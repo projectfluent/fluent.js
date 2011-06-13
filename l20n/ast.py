@@ -1,53 +1,42 @@
 import pyast
 
 class Node(pyast.Node):
+    _abstract = True
     _debug = False
 
 class Entry(Node):
-    pass
+    _abstract = True
 
-class WS(Node):
-    content = pyast.field(str)
-
-class Value(Node):
-    pass
+class LOL(Node):
+    body = pyast.seq(Entry, null=True)
 
 class Expression(Node):
-    pass
+    _abstract = True
+
+class Value(Expression):
+    _abstract = True
 
 class Operator(Node):
-    pass
+    _abstract = True
 
-class Identifier(Node):
+class Identifier(Expression):
     name = pyast.field(str)
 
 class Expander(Node):
     expression = pyast.field(Expression)
 
-class LOL(Node):
-    body = pyast.seq((Entry, WS), null=True)
 
 class KeyValuePair(Node):
     key = pyast.field(Identifier)
     value = pyast.field(Value)
+
+### Entries
 
 class Entity(Entry):
     id = pyast.field(Identifier)
     index = pyast.seq(Expression, null=True)
     value = pyast.field(Value)
     attrs = pyast.seq(KeyValuePair, null=True)
-
-class ComplexStringValue(Value):
-    content = pyast.seq((str, Expander))
-
-class StringValue(Value):
-    content = pyast.field(str)
-
-class ArrayValue(Value):
-    content = pyast.seq(Value)
-
-class ObjectValue(Value):
-    content = pyast.seq(KeyValuePair)
 
 class Comment(Entry):
     content = pyast.field(str, null=True)
@@ -56,6 +45,20 @@ class Macro(Entry):
     id = pyast.field(Identifier)
     args = pyast.seq(Identifier)
     body = pyast.field(Expression)
+
+### Values
+
+class String(Value):
+    content = pyast.field(str)
+
+class Array(Value):
+    content = pyast.seq(Value)
+
+class Hash(Value):
+    content = pyast.seq(KeyValuePair)
+
+class Int(Value):
+    content = pyast.field(int)
 
 ### Operators
 
@@ -78,6 +81,9 @@ class AssignmentOperator(Operator):
                          ">>>=", "|=", "^=", "&="))
 
 ### Expressions
+
+class Literal(Expression):
+    value = pyast.field((bool, int))
 
 class BinaryExpression(Expression):
     operator = pyast.field(BinaryOperator)

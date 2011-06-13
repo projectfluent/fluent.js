@@ -17,15 +17,12 @@ class Parser():
     def parse(self, content):
         lol = ast.LOL()
         lol._struct = True
+        lol._template = []
         self.content = content
-        ws = self.get_ws()
-        if ws:
-            lol.body.append(ast.WS(ws))
+        lol._template.append(self.get_ws())
         while self.content:
             lol.body.append(self.get_entry())
-            ws = self.get_ws()
-            if ws:
-                lol.body.append(ast.WS(ws))
+            lol._template.append(self.get_ws())
         return lol
 
     def get_ws(self):
@@ -91,7 +88,7 @@ class Parser():
         if not match:
             raise ParserError()
         self.content = self.content[match.end(0):]
-        return ast.StringValue(match.group(1))
+        return ast.String(match.group(1))
 
     def get_array(self):
         self.content = self.content[1:]
@@ -104,21 +101,21 @@ class Parser():
                 self.content = self.content[1:]
                 ws2 = self.get_ws()
         self.content = self.content[1:]
-        return ast.ArrayValue(array)
+        return ast.Array(array)
 
     def get_hash(self):
-        hash = OrderedDict()
+        hash = []
         self.content = self.content[1:]
         ws = self.get_ws()
         while self.content[0] != '}':
             kvp = self.get_kvp()
-            hash[kvp.key] = kvp.value
+            hash.append(kvp)
             ws = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
                 ws2 = self.get_ws()
         self.content = self.content[1:]
-        return ast.ObjectValue(hash)
+        return ast.Hash(hash)
 
     def get_kvp(self):
         ws = self.get_ws()
@@ -132,15 +129,15 @@ class Parser():
         return ast.KeyValuePair(key, val)
 
     def get_attributes(self):
-        hash = OrderedDict()
+        hash = []
         kvp = self.get_kvp()
-        hash[kvp.key] = kvp.value
+        hash.append(kvp)
         ws2 = self.get_ws()
         while self.content[0] != '>':
             self.content = self.content[1:]
             ws = self.get_ws()
             kvp = self.get_kvp()
-            hash[kvp.key] = kvp.value
+            hash.append(kvp)
             ws2 = self.get_ws()
         return hash
 
@@ -164,15 +161,19 @@ class Parser():
 
     def get_conditional_expression(self):
         logical_expression = self.get_logical_expression()
+        return logical_expression
 
     def get_logical_expression(self):
         binary_expression = self.get_binary_expression()
+        return binary_expression
 
     def get_binary_expression(self):
         unary_expression = self.get_unary_expression()
+        return unary_expression
 
     def get_unary_expression(self):
         primary_expression = self.get_primary_expression()
+        return primary_expression
 
     def get_primary_expression(self):
         if self.content[0] == "(":
@@ -191,7 +192,7 @@ class Parser():
         if ptr:
             d =  int(self.content[:ptr])
             self.content = self.content[ptr:]
-            return d
+            return ast.Literal(d)
         #value
         if self.content[0] in ('"\'{['):
             return self.get_value()
@@ -208,7 +209,8 @@ class Parser():
         self.content = self.content[1:]
         self.get_ws()
         while self.content[0] != ')':
-            mcall.arguments.append(self.get_expression())
+            exp = self.get_expression()
+            mcall.arguments.append(exp)
             self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
