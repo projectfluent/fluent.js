@@ -35,7 +35,7 @@ class KeyValuePair(Node):
 class Entity(Entry):
     id = pyast.field(Identifier)
     index = pyast.seq(Expression, null=True)
-    value = pyast.field(Value)
+    value = pyast.field(Value, null=True)
     attrs = pyast.seq(KeyValuePair, null=True)
 
 class Comment(Entry):
