@@ -20,7 +20,7 @@ class Operator(Node):
     _abstract = True
 
 class Identifier(Expression):
-    name = pyast.field(str)
+    name = pyast.field(pyast.re('\w+'))
 
 class Expander(Node):
     expression = pyast.field(Expression)

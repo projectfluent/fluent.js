@@ -56,7 +56,7 @@ class Parser():
 
     def get_entity(self, id, index=None):
         ws1 = self.get_ws()
-        value = self.get_value()
+        value = self.get_value(none=True)
         ws2 = self.get_ws()
         if self.content[0] != '>':
             attrs = self.get_attributes()
@@ -70,7 +70,7 @@ class Parser():
         entity._template = "<%%s%%s%s%%s%s%%s>" % (ws1,ws2)
         return entity
 
-    def get_value(self):
+    def get_value(self, none=False):
         c = self.content[0]
         if c in ('"', "'"):
             value = self.get_string()
@@ -79,7 +79,9 @@ class Parser():
         elif c == '{':
             value = self.get_hash()
         else:
-            return None
+            if none is True:
+                return None
+            raise ParserError()
         return value
 
     def get_string(self):
