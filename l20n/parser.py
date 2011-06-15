@@ -1,9 +1,5 @@
 import re
 from l20n import ast
-from collections import OrderedDict
-
-class NoValueException(Exception):
-    pass
 
 class ParserError(Exception):
     pass
@@ -21,7 +17,10 @@ class Parser():
         self.content = content
         lol._template.append(self.get_ws())
         while self.content:
-            lol.body.append(self.get_entry())
+            try:
+                lol.body.append(self.get_entry())
+            except IndexError:
+                raise ParserError()
             lol._template.append(self.get_ws())
         return lol
 
@@ -80,7 +79,7 @@ class Parser():
         elif c == '{':
             value = self.get_hash()
         else:
-            raise ParserError()
+            return None
         return value
 
     def get_string(self):
@@ -88,7 +87,7 @@ class Parser():
         if not match:
             raise ParserError()
         self.content = self.content[match.end(0):]
-        return ast.String(match.group(1))
+        return ast.String(match.group(2))
 
     def get_array(self):
         self.content = self.content[1:]
@@ -161,7 +160,22 @@ class Parser():
 
     def get_conditional_expression(self):
         logical_expression = self.get_logical_expression()
-        return logical_expression
+        self.get_ws()
+        if self.content[0] != '?':
+            return logical_expression
+        self.content = self.content[1:]
+        self.get_ws()
+        consequent = self.get_expression()
+        self.get_ws()
+        if self.content[0] != ':':
+            raise ParserError()
+        self.content = self.content[1:]
+        self.get_ws()
+        alternate = self.get_expression()
+        self.get_ws()
+        return ast.ConditionalExpression(logical_expression,
+                                         consequent,
+                                         alternate)
 
     def get_logical_expression(self):
         binary_expression = self.get_binary_expression()
