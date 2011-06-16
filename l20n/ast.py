@@ -20,7 +20,7 @@ class Operator(Node):
     _abstract = True
 
 class Identifier(Expression):
-    name = pyast.field(pyast.re('\w+'))
+    name = pyast.field(pyast.re('[a-zA-Z]\w*'))
 
 class Expander(Node):
     expression = pyast.field(Expression)
@@ -44,7 +44,8 @@ class Comment(Entry):
 class Macro(Entry):
     id = pyast.field(Identifier)
     args = pyast.seq(Identifier)
-    body = pyast.field(Expression)
+    expression = pyast.field(Expression)
+    attrs = pyast.seq(KeyValuePair, null=True)
 
 ### Values
 
