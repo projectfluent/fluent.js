@@ -58,28 +58,20 @@ class Array(Value):
 class Hash(Value):
     content = pyast.seq(KeyValuePair)
 
-class Int(Value):
-    content = pyast.field(int)
-
 ### Operators
 
 class UnaryOperator(Operator):
-    token = pyast.field(("-", "+", "!", "~", "typeof", "void", "delete"))
+    token = pyast.field(("-", "+", "!"))
 
 
 class BinaryOperator(Operator):
-    token = pyast.field(("==", "!=", "===", "!==", "<", "<=", ">", ">=",
-                           "<<", ">>", ">>>", "+", "-", "*", "/", "%", "|",
-                           "^", "in", "instanceof", ".."))
+    token = pyast.field(("==", "!=", "<", "<=", ">", ">=",
+                         "+", "-", "*", "/", "%"))
 
 
 class LogicalOperator(Operator):
     token = pyast.field(("||", "&&"))
 
-
-class AssignmentOperator(Operator):
-    token = pyast.field(("=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=",
-                         ">>>=", "|=", "^=", "&="))
 
 ### Expressions
 
@@ -99,14 +91,15 @@ class ConditionalExpression(Expression):
 class UnaryExpression(Expression):
     operator = pyast.field(UnaryOperator)
     argument = pyast.field(Expression)
-    prefix = pyast.field(bool, default=False)
 
 class CallExpression(Expression):
     callee = pyast.field(Expression)
     arguments = pyast.seq(Expression, null=True)
 
 class LogicalExpression(Expression):
-    pass
+    operator = pyast.field(LogicalOperator)
+    left = pyast.field(Expression)
+    right = pyast.field(Expression)
 
 class MemberExpression(Expression):
     pass
