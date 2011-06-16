@@ -322,6 +322,38 @@ class L20nParserTestCase(unittest.TestCase):
             except AssertionError:
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
+    def test_expression(self):
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+        string = "<id[a == b == c] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '==')
+        self.assertEqual(exp.left.operator.token, '==')
+
+        string = "<id[a == b || c == d || e == f] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '||')
+        self.assertEqual(exp.right.operator.token, '==')
+
+        string = "<id[0 && 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '&&')
+
+        string = "<id[1 || 1 && 0] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.right.operator.token, '&&')
+
 if __name__ == '__main__':
     unittest.main()
 
