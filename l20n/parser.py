@@ -208,12 +208,31 @@ class Parser():
                                          alternate)
 
     def get_logical_expression(self):
-        binary_expression = self.get_binary_expression()
-        return binary_expression
+        expression = self.get_binary_expression()
+        op = self.content[:2]
+        while op in ('||', '&&'):
+            self.content = self.content[2:]
+            self.get_ws()
+            expression = ast.LogicalExpression(ast.LogicalOperator(op),
+                                               expression,
+                                               self.get_binary_expression())
+            self.get_ws()
+            op = self.content[:2]
+        return expression
 
     def get_binary_expression(self):
-        unary_expression = self.get_unary_expression()
-        return unary_expression
+        expression = self.get_unary_expression()
+        self.get_ws()
+        op = self.content[:2]
+        while op in ('==', '!='):
+            self.content = self.content[2:]
+            self.get_ws()
+            expression = ast.BinaryExpression(ast.BinaryOperator(op),
+                                              expression,
+                                              self.get_unary_expression())
+            self.get_ws()
+            op = self.content[:2]
+        return expression
 
     def get_unary_expression(self):
         primary_expression = self.get_primary_expression()
