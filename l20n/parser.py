@@ -6,7 +6,7 @@ class ParserError(Exception):
 
 class Parser():
     patterns = {
-        'id': re.compile('^[\'"]?(\w+)[\'"]?'),
+        'id': re.compile('^([a-zA-Z]\w*)'),
         'value': re.compile('^(?P<op>[\'"])(.*?)(?<!\\\)(?P=op)'),
     }
 
@@ -56,19 +56,50 @@ class Parser():
 
     def get_entity(self, id, index=None):
         ws1 = self.get_ws()
+        if self.content[0] == '>':
+            self.content = self.content[1:]
+            entity = ast.Entity(id)
+            entity._template = "<%%s%s>" % ws1
+            return entity
+        if len(ws1) == 0:
+            raise ParserError()
         value = self.get_value(none=True)
         ws2 = self.get_ws()
-        if self.content[0] != '>':
-            attrs = self.get_attributes()
-        else:
-            attrs = None
-        self.content = self.content[1:]
+        attrs = self.get_attributes()
         entity = ast.Entity(id,
                             index,
                             value,
                             attrs)
         entity._template = "<%%s%%s%s%%s%s%%s>" % (ws1,ws2)
         return entity
+
+    def get_macro(self, id):
+        idlist = []
+        self.content = self.content[1:]
+        self.get_ws()
+        while self.content[0] != ')':
+            idlist.append(self.get_identifier())
+            self.get_ws()
+            if self.content[0] == ',':
+                self.content = self.content[1:]
+                self.get_ws()
+        self.content = self.content[1:]
+        ws = self.get_ws()
+        if len(ws) == 0:
+            raise ParserError()
+        if self.content[0] != '{':
+            raise ParserError()
+        self.content = self.content[1:]
+        exp = self.get_expression()
+        self.get_ws()
+        if self.content[0] != '}':
+            raise ParserError()
+        self.content = self.content[1:]
+        attrs = self.get_attributes()
+        return ast.Macro(id,
+                         idlist,
+                         exp,
+                         attrs)
 
     def get_value(self, none=False):
         c = self.content[0]
@@ -131,16 +162,13 @@ class Parser():
 
     def get_attributes(self):
         hash = []
-        kvp = self.get_kvp()
-        hash.append(kvp)
-        ws2 = self.get_ws()
         while self.content[0] != '>':
-            self.content = self.content[1:]
             ws = self.get_ws()
             kvp = self.get_kvp()
             hash.append(kvp)
             ws2 = self.get_ws()
-        return hash
+        self.content = self.content[1:]
+        return hash if len(hash) else None
 
     def get_index(self):
         index = []
