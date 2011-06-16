@@ -189,10 +189,10 @@ class Parser():
         return self.get_conditional_expression()
 
     def get_conditional_expression(self):
-        logical_expression = self.get_logical_expression()
+        or_expression = self.get_or_expression()
         self.get_ws()
         if self.content[0] != '?':
-            return logical_expression
+            return or_expression
         self.content = self.content[1:]
         self.get_ws()
         consequent = self.get_expression()
@@ -203,40 +203,100 @@ class Parser():
         self.get_ws()
         alternate = self.get_expression()
         self.get_ws()
-        return ast.ConditionalExpression(logical_expression,
+        return ast.ConditionalExpression(or_expression,
                                          consequent,
                                          alternate)
 
-    def get_logical_expression(self):
-        expression = self.get_binary_expression()
-        op = self.content[:2]
-        while op in ('||', '&&'):
-            self.content = self.content[2:]
-            self.get_ws()
-            expression = ast.LogicalExpression(ast.LogicalOperator(op),
-                                               expression,
-                                               self.get_binary_expression())
-            self.get_ws()
-            op = self.content[:2]
-        return expression
-
-    def get_binary_expression(self):
-        expression = self.get_unary_expression()
+    def get_prefix_expression(self, token, token_length, cl, op, nxt):
+        exp = nxt()
         self.get_ws()
-        op = self.content[:2]
-        while op in ('==', '!='):
-            self.content = self.content[2:]
+        while self.content[:token_length] in token:
+            t = self.content[:token_length]
+            self.content = self.content[token_length:]
             self.get_ws()
-            expression = ast.BinaryExpression(ast.BinaryOperator(op),
-                                              expression,
-                                              self.get_unary_expression())
+            exp = cl(op(t),
+                     exp,
+                     nxt())
             self.get_ws()
-            op = self.content[:2]
-        return expression
+        return exp
 
-    def get_unary_expression(self):
-        primary_expression = self.get_primary_expression()
-        return primary_expression
+    def get_prefix_expression_re(self, token, cl, op, nxt):
+        exp = nxt()
+        self.get_ws()
+        m = token.match(self.content)
+        while m:
+            self.content = self.content[m.end(0):]
+            self.get_ws()
+            exp = cl(op(m.group(0)),
+                     exp,
+                     nxt())
+            self.get_ws()
+            m = token.match(self.content)
+        return exp
+
+
+    def get_postfix_expression(self, token, token_length, cl, op, nxt):
+        t = self.content[0]
+        if t not in token:
+            return nxt()
+        self.content = self.content[1:]
+        self.get_ws()
+        return cl(op(t),
+                  self.get_postfix_expression())
+
+    def get_or_expression(self,
+                          token=('||',),
+                          cl=ast.LogicalExpression,
+                          op=ast.LogicalOperator):
+        self.get_prefix_expression(token, 2, cl, op, self.get_and_expression)
+
+    def get_and_expression(self,
+                          token=('&&',),
+                          cl=ast.LogicalExpression,
+                          op=ast.LogicalOperator):
+        self.get_prefix_expression(token, 2, cl, op, self.get_equality_expression)
+
+    def get_equality_expression(self,
+                          token=('==', '!='),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_prefix_expression(token, 2, cl, op, self.get_relational_expression)
+
+    def get_relational_expression(self,
+                          token=re.compile('^[<>]=?'),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_prefix_expression_re(token, cl, op, self.get_additive_expression)
+
+    def get_additive_expression(self,
+                          token=('+', '-'),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_prefix_expression(token, 1, cl, op, self.get_multiplicative_expression)
+
+    def get_multiplicative_expression(self,
+                          token=('*',),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_prefix_expression(token, 1, cl, op, self.get_dividive_expression)
+
+    def get_dividive_expression(self,
+                          token=('/',),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_prefix_expression(token, 1, cl, op, self.get_modulo_expression)
+
+    def get_modulo_expression(self,
+                          token=('%',),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_prefix_expression(token, 1, cl, op, self.get_unary_expression)
+
+    def get_unary_expression(self,
+                          token=('+', '-', '!'),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
+        self.get_postfix_expression(token, 1, cl, op, self.get_primary_expression)
 
     def get_primary_expression(self):
         if self.content[0] == "(":
@@ -297,3 +357,4 @@ class Parser():
         self.get_ws()
         self.content = self.content[1:]
         return ast.MemberExpression(idref, exp)
+

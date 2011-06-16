@@ -94,7 +94,7 @@ class UnaryExpression(Expression):
 
 class CallExpression(Expression):
     callee = pyast.field(Expression)
-    arguments = pyast.seq(Expression, null=True)
+    arguments = pyast.seq(Expression)
 
 class LogicalExpression(Expression):
     operator = pyast.field(LogicalOperator)
@@ -108,4 +108,4 @@ class AttributeExpression(Expression):
     pass
 
 class ParenthesisExpression(Expression):
-    pass
+    expression = pyast.field(Expression)
