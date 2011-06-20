@@ -115,26 +115,57 @@
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="unary_expression">unary_expression</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">( ('+' | '-' | '!') <a href="#WS">WS</a>? <a href="#unary_expression">unary_expression</a> ) | <a href="#primary_expression">primary_expression</a> ;</td>
+  <td class="p2cell">( ('+' | '-' | '!') <a href="#WS">WS</a>? <a 
+          href="#unary_expression">unary_expression</a> ) | <a 
+          href="#parenthesis_expression">parenthesis_expression</a> ;</td>
+
+  </tr></tbody></table>
+
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="parenthesis_expression">parenthesis_expression</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell">'(' <a href="#WS">WS</a>? <a 
+          href="#expression">expression</a> <a href="#WS">WS</a>? ')' | <a href="#primary_expression">primary_expression</a> ;</td>
 
   </tr></tbody></table>
 
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="primary_expression">primary_expression</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">( '(' <a href="#WS">WS</a>? <a href="#expression">expression</a> ')' ) | number | <a href="#value">value</a> |
-  <a href="#idref">idref</a> (
-    ( '(' <a href="#WS">WS</a>? ( <a href="#expression">expression</a> <a href="#WS">WS</a>? ( ',' <a href="#WS">WS</a>? <a href="#expression">expression</a> <a href="#WS">WS</a>? )* )? ')' )
-  | <a href="#index">index</a>
-
-        )? ;</td>
+  <td class="p2cell"> <a href="#literal">literal</a> | <a href="#value">value</a> |
+      <a href="#id">ID</a> | <a href="#call_expression">call_expression</a> | 
+      <a href="#member_expression">member_expression</a> |
+      <a href="#attr_expression">attr_expression</a> ;</td>
   </tr></tbody></table>
 
 <table class="production"><tbody><tr>
-  <td class="p1cell"><a name="idref">idref</a></td>
+  <td class="p1cell"><a name="call_expression">call_expression</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell"><a href="#ID">ID</a> ( '.' <a href="#ID">ID</a> )* ;</td>
+  <td class="p2cell"> <a href="#ID">ID</a> '(' <a href="#WS">WS</a>? <a 
+          href="#expression">expression</a> <a href="#WS">WS</a>? ( ', ' <a href="#WS">WS</a>?  <a 
+          href="#expression">expression</a> <a href="#WS">WS</a>? )* ')' ;</td>
+  </tr></tbody></table>
 
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="member_expression">member_expression</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell"> <a href="#ID">ID</a> '[' <a href="#WS">WS</a>? <a 
+          href="#expression">expression</a> <a href="#WS">WS</a> ']' | 
+      <a href="#ID">ID</a> '.' <a href="#ID">ID</a>;</td>
+  </tr></tbody></table>
+
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="attr_expression">attr_expression</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell"> <a href="#ID">ID</a> '[.' <a href="#WS">WS</a>? <a 
+          href="#expression">expression</a> <a href="#WS">WS</a> ']' |
+     <a href="#ID">ID</a> '..' <a href="#ID">ID</a> ;</td>
+  </tr></tbody></table>
+
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="literal">literal</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell"> 'true' | 'false' | number ;</td>
   </tr></tbody></table>
 
 <p>One of the fundamental elements of l20n are values, which can be plain strings, strings with parameters, arrays or hashes. Both arrays and hashes have values as values, that is, they can be hierarchical.</p>
@@ -148,15 +179,23 @@
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="macro">macro</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">'(' <a href="#WS">WS</a>? ( <a href="#ID">ID</a> <a href="#WS">WS</a>? ( ',' <a href="#WS">WS</a>? <a href="#ID">ID</a> <a href="#WS">WS</a>? )* )? ')' <a href="#WS">WS</a>?
-       '->' <a href="#WS">WS</a>? '{' <a href="#WS">WS</a>? <a href="#expression">expression</a> <a href="#WS">WS</a>? '}' ;</td>
+  <td class="p2cell">'<' <a href="#ID">ID</a> '(' <a href="#WS">WS</a>? ( <a 
+          href="#ID">ID</a> <a href="#WS">WS</a>? ( ',' <a href="#WS">WS</a>? 
+      <a href="#ID">ID</a> <a href="#WS">WS</a>? )* )? ')' <a 
+          href="#WS">WS</a>+ '{' <a href="#WS">WS</a>? <a 
+           href="#expression">expression</a> <a href="#WS">WS</a>? '}' <a href="#WS">WS</a>? '>' ;</td>
 
   </tr></tbody></table>
+  
 <p>The <code>expander</code> production used inside strings is used to reference expressions to be expanded within a string.</p>
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="string">string</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">'\'' ([^'] | <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '\'' ;</td>
+  <td class="p2cell">
+      '\'' ([^'] | <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '\'' |
+      '"' ([^"] | <a href="#escape">escape</a> | <a 
+          href="#expander">expander</a> )* '"' ;
+  </td>
 
   </tr></tbody></table>
 
@@ -170,7 +209,7 @@
 
   <td class="p1cell"><a name="expander">expander</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">'${' <a href="#expression">expression</a> '}' ('s' | 'i') ;</td>
+  <td class="p2cell">'{{' <a href="#expression">expression</a> '}}' ;</td>
   </tr></tbody></table>
 
 <table class="production"><tbody><tr>
@@ -198,13 +237,7 @@
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="comment">comment</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">'/' '*' .*? '*' '/' ;</td>
-  </tr></tbody></table>
-
-<table class="production"><tbody><tr>
-  <td class="p1cell"><a name="group">group</a></td>
-  <td class="p2cell">:</td>
-  <td class="p2cell">'[%%' <a href="#WS">WS</a>? <a href="#entry">entry</a>* '%%]' ;</td>
+  <td class="p2cell">'/*' .*? '*/' ;</td>
   </tr></tbody></table>
 
 <table class="production"><tbody><tr>
