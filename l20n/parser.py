@@ -242,61 +242,61 @@ class Parser():
         self.content = self.content[1:]
         self.get_ws()
         return cl(op(t),
-                  self.get_postfix_expression())
+                  self.get_postfix_expression(token, token_length, cl, op, nxt))
 
     def get_or_expression(self,
                           token=('||',),
                           cl=ast.LogicalExpression,
                           op=ast.LogicalOperator):
-        self.get_prefix_expression(token, 2, cl, op, self.get_and_expression)
+        return self.get_prefix_expression(token, 2, cl, op, self.get_and_expression)
 
     def get_and_expression(self,
                           token=('&&',),
                           cl=ast.LogicalExpression,
                           op=ast.LogicalOperator):
-        self.get_prefix_expression(token, 2, cl, op, self.get_equality_expression)
+        return self.get_prefix_expression(token, 2, cl, op, self.get_equality_expression)
 
     def get_equality_expression(self,
                           token=('==', '!='),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
-        self.get_prefix_expression(token, 2, cl, op, self.get_relational_expression)
+        return self.get_prefix_expression(token, 2, cl, op, self.get_relational_expression)
 
     def get_relational_expression(self,
                           token=re.compile('^[<>]=?'),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
-        self.get_prefix_expression_re(token, cl, op, self.get_additive_expression)
+        return self.get_prefix_expression_re(token, cl, op, self.get_additive_expression)
 
     def get_additive_expression(self,
                           token=('+', '-'),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
-        self.get_prefix_expression(token, 1, cl, op, self.get_multiplicative_expression)
+        return self.get_prefix_expression(token, 1, cl, op, self.get_multiplicative_expression)
 
     def get_multiplicative_expression(self,
                           token=('*',),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
-        self.get_prefix_expression(token, 1, cl, op, self.get_dividive_expression)
+        return self.get_prefix_expression(token, 1, cl, op, self.get_dividive_expression)
 
     def get_dividive_expression(self,
                           token=('/',),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
-        self.get_prefix_expression(token, 1, cl, op, self.get_modulo_expression)
+        return self.get_prefix_expression(token, 1, cl, op, self.get_modulo_expression)
 
     def get_modulo_expression(self,
                           token=('%',),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
-        self.get_prefix_expression(token, 1, cl, op, self.get_unary_expression)
+        return self.get_prefix_expression(token, 1, cl, op, self.get_unary_expression)
 
     def get_unary_expression(self,
                           token=('+', '-', '!'),
-                          cl=ast.BinaryExpression,
-                          op=ast.BinaryOperator):
-        self.get_postfix_expression(token, 1, cl, op, self.get_primary_expression)
+                          cl=ast.UnaryExpression,
+                          op=ast.UnaryOperator):
+        return self.get_postfix_expression(token, 1, cl, op, self.get_primary_expression)
 
     def get_primary_expression(self):
         if self.content[0] == "(":
