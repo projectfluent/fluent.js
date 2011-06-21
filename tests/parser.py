@@ -349,11 +349,29 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(exp.operator.token, '||')
         self.assertEqual(exp.left.operator.token, '&&')
 
+        string = "<id[0 && (1 || 1)] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '&&')
+        self.assertEqual(exp.right.expression.operator.token, '||')
+
         string = "<id[1 || 1 && 0] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
         self.assertEqual(exp.operator.token, '||')
         self.assertEqual(exp.right.operator.token, '&&')
+
+        string = "<id[1 + 2] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '+')
+        self.assertEqual(exp.left.value, 1)
+        self.assertEqual(exp.right.value, 2)
+
+        string = "<id[1 + 2 - 3 > 4 < 5 <= a >= 'd' * 3 / q % 10] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '>=')
 
         string = "<id[! +1] 'foo'>"
         lol = self.parser.parse(string)
@@ -377,9 +395,34 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(exp.left.value, 1)
         self.assertEqual(exp.right.value, 2)
 
+        string = "<id[id2['foo']] 'foo2'>"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        exp = lol.body[0].index[0]
+        self.assertEqual(lol.body[0].value.content, 'foo2')
+        self.assertEqual(exp.object.name, 'id2')
+        self.assertEqual(exp.property.content , 'foo')
+
+        string = "<id[id['foo']]>"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        exp = lol.body[0].index[0]
+        self.assertEqual(lol.body[0].value, None)
+        self.assertEqual(exp.object.name, 'id')
+        self.assertEqual(exp.property.content , 'foo')
+
     def test_expression_errors(self):
         strings = [
             '<id[1+()] "foo">',
+            '<id[1<>2] "foo">',
+            '<id[1+=2] "foo">',
+            '<id[>2] "foo">',
+            '<id[1==] "foo">',
+            '<id[1+ "foo">',
+            '<id[2==1+] "foo">',
+            '<id[2==3+4 "fpp">',
+            '<id[2==3+ "foo">',
+            '<id[2>>2] "foo">',
         ]
         for string in strings:
             try:
