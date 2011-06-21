@@ -58,7 +58,7 @@ class Parser():
         ws1 = self.get_ws()
         if self.content[0] == '>':
             self.content = self.content[1:]
-            entity = ast.Entity(id)
+            entity = ast.Entity(id, index)
             entity._template = "<%%s%s>" % ws1
             return entity
         if len(ws1) == 0:
@@ -348,7 +348,7 @@ class Parser():
         exp = self.get_expression()
         self.get_ws()
         self.content = self.content[1:]
-        return ast.AttributeExpression(idref, exp)
+        return ast.AttributeExpression(idref, exp, True)
 
     def get_member_expression(self, idref):
         self.content = self.content[1:]
@@ -356,5 +356,5 @@ class Parser():
         exp = self.get_expression()
         self.get_ws()
         self.content = self.content[1:]
-        return ast.MemberExpression(idref, exp)
+        return ast.MemberExpression(idref, exp, True)
 
