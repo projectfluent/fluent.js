@@ -53,10 +53,10 @@ class String(Value):
     content = pyast.field(str)
 
 class Array(Value):
-    content = pyast.seq(Value)
+    content = pyast.seq(Value, null=True)
 
 class Hash(Value):
-    content = pyast.seq(KeyValuePair)
+    content = pyast.seq(KeyValuePair, null=True)
 
 ### Operators
 
@@ -93,8 +93,8 @@ class UnaryExpression(Expression):
     argument = pyast.field(Expression)
 
 class CallExpression(Expression):
-    callee = pyast.field(Expression)
-    arguments = pyast.seq(Expression)
+    callee = pyast.field(Identifier)
+    arguments = pyast.seq(Expression, null=True)
 
 class LogicalExpression(Expression):
     operator = pyast.field(LogicalOperator)
@@ -102,10 +102,14 @@ class LogicalExpression(Expression):
     right = pyast.field(Expression)
 
 class MemberExpression(Expression):
-    pass
+    object = pyast.field(Identifier)
+    property = pyast.field(Expression)
+    computed = pyast.field(bool)
 
 class AttributeExpression(Expression):
-    pass
+    object = pyast.field(Identifier)
+    attribute = pyast.field(Expression)
+    computed = pyast.field(bool)
 
 class ParenthesisExpression(Expression):
     expression = pyast.field(Expression)
