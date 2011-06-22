@@ -1,5 +1,6 @@
 import re
 from l20n import ast
+import string
 
 class ParserError(Exception):
     pass
@@ -24,7 +25,12 @@ class Parser():
             lol._template.append(self.get_ws())
         return lol
 
-    def get_ws(self):
+    def get_ws(self, wschars=string.whitespace):
+        try:
+            if self.content[0] not in wschars:
+                return ''
+        except IndexError:
+            return ''
         content = self.content.lstrip()
         ws = self.content[:len(content)*-1]
         self.content = content
@@ -61,7 +67,7 @@ class Parser():
             entity = ast.Entity(id, index)
             entity._template = "<%%s%s>" % ws1
             return entity
-        if len(ws1) == 0:
+        if ws1 == '':
             raise ParserError()
         value = self.get_value(none=True)
         ws2 = self.get_ws()
@@ -92,7 +98,7 @@ class Parser():
                 else:
                     raise ParserError()
         ws = self.get_ws()
-        if len(ws) == 0:
+        if ws == '':
             raise ParserError()
         if self.content[0] != '{':
             raise ParserError()
@@ -132,11 +138,11 @@ class Parser():
 
     def get_array(self):
         self.content = self.content[1:]
-        array = []
         ws = self.get_ws()
         if self.content[0] == ']':
             self.content = self.content[1:]
             return ast.Array()
+        array = []
         while 1:
             array.append(self.get_value())
             ws = self.get_ws()
@@ -151,12 +157,12 @@ class Parser():
         return ast.Array(array)
 
     def get_hash(self):
-        hash = []
         self.content = self.content[1:]
         ws = self.get_ws()
         if self.content[0] == '}':
             self.content = self.content[1:]
             return ast.Hash()
+        hash = []
         while 1:
             kvp = self.get_kvp()
             hash.append(kvp)
@@ -172,7 +178,6 @@ class Parser():
         return ast.Hash(hash)
 
     def get_kvp(self):
-        ws = self.get_ws()
         key = self.get_identifier()
         ws2 = self.get_ws()
         if self.content[0] != ':':
@@ -183,19 +188,19 @@ class Parser():
         return ast.KeyValuePair(key, val)
 
     def get_attributes(self):
-        hash = []
         if self.content[0] == '>':
             self.content = self.content[1:]
             return None
+        hash = []
         while 1:
             kvp = self.get_kvp()
             hash.append(kvp)
             ws2 = self.get_ws()
             if self.content[0] == '>':
+                self.content = self.content[1:]
                 break
-            elif len(ws2) == 0:
+            elif ws2 == '':
                 raise ParserError()
-        self.content = self.content[1:]
         return hash if len(hash) else None
 
     def get_index(self):
