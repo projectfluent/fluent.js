@@ -552,17 +552,31 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_call_expression(self):
-        #from pudb import set_trace; set_trace()
-        string = "<id[0 == 1 || 1] 'foo'>"
+        string = "<id[foo()] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.operator.token, '||')
-        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.callee.name, 'foo')
+        self.assertEqual(len(exp.arguments), 0)
+
+        string = "<id[foo(d, e, f, g)] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.callee.name, 'foo')
+        self.assertEqual(len(exp.arguments), 4)
+        self.assertEqual(exp.arguments[0].name, 'd')
+        self.assertEqual(exp.arguments[1].name, 'e')
+        self.assertEqual(exp.arguments[2].name, 'f')
+        self.assertEqual(exp.arguments[3].name, 'g')
 
     def test_call_expression_errors(self):
         strings = [
             '<id[1+()] "foo">',
             '<id[foo(fo fo)] "foo">',
+            '<id[foo(()] "foo">',
+            '<id[foo(())] "foo">',
+            '<id[foo())] "foo">',
+            '<id[foo("ff)] "foo">',
+            '<id[foo(ff")] "foo">',
         ]
         for string in strings:
             try:
@@ -571,16 +585,28 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_member_expression(self):
-        #from pudb import set_trace; set_trace()
-        string = "<id[0 == 1 || 1] 'foo'>"
+        string = "<id[x['d']] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.operator.token, '||')
-        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.object.name, 'x')
+        self.assertEqual(exp.property.content, 'd')
+
+        string = "<id[x.d] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.object.name, 'x')
+        self.assertEqual(exp.property.name, 'd')
+
+        string = "<id[ x.d ] 'foo' >"
+        lol = self.parser.parse(string)
+
+        string = "<id[ x[ 'd' ] ] 'foo' >"
+        lol = self.parser.parse(string)
 
     def test_member_expression_errors(self):
         strings = [
-            '<id[1+()] "foo">',
+            '<id[x[[]] "foo">',
+            '<id[x[] "foo">',
         ]
         for string in strings:
             try:
@@ -589,22 +615,31 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_attr_expression(self):
-        #from pudb import set_trace; set_trace()
-        string = "<id[0 == 1 || 1] 'foo'>"
+        string = "<id[x[.'d']] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.operator.token, '||')
-        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.object.name, 'x')
+        self.assertEqual(exp.attribute.content, 'd')
+
+        string = "<id[x..d] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.object.name, 'x')
+        self.assertEqual(exp.attribute.name, 'd')
 
     def test_attr_expression_errors(self):
         strings = [
-            '<id[1+()] "foo">',
+            '<id[x...d] "foo">',
+            '<id[x.["d"]] "foo">',
+            '<id[x[..d]] "foo">',
         ]
         for string in strings:
             try:
                 self.assertRaises(ParserError, self.parser.parse, string)
             except AssertionError:
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+### TILL HERE
 
     def test_parenthesis_expression(self):
         #from pudb import set_trace; set_trace()

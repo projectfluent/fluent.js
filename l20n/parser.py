@@ -361,9 +361,9 @@ class Parser():
             return self.get_value()
         #idref (with index?) or macrocall
         idref = self.get_identifier()
-        if self.content[0:2] == '[.':
+        if self.content[0:2] in ('[.', '..'):
             return self.get_attr_expression(idref)
-        elif self.content[0] == '[':
+        elif self.content[0] in ('[', '.'):
             return self.get_member_expression(idref)
         elif self.content[0] != '(':
             return idref
@@ -390,18 +390,35 @@ class Parser():
 
 
     def get_attr_expression(self, idref):
-        self.content = self.content[2:]
-        self.get_ws()
-        exp = self.get_expression()
-        self.get_ws()
-        self.content = self.content[1:]
-        return ast.AttributeExpression(idref, exp, True)
+        d = self.content[0:2]
+        if d == '[.':
+            self.content = self.content[2:]
+            self.get_ws()
+            exp = self.get_expression()
+            self.get_ws()
+            self.content = self.content[1:]
+            return ast.AttributeExpression(idref, exp, True)
+        elif d == '..':
+            self.content = self.content[2:]
+            prop = self.get_identifier()
+            return ast.AttributeExpression(idref, prop, False)
+            pass
+        else:
+            raise ParserError()
 
     def get_member_expression(self, idref):
-        self.content = self.content[1:]
-        self.get_ws()
-        exp = self.get_expression()
-        self.get_ws()
-        self.content = self.content[1:]
-        return ast.MemberExpression(idref, exp, True)
+        d = self.content[0]
+        if d == '[':
+            self.content = self.content[1:]
+            self.get_ws()
+            exp = self.get_expression()
+            self.get_ws()
+            self.content = self.content[1:]
+            return ast.MemberExpression(idref, exp, True)
+        elif d == '.':
+            self.content = self.content[1:]
+            prop = self.get_identifier()
+            return ast.MemberExpression(idref, prop, False)
+        else:
+            raise ParserError()
 
