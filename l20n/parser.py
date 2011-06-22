@@ -272,6 +272,12 @@ class Parser():
                           token=('+', '-'),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
+        return self.get_prefix_expression(token, 1, cl, op, self.get_modulo_expression)
+
+    def get_modulo_expression(self,
+                          token=('%',),
+                          cl=ast.BinaryExpression,
+                          op=ast.BinaryOperator):
         return self.get_prefix_expression(token, 1, cl, op, self.get_multiplicative_expression)
 
     def get_multiplicative_expression(self,
@@ -282,12 +288,6 @@ class Parser():
 
     def get_dividive_expression(self,
                           token=('/',),
-                          cl=ast.BinaryExpression,
-                          op=ast.BinaryOperator):
-        return self.get_prefix_expression(token, 1, cl, op, self.get_modulo_expression)
-
-    def get_modulo_expression(self,
-                          token=('%',),
                           cl=ast.BinaryExpression,
                           op=ast.BinaryOperator):
         return self.get_prefix_expression(token, 1, cl, op, self.get_unary_expression)
