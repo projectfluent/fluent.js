@@ -75,7 +75,14 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
 
-        string = "<id 'value' attr1: 'foo' attr2: 'foo2' attr3: 'foo3'>"
+        string = "<id attr1: 'foo' attr2: 'foo2'    >"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body[0].attrs), 2)
+        attr = lol.body[0].attrs[0]
+        self.assertEqual(attr.key.name, "attr1")
+        self.assertEqual(attr.value.content, "foo")
+
+        string = "<id 'value' attr1: 'foo' attr2: 'foo2' attr3: 'foo3' >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 3)
         attr = lol.body[0].attrs[0]
@@ -101,6 +108,7 @@ class L20nParserTestCase(unittest.TestCase):
             "<id 'a': 'a'>",
             "<id \"a\": 'a'>",
             "<id 2: 'a'>",
+            "<id a2:'a'a3:'v'>",
         ]
         for string in strings:
             try:
@@ -122,7 +130,7 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(len(val.content), 1)
         self.assertEqual(val.content[0].content, "foo")
 
-        string = "<id ['foo', 'foo2', 'foo3']>"
+        string = "<id ['foo', 'foo2', 'foo3']  \t>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         val = lol.body[0].value
@@ -132,7 +140,7 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(val.content[2].content, "foo3")
 
     def test_nested_array_value(self):
-        string = "<id [[], []]>"
+        string = "<id [[], [  ]]>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         val = lol.body[0].value
@@ -148,7 +156,7 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(val.content[1].content[0].content, 'foo2')
         self.assertEqual(val.content[1].content[1].content, 'foo3')
 
-        string = "<id ['foo', ['foo2', 'foo3']]>"
+        string = "<id ['foo', ['foo2', 'foo3' ]  ]>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         val = lol.body[0].value
@@ -169,7 +177,10 @@ class L20nParserTestCase(unittest.TestCase):
             "<id ['[']']>",
             "<id ['f'][][>",
             "<id ['f']['f']>",
-            "<id [2, 3]>", 
+            "<id [2, 3]>",
+            "<id ['f' 'f']>",
+            "<id ['f''f']>",
+            "<id [n?e]>",
         ]
         for string in strings:
             try:
@@ -184,14 +195,14 @@ class L20nParserTestCase(unittest.TestCase):
         val = lol.body[0].value
         self.assertEqual(len(val.content), 0)
 
-        string = "<id {a: 'b', a2: 'c', d: 'd'}>"
+        string = "<id {a: 'b', a2: 'c', d: 'd' }>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         val = lol.body[0].value
         self.assertEqual(len(val.content), 3)
         self.assertEqual(val.content[0].value.content, "b")
 
-        string = "<id {a: '2', b: '3'}>"
+        string = "<id {a: '2', b: '3'} >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         val = lol.body[0].value
@@ -200,7 +211,7 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(val.content[1].value.content, "3")
 
     def test_nested_hash_value(self):
-        string = "<id {a: {}, b: {}}>"
+        string = "<id {a: {}, b: { }}>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         val = lol.body[0].value
@@ -217,15 +228,6 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(val.content[2].value.content[0].key.name, 'a2')
         self.assertEqual(val.content[2].value.content[0].value.content, 'p')
 
-        string = "<id ['foo', ['foo2', 'foo3']]>"
-        lol = self.parser.parse(string)
-        self.assertEqual(len(lol.body), 1)
-        val = lol.body[0].value
-        self.assertEqual(len(val.content), 2)
-        self.assertEqual(val.content[0].content, 'foo')
-        self.assertEqual(val.content[1].content[0].content, 'foo2')
-        self.assertEqual(val.content[1].content[1].content, 'foo3')
-
     def test_hash_errors(self):
         strings = [
             '<id {a: 2}>',
@@ -238,6 +240,7 @@ class L20nParserTestCase(unittest.TestCase):
             "<id {'a': 'foo'}>",
             "<id {\"a\": 'foo'}>",
             "<id {2: 'foo'}>",
+            "<id {a:'foo'b:'foo'}>",
         ]
         for string in strings:
             try:
@@ -252,6 +255,12 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(len(lol.body[0].index), 0)
         self.assertEqual(lol.body[0].value, None)
 
+        string = "<id[ ] >"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        self.assertEqual(len(lol.body[0].index), 0)
+        self.assertEqual(lol.body[0].value, None)
+        
         string = "<id['foo'] 'foo2'>"
         lol = self.parser.parse(string)
         entity = lol.body[0]
@@ -281,6 +290,7 @@ class L20nParserTestCase(unittest.TestCase):
             '<id[ } "foo">',
             '<id[" ] "["a"]>',
             '<id[a]["a"]>',
+            '<id["foo""foo"] "fo">',
         ]
         for string in strings:
             try:
@@ -295,7 +305,7 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(len(lol.body[0].args), 1)
         self.assertEqual(lol.body[0].expression.value, 2)
 
-        string = "<id(n, m, a) {2}>"
+        string = "<id( n, m, a ) {2}  >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         self.assertEqual(len(lol.body[0].args), 3)
@@ -314,6 +324,7 @@ class L20nParserTestCase(unittest.TestCase):
             '<id("a") {2}>',
             '<id(\'a\') {2}>',
             '<id(2) {2}>',
+            '<id(nm nm) {2}>',
 
         ]
         for string in strings:
@@ -323,7 +334,6 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_expression(self):
-        #from pudb import set_trace; set_trace()
         string = "<id[0 == 1 || 1] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
@@ -336,7 +346,7 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(exp.operator.token, '==')
         self.assertEqual(exp.left.operator.token, '==')
 
-        string = "<id[a == b || c == d || e == f] 'foo'>"
+        string = "<id[ a == b || c == d || e == f ] 'foo'  >"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
         self.assertEqual(exp.operator.token, '||')
@@ -423,6 +433,226 @@ class L20nParserTestCase(unittest.TestCase):
             '<id[2==3+4 "fpp">',
             '<id[2==3+ "foo">',
             '<id[2>>2] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_logical_expression(self):
+        string = "<id[0 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.value, 0)
+        self.assertEqual(exp.right.value, 1)
+
+        string = "<id[0 || 1 && 2 || 3] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '||')
+        self.assertEqual(exp.right.value, 3)
+        self.assertEqual(exp.left.left.value, 0)
+        self.assertEqual(exp.left.right.left.value, 1)
+        self.assertEqual(exp.left.right.right.value, 2)
+        self.assertEqual(exp.left.right.operator.token, '&&')
+
+    def test_logical_expression_errors(self):
+        strings = [
+            '<id[0 || && 1] "foo">',
+            '<id[0 | 1] "foo">',
+            '<id[0 & 1] "foo">',
+            '<id[|| 1] "foo">',
+            '<id[0 ||] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+
+    def test_binary_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[a / b * c] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '*')
+        self.assertEqual(exp.left.operator.token, '/')
+
+        string = "<id[8 * 9 % 11] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '%')
+        self.assertEqual(exp.left.operator.token, '*')
+
+        string = "<id[6 + 7 - 8 * 9 / 10 % 11] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '-')
+        self.assertEqual(exp.left.operator.token, '+')
+        self.assertEqual(exp.right.operator.token, '%')
+
+
+        string = "<id[0 == 1 != 2 > 3 < 4 >= 5 <= 6 + 7 - 8 * 9 / 10 % 11] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '!=')
+        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.right.operator.token, '<=')
+        self.assertEqual(exp.right.left.operator.token, '>=')
+        self.assertEqual(exp.right.right.operator.token, '-')
+        self.assertEqual(exp.right.left.left.operator.token, '<')
+        self.assertEqual(exp.right.left.right.value, 5)
+        self.assertEqual(exp.right.left.left.left.operator.token, '>')
+        self.assertEqual(exp.right.right.left.operator.token, '+')
+        self.assertEqual(exp.right.right.right.operator.token, '%')
+        self.assertEqual(exp.right.right.right.left.operator.token, '*')
+        self.assertEqual(exp.right.right.right.left.right.operator.token, '/')
+
+    def test_binary_expression_errors(self):
+        strings = [
+            '<id[1 \ 2] "foo">',
+            '<id[1 ** 2] "foo">',
+            '<id[1 * / 2] "foo">',
+            '<id[1 !> 2] "foo">',
+            '<id[1 <* 2] "foo">',
+            '<id[1 += 2] "foo">',
+            '<id[1 %= 2] "foo">',
+            '<id[1 ^ 2] "foo">',
+            '<id 2 < 3 "foo">',
+            '<id 2 > 3 "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_unary_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[! + - 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '!')
+        self.assertEqual(exp.argument.operator.token, '+')
+        self.assertEqual(exp.argument.argument.operator.token, '-')
+
+    def test_unary_expression_errors(self):
+        strings = [
+            '<id[a ! v] "foo">',
+            '<id[!] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_call_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+    def test_call_expression_errors(self):
+        strings = [
+            '<id[1+()] "foo">',
+            '<id[foo(fo fo)] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_member_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+    def test_member_expression_errors(self):
+        strings = [
+            '<id[1+()] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_attr_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+    def test_attr_expression_errors(self):
+        strings = [
+            '<id[1+()] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_parenthesis_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+    def test_parenthesis_expression_errors(self):
+        strings = [
+            '<id[1+()] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_literal_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+    def test_literal_expression_errors(self):
+        strings = [
+            '<id[1+()] "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_value_expression(self):
+        #from pudb import set_trace; set_trace()
+        string = "<id[0 == 1 || 1] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.left.operator.token, '==')
+
+    def test_value_expression_errors(self):
+        strings = [
+            '<id[1+()] "foo">',
         ]
         for string in strings:
             try:

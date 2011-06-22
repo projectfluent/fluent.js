@@ -77,13 +77,20 @@ class Parser():
         idlist = []
         self.content = self.content[1:]
         self.get_ws()
-        while self.content[0] != ')':
-            idlist.append(self.get_identifier())
-            self.get_ws()
-            if self.content[0] == ',':
-                self.content = self.content[1:]
+        if self.content[0] == ')':
+            self.content = self.content[1:]
+        else:
+            while 1:
+                idlist.append(self.get_identifier())
                 self.get_ws()
-        self.content = self.content[1:]
+                if self.content[0] == ',':
+                    self.content = self.content[1:]
+                    self.get_ws()
+                elif self.content[0] == ')':
+                    self.content = self.content[1:]
+                    break
+                else:
+                    raise ParserError()
         ws = self.get_ws()
         if len(ws) == 0:
             raise ParserError()
@@ -95,6 +102,7 @@ class Parser():
         if self.content[0] != '}':
             raise ParserError()
         self.content = self.content[1:]
+        ws = self.get_ws()
         attrs = self.get_attributes()
         return ast.Macro(id,
                          idlist,
@@ -126,12 +134,19 @@ class Parser():
         self.content = self.content[1:]
         array = []
         ws = self.get_ws()
-        while self.content[0] != ']':
+        if self.content[0] == ']':
+            self.content = self.content[1:]
+            return ast.Array()
+        while 1:
             array.append(self.get_value())
             ws = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
                 ws2 = self.get_ws()
+            elif self.content[0] == ']':
+                break
+            else:
+                raise ParserError()
         self.content = self.content[1:]
         return ast.Array(array)
 
@@ -139,13 +154,20 @@ class Parser():
         hash = []
         self.content = self.content[1:]
         ws = self.get_ws()
-        while self.content[0] != '}':
+        if self.content[0] == '}':
+            self.content = self.content[1:]
+            return ast.Hash()
+        while 1:
             kvp = self.get_kvp()
             hash.append(kvp)
             ws = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
                 ws2 = self.get_ws()
+            elif self.content[0] == '}':
+                break
+            else:
+                raise ParserError()
         self.content = self.content[1:]
         return ast.Hash(hash)
 
@@ -162,11 +184,17 @@ class Parser():
 
     def get_attributes(self):
         hash = []
-        while self.content[0] != '>':
-            ws = self.get_ws()
+        if self.content[0] == '>':
+            self.content = self.content[1:]
+            return None
+        while 1:
             kvp = self.get_kvp()
             hash.append(kvp)
             ws2 = self.get_ws()
+            if self.content[0] == '>':
+                break
+            elif len(ws2) == 0:
+                raise ParserError()
         self.content = self.content[1:]
         return hash if len(hash) else None
 
@@ -174,13 +202,20 @@ class Parser():
         index = []
         self.content = self.content[1:]
         ws = self.get_ws()
-        while self.content[0] != ']':
+        if self.content[0] == ']':
+            self.content = self.content[1:]
+            return index
+        while 1:
             expression = self.get_expression()
             index.append(expression)
             ws = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
                 self.get_ws()
+            elif self.content[0] == ']':
+                break
+            else:
+                raise ParserError()
         self.content = self.content[1:]
         return index
 
@@ -331,13 +366,20 @@ class Parser():
         mcall = ast.CallExpression(idref)
         self.content = self.content[1:]
         self.get_ws()
-        while self.content[0] != ')':
+        if self.content[0] == ')':
+            self.content = self.content[1:]
+            return mcall
+        while 1:
             exp = self.get_expression()
             mcall.arguments.append(exp)
             self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
                 self.get_ws()
+            elif self.content[0] == ')':
+                break
+            else:
+                raise ParserError()
         self.content = self.content[1:]
         return mcall
 
