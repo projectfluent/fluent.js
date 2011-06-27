@@ -423,7 +423,8 @@ class Parser():
             raise ParserError()
 
     def get_comment(self):
-        self.content = self.content[2:]
-        comment, sep, self.content = self.content.partition('*/')
+        comment, sep, self.content = self.content[2:].partition('*/')
+        if not sep:
+            raise ParserError()
         return ast.Comment(comment)
 

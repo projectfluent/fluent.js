@@ -721,13 +721,24 @@ class L20nParserTestCase(unittest.TestCase):
             except AssertionError:
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
-### TILL HERE
     def test_comment(self):
         #from pudb import set_trace; set_trace()
         string = "/* test */"
         lol = self.parser.parse(string)
         comment = lol.body[0]
         self.assertEqual(comment.content, ' test ')
+
+    def test_comment_errors(self):
+        strings = [
+            '/* foo ',
+            'foo */',
+            '<id /* test */ "foo">',
+        ]
+        for string in strings:
+            try:
+                self.assertRaises(ParserError, self.parser.parse, string)
+            except AssertionError:
+                raise AssertionError("Failed to raise parser error on string: %s" % string)
 
 if __name__ == '__main__':
     unittest.main()
