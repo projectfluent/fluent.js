@@ -639,19 +639,31 @@ class L20nParserTestCase(unittest.TestCase):
             except AssertionError:
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
-### TILL HERE
 
     def test_parenthesis_expression(self):
         #from pudb import set_trace; set_trace()
-        string = "<id[0 == 1 || 1] 'foo'>"
+        string = "<id[(1 + 2) * 3] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.operator.token, '||')
-        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.operator.token, '*')
+        self.assertEqual(exp.left.expression.operator.token, '+')
+
+        string = "<id[(1) + ((2))] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '+')
+        self.assertEqual(exp.left.expression.value, 1)
+        self.assertEqual(exp.right.expression.expression.value, 2)
 
     def test_parenthesis_expression_errors(self):
         strings = [
             '<id[1+()] "foo">',
+            '<id[(+)*(-)] "foo">',
+            '<id[(!)] "foo">',
+            '<id[(())] "foo">',
+            '<id[(] "foo">',
+            '<id[)] "foo">',
+            '<id[1+(2] "foo">',
         ]
         for string in strings:
             try:
@@ -660,16 +672,14 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_literal_expression(self):
-        #from pudb import set_trace; set_trace()
-        string = "<id[0 == 1 || 1] 'foo'>"
+        string = "<id[012] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.operator.token, '||')
-        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.value, 12)
 
     def test_literal_expression_errors(self):
         strings = [
-            '<id[1+()] "foo">',
+            '<id[012x1] "foo">',
         ]
         for string in strings:
             try:
@@ -678,22 +688,46 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_value_expression(self):
-        #from pudb import set_trace; set_trace()
-        string = "<id[0 == 1 || 1] 'foo'>"
+        string = "<id['foo'] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.operator.token, '||')
-        self.assertEqual(exp.left.operator.token, '==')
+        self.assertEqual(exp.content, 'foo')
+
+        string = "<id[['foo', 'foo2']] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.content[0].content, 'foo')
+        self.assertEqual(exp.content[1].content, 'foo2')
+
+        string = "<id[{a: 'foo', b: 'foo2'}] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.content[0].value.content, 'foo')
+        self.assertEqual(exp.content[1].value.content, 'foo2')
 
     def test_value_expression_errors(self):
         strings = [
-            '<id[1+()] "foo">',
+            '<id[[0, 1]] "foo">',
+            '<id["foo] "foo">',
+            '<id[foo"] "foo">',
+            '<id[["foo]] "foo">',
+            '<id[{"a": "foo"}] "foo">',
+            '<id[{a: 0}] "foo">',
+            '<id[{a: "foo"] "foo">',
         ]
         for string in strings:
             try:
                 self.assertRaises(ParserError, self.parser.parse, string)
             except AssertionError:
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+### TILL HERE
+    def test_comment(self):
+        #from pudb import set_trace; set_trace()
+        string = "/* test */"
+        lol = self.parser.parse(string)
+        comment = lol.body[0]
+        self.assertEqual(comment.content, ' test ')
 
 if __name__ == '__main__':
     unittest.main()
