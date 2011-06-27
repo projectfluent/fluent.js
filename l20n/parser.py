@@ -48,7 +48,7 @@ class Parser():
             else:
                 entry = self.get_entity(id)
         elif self.content[0:2] == '/*':
-            entry = self.get_comment(self.ptr)
+            entry = self.get_comment()
         else:
             raise ParserError()
         return entry
@@ -421,4 +421,9 @@ class Parser():
             return ast.MemberExpression(idref, prop, False)
         else:
             raise ParserError()
+
+    def get_comment(self):
+        self.content = self.content[2:]
+        comment, sep, self.content = self.content.partition('*/')
+        return ast.Comment(comment)
 
