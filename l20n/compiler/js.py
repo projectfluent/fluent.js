@@ -256,15 +256,15 @@ class Compiler(object):
         
         if has_attrs:
             attrs = js.ObjectExpression()
-            for k,v in entity.kvplist.items():
-                (val, breaks_static) = cls.transform_value(v, requires_object=False)
+            for kvp in entity.attrs:
+                (val, breaks_static) = cls.transform_value(kvp.value, requires_object=False)
                 if breaks_static:
                     val = js.FunctionExpression(
                         id=None,
                         params=[js.Identifier('env')],
                         body=js.BlockStatement([js.ReturnStatement(val)])
                     )
-                attrs.properties.append(js.Property(js.Literal(k), val))
+                attrs.properties.append(js.Property(js.Identifier(kvp.key.name), val))
             script.body.append(
                 js.ExpressionStatement(
                     js.AssignmentExpression(
@@ -336,7 +336,7 @@ class Compiler(object):
                 else:
                     val = s
         elif isinstance(l20nval, l20n.Array):
-            vals = [cls.transform_value(i, requires_object=False) for i in l20nval]
+            vals = [cls.transform_value(i, requires_object=False) for i in l20nval.content]
             val = js.ArrayExpression()
             for v in vals:
                 if v[1]:
@@ -344,23 +344,28 @@ class Compiler(object):
                 val.elements.append(v[0])
         elif isinstance(l20nval, l20n.Hash):
             vals = []
-            for k,v in l20nval.items():
-                (subval, b_static) = cls.transform_value(v)
+            for kvp in l20nval.content:
+                (subval, b_static) = cls.transform_value(kvp.value)
                 if b_static:
                     vals.append(
                         js.Property(
-                            js.Literal(k),
+                            js.Literal(kvp.key.name),
                             js.FunctionExpression(
                                 params=[js.Identifier('env')],
                                 body=js.BlockStatement([js.ReturnStatement(subval)]))
                         )
                     )
                 else:
-                    vals.append(js.Property(js.Literal(k), subval))
+                    vals.append(js.Property(js.Literal(kvp.key.name), subval))
             val = js.ObjectExpression(vals)
+        elif l20nval is None:
+            if requires_object:
+                val = js.NewExpression(js.CallExpression(js.Identifier('String')))
+            else:
+                val = js.Literal(js.NULL)
         else:
-            print(is_string(l20nval))
-            print(type(l20nval))
+            #print(is_string(l20nval))
+            #print(type(l20nval))
             raise Exception("Unknown l20nval")
         return (val, breaks_static)
 
@@ -381,25 +386,25 @@ class Compiler(object):
 
     @classmethod
     def transform_identifier(cls, exp):
-        if isinstance(exp, l20n.Idref):
+        if isinstance(exp, l20n.Identifier):
             idref = js.CallExpression(js.Identifier('getent'))
             idref.arguments.append(js.Identifier('env'))
             idref.arguments.append(js.Literal(exp.name))
             return idref
-        elif isinstance(exp, l20n.AttrIndex):
+        elif isinstance(exp, l20n.AttributeExpression):
             idref = js.CallExpression(js.Identifier('getattr'))
             idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.idref.name))
-            if isinstance(exp.arg, (l20n.Idref, l20n.ObjectIndex, l20n.AttrIndex)):
-                idref.arguments.append(cls.transform_identifier(exp.arg))
+            idref.arguments.append(js.Literal(exp.object.name))
+            if isinstance(exp.attribute, (l20n.Identifier, l20n.MemberExpression, l20n.AttributeExpression)):
+                idref.arguments.append(cls.transform_identifier(exp.attribute))
             else:
-                idref.arguments.append(js.Literal(exp.arg))
+                idref.arguments.append(js.Literal(exp.attribute))
             return idref
         else:
             idref = js.CallExpression(js.Identifier('getent'))
             idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.idref.name))
-            idref.arguments.append(js.ArrayExpression([js.Literal(exp.arg)]))
+            idref.arguments.append(js.Literal(exp.object.name))
+            idref.arguments.append(js.ArrayExpression([js.Identifier(exp.property.name)]))
             return idref
 
     @classmethod
@@ -408,61 +413,56 @@ class Compiler(object):
             return cls.transform_expression(exp.expression)
         if isinstance(exp, l20n.ConditionalExpression):
             jsexp = js.ConditionalExpression(
-                cls.transform_expression(exp[0]),
-                cls.transform_expression(exp[1]),
-                cls.transform_expression(exp[2])
+                cls.transform_expression(exp.test),
+                cls.transform_expression(exp.consequent),
+                cls.transform_expression(exp.alternate)
             )
             return jsexp
-        if isinstance(exp, l20n.OperatorExpression):
-            left = cls.transform_expression(exp[0])
-            right = cls.transform_expression(exp[2])
-        if isinstance(exp, l20n.EqualityExpression):
-            jsexp = js.BinaryExpression(js.BinaryOperator('=='),
-                                        left,
-                                        right)
-        if isinstance(exp, l20n.RelationalExpression):
-            jsexp = js.RelationalExpression()
-        if isinstance(exp, l20n.OrExpression):
-            jsexp = js.OrExpression()
-        if isinstance(exp, l20n.AdditiveExpression):
-            jsexp = js.AdditiveExpression()
-        if isinstance(exp, l20n.AndExpression):
-            jsexp = js.AndExpression()
-        if isinstance(exp, l20n.MultiplicativeExpression):
-            jsexp = js.MultiplicativeExpression()
-        if isinstance(exp, l20n.UnaryExpression):
+        if isinstance(exp, l20n.LogicalExpression):
+            return js.LogicalExpression(
+                js.LogicalOperator(exp.operator.token),
+                cls.transform_expression(exp.left),
+                cls.transform_expression(exp.right)
+            )
+        elif isinstance(exp, l20n.BinaryExpression):
+            return js.BinaryExpression(
+                js.BinaryOperator(exp.operator.token),
+                cls.transform_expression(exp.left),
+                cls.transform_expression(exp.right)
+            )
+        elif isinstance(exp, l20n.UnaryExpression):
             jsexp = js.UnaryExpression()
-        if isinstance(exp, l20n.OperatorExpression):
-            jsexp.left = cls.transform_expression(exp[0])
-            jsexp.right = cls.transform_expression(exp[2])
-            return jsexp
-        if isinstance(exp, l20n.BraceExpression):
+        if isinstance(exp, l20n.ParenthesisExpression):
             jsexp = js.BraceExpression()
             jsexp.append(cls.transform_expression(exp[0]))
             return jsexp 
-        if isinstance(exp, l20n.Idref):
-            jsidref = js.CallExpression(js.Identifier('getent'))
-            jsidref.arguments.append(js.Identifier('env'))
-            jsidref.arguments.append(js.Literal(exp.name))
-            return jsidref
-        if is_string(exp):
-            return js.Literal(unicode(exp))
+        if isinstance(exp, l20n.Identifier):
+            return js.Identifier(exp.name)
+        if isinstance(exp, l20n.Literal):
+            val = exp.value
+            if isinstance(val, int):
+                return js.Literal(val)
+            elif isinstance(val, str):
+                return js.Literal(val)
+        if isinstance(exp, l20n.Value):
+            return cls.transform_value(exp, requires_object=False)[0]
         if isinstance(exp, int):
             return js.Literal(exp)
-        if isinstance(exp, l20n.MacroCall):
-            args = map(cls.transform_expression, exp.args)
+        if isinstance(exp, l20n.CallExpression):
+            args = map(cls.transform_expression, exp.arguments)
             return js.CallExpression(js.Identifier('getmacro'),
                            [js.Identifier('env'),
-                            js.Literal(exp.idref.name),
+                            js.Literal(exp.callee.name),
                             js.ArrayExpression(args)])
             return js.Call(cls.transform_expression(exp.idref), args2)
-        if isinstance(exp, (l20n.ObjectIndex, l20n.AttrIndex)):
+        if isinstance(exp, (l20n.MemberExpression, l20n.AttributeExpression)):
 
-            if exp.idref.name == "data":
+            if exp.object.name == "data":
                 idref = js.MemberExpression(js.Identifier("data"),
                                             js.Literal(exp.arg),
                                             computed=True)
                 return idref
             idref = cls.transform_identifier(exp)
             return idref
+        print(exp)
 
