@@ -76,7 +76,12 @@ class LogicalOperator(Operator):
 ### Expressions
 
 class Literal(Expression):
-    value = pyast.field((bool, int))
+    value = pyast.field(int)
+
+class LogicalExpression(Expression):
+    operator = pyast.field(LogicalOperator)
+    left = pyast.field(Expression)
+    right = pyast.field(Expression)
 
 class BinaryExpression(Expression):
     operator = pyast.field(BinaryOperator)
@@ -93,21 +98,16 @@ class UnaryExpression(Expression):
     argument = pyast.field(Expression)
 
 class CallExpression(Expression):
-    callee = pyast.field(Identifier)
+    callee = pyast.field(Expression)
     arguments = pyast.seq(Expression, null=True)
 
-class LogicalExpression(Expression):
-    operator = pyast.field(LogicalOperator)
-    left = pyast.field(Expression)
-    right = pyast.field(Expression)
-
 class MemberExpression(Expression):
-    object = pyast.field(Identifier)
-    property = pyast.field(Expression)
+    expression = pyast.field(Expression)
+    member = pyast.field(Expression)
     computed = pyast.field(bool)
 
 class AttributeExpression(Expression):
-    object = pyast.field(Identifier)
+    expression = pyast.field(Expression)
     attribute = pyast.field(Expression)
     computed = pyast.field(bool)
 

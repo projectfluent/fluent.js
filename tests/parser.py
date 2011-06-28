@@ -410,16 +410,16 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(len(lol.body), 1)
         exp = lol.body[0].index[0]
         self.assertEqual(lol.body[0].value.content, 'foo2')
-        self.assertEqual(exp.object.name, 'id2')
-        self.assertEqual(exp.property.content , 'foo')
+        self.assertEqual(exp.expression.name, 'id2')
+        self.assertEqual(exp.member.content , 'foo')
 
         string = "<id[id['foo']]>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         exp = lol.body[0].index[0]
         self.assertEqual(lol.body[0].value, None)
-        self.assertEqual(exp.object.name, 'id')
-        self.assertEqual(exp.property.content , 'foo')
+        self.assertEqual(exp.expression.name, 'id')
+        self.assertEqual(exp.member.content , 'foo')
 
     def test_expression_errors(self):
         strings = [
@@ -588,14 +588,14 @@ class L20nParserTestCase(unittest.TestCase):
         string = "<id[x['d']] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.object.name, 'x')
-        self.assertEqual(exp.property.content, 'd')
+        self.assertEqual(exp.expression.name, 'x')
+        self.assertEqual(exp.member.content, 'd')
 
         string = "<id[x.d] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.object.name, 'x')
-        self.assertEqual(exp.property.name, 'd')
+        self.assertEqual(exp.expression.name, 'x')
+        self.assertEqual(exp.member.name, 'd')
 
         string = "<id[ x.d ] 'foo' >"
         lol = self.parser.parse(string)
@@ -618,13 +618,13 @@ class L20nParserTestCase(unittest.TestCase):
         string = "<id[x[.'d']] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.object.name, 'x')
+        self.assertEqual(exp.expression.name, 'x')
         self.assertEqual(exp.attribute.content, 'd')
 
         string = "<id[x..d] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
-        self.assertEqual(exp.object.name, 'x')
+        self.assertEqual(exp.expression.name, 'x')
         self.assertEqual(exp.attribute.name, 'd')
 
     def test_attr_expression_errors(self):
