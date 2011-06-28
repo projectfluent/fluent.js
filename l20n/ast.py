@@ -97,16 +97,19 @@ class UnaryExpression(Expression):
     operator = pyast.field(UnaryOperator)
     argument = pyast.field(Expression)
 
-class CallExpression(Expression):
+class MemberExpression(Expression):
+    _abstract = True
+
+class CallExpression(MemberExpression):
     callee = pyast.field(Expression)
     arguments = pyast.seq(Expression, null=True)
 
-class MemberExpression(Expression):
+class PropertyExpression(MemberExpression):
     expression = pyast.field(Expression)
-    member = pyast.field(Expression)
+    property = pyast.field(Expression)
     computed = pyast.field(bool)
 
-class AttributeExpression(Expression):
+class AttributeExpression(MemberExpression):
     expression = pyast.field(Expression)
     attribute = pyast.field(Expression)
     computed = pyast.field(bool)
