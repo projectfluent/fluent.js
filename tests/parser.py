@@ -411,7 +411,7 @@ class L20nParserTestCase(unittest.TestCase):
         exp = lol.body[0].index[0]
         self.assertEqual(lol.body[0].value.content, 'foo2')
         self.assertEqual(exp.expression.name, 'id2')
-        self.assertEqual(exp.member.content , 'foo')
+        self.assertEqual(exp.property.content , 'foo')
 
         string = "<id[id['foo']]>"
         lol = self.parser.parse(string)
@@ -419,7 +419,7 @@ class L20nParserTestCase(unittest.TestCase):
         exp = lol.body[0].index[0]
         self.assertEqual(lol.body[0].value, None)
         self.assertEqual(exp.expression.name, 'id')
-        self.assertEqual(exp.member.content , 'foo')
+        self.assertEqual(exp.property.content , 'foo')
 
     def test_expression_errors(self):
         strings = [
@@ -589,13 +589,19 @@ class L20nParserTestCase(unittest.TestCase):
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
         self.assertEqual(exp.expression.name, 'x')
-        self.assertEqual(exp.member.content, 'd')
+        self.assertEqual(exp.property.content, 'd')
 
         string = "<id[x.d] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
         self.assertEqual(exp.expression.name, 'x')
-        self.assertEqual(exp.member.name, 'd')
+        self.assertEqual(exp.property.name, 'd')
+
+        string = "<id[a||b.c] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '||')
+        self.assertEqual(exp.right.expression.name, 'b')
 
         string = "<id[ x.d ] 'foo' >"
         lol = self.parser.parse(string)
@@ -654,6 +660,28 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(exp.operator.token, '+')
         self.assertEqual(exp.left.expression.value, 1)
         self.assertEqual(exp.right.expression.expression.value, 2)
+
+        string = "<id[(a||b).c] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.expression.expression.operator.token, '||')
+        self.assertEqual(exp.property.name, 'c')
+
+        string = "<id[!(a||b).c] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.operator.token, '!')
+        self.assertEqual(exp.argument.expression.expression.operator.token, '||')
+        self.assertEqual(exp.argument.property.name, 'c')
+
+        string = "<id[a().c] 'foo'>"
+        lol = self.parser.parse(string)
+        exp = lol.body[0].index[0]
+        self.assertEqual(exp.expression.callee.name, 'a')
+        self.assertEqual(exp.property.name, 'c')
+
+        string = "<id[a().c[.d]()] 'foo'>"
+        lol = self.parser.parse(string)
 
     def test_parenthesis_expression_errors(self):
         strings = [
