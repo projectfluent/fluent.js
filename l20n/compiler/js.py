@@ -394,7 +394,7 @@ class Compiler(object):
         elif isinstance(exp, l20n.AttributeExpression):
             idref = js.CallExpression(js.Identifier('getattr'))
             idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.object.name))
+            idref.arguments.append(js.Literal(exp.expression.name))
             if isinstance(exp.attribute, (l20n.Identifier, l20n.MemberExpression, l20n.AttributeExpression)):
                 idref.arguments.append(cls.transform_identifier(exp.attribute))
             else:
@@ -403,7 +403,7 @@ class Compiler(object):
         else:
             idref = js.CallExpression(js.Identifier('getent'))
             idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.object.name))
+            idref.arguments.append(js.Literal(exp.expression.name))
             idref.arguments.append(js.ArrayExpression([js.Identifier(exp.property.name)]))
             return idref
 
@@ -457,7 +457,7 @@ class Compiler(object):
             return js.Call(cls.transform_expression(exp.idref), args2)
         if isinstance(exp, (l20n.MemberExpression, l20n.AttributeExpression)):
 
-            if exp.object.name == "data":
+            if exp.expression.name == "data":
                 idref = js.MemberExpression(js.Identifier("data"),
                                             js.Literal(exp.arg),
                                             computed=True)
