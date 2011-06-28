@@ -1,5 +1,4 @@
 import l20n.ast as l20n
-from pyjs.serializer import Serializer
 import pyjs.ast as js
 from copy import deepcopy
 
@@ -11,6 +10,9 @@ if sys.version >= "3":
 def is_string(string):
     return isinstance(string, basestring)
 
+class CompilerError(Exception):
+    pass
+
 ###
 # Don't bother reading it for the sake of learning
 # It's just a temporary code that evolves over time and gets ugly in the 
@@ -20,12 +22,11 @@ def is_string(string):
 class Compiler(object):
 
     @classmethod
-    def compile(cls, lol):
+    def compile(cls, lol, insert_header=False):
         prog = cls.transform_into_js(lol)
-        #cls.insert_header_func(prog.body)
-        serializer = Serializer()
-        string = serializer.dump_program(prog)
-        return string
+        if insert_header:
+            cls.insert_header_func(prog.body)
+        return prog
 
     @classmethod
     def insert_header_func(cls, prog):
