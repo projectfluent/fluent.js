@@ -609,6 +609,12 @@ class L20nParserTestCase(unittest.TestCase):
         string = "<id[ x[ 'd' ] ] 'foo' >"
         lol = self.parser.parse(string)
 
+        string = "<id[ x ['d'] ] 'foo' >"
+        lol = self.parser.parse(string)
+
+        string = "<id[x['d']['e']] 'foo' >"
+        lol = self.parser.parse(string)
+
     def test_member_expression_errors(self):
         strings = [
             '<id[x[[]] "foo">',
