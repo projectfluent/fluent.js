@@ -52,8 +52,8 @@
   <td class="p2cell">:</td>
   <td class="p2cell">'<' <a href="#ID">ID</a> <a href="#index">index</a>? <a 
           href="#WS">WS</a>+
-        <a href="#value">value</a> (<a href="#WS">WS</a>+
-        <a href="#attrs">attributes</a>?) <a href="#WS">WS</a>? '>' ;</td>
+        <a href="#value">value</a>
+        <a href="#attrs">attributes</a>? <a href="#WS">WS</a>? '>' ;</td>
 
   </tr></tbody></table>
 
@@ -75,8 +75,8 @@
 
   <td class="p1cell"><a name="attrs">attributes</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">( <a href="#keyValuePair">keyValuePair</a> <a 
-          href="#WS">WS</a>? )* ;</td>
+  <td class="p2cell">( <a 
+          href="#WS">WS</a>+ <a href="#keyValuePair">keyValuePair</a> )* ;</td>
 
   </tr></tbody></table>
 <p>Expressions are closely modeled after C expressions, merely binary operators and some C-specifics have been removed.</p>
