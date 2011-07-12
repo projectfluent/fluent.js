@@ -52,6 +52,9 @@ class Macro(Entry):
 class String(Value):
     content = pyast.field(str)
 
+class ComplexString(String):
+    content = pyast.seq((str, Expression))
+
 class Array(Value):
     content = pyast.seq(Value, null=True)
 
