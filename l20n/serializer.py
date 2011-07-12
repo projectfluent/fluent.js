@@ -1,7 +1,7 @@
 from l20n import ast
 import sys
 
-if sys.version <= "3":
+if sys.version >= "3":
     basestring = str
 
 def is_string(string):
@@ -14,7 +14,7 @@ class Serializer():
         if hasattr(lol, '_struct') and lol._struct is True:
             string = ''.join([cls.dump_entry(element) for element in lol.body])
         else:
-            string = '\n\n'.join([cls.dump_entry(element) for element in lol.body])
+            string = '\n'.join([cls.dump_entry(element, struct=False) for element in lol.body])
         return string
 
     @classmethod
@@ -53,17 +53,58 @@ class Serializer():
 
     @classmethod
     def dump_kvp(cls, key, value):
-        if isinstance(value, list):
-            return '%s: [%s]' % (key, ','.join(["\"%s\"" % v for v in value]))
-        else:
-            return '%s: "%s"' % (key, unicode(value))
+        return '%s: %s' % (key.name,
+                           cls.dump_value(value))
 
     @classmethod
     def dump_value(cls, value):
-        if isinstance(value, ast.StringValue):
+        if not value:
+            return ''
+        if isinstance(value, ast.String):
             return '"%s"' % value.content
-        elif isinstance(value, ast.ArrayValue):
+        elif isinstance(value, ast.Array):
             return '[%s]' % ', '.join(map(cls.dump_value, value.content))
-        elif isinstance(value, ast.ObjectValue):
+        elif isinstance(value, ast.Hash):
             return '{%s}' % ', '.join(map(cls.dump_kvp, value.content))
+
+
+    @classmethod
+    def dump_index(cls, index):
+        return '[%s]' % cls.dump_expression(index)
+
+    @classmethod
+    def dump_expression(cls, expression):
+        if isinstance(expression, ast.ConditionalExpression):
+            return cls.dump_conditional_expression(expression)
+        elif isinstance(expression, ast.LogicalExpression):
+            return cls.dump_logical_expression(expression)
+        elif isinstance(expression, ast.BinaryExpression):
+            return cls.dump_binary_expression(expression)
+        elif isinstance(expression, ast.UnaryExpression):
+            return cls.dump_unary_expression(expression)
+        elif isinstance(expression, ast.ParenthesisExpression):
+            return cls.dump_brace_expression(expression)
+        elif isinstance(expression, ast.MemberExpression):
+            return cls.dump_macrocall(expression)
+        elif isinstance(expression, ast.Identifier):
+            return cls.dump_idref(expression)
+        elif isinstance(expression, int):
+            return str(expression)
+        elif is_string(expression):
+            return '"%s"' % expression
+
+    @classmethod
+    def dump_logical_expression(cls, e):
+        s = cls.dump_expression(e[0])
+        for i in range(0,1+int((len(e)-3)/2)):
+            s = '%s%s%s' % (s, e[(i*2)+1], cls.dump_expression(e[2+(i*2)]))
+        return s
+
+    dump_binary_expression = dump_logical_expression 
+    dump_equality_expression = dump_logical_expression
+    dump_relational_expression = dump_logical_expression
+    dump_additive_expression = dump_logical_expression
+    dump_multiplicative_expression = dump_logical_expression
+    dump_unary_expression = dump_logical_expression
+    dump_brace_expression = dump_logical_expression
 
