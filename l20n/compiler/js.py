@@ -171,9 +171,9 @@ class Compiler(object):
         for elem in lol.body:
             if isinstance(elem, l20n.Comment):
                 cls.transform_comment(elem, script)
-            if isinstance(elem, l20n.Entity):
+            elif isinstance(elem, l20n.Entity):
                 cls.transform_entity(elem, script)
-            if isinstance(elem, l20n.Macro):
+            elif isinstance(elem, l20n.Macro):
                 cls.transform_macro(elem, script)
         return script
 
