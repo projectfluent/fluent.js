@@ -83,6 +83,36 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         self.assertEqual(exp.right.properties[0].value.value, 'foo value')
         self.assertEqual(exp.right.properties[1].value.value, 'foo2 value')
 
+    def test_attributes(self):
+        attrs = (l20n.KeyValuePair(
+                     l20n.Identifier('a'),
+                     l20n.String('foo')),
+                 l20n.KeyValuePair(
+                     l20n.Identifier('b'),
+                     l20n.String('foo2')
+                 ))
+        entity = l20n.Entity(id=l20n.Identifier('id'),
+                             value=l20n.String('foo'),
+                             attrs=attrs)
+        lol = l20n.LOL((entity,))
+        prog = compile(lol)
+        self.assertEqual(len(prog.body), 2)
+        exp = prog.body[0].expression
+        self.assertEqual(exp.operator.token, "=")
+        self.assertTrue(isinstance(exp.left.obj, js.ThisExpression))
+        self.assertEqual(exp.left.prop.name, "id")
+        self.assertEqual(exp.left.computed, False)
+
+        self.assertTrue(isinstance(exp.right, js.NewExpression))
+        self.assertEquals(exp.right.callee.name, "String")
+        self.assertEquals(exp.right.arguments[0].value, "foo")
+
+        exp = prog.body[1].expression
+        self.assertEquals(exp.operator.token, '=')
+        self.assertTrue(isinstance(exp.left.obj, js.MemberExpression))
+        self.assertEqual(exp.left.obj.prop.name, 'id')
+        self.assertEqual(exp.left.prop.name, "attrs")
+        self.assertEqual(exp.left.computed, False)
 
 if __name__ == '__main__':
     unittest.main()

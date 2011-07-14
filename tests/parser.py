@@ -615,6 +615,9 @@ class L20nParserTestCase(unittest.TestCase):
         string = "<id[x['d']['e']] 'foo' >"
         lol = self.parser.parse(string)
 
+        string = "<id[! (a?b:c) ['d']['e']] 'foo' >"
+        lol = self.parser.parse(string)
+
     def test_member_expression_errors(self):
         strings = [
             '<id[x[[]] "foo">',
@@ -773,6 +776,17 @@ class L20nParserTestCase(unittest.TestCase):
                 self.assertRaises(ParserError, self.parser.parse, string)
             except AssertionError:
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
+
+    def test_identifier(self):
+        string = "<id>"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        self.assertEqual(lol.body[0].id.name, "id")
+
+        string = "<ID>"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        self.assertEqual(lol.body[0].id.name, "ID")
 
 if __name__ == '__main__':
     unittest.main()
