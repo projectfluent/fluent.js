@@ -65,7 +65,7 @@ class Parser():
         if self.content[0] == '>':
             self.content = self.content[1:]
             entity = ast.Entity(id, index)
-            entity._template = "<%%s%s>" % ws1
+            entity._template = "<%%s%s%%s%%s%%s>" % ws1
             return entity
         if ws1 == '':
             raise ParserError()
@@ -135,6 +135,29 @@ class Parser():
             raise ParserError()
         self.content = self.content[match.end(0):]
         return ast.String(match.group(2))
+
+    def parse_string(self, string):
+        literal = re.compile('^([^\\{]+)')
+        obj = []
+        l = len(string)
+        ptr = 0
+        while ptr<l:
+            if string[ptr:ptr+2] == '\\':
+                pass
+            if string[ptr:ptr+2] == '{{':
+                end = string[ptr+2].find('}}')
+                if end is False:
+                    raise ParserError()
+                exp = string[ptr:end]
+                print(exp)
+                ptr = end
+                obj.append(self.dump_expression(exp))
+            m = literal.match(string[ptr:])
+            if m:
+                buffer = m.group(1)
+                ptr = m.end(0)
+                obj.append(ast.String(buffer))
+        return ast.ComplexString(obj)
 
     def get_array(self):
         self.content = self.content[1:]
