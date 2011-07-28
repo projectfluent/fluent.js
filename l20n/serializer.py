@@ -43,7 +43,7 @@ class Serializer():
         kvplist = ''
         if entity.attrs:
             kvplist += '\n '
-            kvplist += '\n '.join([cls.dump_kvp(k,v) for k,v in entity.attrs.items()])
+            kvplist += '\n '.join([cls.dump_kvp(kvp) for kvp in entity.attrs])
         template = entity._template if struct else '<%s%s %s%s>'
         string = template % (entity.id.name,
                              index,
@@ -52,9 +52,9 @@ class Serializer():
         return string
 
     @classmethod
-    def dump_kvp(cls, key, value):
-        return '%s: %s' % (key.name,
-                           cls.dump_value(value))
+    def dump_kvp(cls, kvp):
+        return '%s: %s' % (kvp.key.name,
+                           cls.dump_value(kvp.value))
 
     @classmethod
     def dump_value(cls, value):
