@@ -183,18 +183,6 @@ class Compiler(object):
         script.append(c)
 
     @classmethod
-    def _replace_local_idrefs(cls, eid, attr):
-        if isinstance(attr, js.Idref):
-            if attr[1] == eid:
-                attr = js.Idref('x')+attr[2:]
-        elif isinstance(attr, js.OperatorExpression):
-            for i,elem in enumerate(attr):
-                attr[i] = cls._replace_local_idrefs(eid, elem)
-        elif isinstance(attr, js.String):
-            attr = js.String(cls._replace_local_idrefs(eid, attr.data))
-        return attr
-
-    @classmethod
     def transform_entity(cls, entity, script):
         name = js.MemberExpression(
                     js.ThisExpression(),
@@ -275,8 +263,8 @@ class Compiler(object):
 
     @classmethod
     def transform_macro(cls, macro, script):
-        name = js.MemberExpression(js.ThisExpression(),js.Identifier(macro.id), False)
-        exp = cls._transform_macro_idrefs(macro.structure[0], macro.idlist)
+        name = js.MemberExpression(js.ThisExpression(),js.Identifier(macro.id.name), False)
+        exp = cls._transform_macro_idrefs(macro.expression, [arg.name for arg in macro.args])
         body = cls.transform_expression(exp)
         func = js.FunctionExpression(
             params = [js.Identifier('env'), js.Identifier('data')],
@@ -289,14 +277,16 @@ class Compiler(object):
     @classmethod
     def _transform_macro_idrefs(cls, expression, ids):
         exp = deepcopy(expression)
-        for n,elem in enumerate(exp):
-            if isinstance(elem, l20n.Idref):
-                if elem.name in ids:
-                    exp[n] = l20n.ObjectIndex(l20n.Idref("data"), ids.index(elem.name))
-            elif isinstance(elem, (l20n.OperatorExpression, l20n.BraceExpression)):
-                exp[n] = cls._transform_macro_idrefs(elem, ids)
-            elif isinstance(elem, l20n.MacroCall):
-                exp[n].args = cls._transform_macro_idrefs(exp[n].args, ids)
+        for field in exp._fields:
+            attr = getattr(exp, field)
+            if isinstance(attr, l20n.Identifier):
+                if attr.name in ids:
+                    n = l20n.PropertyExpression(l20n.Identifier('data'),
+                                                l20n.Literal(ids.index(attr.name)))
+
+                    setattr(exp, field, n)
+            elif isinstance(attr, l20n.Expression):
+                setattr(exp, field, cls._transform_macro_idrefs(attr, ids))
         return exp
 
     @classmethod
@@ -361,7 +351,7 @@ class Compiler(object):
             val = js.ObjectExpression(vals)
         elif l20nval is None:
             if requires_object:
-                val = js.NewExpression(js.CallExpression(js.Identifier('String')))
+                val = js.NewExpression(js.CallExpression(js.Identifier('Object')))
             else:
                 val = js.Literal(js.NULL)
         else:
@@ -460,7 +450,7 @@ class Compiler(object):
 
             if exp.expression.name == "data":
                 idref = js.MemberExpression(js.Identifier("data"),
-                                            js.Literal(exp.arg),
+                                            cls.transform_expression(exp.property),
                                             computed=True)
                 return idref
             idref = cls.transform_identifier(exp)
