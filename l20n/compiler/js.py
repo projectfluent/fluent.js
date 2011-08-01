@@ -314,7 +314,7 @@ class Compiler(object):
         breaks_static = False
 
         if isinstance(l20nval, l20n.String):
-            if 0:
+            if isinstance(l20nval, l20n.ComplexString):
                 s = cls.transform_complex_string(l20nval)
                 breaks_static = True
                 val = s
@@ -362,13 +362,13 @@ class Compiler(object):
 
     @classmethod
     def transform_complex_string(cls, val):
-        if len(val.pieces)<2:
-            piece = val.pieces[0]
-            if isinstance(piece, l20n.Expander):
+        if len(val.content)<2:
+            piece = val.content[0]
+            if isinstance(piece, l20n.Expression):
                 return cls.transform_expression(piece)
             else:
                 return val.pieces[0]
-        pieces = val.pieces[:]
+        pieces = val.content[:]
         r = cls.transform_expression(pieces.pop())
         while len(pieces)>0:
             l = cls.transform_expression(pieces.pop())
@@ -377,26 +377,10 @@ class Compiler(object):
 
     @classmethod
     def transform_identifier(cls, exp):
-        if isinstance(exp, l20n.Identifier):
-            idref = js.CallExpression(js.Identifier('getent'))
-            idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.name))
-            return idref
-        elif isinstance(exp, l20n.AttributeExpression):
-            idref = js.CallExpression(js.Identifier('getattr'))
-            idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.expression.name))
-            if isinstance(exp.attribute, (l20n.Identifier, l20n.MemberExpression, l20n.AttributeExpression)):
-                idref.arguments.append(cls.transform_identifier(exp.attribute))
-            else:
-                idref.arguments.append(js.Literal(exp.attribute))
-            return idref
-        else:
-            idref = js.CallExpression(js.Identifier('getent'))
-            idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.expression.name))
-            idref.arguments.append(js.ArrayExpression([js.Identifier(exp.property.name)]))
-            return idref
+        idref = js.CallExpression(js.Identifier('getent'))
+        idref.arguments.append(js.Identifier('env'))
+        idref.arguments.append(js.Literal(exp.name))
+        return idref
 
     @classmethod
     def transform_expression(cls, exp):
@@ -428,7 +412,7 @@ class Compiler(object):
             jsexp.append(cls.transform_expression(exp[0]))
             return jsexp 
         if isinstance(exp, l20n.Identifier):
-            return js.Identifier(exp.name)
+            return cls.transform_identifier(exp)
         if isinstance(exp, l20n.Literal):
             val = exp.value
             if isinstance(val, int):
@@ -445,15 +429,25 @@ class Compiler(object):
                            [js.Identifier('env'),
                             js.Literal(exp.callee.name),
                             js.ArrayExpression(args)])
-            return js.Call(cls.transform_expression(exp.idref), args2)
-        if isinstance(exp, (l20n.MemberExpression, l20n.AttributeExpression)):
-
-            if exp.expression.name == "data":
-                idref = js.MemberExpression(js.Identifier("data"),
-                                            cls.transform_expression(exp.property),
-                                            computed=True)
-                return idref
-            idref = cls.transform_identifier(exp)
+        elif isinstance(exp, l20n.AttributeExpression):
+            idref = js.CallExpression(js.Identifier('getattr'))
+            idref.arguments.append(js.Identifier('env'))
+            idref.arguments.append(js.Literal(exp.expression.name))
+            if isinstance(exp.attribute, (l20n.Identifier, l20n.MemberExpression)):
+                idref.arguments.append(cls.transform_identifier(exp.attribute))
+            else:
+                idref.arguments.append(js.Literal(exp.attribute))
+            return idref
+        elif isinstance(exp, l20n.PropertyExpression):
+            idref = js.CallExpression(js.Identifier('getent'))
+            idref.arguments.append(js.Identifier('env'))
+            if isinstance(exp.expression, l20n.Identifier):
+                name = js.Literal(exp.expression.name)
+            else:
+                name = cls.transform_expression(exp.expression)
+            val = cls.transform_expression(exp.property)
+            idref.arguments.append(name)
+            idref.arguments.append(js.ArrayExpression([val]))
             return idref
         print(exp)
 

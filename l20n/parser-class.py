@@ -1,6 +1,6 @@
 import re
-from l20n import ast
 import string
+from l20n import ast
 
 class ParserError(Exception):
     pass
@@ -10,77 +10,81 @@ class Parser():
         'id': re.compile('^([a-zA-Z]\w*)'),
         'value': re.compile('^(?P<op>[\'"])(.*?)(?<!\\\)(?P=op)'),
     }
-    _parse_strings = False
 
-    def parse(self, content):
+    @classmethod
+    def parse(cls, content, ptr=0):
         lol = ast.LOL()
         lol._struct = True
         lol._template = []
-        self.content = content
-        self._parse_strings = True
-        lol._template.append(self.get_ws())
-        while self.content:
-            #try:
-            lol.body.append(self.get_entry())
-            #except IndexError:
-            #    raise ParserError()
-            lol._template.append(self.get_ws())
+        (ws, ptr) = cls.get_ws(content, ptr)
+        lol._template.append(ws)
+        while len(content)>ptr:
+            try:
+                (entry, ptr) = cls.get_entry(content, ptr)
+                lol.body.append(entry)
+            except IndexError:
+                raise ParserError()
+            (ws, ptr) = cls.get_ws(content, ptr)
+            lol._template.append(ws)
         return lol
 
-    def get_ws(self, wschars=string.whitespace):
+    @classmethod
+    def get_ws(cls, content, ptr, wschars=string.whitespace):
+        start = 0
         try:
-            if self.content[0] not in wschars:
-                return ''
+            while content[ptr] in wschars:
+                ptr += 1
+            return (content[start:ptr], ptr)
         except IndexError:
-            return ''
-        content = self.content.lstrip()
-        ws = self.content[:len(content)*-1]
-        self.content = content
-        return ws
+            return (content[start:ptr], ptr)
+            
 
-    def get_entry(self):
-        if self.content[0] == '<':
-            self.content = self.content[1:]
-            id = self.get_identifier()
-            if self.content[0] == '(':
-                entry = self.get_macro(id)
-            elif self.content[0] == '[':
-                index = self.get_index()
-                entry = self.get_entity(id, index)
+    @classmethod
+    def get_entry(cls, content, ptr):
+        if content[ptr] == '<':
+            ptr += 1
+            (id, ptr) = cls.get_identifier(content, ptr)
+            if content[ptr] == '(':
+                entry = cls.get_macro(id)
+            elif content[ptr] == '[':
+                index = cls.get_index()
+                entry = cls.get_entity(id, index)
             else:
-                entry = self.get_entity(id)
-        elif self.content[0:2] == '/*':
-            entry = self.get_comment()
+                (entry, ptr)  = cls.get_entity(id, content, ptr)
+        elif content[0:2] == '/*':
+            entry = cls.get_comment()
         else:
             raise ParserError()
-        return entry
+        return (entry, ptr)
 
-    def get_identifier(self):
-        match = self.patterns['id'].match(self.content)
+    @classmethod
+    def get_identifier(cls, content, ptr):
+        match = cls.patterns['id'].match(content[ptr:])
         if not match:
             raise ParserError()
-        self.content = self.content[match.end(0):]
-        return ast.Identifier(match.group(1))
+        ptr += match.end(0)
+        return (ast.Identifier(match.group(1)), ptr)
 
-    def get_entity(self, id, index=None):
-        ws1 = self.get_ws()
-        if self.content[0] == '>':
-            self.content = self.content[1:]
+    @classmethod
+    def get_entity(cls, id, content, ptr, index=None):
+        (ws1, ptr) = cls.get_ws(content, ptr)
+        if content[ptr] == '>':
+            ptr += 1
             entity = ast.Entity(id, index)
             entity._template = "<%%s%s%%s%%s%%s>" % ws1
-            return entity
+            return (entity, ptr)
         if ws1 == '':
             raise ParserError()
-        value = self.get_value(none=True)
-        ws2 = self.get_ws()
-        attrs = self.get_attributes()
+        value = cls.get_value(True, content, ptr)
+        ws2 = cls.get_ws(content, ptr)
+        attrs = cls.get_attributes(content, ptr)
         entity = ast.Entity(id,
                             index,
                             value,
                             attrs)
         entity._template = "<%%s%%s%s%%s%s%%s>" % (ws1,ws2)
         return entity
-
+"""
     def get_macro(self, id):
         idlist = []
         self.content = self.content[1:]
@@ -120,10 +124,7 @@ class Parser():
     def get_value(self, none=False):
         c = self.content[0]
         if c in ('"', "'"):
-            if self._parse_strings:
-                value = self.get_complex_string()
-            else:
-                value = self.get_string()
+            value = self.get_string()
         elif c == '[':
             value = self.get_array()
         elif c == '{':
@@ -141,28 +142,27 @@ class Parser():
         self.content = self.content[match.end(0):]
         return ast.String(match.group(2))
 
-    def get_complex_string(self):
-        str_end = self.content[0]
-        literal = re.compile('^([^\\{%s]+)' % str_end)
+    def parse_string(self, string):
+        literal = re.compile('^([^\\{]+)')
         obj = []
-        self.content = self.content[1:]
-        while self.content[0] != str_end:
-            #if self.content[:2] == '\\':
-            #    self.content = self.content[2:]
-            if self.content[:2] == '{{':
-                self.content = self.content[2:]
-                obj.append(self.get_expression())
-                if self.content[:2] != '}}':
+        l = len(string)
+        ptr = 0
+        while ptr<l:
+            if string[ptr:ptr+2] == '\\':
+                pass
+            if string[ptr:ptr+2] == '{{':
+                end = string[ptr+2].find('}}')
+                if end is False:
                     raise ParserError()
-                self.content = self.content[2:]
-            m = literal.match(self.content)
+                exp = string[ptr:end]
+                print(exp)
+                ptr = end
+                obj.append(self.dump_expression(exp))
+            m = literal.match(string[ptr:])
             if m:
                 buffer = m.group(1)
-                self.content = self.content[m.end(0):]
+                ptr = m.end(0)
                 obj.append(ast.String(buffer))
-        self.content = self.content[1:]
-        if len(obj) == 1 and isinstance(obj[0], ast.String):
-            return obj[0]
         return ast.ComplexString(obj)
 
     def get_array(self):
@@ -466,4 +466,4 @@ class Parser():
         if not sep:
             raise ParserError()
         return ast.Comment(comment)
-
+"""
