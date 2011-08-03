@@ -1,4 +1,8 @@
 import pyast
+import sys
+
+if sys.version >= '3':
+    basestring = str
 
 class Node(pyast.Node):
     _abstract = True
@@ -50,7 +54,7 @@ class Macro(Entry):
 ### Values
 
 class String(Value):
-    content = pyast.field(str)
+    content = pyast.field(basestring)
 
 class ComplexString(String):
     content = pyast.seq((str, Expression))
