@@ -12,18 +12,18 @@ class Parser():
     }
     _parse_strings = False
 
-    def parse(self, content):
+    def parse(self, content, parse_strings=True):
         lol = ast.LOL()
         lol._struct = True
         lol._template = []
         self.content = content
-        self._parse_strings = True
+        self._parse_strings = parse_strings
         lol._template.append(self.get_ws())
         while self.content:
-            #try:
-            lol.body.append(self.get_entry())
-            #except IndexError:
-            #    raise ParserError()
+            try:
+                lol.body.append(self.get_entry())
+            except IndexError:
+                raise ParserError()
             lol._template.append(self.get_ws())
         return lol
 
@@ -143,23 +143,29 @@ class Parser():
 
     def get_complex_string(self):
         str_end = self.content[0]
-        literal = re.compile('^([^\\{%s]+)' % str_end)
+        literal = re.compile('^([^\\\{%s]+)' % str_end)
         obj = []
+        buffer = ''
         self.content = self.content[1:]
         while self.content[0] != str_end:
-            #if self.content[:2] == '\\':
-            #    self.content = self.content[2:]
+            if self.content[0] == '\\':
+                buffer += self.content[1]
+                self.content = self.content[2:]
             if self.content[:2] == '{{':
                 self.content = self.content[2:]
+                if buffer:
+                    obj.append(ast.String(buffer))
+                    buffer = ''
                 obj.append(self.get_expression())
                 if self.content[:2] != '}}':
                     raise ParserError()
                 self.content = self.content[2:]
             m = literal.match(self.content)
             if m:
-                buffer = m.group(1)
+                buffer += m.group(1)
                 self.content = self.content[m.end(0):]
-                obj.append(ast.String(buffer))
+        if buffer or len(obj):
+            obj.append(ast.String(buffer))
         self.content = self.content[1:]
         if len(obj) == 1 and isinstance(obj[0], ast.String):
             return obj[0]
