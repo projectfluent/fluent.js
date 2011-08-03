@@ -32,11 +32,11 @@ class L20nParserTestCase(unittest.TestCase):
     def test_string_value_quotes(self):
         string = '<id "str\\"ing">'
         lol = self.parser.parse(string)
-        self.assertEqual(lol.body[0].value.content, 'str\\"ing')
+        self.assertEqual(lol.body[0].value.content, 'str"ing')
 
         string = "<id 'str\\'ing'>"
         lol = self.parser.parse(string)
-        self.assertEqual(lol.body[0].value.content, "str\\'ing")
+        self.assertEqual(lol.body[0].value.content, "str'ing")
 
     def test_basic_errors(self):
         strings = [
