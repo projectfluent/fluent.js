@@ -435,12 +435,11 @@ class Compiler(object):
             attr = None
             subexp = exp
             while isinstance(subexp, l20n.PropertyExpression):
-                if isinstance(subexp.property, l20n.Identifier):
-                    index.append(js.Literal(subexp.property.name))
-                else:
+                if subexp.computed:
                     arg = cls.transform_expression(subexp.property)
-                    if isinstance(arg, js.Literal):
-                        index.append(arg)
+                    index.append(arg)
+                else:
+                    index.append(js.Literal(subexp.property.name))
                 if isinstance(subexp.expression, l20n.Identifier):
                     name = js.Literal(subexp.expression.name)
                     break
@@ -452,10 +451,11 @@ class Compiler(object):
             index.reverse()
             if isinstance(subexp, l20n.AttributeExpression):
                 name = js.Literal(subexp.expression.name)
-                if isinstance(subexp.attribute, l20n.Identifier):
-                    attr = js.Literal(subexp.attribute.name)
-                else:
+                if subexp.computed:
                     attr = cls.transform_expression(subexp.attribute)
+                    pass
+                else:
+                    attr = js.Literal(subexp.attribute.name)
             if attr:
                 idref = js.CallExpression(js.Identifier('getattr'))
                 idref.arguments.append(js.Identifier('env'))
