@@ -103,8 +103,8 @@ class Compiler(object):
                                            js.Identifier('name'),
                                            js.Identifier('index')],
                                    body=body)
-        prog.insert(0, f)
-        prog.insert(1, js.ExpressionStatement(
+        prog.append(f)
+        prog.append(js.ExpressionStatement(
             js.AssignmentExpression(
                 js.AssignmentOperator('='),
                 js.MemberExpression(
@@ -126,7 +126,7 @@ class Compiler(object):
                                            js.Identifier('name'),
                                            js.Identifier('args')],
                                    body=body)
-        prog.insert(2, f)
+        prog.append(f)
         body = js.BlockStatement([
             js.VariableDeclaration(
                 js.LET,
@@ -162,7 +162,7 @@ class Compiler(object):
                                            js.Identifier('name'),
                                            js.Identifier('param')],
                                    body=body)
-        prog.insert(3, f)
+        prog.append(f)
         return prog
 
     @classmethod
@@ -429,25 +429,47 @@ class Compiler(object):
                            [js.Identifier('env'),
                             js.Literal(exp.callee.name),
                             js.ArrayExpression(args)])
-        elif isinstance(exp, l20n.AttributeExpression):
-            idref = js.CallExpression(js.Identifier('getattr'))
-            idref.arguments.append(js.Identifier('env'))
-            idref.arguments.append(js.Literal(exp.expression.name))
-            if isinstance(exp.attribute, (l20n.Identifier, l20n.MemberExpression)):
-                idref.arguments.append(cls.transform_identifier(exp.attribute))
+        elif isinstance(exp, (l20n.AttributeExpression, l20n.PropertyExpression)):
+            name = None
+            index = []
+            attr = None
+            subexp = exp
+            while isinstance(subexp, l20n.PropertyExpression):
+                if isinstance(subexp.property, l20n.Identifier):
+                    index.append(js.Literal(subexp.property.name))
+                else:
+                    arg = cls.transform_expression(subexp.property)
+                    if isinstance(arg, js.Literal):
+                        index.append(arg)
+                if isinstance(subexp.expression, l20n.Identifier):
+                    name = js.Literal(subexp.expression.name)
+                    break
+                elif isinstance(subexp.expression, l20n.PropertyExpression):
+                    subexp = subexp.expression
+                else:
+                    subexp = subexp.expression
+                    break
+            index.reverse()
+            if isinstance(subexp, l20n.AttributeExpression):
+                name = js.Literal(subexp.expression.name)
+                if isinstance(subexp.attribute, l20n.Identifier):
+                    attr = js.Literal(subexp.attribute.name)
+                else:
+                    attr = cls.transform_expression(subexp.attribute)
+            if attr:
+                idref = js.CallExpression(js.Identifier('getattr'))
+                idref.arguments.append(js.Identifier('env'))
+                idref.arguments.append(name)
+                idref.arguments.append(attr)
+                if index:
+                    idref.arguments.append(js.ArrayExpression(index))
+                return idref
             else:
-                idref.arguments.append(js.Literal(exp.attribute))
-            return idref
-        elif isinstance(exp, l20n.PropertyExpression):
-            idref = js.CallExpression(js.Identifier('getent'))
-            idref.arguments.append(js.Identifier('env'))
-            if isinstance(exp.expression, l20n.Identifier):
-                name = js.Literal(exp.expression.name)
-            else:
-                name = cls.transform_expression(exp.expression)
-            val = cls.transform_expression(exp.property)
-            idref.arguments.append(name)
-            idref.arguments.append(js.ArrayExpression([val]))
-            return idref
+                idref = js.CallExpression(js.Identifier('getent'))
+                idref.arguments.append(js.Identifier('env'))
+                idref.arguments.append(name)
+                if index:
+                    idref.arguments.append(js.ArrayExpression(index))
+                return idref
         print(exp)
 

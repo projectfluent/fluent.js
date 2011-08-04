@@ -114,6 +114,142 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         self.assertEqual(exp.left.prop.name, "attrs")
         self.assertEqual(exp.left.computed, False)
 
+    def test_property_expression(self):
+        string = l20n.ComplexString([
+            l20n.String("word1 "),
+            l20n.PropertyExpression(
+                l20n.Identifier('foo'),
+                l20n.Identifier('a'),
+                False),
+            l20n.String(" word2")
+        ])
+        entity = l20n.Entity(id=l20n.Identifier('id'),
+                             value=string)
+        lol = l20n.LOL((entity,))
+        prog = compile(lol)
+        self.assertEqual(len(prog.body), 1)
+        entity = prog.body[0].expression
+        value = entity.right
+        val_body = value.body
+        val_return = val_body.body[0]
+        complex_string = val_return.argument
+        first_part = complex_string.left
+        getent_call = complex_string.right.left
+        third_part = complex_string.right.right
+        getent_arguments = getent_call.arguments
+        self.assertEqual(getent_call.callee.name, "getent")
+        self.assertEqual(getent_arguments[0].name, "env")
+        self.assertEqual(getent_arguments[1].value, "foo")
+        self.assertEqual(len(getent_arguments[2].elements), 1)
+        self.assertEqual(getent_arguments[2].elements[0].value, 'a')
+
+        string = l20n.ComplexString([
+            l20n.String("word1 "),
+            l20n.PropertyExpression(
+                l20n.PropertyExpression(
+                    l20n.Identifier('foo'),
+                    l20n.Identifier('a'),
+                    False),
+                l20n.Identifier('b'),
+                False),
+            l20n.String(" word2")
+        ])
+        entity = l20n.Entity(id=l20n.Identifier('id'),
+                             value=string)
+        lol = l20n.LOL((entity,))
+        prog = compile(lol)
+        self.assertEqual(len(prog.body), 1)
+        entity = prog.body[0].expression
+        value = entity.right
+        val_body = value.body
+        val_return = val_body.body[0]
+        complex_string = val_return.argument
+        first_part = complex_string.left
+        getent_call = complex_string.right.left
+        third_part = complex_string.right.right
+        getent_arguments = getent_call.arguments
+        self.assertEqual(getent_call.callee.name, "getent")
+        self.assertEqual(getent_arguments[0].name, "env")
+        self.assertEqual(getent_arguments[1].value, "foo")
+        self.assertEqual(len(getent_arguments[2].elements), 2)
+        self.assertEqual(getent_arguments[2].elements[0].value, 'a')
+        self.assertEqual(getent_arguments[2].elements[1].value, 'b')
+
+        string = l20n.ComplexString([
+            l20n.String("word1 "),
+            l20n.PropertyExpression(
+                l20n.PropertyExpression(
+                    l20n.PropertyExpression(
+                        l20n.Identifier('foo'),
+                        l20n.Identifier('a'),
+                        True),
+                    l20n.Identifier('b'),
+                    False),
+                l20n.Identifier('c'),
+                True),
+            l20n.String(" word2")
+        ])
+        entity = l20n.Entity(id=l20n.Identifier('id'),
+                             value=string)
+        lol = l20n.LOL((entity,))
+        prog = compile(lol)
+        self.assertEqual(len(prog.body), 1)
+        entity = prog.body[0].expression
+        value = entity.right
+        val_body = value.body
+        val_return = val_body.body[0]
+        complex_string = val_return.argument
+        first_part = complex_string.left
+        getent_call = complex_string.right.left
+        third_part = complex_string.right.right
+        getent_arguments = getent_call.arguments
+        self.assertEqual(getent_call.callee.name, "getent")
+        self.assertEqual(getent_arguments[0].name, "env")
+        self.assertEqual(getent_arguments[1].value, "foo")
+        self.assertEqual(len(getent_arguments[2].elements), 3)
+        self.assertEqual(getent_arguments[2].elements[0].value, 'a')
+        self.assertEqual(getent_arguments[2].elements[1].value, 'b')
+        self.assertEqual(getent_arguments[2].elements[2].value, 'c')
+
+
+    def test_attribute_expression(self):
+        string = l20n.ComplexString([
+            l20n.String("word1 "),
+            l20n.PropertyExpression(
+                l20n.PropertyExpression(
+                    l20n.AttributeExpression(
+                        l20n.Identifier('foo'),
+                        l20n.Identifier('a'),
+                        True),
+                    l20n.Identifier('b'),
+                    False),
+                l20n.Identifier('c'),
+                True),
+            l20n.String(" word2")
+        ])
+        entity = l20n.Entity(id=l20n.Identifier('id'),
+                             value=string)
+        lol = l20n.LOL((entity,))
+        prog = compile(lol)
+        self.assertEqual(len(prog.body), 1)
+        entity = prog.body[0].expression
+        value = entity.right
+        val_body = value.body
+        val_return = val_body.body[0]
+        complex_string = val_return.argument
+        first_part = complex_string.left
+        getent_call = complex_string.right.left
+        third_part = complex_string.right.right
+        getent_arguments = getent_call.arguments
+        self.assertEqual(getent_call.callee.name, "getattr")
+        self.assertEqual(getent_arguments[0].name, "env")
+        self.assertEqual(getent_arguments[1].value, "foo")
+        self.assertEqual(getent_arguments[2].value, "a")
+        self.assertEqual(len(getent_arguments[3].elements), 2)
+        self.assertEqual(getent_arguments[3].elements[0].value, 'b')
+        self.assertEqual(getent_arguments[3].elements[1].value, 'c')
+
 if __name__ == '__main__':
+
     unittest.main()
 
