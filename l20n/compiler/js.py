@@ -137,7 +137,7 @@ class Compiler(object):
                                                        js.Identifier('env'),
                                                        js.Identifier('name'),
                                                        True),
-                                                   js.Identifier('attrs'),
+                                                   js.Identifier('_attrs'),
                                                    False),
                                                js.Identifier('param'),
                                                True))]),
@@ -258,7 +258,7 @@ class Compiler(object):
                 js.ExpressionStatement(
                     js.AssignmentExpression(
                         js.AssignmentOperator('='),
-                        js.MemberExpression(name, js.Identifier('attrs'), False),
+                        js.MemberExpression(name, js.Identifier('_attrs'), False),
                         attrs)))
 
     @classmethod

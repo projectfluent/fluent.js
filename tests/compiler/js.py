@@ -111,7 +111,7 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         self.assertEquals(exp.operator.token, '=')
         self.assertTrue(isinstance(exp.left.obj, js.MemberExpression))
         self.assertEqual(exp.left.obj.prop.name, 'id')
-        self.assertEqual(exp.left.prop.name, "attrs")
+        self.assertEqual(exp.left.prop.name, "_attrs")
         self.assertEqual(exp.left.computed, False)
 
     def test_property_expression(self):
