@@ -1,4 +1,4 @@
-from l20n import ast
+from l20n.format.lol import ast
 import sys
 
 if sys.version >= "3":
@@ -84,10 +84,10 @@ class Serializer():
             return cls.dump_unary_expression(expression)
         elif isinstance(expression, ast.ParenthesisExpression):
             return cls.dump_brace_expression(expression)
-        elif isinstance(expression, ast.MemberExpression):
-            return cls.dump_macrocall(expression)
+        elif isinstance(expression, ast.PropertyExpression):
+            return cls.dump_propertyexpression(expression)
         elif isinstance(expression, ast.Identifier):
-            return cls.dump_idref(expression)
+            return cls.dump_identifier(expression)
         elif isinstance(expression, int):
             return str(expression)
         elif is_string(expression):
@@ -107,4 +107,16 @@ class Serializer():
     dump_multiplicative_expression = dump_logical_expression
     dump_unary_expression = dump_logical_expression
     dump_brace_expression = dump_logical_expression
+
+    @classmethod
+    def dump_identifier(cls, i):
+        return i.name
+
+    @classmethod
+    def dump_propertyexpression(cls, e):
+        if e.computed:
+            return '%s[%s]' % (cls.dump_expression(e.expression),
+                               cls.dump_expression(e.property))
+        else:
+            return '%s.%s' % (e.expression, e.property)
 
