@@ -1,8 +1,6 @@
 import unittest
-import sys
-sys.path.append('./')
 
-from l20n.parser import Parser, ParserError
+from l20n.format.lol.parser import Parser, ParserError
 
 class L20nParserTestCase(unittest.TestCase):
 

@@ -1,9 +1,7 @@
 import unittest
-import sys
-sys.path.append('./')
 
 from pyjs import ast as js
-from l20n import ast as l20n
+from l20n.format.lol import ast as l20n
 from l20n.compiler.js import Compiler, CompilerError
 
 compile = Compiler.compile
