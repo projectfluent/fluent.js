@@ -1,4 +1,4 @@
-import l20n.ast as l20n
+import l20n.format.lol.ast as l20n
 import pyjs.ast as js
 from copy import deepcopy
 
@@ -435,11 +435,22 @@ class Compiler(object):
             attr = None
             subexp = exp
             while isinstance(subexp, l20n.PropertyExpression):
+                if isinstance(subexp.expression, l20n.Identifier) and \
+                   subexp.expression.name == 'data':
+                    idref = js.MemberExpression(
+                        js.Identifier('data'),
+                        cls.transform_expression(subexp.property),
+                        True,
+                    )
+                    return idref
                 if subexp.computed:
                     arg = cls.transform_expression(subexp.property)
                     index.append(arg)
                 else:
-                    index.append(js.Literal(subexp.property.name))
+                    if isinstance(subexp.property, l20n.Literal):
+                        index.append(js.Literal(subexp.property.value))
+                    else:
+                        index.append(js.Literal(subexp.property.name))
                 if isinstance(subexp.expression, l20n.Identifier):
                     name = js.Literal(subexp.expression.name)
                     break
