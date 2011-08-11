@@ -1,5 +1,5 @@
 import re
-from l20n import ast
+from l20n.format.lol import ast
 import string
 
 class ParserError(Exception):
