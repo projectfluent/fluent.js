@@ -34,7 +34,7 @@ class Parser():
         except IndexError:
             return ''
         content = self.content.lstrip()
-        ws = self.content[:len(content)*-1]
+        ws = self.content[:len(content)*-1 or None]
         self.content = content
         return ws
 
@@ -165,7 +165,9 @@ class Parser():
                 buffer += m.group(1)
                 self.content = self.content[m.end(0):]
         if buffer or len(obj):
-            obj.append(ast.String(buffer))
+            string = ast.String(buffer)
+            string._template={'str_end': str_end}
+            obj.append(string)
         self.content = self.content[1:]
         if len(obj) == 1 and isinstance(obj[0], ast.String):
             return obj[0]
@@ -173,35 +175,47 @@ class Parser():
 
     def get_array(self):
         self.content = self.content[1:]
-        ws = self.get_ws()
+        template={'pre_ws': [self.get_ws()], 'post_ws': []}
         if self.content[0] == ']':
             self.content = self.content[1:]
-            return ast.Array()
+            arr = ast.Array()
+            arr._template = template
+            return arr
         array = []
         while 1:
             array.append(self.get_value())
-            ws = self.get_ws()
+            template['post_ws'].append(self.get_ws())
             if self.content[0] == ',':
                 self.content = self.content[1:]
-                ws2 = self.get_ws()
+                template['pre_ws'].append(self.get_ws())
             elif self.content[0] == ']':
                 break
             else:
                 raise ParserError()
         self.content = self.content[1:]
-        return ast.Array(array)
+        arr = ast.Array(array)
+        arr._template = template
+        return arr
 
     def get_hash(self):
         self.content = self.content[1:]
-        ws = self.get_ws()
+        template = {'pre_ws': self.get_ws()}
         if self.content[0] == '}':
             self.content = self.content[1:]
-            return ast.Hash()
+            h = ast.Hash()
+            h._template = template
+            return h
         hash = []
+        ws2 = None
         while 1:
             kvp = self.get_kvp()
+            if ws2:
+                kvp._template['ws_pre_key'] = ws2
+                ws2 = None
+            else:
+                kvp._template['ws_pre_key'] = ''
+            kvp._template['ws_post_value'] = self.get_ws()
             hash.append(kvp)
-            ws = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
                 ws2 = self.get_ws()
@@ -210,17 +224,21 @@ class Parser():
             else:
                 raise ParserError()
         self.content = self.content[1:]
-        return ast.Hash(hash)
+        h = ast.Hash(hash)
+        h._template = template
+        return h
 
     def get_kvp(self):
         key = self.get_identifier()
-        ws2 = self.get_ws()
+        template = {'ws_post_key': self.get_ws()} 
         if self.content[0] != ':':
             raise ParserError()
         self.content = self.content[1:]
-        ws3 = self.get_ws()
+        template['ws_pre_value'] = self.get_ws()
         val = self.get_value()
-        return ast.KeyValuePair(key, val)
+        kvp = ast.KeyValuePair(key, val)
+        kvp._template = template
+        return kvp
 
     def get_attributes(self):
         if self.content[0] == '>':
