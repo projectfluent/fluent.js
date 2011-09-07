@@ -2,15 +2,15 @@
 var L20n = {
   xul: {},
   cache: {},
-  getContext: function(path) {
-    return new L20n.Context(this.xul[path], this.cache)
+  getContext: function(id) {
+    return new L20n.Context(this.xul[id], this.cache)
   },
-  hasContext: function(path) {
-    return this.xul[path]?true:false;
+  hasContext: function(id) {
+    return this.xul[id]?true:false;
   },
-  createContext: function(path, testPath) {
-    this.xul[path] = {'l20n': {}, 'data': {}};
-    return new L20n.Context(this.xul[path], this.cache);
+  createContext: function(id) {
+    this.xul[id] = {'l20n': {}, 'data': {}};
+    return new L20n.Context(this.xul[id], this.cache);
   },
 }
 
