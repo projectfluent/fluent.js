@@ -42,7 +42,7 @@ class Serializer():
     @classmethod
     def dump_entity(cls, entity, struct=True):
         if entity.index:
-            index = cls.dump_index(entity.index)
+            index = cls.dump_index(entity.index, entity._index_template, struct=struct)
         else:
             index = ''
         kvplist = ''
@@ -75,12 +75,7 @@ class Serializer():
         if not value:
             return ''
         if isinstance(value, ast.String):
-            if struct:
-                return '%s%s%s' % (value._template['str_end'],
-                                   value.content,
-                                   value._template['str_end'])
-            else:
-                return '"%s"' % value.content
+            return cls.dump_string(value)
         elif isinstance(value, ast.Array):
             if struct:
                 elems = ['%s%s%s' % x for x in zip_longest(
@@ -101,13 +96,21 @@ class Serializer():
 
 
     @classmethod
-    def dump_index(cls, index):
-        return '[%s]' % ', '.join([cls.dump_expression(i) for i in index])
+    def dump_index(cls, index, index_ws, struct=True):
+        if struct:
+            elems = ['%s%s' % x for x in zip_longest(
+                ['']+index_ws[1:],
+                [cls.dump_expression(i, struct=True) for i in index],
+                fillvalue='')]
+            return '[%s%s]' % (index_ws[0],
+                               ','.join(elems))
+        else:
+            return '[%s]' % ', '.join([cls.dump_expression(i, struct=False) for i in index])
 
     @classmethod
-    def dump_expression(cls, expression):
+    def dump_expression(cls, expression, struct=True):
         if isinstance(expression, ast.ConditionalExpression):
-            return cls.dump_conditional_expression(expression)
+            return cls.dump_conditional_expression(expression, struct=struct)
         elif isinstance(expression, ast.LogicalExpression):
             return cls.dump_logical_expression(expression)
         elif isinstance(expression, ast.BinaryExpression):
@@ -115,17 +118,17 @@ class Serializer():
         elif isinstance(expression, ast.UnaryExpression):
             return cls.dump_unary_expression(expression)
         elif isinstance(expression, ast.ParenthesisExpression):
-            return cls.dump_brace_expression(expression)
+            return cls.dump_parenthesis_expression(expression)
         elif isinstance(expression, ast.PropertyExpression):
             return cls.dump_propertyexpression(expression)
         elif isinstance(expression, ast.Identifier):
             return cls.dump_identifier(expression)
         elif isinstance(expression, ast.Literal):
             return cls.dump_literal(expression)
+        elif isinstance(expression, ast.String):
+            return cls.dump_string(expression, struct=struct)
         elif isinstance(expression, int):
             return str(expression)
-        elif is_string(expression):
-            return '"%s"' % expression
 
     @classmethod
     def dump_logical_expression(cls, e):
@@ -144,7 +147,12 @@ class Serializer():
     dump_additive_expression = dump_logical_expression
     dump_multiplicative_expression = dump_logical_expression
     dump_unary_expression = dump_logical_expression
-    dump_brace_expression = dump_logical_expression
+
+    @classmethod
+    def dump_parenthesis_expression(cls, e):
+        return '(%s%s%s)' % (e._template['ws_pre'],
+                             cls.dump_expression(e.expression),
+                             e._template['ws_post'])
 
     @classmethod
     def dump_identifier(cls, i):
@@ -161,7 +169,17 @@ class Serializer():
 
     @classmethod
     def dump_literal(cls, e):
-        return "%s" % e.value
+        return "%s%s" % (e.value,
+                         e._template['ws_post'])
+
+    @classmethod
+    def dump_string(cls, e, struct=True):
+        if struct:
+            return '%s%s%s' % (e._template['str_end'],
+                               e.content,
+                               e._template['str_end'])
+        else:
+            return '"%s"' % e.content.replace('"', '\\"')
 
     @classmethod
     def dump_operator(cls, op):

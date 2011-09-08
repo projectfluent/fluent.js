@@ -45,8 +45,8 @@ class Parser():
             if self.content[0] == '(':
                 entry = self.get_macro(id)
             elif self.content[0] == '[':
-                index = self.get_index()
-                entry = self.get_entity(id, index)
+                (index, index_ws) = self.get_index()
+                entry = self.get_entity(id, index, index_ws)
             else:
                 entry = self.get_entity(id)
         elif self.content[0:2] == '/*':
@@ -62,12 +62,13 @@ class Parser():
         self.content = self.content[match.end(0):]
         return ast.Identifier(match.group(1))
 
-    def get_entity(self, id, index=None):
+    def get_entity(self, id, index=None, index_ws=None):
         ws1 = self.get_ws()
         if self.content[0] == '>':
             self.content = self.content[1:]
             entity = ast.Entity(id, index)
             entity._template = "<%%s%s%%s%%s%%s>" % ws1
+            entity._index_template = index_ws
             return entity
         if ws1 == '':
             raise ParserError()
@@ -79,6 +80,7 @@ class Parser():
                             value,
                             attrs)
         entity._template = "<%%s%%s%s%%s%s%%s>" % (ws1,ws2)
+        entity._index_template = index_ws
         return entity
 
     def get_macro(self, id):
@@ -258,24 +260,24 @@ class Parser():
 
     def get_index(self):
         index = []
+        template = []
         self.content = self.content[1:]
-        ws = self.get_ws()
+        template.append(self.get_ws())
         if self.content[0] == ']':
             self.content = self.content[1:]
-            return index
+            return (index, template)
         while 1:
             expression = self.get_expression()
             index.append(expression)
-            ws = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
-                self.get_ws()
+                template.append(self.get_ws())
             elif self.content[0] == ']':
                 break
             else:
                 raise ParserError()
         self.content = self.content[1:]
-        return index
+        return (index, template)
 
 
     def get_expression(self):
@@ -283,7 +285,6 @@ class Parser():
 
     def get_conditional_expression(self):
         or_expression = self.get_or_expression()
-        self.get_ws()
         if self.content[0] != '?':
             return or_expression
         self.content = self.content[1:]
@@ -302,20 +303,18 @@ class Parser():
 
     def get_prefix_expression(self, token, token_length, cl, op, nxt):
         exp = nxt()
-        self.get_ws()
+        template = []
         while self.content[:token_length] in token:
             t = self.content[:token_length]
             self.content = self.content[token_length:]
-            self.get_ws()
+            template.append(self.get_ws())
             exp = cl(op(t),
                      exp,
                      nxt())
-            self.get_ws()
         return exp
 
     def get_prefix_expression_re(self, token, cl, op, nxt):
         exp = nxt()
-        self.get_ws()
         m = token.match(self.content)
         while m:
             self.content = self.content[m.end(0):]
@@ -323,7 +322,6 @@ class Parser():
             exp = cl(op(m.group(0)),
                      exp,
                      nxt())
-            self.get_ws()
             m = token.match(self.content)
         return exp
 
@@ -393,7 +391,9 @@ class Parser():
 
     def get_member_expression(self):
         exp = self.get_parenthesis_expression()
-        self.get_ws()
+        if not hasattr(exp, '_template'):
+            exp._template = {}
+        exp._template['ws_post'] = self.get_ws()
         while 1:
             if self.content[0:2] in ('[.', '..'):
                 exp = self.get_attr_expression(exp)
@@ -410,7 +410,10 @@ class Parser():
             self.content = self.content[1:]
             ws = self.get_ws()
             pexp = ast.ParenthesisExpression(self.get_expression())
-            ws = self.get_ws()
+            if not hasattr(pexp, '_template'):
+                pexp._template = {}
+            pexp._template['ws_pre'] =  ws
+            pexp._template['ws_post'] = self.get_ws()
             if self.content[0] != ')':
                 raise ParserError()
             self.content = self.content[1:]
