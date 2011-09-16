@@ -74,6 +74,9 @@ class Parser():
         value = self.get_value(none=True)
         ws2 = self.get_ws()
         attrs = self.get_attributes()
+        if attrs:
+            attrs_template = attrs[1]
+            attrs = attrs[0]
         entity = ast.Entity(id,
                             index,
                             value,
@@ -82,6 +85,8 @@ class Parser():
             entity._template = "<%%(id)s[%%(index)s]%s%%(value)s%s%%(attrs)s>" % (ws1,ws2)
         else:
             entity._template = "<%%(id)s%s%%(value)s%s%%(attrs)s>" % (ws1,ws2)
+        if attrs:
+            entity._template_attrs = attrs_template
         return entity
 
     def get_macro(self, id):
@@ -179,71 +184,59 @@ class Parser():
     def get_array(self):
         self.content = self.content[1:]
         ws_pre = self.get_ws()
-        ws_item_pre = None
-        array = []
         if self.content[0] == ']':
             self.content = self.content[1:]
             arr = ast.Array()
             arr._template = '%s%%(content)s' % ws_pre
             return arr
+        array = []
+        array_template = []
         while 1:
             elem = self.get_value()
             array.append(elem)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
-                if ws_item_pre is None:
-                    ws_item_pre = ws_pre
-                    ws_pre = ''
-                elem._template = '%s%s%s' % (ws_item_pre,
-                                             elem._template,
-                                             ws_item_post)
-                ws_item_pre = self.get_ws()
+                array_template.append('%s%s%s' % (ws_item_post,
+                                                  ',',
+                                                  self.get_ws()))
             elif self.content[0] == ']':
-                elem._template = '%s%s%s' % (ws_item_pre,
-                                             elem._template,
-                                             ws_item_post)
                 break
             else:
                 raise ParserError()
         self.content = self.content[1:]
         arr = ast.Array(array)
-        arr._template = '[%(content)s]'
+        arr._template = '[%s%%(content)s%s]' % (ws_pre, ws_item_post)
+        arr._template_content = array_template
         return arr
 
     def get_hash(self):
         self.content = self.content[1:]
         ws_pre = self.get_ws()
-        ws_item_pre = None
-        hash = []
         if self.content[0] == '}':
             self.content = self.content[1:]
             h = ast.Hash()
             h._template = '%s%%(content)s' % ws_pre
             return h
+        hash = []
+        hash_template = []
         while 1:
             kvp = self.get_kvp()
             hash.append(kvp)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
-                if ws_item_pre is None:
-                    ws_item_pre = ws_pre
-                    ws_pre = ''
-                kvp._template = '%s%s%s' % (ws_item_pre,
-                                            kvp._template,
-                                            ws_item_post)
-                ws_item_pre = self.get_ws()
+                hash_template.append('%s%s%s' % (ws_item_post,
+                                                 ',',
+                                                 self.get_ws()))
             elif self.content[0] == '}':
-                kvp._template = '%s%s%s' % (ws_item_pre,
-                                            kvp._template,
-                                            ws_item_post)
                 break
             else:
                 raise ParserError()
         self.content = self.content[1:]
         h = ast.Hash(hash)
-        h._template = '{%(content)s}'
+        h._template = '{%s%%(content)s%s}' % (ws_pre, ws_item_post)
+        h._template_content = hash_template
         return h
 
     def get_kvp(self):
@@ -264,51 +257,50 @@ class Parser():
             self.content = self.content[1:]
             return None
         hash = []
+        hash_template = []
         while 1:
             kvp = self.get_kvp()
             hash.append(kvp)
-            ws2 = self.get_ws()
+            ws_post_item = self.get_ws()
             if self.content[0] == '>':
+                hash_template.append(ws_post_item)
                 self.content = self.content[1:]
                 break
-            elif ws2 == '':
+            elif ws_post_item == '':
                 raise ParserError()
-        return hash if len(hash) else None
+            hash_template.append(ws_post_item)
+        if len(hash):
+            return (hash, hash_template)
+        else:
+            return None
 
     def get_index(self):
-        index = []
         self.content = self.content[1:]
         ws_pre = self.get_ws()
-        ws_item_pre = None
-        expression = None
         if self.content[0] == ']':
             self.content = self.content[1:]
-            ind = ast.Index(index)
+            ind = ast.Index()
             ind._template = '%s%%(sequence)s' % ws_pre
             return ind
+        index = []
+        index_template = []
         while 1:
             expression = self.get_expression()
             index.append(expression)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
-                if ws_item_pre is None:
-                    ws_item_pre = ws_pre
-                    ws_pre = ''
-                expression._template = '%s%s%s' % (ws_item_pre,
-                                                   expression._template,
-                                                   ws_item_post)
-                ws_item_pre = self.get_ws()
+                index_template.append('%s%s%s' % (ws_item_post,
+                                                  ',',
+                                                  self.get_ws()))
             elif self.content[0] == ']':
-                expression._template = '%s%s%s' % (ws_item_pre,
-                                                   expression._template,
-                                                   ws_item_post)
                 break
             else:
                 raise ParserError()
         self.content = self.content[1:]
         ind = ast.Index(index)
-        ind._template = '%(sequence)s'
+        ind._template = '%s%%(sequence)s%s' % (ws_pre, ws_item_post)
+        ind._template_sequence = index_template
         return ind
 
 
