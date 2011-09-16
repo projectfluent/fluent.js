@@ -34,11 +34,14 @@ class KeyValuePair(Node):
     key = pyast.field(Identifier)
     value = pyast.field(Value)
 
+class Index(Node):
+    sequence = pyast.seq(Expression)
+
 ### Entries
 
 class Entity(Entry):
     id = pyast.field(Identifier)
-    index = pyast.seq(Expression, null=True)
+    index = pyast.seq(Index, null=True)
     value = pyast.field(Value, null=True)
     attrs = pyast.seq(KeyValuePair, null=True)
 
@@ -84,6 +87,7 @@ class LogicalOperator(Operator):
 
 class Literal(Expression):
     value = pyast.field(int)
+    _template = '%(value)s'
 
 class LogicalExpression(Expression):
     operator = pyast.field(LogicalOperator)
