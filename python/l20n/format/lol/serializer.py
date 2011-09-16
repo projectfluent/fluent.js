@@ -15,7 +15,7 @@ class Serializer():
     def serialize(cls, lol):
         if hasattr(lol, '_struct') and lol._struct is True:
             string = ''.join(chain(*zip_longest(
-                lol._template,
+                lol._template2,
                 [cls.dump_entry(element) for element in lol.body],
                 fillvalue='')))
         else:
@@ -41,20 +41,20 @@ class Serializer():
 
     @classmethod
     def dump_entity(cls, entity, struct=True):
-        if entity.index:
-            index = cls.dump_index(entity.index, entity._index_template, struct=struct)
-        else:
-            index = ''
-        kvplist = ''
-        if entity.attrs:
-            kvplist += '\n '
-            kvplist += '\n '.join([cls.dump_kvp(kvp) for kvp in entity.attrs])
-        template = entity._template if struct else '<%s%s %s%s>'
-        string = template % (entity.id.name,
-                             index,
-                             cls.dump_value(entity.value, struct=struct),
-                             kvplist)
-        return string
+        #if entity.index:
+        #    index = cls.dump_index(entity.index, entity._index_template, struct=struct)
+        #else:
+        #    index = ''
+        #kvplist = ''
+        #if entity.attrs:
+        #    kvplist += '\n '
+        #    kvplist += '\n '.join([cls.dump_kvp(kvp) for kvp in entity.attrs])
+        #template = entity._template if struct else '<%s%s %s%s>'
+        #string = template % (entity.id.name,
+        #                     index,
+        #                     cls.dump_value(entity.value, struct=struct),
+        #                     kvplist)
+        return str(entity)
 
     @classmethod
     def dump_kvp(cls, kvp, struct=True):
