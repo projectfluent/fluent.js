@@ -60,7 +60,9 @@ class Parser():
         if not match:
             raise ParserError()
         self.content = self.content[match.end(0):]
-        return ast.Identifier(match.group(1))
+        identifier = ast.Identifier(match.group(1))
+        identifier._template = '%(name)s'
+        return identifier
 
     def get_entity(self, id, index=None):
         ws1 = self.get_ws()
@@ -77,12 +79,14 @@ class Parser():
         if attrs:
             attrs_template = attrs[1]
             attrs = attrs[0]
+        index_arr = index[0] if index else None
         entity = ast.Entity(id,
-                            index,
+                            index_arr,
                             value,
                             attrs)
-        if index is not None:
-            entity._template = "<%%(id)s[%%(index)s]%s%%(value)s%s%%(attrs)s>" % (ws1,ws2)
+        if index:
+            entity._template_index = index[2]
+            entity._template = "<%%(id)s[%s]%s%%(value)s%s%%(attrs)s>" % (index[1], ws1,ws2)
         else:
             entity._template = "<%%(id)s%s%%(value)s%s%%(attrs)s>" % (ws1,ws2)
         if attrs:
@@ -164,7 +168,12 @@ class Parser():
                 if buffer:
                     obj.append(ast.String(buffer))
                     buffer = ''
-                obj.append(self.get_expression())
+                ws_pre_exp = self.get_ws()
+                expr = self.get_expression()
+                expr._template = '{{%s%s%s}}' % (ws_pre_exp,
+                                                 expr._template,
+                                                 self.get_ws())
+                obj.append(expr)
                 if self.content[:2] != '}}':
                     raise ParserError()
                 self.content = self.content[2:]
@@ -174,12 +183,16 @@ class Parser():
                 self.content = self.content[m.end(0):]
         if buffer or len(obj):
             string = ast.String(buffer)
-            string._template = '%s%%(content)s%s' % (str_end, str_end)
+            string._template = '%(content)s'
             obj.append(string)
         self.content = self.content[1:]
         if len(obj) == 1 and isinstance(obj[0], ast.String):
+            obj[0]._template = '%s%%(content)s%s' % (str_end, str_end)
             return obj[0]
-        return ast.ComplexString(obj)
+        cs = ast.ComplexString(obj)
+        cs._template = '%s%%(content)s%s' % (str_end, str_end)
+        cs._template_content = ['']
+        return cs
 
     def get_array(self):
         self.content = self.content[1:]
@@ -279,9 +292,7 @@ class Parser():
         ws_pre = self.get_ws()
         if self.content[0] == ']':
             self.content = self.content[1:]
-            ind = ast.Index()
-            ind._template = '%s%%(sequence)s' % ws_pre
-            return ind
+            return ([], '%s%%(index)s' % ws_pre, [])
         index = []
         index_template = []
         while 1:
@@ -296,12 +307,11 @@ class Parser():
             elif self.content[0] == ']':
                 break
             else:
+                print(self.content)
                 raise ParserError()
         self.content = self.content[1:]
-        ind = ast.Index(index)
-        ind._template = '%s%%(sequence)s%s' % (ws_pre, ws_item_post)
-        ind._template_sequence = index_template
-        return ind
+        template = '%s%%(index)s%s' % (ws_pre, ws_item_post)
+        return (index, template, index_template)
 
 
     def get_expression(self):
@@ -309,40 +319,67 @@ class Parser():
 
     def get_conditional_expression(self):
         or_expression = self.get_or_expression()
+        ws_pre_op = self.get_ws()
         if self.content[0] != '?':
+            self.content = '%s%s' % (ws_pre_op, self.content)
             return or_expression
         self.content = self.content[1:]
-        self.get_ws()
+        ws_pre_cons = self.get_ws()
         consequent = self.get_expression()
-        self.get_ws()
+        ws_post_cons = self.get_ws()
         if self.content[0] != ':':
             raise ParserError()
         self.content = self.content[1:]
-        self.get_ws()
+        ws_pre_alter = self.get_ws()
         alternate = self.get_expression()
-        return ast.ConditionalExpression(or_expression,
-                                         consequent,
-                                         alternate)
+        cons_exp = ast.ConditionalExpression(or_expression,
+                                             consequent,
+                                             alternate)
+        cons_exp._template = '%%(test)s%s?%s%%(consequent)s%s:%s%%(alternate)s' % (ws_pre_op,
+                                                                                     ws_pre_cons,
+                                                                                     ws_post_cons,
+                                                                                     ws_pre_alter)
+        return cons_exp
 
     def get_prefix_expression(self, token, token_length, cl, op, nxt):
+        print(token)
+        print(self.content)
         exp = nxt()
+        ws_pre_op = self.get_ws()
         while self.content[:token_length] in token:
+            print('this')
+            print(exp)
             t = self.content[:token_length]
             self.content = self.content[token_length:]
+            ws_post_op = self.get_ws()
             exp = cl(op(t),
                      exp,
                      nxt())
+            exp._template = '%%(left)s%s%%(operator)s%s%%(right)s' % (ws_pre_op, 
+                                                                      ws_post_op)
+            ws_pre_op = self.get_ws()
+        self.content = '%s%s' % (ws_pre_op, self.content)
         return exp
 
     def get_prefix_expression_re(self, token, cl, op, nxt):
+        print(token)
+        print(self.content)
         exp = nxt()
+        ws_pre_op = self.get_ws()
         m = token.match(self.content)
         while m:
+            print('this')
+            print(exp)
             self.content = self.content[m.end(0):]
+            ws_post_op = self.get_ws()
             exp = cl(op(m.group(0)),
                      exp,
                      nxt())
             m = token.match(self.content)
+            exp._template = '%%(left)s%s%%(operator)s%s%%(right)s' % (ws_pre_op,
+                                                                      ws_post_op)
+            ws_pre_op = self.get_ws()
+        self.content = '%s%s' % (ws_pre_op, self.content)
         return exp
 
 
@@ -351,8 +388,11 @@ class Parser():
         if t not in token:
             return nxt()
         self.content = self.content[1:]
-        return cl(op(t),
-                  self.get_postfix_expression(token, token_length, cl, op, nxt))
+        ws = self.get_ws()
+        exp = cl(op(t),
+                 self.get_postfix_expression(token, token_length, cl, op, nxt))
+        exp._template = '%%(operator)s%s%%(argument)s' % ws
+        return exp
 
     def get_or_expression(self,
                           token=('||',),
@@ -410,29 +450,34 @@ class Parser():
 
     def get_member_expression(self):
         exp = self.get_parenthesis_expression()
+        ws_post_id = self.get_ws()
+        matched = False
         while 1:
             if self.content[0:2] in ('[.', '..'):
-                exp = self.get_attr_expression(exp)
+                exp = self.get_attr_expression(exp, ws_post_id)
+                matched = True
             elif self.content[0] in ('[', '.'):
-                exp = self.get_property_expression(exp)
+                exp = self.get_property_expression(exp, ws_post_id)
+                matched = True
             elif self.content[0] == '(':
-                exp = self.get_call_expression(exp)
+                exp = self.get_call_expression(exp, ws_post_id)
+                matched = True
             else:
                 break
+        if not matched:
+            self.content = '%s%s' % (ws_post_id, self.content)
         return exp
 
     def get_parenthesis_expression(self):
         if self.content[0] == "(":
             self.content = self.content[1:]
-            ws = self.get_ws()
+            ws_pre = self.get_ws()
             pexp = ast.ParenthesisExpression(self.get_expression())
-            if not hasattr(pexp, '_template'):
-                pexp._template = {}
-            pexp._template['ws_pre'] =  ws
-            pexp._template['ws_post'] = self.get_ws()
+            ws_post = self.get_ws()
             if self.content[0] != ')':
                 raise ParserError()
             self.content = self.content[1:]
+            pexp._template = '(%s%%(expression)s%s)' % (ws_pre, ws_post)
             return pexp
         return self.get_primary_expression()
 
@@ -444,21 +489,25 @@ class Parser():
         if ptr:
             d =  int(self.content[:ptr])
             self.content = self.content[ptr:]
-            return ast.Literal(d)
+            literal = ast.Literal(d)
+            literal._template = '%(value)s'
+            return literal
         #value
         if self.content[0] in ('"\'{['):
             return self.get_value()
         return self.get_identifier()
 
-    def get_attr_expression(self, idref):
+    def get_attr_expression(self, idref, ws_post_id):
         d = self.content[0:2]
         if d == '[.':
             self.content = self.content[2:]
-            self.get_ws()
+            ws_pre = self.get_ws()
             exp = self.get_expression()
-            self.get_ws()
+            ws_post = self.get_ws()
             self.content = self.content[1:]
-            return ast.AttributeExpression(idref, exp, True)
+            attr = ast.AttributeExpression(idref, exp, True)
+            attr._template = '%%(expression)s%s[.%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
+            return attr
         elif d == '..':
             self.content = self.content[2:]
             prop = self.get_identifier()
@@ -467,15 +516,17 @@ class Parser():
         else:
             raise ParserError()
 
-    def get_property_expression(self, idref):
+    def get_property_expression(self, idref, ws_post_id):
         d = self.content[0]
         if d == '[':
             self.content = self.content[1:]
-            self.get_ws()
+            ws_pre = self.get_ws()
             exp = self.get_expression()
-            self.get_ws()
+            ws_post = self.get_ws()
             self.content = self.content[1:]
-            return ast.PropertyExpression(idref, exp, True)
+            prop = ast.PropertyExpression(idref, exp, True)
+            prop._template = '%%(expression)s%s[%s%%(property)s%s]' % (ws_post_id, ws_pre, ws_post)
+            return prop
         elif d == '.':
             self.content = self.content[1:]
             prop = self.get_identifier()
@@ -483,25 +534,29 @@ class Parser():
         else:
             raise ParserError()
 
-    def get_call_expression(self, callee):
+    def get_call_expression(self, callee, ws_post_id):
         mcall = ast.CallExpression(callee)
         self.content = self.content[1:]
-        self.get_ws()
+        ws_pre = self.get_ws()
         if self.content[0] == ')':
             self.content = self.content[1:]
+            mcall._template = '%%(callee)s%s()' % (ws_post_id)
             return mcall
+        template = []
         while 1:
             exp = self.get_expression()
             mcall.arguments.append(exp)
-            self.get_ws()
+            ws_post = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
-                self.get_ws()
+                template.append('%s,%s' % (ws_post, self.get_ws()))
             elif self.content[0] == ')':
                 break
             else:
                 raise ParserError()
         self.content = self.content[1:]
+        mcall._template = '%%(callee)s%s(%s%%(arguments)s%s)' % (ws_post_id, ws_pre, ws_post)
+        mcall._template_arguments = template
         return mcall
 
     def get_comment(self):
