@@ -15,16 +15,17 @@ class Parser():
     def parse(self, content, parse_strings=True):
         lol = ast.LOL()
         lol._struct = True
-        lol._template2 = []
+        lol._template_body = []
         self.content = content
         self._parse_strings = parse_strings
-        lol._template2.append(self.get_ws())
+        ws_pre = self.get_ws()
         while self.content:
             try:
                 lol.body.append(self.get_entry())
             except IndexError:
                 raise ParserError()
-            lol._template2.append(self.get_ws())
+            lol._template_body.append(self.get_ws())
+        lol._template = '%s%%(body)s' % (ws_pre,)
         return lol
 
     def get_ws(self, wschars=string.whitespace):
