@@ -66,10 +66,15 @@ class Parser():
 
     def get_entity(self, id, index=None):
         ws1 = self.get_ws()
+        index_arr = index[0] if index else None
         if self.content[0] == '>':
             self.content = self.content[1:]
-            entity = ast.Entity(id, index)
-            entity._template = "<%%s%s%%s%%s%%s>" % ws1
+            entity = ast.Entity(id, index_arr)
+            if index:
+                entity._template_index = index[2]
+                entity._template = "<%%(id)s[%s]%s>" % (index[1], ws1)
+            else:
+                entity._template = "<%%(id)s%s>" % ws1
             return entity
         if ws1 == '':
             raise ParserError()
@@ -79,7 +84,6 @@ class Parser():
         if attrs:
             attrs_template = attrs[1]
             attrs = attrs[0]
-        index_arr = index[0] if index else None
         entity = ast.Entity(id,
                             index_arr,
                             value,
@@ -307,7 +311,6 @@ class Parser():
             elif self.content[0] == ']':
                 break
             else:
-                print(self.content)
                 raise ParserError()
         self.content = self.content[1:]
         template = '%s%%(index)s%s' % (ws_pre, ws_item_post)
@@ -342,13 +345,9 @@ class Parser():
         return cons_exp
 
     def get_prefix_expression(self, token, token_length, cl, op, nxt):
-        print(token)
-        print(self.content)
         exp = nxt()
         ws_pre_op = self.get_ws()
         while self.content[:token_length] in token:
-            print('this')
-            print(exp)
             t = self.content[:token_length]
             self.content = self.content[token_length:]
             ws_post_op = self.get_ws()
@@ -362,23 +361,19 @@ class Parser():
         return exp
 
     def get_prefix_expression_re(self, token, cl, op, nxt):
-        print(token)
-        print(self.content)
         exp = nxt()
         ws_pre_op = self.get_ws()
         m = token.match(self.content)
         while m:
-            print('this')
-            print(exp)
             self.content = self.content[m.end(0):]
             ws_post_op = self.get_ws()
             exp = cl(op(m.group(0)),
                      exp,
                      nxt())
-            m = token.match(self.content)
             exp._template = '%%(left)s%s%%(operator)s%s%%(right)s' % (ws_pre_op,
                                                                       ws_post_op)
             ws_pre_op = self.get_ws()
+            m = token.match(self.content)
         self.content = '%s%s' % (ws_pre_op, self.content)
         return exp
 
