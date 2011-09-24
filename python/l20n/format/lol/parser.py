@@ -100,38 +100,55 @@ class Parser():
     def get_macro(self, id):
         idlist = []
         self.content = self.content[1:]
-        self.get_ws()
+        ws_pre_idlist = self.get_ws()
+        ws_idlist_tmpl = []
         if self.content[0] == ')':
             self.content = self.content[1:]
         else:
+
             while 1:
                 idlist.append(self.get_identifier())
-                self.get_ws()
+                ws_post = self.get_ws()
                 if self.content[0] == ',':
                     self.content = self.content[1:]
-                    self.get_ws()
+                    ws_idlist_tmpl.append('%s,%s' % (ws_post, self.get_ws()))
                 elif self.content[0] == ')':
+                    ws_post_idlist = ws_post
                     self.content = self.content[1:]
                     break
                 else:
                     raise ParserError()
-        ws = self.get_ws()
-        if ws == '':
+        ws1 = self.get_ws()
+        if ws1 == '':
             raise ParserError()
         if self.content[0] != '{':
             raise ParserError()
         self.content = self.content[1:]
+        ws2 = self.get_ws()
         exp = self.get_expression()
-        self.get_ws()
+        ws3 = self.get_ws()
         if self.content[0] != '}':
             raise ParserError()
         self.content = self.content[1:]
-        ws = self.get_ws()
+        ws4 = self.get_ws()
         attrs = self.get_attributes()
-        return ast.Macro(id,
-                         idlist,
-                         exp,
-                         attrs)
+        if attrs:
+            attrs_template = attrs[1]
+            attrs = attrs[0]
+        macro = ast.Macro(id,
+                          idlist,
+                          exp,
+                          attrs)
+        macro._template = '<%%(id)s(%s%%(args)s%s)%s{%s%%(expression)s%s}%s%%(attrs)s>' % (ws_pre_idlist,
+                                                                                 ws_post_idlist,
+                                                                               ws1,
+                                                                               ws2,
+                                                                               ws3,
+                                                                               ws4)
+        macro._template_args = ws_idlist_tmpl
+        if attrs:
+            macro._template_attrs = attrs_template
+        return macro
 
     def get_value(self, none=False):
         c = self.content[0]
