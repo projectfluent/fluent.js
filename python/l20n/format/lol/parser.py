@@ -524,8 +524,9 @@ class Parser():
         elif d == '..':
             self.content = self.content[2:]
             prop = self.get_identifier()
-            return ast.AttributeExpression(idref, prop, False)
-            pass
+            ae = ast.AttributeExpression(idref, prop, False)
+            ae._template = '%(expression)s..%(attribute)s'
+            return ae
         else:
             raise ParserError()
 
@@ -543,7 +544,9 @@ class Parser():
         elif d == '.':
             self.content = self.content[1:]
             prop = self.get_identifier()
-            return ast.PropertyExpression(idref, prop, False)
+            pe = ast.PropertyExpression(idref, prop, False)
+            pe._template = '%(expression)s.%(property)s'
+            return pe
         else:
             raise ParserError()
 
