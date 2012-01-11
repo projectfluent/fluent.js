@@ -26,17 +26,65 @@ document.addEventListener("DOMContentLoaded", function() {
   ctx.onReady = function() {
     var nodes = document.body.getElementsByTagName('*');
     var l10nId = null;
-    for (var i=0;i<nodes.length;i++) {
-      if (l10nId = nodes[i].getAttribute('l10n-id')) {
-        nodes[i].innerHTML = ctx.get(l10nId);
+    for (var i=0, node; node = nodes[i]; i++) {
+      if (l10nId = node.getAttribute('l10n-id')) {
+        // deep-copy the original node
+        var origNode = node.cloneNode(true);
+        node.innerHTML = ctx.get(l10nId);
+        // get attributes from the LO
         var attrs = ctx.getAttributes(l10nId);
         if (attrs) {
           for (var j in attrs)
-            nodes[i].setAttribute(j, attrs[j]);
+            node.setAttribute(j, attrs[j]);
         }
+        // overlay the attributes of descendant nodes
+        var children = node.getElementsByTagName('*');
+        for (var j=0, child; child = children[j]; j++) {
+          var path = child.getAttribute('l10n-path');
+          if ( ! path)
+            path = getPathTo(child, node);
+          console.log(path);
+          // match the child node with the equivalent node in origNode
+          var origChild = getElementByPath(path, origNode);
+          for (var k=0, origAttr; origAttr = origChild.attributes[k]; k++) {
+            // if ( ! origAttr.specified) continue;  // for IE?
+            if ( ! child.hasAttribute(origAttr.name))
+              child.setAttribute(origAttr.nodeName, origAttr.value);
+          }
+        }
+
       }
     }
   }
 
   ctx.freeze();
 }, false);
+
+function getPathTo(element, context) {
+  if (element === context)
+    return '.';
+  if (element.id !== '')
+    return 'id("' + element.id + '")';
+  var localPath = element.getAttribute('l10n-path');
+  if (localPath)
+    return element.getAttribute('l10n-path');
+
+  var ix = 0;
+  var siblings = element.parentNode.childNodes;
+  for (var i=0, sibling; sibling = siblings[i]; i++) {
+    if (sibling === element) {
+      var pathToParent = getPathTo(element.parentNode, context);
+      return pathToParent + '/' + element.tagName + '[' + (ix + 1) + ']';
+    }
+    if (sibling.nodeType === 1 && sibling.tagName === element.tagName)
+      ix++;
+  }
+}
+
+function getElementByPath(path, context) {
+  var xpe = document.evaluate(path, context, null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+  return xpe.singleNodeValue;
+}
+
+// vim: tw=2 et sw=2 sts=2
