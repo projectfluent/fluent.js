@@ -1,1 +1,7 @@
-/Users/zbraniecki/projects/mozilla/mozilla-central/intl/l20n/data/default.j20n
+this.DEFAULT = {
+  'hour': function(env, sys) {
+    var cur = new Date();
+    return cur.getHours();
+  },
+}
+
