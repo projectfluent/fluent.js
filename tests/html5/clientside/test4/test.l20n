@@ -1,15 +1,15 @@
-<hello """
+<hello "
   <strong l10n-path='strong[2]'>Jesteś <em>mistrzem!</em></strong>
   Witaj <strong l10n-path='strong[1]'>z</strong>
   <input placeholder='przyszłości'/>.
-"""
+"
   class: "first"
 >
 
-<helloid """
+<helloid "
   <strong id='s2'>Jesteś <em>mistrzem!</em></strong>
   Witaj <strong id='s1'>z</strong>
   <input placeholder='przyszłości'/>.
-"""
+"
   class: "first"
 >

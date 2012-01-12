@@ -1,7 +1,15 @@
-this.hello = new String("<strong l10n-path='strong[2]'>Jesteś <em>mistrzem!</em></strong> Witaj <strong l10n-path='strong[1]'>z</strong> <input placeholder='przyszłości'/>.")
+this.hello = new String("\
+  <strong l10n-path='strong[2]'>Jesteś <em>mistrzem!</em></strong>\
+  Witaj <strong l10n-path='strong[1]'>z</strong>\
+  <input placeholder='przyszłości'/>.\
+");
 
-//this.hello = new Object();
+this.hello._attrs = {class: "first"};
 
-this.hello._attrs = { class: "first" };
+this.helloid = new String("\
+  <strong id='s2'>Jesteś <em>mistrzem!</em></strong>\
+  Witaj <strong id='s1'>z</strong>\
+  <input placeholder='przyszłości'/>.\
+");
 
-this.helloid = "<strong id='s2'>Jesteś <em>mistrzem!</em></strong> Witaj <strong id='s1'>z</strong> <input placeholder='przyszłości'/>."
+this.helloid._attrs = {class: "first"};
