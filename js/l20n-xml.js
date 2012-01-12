@@ -23,6 +23,14 @@ document.addEventListener("DOMContentLoaded", function() {
       ctx.addResource(linkNodes[i].getAttribute('href'))
   }
 
+  var scriptNodes = headNode.getElementsByTagName('script')
+  for (var i=0;i<scriptNodes.length;i++) {
+    if (scriptNodes[i].getAttribute('type')=='application/l20n') {
+      var contextData = JSON.parse(scriptNodes[i].textContent);
+      ctx.data = contextData;
+    }
+  }
+
   ctx.onReady = function() {
     var nodes = document.body.getElementsByTagName('*');
     var l10nId = null;
