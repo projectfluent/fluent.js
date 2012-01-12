@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", function() {
               child.setAttribute(origAttr.nodeName, origAttr.value);
           }
         }
-
       }
     }
   }
