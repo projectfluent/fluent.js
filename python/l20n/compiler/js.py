@@ -146,9 +146,12 @@ class Compiler(object):
                     n = l20n.PropertyExpression(l20n.Identifier('data'),
                                                 l20n.Literal(ids.index(attr.name)),
                                                 False)
-                    setattr(exp, field, n)
+                    # why setattr doesn't work in debug mode?
+                    #setattr(exp, field, n)
+                    object.__setattr__(exp, field, n)
             elif isinstance(attr, l20n.Expression):
-                setattr(exp, field, cls._transform_macro_idrefs(attr, ids))
+                #setattr(exp, field, cls._transform_macro_idrefs(attr, ids))
+                object.__setattr__(exp, field, cls._transform_macro_idrefs(attr, ids))
         return exp
 
     @classmethod

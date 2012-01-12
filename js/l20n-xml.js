@@ -36,13 +36,17 @@ document.addEventListener("DOMContentLoaded", function() {
     var l10nId = null;
     for (var i=0, node; node = nodes[i]; i++) {
       if (l10nId = node.getAttribute('l10n-id')) {
+        var args = node.getAttribute('l10n-args');
+        if (args) {
+          args = JSON.parse(args);
+        }
         // get attributes from the LO
-        var attrs = ctx.getAttributes(l10nId);
+        var attrs = ctx.getAttributes(l10nId, args);
         if (attrs) {
           for (var j in attrs)
             node.setAttribute(j, attrs[j]);
         }
-        var valueFromCtx = ctx.get(l10nId);
+        var valueFromCtx = ctx.get(l10nId, args);
         if (valueFromCtx === null)
           continue;
         // deep-copy the original node
