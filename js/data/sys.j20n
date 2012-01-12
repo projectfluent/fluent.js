@@ -13,7 +13,7 @@ this.getent = function(env, sys, name, index) {
   if (typeof entity == "number")
     return entity.toString();
   if (entity.length === undefined)
-    return "";
+    return null;
   if (entity)
     return entity.toString();
   else
