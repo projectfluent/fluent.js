@@ -36,8 +36,12 @@ document.addEventListener("DOMContentLoaded", function() {
     var l10nId = null;
     for (var i=0;i<nodes.length;i++) {
       if (l10nId = nodes[i].getAttribute('l10n-id')) {
-        nodes[i].innerHTML = ctx.get(l10nId);
-        var attrs = ctx.getAttributes(l10nId);
+        var args = nodes[i].getAttribute('l10n-args');
+        if (args) {
+          args = JSON.parse(args);
+        }
+        nodes[i].innerHTML = ctx.get(l10nId, args);
+        var attrs = ctx.getAttributes(l10nId, args);
         if (attrs) {
           for (var j in attrs)
             nodes[i].setAttribute(j, attrs[j]);
