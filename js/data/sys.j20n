@@ -10,6 +10,8 @@ this.getent = function(env, sys, name, index) {
     for (i in index)        entity = entity[index[i]];
   if (typeof entity == "function")
     return entity(env, sys);
+  if (typeof entity == "number")
+    return entity.toString();
   if (entity.length === undefined)
     return null;
   if (entity)
