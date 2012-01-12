@@ -63,6 +63,9 @@ document.addEventListener("DOMContentLoaded", function() {
           }
           // match the child node with the equivalent node in origNode
           var origChild = getElementByPath(path, origNode);
+          if ( ! origChild) {
+            continue;
+          }
           for (var k=0, origAttr; origAttr = origChild.attributes[k]; k++) {
             // if ( ! origAttr.specified) continue;  // for IE?
             if ( ! child.hasAttribute(origAttr.name)) {
@@ -81,8 +84,9 @@ function getPathTo(element, context) {
   if (element === context) {
     return '.';
   }
-  if (element.id !== '') {
-    return '*[@id="' + element.id + '"]';
+  var id = element.getAttribute('id');
+  if (id) {
+    return '*[@id="' + id + '"]';
   }
   var localPath = element.getAttribute('l10n-path');
   if (localPath) {
