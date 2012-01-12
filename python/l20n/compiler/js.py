@@ -70,7 +70,8 @@ class Compiler(object):
                     name,
                     jsval)))
         else:
-            func = js.FunctionExpression(params=[js.Identifier('env'),],
+            func = js.FunctionExpression(params=[js.Identifier('env'),
+                                                 js.Identifier('sys'),],
                                          body=js.BlockStatement())
 
             if has_index:
@@ -93,7 +94,7 @@ class Compiler(object):
                 if isinstance(jsval, js.BinaryExpression):
                     jsval = js.FunctionExpression(
                         id=None,
-                        params=['env'],
+                        params=['env', 'sys'],
                         body=js.ReturnStatement(jsval))
                 val = js.VariableDeclarator(js.Identifier("x"), jsval) 
                 let = js.LetExpression([val], func)
@@ -111,7 +112,7 @@ class Compiler(object):
                 if breaks_static:
                     val = js.FunctionExpression(
                         id=None,
-                        params=[js.Identifier('env')],
+                        params=[js.Identifier('env'), js.Identifier('sys')],
                         body=js.BlockStatement([js.ReturnStatement(val)])
                     )
                 attrs.properties.append(js.Property(js.Identifier(kvp.key.name), val))
@@ -128,7 +129,7 @@ class Compiler(object):
         exp = cls._transform_macro_idrefs(macro.expression, [arg.name for arg in macro.args])
         body = cls.transform_expression(exp)
         func = js.FunctionExpression(
-            params = [js.Identifier('env'), js.Identifier('data')],
+            params = [js.Identifier('env'), js.Identifier('sys'), js.Identifier('data')],
             body = js.BlockStatement([js.ReturnStatement(body)])
 
         )
@@ -143,8 +144,8 @@ class Compiler(object):
             if isinstance(attr, l20n.Identifier):
                 if attr.name in ids:
                     n = l20n.PropertyExpression(l20n.Identifier('data'),
-                                                l20n.Literal(ids.index(attr.name)))
-
+                                                l20n.Literal(ids.index(attr.name)),
+                                                False)
                     setattr(exp, field, n)
             elif isinstance(attr, l20n.Expression):
                 setattr(exp, field, cls._transform_macro_idrefs(attr, ids))
@@ -203,7 +204,7 @@ class Compiler(object):
                         js.Property(
                             js.Literal(kvp.key.name),
                             js.FunctionExpression(
-                                params=[js.Identifier('env')],
+                                params=[js.Identifier('env'), js.Identifier('sys')],
                                 body=js.BlockStatement([js.ReturnStatement(subval)]))
                         )
                     )
@@ -240,8 +241,12 @@ class Compiler(object):
     def transform_identifier(cls, exp):
         idref = js.CallExpression(js.Identifier('getent'))
         idref.arguments.append(js.Identifier('env'))
+        idref.arguments.append(js.Identifier('sys'))
         idref.arguments.append(js.Literal(exp.name))
-        return idref
+        expr = js.MemberExpression(
+            js.Identifier('sys'),
+            idref)
+        return expr
 
     @classmethod
     def transform_expression(cls, exp):
@@ -286,10 +291,15 @@ class Compiler(object):
             return js.Literal(exp)
         if isinstance(exp, l20n.CallExpression):
             args = map(cls.transform_expression, exp.arguments)
-            return js.CallExpression(js.Identifier('getmacro'),
+            ce = js.CallExpression(js.Identifier('getmacro'),
                            [js.Identifier('env'),
+                            js.Identifier('sys'),
                             js.Literal(exp.callee.name),
                             js.ArrayExpression(args)])
+            return js.MemberExpression(
+                    js.Identifier('sys'),
+                    ce
+            )
         elif isinstance(exp, (l20n.AttributeExpression, l20n.PropertyExpression)):
             name = None
             index = []
@@ -331,17 +341,27 @@ class Compiler(object):
             if attr:
                 idref = js.CallExpression(js.Identifier('getattr'))
                 idref.arguments.append(js.Identifier('env'))
+                idref.arguments.append(js.Identifier('sys'))
                 idref.arguments.append(name)
                 idref.arguments.append(attr)
                 if index:
                     idref.arguments.append(js.ArrayExpression(index))
-                return idref
+                expr = js.MemberExpression(
+                    js.Identifier('sys'),
+                    idref
+                )
+                return expr
             else:
                 idref = js.CallExpression(js.Identifier('getent'))
                 idref.arguments.append(js.Identifier('env'))
+                idref.arguments.append(js.Identifier('sys'))
                 idref.arguments.append(name)
                 if index:
                     idref.arguments.append(js.ArrayExpression(index))
-                return idref
+                expr = js.MemberExpression(
+                    js.Identifier('sys'),
+                    idref
+                )
+                return expr
         print(exp)
 
