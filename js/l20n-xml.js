@@ -82,7 +82,7 @@ function getPathTo(element, context) {
     return '.';
   }
   if (element.id !== '') {
-    return 'id("' + element.id + '")';
+    return '*[@id="' + element.id + '"]';
   }
   var localPath = element.getAttribute('l10n-path');
   if (localPath) {
