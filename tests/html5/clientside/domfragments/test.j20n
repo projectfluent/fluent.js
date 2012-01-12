@@ -6,10 +6,8 @@ this.hello = new String("\
 
 this.hello._attrs = {class: "first"};
 
-this.helloid = new String("\
+this.helloid = "\
   <strong id='s2'>Jesteś <em>mistrzem!</em></strong>\
   Witaj <strong id='s1'>z</strong>\
   <input placeholder='przyszłości'/>.\
-");
-
-this.helloid._attrs = {class: "first"};
+";

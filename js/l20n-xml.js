@@ -43,12 +43,14 @@ document.addEventListener("DOMContentLoaded", function() {
         // get attributes from the LO
         var attrs = ctx.getAttributes(l10nId, args);
         if (attrs) {
-          for (var j in attrs)
+          for (var j in attrs) {
             node.setAttribute(j, attrs[j]);
+          }
         }
         var valueFromCtx = ctx.get(l10nId, args);
-        if (valueFromCtx === null)
+        if (valueFromCtx === null) {
           continue;
+        }
         // deep-copy the original node
         var origNode = node.cloneNode(true);
         node.innerHTML = valueFromCtx;
@@ -56,15 +58,16 @@ document.addEventListener("DOMContentLoaded", function() {
         var children = node.getElementsByTagName('*');
         for (var j=0, child; child = children[j]; j++) {
           var path = child.getAttribute('l10n-path');
-          if ( ! path)
+          if ( ! path) {
             path = getPathTo(child, node);
-          console.log(path);
+          }
           // match the child node with the equivalent node in origNode
           var origChild = getElementByPath(path, origNode);
           for (var k=0, origAttr; origAttr = origChild.attributes[k]; k++) {
             // if ( ! origAttr.specified) continue;  // for IE?
-            if ( ! child.hasAttribute(origAttr.name))
+            if ( ! child.hasAttribute(origAttr.name)) {
               child.setAttribute(origAttr.nodeName, origAttr.value);
+            }
           }
         }
       }
@@ -75,13 +78,16 @@ document.addEventListener("DOMContentLoaded", function() {
 }, false);
 
 function getPathTo(element, context) {
-  if (element === context)
+  if (element === context) {
     return '.';
-  if (element.id !== '')
+  }
+  if (element.id !== '') {
     return 'id("' + element.id + '")';
+  }
   var localPath = element.getAttribute('l10n-path');
-  if (localPath)
+  if (localPath) {
     return element.getAttribute('l10n-path');
+  }
 
   var ix = 0;
   var siblings = element.parentNode.childNodes;
@@ -90,8 +96,9 @@ function getPathTo(element, context) {
       var pathToParent = getPathTo(element.parentNode, context);
       return pathToParent + '/' + element.tagName + '[' + (ix + 1) + ']';
     }
-    if (sibling.nodeType === 1 && sibling.tagName === element.tagName)
+    if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
       ix++;
+    }
   }
 }
 
