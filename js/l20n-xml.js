@@ -36,15 +36,18 @@ document.addEventListener("DOMContentLoaded", function() {
     var l10nId = null;
     for (var i=0, node; node = nodes[i]; i++) {
       if (l10nId = node.getAttribute('l10n-id')) {
-        // deep-copy the original node
-        var origNode = node.cloneNode(true);
-        node.innerHTML = ctx.get(l10nId);
         // get attributes from the LO
         var attrs = ctx.getAttributes(l10nId);
         if (attrs) {
           for (var j in attrs)
             node.setAttribute(j, attrs[j]);
         }
+        var valueFromCtx = ctx.get(l10nId);
+        if (valueFromCtx === null)
+          continue;
+        // deep-copy the original node
+        var origNode = node.cloneNode(true);
+        node.innerHTML = valueFromCtx;
         // overlay the attributes of descendant nodes
         var children = node.getElementsByTagName('*');
         for (var j=0, child; child = children[j]; j++) {
