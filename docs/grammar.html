@@ -204,8 +204,9 @@
   <td class="p2cell">:</td>
   <td class="p2cell">
       '\'' ([^'] | <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '\'' |
-      '"' ([^"] | <a href="#escape">escape</a> | <a 
-          href="#expander">expander</a> )* '"' ;
+      '"' ([^"] | <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '"' ; |
+      '\'\'\'' ( <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '\'\'\'' ; |
+      '"""' ( <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '"""' ;
   </td>
 
   </tr></tbody></table>
@@ -213,7 +214,7 @@
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="escape">escape</a></td>
   <td class="p2cell">:</td>
-  <td class="p2cell">'\' ('\' | '\'' | '"' | '$') ;</td>
+  <td class="p2cell">'\' ('\' | '\'' | '"' | '{{') ;</td>
   </tr></tbody></table>
 
 <table class="production"><tbody><tr>
