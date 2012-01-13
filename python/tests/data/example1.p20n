@@ -1,0 +1,7 @@
+self['foo'] = "foo1";
+
+
+def getent(env, name, index=None):
+    return env[name]
+
+self['getent'] = getent
