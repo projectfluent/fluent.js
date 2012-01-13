@@ -180,7 +180,8 @@ class Parser():
     def get_complex_string(self, quote):
 
         def not_end():
-            return self.content[:len(quote)] != quote
+            return not (self.content[:len(quote)] == quote and
+                        self.content[1:len(quote) + 1] != quote)
 
         str_end = quote[:1]
         literal = re.compile('^([^\\\{%s]+)' % str_end)
