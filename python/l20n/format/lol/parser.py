@@ -154,8 +154,10 @@ class Parser():
     def get_value(self, none=False):
         c = self.content[0]
         if c in ('"', "'"):
+            ccc = self.content[:3]
+            quote = ccc if ccc in ('"""', "'''") else c
             if self._parse_strings:
-                value = self.get_complex_string()
+                value = self.get_complex_string(quote)
             else:
                 value = self.get_string()
         elif c == '[':
@@ -175,13 +177,21 @@ class Parser():
         self.content = self.content[match.end(0):]
         return ast.String(match.group(2))
 
-    def get_complex_string(self):
-        str_end = self.content[0]
+    def get_complex_string(self, quote):
+
+        def not_end():
+            return self.content[:len(quote)] != quote
+
+        str_end = quote[:1]
         literal = re.compile('^([^\\\{%s]+)' % str_end)
+
         obj = []
         buffer = ''
-        self.content = self.content[1:]
-        while self.content[0] != str_end:
+        self.content = self.content[len(quote):]
+        while not_end():
+            if self.content[0] == str_end:
+                buffer += self.content[0]
+                self.content = self.content[1:]
             if self.content[0] == '\\':
                 buffer += self.content[1]
                 self.content = self.content[2:]
@@ -207,12 +217,12 @@ class Parser():
             string = ast.String(buffer)
             string._template = '%(content)s'
             obj.append(string)
-        self.content = self.content[1:]
+        self.content = self.content[len(quote):]
         if len(obj) == 1 and isinstance(obj[0], ast.String):
-            obj[0]._template = '%s%%(content)s%s' % (str_end, str_end)
+            obj[0]._template = '%s%%(content)s%s' % (quote, quote)
             return obj[0]
         cs = ast.ComplexString(obj)
-        cs._template = '%s%%(content)s%s' % (str_end, str_end)
+        cs._template = '%s%%(content)s%s' % (quote, quote)
         cs._template_content = ['']
         return cs
 
