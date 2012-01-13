@@ -179,17 +179,18 @@ class Parser():
 
     def get_complex_string(self, quote):
 
-        def not_end():
-            return not (self.content[:len(quote)] == quote and
-                        self.content[1:len(quote) + 1] != quote)
-
         str_end = quote[:1]
         literal = re.compile('^([^\\\{%s]+)' % str_end)
-
         obj = []
         buffer = ''
         self.content = self.content[len(quote):]
-        while not_end():
+
+        # If `quote` is `"` (a single quote), stop the loop if the next 
+        # character is `"` but the next two are not `""`.
+        # If `quote` is `"""` (triple quotes), stop the loop if the next 
+        # three characters are `"""` and the next four are not `""""`.
+        while not (self.content[:len(quote)] == quote and
+                   self.content[1:len(quote) + 1] != quote):
             if self.content[0] == str_end:
                 buffer += self.content[0]
                 self.content = self.content[1:]
