@@ -195,8 +195,9 @@ class Parser():
                 buffer += self.content[0]
                 self.content = self.content[1:]
             if self.content[0] == '\\':
-                buffer += self.content[1]
-                self.content = self.content[2:]
+                jump = 3 if self.content[1:3] == '{{' else 2
+                buffer += self.content[1:jump]
+                self.content = self.content[jump:]
             if self.content[:2] == '{{':
                 self.content = self.content[2:]
                 if buffer:
