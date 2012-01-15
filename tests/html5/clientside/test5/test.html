@@ -16,7 +16,8 @@
     <script type="text/javascript">
       function test() {
         var node = document.getElementById('mood');
-        node.setAttribute('l10n-args', '{"user":{"gender":"female"}}');
+        node.l10nData.user.gender = 'female';
+
         node.retranslate();
       }
     </script>
