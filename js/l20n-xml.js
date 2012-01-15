@@ -44,6 +44,14 @@ document.addEventListener("DOMContentLoaded", function() {
     localizeNode(ctx, this);
   }
 
+  HTMLElement.prototype.__defineGetter__('l10nData', function() {
+    return this.nodeData;
+  });
+
+  HTMLDocument.prototype.__defineGetter__('l10nData', function() {
+    return ctx.data;
+  });
+
   ctx.freeze();
 }, false);
 
@@ -83,9 +91,14 @@ function getElementByPath(path, context) {
 function localizeNode(ctx, node) {
   var l10nId;
   if (l10nId = node.getAttribute('l10n-id')) {
-    var args = node.getAttribute('l10n-args');
-    if (args) {
-      args = JSON.parse(args);
+    var args;
+    // node.nodeData 
+    // must not be exposed
+    if (node.nodeData) {
+      args = node.nodeData;
+    } else if (node.hasAttribute('l10n-args')) {
+      args = JSON.parse(node.getAttribute('l10n-args'));
+      node.nodeData = args;
     }
     // get attributes from the LO
     var attrs = ctx.getAttributes(l10nId, args);
