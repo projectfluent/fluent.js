@@ -30,18 +30,12 @@ class Compiler(object):
     def transform_into_js(cls, lol):
         script = js.Program()
         for elem in lol.body:
-            if isinstance(elem, l20n.Comment):
-                cls.transform_comment(elem, script)
-            elif isinstance(elem, l20n.Entity):
+            if isinstance(elem, l20n.Entity):
                 cls.transform_entity(elem, script)
             elif isinstance(elem, l20n.Macro):
                 cls.transform_macro(elem, script)
+            # ignore l20n.Comment, we don't need it in j20n
         return script
-
-    @classmethod
-    def transform_comment(cls, comment, script):
-        c = js.Comment(comment.content)
-        script.append(c)
 
     @classmethod
     def transform_entity(cls, entity, script):
