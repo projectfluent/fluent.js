@@ -185,12 +185,7 @@ class Parser():
         buffer = ''
         self.content = self.content[len(quote):]
 
-        # If `quote` is `"` (a single quote), stop the loop at the first 
-        # unescaped quote.
-        # If `quote` is `"""` (triple quotes), stop the loop if the next 
-        # three characters are `"""` and the next four are not `""""`.
-        while not (self.content[0] == quote if len(quote) == 1 else
-                   self.content[:3] == quote and self.content[3] != str_end):
+        while not self.content[:len(quote)] == quote:
             if self.content[0] == str_end:
                 buffer += self.content[0]
                 self.content = self.content[1:]
