@@ -205,8 +205,8 @@
   <td class="p2cell">
       '\'' ([^'] | <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '\'' |
       '"' ([^"] | <a href="#escape">escape</a> | <a href="#expander">expander</a> )* '"' ; |
-      '\'\'\'' ( <a href="#escape">escape</a> | <a href="#expander">expander</a> )*? '\'\'\'' ; |
-      '"""' ( <a href="#escape">escape</a> | <a href="#expander">expander</a> )*? '"""' ;
+      '\'\'\'' ( . | <a href="#escape">escape</a> | <a href="#expander">expander</a> )*? '\'\'\'' ; |
+      '"""' ( . | <a href="#escape">escape</a> | <a href="#expander">expander</a> )*? '"""' ;
   </td>
 
   </tr></tbody></table>
