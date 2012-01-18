@@ -20,8 +20,19 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(lol.body[0].id.name, "id")
         self.assertEqual(lol.body[0].value.content, 'string')
 
-
         string = '<id "string">'
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        self.assertEqual(lol.body[0].id.name, "id")
+        self.assertEqual(lol.body[0].value.content, 'string')
+
+        string = "<id '''string'''>"
+        lol = self.parser.parse(string)
+        self.assertEqual(len(lol.body), 1)
+        self.assertEqual(lol.body[0].id.name, "id")
+        self.assertEqual(lol.body[0].value.content, 'string')
+
+        string = '<id """string""">'
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         self.assertEqual(lol.body[0].id.name, "id")
@@ -36,6 +47,22 @@ class L20nParserTestCase(unittest.TestCase):
         lol = self.parser.parse(string)
         self.assertEqual(lol.body[0].value.content, "str'ing")
 
+        string = '<id """str"ing""">'
+        lol = self.parser.parse(string)
+        self.assertEqual(lol.body[0].value.content, 'str"ing')
+
+        string = "<id '''str'ing'''>"
+        lol = self.parser.parse(string)
+        self.assertEqual(lol.body[0].value.content, "str'ing")
+
+        string = '<id """"string\\"""">'
+        lol = self.parser.parse(string)
+        self.assertEqual(lol.body[0].value.content, '"string"')
+
+        string = "<id ''''string\\''''>"
+        lol = self.parser.parse(string)
+        self.assertEqual(lol.body[0].value.content, "'string'")
+
     def test_basic_errors(self):
         strings = [
             '< "str\\"ing">',
@@ -48,6 +75,7 @@ class L20nParserTestCase(unittest.TestCase):
             "<id value'",
             "<id'value'>",
             '<id"value">',
+            '<id """value"""">',
             '< id "value">',
             '<()>',
             '<+s>',
