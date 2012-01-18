@@ -1,28 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
-  if (!l20nlib)
-    var l20nlib = "custom"; // system || custom
+  var headNode = document.getElementsByTagName('head')[0];
 
-
-  if (l20nlib == "system") {
-    Components.utils.import("resource://gre/modules/L20n.jsm");
-  }
-
-
+  if (!headNode)
+    return;
 
   var ctx = L20n.getContext();
 
-  var headNode = null;
-  var headNodes = document.getElementsByTagName('head');
-  if (headNodes)
-    headNode = headNodes[0];
-
-  if (headNode == null)
-    return;
-
-  var linkNodes = headNode.getElementsByTagName('link')
-  for (var i=0;i<linkNodes.length;i++) {
-    if (linkNodes[i].getAttribute('type')=='intl/l20n')
-      ctx.addResource(linkNodes[i].getAttribute('href'))
+  var links = headNode.getElementsByTagName('link')
+  for (var i = 0; i < links.length; i++) {
+    if (links[i].type 'intl/l20n')
+      ctx.addResource(links[i].getAttribute('href'))
   }
 
   var scriptNodes = headNode.getElementsByTagName('script')
@@ -35,13 +22,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
   ctx.onReady = function() {
     var nodes = document.body.getElementsByTagName('*');
-    for (var i=0, node; node = nodes[i]; i++) {
-      localizeNode(ctx, node);
+    for (var i = 0, node; node = nodes[i]; i++) {
+      if (node.hasAttribute('l10n-id')) {
+        localizeNode(ctx, node);
+      }
     }
   }
 
   HTMLElement.prototype.retranslate = function() {
-    localizeNode(ctx, this);
+    if (this.hasAttribute('l10n-id')) {
+      localizeNode(ctx, this);
+      return;
+    }
+    throw Exception("Node not localizable");
   }
 
   HTMLElement.prototype.__defineGetter__('l10nData', function() {
