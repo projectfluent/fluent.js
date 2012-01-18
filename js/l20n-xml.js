@@ -56,10 +56,6 @@ function getPathTo(element, context) {
   if (id) {
     return '*[@id="' + id + '"]';
   }
-  var localPath = element.getAttribute('l10n-path');
-  if (localPath) {
-    return element.getAttribute('l10n-path');
-  }
 
   var ix = 0;
   var siblings = element.parentNode.childNodes;
@@ -110,15 +106,28 @@ function localizeNode(ctx, node) {
     // overlay the attributes of descendant nodes
     var children = node.getElementsByTagName('*');
     for (var j=0, child; child = children[j]; j++) {
+      // Match the child node with the equivalent node in origNode.
+      // The tricky part is that the node in origNode might have been 
+      // translated before; if so and if it had been reordered via 
+      // `l10n-path`, it's likely that even though the path points to it, it 
+      // actually _isn't_ the right node.
+      var origChild;
       var path = child.getAttribute('l10n-path');
       if ( ! path) {
         path = getPathTo(child, node);
       }
-      // match the child node with the equivalent node in origNode
-      var origChild = getElementByPath(path, origNode);
+      origChild = getElementByPath(path, origNode);
+      // If the origChild already has `l10n-path`, it's likely that it has
+      // already been translated once.  Follow its `l10n-path` again to find 
+      // the true source equivalent in origNode.
+      var origChildPath = origChild && origChild.getAttribute('l10n-path');
+      if (origChildPath) {
+        origChild = getElementByPath(origChildPath, origNode);
+      }
       if ( ! origChild) {
         continue;
       }
+
       for (var k=0, origAttr; origAttr = origChild.attributes[k]; k++) {
         // if ( ! origAttr.specified) continue;  // for IE?
         if ( ! child.hasAttribute(origAttr.name)) {
@@ -128,4 +137,4 @@ function localizeNode(ctx, node) {
     }
   }
 }
-// vim: tw=2 et sw=2 sts=2
+// vim: ts=2 et sw=2 sts=2
