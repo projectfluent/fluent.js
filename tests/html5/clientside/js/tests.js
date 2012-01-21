@@ -12,10 +12,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function runTests() {
   for (var i in utests) {
+    var nodesAffected = [];
     try {
-      utests[i]();
+      utests[i](nodesAffected);
+      for (var i in nodesAffected) {
+        nodesAffected[i].style.outline = "1px solid #bfb";
+        nodesAffected[i].style.color = '#090';
+      }
       var error = false;
     } catch(e) {
+      for (var i in nodesAffected) {
+        nodesAffected[i].style.outline = "1px solid #fbb";
+        nodesAffected[i].style.color = '#900';
+      }
       tests.push(false);
       error = true;
     }
