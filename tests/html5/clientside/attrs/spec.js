@@ -1,34 +1,27 @@
-var utests = {
-  'name': function(nodes) {
-    var name = document.querySelectorAll('[l10n-id="name"]')[0];
-    nodes.push(name);
-    assertEquals(name.textContent, 'Name');
-  },
-  'phone': function(nodes) {
-    var phone = document.querySelectorAll('[l10n-id="phone"]')[0];
-    nodes.push(phone);
-    assertEquals(phone.textContent, 'Phone');
-  },
-  'address': function(nodes) {
-    var address = document.querySelectorAll('[l10n-id="address"]')[0];
-    nodes.push(address);
-    assertEquals(address.textContent, 'Address');
-  },
-  'name_input': function(nodes) {
-    var nameInput = document.querySelectorAll('[l10n-id="name_input"]')[0];
-    nodes.push(nameInput);
-    assertEquals(nameInput.getAttribute('title'), 'You can give us your nickname if you prefer');
-    assertEquals(nameInput.getAttribute('placeholder'), 'Write your name');
-  },
-  'phone_input': function(nodes) {
-    var phoneInput = document.querySelectorAll('[l10n-id="phone_input"]')[0];
-    nodes.push(phoneInput);
-    assertEquals(phoneInput.getAttribute('placeholder'), '(501) 650 231 800');
-  },
-  'address_input': function(nodes) {
-    var addressInput = document.querySelectorAll('[l10n-id="address_input"]')[0];
-    nodes.push(addressInput);
-    assertEquals(addressInput.getAttribute('placeholder'), '650 Castro St., Suite 300, MtV, CA');
-  },
-}
-
+describe("Localization", function() {
+    it("name should be 'Name'", function() {
+        var name = document.querySelector('[l10n-id="name"]');
+        expect(name.textContent).toEqual('Name');
+    });
+    it("phone should be 'Phone'", function() {
+        var phone = document.querySelector('[l10n-id="phone"]');
+        expect(phone.textContent).toEqual('Phone');
+    });
+    it("address should be 'Address'", function() {
+        var address = document.querySelector('[l10n-id="address"]');
+        expect(address.textContent).toEqual('Address');
+    });
+    it("name_input should be 'You can give us your nickname if you prefer'", function() {
+        var node = document.querySelector('[l10n-id="name_input"]');
+        expect(node.getAttribute('title')).toEqual('You can give us your nickname if you prefer');
+        expect(node.getAttribute('placeholder')).toEqual('Write your name');
+    });
+    it("phone_input should be '(501) 650 231 800'", function() {
+        var node = document.querySelector('[l10n-id="phone_input"]');
+        expect(node.getAttribute('placeholder')).toEqual('(501) 650 231 800');
+    });
+    it("address_input should be '650 Castro St., Suite 300, MtV, CA'", function() {
+        var node = document.querySelector('[l10n-id="address_input"]');
+        expect(node.getAttribute('placeholder')).toEqual('650 Castro St., Suite 300, MtV, CA');
+    });
+});
