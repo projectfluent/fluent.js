@@ -1,9 +1,11 @@
-var utests = {
-  'test': function(nodes) {
-    var node = document.querySelectorAll('[l10n-id="test"]')[0];
-    nodes.push(node);
-    assertEquals(getEntity('test'), node.textContent); 
-  },
-}
-
-
+describe("Localization", function() {
+  it("test sentence should be 'Test sentence'", function() {
+    var node = document.querySelector('[l10n-id="test"]');
+    expect(node.textContent).toEqual('Test sentence');
+  });
+});
+describe("JS API", function() {
+  it("value from context should be 'Test sentence'", function() {
+    expect(getEntity('test')).toEqual('Test sentence');
+  });
+});
