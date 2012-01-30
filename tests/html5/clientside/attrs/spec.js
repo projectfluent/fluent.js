@@ -11,9 +11,12 @@ describe("Localization", function() {
     var address = document.querySelector('[l10n-id="address"]');
     expect(address.textContent).toEqual('Address');
   });
-  it("name_input should be 'You can give us your nickname if you prefer'", function() {
+  it("name_input title should be 'You can give us your nickname if you prefer'", function() {
     var node = document.querySelector('[l10n-id="name_input"]');
     expect(node.getAttribute('title')).toEqual('You can give us your nickname if you prefer');
+  });
+  it("name_input should be 'Write your name'", function() {
+    var node = document.querySelector('[l10n-id="name_input"]');
     expect(node.getAttribute('placeholder')).toEqual('Write your name');
   });
   it("phone_input should be '(501) 650 231 800'", function() {

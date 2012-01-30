@@ -19,7 +19,7 @@ describe("localization", function() {
     var node = document.querySelector('[l10n-id="name_input"]');
     expect(node.getAttribute('title')).toEqual('You can give us your nickname if you prefer');
   });
-  it("download status should be 'Mark is currently downloading 5 files.'", function() {
+  it("download status should be 'Maggie is currently downloading 5 files.'", function() {
     var node = document.querySelector('[l10n-id="download_status"]');
     expect(node.textContent).toEqual('Maggie is currently downloading 5 files.');
   });
