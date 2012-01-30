@@ -20,7 +20,6 @@ describe("Example 1", function() {
     });
     afterEach(function() {
       var node = document.querySelector('#progress1');
-      console.log(buffer);
       node.innerHTML = buffer;
       document.l10nData['kilobytes1'] = 0;
     });
@@ -58,7 +57,6 @@ describe("Example 2", function() {
     });
     afterEach(function() {
       var node = document.querySelector('#progress2');
-      console.log(buffer);
       node.innerHTML = buffer;
       document.l10nData['kilobytes2'] = 0;
     });
@@ -96,7 +94,6 @@ describe("Example 3", function() {
     });
     afterEach(function() {
       var node = document.querySelector('#progress3');
-      console.log(buffer);
       node.innerHTML = buffer;
       document.l10nData['kilobytes3'] = 0;
     });
@@ -134,7 +131,6 @@ describe("Example 4", function() {
     });
     afterEach(function() {
       var node = document.querySelector('#progress4');
-      console.log(buffer);
       node.innerHTML = buffer;
       document.l10nData['kilobytes4'] = 0;
     });

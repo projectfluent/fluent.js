@@ -20,7 +20,6 @@ describe("Retranslation", function() {
   });
   afterEach(function() {
     var node = document.querySelector('#progress1');
-    console.log(buffer);
     node.innerHTML = buffer;
     document.l10nData['kilobytes1'] = 0;
     document.l10nData['timeremaining1'] = 60;
