@@ -7,6 +7,7 @@
     <script type="text/javascript" src="../lib/jasmine/jasmine.js"></script>
     <script type="text/javascript" src="../lib/jasmine/jasmine-html.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../lib/test.css">
     <script type="text/javascript" src="spec.js"></script>
     <script type="text/javascript" src="../lib/test.js"></script>
 
@@ -31,6 +32,11 @@
     <link href="./index.j20n" type="intl/l20n" />
   </head>
   <body>
+    <p class="intro">
+      This example introduces a "l10nData" property of the document object that 
+      enables the developer to manipulate the document level context data 
+      provided to the localizer.
+    </p>
     <h1 l10n-id="window_title" style="color:green" l10n-attrs="title,accesskey"></h1>
     <span l10n-id="name"></span><input type="text" l10n-id="name_input"/>
     <br/>
