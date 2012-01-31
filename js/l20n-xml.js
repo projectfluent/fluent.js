@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
   ctx.freeze();
 });
 
-function getPathTo(element, context) {
+function getPathTo(element, context, ignoreL10nPath) {
   const TYPE_ELEMENT = 1;
 
   if (element === context)
@@ -60,15 +60,15 @@ function getPathTo(element, context) {
   if (id)
     return '*[@id="' + id + '"]';
 
-  var localPath = element.getAttribute('l10n-path');
-  if (localPath)
-    return localPath;
+  var l10nPath = !ignoreL10nPath && element.getAttribute('l10n-path');
+  if (l10nPath)
+    return l10nPath;
 
   var index = 0;
   var siblings = element.parentNode.childNodes;
   for (var i = 0, sibling; sibling = siblings[i]; i++) {
     if (sibling === element) {
-      var pathToParent = getPathTo(element.parentNode, context);
+      var pathToParent = getPathTo(element.parentNode, context, ignoreL10nPath);
       return pathToParent + '/' + element.tagName + '[' + (index + 1) + ']';
     }
     if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName)
@@ -112,31 +112,22 @@ function localizeNode(ctx, node) {
 
   // deep-copy the original node
   var origNode = node.cloneNode(true);
+  var origL10nStatus = origNode.getAttribute('l10n-status');
   node.innerHTML = valueFromCtx;
+  node.setAttribute('l10n-status', 'translated');
 
   // overlay the attributes of descendant nodes
   var children = node.getElementsByTagName('*');
   for (var i = 0, child; child = children[i]; i++) {
-    // Match the child node with the equivalent node in origNode.
-    // The tricky part is that the node in origNode might have been 
-    // translated before; if so and if it had been reordered via 
-    // `l10n-path`, it's likely that even though the path points to it, it 
-    // actually _isn't_ the right node.
-    var path = child.getAttribute('l10n-path');
-    if (!path) {
-      path = getPathTo(child, node);
-    }
+    // Match the `child` node with the equivalent node in `origNode`.
+    // If `origNode` has a non-empty `l10n-status`, it has already been 
+    // translated once.  `getPathTo` will follow the closest `l10n-path` it can 
+    // find on `child` or its ancestors in order to find the path to the true 
+    // source equivalent of `child` in `origNode`.
+    var  path = getPathTo(child, node, origL10nStatus);
     var origChild = getElementByPath(path, origNode);
-    // If the origChild already has `l10n-path`, it's likely that it has
-    // already been translated once.  Follow its `l10n-path` again to find 
-    // the true source equivalent in origNode.
-    var origChildPath = origChild && origChild.getAttribute('l10n-path');
-    if (origChildPath) {
-      origChild = getElementByPath(origChildPath, origNode);
-    }
-    if (!origChild) {
+    if (!origChild)
       continue;
-    }
 
     for (var k = 0, origAttr; origAttr = origChild.attributes[k]; k++) {
       if (!child.hasAttribute(origAttr.name)) {
