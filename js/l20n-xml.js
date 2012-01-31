@@ -60,6 +60,10 @@ function getPathTo(element, context) {
   if (id)
     return '*[@id="' + id + '"]';
 
+  var localPath = element.getAttribute('l10n-path');
+  if (localPath)
+    return localPath;
+
   var index = 0;
   var siblings = element.parentNode.childNodes;
   for (var i = 0, sibling; sibling = siblings[i]; i++) {
@@ -141,4 +145,3 @@ function localizeNode(ctx, node) {
     }
   }
 }
-// vim: ts=2 et sw=2 sts=2
