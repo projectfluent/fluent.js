@@ -36,11 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   HTMLElement.prototype.__defineGetter__('l10nData', function() {
-    return this.nodeData;
+    return this.nodeData || (this.nodeData = {});
   });
 
   HTMLDocument.prototype.__defineGetter__('l10nData', function() {
-    return ctx.data;
+    return ctx.data || (ctx.data = {});
   });
 
   HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
