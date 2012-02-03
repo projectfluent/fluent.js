@@ -98,10 +98,7 @@ L20n.Context.prototype = {
     return mObjects['globals'];
   },
   _loadObject: function(data, obj) {
-    var read = function(data) {
-      eval(data);
-    }
-    read.apply(obj, Array(data));
+    new Function(data).call(obj);
   },
   _getObject: function(obj, url) {
     var self = this;
