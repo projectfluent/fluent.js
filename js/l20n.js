@@ -39,12 +39,15 @@ L20n.Context.prototype = {
   addResource: function(aURI) {
     var res = this._getObject(mObjects['resources'], aURI);
   },
+  // we should have getValue for value, getAttributes for attributes and get 
+  // for both
   get: function(id, args) {
     return mObjects['resources'][id](); 
     var curObj = this._get(id, args);
     return mObjects['system'].getent(curObj, mObjects['system'], id);
   },
   getAttributes: function(id, args) {
+    return {}; // skip the attributes for now
     var curObj = this._get(id, args);
     return mObjects['system'].getattrs(curObj, mObjects['system'], id);
   },
