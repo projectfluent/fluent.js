@@ -10,9 +10,7 @@ var L20n = {
     });
     xhr.open('GET', res.uri, true);
     xhr.send('');
-  },
-  _paths: {'system': '/l20n/js/data/sys.j20n',
-           'globals': '/l20n/js/data/default.j20n'},
+  }
 }
 
 L20n.Resource = function(aURI) {
@@ -32,12 +30,9 @@ L20n.Context = function() {
   mObjects = {
     'resources': {},
     'context': {},
-    'system': {},
     'globals': {},
   }
 
-  for (var name in L20n._paths)
-    this._getObject(mObjects[name], L20n._paths[name]);
 }
 
 L20n.Context.prototype = {
@@ -45,6 +40,7 @@ L20n.Context.prototype = {
     var res = this._getObject(mObjects['resources'], aURI);
   },
   get: function(id, args) {
+    return mObjects['resources'][id](); 
     var curObj = this._get(id, args);
     return mObjects['system'].getent(curObj, mObjects['system'], id);
   },
@@ -98,7 +94,9 @@ L20n.Context.prototype = {
     return mObjects['globals'];
   },
   _loadObject: function(data, obj) {
-    new Function(data).call(obj);
+    var ast = Parser.parse(data);
+    Compiler.compile(ast, obj);
+    //new Function(data).call(obj);
   },
   _getObject: function(obj, url) {
     var self = this;
@@ -106,7 +104,6 @@ L20n.Context.prototype = {
     var _injectResource = function(data) {
       self._loadObject(data, obj);
       res._loading = false;
-
       if (self.isReady()) {
         self._fireCallback();
       }
