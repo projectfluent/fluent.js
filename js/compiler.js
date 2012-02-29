@@ -1,20 +1,20 @@
-var Compiler = (function() {
+var Compiler = exports.Compiler = (function() {
 
-  function ID(literal) {
+  function Identifier(expr) {
     return function(locals) {
-      return locals[literal];
+      return locals[expr.name];
     }
   }
 
-  function NumberLiteral(literal) {
+  function NumberLiteral(expr) {
     return function(locals) {
-      return literal;
+      return expr.content;
     }
   }
 
-  function StringLiteral(literal) {
+  function StringLiteral(expr) {
     return function(locals) {
-      return literal;
+      return expr.content;
     }
   }
 
@@ -64,47 +64,97 @@ var Compiler = (function() {
     return function(locals) {
       if (condition(locals)) return ifTrue(locals);
       else return ifFalse(locals);
-    }
+    };
   }
 
-  function Expression(ast) {
-    if (ast.type == 'conditional') return new ConditionalExpression(ast.body);
-    if (ast.type == 'logical') return new LogicalExpression(ast.body);
-    if (ast.type == 'binary') return new BinaryExpression(ast.body);
-    if (ast.type == 'string') return new StringLiteral(ast.body);
-    if (ast.type == 'number') return new NumberLiteral(ast.body);
-    if (ast.type == 'id') return new ID(ast.body);
+  function Expression(expr) {
+    if (!expr) return null;
+
+    if (expr.type == 'conditionalExpression') return new ConditionalExpression(expr);
+    if (expr.type == 'logicalExpression') return new LogicalExpression(expr);
+    if (expr.type == 'binaryExpression') return new BinaryExpression(expr);
+    if (expr.type == 'unaryExpression') return new UnaryExpression(expr);
+
+    if (expr.type == 'callExpression') return new CallExpression(expr);
+    if (expr.type == 'propertyExpression') return new PropertyExpression(expr);
+    if (expr.type == 'attributeExpression') return new AttributeExpression(expr);
+    if (expr.type == 'parenthesisExpression') return new ParenthesisExpression(expr);
+
+    if (expr.type == 'string') return new StringLiteral(expr);
+    if (expr.type == 'complexString') return new ComplexString(expr);
+    if (expr.type == 'number') return new NumberLiteral(expr);
+    if (expr.type == 'identifier') return new Identifier(expr);
+    if (expr.type == 'variable') return new Variable(expr);
+  }
+
+  function Attribute(ast) {
+    var value = new Expression(ast.value);
+    return {
+      id: ast.id,
+      local: ast.local || false,
+      get: function(globals, env) {
+        return value(globals, env);
+      }
+    };
   }
 
   function Entity(ast) {
-    return function(locals) {
-      return ast;
+    var value = new Expression(ast.value);
+    //var index = new Expression(ast.index);
+    var attributes = {};
+    for (var i = 0, attr; attr = ast.attrs[i]; i++) {
+      attributes[attr.id] = new Attribute(attr);
     }
+
+    return {
+      id: ast.id,
+      local: ast.local || false,
+      get: function(globals, env) {
+        return value(globals, env);
+      },
+      getAttribute: function(name, globals, env) {
+        return attributes[name].get(globals, env);
+      },
+      getAttributes: function(globals, env) {
+        var attrs = {};
+        for (var i in attributes) {
+          var attr = attributes[i];
+          attrs[attr.id] = attr.get(globals, env);
+        }
+        return attrs;
+      },
+      getEntity: function(globals, env) {
+        return {
+          value: this.get(globals, env),
+          attributes: this.getAttributes(globals, env),
+        };
+      },
+    };
   }
 
   function Macro(ast) {
-    var exp = new Expression(ast.body);
-    var l = ast.args.length;
+    var expr = new Expression(ast.expression);
+    var len = ast.args.length;
     return function() {
       var locals = {};
-      for (var i = 0; i< l; i++) {
+      for (var i = 0; i < len; i++) {
         locals[ast.args[i]] = arguments[i];
       }
-      return exp(locals);
+      return expr(locals);
     };
   }
 
   function compile(ast, obj) {
-    for (var i in ast) {
-      if (1) {
-        var entity = new Entity(ast[i]);
-        obj[i] = entity;
-      }
+    for (var i = 0, elem; elem = ast[i]; i++) {
+      if (elem.type == 'entity')
+        obj[elem.id] = new Entity(elem);
+      else if (elem.type == 'macro')
+        obj[elem.id] = new Macro(elem);
     }
   }
 
   return {
-    compile: compile
-  }
+    compile: compile,
+  };
 
 })();
