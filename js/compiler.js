@@ -1,21 +1,59 @@
 var Compiler = exports.Compiler = (function() {
 
   function Identifier(expr) {
-    return function(locals) {
-      return locals[expr.name];
-    }
+    return function(locals, env, data) {
+      return locals[expr.name] || env[expr.name];
+    };
+  }
+
+  function Variable(expr) {
+    return function(locals, env, data) {
+      return data[expr.name];
+    };
+  }
+
+  function Global(expr) {
+    return function(locals, env, data) {
+      return env.GLOBALS[expr.name];
+    };
   }
 
   function NumberLiteral(expr) {
-    return function(locals) {
+    return function(locals, env, data) {
       return expr.content;
-    }
+    };
   }
 
   function StringLiteral(expr) {
-    return function(locals) {
+    return function(locals, env, data) {
       return expr.content;
+    };
+  }
+
+  function ArrayLiteral(expr) {
+    return function(locals, env, data, index) {
+      return expr.content[index];
+    };
+  }
+
+  function HashLiteral(expr) {
+    return function(locals, env, data,  index) {
+      return expr.content[index];
+    };
+  }
+
+  function ComplexString(expr) {
+    var contents = [];
+    for (var i = 0, part; part = expr.content[i]; i++) {
+      contents.push(new Expression(part));
     }
+    return function(locals, env, data) {
+      var parts = [];
+      for (var i = 0, part; part = contents[i]; i++) {
+        parts.push(part(locals, env, data));
+      }
+      return parts.join('');
+    };
   }
 
   function BinaryOperator(token) {
@@ -92,8 +130,8 @@ var Compiler = exports.Compiler = (function() {
     return {
       id: ast.id,
       local: ast.local || false,
-      get: function(globals, env) {
-        return value(globals, env);
+      get: function(env, data) {
+        return value(env, data);
       }
     };
   }
@@ -109,24 +147,24 @@ var Compiler = exports.Compiler = (function() {
     return {
       id: ast.id,
       local: ast.local || false,
-      get: function(globals, env) {
-        return value(globals, env);
+      get: function(env, data) {
+        return value(env, data);
       },
-      getAttribute: function(name, globals, env) {
-        return attributes[name].get(globals, env);
+      getAttribute: function(name, env, data) {
+        return attributes[name].get(env, data);
       },
-      getAttributes: function(globals, env) {
+      getAttributes: function(env, data) {
         var attrs = {};
         for (var i in attributes) {
           var attr = attributes[i];
-          attrs[attr.id] = attr.get(globals, env);
+          attrs[attr.id] = attr.get(env, data);
         }
         return attrs;
       },
-      getEntity: function(globals, env) {
+      getEntity: function(env, data) {
         return {
-          value: this.get(globals, env),
-          attributes: this.getAttributes(globals, env),
+          value: this.get(env, data),
+          attributes: this.getAttributes(env, data),
         };
       },
     };
