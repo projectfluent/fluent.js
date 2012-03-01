@@ -31,8 +31,25 @@ var Compiler = exports.Compiler = (function() {
   }
 
   function ArrayLiteral(expr) {
+    var content = [];
+    var defaultIndex = null;
+    for (var i = 0, elem; elem = expr.content[i]; i++) {
+      content.push(new Expression(elem));
+      if (elem.default)
+        defaultIndex = i;
+    }
     return function(locals, env, data, index) {
-      return expr.content[index];
+      var parts = [];
+      for (var i = 0, part; part = content[i]; i++) {
+        parts.push(part(locals, env, data));
+      }
+      if (index) try {
+        return parts[index];
+      } catch (e) {}
+      if (defaultIndex !== null) try {
+        return parts[defaultIndex];
+      } catch (e) {}
+      return parts;
     };
   }
 
@@ -43,13 +60,13 @@ var Compiler = exports.Compiler = (function() {
   }
 
   function ComplexString(expr) {
-    var contents = [];
+    var content = [];
     for (var i = 0, part; part = expr.content[i]; i++) {
-      contents.push(new Expression(part));
+      content.push(new Expression(part));
     }
     return function(locals, env, data) {
       var parts = [];
-      for (var i = 0, part; part = contents[i]; i++) {
+      for (var i = 0, part; part = content[i]; i++) {
         parts.push(part(locals, env, data));
       }
       return parts.join('');
@@ -118,11 +135,13 @@ var Compiler = exports.Compiler = (function() {
     if (expr.type == 'attributeExpression') return new AttributeExpression(expr);
     if (expr.type == 'parenthesisExpression') return new ParenthesisExpression(expr);
 
-    if (expr.type == 'string') return new StringLiteral(expr);
-    if (expr.type == 'complexString') return new ComplexString(expr);
-    if (expr.type == 'number') return new NumberLiteral(expr);
     if (expr.type == 'identifier') return new Identifier(expr);
     if (expr.type == 'variable') return new Variable(expr);
+    if (expr.type == 'number') return new NumberLiteral(expr);
+    if (expr.type == 'string') return new StringLiteral(expr);
+    if (expr.type == 'complexString') return new ComplexString(expr);
+    if (expr.type == 'array') return new ArrayLiteral(expr);
+    if (expr.type == 'hash') return new HashLiteral(expr);
   }
 
   function Attribute(ast) {
