@@ -1,39 +1,39 @@
 var Compiler = exports.Compiler = (function() {
 
-  function Identifier(expr) {
+  function Identifier(node) {
     return function(locals, env, data) {
-      return env[expr.name];
+      return env[node.name];
     };
   }
 
-  function Variable(expr) {
+  function Variable(node) {
     return function(locals, env, data) {
-      return locals[expr.name] || data[expr.name];
+      return locals[node.name] || data[node.name];
     };
   }
 
-  function Global(expr) {
+  function Global(node) {
     return function(locals, env, data) {
-      return env.GLOBALS[expr.name];
+      return env.GLOBALS[node.name];
     };
   }
 
-  function NumberLiteral(expr) {
+  function NumberLiteral(node) {
     return function(locals, env, data) {
-      return expr.content;
+      return node.content;
     };
   }
 
-  function StringLiteral(expr) {
+  function StringLiteral(node) {
     return function(locals, env, data) {
-      return expr.content;
+      return node.content;
     };
   }
 
-  function ArrayLiteral(expr) {
+  function ArrayLiteral(node) {
     var content = [];
     var defaultIndex = null;
-    for (var i = 0, elem; elem = expr.content[i]; i++) {
+    for (var i = 0, elem; elem = node.content[i]; i++) {
       content.push(new Expression(elem));
       if (elem.default)
         defaultIndex = i;
@@ -53,10 +53,10 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
-  function HashLiteral(expr) {
+  function HashLiteral(node) {
     var content = [];
     var defaultKey = null;
-    for (var i = 0, elem; elem = expr.content[i]; i++) {
+    for (var i = 0, elem; elem = node.content[i]; i++) {
       content[elem.id] = new Expression(elem);
       if (elem.default)
         defaultKey = elem.id;
@@ -77,9 +77,9 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
-  function ComplexString(expr) {
+  function ComplexString(node) {
     var content = [];
-    for (var i = 0, part; part = expr.content[i]; i++) {
+    for (var i = 0, part; part = node.content[i]; i++) {
       content.push(new Expression(part));
     }
     return function(locals, env, data) {
@@ -91,8 +91,8 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
-  function KeyValuePair(expr) {
-    var value = new Expression(expr.value)
+  function KeyValuePair(node) {
+    var value = new Expression(node.value)
     return function(locals, env, data) {
       return value(locals, env, data);
     };
@@ -108,10 +108,10 @@ var Compiler = exports.Compiler = (function() {
     // etc.
   }
 
-  function BinaryExpression(ast) {
-    var left = new Expression(ast.left);
-    var operator = new BinaryOperator(ast.operator);
-    var right = new Expression(ast.right);
+  function BinaryExpression(node) {
+    var left = new Expression(node.left);
+    var operator = new BinaryOperator(node.operator);
+    var right = new Expression(node.right);
     return function(locals) {
       return operator(left(locals), right(locals));
     };
@@ -126,73 +126,73 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
-  function LogicalExpression(ast) {
-    var left = new Expression(ast.left);
-    if (ast.operator) {
-      var operator = new LogicalOperator(ast.operator);
-      var right = new Expression(ast.right);
+  function LogicalExpression(node) {
+    var left = new Expression(node.left);
+    if (node.operator) {
+      var operator = new LogicalOperator(node.operator);
+      var right = new Expression(node.right);
       return function(locals) {
         operator(left(locals), right(locals));
       }
     } else return left(locals);
   }
 
-  function ConditionalExpression(ast) {
-    var condition = new Expression(ast.condition);
-    var ifTrue = new Expression(ast.ifTrue);
-    var ifFalse = new Expression(ast.ifFalse);
+  function ConditionalExpression(node) {
+    var condition = new Expression(node.condition);
+    var ifTrue = new Expression(node.ifTrue);
+    var ifFalse = new Expression(node.ifFalse);
     return function(locals) {
       if (condition(locals)) return ifTrue(locals);
       else return ifFalse(locals);
     };
   }
 
-  function Expression(expr) {
-    if (!expr) return null;
+  function Expression(node) {
+    if (!node) return null;
 
-    if (expr.type == 'conditionalExpression') return new ConditionalExpression(expr);
-    if (expr.type == 'logicalExpression') return new LogicalExpression(expr);
-    if (expr.type == 'binaryExpression') return new BinaryExpression(expr);
-    if (expr.type == 'unaryExpression') return new UnaryExpression(expr);
+    if (node.type == 'conditionalExpression') return new ConditionalExpression(node);
+    if (node.type == 'logicalExpression') return new LogicalExpression(node);
+    if (node.type == 'binaryExpression') return new BinaryExpression(node);
+    if (node.type == 'unaryExpression') return new UnaryExpression(node);
 
-    if (expr.type == 'callExpression') return new CallExpression(expr);
-    if (expr.type == 'propertyExpression') return new PropertyExpression(expr);
-    if (expr.type == 'attributeExpression') return new AttributeExpression(expr);
-    if (expr.type == 'parenthesisExpression') return new ParenthesisExpression(expr);
+    if (node.type == 'callExpression') return new CallExpression(node);
+    if (node.type == 'propertyExpression') return new PropertyExpression(node);
+    if (node.type == 'attributeExpression') return new AttributeExpression(node);
+    if (node.type == 'parenthesisExpression') return new ParenthesisExpression(node);
 
-    if (expr.type == 'keyValuePair') return new KeyValuePair(expr);
+    if (node.type == 'keyValuePair') return new KeyValuePair(node);
 
-    if (expr.type == 'identifier') return new Identifier(expr);
-    if (expr.type == 'variable') return new Variable(expr);
-    if (expr.type == 'number') return new NumberLiteral(expr);
-    if (expr.type == 'string') return new StringLiteral(expr);
-    if (expr.type == 'complexString') return new ComplexString(expr);
-    if (expr.type == 'array') return new ArrayLiteral(expr);
-    if (expr.type == 'hash') return new HashLiteral(expr);
+    if (node.type == 'identifier') return new Identifier(node);
+    if (node.type == 'variable') return new Variable(node);
+    if (node.type == 'number') return new NumberLiteral(node);
+    if (node.type == 'string') return new StringLiteral(node);
+    if (node.type == 'complexString') return new ComplexString(node);
+    if (node.type == 'array') return new ArrayLiteral(node);
+    if (node.type == 'hash') return new HashLiteral(node);
   }
 
-  function Attribute(ast) {
-    var value = new Expression(ast.value);
+  function Attribute(node) {
+    var value = new Expression(node.value);
     return {
-      id: ast.id,
-      local: ast.local || false,
+      id: node.id,
+      local: node.local || false,
       get: function(env, data) {
         return value(env, data);
       }
     };
   }
 
-  function Entity(ast) {
-    var value = new Expression(ast.value);
-    //var index = new Expression(ast.index);
+  function Entity(node) {
+    var value = new Expression(node.value);
+    //var index = new Expression(node.index);
     var attributes = {};
-    for (var i = 0, attr; attr = ast.attrs[i]; i++) {
+    for (var i = 0, attr; attr = node.attrs[i]; i++) {
       attributes[attr.id] = new Attribute(attr);
     }
 
     return {
-      id: ast.id,
-      local: ast.local || false,
+      id: node.id,
+      local: node.local || false,
       get: function(env, data) {
         return value(env, data);
       },
@@ -216,13 +216,13 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
-  function Macro(ast) {
-    var expr = new Expression(ast.expression);
-    var len = ast.args.length;
+  function Macro(node) {
+    var expr = new Expression(node.expression);
+    var len = node.args.length;
     return function() {
       var locals = {};
       for (var i = 0; i < len; i++) {
-        locals[ast.args[i]] = arguments[i];
+        locals[node.args[i]] = arguments[i];
       }
       return expr(locals);
     };
