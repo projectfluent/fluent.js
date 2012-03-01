@@ -2,13 +2,13 @@ var Compiler = exports.Compiler = (function() {
 
   function Identifier(expr) {
     return function(locals, env, data) {
-      return locals[expr.name] || env[expr.name];
+      return env[expr.name];
     };
   }
 
   function Variable(expr) {
     return function(locals, env, data) {
-      return data[expr.name];
+      return locals[expr.name] || data[expr.name];
     };
   }
 
@@ -39,23 +39,41 @@ var Compiler = exports.Compiler = (function() {
         defaultIndex = i;
     }
     return function(locals, env, data, index) {
-      var parts = [];
+      var values = [];
       for (var i = 0, part; part = content[i]; i++) {
-        parts.push(part(locals, env, data));
+        values.push(part(locals, env, data));
       }
       if (index) try {
-        return parts[index];
+        return values[index];
       } catch (e) {}
       if (defaultIndex !== null) try {
-        return parts[defaultIndex];
+        return values[defaultIndex];
       } catch (e) {}
-      return parts;
+      return values;
     };
   }
 
   function HashLiteral(expr) {
-    return function(locals, env, data,  index) {
-      return expr.content[index];
+    var content = [];
+    var defaultKey = null;
+    for (var i = 0, elem; elem = expr.content[i]; i++) {
+      content[elem.id] = new Expression(elem);
+      if (elem.default)
+        defaultKey = elem.id;
+    }
+    return function(locals, env, data, index) {
+      var values = [];
+      for (var key in content) {
+        var value = content[key];
+        values[key] = value(locals, env, data);
+      }
+      if (index) try {
+        return values[index];
+      } catch (e) {}
+      if (defaultKey !== null) try {
+        return values[defaultKey];
+      } catch (e) {}
+      return value;
     };
   }
 
@@ -70,6 +88,13 @@ var Compiler = exports.Compiler = (function() {
         parts.push(part(locals, env, data));
       }
       return parts.join('');
+    };
+  }
+
+  function KeyValuePair(expr) {
+    var value = new Expression(expr.value)
+    return function(locals, env, data) {
+      return value(locals, env, data);
     };
   }
 
@@ -134,6 +159,8 @@ var Compiler = exports.Compiler = (function() {
     if (expr.type == 'propertyExpression') return new PropertyExpression(expr);
     if (expr.type == 'attributeExpression') return new AttributeExpression(expr);
     if (expr.type == 'parenthesisExpression') return new ParenthesisExpression(expr);
+
+    if (expr.type == 'keyValuePair') return new KeyValuePair(expr);
 
     if (expr.type == 'identifier') return new Identifier(expr);
     if (expr.type == 'variable') return new Variable(expr);
