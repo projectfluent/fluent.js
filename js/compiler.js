@@ -2,7 +2,13 @@ var Compiler = exports.Compiler = (function() {
 
   function Identifier(node) {
     return function(locals, env, data) {
-      return env[node.name];
+      return env[node.name].get(env, data);
+    };
+  }
+
+  function This(node) {
+    return function(locals, env, data) {
+      return locals['_this'].get(env, data);
     };
   }
 
@@ -17,6 +23,9 @@ var Compiler = exports.Compiler = (function() {
       return env.GLOBALS[node.name];
     };
   }
+
+
+
 
   function NumberLiteral(node) {
     return function(locals, env, data) {
@@ -85,6 +94,9 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
+
+
+
   function BinaryOperator(token) {
     if (token == '+') return function(left, right) {
       return left + right;
@@ -134,6 +146,9 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
+
+
+
   function Expression(node) {
     if (!node) return null;
 
@@ -150,6 +165,7 @@ var Compiler = exports.Compiler = (function() {
     if (node.type == 'keyValuePair') return new KeyValuePair(node);
 
     if (node.type == 'identifier') return new Identifier(node);
+    if (node.type == 'this') return new This(node);
     if (node.type == 'variable') return new Variable(node);
     if (node.type == 'number') return new NumberLiteral(node);
     if (node.type == 'string') return new StringLiteral(node);
@@ -158,13 +174,16 @@ var Compiler = exports.Compiler = (function() {
     if (node.type == 'hash') return new HashLiteral(node);
   }
 
+
+
+
   function Attribute(node) {
     var value = new Expression(node.value);
     return {
       id: node.id,
       local: node.local || false,
-      get: function(env, data) {
-        return value(env, data);
+      get: function(locals, env, data) {
+        return value(locals, env, data);
       }
     };
   }
@@ -181,16 +200,16 @@ var Compiler = exports.Compiler = (function() {
       id: node.id,
       local: node.local || false,
       get: function(env, data) {
-        return value(env, data);
+        return value({ _this: this }, env, data);
       },
       getAttribute: function(name, env, data) {
-        return attributes[name].get(env, data);
+        return attributes[name].get({ _this: this }, env, data);
       },
       getAttributes: function(env, data) {
         var attrs = {};
         for (var i in attributes) {
           var attr = attributes[i];
-          attrs[attr.id] = attr.get(env, data);
+          attrs[attr.id] = attr.get({ _this: this }, env, data);
         }
         return attrs;
       },
