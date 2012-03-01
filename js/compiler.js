@@ -32,61 +32,48 @@ var Compiler = exports.Compiler = (function() {
 
   function ArrayLiteral(node) {
     var content = [];
-    var defaultIndex = null;
-    for (var i = 0, elem; elem = node.content[i]; i++) {
+    var defaultIndex = 0;
+    node.content.forEach(function(elem, i) {
       content.push(new Expression(elem));
       if (elem.default)
         defaultIndex = i;
-    }
+    });
     return function(locals, env, data, index) {
-      var values = [];
-      for (var i = 0, part; part = content[i]; i++) {
-        values.push(part(locals, env, data));
+      try {
+        return content[index](locals, env, data);
+      } catch (e) {
+        return content[defaultIndex](locals, env, data);
       }
-      if (index) try {
-        return values[index];
-      } catch (e) {}
-      if (defaultIndex !== null) try {
-        return values[defaultIndex];
-      } catch (e) {}
-      return values;
     };
   }
 
   function HashLiteral(node) {
     var content = [];
     var defaultKey = null;
-    for (var i = 0, elem; elem = node.content[i]; i++) {
+    node.content.forEach(function(elem, i) {
       content[elem.id] = new Expression(elem);
-      if (elem.default)
+      if (i == 0 || elem.default)
         defaultKey = elem.id;
-    }
+    });
     return function(locals, env, data, index) {
-      var values = [];
-      for (var key in content) {
-        var value = content[key];
-        values[key] = value(locals, env, data);
+      try {
+        return content[index](locals, env, data);
+      } catch (e) {
+        return content[defaultKey](locals, env, data);
       }
-      if (index) try {
-        return values[index];
-      } catch (e) {}
-      if (defaultKey !== null) try {
-        return values[defaultKey];
-      } catch (e) {}
-      return value;
     };
   }
 
   function ComplexString(node) {
     var content = [];
-    for (var i = 0, part; part = node.content[i]; i++) {
-      content.push(new Expression(part));
-    }
+    node.content.forEach(function(elem) {
+      content.push(new Expression(elem));
+    })
     return function(locals, env, data) {
       var parts = [];
-      for (var i = 0, part; part = content[i]; i++) {
-        parts.push(part(locals, env, data));
-      }
+      content.forEach(function(elem) {
+        parts.push(elem(locals, env, data));
+      })
       return parts.join('');
     };
   }
