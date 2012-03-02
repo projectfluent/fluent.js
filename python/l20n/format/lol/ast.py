@@ -71,7 +71,7 @@ class Hash(Value):
 ### Statements
 
 class BlockStatement(Statement):
-    body = pyast.seq(Entry, Statement)
+    body = pyast.seq(Entry, null=True)
 
 class IfStatement(Statement):
     test = pyast.field(Expression)
