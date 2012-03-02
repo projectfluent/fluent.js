@@ -1,8 +1,10 @@
 var Compiler = exports.Compiler = (function() {
 
-  function Identifier(node) {
+  function Identifier(node, resolve) {
+    if (resolve === undefined)
+      resolve = true;
     return function(locals, env, data) {
-      return env[node.name].get(env, data);
+      return resolve? env[node.name].get(env, data) : env[node.name];
     };
   }
 
@@ -149,7 +151,34 @@ var Compiler = exports.Compiler = (function() {
 
 
 
-  function Expression(node) {
+
+  function PropertyExpression(node) {
+    var expression = new Expression(node.expression);
+    var computed = node.computed;
+    if (computed)
+      var property = new Expression(node.property);
+    else
+      var property = node.property.name;
+    return function(locals, env, data) {
+      return expression(locals, env, data, property);
+    }
+  }
+
+
+  function AttributeExpression(node) {
+    var expression = new Expression(node.expression, false);
+    var computed = node.computed;
+    if (computed)
+      var attribute = new Expression(node.attribute);
+    else
+      var attribute = node.attribute.name;
+    return function(locals, env, data) {
+      return expression(locals, env, data).getAttribute(attribute, env, data);
+    }
+  }
+
+
+  function Expression(node, resolve) {
     if (!node) return null;
 
     if (node.type == 'conditionalExpression') return new ConditionalExpression(node);
@@ -164,8 +193,9 @@ var Compiler = exports.Compiler = (function() {
 
     if (node.type == 'keyValuePair') return new KeyValuePair(node);
 
-    if (node.type == 'identifier') return new Identifier(node);
-    if (node.type == 'this') return new This(node);
+    // primary expressions (literals, values, id, variables)
+    if (node.type == 'identifier') return new Identifier(node, resolve);
+    if (node.type == 'this') return new This(node, resolve);
     if (node.type == 'variable') return new Variable(node);
     if (node.type == 'number') return new NumberLiteral(node);
     if (node.type == 'string') return new StringLiteral(node);
