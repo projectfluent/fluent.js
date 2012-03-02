@@ -6,7 +6,7 @@ if sys.version >= '3':
 
 class Node(pyast.Node):
     _abstract = True
-    _debug = False
+    _debug = True
 
 class Entry(Node):
     _abstract = True
@@ -15,6 +15,9 @@ class LOL(Node):
     body = pyast.seq(Entry, null=True)
 
 class Expression(Node):
+    _abstract = True
+
+class Statement(Entry):
     _abstract = True
 
 class Value(Expression):
@@ -64,6 +67,19 @@ class Array(Value):
 
 class Hash(Value):
     content = pyast.seq(KeyValuePair, null=True)
+
+### Statements
+
+class BlockStatement(Statement):
+    body = pyast.seq(Entry, Statement)
+
+class IfStatement(Statement):
+    test = pyast.field(Expression)
+    consequent = pyast.field(BlockStatement)
+
+class ImportStatement(Statement):
+    uri = pyast.field(String)
+    test = pyast.field(IfStatement, null=True)
 
 ### Operators
 
