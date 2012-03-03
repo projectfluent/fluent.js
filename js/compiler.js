@@ -55,9 +55,11 @@ var Compiler = exports.Compiler = (function() {
       if (elem.default)
         defaultIndex = i;
     });
-    return function(locals, env, data, index) {
+    return function(locals, env, data, i) {
+      if (typeof i == 'function')
+        i = i(locals, env, data);
       try {
-        return content[index](locals, env, data);
+        return content[i](locals, env, data);
       } catch (e) {
         return content[defaultIndex](locals, env, data);
       }
@@ -73,8 +75,10 @@ var Compiler = exports.Compiler = (function() {
         defaultKey = elem.id;
     });
     return function(locals, env, data, key) {
+      if (typeof key == 'function')
+        key = key(locals, env, data);
       try {
-        return content[key(locals, env, data)](locals, env, data);
+        return content[key](locals, env, data);
       } catch (e) {
         return content[defaultKey](locals, env, data);
       }
