@@ -69,9 +69,9 @@ var Compiler = exports.Compiler = (function() {
       if (i == 0 || elem.default)
         defaultKey = elem.id;
     });
-    return function(locals, env, data, index) {
+    return function(locals, env, data, key) {
       try {
-        return content[index](locals, env, data);
+        return content[key(locals, env, data)](locals, env, data);
       } catch (e) {
         return content[defaultKey](locals, env, data);
       }
@@ -242,25 +242,38 @@ var Compiler = exports.Compiler = (function() {
 
   function Entity(node) {
     var value = new Expression(node.value);
-    //var index = new Expression(node.index);
+    var index = [];
+    node.index.forEach(function(ind) {
+      index.push(new Expression(ind));
+    });
     var attributes = {};
-    for (var i = 0, attr; attr = node.attrs[i]; i++) {
+    node.attrs.forEach(function(attr) {
       attributes[attr.id] = new Attribute(attr);
-    }
+    });
 
     return {
       id: node.id,
+      value: value,
+      index: index,
+      attributes: attributes,
       local: node.local || false,
-      get: function(env, data) {
-        return value({ _this: this }, env, data);
+      get: function(env, data, index) {
+        var index = index || this.index || [];
+        if (!index.length)
+          return this.value({ _this: this }, env, data);
+        var val = this.value;
+        index.forEach(function(ind) {
+          val = val({ _this: this }, env, data, ind);
+        });
+        return val;
       },
       getAttribute: function(name, env, data) {
-        return attributes[name].get({ _this: this }, env, data);
+        return this.attributes[name].get({ _this: this }, env, data);
       },
       getAttributes: function(env, data) {
         var attrs = {};
-        for (var i in attributes) {
-          var attr = attributes[i];
+        for (var i in this.attributes) {
+          var attr = this.attributes[i];
           attrs[attr.id] = attr.get({ _this: this }, env, data);
         }
         return attrs;
