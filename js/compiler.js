@@ -22,7 +22,10 @@ var Compiler = exports.Compiler = (function() {
 
   function Variable(node) {
     return function(locals, env, data) {
-      return locals[node.name] || data[node.name];
+      var value = locals[node.name];
+      if (value !== undefined)
+        return value;
+      return data[node.name];
     };
   }
 
@@ -102,6 +105,19 @@ var Compiler = exports.Compiler = (function() {
 
   // operators
 
+  function UnaryOperator(token) {
+    if (token == '-') return function(operand) {
+      return -operand;
+    };
+    if (token == '+') return function(operand) {
+      return +operand;
+    };
+    if (token == '!') return function(operand) {
+      return !operand;
+    };
+    // etc.
+  }
+
   function BinaryOperator(token) {
     if (token == '+') return function(left, right) {
       return left + right;
@@ -112,8 +128,26 @@ var Compiler = exports.Compiler = (function() {
     // etc.
   }
 
+  function LogicalOperator(token) {
+    if (token == '&&') return function(left, right) {
+      return left && right;
+    };
+    if (token == '||') return function(left, right) {
+      return left || right;
+    };
+  }
+
 
   // logical expressions
+
+  function UnaryExpression(node) {
+    var operator = new UnaryOperator(node.operator);
+    var operand = new Expression(node.operand);
+    return function(locals, env, data) {
+      console.log(operand(locals, env, data))
+      return operator(operand(locals, env, data));
+    };
+  }
 
   function BinaryExpression(node) {
     var left = new Expression(node.left);
@@ -121,15 +155,6 @@ var Compiler = exports.Compiler = (function() {
     var right = new Expression(node.right);
     return function(locals, env, data) {
       return operator(left(locals, env, data), right(locals, env, data));
-    };
-  }
-
-  function LogicalOperator(token) {
-    if (token == '&&') return function(left, right) {
-      return left && right;
-    };
-    if (token == '||') return function(left, right) {
-      return left || right;
     };
   }
 
