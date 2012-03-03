@@ -52,9 +52,27 @@ class Parser():
                 entry = self.get_entity(id)
         elif self.content[0:2] == '/*':
             entry = self.get_comment()
+        elif self.content[0:6] == "import":
+            entry = self.get_importstatement()
         else:
+            print(self.content)
             raise ParserError()
         return entry
+
+    def get_importstatement(self):
+        self.content = self.content[6:]
+        self.get_ws()
+        if self.content[0] != "(":
+            raise ParserError()
+        self.content = self.content[1:]
+        self.get_ws()
+        uri = self.get_string()
+        self.get_ws()
+        if self.content[0] != ")":
+            raise ParserError()
+        self.content = self.content[1:]
+        impStmt = ast.ImportStatement(uri=uri)
+        return impStmt
 
     def get_identifier(self):
         match = self.patterns['id'].match(self.content)
