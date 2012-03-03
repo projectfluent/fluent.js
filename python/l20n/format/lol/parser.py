@@ -56,6 +56,10 @@ class Parser():
             entry = self.get_importstatement()
         elif self.content[0:2] == "if":
             entry = self.get_ifstatement()
+        elif self.content[0] == "{":
+            self.content = self.content[1:]
+            self.get_ws()
+            entry = self.get_blockstmt()
         else:
             raise ParserError()
         return entry
@@ -91,6 +95,13 @@ class Parser():
         ifStmt = ast.IfStatement(test=test, consequent=entry)
         return ifStmt
 
+    def get_blockstmt(self):
+        blockStmt = ast.BlockStatement()
+        while self.content[0] != "}":
+            blockStmt.body.append(self.get_entry())
+            self.get_ws()
+        self.content = self.content[1:]
+        return blockStmt
 
     def get_identifier(self):
         match = self.patterns['id'].match(self.content)
