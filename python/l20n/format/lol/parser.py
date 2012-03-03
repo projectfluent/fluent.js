@@ -54,8 +54,9 @@ class Parser():
             entry = self.get_comment()
         elif self.content[0:6] == "import":
             entry = self.get_importstatement()
+        elif self.content[0:2] == "if":
+            entry = self.get_ifstatement()
         else:
-            print(self.content)
             raise ParserError()
         return entry
 
@@ -73,6 +74,23 @@ class Parser():
         self.content = self.content[1:]
         impStmt = ast.ImportStatement(uri=uri)
         return impStmt
+
+    def get_ifstatement(self):
+        self.content = self.content[2:]
+        self.get_ws()
+        if self.content[0] != "(":
+            raise ParserError()
+        self.content = self.content[1:]
+        self.get_ws()
+        test = self.get_expression()
+        if self.content[0] != ")":
+            raise ParserError()
+        self.content = self.content[1:]
+        self.get_ws()
+        entry = self.get_entry()
+        ifStmt = ast.IfStatement(test=test, consequent=entry)
+        return ifStmt
+
 
     def get_identifier(self):
         match = self.patterns['id'].match(self.content)
