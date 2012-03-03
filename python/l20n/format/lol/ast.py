@@ -75,7 +75,7 @@ class BlockStatement(Statement):
 
 class IfStatement(Statement):
     test = pyast.field(Expression)
-    consequent = pyast.field(BlockStatement)
+    consequent = pyast.field(Entry)
 
 class ImportStatement(Statement):
     uri = pyast.field(String)
