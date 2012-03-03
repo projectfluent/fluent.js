@@ -119,17 +119,42 @@ var Compiler = exports.Compiler = (function() {
     if (token == '!') return function(operand) {
       return !operand;
     };
-    // etc.
   }
 
   function BinaryOperator(token) {
-    if (token == '+') return function(left, right) {
-      return left + right;
-    };
     if (token == '==') return function(left, right) {
       return left == right;
     };
-    // etc.
+    if (token == '!=') return function(left, right) {
+      return left != right;
+    };
+    if (token == '<') return function(left, right) {
+      return left < right;
+    };
+    if (token == '<=') return function(left, right) {
+      return left <= right;
+    };
+    if (token == '>') return function(left, right) {
+      return left > right;
+    };
+    if (token == '>=') return function(left, right) {
+      return left >= right;
+    };
+    if (token == '+') return function(left, right) {
+      return left + right;
+    };
+    if (token == '-') return function(left, right) {
+      return left - right;
+    };
+    if (token == '*') return function(left, right) {
+      return left * right;
+    };
+    if (token == '/') return function(left, right) {
+      return left / right;
+    };
+    if (token == '%') return function(left, right) {
+      return left % right;
+    };
   }
 
   function LogicalOperator(token) {
