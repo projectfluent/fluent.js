@@ -55,13 +55,14 @@ var Compiler = exports.Compiler = (function() {
       if (elem.default)
         defaultIndex = i;
     });
-    return function(locals, env, data, i) {
+    return function(locals, env, data, index) {
+      var i = index.shift();
       if (typeof i == 'function')
         i = i(locals, env, data);
       try {
-        return content[i](locals, env, data);
+        return content[i](locals, env, data, index);
       } catch (e) {
-        return content[defaultIndex](locals, env, data);
+        return content[defaultIndex](locals, env, data, index);
       }
     };
   }
@@ -74,13 +75,14 @@ var Compiler = exports.Compiler = (function() {
       if (i == 0 || elem.default)
         defaultKey = elem.id;
     });
-    return function(locals, env, data, key) {
+    return function(locals, env, data, index) {
+      var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
       try {
-        return content[key](locals, env, data);
+        return content[key](locals, env, data, index);
       } catch (e) {
-        return content[defaultKey](locals, env, data);
+        return content[defaultKey](locals, env, data, index);
       }
     };
   }
@@ -101,9 +103,7 @@ var Compiler = exports.Compiler = (function() {
 
   function KeyValuePair(node) {
     var value = new Expression(node.value)
-    return function(locals, env, data) {
-      return value(locals, env, data);
-    };
+    return value;
   }
 
 
@@ -148,7 +148,6 @@ var Compiler = exports.Compiler = (function() {
     var operator = new UnaryOperator(node.operator);
     var operand = new Expression(node.operand);
     return function(locals, env, data) {
-      console.log(operand(locals, env, data))
       return operator(operand(locals, env, data));
     };
   }
@@ -287,14 +286,8 @@ var Compiler = exports.Compiler = (function() {
       attributes: attributes,
       local: node.local || false,
       get: function(env, data, index) {
-        var index = index || this.index || [];
-        if (!index.length)
-          return this.value({ _this: this }, env, data);
-        var val = this.value;
-        index.forEach(function(ind) {
-          val = val({ _this: this }, env, data, ind);
-        });
-        return val;
+        index = index || this.index || [];
+        return this.value({ _this: this }, env, data, index);
       },
       getAttribute: function(name, env, data) {
         return this.attributes[name].get({ _this: this }, env, data);
