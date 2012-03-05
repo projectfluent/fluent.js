@@ -40,7 +40,7 @@
   <td class="p2cell">:</td>
 
   <td class="p2cell"><a href="#entity">entity</a> | <a href="#macro">macro</a> 
-      | <a href="#comment">comment</a> ;</td>
+      | <a href="#comment">comment</a> | <a href="#statement">statement</a> ;</td>
   </tr></tbody></table>
 
   <p>A entity consists of an <a href="#ID">identifier</a>, a value and an 
@@ -79,6 +79,29 @@
           href="#WS">WS</a>+ <a href="#keyValuePair">keyValuePair</a> )* ;</td>
 
   </tr></tbody></table>
+  
+<p>Statements are similar to C-style statements.</p>
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="statement">statement</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell"><a href="#import_statement">import_statement</a> | <a href="#if_statement">if_statement</a> | <a href="#block_statement">block_statement</a>;</td>  
+  </tr></tbody></table> 
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="import_statement">import_statement</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell">'import' <a href="#WS">WS</a>? '(' <a href="#WS">WS</a>? <a href="#expression">expression</a> <a href="#WS">WS</a>? ')';</td>  
+  </tr></tbody></table> 
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="if_statement">if_statement</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell">'if' <a href="#WS">WS</a>? '(' <a href="#WS">WS</a>? <a href="#expression">expression</a> <a href="#WS">WS</a>? ')' <a href="#WS">WS</a>? <a href="#entry">entry</a>;</td>  
+  </tr></tbody></table> 
+<table class="production"><tbody><tr>
+  <td class="p1cell"><a name="block_statement">block_statement</a></td>
+  <td class="p2cell">:</td>
+  <td class="p2cell">'{' <a href="#WS">WS</a>? (<a href="#WS">WS</a> | <a href="#entry">entry</a>)* '}';</td>  
+  </tr></tbody></table> 
+  
 <p>Expressions are closely modeled after C expressions, merely binary operators and some C-specifics have been removed.</p>
 <table class="production"><tbody><tr>
   <td class="p1cell"><a name="expression">expression</a></td>
