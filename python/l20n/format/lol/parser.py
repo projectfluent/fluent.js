@@ -104,6 +104,11 @@ class Parser():
         return blockStmt
 
     def get_identifier(self):
+        if self.content[0] == '~':
+            self.content = self.content[1:]
+            te = ast.ThisExpression()
+            te._template = '~'
+            return te
         match = self.patterns['id'].match(self.content)
         if not match:
             raise ParserError()

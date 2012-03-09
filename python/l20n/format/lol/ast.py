@@ -143,3 +143,6 @@ class AttributeExpression(MemberExpression):
 
 class ParenthesisExpression(Expression):
     expression = pyast.field(Expression)
+
+class ThisExpression(Expression):
+    pass
