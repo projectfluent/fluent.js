@@ -575,7 +575,6 @@ class Parser():
         return self.get_identifier()
 
     def get_entity_id_expression(self):
-        print(self.content)
         if self.content[0] == '[':
             self.content = self.content[1:]
             self.get_ws()
@@ -589,6 +588,8 @@ class Parser():
             return eid
         else:
             exp = self.get_identifier()
+            if isinstance(exp, ast.ThisExpression):
+                raise ParserError()
             eid = ast.EntityIDExpression(exp, False)
             eid._template = ':%(expression)s'
             return eid
