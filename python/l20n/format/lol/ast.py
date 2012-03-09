@@ -95,7 +95,6 @@ class BinaryOperator(Operator):
 class LogicalOperator(Operator):
     token = pyast.field(("||", "&&"))
 
-
 ### Expressions
 
 class Literal(Expression):
@@ -127,6 +126,10 @@ class MemberExpression(Expression):
 class CallExpression(MemberExpression):
     callee = pyast.field(Expression)
     arguments = pyast.seq(Expression, null=True)
+
+class EntityIDExpression(MemberExpression):
+    expression = pyast.field(Expression)
+    computed = pyast.field(bool)
 
 class PropertyExpression(MemberExpression):
     expression = pyast.field(Expression)

@@ -521,7 +521,7 @@ class Parser():
         ws_post_id = self.get_ws()
         matched = False
         while 1:
-            if self.content[0:2] in ('[.', '..'):
+            if self.content[0] == ':':
                 exp = self.get_attr_expression(exp, ws_post_id)
                 matched = True
             elif self.content[0] in ('[', '.'):
@@ -563,27 +563,47 @@ class Parser():
         #value
         if self.content[0] in ('"\'{['):
             return self.get_value()
+        #variable or identifier
+        if self.content[0] == ":":
+            self.content = self.content[1:]
+            return self.get_entity_id_expression()
         return self.get_identifier()
 
+    def get_entity_id_expression(self):
+        print(self.content)
+        if self.content[0] == '[':
+            self.content = self.content[1:]
+            self.get_ws()
+            exp = self.get_expression()
+            self.get_ws()
+            if self.content[0] != ']':
+                raise ParserError()
+            self.content = self.content[1:]
+            eid = ast.EntityIDExpression(exp, True)
+            eid._template = ':[%(expression)s]'
+            return eid
+        else:
+            exp = self.get_identifier()
+            eid = ast.EntityIDExpression(exp, False)
+            eid._template = ':%(expression)s'
+            return eid
+
     def get_attr_expression(self, idref, ws_post_id):
-        d = self.content[0:2]
-        if d == '[.':
-            self.content = self.content[2:]
+        self.content = self.content[1:]
+        if self.content[0] == '[':
+            self.content = self.content[1:]
             ws_pre = self.get_ws()
             exp = self.get_expression()
             ws_post = self.get_ws()
             self.content = self.content[1:]
             attr = ast.AttributeExpression(idref, exp, True)
-            attr._template = '%%(expression)s%s[.%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
+            attr._template = '%%(expression)s%s:[%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
             return attr
-        elif d == '..':
-            self.content = self.content[2:]
+        else:
             prop = self.get_identifier()
             ae = ast.AttributeExpression(idref, prop, False)
-            ae._template = '%(expression)s..%(attribute)s'
+            ae._template = '%(expression)s:%(attribute)s'
             return ae
-        else:
-            raise ParserError()
 
     def get_property_expression(self, idref, ws_post_id):
         d = self.content[0]
