@@ -572,6 +572,7 @@ class Parser():
         if self.content[0] == ":":
             self.content = self.content[1:]
             return self.get_entity_id_expression()
+        #globals
         if self.content[0] == '@':
             self.content = self.content[1:]
             ide = self.get_identifier()
@@ -602,6 +603,8 @@ class Parser():
 
     def get_attr_expression(self, idref, ws_post_id):
         self.content = self.content[1:]
+        if isinstance(idref, ast.GlobalsExpression):
+            raise ParserError
         if self.content[0] == '[':
             self.content = self.content[1:]
             ws_pre = self.get_ws()
