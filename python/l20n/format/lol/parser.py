@@ -263,7 +263,7 @@ class Parser():
             if m:
                 buffer += m.group(1)
                 self.content = self.content[m.end(0):]
-        if buffer or len(obj):
+        if buffer:
             string = ast.String(buffer)
             string._template = '%(content)s'
             obj.append(string)
