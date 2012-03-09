@@ -146,3 +146,6 @@ class ParenthesisExpression(Expression):
 
 class ThisExpression(Expression):
     pass
+
+class GlobalsExpression(Expression):
+    id = pyast.field(Identifier)

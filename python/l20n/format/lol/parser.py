@@ -572,6 +572,12 @@ class Parser():
         if self.content[0] == ":":
             self.content = self.content[1:]
             return self.get_entity_id_expression()
+        if self.content[0] == '@':
+            self.content = self.content[1:]
+            ide = self.get_identifier()
+            ge = ast.GlobalsExpression(ide)
+            ge._template = '@%%(id)s'
+            return ge
         return self.get_identifier()
 
     def get_entity_id_expression(self):
