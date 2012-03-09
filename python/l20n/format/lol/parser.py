@@ -7,7 +7,7 @@ class ParserError(Exception):
 
 class Parser():
     patterns = {
-        'id': re.compile('^([a-zA-Z]\w*)'),
+        'id': re.compile('^([_a-zA-Z]\w*)'),
         'value': re.compile('^(?P<op>[\'"])(.*?)(?<!\\\)(?P=op)'),
     }
     _parse_strings = False
@@ -122,7 +122,9 @@ class Parser():
         index_arr = index[0] if index else None
         if self.content[0] == '>':
             self.content = self.content[1:]
-            entity = ast.Entity(id, index_arr)
+            entity = ast.Entity(id,
+                                index_arr)
+            entity.local = id.name[0] == '_'
             if index:
                 entity._template_index = index[2]
                 entity._template = "<%%(id)s[%s]%s>" % (index[1], ws1)
@@ -141,6 +143,7 @@ class Parser():
                             index_arr,
                             value,
                             attrs)
+        entity.local = id.name[0] == '_'
         if index:
             entity._template_index = index[2]
             entity._template = "<%%(id)s[%s]%s%%(value)s%s%%(attrs)s>" % (index[1], ws1,ws2)
@@ -151,6 +154,8 @@ class Parser():
         return entity
 
     def get_macro(self, id):
+        if id.name[0] == '_':
+            raise ParserError()
         idlist = []
         self.content = self.content[1:]
         ws_pre_idlist = self.get_ws()
@@ -316,8 +321,12 @@ class Parser():
         hash = []
         hash_template = []
         while 1:
-            kvp = self.get_kvp()
-            hash.append(kvp)
+            default = False
+            if self.content[0] == '*':
+                self.content = self.content[1:]
+                default = True
+            hi = self.get_kvp(ast.HashItem)
+            hash.append(hi)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
@@ -334,7 +343,7 @@ class Parser():
         h._template_content = hash_template
         return h
 
-    def get_kvp(self):
+    def get_kvp(self, cl):
         key = self.get_identifier()
         ws_post_key = self.get_ws()
         if self.content[0] != ':':
@@ -342,7 +351,7 @@ class Parser():
         self.content = self.content[1:]
         ws_pre_value = self.get_ws()
         val = self.get_value()
-        kvp = ast.KeyValuePair(key, val)
+        kvp = cl(key, val)
         kvp._template = '%%(key)s%s:%s%%(value)s' % (ws_post_key,
                                                      ws_pre_value)
         return kvp
@@ -351,21 +360,21 @@ class Parser():
         if self.content[0] == '>':
             self.content = self.content[1:]
             return None
-        hash = []
-        hash_template = []
+        attrs = []
+        attrs_template = []
         while 1:
-            kvp = self.get_kvp()
-            hash.append(kvp)
+            attr = self.get_kvp(ast.Attribute)
+            attrs.append(attr)
             ws_post_item = self.get_ws()
             if self.content[0] == '>':
-                hash_template.append(ws_post_item)
+                attrs_template.append(ws_post_item)
                 self.content = self.content[1:]
                 break
             elif ws_post_item == '':
                 raise ParserError()
-            hash_template.append(ws_post_item)
-        if len(hash):
-            return (hash, hash_template)
+            attrs_template.append(ws_post_item)
+        if len(attrs):
+            return (attrs, attrs_template)
         else:
             return None
 
@@ -603,7 +612,8 @@ class Parser():
 
     def get_attr_expression(self, idref, ws_post_id):
         self.content = self.content[1:]
-        if isinstance(idref, ast.GlobalsExpression):
+        if isinstance(idref, (ast.Identifier,
+                              ast.GlobalsExpression)):
             raise ParserError
         if self.content[0] == '[':
             self.content = self.content[1:]

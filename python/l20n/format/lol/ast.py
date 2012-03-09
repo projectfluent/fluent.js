@@ -27,15 +27,21 @@ class Operator(Node):
     _abstract = True
 
 class Identifier(Expression):
-    name = pyast.field(pyast.re('[a-zA-Z]\w*'))
+    name = pyast.field(pyast.re('[_a-zA-Z]\w*'))
 
 class Expander(Node):
     expression = pyast.field(Expression)
 
-
 class KeyValuePair(Node):
     key = pyast.field(Identifier)
     value = pyast.field(Value)
+    _abstract = True
+
+class HashItem(KeyValuePair):
+    default = pyast.field(bool, default=False)
+
+class Attribute(KeyValuePair):
+    local = pyast.field(bool, default=False)
 
 ### Entries
 
@@ -43,7 +49,8 @@ class Entity(Entry):
     id = pyast.field(Identifier)
     index = pyast.seq(Expression, null=True)
     value = pyast.field(Value, null=True)
-    attrs = pyast.seq(KeyValuePair, null=True)
+    attrs = pyast.seq(Attribute, null=True)
+    local = pyast.field(bool, default=False)
 
 class Comment(Entry):
     content = pyast.field(str, null=True)
@@ -52,7 +59,7 @@ class Macro(Entry):
     id = pyast.field(Identifier)
     args = pyast.seq(Identifier)
     expression = pyast.field(Expression)
-    attrs = pyast.seq(KeyValuePair, null=True)
+    attrs = pyast.seq(Attribute, null=True)
 
 ### Values
 
@@ -66,7 +73,7 @@ class Array(Value):
     content = pyast.seq(Value, null=True)
 
 class Hash(Value):
-    content = pyast.seq(KeyValuePair, null=True)
+    content = pyast.seq(HashItem, null=True)
 
 ### Statements
 
