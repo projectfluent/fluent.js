@@ -77,16 +77,8 @@ class Hash(Value):
 
 ### Statements
 
-class BlockStatement(Statement):
-    body = pyast.seq(Entry, null=True)
-
-class IfStatement(Statement):
-    test = pyast.field(Expression)
-    consequent = pyast.field(Entry)
-
 class ImportStatement(Statement):
     uri = pyast.field(String)
-    test = pyast.field(IfStatement, null=True)
 
 ### Operators
 
