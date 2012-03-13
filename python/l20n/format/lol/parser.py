@@ -135,7 +135,7 @@ class Parser():
         else:
 
             while 1:
-                idlist.append(self.get_identifier())
+                idlist.append(self.get_macro_argument())
                 ws_post = self.get_ws()
                 if self.content[0] == ',':
                     self.content = self.content[1:]
@@ -505,7 +505,7 @@ class Parser():
         ws_post_id = self.get_ws()
         matched = False
         while 1:
-            if self.content[0] == ':':
+            if self.content[0:2] in ('.[', '..'):
                 exp = self.get_attr_expression(exp, ws_post_id)
                 matched = True
             elif self.content[0] in ('[', '.'):
@@ -548,9 +548,14 @@ class Parser():
         if self.content[0] in ('"\'{['):
             return self.get_value()
         #variable or identifier
-        if self.content[0] == ":":
+        if self.content[0] == "$":
             self.content = self.content[1:]
-            return self.get_entity_id_expression()
+            id = self.get_identifier()
+            var = ast.VariableExpression(id)
+            var._template = "$%%(id)s"
+            return var
+        if self.content[0] == "#":
+            return self.get_macro_argument()
         #globals
         if self.content[0] == '@':
             self.content = self.content[1:]
@@ -560,52 +565,40 @@ class Parser():
             return ge
         return self.get_identifier()
 
-    def get_entity_id_expression(self):
-        if self.content[0] == '[':
-            self.content = self.content[1:]
-            self.get_ws()
-            exp = self.get_expression()
-            self.get_ws()
-            if self.content[0] != ']':
-                raise ParserError()
-            self.content = self.content[1:]
-            eid = ast.EntityIDExpression(exp, True)
-            eid._template = ':[%(expression)s]'
-            return eid
-        else:
-            exp = self.get_identifier()
-            if isinstance(exp, ast.ThisExpression):
-                raise ParserError()
-            eid = ast.EntityIDExpression(exp, False)
-            eid._template = ':%(expression)s'
-            return eid
+    def get_macro_argument(self):
+        self.content = self.content[1:]
+        id = self.get_identifier()
+        ma = ast.MacroArgument(id)
+        ma._template = "#%%{id}s"
+        return ma
 
     def get_attr_expression(self, idref, ws_post_id):
-        self.content = self.content[1:]
-        if isinstance(idref, (ast.Identifier,
+        if isinstance(idref, (ast.Variable,
                               ast.GlobalsExpression)):
-            raise ParserError
-        if self.content[0] == '[':
-            self.content = self.content[1:]
+            raise ParserError()
+        if self.content[1] == '[':
+            self.content = self.content[2:]
             ws_pre = self.get_ws()
-            exp = self.get_expression()
+            exp = self.get_member_expression()
             ws_post = self.get_ws()
             self.content = self.content[1:]
             attr = ast.AttributeExpression(idref, exp, True)
-            attr._template = '%%(expression)s%s:[%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
+            attr._template = '%%(expression)s%s.[%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
             return attr
-        else:
+        elif self.content[1] == '.':
+            self.content = self.content[2:]
             prop = self.get_identifier()
             ae = ast.AttributeExpression(idref, prop, False)
-            ae._template = '%(expression)s:%(attribute)s'
+            ae._template = '%(expression)s..%(attribute)s'
             return ae
+        raise ParserError()
 
     def get_property_expression(self, idref, ws_post_id):
         d = self.content[0]
         if d == '[':
             self.content = self.content[1:]
             ws_pre = self.get_ws()
-            exp = self.get_expression()
+            exp = self.get_member_expression()
             ws_post = self.get_ws()
             self.content = self.content[1:]
             prop = ast.PropertyExpression(idref, exp, True)

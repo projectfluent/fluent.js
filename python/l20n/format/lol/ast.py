@@ -57,7 +57,7 @@ class Comment(Entry):
 
 class Macro(Entry):
     id = pyast.field(Identifier)
-    args = pyast.seq(Identifier)
+    args = pyast.seq(MacroArgument)
     expression = pyast.field(Expression)
     attrs = pyast.seq(Attribute, null=True)
 
@@ -126,10 +126,6 @@ class CallExpression(MemberExpression):
     callee = pyast.field(Expression)
     arguments = pyast.seq(Expression, null=True)
 
-class EntityIDExpression(MemberExpression):
-    expression = pyast.field(Expression)
-    computed = pyast.field(bool)
-
 class PropertyExpression(MemberExpression):
     expression = pyast.field(Expression)
     property = pyast.field(Expression)
@@ -148,3 +144,10 @@ class ThisExpression(Expression):
 
 class GlobalsExpression(Expression):
     id = pyast.field(Identifier)
+
+class VariableExpression(Expression):
+    id = pyast.field(Identifier)
+
+class MacroArgument(Expression):
+    id = pyast.field(Identifier)
+
