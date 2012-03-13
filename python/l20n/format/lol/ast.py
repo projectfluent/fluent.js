@@ -6,7 +6,7 @@ if sys.version >= '3':
 
 class Node(pyast.Node):
     _abstract = True
-    _debug = False
+    _debug = True
 
 class Entry(Node):
     _abstract = True
@@ -17,6 +17,9 @@ class LOL(Node):
 class Expression(Node):
     _abstract = True
 
+class Statement(Entry):
+    _abstract = True
+
 class Value(Expression):
     _abstract = True
 
@@ -24,15 +27,21 @@ class Operator(Node):
     _abstract = True
 
 class Identifier(Expression):
-    name = pyast.field(pyast.re('[a-zA-Z]\w*'))
+    name = pyast.field(pyast.re('[_a-zA-Z]\w*'))
 
 class Expander(Node):
     expression = pyast.field(Expression)
 
-
 class KeyValuePair(Node):
     key = pyast.field(Identifier)
     value = pyast.field(Value)
+    _abstract = True
+
+class HashItem(KeyValuePair):
+    default = pyast.field(bool, default=False)
+
+class Attribute(KeyValuePair):
+    local = pyast.field(bool, default=False)
 
 ### Entries
 
@@ -40,16 +49,17 @@ class Entity(Entry):
     id = pyast.field(Identifier)
     index = pyast.seq(Expression, null=True)
     value = pyast.field(Value, null=True)
-    attrs = pyast.seq(KeyValuePair, null=True)
+    attrs = pyast.seq(Attribute, null=True)
+    local = pyast.field(bool, default=False)
 
 class Comment(Entry):
     content = pyast.field(str, null=True)
 
 class Macro(Entry):
     id = pyast.field(Identifier)
-    args = pyast.seq(Identifier)
+    args = pyast.seq(MacroArgument)
     expression = pyast.field(Expression)
-    attrs = pyast.seq(KeyValuePair, null=True)
+    attrs = pyast.seq(Attribute, null=True)
 
 ### Values
 
@@ -63,7 +73,12 @@ class Array(Value):
     content = pyast.seq(Value, null=True)
 
 class Hash(Value):
-    content = pyast.seq(KeyValuePair, null=True)
+    content = pyast.seq(HashItem, null=True)
+
+### Statements
+
+class ImportStatement(Statement):
+    uri = pyast.field(String)
 
 ### Operators
 
@@ -78,7 +93,6 @@ class BinaryOperator(Operator):
 
 class LogicalOperator(Operator):
     token = pyast.field(("||", "&&"))
-
 
 ### Expressions
 
@@ -124,3 +138,16 @@ class AttributeExpression(MemberExpression):
 
 class ParenthesisExpression(Expression):
     expression = pyast.field(Expression)
+
+class ThisExpression(Expression):
+    pass
+
+class GlobalsExpression(Expression):
+    id = pyast.field(Identifier)
+
+class VariableExpression(Expression):
+    id = pyast.field(Identifier)
+
+class MacroArgument(Expression):
+    id = pyast.field(Identifier)
+
