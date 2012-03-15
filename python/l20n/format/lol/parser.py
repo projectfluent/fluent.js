@@ -135,7 +135,7 @@ class Parser():
         else:
 
             while 1:
-                idlist.append(self.get_macro_argument())
+                idlist.append(self.get_variable())
                 ws_post = self.get_ws()
                 if self.content[0] == ',':
                     self.content = self.content[1:]
@@ -205,7 +205,6 @@ class Parser():
         return ast.String(match.group(2))
 
     def get_complex_string(self, quote):
-
         str_end = quote[0]
         literal = re.compile('^([^\\\{%s]+)' % str_end)
         obj = []
@@ -547,15 +546,9 @@ class Parser():
         #value
         if self.content[0] in ('"\'{['):
             return self.get_value()
-        #variable or identifier
+        #variable
         if self.content[0] == "$":
-            self.content = self.content[1:]
-            id = self.get_identifier()
-            var = ast.VariableExpression(id)
-            var._template = "$%%(id)s"
-            return var
-        if self.content[0] == "#":
-            return self.get_macro_argument()
+            return self.get_variable()
         #globals
         if self.content[0] == '@':
             self.content = self.content[1:]
@@ -565,16 +558,16 @@ class Parser():
             return ge
         return self.get_identifier()
 
-    def get_macro_argument(self):
+    def get_variable(self):
         self.content = self.content[1:]
         id = self.get_identifier()
-        ma = ast.MacroArgument(id)
-        ma._template = "#%%{id}s"
-        return ma
+        ve = ast.VariableExpression(id)
+        ve._template = "$%%{id}s"
+        return ve
 
     def get_attr_expression(self, idref, ws_post_id):
-        if isinstance(idref, (ast.Variable,
-                              ast.GlobalsExpression)):
+        if not isinstance(idref, (ast.ParenthesisExpression,
+                                  ast.Identifier)):
             raise ParserError()
         if self.content[1] == '[':
             self.content = self.content[2:]

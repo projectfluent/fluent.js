@@ -29,6 +29,9 @@ class Operator(Node):
 class Identifier(Expression):
     name = pyast.field(pyast.re('[_a-zA-Z]\w*'))
 
+class VariableExpression(Expression):
+    id = pyast.field(Identifier)
+
 class Expander(Node):
     expression = pyast.field(Expression)
 
@@ -57,7 +60,7 @@ class Comment(Entry):
 
 class Macro(Entry):
     id = pyast.field(Identifier)
-    args = pyast.seq(MacroArgument)
+    args = pyast.seq(VariableExpression)
     expression = pyast.field(Expression)
     attrs = pyast.seq(Attribute, null=True)
 
@@ -145,9 +148,5 @@ class ThisExpression(Expression):
 class GlobalsExpression(Expression):
     id = pyast.field(Identifier)
 
-class VariableExpression(Expression):
-    id = pyast.field(Identifier)
 
-class MacroArgument(Expression):
-    id = pyast.field(Identifier)
 
