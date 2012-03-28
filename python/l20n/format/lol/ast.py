@@ -56,7 +56,7 @@ class Entity(Entry):
     local = pyast.field(bool, default=False)
 
 class Comment(Entry):
-    content = pyast.field(str, null=True)
+    content = pyast.field(basestring, null=True)
 
 class Macro(Entry):
     id = pyast.field(Identifier)
