@@ -4,6 +4,9 @@ import re
 
 if sys.version >= "3":
     basestring = str
+    string = str
+else:
+    string = unicode
 
 def is_string(string):
     return isinstance(string, basestring)
@@ -25,8 +28,8 @@ class Serializer():
     def serialize(cls, lol):
         if not hasattr(lol, '_template'):
             setattr(ast.Node, '_serializer', cls)
-        string = str(lol)
-        return string
+        s = string(lol)
+        return s
 
     @classmethod
     def dump(cls, node):
