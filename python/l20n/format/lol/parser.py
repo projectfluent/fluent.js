@@ -238,7 +238,7 @@ class Parser():
                 buffer += m.group(1)
                 self.content = self.content[m.end(0):]
         if buffer:
-            string = ast.String(buffer)
+            string = ast.String(buffer.decode('utf8'))
             string._template = '%(content)s'
             obj.append(string)
         self.content = self.content[len(quote):]
@@ -635,5 +635,7 @@ class Parser():
         comment, sep, self.content = self.content[2:].partition('*/')
         if not sep:
             raise ParserError()
-        return ast.Comment(comment)
+        c = ast.Comment(comment)
+        c._template = '/*%(content)s*/'
+        return c
 
