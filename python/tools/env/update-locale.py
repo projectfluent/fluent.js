@@ -5,8 +5,9 @@ import l20n.format.lol.parser as parser
 import l20n.format.lol.ast as ast
 
 def read_file(path):
-    with file(path) as f:
-        return f.read()
+    with codecs.open(path, 'r', encoding='utf-8') as file:
+        text = file.read()
+    return text
 
 def write_file(path, s):
     f = codecs.open(path, encoding='utf_8', mode='w+')
@@ -70,12 +71,13 @@ def update_locale():
         res = diff_entity(source_dict.get(k, None),
                           orig_dict[k],
                           trans_dict.get(k, None))
+        print('%s - %s' % (k, res))
         if res == 'added':
-            pass
+            print('added')
         elif res == 'removed':
-            pass
+            print('removed')
         elif res == 'outdated':
-            pass
+            print('outdated')
         continue
     for k,entity in source_dict.items():
         if k not in orig_dict:
