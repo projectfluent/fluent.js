@@ -40,8 +40,9 @@ def bootstrap_lol(lol):
             #entity_str = ser.dump_entity(lol.body[i])
             #c = ast.Comment(entity_str)
             #c._template = '/*\n  %(content)s\n*/'
-            s = ast.String('')
-            s._template = '"%(content)s"'
+            #s = ast.String('')
+            #s._template = '"%(content)s"'
+            s = None
             object.__setattr__(lol.body[i], 'value', s)
             #lol.body.insert(i, c)
             #lol._template_body.insert(i, '\n')
