@@ -238,7 +238,7 @@ class Parser():
                 buffer += m.group(1)
                 self.content = self.content[m.end(0):]
         if buffer:
-            string = ast.String(buffer.decode('utf8'))
+            string = ast.String(buffer)
             string._template = '%(content)s'
             obj.append(string)
         self.content = self.content[len(quote):]
