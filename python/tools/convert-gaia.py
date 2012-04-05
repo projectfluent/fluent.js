@@ -1,15 +1,17 @@
 #!/usr/bin/python 
 import re
 import os
+import codecs
 import l20n.format.lol.ast as ast
 import l20n.format.lol.serializer as serializer
 
 def read_file(path):
-    with file(path) as f:
-        return f.read()
+    with codecs.open(path, 'r', encoding='utf-8') as file:
+        text = file.read()
+    return text
 
 def write_file(path, s):
-    f = open(path, mode='w')
+    f = codecs.open(path, encoding='utf_8', mode='w+')
     f.write(s)
     f.close()
 
