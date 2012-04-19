@@ -222,7 +222,9 @@ class Parser():
             if self.content[:2] == '{{':
                 self.content = self.content[2:]
                 if buffer:
-                    obj.append(ast.String(buffer))
+                    string = ast.String(buffer)
+                    string._template = "%(content)s"
+                    obj.append(string)
                     buffer = ''
                 ws_pre_exp = self.get_ws()
                 expr = self.get_expression()
