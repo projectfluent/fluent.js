@@ -6,13 +6,19 @@ if sys.version >= '3':
 
 class Node(pyast.Node):
     _abstract = True
-    _debug = True
+    _debug = False
 
 class Entry(Node):
     _abstract = True
 
 class LOL(Node):
     body = pyast.seq(Entry, null=True)
+
+    _template = '%(body)s'
+    def _template_body(self):
+        return [''] + ['\n'] * ( len(self.body) - 1 )
+
+    _template_body_fillvalue = "\n"
 
 class Expression(Node):
     _abstract = True
@@ -28,6 +34,8 @@ class Operator(Node):
 
 class Identifier(Expression):
     name = pyast.field(pyast.re('[_a-zA-Z]\w*'))
+
+    _template = "%(name)s"
 
 class VariableExpression(Expression):
     id = pyast.field(Identifier)
@@ -55,8 +63,14 @@ class Entity(Entry):
     attrs = pyast.seq(Attribute, null=True)
     local = pyast.field(bool, default=False)
 
+    def _template (self):
+        return "<%(id)s %(value)s>"
+
+
 class Comment(Entry):
     content = pyast.field(basestring, null=True)
+
+    _template = "/* %(content)s */"
 
 class Macro(Entry):
     id = pyast.field(Identifier)
@@ -69,8 +83,23 @@ class Macro(Entry):
 class String(Value):
     content = pyast.field(basestring)
 
+    _template = "\"%(content)s\""
+
 class ComplexString(String):
     content = pyast.seq((str, Expression))
+
+    def _template_content(self):
+        ws = []
+        for n,elem in enumerate(self.content):
+            if isinstance(self.content[n], String):
+                self.content[n]._template = "%(content)s"
+            if not isinstance(self.content[n], String):
+                ws.append("{{")
+            elif not isinstance(self.content[n-1], String):
+                ws.append("}}")
+            else:
+                ws.append("")
+        return ws
 
 class Array(Value):
     content = pyast.seq(Value, null=True)
@@ -101,7 +130,8 @@ class LogicalOperator(Operator):
 
 class Literal(Expression):
     value = pyast.field(int)
-    _template = '%(value)s'
+    
+    __template = '%(value)s'
 
 class LogicalExpression(Expression):
     operator = pyast.field(LogicalOperator)
