@@ -564,7 +564,7 @@ class Parser():
         self.content = self.content[1:]
         id = self.get_identifier()
         ve = ast.VariableExpression(id)
-        ve._template = "$%%{id}s"
+        ve._template = "$%(id)s"
         return ve
 
     def get_attr_expression(self, idref, ws_post_id):
