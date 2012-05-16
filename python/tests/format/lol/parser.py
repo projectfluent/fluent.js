@@ -97,27 +97,27 @@ class L20nParserTestCase(unittest.TestCase):
         string = "<id attr1: 'foo'>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 1)
-        attr = lol.body[0].attrs[0]
+        attr = lol.body[0].attrs['attr1']
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
 
         string = "<id attr1: 'foo' attr2: 'foo2'    >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 2)
-        attr = lol.body[0].attrs[0]
+        attr = lol.body[0].attrs['attr1']
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
 
         string = "<id 'value' attr1: 'foo' attr2: 'foo2' attr3: 'foo3' >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 3)
-        attr = lol.body[0].attrs[0]
+        attr = lol.body[0].attrs['attr1']
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
-        attr = lol.body[0].attrs[1]
+        attr = lol.body[0].attrs['attr2']
         self.assertEqual(attr.key.name, "attr2")
         self.assertEqual(attr.value.content, "foo2")
-        attr = lol.body[0].attrs[2]
+        attr = lol.body[0].attrs['attr3']
         self.assertEqual(attr.key.name, "attr3")
         self.assertEqual(attr.value.content, "foo3")
 

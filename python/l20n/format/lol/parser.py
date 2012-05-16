@@ -1,6 +1,7 @@
 import re
 from l20n.format.lol import ast
 import string
+from collections import OrderedDict
 
 class ParserError(Exception):
     pass
@@ -109,10 +110,10 @@ class Parser():
         if attrs:
             attrs_template = attrs[1]
             attrs = attrs[0]
-        entity = ast.Entity(id,
-                            index_arr,
-                            value,
-                            attrs)
+        entity = ast.Entity(id=id,
+                            index=index_arr,
+                            value=value,
+                            attrs=attrs)
         entity.local = id.name[0] == '_'
         if index:
             entity._template_index = index[2]
@@ -331,11 +332,11 @@ class Parser():
         if self.content[0] == '>':
             self.content = self.content[1:]
             return None
-        attrs = []
+        attrs = OrderedDict()
         attrs_template = []
         while 1:
             attr = self.get_kvp(ast.Attribute)
-            attrs.append(attr)
+            attrs[attr.key.name] = attr
             ws_post_item = self.get_ws()
             if self.content[0] == '>':
                 attrs_template.append(ws_post_item)

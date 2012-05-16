@@ -60,7 +60,7 @@ class Entity(Entry):
     id = pyast.field(Identifier)
     index = pyast.seq(Expression, null=True)
     value = pyast.field(Value, null=True)
-    attrs = pyast.seq(Attribute, null=True)
+    attrs = pyast.dict(Attribute, null=True)
     local = pyast.field(bool, default=False)
 
     def _template (self):
