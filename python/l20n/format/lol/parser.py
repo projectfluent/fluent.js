@@ -115,11 +115,12 @@ class Parser():
                             value=value,
                             attrs=attrs)
         entity.local = id.name[0] == '_'
+        at = '%%(attrs)s' if attrs else ''
         if index:
             entity._template_index = index[2]
-            entity._template = "<%%(id)s[%s]%s%%(value)s%s%%(attrs)s>" % (index[1], ws1,ws2)
+            entity._template = "<%%(id)s[%s]%s%%(value)s%s%s>" % (index[1], ws1,ws2, at)
         else:
-            entity._template = "<%%(id)s%s%%(value)s%s%%(attrs)s>" % (ws1,ws2)
+            entity._template = "<%%(id)s%s%%(value)s%s%s>" % (ws1,ws2, at)
         if attrs:
             entity._template_attrs = attrs_template
         return entity
