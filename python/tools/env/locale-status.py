@@ -1,8 +1,16 @@
 import os
 import codecs
+import sys
 
 import l20n.format.lol.parser as parser
 import l20n.format.lol.ast as ast
+import l10ndiff
+
+if sys.version >= '3':
+    basestring = str
+    string = str
+else:
+    string = unicode
 
 def read_file(path):
     with codecs.open(path, 'r', encoding='utf-8') as file:
@@ -16,7 +24,7 @@ def write_file(path, s):
 
 def reduce_complex_string(s):
     if isinstance(s, ast.ComplexString):
-        return unicode(s)
+        return string(s)
     elif isinstance(s, ast.String):
         return s.content
     elif s is None:
@@ -30,12 +38,12 @@ def diff_entity(source, orig, trans):
 
     if oval is None:
         return 'added'
+    if trans is None:
+        return 'nottranslated'
     if sval is None:
         return 'removed'
     if not sval == oval:
         return 'outdated'
-    if trans is None:
-        return 'nottranslated'
     return 'uptodate'
 
 def get_entity_dict(lol):
@@ -99,7 +107,7 @@ def print_result(rname,
                               stats['untranslated']/stats['all']*100))
 
 
-def update_locale():
+def locale_status():
     source_locale = 'en-US'
     locale = 'pl'
     module = 'homescreen'
@@ -122,6 +130,8 @@ def update_locale():
     trans_lol = p.parse(trans_file)
     source_lol = p.parse(source_file)
 
+    l10ndiff.list(orig_lol, trans_lol)
+
     orig_dict = get_entity_dict(orig_lol)
     trans_dict = get_entity_dict(trans_lol)
     source_dict = get_entity_dict(source_lol)
@@ -134,10 +144,10 @@ def update_locale():
     
     for k,entity in orig_dict.items():
         if k not in source_dict:
-          result['obsolete'][k] = entity
+            result['obsolete'][k] = entity
     print_result('homescreen', result)
 
 
 if __name__ == '__main__':
-    update_locale()
+    locale_status()
 
