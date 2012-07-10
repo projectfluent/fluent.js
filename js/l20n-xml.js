@@ -110,7 +110,9 @@ function localizeNode(ctx, node) {
   if (valueFromCtx === null)
     return;
 
-  // deep-copy the original node
+  // Deep-copy the original node.  Note that `origNode` isn't attached anywhere 
+  // in the DOM, thus making it impossible for a malevolent XPath expression to 
+  // step outside of it.
   var origNode = node.cloneNode(true);
   var origL10nStatus = origNode.getAttribute('l10n-status');
   node.innerHTML = valueFromCtx;
