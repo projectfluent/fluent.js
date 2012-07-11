@@ -16,7 +16,7 @@ var Compiler = exports.Compiler = (function() {
 
   function This(node) {
     return function(locals, env, data) {
-      return locals['_this'].get(env, data);
+      return locals['__this__'].get(env, data);
     };
   }
 
@@ -312,16 +312,16 @@ var Compiler = exports.Compiler = (function() {
       local: node.local || false,
       get: function(env, data, index) {
         index = index || this.index || [];
-        return this.value({ _this: this }, env, data, index);
+        return this.value({ __this__: this }, env, data, index);
       },
       getAttribute: function(name, env, data) {
-        return this.attributes[name].get({ _this: this }, env, data);
+        return this.attributes[name].get({ __this__: this }, env, data);
       },
       getAttributes: function(env, data) {
         var attrs = {};
         for (var i in this.attributes) {
           var attr = this.attributes[i];
-          attrs[attr.id] = attr.get({ _this: this }, env, data);
+          attrs[attr.id] = attr.get({ __this__: this }, env, data);
         }
         return attrs;
       },
