@@ -1,22 +1,16 @@
 var Compiler = exports.Compiler = (function() {
 
+  // {{{ primary expressions
 
-  // primary expressions
-
-  function Identifier(node, resolve) {
-    if (resolve === undefined)
-      resolve = true;
+  function Identifier(node) {
     return function(locals, env, data) {
-      var entry = env[node.name];
-      if (entry.get && resolve)
-        return entry.get(env, data);
-      return entry;
+      return env[node.name];
     };
   }
 
   function This(node) {
     return function(locals, env, data) {
-      return locals['__this__'].get(env, data);
+      return locals['__this__'];
     };
   }
 
@@ -49,21 +43,18 @@ var Compiler = exports.Compiler = (function() {
 
   function ArrayLiteral(node) {
     var content = [];
-    var defaultIndex = 0;
+    var defaultKey = 0;
     node.content.forEach(function(elem, i) {
       content.push(new Expression(elem));
       if (elem.default)
-        defaultIndex = i;
+        defaultKey = i;
     });
-    return function(locals, env, data, index) {
-      var i = index.shift();
-      if (typeof i == 'function')
-        i = i(locals, env, data);
-      try {
-        return content[i](locals, env, data, index);
-      } catch (e) {
-        return content[defaultIndex](locals, env, data, index);
-      }
+    return function(locals, env, data, key) {
+      if (typeof key == 'function')
+        key = key(locals, env, data);
+      if (key && content[key])
+        return content[key];
+      return content[defaultKey];
     };
   }
 
@@ -75,15 +66,12 @@ var Compiler = exports.Compiler = (function() {
       if (i == 0 || elem.default)
         defaultKey = elem.id;
     });
-    return function(locals, env, data, index) {
-      var key = index.shift();
+    return function(locals, env, data, key) {
       if (typeof key == 'function')
         key = key(locals, env, data);
-      try {
-        return content[key](locals, env, data, index);
-      } catch (e) {
-        return content[defaultKey](locals, env, data, index);
-      }
+      if (key && content[key])
+        return content[key];
+      return content[defaultKey];
     };
   }
 
@@ -95,19 +83,26 @@ var Compiler = exports.Compiler = (function() {
     return function(locals, env, data) {
       var parts = [];
       content.forEach(function(elem) {
-        parts.push(elem(locals, env, data));
+        var part = elem(locals, env, data);
+        while (typeof part !== 'string') {
+          if (part instanceof Entity)
+            part = part.yield(env, data);
+          else
+            part = part(locals, env, data);
+        }
+        parts.push(part);
       })
       return parts.join('');
     };
   }
 
   function KeyValuePair(node) {
-    var value = new Expression(node.value)
-    return value;
+    return new Expression(node.value)
   }
 
 
-  // operators
+  // }}}
+  // {{{ operators
 
   function UnaryOperator(token) {
     if (token == '-') return function(operand) {
@@ -167,7 +162,8 @@ var Compiler = exports.Compiler = (function() {
   }
 
 
-  // logical expressions
+  // }}}
+  // {{{ logical expressions
 
   function UnaryExpression(node) {
     var operator = new UnaryOperator(node.operator);
@@ -209,7 +205,8 @@ var Compiler = exports.Compiler = (function() {
   }
 
 
-  // member expressions
+  // }}}
+  // {{{ member expressions
 
   function CallExpression(node) {
     var callee = new Expression(node.callee);
@@ -234,7 +231,13 @@ var Compiler = exports.Compiler = (function() {
     else
       var property = node.property.name;
     return function(locals, env, data) {
-      return expression(locals, env, data, property);
+      var ret = expression(locals, env, data);
+      if (ret instanceof Entity)
+        return ret.yield(env, data, property);
+      if (ret instanceof Attribute)
+        return ret.yield(locals, env, data, property);
+      // else, `expression` is a HashLiteral
+      return ret(locals, env, data, property);
     }
   }
 
@@ -247,91 +250,127 @@ var Compiler = exports.Compiler = (function() {
     else
       var attribute = node.attribute.name;
     return function(locals, env, data) {
-      return expression(locals, env, data).getAttribute(attribute, env, data);
+      var entity = expression(locals, env, data);
+      //if (!entity instanceof Entity)
+      //  throw "Expression does not evaluate to a valid entity."
+      return entity.getAttribute(attribute, env, data);
     }
   }
 
 
-  // the base Expression class
+  // }}}
+  // {{{ the base Expression class
 
-  function Expression(node, resolve) {
+  function Expression(node) {
     if (!node) return null;
 
-    if (node.type == 'conditionalExpression') return new ConditionalExpression(node);
-    if (node.type == 'logicalExpression') return new LogicalExpression(node);
-    if (node.type == 'binaryExpression') return new BinaryExpression(node);
-    if (node.type == 'unaryExpression') return new UnaryExpression(node);
+    if (node.type == 'conditionalExpression')
+      return new ConditionalExpression(node);
+    if (node.type == 'logicalExpression')
+      return new LogicalExpression(node);
+    if (node.type == 'binaryExpression')
+      return new BinaryExpression(node);
+    if (node.type == 'unaryExpression')
+      return new UnaryExpression(node);
 
-    if (node.type == 'callExpression') return new CallExpression(node);
-    if (node.type == 'propertyExpression') return new PropertyExpression(node);
-    if (node.type == 'attributeExpression') return new AttributeExpression(node);
-    if (node.type == 'parenthesisExpression') return new ParenthesisExpression(node);
+    if (node.type == 'callExpression')
+      return new CallExpression(node);
+    if (node.type == 'propertyExpression')
+      return new PropertyExpression(node);
+    if (node.type == 'attributeExpression')
+      return new AttributeExpression(node);
+    if (node.type == 'parenthesisExpression')
+      return new ParenthesisExpression(node);
 
-    if (node.type == 'keyValuePair') return new KeyValuePair(node);
+    if (node.type == 'keyValuePair')
+      return new KeyValuePair(node);
 
-    if (node.type == 'identifier') return new Identifier(node, resolve);
-    if (node.type == 'this') return new This(node, resolve);
-    if (node.type == 'variable') return new Variable(node);
-    if (node.type == 'number') return new NumberLiteral(node);
-    if (node.type == 'string') return new StringLiteral(node);
-    if (node.type == 'complexString') return new ComplexString(node);
-    if (node.type == 'array') return new ArrayLiteral(node);
-    if (node.type == 'hash') return new HashLiteral(node);
+    if (node.type == 'identifier')
+      return new Identifier(node);
+    if (node.type == 'this')
+      return new This(node);
+    if (node.type == 'variable')
+      return new Variable(node);
+    if (node.type == 'number')
+      return new NumberLiteral(node);
+    if (node.type == 'string')
+      return new StringLiteral(node);
+    if (node.type == 'complexString')
+      return new ComplexString(node);
+    if (node.type == 'array')
+      return new ArrayLiteral(node);
+    if (node.type == 'hash')
+      return new HashLiteral(node);
   }
 
-
-  // entries
+  // }}}
+  // {{{ entries
 
   function Attribute(node) {
-    var value = new Expression(node.value);
-    return {
-      id: node.id,
-      local: node.local || false,
-      get: function(locals, env, data) {
-        return value(locals, env, data);
+    this.id = node.id;
+    this.local = node.local || false;
+    this.value = new Expression(node.value);
+  }
+
+  Attribute.prototype = {
+    yield: function yield(locals, env, data, key) {
+      return this.value(locals, env, data, key);
+    },
+    get: function get(locals, env, data, index) {
+      if (index === undefined)
+        var index = locals['__this__'].index;
+      var ret = this.yield(locals, env, data, index.shift());
+      while (typeof ret !== 'string') {
+        ret = ret(locals, env, data, index.shift());
       }
-    };
+      return ret;
+    },
   }
 
   function Entity(node) {
-    var value = new Expression(node.value);
-    var index = [];
+    this.id = node.id;
+    this.value = new Expression(node.value);
+    this.index = [];
     node.index.forEach(function(ind) {
-      index.push(new Expression(ind));
-    });
-    var attributes = {};
+      this.index.push(new Expression(ind));
+    }, this);
+    this.attributes = {};
     node.attrs.forEach(function(attr) {
-      attributes[attr.id] = new Attribute(attr);
-    });
+      this.attributes[attr.id] = new Attribute(attr);
+    }, this);
+    this.local = node.local || false;
+  }
 
-    return {
-      id: node.id,
-      value: value,
-      index: index,
-      attributes: attributes,
-      local: node.local || false,
-      get: function(env, data, index) {
-        index = index || this.index || [];
-        return this.value({ __this__: this }, env, data, index);
-      },
-      getAttribute: function(name, env, data) {
-        return this.attributes[name].get({ __this__: this }, env, data);
-      },
-      getAttributes: function(env, data) {
-        var attrs = {};
-        for (var i in this.attributes) {
-          var attr = this.attributes[i];
-          attrs[attr.id] = attr.get({ __this__: this }, env, data);
-        }
-        return attrs;
-      },
-      getEntity: function(env, data) {
-        return {
-          value: this.get(env, data),
-          attributes: this.getAttributes(env, data),
-        };
+  Entity.prototype = {
+    yield: function yield(env, data, key) {
+      return this.value({ __this__: this }, env, data, key);
+    },
+    get: function get(env, data, index) {
+      if (index === undefined)
+        var index = this.index;
+      var ret = this.yield(env, data, index.shift());
+      while (typeof ret !== 'string') {
+        ret = ret({ __this__: this }, env, data, index.shift());
       }
-    };
+      return ret;
+    },
+    getAttribute: function getAttribute(name, env, data) {
+      return this.attributes[name].get({ __this__: this }, env, data);
+    },
+    getAttributes: function getAttributes(env, data) {
+      var attrs = {};
+      for (var i in this.attributes) {
+        var attr = this.attributes[i];
+        attrs[attr.id] = attr.get({ __this__: this }, env, data);
+      }
+      return attrs;
+    },
+    getEntity: function getEntity(env, data) {
+      return {
+        value: this.get(env, data),
+        attributes: this.getAttributes(env, data),
+      };
+    }
   }
 
   function Macro(node) {
@@ -345,7 +384,8 @@ var Compiler = exports.Compiler = (function() {
     };
   }
 
-
+  // }}}
+  // {{{ public API
 
   function compile(ast, obj) {
     for (var i = 0, elem; elem = ast[i]; i++) {
@@ -359,5 +399,7 @@ var Compiler = exports.Compiler = (function() {
   return {
     compile: compile,
   };
+
+  // }}}
 
 })();
