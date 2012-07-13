@@ -3,14 +3,23 @@ var Compiler = exports.Compiler = (function() {
   // {{{ primary expressions
 
   function Identifier(node) {
+    var name = node.name;
     return function(locals, env, data) {
-      return env[node.name];
+      if (locals.__stack__.indexOf(name) > -1) {
+        console.error('Circular reference')
+        return '';
+      }
+      return env[name];
     };
   }
 
   function This(node) {
     return function(locals, env, data) {
-      return locals['__this__'];
+      if (locals.__stack__.indexOf(locals.__this__.id) > -1) {
+        console.error('Circular reference')
+        return '';
+      }
+      return locals.__this__;
     };
   }
 
@@ -49,12 +58,18 @@ var Compiler = exports.Compiler = (function() {
       if (elem.default)
         defaultKey = i;
     });
-    return function(locals, env, data, key) {
+    return function(locals, env, data, index) {
+      var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
       if (key && content[key])
-        return content[key];
-      return content[defaultKey];
+        var member = content[key];
+      else
+        var member = content[defaultKey];
+      if (locals.__resolve__)
+        return member(locals, env, data, index);
+      else
+        return member;
     };
   }
 
@@ -66,12 +81,18 @@ var Compiler = exports.Compiler = (function() {
       if (i == 0 || elem.default)
         defaultKey = elem.id;
     });
-    return function(locals, env, data, key) {
+    return function(locals, env, data, index) {
+      var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
       if (key && content[key])
-        return content[key];
-      return content[defaultKey];
+        var member = content[key];
+      else
+        var member = content[defaultKey];
+      if (locals.__resolve__)
+        return member(locals, env, data, index);
+      else
+        return member;
     };
   }
 
@@ -86,7 +107,7 @@ var Compiler = exports.Compiler = (function() {
         var part = elem(locals, env, data);
         while (typeof part !== 'string') {
           if (part instanceof Entity)
-            part = part.yield(env, data);
+            part = part._resolve(locals, env, data);
           else
             part = part(locals, env, data);
         }
@@ -233,9 +254,9 @@ var Compiler = exports.Compiler = (function() {
     return function(locals, env, data) {
       var ret = expression(locals, env, data);
       if (ret instanceof Entity)
-        return ret.yield(env, data, property);
+        return ret._yield(locals, env, data, [property]);
       if (ret instanceof Attribute)
-        return ret.yield(locals, env, data, property);
+        return ret._yield(locals, env, data, [property]);
       // else, `expression` is a HashLiteral
       return ret(locals, env, data, property);
     }
@@ -318,7 +339,7 @@ var Compiler = exports.Compiler = (function() {
     },
     get: function get(locals, env, data, index) {
       if (index === undefined)
-        var index = locals['__this__'].index;
+        index = locals['__this__'].index;
       var ret = this.yield(locals, env, data, index.shift());
       while (typeof ret !== 'string') {
         ret = ret(locals, env, data, index.shift());
@@ -342,17 +363,24 @@ var Compiler = exports.Compiler = (function() {
   }
 
   Entity.prototype = {
-    yield: function yield(env, data, key) {
-      return this.value({ __this__: this }, env, data, key);
+    _get: function _get(locals, env, data, index) {
+      if (index === undefined)
+        index = this.index;
+      locals.__this__ = this;
+      locals.__stack__ = locals.__stack__ || [];
+      locals.__stack__.push(this.id); 
+      return this.value(locals, env, data, index);
+    },
+    _yield: function _yield(locals, env, data, index) {
+      locals.__resolve__ = false;
+      return this._get(locals, env, data, index);
+    },
+    _resolve: function _resolve(locals, env, data, index) {
+      locals.__resolve__ = true;
+      return this._get(locals, env, data, index);
     },
     get: function get(env, data, index) {
-      if (index === undefined)
-        var index = this.index;
-      var ret = this.yield(env, data, index.shift());
-      while (typeof ret !== 'string') {
-        ret = ret({ __this__: this }, env, data, index.shift());
-      }
-      return ret;
+      return this._resolve({}, env, data, index);
     },
     getAttribute: function getAttribute(name, env, data) {
       return this.attributes[name].get({ __this__: this }, env, data);
