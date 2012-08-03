@@ -1,0 +1,16 @@
+<noSimCard "Brak karty SIM">
+<connecting >
+<unreadMessages >
+<missedCalls >
+<oldEntity "foo">
+/* sleep menu*/
+<airplane >
+<silent >
+<normal >
+<restart >
+<power >
+<loading "Loading…">
+<oldEntity "foo">
+<no "No">
+<install "Do you want to install {{name}} from {{origin}}?">
+<yes "Yes">

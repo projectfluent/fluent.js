@@ -1,13 +1,14 @@
 import unittest
 
 from pyjs import ast as js
+from pyjs import serializer
 from l20n.format.lol import ast as l20n
 from l20n.compiler.js import Compiler, CompilerError
 
 compile = Compiler.compile
 
 class L20nJsCompilerTestCase(unittest.TestCase):
-
+    """
     def test_empty_lol(self):
         lol = l20n.LOL()
         prog = compile(lol)
@@ -111,7 +112,7 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         self.assertEqual(exp.left.obj.prop.name, 'id')
         self.assertEqual(exp.left.prop.name, "_attrs")
         self.assertEqual(exp.left.computed, False)
-
+    """
     def test_property_expression(self):
         string = l20n.ComplexString([
             l20n.String("word1 "),
@@ -121,10 +122,13 @@ class L20nJsCompilerTestCase(unittest.TestCase):
                 False),
             l20n.String(" word2")
         ])
+        string = l20n.String('foo')
         entity = l20n.Entity(id=l20n.Identifier('id'),
                              value=string)
         lol = l20n.LOL((entity,))
         prog = compile(lol)
+        s = serializer.Serializer()
+        print(s.dump_program(prog))
         self.assertEqual(len(prog.body), 1)
         entity = prog.body[0].expression
         value = entity.right
@@ -134,6 +138,8 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         first_part = complex_string.left
         getent_call = complex_string.right.left
         third_part = complex_string.right.right
+        print(getent_call)
+        print(getent_call.obj)
         getent_arguments = getent_call.arguments
         self.assertEqual(getent_call.callee.name, "getent")
         self.assertEqual(getent_arguments[0].name, "env")
@@ -209,7 +215,7 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         self.assertEqual(getent_arguments[2].elements[1].value, 'b')
         self.assertEqual(getent_arguments[2].elements[2].value, 'c')
 
-
+    """
     def test_attribute_expression(self):
         string = l20n.ComplexString([
             l20n.String("word1 "),
@@ -278,7 +284,7 @@ class L20nJsCompilerTestCase(unittest.TestCase):
         self.assertEqual(subget.callee.name, 'getent')
         self.assertEqual(subget.arguments[0].name, 'env')
         self.assertEqual(subget.arguments[1].value, 'a')
-
+     """
 if __name__ == '__main__':
 
     unittest.main()
