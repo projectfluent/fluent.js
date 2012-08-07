@@ -5,20 +5,12 @@ var Compiler = (function() {
   function Identifier(node) {
     var name = node.name;
     return function(locals, env, data) {
-      if (locals.__stack__.indexOf(name) > -1) {
-        console.error('Circular reference')
-        return '';
-      }
       return env[name];
     };
   }
 
   function This(node) {
     return function(locals, env, data) {
-      if (locals.__stack__.indexOf(locals.__this__.id) > -1) {
-        console.error('Circular reference')
-        return '';
-      }
       return locals.__this__;
     };
   }
@@ -97,11 +89,15 @@ var Compiler = (function() {
   }
 
   function ComplexString(node) {
+    var dirty = false;
     var content = [];
     node.content.forEach(function(elem) {
       content.push(new Expression(elem));
     })
     return function(locals, env, data) {
+      if (dirty)
+        throw "Recursive reference";
+      dirty = true;
       var parts = [];
       content.forEach(function(elem) {
         var part = elem(locals, env, data);
@@ -113,6 +109,7 @@ var Compiler = (function() {
         }
         parts.push(part);
       })
+      dirty = false
       return parts.join('');
     };
   }
@@ -367,8 +364,6 @@ var Compiler = (function() {
       if (index === undefined)
         index = this.index;
       locals.__this__ = this;
-      locals.__stack__ = locals.__stack__ || [];
-      locals.__stack__.push(this.id); 
       return this.value(locals, env, data, index);
     },
     _yield: function _yield(locals, env, data, index) {
