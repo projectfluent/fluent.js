@@ -53,7 +53,8 @@ class Compiler(object):
         if has_index:
             is_static = False
         
-        (jsval, breaks_static) = cls.transform_value(l20nval, requires_object=requires_object)
+        (jsval, breaks_static) = cls.transform_value(l20nval,
+                                                     requires_object=requires_object)
         if breaks_static:
             is_static = False
         
@@ -101,7 +102,7 @@ class Compiler(object):
         
         if has_attrs:
             attrs = js.ObjectExpression()
-            for kvp in entity.attrs:
+            for (k,kvp) in entity.attrs.items():
                 (val, breaks_static) = cls.transform_value(kvp.value, requires_object=False)
                 if breaks_static:
                     val = js.FunctionExpression(
@@ -120,7 +121,7 @@ class Compiler(object):
     @classmethod
     def transform_macro(cls, macro, script):
         name = js.MemberExpression(js.ThisExpression(),js.Identifier(macro.id.name), False)
-        exp = cls._transform_macro_idrefs(macro.expression, [arg.name for arg in macro.args])
+        exp = cls._transform_macro_idrefs(macro.expression, [arg.id.name for arg in macro.args])
         body = cls.transform_expression(exp)
         func = js.FunctionExpression(
             params = [js.Identifier('env'), js.Identifier('sys'), js.Identifier('data')],
@@ -135,17 +136,14 @@ class Compiler(object):
         exp = deepcopy(expression)
         for field in exp._fields:
             attr = getattr(exp, field)
-            if isinstance(attr, l20n.Identifier):
-                if attr.name in ids:
+            if isinstance(attr, l20n.VariableExpression):
+                if attr.id.name in ids:
                     n = l20n.PropertyExpression(l20n.Identifier('data'),
-                                                l20n.Literal(ids.index(attr.name)),
+                                                l20n.Literal(ids.index(attr.id.name)),
                                                 False)
-                    # why setattr doesn't work in debug mode?
-                    #setattr(exp, field, n)
-                    object.__setattr__(exp, field, n)
+                    setattr(exp, field, n)
             elif isinstance(attr, l20n.Expression):
-                #setattr(exp, field, cls._transform_macro_idrefs(attr, ids))
-                object.__setattr__(exp, field, cls._transform_macro_idrefs(attr, ids))
+                setattr(exp, field, cls._transform_macro_idrefs(attr, ids))
         return exp
 
     @classmethod
