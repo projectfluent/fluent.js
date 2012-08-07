@@ -255,7 +255,7 @@ var Compiler = (function() {
       if (ret instanceof Attribute)
         return ret._yield(locals, env, data, [property]);
       // else, `expression` is a HashLiteral
-      return ret(locals, env, data, property);
+      return ret(locals, env, data, [property]);
     }
   }
 

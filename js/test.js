@@ -1096,17 +1096,15 @@ console.log('Firefox', obj['brandName4'].get(obj));
 console.log('male', obj['brandName4'].getAttribute('_gender', obj));
 console.log('Firefox', obj['brandName5'].get(obj));
 console.log('F', obj['brandName5'].getAttribute('accesskey', obj));
-
 console.log('This is Firefox', obj['brandName6'].getAttribute('title', obj));
 console.log('This is F', obj['brandName61'].getAttribute('title', obj));
 console.log('About Firefox...', obj['about1'].get(obj));
 console.log('About Firefox...', obj['about2'].get(obj));
-
 console.log('About Firefox...', obj['about3'].get(obj));
 console.log('About Firefox\'s...', obj['about4'].get(obj, {case: 'genitive'}));
+console.log('About Aurora\'s', obj['about23'].get(obj));
 
 // XXX index undefined errors
-//console.log('About Aurora\'s', obj['about23'].get(obj));
 //console.log('About Firefox Firefox Aurora Aurora Aurora\'s', obj['about22'].get(obj));
 
 
