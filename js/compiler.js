@@ -1,4 +1,4 @@
-var Compiler = exports.Compiler = (function() {
+var Compiler = (function() {
 
   // {{{ primary expressions
 
