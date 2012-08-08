@@ -280,46 +280,36 @@ var Compiler = (function() {
   // }}}
   // {{{ the base Expression class
 
+  var EXPRESSION_TYPES = {
+    // primary expressions
+    'identifier': Identifier,
+    'this': This,
+    'variable': Variable,
+    'global': Global,
+    'number': NumberLiteral,
+    'string': StringLiteral,
+    'array': ArrayLiteral,
+    'hash': HashLiteral,
+    'complexString': ComplexString,
+    'keyValuePair': KeyValuePair,
+
+    // logical expressions
+    'unaryExpression': UnaryExpression,
+    'binaryExpression': BinaryExpression,
+    'logicalExpression': LogicalExpression,
+    'conditionalExpression': ConditionalExpression,
+
+    // member expressions
+    'callExpression': CallExpression,
+    'propertyExpression': PropertyExpression,
+    'attributeExpression': AttributeExpression,
+    //'parenthesisExpression': ParenthesisExpression,
+
+  }
+
   function Expression(node) {
     if (!node) return null;
-
-    if (node.type == 'conditionalExpression')
-      return new ConditionalExpression(node);
-    if (node.type == 'logicalExpression')
-      return new LogicalExpression(node);
-    if (node.type == 'binaryExpression')
-      return new BinaryExpression(node);
-    if (node.type == 'unaryExpression')
-      return new UnaryExpression(node);
-
-    if (node.type == 'callExpression')
-      return new CallExpression(node);
-    if (node.type == 'propertyExpression')
-      return new PropertyExpression(node);
-    if (node.type == 'attributeExpression')
-      return new AttributeExpression(node);
-    if (node.type == 'parenthesisExpression')
-      return new ParenthesisExpression(node);
-
-    if (node.type == 'keyValuePair')
-      return new KeyValuePair(node);
-
-    if (node.type == 'identifier')
-      return new Identifier(node);
-    if (node.type == 'this')
-      return new This(node);
-    if (node.type == 'variable')
-      return new Variable(node);
-    if (node.type == 'number')
-      return new NumberLiteral(node);
-    if (node.type == 'string')
-      return new StringLiteral(node);
-    if (node.type == 'complexString')
-      return new ComplexString(node);
-    if (node.type == 'array')
-      return new ArrayLiteral(node);
-    if (node.type == 'hash')
-      return new HashLiteral(node);
+    return new EXPRESSION_TYPES[node.type](node);
   }
 
   // }}}
