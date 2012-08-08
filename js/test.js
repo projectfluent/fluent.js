@@ -492,11 +492,7 @@ var ast = [
 
 
 
-// <about22 """
-//   About {{ brandName32 }} {{ brandName32.male }}
-//   {{ brandName32.female }} {{ brandName32.female.nominative }}
-//   {{ brandName32.female.genitive }}
-// """>
+// <about22 "About {{ brandName32.female }}">
 
 
 {
@@ -512,30 +508,6 @@ var ast = [
         "content": "About "
       },
       {
-        "type": "identifier",
-        "name": "brandName32"
-      },
-      {
-        "type": "string",
-        "content": " "
-      },
-      {
-        "type": "propertyExpression",
-        "expression": {
-          "type": "identifier",
-          "name": "brandName32"
-        },
-        "property": {
-          "type": "identifier",
-          "name": "male"
-        },
-        "computed": false
-      },
-      {
-        "type": "string",
-        "content": " "
-      },
-      {
         "type": "propertyExpression",
         "expression": {
           "type": "identifier",
@@ -544,54 +516,6 @@ var ast = [
         "property": {
           "type": "identifier",
           "name": "female"
-        },
-        "computed": false
-      },
-      {
-        "type": "string",
-        "content": " "
-      },
-      {
-        "type": "propertyExpression",
-        "expression": {
-          "type": "propertyExpression",
-          "expression": {
-            "type": "identifier",
-            "name": "brandName32"
-          },
-          "property": {
-            "type": "identifier",
-            "name": "female"
-          },
-          "computed": false
-        },
-        "property": {
-          "type": "identifier",
-          "name": "nominative"
-        },
-        "computed": false
-      },
-      {
-        "type": "string",
-        "content": " "
-      },
-      {
-        "type": "propertyExpression",
-        "expression": {
-          "type": "propertyExpression",
-          "expression": {
-            "type": "identifier",
-            "name": "brandName32"
-          },
-          "property": {
-            "type": "identifier",
-            "name": "female"
-          },
-          "computed": false
-        },
-        "property": {
-          "type": "identifier",
-          "name": "genitive"
         },
         "computed": false
       }
@@ -1087,25 +1011,23 @@ var ast = [
 
 Compiler.compile(ast, obj);
 
-console.log('Firefox', obj['brandName1'].get(obj));
-console.log('Firefox', obj['_brandName'].get(obj));
-console.log('Firefox', obj['brandName2'].get(obj));
-console.log('Firefox', obj['brandName3'].get(obj));
-console.log('Whose is this? Firefox\'s', obj['brandName31'].getAttribute('title', obj));
-console.log('Firefox', obj['brandName4'].get(obj));
-console.log('male', obj['brandName4'].getAttribute('_gender', obj));
-console.log('Firefox', obj['brandName5'].get(obj));
-console.log('F', obj['brandName5'].getAttribute('accesskey', obj));
-console.log('This is Firefox', obj['brandName6'].getAttribute('title', obj));
-console.log('This is F', obj['brandName61'].getAttribute('title', obj));
-console.log('About Firefox...', obj['about1'].get(obj));
-console.log('About Firefox...', obj['about2'].get(obj));
-console.log('About Firefox...', obj['about3'].get(obj));
-console.log('About Firefox\'s...', obj['about4'].get(obj, {case: 'genitive'}));
-console.log('About Aurora\'s', obj['about23'].get(obj));
-
-// XXX index undefined errors
-//console.log('About Firefox Firefox Aurora Aurora Aurora\'s', obj['about22'].get(obj));
+console.log('01 Firefox', obj['brandName1'].get(obj));
+console.log('02 Firefox', obj['_brandName'].get(obj));
+console.log('03 Firefox', obj['brandName2'].get(obj));
+console.log('04 Firefox', obj['brandName3'].get(obj));
+console.log('05 Whose is this? Firefox\'s', obj['brandName31'].getAttribute('title', obj));
+console.log('06 Firefox', obj['brandName4'].get(obj));
+console.log('07 male', obj['brandName4'].getAttribute('_gender', obj));
+console.log('08 Firefox', obj['brandName5'].get(obj));
+console.log('09 F', obj['brandName5'].getAttribute('accesskey', obj));
+console.log('10 This is Firefox', obj['brandName6'].getAttribute('title', obj));
+console.log('11 This is F', obj['brandName61'].getAttribute('title', obj));
+console.log('12 About Firefox...', obj['about1'].get(obj));
+console.log('13 About Firefox...', obj['about2'].get(obj));
+console.log('14 About Firefox...', obj['about3'].get(obj));
+console.log('15 About Firefox\'s...', obj['about4'].get(obj, {case: 'genitive'}));
+console.log('16 About Aurora\'s', obj['about23'].get(obj));
+console.log('17 About Aurora', obj['about22'].get(obj));
 
 
 // Throw a recursion error

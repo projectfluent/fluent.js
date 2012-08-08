@@ -74,6 +74,7 @@ var Compiler = (function() {
         defaultKey = elem.id;
     });
     return function hashLiteral(locals, env, data, index) {
+      var index = index || [];
       var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
