@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script type="text/javascript;version=1.8" src="/l20n/js/parser.js"></script>
+
+    <script type="text/javascript">
+        function parse() {
+
+  var lol = document.getElementById('lol').value;
+  var ast = Parser.parse(lol);
+  document.getElementById('ast').value = JSON.stringify(ast);
+}
+    </script>
+  </head>
+  <body>
+    <button onclick="parse()">parse</button>
+    <textarea id="lol" style="width:500px;height:500px"></textarea>
+    <textarea id="ast" style="width:500px;height:500px"></textarea>
+  </body>
+</html>
+
+

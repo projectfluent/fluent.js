@@ -1,7 +1,9 @@
 <html>
   <head>
     <script type="text/javascript;version=1.8" src="/l20n/js/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="/l20n/js/l20n-xml.js"></script>
+    <script type="text/javascript;version=1.8" src="/l20n/js/parser.js"></script>
+    <script type="text/javascript;version=1.8" src="/l20n/js/compiler.js"></script>
+    <script type="text/javascript;version=1.8" src="/l20n/js/l20n-dom.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../lib/jasmine/jasmine.css">
     <script type="text/javascript" src="../lib/jasmine/jasmine.js"></script>
@@ -23,13 +25,16 @@
 
     <script type="text/javascript">
       function test() {
-        document.l10nData.user.gender="male";
-        var node = document.getElementById('mood');
-        node.retranslate();
+          var x="<foo 'downloading {{downloadCount}} foo'>";
+        var ast = Parser.parse(x);
+        alert(JSON.stringify(ast));
+        //document.l10nData.user.gender="male";
+        //var node = document.getElementById('mood');
+        //node.retranslate();
       }
     </script>
 
-    <link href="./index.j20n" type="intl/l20n" />
+    <link href="./index.lol" type="intl/l20n" />
   </head>
   <body>
     <p class="intro">

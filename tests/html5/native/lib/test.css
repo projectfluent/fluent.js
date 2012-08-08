@@ -2,19 +2,11 @@ body {
     margin: 1em;
 }
 
-.intro {
+p.intro {
     width: 500px;
     margin: 1em;
     padding: 1em;
     background-color: #e3e3e3;
-}
-
-pre, code {
-    background-color: #fff;
-}
-
-.intro pre, .intro code {
-    background-color: #eee;
 }
 
 .jasmine_reporter {

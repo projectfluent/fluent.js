@@ -97,27 +97,27 @@ class L20nParserTestCase(unittest.TestCase):
         string = "<id attr1: 'foo'>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 1)
-        attr = lol.body[0].attrs[0]
+        attr = lol.body[0].attrs['attr1']
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
 
         string = "<id attr1: 'foo' attr2: 'foo2'    >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 2)
-        attr = lol.body[0].attrs[0]
+        attr = lol.body[0].attrs['attr1']
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
 
         string = "<id 'value' attr1: 'foo' attr2: 'foo2' attr3: 'foo3' >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body[0].attrs), 3)
-        attr = lol.body[0].attrs[0]
+        attr = lol.body[0].attrs['attr1']
         self.assertEqual(attr.key.name, "attr1")
         self.assertEqual(attr.value.content, "foo")
-        attr = lol.body[0].attrs[1]
+        attr = lol.body[0].attrs['attr2']
         self.assertEqual(attr.key.name, "attr2")
         self.assertEqual(attr.value.content, "foo2")
-        attr = lol.body[0].attrs[2]
+        attr = lol.body[0].attrs['attr3']
         self.assertEqual(attr.key.name, "attr3")
         self.assertEqual(attr.value.content, "foo3")
 
@@ -325,13 +325,13 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_macro(self):
-        string = "<id(n) {2}>"
+        string = "<id($n) {2}>"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         self.assertEqual(len(lol.body[0].args), 1)
         self.assertEqual(lol.body[0].expression.value, 2)
 
-        string = "<id( n, m, a ) {2}  >"
+        string = "<id( $n, $m, $a ) {2}  >"
         lol = self.parser.parse(string)
         self.assertEqual(len(lol.body), 1)
         self.assertEqual(len(lol.body[0].args), 3)
@@ -340,6 +340,7 @@ class L20nParserTestCase(unittest.TestCase):
     def test_macro_errors(self):
         strings = [
             '<id (n) {2}>',
+            '<id ($n) {2}>',
             '<(n) {2}>',
             '<id(() {2}>',
             '<id()) {2}>',
@@ -656,7 +657,7 @@ class L20nParserTestCase(unittest.TestCase):
                 raise AssertionError("Failed to raise parser error on string: %s" % string)
 
     def test_attr_expression(self):
-        string = "<id[x[.'d']] 'foo'>"
+        string = "<id[x.['d']] 'foo'>"
         lol = self.parser.parse(string)
         exp = lol.body[0].index[0]
         self.assertEqual(exp.expression.name, 'x')
@@ -671,8 +672,13 @@ class L20nParserTestCase(unittest.TestCase):
     def test_attr_expression_errors(self):
         strings = [
             '<id[x...d] "foo">',
-            '<id[x.["d"]] "foo">',
+            '<id[x[."d"]] "foo">',
             '<id[x[..d]] "foo">',
+            '<id[x..[d]] "foo">',
+            '<id[x.y..z] "foo">',
+            '<id[x..y..z] "foo">',
+            '<id[x.y.["z"]] "foo">',
+            '<id[x..y.["z"]] "foo">',
         ]
         for string in strings:
             try:
@@ -715,9 +721,6 @@ class L20nParserTestCase(unittest.TestCase):
         self.assertEqual(exp.expression.callee.name, 'a')
         self.assertEqual(exp.property.name, 'c')
 
-        string = "<id[a().c[.d]()] 'foo'>"
-        lol = self.parser.parse(string)
-
     def test_parenthesis_expression_errors(self):
         strings = [
             '<id[1+()] "foo">',
@@ -727,6 +730,7 @@ class L20nParserTestCase(unittest.TestCase):
             '<id[(] "foo">',
             '<id[)] "foo">',
             '<id[1+(2] "foo">',
+            '<id[a().c.[d]()] "foo">',
         ]
         for string in strings:
             try:

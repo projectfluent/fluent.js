@@ -1,13 +1,14 @@
 import re
 from l20n.format.lol import ast
 import string
+from collections import OrderedDict
 
 class ParserError(Exception):
     pass
 
 class Parser():
     patterns = {
-        'id': re.compile('^([a-zA-Z]\w*)'),
+        'id': re.compile('^([_a-zA-Z]\w*)'),
         'value': re.compile('^(?P<op>[\'"])(.*?)(?<!\\\)(?P=op)'),
     }
     _parse_strings = False
@@ -15,17 +16,17 @@ class Parser():
     def parse(self, content, parse_strings=True):
         lol = ast.LOL()
         lol._struct = True
-        lol._template_body = []
         self.content = content
         self._parse_strings = parse_strings
         ws_pre = self.get_ws()
+        lol._template_body = [ws_pre]
         while self.content:
             try:
                 lol.body.append(self.get_entry())
             except IndexError:
                 raise ParserError()
             lol._template_body.append(self.get_ws())
-        lol._template = '%s%%(body)s' % (ws_pre,)
+        lol._template = '%(body)s'
         return lol
 
     def get_ws(self, wschars=string.whitespace):
@@ -52,11 +53,33 @@ class Parser():
                 entry = self.get_entity(id)
         elif self.content[0:2] == '/*':
             entry = self.get_comment()
+        elif self.content[0:6] == "import":
+            entry = self.get_importstatement()
         else:
             raise ParserError()
         return entry
 
+    def get_importstatement(self):
+        self.content = self.content[6:]
+        self.get_ws()
+        if self.content[0] != "(":
+            raise ParserError()
+        self.content = self.content[1:]
+        self.get_ws()
+        uri = self.get_string()
+        self.get_ws()
+        if self.content[0] != ")":
+            raise ParserError()
+        self.content = self.content[1:]
+        impStmt = ast.ImportStatement(uri=uri)
+        return impStmt
+
     def get_identifier(self):
+        if self.content[0] == '~':
+            self.content = self.content[1:]
+            te = ast.ThisExpression()
+            te._template = '~'
+            return te
         match = self.patterns['id'].match(self.content)
         if not match:
             raise ParserError()
@@ -70,7 +93,9 @@ class Parser():
         index_arr = index[0] if index else None
         if self.content[0] == '>':
             self.content = self.content[1:]
-            entity = ast.Entity(id, index_arr)
+            entity = ast.Entity(id,
+                                index_arr)
+            entity.local = id.name[0] == '_'
             if index:
                 entity._template_index = index[2]
                 entity._template = "<%%(id)s[%s]%s>" % (index[1], ws1)
@@ -85,20 +110,24 @@ class Parser():
         if attrs:
             attrs_template = attrs[1]
             attrs = attrs[0]
-        entity = ast.Entity(id,
-                            index_arr,
-                            value,
-                            attrs)
+        entity = ast.Entity(id=id,
+                            index=index_arr,
+                            value=value,
+                            attrs=attrs)
+        entity.local = id.name[0] == '_'
+        at = '%%(attrs)s' if attrs else ''
         if index:
             entity._template_index = index[2]
-            entity._template = "<%%(id)s[%s]%s%%(value)s%s%%(attrs)s>" % (index[1], ws1,ws2)
+            entity._template = "<%%(id)s[%s]%s%%(value)s%s%s>" % (index[1], ws1,ws2, at)
         else:
-            entity._template = "<%%(id)s%s%%(value)s%s%%(attrs)s>" % (ws1,ws2)
+            entity._template = "<%%(id)s%s%%(value)s%s%s>" % (ws1,ws2, at)
         if attrs:
             entity._template_attrs = attrs_template
         return entity
 
     def get_macro(self, id):
+        if id.name[0] == '_':
+            raise ParserError()
         idlist = []
         self.content = self.content[1:]
         ws_pre_idlist = self.get_ws()
@@ -108,7 +137,7 @@ class Parser():
         else:
 
             while 1:
-                idlist.append(self.get_identifier())
+                idlist.append(self.get_variable())
                 ws_post = self.get_ws()
                 if self.content[0] == ',':
                     self.content = self.content[1:]
@@ -178,7 +207,6 @@ class Parser():
         return ast.String(match.group(2))
 
     def get_complex_string(self, quote):
-
         str_end = quote[0]
         literal = re.compile('^([^\\\{%s]+)' % str_end)
         obj = []
@@ -196,7 +224,9 @@ class Parser():
             if self.content[:2] == '{{':
                 self.content = self.content[2:]
                 if buffer:
-                    obj.append(ast.String(buffer))
+                    string = ast.String(buffer)
+                    string._template = "%(content)s"
+                    obj.append(string)
                     buffer = ''
                 ws_pre_exp = self.get_ws()
                 expr = self.get_expression()
@@ -211,7 +241,7 @@ class Parser():
             if m:
                 buffer += m.group(1)
                 self.content = self.content[m.end(0):]
-        if buffer or len(obj):
+        if buffer:
             string = ast.String(buffer)
             string._template = '%(content)s'
             obj.append(string)
@@ -264,8 +294,12 @@ class Parser():
         hash = []
         hash_template = []
         while 1:
-            kvp = self.get_kvp()
-            hash.append(kvp)
+            default = False
+            if self.content[0] == '*':
+                self.content = self.content[1:]
+                default = True
+            hi = self.get_kvp(ast.HashItem)
+            hash.append(hi)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
                 self.content = self.content[1:]
@@ -282,7 +316,7 @@ class Parser():
         h._template_content = hash_template
         return h
 
-    def get_kvp(self):
+    def get_kvp(self, cl):
         key = self.get_identifier()
         ws_post_key = self.get_ws()
         if self.content[0] != ':':
@@ -290,7 +324,7 @@ class Parser():
         self.content = self.content[1:]
         ws_pre_value = self.get_ws()
         val = self.get_value()
-        kvp = ast.KeyValuePair(key, val)
+        kvp = cl(key, val)
         kvp._template = '%%(key)s%s:%s%%(value)s' % (ws_post_key,
                                                      ws_pre_value)
         return kvp
@@ -299,21 +333,21 @@ class Parser():
         if self.content[0] == '>':
             self.content = self.content[1:]
             return None
-        hash = []
-        hash_template = []
+        attrs = OrderedDict()
+        attrs_template = []
         while 1:
-            kvp = self.get_kvp()
-            hash.append(kvp)
+            attr = self.get_kvp(ast.Attribute)
+            attrs[attr.key.name] = attr
             ws_post_item = self.get_ws()
             if self.content[0] == '>':
-                hash_template.append(ws_post_item)
+                attrs_template.append(ws_post_item)
                 self.content = self.content[1:]
                 break
             elif ws_post_item == '':
                 raise ParserError()
-            hash_template.append(ws_post_item)
-        if len(hash):
-            return (hash, hash_template)
+            attrs_template.append(ws_post_item)
+        if len(attrs):
+            return (attrs, attrs_template)
         else:
             return None
 
@@ -474,7 +508,7 @@ class Parser():
         ws_post_id = self.get_ws()
         matched = False
         while 1:
-            if self.content[0:2] in ('[.', '..'):
+            if self.content[0:2] in ('.[', '..'):
                 exp = self.get_attr_expression(exp, ws_post_id)
                 matched = True
             elif self.content[0] in ('[', '.'):
@@ -516,34 +550,52 @@ class Parser():
         #value
         if self.content[0] in ('"\'{['):
             return self.get_value()
+        #variable
+        if self.content[0] == "$":
+            return self.get_variable()
+        #globals
+        if self.content[0] == '@':
+            self.content = self.content[1:]
+            ide = self.get_identifier()
+            ge = ast.GlobalsExpression(ide)
+            ge._template = '@%%(id)s'
+            return ge
         return self.get_identifier()
 
+    def get_variable(self):
+        self.content = self.content[1:]
+        id = self.get_identifier()
+        ve = ast.VariableExpression(id)
+        ve._template = "$%(id)s"
+        return ve
+
     def get_attr_expression(self, idref, ws_post_id):
-        d = self.content[0:2]
-        if d == '[.':
+        if not isinstance(idref, (ast.ParenthesisExpression,
+                                  ast.Identifier)):
+            raise ParserError()
+        if self.content[1] == '[':
             self.content = self.content[2:]
             ws_pre = self.get_ws()
-            exp = self.get_expression()
+            exp = self.get_member_expression()
             ws_post = self.get_ws()
             self.content = self.content[1:]
             attr = ast.AttributeExpression(idref, exp, True)
-            attr._template = '%%(expression)s%s[.%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
+            attr._template = '%%(expression)s%s.[%s%%(attribute)s%s]' % (ws_post_id, ws_pre, ws_post)
             return attr
-        elif d == '..':
+        elif self.content[1] == '.':
             self.content = self.content[2:]
             prop = self.get_identifier()
             ae = ast.AttributeExpression(idref, prop, False)
             ae._template = '%(expression)s..%(attribute)s'
             return ae
-        else:
-            raise ParserError()
+        raise ParserError()
 
     def get_property_expression(self, idref, ws_post_id):
         d = self.content[0]
         if d == '[':
             self.content = self.content[1:]
             ws_pre = self.get_ws()
-            exp = self.get_expression()
+            exp = self.get_member_expression()
             ws_post = self.get_ws()
             self.content = self.content[1:]
             prop = ast.PropertyExpression(idref, exp, True)
@@ -587,5 +639,7 @@ class Parser():
         comment, sep, self.content = self.content[2:].partition('*/')
         if not sep:
             raise ParserError()
-        return ast.Comment(comment)
+        c = ast.Comment(comment)
+        c._template = '/*%(content)s*/'
+        return c
 
