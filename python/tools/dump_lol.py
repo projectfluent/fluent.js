@@ -2,17 +2,20 @@
 import argparse
 
 from l20n.format.lol.parser import Parser
-import pyast
+import pyast.dump.raw, pyast.dump.json
 
 def read_file(filename, charset='utf-8', errors='strict'):
     with open(filename, 'rb') as f:
         return f.read().decode(charset, errors)
 
-def dump_lol(path):
+def dump_lol(path, t):
     source = read_file(path)
     p = Parser()
     lol = p.parse(source)
-    print(pyast.dump(lol))
+    if t == 'raw':
+        print(pyast.dump.raw.dump(lol))
+    else:
+        print(pyast.dump.json.dump(lol))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -20,5 +23,10 @@ if __name__ == '__main__':
         prog="dump_lol")
     parser.add_argument('path', type=str,
                         help='path to lol file')
+    parser.add_argument('--type', '-t',
+                        type=str,
+                        choices=('json', 'raw'),
+                        default='raw',
+                        help='path to lol file')
     args = parser.parse_args()
-    dump_lol(args.path)
+    dump_lol(args.path, args.type)
