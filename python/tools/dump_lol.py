@@ -1,8 +1,7 @@
-#!/usr/bin/python 
 import argparse
 
 from l20n.format.lol.parser import Parser
-import pyast.dump.raw, pyast.dump.json
+import pyast.dump.raw, pyast.dump.js
 
 def read_file(filename, charset='utf-8', errors='strict'):
     with open(filename, 'rb') as f:
@@ -15,7 +14,7 @@ def dump_lol(path, t):
     if t == 'raw':
         print(pyast.dump.raw.dump(lol))
     else:
-        print(pyast.dump.json.dump(lol))
+        print(pyast.dump.js.dump(lol))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
