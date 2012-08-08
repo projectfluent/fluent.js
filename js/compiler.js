@@ -4,19 +4,19 @@ var Compiler = (function() {
 
   function Identifier(node) {
     var name = node.name;
-    return function(locals, env, data) {
+    return function identifier(locals, env, data) {
       return env[name];
     };
   }
 
   function This(node) {
-    return function(locals, env, data) {
+    return function thisIdentifier(locals, env, data) {
       return locals.__this__;
     };
   }
 
   function Variable(node) {
-    return function(locals, env, data) {
+    return function variable(locals, env, data) {
       var value = locals[node.name];
       if (value !== undefined)
         return value;
@@ -25,19 +25,19 @@ var Compiler = (function() {
   }
 
   function Global(node) {
-    return function(locals, env, data) {
+    return function global(locals, env, data) {
       return env.GLOBALS[node.name];
     };
   }
 
   function NumberLiteral(node) {
-    return function(locals, env, data) {
+    return function numberLiteral(locals, env, data) {
       return node.content;
     };
   }
 
   function StringLiteral(node) {
-    return function(locals, env, data) {
+    return function stringLiteral(locals, env, data) {
       return node.content;
     };
   }
@@ -50,7 +50,7 @@ var Compiler = (function() {
       if (elem.default)
         defaultKey = i;
     });
-    return function(locals, env, data, index) {
+    return function arrayLiteral(locals, env, data, index) {
       var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
@@ -73,7 +73,7 @@ var Compiler = (function() {
       if (i == 0 || elem.default)
         defaultKey = elem.id;
     });
-    return function(locals, env, data, index) {
+    return function hashLiteral(locals, env, data, index) {
       var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
@@ -94,7 +94,7 @@ var Compiler = (function() {
     node.content.forEach(function(elem) {
       content.push(new Expression(elem));
     })
-    return function(locals, env, data) {
+    return function complexString(locals, env, data) {
       if (dirty)
         throw "Recursive reference";
       dirty = true;
@@ -123,58 +123,58 @@ var Compiler = (function() {
   // {{{ operators
 
   function UnaryOperator(token) {
-    if (token == '-') return function(operand) {
+    if (token == '-') return function negativeOperator(operand) {
       return -operand;
     };
-    if (token == '+') return function(operand) {
+    if (token == '+') return function positiveOperator(operand) {
       return +operand;
     };
-    if (token == '!') return function(operand) {
+    if (token == '!') return function notOperator(operand) {
       return !operand;
     };
   }
 
   function BinaryOperator(token) {
-    if (token == '==') return function(left, right) {
+    if (token == '==') return function equalOperator(left, right) {
       return left == right;
     };
-    if (token == '!=') return function(left, right) {
+    if (token == '!=') return function notEqualOperator(left, right) {
       return left != right;
     };
-    if (token == '<') return function(left, right) {
+    if (token == '<') return function lessThanOperator(left, right) {
       return left < right;
     };
-    if (token == '<=') return function(left, right) {
+    if (token == '<=') return function lessThanEqualOperator(left, right) {
       return left <= right;
     };
-    if (token == '>') return function(left, right) {
+    if (token == '>') return function greaterThanOperator(left, right) {
       return left > right;
     };
-    if (token == '>=') return function(left, right) {
+    if (token == '>=') return function greaterThanEqualOperator(left, right) {
       return left >= right;
     };
-    if (token == '+') return function(left, right) {
+    if (token == '+') return function addOperator(left, right) {
       return left + right;
     };
-    if (token == '-') return function(left, right) {
+    if (token == '-') return function substractOperator(left, right) {
       return left - right;
     };
-    if (token == '*') return function(left, right) {
+    if (token == '*') return function multiplyOperator(left, right) {
       return left * right;
     };
-    if (token == '/') return function(left, right) {
+    if (token == '/') return function devideOperator(left, right) {
       return left / right;
     };
-    if (token == '%') return function(left, right) {
+    if (token == '%') return function moduloOperator(left, right) {
       return left % right;
     };
   }
 
   function LogicalOperator(token) {
-    if (token == '&&') return function(left, right) {
+    if (token == '&&') return function andOperator(left, right) {
       return left && right;
     };
-    if (token == '||') return function(left, right) {
+    if (token == '||') return function orOperator(left, right) {
       return left || right;
     };
   }
@@ -186,7 +186,7 @@ var Compiler = (function() {
   function UnaryExpression(node) {
     var operator = new UnaryOperator(node.operator);
     var operand = new Expression(node.operand);
-    return function(locals, env, data) {
+    return function unaryExpression(locals, env, data) {
       return operator(operand(locals, env, data));
     };
   }
@@ -195,7 +195,7 @@ var Compiler = (function() {
     var left = new Expression(node.left);
     var operator = new BinaryOperator(node.operator);
     var right = new Expression(node.right);
-    return function(locals, env, data) {
+    return function binaryExpression(locals, env, data) {
       return operator(left(locals, env, data), right(locals, env, data));
     };
   }
@@ -205,7 +205,7 @@ var Compiler = (function() {
     if (node.operator) {
       var operator = new LogicalOperator(node.operator);
       var right = new Expression(node.right);
-      return function(locals, env, data) {
+      return function logicalExpression(locals, env, data) {
         operator(left(locals, env, data), right(locals, env, data));
       }
     } else return left;
@@ -215,7 +215,7 @@ var Compiler = (function() {
     var test = new Expression(node.test);
     var consequent = new Expression(node.consequent);
     var alternate = new Expression(node.alternate);
-    return function(locals, env, data) {
+    return function conditionalExpression(locals, env, data) {
       if (test(locals, env, data))
         return consequent(locals, env, data);
       return alternate(locals, env, data);
@@ -232,7 +232,7 @@ var Compiler = (function() {
     node.arguments.forEach(function(elem, i) {
       args.push(new Expression(elem));
     });
-    return function(locals, env, data) {
+    return function callExpression(locals, env, data) {
       var resolved_args = [];
       args.forEach(function(arg, i) {
         resolved_args.push(arg(locals, env, data));
@@ -248,7 +248,7 @@ var Compiler = (function() {
       var property = new Expression(node.property);
     else
       var property = node.property.name;
-    return function(locals, env, data) {
+    return function propertyExpression(locals, env, data) {
       var ret = expression(locals, env, data);
       if (ret instanceof Entity)
         return ret._yield(locals, env, data, [property]);
@@ -267,7 +267,7 @@ var Compiler = (function() {
       var attribute = new Expression(node.attribute);
     else
       var attribute = node.attribute.name;
-    return function(locals, env, data) {
+    return function attributeExpression(locals, env, data) {
       var entity = expression(locals, env, data);
       //if (!entity instanceof Entity)
       //  throw "Expression does not evaluate to a valid entity."
