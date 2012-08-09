@@ -90,13 +90,12 @@ class Parser():
 
     def get_entity(self, id, index=None):
         ws1 = self.get_ws()
-        index_arr = index[0] if index else None
         if self.content[0] == '>':
             self.content = self.content[1:]
-            entity = ast.Entity(id,
-                                index_arr)
+            entity = ast.Entity(id)
             entity.local = id.name[0] == '_'
             if index:
+                entity.index = index[0]
                 entity._template_index = index[2]
                 entity._template = "<%%(id)s[%s]%s>" % (index[1], ws1)
             else:
@@ -107,22 +106,19 @@ class Parser():
         value = self.get_value(none=True)
         ws2 = self.get_ws()
         attrs = self.get_attributes()
-        if attrs:
-            attrs_template = attrs[1]
-            attrs = attrs[0]
         entity = ast.Entity(id=id,
-                            index=index_arr,
-                            value=value,
-                            attrs=attrs)
+                            value=value)
         entity.local = id.name[0] == '_'
         at = '%%(attrs)s' if attrs else ''
         if index:
+            entity.index = index[0]
             entity._template_index = index[2]
             entity._template = "<%%(id)s[%s]%s%%(value)s%s%s>" % (index[1], ws1,ws2, at)
         else:
             entity._template = "<%%(id)s%s%%(value)s%s%s>" % (ws1,ws2, at)
         if attrs:
-            entity._template_attrs = attrs_template
+            entity.attrs = attrs[0]
+            entity._template_attrs = attrs[1]
         return entity
 
     def get_macro(self, id):
