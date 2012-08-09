@@ -313,9 +313,6 @@ class L20nJsCompilerTestCase(unittest.TestCase):
 
         lol = l20n.LOL((macro,))
         prog = compile(lol)
-        s = serializer.Serializer()
-        print(s.dump_program(prog))
-
         macro = prog.body[0].expression
         value = macro.right
         val_body = value.body
