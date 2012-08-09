@@ -9,30 +9,30 @@ var Compiler = (function() {
     };
   }
 
-  function This(node) {
-    return function thisIdentifier(locals, env, data) {
+  function ThisExpression(node) {
+    return function thisExpression(locals, env, data) {
       return locals.__this__;
     };
   }
 
-  function Variable(node) {
-    return function variable(locals, env, data) {
-      var value = locals[node.name];
+  function VariableExpression(node) {
+    return function variableExpression(locals, env, data) {
+      var value = locals[node.id.name];
       if (value !== undefined)
         return value;
-      return data[node.name];
+      return data[node.id.name];
     };
   }
 
-  function Global(node) {
-    return function global(locals, env, data) {
-      return env.GLOBALS[node.name];
+  function GlobalsExpression(node) {
+    return function globalsExpression(locals, env, data) {
+      return env.__globals__[node.id.name];
     };
   }
 
   function NumberLiteral(node) {
     return function numberLiteral(locals, env, data) {
-      return node.content;
+      return node.value;
     };
   }
 
@@ -70,15 +70,15 @@ var Compiler = (function() {
     var content = [];
     var defaultKey = null;
     node.content.forEach(function(elem, i) {
-      content[elem.id] = new Expression(elem);
+      content[elem.key.name] = new HashItem(elem);
       if (i == 0 || elem.default)
-        defaultKey = elem.id;
+        defaultKey = elem.key.name;
     });
     return function hashLiteral(locals, env, data, index) {
       var index = index || [];
       var key = index.shift();
       if (typeof key == 'function')
-        key = key(locals, env, data);
+        key = key(locals, env, data); // XXX __resolve__ = true ?
       if (key && content[key])
         var member = content[key];
       else
@@ -89,6 +89,15 @@ var Compiler = (function() {
         return member;
     };
   }
+
+  function HashItem(node) {
+    // return the value expression right away
+    // the `key` and the `default` flag logic is done in `HashLiteral`
+    return new Expression(node.value)
+  }
+
+  // }}}
+  // {{{ ComplexString
 
   function ComplexString(node) {
     var dirty = false;
@@ -116,23 +125,18 @@ var Compiler = (function() {
     };
   }
 
-  function KeyValuePair(node) {
-    return new Expression(node.value)
-  }
-
-
   // }}}
   // {{{ operators
 
   function UnaryOperator(token) {
-    if (token == '-') return function negativeOperator(operand) {
-      return -operand;
+    if (token == '-') return function negativeOperator(argument) {
+      return -argument;
     };
-    if (token == '+') return function positiveOperator(operand) {
-      return +operand;
+    if (token == '+') return function positiveOperator(argument) {
+      return +argument;
     };
-    if (token == '!') return function notOperator(operand) {
-      return !operand;
+    if (token == '!') return function notOperator(argument) {
+      return !argument;
     };
   }
 
@@ -186,16 +190,16 @@ var Compiler = (function() {
   // {{{ logical expressions
 
   function UnaryExpression(node) {
-    var operator = new UnaryOperator(node.operator);
-    var operand = new Expression(node.operand);
+    var operator = new UnaryOperator(node.operator.token);
+    var argument = new Expression(node.argument);
     return function unaryExpression(locals, env, data) {
-      return operator(operand(locals, env, data));
+      return operator(argument(locals, env, data));
     };
   }
 
   function BinaryExpression(node) {
     var left = new Expression(node.left);
-    var operator = new BinaryOperator(node.operator);
+    var operator = new BinaryOperator(node.operator.token);
     var right = new Expression(node.right);
     return function binaryExpression(locals, env, data) {
       return operator(left(locals, env, data), right(locals, env, data));
@@ -205,7 +209,7 @@ var Compiler = (function() {
   function LogicalExpression(node) {
     var left = new Expression(node.left);
     if (node.operator) {
-      var operator = new LogicalOperator(node.operator);
+      var operator = new LogicalOperator(node.operator.token);
       var right = new Expression(node.right);
       return function logicalExpression(locals, env, data) {
         operator(left(locals, env, data), right(locals, env, data));
@@ -252,12 +256,14 @@ var Compiler = (function() {
     else
       var property = node.property.name;
     return function propertyExpression(locals, env, data) {
+      // XXX: if computed call the property with __resolve__ = true
       var ret = expression(locals, env, data);
       if (ret instanceof Entity)
         return ret._yield(env, data, property);
       if (ret instanceof Attribute)
         return ret._yield(locals, env, data, property);
       // else, `expression` is a HashLiteral
+      // XXX what if __resolve__ is true here?
       return ret(locals, env, data, [property]);
     }
   }
@@ -274,38 +280,43 @@ var Compiler = (function() {
       var entity = expression(locals, env, data);
       //if (!entity instanceof Entity)
       //  throw "Expression does not evaluate to a valid entity."
+
+      // XXX: if computed call the attribute with __resolve__ = true
       return entity.getAttribute(attribute, env, data);
     }
   }
 
+  function ParenthesisExpression(node) {
+    return new Expression(node.expression);
+  }
 
   // }}}
   // {{{ the base Expression class
 
   var EXPRESSION_TYPES = {
     // primary expressions
-    'identifier': Identifier,
-    'this': This,
-    'variable': Variable,
-    'global': Global,
-    'number': NumberLiteral,
-    'string': StringLiteral,
-    'array': ArrayLiteral,
-    'hash': HashLiteral,
-    'complexString': ComplexString,
-    'keyValuePair': KeyValuePair,
+    'Identifier': Identifier,
+    'ThisExpression': ThisExpression,
+    'VariableExpression': VariableExpression,
+    'GlobalsExpression': GlobalsExpression,
+    'Literal': NumberLiteral,
+    'String': StringLiteral,
+    'Array': ArrayLiteral,
+    'Hash': HashLiteral,
+    'HashItem': HashItem,
+    'ComplexString': ComplexString,
 
     // logical expressions
-    'unaryExpression': UnaryExpression,
-    'binaryExpression': BinaryExpression,
-    'logicalExpression': LogicalExpression,
-    'conditionalExpression': ConditionalExpression,
+    'UnaryExpression': UnaryExpression,
+    'BinaryExpression': BinaryExpression,
+    'LogicalExpression': LogicalExpression,
+    'ConditionalExpression': ConditionalExpression,
 
     // member expressions
-    'callExpression': CallExpression,
-    'propertyExpression': PropertyExpression,
-    'attributeExpression': AttributeExpression,
-    //'parenthesisExpression': ParenthesisExpression,
+    'CallExpression': CallExpression,
+    'PropertyExpression': PropertyExpression,
+    'AttributeExpression': AttributeExpression,
+    'ParenthesisExpression': ParenthesisExpression,
 
   }
 
@@ -319,7 +330,7 @@ var Compiler = (function() {
   // {{{ entries
 
   function Attribute(node) {
-    this.id = node.id;
+    this.key = node.key.name;
     this.local = node.local || false;
     this.value = new Expression(node.value);
   }
@@ -347,9 +358,9 @@ var Compiler = (function() {
       this.index.push(new Expression(ind));
     }, this);
     this.attributes = {};
-    node.attrs.forEach(function(attr) {
-      this.attributes[attr.id] = new Attribute(attr);
-    }, this);
+    for (var key in node.attrs) {
+      this.attributes[key] = new Attribute(node.attrs[key]);
+    }
     this.local = node.local || false;
   }
 
@@ -360,13 +371,13 @@ var Compiler = (function() {
       return this.value(locals, env, data, index);
     },
     _yield: function _yield(env, data, key) {
-      locals = {
+      var locals = {
         '__resolve__': false,
       };
       return this._get(locals, env, data, [key]);
     },
     _resolve: function _resolve(env, data, index) {
-      locals = {
+      var locals = {
         '__resolve__': true,
       };
       return this._get(locals, env, data, index);
@@ -381,7 +392,7 @@ var Compiler = (function() {
       var attrs = {};
       for (var i in this.attributes) {
         var attr = this.attributes[i];
-        attrs[attr.id] = attr._resolve({ __this__: this }, env, data);
+        attrs[attr.key] = attr._resolve({ __this__: this }, env, data);
       }
       return attrs;
     },
@@ -398,7 +409,7 @@ var Compiler = (function() {
     return function(args, env, data) {
       var locals = {};
       node.args.forEach(function(arg, i) {
-        locals[arg.name] = args[i];
+        locals[arg.id.name] = args[i];
       });
       return expression(locals, env, data);
     };
@@ -409,10 +420,10 @@ var Compiler = (function() {
 
   function compile(ast, obj) {
     for (var i = 0, elem; elem = ast[i]; i++) {
-      if (elem.type == 'entity')
-        obj[elem.id] = new Entity(elem);
-      else if (elem.type == 'macro')
-        obj[elem.id] = new Macro(elem);
+      if (elem.type == 'Entity')
+        obj[elem.id.name] = new Entity(elem);
+      else if (elem.type == 'Macro')
+        obj[elem.id.name] = new Macro(elem);
     }
   }
 
