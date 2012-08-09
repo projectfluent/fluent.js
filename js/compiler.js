@@ -51,6 +51,7 @@ var Compiler = (function() {
         defaultKey = i;
     });
     return function arrayLiteral(locals, env, data, index) {
+      var index = index || [];
       var key = index.shift();
       if (typeof key == 'function')
         key = key(locals, env, data);
@@ -252,9 +253,9 @@ var Compiler = (function() {
     return function propertyExpression(locals, env, data) {
       var ret = expression(locals, env, data);
       if (ret instanceof Entity)
-        return ret._yield(locals, env, data, [property]);
+        return ret._yield(env, data, property);
       if (ret instanceof Attribute)
-        return ret._yield(locals, env, data, [property]);
+        return ret._yield(locals, env, data, property);
       // else, `expression` is a HashLiteral
       return ret(locals, env, data, [property]);
     }
@@ -262,7 +263,7 @@ var Compiler = (function() {
 
 
   function AttributeExpression(node) {
-    var expression = new Expression(node.expression, false);
+    var expression = new Expression(node.expression);
     var computed = node.computed;
     if (computed)
       var attribute = new Expression(node.attribute);
@@ -308,7 +309,8 @@ var Compiler = (function() {
   }
 
   function Expression(node) {
-    if (!node) return null;
+    if (!node) 
+      return null;
     return new EXPRESSION_TYPES[node.type](node);
   }
 
@@ -322,18 +324,18 @@ var Compiler = (function() {
   }
 
   Attribute.prototype = {
-    yield: function yield(locals, env, data, key) {
-      return this.value(locals, env, data, key);
+    _get: function _get(locals, env, data, index) {
+      var index = index || locals['__this__'].index;
+      return this.value(locals, env, data, index);
     },
-    get: function get(locals, env, data, index) {
-      if (index === undefined)
-        index = locals['__this__'].index;
-      var ret = this.yield(locals, env, data, index.shift());
-      while (typeof ret !== 'string') {
-        ret = ret(locals, env, data, index.shift());
-      }
-      return ret;
+    _yield: function _yield(locals, env, data, key) {
+      locals.__resolve__ = false;
+      return this._get(locals, env, data, [key]);
     },
+    _resolve: function _resolve(locals, env, data, index) {
+      locals.__resolve__ = true;
+      return this._get(locals, env, data, index);
+    }
   }
 
   function Entity(node) {
@@ -352,30 +354,33 @@ var Compiler = (function() {
 
   Entity.prototype = {
     _get: function _get(locals, env, data, index) {
-      if (index === undefined)
-        index = this.index;
+      var index = index || this.index;
       locals.__this__ = this;
       return this.value(locals, env, data, index);
     },
-    _yield: function _yield(locals, env, data, index) {
-      locals.__resolve__ = false;
-      return this._get(locals, env, data, index);
+    _yield: function _yield(env, data, key) {
+      locals = {
+        '__resolve__': false,
+      };
+      return this._get(locals, env, data, [key]);
     },
-    _resolve: function _resolve(locals, env, data, index) {
-      locals.__resolve__ = true;
+    _resolve: function _resolve(env, data, index) {
+      locals = {
+        '__resolve__': true,
+      };
       return this._get(locals, env, data, index);
     },
     get: function get(env, data, index) {
-      return this._resolve({}, env, data, index);
+      return this._resolve(env, data, index);
     },
     getAttribute: function getAttribute(name, env, data) {
-      return this.attributes[name].get({ __this__: this }, env, data);
+      return this.attributes[name]._resolve({ __this__: this }, env, data);
     },
     getAttributes: function getAttributes(env, data) {
       var attrs = {};
       for (var i in this.attributes) {
         var attr = this.attributes[i];
-        attrs[attr.id] = attr.get({ __this__: this }, env, data);
+        attrs[attr.id] = attr._resolve({ __this__: this }, env, data);
       }
       return attrs;
     },
