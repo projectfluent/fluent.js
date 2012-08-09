@@ -295,6 +295,7 @@ class Parser():
                 self.content = self.content[1:]
                 default = True
             hi = self.get_kvp(ast.HashItem)
+            hi.default = default
             hash.append(hi)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
