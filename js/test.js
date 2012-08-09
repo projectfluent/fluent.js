@@ -1007,6 +1007,96 @@ var ast = [
   }
 },
 
+
+
+
+
+// <infinite() { infinite() }>
+{
+  "type": "macro",
+  "id": "infinite",
+  "args": [],
+  "attrs": [],
+  "expression": {
+    "type": "callExpression",
+    "callee": {
+      "type": "identifier",
+      "name": "infinite"
+    },
+    "arguments": []
+  }
+},
+
+
+
+// <fac($n) { $n == 1 ? 1 : $n * fac($n - 1) }>
+{
+  "type": "macro",
+  "id": "fac",
+  "args": [
+    {
+      "type": "variable",
+      "name": "n"
+    }
+  ],
+  "attrs": [],
+  "expression": {
+    "type": "conditionalExpression",
+    "test": {
+      "type": "logicalExpression",
+      "left": {
+        "type": "binaryExpression",
+        "left": {
+          "type": "variable",
+          "name": "n"
+        },
+        "operator": "==",
+        "right": {
+          "type": "number",
+          "content": 1
+        }
+      }
+    },
+    "consequent": {
+      "type": "number",
+      "content": 1
+    },
+    "alternate": {
+      "type": "binaryExpression",
+      "left": {
+        "type": "variable",
+        "name": "n"
+      },
+      "operator": "*",
+      "right": {
+        "type": "callExpression",
+        "callee": {
+          "type": "identifier",
+          "name": "fac"
+        },
+        "arguments": [
+          {
+            "type": "binaryExpression",
+            "left": {
+              "type": "variable",
+              "name": "n"
+            },
+            "operator": "-",
+            "right": {
+              "type": "number",
+              "content": 1
+            }
+          }
+        ]
+      }
+    }
+  }
+},
+
+
+
+
+
 ];
 
 Compiler.compile(ast, obj);
@@ -1028,8 +1118,11 @@ console.log('14 About Firefox...', obj['about3'].get(obj));
 console.log('15 About Firefox\'s...', obj['about4'].get(obj, {case: 'genitive'}));
 console.log('16 About Aurora\'s', obj['about23'].get(obj));
 console.log('17 About Aurora', obj['about22'].get(obj));
+console.log('18 120', obj['fac']([5], obj));
 
 
-// Throw a recursion error
+// Throw a cyclic ref error
 //console.log('Error', obj['about12'].get(obj));
 //console.log('Error', obj['foo'].get(obj));
+// Throw a recursion error
+//console.log('Error', obj['infinite']([], obj));

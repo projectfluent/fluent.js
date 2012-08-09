@@ -98,7 +98,7 @@ var Compiler = (function() {
     })
     return function complexString(locals, env, data) {
       if (dirty)
-        throw "Recursive reference";
+        throw "Error: Cyclic reference detected";
       dirty = true;
       var parts = [];
       content.forEach(function(elem) {
@@ -239,6 +239,7 @@ var Compiler = (function() {
       args.forEach(function(arg, i) {
         resolved_args.push(arg(locals, env, data));
       });
+      // rely entirely on the platform implementation to detect recursion
       return callee(locals, env, data)(resolved_args, env, data);
     };
   }
