@@ -1,4 +1,4 @@
-var Compiler = (function() {
+(function() {
 
   // {{{ primary expressions
 
@@ -417,8 +417,16 @@ var Compiler = (function() {
 
   // }}}
   // {{{ public API
+  
+  var Compiler;
 
-  function compile(ast, obj) {
+  if (typeof exports !== 'undefined') {
+    Compiler = exports;
+  } else {
+    Compiler = this.L20n.Compiler = {};
+  }
+
+  Compiler.compile = function compile(ast, obj) {
     for (var i = 0, elem; elem = ast[i]; i++) {
       if (elem.type == 'Entity')
         obj[elem.id.name] = new Entity(elem);
@@ -427,10 +435,9 @@ var Compiler = (function() {
     }
   }
 
-  return {
-    compile: compile,
-  };
 
   // }}}
 
-})();
+})(this);
+
+
