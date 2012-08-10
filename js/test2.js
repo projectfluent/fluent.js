@@ -16,8 +16,7 @@ ctx.__addResourceAST('path1')
 ctx.onReady = function() {
   console.log('-- ready!')
   console.log(ctx.getAST());
+  console.log(ctx.get('foo'))
 }
-
-//Compiler.compile(ast, obj);
 
 //console.log('01 Firefox', obj['brandName1'].get(obj));
