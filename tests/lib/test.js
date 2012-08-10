@@ -7,16 +7,16 @@ var asts = {
 
 var ctx = L20n.getContext();
 
-ctx.__addResourceAST('path1')
+ctx.addResource('/l20n/l20n.js/tests/lib/data/example1.lol')
 
-ctx.__addResourceAST('path2')
+//ctx.__addResourceAST('path2')
 
-ctx.__addResourceAST('path1')
+//ctx.__addResourceAST('path1')
 
 ctx.onReady = function() {
   console.log('-- ready!')
   console.log(ctx.getAST());
-  console.log(ctx.get('foo'))
+  //console.log(ctx.get('foo'))
 }
 
 //console.log('01 Firefox', obj['brandName1'].get(obj));
