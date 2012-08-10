@@ -1,57 +1,9 @@
 var obj = [];
 var asts = {
-  'path1': {
-  'type': 'LOL',
-  'body': [
-  {
-    "type": "ImportStatement", 
-    "uri": {
-      "type": "String", 
-      "content": "path3"
-    }
-  }, 
-  {
-    "type": "Entity", 
-    "id": {
-      "type": "Identifier", 
-      "name": "foo"
-    }, 
-    "index": [], 
-    "value": {
-      "type": "String", 
-      "content": "value"
-    }, 
-    "attrs": {}, 
-    "local": false
-  }
-  ]
-  },
-  'path2': {
-  'type': 'LOL',
-  'body': []
-  },
-  'path3': {
-    'type': 'LOL',
-    'body': [
-      {
-        'type': 'Entity',
-        'id': {
-          'type': 'Identifier',
-          'name': 'foo2'
-        },
-        'index': [],
-        'value': {
-          'type': 'String',
-          'content': 'value'
-        },
-        'attrs': {},
-        'local': false
-      }
-    ]
-  }
+  'path1': "import('path3') <foo 'value'>",
+  'path2': "",
+  'path3': "<foo2 'value'>"
 }
-
-
 
 var ctx = L20n.getContext();
 
