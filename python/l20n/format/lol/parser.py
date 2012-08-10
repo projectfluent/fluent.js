@@ -295,7 +295,7 @@ class Parser():
                 self.content = self.content[1:]
                 default = True
             hi = self.get_kvp(ast.HashItem)
-            hi.default = default
+            hash.default = default
             hash.append(hi)
             ws_item_post = self.get_ws()
             if self.content[0] == ',':
@@ -329,7 +329,7 @@ class Parser():
     def get_attributes(self):
         if self.content[0] == '>':
             self.content = self.content[1:]
-            return None
+            return None # should return empty hash?
         attrs = OrderedDict()
         attrs_template = []
         while 1:
