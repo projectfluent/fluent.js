@@ -137,15 +137,17 @@ L20n.Context = function() {
         return mResources[url];
       var res = new L20n.Resource(url);
       var _injectResource = function(data) {
-        res._ast = asts[url];
-        obj._ast = asts[url];
+        var parser = L20n.Parser();
+        var ast = parser.parse(data);
+        res._ast = ast;
+        obj._ast = ast;
         self.__preprocessResource(res);
         res._loading = false;
         if (self.isReady()) {
           self._fireCallback();
         }
       }
-      _injectResource();
+      _injectResource(asts[url]);
       mResources[url] = res;
       return res;
     },
