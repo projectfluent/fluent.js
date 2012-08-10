@@ -25,6 +25,7 @@ L20n.Resource.prototype = {
 
 L20n.Context = function() {
   var mFrozen = false;
+  var mCompiled = false;
   var mResources = {}; // resource files
   var mEvents = {'ready': []}
 
@@ -58,8 +59,9 @@ L20n.Context = function() {
     // we should have getValue for value, getAttributes for attributes and get 
     // for both
     get: function(id, args) {
-      var curObj = this._get(id, args);
-      return mObjects['system'].getent(curObj, mObjects['system'], id);
+      return mObjects['resources'][id].get(mObjects['resources'],
+                                           mObjects['context'],
+                                           args)
     },
     getAttributes: function(id, args) {
       var curObj = this._get(id, args);
@@ -67,6 +69,9 @@ L20n.Context = function() {
     },
     isFrozen: function() {
       return mFrozen; 
+    },
+    isCompiled: function() {
+      return mCompiled;
     },
     isReady: function() {
       if (!mFrozen)
@@ -77,15 +82,20 @@ L20n.Context = function() {
       }
       return true;
     },
+    onASTReady: function() {
+      var compiler = L20n.Compiler;
+      var ast = mObjects['asts']['path1']['_ast']['body'];
+      compiler.compile(ast, mObjects['resources']);
+      this._fireCallbacks(); 
+    },
     getAST: function() {
       return {'res': mResources, 'obj': mObjects};
     },
     set onReady(callback) {
       mFrozen = true;
-      if (!this.isReady())
-        mEvents['ready'].push(callback);
-      else
-        callback();
+      mEvents['ready'].push(callback);
+      if (this.isReady())
+        this.onASTReady();
     },
     set data(data) {
       mObjects['context'] = data
@@ -142,14 +152,14 @@ L20n.Context = function() {
         self.__preprocessResource(res);
         res._loading = false;
         if (self.isReady()) {
-          self._fireCallback();
+          self.onASTReady();
         }
       }
       _injectResource(asts[url]);
       mResources[url] = res;
       return res;
     },
-    _fireCallback: function() {
+    _fireCallbacks: function() {
       if (mEvents['ready'].length) {
         for (var i in mEvents['ready'])
           mEvents['ready'][i]();
