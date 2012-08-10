@@ -1,6 +1,6 @@
 var fs = require('fs');
 var should = require('should');
-var Compiler = require('../../../js/compiler.js');
+var Compiler = require('../../lib/compiler.js');
 
 function read(filename) {
   return JSON.parse(fs.readFileSync(filename)).body;
