@@ -37,23 +37,18 @@ L20n.Context = function() {
 
   return {
     addResource: function(aURI) {
-      console.log('-- addResource for: '+aURI);
-      //console.log(mResources);
       var res = this._getObject(mObjects['resources'], aURI);
     },
     __addResourceAST: function(aURI) {
-      console.log('-- addResourceAST for: '+aURI);
       if (!(aURI in mObjects['asts']))
         mObjects['asts'][aURI] = {'_ast': null}
       var res = this._getObjectAST(mObjects['asts'][aURI], aURI);
     },
     __preprocessResource: function(res) {
-      console.log('-- preprocessResource')
       var ast = res._ast;
       for(var node in ast.body) {
         if (ast.body[node].type == 'ImportStatement') {
           var path = ast.body[node].uri.content;
-          console.log('--- Import: '+path);
           ast.body[node]._ast = null;
           var res = this._getObjectAST(ast.body[node],
                                        path);
@@ -88,8 +83,6 @@ L20n.Context = function() {
       return {'res': mResources, 'obj': mObjects};
     },
     set onReady(callback) {
-      console.log('-- setting onReady')
-      console.log('isReady: '+this.isReady())
       mFrozen = true;
       if (!this.isReady())
         mEvents['ready'].push(callback);
@@ -123,13 +116,11 @@ L20n.Context = function() {
       //new Function(data).call(obj);
     },
     _getObject: function(obj, url) {
-      console.log('-- __getObject for '+url);
       var self = this;
       if (url in mResources)
         return mResources[url];
       var res = new L20n.Resource(url);
       var _injectResource = function(data) {
-        console.log('-- injectResource: '+url);
         self._loadObject(data, obj);
         res._loading = false;
         if (self.isReady()) {
@@ -141,13 +132,11 @@ L20n.Context = function() {
       return res;
     },
     _getObjectAST: function(obj, url) {
-      console.log('-- __getObjectAST for '+url);
       var self = this;
       if (url in mResources)
         return mResources[url];
       var res = new L20n.Resource(url);
       var _injectResource = function(data) {
-        console.log('-- injectResourceAST: '+url);
         res._ast = asts[url];
         obj._ast = asts[url];
         self.__preprocessResource(res);
