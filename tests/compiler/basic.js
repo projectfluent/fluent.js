@@ -16,7 +16,7 @@ describe('Basic entities', function(){
   });
 
   describe('Simple value', function(){
-    var filename = './lol/basic1.json';
+    var filename = './tests/fixtures/basic1.json';
     before(function() { 
       ast = read(filename);
     });
@@ -30,7 +30,7 @@ describe('Basic entities', function(){
   });
 
   describe('Simple array', function(){
-    var filename = './lol/basic2.json';
+    var filename = './tests/fixtures/basic2.json';
     before(function() { 
       ast = read(filename);
     });
@@ -58,7 +58,7 @@ describe('Basic entities', function(){
   });
 
   describe('Simple hash', function(){
-    var filename = './lol/basic3.json';
+    var filename = './tests/fixtures/basic3.json';
     before(function() { 
       ast = read(filename);
     });
