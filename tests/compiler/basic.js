@@ -1,6 +1,7 @@
 var fs = require('fs');
-var should = require('should');
-var Compiler = require('../../lib/compiler.js');
+var Compiler = process.env.L20N_COV
+  ? require('../../lib-cov/compiler.js')
+  : require('../../lib/compiler.js');
 
 function read(filename) {
   return JSON.parse(fs.readFileSync(filename)).body;
