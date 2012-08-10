@@ -46,8 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
   HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
     return ctx;
   });
-
-  ctx.freeze();
 });
 
 function getPathTo(element, context, ignoreL10nPath) {
