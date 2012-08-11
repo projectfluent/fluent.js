@@ -25,7 +25,7 @@ describe('Basic entities', function(){
   describe('Simple value', function(){
     describe('Simple string value', function(){
       it('is "Firefox"', function(){
-        var value = obj['brandName'].get();
+        var value = obj['brandName'].toString();
         value.should.equal("Firefox");
       });
     });
@@ -34,45 +34,45 @@ describe('Basic entities', function(){
   describe('Simple array', function(){
     describe('an array without an index', function(){
       it('is "Firefox" when called without an index', function(){
-        var value = obj['brandName11'].get(obj);
+        var value = obj['brandName11'].toString(obj);
         value.should.equal('Firefox');
       });
       it('is "Firefox" when called with [0]', function(){
-        var value = obj['brandName11'].get(obj, {}, [0]);
+        var value = obj['brandName11'].toString(obj, {}, [0]);
         value.should.equal('Firefox');
       });
       it('is "Aurora" when called with [1]', function(){
-        var value = obj['brandName11'].get(obj, {}, [1]);
+        var value = obj['brandName11'].toString(obj, {}, [1]);
         value.should.equal('Aurora');
       });
       it('is "Firefox" when called with [7]', function(){
         // XXX different in the DEBUG mode
-        var value = obj['brandName11'].get(obj, {}, [7]);
+        var value = obj['brandName11'].toString(obj, {}, [7]);
         value.should.equal('Firefox');
       });
       it('is "Aurora" when called with [1, 7]', function(){
         // XXX different in the DEBUG mode
-        var value = obj['brandName11'].get(obj, {}, [1, 7]);
+        var value = obj['brandName11'].toString(obj, {}, [1, 7]);
         value.should.equal('Aurora');
       });
     });
     describe('an array with an index of [1]', function(){
       it('is "Aurora" when called without an index', function(){
-        var value = obj['brandName12'].get(obj);
+        var value = obj['brandName12'].toString(obj);
         value.should.equal('Aurora');
       });
       it('is "Firefox" when called with [0]', function(){
-        var value = obj['brandName12'].get(obj, {}, [0]);
+        var value = obj['brandName12'].toString(obj, {}, [0]);
         value.should.equal('Firefox');
       });
       it('is "Firefox" when called with [7]', function(){
         // XXX different in the DEBUG mode
-        var value = obj['brandName12'].get(obj, {}, [7]);
+        var value = obj['brandName12'].toString(obj, {}, [7]);
         value.should.equal('Firefox');
       });
       it('is "Firefox" when called with [7, 7]', function(){
         // XXX different in the DEBUG mode
-        var value = obj['brandName12'].get(obj, {}, [7, 7]);
+        var value = obj['brandName12'].toString(obj, {}, [7, 7]);
         value.should.equal('Firefox');
       });
     });
@@ -81,38 +81,38 @@ describe('Basic entities', function(){
   describe('Simple hash', function(){
     describe('a hash with no index and no default value', function(){
       it('is "Firefox"', function(){
-        var value = obj['brandName21'].get(obj);
+        var value = obj['brandName21'].toString(obj);
         value.should.equal('Firefox');
       });
       it('is "Aurora when called with an index of ["feminine"] "', function(){
-        var value = obj['brandName21'].get(obj, {}, ['feminine']);
+        var value = obj['brandName21'].toString(obj, {}, ['feminine']);
         value.should.equal('Aurora');
       });
     });
     describe('a hash with no index and with a default value', function(){
       it('is "Aurora"', function(){
-        var value = obj['brandName22'].get(obj);
+        var value = obj['brandName22'].toString(obj);
         value.should.equal('Aurora');
       });
       it('is "Firefox" when called with an index of ["masculine"] ', function(){
-        var value = obj['brandName22'].get(obj, {}, ['masculine']);
+        var value = obj['brandName22'].toString(obj, {}, ['masculine']);
         value.should.equal('Firefox');
       });
     });
     describe('a hash with an index and no default value', function(){
       it('is "Aurora"', function(){
-        var value = obj['brandName23'].get(obj);
+        var value = obj['brandName23'].toString(obj);
         value.should.equal('Aurora');
       });
       it('is "Firefox" when called with an index of ["masculine"] ', function(){
-        var value = obj['brandName23'].get(obj, {}, ['masculine']);
+        var value = obj['brandName23'].toString(obj, {}, ['masculine']);
         value.should.equal('Firefox');
       });
     });
     describe('a hash with too many index keys and no default value', function(){
       it('is "Aurora"', function(){
         // XXX different in the DEBUG mode
-        var value = obj['brandName23'].get(obj);
+        var value = obj['brandName23'].toString(obj);
         value.should.equal('Aurora');
       });
     });

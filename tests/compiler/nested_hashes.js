@@ -23,301 +23,301 @@ describe('Nested hash', function(){
 
   describe('with no index and no default value', function(){
     it('is "Firefox"', function(){
-      var value = obj['brandName21'].get(obj);
+      var value = obj['brandName21'].toString(obj);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["foo", "bar"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['foo', 'bar']);
+      var value = obj['brandName21'].toString(obj, {}, ['foo', 'bar']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["foo", "bar", "baz"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['foo', 'bar', 'baz']);
+      var value = obj['brandName21'].toString(obj, {}, ['foo', 'bar', 'baz']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine"]', function(){
-      var value = obj['brandName21'].get(obj, {}, ['masculine']);
+      var value = obj['brandName21'].toString(obj, {}, ['masculine']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['masculine', 'foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['masculine', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative"]', function(){
-      var value = obj['brandName21'].get(obj, {}, ['masculine', 'nominative']);
+      var value = obj['brandName21'].toString(obj, {}, ['masculine', 'nominative']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['masculine', 'nominative', 'foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['masculine', 'nominative', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive"]', function(){
-      var value = obj['brandName21'].get(obj, {}, ['masculine', 'genitive']);
+      var value = obj['brandName21'].toString(obj, {}, ['masculine', 'genitive']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['masculine', 'genitive', 'foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['masculine', 'genitive', 'foo']);
       value.should.equal('Firefox\'s');
     });
     it('is "Aurora" when passed an index of ["feminine"]', function(){
-      var value = obj['brandName21'].get(obj, {}, ['feminine']);
+      var value = obj['brandName21'].toString(obj, {}, ['feminine']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['feminine', 'foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['feminine', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative"]', function(){
-      var value = obj['brandName21'].get(obj, {}, ['feminine', 'nominative']);
+      var value = obj['brandName21'].toString(obj, {}, ['feminine', 'nominative']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['feminine', 'nominative', 'foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['feminine', 'nominative', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive"]', function(){
-      var value = obj['brandName21'].get(obj, {}, ['feminine', 'genitive']);
+      var value = obj['brandName21'].toString(obj, {}, ['feminine', 'genitive']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName21'].get(obj, {}, ['feminine', 'genitive', 'foo']);
+      var value = obj['brandName21'].toString(obj, {}, ['feminine', 'genitive', 'foo']);
       value.should.equal('Aurora\'s');
     });
   });
   describe('with no index and default values on the second level', function(){
     it('is "Firefox\'s"', function(){
-      var value = obj['brandName22'].get(obj);
+      var value = obj['brandName22'].toString(obj);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['foo']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["foo", "bar"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['foo', 'bar']);
+      var value = obj['brandName22'].toString(obj, {}, ['foo', 'bar']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["foo", "bar", "baz"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['foo', 'bar', 'baz']);
+      var value = obj['brandName22'].toString(obj, {}, ['foo', 'bar', 'baz']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine"]', function(){
-      var value = obj['brandName22'].get(obj, {}, ['masculine']);
+      var value = obj['brandName22'].toString(obj, {}, ['masculine']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['masculine', 'foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['masculine', 'foo']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative"]', function(){
-      var value = obj['brandName22'].get(obj, {}, ['masculine', 'nominative']);
+      var value = obj['brandName22'].toString(obj, {}, ['masculine', 'nominative']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['masculine', 'nominative', 'foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['masculine', 'nominative', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive"]', function(){
-      var value = obj['brandName22'].get(obj, {}, ['masculine', 'genitive']);
+      var value = obj['brandName22'].toString(obj, {}, ['masculine', 'genitive']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['masculine', 'genitive', 'foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['masculine', 'genitive', 'foo']);
       value.should.equal('Firefox\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine"]', function(){
-      var value = obj['brandName22'].get(obj, {}, ['feminine']);
+      var value = obj['brandName22'].toString(obj, {}, ['feminine']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['feminine', 'foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['feminine', 'foo']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative"]', function(){
-      var value = obj['brandName22'].get(obj, {}, ['feminine', 'nominative']);
+      var value = obj['brandName22'].toString(obj, {}, ['feminine', 'nominative']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['feminine', 'nominative', 'foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['feminine', 'nominative', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive"]', function(){
-      var value = obj['brandName22'].get(obj, {}, ['feminine', 'genitive']);
+      var value = obj['brandName22'].toString(obj, {}, ['feminine', 'genitive']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName22'].get(obj, {}, ['feminine', 'genitive', 'foo']);
+      var value = obj['brandName22'].toString(obj, {}, ['feminine', 'genitive', 'foo']);
       value.should.equal('Aurora\'s');
     });
   });
   describe('with an index of ["feminine"] and no defaults', function(){
     it('is "Aurora"', function(){
-      var value = obj['brandName23'].get(obj);
+      var value = obj['brandName23'].toString(obj);
       value.should.equal('Aurora');
     });
     it('is "Firefox\'s" when passed an index of ["foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["foo", "bar"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['foo', 'bar']);
+      var value = obj['brandName23'].toString(obj, {}, ['foo', 'bar']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["foo", "bar", "baz"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['foo', 'bar', 'baz']);
+      var value = obj['brandName23'].toString(obj, {}, ['foo', 'bar', 'baz']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine"]', function(){
-      var value = obj['brandName23'].get(obj, {}, ['masculine']);
+      var value = obj['brandName23'].toString(obj, {}, ['masculine']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['masculine', 'foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['masculine', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative"]', function(){
-      var value = obj['brandName23'].get(obj, {}, ['masculine', 'nominative']);
+      var value = obj['brandName23'].toString(obj, {}, ['masculine', 'nominative']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['masculine', 'nominative', 'foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['masculine', 'nominative', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive"]', function(){
-      var value = obj['brandName23'].get(obj, {}, ['masculine', 'genitive']);
+      var value = obj['brandName23'].toString(obj, {}, ['masculine', 'genitive']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['masculine', 'genitive', 'foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['masculine', 'genitive', 'foo']);
       value.should.equal('Firefox\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine"]', function(){
-      var value = obj['brandName23'].get(obj, {}, ['feminine']);
+      var value = obj['brandName23'].toString(obj, {}, ['feminine']);
       value.should.equal('Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['feminine', 'foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['feminine', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative"]', function(){
-      var value = obj['brandName23'].get(obj, {}, ['feminine', 'nominative']);
+      var value = obj['brandName23'].toString(obj, {}, ['feminine', 'nominative']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['feminine', 'nominative', 'foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['feminine', 'nominative', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive"]', function(){
-      var value = obj['brandName23'].get(obj, {}, ['feminine', 'genitive']);
+      var value = obj['brandName23'].toString(obj, {}, ['feminine', 'genitive']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName23'].get(obj, {}, ['feminine', 'genitive', 'foo']);
+      var value = obj['brandName23'].toString(obj, {}, ['feminine', 'genitive', 'foo']);
       value.should.equal('Aurora\'s');
     });
   });
   describe('with an index of ["feminine", "genitive"] and no defaults', function(){
     it('is "Aurora\'s"', function(){
-      var value = obj['brandName24'].get(obj);
+      var value = obj['brandName24'].toString(obj);
       value.should.equal('Aurora\'s');
     });
     it('is "Firefox\'s" when passed an index of ["foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["foo", "bar"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['foo', 'bar']);
+      var value = obj['brandName24'].toString(obj, {}, ['foo', 'bar']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["foo", "bar", "baz"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['foo', 'bar', 'baz']);
+      var value = obj['brandName24'].toString(obj, {}, ['foo', 'bar', 'baz']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine"]', function(){
-      var value = obj['brandName24'].get(obj, {}, ['masculine']);
+      var value = obj['brandName24'].toString(obj, {}, ['masculine']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['masculine', 'foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['masculine', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative"]', function(){
-      var value = obj['brandName24'].get(obj, {}, ['masculine', 'nominative']);
+      var value = obj['brandName24'].toString(obj, {}, ['masculine', 'nominative']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['masculine', 'nominative', 'foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['masculine', 'nominative', 'foo']);
       value.should.equal('Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive"]', function(){
-      var value = obj['brandName24'].get(obj, {}, ['masculine', 'genitive']);
+      var value = obj['brandName24'].toString(obj, {}, ['masculine', 'genitive']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['masculine', 'genitive', 'foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['masculine', 'genitive', 'foo']);
       value.should.equal('Firefox\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine"]', function(){
-      var value = obj['brandName24'].get(obj, {}, ['feminine']);
+      var value = obj['brandName24'].toString(obj, {}, ['feminine']);
       value.should.equal('Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['feminine', 'foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['feminine', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative"]', function(){
-      var value = obj['brandName24'].get(obj, {}, ['feminine', 'nominative']);
+      var value = obj['brandName24'].toString(obj, {}, ['feminine', 'nominative']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['feminine', 'nominative', 'foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['feminine', 'nominative', 'foo']);
       value.should.equal('Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive"]', function(){
-      var value = obj['brandName24'].get(obj, {}, ['feminine', 'genitive']);
+      var value = obj['brandName24'].toString(obj, {}, ['feminine', 'genitive']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive", "foo"]', function(){
       // XXX different in the DEBUG mode
-      var value = obj['brandName24'].get(obj, {}, ['feminine', 'genitive', 'foo']);
+      var value = obj['brandName24'].toString(obj, {}, ['feminine', 'genitive', 'foo']);
       value.should.equal('Aurora\'s');
     });
   });
