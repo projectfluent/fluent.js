@@ -37,18 +37,42 @@ describe('Basic entities', function(){
         var value = obj['brandName11'].get(obj);
         value.should.equal('Firefox');
       });
+      it('is "Firefox" when called with [0]', function(){
+        var value = obj['brandName11'].get(obj, {}, [0]);
+        value.should.equal('Firefox');
+      });
       it('is "Aurora" when called with [1]', function(){
         var value = obj['brandName11'].get(obj, {}, [1]);
         value.should.equal('Aurora');
       });
+      it('is "Firefox" when called with [7]', function(){
+        // XXX different in the DEBUG mode
+        var value = obj['brandName11'].get(obj, {}, [7]);
+        value.should.equal('Firefox');
+      });
+      it('is "Aurora" when called with [1, 7]', function(){
+        // XXX different in the DEBUG mode
+        var value = obj['brandName11'].get(obj, {}, [1, 7]);
+        value.should.equal('Aurora');
+      });
     });
     describe('an array with an index of [1]', function(){
-      it('is "Firefox" when called without an index', function(){
+      it('is "Aurora" when called without an index', function(){
         var value = obj['brandName12'].get(obj);
-        value.should.equal('Firefox');
+        value.should.equal('Aurora');
       });
       it('is "Firefox" when called with [0]', function(){
         var value = obj['brandName12'].get(obj, {}, [0]);
+        value.should.equal('Firefox');
+      });
+      it('is "Firefox" when called with [7]', function(){
+        // XXX different in the DEBUG mode
+        var value = obj['brandName12'].get(obj, {}, [7]);
+        value.should.equal('Firefox');
+      });
+      it('is "Firefox" when called with [7, 7]', function(){
+        // XXX different in the DEBUG mode
+        var value = obj['brandName12'].get(obj, {}, [7, 7]);
         value.should.equal('Firefox');
       });
     });
@@ -87,6 +111,7 @@ describe('Basic entities', function(){
     });
     describe('a hash with too many index keys and no default value', function(){
       it('is "Aurora"', function(){
+        // XXX different in the DEBUG mode
         var value = obj['brandName23'].get(obj);
         value.should.equal('Aurora');
       });
