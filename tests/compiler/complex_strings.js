@@ -11,85 +11,88 @@ function read(filename) {
 describe('Complex strings', function(){
   var filename = 'complex_strings.json';
   var ast;
-  var obj;
+  var env = {
+    entries: {},
+    globals: {}
+  };
 
   before(function() {
     ast = read(filename);
   });
   beforeEach(function() {
-    obj = {};
-    Compiler.compile(ast, obj);
+    env.entries = {};
+    Compiler.compile(ast, env.entries);
   });
 
   describe('reference by name alone', function(){
     it('returns "About Firefox"', function(){
-      var value = obj['about1'].toString(obj);
+      var value = env.entries['about1'].toString();
       value.should.equal('About Firefox');
     });
   });
   describe('reference to a property', function(){
     it('returns "About Firefox" with .release', function(){
-      var value = obj['about2'].toString(obj);
+      var value = env.entries['about2'].toString();
       value.should.equal('About Firefox');
     });
     it('returns "About Aurora" with .testing', function(){
-      var value = obj['about3'].toString(obj);
+      var value = env.entries['about3'].toString();
       value.should.equal('About Aurora');
     });
     it('returns "About Firefox" with ["release"]', function(){
-      var value = obj['about4'].toString(obj);
+      var value = env.entries['about4'].toString();
       value.should.equal('About Firefox');
     });
     it('returns "About Aurora" with ["testing"]', function(){
-      var value = obj['about5'].toString(obj);
+      var value = env.entries['about5'].toString();
       value.should.equal('About Aurora');
     });
   });
   describe('deeper hash hierarchy', function(){
     it('returns "Firefox"', function(){
-      var value = obj['about21'].toString(obj);
+      var value = env.entries['about21'].toString();
       value.should.equal('About Firefox');
     });
     it('returns "Aurora" for .feminine', function(){
-      var value = obj['about22'].toString(obj);
+      var value = env.entries['about22'].toString();
       value.should.equal('About Aurora');
     });
     it('returns "Aurora" for ["feminine"]', function(){
-      var value = obj['about23'].toString(obj);
+      var value = env.entries['about23'].toString();
       value.should.equal('About Aurora');
     });
     it('returns "Aurora\'s" for .feminine.genitive', function(){
-      var value = obj['about24'].toString(obj);
+      var value = env.entries['about24'].toString();
       value.should.equal('About Aurora\'s');
     });
     it('returns "Aurora\'s" for ["feminine"].genitive', function(){
-      var value = obj['about25'].toString(obj);
+      var value = env.entries['about25'].toString()
       value.should.equal('About Aurora\'s');
     });
     it('returns "Aurora\'s" for ["feminine"]["genitive"]', function(){
-      var value = obj['about26'].toString(obj);
+      var value = env.entries['about26'].toString();
       value.should.equal('About Aurora\'s');
     });
     it('returns "Mozilla Aurora\'s" for .feminine.genitive.long', function(){
-      var value = obj['about27'].toString(obj);
+      var value = env.entries['about27'].toString();
       value.should.equal('About Mozilla Aurora\'s');
     });
   });
   describe('computed property name', function(){
     it('returns "Aurora" for [channels]', function(){
-      var value = obj['about31'].toString(obj);
+      var value = env.entries['about31'].toString();
       value.should.equal('About Aurora');
     });
     it('returns "Aurora" for [channels.testing]', function(){
-      var value = obj['about32'].toString(obj);
+      var value = env.entries['about32'].toString();
       value.should.equal('About Aurora');
     });
     it('returns "Aurora" for [channels["testing"]]', function(){
-      var value = obj['about33'].toString(obj);
+      var value = env.entries['about33'].toString();
       value.should.equal('About Aurora');
     });
     it('returns "Mozilla Aurora\'s" for .feminine.genitive[length[1]]', function(){
-      var value = obj['about34'].toString(obj);
+      var value = env.entries['about34'].toString();
       value.should.equal('About Mozilla Aurora\'s');
     });
   });

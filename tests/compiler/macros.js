@@ -11,26 +11,29 @@ function read(filename) {
 describe('Funky macros', function(){
   var filename = 'macros.json';
   var ast;
-  var obj;
+  var env = {
+    entries: {},
+    globals: {}
+  };
 
   before(function() {
     ast = read(filename);
   });
 
   beforeEach(function() {
-    obj = {};
-    Compiler.compile(ast, obj);
+    env.entries = {};
+    Compiler.compile(ast, env.entries);
   });
 
   describe('nth Fibonnaci number', function(){
     it('returns 6765 for [20]', function(){
-      var value = obj['fib']([20], obj);
+      var value = env.entries['fib']([20], env);
       value.should.equal(6765);
     });
   });
   describe('factorial', function(){
     it('returns 120 for [5]', function(){
-      var value = obj['fac']([5], obj);
+      var value = env.entries['fac']([5], env);
       value.should.equal(120);
     });
   });

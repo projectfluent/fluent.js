@@ -11,75 +11,78 @@ function read(filename) {
 describe('Deep hierarchy', function(){
   var filename = 'nested_hash_deep.json';
   var ast;
-  var obj;
+  var env = {
+    entries: {},
+    globals: {}
+  };
 
   before(function() {
     ast = read(filename);
   });
   beforeEach(function() {
-    obj = {};
-    Compiler.compile(ast, obj);
+    env.entries = {};
+    Compiler.compile(ast, env.entries);
   });
 
   describe('3-level-deep nested hash', function(){
     it('is "Firefox" when passed no index', function(){
-      var value = obj['brandName'].toString(obj);
+      var value = env.entries['brandName'].toString();
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine']);
+      var value = env.entries['brandName']._resolve({}, ['masculine']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine', 'nominative']);
+      var value = env.entries['brandName']._resolve({}, ['masculine', 'nominative']);
       value.should.equal('Firefox');
     });
     it('is "Firefox" when passed an index of ["masculine", "nominative", "short"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine', 'nominative', 'short']);
+      var value = env.entries['brandName']._resolve({}, ['masculine', 'nominative', 'short']);
       value.should.equal('Firefox');
     });
     it('is "Mozilla Firefox" when passed an index of ["masculine", "nominative", "long"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine', 'nominative', 'long']);
+      var value = env.entries['brandName']._resolve({}, ['masculine', 'nominative', 'long']);
       value.should.equal('Mozilla Firefox');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine', 'genitive']);
+      var value = env.entries['brandName']._resolve({}, ['masculine', 'genitive']);
       value.should.equal('Firefox\'s');
     });
     it('is "Firefox\'s" when passed an index of ["masculine", "genitive", "short"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine', 'genitive', 'short']);
+      var value = env.entries['brandName']._resolve({}, ['masculine', 'genitive', 'short']);
       value.should.equal('Firefox\'s');
     });
     it('is "Mozilla Firefox\'s" when passed an index of ["masculine", "genitive", "long"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['masculine', 'genitive', 'long']);
+      var value = env.entries['brandName']._resolve({}, ['masculine', 'genitive', 'long']);
       value.should.equal('Mozilla Firefox\'s');
     });
     it('is "Aurora" when passed an index of ["feminine"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine']);
+      var value = env.entries['brandName']._resolve({}, ['feminine']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine', 'nominative']);
+      var value = env.entries['brandName']._resolve({}, ['feminine', 'nominative']);
       value.should.equal('Aurora');
     });
     it('is "Aurora" when passed an index of ["feminine", "nominative", "short"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine', 'nominative', 'short']);
+      var value = env.entries['brandName']._resolve({}, ['feminine', 'nominative', 'short']);
       value.should.equal('Aurora');
     });
     it('is "Mozilla Aurora" when passed an index of ["feminine", "nominative", "long"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine', 'nominative', 'long']);
+      var value = env.entries['brandName']._resolve({}, ['feminine', 'nominative', 'long']);
       value.should.equal('Mozilla Aurora');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine', 'genitive']);
+      var value = env.entries['brandName']._resolve({}, ['feminine', 'genitive']);
       value.should.equal('Aurora\'s');
     });
     it('is "Aurora\'s" when passed an index of ["feminine", "genitive", "short"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine', 'genitive', 'short']);
+      var value = env.entries['brandName']._resolve({}, ['feminine', 'genitive', 'short']);
       value.should.equal('Aurora\'s');
     });
     it('is "Mozilla Aurora\'s" when passed an index of ["feminine", "genitive", "long"]', function(){
-      var value = obj['brandName'].toString(obj, {}, ['feminine', 'genitive', 'long']);
+      var value = env.entries['brandName']._resolve({}, ['feminine', 'genitive', 'long']);
       value.should.equal('Mozilla Aurora\'s');
     });
   });
