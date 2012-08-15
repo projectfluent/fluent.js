@@ -27,14 +27,20 @@ describe('Funky macros', function(){
 
   describe('nth Fibonnaci number', function(){
     it('returns 6765 for [20]', function(){
-      var value = env.entries['fib']([20], env);
-      value.should.equal(6765);
+      var value = env.entries['callFib'].toString();
+      value.should.equal('6765');
     });
   });
   describe('factorial', function(){
     it('returns 120 for [5]', function(){
-      var value = env.entries['fac']([5], env);
-      value.should.equal(120);
+      var value = env.entries['callFac'].toString();
+      value.should.equal('120');
+    });
+  });
+  describe('logical OR expression', function(){
+    it('returns the second operand if the first one is false', function(){
+      var value = env.entries['callZeroOrFac'].toString();
+      value.should.equal('120');
     });
   });
 });
