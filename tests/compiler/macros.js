@@ -38,6 +38,46 @@ describe('Macros', function(){
         value.should.equal('0');
       });
     });
+    describe('isFalsy', function(){
+      it('returns "falsy" for 0', function(){
+        var value = env.entries['callIsFalsy1'].toString();
+        value.should.equal('falsy');
+      });
+      it('returns "falsy" for "" (an empty string)', function(){
+        var value = env.entries['callIsFalsy2'].toString();
+        value.should.equal('falsy');
+      });
+      it('returns "falsy" for []', function(){
+        var value = env.entries['callIsFalsy3'].toString();
+        value.should.equal('falsy');
+      });
+      it('returns "falsy" for {}', function(){
+        var value = env.entries['callIsFalsy4'].toString();
+        value.should.equal('falsy');
+      });
+      it('returns "truthy" for 1', function(){
+        var value = env.entries['callIsFalsy5'].toString();
+        value.should.equal('truthy');
+      });
+      it('returns "truthy" for "text"', function(){
+        var value = env.entries['callIsFalsy6'].toString();
+        value.should.equal('truthy');
+      });
+      it('returns "truthy" for ["text"]', function(){
+        var value = env.entries['callIsFalsy7'].toString();
+        value.should.equal('truthy');
+      });
+      it('returns "truthy" for {one: "text"}', function(){
+        var value = env.entries['callIsFalsy8'].toString();
+        value.should.equal('truthy');
+      });
+    });
+    describe('isTruthy', function(){
+      it('returns "falsy" for 0', function(){
+        var value = env.entries['callIsTruthy'].toString();
+        value.should.equal('falsy');
+      });
+    });
   });
 
   describe('Funky macros', function(){
