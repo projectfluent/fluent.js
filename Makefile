@@ -17,10 +17,17 @@ watch-compiler:
 		--growl \
 		tests/compiler/*.js
 
-test-cov: lib-cov
-	@L20N_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
+test-cov: docs/coverage.html
 
-lib-cov:
+docs/coverage.html: lib-cov
+	L20N_COV=1 $(MAKE) test REPORTER=html-cov > docs/coverage.html
+
+lib-cov: lib
+	@rm -rf lib-cov
 	@jscoverage lib lib-cov
 
-.PHONY: test test-compiler watch-compiler
+docs: lib
+	./node_modules/docco/bin/docco lib/*.js
+	@touch docs
+
+.PHONY: test test-compiler watch-compiler test-cov
