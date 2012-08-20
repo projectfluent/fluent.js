@@ -1,0 +1,1 @@
+this.message = "This is a <a href='#' l10n-path='../*[@id=\"target\"]'>harmless link</a>.";
