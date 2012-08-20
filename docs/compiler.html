@@ -2,14 +2,141 @@
 and uses it to create a set of JavaScript objects representing entities and 
 functions representing macros and other expressions.</p>
 
-<p>Main concepts:</p>
+<p>The module defines a <code>Compiler</code> singleton with a single method: <code>compile</code>.
+The result of the compilation is stored on the <code>entries</code> object passed as 
+the second argument to the <code>compile</code> funciton.  The third argument is 
+<code>globals</code>, an object whose properties provide information about the runtime 
+environment, e.g., the current hour, operating system etc.</p>
+
+<h2>Main concepts</h2>
+
+<p><strong>Entities</strong> and <strong>attributes</strong> are objects which are publicly available. <br />
+Their <code>toString</code> method is designed to be used by the L20n context to get 
+a string value of the entity, given the cotext data passed to the method.</p>
+
+<p>All other symbols defined by the grammar are implemented as expression 
+functions.  The naming convention is:</p>
 
 <ul>
-<li>expressions</li>
-<li>locals, env, data</li>
-<li>AST, entries, globals</li>
-<li>_resolve</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre>  </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Isolate the code by using an immediately-invoked function expression.
+<li>capitalized first letters denote <strong>expressions constructors</strong>, e.g.
+<code>PropertyExpression</code>.</li>
+<li>camel-case denotes <strong>expression functions</strong> returned by the 
+constructors, e.g.
+<code>propertyExpression</code>.</li>
+</ul>
+
+<h3>Constructors</h3>
+
+<p>The constructor is called for every node in the AST.  It stores the 
+components of the expression which are constant and do not depend on the 
+calling context, such as the data passed by the developer to the <code>toString</code> 
+method.</p>
+
+<h3>Expression functions</h3>
+
+<p>The constructor, when called, returns an expression function, which, in 
+turn, is called every time the expression needs to be evaluated.  The 
+evaluation call is context-dependend.  Every expression function takes three 
+mandatory arguments and one optional one:</p>
+
+<ul>
+<li><code>locals</code>, which stores the information about the currently evaluated 
+entity (<code>locals.__this__</code>).  It also stores the arguments passed to macros.</li>
+<li><code>env</code>, which combines <code>entries</code> (all other entities and macros) and 
+<code>globals</code> passed to <code>Compiler.compile</code>.</li>
+<li><code>data</code>, which is an object with data passed to the context by the 
+developer.  The developer can define data on the context, or pass it on 
+a per-call basis.</li>
+<li><code>key</code> (optional), which is a string or a number passed to an 
+<code>ArrayLiteral</code> or a <code>HashLiteral</code> expression denoting the member of the 
+array or the hash to return.  The member will be another expression function 
+which can then be evaluated further.</li>
+</ul>
+
+<h2>Bubbling up the new <em>current</em> entity</h2>
+
+<p>Every expression function returns an array [<code>newLocals</code>, <code>evaluatedValue</code>].
+The reason for this, and in particular for returning <code>newLocals</code>, is 
+important for understanding how the compiler works.</p>
+
+<p>In most of the cases. <code>newLocals</code> will be the same as the original <code>locals</code> 
+passed to the expression function during the evaluation call.  In some 
+cases, however, <code>newLocals.__this__</code> will reference a different entity than 
+<code>locals.__this__</code> did.  On runtime, as the compiler traverses the AST and 
+goes deeper into individual branches, when it hits an <code>identifier</code> and 
+evaluates it to an entity, it needs to <strong>bubble up</strong> this find back to the 
+top expressions in the chain.  This is so that the evaluation of the 
+top-most expressions in the branch (root being at the very top of the tree) 
+takes into account the new value of <code>locals</code>.</p>
+
+<p>To illustrate this point, consider the following example.</p>
+
+<p>Two entities, <code>brandName</code> and <code>about</code> are defined as such:</p>
+
+<pre><code>&lt;brandName {
+  short: "Firefox",
+  long: "Mozilla {{ ~ }}"
+}&gt;
+&lt;about "About {{ brandName.long }}"&gt;
+</code></pre>
+
+<p>Notice two <code>complexString</code>s: <code>about</code> references <code>brandName.long</code>, and 
+<code>brandName.long</code> references its own entity via <code>~</code>.  This <code>~</code> (meaning, the 
+current entity) must always reference <code>brandName</code>, even when called from 
+<code>about</code>.</p>
+
+<p>The AST for the <code>about</code> entity looks like this:</p>
+
+<pre><code>[Entity]
+  .id[Identifier]
+    .name[unicode "about"]
+  .index
+  .value[ComplexString]                      &lt;1&gt;
+    .content
+      [String]                               &lt;2&gt;
+        .content[unicode "About "]
+      [PropertyExpression]                   &lt;3&gt;
+        .expression[Identifier]              &lt;4&gt;
+          .name[unicode "brandName"]
+        .property[Identifier]
+          .name[unicode "long"]
+        .computed[bool=False]
+  .attrs
+  .local[bool=False]
+</code></pre>
+
+<p>During the compilation the compiler will walk the AST top-down to the 
+deepest terminal leaves and will use expression constructors to create 
+expression functions for the components.  For instance, for <code>about</code>'s value, 
+the compiler will call <code>ComplexString()</code> to create an expression function 
+<code>complexString</code> &lt;1> which will be assigned to the entity's value. The 
+<code>ComplexString</code> construtor, before it returns the <code>complexString</code> &lt;1>, will 
+in turn call other expression constructors to create <code>content</code>: 
+a <code>stringLiteral</code> and a <code>propertyExpression</code>.  The <code>PropertyExpression</code> 
+contructor will do the same, etc...</p>
+
+<p>When <code>entity.toString(ctxdata)</code> is called by a third-party code, we need to 
+resolve the whole <code>complexString</code> &lt;1> to return a single string value.  This 
+is what <strong>resolving</strong> means and it involves some recursion.  On the other 
+hand, <strong>evaluating</strong> means <em>to call the expression once and use what it 
+returns</em>.</p>
+
+<p><code>toString</code> sets <code>locals.__this__</code> to the current entity, <code>about</code> and tells 
+the <code>complexString</code> &lt;1> to <em>resolve</em> itself.</p>
+
+<p>In order to resolve the <code>complexString</code> &lt;1>, we start by resolving its first 
+member &lt;2> to a string.  As we resolve deeper down, we bubble down <code>locals</code> 
+set by <code>toString</code>.  The first member of <code>content</code> turns out to simply be 
+a string that reads "About ".</p>
+
+<p>On to the second member, the propertyExpression &lt;3>.  We bubble down 
+<code>locals</code> again and proceed to evaluate the <code>expression</code> field, which is an 
+<code>identifier</code>.  Note that we don't <em>resolve</em> it to a string; we <em>evaluate</em> it 
+to something that can be further used in other expressions, in this case, an 
+<strong>entity</strong> called <code>brandName</code>.</p>
+
+<p>If locales bubbles up, why doesn't it go all the way up to about?
+- _resolve</p>             </td>             <td class="code">               <div class="highlight"><pre>  </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Isolate the code by using an immediately-invoked function expression.
 Invoke it via <code>(function(){ ... }).call(this)</code> so that inside of the IIFE, 
 <code>this</code> references the global object.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
@@ -95,48 +222,54 @@ file</p>             </td>             <td class="code">               <div clas
 
   <span class="kd">function</span> <span class="nx">Macro</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">expression</span> <span class="o">=</span> <span class="nx">Expression</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">expression</span><span class="p">);</span>
-    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>XXX extend locals?</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">node</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">node</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">locals</span><span class="p">[</span><span class="nx">arg</span><span class="p">.</span><span class="nx">id</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
       <span class="p">});</span>
       <span class="k">return</span> <span class="nx">expression</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
     <span class="p">};</span>
-  <span class="p">}</span>
-
-  <span class="kd">function</span> <span class="nx">Expression</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">EXPRESSION_TYPES</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>primary expressions</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;Identifier&#39;</span><span class="o">:</span> <span class="nx">Identifier</span><span class="p">,</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>The 'dispatcher' expression constructor.  Other expression constructors 
+call this to create expression functions for their components.  For 
+instance, <code>ConditionalExpression</code> calls <code>Expression</code> to create expression 
+functions for its <code>test</code>, <code>consequent</code> and <code>alternate</code> symbols.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">Expression</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">EXPRESSION_TYPES</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Primary expressions.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;Identifier&#39;</span><span class="o">:</span> <span class="nx">Identifier</span><span class="p">,</span>
       <span class="s1">&#39;ThisExpression&#39;</span><span class="o">:</span> <span class="nx">ThisExpression</span><span class="p">,</span>
       <span class="s1">&#39;VariableExpression&#39;</span><span class="o">:</span> <span class="nx">VariableExpression</span><span class="p">,</span>
-      <span class="s1">&#39;GlobalsExpression&#39;</span><span class="o">:</span> <span class="nx">GlobalsExpression</span><span class="p">,</span>
-      <span class="s1">&#39;Literal&#39;</span><span class="o">:</span> <span class="nx">NumberLiteral</span><span class="p">,</span>
+      <span class="s1">&#39;GlobalsExpression&#39;</span><span class="o">:</span> <span class="nx">GlobalsExpression</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Value expressions.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;Literal&#39;</span><span class="o">:</span> <span class="nx">NumberLiteral</span><span class="p">,</span>
       <span class="s1">&#39;String&#39;</span><span class="o">:</span> <span class="nx">StringLiteral</span><span class="p">,</span>
       <span class="s1">&#39;Array&#39;</span><span class="o">:</span> <span class="nx">ArrayLiteral</span><span class="p">,</span>
       <span class="s1">&#39;Hash&#39;</span><span class="o">:</span> <span class="nx">HashLiteral</span><span class="p">,</span>
       <span class="s1">&#39;HashItem&#39;</span><span class="o">:</span> <span class="nx">HashItem</span><span class="p">,</span>
-      <span class="s1">&#39;ComplexString&#39;</span><span class="o">:</span> <span class="nx">ComplexString</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>logical expressions</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;UnaryExpression&#39;</span><span class="o">:</span> <span class="nx">UnaryExpression</span><span class="p">,</span>
+      <span class="s1">&#39;ComplexString&#39;</span><span class="o">:</span> <span class="nx">ComplexString</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Logical expressions.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;UnaryExpression&#39;</span><span class="o">:</span> <span class="nx">UnaryExpression</span><span class="p">,</span>
       <span class="s1">&#39;BinaryExpression&#39;</span><span class="o">:</span> <span class="nx">BinaryExpression</span><span class="p">,</span>
       <span class="s1">&#39;LogicalExpression&#39;</span><span class="o">:</span> <span class="nx">LogicalExpression</span><span class="p">,</span>
-      <span class="s1">&#39;ConditionalExpression&#39;</span><span class="o">:</span> <span class="nx">ConditionalExpression</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>member expressions</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;CallExpression&#39;</span><span class="o">:</span> <span class="nx">CallExpression</span><span class="p">,</span>
+      <span class="s1">&#39;ConditionalExpression&#39;</span><span class="o">:</span> <span class="nx">ConditionalExpression</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Member expressions.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="s1">&#39;CallExpression&#39;</span><span class="o">:</span> <span class="nx">CallExpression</span><span class="p">,</span>
       <span class="s1">&#39;PropertyExpression&#39;</span><span class="o">:</span> <span class="nx">PropertyExpression</span><span class="p">,</span>
       <span class="s1">&#39;AttributeExpression&#39;</span><span class="o">:</span> <span class="nx">AttributeExpression</span><span class="p">,</span>
       <span class="s1">&#39;ParenthesisExpression&#39;</span><span class="o">:</span> <span class="nx">ParenthesisExpression</span><span class="p">,</span>
-    <span class="p">};</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">node</span> <span class="o">||</span> <span class="o">!</span><span class="nx">EXPRESSION_TYPES</span><span class="p">[</span><span class="nx">node</span><span class="p">.</span><span class="nx">type</span><span class="p">])</span> <span class="p">{</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>An entity can have no value.  It will be resolved to <code>null</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">EXPRESSION_TYPES</span><span class="p">[</span><span class="nx">node</span><span class="p">.</span><span class="nx">type</span><span class="p">](</span><span class="nx">node</span><span class="p">);</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">expr</span> <span class="o">=</span> <span class="nx">EXPRESSION_TYPES</span><span class="p">[</span><span class="nx">node</span><span class="p">.</span><span class="nx">type</span><span class="p">](</span><span class="nx">node</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Unknown expression type&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">expr</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="kd">function</span> <span class="nx">_resolve</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">expr</span> <span class="o">||</span> 
+  <span class="kd">function</span> <span class="nx">_resolve</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Bail out early if it's a primitive value or <code>null</code>.  This is exactly 
+what we want.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">expr</span> <span class="o">||</span> 
         <span class="k">typeof</span> <span class="nx">expr</span> <span class="o">===</span> <span class="s1">&#39;boolean&#39;</span> <span class="o">||</span> 
         <span class="k">typeof</span> <span class="nx">expr</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span> <span class="o">||</span> 
         <span class="k">typeof</span> <span class="nx">expr</span> <span class="o">===</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">expr</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">expr</span><span class="p">.</span><span class="nx">_resolve</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>it's an Entity or an Attribute</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">expr</span><span class="p">.</span><span class="nx">_resolve</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">index</span><span class="p">);</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Check if <code>expr</code> knows how to resolve itself (if it's an Entity or an 
+Attribute).</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">expr</span><span class="p">.</span><span class="nx">_resolve</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">expr</span><span class="p">.</span><span class="nx">_resolve</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">index</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="nx">index</span> <span class="o">=</span> <span class="nx">index</span> <span class="o">||</span> <span class="p">[];</span>
-    <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">index</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p><code>var [locals, current] = expr(...)</code> is not ES5 (V8 doesn't support it)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">expr</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">key</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">index</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p><code>var [locals, current] = expr(...)</code> is not ES5 (V8 doesn't support it)</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">expr</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">key</span><span class="p">);</span>
     <span class="nx">locals</span> <span class="o">=</span> <span class="nx">current</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">current</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
     <span class="k">return</span> <span class="nx">_resolve</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">index</span><span class="p">);</span>
   <span class="p">}</span>
@@ -185,7 +318,7 @@ file</p>             </td>             <td class="code">               <div clas
       <span class="nx">key</span> <span class="o">=</span> <span class="nx">_resolve</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
       <span class="k">if</span> <span class="p">(</span><span class="nx">key</span> <span class="o">&amp;&amp;</span> <span class="nx">content</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="p">{</span>
         <span class="k">return</span> <span class="p">[</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">content</span><span class="p">[</span><span class="nx">key</span><span class="p">]];</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>For Arrays, the default key is always 0.  The syntax does not allow 
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>For Arrays, the default key is always 0.  The syntax does not allow 
 specifying a different default with an asterisk, like in hashes.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="p">[</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>
       <span class="p">}</span>
     <span class="p">};</span>
@@ -207,14 +340,14 @@ specifying a different default with an asterisk, like in hashes.</p>            
       <span class="p">}</span>
     <span class="p">};</span>
   <span class="p">}</span>
-  <span class="kd">function</span> <span class="nx">HashItem</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>return the value expression right away
+  <span class="kd">function</span> <span class="nx">HashItem</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>return the value expression right away
 the <code>key</code> and the <code>default</code> flag logic is done in <code>HashLiteral</code></p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">return</span> <span class="nx">Expression</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
   <span class="p">}</span>
   <span class="kd">function</span> <span class="nx">ComplexString</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="p">[];</span>
     <span class="nx">node</span><span class="p">.</span><span class="nx">content</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">elem</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">content</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">Expression</span><span class="p">(</span><span class="nx">elem</span><span class="p">));</span>
-    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Every complexString needs to have its own <code>dirty</code> flag whose state 
+    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Every complexString needs to have its own <code>dirty</code> flag whose state 
 persists across multiple calls to the given complexString.  On the other 
 hand, <code>dirty</code> must not be shared by all complexStrings.  Hence the need 
 to define <code>dirty</code> as a variable available in the closure.  Note that the 
@@ -345,9 +478,9 @@ immediately.</p>             </td>             <td class="code">               <
       <span class="kd">var</span> <span class="nx">evaluated_args</span> <span class="o">=</span> <span class="p">[];</span>
       <span class="nx">args</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">evaluated_args</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arg</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">));</span>
-      <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>callee is an expression pointing to a macro, e.g. an identifier
+      <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>callee is an expression pointing to a macro, e.g. an identifier
 XXX what if it doesn't point to a macro?</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="kd">var</span> <span class="nx">macro</span> <span class="o">=</span> <span class="nx">callee</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
-      <span class="nx">locals</span> <span class="o">=</span> <span class="nx">macro</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">macro</span> <span class="o">=</span> <span class="nx">macro</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>rely entirely on the platform implementation to detect recursion</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">macro</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">evaluated_args</span><span class="p">);</span>
+      <span class="nx">locals</span> <span class="o">=</span> <span class="nx">macro</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">macro</span> <span class="o">=</span> <span class="nx">macro</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>rely entirely on the platform implementation to detect recursion</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">macro</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">evaluated_args</span><span class="p">);</span>
     <span class="p">};</span>
   <span class="p">}</span>
   <span class="kd">function</span> <span class="nx">PropertyExpression</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
@@ -359,12 +492,12 @@ XXX what if it doesn't point to a macro?</p>             </td>             <td c
       <span class="kd">var</span> <span class="nx">prop</span> <span class="o">=</span> <span class="nx">_resolve</span><span class="p">(</span><span class="nx">property</span><span class="p">,</span> <span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
       <span class="kd">var</span> <span class="nx">parent</span> <span class="o">=</span> <span class="nx">expression</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
       <span class="nx">locals</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">parent</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">parent</span><span class="p">.</span><span class="nx">_yield</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>it's an Entity or an Attribute</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">_yield</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">prop</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">parent</span><span class="p">.</span><span class="nx">_yield</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>it's an Entity or an Attribute</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">_yield</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">prop</span><span class="p">);</span>
       <span class="p">}</span>
       <span class="k">return</span> <span class="nx">parent</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">prop</span><span class="p">);</span>
     <span class="p">}</span>
   <span class="p">}</span>
-  <span class="kd">function</span> <span class="nx">AttributeExpression</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>XXX looks similar to PropertyExpression, but it's actually closer to 
+  <span class="kd">function</span> <span class="nx">AttributeExpression</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>XXX looks similar to PropertyExpression, but it's actually closer to 
 Identifier</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">expression</span> <span class="o">=</span> <span class="nx">Expression</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">expression</span><span class="p">);</span>
     <span class="kd">var</span> <span class="nx">attribute</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">computed</span> <span class="o">?</span> 
       <span class="nx">Expression</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">attribute</span><span class="p">)</span> <span class="o">:</span> 
@@ -372,7 +505,7 @@ Identifier</p>             </td>             <td class="code">               <di
     <span class="k">return</span> <span class="kd">function</span> <span class="nx">attributeExpression</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">attr</span> <span class="o">=</span> <span class="nx">_resolve</span><span class="p">(</span><span class="nx">attribute</span><span class="p">,</span> <span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
       <span class="kd">var</span> <span class="nx">entity</span> <span class="o">=</span> <span class="nx">expression</span><span class="p">(</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
-      <span class="nx">locals</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">entity</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>XXX what if it's not an entity?</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="p">[</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">]];</span>
+      <span class="nx">locals</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">entity</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>XXX what if it's not an entity?</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="p">[</span><span class="nx">locals</span><span class="p">,</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">]];</span>
     <span class="p">}</span>
   <span class="p">}</span>
   <span class="kd">function</span> <span class="nx">ParenthesisExpression</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
