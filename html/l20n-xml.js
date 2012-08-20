@@ -1,10 +1,17 @@
+(function(){
+  var ctx = L20n.getContext();
+  HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
+    return ctx;
+  });
+})();
+
 document.addEventListener("DOMContentLoaded", function() {
   var headNode = document.getElementsByTagName('head')[0];
 
   if (!headNode)
     return;
 
-  var ctx = L20n.getContext();
+  var ctx = document.l10nCtx;
 
   var links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {
@@ -43,9 +50,6 @@ document.addEventListener("DOMContentLoaded", function() {
     return ctx.data || (ctx.data = {});
   });
 
-  HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
-    return ctx;
-  });
 });
 
 function getPathTo(element, context, ignoreL10nPath) {
