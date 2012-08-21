@@ -28,7 +28,7 @@
   "dependencies": {
     "mocha"  :  "1.3.x",
     "should" :  "1.x.x",
-    "docco"  :  "0.3.x"
+    "docco"  :  "git://github.com/jashkenas/docco.git"
   },
   "license": "BSD",
   "engine": {
