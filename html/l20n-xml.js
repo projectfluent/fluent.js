@@ -78,6 +78,8 @@ function getPathTo(element, context, ignoreL10nPath) {
     if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName)
       index++;
   }
+
+  throw "Can't find the path to element " + element;
 }
 
 function getElementByPath(path, context) {
