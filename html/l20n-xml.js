@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function() {
       ctx.addResource(links[i].getAttribute('href'))
   }
 
+  ctx.freeze();
+
   var scriptNodes = headNode.getElementsByTagName('script')
   for (var i=0;i<scriptNodes.length;i++) {
     if (scriptNodes[i].getAttribute('type')=='application/l20n') {
@@ -27,12 +29,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  ctx.onReady = function() {
+  document.addEventListener('LocalizationReady', function() {
     var nodes = document.querySelectorAll('[l10n-id]');
     for (var i = 0, node; node = nodes[i]; i++) {
       localizeNode(ctx, node);
     }
-  }
+  });
 
   HTMLElement.prototype.retranslate = function() {
     if (this.hasAttribute('l10n-id')) {
