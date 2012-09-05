@@ -11,6 +11,38 @@ document.addEventListener("DOMContentLoaded", function() {
   if (!headNode)
     return;
 
+
+  var links = headNode.getElementsByTagName('link')
+  for (var i = 0; i < links.length; i++) {
+    if (links[i].getAttribute('type') == 'intl/manifest') {
+      download(links[i].getAttribute('href'), function(manifest) {
+        var ctx = document.l10nCtx;
+
+        var langList = L20n.Intl.negotiateLocale(manifest.locales.supported);
+        ctx.settings.locales = [langList];
+        ctx.settings.paths = manifest.paths;
+
+        initializeDocumentContext();
+      });
+      return;
+    }
+  }
+
+  initializeDocumentContext();
+});
+
+function download(uri, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.overrideMimeType("application/json");
+  xhr.addEventListener("load", function() {
+    callback(JSON.parse(xhr.responseText))
+  });
+  xhr.open('GET', uri, true);
+  xhr.send('');
+}
+
+function initializeDocumentContext() {
+  var headNode = document.getElementsByTagName('head')[0];
   var ctx = document.l10nCtx;
 
   var links = headNode.getElementsByTagName('link')
@@ -51,8 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
   HTMLDocument.prototype.__defineGetter__('l10nData', function() {
     return ctx.data || (ctx.data = {});
   });
-
-});
+}
 
 function getPathTo(element, context, ignoreL10nPath) {
   const TYPE_ELEMENT = 1;
