@@ -1,0 +1,15 @@
+{
+  "paths": [
+    {
+      "root": "./locales/",
+      "schema": "{{ locale }}/{{ urn }}.lol"
+    }
+  ],
+  "locales": {
+    "supported": [
+      "en-US",
+      "pl"
+    ],
+    "source": "en-US"
+  }
+}
