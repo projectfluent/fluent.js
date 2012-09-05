@@ -1,16 +1,25 @@
+(function(){
+  var ctx = L20n.getContext();
+  HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
+    return ctx;
+  });
+})();
+
 document.addEventListener("DOMContentLoaded", function() {
   var headNode = document.getElementsByTagName('head')[0];
 
   if (!headNode)
     return;
 
-  var ctx = L20n.getContext();
+  var ctx = document.l10nCtx;
 
   var links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {
     if (links[i].getAttribute('type') == 'intl/l20n')
       ctx.addResource(links[i].getAttribute('href'))
   }
+
+  ctx.freeze();
 
   var scriptNodes = headNode.getElementsByTagName('script')
   for (var i=0;i<scriptNodes.length;i++) {
@@ -20,12 +29,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  ctx.onReady = function() {
+  document.addEventListener('LocalizationReady', function() {
     var nodes = document.querySelectorAll('[l10n-id]');
     for (var i = 0, node; node = nodes[i]; i++) {
       localizeNode(ctx, node);
     }
-  }
+  });
 
   HTMLElement.prototype.retranslate = function() {
     if (this.hasAttribute('l10n-id')) {
@@ -43,9 +52,6 @@ document.addEventListener("DOMContentLoaded", function() {
     return ctx.data || (ctx.data = {});
   });
 
-  HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
-    return ctx;
-  });
 });
 
 function getPathTo(element, context, ignoreL10nPath) {
@@ -72,6 +78,8 @@ function getPathTo(element, context, ignoreL10nPath) {
     if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName)
       index++;
   }
+
+  throw "Can't find the path to element " + element;
 }
 
 function getElementByPath(path, context) {
