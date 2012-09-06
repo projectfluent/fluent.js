@@ -66,6 +66,7 @@ function initializeDocumentContext() {
     for (var i = 0, node; node = nodes[i]; i++) {
       localizeNode(ctx, node);
     }
+    fireLocalizedEvent();
   });
 
   HTMLElement.prototype.retranslate = function() {
@@ -83,6 +84,12 @@ function initializeDocumentContext() {
   HTMLDocument.prototype.__defineGetter__('l10nData', function() {
     return ctx.data || (ctx.data = {});
   });
+}
+
+function fireLocalizedEvent() {
+  var event = document.createEvent('Event');
+  event.initEvent('DocumentLocalized', false, false);
+  document.dispatchEvent(event);
 }
 
 function getPathTo(element, context, ignoreL10nPath) {
