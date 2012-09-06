@@ -1,16 +1,29 @@
 describe("Localization", function() {
-  console.log('a')
   it("name should be 'Name'", function() {
-    console.log('b')
     var name = document.querySelector('[l10n-id="name"]');
-    expect(name.textContent).toEqual('Name');
+    var l10n = {
+      'en-US': 'Name',
+      'pl': "Imię"
+    }
+    var locale = document.l10nCtx.getLocale();
+    expect(name.textContent).toEqual(l10n[locale]);
   });
   it("phone should be 'Phone'", function() {
     var phone = document.querySelector('[l10n-id="phone"]');
-    expect(phone.textContent).toEqual('Phone');
+    var l10n = {
+      'en-US': 'Phone',
+      'pl': "Telefon"
+    }
+    var locale = document.l10nCtx.getLocale();
+    expect(phone.textContent).toEqual(l10n[locale]);
   });
   it("address should be 'Address'", function() {
     var address = document.querySelector('[l10n-id="address"]');
-    expect(address.textContent).toEqual('Address');
+    var l10n = {
+      'en-US': 'Address',
+      'pl': "Adres"
+    }
+    var locale = document.l10nCtx.getLocale();
+    expect(address.textContent).toEqual(l10n[locale]);
   });
 });
