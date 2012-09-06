@@ -1,5 +1,7 @@
 describe("Localization", function() {
+  console.log('a')
   it("name should be 'Name'", function() {
+    console.log('b')
     var name = document.querySelector('[l10n-id="name"]');
     expect(name.textContent).toEqual('Name');
   });
