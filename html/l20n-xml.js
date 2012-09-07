@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
       download(links[i].getAttribute('href'), function(manifest) {
         var ctx = document.l10nCtx;
 
-        var langList = L20n.Intl.negotiateLocale(manifest.locales.supported);
-        ctx.settings.locales = [langList];
+        var langList = L20n.Intl.prioritizeLocales(manifest.locales.supported);
+        ctx.settings.locales = langList;
         ctx.settings.paths = manifest.paths;
 
         initializeDocumentContext();
@@ -44,6 +44,17 @@ function download(uri, callback) {
 function initializeDocumentContext() {
   var headNode = document.getElementsByTagName('head')[0];
   var ctx = document.l10nCtx;
+
+  var metas = headNode.getElementsByTagName('meta');
+  for (var i = 0; i < metas.length; i++) {
+    if (metas[i].getAttribute('http-equiv') == 'Content-Language') {
+      var locales = metas[i].getAttribute('Content').split(',');
+      locales.forEach(String.trim);
+      ctx.settings.locales = locales;
+      console.log(locales);
+      break;
+    }
+  }
 
   var links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {
