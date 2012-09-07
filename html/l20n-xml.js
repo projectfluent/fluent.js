@@ -45,14 +45,13 @@ function initializeDocumentContext() {
   var headNode = document.getElementsByTagName('head')[0];
   var ctx = document.l10nCtx;
 
-  if (settings.locales === null) {
+  if (ctx.settings.locales === null) {
     var metas = headNode.getElementsByTagName('meta');
     for (var i = 0; i < metas.length; i++) {
       if (metas[i].getAttribute('http-equiv') == 'Content-Language') {
         var locales = metas[i].getAttribute('Content').split(',');
         locales.forEach(String.trim);
         ctx.settings.locales = locales;
-        console.log(locales);
         break;
       }
     }
