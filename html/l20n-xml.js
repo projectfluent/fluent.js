@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         var langList = L20n.Intl.prioritizeLocales(manifest.locales.supported);
         ctx.settings.locales = langList;
-        ctx.settings.paths = manifest.paths;
+        ctx.settings.schemes = manifest.schemes;
 
         initializeDocumentContext();
       });
