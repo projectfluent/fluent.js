@@ -1,4 +1,4 @@
-<plural(n) {n==0?"none":n==1?"one":"many"}>
+<plural($n) {$n==0?"none":$n==1?"one":"many"}>
 
 
 <name "Name">
