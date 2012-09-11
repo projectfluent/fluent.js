@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
+    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../runtests.js"></script>
+    <script type="text/javascript" src="spec.js"></script>
+
+    <link href="./index.j20n" type="intl/l20n" />
+  </head>
+  <body>
+    <p class="intro">
+      This tests expands the concept of entity-node relation to attributes. 
+      All attributes set on the entity expand the node attribute list
+    </p>
+    <span l10n-id="name"></span><input type="text" l10n-id="name_input"/>
+    <span l10n-id="phone"></span><input type="text" l10n-id="phone_input"/>
+    <span l10n-id="address"></span><input type="text" l10n-id="address_input"/>
+  </body>
+</html>

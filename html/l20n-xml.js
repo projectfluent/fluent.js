@@ -1,16 +1,72 @@
+(function(){
+  var ctx = L20n.getContext();
+  HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
+    return ctx;
+  });
+})();
+
 document.addEventListener("DOMContentLoaded", function() {
   var headNode = document.getElementsByTagName('head')[0];
 
   if (!headNode)
     return;
 
-  var ctx = L20n.getContext();
+
+  var links = headNode.getElementsByTagName('link')
+  for (var i = 0; i < links.length; i++) {
+    if (links[i].getAttribute('type') == 'intl/manifest') {
+      download(links[i].getAttribute('href'), function(manifest) {
+        var ctx = document.l10nCtx;
+
+        var langList = L20n.Intl.prioritizeLocales(manifest.locales.supported);
+        ctx.settings.locales = langList;
+        ctx.settings.schemes = manifest.schemes;
+
+        initializeDocumentContext();
+      });
+      return;
+    }
+  }
+
+  initializeDocumentContext();
+});
+
+function download(uri, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.overrideMimeType("application/json");
+  xhr.addEventListener("load", function() {
+    callback(JSON.parse(xhr.responseText))
+  });
+  xhr.open('GET', uri, true);
+  xhr.send('');
+}
+
+function initializeDocumentContext() {
+  var headNode = document.getElementsByTagName('head')[0];
+  var ctx = document.l10nCtx;
+
+  if (ctx.settings.locales === null) {
+    var metas = headNode.getElementsByTagName('meta');
+    for (var i = 0; i < metas.length; i++) {
+      if (metas[i].getAttribute('http-equiv') == 'Content-Language') {
+        var locales = metas[i].getAttribute('Content').split(',');
+        for(i in locales) {
+          locales[i] = locales[i].trim()
+        }
+        var langList = L20n.Intl.prioritizeLocales(locales);
+        ctx.settings.locales = langList;
+        break;
+      }
+    }
+  }
 
   var links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {
     if (links[i].getAttribute('type') == 'intl/l20n')
       ctx.addResource(links[i].getAttribute('href'))
   }
+
+  ctx.freeze();
 
   var scriptNodes = headNode.getElementsByTagName('script')
   for (var i=0;i<scriptNodes.length;i++) {
@@ -20,12 +76,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  ctx.onReady = function() {
+  document.addEventListener('LocalizationReady', function() {
     var nodes = document.querySelectorAll('[l10n-id]');
     for (var i = 0, node; node = nodes[i]; i++) {
       localizeNode(ctx, node);
     }
-  }
+    fireLocalizedEvent();
+  });
 
   HTMLElement.prototype.retranslate = function() {
     if (this.hasAttribute('l10n-id')) {
@@ -42,11 +99,13 @@ document.addEventListener("DOMContentLoaded", function() {
   HTMLDocument.prototype.__defineGetter__('l10nData', function() {
     return ctx.data || (ctx.data = {});
   });
+}
 
-  HTMLDocument.prototype.__defineGetter__('l10nCtx', function() {
-    return ctx;
-  });
-});
+function fireLocalizedEvent() {
+  var event = document.createEvent('Event');
+  event.initEvent('DocumentLocalized', false, false);
+  document.dispatchEvent(event);
+}
 
 function getPathTo(element, context, ignoreL10nPath) {
   const TYPE_ELEMENT = 1;
@@ -72,6 +131,8 @@ function getPathTo(element, context, ignoreL10nPath) {
     if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName)
       index++;
   }
+
+  throw "Can't find the path to element " + element;
 }
 
 function getElementByPath(path, context) {

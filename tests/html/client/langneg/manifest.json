@@ -1,0 +1,12 @@
+{
+  "schemes": [
+    "./locales/{{ locale }}/{{ resource }}.lol"
+  ],
+  "locales": {
+    "supported": [
+      "en-US",
+      "pl"
+    ],
+    "source": "en-US"
+  }
+}
