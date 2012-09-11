@@ -50,8 +50,11 @@ function initializeDocumentContext() {
     for (var i = 0; i < metas.length; i++) {
       if (metas[i].getAttribute('http-equiv') == 'Content-Language') {
         var locales = metas[i].getAttribute('Content').split(',');
-        locales.forEach(String.trim);
-        ctx.settings.locales = locales;
+        for(i in locales) {
+          locales[i] = locales[i].trim()
+        }
+        var langList = L20n.Intl.prioritizeLocales(locales);
+        ctx.settings.locales = langList;
         break;
       }
     }
