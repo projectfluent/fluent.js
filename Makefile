@@ -32,4 +32,7 @@ docs: lib html
 	./node_modules/docco/bin/docco --output docs/html html/*.js
 	@touch docs
 
-.PHONY: test test-compiler watch-compiler coverage
+gh-pages: docs
+	./_build/gh-pages.sh
+
+.PHONY: test test-compiler watch-compiler coverage gh-pages
