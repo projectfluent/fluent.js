@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# A useful build script for projects hosted on github:
-# It can build your Sphinx docs and push them straight to your gh-pages branch.
-
 if [[ -z $1 ]]; then
     REMOTE=upstream
 else
@@ -21,7 +18,7 @@ if [[ ! -d $GH ]]; then
     popd
 fi
 
-# Update the _gh-pages target dir.
+# Update the _build/gh-pages target dir.
 pushd $GH
 git pull
 popd
@@ -37,6 +34,6 @@ pushd $GH
 # Commit.
 git add .
 git commit -am "gh-pages build on $(date)"
-#git push origin gh-pages
+git push origin gh-pages
 
 popd
