@@ -1,0 +1,214 @@
+<!DOCTYPE html>  <html> <head>   <title>intl.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="compiler.html">                 compiler.js               </a>                                           <a class="source" href="intl.html">                 intl.js               </a>                                           <a class="source" href="l20n.html">                 l20n.js               </a>                                           <a class="source" href="parser.html">                 parser.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               intl.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;defaultLocale&#39;</span><span class="o">:</span> <span class="s1">&#39;en-US&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;systemLocales&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;en-US&#39;</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* I18n API TC39 6.2.2 */</span>
+  <span class="kd">function</span> <span class="nx">isStructurallyValidLanguageTag</span><span class="p">(</span><span class="nx">locale</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+
+  <span class="cm">/* I18n API TC39 6.2.3 */</span>
+  <span class="kd">function</span> <span class="nx">canonicalizeLanguageTag</span><span class="p">(</span><span class="nx">locale</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">locale</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* I18n API TC39 6.2.4 */</span>
+  <span class="kd">function</span> <span class="nx">defaultLocale</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">defaultLocale</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* I18n API TC39 9.2.1 */</span>
+  <span class="kd">function</span> <span class="nx">canonicalizeLocaleList</span><span class="p">(</span><span class="nx">locales</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">locales</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">[];</span>
+    <span class="p">}</span>
+    
+    <span class="kd">var</span> <span class="nx">seen</span> <span class="o">=</span> <span class="p">[];</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">locales</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">locales</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">locales</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">locales</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="nx">k</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">Pk</span> <span class="o">=</span> <span class="nx">k</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+      <span class="kd">var</span> <span class="nx">kPresent</span> <span class="o">=</span> <span class="nx">locales</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">Pk</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">kPresent</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">kValue</span> <span class="o">=</span> <span class="nx">locales</span><span class="p">[</span><span class="nx">Pk</span><span class="p">];</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">kValue</span><span class="p">)</span> <span class="o">!==</span> <span class="s1">&#39;string&#39;</span> <span class="o">&amp;&amp;</span>
+            <span class="k">typeof</span><span class="p">(</span><span class="nx">kValue</span><span class="p">)</span> <span class="o">!==</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span><span class="p">();</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">tag</span> <span class="o">=</span> <span class="nx">kValue</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isStructurallyValidLanguageTag</span><span class="p">(</span><span class="nx">tag</span><span class="p">))</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nx">RangeError</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">tag</span> <span class="o">=</span> <span class="nx">canonicalizeLanguageTag</span><span class="p">(</span><span class="nx">tag</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">seen</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">tag</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">seen</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">tag</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="nx">k</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">seen</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* I18n API TC39 9.2.2 */</span>
+  <span class="kd">function</span> <span class="nx">bestAvailableLocale</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span> <span class="nx">locale</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">candidate</span> <span class="o">=</span> <span class="nx">locale</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">availableLocales</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">candidate</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">candidate</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="kd">var</span> <span class="nx">pos</span> <span class="o">=</span> <span class="nx">candidate</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pos</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">pos</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">candidate</span><span class="p">[</span><span class="nx">pos</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">pos</span> <span class="o">-=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="nx">candidate</span> <span class="o">=</span> <span class="nx">candidate</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">pos</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* I18n API TC39 9.2.3 */</span>
+  <span class="kd">function</span> <span class="nx">lookupMatcher</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span> <span class="nx">requestedLocales</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">requestedLocales</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">availableLocale</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span> <span class="o">&amp;&amp;</span> <span class="nx">availableLocale</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">locale</span> <span class="o">=</span> <span class="nx">requestedLocales</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="kd">var</span> <span class="nx">noExtensionsLocale</span> <span class="o">=</span> <span class="nx">locale</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">availableLocale</span> <span class="o">=</span> <span class="nx">bestAvailableLocale</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span>
+                                                <span class="nx">noExtensionsLocale</span><span class="p">);</span>
+      <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{};</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="nx">availableLocale</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">locale</span> <span class="o">=</span> <span class="nx">availableLocale</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">locale</span> <span class="o">!==</span> <span class="nx">noExtensionsLocale</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="s2">&quot;NotImplemented&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">locale</span> <span class="o">=</span> <span class="nx">defaultLocale</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* I18n API TC39 9.2.4 */</span>
+  <span class="kd">var</span> <span class="nx">bestFitMatcher</span> <span class="o">=</span> <span class="nx">lookupMatcher</span><span class="p">;</span>
+
+  <span class="cm">/* I18n API TC39 9.2.5 */</span>
+  <span class="kd">function</span> <span class="nx">resolveLocale</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span>
+                         <span class="nx">requestedLocales</span><span class="p">,</span>
+                         <span class="nx">options</span><span class="p">,</span>
+                         <span class="nx">relevantExtensionKeys</span><span class="p">,</span>
+                         <span class="nx">localeData</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">matcher</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">localeMatcher</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">matcher</span> <span class="o">==</span> <span class="s1">&#39;lookup&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">lookupMatcher</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span> <span class="nx">requestedLocales</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">bestFitMatcher</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span> <span class="nx">requestedLocales</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">foundLocale</span> <span class="o">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">locale</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;NotImplemented&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="nx">result</span><span class="p">.</span><span class="nx">dataLocale</span> <span class="o">=</span> <span class="nx">foundLocale</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">supportedExtension</span> <span class="o">=</span> <span class="s2">&quot;-u&quot;</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">relevantExtensionKeys</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">len</span> <span class="o">=</span> <span class="nx">relevantExtensionKeys</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">while</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">relevantExtensionKeys</span><span class="p">[</span><span class="nx">i</span><span class="p">.</span><span class="nx">toString</span><span class="p">()];</span>
+      <span class="kd">var</span> <span class="nx">foundLocaleData</span> <span class="o">=</span> <span class="nx">localeData</span><span class="p">(</span><span class="nx">foundLocale</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">keyLocaleData</span> <span class="o">=</span> <span class="nx">foundLocaleData</span><span class="p">[</span><span class="nx">foundLocale</span><span class="p">];</span>
+      <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">keyLocaleData</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+      <span class="kd">var</span> <span class="nx">supportedExtensionAddition</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">extensionSubtags</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="s2">&quot;NotImplemented&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">))</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">optionsValue</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">keyLocaleData</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">optionsValue</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">optionsValue</span> <span class="o">!==</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">value</span> <span class="o">=</span> <span class="nx">optionsValue</span><span class="p">;</span>
+            <span class="nx">supportedExtensionAddition</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">key</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+        <span class="nx">supportedExtension</span> <span class="o">+=</span> <span class="nx">supportedExtensionAddition</span><span class="p">;</span>
+        <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">supportedExtension</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">preExtension</span> <span class="o">=</span> <span class="nx">foundLocale</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">extensionIndex</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">postExtension</span> <span class="o">=</span> <span class="nx">foundLocale</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">extensionIndex</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">foundLocale</span> <span class="o">=</span> <span class="nx">preExtension</span> <span class="o">+</span> <span class="nx">supportedExtension</span> <span class="o">+</span> <span class="nx">postExtension</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">result</span><span class="p">.</span><span class="nx">locale</span> <span class="o">=</span> <span class="nx">foundLocale</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * availableLocales - The list of locales that the system offers</span>
+<span class="cm">   *</span>
+<span class="cm">   * returns the list of availableLocales sorted by user preferred locales</span>
+<span class="cm">   **/</span>
+  <span class="kd">function</span> <span class="nx">prioritizeLocales</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/**</span>
+<span class="cm">     * For now we just take nav.language, but we&#39;d prefer to get</span>
+<span class="cm">     * a list of locales that the user can read sorted by user&#39;s preference</span>
+<span class="cm">     **/</span>
+    <span class="kd">var</span> <span class="nx">requestedLocales</span> <span class="o">=</span> <span class="p">[</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">language</span> <span class="o">||</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userLanguage</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;localeMatcher&#39;</span><span class="o">:</span> <span class="s1">&#39;lookup&#39;</span><span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">tag</span> <span class="o">=</span> <span class="nx">resolveLocale</span><span class="p">(</span><span class="nx">availableLocales</span><span class="p">,</span>
+                            <span class="nx">requestedLocales</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">pos</span> <span class="o">=</span> <span class="nx">availableLocales</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">tag</span><span class="p">.</span><span class="nx">locale</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pos</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>not sure why resolveLocale can return a locale that is not available</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">availableLocales</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">availableLocales</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">pos</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="nx">availableLocales</span><span class="p">.</span><span class="nx">unshift</span><span class="p">(</span><span class="nx">tag</span><span class="p">.</span><span class="nx">locale</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">availableLocales</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">Intl</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">Intl</span> <span class="o">=</span> <span class="nx">exports</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">Intl</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">L20n</span><span class="p">.</span><span class="nx">Intl</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="p">}</span>
+
+  <span class="nx">Intl</span><span class="p">.</span><span class="nx">prioritizeLocales</span> <span class="o">=</span> <span class="nx">prioritizeLocales</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

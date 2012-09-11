@@ -26,8 +26,9 @@ lib-cov: lib
 	@rm -rf lib-cov
 	@jscoverage lib lib-cov
 
-docs: lib
-	./node_modules/docco/bin/docco lib/*.js
+docs: lib html
+	./node_modules/docco/bin/docco --output docs/lib lib/*.js
+	./node_modules/docco/bin/docco --output docs/html html/*.js
 	@touch docs
 
 .PHONY: test test-compiler watch-compiler test-cov

@@ -1,16 +1,72 @@
-<!DOCTYPE html>  <html> <head>   <title>l20n-xml.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="compiler.html">                 compiler.js               </a>                                           <a class="source" href="l20n-xml.html">                 l20n-xml.js               </a>                                           <a class="source" href="l20n.html">                 l20n.js               </a>                                           <a class="source" href="parser.html">                 parser.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               l20n-xml.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;DOMContentLoaded&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<!DOCTYPE html>  <html> <head>   <title>l20n-xml.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               l20n-xml.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">L20n</span><span class="p">.</span><span class="nx">getContext</span><span class="p">();</span>
+  <span class="nx">HTMLDocument</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">__defineGetter__</span><span class="p">(</span><span class="s1">&#39;l10nCtx&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">ctx</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">})();</span>
+
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;DOMContentLoaded&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">headNode</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
 
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">headNode</span><span class="p">)</span>
     <span class="k">return</span><span class="p">;</span>
 
-  <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">L20n</span><span class="p">.</span><span class="nx">getContext</span><span class="p">();</span>
+
+  <span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">headNode</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">links</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;intl/manifest&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">download</span><span class="p">(</span><span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">manifest</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">l10nCtx</span><span class="p">;</span>
+
+        <span class="kd">var</span> <span class="nx">langList</span> <span class="o">=</span> <span class="nx">L20n</span><span class="p">.</span><span class="nx">Intl</span><span class="p">.</span><span class="nx">prioritizeLocales</span><span class="p">(</span><span class="nx">manifest</span><span class="p">.</span><span class="nx">locales</span><span class="p">.</span><span class="nx">supported</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">settings</span><span class="p">.</span><span class="nx">locales</span> <span class="o">=</span> <span class="nx">langList</span><span class="p">;</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">settings</span><span class="p">.</span><span class="nx">schemes</span> <span class="o">=</span> <span class="nx">manifest</span><span class="p">.</span><span class="nx">schemes</span><span class="p">;</span>
+
+        <span class="nx">initializeDocumentContext</span><span class="p">();</span>
+      <span class="p">});</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">initializeDocumentContext</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="kd">function</span> <span class="nx">download</span><span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+  <span class="nx">xhr</span><span class="p">.</span><span class="nx">overrideMimeType</span><span class="p">(</span><span class="s2">&quot;application/json&quot;</span><span class="p">);</span>
+  <span class="nx">xhr</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">callback</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">))</span>
+  <span class="p">});</span>
+  <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+  <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">initializeDocumentContext</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">headNode</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="kd">var</span> <span class="nx">ctx</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">l10nCtx</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">settings</span><span class="p">.</span><span class="nx">locales</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">metas</span> <span class="o">=</span> <span class="nx">headNode</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;meta&#39;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">metas</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">metas</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;http-equiv&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Content-Language&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">locales</span> <span class="o">=</span> <span class="nx">metas</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;Content&#39;</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
+        <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">locales</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">locales</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">locales</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">trim</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">langList</span> <span class="o">=</span> <span class="nx">L20n</span><span class="p">.</span><span class="nx">Intl</span><span class="p">.</span><span class="nx">prioritizeLocales</span><span class="p">(</span><span class="nx">locales</span><span class="p">);</span>
+        <span class="nx">ctx</span><span class="p">.</span><span class="nx">settings</span><span class="p">.</span><span class="nx">locales</span> <span class="o">=</span> <span class="nx">langList</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
 
   <span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">headNode</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">)</span>
   <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">links</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;intl/l20n&#39;</span><span class="p">)</span>
       <span class="nx">ctx</span><span class="p">.</span><span class="nx">addResource</span><span class="p">(</span><span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">))</span>
   <span class="p">}</span>
+
+  <span class="nx">ctx</span><span class="p">.</span><span class="nx">freeze</span><span class="p">();</span>
 
   <span class="kd">var</span> <span class="nx">scriptNodes</span> <span class="o">=</span> <span class="nx">headNode</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">)</span>
   <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">scriptNodes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
@@ -20,12 +76,13 @@
     <span class="p">}</span>
   <span class="p">}</span>
 
-  <span class="nx">ctx</span><span class="p">.</span><span class="nx">onReady</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;LocalizationReady&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">nodes</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;[l10n-id]&#39;</span><span class="p">);</span>
     <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">node</span><span class="p">;</span> <span class="nx">node</span> <span class="o">=</span> <span class="nx">nodes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">localizeNode</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">node</span><span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">}</span>
+    <span class="nx">fireLocalizedEvent</span><span class="p">();</span>
+  <span class="p">});</span>
 
   <span class="nx">HTMLElement</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">retranslate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="s1">&#39;l10n-id&#39;</span><span class="p">))</span> <span class="p">{</span>
@@ -42,11 +99,13 @@
   <span class="nx">HTMLDocument</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">__defineGetter__</span><span class="p">(</span><span class="s1">&#39;l10nData&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">data</span> <span class="o">||</span> <span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="p">{});</span>
   <span class="p">});</span>
+<span class="p">}</span>
 
-  <span class="nx">HTMLDocument</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">__defineGetter__</span><span class="p">(</span><span class="s1">&#39;l10nCtx&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">ctx</span><span class="p">;</span>
-  <span class="p">});</span>
-<span class="p">});</span>
+<span class="kd">function</span> <span class="nx">fireLocalizedEvent</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">event</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createEvent</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">);</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">initEvent</span><span class="p">(</span><span class="s1">&#39;DocumentLocalized&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+<span class="p">}</span>
 
 <span class="kd">function</span> <span class="nx">getPathTo</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">ignoreL10nPath</span><span class="p">)</span> <span class="p">{</span>
   <span class="kr">const</span> <span class="nx">TYPE_ELEMENT</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
@@ -72,6 +131,8 @@
     <span class="k">if</span> <span class="p">(</span><span class="nx">sibling</span><span class="p">.</span><span class="nx">nodeType</span> <span class="o">===</span> <span class="nx">TYPE_ELEMENT</span> <span class="o">&amp;&amp;</span> <span class="nx">sibling</span><span class="p">.</span><span class="nx">tagName</span> <span class="o">===</span> <span class="nx">element</span><span class="p">.</span><span class="nx">tagName</span><span class="p">)</span>
       <span class="nx">index</span><span class="o">++</span><span class="p">;</span>
   <span class="p">}</span>
+
+  <span class="k">throw</span> <span class="s2">&quot;Can&#39;t find the path to element &quot;</span> <span class="o">+</span> <span class="nx">element</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="kd">function</span> <span class="nx">getElementByPath</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
