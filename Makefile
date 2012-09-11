@@ -17,18 +17,19 @@ watch-compiler:
 		--growl \
 		tests/compiler/*.js
 
-test-cov: docs/coverage.html
+coverage: docs/coverage.html
 
-docs/coverage.html: lib-cov
-	L20N_COV=1 $(MAKE) test REPORTER=html-cov > docs/coverage.html
+docs/coverage.html: _build/cov
+	@L20N_COV=1 $(MAKE) test REPORTER=html-cov > docs/coverage.html
 
-lib-cov: lib
-	@rm -rf lib-cov
-	@jscoverage lib lib-cov
+_build/cov: lib
+	@rm -rf _build/cov
+	@mkdir _build/cov
+	@jscoverage lib _build/cov/lib
 
 docs: lib html
 	./node_modules/docco/bin/docco --output docs/lib lib/*.js
 	./node_modules/docco/bin/docco --output docs/html html/*.js
 	@touch docs
 
-.PHONY: test test-compiler watch-compiler test-cov
+.PHONY: test test-compiler watch-compiler coverage

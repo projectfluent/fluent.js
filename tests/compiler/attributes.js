@@ -1,6 +1,6 @@
 var fs = require('fs');
 var Compiler = process.env.L20N_COV
-  ? require('../../lib-cov/compiler.js')
+  ? require('../../_build/cov/lib/compiler.js')
   : require('../../lib/compiler.js');
 
 function read(filename) {
