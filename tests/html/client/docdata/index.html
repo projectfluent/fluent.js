@@ -24,12 +24,9 @@
 
     <script type="text/javascript">
       function test() {
-          var x="<foo 'downloading {{downloadCount}} foo'>";
-        var ast = Parser.parse(x);
-        alert(JSON.stringify(ast));
-        //document.l10nData.user.gender="male";
-        //var node = document.getElementById('mood');
-        //node.retranslate();
+        document.l10nData.user.gender="male";
+        var node = document.getElementById('mood');
+        node.retranslate();
       }
     </script>
 

@@ -18,9 +18,9 @@ document.addEventListener("DOMContentLoaded", function() {
       download(links[i].getAttribute('href'), function(manifest) {
         var ctx = document.l10nCtx;
 
-        var langList = L20n.Intl.negotiateLocale(manifest.locales.supported);
-        ctx.settings.locales = [langList];
-        ctx.settings.paths = manifest.paths;
+        var langList = L20n.Intl.prioritizeLocales(manifest.locales.supported);
+        ctx.settings.locales = langList;
+        ctx.settings.schemes = manifest.schemes;
 
         initializeDocumentContext();
       });
@@ -44,6 +44,21 @@ function download(uri, callback) {
 function initializeDocumentContext() {
   var headNode = document.getElementsByTagName('head')[0];
   var ctx = document.l10nCtx;
+
+  if (ctx.settings.locales === null) {
+    var metas = headNode.getElementsByTagName('meta');
+    for (var i = 0; i < metas.length; i++) {
+      if (metas[i].getAttribute('http-equiv') == 'Content-Language') {
+        var locales = metas[i].getAttribute('Content').split(',');
+        for(i in locales) {
+          locales[i] = locales[i].trim()
+        }
+        var langList = L20n.Intl.prioritizeLocales(locales);
+        ctx.settings.locales = langList;
+        break;
+      }
+    }
+  }
 
   var links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {

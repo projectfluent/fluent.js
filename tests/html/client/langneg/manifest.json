@@ -1,9 +1,6 @@
 {
-  "paths": [
-    {
-      "root": "./locales/",
-      "schema": "{{ locale }}/{{ urn }}.lol"
-    }
+  "schemes": [
+    "./locales/{{ locale }}/{{ resource }}.lol"
   ],
   "locales": {
     "supported": [
