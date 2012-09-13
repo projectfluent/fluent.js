@@ -75,8 +75,12 @@ function initializeDocumentContext() {
       ctx.data = contextData;
     }
   }
+  
+  ctx.addEventListener('ready', function() {
+    var event = document.createEvent('Event');
+    event.initEvent('LocalizationReady', false, false);
+    document.dispatchEvent(event);
 
-  document.addEventListener('LocalizationReady', function() {
     var nodes = document.querySelectorAll('[l10n-id]');
     for (var i = 0, node; node = nodes[i]; i++) {
       localizeNode(ctx, node);
