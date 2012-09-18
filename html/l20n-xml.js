@@ -157,7 +157,12 @@ function localizeNode(ctx, node) {
     node.nodeData = args;
   }
   // get attributes from the LO
-  var attrs = ctx.getAttributes(l10nId, args);
+  try {
+    var attrs = ctx.getAttributes(l10nId, args);
+  } catch (e) {
+    console.warn("Failed to localize node: "+l10nId);
+    return false;
+  }
   var l10nAttrs;
   if (node.hasAttribute('l10n-attrs'))
     l10nAttrs = node.getAttribute('l10n-attrs').split(" ");
@@ -200,4 +205,5 @@ function localizeNode(ctx, node) {
       }
     }
   }
+  return true;
 }
