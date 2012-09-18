@@ -3,6 +3,12 @@ REPORTER?=dot
 
 test: test-compiler
 
+test-lib: 
+	@./node_modules/.bin/mocha \
+		--require should \
+		--reporter $(REPORTER) \
+		tests/lib/*.js
+
 test-compiler:
 	@./node_modules/.bin/mocha \
 		--require should \
