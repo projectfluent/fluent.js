@@ -1,7 +1,7 @@
 MOCHA_OPTS=
 REPORTER?=dot
 
-test: test-compiler
+test: test-lib test-compiler
 
 test-lib: 
 	@L20N_TEST=1 ./node_modules/.bin/mocha \
