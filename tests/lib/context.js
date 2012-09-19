@@ -14,6 +14,7 @@ function handleRequest(request, response) {
     if (err) {
       response.writeHead(err);
       response.end();
+      return;
     }
     path.exists(filePath, function(exists) {
       if (exists) {
