@@ -41,10 +41,6 @@ function handleRequest(request, response) {
   }
 }
 
-function unique(path) {
-  return path + '?' + Date.now();
-}
-
 // The LOL files are located in:
 // /tests/fixtures/sets/SCENARIO/locales/LOCALE/
 //                              ^       ^
@@ -80,17 +76,11 @@ function unique(path) {
 //   ctx.addResource('l10n:browser:base');
 
 describe('L20n context', function(){
-  var server;
-  var ctx;
-
-  before(function() {
-    server = http.createServer(handleRequest);
-    server.listen(8357);
-  });
+  var server = http.createServer(handleRequest).listen(8357);
 
   beforeEach(function() {
     server.rules = {};
-    ctx = L20n.getContext();
+    L20n.invalidateCache();
   });
 
   describe('Hardcoded URL', function(){
@@ -98,7 +88,8 @@ describe('L20n context', function(){
       server.scenario = 'no_imports';
     });
     it('works for en-US', function(done) {
-      ctx.addResource(unique('en-US/a.lol'));
+      var ctx = L20n.getContext();
+      ctx.addResource('en-US/a.lol');
       ctx.freeze();
       ctx.get('a', {}, function(value) {
         value.should.equal('A (en-US)');
@@ -106,7 +97,8 @@ describe('L20n context', function(){
       }, 'A');
     });
     it('works for pl', function(done) {
-      ctx.addResource(unique('pl/a.lol'));
+      var ctx = L20n.getContext();
+      ctx.addResource('pl/a.lol');
       ctx.freeze();
       ctx.get('a', {}, function(value) {
         value.should.equal('A (pl)');
@@ -117,7 +109,8 @@ describe('L20n context', function(){
       server.rules['/locales/en-US/a.lol'] = function(next) {
         setTimeout(next, 300);
       };
-      ctx.addResource(unique('en-US/a.lol'));
+      var ctx = L20n.getContext();
+      ctx.addResource('en-US/a.lol');
       ctx.freeze();
       ctx.get('a', {}, function(value) {
         value.should.equal('A (en-US)');
@@ -128,7 +121,8 @@ describe('L20n context', function(){
       server.rules['/locales/en-US/a.lol'] = function(next) {
         setTimeout(next, 1000);
       };
-      ctx.addResource(unique('en-US/a.lol'));
+      var ctx = L20n.getContext();
+      ctx.addResource('en-US/a.lol');
       ctx.freeze();
       ctx.get('a', {}, function(value) {
         value.should.equal('A');
@@ -136,4 +130,64 @@ describe('L20n context', function(){
       }, 'A');
     });
   });
+
+  describe('Simple scheme URL', function(){
+    before(function() {
+      server.scenario = 'no_imports';
+    });
+    it('works for en-US', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['en-US'];
+      ctx.addResource('l10n:{{ locale }}/a.lol');
+      ctx.freeze();
+      ctx.get('a', {}, function(value) {
+        value.should.equal('A (en-US)');
+        done();
+      }, 'A');
+    });
+    it('works for en-US for absolute URLs', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['en-US'];
+      ctx.addResource('l10n:/locales/{{ locale }}/a.lol');
+      ctx.freeze();
+      ctx.get('a', {}, function(value) {
+        value.should.equal('A (en-US)');
+        done();
+      }, 'A');
+    });
+  });
+
+  describe('Complex scheme URL', function(){
+    before(function() {
+      server.scenario = 'no_imports';
+    });
+    it('works when the first URL is 200', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('a', {}, function(value) {
+        value.should.equal('A (en-US)');
+        done();
+      }, 'A');
+    });
+    it('uses the second URL if the first one cannot be fetched', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['en-US'];
+      ctx.settings.schemes = [
+        '/wrongdir/{{ locale }}/{{ resource }}.lol',
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('a', {}, function(value) {
+        value.should.equal('A (en-US)');
+        done();
+      }, 'A');
+    });
+  });
+
 });
