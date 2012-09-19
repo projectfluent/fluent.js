@@ -106,8 +106,8 @@ describe('L20n context', function(){
       }, 'A');
     });
     it('works with 300ms delay', function(done) {
-      server.rules['/locales/en-US/a.lol'] = function(next) {
-        setTimeout(next, 300);
+      server.rules['/locales/en-US/a.lol'] = function(serve) {
+        setTimeout(serve, 300);
       };
       var ctx = L20n.getContext();
       ctx.addResource('en-US/a.lol');
@@ -118,8 +118,8 @@ describe('L20n context', function(){
       }, 'A');
     });
     it('uses the default value if delay is 1000ms', function(done) {
-      server.rules['/locales/en-US/a.lol'] = function(next) {
-        setTimeout(next, 1000);
+      server.rules['/locales/en-US/a.lol'] = function(serve) {
+        setTimeout(serve, 1000);
       };
       var ctx = L20n.getContext();
       ctx.addResource('en-US/a.lol');
@@ -187,6 +187,49 @@ describe('L20n context', function(){
         value.should.equal('A (en-US)');
         done();
       }, 'A');
+    });
+  });
+
+  describe('Locale fallback', function(){
+    before(function() {
+      server.scenario = 'no_imports';
+    });
+    it('uses en-US when the first locale is not integral', function(done) {
+      server.rules['/locales/pl/a.lol'] = function(serve) {
+        serve(404);
+      };
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('a', {}, function(value) {
+        value.should.equal('A (en-US)');
+        done();
+      }, 'A');
+    });
+    // add a testcase for when none of the locales is integral
+  });
+
+  // disable for now due to troubles with the synchronous XHR in node
+  xdescribe('Entity fallback', function(){
+    before(function() {
+      server.scenario = 'no_imports';
+    });
+    it('uses en-US translation when the Polish one is missing', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('b', {}, function(value) {
+        value.should.equal('B (en-US)');
+        done();
+      }, 'B');
     });
   });
 
