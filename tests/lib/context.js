@@ -233,4 +233,39 @@ describe('L20n context', function(){
     });
   });
 
+  describe('Simple import', function(){
+    before(function() {
+      server.scenario = 'simple_import';
+    });
+    it('works', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('c', {}, function(value) {
+        value.should.equal('C (pl)');
+        done();
+      }, 'C');
+    });
+    it('when 404, ctx fallbacks to next locale', function(done) {
+      server.rules['/locales/pl/c.lol'] = function(serve) {
+        serve(404);
+      };
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('c', {}, function(value) {
+        value.should.equal('C (en-US)');
+        done();
+      }, 'C');
+    });
+  });
+
 });
