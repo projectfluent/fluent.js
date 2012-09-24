@@ -6,6 +6,25 @@ var http = require('http');
 var path = require('path');
 var fs = require('fs');
 
+var env = {
+  DEBUG: false,
+  getURL: function getURL(url) {
+    var localhost = 'http://localhost:8357';
+    if (url[0] == '/') {
+      url = localhost + url;
+    } else if (!/localhost:8357/.test(url)) {
+      url = localhost + '/locales/' + url;
+    }
+    return url;
+  },
+  XMLHttpRequest: require("xmlhttprequest").XMLHttpRequest,
+}
+
+L20n.env = env;
+
+// node's XHR doesn't support overrideMimeType; make it no-op for now
+env.XMLHttpRequest.prototype.overrideMimeType = function() {};
+
 function handleRequest(request, response) {
   var url = request.url.split('?')[0];
   var filePath = './tests/fixtures/sets/' + this.scenario + url;
