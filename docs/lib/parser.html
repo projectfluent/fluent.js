@@ -521,6 +521,19 @@
     <span class="k">return</span> <span class="nx">mcall</span>
   <span class="p">}</span>
 
+  <span class="kd">function</span> <span class="nx">get_comment</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">pos</span> <span class="o">=</span> <span class="nx">content</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;*/&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">pos</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;ParserError in get_comment&quot;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">content</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nx">pos</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nx">content</span> <span class="o">=</span> <span class="nx">content</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">pos</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Comment&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;content&#39;</span><span class="o">:</span> <span class="nx">c</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
 <span class="p">}).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span> 
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

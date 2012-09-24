@@ -1,7 +1,13 @@
 MOCHA_OPTS=
 REPORTER?=dot
 
-test: test-compiler
+test: test-lib test-compiler
+
+test-lib: 
+	@L20N_TEST=1 ./node_modules/.bin/mocha \
+		--require should \
+		--reporter $(REPORTER) \
+		tests/lib/*.js
 
 test-compiler:
 	@./node_modules/.bin/mocha \
