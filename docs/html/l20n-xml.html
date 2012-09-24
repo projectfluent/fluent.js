@@ -75,8 +75,12 @@
       <span class="nx">ctx</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="nx">contextData</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
+  
+  <span class="nx">ctx</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;ready&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">event</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createEvent</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">);</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">initEvent</span><span class="p">(</span><span class="s1">&#39;LocalizationReady&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
 
-  <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;LocalizationReady&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">nodes</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;[l10n-id]&#39;</span><span class="p">);</span>
     <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">node</span><span class="p">;</span> <span class="nx">node</span> <span class="o">=</span> <span class="nx">nodes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">localizeNode</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">node</span><span class="p">);</span>
@@ -148,7 +152,12 @@
   <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="s1">&#39;l10n-args&#39;</span><span class="p">))</span> <span class="p">{</span>
     <span class="nx">args</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;l10n-args&#39;</span><span class="p">));</span>
     <span class="nx">node</span><span class="p">.</span><span class="nx">nodeData</span> <span class="o">=</span> <span class="nx">args</span><span class="p">;</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>get attributes from the LO</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">attrs</span> <span class="o">=</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">getAttributes</span><span class="p">(</span><span class="nx">l10nId</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>get attributes from the LO</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">try</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">attrs</span> <span class="o">=</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">getAttributes</span><span class="p">(</span><span class="nx">l10nId</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s2">&quot;Failed to localize node: &quot;</span><span class="o">+</span><span class="nx">l10nId</span><span class="p">);</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
   <span class="kd">var</span> <span class="nx">l10nAttrs</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="s1">&#39;l10n-attrs&#39;</span><span class="p">))</span>
     <span class="nx">l10nAttrs</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">&#39;l10n-attrs&#39;</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">);</span>
@@ -183,6 +192,7 @@ source equivalent of <code>child</code> in <code>origNode</code>.</p>           
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
+  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
 <span class="p">}</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
