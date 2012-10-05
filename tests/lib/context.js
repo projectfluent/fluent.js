@@ -294,4 +294,24 @@ describe('L20n context', function(){
       }, 'C');
     });
   });
+
+  describe('Recursive import', function(){
+    before(function() {
+      server.scenario = 'recursive_imports';
+    });
+    it('works', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addEventListener('error', function(e) {
+        e.code.should.equal(L20n.NESTED_ERROR | L20n.INTEGRITY_ERROR);
+        done();
+      }); 
+      ctx.addResource('l10n:a')
+      ctx.freeze();
+    })
+  });
+
 });
