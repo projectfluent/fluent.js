@@ -88,6 +88,14 @@ function initializeDocumentContext() {
     fireLocalizedEvent();
   });
 
+  ctx.addEventListener('error', function(e) {
+    if (e.code & L20n.NOVALIDLOCALE_ERROR) {
+      var event = document.createEvent('Event');
+      event.initEvent('LocalizationFailed', false, false);
+      document.dispatchEvent(event);
+    }
+  });
+
   HTMLElement.prototype.retranslate = function() {
     if (this.hasAttribute('l10n-id')) {
       localizeNode(ctx, this);
