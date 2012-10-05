@@ -21,7 +21,7 @@ var env = {
         url = localhost + '/locales/' + url;
       }
     } else {
-      var url = 'file://'+__dirname+'/../fixtures/sets/no_imports' + url;
+      var url = 'file://'+__dirname+'/../fixtures/sets/recursive_imports' + url;
     }
     return url;
   },
@@ -308,7 +308,7 @@ describe('L20n context', function(){
       ctx.addEventListener('error', function(e) {
         e.code.should.equal(L20n.NESTED_ERROR | L20n.INTEGRITY_ERROR);
         done();
-      }); 
+      });
       ctx.addResource('l10n:a')
       ctx.freeze();
     })
