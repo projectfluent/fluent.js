@@ -8,12 +8,20 @@ var fs = require('fs');
 
 var env = {
   DEBUG: false,
-  getURL: function getURL(url) {
-    var localhost = 'http://localhost:8357';
-    if (url[0] == '/') {
-      url = localhost + url;
-    } else if (!/localhost:8357/.test(url)) {
-      url = localhost + '/locales/' + url;
+  getURL: function getURL(url, async) {
+    if (async === undefined) {
+      async = true;
+    }
+
+    if (async) {
+      var localhost = 'http://localhost:8357';
+      if (url[0] == '/') {
+        url = localhost + url;
+      } else if (!/localhost:8357/.test(url)) {
+        url = localhost + '/locales/' + url;
+      }
+    } else {
+      var url = 'file://'+__dirname+'/../fixtures/sets/no_imports' + url;
     }
     return url;
   },
@@ -233,7 +241,7 @@ describe('L20n context', function(){
   });
 
   // disable for now due to troubles with the synchronous XHR in node
-  xdescribe('Entity fallback', function(){
+  describe('Entity fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
@@ -286,5 +294,4 @@ describe('L20n context', function(){
       }, 'C');
     });
   });
-
 });
