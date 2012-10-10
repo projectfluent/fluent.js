@@ -240,7 +240,8 @@ describe('L20n context', function(){
     // add a testcase for when none of the locales is integral
   });
 
-  // disable for now due to troubles with the synchronous XHR in node
+  // TODO: this test passes, but it cheats.  it actually uses recursive_imports 
+  // scenario when it does the sync XHR
   describe('Entity fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
@@ -313,5 +314,8 @@ describe('L20n context', function(){
       ctx.freeze();
     })
   });
+
+  // TODO: test fallback on parsing errors
+  // TODO: test that two fallbacks invalidate ctx only once
 
 });
