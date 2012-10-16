@@ -324,6 +324,55 @@ describe('L20n context', function(){
     })
   });
 
+  describe('Duplicate import', function(){
+    before(function() {
+      server.scenario = 'duplicate_imports';
+    });
+    it('works', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('c', {}, function(value) {
+        value.should.equal('C (pl)');
+        done();
+      }, 'C');
+    });
+    it('when 404, fallbacks to next locale', function(done) {
+      server.rules['/locales/pl/c.lol'] = function(serve) {
+        serve(404);
+      };
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('c', {}, function(value) {
+        value.should.equal('C (en-US)');
+        done();
+      }, 'C');
+    });
+    it('works when the imported res is addResource\'d directly to the ctx first', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:c');
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.get('c', {}, function(value) {
+        value.should.equal('C (pl)');
+        done();
+      }, 'C');
+    });
+  });
+
   // TODO: test fallback on parsing errors
   // TODO: test that two fallbacks invalidate ctx only once
 
