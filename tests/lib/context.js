@@ -103,11 +103,20 @@ function handleRequest(request, response) {
 //   ctx.addResource('l10n:browser:base');
 
 describe('L20n context', function(){
-  var server = http.createServer(handleRequest).listen(8357);
+  var server;
+
+  before(function() {
+    server = http.createServer(handleRequest);
+  });
 
   beforeEach(function() {
+    server.listen(8357);
     server.rules = {};
     L20n.invalidateCache();
+  });
+
+  afterEach(function() {
+    server.close();
   });
 
   describe('Hardcoded URL', function(){
