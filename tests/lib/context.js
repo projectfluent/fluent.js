@@ -378,7 +378,41 @@ describe('L20n context', function(){
     });
   });
 
+  describe('Broken lol', function(){
+    before(function() {
+      server.scenario = 'broken_lol';
+      L20n.env.scenario = 'broken_lol';
+    });
+    it('works', function(done) {
+      var ctx = L20n.getContext();
+      ctx.settings.locales = ['pl', 'en-US'];
+      ctx.settings.schemes = [
+        '/locales/{{ locale }}/{{ resource }}.lol'
+      ];
+      ctx.addResource('l10n:a');
+      ctx.freeze();
+      ctx.addEventListener('error', function(e) {
+        console.log(e)
+      });
+      ctx.addEventListener('ready', function() {
+        ctx.get('a').should.equal('A (pl)')
+        ctx.get('c').should.equal('C (pl)')
+        ctx.get('b').should.equal('B (en-US)')
+        try {
+          var x = ctx.get('d');
+          // that's not what should happen in this case...
+          // and it'll work only once we fix the sync file loading here
+        } catch (e) {
+          if (e == "No valid locales were available.") {
+            done();
+          }
+        }
+      });
+    })
+  });
+
   // TODO: test fallback on parsing errors
   // TODO: test that two fallbacks invalidate ctx only once
 
 });
+
