@@ -21,7 +21,10 @@ var env = {
         url = localhost + '/locales/' + url;
       }
     } else {
-      var url = 'file://'+__dirname+'/../fixtures/sets/recursive_imports' + url;
+      if (!L20n.env.scenario) {
+        throw "Define L20n.env.scenario for this scenario";
+      }
+      var url = 'file://'+__dirname+'/../fixtures/sets/' + L20n.env.scenario + url;
     }
     return url;
   },
@@ -117,6 +120,7 @@ describe('L20n context', function(){
 
   afterEach(function() {
     server.close();
+    L20n.env.scenario = null;
   });
 
   describe('Hardcoded URL', function(){
@@ -254,6 +258,7 @@ describe('L20n context', function(){
   describe('Entity fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
+      L20n.env.scenario = 'no_imports';
     });
     it('uses en-US translation when the Polish one is missing', function(done) {
       var ctx = L20n.getContext();
