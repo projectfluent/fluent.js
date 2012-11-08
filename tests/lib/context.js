@@ -253,8 +253,6 @@ describe('L20n context', function(){
     // add a testcase for when none of the locales is integral
   });
 
-  // TODO: this test passes, but it cheats.  it actually uses recursive_imports 
-  // scenario when it does the sync XHR
   describe('Entity fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
@@ -322,6 +320,10 @@ describe('L20n context', function(){
       ];
       ctx.addEventListener('error', function(e) {
         e.code.should.equal(L20n.NESTED_ERROR | L20n.INTEGRITY_ERROR);
+      });
+      ctx.addEventListener('ready', function(e) {
+        ctx.get('a').should.equal('A (en-US)')
+        ctx.get('c').should.equal('C (en-US)')
         done();
       });
       ctx.addResource('l10n:a')
