@@ -39,7 +39,7 @@ describe('Compiler errors:', function(){
     it('throws a ValueError', function(){
       (function() {
         env.prompt.getString();
-      }).should.throw(compiler.ValueError);
+      }).should.throw(Compiler.ValueError);
       (function() {
         env.prompt.getString();
       }).should.throw(/unknown entry/);
@@ -83,7 +83,7 @@ describe('Compiler errors:', function(){
     it('throws an IndexError', function(){
       (function() {
         env.prompt.getString();
-      }).should.throw(compiler.IndexError);
+      }).should.throw(Compiler.IndexError);
       (function() {
         env.prompt.getString();
       }).should.throw(/unknown entry/);
@@ -123,7 +123,7 @@ describe('Compiler errors:', function(){
     it('throws an IndexError, not a ValueError', function(){
       (function() {
         env.prompt.getString();
-      }).should.throw(compiler.IndexError);
+      }).should.throw(Compiler.IndexError);
       (function() {
         env.prompt.getString();
       }).should.throw(/unknown entry/);
@@ -171,7 +171,7 @@ describe('Compiler errors:', function(){
     it('throws an IndexError', function(){
       (function() {
         env.settings.getString();
-      }).should.throw(compiler.IndexError);
+      }).should.throw(Compiler.IndexError);
       (function() {
         env.settings.getString();
       }).should.throw('Hash key lookup failed.');
@@ -186,7 +186,7 @@ describe('Compiler errors:', function(){
         // to directly request a member of a hash value of an entity.  The way 
         // we know this test works is by checking the message of the error.
         env.bypassNoKey.getString();
-      }).should.throw(compiler.ValueError);
+      }).should.throw(Compiler.ValueError);
       (function() {
         env.bypassNoKey.getString();
       }).should.throw('Hash key lookup failed (tried "lin").');
@@ -239,7 +239,7 @@ describe('Compiler errors:', function(){
     it('throws an IndexError instead of returning the default value', function(){
       (function() {
         env.settings.getString();
-      }).should.throw(compiler.IndexError);
+      }).should.throw(Compiler.IndexError);
       (function() {
         env.settings.getString();
       }).should.throw(/unknown variable/);
@@ -251,7 +251,7 @@ describe('Compiler errors:', function(){
       (function() {
         // This will actually throw a ValueError, not IndexError.  See above.
         env.bypassNoKey.getString();
-      }).should.throw(compiler.ValueError);
+      }).should.throw(Compiler.ValueError);
       (function() {
         env.bypassNoKey.getString();
       }).should.throw(/unknown variable/);
@@ -275,7 +275,7 @@ describe('Compiler errors:', function(){
     it('throws an IndexError instead of returning the default value', function(){
       (function() {
         env.settings.getString({os: "mac"});
-      }).should.throw(compiler.IndexError);
+      }).should.throw(Compiler.IndexError);
       (function() {
         env.settings.getString({os: "mac"});
       }).should.throw(/Hash key lookup failed/);
@@ -290,7 +290,7 @@ describe('Compiler errors:', function(){
       (function() {
         // This will actually throw a ValueError, not IndexError.  See above.
         env.bypassNoKey.getString({os: "mac"});
-      }).should.throw(compiler.ValueError);
+      }).should.throw(Compiler.ValueError);
       (function() {
         env.bypassNoKey.getString({os: "mac"});
       }).should.throw('Hash key lookup failed (tried "lin", "mac").');
@@ -311,7 +311,7 @@ describe('Compiler errors:', function(){
     it('throws an IndexError instead of returning the default value', function(){
       (function() {
         env.settings.getString();
-      }).should.throw(compiler.IndexError);
+      }).should.throw(Compiler.IndexError);
       (function() {
         env.settings.getString();
       }).should.throw(/unknown variable/);
@@ -323,7 +323,7 @@ describe('Compiler errors:', function(){
       (function() {
         // This will actually throw a ValueError, not IndexError.  See above.
         env.bypassNoKey.getString();
-      }).should.throw(compiler.ValueError);
+      }).should.throw(Compiler.ValueError);
       (function() {
         env.bypassNoKey.getString();
       }).should.throw(/unknown variable/);
