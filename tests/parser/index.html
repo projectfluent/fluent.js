@@ -1,5 +1,6 @@
 <html>
   <head>
+    <script type="text/javascript;version=1.8" src="/l20n/js/lib/when.js"></script>
     <script type="text/javascript;version=1.8" src="/l20n/js/lib/l20n.js"></script>
     <script type="text/javascript;version=1.8" src="/l20n/js/lib/events.js"></script>
     <script type="text/javascript;version=1.8" src="/l20n/js/lib/parser.js"></script>
@@ -11,7 +12,9 @@ function parse() {
   var ctx = L20n.getContext();
   ctx.addEventListener('ready', function(e) {
     console.log('ready');
-  });
+    });
+  ctx.addResource('./stas.lol');
+  ctx.freeze();
 }
     </script>
   </head>
