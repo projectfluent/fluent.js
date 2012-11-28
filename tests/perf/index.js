@@ -2,12 +2,13 @@ var performanceTimer;
 
 function init() {
   var files = [
-    '/l20n/js/lib/l20n.js',
-    '/l20n/js/lib/events.js',
-    '/l20n/js/lib/parser.js',
-    '/l20n/js/lib/compiler.js',
+    './js/lib/l20n.js',
+    './js/lib/events.js',
+    './js/lib/parser.js',
+    './js/lib/compiler.js',
   ];
   performanceTimer = new PerfTest();
+  performanceTimer.addPerformanceAPINumbers();
   performanceTimer.files = files;
   performanceTimer.addHook();
   init2();

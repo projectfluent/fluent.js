@@ -32,7 +32,7 @@ function PerfTest() {
 
   this.addPerformanceAPINumbers = function() {
     for (var i in performance.timing) {
-      perfData['lib']['performance.*'][i] = performance.timing[i];
+      this.perfData['lib']['performance.*'][i] = performance.timing[i];
     }
   }
 
