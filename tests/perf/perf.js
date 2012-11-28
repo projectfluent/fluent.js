@@ -2,6 +2,7 @@
 function PerfTest() {
   this.perfData = {
     'lib': {
+      'performance.*': {},
       'load': [],
       'ready': [],
       'pages': {},
@@ -27,6 +28,12 @@ function PerfTest() {
       this.timers[id][test] = {};
     }
     this.timers[id][test]['start'] = this.getTime();
+  }
+
+  this.addPerformanceAPINumbers = function() {
+    for (var i in performance.timing) {
+      perfData['lib']['performance.*'][i] = performance.timing[i];
+    }
   }
 
   this.setTimerCallback = function(id, test, callback) {
