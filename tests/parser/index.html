@@ -18,7 +18,10 @@ function parse() {
 }
     </script>
   </head>
-  <body>
+  <body onload="reset()">
+    <textarea id="lol" style="width:200px;height:200px"></textarea>
+    <textarea id="ast" style="width:200px;height:200px"></textarea>
+    <hr/>
     <button onclick="parse()">parse</button>
     <textarea id="lol" style="width:500px;height:100px"></textarea>
     <textarea id="ast" style="width:500px;height:100px"></textarea>
