@@ -380,7 +380,7 @@ describe('L20n context', function(){
     });
   });
 
-  describe('Broken lol', function(){
+  xdescribe('Broken lol', function(){
     before(function() {
       server.scenario = 'broken_lol';
       L20n.env.scenario = 'broken_lol';
