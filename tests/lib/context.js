@@ -2,9 +2,11 @@
 //  ? require('../../_build/cov/lib/l20n.js')
 //  : require('../../lib/l20n.js');
 
-var L20n = require('../../lib/l20n-old.js');
+var L20n = require('../../lib/l20n.js').L20n;
 L20n.EventEmitter = require('../../lib/events.js').EventEmitter;
 L20n.Parser = require('../../lib/parser.js').Parser;
+L20n.Compiler = require('../../lib/compiler.js').Compiler;
+L20n.Compiler = new L20n.Compiler(L20n.EventEmitter, L20n.Parser);
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
@@ -21,7 +23,7 @@ var env = {
       if (url[0] == '/') {
         url = localhost + url;
       } else if (!/localhost:8357/.test(url)) {
-        url = localhost + '/locales/' + url;
+        url = localhost + '/'+ url;
       }
     } else {
       if (!L20n.env.scenario) {
@@ -31,7 +33,7 @@ var env = {
     }
     return url;
   },
-  XMLHttpRequest: require("xmlhttprequest").XMLHttpRequest,
+  XMLHttpRequest: require("w3c-xmlhttprequest").XMLHttpRequest,
 }
 
 L20n.env = env;
@@ -42,7 +44,6 @@ env.XMLHttpRequest.prototype.overrideMimeType = function() {};
 function handleRequest(request, response) {
   var url = request.url.split('?')[0];
   var filePath = './tests/fixtures/sets/' + this.scenario + url;
-  console.log(filePath);
 
   function serve(err) {
     if (err) {
@@ -119,7 +120,6 @@ describe('L20n context', function(){
   beforeEach(function() {
     server.listen(8357);
     server.rules = {};
-    //L20n.invalidateCache();
   });
 
   afterEach(function() {
@@ -127,27 +127,29 @@ describe('L20n context', function(){
     L20n.env.scenario = null;
   });
 
-  describe('Hardcoded URL', function(){
+  xdescribe('Hardcoded URL', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
     it('works for en-US', function(done) {
       var ctx = L20n.getContext();
       ctx.addResource('en-US/a.lol');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (en-US)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
     it('works for pl', function(done) {
       var ctx = L20n.getContext();
       ctx.addResource('pl/a.lol');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (pl)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
     it('works with 300ms delay', function(done) {
       server.rules['/locales/en-US/a.lol'] = function(serve) {
@@ -155,11 +157,12 @@ describe('L20n context', function(){
       };
       var ctx = L20n.getContext();
       ctx.addResource('en-US/a.lol');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (en-US)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
     it('uses the default value if delay is 1000ms', function(done) {
       server.rules['/locales/en-US/a.lol'] = function(serve) {
@@ -167,11 +170,17 @@ describe('L20n context', function(){
       };
       var ctx = L20n.getContext();
       ctx.addResource('en-US/a.lol');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var values = ctx.get('a');
         value.should.equal('A');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
+      ctx.getMany(['a'], {}).then(
+        function() {},
+        function() {
+          done();
+        });
     });
   });
 
@@ -179,29 +188,20 @@ describe('L20n context', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
-    it('works for en-US', function(done) {
-      var ctx = L20n.getContext();
-      ctx.settings.locales = ['en-US'];
-      ctx.addResource('l10n:{{ locale }}/a.lol');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
-        value.should.equal('A (en-US)');
-        done();
-      }, 'A');
-    });
     it('works for en-US for absolute URLs', function(done) {
       var ctx = L20n.getContext();
       ctx.settings.locales = ['en-US'];
       ctx.addResource('l10n:/locales/{{ locale }}/a.lol');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (en-US)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
   });
 
-  xdescribe('Complex scheme URL', function(){
+  describe('Complex scheme URL', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
