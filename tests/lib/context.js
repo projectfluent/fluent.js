@@ -29,7 +29,9 @@ var env = {
       if (!L20n.env.scenario) {
         throw "Define L20n.env.scenario for this scenario";
       }
-      var url = 'file://'+__dirname+'/../fixtures/sets/' + L20n.env.scenario + url;
+      if (!/file:\/\/\//.test(url)) {
+        var url = 'file://'+__dirname+'/../fixtures/sets/' + L20n.env.scenario + url;
+      }
     }
     return url;
   },
@@ -127,7 +129,7 @@ describe('L20n context', function(){
     L20n.env.scenario = null;
   });
 
-  xdescribe('Hardcoded URL', function(){
+  describe('Hardcoded URL', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
@@ -285,8 +287,9 @@ describe('L20n context', function(){
   xdescribe('Simple import', function(){
     before(function() {
       server.scenario = 'simple_import';
+      L20n.env.scenario = 'simple_import';
     });
-    it('works', function(done) {
+    xit('works', function(done) {
       var ctx = L20n.getContext();
       ctx.settings.locales = ['pl', 'en-US'];
       ctx.settings.schemes = [
@@ -300,7 +303,7 @@ describe('L20n context', function(){
       });
       ctx.freeze();
     });
-    xit('when 404, ctx fallbacks to next locale', function(done) {
+    it('when 404, ctx fallbacks to next locale', function(done) {
       server.rules['/locales/pl/c.lol'] = function(serve) {
         serve(404);
       };
@@ -310,11 +313,12 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('c', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('c');
         value.should.equal('C (en-US)');
         done();
-      }, 'C');
+      });
+      ctx.freeze();
     });
   });
 
