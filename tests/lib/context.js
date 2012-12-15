@@ -33,7 +33,7 @@ var env = {
     }
     return url;
   },
-  XMLHttpRequest: require("w3c-xmlhttprequest").XMLHttpRequest,
+  XMLHttpRequest: require("xmlhttprequest").XMLHttpRequest,
 }
 
 L20n.env = env;
@@ -133,7 +133,7 @@ describe('L20n context', function(){
     });
     it('works for en-US', function(done) {
       var ctx = L20n.getContext();
-      ctx.addResource('en-US/a.lol');
+      ctx.addResource('locales/en-US/a.lol');
       ctx.addEventListener('ready', function() {
         var value = ctx.get('a');
         value.should.equal('A (en-US)');
@@ -143,7 +143,7 @@ describe('L20n context', function(){
     });
     it('works for pl', function(done) {
       var ctx = L20n.getContext();
-      ctx.addResource('pl/a.lol');
+      ctx.addResource('locales/pl/a.lol');
       ctx.addEventListener('ready', function() {
         var value = ctx.get('a');
         value.should.equal('A (pl)');
@@ -156,7 +156,7 @@ describe('L20n context', function(){
         setTimeout(serve, 300);
       };
       var ctx = L20n.getContext();
-      ctx.addResource('en-US/a.lol');
+      ctx.addResource('locales/en-US/a.lol');
       ctx.addEventListener('ready', function() {
         var value = ctx.get('a');
         value.should.equal('A (en-US)');
@@ -169,7 +169,7 @@ describe('L20n context', function(){
         setTimeout(serve, 1000);
       };
       var ctx = L20n.getContext();
-      ctx.addResource('en-US/a.lol');
+      ctx.addResource('locales/en-US/a.lol');
       ctx.addEventListener('ready', function() {
         var values = ctx.get('a');
         value.should.equal('A');
@@ -201,7 +201,7 @@ describe('L20n context', function(){
     });
   });
 
-  describe('Complex scheme URL', function(){
+  xdescribe('Complex scheme URL', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
@@ -212,11 +212,12 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (en-US)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
     it('uses the second URL if the first one cannot be fetched', function(done) {
       var ctx = L20n.getContext();
@@ -226,17 +227,19 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (en-US)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
   });
 
   xdescribe('Locale fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
+      L20n.env.scenario = 'no_imports';
     });
     it('uses en-US when the first locale is not integral', function(done) {
       server.rules['/locales/pl/a.lol'] = function(serve) {
@@ -248,11 +251,12 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('a', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('a');
         value.should.equal('A (en-US)');
         done();
-      }, 'A');
+      });
+      ctx.freeze();
     });
     // add a testcase for when none of the locales is integral
   });
@@ -269,11 +273,12 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('b', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('b');
         value.should.equal('B (en-US)');
         done();
-      }, 'B');
+      });
+      ctx.freeze();
     });
   });
 
@@ -288,13 +293,14 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('c', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('c');
         value.should.equal('C (pl)');
         done();
-      }, 'C');
+      });
+      ctx.freeze();
     });
-    it('when 404, ctx fallbacks to next locale', function(done) {
+    xit('when 404, ctx fallbacks to next locale', function(done) {
       server.rules['/locales/pl/c.lol'] = function(serve) {
         serve(404);
       };
@@ -326,8 +332,8 @@ describe('L20n context', function(){
         e.code.should.equal(L20n.NESTED_ERROR | L20n.INTEGRITY_ERROR);
       });
       ctx.addEventListener('ready', function(e) {
-        ctx.get('a').should.equal('A (en-US)')
-        ctx.get('c').should.equal('C (en-US)')
+        ctx.get('a').should.equal('A (pl)')
+        ctx.get('c').should.equal('C (pl)')
         done();
       });
       ctx.addResource('l10n:a')
