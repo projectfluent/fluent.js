@@ -30,7 +30,7 @@ var env = {
         throw "Define L20n.env.scenario for this scenario";
       }
       if (!/file:\/\/\//.test(url)) {
-        var url = 'file://'+__dirname+'/../fixtures/sets/' + L20n.env.scenario + url;
+        url = 'file://'+__dirname+'/../fixtures/sets/' + L20n.env.scenario + url;
       }
     }
     return url;
@@ -186,7 +186,7 @@ describe('L20n context', function(){
     });
   });
 
-  xdescribe('Simple scheme URL', function(){
+  describe('Simple scheme URL', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
@@ -203,7 +203,7 @@ describe('L20n context', function(){
     });
   });
 
-  xdescribe('Complex scheme URL', function(){
+  describe('Complex scheme URL', function(){
     before(function() {
       server.scenario = 'no_imports';
     });
@@ -238,7 +238,7 @@ describe('L20n context', function(){
     });
   });
 
-  xdescribe('Locale fallback', function(){
+  describe('Locale fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
       L20n.env.scenario = 'no_imports';
@@ -263,7 +263,7 @@ describe('L20n context', function(){
     // add a testcase for when none of the locales is integral
   });
 
-  xdescribe('Entity fallback', function(){
+  describe('Entity fallback', function(){
     before(function() {
       server.scenario = 'no_imports';
       L20n.env.scenario = 'no_imports';
@@ -284,12 +284,12 @@ describe('L20n context', function(){
     });
   });
 
-  xdescribe('Simple import', function(){
+  describe('Simple import', function(){
     before(function() {
       server.scenario = 'simple_import';
       L20n.env.scenario = 'simple_import';
     });
-    xit('works', function(done) {
+    it('works', function(done) {
       var ctx = L20n.getContext();
       ctx.settings.locales = ['pl', 'en-US'];
       ctx.settings.schemes = [
@@ -304,6 +304,7 @@ describe('L20n context', function(){
       ctx.freeze();
     });
     it('when 404, ctx fallbacks to next locale', function(done) {
+      L20n.env.scenario = 'simple_import';
       server.rules['/locales/pl/c.lol'] = function(serve) {
         serve(404);
       };
@@ -322,7 +323,7 @@ describe('L20n context', function(){
     });
   });
 
-  xdescribe('Recursive import', function(){
+  describe('Recursive import', function(){
     before(function() {
       server.scenario = 'recursive_imports';
     });
@@ -345,9 +346,10 @@ describe('L20n context', function(){
     })
   });
 
-  xdescribe('Duplicate import', function(){
+  describe('Duplicate import', function(){
     before(function() {
       server.scenario = 'duplicate_imports';
+      L20n.env.scenario = 'duplicate_imports';
     });
     it('works', function(done) {
       var ctx = L20n.getContext();
@@ -356,13 +358,15 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('c', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('c');
         value.should.equal('C (pl)');
         done();
-      }, 'C');
+      });
+      ctx.freeze();
     });
     it('when 404, fallbacks to next locale', function(done) {
+      L20n.env.scenario = 'duplicate_imports';
       server.rules['/locales/pl/c.lol'] = function(serve) {
         serve(404);
       };
@@ -372,11 +376,12 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('c', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('c');
         value.should.equal('C (en-US)');
         done();
-      }, 'C');
+      });
+      ctx.freeze();
     });
     it('works when the imported res is addResource\'d directly to the ctx first', function(done) {
       var ctx = L20n.getContext();
@@ -386,15 +391,16 @@ describe('L20n context', function(){
       ];
       ctx.addResource('l10n:c');
       ctx.addResource('l10n:a');
-      ctx.freeze();
-      ctx.get('c', {}, function(value) {
+      ctx.addEventListener('ready', function() {
+        var value = ctx.get('c');
         value.should.equal('C (pl)');
         done();
-      }, 'C');
+      });
+      ctx.freeze();
     });
   });
 
-  xdescribe('Broken lol', function(){
+  describe('Broken lol', function(){
     before(function() {
       server.scenario = 'broken_lol';
       L20n.env.scenario = 'broken_lol';
@@ -406,7 +412,6 @@ describe('L20n context', function(){
         '/locales/{{ locale }}/{{ resource }}.lol'
       ];
       ctx.addResource('l10n:a');
-      ctx.freeze();
       ctx.addEventListener('error', function(e) {
         console.log(e)
       });
@@ -415,15 +420,16 @@ describe('L20n context', function(){
         ctx.get('c').should.equal('C (pl)')
         ctx.get('b').should.equal('B (en-US)')
         try {
-          var x = ctx.get('d');
           // that's not what should happen in this case...
           // and it'll work only once we fix the sync file loading here
+          var x = ctx.get('d');
         } catch (e) {
-          if (e == "No valid locales were available.") {
+          if (e == "Could not get the entity") {
             done();
           }
         }
       });
+      ctx.freeze();
     })
   });
 
