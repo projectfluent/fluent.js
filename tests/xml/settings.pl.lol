@@ -1,4 +1,4 @@
-<settings "Settings L20n {{nonexisting }} fgoo">
+<settings "Settings L20n">
 <advancedSettings "Advanced Settings">
 <default "Default">
 <enabled "Enabled">
