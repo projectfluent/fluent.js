@@ -47,7 +47,6 @@ var values = [];
 var start = performance.now();
 var counter = 0;
 var r = 1;
-L20n.Compiler = new Compiler(L20n.EventEmitter, L20n.Parser);
 
 function localize() {
   var ctx = L20n.getContext();
@@ -61,21 +60,21 @@ function localize() {
     console.log(e);
   });
   ctx.addEventListener('ready', function() {
-      counter++;
-      try {
+    counter++;
+    try {
       console.log(ctx.get('settings'));
-      } catch (e) {
-        console.log(e);
-      }
-      //document.getElementById('one').innerHTML = ctx.get("one");
-      //for (var i in ids) {
-      //  values.push(ctx.get(ids[i]));
-      //}
-      //if (counter >= r && values.length == r*ids.length) {
-      //  var end = performance.now();
-      //  document.getElementById('time').innerHTML = end - start; 
-      //}
-      });
+    } catch (e) {
+      console.log(e);
+    }
+    //document.getElementById('one').innerHTML = ctx.get("one");
+    //for (var i in ids) {
+    //  values.push(ctx.get(ids[i]));
+    //}
+    //if (counter >= r && values.length == r*ids.length) {
+    //  var end = performance.now();
+    //  document.getElementById('time').innerHTML = end - start; 
+    //}
+  });
   ctx.freeze();
 }
 
