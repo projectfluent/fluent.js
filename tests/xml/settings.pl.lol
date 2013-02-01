@@ -1,4 +1,4 @@
-<settings "Settings L20n">
+<settings "Settings {{okkk}}">
 <advancedSettings "Advanced Settings">
 <default "Default">
 <enabled "Enabled">
