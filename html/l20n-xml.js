@@ -5,51 +5,37 @@
   });
 })();
 
-document.addEventListener("DOMContentLoaded", function() {
-  var headNode = document.getElementsByTagName('head')[0];
+var headNode, ctx, links;
 
-  if (!headNode)
-    return;
-
-
-  var links = headNode.getElementsByTagName('link')
+function bootstrap() {
+  headNode = document.head;
+  ctx = document.l10nCtx;
+  links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {
     if (links[i].getAttribute('type') == 'intl/manifest') {
-      download(links[i].getAttribute('href'), function(manifest) {
-        var ctx = document.l10nCtx;
-
-        var langList = L20n.Intl.prioritizeLocales(manifest.locales.supported);
-        ctx.settings.locales = langList;
-        ctx.settings.schemes = manifest.schemes;
-
-        initializeDocumentContext();
-      });
+      IO.loadAsync(links[i].getAttribute('href')).then(
+        function(text) {
+          var manifest = JSON.parse(text);
+          var langList = L20n.Intl.prioritizeLocales(manifest.locales.supported);
+          ctx.settings.locales = langList;
+          ctx.settings.schemes = manifest.schemes;
+          initializeDocumentContext();
+        }
+      );
       return;
     }
   }
-
   initializeDocumentContext();
-});
-
-function download(uri, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.overrideMimeType("application/json");
-  xhr.addEventListener("load", function() {
-    callback(JSON.parse(xhr.responseText))
-  });
-  xhr.open('GET', uri, true);
-  xhr.send('');
 }
 
-function initializeDocumentContext() {
-  var headNode = document.getElementsByTagName('head')[0];
-  var ctx = document.l10nCtx;
+bootstrap();
 
-  if (ctx.settings.locales === null) {
+function initializeDocumentContext() {
+  if (ctx.settings.locales.length === 0) {
     var metas = headNode.getElementsByTagName('meta');
     for (var i = 0; i < metas.length; i++) {
       if (metas[i].getAttribute('http-equiv') == 'Content-Language') {
-        var locales = metas[i].getAttribute('Content').split(',');
+        var locales = metas[i].getAttribute('content').split(',');
         for(i in locales) {
           locales[i] = locales[i].trim()
         }
@@ -60,19 +46,19 @@ function initializeDocumentContext() {
     }
   }
 
-  var links = headNode.getElementsByTagName('link')
   for (var i = 0; i < links.length; i++) {
     if (links[i].getAttribute('type') == 'intl/l20n')
       ctx.addResource(links[i].getAttribute('href'))
   }
 
-  ctx.freeze();
 
   var scriptNodes = headNode.getElementsByTagName('script')
   for (var i=0;i<scriptNodes.length;i++) {
-    if (scriptNodes[i].getAttribute('type')=='application/l20n') {
+    if (scriptNodes[i].getAttribute('type')=='intl/l20n-data') {
       var contextData = JSON.parse(scriptNodes[i].textContent);
       ctx.data = contextData;
+    } else if (scriptNodes[i].getAttribute('type')=='intl/l20n') {
+      ctx.injectResource(null, scriptNodes[i].textContent);
     }
   }
   
@@ -80,12 +66,15 @@ function initializeDocumentContext() {
     var event = document.createEvent('Event');
     event.initEvent('LocalizationReady', false, false);
     document.dispatchEvent(event);
-
-    var nodes = document.querySelectorAll('[l10n-id]');
-    for (var i = 0, node; node = nodes[i]; i++) {
-      localizeNode(ctx, node);
+    if (document.body) {
+      localizeDocument();
+    } else {
+      document.addEventListener('readystatechange', function() {
+        if (document.readyState === 'interactive') {
+          localizeDocument();
+        }
+      });
     }
-    fireLocalizedEvent();
   });
 
   ctx.addEventListener('error', function(e) {
@@ -96,8 +85,19 @@ function initializeDocumentContext() {
     }
   });
 
+  ctx.freeze();
+
+  function localizeDocument() {
+    var nodes = document.querySelectorAll('[data-l10n-id]');
+    for (var i = 0, node; node = nodes[i]; i++) {
+      localizeNode(ctx, node);
+    }
+    fireLocalizedEvent();
+  }
+
+
   HTMLElement.prototype.retranslate = function() {
-    if (this.hasAttribute('l10n-id')) {
+    if (this.hasAttribute('data-l10n-id')) {
       localizeNode(ctx, this);
       return;
     }
@@ -118,6 +118,66 @@ function fireLocalizedEvent() {
   event.initEvent('DocumentLocalized', false, false);
   document.dispatchEvent(event);
 }
+
+function localizeNode(ctx, node) {
+  var l10nId = node.getAttribute('data-l10n-id');
+  var args;
+
+  if (node.hasAttribute('data-l10n-args')) {
+    args = JSON.parse(node.getAttribute('data-l10n-args'));
+  }
+  try {
+    var entity = ctx.getEntity(l10nId, args);
+  } catch (e) {
+    console.warn("Failed to localize node: "+l10nId);
+    return false;
+  }
+  var l10nAttrs = null;
+  if (node.hasAttribute('data-l10n-attrs')) {
+    l10nAttrs = node.getAttribute('data-l10n-attrs').split(" ");
+  }
+
+  if (entity.attributes) {
+    for (var j in entity.attributes) {
+      if (!l10nAttrs || l10nAttrs.indexOf(j) !== -1)
+        node.setAttribute(j, entity.attributes[j]);
+    }
+  }
+
+  var l10nOverlay = node.hasAttribute('data-l10n-overlay');
+
+  if (!l10nOverlay) {
+    node.textContent = entity.value;
+    return true;
+  }
+  var origNode = node.cloneNode(true);
+  var origL10nStatus = origNode.getAttribute('l10n-status');
+  node.innerHTML = entity.value;
+  node.setAttribute('l10n-status', 'translated');
+
+  var children = node.getElementsByTagName('*');
+  for (var i=0,child;child  = children[i]; i++) {
+    var path = getPathTo(child, node, origL10nStatus);
+    origChild = getElementByPath(path, origNode);
+    if (!origChild) {
+      continue;
+    }
+
+    for (var k=0, origAttr; origAttr = origChild.attributes[k]; k++) {
+      if (!child.hasAttribute(origAttr.name)) {
+        child.setAttribute(origAttr.nodeName, origAttr.value);
+      }
+    }
+  }
+  return true;
+}
+
+function getElementByPath(path, context) {
+  var xpe = document.evaluate(path, context, null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+  return xpe.singleNodeValue;
+}
+
 
 function getPathTo(element, context, ignoreL10nPath) {
   const TYPE_ELEMENT = 1;
@@ -145,73 +205,4 @@ function getPathTo(element, context, ignoreL10nPath) {
   }
 
   throw "Can't find the path to element " + element;
-}
-
-function getElementByPath(path, context) {
-  var xpe = document.evaluate(path, context, null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-  return xpe.singleNodeValue;
-}
-
-function localizeNode(ctx, node) {
-  var l10nId = node.getAttribute('l10n-id');
-  var args;
-
-  // node.nodeData must not be exposed
-  if (node.nodeData) {
-    args = node.nodeData;
-  } else if (node.hasAttribute('l10n-args')) {
-    args = JSON.parse(node.getAttribute('l10n-args'));
-    node.nodeData = args;
-  }
-  // get attributes from the LO
-  try {
-    var attrs = ctx.getAttributes(l10nId, args);
-  } catch (e) {
-    console.warn("Failed to localize node: "+l10nId);
-    return false;
-  }
-  var l10nAttrs;
-  if (node.hasAttribute('l10n-attrs'))
-    l10nAttrs = node.getAttribute('l10n-attrs').split(" ");
-  else
-    l10nAttrs = null;
-  if (attrs) {
-    for (var j in attrs) {
-      if (!l10nAttrs || l10nAttrs.indexOf(j) !== -1)
-        node.setAttribute(j, attrs[j]);
-    }
-  }
-  var valueFromCtx = ctx.get(l10nId, args);
-  if (valueFromCtx === null)
-    return;
-
-  // Deep-copy the original node.  Note that `origNode` isn't attached anywhere 
-  // in the DOM, thus making it impossible for a malevolent XPath expression to 
-  // step outside of it.
-  var origNode = node.cloneNode(true);
-  var origL10nStatus = origNode.getAttribute('l10n-status');
-  node.innerHTML = valueFromCtx;
-  node.setAttribute('l10n-status', 'translated');
-
-  // overlay the attributes of descendant nodes
-  var children = node.getElementsByTagName('*');
-  for (var i = 0, child; child = children[i]; i++) {
-    // Match the `child` node with the equivalent node in `origNode`.
-    // If `origNode` has a non-empty `l10n-status`, it has already been 
-    // translated once.  `getPathTo` will follow the closest `l10n-path` it can 
-    // find on `child` or its ancestors in order to find the path to the true 
-    // source equivalent of `child` in `origNode`.
-    var  path = getPathTo(child, node, origL10nStatus);
-    var origChild = getElementByPath(path, origNode);
-    if (!origChild)
-      continue;
-
-    for (var k = 0, origAttr; origAttr = origChild.attributes[k]; k++) {
-      if (!child.hasAttribute(origAttr.name)) {
-        child.setAttribute(origAttr.nodeName, origAttr.value);
-      }
-    }
-  }
-  return true;
 }
