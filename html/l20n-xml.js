@@ -150,14 +150,16 @@ function localizeNode(ctx, node) {
     node.textContent = entity.value;
     return true;
   }
-  var origNode = node.cloneNode(true);
-  var origL10nStatus = origNode.getAttribute('l10n-status');
+  var origNode = node.l20nOrigNode;
+  if (!origNode) {
+    origNode = node.cloneNode(true);
+    node.l20nOrigNode = origNode;
+  }
   node.innerHTML = entity.value;
-  node.setAttribute('l10n-status', 'translated');
 
   var children = node.getElementsByTagName('*');
   for (var i=0,child;child  = children[i]; i++) {
-    var path = getPathTo(child, node, origL10nStatus);
+    var path = getPathTo(child, node);
     origChild = getElementByPath(path, origNode);
     if (!origChild) {
       continue;
@@ -179,7 +181,7 @@ function getElementByPath(path, context) {
 }
 
 
-function getPathTo(element, context, ignoreL10nPath) {
+function getPathTo(element, context) {
   const TYPE_ELEMENT = 1;
 
   if (element === context)
@@ -189,7 +191,7 @@ function getPathTo(element, context, ignoreL10nPath) {
   if (id)
     return '*[@id="' + id + '"]';
 
-  var l10nPath = !ignoreL10nPath && element.getAttribute('l10n-path');
+  var l10nPath = element.getAttribute('l10n-path');
   if (l10nPath)
     return l10nPath;
 
@@ -197,7 +199,7 @@ function getPathTo(element, context, ignoreL10nPath) {
   var siblings = element.parentNode.childNodes;
   for (var i = 0, sibling; sibling = siblings[i]; i++) {
     if (sibling === element) {
-      var pathToParent = getPathTo(element.parentNode, context, ignoreL10nPath);
+      var pathToParent = getPathTo(element.parentNode, context);
       return pathToParent + '/' + element.tagName + '[' + (index + 1) + ']';
     }
     if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName)
