@@ -1668,7 +1668,7 @@ define(function () {
 
       var ch = _source.charAt(_index);
       var value = getValue(true, ch);
-      var attrs = null;
+      var attrs = [];
       if (value === null) {
         if (ch !== '>') {
           attrs = getAttributes();
