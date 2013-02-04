@@ -150,10 +150,10 @@ function localizeNode(ctx, node) {
     node.textContent = entity.value;
     return true;
   }
-  var origNode = node.l20nOrigNode;
+  var origNode = node.l10nSource;
   if (!origNode) {
     origNode = node.cloneNode(true);
-    node.l20nOrigNode = origNode;
+    node.l10nSource = origNode;
   }
   node.innerHTML = entity.value;
 
