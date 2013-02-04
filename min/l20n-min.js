@@ -1528,8 +1528,10 @@ define(function () {
       };
     }
 
-    function getValue() {
-      var ch = _source.charAt(_index);
+    function getValue(optional, ch) {
+      if (ch === undefined) {
+        ch = _source.charAt(_index);
+      }
       if (ch === "'" || ch === '"') {
         if (ch === _source.charAt(_index + 1) && ch === _source.charAt(_index + 2)) {
           return getString(ch + ch + ch);
@@ -1542,7 +1544,10 @@ define(function () {
       if (ch === '[') {
         return getArray();
       }
-      throw error('Unknown value type');
+      if (!optional) {
+        throw error('Unknown value type');
+      }
+      return null;
     }
 
 
@@ -1661,17 +1666,27 @@ define(function () {
         throw error('Expected white space');
       }
 
-      var value = getValue();
-      var ws1 = getRequiredWS();
-      var attrs = [];
-
-      // 62 == '>'
-      if (_source.charCodeAt(_index) !== 62) {
-        if (!ws1) {
+      var ch = _source.charAt(_index);
+      var value = getValue(true, ch);
+      var attrs = null;
+      if (value === null) {
+        if (ch !== '>') {
+          attrs = getAttributes();
+        } else {
           throw error('Expected ">"');
         }
-        attrs = getAttributes();
+      } else {
+        var ws1 = getRequiredWS();
+        if (_source.charAt(_index) !== '>') {
+          if (!ws1) {
+            throw error('Expected ">"');
+          }
+          attrs = getAttributes();
+        }
       }
+      getWS();
+
+      // skip '>'
       ++_index;
       return {
         type: 'Entity',
@@ -3044,7 +3059,8 @@ define(function () {
         if (typeof parent !== 'function') {
           if (!parent.hasOwnProperty(prop)) {
             throw new RuntimeError(prop + 
-                                   ' is not defined in the context data');
+                                   ' is not defined in the context data',
+                                   entry);
           }
           return [null, parent[prop]];
         }
