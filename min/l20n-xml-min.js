@@ -1528,8 +1528,10 @@ define(function () {
       };
     }
 
-    function getValue() {
-      var ch = _source.charAt(_index);
+    function getValue(optional, ch) {
+      if (ch === undefined) {
+        ch = _source.charAt(_index);
+      }
       if (ch === "'" || ch === '"') {
         if (ch === _source.charAt(_index + 1) && ch === _source.charAt(_index + 2)) {
           return getString(ch + ch + ch);
@@ -1542,7 +1544,10 @@ define(function () {
       if (ch === '[') {
         return getArray();
       }
-      throw error('Unknown value type');
+      if (!optional) {
+        throw error('Unknown value type');
+      }
+      return null;
     }
 
 
@@ -1661,17 +1666,27 @@ define(function () {
         throw error('Expected white space');
       }
 
-      var value = getValue();
-      var ws1 = getRequiredWS();
-      var attrs = [];
-
-      // 62 == '>'
-      if (_source.charCodeAt(_index) !== 62) {
-        if (!ws1) {
+      var ch = _source.charAt(_index);
+      var value = getValue(true, ch);
+      var attrs = null;
+      if (value === null) {
+        if (ch !== '>') {
+          attrs = getAttributes();
+        } else {
           throw error('Expected ">"');
         }
-        attrs = getAttributes();
+      } else {
+        var ws1 = getRequiredWS();
+        if (_source.charAt(_index) !== '>') {
+          if (!ws1) {
+            throw error('Expected ">"');
+          }
+          attrs = getAttributes();
+        }
       }
+      getWS();
+
+      // skip '>'
       ++_index;
       return {
         type: 'Entity',
@@ -3044,7 +3059,8 @@ define(function () {
         if (typeof parent !== 'function') {
           if (!parent.hasOwnProperty(prop)) {
             throw new RuntimeError(prop + 
-                                   ' is not defined in the context data');
+                                   ' is not defined in the context data',
+                                   entry);
           }
           return [null, parent[prop]];
         }
@@ -3516,14 +3532,16 @@ function localizeNode(ctx, node) {
     node.textContent = entity.value;
     return true;
   }
-  var origNode = node.cloneNode(true);
-  var origL10nStatus = origNode.getAttribute('l10n-status');
+  var origNode = node.l20nOrigNode;
+  if (!origNode) {
+    origNode = node.cloneNode(true);
+    node.l20nOrigNode = origNode;
+  }
   node.innerHTML = entity.value;
-  node.setAttribute('l10n-status', 'translated');
 
   var children = node.getElementsByTagName('*');
   for (var i=0,child;child  = children[i]; i++) {
-    var path = getPathTo(child, node, origL10nStatus);
+    var path = getPathTo(child, node);
     origChild = getElementByPath(path, origNode);
     if (!origChild) {
       continue;
@@ -3545,7 +3563,7 @@ function getElementByPath(path, context) {
 }
 
 
-function getPathTo(element, context, ignoreL10nPath) {
+function getPathTo(element, context) {
   const TYPE_ELEMENT = 1;
 
   if (element === context)
@@ -3555,7 +3573,7 @@ function getPathTo(element, context, ignoreL10nPath) {
   if (id)
     return '*[@id="' + id + '"]';
 
-  var l10nPath = !ignoreL10nPath && element.getAttribute('l10n-path');
+  var l10nPath = element.getAttribute('l10n-path');
   if (l10nPath)
     return l10nPath;
 
@@ -3563,7 +3581,7 @@ function getPathTo(element, context, ignoreL10nPath) {
   var siblings = element.parentNode.childNodes;
   for (var i = 0, sibling; sibling = siblings[i]; i++) {
     if (sibling === element) {
-      var pathToParent = getPathTo(element.parentNode, context, ignoreL10nPath);
+      var pathToParent = getPathTo(element.parentNode, context);
       return pathToParent + '/' + element.tagName + '[' + (index + 1) + ']';
     }
     if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName)
