@@ -1,19 +1,15 @@
 <html>
   <head>
-    <script type="text/javascript;version=1.8" src="../../../../lib/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/parser.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/compiler.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../html/l20n-xml.js"></script>
+    <link href="./index.lol" type="intl/l20n" />
+    <script type="text/javascript;version=1.8" src="../../../../min/l20n.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="../runtests.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../_lib/test.css">
+    <script type="text/javascript" src="../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../_lib/runtests.js"></script>
     <script type="text/javascript" src="spec.js"></script>
     
-    <link href="./index.lol" type="intl/l20n" />
-
     <script type="text/javascript">
       function test(index) {
         var node = document.getElementById('progress' + index);
@@ -62,7 +58,7 @@
 
     <pre>
 
-      &lt;td id="progress1" l10n-id="downloaded1"&gt;
+      &lt;td id="progress1" data-l10n-id="downloaded1" data-l10n-overlay&gt;
         &lt;span class="green"&gt;&lt;/span&gt;
       &lt;/td&gt;
     </pre>
@@ -72,12 +68,12 @@
 
     <pre>
 
-      &lt;downloaded1 "
+      &lt;downloaded1 """
         You've downloaded
         &lt;span title='{{ kilobytes1 / 1024 }} MB'&gt;
           {{ kilobytes1 }} KB
         &lt;/span&gt; so far.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The localizer takes this l20n file and uses it as a base for her 
@@ -85,19 +81,19 @@
 
     <pre>
 
-      &lt;downloaded1 "
+      &lt;downloaded1 """
         Pobrałeś
         &lt;span title='{{ kilobytes1 / 1024 }} MB (megabajtów)'&gt;
           {{ kilobytes1 }} KB (kilobajtów)
         &lt;span&gt;.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The result:</p>
 
     <table>
       <tr>
-        <td id="progress1" l10n-id="downloaded1">
+        <td id="progress1" data-l10n-id="downloaded1" data-l10n-overlay>
           <span class="green"></span>
         </td>
         <td>
@@ -124,7 +120,7 @@
 
     <pre>
 
-      &lt;td id="progress2" l10n-id="downloaded2"&gt;
+      &lt;td id="progress2" data-l10n-id="downloaded2" data-l10n-overlay&gt;
         &lt;span class="green"&gt;&lt;/span&gt;
       &lt;/td&gt;
     </pre>
@@ -134,12 +130,12 @@
 
     <pre>
 
-      &lt;downloaded2 "
+      &lt;downloaded2 """
         You've downloaded
         &lt;span title='{{ kilobytes2 / 1024 }} MB'&gt;
           {{ kilobytes2 }} KB
         &lt;/span&gt; so far.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The localizer takes this l20n file and uses it as a base for her 
@@ -147,19 +143,19 @@
 
     <pre>
 
-      &lt;downloaded2 "
+      &lt;downloaded2 """
         Pobrałeś
         &lt;span&gt;
           {{ kilobytes2 }} KB (kilobajtów)
         &lt;span&gt;.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The result:</p>
 
     <table>
       <tr>
-        <td id="progress2" l10n-id="downloaded2">
+        <td id="progress2" data-l10n-id="downloaded2" data-l10n-overlay>
           <span class="green"></span>
         </td>
         <td>
@@ -187,7 +183,7 @@
 
     <pre>
 
-      &lt;td id="progress3" l10n-id="downloaded3"&gt;
+      &lt;td id="progress3" data-l10n-id="downloaded3" data-l10n-overlay&gt;
         &lt;span class="green"&gt;&lt;/span&gt;
       &lt;/td&gt;
     </pre>
@@ -197,12 +193,12 @@
 
     <pre>
 
-      &lt;downloaded3 "
+      &lt;downloaded3 """
         You've downloaded
         &lt;span title='{{ kilobytes3 / 1024 }} MB'&gt;
           {{ kilobytes3 }} KB
         &lt;/span&gt; so far.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The localizer takes this l20n file and uses it as a base for her 
@@ -211,19 +207,19 @@
 
     <pre>
 
-      &lt;downloaded3 "
+      &lt;downloaded3 """
         Pobrałeś
         &lt;span class='red' title='{{ kilobytes3 / 1024 }} MB (megabajtów)'&gt;
           {{ kilobytes3 }} KB (kilobajtów)
         &lt;span&gt;.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The result:</p>
 
     <table>
       <tr>
-        <td id="progress3" l10n-id="downloaded3">
+        <td id="progress3" data-l10n-id="downloaded3" data-l10n-overlay>
           <span class="green"></span>
         </td>
         <td>
@@ -246,7 +242,7 @@
 
     <pre>
 
-      &lt;td id="progress4" l10n-id="downloaded4"&gt;
+      &lt;td id="progress4" data-l10n-id="downloaded4" data-l10n-overlay&gt;
         &lt;span class="green" title="{{ kilobytes4 / 1024 }} MB"&gt;&lt;/span&gt;
       &lt;/td&gt;
     </pre>
@@ -257,12 +253,12 @@
 
     <pre>
 
-      &lt;downloaded4 "
+      &lt;downloaded4 """
         You've downloaded
         &lt;span&gt;
           {{ kilobytes4 }} KB
         &lt;/span&gt; so far.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The localizer takes this l20n file and uses it as a base for her 
@@ -270,19 +266,19 @@
 
     <pre>
 
-      &lt;downloaded4 "
+      &lt;downloaded4 """
         Pobrałeś
         &lt;span&gt;
           {{ kilobytes4 }} KB (kilobajtów)
         &lt;span&gt;.
-      "&gt;
+      """&gt;
     </pre>
 
     <p>The result:</p>
 
     <table>
       <tr>
-        <td id="progress4" l10n-id="downloaded4">
+        <td id="progress4" data-l10n-id="downloaded4" data-l10n-overlay>
           <span class="green" title='{{ kilobytes4 / 1024 }} MB'></span>
         </td>
         <td>

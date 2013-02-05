@@ -1,18 +1,14 @@
 <html>
   <head>
-    <script type="text/javascript;version=1.8" src="../../../../lib/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/parser.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/compiler.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../html/l20n-xml.js"></script>
+    <link href="./index.l20n" type="intl/l20n" />
+    <script type="text/javascript;version=1.8" src="../../../../min/l20n.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="../runtests.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../_lib/test.css">
+    <script type="text/javascript" src="../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../_lib/runtests.js"></script>
     <script type="text/javascript" src="spec.js"></script>
-    
-    <link href="./index.lol" type="intl/l20n" />
 
     <script type="text/javascript">
       function test(index) {
@@ -60,7 +56,7 @@
 
     <table>
       <tr>
-        <td id="progress1" l10n-id="downloaded1">
+        <td id="progress1" data-l10n-id="downloaded1" data-l10n-overlay>
           <span class="payload"><abbr class="acronym"></abbr></span>
           <span class="time"></span>
         </td>

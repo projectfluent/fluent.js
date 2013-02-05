@@ -1,18 +1,14 @@
 <html>
   <head>
-    <script type="text/javascript;version=1.8" src="../../../../lib/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/parser.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/compiler.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../html/l20n-xml.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="../runtests.js"></script>
-    <script type="text/javascript" src="spec.js"></script>
-
     <link href="./index.lol" type="intl/l20n" />
+    <script type="text/javascript;version=1.8" src="../../../../min/l20n.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../_lib/test.css">
+    <script type="text/javascript" src="../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../_lib/runtests.js"></script>
+    <script type="text/javascript" src="spec.js"></script>
   </head>
   <body>
     <p class="intro">
@@ -22,7 +18,6 @@
       value, title etc.) but the developer may specifically control which 
       attributes may be localized on the given node via this attribute
     </p>
-    <input l10n-id="test" style="color:green" value="wrong" l10n-attrs="value 
-    title"/>
+    <input data-l10n-id="test" style="color:green" value="wrong" data-l10n-attrs="value title"/>
   </body>
 </html>

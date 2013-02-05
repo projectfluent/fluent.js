@@ -1,6 +1,6 @@
 describe("Localization", function() {
   it("test sentence should be 'Test sentence'", function() {
-    var node = document.querySelector('[l10n-id="test"]');
+    var node = document.querySelector('[data-l10n-id="test"]');
     expect(node.textContent).toEqual('Test sentence');
   });
 });

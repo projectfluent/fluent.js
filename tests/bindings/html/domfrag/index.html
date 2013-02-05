@@ -1,18 +1,14 @@
 <html>
   <head>
-    <script type="text/javascript;version=1.8" src="../../../../lib/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/parser.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/compiler.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../html/l20n-xml.js"></script>
+    <link href="./index.l20n" type="intl/l20n" />
+    <script type="text/javascript;version=1.8" src="../../../../min/l20n.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="../runtests.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../_lib/test.css">
+    <script type="text/javascript" src="../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../_lib/runtests.js"></script>
     <script type="text/javascript" src="spec.js"></script>
-    
-    <link href="./index.lol" type="intl/l20n" />
 
     <style type="text/css">
       .preposition {
@@ -35,12 +31,12 @@
       the <input type="text" placeholder="future"/>.
       <strong>You <em style="color: red;">rock!</em></strong>
     </p>
-    <p l10n-id="hello">
+    <p data-l10n-id="hello" data-l10n-overlay>
       Hello <strong class="preposition">from</strong>
       the <input type="text" placeholder="future"/>.
       <strong>You <em style="color: red;">rock!</em></strong>
     </p>
-    <p l10n-id="helloid">
+    <p data-l10n-id="helloid" data-l10n-overlay>
       Hello <strong id="s1" class="preposition">from</strong>
       the <input type="text" placeholder="future"/>.
       <strong id="s2">You <em style="color: red;">rock!</em></strong>

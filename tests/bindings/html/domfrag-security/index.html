@@ -1,18 +1,14 @@
 <html>
   <head>
-    <script type="text/javascript;version=1.8" src="../../../../lib/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/parser.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/compiler.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../html/l20n-xml.js"></script>
+    <link href="./index.l20n" type="intl/l20n" />
+    <script type="text/javascript;version=1.8" src="../../../../min/l20n.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="../runtests.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../_lib/test.css">
+    <script type="text/javascript" src="../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../_lib/runtests.js"></script>
     <script type="text/javascript" src="spec.js"></script>
-    
-    <link href="./index.lol" type="intl/l20n" />
 
   </head>
   <body>
@@ -29,9 +25,9 @@
       accessible by the localizer from the localization code.
     </p>
 
-    <p id="message" l10n-id="message"></p>
+    <p id="message" data-l10n-id="message" data-l10n-overlay></p>
 
-    <button id="target" onclick="alert('Boo!');">Don't click this</button>
+    <button id="target" onclick="alert('Hello');">This will alert "Hello"</button>
 
   </body>
 </html>

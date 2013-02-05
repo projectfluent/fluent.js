@@ -1,7 +1,7 @@
 describe("Translation", function() {
   it("should read: This is a harmless link.", function() {
     var node = document.querySelector('#message');
-    expect(node.textContent).toEqual('This is a harmless link.');
+    expect(node.textContent.trim()).toEqual('This is a harmless link. It will not alert anything.');
   });
 });
 describe("The link", function() {
@@ -17,8 +17,8 @@ describe("The link", function() {
     var node = document.querySelector('#message a');
     expect(node.getAttribute('onclick')).toBeNull();
   });
-  it("its onclick handler should not be alert('Boo!');", function() {
+  it("its onclick handler should not be alert('Hello');", function() {
     var node = document.querySelector('#message a');
-    expect(node.getAttribute('onclick')).not.toEqual("alert('Boo!');");
+    expect(node.getAttribute('onclick')).not.toEqual("alert('Hello');");
   });
 });

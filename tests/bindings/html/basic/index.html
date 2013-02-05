@@ -1,29 +1,25 @@
 <html>
   <head>
-    <script type="text/javascript;version=1.8" src="../../../../lib/l20n.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/parser.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../lib/compiler.js"></script>
-    <script type="text/javascript;version=1.8" src="../../../../html/l20n-xml.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="../../_lib/jasmine/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../../_lib/test.css">
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine.js"></script>
-    <script type="text/javascript" src="../../_lib/jasmine/jasmine-html.js"></script>
-    <script type="text/javascript" src="../runtests.js"></script>
-    <script type="text/javascript" src="spec.js"></script>
-
     <link href="./index.lol" type="intl/l20n" />
+    <script type="text/javascript;version=1.8" src="../../../../min/l20n.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../_lib/jasmine/jasmine.css">
+    <link rel="stylesheet" type="text/css" href="../_lib/test.css">
+    <script type="text/javascript" src="../_lib/jasmine/jasmine.js"></script>
+    <script type="text/javascript" src="../_lib/jasmine/jasmine-html.js"></script>
+    <script type="text/javascript" src="../_lib/runtests.js"></script>
+    <script type="text/javascript" src="spec.js"></script>
   </head>
   <body>
     <p class="intro">
       In this example there are three <code>&lt;span&gt;</code> elements and 
-      assign l10n-id attribute which binds them with their respective L20n 
+      assign data-l10n-id attribute which binds them with their respective L20n 
       entities. The value of the entity becomes a text content of the span 
       element.
     </p>
-    <span l10n-id="name"></span>
-    <span l10n-id="phone"></span>
-    <span l10n-id="address"></span>
+    <span data-l10n-id="name"></span>
+    <span data-l10n-id="phone"></span>
+    <span data-l10n-id="address"></span>
   </body>
 </html>
 
