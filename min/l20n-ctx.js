@@ -1003,7 +1003,31 @@ define(function () {
     var _resource = new Resource(null, this, _parser);
     var _entries = {};
     var _ctxdata = {};
-    var _globals = {};
+    var _globals = {
+      get hour() {
+        return new Date().getHours();
+      },
+      get os() {
+        if (/^MacIntel/.test(navigator.platform)) {
+          return 'mac';
+        }
+        if (/^Linux/.test(navigator.platform)) {
+          return 'linux';
+        }
+        if (/^Win/.test(navigatgor.platform)) {
+          return 'win';
+        }
+        return 'unknown';
+      },
+      screen: {
+        get width() {
+          return document.body.clientWidth;
+        },
+        get height() {
+          return document.body.clientHeight;
+        },
+      }
+    };
     var _listeners = [];
     var _subContext = null;
     var _settings = {
@@ -1014,6 +1038,7 @@ define(function () {
 
     _parser.addEventListener('error', echo);
     _compiler.addEventListener('error', echo);
+    _compiler.setGlobals(_globals);
 
     function get(id, data) {
       if (!_resource.isReady) {
@@ -1304,52 +1329,6 @@ define(function () {
 
   this.L20n = L20n;
 
-}).call(this);
-(function() {
-  'use strict';
-
-  function EventEmitter() {
-    this._listeners = {};
-  }
-
-  EventEmitter.prototype.emit = function ee_emit() {
-    var args = Array.prototype.slice.call(arguments);
-    var type = args.shift();
-    var typeListeners = this._listeners[type];
-    if (!typeListeners || !typeListeners.length) {
-      return false;
-    }
-    typeListeners.forEach(function(listener) {
-      listener.apply(this, args);
-    }, this);
-    return true;
-  }
-
-  EventEmitter.prototype.addEventListener = function ee_add(type, listener) {
-    if (!this._listeners[type]) {
-      this._listeners[type] = [];
-    }
-    this._listeners[type].push(listener);
-    return this;
-  }
-
-  EventEmitter.prototype.removeEventListener = function ee_remove(type, listener) {
-    var typeListeners = this._listeners[type];
-    var pos = typeListeners.indexOf(listener);
-    if (pos === -1) {
-      return this;
-    }
-    listeners.splice(pos, 1);
-    return this;
-  }
-
-  if (typeof exports !== 'undefined') {
-    exports.EventEmitter = EventEmitter;
-  } else if (this.L20n) {
-    this.L20n.EventEmitter = EventEmitter;
-  } else {
-    this.L20nEventEmitter = EventEmitter;
-  }
 }).call(this);
 (function() {
   'use strict';
@@ -2313,6 +2292,52 @@ define(function () {
     this.L20n.Parser = Parser;
   } else {
     this.L20nParser = Parser;
+  }
+}).call(this);
+(function() {
+  'use strict';
+
+  function EventEmitter() {
+    this._listeners = {};
+  }
+
+  EventEmitter.prototype.emit = function ee_emit() {
+    var args = Array.prototype.slice.call(arguments);
+    var type = args.shift();
+    var typeListeners = this._listeners[type];
+    if (!typeListeners || !typeListeners.length) {
+      return false;
+    }
+    typeListeners.forEach(function(listener) {
+      listener.apply(this, args);
+    }, this);
+    return true;
+  }
+
+  EventEmitter.prototype.addEventListener = function ee_add(type, listener) {
+    if (!this._listeners[type]) {
+      this._listeners[type] = [];
+    }
+    this._listeners[type].push(listener);
+    return this;
+  }
+
+  EventEmitter.prototype.removeEventListener = function ee_remove(type, listener) {
+    var typeListeners = this._listeners[type];
+    var pos = typeListeners.indexOf(listener);
+    if (pos === -1) {
+      return this;
+    }
+    listeners.splice(pos, 1);
+    return this;
+  }
+
+  if (typeof exports !== 'undefined') {
+    exports.EventEmitter = EventEmitter;
+  } else if (this.L20n) {
+    this.L20n.EventEmitter = EventEmitter;
+  } else {
+    this.L20nEventEmitter = EventEmitter;
   }
 }).call(this);
 // This is L20n's on-the-fly compiler.  It takes the AST produced by the parser 
