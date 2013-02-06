@@ -1564,15 +1564,7 @@ define(function () {
 
       // a-zA-Z_
       if ((cc < 97 || cc > 122) && (cc < 65 || cc > 90) && cc !== 95) {
-        // "~"
-        if (cc === 126) {
-          _index += 1;
-          return {
-            type: 'ThisExpression'
-          };
-        } else {
-          throw error('Identifier has to start with [a-zA-Z]');
-        }
+        throw error('Identifier has to start with [a-zA-Z]');
       }
 
       cc = source.charCodeAt(++index);
@@ -1767,7 +1759,7 @@ define(function () {
         getWS();
         body.push(getExpression());
         getWS();
-        if (_source.charCodeAt(_index) !== 125 &&
+        if (_source.charCodeAt(_index) !== 125 ||
             _source.charCodeAt(_index+1) !== 125) {
           throw error('Expected "}}"');
         }
@@ -1846,7 +1838,14 @@ define(function () {
       _source = string;
       _index = 0;
       _length = _source.length;
-      return getComplexString();
+      try {
+        return getComplexString();
+      } catch (e) {
+        if (Emitter && e instanceof ParserError) {
+          _emitter.emit('error', e);
+        }
+        throw e;
+      }
     }
 
     function parse(string) {
@@ -2149,25 +2148,36 @@ define(function () {
         };
       }
 
-      // value: '"{[
-      if (cc === 39 || cc === 34 || cc === 123 || cc === 91) {
-        return getValue();
-      }
+      switch (cc) {
+        // value: '"{[
+        case 39:
+        case 34:
+        case 123:
+        case 91:
+          return getValue();
 
-      // variable: $
-      if (cc === 36) {
-        return getVariable();
-      }
+        // variable: $
+        case 36:
+          return getVariable();
 
-      // globals: @
-      if (cc === 64) {
-        ++_index;
-        return {
-          type: 'GlobalsExpression',
-          id: getIdentifier()
-        };
+        // globals: @
+        case 64:
+          ++_index;
+          return {
+            type: 'GlobalsExpression',
+              id: getIdentifier()
+          };
+
+        // this: ~
+        case 126:
+          ++_index;
+          return {
+            type: 'ThisExpression'
+          };
+
+        default:
+          return getIdentifier();
       }
-      return getIdentifier();
     }
 
     /* helper functions */
@@ -2787,7 +2797,12 @@ define(function () {
       var parsed, complex;
       return function stringLiteral(locals, ctxdata) {
         if (!complex) {
-          parsed = _parser.parseString(node.content);
+          try {
+            parsed = _parser.parseString(node.content);
+          } catch (e) {
+            throw new ValueError("Malformed string. " + e.message, entry, 
+                                 node.content);
+          }
           if (parsed.type == 'String') {
             return [locals, parsed.content];
           }
