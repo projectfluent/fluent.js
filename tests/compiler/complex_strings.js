@@ -90,9 +90,5 @@ describe('Complex strings', function(){
       var value = env['about33'].toString();
       value.should.equal('About Aurora');
     });
-    it('returns "Mozilla Aurora\'s" for .feminine.genitive[length[1]]', function(){
-      var value = env['about34'].toString();
-      value.should.equal('About Mozilla Aurora\'s');
-    });
   });
 });
