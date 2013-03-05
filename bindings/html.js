@@ -10,7 +10,7 @@
 
   function bootstrap() {
     headNode = document.head;
-    var link = headNode.querySelector('link[rel="l10n-manifest"]');
+    var link = headNode.querySelector('link[rel~="localization][rel~="manifest"]');
     if (link) {
       loadManifest(link.getAttribute('href')).then(
         initializeDocumentContext
@@ -83,9 +83,9 @@
     L20n.IO.loadAsync(url).then(
       function(text) {
         var manifest = JSON.parse(text);
-        var langList = L20n.Intl.prioritizeLocales(manifest.locales);
+        var langList = L20n.Intl.prioritizeLocales(Object.keys(manifest.locales));
         ctx.settings.locales = langList;
-        ctx.settings.schemes = manifest.schemes;
+        ctx.settings.resources = manifest.locales;
         deferred.resolve();
       }
     );
