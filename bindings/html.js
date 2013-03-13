@@ -25,11 +25,13 @@
       }
       initializeDocumentContext();
     } else {
-      var link = headNode.querySelector('link[rel~="localization"]');
+      var link = headNode.querySelector('link[rel="localization"]');
       if (link) {
         loadManifest(link.getAttribute('href')).then(
           initializeDocumentContext
         );
+      } else {
+        initializeDocumentContext();
       }
     }
     return true;
