@@ -10,13 +10,27 @@
 
   function bootstrap() {
     headNode = document.head;
-    var link = headNode.querySelector('link[rel~="localization][rel~="manifest"]');
-    if (link) {
-      loadManifest(link.getAttribute('href')).then(
-        initializeDocumentContext
-      );
-    } else {
+    var data = headNode.querySelector('script[type="application/l10n-data+json"]');
+
+    if (data) {
+      ctx.data = JSON.parse(data.textContent);
+    }
+
+    var script = headNode.querySelector('script[type="application/l20n"]');
+    if (script) {
+      if (script.hasAttribute('src')) {
+        ctx.addResource(script.getAttribute('src'));
+      } else {
+        ctx.injectResource(null, script.textContent);
+      }
       initializeDocumentContext();
+    } else {
+      var link = headNode.querySelector('link[rel~="localization"]');
+      if (link) {
+        loadManifest(link.getAttribute('href')).then(
+          initializeDocumentContext
+        );
+      }
     }
     return true;
   }
@@ -24,26 +38,6 @@
   bootstrap();
 
   function initializeDocumentContext() {
-    setMetadata();
-
-    var data = headNode.querySelector('script[type="application/l10n-data+json"]');
-    if (data) {
-      ctx.data = JSON.parse(data.textContent);
-    }
-
-    var res;
-    var resources = headNode.querySelectorAll('script[type="application/l10n"]');
-    for (var i = 0; i < resources.length; i++) {
-      res = resources[i];
-      if (res.hasAttribute('pathspec')) {
-        ctx.addResource(res.getAttribute('pathspec'));
-      } else if (res.hasAttribute('src')) {
-        ctx.addResource(res.getAttribute('src'));
-      } else {
-        ctx.injectResource(null, res.textContent);
-      }
-    } 
-
     ctx.addEventListener('ready', function() {
       var event = document.createEvent('Event');
       event.initEvent('LocalizationReady', false, false);
@@ -85,28 +79,14 @@
         var manifest = JSON.parse(text);
         var langList = L20n.Intl.prioritizeLocales(Object.keys(manifest.locales));
         ctx.settings.locales = langList;
-        ctx.settings.resources = manifest.locales;
+        for (var loc in manifest.locales) {
+          // res can be a list of resources
+          ctx.addResource(manifest.locales[loc], loc);
+        }
         deferred.resolve();
       }
     );
     return deferred.promise;
-  }
-
-  function setMetadata() {
-    var meta, metas;
-    if (ctx.settings.locales.length == 0) {
-      meta = headNode.querySelector('meta[name="content-languages"]');
-      if (meta) {
-        var locales = meta.content.split(',').map(String.trim);
-        ctx.settings.locales = L20n.Intl.prioritizeLocales(locales);
-      }
-    }
-    if (ctx.settings.schemes.length == 0) {
-      metas = headNode.querySelectorAll('meta[name="pathspec"]');
-      for (var i = 0; i < metas.length; i++) {
-        ctx.settings.schemes.push(metas[i].content);
-      }
-    }
   }
 
   function fireLocalizedEvent() {
