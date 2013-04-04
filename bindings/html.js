@@ -5,6 +5,14 @@
   HTMLDocument.prototype.__defineGetter__('l10n', function() {
     return ctx;
   });
+  navigator.mozL10n = {
+    'ready': function(cb) {
+      ctx.addEventListener(cb);
+    },
+    'translate': function(node) {
+      localizeNode(node);
+    }
+  };
 
   var headNode;
 
@@ -98,7 +106,11 @@
   }
 
   function localizeDocument() {
-    var nodes = document.querySelectorAll('[data-l10n-id]');
+    localizeNode(document);
+    fireLocalizedEvent();
+  }
+  function localizeNode(node) {
+    var nodes = node.querySelectorAll('[data-l10n-id]');
     var ids = [];
     for (var i = 0; i < nodes.length; i++) {
       ids.push(nodes[i].getAttribute('data-l10n-id'));
@@ -106,16 +118,17 @@
     ctx.localize(ids, {}, function(d) {
       for (var i = 0; i < nodes.length; i++) {
         var id = nodes[i].getAttribute('data-l10n-id');
-        nodes[i].textContent = d[id].value;
+        if (d[id].value) {
+          nodes[i].textContent = d[id].value;
+        }
         for (var key in d[id].attributes) {
           nodes[i].setAttribute(key, d[id].attributes[key]);
         }
       }
-      console.log('localizing');
       // readd data-l10n-attrs
       // readd data-l10n-overlay
+      // secure attribute access
     });
-    fireLocalizedEvent();
   }
 
 })(this);
