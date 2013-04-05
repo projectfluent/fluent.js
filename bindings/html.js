@@ -69,7 +69,7 @@
   }
 
   function loadManifest(url) {
-    var deferred = new Promise();
+    var deferred = new L20n.Promise();
     L20n.IO.load(url, true).then(
       function(text) {
         var manifest = JSON.parse(text);
