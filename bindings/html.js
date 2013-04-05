@@ -81,7 +81,7 @@
   }
 
   function loadManifest(url) {
-    var deferred = when.defer();
+    var deferred = new Promise();
     L20n.IO.load(url, true).then(
       function(text) {
         var manifest = JSON.parse(text);
@@ -90,10 +90,10 @@
         ctx.linkResource(function(lang) {
           return manifest.resources[0].replace("{{lang}}", lang);
         });
-        deferred.resolve();
+        deferred.fulfill();
       }
     );
-    return deferred.promise;
+    return deferred;
   }
 
   function fireLocalizedEvent() {
