@@ -38,8 +38,6 @@
         loadManifest(link.getAttribute('href')).then(
           initializeDocumentContext
         );
-      } else {
-        initializeDocumentContext();
       }
     }
     return true;
@@ -84,15 +82,14 @@
 
   function loadManifest(url) {
     var deferred = when.defer();
-    L20n.IO.loadAsync(url).then(
+    L20n.IO.load(url, true).then(
       function(text) {
         var manifest = JSON.parse(text);
-        var langList = L20n.Intl.prioritizeLocales(Object.keys(manifest.locales));
-        ctx.settings.locales = langList;
-        for (var loc in manifest.locales) {
-          // res can be a list of resources
-          ctx.addResource(manifest.locales[loc], loc);
-        }
+        var langList = L20n.Intl.prioritizeLocales(manifest.languages);
+        ctx.registerLocales.apply(this, langList);
+        ctx.linkResource(function(lang) {
+          return manifest.resources[0].replace("{{lang}}", lang);
+        });
         deferred.resolve();
       }
     );
