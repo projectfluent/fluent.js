@@ -1,20 +1,8 @@
 (function(){
   'use strict';
-
-  var ctx = L20n.getContext(document.location.host);
-  HTMLDocument.prototype.__defineGetter__('l10n', function() {
-    return ctx;
-  });
-  navigator.mozL10n = {
-    'ready': function(cb) {
-      ctx.addEventListener(cb);
-    },
-    'translate': function(node) {
-      localizeNode(node);
-    }
-  };
-
+  var ctx = this.L20n.getContext(document.location.host);
   var headNode;
+  document.body.style.visibility = 'hidden';
 
   function bootstrap() {
     headNode = document.head;
@@ -97,6 +85,7 @@
   }
 
   function fireLocalizedEvent() {
+    document.body.style.visibility = 'visible';
     var event = document.createEvent('Event');
     event.initEvent('DocumentLocalized', false, false);
     document.dispatchEvent(event);
@@ -104,6 +93,9 @@
 
   function localizeDocument() {
     localizeNode(document);
+    HTMLDocument.prototype.__defineGetter__('l10n', function() {
+      return ctx;
+    });
     fireLocalizedEvent();
   }
   function localizeNode(node) {
@@ -128,4 +120,4 @@
     });
   }
 
-})(this);
+}).call(this);
