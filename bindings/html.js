@@ -2,7 +2,9 @@
   'use strict';
   var ctx = this.L20n.getContext(document.location.host);
   var headNode;
-  document.body.style.visibility = 'hidden';
+  if (document.body) {
+    document.body.style.visibility = 'hidden';
+  }
 
   function bootstrap() {
     headNode = document.head;
@@ -102,16 +104,22 @@
     var nodes = node.querySelectorAll('[data-l10n-id]');
     var ids = [];
     for (var i = 0; i < nodes.length; i++) {
-      ids.push(nodes[i].getAttribute('data-l10n-id'));
+      if (nodes[i].hasAttribute('data-l10n-args')) {
+        ids.push([nodes[i].getAttribute('data-l10n-id'),
+                  JSON.parse(nodes[i].getAttribute('data-l10n-args'))]);
+      } else {
+        ids.push(nodes[i].getAttribute('data-l10n-id'));
+      }
     }
-    ctx.localize(ids, {}, function(d) {
+
+    ctx.localize(ids, function(d) {
       for (var i = 0; i < nodes.length; i++) {
         var id = nodes[i].getAttribute('data-l10n-id');
-        if (d[id].value) {
-          nodes[i].textContent = d[id].value;
+        if (d.entities[id].value) {
+          nodes[i].textContent = d.entities[id].value;
         }
-        for (var key in d[id].attributes) {
-          nodes[i].setAttribute(key, d[id].attributes[key]);
+        for (var key in d.entities[id].attributes) {
+          nodes[i].setAttribute(key, d.entities[id].attributes[key]);
         }
       }
       // readd data-l10n-attrs
