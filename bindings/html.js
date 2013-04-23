@@ -63,7 +63,7 @@
 
     HTMLElement.prototype.retranslate = function() {
       if (this.hasAttribute('data-l10n-id')) {
-        localizeNode(ctx, this);
+        localizeNode(this);
         return true;
       }
       throw Exception("Node not localizable");
@@ -100,6 +100,7 @@
     });
     fireLocalizedEvent();
   }
+
   function localizeNode(node) {
     var nodes = node.querySelectorAll('[data-l10n-id]');
     var ids = [];
