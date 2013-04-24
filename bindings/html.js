@@ -36,19 +36,12 @@
   bootstrap();
 
   function initializeDocumentContext() {
+    localizeDocument();
+
     ctx.addEventListener('ready', function() {
       var event = document.createEvent('Event');
       event.initEvent('LocalizationReady', false, false);
       document.dispatchEvent(event);
-      if (document.body) {
-        localizeDocument();
-      } else {
-        document.addEventListener('readystatechange', function() {
-          if (document.readyState === 'interactive') {
-            localizeDocument();
-          }
-        });
-      }
     });
 
     ctx.addEventListener('error', function(e) {
@@ -93,12 +86,43 @@
     document.dispatchEvent(event);
   }
 
+  function onDocumentBodyReady() {
+    if (document.readyState === 'interactive') {
+      localizeNode(document);
+      fireLocalizedEvent();
+      document.removeEventListener('readystatechange', onDocumentBodyReady);
+    }
+  }
+
   function localizeDocument() {
-    localizeNode(document);
+    if (document.body) {
+      localizeNode(document);
+      fireLocalizedEvent();
+    } else {
+      document.addEventListener('readystatechange', onDocumentBodyReady);
+    }
     HTMLDocument.prototype.__defineGetter__('l10n', function() {
       return ctx;
     });
-    fireLocalizedEvent();
+  }
+
+  function retranslate(node, l10n) {
+    var nodes = node.querySelectorAll('[data-l10n-id]');
+    var entity;
+    for (var i = 0; i < nodes.length; i++) {
+      var id = nodes[i].getAttribute('data-l10n-id');
+      var entity = l10n.entities[id];
+      var node = nodes[i];
+      if (entity.value) {
+        node.textContent = entity.value;
+      }
+      for (var key in entity.attributes) {
+        node.setAttribute(key, entity.attributes[key]);
+      }
+    }
+    // readd data-l10n-attrs
+    // readd data-l10n-overlay
+    // secure attribute access
   }
 
   function localizeNode(node) {
@@ -112,21 +136,7 @@
         ids.push(nodes[i].getAttribute('data-l10n-id'));
       }
     }
-
-    ctx.localize(ids, function(d) {
-      for (var i = 0; i < nodes.length; i++) {
-        var id = nodes[i].getAttribute('data-l10n-id');
-        if (d.entities[id].value) {
-          nodes[i].textContent = d.entities[id].value;
-        }
-        for (var key in d.entities[id].attributes) {
-          nodes[i].setAttribute(key, d.entities[id].attributes[key]);
-        }
-      }
-      // readd data-l10n-attrs
-      // readd data-l10n-overlay
-      // secure attribute access
-    });
+    ctx.localize(ids, retranslate.bind(this, node));
   }
 
 }).call(this);
