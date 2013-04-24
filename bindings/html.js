@@ -53,14 +53,6 @@
     });
 
     ctx.freeze();
-
-    HTMLElement.prototype.retranslate = function() {
-      if (this.hasAttribute('data-l10n-id')) {
-        localizeNode(this);
-        return true;
-      }
-      throw Exception("Node not localizable");
-    }
   }
 
   function loadManifest(url) {
