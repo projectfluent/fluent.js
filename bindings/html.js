@@ -30,6 +30,8 @@
         loadManifest(link.getAttribute('href')).then(
           initializeDocumentContext
         );
+      } else {
+        console.log("L20n error: You're using l20n without any resources! Please, link them above l20n.js");
       }
     }
     return true;
