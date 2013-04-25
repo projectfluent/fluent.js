@@ -14,12 +14,14 @@
       ctx.data = JSON.parse(data.textContent);
     }
 
-    var script = headNode.querySelector('script[type="application/l20n"]');
-    if (script) {
-      if (script.hasAttribute('src')) {
-        ctx.linkResource(script.getAttribute('src'));
-      } else {
-        ctx.addResource(script.textContent);
+    var scripts = headNode.querySelectorAll('script[type="application/l20n"]');
+    if (scripts.length) {
+      for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].hasAttribute('src')) {
+          ctx.linkResource(scripts[i].getAttribute('src'));
+        } else {
+          ctx.addResource(scripts[i].textContent);
+        }
       }
       initializeDocumentContext();
     } else {
