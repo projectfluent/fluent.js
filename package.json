@@ -1,8 +1,9 @@
 {
   "name": "l20n",
+  "description": "A natural-language localization framework",
   "version": "0.9.0",
+  "homepage": "http://l20n.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
-  "description": "A powerful language for localization",
   "contributors": [ 
     {
       "name": "Zbigniew Braniecki",
@@ -16,6 +17,9 @@
   "scripts": {
     "test": "make test"
   },
+  "directories": {
+    "lib": "./lib"
+  },
   "main": "./lib/l20n.js",
   "repository": {
     "type": "git",
@@ -26,6 +30,10 @@
     "l10n"
   ],
   "dependencies": {
+    "amdefine": ">=0.0.4"
+  },
+  "devDependencies": {
+    "dryice": ">=0.4.8",
     "mocha": "1.3.x",
     "xmlhttprequest": "1.4.x",
     "should": "1.x.x",

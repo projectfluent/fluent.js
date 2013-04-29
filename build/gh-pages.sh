@@ -7,7 +7,7 @@ else
 fi
 
 REPO=$(git config remote.$REMOTE.url)
-GH=_build/gh-pages
+GH=build/gh-pages
 
 
 # Checkout the gh-pages branch, if necessary.

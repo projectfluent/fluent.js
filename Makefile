@@ -1,5 +1,9 @@
 MOCHA_OPTS=
 REPORTER?=dot
+NODE=node
+
+build:
+	$(NODE) build/Makefile.js
 
 test: test-lib test-compiler
 
@@ -25,13 +29,13 @@ watch-compiler:
 
 coverage: docs/coverage.html
 
-docs/coverage.html: _build/cov
+docs/coverage.html: build/cov
 	@L20N_COV=1 $(MAKE) test REPORTER=html-cov > docs/coverage.html
 
-_build/cov: lib
-	@rm -rf _build/cov
-	@mkdir _build/cov
-	@jscoverage lib _build/cov/lib
+build/cov: lib
+	@rm -rf build/cov
+	@mkdir build/cov
+	@jscoverage lib build/cov/lib
 
 docs: lib html
 	./node_modules/docco/bin/docco --output docs/lib lib/*.js
@@ -39,6 +43,6 @@ docs: lib html
 	@touch docs
 
 gh-pages: docs
-	./_build/gh-pages.sh
+	./build/gh-pages.sh
 
-.PHONY: test test-compiler watch-compiler coverage gh-pages
+.PHONY: build test test-compiler watch-compiler coverage gh-pages
