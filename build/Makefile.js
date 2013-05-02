@@ -26,7 +26,7 @@ function buildBrowser() {
 
   copy({
     source: [
-      'build/almond.js',
+      'build/microrequire.js',
       {
         project: project,
         require: ['l20n/html']
