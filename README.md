@@ -2,7 +2,7 @@ L20n: Localization 2.0
 ======================
 
 L20n reinvents software localization. Users should be able to benefit from the 
-entire expressive power of the natural language.  L20n keeps simple things 
+entire expressive power of a natural language.  L20n keeps simple things 
 simple, and at the same time makes complex things possible.
 
 
@@ -41,7 +41,7 @@ ctx.freeze();
 ```
 
 When you freeze the context, the resource files will be retrieved, parsed and 
-compiled.  Register callbacks to execute when the context is ready, or listen 
+compiled.  Register calls back to execute when the context is ready, or register calls back to listen 
 to the `LocalizationReady` event emitted by `document.l10n`.
 
 ```javascript
@@ -56,7 +56,7 @@ document.l10n.localize(['hello', 'new'], function(l10n) {
 The HTML Bindings
 -----------------
 
-You can take advantage of the HTML bindings to localize your HTML documents 
+You can take advantage of HTML bindings to localize your HTML documents 
 with L20n.  We maintain a repository with L20n optimized for production use:
 
  - [one file](https://github.com/l20n/l20n.min.js/blob/master/l20n.js) (~100KB)
@@ -75,8 +75,7 @@ element.
 ### Adding resources
 
 You can embed localization resources right in your HTML.  This may be useful 
-when you first start a new project, or when you do the language negotiation on 
-the server.
+when you first start a new project, or when determining server-side language negotiation.
 
 ```html
 <script type="application/l20n">
