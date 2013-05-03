@@ -17,7 +17,11 @@ function buildBrowser() {
   console.log('\nCreating dist/l20n.js');
 
   var project = copy.createCommonJsProject({
-    roots: [ path.join(__dirname, '..', 'lib') ]
+    roots: [ 
+      path.join(__dirname, '..', 'bindings') ,
+      path.join(__dirname, '..', 'lib', 'client') ,
+      path.join(__dirname, '..', 'lib'),
+    ]
   });
 
   copy({
@@ -25,7 +29,7 @@ function buildBrowser() {
       'build/almond.js',
       {
         project: project,
-        require: ['l20n/bindings/html']
+        require: ['l20n/html']
       },
      'build/browser.js'
     ],

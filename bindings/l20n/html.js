@@ -1,10 +1,10 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var L20n = require('../../l20n').L20n;
-  var Promise = require('../promise').Promise;
-  var IO = require('./html/io').IO;
-  var Intl = require('../intl').Intl;
+  var L20n = require('../l20n');
+  var Promise = require('./promise').Promise;
+  var Intl = require('./platform/intl').Intl;
+  var io = require('./platform/io');
 
   var ctx = L20n.getContext(document.location.host);
 
@@ -64,7 +64,7 @@ define(function (require, exports, module) {
 
   function loadManifest(url) {
     var deferred = new Promise();
-    IO.load(url, true).then(
+    io.loadAsync(url).then(
       function(text) {
         var re = /{{\s*lang\s*}}/;
         var manifest = JSON.parse(text);
@@ -142,6 +142,7 @@ define(function (require, exports, module) {
     ctx.localize(ids, retranslate.bind(this, node));
   }
 
-  exports.L20n = L20n;
+  // same as exports = L20n
+  return L20n;
 
 });
