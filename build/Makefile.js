@@ -7,6 +7,9 @@ function removeAmdefine(src) {
     /if\s*\(typeof\s*define\s*!==\s*'function'\)\s*{\s*var\s*define\s*=\s*require\('amdefine'\)\(module\);\s*}\s*/g,
     '');
   src = src.replace(
+    'define(\'amdefine\', [], { /* dummy amdefine */ });\n',
+    '');
+  src = src.replace(
     /\b(define\(.*)('amdefine',?)/gm,
     '$1');
   return src;
@@ -21,6 +24,8 @@ function buildBrowser() {
       path.join(__dirname, '..', 'bindings') ,
       path.join(__dirname, '..', 'lib', 'client') ,
       path.join(__dirname, '..', 'lib'),
+      __dirname  // look for dummy amdefine in build/ to make 
+                 // the output prettier (bug 869210)
     ]
   });
 

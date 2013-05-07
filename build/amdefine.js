@@ -1,0 +1,1 @@
+define('amdefine', [], { /* dummy amdefine */ });
