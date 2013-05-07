@@ -80,6 +80,7 @@ define(function (require, exports, module) {
   function loadResources() {
     ctx.freeze();
     ctx.addEventListener('error', console.warn);
+    ctx.addEventListener('debug', console.error);
 
     document.l10n = ctx;
 
