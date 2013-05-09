@@ -161,4 +161,35 @@ You can expose important bits of data to the localization context in form of
 </script>
 ```
 
-This data will be available context-wide to all localized strings.
+This data will be available context-wide to all localized strings.  For 
+instance, a string could use the information about the user's gender to provide 
+two variants of the translation, like in the example below. See [L20n by 
+Example][] to learn more about L20n's syntax. 
+
+[L20n by Example]: http://l20n.org/learn/
+
+```php
+<invited[$user.gender] {
+  feminine: "{{ $user.name }} has invited you to her circles.",
+  masculine: "{{ $user.name }} has invited you to his circles.",
+ *unknown: "{{ $user.name }} has invited you to their circles."
+}>
+```
+
+Based on the context data defined above, this will produce:
+
+    Jane has invited you to her circles.
+
+To override the context-wide data on a per-element basis, use the `data-l10n-args` 
+attribute.
+
+```html
+<p data-l10n-id="invited"
+   data-l10n-args='{"user": {"name": "Joe", "gender": "masculine"}}'></p>
+```
+
+Even though `$user` is defined as `Jane` and `feminine` context-wide, this 
+particular `p` element will show up as:
+
+    Joe has invited you to his circles.
+
