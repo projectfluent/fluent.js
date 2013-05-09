@@ -180,16 +180,3 @@ Based on the context data defined above, this will produce:
 
     Jane has invited you to her circles.
 
-To override the context-wide data on a per-element basis, use the `data-l10n-args` 
-attribute.
-
-```html
-<p data-l10n-id="invited"
-   data-l10n-args='{"user": {"name": "Joe", "gender": "masculine"}}'></p>
-```
-
-Even though `$user` is defined as `Jane` and `feminine` context-wide, this 
-particular `p` element will show up as:
-
-    Joe has invited you to his circles.
-

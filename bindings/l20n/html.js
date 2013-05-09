@@ -132,12 +132,7 @@ define(function (require, exports, module) {
     var nodes = node.querySelectorAll('[data-l10n-id]');
     var ids = [];
     for (var i = 0; i < nodes.length; i++) {
-      if (nodes[i].hasAttribute('data-l10n-args')) {
-        ids.push([nodes[i].getAttribute('data-l10n-id'),
-                  JSON.parse(nodes[i].getAttribute('data-l10n-args'))]);
-      } else {
-        ids.push(nodes[i].getAttribute('data-l10n-id'));
-      }
+      ids.push(nodes[i].getAttribute('data-l10n-id'));
     }
     ctx.localize(ids, retranslate.bind(this, node));
   }
