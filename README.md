@@ -44,12 +44,15 @@ ctx.freeze();
 ```
 
 When you freeze the context, the resource files will be retrieved, parsed and 
-compiled.  Register calls back to execute when the context is ready with 
-`ctx.localize` or use `ctx.get` and `ctx.getEntity` to get a single entity 
-synchronously.
+compiled.  You can listen to the `ready` event (emitted by the `Context` 
+instance when all the resources have been compiled) and use `ctx.get` and 
+`ctx.getEntity` to get translations synchronously.
+
+Alternatively, you can register callbacks to execute when the context is ready 
+with `ctx.localize`.
 
 ```javascript
-document.l10n.localize(['hello', 'new'], function(l10n) {
+ctx.localize(['hello', 'new'], function(l10n) {
   var node = document.querySelector('[data-l10n-id=hello]');
   node.textConent = l10n.entities.hello.value;
   node.classList.remove('hidden');
@@ -180,8 +183,9 @@ Get Involved
 L20n is open-source, MPL 2-licensed.  We encourage everyone to take a look at 
 our code and we'll listen to your feedback.
 
-We use Bugzilla to track our work. Visit our [Tracking] page for a collection of useful links 
-and information about our release planning.  You can also go straight to the [Dashboard][] or [file a new bug][].
+We use Bugzilla to track our work. Visit our [Tracking] page for a collection 
+of useful links and information about our release planning.  You can also go 
+straight to the [Dashboard][] or [file a new bug][].
 
 We <3 GitHub, but we prefer `text/plain` patches over pull requests.  Refer to 
 the [Contributor's documentation][]  for more information.
