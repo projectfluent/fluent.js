@@ -9,6 +9,8 @@ define(function (require, exports, module) {
   var localizeBodyHandler;
   var ctx = L20n.getContext(document.location.host);
 
+  var documentLocalized = false;
+
   bootstrap();
 
   function bootstrap() {
@@ -50,8 +52,9 @@ define(function (require, exports, module) {
           l10n.entities[nodes.ids[i]]);
       }
       nodes = null;
-      if (!l10n.reason || l10n.reason.locales) {
+      if (!documentLocalized) {
         fireLocalizedEvent();
+        documentLocalized = true;
       }
     });
     ctx.removeEventListener('ready', localizeBodyHandler);
