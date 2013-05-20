@@ -180,8 +180,9 @@ channel.
 
 Get Involved
 ------------
-L20n is open-source, MPL 2-licensed.  We encourage everyone to take a look at 
-our code and we'll listen to your feedback.
+L20n is open-source, licensed under the Apache License, Version 2.0.  We 
+encourage everyone to take a look at our code and we'll listen to your 
+feedback.
 
 We use Bugzilla to track our work. Visit our [Tracking] page for a collection 
 of useful links and information about our release planning.  You can also go 
