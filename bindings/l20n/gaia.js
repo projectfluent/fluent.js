@@ -106,7 +106,12 @@ define(function (require, exports, module) {
   function initializeManifest(manifest) {
     var re = /{{\s*lang\s*}}/;
     var Intl = require('./platform/intl').Intl;
-    var langList = Intl.prioritizeLocales(manifest.languages);
+    /**
+     * For now we just take nav.language, but we'd prefer to get
+     * a list of locales that the user can read sorted by user's preference
+     **/
+    var langList = Intl.prioritizeLocales(manifest.languages,
+                                          [navigator.language]);
     ctx.registerLocales.apply(ctx, langList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
