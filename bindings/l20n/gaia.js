@@ -30,12 +30,22 @@ define(function (require, exports, module) {
       }
       loadResources();
     } else {
-      var link = headNode.querySelector('link[rel="localization"]');
-      if (link) {
-        // XXX add errback
-        loadManifest(link.getAttribute('href')).then(loadResources);
+      var metaLang = headNode.querySelector('meta[name="languages"]');
+      var metaRes = headNode.querySelector('meta[name="resources"]');
+      if (metaLang && metaRes) {
+        initializeManifest({
+          'languages': metaLang.getAttribute('content').split(',').map(String.trim),
+          'resources': metaRes.getAttribute('content').split('|').map(String.trim)
+        });
+        loadResources();
       } else {
-        console.warn("L20n: No resources found. (Put them above l20n.js.)");
+        var link = headNode.querySelector('link[rel="localization"]');
+        if (link) {
+          // XXX add errback
+          loadManifest(link.getAttribute('href')).then(loadResources);
+        } else {
+          console.warn("L20n: No resources found. (Put them above l20n.js.)");
+        }
       }
     }
     document.addEventListener('readystatechange', collectNodes);
@@ -93,22 +103,26 @@ define(function (require, exports, module) {
     };
   }
 
+  function initializeManifest(manifest) {
+    var re = /{{\s*lang\s*}}/;
+    var Intl = require('./platform/intl').Intl;
+    var langList = Intl.prioritizeLocales(manifest.languages);
+    ctx.registerLocales.apply(ctx, langList);
+    manifest.resources.forEach(function(uri) {
+      if (re.test(uri)) {
+        ctx.linkResource(uri.replace.bind(uri, re));
+      } else {
+        ctx.linkResource(uri);
+      }
+    });
+  }
+
   function loadManifest(url) {
     var deferred = new Promise();
     io.loadAsync(url).then(
       function(text) {
-        var re = /{{\s*lang\s*}}/;
         var manifest = JSON.parse(text);
-        var Intl = require('./platform/intl').Intl;
-        var langList = Intl.prioritizeLocales(manifest.languages);
-        ctx.registerLocales.apply(ctx, langList);
-        manifest.resources.forEach(function(uri) {
-          if (re.test(uri)) {
-            ctx.linkResource(uri.replace.bind(uri, re));
-          } else {
-            ctx.linkResource(uri);
-          }
-        });
+        initializeManifest(manifest);
         deferred.fulfill();
       }
     );
