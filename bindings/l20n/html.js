@@ -93,22 +93,31 @@ define(function (require, exports, module) {
     };
   }
 
+  function initializeManifest(manifest) {
+    var re = /{{\s*lang\s*}}/;
+    var Intl = require('./platform/intl').Intl;
+    /**
+     * For now we just take nav.language, but we'd prefer to get
+     * a list of locales that the user can read sorted by user's preference
+     **/
+    var langList = Intl.prioritizeLocales(manifest.languages,
+                                          [navigator.language]);
+    ctx.registerLocales.apply(ctx, langList);
+    manifest.resources.forEach(function(uri) {
+      if (re.test(uri)) {
+        ctx.linkResource(uri.replace.bind(uri, re));
+      } else {
+        ctx.linkResource(uri);
+      }
+    });
+  }
+
   function loadManifest(url) {
     var deferred = new Promise();
     io.loadAsync(url).then(
       function(text) {
-        var re = /{{\s*lang\s*}}/;
         var manifest = JSON.parse(text);
-        var Intl = require('./platform/intl').Intl;
-        var langList = Intl.prioritizeLocales(manifest.languages);
-        ctx.registerLocales.apply(ctx, langList);
-        manifest.resources.forEach(function(uri) {
-          if (re.test(uri)) {
-            ctx.linkResource(uri.replace.bind(uri, re));
-          } else {
-            ctx.linkResource(uri);
-          }
-        });
+        initializeManifest(manifest);
         deferred.fulfill();
       }
     );
