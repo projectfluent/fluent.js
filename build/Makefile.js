@@ -16,8 +16,8 @@ function removeAmdefine(src) {
 }
 removeAmdefine.onRead = true;
 
-function buildBrowser() {
-  console.log('\nCreating dist/l20n.js');
+function buildL20n(bindings) {
+  console.log('\nCreating dist/'+bindings+'/l20n.js');
 
   var project = copy.createCommonJsProject({
     roots: [ 
@@ -34,7 +34,7 @@ function buildBrowser() {
       'build/microrequire.js',
       {
         project: project,
-        require: ['l20n/html']
+        require: ['l20n/' + bindings]
       },
      'build/browser.js'
     ],
@@ -42,17 +42,17 @@ function buildBrowser() {
       copy.filter.moduleDefines,
       removeAmdefine
     ],
-    dest: 'dist/l20n.js'
+    dest: 'dist/'+bindings+'/l20n.js'
   });
 }
 
-function buildBrowserMin() {
-  console.log('\nCreating dist/l20n.min.js');
+function buildL20nMin(bindings) {
+  console.log('\nCreating dist/'+bindings+'/l20n.min.js');
 
   copy({
-    source: 'dist/l20n.js',
+    source: 'dist/'+bindings+'/l20n.js',
     filter: copy.filter.uglifyjs,
-    dest: 'dist/l20n.min.js'
+    dest: 'dist/'+bindings+'/l20n.min.js'
   });
 }
 
@@ -67,6 +67,9 @@ function ensureDir(name) {
   }
 }
 
+var bindings = process.argv[2];
+
 ensureDir("dist");
-buildBrowser();
-buildBrowserMin();
+ensureDir("dist/"+bindings);
+buildL20n(bindings);
+buildL20nMin(bindings);

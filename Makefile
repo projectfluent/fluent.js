@@ -1,9 +1,10 @@
 MOCHA_OPTS=
 REPORTER?=dot
 NODE=node
+BINDINGS=html
 
 build:
-	$(NODE) build/Makefile.js
+	$(NODE) build/Makefile.js $(BINDINGS)
 
 test: test-lib test-compiler
 
