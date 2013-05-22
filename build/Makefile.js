@@ -31,28 +31,28 @@ function buildL20n(bindings) {
 
   copy({
     source: [
-      'build/microrequire.js',
+      'build/prefix/microrequire.js',
       {
         project: project,
         require: ['l20n/' + bindings]
       },
-     'build/browser.js'
+     'build/suffix/' + bindings + '.js'
     ],
     filter: [
       copy.filter.moduleDefines,
       removeAmdefine
     ],
-    dest: 'dist/'+bindings+'/l20n.js'
+    dest: 'dist/' + bindings + '/l20n.js'
   });
 }
 
 function buildL20nMin(bindings) {
-  console.log('\nCreating dist/'+bindings+'/l20n.min.js');
+  console.log('\nCreating dist/' + bindings + '/l20n.min.js');
 
   copy({
-    source: 'dist/'+bindings+'/l20n.js',
+    source: 'dist/' + bindings + '/l20n.js',
     filter: copy.filter.uglifyjs,
-    dest: 'dist/'+bindings+'/l20n.min.js'
+    dest: 'dist/' + bindings + '/l20n.min.js'
   });
 }
 
@@ -69,7 +69,7 @@ function ensureDir(name) {
 
 var bindings = process.argv[2];
 
-ensureDir("dist");
-ensureDir("dist/"+bindings);
+ensureDir('dist');
+ensureDir('dist/' + bindings);
 buildL20n(bindings);
 buildL20nMin(bindings);
