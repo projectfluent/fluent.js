@@ -120,6 +120,11 @@ define(function (require, exports, module) {
         ctx.linkResource(uri);
       }
     });
+    navigator.mozSettings.addObserver('language.current', function(event) {
+      var langList = Intl.prioritizeLocales(manifest.languages,
+                                            [event.settingValue]);
+      ctx.registerLocales.apply(ctx, langList);
+    });
   }
 
   function loadManifest(url) {
