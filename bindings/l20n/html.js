@@ -38,7 +38,12 @@ define(function (require, exports, module) {
         console.warn("L20n: No resources found. (Put them above l20n.js.)");
       }
     }
-    document.addEventListener('readystatechange', collectNodes);
+
+    if (document.readyState !== 'loading') {
+      collectNodes();
+    } else {
+      document.addEventListener('readystatechange', collectNodes);
+    }
   }
 
   function localizeBody(nodes) {
