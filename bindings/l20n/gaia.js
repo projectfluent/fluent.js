@@ -166,15 +166,94 @@ define(function (require, exports, module) {
     if (!entity) {
       return;
     }
-    if (entity.value) {
-      node.textContent = entity.value;
-    }
     for (key in entity.attributes) {
       node.setAttribute(key, entity.attributes[key]);
     }
+    if (entity.value) {
+      if (node.hasAttribute('data-l10n-overlay')) {
+        overlayNode(node, entity.value);
+      } else {
+        node.textContent = entity.value;
+      }
+    }
     // readd data-l10n-attrs
-    // readd data-l10n-overlay
     // secure attribute access
+  }
+
+  function overlayNode(node, value) {
+    // This code operates on three DOMFragments:
+    //
+    // node - the fragment that is currently attached to the document
+    //
+    // sourceNode - in retranslation case, we need to store the original
+    // node from before translation, in order to properly apply path matchings
+    //
+    // l10nNode - new fragment that takes the l10n value and applies attributes
+    // from the sourceNode for matching nodes
+
+    var sourceNode = node._l20nSourceNode || node;
+    var l10nNode = sourceNode.cloneNode(false);
+
+    l10nNode.innerHTML = value;
+
+    var children = l10nNode.getElementsByTagName('*');
+    for (var i = 0, child; child = children[i]; i++) {
+      var path = getPathTo(child, sourceNode);
+      var sourceChild = getElementByPath(path, sourceNode);
+      if (!sourceChild) {
+        continue;
+      }
+
+      for (var k = 0, sourceAttr; sourceAttr = sourceChild.attributes[k]; k++) {
+        if (!child.hasAttribute(sourceAttr.name)) {
+          child.setAttribute(sourceAttr.nodeName, sourceAttr.value);
+        }
+      }
+    }
+
+    l10nNode._l20nSourceNode = sourceNode;
+    node.parentNode.replaceChild(l10nNode, node);
+    return;
+  }
+
+
+  function getPathTo(element, context) {
+    const TYPE_ELEMENT = 1;
+
+    if (element === context) {
+      return '.';
+    }
+
+    var id = element.getAttribute('id');
+    if (id) {
+      return '*[@id="' + id + '"]';
+    }
+
+    var l10nPath = element.getAttribute('data-l10n-path');
+    if (l10nPath) {
+      element.removeAttribute('data-l10n-path');
+      return l10nPath;
+    }
+
+    var index = 0;
+    var siblings = element.parentNode.childNodes;
+    for (var i = 0, sibling; sibling = siblings[i]; i++) {
+      if (sibling === element) {
+        var pathToParent = getPathTo(element.parentNode, context);
+        return pathToParent + '/' + element.tagName + '[' + (index + 1) + ']';
+      }
+      if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName) {
+        index++;
+      }
+    }
+
+    throw "Can't find the path to element " + element;
+  }
+
+  function getElementByPath(path, context) {
+    var xpe = document.evaluate(path, context, null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    return xpe.singleNodeValue;
   }
 
   // same as exports = L20n;
