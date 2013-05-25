@@ -188,7 +188,7 @@ define(function (require, exports, module) {
 
     var children = l10nNode.getElementsByTagName('*');
     for (var i = 0, child; child = children[i]; i++) {
-      var path = getPathTo(child, sourceNode);
+      var path = getPathTo(child, l10nNode);
       var sourceChild = getElementByPath(path, sourceNode);
       if (!sourceChild) {
         continue;
