@@ -49,7 +49,8 @@ instance when all the resources have been compiled) and use `ctx.get` and
 `ctx.getEntity` to get translations synchronously.
 
 Alternatively, you can register callbacks to execute when the context is ready 
-with `ctx.localize`.
+(or when globals change and translations need to be updated) with 
+`ctx.localize`.
 
 ```javascript
 ctx.localize(['hello', 'new'], function(l10n) {
@@ -60,7 +61,7 @@ ctx.localize(['hello', 'new'], function(l10n) {
 ```
 
 ### ctx.addResource(String)
-### ctx.registerLocales(Array<String>)
+### ctx.registerLocales(Array&lt;String&gt;)
 ### ctx.linkResource(String|Function)
 ### ctx.freeze()
 ### ctx.addEventListener(String, Function)
@@ -68,6 +69,7 @@ ctx.localize(['hello', 'new'], function(l10n) {
 ### ctx.get(String, Object)
 ### ctx.getEntity(String, Object)
 ### ctx.localize(Array, Function)
+### ctx.ready(Function)
 
 
 The HTML Bindings

@@ -69,9 +69,10 @@ define(function (require, exports, module) {
 
   function loadResources() {
     ctx.freeze();
-
     ctx.addEventListener('error', console.warn);
+
     document.l10n = ctx;
+
     document.l10n.localizeNode = function localizeNode(node) {
       var nodes = getNodes(node);
       var many = localizeHandler.extend(nodes.ids);
@@ -80,6 +81,17 @@ define(function (require, exports, module) {
                       many.entities[nodes.ids[i]]);
       }
     };
+    document.l10n.once = function L20nContext_once(callback) {
+      if (documentLocalized) {
+        callback();
+      } else {
+        var callAndRemove = function callAndRemove() {
+          document.removeEventListener('DocumentLocalized', callAndRemove);
+          callback();
+        }
+        document.addEventListener('DocumentLocalized', callAndRemove);
+      }
+    }
   }
 
   function initializeManifest(manifest) {
