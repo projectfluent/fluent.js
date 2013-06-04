@@ -6,7 +6,6 @@ define(function (require, exports, module) {
   var io = require('./platform/io');
 
   var localizeHandler;
-  var localizeBodyHandler;
   var ctx = L20n.getContext(document.location.host);
 
   var documentLocalized = false;
@@ -48,43 +47,33 @@ define(function (require, exports, module) {
         }
       }
     }
-    document.addEventListener('readystatechange', collectNodes);
+
+    if (document.readyState !== 'loading') {
+      collectNodes();
+    } else {
+      document.addEventListener('readystatechange', collectNodes);
+    }
   }
 
-  function localizeBody(nodes) {
+  function collectNodes() {
+    var nodes = getNodes(document.body);
     localizeHandler = ctx.localize(nodes.ids, function(l10n) {
       if (!nodes) {
         nodes = getNodes(document.body);
       }
       for (var i = 0; i < nodes.nodes.length; i++) {
         translateNode(nodes.nodes[i],
-          nodes.ids[i],
-          l10n.entities[nodes.ids[i]]);
+                      nodes.ids[i],
+                      l10n.entities[nodes.ids[i]]);
       }
       nodes = null;
       if (!documentLocalized) {
-        fireLocalizedEvent();
         documentLocalized = true;
+        fireLocalizedEvent();
       }
     });
-    ctx.removeEventListener('ready', localizeBodyHandler);
-  }
 
-  function collectNodes() {
-    // this function is fired right when we have document.body available
-    //
-    // We collect the nodes and then we check if the l10n context is ready.
-    // If it is ready, we create localize block for it, if not
-    // we set an event listener on context and add it when it's ready.
-    var nodes = getNodes(document.body);
-
-
-    if (ctx.isReady) {
-      localizeBody(nodes);
-    } else {
-      localizeBodyHandler = localizeBody.bind(this, nodes);
-      ctx.addEventListener('ready', localizeBodyHandler);
-    }
+    // TODO this might fail; silence the error
     document.removeEventListener('readystatechange', collectNodes);
   }
 
