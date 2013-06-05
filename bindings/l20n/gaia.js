@@ -207,7 +207,7 @@ define(function (require, exports, module) {
 
 
   function getPathTo(element, context) {
-    const TYPE_ELEMENT = 1;
+    var TYPE_ELEMENT = 1;
 
     if (element === context) {
       return '.';
