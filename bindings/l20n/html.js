@@ -101,11 +101,32 @@ define(function (require, exports, module) {
     });
   }
 
+  function relativeToManifest(manifestUrl, url) {
+    if (url[0] == '/') {
+      return url;
+    }
+    var dirs = manifestUrl.split('/')
+                          .slice(0, -1)
+                          .concat(url.split('/'))
+                          .filter(function(elem) {
+                            return elem !== '.';
+                          });
+
+    if (dirs[0] !== '' && dirs[0] !== '..') {
+      // if the manifest path doesn't start with / or ..
+      dirs.unshift('.');
+    }
+
+    return dirs.join('/');
+  }
+
   function loadManifest(url) {
     var deferred = new Promise();
     io.loadAsync(url).then(
       function(text) {
         var manifest = JSON.parse(text);
+        manifest.resources = manifest.resources.map(
+                               relativeToManifest.bind(this, url));
         initializeManifest(manifest);
         deferred.fulfill();
       }
