@@ -173,7 +173,7 @@ define(function (require, exports, module) {
     if (!entity) {
       return;
     }
-    for (key in entity.attributes) {
+    for (var key in entity.attributes) {
       node.setAttribute(key, entity.attributes[key]);
     }
     if (entity.value) {
