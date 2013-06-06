@@ -1,3 +1,4 @@
+var should = require('should');
 var Parser = process.env.L20N_COV
   ? require('../../build/cov/lib/l20n/parser').Parser
   : require('../../lib/l20n/parser').Parser;
@@ -167,5 +168,32 @@ describe('Example', function() {
     ast.body[0].value.content.length.should.equal(2);
     ast.body[0].value.content[0].value.content.should.equal('2');
     ast.body[0].value.content[1].value.content.should.equal('3');
+  });
+  describe('detecting non-complex (simple) strings', function() {
+    it('should return not-complex for simple strings', function() {
+      var ast = parser.parse("<id 'string'>");
+      ast.body[0].value.should.have.property('isNotComplex', true);
+    });
+    it('should return maybe-complex for complex strings', function() {
+      var ast = parser.parse("<id '{{ reference }}'>");
+      should.not.exist(ast.body[0].value.isNotComplex);
+    });
+    it('should return maybe-complex for simple strings with braces escaped', function() {
+      var ast = parser.parse("<id '\\{{ string }}'>");
+      should.not.exist(ast.body[0].value.isNotComplex);
+
+      var ast = parser.parse("<id '\\\\{{ string }}'>");
+      should.not.exist(ast.body[0].value.isNotComplex);
+    });
+    it('should return not-complex for simple strings with braces not next to each other', function() {
+      var ast = parser.parse("<id '{a{ string }}'>");
+      ast.body[0].value.should.have.property('isNotComplex', true);
+
+      var ast = parser.parse("<id '{\\{ string }}'>");
+      ast.body[0].value.should.have.property('isNotComplex', true);
+
+      var ast = parser.parse("<id '{\\\\{ string }}'>");
+      ast.body[0].value.should.have.property('isNotComplex', true);
+    });
   });
 });
