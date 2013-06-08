@@ -63,15 +63,94 @@ ctx.localize(['hello', 'new'], function(l10n) {
 });
 ```
 
+### ctx.registerLocales(String[, String…])
+
+Register the locales (language codes) passed as the arguments.
+
+```javascript
+ctx.registerLocales('es-AR', 'es-ES', 'en-US');
+```
+
+The list of locales should be the result of a client-side language negotiation 
+between the HTML document and the browser.  It should include the original 
+language of the document as the last element.
+
+If `registerLocales` is called with a non-empty list of arguments, the Context 
+instance will run in a multi-locale mode.  In this mode, the language fallback 
+is enabled according to the negotiated fallback chain.  Each entity retrieved 
+via `getEntity` or `localize` will also have a `locale` property denoting which 
+language it is in.  (E.g., in the example above, if an entity is missing from 
+`es-AR` and is found in `es-ES`, the `locale` property will be `es-ES`.)
+
+If, on the other hand, `registerLocales` is called with an empty argument list, 
+with a falsy argument or is not called at all, the Context instance will run in 
+a single-locale mode.  In this mode there is no language negotiation nor 
+language fallback.  All resources are added to a special locale internally 
+called `\_\_none\_\_` and all retrieved entities come from it as well (their 
+`locale` property is `undefined`).
+
+`registerLocales` can be called after `freeze` to change the current language 
+fallback chain, for instance if requested by the user.
+
+
 ### ctx.addResource(String)
-### ctx.registerLocales(Array&lt;String&gt;)
-### ctx.linkResource(String|Function)
+
+Add a string as the content of a resource to the Context instance. 
+
+```javascript
+ctx.addResource('<hello "Hello, world!">');
+```
+
+The resource is added to all registered locales, or to the `\_\_none\_\_` 
+locale in the single-locale mode.
+
+
+### ctx.linkResource(String)
+
+Add a resource identified by a URL to the Context instance. 
+
+```javascript
+ctx.linkResource('../locale/app.lol');
+```
+
+The resource is added to all registered locales, or to the `\_\_none\_\_` 
+locale in the single-locale mode.
+
+
+### ctx.linkResource(Function)
+
+Add a resource identified by a URL to the Context instance.  The URL is 
+constructed dynamically when you call `freeze`.  The function passed to 
+`linkResource` (called a _template function_) takes one argument which is the 
+code of the current locale, which needs to be first registered with 
+`registerLocales`.
+
+```javascript
+ctx.linkResource(function(lang) {
+  return '../locales/' + lang + '/app.lol';
+});
+```
+
+The resource is added to all registered locales.  If there are no registered 
+locales, calling `freeze` with a template function as an argument will throw 
+a `No registered locales` error in `freeze`.
+
+
 ### ctx.freeze()
+
+Freeze the Context instance.  No more resources can be added after `freeze` is 
+called.
+
+All IO related to fetching the resource files takes place in `freeze`.  When 
+all resources have been fetched, parsed and compiled, the Context instance will 
+emit a `ready` event.
+
+
 ### ctx.addEventListener(String, Function)
 ### ctx.removeEventListener(String, Function)
 ### ctx.get(String, Object)
 ### ctx.getEntity(String, Object)
-### ctx.localize(Array, Function)
+### ctx.localize(Array&lt;String&gt;, Function)
 ### ctx.ready(Function)
 
 

@@ -7,6 +7,11 @@ DOCCO=./node_modules/.bin/docco
 
 SAMPLESIZE?=25
 ITERATIONS?=100
+LIB_FILES = \
+  tests/lib/*.js \
+  tests/lib/context/*.js \
+  tests/lib/compiler/*.js \
+  tests/integration/*.js
 
 BINDINGS?=html
 
@@ -16,17 +21,11 @@ build:
 
 .PHONY: test
 test:
-	@$(MOCHA) --require should --reporter $(REPORTER) \
-		tests/lib/*.js \
-		tests/lib/compiler/*.js \
-		tests/integration/*.js
+	@$(MOCHA) --require should --reporter $(REPORTER) $(LIB_FILES)
 
 .PHONY: watch
 watch:
-	@$(MOCHA) --require should --reporter min --watch --growl \
-		tests/lib/*.js \
-		tests/lib/compiler/*.js \
-		tests/integration/*.js
+	@$(MOCHA) --require should --reporter min --watch --growl $(LIB_FILES)
 
 .PHONY: perf
 make perf:
