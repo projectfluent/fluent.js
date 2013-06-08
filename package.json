@@ -1,7 +1,7 @@
 {
   "name": "l20n",
   "description": "A natural-language localization framework",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "homepage": "http://l20n.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "contributors": [ 
@@ -33,11 +33,11 @@
     "amdefine": ">=0.0.4"
   },
   "devDependencies": {
-    "dryice": ">=0.4.8",
-    "mocha": "1.3.x",
-    "xmlhttprequest": "1.4.x",
-    "should": "1.x.x",
-    "docco": "0.4.x"
+    "dryice": "0.4.x",
+    "mocha": "1.10.x",
+    "should": "1.2.x",
+    "docco": "0.6.x",
+    "jscoverage": "0.3.x"
   },
   "license": "BSD",
   "engine": {

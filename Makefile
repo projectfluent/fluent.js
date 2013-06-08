@@ -1,49 +1,51 @@
 MOCHA_OPTS=
 REPORTER?=dot
 NODE=node
+MOCHA=./node_modules/.bin/mocha
+JSCOVERAGE=./node_modules/.bin/jscoverage
+DOCCO=./node_modules/.bin/docco
+
+
 BINDINGS=html
 
+.PHONY: build
 build:
 	$(NODE) build/Makefile.js $(BINDINGS)
 
-test: test-lib test-compiler
+.PHONY: test
+test:
+	@$(MOCHA) --require should --reporter $(REPORTER) \
+		tests/lib/*.js \
+		tests/lib/compiler/*.js \
+		tests/integration/*.js
 
-test-lib: 
-	@L20N_TEST=1 ./node_modules/.bin/mocha \
-		--require should \
-		--reporter $(REPORTER) \
-		tests/lib/*.js
+.PHONY: watch
+watch:
+	@$(MOCHA) --require should --reporter min --watch --growl \
+		tests/lib/*.js \
+		tests/lib/compiler/*.js \
+		tests/integration/*.js
 
-test-compiler:
-	@./node_modules/.bin/mocha \
-		--require should \
-		--reporter $(REPORTER) \
-		tests/compiler/*.js
+.PHONY: coverage
+coverage: build/cov
+	@mkdir -p dist/docs
+	@L20N_COV=1 $(MAKE) test REPORTER=html-cov > dist/docs/coverage.html
 
-watch-compiler:
-	@./node_modules/.bin/mocha \
-		--require should \
-		--reporter min \
-		--watch \
-		--growl \
-		tests/compiler/*.js
-
-coverage: docs/coverage.html
-
-docs/coverage.html: build/cov
-	@L20N_COV=1 $(MAKE) test REPORTER=html-cov > docs/coverage.html
-
-build/cov: lib
+build/cov: lib 
 	@rm -rf build/cov
 	@mkdir build/cov
-	@jscoverage lib build/cov/lib
+	@$(JSCOVERAGE) lib build/cov/lib
 
-docs: lib html
-	./node_modules/docco/bin/docco --output docs/lib lib/*.js
-	./node_modules/docco/bin/docco --output docs/html html/*.js
-	@touch docs
+.PHONY: docs
+docs: lib bindings
+	@mkdir -p dist/docs
+	$(DOCCO) --output dist/docs/lib lib/*.js \
+	                                lib/l20n/*.js \
+		                            lib/l20n/platform/*.js
+	$(DOCCO) --output dist/docs/lib/client lib/client/l20n/platform/*.js
+	$(DOCCO) --output dist/docs/bindings bindings/l20n/*.js
+	@touch dist/docs
 
-gh-pages: docs
+.PHONY: gh-pages
+gh-pages: dist/docs
 	./build/gh-pages.sh
-
-.PHONY: build test test-compiler watch-compiler coverage gh-pages

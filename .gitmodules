@@ -1,3 +1,0 @@
-[submodule "tests/fixtures"]
-	path = tests/fixtures
-	url = git@github.com:l20n/lol-fixtures.git
