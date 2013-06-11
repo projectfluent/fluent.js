@@ -47,6 +47,6 @@
     "jscoverage": "0.3.x"
   },
   "engine": {
-    "node": ">=0.6"
+    "node": ">=0.10"
   }
 }
