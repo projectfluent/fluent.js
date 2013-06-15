@@ -5,8 +5,10 @@ MOCHA=./node_modules/.bin/mocha
 JSCOVERAGE=./node_modules/.bin/jscoverage
 DOCCO=./node_modules/.bin/docco
 
+SAMPLESIZE?=25
+ITERATIONS?=100
 
-BINDINGS=html
+BINDINGS?=html
 
 .PHONY: build
 build:
@@ -25,6 +27,13 @@ watch:
 		tests/lib/*.js \
 		tests/lib/compiler/*.js \
 		tests/integration/*.js
+
+.PHONY: perf
+make perf:
+	@$(NODE) ./tools/perf \
+		--progress \
+		--sample $(SAMPLESIZE) \
+		--iterations $(ITERATIONS)
 
 .PHONY: coverage
 coverage: build/cov

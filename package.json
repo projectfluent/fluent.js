@@ -44,7 +44,10 @@
     "mocha": "1.10.x",
     "should": "1.2.x",
     "docco": "0.6.x",
-    "jscoverage": "0.3.x"
+    "jscoverage": "0.3.x",
+    "commander": "1.x.x",
+    "prettyjson": "0.8.x",
+    "colors": "0.6.x"
   },
   "engine": {
     "node": ">=0.10"
