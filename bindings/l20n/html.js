@@ -97,7 +97,7 @@ define(function (require, exports, module) {
 
   function initializeManifest(manifest) {
     var re = /{{\s*lang\s*}}/;
-    var Intl = require('./platform/intl').Intl;
+    var Intl = require('./intl').Intl;
     /**
      * For now we just take nav.language, but we'd prefer to get
      * a list of locales that the user can read sorted by user's preference
