@@ -40,7 +40,7 @@
     "amdefine": "0.0.x"
   },
   "devDependencies": {
-    "dryice": "0.4.x",
+    "dryice": "git://github.com/joewalker/dryice.git",
     "mocha": "1.10.x",
     "should": "1.2.x",
     "docco": "0.6.x",

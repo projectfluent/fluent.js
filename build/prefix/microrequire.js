@@ -1,6 +1,6 @@
 (function(window, undefined) {
 
-function define(name, deps, payload) {
+function define(name, payload) {
   define.modules[name] = payload;
 };
 

@@ -9,12 +9,16 @@ function removeAmdefine(src) {
   src = src.replace(
     'define(\'amdefine\', [], { /* dummy amdefine */ });\n',
     '');
-  src = src.replace(
-    /\b(define\(.*)('amdefine',?)/gm,
-    '$1');
   return src;
 }
 removeAmdefine.onRead = true;
+
+function removeDependencies(src) {
+  return src.replace(
+    /\b(define\(.*)\[.*\], /gm,
+    '$1');
+}
+removeDependencies.onRead = true;
 
 function buildL20n(bindings) {
   console.log('\nCreating dist/'+bindings+'/l20n.js');
@@ -40,7 +44,8 @@ function buildL20n(bindings) {
     ],
     filter: [
       copy.filter.moduleDefines,
-      removeAmdefine
+      removeAmdefine,
+      removeDependencies
     ],
     dest: 'dist/' + bindings + '/l20n.js'
   });
