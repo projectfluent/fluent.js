@@ -226,10 +226,7 @@ like [RequireJS][].
   require.config({ 
     baseUrl: '../path/to/lib/', // tell RequireJS where to look for L20n
     paths: {
-      'l20n/platform': 'client/l20n/platform' // and where the client-
-                                              // specific code lives relative
-                                              // to `baseUrl` (you shouldn't
-                                              // need to change this)
+      'l20n/platform': 'client/l20n/platform'
     }
   });
   require(['l20n'], function(L20n) {

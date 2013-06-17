@@ -18,3 +18,9 @@
 
        https://github.com/ondras/promise
 
+   The example files in examples/ use an AMD implementation provided by 
+   RequireJS, which is open source software licensed under the MIT License, and 
+   is copyright by The Dojo Foundation.  The original software is availale from
+
+       http://requirejs.org/
+

@@ -64,7 +64,7 @@ like [RequireJS][].
 <script src="require.js"></script>
 <script>
   require.config({ 
-    baseUrl: '../js/lib/',
+    baseUrl: '../path/to/lib/', // tell RequireJS where to look for L20n
     paths: {
       'l20n/platform': 'client/l20n/platform',
       'l20n/html': '../bindings/l20n/html',

@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <!-- L20n setup -->
+    <link rel="localization" href="locales/manifest.json">
+    <script type="application/l10n-data+json">
+      {
+        "build": "dev",
+        "mode": "multi"
+      }
+    </script>
+
+    <!-- AMD setup -->
+    <script src="lib/require.js"></script>
+    <script>
+      require.config({ 
+        baseUrl: '../lib/',
+        paths: {
+          'l20n/platform': 'client/l20n/platform',
+          'l20n/html': '../bindings/l20n/html',
+        }
+      });
+      require(['l20n/html'], function(L20n) {
+        // L20n and document.l10n are now available
+        document.l10n.ready(function() {
+          console.log("Document's context is ready");
+        });
+        document.l10n.addEventListener('error',function(err) {
+          if (err instanceof L20n.Compiler.Error) {
+            // do something
+          }
+        });
+      });
+    </script> 
+  </head>
+
+  <body>
+    <h1 data-l10n-id="hello"></h1>
+    <p data-l10n-id="intro"></p>
+
+    <hr>
+    <p data-l10n-id="langNego"></p>
+
+    <hr>
+    <p data-l10n-id="screenWidth"></p>
+    <input type="button" data-l10n-id="button">
+
+    <hr>
+    <p data-l10n-id="more" data-l10n-overlay>
+      <a href="http://l20n.org"></a>
+    </p>
+    <small data-l10n-id="kthxbye"></small>
+
+    <script>
+      var button = document.querySelector('input');
+      button.addEventListener('click', function insert() {
+        var p = document.createElement('p');
+        p.setAttribute('data-l10n-id', 'currentWidth'); 
+        document.l10n.localizeNode(p); 
+        document.body.insertBefore(p, button.nextSibling);
+      });
+    </script>
+
+  </body>
+</html>
