@@ -9,7 +9,7 @@ define(function (require, exports, module) {
   var ctx = L20n.getContext(document.location.host);
 
   // http://www.w3.org/International/questions/qa-scripts
-  // TODO: dehardcode
+  // XXX: bug 884308
   // each localization should decide which direction it wants to use
   var rtlLanguages = ['ar', 'fa', 'he', 'ps', 'ur'];
 
@@ -32,12 +32,12 @@ define(function (require, exports, module) {
           ctx.addResource(scripts[i].textContent);
         }
       }
-      loadResources();
+      ctx.freeze();
     } else {
       var link = headNode.querySelector('link[rel="localization"]');
       if (link) {
         // XXX add errback
-        loadManifest(link.getAttribute('href')).then(loadResources);
+        loadManifest(link.getAttribute('href')).then(ctx.freeze.bind(ctx));
       } else {
         console.warn("L20n: No resources found. (Put them above l20n.js.)");
       }
@@ -48,11 +48,12 @@ define(function (require, exports, module) {
     } else {
       document.addEventListener('readystatechange', collectNodes);
     }
+    bindPublicAPI();
   }
 
   function collectNodes() {
     var nodes = getNodes(document.body);
-    localizeHandler = ctx.localize(nodes.ids, function(l10n) {
+    localizeHandler = ctx.localize(nodes.ids, function localizeHandler(l10n) {
       if (!nodes) {
         nodes = getNodes(document.body);
       }
@@ -81,14 +82,11 @@ define(function (require, exports, module) {
     document.removeEventListener('readystatechange', collectNodes);
   }
 
-  function loadResources() {
-    ctx.freeze();
+  function bindPublicAPI() {
     ctx.addEventListener('error', console.warn);
     ctx.addEventListener('debug', console.error);
 
-    document.l10n = ctx;
-
-    document.l10n.localizeNode = function localizeNode(node) {
+    ctx.localizeNode = function localizeNode(node) {
       var nodes = getNodes(node);
       var many = localizeHandler.extend(nodes.ids);
       for (var i = 0; i < nodes.nodes.length; i++) {
@@ -96,7 +94,7 @@ define(function (require, exports, module) {
                       many.entities[nodes.ids[i]]);
       }
     };
-    document.l10n.once = function L20nContext_once(callback) {
+    ctx.once = function once(callback) {
       if (documentLocalized) {
         callback();
       } else {
@@ -107,6 +105,7 @@ define(function (require, exports, module) {
         document.addEventListener('DocumentLocalized', callAndRemove);
       }
     }
+    document.l10n = ctx;
   }
 
   function initializeManifest(manifest) {
