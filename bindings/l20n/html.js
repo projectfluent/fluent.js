@@ -8,6 +8,11 @@ define(function (require, exports, module) {
   var localizeHandler;
   var ctx = L20n.getContext(document.location.host);
 
+  // http://www.w3.org/International/questions/qa-scripts
+  // TODO: dehardcode
+  // each localization should decide which direction it wants to use
+  var rtlLanguages = ['ar', 'fa', 'he', 'ps', 'ur'];
+
   var documentLocalized = false;
 
   bootstrap();
@@ -56,6 +61,15 @@ define(function (require, exports, module) {
                       nodes.ids[i],
                       l10n.entities[nodes.ids[i]]);
       }
+
+      // 'locales in l10n.reason mean that localize has been
+      // called because of locale change
+      if ('locales' in l10n.reason && l10n.reason.locales.length) {
+        document.documentElement.lang = l10n.reason.locales[0];
+        document.documentElement.dir =
+          rtlLanguages.indexOf(l10n.reason.locales[0]) === -1 ? 'ltr' : 'rtl';
+      }
+
       nodes = null;
       if (!documentLocalized) {
         documentLocalized = true;
