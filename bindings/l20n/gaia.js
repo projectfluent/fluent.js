@@ -11,7 +11,7 @@ define(function (require, exports, module) {
   // http://www.w3.org/International/questions/qa-scripts
   // XXX: bug 884308
   // each localization should decide which direction it wants to use
-  var rtlLanguages = ['ar', 'fa', 'he', 'ps', 'ur'];
+  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   var documentLocalized = false;
 
@@ -34,11 +34,13 @@ define(function (require, exports, module) {
       }
       ctx.freeze();
     } else {
-      var metaLang = headNode.querySelector('meta[name="languages"]');
+      var metaLoc = headNode.querySelector('meta[name="locales"]');
+      var metaDefLoc = headNode.querySelector('meta[name="default_locale"]');
       var metaRes = headNode.querySelector('meta[name="resources"]');
-      if (metaLang && metaRes) {
+      if (metaLoc && metaDefLoc && metaRes) {
         initializeManifest({
-          'languages': metaLang.getAttribute('content').split(',').map(String.trim),
+          'locales': metaLoc.getAttribute('content').split(',').map(String.trim),
+          'default_locale': metaDefLoc.getAttribute('content'),
           'resources': metaRes.getAttribute('content').split('|').map(String.trim)
         });
         loadResources();
@@ -78,7 +80,7 @@ define(function (require, exports, module) {
       if ('locales' in l10n.reason && l10n.reason.locales.length) {
         document.documentElement.lang = l10n.reason.locales[0];
         document.documentElement.dir =
-          rtlLanguages.indexOf(l10n.reason.locales[0]) === -1 ? 'ltr' : 'rtl';
+          rtlLocales.indexOf(l10n.reason.locales[0]) === -1 ? 'ltr' : 'rtl';
       }
 
       nodes = null;
@@ -119,15 +121,16 @@ define(function (require, exports, module) {
   }
 
   function initializeManifest(manifest) {
-    var re = /{{\s*lang\s*}}/;
+    var re = /{{\s*locale\s*}}/;
     var Intl = require('./intl').Intl;
     /**
      * For now we just take nav.language, but we'd prefer to get
      * a list of locales that the user can read sorted by user's preference
      **/
-    var langList = Intl.prioritizeLocales(manifest.languages,
-                                          [navigator.language]);
-    ctx.registerLocales.apply(ctx, langList);
+    var locList = Intl.prioritizeLocales(manifest.locales,
+                                         [navigator.language],
+                                         manifest.default_locale);
+    ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
         ctx.linkResource(uri.replace.bind(uri, re));
@@ -136,9 +139,10 @@ define(function (require, exports, module) {
       }
     });
     navigator.mozSettings.addObserver('language.current', function(event) {
-      var langList = Intl.prioritizeLocales(manifest.languages,
-                                            [event.settingValue]);
-      ctx.registerLocales.apply(ctx, langList);
+      var locList = Intl.prioritizeLocales(manifest.locales,
+                                           [event.settingValue],
+                                           manifest.default_locale);
+      ctx.registerLocales.apply(ctx, locList);
     });
   }
 

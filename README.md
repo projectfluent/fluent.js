@@ -126,8 +126,8 @@ code of the current locale, which needs to be first registered with
 `registerLocales`.
 
 ```javascript
-ctx.linkResource(function(lang) {
-  return '../locales/' + lang + '/app.lol';
+ctx.linkResource(function(locale) {
+  return '../locales/' + locale + '/app.lol';
 });
 ```
 

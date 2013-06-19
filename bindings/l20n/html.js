@@ -11,7 +11,7 @@ define(function (require, exports, module) {
   // http://www.w3.org/International/questions/qa-scripts
   // XXX: bug 884308
   // each localization should decide which direction it wants to use
-  var rtlLanguages = ['ar', 'fa', 'he', 'ps', 'ur'];
+  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   var documentLocalized = false;
 
@@ -68,7 +68,7 @@ define(function (require, exports, module) {
       if ('locales' in l10n.reason && l10n.reason.locales.length) {
         document.documentElement.lang = l10n.reason.locales[0];
         document.documentElement.dir =
-          rtlLanguages.indexOf(l10n.reason.locales[0]) === -1 ? 'ltr' : 'rtl';
+          rtlLocales.indexOf(l10n.reason.locales[0]) === -1 ? 'ltr' : 'rtl';
       }
 
       nodes = null;
@@ -109,15 +109,16 @@ define(function (require, exports, module) {
   }
 
   function initializeManifest(manifest) {
-    var re = /{{\s*lang\s*}}/;
+    var re = /{{\s*locale\s*}}/;
     var Intl = require('./intl').Intl;
     /**
      * For now we just take nav.language, but we'd prefer to get
      * a list of locales that the user can read sorted by user's preference
      **/
-    var langList = Intl.prioritizeLocales(manifest.languages,
-                                          [navigator.language]);
-    ctx.registerLocales.apply(ctx, langList);
+    var locList = Intl.prioritizeLocales(manifest.locales,
+                                         [navigator.language],
+                                         manifest.default_locale);
+    ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
         ctx.linkResource(uri.replace.bind(uri, re));

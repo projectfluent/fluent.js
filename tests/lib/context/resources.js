@@ -144,8 +144,8 @@ describe('linkResource(String) with registerLocales', function() {
 
 describe('linkResource(Function) without registerLocales', function() {
   var ctx = new Context();
-  ctx.linkResource(function(lang) {
-    return __dirname + '/fixtures/' + lang + '.lol';
+  ctx.linkResource(function(locale) {
+    return __dirname + '/fixtures/' + locale + '.lol';
   });
 
   it('should throw on freeze', function() {
@@ -156,8 +156,8 @@ describe('linkResource(Function) without registerLocales', function() {
 
 describe('linkResource(Function) with registerLocales', function() {
   var ctx = new Context();
-  ctx.linkResource(function(lang) {
-    return __dirname + '/fixtures/' + lang + '.lol';
+  ctx.linkResource(function(locale) {
+    return __dirname + '/fixtures/' + locale + '.lol';
   });
 
   before(function(done) {

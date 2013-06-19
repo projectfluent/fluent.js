@@ -117,13 +117,13 @@ An example of the manifest file:
     
 ```json
 {
-  "languages": [
+  "locales": [
     "en-US",
     "pl"
   ],
   "resources": [
-    "../locales/{{lang}}/browser.l20n",
-    "/shared/{{lang}}/date.l20n"
+    "../locales/{{locale}}/browser.l20n",
+    "/shared/{{locale}}/date.l20n"
   ]
 }
 ```
