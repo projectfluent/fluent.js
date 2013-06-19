@@ -3,20 +3,107 @@ var Compiler = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/compiler').Compiler
   : require('../../../lib/l20n/compiler').Compiler;
 
-var parser = new Parser();
+var parser = new Parser(true);
 var compiler = new Compiler();
 
-describe('Strings:', function(){
+describe('Primitives:', function(){
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
     env = compiler.reset().compile(ast);
   });
 
+  describe('Numbers', function(){
+    before(function() {
+      source = '                                                              \
+        <one "{{ 1 }}">                                                       \
+        <missing "{{ 1.missing }} ">                                          \
+        <builtin "{{ 1.valueOf }} ">                                          \
+        <index[1] {                                                           \
+          key: "value"                                                        \
+        }>                                                                    \
+        <indexMissing[1.missing] {                                            \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    it('returns the value in a complex string', function(){
+      env.one.getString().should.equal('1');
+    });
+    it('throws when trying to access a property of a number', function(){
+      (function() {
+        env.missing.getString();
+      }).should.throw(/Cannot get property of a number: missing/);
+    });
+    it('throws when trying to access a builtin property of a number', function(){
+      (function() {
+        env.builtin.getString();
+      }).should.throw(/Cannot get property of a number: valueOf/);
+    });
+    it('throws when in index', function(){
+      (function() {
+        env.index.getString();
+      }).should.throw(/Index must be a string/);
+    });
+    it('throws when trying to access a property of a number in an index', function(){
+      (function() {
+        env.indexMissing.getString();
+      }).should.throw(/Cannot get property of a number: missing/);
+    });
+  });
+
+  describe('Booleans', function(){
+    before(function() {
+      source = '                                                              \
+        <true "{{ 1 == 1 }} ">                                                \
+        <missing "{{ (1 == 1).missing }} ">                                   \
+        <builtin "{{ (1 == 1).valueOf }} ">                                   \
+        <index[(1 == 1)] {                                                    \
+          key: "value"                                                        \
+        }>                                                                    \
+        <indexMissing[(1 == 1).missing] {                                     \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    it('throws when used in a complex string', function(){
+      (function() {
+        env.true.getString();
+      }).should.throw(/Placeables must be strings or numbers/);
+    });
+    it('throws when trying to access a property of a number', function(){
+      (function() {
+        env.missing.getString();
+      }).should.throw(/Cannot get property of a boolean: missing/);
+    });
+    it('throws when trying to access a builtin property of a number', function(){
+      (function() {
+        env.builtin.getString();
+      }).should.throw(/Cannot get property of a boolean: valueOf/);
+    });
+    it('throws when in index', function(){
+      (function() {
+        env.index.getString();
+      }).should.throw(/Index must be a string/);
+    });
+    it('throws when trying to access a property of a number in an index', function(){
+      (function() {
+        env.indexMissing.getString();
+      }).should.throw(/Cannot get property of a boolean: missing/);
+    });
+  });
+
   describe('Simple string value', function(){
     before(function() {
       source = '                                                              \
         <foo "Foo">                                                           \
+        <fooMissing "{{ foo.missing }} ">                                     \
+        <fooLength "{{ foo.length }} ">                                       \
+        <literalMissing "{{ \\"string\\".missing }} ">                        \
+        <literalLength "{{ \\"string\\".length }} ">                          \
+        <literalIndex["string".missing] {                                     \
+          key: "value"                                                        \
+        }>                                                                    \
       ';
     });
     it('returns the value', function(){
@@ -27,6 +114,31 @@ describe('Strings:', function(){
     it('is detected to be non-complex (simple)', function(){
       env.foo.value.should.be.a('string');
     });
+    it('throws when trying to access a property of a string', function(){
+      (function() {
+        env.fooMissing.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+    it('throws when trying to access a builtin property of a string', function(){
+      (function() {
+        env.fooLength.getString();
+      }).should.throw(/Cannot get property of a string: length/);
+    });
+    it('throws when trying to access a property of a string literal', function(){
+      (function() {
+        env.literalMissing.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+    it('throws when trying to access a builtin property of a string literal', function(){
+      (function() {
+        env.literalLength.getString();
+      }).should.throw(/Cannot get property of a string: length/);
+    });
+    it('throws when trying to access a property of a string literal in an index', function(){
+      (function() {
+        env.literalIndex.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
   });
 
   describe('Complex string value', function(){
@@ -34,7 +146,8 @@ describe('Strings:', function(){
       source = '                                                              \
         <foo "Foo">                                                           \
         <bar "{{ foo }} Bar">                                                 \
-        <baz "{{ quux }}">                                                    \
+        <baz "{{ missing }}">                                                 \
+        <quux "{{ foo.missing }} ">                                           \
       ';
     });
     it('returns the value', function(){
@@ -42,7 +155,7 @@ describe('Strings:', function(){
       value.should.equal("Foo Bar");
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
-    it('is detected to be non-complex (simple)', function(){
+    it('is detected to be maybe-complex', function(){
       env.bar.value.should.be.a('function');
     });
     it('throws when the referenced entity cannot be found', function(){
@@ -50,19 +163,55 @@ describe('Strings:', function(){
         env.baz.getString();
       }).should.throw(/unknown entry/);
     });
+    it('throws when trying to access a property of a string', function(){
+      (function() {
+        env.quux.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+  });
+
+  describe('String value in a hash', function(){
+    before(function() {
+      source = '                                                              \
+        <foo {                                                                \
+          key: "Foo"                                                          \
+        }>                                                                    \
+        <bar "{{ foo.key }}">                                                 \
+        <missing "{{ foo.key.missing }}">                                     \
+        <undef "{{ foo.key[$undef] }}">                                       \
+      ';
+    });
+    it('returns the value', function(){
+      var value = env.bar.getString();
+      value.should.equal("Foo");
+    });
+    it('is not detected to be non-complex (simple)', function(){
+      env.bar.value.should.be.a('function');
+    });
+    it('throws when trying to access a property of a string member', function(){
+      (function() {
+        env.missing.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+    // see Compiler:StringLiteral
+    it('throws when trying to access an "undefined" property of a string member', function(){
+      (function() {
+        env.undef.getString({ undef: undefined });
+      }).should.throw(/Cannot get property of a string: undefined/);
+    });
   });
   
-  describe('Complex string value with errors', function(){
+  describe('Complex string referencing an entity with null value', function(){
     before(function() {
       source = '                                                              \
         <foo                                                                  \
           attr: "Foo"                                                         \
         >                                                                     \
         <bar "{{ foo }} Bar">                                                 \
-        <baz "{{ foo::missing }} Bar">                                        \
+        <baz "{{ foo::attr }} Bar">                                           \
       ';
     });
-    it('returns the value', function(){
+    it('returns the null value', function(){
       var entity = env.foo.get();
       entity.should.have.property('value', null);
     });
@@ -71,11 +220,9 @@ describe('Strings:', function(){
         env.bar.getString();
       }).should.throw(/Placeables must be strings or numbers/);
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully 
-    it('throws when referencing a missing attribute', function(){
-      (function() {
-        env.baz.getString();
-      }).should.throw();
+    it('returns the attribute', function(){
+      var value = env.baz.getString();
+      value.should.equal('Foo Bar');
     });
   });
 

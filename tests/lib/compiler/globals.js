@@ -5,7 +5,7 @@ var Compiler = process.env.L20N_COV
 var RetranslationManager = require('../../../lib/l20n/retranslation').RetranslationManager;
 var Global = require('../../../lib/l20n/platform/globals').Global;
 
-var parser = new Parser();
+var parser = new Parser(true);
 var compiler = new Compiler();
 
 function NestedGlobal() {
@@ -17,7 +17,13 @@ function NestedGlobal() {
 
   function _get() {
     return {
-      property: 'property'
+      property: 'property',
+      number: 1,
+      bool: true,
+      undef: undefined,
+      nullable: null,
+      arr: [3, 4],
+      obj: { key: 'value' }
     }
   }
 }
@@ -27,6 +33,26 @@ NestedGlobal.prototype.constructor = NestedGlobal;
 RetranslationManager.registerGlobal(NestedGlobal);
 
 var retr = new RetranslationManager();
+
+describe('No globals:', function(){
+  var source, ast, env;
+  before(function() {
+    source = '                                                                \
+      <theHourIs "It is {{ @hour }} o\'clock.">                               \
+    ';
+  });
+  beforeEach(function() {
+    ast = parser.parse(source);
+    env = compiler.reset().compile(ast);
+  });
+
+  it('returns the current hour', function() {
+    (function() {
+      env.theHourIs.getString();
+    }).should.throw('No globals set (tried @hour)');
+  });
+});
+
 
 describe('Globals:', function(){
   var source, ast, env;
@@ -72,40 +98,248 @@ describe('Globals:', function(){
     });
   });
 
-  describe('@nested.property (a dict-like global)', function(){
+  describe('@nested (a dict-like global) and simple errors', function(){
     before(function() {
       source = '                                                              \
+        <missing "{{ @missing }}">                                            \
+        <missingTwice "{{ @missing.another }}">                               \
         <nested "{{ @nested }}">                                              \
-        <property "{{ @nested.property }}">                                   \
-        <missing "{{ @nested.missing }}">                                     \
-        <doubleNested "{{ @nested.property.missing }}">                       \
+        <nestedMissing "{{ @nested.missing }}">                               \
+        <nestedMissingTwice "{{ @nested.missing.another }}">                  \
       ';
     });
-    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
+    it('throws when a missing global is referenced', function(){
+      (function() {
+        var value = env.missing.getString();
+      }).should.throw(/unknown global/);
+    });
+    it('throws when a property of a missing global is referenced', function(){
+      (function() {
+        var value = env.missingTwice.getString();
+      }).should.throw(/unknown global/);
+    });
+    // XXX Bug 883270 - Compiler should handle ctxdatas and ctxdata which are not 
     // strings
     it.skip('throws when @nested is referenced', function(){
       (function() {
         var value = env.nested.getString();
-      }).should.throw(Compiler.ValueError);
-    });
-    it('returns the correct value', function(){
-      env.property.getString().should.equal('property');
+      }).should.throw();
     });
     it('throws when a missing property of @nested is referenced', function(){
       (function() {
-        var value = env.missing.getString();
-      }).should.throw(Compiler.ValueError);
-      (function() {
-        var value = env.missing.getString();
-      }).should.throw(/is not defined/);
+        var value = env.nestedMissing.getString();
+      }).should.throw(/not defined/);
     });
-    it('throws when a property of a primitive property of @nested is referenced', function(){
+    it('throws when a property of a missing property of @nested is referenced', function(){
       (function() {
-        var value = env.doubleNested.getString();
-      }).should.throw(Compiler.ValueError);
+        var value = env.nestedMissingTwice.getString();
+      }).should.throw(/not defined/);
+    });
+  });
+
+  describe('@nested (a dict-like global) and strings', function(){
+    before(function() {
+      source = '                                                              \
+        <property "{{ @nested.property }}">                                   \
+        <propertyMissing "{{ @nested.property.missing }}">                    \
+      ';
+    });
+    it('returns a string value', function(){
+      env.property.getString().should.equal('property');
+    });
+    it('throws when a property of a string property of @nested is referenced', function(){
       (function() {
-        var value = env.doubleNested.getString();
-      }).should.throw(/is not defined/);
+        var value = env.propertyMissing.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+  });
+
+  describe('@nested (a dict-like global) and numbers', function(){
+    before(function() {
+      source = '                                                              \
+        <number "{{ @nested.number }}">                                       \
+        <numberMissing "{{ @nested.number.missing }}">                        \
+        <numberValueOf "{{ @nested.number.valueOf }}">                        \
+        <numberIndex[@nested.number] {                                        \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    it('returns a number value', function(){
+      env.number.getString().should.equal('1');
+    });
+    it('throws when a property of a number property of @nested is referenced', function(){
+      (function() {
+        var value = env.numberMissing.getString();
+      }).should.throw(/Cannot get property of a number: missing/);
+    });
+    it('throws when a built-in property of a number property of @nested is referenced', function(){
+      (function() {
+        var value = env.numberMissing.getString();
+      }).should.throw(/Cannot get property of a number: missing/);
+    });
+    it('throws when a number property of @nested is used in an index', function(){
+      (function() {
+        var value = env.numberIndex.getString();
+      }).should.throw(/Index must be a string/);
+    });
+  });
+
+  describe('@nested (a dict-like global) and bools', function(){
+    before(function() {
+      source = '                                                              \
+        <bool "{{ @nested.bool ? 1 : 0 }}">                                   \
+        <boolMissing "{{ @nested.bool.missing }}">                            \
+        <boolIndex[@nested.bool] {                                            \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    it('returns a bool value', function(){
+      env.bool.getString().should.equal('1');
+    });
+    it('throws when a property of a bool property of @nested is referenced', function(){
+      (function() {
+        var value = env.boolMissing.getString();
+      }).should.throw(/Cannot get property of a boolean: missing/);
+    });
+    it('throws when a bool property of @nested is used in an index', function(){
+      (function() {
+        var value = env.boolIndex.getString();
+      }).should.throw(/Index must be a string/);
+    });
+  });
+
+  describe('@nested (a dict-like global) and undefined', function(){
+    before(function() {
+      source = '                                                              \
+        <undef "{{ @nested.undef }}">                                         \
+        <undefMissing "{{ @nested.undef.missing }}">                          \
+        <undefIndex[@nested.undef] {                                          \
+          key: "value",                                                       \
+          undefined: "undef"                                                  \
+        }>                                                                    \
+      ';
+    });
+    it('throws', function(){
+      (function() {
+        var value = env.undef.getString();
+      }).should.throw(/Placeables must be strings or numbers/);
+    });
+    it('throws when a property of an undefined property of @nested is referenced', function(){
+      (function() {
+        var value = env.undefMissing.getString();
+      }).should.throw(/Cannot get property of a undefined: missing/);
+    });
+    it('throws when an undefined property of @nested is used in an index', function(){
+      (function() {
+        var value = env.undefIndex.getString();
+      }).should.throw(/Hash key lookup failed/);
+    });
+  });
+
+  describe('@nested (a dict-like global) and null', function(){
+    before(function() {
+      source = '                                                              \
+        <nullable "{{ @nested.nullable }}">                                   \
+        <nullableMissing "{{ @nested.nullable.missing }}">                    \
+        <nullableIndex[@nested.nullable] {                                    \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    it('throws', function(){
+      (function() {
+        var value = env.nullable.getString();
+      }).should.throw(/Placeables must be strings or numbers/);
+    });
+    it('throws when a property of a null property of @nested is referenced', function(){
+      (function() {
+        var value = env.nullableMissing.getString();
+      }).should.throw(/Cannot get property of a null: missing/);
+    });
+    it('throws when a null property of @nested is used in an index', function(){
+      (function() {
+        var value = env.nullableIndex.getString();
+      }).should.throw(/Index must be a string/);
+    });
+  });
+
+  describe('@nested (a dict-like global) and arrays', function(){
+    before(function() {
+      source = '                                                              \
+        <arr "{{ @nested.arr }}">                                             \
+        <arrMissing "{{ @nested.arr.missing }}">                              \
+        <arrLength "{{ @nested.arr.length }}">                                \
+        <arrIndex[@nested.arr] {                                              \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
+    // strings
+    it.skip('throws', function(){
+      (function() {
+        var value = env.arr.getString();
+      }).should.throw();
+    });
+    it('throws when a property of an array-typed property of @nested is referenced', function(){
+      (function() {
+        var value = env.arrMissing.getString();
+      }).should.throw(/Cannot get property of an array: missing/);
+    });
+    it('throws when a built-in property of an array-typed property of @nested is referenced', function(){
+      (function() {
+        var value = env.arrLength.getString();
+      }).should.throw(/Cannot get property of an array: length/);
+    });
+    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
+    // strings
+    it.skip('throws when an array-typed property of @nested is used in an index', function(){
+      (function() {
+        var value = env.arrIndex.getString();
+      }).should.throw();
+    });
+  });
+
+  describe('@nested (a dict-like global) and objects', function(){
+    before(function() {
+      source = '                                                              \
+        <obj "{{ @nested.obj }}">                                             \
+        <objKey "{{ @nested.obj.key }}">                                      \
+        <objMissing "{{ @nested.obj.missing }}">                              \
+        <objValueOf "{{ @nested.obj.valueOf }}">                              \
+        <objIndex[@nested.obj] {                                              \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
+    // strings
+    it.skip('throws if accessed without a key', function(){
+      (function() {
+        var value = env.obj.getString();
+      }).should.throw();
+    });
+    it('returns a string value of the requested key', function(){
+      env.objKey.getString().should.equal('value');
+    });
+    it('throws when a property of an object-typed property of @nested is referenced', function(){
+      (function() {
+        var value = env.objMissing.getString();
+      }).should.throw(/missing is not defined on the object/);
+    });
+    it('throws when a built-in property of an object-typed property of @nested is referenced', function(){
+      (function() {
+        var value = env.objValueOf.getString();
+      }).should.throw(/valueOf is not defined on the object/);
+    });
+    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
+    // strings
+    it.skip('throws when an object-typed property of @nested is used in an index', function(){
+      (function() {
+        var value = env.objIndex.getString();
+      }).should.throw();
     });
   });
 });

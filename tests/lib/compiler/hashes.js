@@ -24,7 +24,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('throws when called directly', function(){
@@ -53,12 +53,12 @@ describe('Hash', function(){
     it('throws when requested property does not exist', function(){
       (function() {
         env.missing.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw(/Hash key lookup failed/);
     });
-    it('throws when requested property does not exist', function(){
+    it('throws when accessing a property of missing property', function(){
       (function() {
         env.missingTwice.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw(/Hash key lookup failed/);
     });
   });
 
@@ -73,7 +73,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('returns the indexed property when called directly', function(){
@@ -103,9 +103,10 @@ describe('Hash', function(){
       var val = env.missing.getString();
       val.should.equal('Aurora');
     });
-    it('returns the indexed property when the requested one does not exist', function(){
-      var val = env.missingTwice.getString();
-      val.should.equal('Aurora');
+    it('throws when trying to access a property of a string-typed member', function(){
+      (function() {
+        env.missingTwice.getString();
+      }).should.throw(/Cannot get property of a string: another/);
     });
   });
 
@@ -120,7 +121,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('returns the default property when called directly', function(){
@@ -143,9 +144,10 @@ describe('Hash', function(){
       var val = env.missing.getString();
       val.should.equal('Aurora');
     });
-    it('returns the default property when the requested one does not exist', function(){
-      var val = env.missingTwice.getString();
-      val.should.equal('Aurora');
+    it('throws when trying to access a property of a string-typed member', function(){
+      (function() {
+        env.missingTwice.getString();
+      }).should.throw(/Cannot get property of a string: another/);
     });
   });
 
@@ -160,7 +162,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('returns the indexed property when called directly', function(){
@@ -183,9 +185,10 @@ describe('Hash', function(){
       var val = env.missing.getString();
       val.should.equal('Aurora');
     });
-    it('returns the indexed property when the requested one does not exist', function(){
-      var val = env.missingTwice.getString();
-      val.should.equal('Aurora');
+    it('throws when trying to access a property of a string-typed member', function(){
+      (function() {
+        env.missingTwice.getString();
+      }).should.throw(/Cannot get property of a string: another/);
     });
   });
 
@@ -200,7 +203,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('returns the indexed property when called directly', function(){
@@ -223,9 +226,10 @@ describe('Hash', function(){
       var val = env.missing.getString();
       val.should.equal('Aurora');
     });
-    it('returns the indexed property when the requested one does not exist', function(){
-      var val = env.missingTwice.getString();
-      val.should.equal('Aurora');
+    it('throws when trying to access a property of a string-typed member', function(){
+      (function() {
+        env.missingTwice.getString();
+      }).should.throw(/Cannot get property of a string: another/);
     });
   });
 
@@ -240,7 +244,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('throws when called directly', function(){
@@ -269,12 +273,12 @@ describe('Hash', function(){
     it('throws when requested property does not exist', function(){
       (function() {
         env.missing.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw('Hash key lookup failed (tried "missing", "foo").');
     });
-    it('throws when requested property does not exist', function(){
+    it('throws when trying to access a property of a missing member', function(){
       (function() {
         env.missingTwice.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw('Hash key lookup failed (tried "missing", "foo").');
     });
   });
 
@@ -289,7 +293,7 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('returns the default property when called directly', function(){
@@ -312,9 +316,10 @@ describe('Hash', function(){
       var val = env.missing.getString();
       val.should.equal('Aurora');
     });
-    it('returns the default property when the requested one does not exist', function(){
-      var val = env.missingTwice.getString();
-      val.should.equal('Aurora');
+    it('throws when trying to access a property of a string-typed member', function(){
+      (function() {
+        env.missingTwice.getString();
+      }).should.throw(/Cannot get property of a string: another/);
     });
   });
 
@@ -329,13 +334,16 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('throws when called directly', function(){
       (function() {
         env.brandName.getString();
       }).should.throw(Compiler.IndexError);
+      (function() {
+        env.brandName.getString();
+      }).should.throw(/Reference to an unknown entry/);
     });
     it('throws when called from another entity', function(){
       (function() {
@@ -358,12 +366,12 @@ describe('Hash', function(){
     it('throws when requested property does not exist', function(){
       (function() {
         env.missing.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw(/Reference to an unknown entry/);
     });
-    it('throws when requested property does not exist', function(){
+    it('throws when trying to access a property of a missing property', function(){
       (function() {
         env.missingTwice.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw(/Reference to an unknown entry/);
     });
   });
 
@@ -378,13 +386,16 @@ describe('Hash', function(){
         <property "{{ brandName.masculine }}">                                \
         <computed "{{ brandName[\\"masculine\\"] }}">                         \
         <missing "{{ brandName.missing }}">                                   \
-        <missingTwice "{{ brandName.missing.missing }}">                      \
+        <missingTwice "{{ brandName.missing.another }}">                      \
       ';
     });
     it('throws when called directly', function(){
       (function() {
         env.brandName.getString();
       }).should.throw(Compiler.IndexError);
+      (function() {
+        env.brandName.getString();
+      }).should.throw(/Reference to an unknown entry/);
     });
     it('throws when called from another entity', function(){
       (function() {
@@ -407,12 +418,12 @@ describe('Hash', function(){
     it('throws when requested property does not exist', function(){
       (function() {
         env.missing.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw(/Reference to an unknown entry/);
     });
-    it('throws when requested property does not exist', function(){
+    it('throws when trying to access a property of a missing property', function(){
       (function() {
         env.missingTwice.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw(/Reference to an unknown entry/);
     });
   });
 
