@@ -52,9 +52,7 @@ describe('Strings:', function(){
     });
   });
   
-  // XXX Bug 884544 - Compiler: isNotComplex doesn't work for entities with 
-  // null values 
-  describe.skip('Complex string value with errors', function(){
+  describe('Complex string value with errors', function(){
     before(function() {
       source = '                                                              \
         <foo                                                                  \

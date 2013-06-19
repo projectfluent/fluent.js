@@ -77,9 +77,7 @@ describe('Attributes', function(){
     });
   });
 
-  // XXX Bug 884544 - Compiler: isNotComplex doesn't work for entities with 
-  // null values
-  describe.skip('with string values', function(){
+  describe('with string values', function(){
     before(function() {
       source = '                                                              \
         <foo                                                                  \
