@@ -528,6 +528,7 @@ describe('Example', function() {
       '<id[x.y::["z"]] "foo">',
       '<id[x::y::["z"]] "foo">',
       '<id[x::[1 "foo">',
+      '<id[x()::attr1] "foo">',
     ];
     for (var i in strings) {
       var ast = parser.parse(strings[i]);
