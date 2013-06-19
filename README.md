@@ -63,7 +63,7 @@ ctx.localize(['hello', 'new'], function(l10n) {
 });
 ```
 
-### ctx.registerLocales(String[, String…])
+### ctx.registerLocales(...locales: String?)
 
 Register the locales (language codes) passed as the arguments.
 
@@ -86,14 +86,14 @@ If, on the other hand, `registerLocales` is called with an empty argument list,
 with a falsy argument or is not called at all, the Context instance will run in 
 a single-locale mode.  In this mode there is no language negotiation nor 
 language fallback.  All resources are added to a special locale internally 
-called `\_\_none\_\_` and all retrieved entities come from it as well (their 
+called `__none__` and all retrieved entities come from it as well (their 
 `locale` property is `undefined`).
 
 `registerLocales` can be called after `freeze` to change the current language 
 fallback chain, for instance if requested by the user.
 
 
-### ctx.addResource(String)
+### ctx.addResource(text: String)
 
 Add a string as the content of a resource to the Context instance. 
 
@@ -101,11 +101,11 @@ Add a string as the content of a resource to the Context instance.
 ctx.addResource('<hello "Hello, world!">');
 ```
 
-The resource is added to all registered locales, or to the `\_\_none\_\_` 
+The resource is added to all registered locales, or to the `__none__` 
 locale in the single-locale mode.
 
 
-### ctx.linkResource(String)
+### ctx.linkResource(uri: String)
 
 Add a resource identified by a URL to the Context instance. 
 
@@ -113,11 +113,11 @@ Add a resource identified by a URL to the Context instance.
 ctx.linkResource('../locale/app.lol');
 ```
 
-The resource is added to all registered locales, or to the `\_\_none\_\_` 
+The resource is added to all registered locales, or to the `__none__` 
 locale in the single-locale mode.
 
 
-### ctx.linkResource(Function)
+### ctx.linkResource(template: Function)
 
 Add a resource identified by a URL to the Context instance.  The URL is 
 constructed dynamically when you call `freeze`.  The function passed to 
@@ -146,13 +146,102 @@ all resources have been fetched, parsed and compiled, the Context instance will
 emit a `ready` event.
 
 
-### ctx.addEventListener(String, Function)
-### ctx.removeEventListener(String, Function)
-### ctx.get(String, Object)
-### ctx.getEntity(String, Object)
-### ctx.localize(Array&lt;String&gt;, Function)
-### ctx.ready(Function)
+### ctx.addEventListener(event: String, callback: Function)
 
+Register an event handler on the Context instance.
+
+Currently available event types:
+
+ - `ready` - fired when all resources are available and the Context instance is 
+   ready to be used.  This event is also fired after each change to locale 
+   order (retranslation).
+ - `error` - fired when the Context instance encounters an error like:
+   - entity could not be retrieved,
+   - entity could not be found in the current locale,
+   - entity value could not be evaluated to a string.
+
+   The error object is passed as the first argument to `callback`.
+
+ - `debug` - fired when an unknown JS error is thrown in the async code.  The 
+   error object is passed as the first argument to `callback`.
+
+
+### ctx.removeEventListener(event: String, callback: Function)
+
+Remove an event listener previously registered with `addEventListener`.
+
+
+### ctx.get(id: String, ctxdata: Object?)
+
+Retrieve a string value of an entity called `id`.
+
+If passed, `ctxdata` is a simple hash object with a list of variables that
+extend the context data available for the evaluation of this entity.
+
+Returns a string.
+
+
+### ctx.getEntity(id: String, ctxdata: Object?)
+
+Retrieve an object with data evaluated from an entity called `id`.
+
+If passed, `ctxdata` is a simple hash object with a list of variables that
+extend the context data available for the evaluation of this entity.
+
+Returns an object with the following properties:
+
+ - `value`: the string value of the entity,
+ - `attributes`: an object of evaluated attributes of the entity,
+ - `globals`: a list of global variables used while evaluating the entity,
+ - `locale`: locale code of the language the entity is in;  it can be different 
+   than the first locale in the current fallback chain if the entity couldn't 
+   be evaluated and a fallback translation had to be used.
+
+
+### ctx.localize(ids: Array&lt;String&gt;, callback: Function)
+
+Registers a callback which fires when all entities listed in `ids` have been 
+retrieved.
+
+```javascript
+ctx.localize(['hello', 'about'], function(l10n) {
+  var node = document.querySelector('[data-l10n-id=hello]');
+  node.textConent = l10n.entities.hello.value;
+  node.classList.remove('hidden');
+});
+```
+
+The callback becomes bound to the entities on the `ids` list.  It will be 
+called when the entities become available (asynchronously) or whenever the 
+translation of any of the entities changes.
+
+`localize` should be the preferred way of localizing the UI.
+
+The callback function is passed an `l10n` object with the following properties:
+
+  - `entities`: an object whose keys are the identifiers and value are the 
+    entity objects as returned by `getEntity`,
+  - `reason`: an object with the reason why `callback` was invoked.
+
+The `reason` object can be:
+ 
+  - `{ locales: Array<String> }` if `callback` was invoked because of a change 
+    of the current locale (see `registerLocales`),
+  - `{ global: String }` if `callback` was invoked because the value of one of 
+    the globals used in the translation of `ids` has changed.
+
+
+### ctx.ready(callback: Function)
+
+Fires the function passed as argument as soon as the context is available.
+
+If the context is available when the function is called, it fires the callback
+instantly. 
+Otherwise it sets the event listener and fire as soon as the context is ready.
+
+After that, each time locale list is modified (retranslation case) the callback 
+will be executed.
+ 
 
 The HTML Bindings
 -----------------
@@ -163,7 +252,7 @@ L20n.  See [bindings/README][].
 [bindings/README]: https://github.com/l20n/l20n.js/blob/master/bindings/README.md
 
 
-Install L20n in Node.js (using NPM)
+Install L20n in Node.js (using npm)
 -----------------------------------
 
     npm install l20n
