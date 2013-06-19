@@ -43,7 +43,7 @@ define(function (require, exports, module) {
           'default_locale': metaDefLoc.getAttribute('content'),
           'resources': metaRes.getAttribute('content').split('|').map(String.trim)
         });
-        loadResources();
+        ctx.freeze();
       } else {
         var link = headNode.querySelector('link[rel="localization"]');
         if (link) {
