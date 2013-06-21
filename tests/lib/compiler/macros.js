@@ -75,13 +75,20 @@ describe('Macros', function(){
       source = '                                                              \
         <foo "Foo">                                                           \
         <bar {                                                                \
-         *baz: "Baz"                                                          \
+         *bar: "Bar",                                                         \
+          baz: "Baz"                                                          \
         }>                                                                    \
                                                                               \
         <string() { "foo" }>                                                  \
         <number() { 1 }>                                                      \
         <stringEntity() { foo }>                                              \
         <hashEntity() { bar }>                                                \
+                                                                              \
+        <stringMissingProp "{{ stringEntity().missing }}">                    \
+        <stringMissingAttr "{{ (stringEntity())::missing }}">                 \
+        <hashBazProp "{{ hashEntity().baz }}">                                \
+        <hashMissingProp "{{ hashEntity().missing }}">                        \
+        <hashMissingAttr "{{ (stringEntity())::missing }}">                   \
       ';
     });
     it('returns strings', function() {
@@ -92,19 +99,45 @@ describe('Macros', function(){
       var value = env.number._call();
       value[1].should.equal(1);
     });
-    // XXX Bug 816887 - Macro should always return a String or a Literal
-    it.skip('returns entities which are strings', function() {
+    it('returns entities which are strings', function() {
       var value = env.stringEntity._call();
       value[1].should.equal('Foo');
     });
-    // XXX Bug 816887 - Macro should always return a String or a Literal
-    it.skip('returns resolved entities which are hashes', function() {
+    it('returns resolved entities which are hashes', function() {
       var value = env.hashEntity._call();
-      value[1].should.equal('Baz');
+      value[1].should.equal('Bar');
+    });
+    it('throws when trying to access a property of macro\'s return value', function() {
+      (function() {
+        env.stringMissingProp.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+    // XXX Bug 884734 - Compiler: Missing attributes should fails gracefully
+    it.skip('throws when trying to access an attribute of macro\'s return value', function() {
+      (function() {
+        env.stringMissingAttr.getString();
+      }).should.throw();
+    });
+
+    it('resolves the hash and throws when trying to access a property of macro\'s return value', function() {
+      (function() {
+        env.hashBazProp.getString();
+      }).should.throw(/Cannot get property of a string: baz/);
+    });
+    it('resolves the hash and throws when trying to access a missing property of macro\'s return value', function() {
+      (function() {
+        env.hashMissingProp.getString();
+      }).should.throw(/Cannot get property of a string: missing/);
+    });
+    // XXX Bug 884734 - Compiler: Missing attributes should fails gracefully
+    it.skip('resolves the hash and throws when trying to access an attribute of macro\'s return value', function() {
+      (function() {
+        env.hashMissingAttr.getString();
+      }).should.throw();
     });
   });
 
-  describe('work with ctxdata', function(){
+  describe('and ctxdata:', function(){
     before(function() {
       ctxdata = {
         n: 3
@@ -112,6 +145,15 @@ describe('Macros', function(){
       source = '                                                              \
         <identity($n) { $n }>                                                 \
         <getFromContext() { $n }>                                             \
+                                                                              \
+        <foo "{{ $n }}">                                                      \
+        <bar {                                                                \
+         *key: "{{ $n }}",                                                    \
+        }>                                                                    \
+                                                                              \
+        <getFoo($n) { foo }>                                                  \
+        <getBar($n) { bar }>                                                  \
+        <getBarKey($n) { bar.key }>                                           \
       ';
     });
     it('does not look at ctxdata if the arg is passed', function() {
@@ -124,9 +166,21 @@ describe('Macros', function(){
       var value = env.identity._call(ctxdata);
       value[1].should.equal(3);
     });
-    it('takes ctxdata is no args are defined', function() {
+    it('takes ctxdata if no args are defined', function() {
       var value = env.getFromContext._call(ctxdata, [[null, 'foo']]);
       value[1].should.equal(3);
+    });
+    it('does not leak args into string entities', function() {
+      var value = env.getFoo._call(ctxdata, [[null, 'foo']]);
+      value[1].should.equal('3');
+    });
+    it('does not leak args into hash entities', function() {
+      var value = env.getBar._call(ctxdata, [[null, 'foo']]);
+      value[1].should.equal('3');
+    });
+    it('does not leak args into members of hash entities', function() {
+      var value = env.getBarKey._call(ctxdata, [[null, 'foo']]);
+      value[1].should.equal('3');
     });
   });
 
