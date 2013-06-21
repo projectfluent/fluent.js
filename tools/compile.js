@@ -13,6 +13,7 @@ program
   .option('-d, --data <file>', 'Context data to use (.json)')
   .option('-a, --ast', 'Treat input as AST, not source code')
   .option('-n, --no-color', 'Print without color')
+  .option('-l, --with-local', 'Print local entities and attributes')
   .parse(process.argv);
 
 var parser = new Parser();
@@ -25,8 +26,13 @@ if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
+var ID = 'cyan';
+var VALUE = undefined;
+var ERROR = 'red';
+var FALLBACK = 'yellow';
+
 function color(str, col) {
-  if (program.color) {
+  if (program.color && col) {
     return str[col];
   }
   return str;
@@ -36,7 +42,7 @@ function logError(err) {
   var error = {};
   var message  = ': ' + err.message.replace('\n', '');
   var name = err.name + (err.entry ? ' in ' + err.entry : '');
-  console.warn(color(name, 'red') + message);
+  console.warn(color(name + message, ERROR));
 }
 
 function singleline(str) {
@@ -47,21 +53,36 @@ function singleline(str) {
 
 function getString(entity) {
   try {
-    return singleline(entity.getString(data));
+    return color(singleline(entity.getString(data)), VALUE);
   } catch (e) {
     if (!(e instanceof Compiler.Error)) {
       logError(e);
-      return color('(' + e.name + ')', 'grey');
+      return color('(' + e.name + ')', FALLBACK);
     }
     if (e.source) {
-      return color(singleline(e.source), 'grey');
+      return color(singleline(e.source), FALLBACK);
     } else {
-      return color(entity.id, 'grey');
+      return color(entity.id, FALLBACK);
     }
   }
 }
 
-function print(err, code) {
+function print(entity) {
+  if (entity.local && !program.withLocal) {
+    return;
+  }
+  // print the string value of the entity
+  console.log(color(entity.id, ID), getString(entity));
+  // print the string values of the attributes
+  for (var attr in entity.attributes) {
+    if (entity.attributes[attr].local && !program.withLocal) {
+      continue;
+    }
+    console.log(color(' ::' + attr, ID), getString(entity.attributes[attr]));
+  }
+}
+
+function compileAndPrint(err, code) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
@@ -72,18 +93,17 @@ function print(err, code) {
   }
 
   var env = compiler.compile(ast);
-  var printable = {};
   for (var id in env) {
     if (env[id].expression) {
       continue;
     }
-    console.log(color(id, 'cyan'), getString(env[id]));
+    print(env[id]);
   }
 }
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  fs.readFile(program.args[0], compileAndPrint);
 } else {
   process.stdin.resume();
-  process.stdin.on('data', print.bind(null, null));
+  process.stdin.on('data', compileAndPrint.bind(null, null));
 }

@@ -1,3 +1,5 @@
 node_modules
 dist
 build/cov
+tools/*.json
+tools/*.lol
