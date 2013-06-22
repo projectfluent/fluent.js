@@ -13,6 +13,92 @@ describe('Macros', function(){
     env = compiler.reset().compile(ast);
   });
 
+  describe('calling', function(){
+    before(function() {
+      source = '                                                              \
+        <foo "Foo">                                                           \
+        <bar {                                                                \
+          baz: "Baz"                                                          \
+        }                                                                     \
+         attr: "Attr"                                                         \
+        >                                                                     \
+        <identity($n) { $n }>                                                 \
+                                                                              \
+        <callFoo "{{ foo() }}">                                               \
+        <callBar "{{ bar() }}">                                               \
+        <callBaz "{{ bar.baz() }}">                                           \
+        <callAttr "{{ bar::attr() }}">                                        \
+        <callMissingAttr "{{ bar::missing() }}">                              \
+                                                                              \
+        <returnMacro() { identity }>                                          \
+        <returnMacroProp() { identity.property }>                             \
+        <returnMacroAttr() { identity::attribute }>                           \
+                                                                              \
+        <placeMacro "{{ identity }}">                                         \
+        <placeMacroProp "{{ identity.property }}">                            \
+        <placeMacroAttr "{{ identity::attribute }}">                          \
+      ';
+    });
+    it('throws if an entity is called', function() {
+      (function() {
+        env.callFoo.getString();
+      }).should.throw(/non-callable/);
+    });
+    it('throws if a hash entity is called', function() {
+      (function() {
+        env.callBar.getString();
+      }).should.throw(/non-callable/);
+    });
+    it('throws if a property of an entity is called', function() {
+      (function() {
+        env.callBaz.getString();
+      }).should.throw(/non-callable/);
+    });
+    it('throws if an attribute of an entity is called', function() {
+      (function() {
+        env.callAttr.getString();
+      }).should.throw(/non-callable/);
+    });
+    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
+    it.skip('throws if a missing attribute of an entity is called', function() {
+      (function() {
+        env.callMissingAttr.getString();
+      }).should.throw();
+    });
+    it('throws when trying to resolve (not call) a macro', function() {
+      (function() {
+        env.returnMacro._call();
+      }).should.throw(/Uncalled macro: identity/);
+    });
+    it('throws when trying to access a property of a macro', function() {
+      (function() {
+        env.returnMacroProp._call();
+      }).should.throw(/Cannot get property of a macro: property/);
+    });
+    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
+    it.skip('throws when trying to access an attribute of a macro', function() {
+      (function() {
+        env.returnMacroAttr._call();
+      }).should.throw();
+    });
+    it('throws when resolving (not calling) a macro in a complex string', function() {
+      (function() {
+        env.placeMacro.getString();
+      }).should.throw(/uncalled/i);
+    });
+    it('throws when accessing a property of a macro in a complex string', function() {
+      (function() {
+        env.placeMacroProp.getString();
+      }).should.throw(/Cannot get property of a macro: property/);
+    });
+    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
+    it.skip('throws when accessing an attribute of a macro in a complex string', function() {
+      (function() {
+        env.placeMacroAttr.getString();
+      }).should.throw();
+    });
+  });
+
   describe('arguments', function(){
     before(function() {
       source = '                                                              \
@@ -42,7 +128,7 @@ describe('Macros', function(){
     it.skip('throws if no required args are provided', function() {
       (function() {
         env.noArg.getString();
-      }).should.throw(Compiler.ValueError);
+      }).should.throw();
     });
     it('strings are passed correctly', function() {
       var value = env.stringArg.getString();
