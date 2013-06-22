@@ -1,4 +1,8 @@
 <brandShortName "Firefox OS">
+<plural($n) {
+  $n == 0 ? "zero" :
+    $n == 1 ? "one" :
+      "many" }>
 
 <settings "Settings">
 <advancedSettings "Advanced settings">
@@ -183,6 +187,10 @@
 <bluetooth_visible_to_all  " Visible to all">
 <bt_status_nopaired  " No devices paired">
 <bt_status_turnoff   " Turned off">
+<bt_status_paired[plural($n)] {
+  zero: "{{name}}",
+ *many: "{{name}}, +{{n}} more"
+}>
 <device_status_tap_connect  " Tap to connect">
 <device_status_pairing      " Pairing with device…">
 <device_status_waiting      " Waiting for other device…">
@@ -413,11 +421,32 @@
 <pukTitle "Enter PUK code">
 <newpinTitle "New PIN">
 <pinErrorMsg "The PIN was incorrect.">
+<inputCodeRetriesLeft[plural($n)] {
+  one: "last try",
+  many: "{{$n} tries left."
+}>
+<pinAttemptMsg3[plural($n)] {
+  one: "You have one try left to enter the correct code before locking the SIM card.",
+  many: "You have {{$n}} tries left to enter the correct code before locking the SIM card."
+}>
 <pinLastChanceMsg "This is your last chance to enter the correct PIN. Otherwise, you must enter the PUK code to use this SIM card.">
 <simCardLockedMsg "The SIM card is locked.">
 <enterPukMsg "You must enter the Personal Unlocking Key (PUK) code for the SIM card. Refer to your SIM card documentation or contact your carrier for more information.">
 <pukErrorMsg "The PUK code is incorrect.">
-<pukAttemptMsg3 "{[ plural(n) ]}">
+
+<pukAttemptMsg3[plural($n)] {
+  one: """
+    You have one try left to enter the correct code before this SIM card will 
+    be permanently unusable. Refer to your SIM card documentation or contact 
+    your carrier for more information.
+  """,
+  many: """
+    You have {{$n}} tries left to enter the correct code before this SIM card 
+    will be permanently unusable. Refer to your SIM card documentation or 
+    contact your carrier for more information.
+  """
+}>
+
 <pukLastChanceMsg "Last chance to enter the correct PUK code. Your SIM card will be permanently unusable if you enter in the wrong PUK code. Refer to your SIM card documentation or contact your carrier for more information.">
 <newSimPinMsg "Create PIN (must contain 4 to 8 digits)">
 <confirmNewSimPinMsg "Confirm new PIN">
@@ -453,6 +482,7 @@
 <byteUnit_GB  " GB">
 <byteUnit_TB  " TB">
 <storageSize  " {{$size}} {{$unit}}">
+<availableSize "{{$size}} {{$unit}} available">
 <apps_total_space "Total space">
 <apps_used_space "Used">
 <apps_free_space "Left">
