@@ -118,12 +118,10 @@ describe('Globals:', function(){
         var value = env.missingTwice.getString();
       }).should.throw(/unknown global/);
     });
-    // XXX Bug 883270 - Compiler should handle ctxdatas and ctxdata which are not 
-    // strings
-    it.skip('throws when @nested is referenced', function(){
+    it('throws when @nested is referenced', function(){
       (function() {
         var value = env.nested.getString();
-      }).should.throw();
+      }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when a missing property of @nested is referenced', function(){
       (function() {
@@ -276,12 +274,10 @@ describe('Globals:', function(){
         }>                                                                    \
       ';
     });
-    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
-    // strings
-    it.skip('throws', function(){
+    it('throws', function(){
       (function() {
         var value = env.arr.getString();
-      }).should.throw();
+      }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when a property of an array-typed property of @nested is referenced', function(){
       (function() {
@@ -293,12 +289,10 @@ describe('Globals:', function(){
         var value = env.arrLength.getString();
       }).should.throw(/Cannot get property of an array: length/);
     });
-    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
-    // strings
-    it.skip('throws when an array-typed property of @nested is used in an index', function(){
+    it('throws when an array-typed property of @nested is used in an index', function(){
       (function() {
         var value = env.arrIndex.getString();
-      }).should.throw();
+      }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });
 
@@ -314,12 +308,10 @@ describe('Globals:', function(){
         }>                                                                    \
       ';
     });
-    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
-    // strings
-    it.skip('throws if accessed without a key', function(){
+    it('throws if accessed without a key', function(){
       (function() {
         var value = env.obj.getString();
-      }).should.throw();
+      }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('returns a string value of the requested key', function(){
       env.objKey.getString().should.equal('value');
@@ -334,12 +326,10 @@ describe('Globals:', function(){
         var value = env.objValueOf.getString();
       }).should.throw(/valueOf is not defined on the object/);
     });
-    // XXX Bug 883270 - Compiler should handle globals and ctxdata which are not 
-    // strings
-    it.skip('throws when an object-typed property of @nested is used in an index', function(){
+    it('throws when an object-typed property of @nested is used in an index', function(){
       (function() {
         var value = env.objIndex.getString();
-      }).should.throw();
+      }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });
 });
