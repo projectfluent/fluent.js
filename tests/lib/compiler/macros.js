@@ -67,18 +67,18 @@ describe('Macros', function(){
     });
     it('throws when trying to resolve (not call) a macro', function() {
       (function() {
-        env.returnMacro._call();
+        env.returnMacro._call([]);
       }).should.throw(/Uncalled macro: identity/);
     });
     it('throws when trying to access a property of a macro', function() {
       (function() {
-        env.returnMacroProp._call();
+        env.returnMacroProp._call([]);
       }).should.throw(/Cannot get property of a macro: property/);
     });
     // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
     it.skip('throws when trying to access an attribute of a macro', function() {
       (function() {
-        env.returnMacroAttr._call();
+        env.returnMacroAttr._call([]);
       }).should.throw();
     });
     it('throws when resolving (not calling) a macro in a complex string', function() {
@@ -108,12 +108,15 @@ describe('Macros', function(){
         }>                                                                    \
                                                                               \
         <identity($n) { $n }>                                                 \
+        <sum($n, $k) { $n + $k }>                                             \
         <getBaz($n) { $n.baz }>                                               \
         <say() { "Hello" }>                                                   \
         <call($n) { $n() }>                                                   \
         <callWithArg($n, $arg) { $n($arg) }>                                  \
                                                                               \
         <noArg "{{ identity() }}">                                            \
+        <tooFewArgs "{{ sum(2) }}">                                           \
+        <tooManyArgs "{{ sum(2, 3, 4) }}">                                    \
         <stringArg "{{ identity(\'string\') }}">                              \
         <numberArg "{{ identity(1) }}">                                       \
         <entityArg "{{ identity(foo) }}">                                     \
@@ -123,12 +126,20 @@ describe('Macros', function(){
         <callMacroWithArg "{{ callWithArg(identity, 2) }}">                   \
       ';
     });
-    // XXX Bug 884201 - Compiler: macros should fail gracefully if no required 
-    // arguments are passed 
-    it.skip('throws if no required args are provided', function() {
+    it('throws if no required args are provided', function() {
       (function() {
         env.noArg.getString();
-      }).should.throw();
+      }).should.throw(/takes exactly/);
+    });
+    it('throws if too few args are provided', function() {
+      (function() {
+        env.tooFewArgs.getString();
+      }).should.throw(/takes exactly/);
+    });
+    it('throws if too many args are provided', function() {
+      (function() {
+        env.tooManyArgs.getString();
+      }).should.throw(/takes exactly/);
     });
     it('strings are passed correctly', function() {
       var value = env.stringArg.getString();
@@ -178,19 +189,19 @@ describe('Macros', function(){
       ';
     });
     it('returns strings', function() {
-      var value = env.string._call();
+      var value = env.string._call([]);
       value[1].should.equal('foo');
     });
     it('returns numbers', function() {
-      var value = env.number._call();
+      var value = env.number._call([]);
       value[1].should.equal(1);
     });
     it('returns entities which are strings', function() {
-      var value = env.stringEntity._call();
+      var value = env.stringEntity._call([]);
       value[1].should.equal('Foo');
     });
     it('returns resolved entities which are hashes', function() {
-      var value = env.hashEntity._call();
+      var value = env.hashEntity._call([]);
       value[1].should.equal('Bar');
     });
     it('throws when trying to access a property of macro\'s return value', function() {
@@ -243,29 +254,28 @@ describe('Macros', function(){
       ';
     });
     it('does not look at ctxdata if the arg is passed', function() {
-      var value = env.identity._call(ctxdata, [[null, 'foo']]);
+      var value = env.identity._call([[null, 'foo']], ctxdata);
       value[1].should.equal('foo');
     });
-    // XXX Bug 884201 - Compiler: macros should fail gracefully if no required 
-    // arguments are passed 
-    it.skip('does not look at ctxdata if the arg is defined, but is not passed', function() {
-      var value = env.identity._call(ctxdata);
-      value[1].should.equal(3);
+    it('does not look at ctxdata if the arg is defined, but is not passed', function() {
+      (function() {
+        env.identity._call([], ctxdata);
+      }).should.throw(/takes exactly/);
     });
     it('takes ctxdata if no args are defined', function() {
-      var value = env.getFromContext._call(ctxdata, [[null, 'foo']]);
+      var value = env.getFromContext._call([], ctxdata);
       value[1].should.equal(3);
     });
     it('does not leak args into string entities', function() {
-      var value = env.getFoo._call(ctxdata, [[null, 'foo']]);
+      var value = env.getFoo._call([[null, 'foo']], ctxdata);
       value[1].should.equal('3');
     });
     it('does not leak args into hash entities', function() {
-      var value = env.getBar._call(ctxdata, [[null, 'foo']]);
+      var value = env.getBar._call([[null, 'foo']], ctxdata);
       value[1].should.equal('3');
     });
     it('does not leak args into members of hash entities', function() {
-      var value = env.getBarKey._call(ctxdata, [[null, 'foo']]);
+      var value = env.getBarKey._call([[null, 'foo']], ctxdata);
       value[1].should.equal('3');
     });
   });
