@@ -59,11 +59,10 @@ describe('Macros', function(){
         env.callAttr.getString();
       }).should.throw(/non-callable/);
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
-    it.skip('throws if a missing attribute of an entity is called', function() {
+    it('throws if a missing attribute of an entity is called', function() {
       (function() {
         env.callMissingAttr.getString();
-      }).should.throw();
+      }).should.throw(/has no attribute/);
     });
     it('throws when trying to resolve (not call) a macro', function() {
       (function() {
@@ -75,11 +74,10 @@ describe('Macros', function(){
         env.returnMacroProp._call([]);
       }).should.throw(/Cannot get property of a macro: property/);
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
-    it.skip('throws when trying to access an attribute of a macro', function() {
+    it('throws when trying to access an attribute of a macro', function() {
       (function() {
         env.returnMacroAttr._call([]);
-      }).should.throw();
+      }).should.throw(/non-entity/);
     });
     it('throws when resolving (not calling) a macro in a complex string', function() {
       (function() {
@@ -91,11 +89,10 @@ describe('Macros', function(){
         env.placeMacroProp.getString();
       }).should.throw(/Cannot get property of a macro: property/);
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fail gracefully
-    it.skip('throws when accessing an attribute of a macro in a complex string', function() {
+    it('throws when accessing an attribute of a macro in a complex string', function() {
       (function() {
         env.placeMacroAttr.getString();
-      }).should.throw();
+      }).should.throw(/non-entity/);
     });
   });
 
@@ -209,11 +206,10 @@ describe('Macros', function(){
         env.stringMissingProp.getString();
       }).should.throw(/Cannot get property of a string: missing/);
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fails gracefully
-    it.skip('throws when trying to access an attribute of macro\'s return value', function() {
+    it('throws when trying to access an attribute of macro\'s return value', function() {
       (function() {
         env.stringMissingAttr.getString();
-      }).should.throw();
+      }).should.throw(/non-entity/);
     });
 
     it('resolves the hash and throws when trying to access a property of macro\'s return value', function() {
@@ -226,11 +222,10 @@ describe('Macros', function(){
         env.hashMissingProp.getString();
       }).should.throw(/Cannot get property of a string: missing/);
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fails gracefully
-    it.skip('resolves the hash and throws when trying to access an attribute of macro\'s return value', function() {
+    it('resolves the hash and throws when trying to access an attribute of macro\'s return value', function() {
       (function() {
         env.hashMissingAttr.getString();
-      }).should.throw();
+      }).should.throw(/non-entity/);
     });
   });
 

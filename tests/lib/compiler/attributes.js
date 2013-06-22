@@ -21,6 +21,10 @@ describe('Attributes', function(){
         >                                                                     \
         <getAttr "{{ foo::missing }}">                                        \
         <getAttrOfAttr "{{ foo::attr::invalid }}">                            \
+        <getPropOfAttr "{{ foo::attr.missing }}">                             \
+        <getPropOfMissing "{{ foo::missing.another }}">                       \
+        <getAttrOfParen "{{ (foo::attr)::invalid }}">                         \
+        <getAttrOfMissing "{{ (foo::missing)::invalid }}">                    \
                                                                               \
         <bar {                                                                \
           bar: "Bar"                                                          \
@@ -28,16 +32,35 @@ describe('Attributes', function(){
         <getAttrOfMember "{{ bar.bar::invalid }}">                            \
       ';
     });
-    // XXX Bug 884734 - Compiler: Missing attributes should fails gracefully
     it('throws if the attribute does not exist', function(){
       (function() {
         env.getAttr.getString();
-      }).should.throw();
+      }).should.throw(/has no attribute missing/);
     });
     it('throws if the syntax is not valid (attr of an attr)', function(){
       (function() {
         env.getAttrOfAttr.getString();
       }).should.throw(/Malformed string/);
+    });
+    it('throws when trying to get a property of a string attribute', function(){
+      (function() {
+        env.getPropOfAttr.getString();
+      }).should.throw('Cannot get property of a string: missing');
+    });
+    it('throws when trying to get a property of a missing attribute', function(){
+      (function() {
+        env.getPropOfMissing.getString();
+      }).should.throw(/has no attribute/);
+    });
+    it('throws when trying to get an attribute of an attribute', function(){
+      (function() {
+        env.getAttrOfParen.getString();
+      }).should.throw('Cannot get attribute of a non-entity: invalid');
+    });
+    it('throws when trying to get an attribute of a missing attribute', function(){
+      (function() {
+        env.getAttrOfMissing.getString();
+      }).should.throw(/has no attribute missing/);
     });
     it('throws if the syntax is not valid (attr of a hash member)', function(){
       (function() {
@@ -70,25 +93,6 @@ describe('Attributes', function(){
     });
     it('is detected to be maybe-complex', function(){
       env.foo.attributes.attrComplex.value.should.be.a('function');
-    });
-    it('can be accessed from another entity ', function(){
-      var value = env.getFoo.getString();
-      value.should.equal("An attribute");
-    });
-  });
-
-  describe('with string values', function(){
-    before(function() {
-      source = '                                                              \
-        <foo                                                                  \
-         attr: "An attribute"                                                 \
-        >                                                                     \
-        <getFoo "{{ foo::attr }}">                                            \
-      ';
-    });
-    it('returns the value', function(){
-      var entity = env.foo.get();
-      entity.attributes.attr.should.equal("An attribute");
     });
     it('can be accessed from another entity ', function(){
       var value = env.getFoo.getString();
