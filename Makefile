@@ -5,8 +5,8 @@ MOCHA=./node_modules/.bin/mocha
 JSCOVERAGE=./node_modules/.bin/jscoverage
 DOCCO=./node_modules/.bin/docco
 
-SAMPLESIZE?=25
-ITERATIONS?=100
+SAMPLESIZE?=500
+REFERENCE?=tools/perf/reference.json
 LIB_FILES = \
   tests/lib/*.js \
   tests/lib/context/*.js \
@@ -27,12 +27,20 @@ test:
 watch:
 	@$(MOCHA) --require should --reporter min --watch --growl $(LIB_FILES)
 
+
+.PHONY: reference
+reference:
+	@$(NODE) ./tools/perf --sample $(SAMPLESIZE) --raw > $(REFERENCE)
+	@cat $(REFERENCE)
+
+
 .PHONY: perf
-make perf:
-	@$(NODE) ./tools/perf \
-		--progress \
-		--sample $(SAMPLESIZE) \
-		--iterations $(ITERATIONS)
+perf:
+ifneq ($(wildcard $(REFERENCE)),)
+	@$(NODE) ./tools/perf --sample $(SAMPLESIZE) --compare $(REFERENCE)
+else
+	@$(NODE) ./tools/perf --sample $(SAMPLESIZE)
+endif
 
 .PHONY: coverage
 coverage: build/cov

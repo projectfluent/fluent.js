@@ -188,8 +188,8 @@
 <bt_status_nopaired  " No devices paired">
 <bt_status_turnoff   " Turned off">
 <bt_status_paired[plural($n)] {
-  zero: "{{name}}",
- *many: "{{name}}, +{{n}} more"
+  zero: "{{$name}}",
+ *many: "{{$name}}, +{{$n}} more"
 }>
 <device_status_tap_connect  " Tap to connect">
 <device_status_pairing      " Pairing with device…">
@@ -423,7 +423,7 @@
 <pinErrorMsg "The PIN was incorrect.">
 <inputCodeRetriesLeft[plural($n)] {
   one: "last try",
-  many: "{{$n} tries left."
+  many: "{{$n}} tries left."
 }>
 <pinAttemptMsg3[plural($n)] {
   one: "You have one try left to enter the correct code before locking the SIM card.",

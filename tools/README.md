@@ -41,6 +41,7 @@ a string into Entity objects and output the result.
       -d, --data <file>  Context data to use (.json)
       -a, --ast          Treat input as AST, not source code
       -n, --no-color     Print without color
+      -l, --with-local   Print local entities and attributes
 
 Examples:
 
