@@ -78,7 +78,7 @@ define(function (require, exports, module) {
                       l10n.entities[nodes.ids[i]]);
       }
 
-      // 'locales in l10n.reason mean that localize has been
+      // 'locales' in l10n.reason means that localize has been
       // called because of locale change
       if ('locales' in l10n.reason && l10n.reason.locales.length) {
         document.documentElement.lang = l10n.reason.locales[0];
