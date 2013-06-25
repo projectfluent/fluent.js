@@ -427,4 +427,19 @@ describe('Hash', function(){
     });
   });
 
+  describe('and built-in properties', function(){
+    before(function() {
+      source = '                                                              \
+        <bar {                                                                \
+         *key: "Bar"                                                          \
+        }>                                                                    \
+        <foo "{{ bar.length }}">                                              \
+      ';
+    });
+    it('returns the default member', function(){
+      var val = env.foo.getString();
+      val.should.equal('Bar');
+    });
+  });
+
 });
