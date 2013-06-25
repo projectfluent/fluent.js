@@ -19,15 +19,15 @@ endif
 BINDINGS?=html
 
 .PHONY: build
-build:
+build: install-git-hook
 	$(NODE) build/Makefile.js $(BINDINGS)
 
 .PHONY: test
-test:
+test: install-git-hook
 	@$(MOCHA) --require should --reporter $(REPORTER) $(LIB_FILES)
 
 .PHONY: watch
-watch:
+watch: install-git-hook
 	@$(MOCHA) --require should --reporter min --watch --growl $(LIB_FILES)
 
 
@@ -60,10 +60,20 @@ docs: lib bindings
 	@mkdir -p dist/docs
 	$(DOCCO) --output dist/docs/lib lib/*.js \
 	                                lib/l20n/*.js \
-		                            lib/l20n/platform/*.js
+	                                lib/l20n/platform/*.js
 	$(DOCCO) --output dist/docs/lib/client lib/client/l20n/platform/*.js
 	$(DOCCO) --output dist/docs/bindings bindings/l20n/*.js
 	@touch dist/docs
+
+lint: install-git-hook
+	@gjslint --disable 1 --nojsdoc \
+	    -r bindings \
+	    -r lib \
+	    -x lib/l20n/intl.js
+
+.PHONY: install-git-hook
+install-git-hook:
+	@cp tools/hooks/pre-commit .git/hooks/pre-commit
 
 .PHONY: gh-pages
 gh-pages: dist/docs

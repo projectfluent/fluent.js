@@ -19,7 +19,8 @@ define(function (require, exports, module) {
 
   function bootstrap() {
     var headNode = document.head;
-    var data = headNode.querySelector('script[type="application/l10n-data+json"]');
+    var data = 
+      headNode.querySelector('script[type="application/l10n-data+json"]');
     if (data) {
       ctx.data = JSON.parse(data.textContent);
     }
@@ -39,7 +40,7 @@ define(function (require, exports, module) {
         // XXX add errback
         loadManifest(link.getAttribute('href')).then(ctx.freeze.bind(ctx));
       } else {
-        console.warn("L20n: No resources found. (Put them above l20n.js.)");
+        console.warn('L20n: No resources found. (Put them above l20n.js.)');
       }
     }
 
@@ -101,10 +102,10 @@ define(function (require, exports, module) {
         var callAndRemove = function callAndRemove() {
           document.removeEventListener('DocumentLocalized', callAndRemove);
           callback();
-        }
+        };
         document.addEventListener('DocumentLocalized', callAndRemove);
       }
-    }
+    };
     document.l10n = ctx;
   }
 
@@ -264,7 +265,8 @@ define(function (require, exports, module) {
         var pathToParent = getPathTo(element.parentNode, context);
         return pathToParent + '/' + element.tagName + '[' + (index + 1) + ']';
       }
-      if (sibling.nodeType === TYPE_ELEMENT && sibling.tagName === element.tagName) {
+      if (sibling.nodeType === TYPE_ELEMENT && 
+          sibling.tagName === element.tagName) {
         index++;
       }
     }
