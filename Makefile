@@ -5,8 +5,15 @@ MOCHA=./node_modules/.bin/mocha
 JSCOVERAGE=./node_modules/.bin/jscoverage
 DOCCO=./node_modules/.bin/docco
 
-SAMPLESIZE?=500
+SAMPLESIZE?=150
 REFERENCE?=tools/perf/reference.json
+ifneq ($(JSSHELL),)
+BENCHMARK = $(JSSHELL) benchmark.jsshell.js
+else 
+BENCHMARK = $(NODE) benchmark.node.js
+endif
+
+
 LIB_FILES = \
   tests/lib/*.js \
   tests/lib/context/*.js \
@@ -33,16 +40,23 @@ watch: install-git-hook
 
 .PHONY: reference
 reference:
-	@$(NODE) ./tools/perf --sample $(SAMPLESIZE) --raw > $(REFERENCE)
+	@$(NODE) ./tools/perf/run $(BENCHMARK) \
+        --sample $(SAMPLESIZE) \
+        --raw > $(REFERENCE)
 	@cat $(REFERENCE)
 
 
 .PHONY: perf
 perf:
 ifneq ($(wildcard $(REFERENCE)),)
-	@$(NODE) ./tools/perf --sample $(SAMPLESIZE) --compare $(REFERENCE)
+	@$(NODE) ./tools/perf/run $(BENCHMARK) \
+        --progress \
+        --sample $(SAMPLESIZE) \
+        --compare $(REFERENCE)
 else
-	@$(NODE) ./tools/perf --sample $(SAMPLESIZE)
+	@$(NODE) ./tools/perf/run $(BENCHMARK) \
+        --progress \
+        --sample $(SAMPLESIZE)
 endif
 
 .PHONY: coverage

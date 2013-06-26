@@ -55,6 +55,6 @@ perf
 ----
 
 Measure the performance impact of changes that you make to the L20n codebase by 
-running `./index.js` (or `make perf` from the root of the repository).
+running `./run.js` (or `make perf` from the root of the repository).
 
 See [perf/README](perf/README.md) for more information.
