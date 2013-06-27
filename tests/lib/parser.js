@@ -643,6 +643,18 @@ describe('Example', function() {
     ast.body.length.should.equal(1);
     ast.body[0].id.name.should.equal('ID');*/
   });
+  it('identifier errors', function() {
+    var strings = [
+      '<i`d "foo">',
+      '<0d "foo">',
+      '<09 "foo">',
+      '<i!d "foo">',
+    ];
+    for (var i in strings) {
+      var ast = parser.parse(strings[i]);
+      ast.body[0].type.should.equal('JunkEntry');
+    }
+  });
 
   it('throwOnErrors', function() {
     var parser = new Parser(true);
