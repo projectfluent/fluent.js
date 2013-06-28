@@ -71,6 +71,13 @@ var data = {
 }
 var ast = parser.parse(code);
 var env = compiler.compile(ast);
+var ids = [];
+for (var id in env) {
+  if (env[id].get) {
+    ids.push(id);
+  }
+}
+
 
 var scenarios = {
   parse: function parse() {
@@ -80,10 +87,8 @@ var scenarios = {
     compiler.compile(ast);
   },
   get: function get() {
-    for (var id in env) {
-      if (env[id]._resolve) {
-        env[id].get(data)
-      }
+    for (var i = 0, len = ids.length; i < len; i++) {
+      env[ids[i]].get(data);
     }
   }
 }
