@@ -171,6 +171,13 @@ describe('Example', function() {
     ast.body[0].value.content[0].value.content.should.equal('2');
     ast.body[0].value.content[1].value.content.should.equal('3');
   });
+  it('hash value with trailing comma', function() {
+    var ast = parser.parse("<id {a: '2', b: '3', } >");
+    ast.body.length.should.equal(1);
+    ast.body[0].value.content.length.should.equal(2);
+    ast.body[0].value.content[0].value.content.should.equal('2');
+    ast.body[0].value.content[1].value.content.should.equal('3');
+  });
   it('nested hash value', function() {
     var ast = parser.parse("<id {a: {}, b: { }}>");
     ast.body.length.should.equal(1);
@@ -239,6 +246,7 @@ describe('Example', function() {
       '<id[" ] "["a"]>',
       '<id[a]["a"]>',
       '<id["foo""foo"] "fo">',
+      '<id[a, b, ] "foo">',
     ];
     for (var i in strings) {
       var ast = parser.parse(strings[i]);
@@ -281,6 +289,8 @@ describe('Example', function() {
       '<id($n) {2',
       '<id($n) {2}',
       '<id(nm nm) {2}>',
+      '<id($n) {}>',
+      '<id($n, $m ,) {2}>',
     ];
     for (var i in strings) {
       var ast = parser.parse(strings[i]);
@@ -472,6 +482,7 @@ describe('Example', function() {
       '<id[foo())] "foo">',
       '<id[foo("ff)] "foo">',
       '<id[foo(ff")] "foo">',
+      '<id[foo(a, b, )] "foo">',
     ];
     for (var i in strings) {
       var ast = parser.parse(strings[i]);
