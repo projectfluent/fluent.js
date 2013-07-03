@@ -156,10 +156,6 @@ describe('Example', function() {
     }
   });
   it('hash value', function() {
-    var ast = parser.parse("<id {}>");
-    ast.body.length.should.equal(1);
-    ast.body[0].value.content.length.should.equal(0);
-    
     var ast = parser.parse("<id {a: 'b', a2: 'c', d: 'd' }>");
     ast.body.length.should.equal(1);
     ast.body[0].value.content.length.should.equal(3);
@@ -179,11 +175,6 @@ describe('Example', function() {
     ast.body[0].value.content[1].value.content.should.equal('3');
   });
   it('nested hash value', function() {
-    var ast = parser.parse("<id {a: {}, b: { }}>");
-    ast.body.length.should.equal(1);
-    ast.body[0].value.content.length.should.equal(2);
-    ast.body[0].value.content[0].value.content.length.should.equal(0);
-    
     ast = parser.parse("<id {a: 'foo', b: {a2: 'p'}}>");
     ast.body.length.should.equal(1);
     ast.body[0].value.content.length.should.equal(2);
@@ -197,6 +188,7 @@ describe('Example', function() {
   });
   it('hash  errors', function() {
     var strings = [
+      '<id {}>',
       '<id {a: 2}>',
       "<id {a: 'd'>",
       "<id a: 'd'}>",
@@ -211,6 +203,7 @@ describe('Example', function() {
       "<id {a }>",
       '<id {a: 2, b , c: 3 } >',
       '<id {*a: "v", *b: "c"}>',
+      '<id {}>',
     ];
     for (var i in strings) {
       var ast = parser.parse(strings[i]);
