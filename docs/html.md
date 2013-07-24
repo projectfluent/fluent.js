@@ -10,8 +10,8 @@ Download L20n with HTML Bindings
 
 We maintain a repository with L20n optimized for production use:
 
- - [one file](https://github.com/l20n/l20n.min.js/blob/master/l20n.js) (~100KB)
- - [one file, minified](https://github.com/l20n/l20n.min.js/blob/master/min/l20n.js) (~30KB)
+ - [one file](https://github.com/l20n/builds/blob/master/l20n.js) (~110KB)
+ - [one file, minified](https://github.com/l20n/builds/blob/master/l20n.min.js) (~35KB)
 
 It's recommended to include the l20n.js file as the last script in the `head` 
 element.
@@ -21,64 +21,6 @@ element.
   …
   <script src="l20n.js"></script>
 </head>
-```
-
-
-Build L20n with HTML Bindings
------------------------------
-
-In order to use L20n on a webpage, all you need is an optimized to a single 
-file, and possibly minified, version of the library with the HTML bindings.
-
-    git clone https://github.com/l20n/l20n.js.git
-    cd l20n.js
-    npm install
-    make build
-
-This will produce the optimized files in `dist`.
-
-    dist/l20n.js
-    dist/l20n.min.js
-
-Again, it's recommended to include the l20n.js file as the last script in the `head` 
-element.
-
-```html
-<head>
-  …
-  <script src="l20n.js"></script>
-</head>
-```
-
-
-Set up L20n with HTML Bindings for Development
-----------------------------------------------
-
-If you want to hack on L20n locally, you don't have to `make build` after every 
-edit.  L20n follows the AMD naming scheme and can be used with module loaders 
-like [RequireJS][].
-
-[RequireJS]: http://requirejs.org/
-
-```html
-<script src="require.js"></script>
-<script>
-  require.config({ 
-    baseUrl: '../path/to/lib/', // tell RequireJS where to look for L20n
-    paths: {
-      'l20n/platform': 'client/l20n/platform',
-      'l20n/html': '../bindings/l20n/html',
-    }
-  });
-  require(['l20n/html'], function(L20n) {
-    // l20n/html also exports the L20n singleton, similar to the l20n module
-    var ctx = L20n.getContext();
-  });
-
-  // or, if you don't need to execute a callback
-  require(['l20n/html']);
-
-</script> 
 ```
 
 
@@ -105,7 +47,7 @@ client side.
 <script type="application/l20n" src="../locales/browser.l20n"></script>
 ```
 
-Once you're ready to provide a multilingual version of your app, use  
+Once you're ready to provide a multilingual version of your app, use 
 a localization *manifest* to define available languages and their resource 
 files.
 
