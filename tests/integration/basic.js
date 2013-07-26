@@ -40,7 +40,7 @@ describe('A single-locale context with addResource', function() {
     value.should.equal('Certificate signed by Mozilla Foundation');
   })
   it('should return the value of cert with the value of $organization defined globally', function() {
-    ctx.data.organization = 'Mozilla Foundation';
+    ctx.updateData({ organization: 'Mozilla Foundation' });
     var value = ctx.get('cert');
     value.should.equal('Certificate signed by Mozilla Foundation');
   })
@@ -81,7 +81,7 @@ describe('A single-locale context with linkResource', function() {
     value.should.equal('Certificate signed by Mozilla Foundation');
   })
   it('should return the value of cert with the value of $organization defined globally', function() {
-    ctx.data.organization = 'Mozilla Foundation';
+    ctx.updateData({ organization: 'Mozilla Foundation' });
     var value = ctx.get('cert');
     value.should.equal('Certificate signed by Mozilla Foundation');
   })

@@ -22,7 +22,7 @@ define(function (require, exports, module) {
     var data = 
       headNode.querySelector('script[type="application/l10n-data+json"]');
     if (data) {
-      ctx.data = JSON.parse(data.textContent);
+      ctx.updateData(JSON.parse(data.textContent));
     }
     var scripts = headNode.querySelectorAll('script[type="application/l20n"]');
     if (scripts.length) {

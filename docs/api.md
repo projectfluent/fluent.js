@@ -132,6 +132,29 @@ Currently available event types:
 Remove an event listener previously registered with `addEventListener`.
 
 
+### ctx.updateData(ctxdata: Object)
+
+Update the context data which will be available to all entities in the context.  
+The `ctxdata` is an object which extends the context data per key and per level 
+of hierarchy.  In other words, the following two calls:
+
+```javascript
+ctx.updateData({ user: { name: "Bob" } });
+ctx.updateData({ user: { gender: "masculine" } });
+```
+
+will make the internally-stored context data look like this:
+
+```json
+{
+  "user" : {
+    "name": "Bob",
+    "gender": "masculine"
+  }
+}
+```
+
+
 ### ctx.get(id: String, ctxdata: Object?)
 
 Retrieve a string value of an entity called `id`.

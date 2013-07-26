@@ -141,11 +141,13 @@ describe('Context data', function(){
   describe('$nested (a dict-like ctxdata) and numbers', function(){
     before(function() {
       ctxdata = {
+        num: 1,
         nested: {
           number: 1,
         }
       };
       source = '                                                              \
+        <num "{{ $num }}">                                                    \
         <number "{{ $nested.number }}">                                       \
         <numberMissing "{{ $nested.number.missing }}">                        \
         <numberValueOf "{{ $nested.number.valueOf }}">                        \
@@ -155,6 +157,9 @@ describe('Context data', function(){
       ';
     });
     it('returns a number value', function(){
+      env.num.getString(ctxdata).should.equal('1');
+    });
+    it('returns a number value when nested', function(){
       env.number.getString(ctxdata).should.equal('1');
     });
     it('throws when a property of a number property of $nested is referenced', function(){
@@ -177,11 +182,13 @@ describe('Context data', function(){
   describe('$nested (a dict-like ctxdata) and bools', function(){
     before(function() {
       ctxdata = {
+        bool: true,
         nested: {
           bool: true,
         }
       };
       source = '                                                              \
+        <just "{{ $bool ? 1 : 0 }}">                                          \
         <bool "{{ $nested.bool ? 1 : 0 }}">                                   \
         <boolMissing "{{ $nested.bool.missing }}">                            \
         <boolIndex[$nested.bool] {                                            \
@@ -190,6 +197,9 @@ describe('Context data', function(){
       ';
     });
     it('returns a bool value', function(){
+      env.just.getString(ctxdata).should.equal('1');
+    });
+    it('returns a bool value when nested', function(){
       env.bool.getString(ctxdata).should.equal('1');
     });
     it('throws when a property of a bool property of $nested is referenced', function(){
@@ -207,11 +217,13 @@ describe('Context data', function(){
   describe('$nested (a dict-like ctxdata) and undefined', function(){
     before(function() {
       ctxdata = {
+        undef: undefined,
         nested: {
           undef: undefined,
         }
       };
       source = '                                                              \
+        <just "{{ $undef }}">                                                 \
         <undef "{{ $nested.undef }}">                                         \
         <undefMissing "{{ $nested.undef.missing }}">                          \
         <undefIndex[$nested.undef] {                                          \
@@ -221,6 +233,11 @@ describe('Context data', function(){
       ';
     });
     it('throws', function(){
+      (function() {
+        var value = env.just.getString(ctxdata);
+      }).should.throw(/Placeables must be strings or numbers/);
+    });
+    it('throws when nested', function(){
       (function() {
         var value = env.undef.getString(ctxdata);
       }).should.throw(/Placeables must be strings or numbers/);
@@ -240,11 +257,13 @@ describe('Context data', function(){
   describe('$nested (a dict-like ctxdata) and null', function(){
     before(function() {
       ctxdata = {
+        nullable: null,
         nested: {
           nullable: null,
         }
       };
       source = '                                                              \
+        <just "{{ $nullable }}">                                              \
         <nullable "{{ $nested.nullable }}">                                   \
         <nullableMissing "{{ $nested.nullable.missing }}">                    \
         <nullableIndex[$nested.nullable] {                                    \
@@ -253,6 +272,11 @@ describe('Context data', function(){
       ';
     });
     it('throws', function(){
+      (function() {
+        var value = env.just.getString(ctxdata);
+      }).should.throw(/Placeables must be strings or numbers/);
+    });
+    it('throws when nested', function(){
       (function() {
         var value = env.nullable.getString(ctxdata);
       }).should.throw(/Placeables must be strings or numbers/);
@@ -272,11 +296,13 @@ describe('Context data', function(){
   describe('$nested (a dict-like ctxdata) and arrays', function(){
     before(function() {
       ctxdata = {
+        arr: [3, 4],
         nested: {
           arr: [3, 4],
         }
       };
       source = '                                                              \
+        <just "{{ $arr }}">                                                   \
         <arr "{{ $nested.arr }}">                                             \
         <arrMissing "{{ $nested.arr.missing }}">                              \
         <arrLength "{{ $nested.arr.length }}">                                \
@@ -286,6 +312,11 @@ describe('Context data', function(){
       ';
     });
     it('throws', function(){
+      (function() {
+        var value = env.just.getString(ctxdata);
+      }).should.throw('Cannot resolve ctxdata or global of type object');
+    });
+    it('throws when nested', function(){
       (function() {
         var value = env.arr.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
@@ -315,6 +346,7 @@ describe('Context data', function(){
         }
       };
       source = '                                                              \
+        <just "{{ $nested }}">                                                \
         <obj "{{ $nested.obj }}">                                             \
         <objKey "{{ $nested.obj.key }}">                                      \
         <objMissing "{{ $nested.obj.missing }}">                              \
@@ -325,6 +357,11 @@ describe('Context data', function(){
       ';
     });
     it('throws if accessed without a key', function(){
+      (function() {
+        var value = env.just.getString(ctxdata);
+      }).should.throw('Cannot resolve ctxdata or global of type object');
+    });
+    it('throws if accessed without a key when nested', function(){
       (function() {
         var value = env.obj.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
@@ -345,6 +382,55 @@ describe('Context data', function(){
     it('throws when an object-typed property of $nested is used in an index', function(){
       (function() {
         var value = env.objIndex.getString(ctxdata);
+      }).should.throw('Cannot resolve ctxdata or global of type object');
+    });
+  });
+
+  describe.skip('$nested (a dict-like ctxdata) and functions', function(){
+    before(function() {
+      ctxdata = {
+        fn: function fn() {},
+        nested: {
+          fn: function fn() {}
+        }
+      };
+      source = '                                                              \
+        <just "{{ $fn }}">                                                    \
+        <fn "{{ $nested.fn }}">                                               \
+        <fnKey "{{ $nested.fn.key }}">                                        \
+        <fnMissing "{{ $nested.fn.missing }}">                                \
+        <fnValueOf "{{ $nested.fn.valueOf }}">                                \
+        <fnIndex[$nested.fn] {                                                \
+          key: "value"                                                        \
+        }>                                                                    \
+      ';
+    });
+    it('throws if accessed without a key', function(){
+      (function() {
+        var value = env.just.getString(ctxdata);
+      }).should.throw('Cannot resolve ctxdata or global of type object');
+    });
+    it('throws if accessed without a key when nested', function(){
+      (function() {
+        var value = env.fn.getString(ctxdata);
+      }).should.throw('Cannot resolve ctxdata or global of type object');
+    });
+    it('returns a string value of the requested key', function(){
+      env.objKey.getString(ctxdata).should.equal('value');
+    });
+    it('throws when a property of an object-typed property of $nested is referenced', function(){
+      (function() {
+        var value = env.fnMissing.getString(ctxdata);
+      }).should.throw(/missing is not defined on the object/);
+    });
+    it('throws when a built-in property of an object-typed property of $nested is referenced', function(){
+      (function() {
+        var value = env.fnValueOf.getString(ctxdata);
+      }).should.throw(/valueOf is not defined on the object/);
+    });
+    it('throws when an object-typed property of $nested is used in an index', function(){
+      (function() {
+        var value = env.fnIndex.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });
