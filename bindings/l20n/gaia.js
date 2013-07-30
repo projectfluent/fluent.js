@@ -191,7 +191,7 @@ define(function (require, exports, module) {
   function getNodes(node) {
     var nodes = node.querySelectorAll('[data-l10n-id]');
     var ids = [];
-    if (node.hasAttribute('data-l10n-id')) {
+    if (node.hasAttribute && node.hasAttribute('data-l10n-id')) {
       // include the root node in nodes (and ids)
       nodes = Array.prototype.slice.call(nodes);
       nodes.push(node);

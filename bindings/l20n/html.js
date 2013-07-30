@@ -53,10 +53,10 @@ define(function (require, exports, module) {
   }
 
   function collectNodes() {
-    var nodes = getNodes(document.body);
+    var nodes = getNodes(document);
     localizeHandler = ctx.localize(nodes.ids, function localizeHandler(l10n) {
       if (!nodes) {
-        nodes = getNodes(document.body);
+        nodes = getNodes(document);
       }
       for (var i = 0; i < nodes.nodes.length; i++) {
         translateNode(nodes.nodes[i],
@@ -171,7 +171,7 @@ define(function (require, exports, module) {
   function getNodes(node) {
     var nodes = node.querySelectorAll('[data-l10n-id]');
     var ids = [];
-    if (node.hasAttribute('data-l10n-id')) {
+    if (node.hasAttribute && node.hasAttribute('data-l10n-id')) {
       // include the root node in nodes (and ids)
       nodes = Array.prototype.slice.call(nodes);
       nodes.push(node);
