@@ -35,26 +35,12 @@ define(function (require, exports, module) {
       }
       ctx.freeze();
     } else {
-      var metaLoc = headNode.querySelector('meta[name="locales"]');
-      var metaDefLoc = headNode.querySelector('meta[name="default_locale"]');
-      var metaRes = headNode.querySelector('meta[name="resources"]');
-      if (metaLoc && metaDefLoc && metaRes) {
-        initializeManifest({
-          'locales': metaLoc.getAttribute('content').split(',')
-                            .map(String.trim),
-          'default_locale': metaDefLoc.getAttribute('content'),
-          'resources': metaRes.getAttribute('content').split('|')
-                              .map(String.trim)
-        });
-        ctx.freeze();
+      var link = headNode.querySelector('link[rel="localization"]');
+      if (link) {
+        // XXX add errback
+        loadManifest(link.getAttribute('href')).then(ctx.freeze.bind(ctx));
       } else {
-        var link = headNode.querySelector('link[rel="localization"]');
-        if (link) {
-          // XXX add errback
-          loadManifest(link.getAttribute('href')).then(ctx.freeze.bind(ctx));
-        } else {
-          console.warn('L20n: No resources found. (Put them above l20n.js.)');
-        }
+        console.warn('L20n: No resources found. (Put them above l20n.js.)');
       }
     }
 
@@ -67,10 +53,10 @@ define(function (require, exports, module) {
   }
 
   function collectNodes() {
-    var nodes = getNodes(document.body);
-    localizeHandler = ctx.localize(nodes.ids, function(l10n) {
+    var nodes = getNodes(document);
+    localizeHandler = ctx.localize(nodes.ids, function localizeHandler(l10n) {
       if (!nodes) {
-        nodes = getNodes(document.body);
+        nodes = getNodes(document);
       }
       for (var i = 0; i < nodes.nodes.length; i++) {
         translateNode(nodes.nodes[i],
@@ -132,14 +118,12 @@ define(function (require, exports, module) {
     var Intl = require('./intl').Intl;
     /**
      * For now we just take nav.language, but we'd prefer to get
-     * a list of locales that the user can read sorted by user's preference,
-     * see:
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+     * a list of locales that the user can read sorted by user's preference
      **/
     var locList = Intl.prioritizeLocales(manifest.locales,
                                          [navigator.language],
                                          manifest.default_locale);
-    setDocumentLanguage(locList[0]);
+    setDocumentLanguage(locList[0])
     ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
@@ -147,12 +131,6 @@ define(function (require, exports, module) {
       } else {
         ctx.linkResource(uri);
       }
-    });
-    navigator.mozSettings.addObserver('language.current', function(event) {
-      var locList = Intl.prioritizeLocales(manifest.locales,
-                                           [event.settingValue],
-                                           manifest.default_locale);
-      ctx.registerLocales.apply(ctx, locList);
     });
   }
 

@@ -132,9 +132,7 @@ define(function (require, exports, module) {
     var Intl = require('./intl').Intl;
     /**
      * For now we just take nav.language, but we'd prefer to get
-     * a list of locales that the user can read sorted by user's preference,
-     * see:
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+     * a list of locales that the user can read sorted by user's preference
      **/
     var locList = Intl.prioritizeLocales(manifest.locales,
                                          [navigator.language],

@@ -118,10 +118,16 @@ define(function (require, exports, module) {
     var Intl = require('./intl').Intl;
     /**
      * For now we just take nav.language, but we'd prefer to get
-     * a list of locales that the user can read sorted by user's preference
+     * a list of locales that the user can read sorted by user's preference,
+     * see:
+     * https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+     *
+     * For IE we use navigator.browserLanguage, see:
+     * http://msdn.microsoft.com/en-us/library/ie/ms533542%28v=vs.85%29.aspx
      **/
+    var curLang = navigator.language || navigator.browserLanguage;
     var locList = Intl.prioritizeLocales(manifest.locales,
-                                         [navigator.language],
+                                         [curLang],
                                          manifest.default_locale);
     setDocumentLanguage(locList[0])
     ctx.registerLocales.apply(ctx, locList);
