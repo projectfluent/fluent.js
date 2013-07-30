@@ -81,9 +81,7 @@ define(function (require, exports, module) {
       // 'locales' in l10n.reason means that localize has been
       // called because of locale change
       if ('locales' in l10n.reason && l10n.reason.locales.length) {
-        document.documentElement.lang = l10n.reason.locales[0];
-        document.documentElement.dir =
-          rtlLocales.indexOf(l10n.reason.locales[0]) === -1 ? 'ltr' : 'rtl';
+        setDocumentLanguage(l10n.reason.locales[0])
       }
 
       nodes = null;
@@ -123,6 +121,12 @@ define(function (require, exports, module) {
     document.l10n = ctx;
   }
 
+  function setDocumentLanguage(loc) {
+    document.documentElement.lang = loc;
+    document.documentElement.dir =
+      rtlLocales.indexOf(loc) === -1 ? 'ltr' : 'rtl';
+  }
+
   function initializeManifest(manifest) {
     var re = /{{\s*locale\s*}}/;
     var Intl = require('./intl').Intl;
@@ -133,6 +137,7 @@ define(function (require, exports, module) {
     var locList = Intl.prioritizeLocales(manifest.locales,
                                          [navigator.language],
                                          manifest.default_locale);
+    setDocumentLanguage(locList[0]);
     ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
