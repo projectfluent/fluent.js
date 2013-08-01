@@ -67,7 +67,7 @@ define(function (require, exports, module) {
       // 'locales' in l10n.reason means that localize has been
       // called because of locale change
       if ('locales' in l10n.reason && l10n.reason.locales.length) {
-        setDocumentLanguage(l10n.reason.locales[0])
+        setDocumentLanguage(l10n.reason.locales[0]);
       }
 
       nodes = null;
@@ -129,7 +129,7 @@ define(function (require, exports, module) {
     var locList = Intl.prioritizeLocales(manifest.locales,
                                          [curLang],
                                          manifest.default_locale);
-    setDocumentLanguage(locList[0])
+    setDocumentLanguage(locList[0]);
     ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {

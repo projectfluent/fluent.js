@@ -11,7 +11,7 @@ describe('Reference bombs', function(){
   var source, ctxdata, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
-    env = compiler.reset().compile(ast);
+    env = compiler.compile(ast);
   });
 
   describe('Billion Laughs', function(){

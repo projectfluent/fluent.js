@@ -43,7 +43,7 @@ describe('No globals:', function(){
   });
   beforeEach(function() {
     ast = parser.parse(source);
-    env = compiler.reset().compile(ast);
+    env = compiler.compile(ast);
   });
 
   it('returns the current hour', function() {
@@ -58,7 +58,7 @@ describe('Globals:', function(){
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
-    env = compiler.reset().compile(ast);
+    env = compiler.compile(ast);
     compiler.setGlobals(retr.globals);
   });
 

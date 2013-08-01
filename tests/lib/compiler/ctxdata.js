@@ -10,7 +10,7 @@ describe('Context data', function(){
   var source, ctxdata, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
-    env = compiler.reset().compile(ast);
+    env = compiler.compile(ast);
   });
 
   describe('in entities', function(){

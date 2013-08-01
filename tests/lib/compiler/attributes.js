@@ -10,7 +10,7 @@ describe('Attributes', function(){
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
-    env = compiler.reset().compile(ast);
+    env = compiler.compile(ast);
   });
 
   describe('missing or invalid syntax', function(){

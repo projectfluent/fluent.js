@@ -10,7 +10,7 @@ describe('Compiler errors:', function(){
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
-    env = compiler.reset().compile(ast);
+    env = compiler.compile(ast);
   });
 
   describe('A complex string referencing an existing entity', function(){
