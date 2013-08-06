@@ -1,7 +1,7 @@
 {
   "name": "l20n",
   "description": "A natural-language localization framework",
-  "version": "1.0.0b3",
+  "version": "1.0.0b4",
   "homepage": "http://l20n.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "licenses": [ 

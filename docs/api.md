@@ -185,8 +185,6 @@ Currently available event types:
    error object is passed as the first argument to `callback`.  These errors 
    include:
 
-   - native JavaScript errors (`TypeError`, `ReferenceError` etc.),
-
    - `Context.RuntimeError`, when an entity is missing or broken in all 
      supported locales;  in this case, L20n will show the the best available 
      fallback of the requested entity in the UI:  the source string as found in 
