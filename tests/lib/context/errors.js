@@ -49,15 +49,25 @@ describe('A frozen, non-ready context', function() {
       ctx.getEntity('dummy');
     }).should.throw(/Context not ready/);
   })
-  it('should throw on registerLocales', function() {
-    (function(){
-      ctx.registerLocales('en-US');
-    }).should.throw(/Context not ready/);
-  })
   it('should not throw on localize', function() {
     (function(){
       ctx.localize(['dummy'], function(l10n) {});
     }).should.not.throw();
+  })
+  it('should throw on registerLocales', function() {
+    (function(){
+      ctx.registerLocales('en-US');
+    }).should.throw(/Context is frozen/);
+  })
+  it('should throw on registerLocaleNegotiator', function() {
+    (function(){
+      ctx.registerLocales('en-US');
+    }).should.throw(/Context is frozen/);
+  })
+  it('should throw on requestLocales', function() {
+    (function(){
+      ctx.requestLocales('en-US');
+    }).should.throw(/Context not ready/);
   })
 });
 
@@ -93,14 +103,24 @@ describe('A frozen, ready context', function() {
       ctx.getEntity('missing');
     }).should.not.throw();
   })
-  it('should not throw on registerLocales', function() {
-    (function(){
-      ctx.registerLocales('en-US');
-    }).should.not.throw();
-  })
   it('should not throw on localize', function() {
     (function(){
       ctx.localize(['dummy'], function(l10n) {});
+    }).should.not.throw();
+  })
+  it('should throw on registerLocales', function() {
+    (function(){
+      ctx.registerLocales('en-US');
+    }).should.throw(/Context is frozen/);
+  })
+  it('should throw on registerLocaleNegotiator', function() {
+    (function(){
+      ctx.registerLocales('en-US');
+    }).should.throw(/Context is frozen/);
+  })
+  it('should not throw on requestLocales', function() {
+    (function(){
+      ctx.requestLocales('en-US');
     }).should.not.throw();
   })
 });

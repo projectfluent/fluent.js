@@ -113,24 +113,30 @@ define(function (require, exports, module) {
       rtlLocales.indexOf(loc) === -1 ? 'ltr' : 'rtl';
   }
 
-  function initializeManifest(manifest) {
+  function setupCtxFromManifest(manifest) {
+    // register available locales
+    ctx.registerLocales(manifest.default_locale, manifest.locales);
+    ctx.registerLocaleNegotiator(function(available, requested, defLoc) {
+      // lazy-require Intl
+      var Intl = require('./intl').Intl;
+      var Promise = require('./promise').Promise;
+      var fallbackChain = Intl.prioritizeLocales(available, requested, defLoc);
+      var deferred = new Promise();
+      setDocumentLanguage(fallbackChain[0]);
+      setTimeout(function() {
+        deferred.fulfill(fallbackChain);
+      });
+      return deferred;
+    });
+    // For now we just take navigator.language, but we'd prefer to get a list 
+    // of locales that the user can read sorted by user's preference, see:
+    //   https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+    // For IE we use navigator.browserLanguage, see:
+    //   http://msdn.microsoft.com/en-us/library/ie/ms533542%28v=vs.85%29.aspx
+    ctx.requestLocales(navigator.language || navigator.browserLanguage);
+
+    // add resources
     var re = /{{\s*locale\s*}}/;
-    var Intl = require('./intl').Intl;
-    /**
-     * For now we just take nav.language, but we'd prefer to get
-     * a list of locales that the user can read sorted by user's preference,
-     * see:
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=889335
-     *
-     * For IE we use navigator.browserLanguage, see:
-     * http://msdn.microsoft.com/en-us/library/ie/ms533542%28v=vs.85%29.aspx
-     **/
-    var curLang = navigator.language || navigator.browserLanguage;
-    var locList = Intl.prioritizeLocales(manifest.locales,
-                                         [curLang],
-                                         manifest.default_locale);
-    setDocumentLanguage(locList[0]);
-    ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
         ctx.linkResource(uri.replace.bind(uri, re));
@@ -138,6 +144,7 @@ define(function (require, exports, module) {
         ctx.linkResource(uri);
       }
     });
+    return manifest;
   }
 
   function relativeToManifest(manifestUrl, url) {
@@ -166,7 +173,7 @@ define(function (require, exports, module) {
         var manifest = JSON.parse(text);
         manifest.resources = manifest.resources.map(
                                relativeToManifest.bind(this, url));
-        initializeManifest(manifest);
+        setupCtxFromManifest(manifest);
         deferred.fulfill();
       }
     );

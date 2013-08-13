@@ -26,42 +26,15 @@ describe('addResource without registerLocales', function() {
     ctx.freeze();
   });
 
-  it('should add to __none__', function() {
+  it('should add the first resource to i-default', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', null);
+    val.should.have.property('locale', 'i-default');
   })
-  it('should add to __none__', function() {
+  it('should add the second resource to i-default', function() {
     var val = ctx.getEntity('bar');
     val.value.should.equal('Bar');
-    val.should.have.property('locale', null);
-  })
-  it('should change locale without an error', function(done) {
-    whenReady(ctx, done);
-    ctx.registerLocales('pl');
-  })
-  it('should add to pl', function() {
-    var val = ctx.getEntity('foo');
-    val.value.should.equal('Foo');
-    val.should.have.property('locale', 'pl')
-  })
-  it('should change back to __none__ without an error', function(done) {
-    whenReady(ctx, done);
-    ctx.registerLocales();
-  })
-  it('should add to __none__', function() {
-    var val = ctx.getEntity('foo');
-    val.value.should.equal('Foo');
-    val.should.have.property('locale', null);
-  })
-  it('should change back to __none__ without an error', function(done) {
-    whenReady(ctx, done);
-    ctx.registerLocales(null);
-  })
-  it('should add to __none__', function() {
-    var val = ctx.getEntity('foo');
-    val.value.should.equal('Foo');
-    val.should.have.property('locale', null);
+    val.should.have.property('locale', 'i-default');
   })
 });
 
@@ -71,7 +44,8 @@ describe('addResource with registerLocales', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.registerLocales('pl');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
   });
 
@@ -82,47 +56,39 @@ describe('addResource with registerLocales', function() {
   })
   it('should change locale without an error', function(done) {
     whenReady(ctx, done);
-    ctx.registerLocales('en-US');
+    ctx.requestLocales('de');
   })
   it('should add to en-US', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', 'en-US')
+    val.should.have.property('locale', 'de')
   })
 });
 
 describe('linkResource(String) without registerLocales', function() {
   var ctx = new Context();
-  ctx.linkResource(__dirname + '/fixtures/none.lol');
+  ctx.linkResource(__dirname + '/fixtures/strings.lol');
 
   before(function(done) {
     whenReady(ctx, done);
     ctx.freeze();
   });
 
-  it('should add to __none__', function() {
+  it('should add to i-default', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', null);
-  })
-  it('should change locale without an error', function(done) {
-    whenReady(ctx, done);
-    ctx.registerLocales('pl');
-  })
-  it('should add to pl', function() {
-    var val = ctx.getEntity('foo');
-    val.value.should.equal('Foo');
-    val.should.have.property('locale', 'pl')
+    val.should.have.property('locale', 'i-default');
   })
 });
 
 describe('linkResource(String) with registerLocales', function() {
   var ctx = new Context();
-  ctx.linkResource(__dirname + '/fixtures/none.lol');
+  ctx.linkResource(__dirname + '/fixtures/strings.lol');
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.registerLocales('pl');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
   });
 
@@ -133,12 +99,12 @@ describe('linkResource(String) with registerLocales', function() {
   })
   it('should change locale without an error', function(done) {
     whenReady(ctx, done);
-    ctx.registerLocales('en-US');
+    ctx.requestLocales('de');
   })
   it('should add to en-US', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', 'en-US')
+    val.should.have.property('locale', 'de')
   })
 });
 
@@ -148,8 +114,15 @@ describe('linkResource(Function) without registerLocales', function() {
     return __dirname + '/fixtures/' + locale + '.lol';
   });
 
-  it('should throw on freeze', function() {
-    ctx.freeze.should.throw(/No registered locales/);
+  before(function(done) {
+    whenReady(ctx, done);
+    ctx.freeze();
+  });
+
+  it('should add to i-default', function() {
+    var val = ctx.getEntity('foo');
+    val.value.should.equal('Foo i');
+    val.should.have.property('locale', 'i-default')
   })
 
 });
@@ -162,7 +135,8 @@ describe('linkResource(Function) with registerLocales', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.registerLocales('pl');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
   });
 
@@ -173,20 +147,12 @@ describe('linkResource(Function) with registerLocales', function() {
   })
   it('should change locale without an error', function(done) {
     whenReady(ctx, done);
-    ctx.registerLocales('en-US');
+    ctx.requestLocales('en-US');
   })
   it('should add to en-US', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo en-US');
     val.should.have.property('locale', 'en-US')
-  })
-  it('should throw if changing locale to __none__', function() {
-    ctx.registerLocales.should.throw(/No registered locales/);
-  })
-  it('should throw if changing locale to __none__', function() {
-    (function() {
-      ctx.registerLocales();
-    }).should.throw(/No registered locales/);
   })
 });
 
@@ -200,44 +166,29 @@ describe('registerLocales errors', function() {
     (function() {
       ctx.registerLocales('en-US');
     }).should.not.throw();
-    (function() {
-      ctx.registerLocales('en-US', 'pl');
-    }).should.not.throw();
-  })
-  it('should not throw if the only argument is null', function() {
-    (function() {
-      ctx.registerLocales(null);
-    }).should.not.throw();
   })
   it('should not throw if there are no arguments', function() {
     (function() {
       ctx.registerLocales();
     }).should.not.throw();
   })
-  it('should throw otherwise', function() {
-    (function() {
-      ctx.registerLocales(7);
-    }).should.throw(/Language codes must be strings/);
-    (function() {
-      ctx.registerLocales('pl', 7);
-    }).should.throw(/Language codes must be strings/);
+  it('should not throw if the first argument is undefined', function() {
     (function() {
       ctx.registerLocales(undefined);
-    }).should.throw(/Language codes must be strings/);
+    }).should.not.throw();
+  })
+  it('should throw otherwise', function() {
     (function() {
-      ctx.registerLocales(true);
+      ctx.registerLocales(null);
     }).should.throw(/Language codes must be strings/);
     (function() {
       ctx.registerLocales(false);
     }).should.throw(/Language codes must be strings/);
     (function() {
-      ctx.registerLocales('pl', undefined);
+      ctx.registerLocales(7);
     }).should.throw(/Language codes must be strings/);
     (function() {
-      ctx.registerLocales(null, 'pl');
-    }).should.throw(/Language codes must be strings/);
-    (function() {
-      ctx.registerLocales('pl', null);
+      ctx.registerLocales(true);
     }).should.throw(/Language codes must be strings/);
   })
 });

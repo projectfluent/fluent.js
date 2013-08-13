@@ -38,15 +38,16 @@ describe('Asynchronous ctx.localize', function() {
     });
     ctx.freeze();
   });
-  it('should have empty reason.locales in monolingual mode', function(done) {
+  it('should have i-default in reason.locales in monolingual mode', function(done) {
     ctx.localize(['foo'], function(l10n) {
-      l10n.reason.locales.should.have.property('length', 0);
+      l10n.reason.locales[0].should.equal('i-default');
       done();
     });
     ctx.freeze();
   });
   it('should have non-empty reason.locales in multilingual mode', function(done) {
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.localize(['foo'], function(l10n) {
       l10n.reason.locales[0].should.equal('pl');
       done();
@@ -60,10 +61,11 @@ describe('Asynchronous ctx.localize', function() {
         done();
       }
     });
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
     whenReady(ctx, function() {
-      ctx.registerLocales('de', 'en-US');
+      ctx.requestLocales('de');
     });
   });
   it('should have reason.locales when locales change', function(done) {
@@ -74,24 +76,26 @@ describe('Asynchronous ctx.localize', function() {
         done();
       }
     });
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
     whenReady(ctx, function() {
-      ctx.registerLocales('de', 'en-US');
+      ctx.requestLocales('de');
     });
   });
-  it('should have empty reason.locales when switching to monolingual', function(done) {
+  it('should use the default when requesting no specific locales', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
       if (i++ == 1) {
-        l10n.reason.locales.should.have.property('length', 0);
+        l10n.reason.locales[0].should.equal('en-US');
         done();
       }
     });
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
     whenReady(ctx, function() {
-      ctx.registerLocales();
+      ctx.requestLocales();
     });
   });
   it('should have non-empty reason.locales when locales change', function(done) {
@@ -102,10 +106,11 @@ describe('Asynchronous ctx.localize', function() {
         done();
       }
     });
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.freeze();
     whenReady(ctx, function() {
-      ctx.registerLocales('de', 'en-US');
+      ctx.requestLocales('de');
     });
   });
   it('should be gced after inner .stop', function(done) {
@@ -273,29 +278,10 @@ describe('Synchronous ctx.localize in monolingual mode', function() {
       l10n.reason.should.have.property('locales');
     });
   });
-  it('should have empty reason.locales', function() {
+  it('should have i-default in reason.locales', function() {
     ctx.localize(['foo'], function(l10n) {
-      l10n.reason.locales.should.have.property('length', 0);
+      l10n.reason.locales[0].should.equal('i-default');
     });
-  });
-  it('should fire again when locales change', function(done) {
-    var i = 0;
-    ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
-        done();
-      }
-    });
-    ctx.registerLocales('pl', 'en-US');
-  });
-  it('should have non-empty reason.locales when locales change', function(done) {
-    var i = 0;
-    ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
-        l10n.reason.locales[0].should.equal('pl');
-        done();
-      }
-    });
-    ctx.registerLocales('pl', 'en-US');
   });
 });
 
@@ -304,7 +290,8 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
 
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.addResource('<foo "Foo">');
     ctx.freeze();
     whenReady(ctx, done);
@@ -335,7 +322,7 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
         done();
       }
     });
-    ctx.registerLocales('pl', 'en-US');
+    ctx.requestLocales('de');
   });
   it('should have non-empty reason.locales when locales change', function(done) {
     var i = 0;
@@ -345,25 +332,27 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
         done();
       }
     });
-    ctx.registerLocales('de', 'en-US');
+    ctx.requestLocales('de');
   });
-  it('should have empty reason.locales when switching to monolingual', function(done) {
+  it('should use the default lcoale if no locales have been requested', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
       if (i++ == 1) {
-        l10n.reason.locales.should.have.property('length', 0);
+        l10n.reason.locales[0].should.equal('en-US');
         done();
       }
     });
-    ctx.registerLocales();
+    ctx.requestLocales();
   });
+});
 
 describe('l10n object passed to ctx.localize\'s callback', function() {
   var ctx;
 
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.registerLocales('pl', 'en-US');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+    ctx.requestLocales('pl');
     ctx.addResource('<foo "Foo">');
     ctx.freeze();
     whenReady(ctx, done);
@@ -377,6 +366,4 @@ describe('l10n object passed to ctx.localize\'s callback', function() {
       l10n.reason.locales[0].should.equal('pl');
     });
   });
-});
-
 });

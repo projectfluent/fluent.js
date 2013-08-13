@@ -24,58 +24,98 @@ ctx.localize(['hello', 'new'], function(l10n) {
 });
 ```
 
-### ctx.registerLocales(...locales: String?)
+### ctx.registerLocales(defaultLocale: String?, availableLocales: Array&lt;String&gt;?)
 
-Register the locales (language codes) passed as the arguments.
+Register the default locale of the `Context` instance, as well as all other 
+locales available to the `Context` instance before the language negotiation. 
+Locales are referenced by their [BCP 47 language codes][].
+
+[BCP 47 language codes]: http://tools.ietf.org/html/bcp47
 
 ```javascript
-ctx.registerLocales('es-AR', 'es-ES', 'en-US');
+ctx.registerLocales('en-US', ['ar', 'es-AR', 'es-ES', 'en-US', 'fr', 'pl']);
 ```
 
-The list of locales should be the result of a client-side language negotiation 
-between the HTML document and the browser.  It should include the original 
-language of the document as the last element.
+`defaultLocale` is the original language of the `Context` instance and will be 
+used as the last fallback locale if other locales are registered.  If 
+it is undefined, or if `registerLocales` hasn't been called at all, the 
+`Context` instance will create a special locale called [`i-default`][] to be 
+used as the default.
 
-If `registerLocales` is called with a non-empty list of arguments, the Context 
-instance will run in a multi-locale mode.  In this mode, the language fallback 
-is enabled according to the negotiated fallback chain.  Each entity retrieved 
-via `getEntity` or `localize` will also have a `locale` property denoting which 
-language it is in.  (E.g., in the example above, if an entity is missing from 
-`es-AR` and is found in `es-ES`, the `locale` property will be `es-ES`.)
+[`i-default`]: http://www.iana.org/assignments/lang-tags/i-default
 
-If, on the other hand, `registerLocales` is called with an empty argument list, 
-with a falsy argument or is not called at all, the Context instance will run in 
-a single-locale mode.  In this mode there is no language negotiation nor 
-language fallback.  All resources are added to a special locale internally 
-called `__none__` and all retrieved entities come from it as well (their 
-`locale` property is `undefined`).
+`availableLocales` is an array of all locales available to the `Context` 
+instance.  This array (with `defaultLocale` appended to it if it is not already 
+present) will be used to negotiate the fallback chain for the user.  
 
-`registerLocales` can be called after `freeze` to change the current language 
+
+### ctx.registerLocaleNegotiator(negotiator: Function)
+
+Register a function which will be used to negotiate the locales supported by 
+the `Context` instance.  If you don't call this function, L20n will use the 
+built-in `Intl.prioritizeLocales` negotiator.
+
+```javascript
+ctx.registerLocaleNegotiator(function(available, requested, defLocale) {
+  return Intl.prioritizeLocales(available, requested, defLocale);
+});
+```
+
+`negotiator` is a function which takes three arguments:
+
+ - `available` - all locales available to the `Context` instance,
+ - `requested` - locales preferred by the user,
+ - `defLocale` - the default locale to be used as the ultimate fallback.
+
+It can return an array which is the final fallback chain of locales, or 
+a Promise which must be fulfilled with the final fallback chain asynchronously.
+
+
+### ctx.requestLocales(...requestedLocales: String?)
+
+Specify the user preferred locales for the `Context` instance to negotiate 
+against.  The final list of locales supported by the `Context` instance will be 
+negotiated asynchronously by the `negotiator` registered by 
+`registerLocaleNegotiator` when `freeze` is called.
+
+```javascript
+ctx.requestLocales('pl');
+```
+
+```javascript
+ctx.requestLocales('fr-CA', 'fr');
+```
+
+If `requestedLocales` is empty or undefined, the default locale from 
+`registerLocales` will be used.
+
+```javascript
+ctx.requestLocales();
+```
+
+`requestLocales` can be called after `freeze` to change the current language 
 fallback chain, for instance if requested by the user.
 
 
 ### ctx.addResource(text: String)
 
-Add a string as the content of a resource to the Context instance. 
+Add a string as the content of a resource to the Context instance.  The 
+resource is added to all registered locales.
 
 ```javascript
 ctx.addResource('<hello "Hello, world!">');
 ```
 
-The resource is added to all registered locales, or to the `__none__` 
-locale in the single-locale mode.
-
 
 ### ctx.linkResource(uri: String)
 
-Add a resource identified by a URL to the Context instance. 
+Add a resource identified by a URL to the Context instance.  The resource is 
+added to all registered locales.
 
 ```javascript
 ctx.linkResource('../locale/app.lol');
 ```
 
-The resource is added to all registered locales, or to the `__none__` 
-locale in the single-locale mode.
 
 
 ### ctx.linkResource(template: Function)
@@ -88,13 +128,14 @@ code of the current locale, which needs to be first registered with
 
 ```javascript
 ctx.linkResource(function(locale) {
-  return '../locales/' + locale + '/app.lol';
+  return '../locales/' + locale + '/strings.lol';
 });
 ```
 
 The resource is added to all registered locales.  If there are no registered 
-locales, calling `freeze` with a template function as an argument will throw 
-a `No registered locales` error in `freeze`.
+locales (see `registerLocales`), the default `i-default` locale is used.  In 
+this case, `addResource(String)` and `linkResource(String)` might be better 
+suited for adding resources.
 
 
 ### ctx.freeze()

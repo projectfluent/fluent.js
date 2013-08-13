@@ -39,7 +39,7 @@ define(function (require, exports, module) {
       var metaDefLoc = headNode.querySelector('meta[name="default_locale"]');
       var metaRes = headNode.querySelector('meta[name="resources"]');
       if (metaLoc && metaDefLoc && metaRes) {
-        initializeManifest({
+        setupCtxFromManifest({
           'locales': metaLoc.getAttribute('content').split(',')
                             .map(String.trim),
           'default_locale': metaDefLoc.getAttribute('content'),
@@ -127,20 +127,23 @@ define(function (require, exports, module) {
       rtlLocales.indexOf(loc) === -1 ? 'ltr' : 'rtl';
   }
 
-  function initializeManifest(manifest) {
+  function setupCtxFromManifest(manifest) {
+    // register available locales
+    ctx.registerLocales(manifest.default_locale, manifest.locales);
+    ctx.registerLocaleNegotiator(function(available, requested, defLoc) {
+      // lazy-require Intl
+      var Intl = require('./intl').Intl;
+      var fallbackChain = Intl.prioritizeLocales(available, requested, defLoc);
+      setDocumentLanguage(fallbackChain[0]);
+      return fallbackChain;
+    });
+    // For now we just take navigator.language, but we'd prefer to get a list 
+    // of locales that the user can read sorted by user's preference, see:
+    //   https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+    ctx.requestLocales(navigator.language);
+
+    // add resources
     var re = /{{\s*locale\s*}}/;
-    var Intl = require('./intl').Intl;
-    /**
-     * For now we just take nav.language, but we'd prefer to get
-     * a list of locales that the user can read sorted by user's preference,
-     * see:
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=889335
-     **/
-    var locList = Intl.prioritizeLocales(manifest.locales,
-                                         [navigator.language],
-                                         manifest.default_locale);
-    setDocumentLanguage(locList[0]);
-    ctx.registerLocales.apply(ctx, locList);
     manifest.resources.forEach(function(uri) {
       if (re.test(uri)) {
         ctx.linkResource(uri.replace.bind(uri, re));
@@ -149,11 +152,9 @@ define(function (require, exports, module) {
       }
     });
     navigator.mozSettings.addObserver('language.current', function(event) {
-      var locList = Intl.prioritizeLocales(manifest.locales,
-                                           [event.settingValue],
-                                           manifest.default_locale);
-      ctx.registerLocales.apply(ctx, locList);
+      ctx.requestLocales(event.settingValue);
     });
+    return manifest;
   }
 
   function relativeToManifest(manifestUrl, url) {
@@ -182,7 +183,7 @@ define(function (require, exports, module) {
         var manifest = JSON.parse(text);
         manifest.resources = manifest.resources.map(
                                relativeToManifest.bind(this, url));
-        initializeManifest(manifest);
+        setupCtxFromManifest(manifest);
         deferred.fulfill();
       }
     );
