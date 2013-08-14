@@ -33,7 +33,7 @@ define(function (require, exports, module) {
           ctx.addResource(scripts[i].textContent);
         }
       }
-      ctx.freeze();
+      ctx.requestLocales();
     } else {
       var metaLoc = headNode.querySelector('meta[name="locales"]');
       var metaDefLoc = headNode.querySelector('meta[name="default_locale"]');
@@ -46,12 +46,11 @@ define(function (require, exports, module) {
           'resources': metaRes.getAttribute('content').split('|')
                               .map(String.trim)
         });
-        ctx.freeze();
       } else {
         var link = headNode.querySelector('link[rel="localization"]');
         if (link) {
           // XXX add errback
-          loadManifest(link.getAttribute('href')).then(ctx.freeze.bind(ctx));
+          loadManifest(link.getAttribute('href'));
         } else {
           console.warn('L20n: No resources found. (Put them above l20n.js.)');
         }
@@ -137,10 +136,6 @@ define(function (require, exports, module) {
       setDocumentLanguage(fallbackChain[0]);
       return fallbackChain;
     });
-    // For now we just take navigator.language, but we'd prefer to get a list 
-    // of locales that the user can read sorted by user's preference, see:
-    //   https://bugzilla.mozilla.org/show_bug.cgi?id=889335
-    ctx.requestLocales(navigator.language);
 
     // add resources
     var re = /{{\s*locale\s*}}/;
@@ -151,9 +146,17 @@ define(function (require, exports, module) {
         ctx.linkResource(uri);
       }
     });
+
+    // listen to language change events
     navigator.mozSettings.addObserver('language.current', function(event) {
       ctx.requestLocales(event.settingValue);
     });
+
+    // For now we just take navigator.language, but we'd prefer to get a list 
+    // of locales that the user can read sorted by user's preference, see:
+    //   https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+    ctx.requestLocales(navigator.language);
+
     return manifest;
   }
 

@@ -20,7 +20,7 @@ describe('A single-locale context with addResource', function() {
         long: "Mozilla Firefox"                                               \
       }>                                                                      \
     ');
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('should return the string value of brandName', function() {
@@ -61,7 +61,7 @@ describe('A single-locale context with linkResource', function() {
     ctx = L20n.getContext();
     ctx.ready(done);
     ctx.linkResource(__dirname + '/fixtures/basic/single.lol');
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('should return the string value of brandName', function() {

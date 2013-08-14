@@ -28,7 +28,7 @@ describe('Asynchronous ctx.localize', function() {
         done();
       }
     });
-    ctx.freeze();
+    ctx.requestLocales();
     now = true;
   });
   it('should have reason.locales', function(done) {
@@ -36,23 +36,22 @@ describe('Asynchronous ctx.localize', function() {
       l10n.reason.should.have.property('locales');
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales();
   });
   it('should have i-default in reason.locales in monolingual mode', function(done) {
     ctx.localize(['foo'], function(l10n) {
       l10n.reason.locales[0].should.equal('i-default');
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales();
   });
   it('should have non-empty reason.locales in multilingual mode', function(done) {
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     ctx.localize(['foo'], function(l10n) {
       l10n.reason.locales[0].should.equal('pl');
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
   it('should fire again when locales change', function(done) {
     var i = 0;
@@ -63,7 +62,6 @@ describe('Asynchronous ctx.localize', function() {
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
     whenReady(ctx, function() {
       ctx.requestLocales('de');
     });
@@ -78,7 +76,6 @@ describe('Asynchronous ctx.localize', function() {
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
     whenReady(ctx, function() {
       ctx.requestLocales('de');
     });
@@ -93,7 +90,6 @@ describe('Asynchronous ctx.localize', function() {
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
     whenReady(ctx, function() {
       ctx.requestLocales();
     });
@@ -108,7 +104,6 @@ describe('Asynchronous ctx.localize', function() {
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
     whenReady(ctx, function() {
       ctx.requestLocales('de');
     });
@@ -164,7 +159,7 @@ describe('Asynchronous ctx.localize', function() {
 
     ctx.addResource('<foo2 "Foo {{ @example }}">');
     ctx.addEventListener('error', function(e){console.log(e);});
-    ctx.freeze();
+    ctx.requestLocales();
 
     ctx.localize(['foo2'], function(l10n) {
       if (!conditions[2]) {
@@ -234,7 +229,7 @@ describe('Asynchronous ctx.localize', function() {
 
     ctx.addResource('<foo2 "Foo {{ @example }}">');
     ctx.addEventListener('error', function(e){console.log(e);});
-    ctx.freeze();
+    ctx.requestLocales();
 
     var handler = ctx.localize(['foo2'], function(l10n) {
       if (!conditions[2]) {
@@ -261,7 +256,7 @@ describe('Synchronous ctx.localize in monolingual mode', function() {
   beforeEach(function(done) {
     ctx = new Context();
     ctx.addResource('<foo "Foo">');
-    ctx.freeze();
+    ctx.requestLocales();
     whenReady(ctx, done);
   });
   it('should fire immediately', function(done) {
@@ -291,9 +286,8 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
   beforeEach(function(done) {
     ctx = new Context();
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     ctx.addResource('<foo "Foo">');
-    ctx.freeze();
+    ctx.requestLocales('pl');
     whenReady(ctx, done);
   });
   it('should fire immediately', function(done) {
@@ -352,9 +346,8 @@ describe('l10n object passed to ctx.localize\'s callback', function() {
   beforeEach(function(done) {
     ctx = new Context();
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     ctx.addResource('<foo "Foo">');
-    ctx.freeze();
+    ctx.requestLocales('pl');
     whenReady(ctx, done);
   });
 

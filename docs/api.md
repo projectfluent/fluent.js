@@ -4,13 +4,13 @@ L20n JavaScript API
 ```javascript
 var ctx = L20n.getContext();
 ctx.linkResource('./locales/strings.l20n');
-ctx.freeze();
+ctx.requestLocales();
 ```
 
-When you freeze the context, the resource files will be retrieved, parsed and 
-compiled.  You can listen to the `ready` event (emitted by the `Context` 
-instance when all the resources have been compiled) and use `ctx.get` and 
-`ctx.getEntity` to get translations synchronously.
+When you freeze the context by calling `requestLocales`, the resource files 
+will be retrieved, parsed and compiled.  You can listen to the `ready` event 
+(emitted by the `Context` instance when all the resources have been compiled) 
+and use `ctx.get` and `ctx.getEntity` to get translations synchronously.
 
 Alternatively, you can register callbacks to execute when the context is ready 
 (or when globals change and translations need to be updated) with 
@@ -73,10 +73,17 @@ a Promise which must be fulfilled with the final fallback chain asynchronously.
 
 ### ctx.requestLocales(...requestedLocales: String?)
 
-Specify the user preferred locales for the `Context` instance to negotiate 
-against.  The final list of locales supported by the `Context` instance will be 
+Specify the user's preferred locales for the `Context` instance to negotiate 
+against and freeze the `Context` instance.
+
+When a `Context` instance is frozen, no more resources can be added or linked.  
+All IO related to fetching the resource files takes place when a `Context` 
+instance freezes.  When all resources have been fetched, parsed and compiled, 
+the `Context` instance will emit a `ready` event.
+
+The final list of locales supported by the `Context` instance will be 
 negotiated asynchronously by the `negotiator` registered by 
-`registerLocaleNegotiator` when `freeze` is called.
+`registerLocaleNegotiator`.
 
 ```javascript
 ctx.requestLocales('pl');
@@ -86,15 +93,26 @@ ctx.requestLocales('pl');
 ctx.requestLocales('fr-CA', 'fr');
 ```
 
-If `requestedLocales` is empty or undefined, the default locale from 
-`registerLocales` will be used.
+If `requestedLocales` argument list is empty or undefined, the default locale 
+from `registerLocales` will be used.
 
 ```javascript
 ctx.requestLocales();
 ```
 
-`requestLocales` can be called after `freeze` to change the current language 
-fallback chain, for instance if requested by the user.
+If `registerLocales` hasn't been called, the special `i-default` locale is 
+used, which means that the following minimal code is valid and will result in 
+a fully operational `Context` instance.
+
+```javascript
+var ctx = L20n.getContext();
+ctx.addResource('<hello "Hello, world!">');
+ctx.requestLocales();
+```
+
+`requestLocales` can be called multiple times after the `Context` instance 
+emitted the `ready` event, in order to change the current language fallback 
+chain, for instance if requested by the user.
 
 
 ### ctx.addResource(text: String)
@@ -121,7 +139,7 @@ ctx.linkResource('../locale/app.lol');
 ### ctx.linkResource(template: Function)
 
 Add a resource identified by a URL to the Context instance.  The URL is 
-constructed dynamically when you call `freeze`.  The function passed to 
+constructed dynamically when you call `requestLocales`.  The function passed to 
 `linkResource` (called a _template function_) takes one argument which is the 
 code of the current locale, which needs to be first registered with 
 `registerLocales`.
@@ -136,16 +154,6 @@ The resource is added to all registered locales.  If there are no registered
 locales (see `registerLocales`), the default `i-default` locale is used.  In 
 this case, `addResource(String)` and `linkResource(String)` might be better 
 suited for adding resources.
-
-
-### ctx.freeze()
-
-Freeze the Context instance.  No more resources can be added after `freeze` is 
-called.
-
-All IO related to fetching the resource files takes place in `freeze`.  When 
-all resources have been fetched, parsed and compiled, the Context instance will 
-emit a `ready` event.
 
 
 ### ctx.addEventListener(event: String, callback: Function)

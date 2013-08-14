@@ -31,12 +31,12 @@ describe('A frozen, non-ready context', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.addResource('<dummy "Dummy">');
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
-  it('should throw on freeze', function() {
+  it('should throw on requestLocales', function() {
     (function(){
-      ctx.freeze();
+      ctx.requestLocales();
     }).should.throw(/Context not ready/);
   })
   it('should throw on get', function() {
@@ -61,7 +61,7 @@ describe('A frozen, non-ready context', function() {
   })
   it('should throw on registerLocaleNegotiator', function() {
     (function(){
-      ctx.registerLocales('en-US');
+      ctx.registerLocaleNegotiator(function() {});
     }).should.throw(/Context is frozen/);
   })
   it('should throw on requestLocales', function() {
@@ -80,7 +80,7 @@ describe('A frozen, ready context', function() {
       ctx.removeEventListener('ready', onReady);
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('should not throw on get of a known entity', function() {

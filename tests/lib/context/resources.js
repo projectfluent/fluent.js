@@ -11,8 +11,8 @@ function whenReady(ctx, callback) {
 
 describe('A context without any resources', function() {
   var ctx = new Context();
-  it('should throw on freeze', function() {
-    ctx.freeze.should.throw(/Context has no resources/);
+  it('should throw on requestLocales', function() {
+    ctx.requestLocales.should.throw(/Context has no resources/);
   })
 });
 
@@ -23,7 +23,7 @@ describe('addResource without registerLocales', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('should add the first resource to i-default', function() {
@@ -46,7 +46,6 @@ describe('addResource with registerLocales', function() {
     whenReady(ctx, done);
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
   });
 
   it('should add to pl', function() {
@@ -71,7 +70,7 @@ describe('linkResource(String) without registerLocales', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('should add to i-default', function() {
@@ -89,7 +88,6 @@ describe('linkResource(String) with registerLocales', function() {
     whenReady(ctx, done);
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
   });
 
   it('should add to pl', function() {
@@ -116,7 +114,7 @@ describe('linkResource(Function) without registerLocales', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('should add to i-default', function() {
@@ -137,7 +135,6 @@ describe('linkResource(Function) with registerLocales', function() {
     whenReady(ctx, done);
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
   });
 
   it('should add to pl', function() {

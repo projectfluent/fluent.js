@@ -21,7 +21,7 @@ describe('ctx.updateData', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('when absent, all testing entities don\'t work', function() {
@@ -160,7 +160,7 @@ describe('ctx.get with ctxdata passed directly', function() {
 
   before(function(done) {
     whenReady(ctx, done);
-    ctx.freeze();
+    ctx.requestLocales();
   });
 
   it('does nothing if no data is paased', function() {

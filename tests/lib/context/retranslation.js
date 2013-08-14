@@ -25,7 +25,6 @@ describe('ctx.ready', function() {
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl');
-    ctx.freeze();
   });
   it('should fire asynchronously when language changes', function(done) {
     var now = false;
@@ -35,27 +34,24 @@ describe('ctx.ready', function() {
       }
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     whenReady(ctx, function() {
       now = true;
       ctx.requestLocales('de');
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
   it('should fire synchronously when context is ready', function(done) {
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     whenReady(ctx, function() {
       ctx.ready(function() {
         done();
       });
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
   it('should fire synchronously when language changes', function(done) {
     var now = false;
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     whenReady(ctx, function() {
       ctx.ready(function() {
         if (now) {
@@ -67,6 +63,6 @@ describe('ctx.ready', function() {
         ctx.requestLocales('de');
       });
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
 });

@@ -33,12 +33,12 @@ define(function (require, exports, module) {
           ctx.addResource(scripts[i].textContent);
         }
       }
-      ctx.freeze();
+      ctx.requestLocales();
     } else {
       var link = headNode.querySelector('link[rel="localization"]');
       if (link) {
         // XXX add errback
-        loadManifest(link.getAttribute('href')).then(ctx.freeze.bind(ctx));
+        loadManifest(link.getAttribute('href'));
       } else {
         console.warn('L20n: No resources found. (Put them above l20n.js.)');
       }
@@ -128,12 +128,6 @@ define(function (require, exports, module) {
       });
       return deferred;
     });
-    // For now we just take navigator.language, but we'd prefer to get a list 
-    // of locales that the user can read sorted by user's preference, see:
-    //   https://bugzilla.mozilla.org/show_bug.cgi?id=889335
-    // For IE we use navigator.browserLanguage, see:
-    //   http://msdn.microsoft.com/en-us/library/ie/ms533542%28v=vs.85%29.aspx
-    ctx.requestLocales(navigator.language || navigator.browserLanguage);
 
     // add resources
     var re = /{{\s*locale\s*}}/;
@@ -144,6 +138,14 @@ define(function (require, exports, module) {
         ctx.linkResource(uri);
       }
     });
+
+    // For now we just take navigator.language, but we'd prefer to get a list 
+    // of locales that the user can read sorted by user's preference, see:
+    //   https://bugzilla.mozilla.org/show_bug.cgi?id=889335
+    // For IE we use navigator.browserLanguage, see:
+    //   http://msdn.microsoft.com/en-us/library/ie/ms533542%28v=vs.85%29.aspx
+    ctx.requestLocales(navigator.language || navigator.browserLanguage);
+
     return manifest;
   }
 

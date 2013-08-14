@@ -16,7 +16,6 @@ describe('Language negotiation', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('pl');
     ctx.linkResource(function(locale) {
       return __dirname + '/fixtures/' + locale + '.lol';
     });
@@ -27,7 +26,7 @@ describe('Language negotiation', function() {
       ctx.get('foo').should.equal('Foo pl');
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
   it('can be overridden', function(done) {
     ctx.registerLocaleNegotiator(function(available, requested, def) {
@@ -37,7 +36,7 @@ describe('Language negotiation', function() {
       ctx.get('foo').should.equal('Foo de');
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
   it('can return a promise', function(done) {
     ctx.registerLocaleNegotiator(function(available, requested, def) {
@@ -51,6 +50,6 @@ describe('Language negotiation', function() {
       ctx.get('foo').should.equal('Foo de');
       done();
     });
-    ctx.freeze();
+    ctx.requestLocales('pl');
   });
 });
