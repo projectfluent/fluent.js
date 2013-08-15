@@ -1,8 +1,9 @@
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
-
-var RetranslationManager = require('../../../lib/l20n/retranslation').RetranslationManager;
+var RetranslationManager = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/retranslation').RetranslationManager
+  : require('../../../lib/l20n/retranslation').RetranslationManager;
 var Global = require('../../../lib/l20n/platform/globals').Global;
 var EventEmitter = require('../../../lib/l20n/events').EventEmitter;
 

@@ -115,6 +115,21 @@ emitted the `ready` event, in order to change the current language fallback
 chain, for instance if requested by the user.
 
 
+### ctx.supportedLocales
+
+A read-only property which holds the current fallback chain of locales which 
+was negotiated between all the available locales, the default locale and the 
+user's preferred locales.
+
+```javascript
+ctx.registerLocales('en-US', ['en-US', 'fr', 'pl']);
+ctx.requestLocales('fr-CA', 'fr');
+ctx.ready(function() {
+  // ctx.supportedLocales == ['fr'];
+});
+```
+
+
 ### ctx.addResource(text: String)
 
 Add a string as the content of a resource to the Context instance.  The 
