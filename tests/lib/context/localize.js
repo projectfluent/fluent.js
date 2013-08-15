@@ -14,6 +14,20 @@ function whenReady(ctx, callback) {
   });
 }
 
+describe('ctx.localize errors', function() {
+  var ctx;
+
+  beforeEach(function() {
+    ctx = new Context();
+  });
+
+  it('should throw if the second argument is not a callback', function() {
+    (function() {
+      ctx.localize(['foo']);
+    }).should.throw(/No callback passed/);
+  });
+});
+
 describe('Asynchronous ctx.localize', function() {
   var ctx;
 

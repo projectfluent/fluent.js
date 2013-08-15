@@ -1,6 +1,7 @@
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
+var Parser = require('../../../lib/l20n/parser').Parser;
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {
@@ -153,39 +154,48 @@ describe('linkResource(Function) with registerLocales', function() {
   })
 });
 
-describe('registerLocales errors', function() {
+describe('Parser errors', function() {
   var ctx;
+
   beforeEach(function() {
     ctx = new Context();
+    ctx.linkResource(function(locale) {
+    return __dirname + '/fixtures/' + locale + '.lol';
+    });
   });
 
-  it('should not throw if the lang code is a string', function() {
-    (function() {
-      ctx.registerLocales('en-US');
-    }).should.not.throw();
-  })
-  it('should not throw if there are no arguments', function() {
-    (function() {
-      ctx.registerLocales();
-    }).should.not.throw();
-  })
-  it('should not throw if the first argument is undefined', function() {
-    (function() {
-      ctx.registerLocales(undefined);
-    }).should.not.throw();
-  })
-  it('should throw otherwise', function() {
-    (function() {
-      ctx.registerLocales(null);
-    }).should.throw(/Language codes must be strings/);
-    (function() {
-      ctx.registerLocales(false);
-    }).should.throw(/Language codes must be strings/);
-    (function() {
-      ctx.registerLocales(7);
-    }).should.throw(/Language codes must be strings/);
-    (function() {
-      ctx.registerLocales(true);
-    }).should.throw(/Language codes must be strings/);
-  })
+  it('should get ready', function(done) {
+    whenReady(ctx, done);
+    ctx.requestLocales();
+  });
+  it('should emit a ParserError', function(done) {
+    ctx.addEventListener('error', function(e) {
+      e.should.be.an.instanceOf(Parser.Error);
+      done();
+    });
+    ctx.requestLocales();
+  });
+});
+
+describe.skip('recursive imports', function() {
+  var ctx;
+
+  beforeEach(function() {
+    ctx = new Context();
+    ctx.linkResource(function(locale) {
+      return __dirname + '/fixtures/recursive.lol';
+    });
+  });
+
+  it('should get ready', function(done) {
+    whenReady(ctx, done);
+    ctx.requestLocales();
+  });
+  it('should emit an error', function(done) {
+    ctx.addEventListener('error', function(e) {
+      e.should.be.an.instanceOf(Context.Error);
+      done();
+    });
+    ctx.requestLocales();
+  });
 });

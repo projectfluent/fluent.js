@@ -177,18 +177,47 @@ Register an event handler on the Context instance.
 
 Currently available event types:
 
- - `ready` - fired when all resources are available and the Context instance is 
-   ready to be used.  This event is also fired after each change to locale 
+ - `ready` - fired when all resources are available and the `Context` instance 
+   is ready to be used.  This event is also fired after each change to locale 
    order (retranslation).
- - `error` - fired when the Context instance encounters an error like:
-   - entity could not be retrieved,
-   - entity could not be found in the current locale,
-   - entity value could not be evaluated to a string.
 
-   The error object is passed as the first argument to `callback`.
+ - `error` - fired when an error occurs which prevents the `Context` instance 
+   from working correctly or when the existing translations are buggy.  The 
+   error object is passed as the first argument to `callback`.  These errors 
+   include:
 
- - `debug` - fired when an unknown JS error is thrown in the async code.  The 
-   error object is passed as the first argument to `callback`.
+   - native JavaScript errors (`TypeError`, `ReferenceError` etc.),
+
+   - `Context.RuntimeError`, when an entity is missing or broken in all 
+     supported locales;  in this case, L20n will show the the best available 
+     fallback of the requested entity in the UI:  the source string as found in 
+     the resource, or the identifier.
+
+   - `Context.TranslationError`, when the translation is present but broken 
+     in one of supported locales;  the `Context` instance will try to retrieve 
+     a fallback translation from the next locale in the fallback chain,
+
+   - `Parser.Error`, when L20n is unable to parse the syntax of a resource; 
+     this might result in entities being broken which in turn can lead to above 
+     error being emitted.
+
+ - `warning` - fired when a less serious error occurs from which the `Context` 
+   instance can recover gracefully and try to fetch a translations from 
+   a fallback locale.  The error object is passed as the first argument to 
+   `callback` and can be one of the following:
+
+   - `Context.Error`, when there are problems with setting up resources (e.g. 
+     a 404 error when fetching a resource file, or recursive `import` 
+     statements in resource files),
+
+   - `Context.TranslationError`, when there is a missing translation 
+     in one of supported locales;  the `Context` instance will try to retrieve 
+     a fallback translation from the next locale in the fallback chain,
+
+   - `Compiler.Error`, when L20n is unable to evaluate an entity to a string; 
+     there are two types of errors in this category: `Compiler.ValueError`, 
+     when L20n can still try to use the literal source string of the entity as 
+     fallback, and `Compiler.IndexError` otherwise.
 
 
 ### ctx.removeEventListener(event: String, callback: Function)
@@ -274,7 +303,7 @@ The callback function is passed an `l10n` object with the following properties:
 The `reason` object can be:
  
   - `{ locales: Array<String> }` if `callback` was invoked because of a change 
-    of the current locale (see `registerLocales`),
+    of the current locale (see `requestLocales`),
   - `{ global: String }` if `callback` was invoked because the value of one of 
     the globals used in the translation of `ids` has changed.
 

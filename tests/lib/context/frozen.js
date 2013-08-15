@@ -34,6 +34,16 @@ describe('A frozen, non-ready context', function() {
     ctx.requestLocales();
   });
 
+  it('should throw on addResource', function() {
+    (function(){
+      ctx.addResource('<dummy "Dummy">');
+    }).should.throw(/Context is frozen/);
+  })
+  it('should throw on linkResource', function() {
+    (function(){
+      ctx.linkResource('./fixtures/en-US.lol');
+    }).should.throw(/Context is frozen/);
+  })
   it('should throw on requestLocales', function() {
     (function(){
       ctx.requestLocales();
@@ -83,6 +93,16 @@ describe('A frozen, ready context', function() {
     ctx.requestLocales();
   });
 
+  it('should throw on addResource', function() {
+    (function(){
+      ctx.addResource('<dummy "Dummy">');
+    }).should.throw(/Context is frozen/);
+  })
+  it('should throw on linkResource', function() {
+    (function(){
+      ctx.linkResource('./fixtures/en-US.lol');
+    }).should.throw(/Context is frozen/);
+  })
   it('should not throw on get of a known entity', function() {
     (function(){
       ctx.get('dummy');

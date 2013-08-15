@@ -128,3 +128,80 @@ describe('Language negotiator', function() {
     ctx.requestLocales('pl');
   });
 });
+
+describe('registerLocales errors', function() {
+  var ctx;
+  beforeEach(function() {
+    ctx = new Context();
+  });
+
+  it('should not throw if the lang code is a string', function() {
+    (function() {
+      ctx.registerLocales('en-US');
+    }).should.not.throw();
+  })
+  it('should not throw if there are no arguments', function() {
+    (function() {
+      ctx.registerLocales();
+    }).should.not.throw();
+  })
+  it('should not throw if the first argument is undefined', function() {
+    (function() {
+      ctx.registerLocales(undefined);
+    }).should.not.throw();
+  })
+  it('should throw otherwise', function() {
+    (function() {
+      ctx.registerLocales(null);
+    }).should.throw(/Language codes must be strings/);
+    (function() {
+      ctx.registerLocales(false);
+    }).should.throw(/Language codes must be strings/);
+    (function() {
+      ctx.registerLocales(7);
+    }).should.throw(/Language codes must be strings/);
+    (function() {
+      ctx.registerLocales(true);
+    }).should.throw(/Language codes must be strings/);
+  })
+});
+
+describe('requestLocales errors', function() {
+  var ctx;
+  beforeEach(function() {
+    ctx = new Context();
+    ctx.addResource('<dummy "Dummy">');
+    ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
+  });
+
+  it('should not throw if the lang code is a string', function() {
+    (function() {
+      ctx.requestLocales('en-US');
+    }).should.not.throw();
+  })
+  it('should not throw if there are no arguments', function() {
+    (function() {
+      ctx.requestLocales();
+    }).should.not.throw();
+  })
+  it('should throw if the argument is undefined', function() {
+    (function() {
+      ctx.requestLocales(undefined);
+    }).should.throw(/Language codes must be strings/);
+  })
+  it('should throw if the argument is null', function() {
+    (function() {
+      ctx.requestLocales(null);
+    }).should.throw(/Language codes must be strings/);
+  })
+  it('should throw if the argument is a boolean', function() {
+    (function() {
+      ctx.requestLocales(false);
+    }).should.throw(/Language codes must be strings/);
+  })
+  it('should throw if the argument is a number', function() {
+    (function() {
+      ctx.requestLocales(7);
+    }).should.throw(/Language codes must be strings/);
+  })
+});

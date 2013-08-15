@@ -95,9 +95,8 @@ define(function (require, exports, module) {
   }
 
   function bindPublicAPI() {
-    ctx.addEventListener('error', console.warn.bind(console));
-    ctx.addEventListener('debug', console.error.bind(console));
-
+    ctx.addEventListener('error', console.error.bind(console));
+    ctx.addEventListener('warning', console.warn.bind(console));
     ctx.localizeNode = function localizeNode(node) {
       var nodes = getNodes(node);
       var many = localizeHandler.extend(nodes.ids);
