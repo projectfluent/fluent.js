@@ -2,6 +2,7 @@ var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
 var Parser = require('../../../lib/l20n/parser').Parser;
+var io = require('../../../lib/l20n/platform/io');
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {
@@ -160,7 +161,7 @@ describe('Parser errors', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.linkResource(function(locale) {
-    return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.lol';
     });
   });
 
@@ -177,14 +178,36 @@ describe('Parser errors', function() {
   });
 });
 
-describe.skip('recursive imports', function() {
+describe('Missing resources', function() {
   var ctx;
 
   beforeEach(function() {
     ctx = new Context();
-    ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/recursive.lol';
+    ctx.addResource('<foo "Foo">');
+    ctx.linkResource(__dirname + '/fixtures/missing.lol');
+  });
+
+  it('should get ready', function(done) {
+    whenReady(ctx, done);
+    ctx.requestLocales();
+  });
+  it('should emit a warning', function(done) {
+    ctx.addEventListener('warning', function(e) {
+      e.should.be.an.instanceOf(io.Error);
+      e.should.match(/missing.lol/);
+      done();
     });
+    ctx.requestLocales();
+  });
+});
+
+describe('Recursive imports', function() {
+  var ctx;
+
+  beforeEach(function() {
+    ctx = new Context();
+    ctx.addResource('<foo "Foo">');
+    ctx.linkResource(__dirname + '/fixtures/recursive.lol');
   });
 
   it('should get ready', function(done) {
@@ -194,7 +217,51 @@ describe.skip('recursive imports', function() {
   it('should emit an error', function(done) {
     ctx.addEventListener('error', function(e) {
       e.should.be.an.instanceOf(Context.Error);
+      e.should.match(/Too many nested/);
       done();
+    });
+    ctx.requestLocales();
+  });
+});
+
+// XXX Bug 908780 - Decide what to do when all resources in a locale are 
+// missing or broken
+// https://bugzilla.mozilla.org/show_bug.cgi?id=908780
+describe('No valid resources', function() {
+  var ctx;
+
+  beforeEach(function() {
+    ctx = new Context();
+    ctx.linkResource(__dirname + '/fixtures/missing.lol');
+    ctx.linkResource(__dirname + '/fixtures/recursive.lol');
+  });
+
+  it('should get ready', function(done) {
+    whenReady(ctx, done);
+    ctx.requestLocales();
+  });
+  it('should emit two errors', function(done) {
+    var count = 0;
+    ctx.addEventListener('error', function(e) {
+      count++;
+      if (count >= 2)
+        done();
+    });
+    ctx.requestLocales();
+  });
+  it('should emit an error about recursion', function(done) {
+    ctx.addEventListener('error', function(e) {
+      e.should.be.an.instanceOf(Context.Error);
+      if (/Too many nested/.test(e.message))
+        done();
+    });
+    ctx.requestLocales();
+  });
+  it('should emit an error about no valid resources', function(done) {
+    ctx.addEventListener('error', function(e) {
+      e.should.be.an.instanceOf(Context.Error);
+      if (/no valid resources/.test(e.message))
+        done();
     });
     ctx.requestLocales();
   });

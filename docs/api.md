@@ -67,8 +67,7 @@ ctx.registerLocaleNegotiator(function(available, requested, defLocale) {
  - `requested` - locales preferred by the user,
  - `defLocale` - the default locale to be used as the ultimate fallback.
 
-It can return an array which is the final fallback chain of locales, or 
-a Promise which must be fulfilled with the final fallback chain asynchronously.
+It must return an array which is the final fallback chain of locales.
 
 
 ### ctx.requestLocales(...requestedLocales: String?)

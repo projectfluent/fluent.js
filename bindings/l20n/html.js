@@ -2,7 +2,6 @@ define(function (require, exports, module) {
   'use strict';
 
   var L20n = require('../l20n');
-  var Promise = require('./promise').Promise;
   var io = require('./platform/io');
 
   var localizeHandler;
@@ -118,9 +117,7 @@ define(function (require, exports, module) {
     ctx.registerLocaleNegotiator(function(available, requested, defLoc) {
       // lazy-require Intl
       var Intl = require('./intl').Intl;
-      var Promise = require('./promise').Promise;
       var fallbackChain = Intl.prioritizeLocales(available, requested, defLoc);
-      var deferred = new Promise();
       setDocumentLanguage(fallbackChain[0]);
       return fallbackChain;
     });
@@ -165,17 +162,12 @@ define(function (require, exports, module) {
   }
 
   function loadManifest(url) {
-    var deferred = new Promise();
-    io.loadAsync(url).then(
-      function(text) {
-        var manifest = JSON.parse(text);
-        manifest.resources = manifest.resources.map(
-                               relativeToManifest.bind(this, url));
-        setupCtxFromManifest(manifest);
-        deferred.fulfill();
-      }
-    );
-    return deferred;
+    io.load(url, function manifestLoaded(err, text) {
+      var manifest = JSON.parse(text);
+      manifest.resources = manifest.resources.map(
+                             relativeToManifest.bind(this, url));
+      setupCtxFromManifest(manifest);
+    });
   }
 
   function fireLocalizedEvent() {

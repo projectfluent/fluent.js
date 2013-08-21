@@ -1,7 +1,6 @@
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
-var Promise = require('../../../lib/l20n/promise').Promise;
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {
@@ -113,13 +112,13 @@ describe('Language negotiator', function() {
     });
     ctx.requestLocales('pl');
   });
-  it('can return a promise', function(done) {
-    ctx.registerLocaleNegotiator(function(available, requested, def) {
-      var promise = new Promise();
+  // XXX Bug 908777 - Allow locale negotiator to be asynchronous
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=908777
+  it.skip('can be asynchronous', function(done) {
+    ctx.registerLocaleNegotiator(function(available, requested, def, cb) {
       setTimeout(function() {
-        promise.fulfill(['de']);
+        cb(['de']);
       });
-      return promise;
     });
     whenReady(ctx, function() {
       ctx.get('foo').should.equal('Foo de');

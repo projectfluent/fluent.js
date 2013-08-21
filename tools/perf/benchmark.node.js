@@ -60,8 +60,12 @@ for (var i = 0, len = ids.length; i < len; i++) {
 cumulative.get = process.hrtime(start);
 
 var ctx = L20n.getContext();
-ctx.addResource('<foo "Foo">');
-ctx.ready(function() {
+ctx.ready(printResults);
+//ctx.addResource('<foo "Foo">');
+ctx.linkResource(__dirname + '/foo.lol');
+ctx.requestLocales();
+
+function printResults() {
   cumulative.ready = process.hrtime(start);
   var results = {
     parse: micro(cumulative.parse),
@@ -70,5 +74,4 @@ ctx.ready(function() {
     ready: micro(cumulative.ready) - micro(cumulative.get),
   };
   console.log(JSON.stringify(results));
-});
-ctx.requestLocales();
+}
