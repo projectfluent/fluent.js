@@ -1,5 +1,6 @@
 var fs = require('fs');
 
+var L20n = require('../../lib/l20n');
 var Parser = require('../../lib/l20n/parser').Parser;
 var Compiler = require('../../lib/l20n/compiler').Compiler;
 var RetranslationManager = require('../../lib/l20n/retranslation').RetranslationManager;
@@ -58,10 +59,16 @@ for (var i = 0, len = ids.length; i < len; i++) {
 }
 cumulative.get = process.hrtime(start);
 
-results = {
-  parse: micro(cumulative.parse),
-  compile: micro(cumulative.compile) - micro(cumulative.parse),
-  get: micro(cumulative.get) - micro(cumulative.compile),
-};
-
-console.log(JSON.stringify(results));
+var ctx = L20n.getContext();
+ctx.addResource('<foo "Foo">');
+ctx.ready(function() {
+  cumulative.ready = process.hrtime(start);
+  var results = {
+    parse: micro(cumulative.parse),
+    compile: micro(cumulative.compile) - micro(cumulative.parse),
+    get: micro(cumulative.get) - micro(cumulative.compile),
+    ready: micro(cumulative.ready) - micro(cumulative.get),
+  };
+  console.log(JSON.stringify(results));
+});
+ctx.requestLocales();
