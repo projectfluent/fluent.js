@@ -28,9 +28,7 @@ define(function (require, exports, module) {
             ctx.requestLocales(lang);
           });
         },
-        getDictionary: function(fragment) {
-        
-        }
+        getDictionary: getSubDictionary
       },
       ready: function() {},
       };
@@ -137,6 +135,57 @@ define(function (require, exports, module) {
     return dirs.join('/');
   }
 
+  // return a sub-dictionary sufficient to translate a given fragment
+  function getSubDictionary(fragment) {
+    print('a');
+    if (!fragment) { // by default, return a clone of the whole dictionary
+      return JSON.parse(JSON.stringify(gL10nData));
+    }
+
+    var dict = {};
+    var elements = getTranslatableChildren(fragment);
+    print(elements);
+
+    function checkGlobalArguments(str) {
+      var match = getL10nArgs(str);
+      for (var i = 0; i < match.length; i++) {
+        var arg = match[i].name;
+        if (arg in gL10nData) {
+          dict[arg] = gL10nData[arg];
+        }
+      }
+    }
+
+    for (var i = 0, l = elements.length; i < l; i++) {
+      var id = getL10nAttributes(elements[i]).id;
+      var data = gL10nData[id];
+      if (!id || !data) {
+        continue;
+      }
+
+      dict[id] = data;
+      for (var prop in data) {
+        var str = data[prop];
+        checkGlobalArguments(str);
+
+        if (reIndex.test(str)) { // macro index
+          for (var j = 0; j < kPluralForms.length; j++) {
+            var key = id + '[' + kPluralForms[j] + ']';
+            if (key in gL10nData) {
+              dict[key] = gL10nData[key];
+              checkGlobalArguments(gL10nData[key]);
+            }
+          }
+        }
+      }
+    }
+
+    return dict;
+  }
+
+  function getTranslatableChildren(element) {
+    return element ? element.querySelectorAll('*[data-l10n-id]') : [];
+  }
 
   return L20n;
 });
