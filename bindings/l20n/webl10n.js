@@ -47,12 +47,15 @@ define(function (require, exports, module) {
   function webL10nBridge() {
     if (!navigator.mozL10n) {
       navigator.mozL10n = {
-        get: function(id) {
+        get: function(id, args) {
+          // it would be better to use context here
+          // to deal with fallbacks and imitate client side l10n 
           var entry = locales[curLocale].getEntry(id);
           if (!entry) {
             return null;
           }
-          return entry.get().value;
+          var val = entry.get(args);
+          return val.value;
         },
         localize: function() {},
         language: {
