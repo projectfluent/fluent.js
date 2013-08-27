@@ -169,6 +169,30 @@ define(function (require, exports, module) {
     return dirs.join('/');
   }
 
+  function getEntry(id, args, nested) {
+    var entries = {};
+    var entry = locales[curLocale].getEntry(id);
+    if (!entry) {
+      return {};
+    }
+
+    var entity = entry.get(args);
+    entries[id] = {'_': entity.value};
+
+    // add attributes when we have them
+    if (entry.value.type === 'ComplexString') {
+      entry.value.body.forEach(function (chunk) {
+        if (chunk.type == 'Identifier') {
+          var subentries = getEntry(chunk.name);
+          for (var e in subentries) {
+            entries[e] = subentries[e];
+          }
+        }
+      });
+    }
+    return entries;
+  }
+
   // return a sub-dictionary sufficient to translate a given fragment
   function getSubDictionary(fragment) {
     if (!fragment) { // by default, return a clone of the whole dictionary
@@ -182,28 +206,16 @@ define(function (require, exports, module) {
     var dict = {};
     var elements = getTranslatableChildren(fragment);
 
-    function checkGlobalArguments(str) {
-      var match = getL10nArgs(str);
-      for (var i = 0; i < match.length; i++) {
-        var arg = match[i].name;
-        if (arg in gL10nData) {
-          dict[arg] = gL10nData[arg];
-        }
-      }
-    }
-
     for (var i = 0, l = elements.length; i < l; i++) {
       var ent = getL10nAttributes(elements[i]);
-      var id = ent.id;
-      var data = navigator.mozL10n.get(id, ent.args);
-      if (!id || !data) {
-        continue;
+      var entries = getEntry(ent.id, ent.args, true);
+      if (entries) {
+        for (var e in entries) {
+          dict[e] = entries[e];
+        }
       }
-
-      dict[id] = {'_': data};
-      for (var prop in data) {
-        var str = data[prop];
-        //checkGlobalArguments(str);
+      //for (var prop in data) {
+      //  var str = data[prop];
 
         /*if (reIndex.test(str)) { // macro index
           for (var j = 0; j < kPluralForms.length; j++) {
@@ -214,7 +226,7 @@ define(function (require, exports, module) {
             }
           }
         }*/
-      }
+      //}
     }
 
     return dict;
