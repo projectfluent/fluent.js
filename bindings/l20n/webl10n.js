@@ -3,48 +3,69 @@ define(function (require, exports, module) {
 
   var L20n = require('../l20n');
   var io = require('./platform/io');
+  var Parser = require('./parser').Parser;
+  var Locale = require('./context').Locale;
+  var Resource = require('./context').Resource;
+  var Compiler = require('./compiler').Compiler;
 
-  var ctx = L20n.getContext();
+  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
-  var resources = {};
+  var resLinks = null;
+
+  var locales = {};
+  var curLocale = null;
 
   webL10nBridge();
 
-  var ctxPopulated = false;
-  function populateCtx(lang) {
-    if (!ctxPopulated) {
-      ctx.addEventListener('ready', function() {
-        print('ctx is ready');
-        //var nodes = getNodes(document);
-        print(lang);
-        //print(nodes);
-        //for (var i = 0; i < nodes.nodes.length; i++) {
-        //  translateNode(nodes.nodes[i], nodes.ids[i]);
-        //}
-        fireLocalizedEvent();
-      });
-      indexResources(document, function() {
-        ctx.registerLocales(lang);
-        bindResources();
-        ctxPopulated = true;
-        print('requesting locale: '+lang);
-        ctx.requestLocales(lang);
-      });
+  function setLocale(lang) {
+    curLocale = lang;
+    if (!resLinks) {
+      indexResources(document, createLocale);
     } else {
-        print('requesting locale2: '+lang);
-      ctx.requestLocales(lang);
+      createLocale();
     }
   }
+
+  function createLocale() {
+
+    var parser = new Parser();
+    var compiler = new Compiler();
+    var locale = new Locale(curLocale, parser, compiler);
+
+    resLinks[curLocale].forEach(function(res) {
+      var resource = new Resource(res, parser);
+      locale.resources.push(resource); 
+    });
+
+    locale.build();
+
+    locales[curLocale] = locale;
+    fireLocalizedEvent();
+  }
+
 
   function webL10nBridge() {
     if (!navigator.mozL10n) {
       navigator.mozL10n = {
-        get: ctx.get.bind(ctx),
+        get: function(id) {
+          var entry = locales[curLocale].getEntry(id);
+          if (!entry) {
+            return null;
+          }
+          return entry.get().value;
+        },
         localize: function() {},
         language: {
-          get code() { return ctx.supportedLocales[0] },
+          get code() { return curLocale },
           set code(lang) {
-            populateCtx(lang);
+            print(lang);
+            setLocale(lang);
+          },
+          get direction() {
+            // getting direction is the only way in BTO that we know
+            // that we work on the default locale
+            translateDocument();
+            return (rtlLocales.indexOf(curLocale) >= 0) ? 'rtl' : 'ltr';
           },
         },
         getDictionary: getSubDictionary,
@@ -54,6 +75,7 @@ define(function (require, exports, module) {
   }
 
   function indexResources(doc, cb) {
+    resLinks = {};
     var headNode = doc.head;
     var links = headNode.querySelectorAll('link[type="application/l10n"]');
 
@@ -76,27 +98,19 @@ define(function (require, exports, module) {
     }
   }
 
-  function bindResources() {
-    resources['en-US'].forEach(function (res) {
-      ctx.linkResource(res);
-    });
-  }
-
   function loadINI(url, cb) {
-    io.loadAsync(url).then(
-        function iniLoaded(text) {
-          var res = addResourcesFromINI(url, text);
-          for (var loc in res) {
-            if (!resources[loc]) {
-              resources[loc] = [];
-            }
-            for (var r in res[loc]) {
-              resources[loc].push(res[loc][r]);
-            }
-          }
-          cb();
+    io.load(url, function iniLoaded(err, text) {
+      var res = addResourcesFromINI(url, text);
+      for (var loc in res) {
+        if (!resLinks[loc]) {
+          resLinks[loc] = [];
         }
-    );
+        for (var r in res[loc]) {
+          resLinks[loc].push(res[loc][r]);
+        }
+      }
+      cb();
+    });
   }
 
   var patterns = {
@@ -156,7 +170,11 @@ define(function (require, exports, module) {
   // return a sub-dictionary sufficient to translate a given fragment
   function getSubDictionary(fragment) {
     if (!fragment) { // by default, return a clone of the whole dictionary
-      return ctx.getEntities();
+      var dict = {};
+      for (var id in locales[curLocale].entries) {
+        dict[id] = {'_': navigator.mozL10n.get(id)};
+      }
+      return dict;
     }
 
     var dict = {};
@@ -174,12 +192,12 @@ define(function (require, exports, module) {
 
     for (var i = 0, l = elements.length; i < l; i++) {
       var id = getL10nAttributes(elements[i]).id;
-      var data = ctx.getEntity(id);
+      var data = navigator.mozL10n.get(id);
       if (!id || !data) {
         continue;
       }
 
-      dict[id] = {'_': data.value};
+      dict[id] = {'_': data};
       for (var prop in data) {
         var str = data[prop];
         //checkGlobalArguments(str);
@@ -222,30 +240,16 @@ define(function (require, exports, module) {
     return { id: l10nId, args: args };
   }
 
-  function getNodes(node) {
-    var nodes = node.querySelectorAll('[data-l10n-id]');
-    var ids = [];
-    if (node.hasAttribute && node.hasAttribute('data-l10n-id')) {
-      // include the root node in nodes (and ids)
-      nodes = Array.prototype.slice.call(nodes);
-      nodes.push(node);
-    }
+  function translateDocument() {
+    var nodes = document.querySelectorAll('[data-l10n-id]');
     for (var i = 0; i < nodes.length; i++) {
-      ids.push(nodes[i].getAttribute('data-l10n-id'));
+      translateNode(nodes[i], nodes[i].getAttribute('data-l10n-id'));
     }
-    return {
-      ids: ids,
-      nodes: nodes
-    };
   }
 
-  function translateNode(node, id, entity) {
-    if (!entity) {
-      entity = ctx.getEntity(id);
-    }
-    for (var key in entity.attributes) {
-      node.setAttribute(key, entity.attributes[key]);
-    }
+  function translateNode(node, id) {
+    var entity = locales[curLocale].getEntry(id).get();
+
     if (entity.value) {
       node.textContent = entity.value;
     }
@@ -254,7 +258,7 @@ define(function (require, exports, module) {
   function fireLocalizedEvent() {
     var event = document.createEvent('Event');
     event.initEvent('localized', false, false);
-    event.langauge = ctx.supportedLocales[0];
+    event.langauge = curLocale;
     window.dispatchEvent(event);
   }
 
