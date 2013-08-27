@@ -58,7 +58,6 @@ define(function (require, exports, module) {
         language: {
           get code() { return curLocale },
           set code(lang) {
-            print(lang);
             setLocale(lang);
           },
           get direction() {
@@ -248,11 +247,7 @@ define(function (require, exports, module) {
   }
 
   function translateNode(node, id) {
-    var entity = locales[curLocale].getEntry(id).get();
-
-    if (entity.value) {
-      node.textContent = entity.value;
-    }
+    node.textContent = navigator.mozL10n.get(id);
   }
 
   function fireLocalizedEvent() {
