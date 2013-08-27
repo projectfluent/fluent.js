@@ -193,8 +193,9 @@ define(function (require, exports, module) {
     }
 
     for (var i = 0, l = elements.length; i < l; i++) {
-      var id = getL10nAttributes(elements[i]).id;
-      var data = navigator.mozL10n.get(id);
+      var ent = getL10nAttributes(elements[i]);
+      var id = ent.id;
+      var data = navigator.mozL10n.get(id, ent.args);
       if (!id || !data) {
         continue;
       }
@@ -245,12 +246,13 @@ define(function (require, exports, module) {
   function translateDocument() {
     var nodes = document.querySelectorAll('[data-l10n-id]');
     for (var i = 0; i < nodes.length; i++) {
-      translateNode(nodes[i], nodes[i].getAttribute('data-l10n-id'));
+      translateNode(nodes[i]);
     }
   }
 
-  function translateNode(node, id) {
-    node.textContent = navigator.mozL10n.get(id);
+  function translateNode(node) {
+    var attrs = getL10nAttributes(node);
+    node.textContent = navigator.mozL10n.get(attrs.id, attrs.args);
   }
 
   function fireLocalizedEvent() {
