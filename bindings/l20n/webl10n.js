@@ -197,6 +197,9 @@ define(function (require, exports, module) {
     for (var i = 0, l = elements.length; i < l; i++) {
       var id = elements[i].getAttribute('data-l10n-id');
       var source = ctx.getSource(id);
+      if (!source) {
+        continue;
+      }
       ast.body.push(source);
       // check for any dependencies
       // XXX should this be recursive?
