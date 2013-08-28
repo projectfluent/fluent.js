@@ -7,40 +7,20 @@ define(function (require, exports, module) {
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   var ctx = L20n.getContext();
+  navigator.mozL10n = ctx;
 
-  navigator.mozL10n = {
-    get: ctx.get.bind(ctx),
-    localize: function() {},
-    language: {
-      get code() { 
-        return ctx.supportedLocales[0];
-      },
-      set code(lang) {
-        ctx.requestLocales(lang);
-      },
-      get direction() {
-        if (rtlLocales.indexOf(ctx.supportedLocales[0]) >= 0) {
-          return 'rtl';
-        } else {
-          return 'ltr';
-        }
-      }
-    },
-    getDictionary: getSubDictionary,
-    ready: ctx.ready.bind(ctx)
-  };
-
-  ctx.ready(translateDocument);
-  bootstrap();
+  if (document) {
+    bootstrap();
+  }
 
 
   function bootstrap() {
     var localePlaceable = /\{\{\s*locale\s*\}\}/;
 
     var head = document.head;
-    var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + \
+    var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + 
                                          '[href$=".ini"]');
-    var jsonLinks = head.querySelectorAll('link[type="application/l10n"]' + \
+    var jsonLinks = head.querySelectorAll('link[type="application/l10n"]' + 
                                           '[href$=".json"]');
 
     for (var i = 0; i < jsonLinks.length; i++) {
@@ -79,6 +59,16 @@ define(function (require, exports, module) {
         requestLocales(available);
       }
     }
+
+    if (document.readyState !== 'loading') {
+      ctx.ready(translateDocument);
+    } else {
+      document.addEventListener('readystatechange', function() {
+        ctx.ready(translateDocument);
+      });
+    }
+
+    bindPublicAPI();
   }
 
   function requestLocales(available) {
@@ -87,8 +77,7 @@ define(function (require, exports, module) {
       available = metaLocs.getAttribute('content').split(',').map(String.trim);
     }
     ctx.registerLocales('en-US', available);
-    //ctx.requestLocales(navigator.language);
-    ctx.requestLocales('fr');
+    ctx.requestLocales(navigator.language);
   }
 
   var patterns = {
@@ -143,6 +132,28 @@ define(function (require, exports, module) {
     }
 
     return dirs.join('/');
+  }
+
+  function bindPublicAPI() {
+    ctx.addEventListener('error', console.error.bind(console));
+    ctx.addEventListener('warning', console.warn.bind(console));
+    ctx.localize = function() {};
+    ctx.language = {
+      get code() { 
+        return ctx.supportedLocales[0];
+      },
+      set code(lang) {
+        ctx.requestLocales(lang);
+      },
+      get direction() {
+        if (rtlLocales.indexOf(ctx.supportedLocales[0]) >= 0) {
+          return 'rtl';
+        } else {
+          return 'ltr';
+        }
+      }
+    };
+    ctx.getDictionary = getSubDictionary;
   }
 
   function getEntry(id, args, nested) {
@@ -236,6 +247,7 @@ define(function (require, exports, module) {
     for (var i = 0; i < nodes.length; i++) {
       translateNode(nodes[i]);
     }
+    fireLocalizedEvent();
   }
 
   function translateNode(node) {
@@ -246,7 +258,7 @@ define(function (require, exports, module) {
   function fireLocalizedEvent() {
     var event = document.createEvent('Event');
     event.initEvent('localized', false, false);
-    event.langauge = curLocale;
+    event.language = ctx.supportedLocales[0];
     window.dispatchEvent(event);
   }
 
