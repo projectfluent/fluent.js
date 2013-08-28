@@ -25,19 +25,31 @@ define(function (require, exports, module) {
 
     for (var i = 0; i < jsonLinks.length; i++) {
       var parts = jsonLinks[i].getAttribute('href').split(localePlaceable);
-      // XXX this should use a special method for loading JSON
       ctx.linkResource(function(locale) {
         return parts[0] + locale + parts[1];
       });
     }
 
-    // XXX what to do with <script>s with JSON?
+    var scripts = head.querySelectorAll('script[type="application/l10n"]');
+    for (var i = 0; i < scripts.length; i++) {
+      // pass the node to save memory
+      ctx.addDictionary(scripts[i], scripts[i].getAttribute('lang'));
+    }
+
+    if (document.readyState !== 'loading') {
+      ctx.ready(translateDocument);
+    } else {
+      document.addEventListener('readystatechange', function() {
+        ctx.ready(translateDocument);
+      });
+    }
+
+    bindPublicAPI();
 
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
       return requestLocales();
     }
-
     for (var i = 0; i < iniLinks.length; i++) {
       var url = iniLinks[i].getAttribute('href');
       io.load(url, iniLoaded.bind(null, url));
@@ -63,21 +75,17 @@ define(function (require, exports, module) {
       }
     }
 
-    if (document.readyState !== 'loading') {
-      ctx.ready(translateDocument);
-    } else {
-      document.addEventListener('readystatechange', function() {
-        ctx.ready(translateDocument);
-      });
-    }
-
-    bindPublicAPI();
   }
 
   function requestLocales(available) {
     if (!available) {
-      var metaLocs = headNode.querySelector('meta[name="locales"]');
-      available = metaLocs.getAttribute('content').split(',').map(String.trim);
+      var metaLocs = document.head.querySelector('meta[name="locales"]');
+      if (metaLocs) {
+        available = metaLocs.getAttribute('content').split(',')
+                                                    .map(String.trim);
+      } else {
+        available = [];
+      }
     }
     ctx.registerLocales('en-US', available);
     ctx.requestLocales(navigator.language);
