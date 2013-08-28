@@ -78,6 +78,13 @@ define(function (require, exports, module) {
     }
     ctx.registerLocales('en-US', available);
     ctx.requestLocales(navigator.language);
+
+    // listen to language change events
+    if ('mozSettings' in navigator && navigator.mozSettings) {
+      navigator.mozSettings.addObserver('language.current', function(event) {
+        ctx.requestLocales(event.settingValue);
+      });
+    }
   }
 
   var patterns = {
