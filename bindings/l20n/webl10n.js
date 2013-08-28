@@ -18,6 +18,10 @@ define(function (require, exports, module) {
 
   function bootstrap(lang) {
     bootstrapped = true;
+    ctx.addEventListener('error', console.error.bind(console));
+    ctx.addEventListener('warning', console.warn.bind(console));
+
+    var availableLocales = [];
     var localePlaceable = /\{\{\s*locale\s*\}\}/;
 
     var head = document.head;
@@ -56,14 +60,12 @@ define(function (require, exports, module) {
       io.load(url, iniLoaded.bind(null, url));
     }
 
-    var available = [];
-
     function iniLoaded(url, err, text) {
       if (err) {
         throw err;
       }
       var ini = parseINI(text, url);
-      available.push.apply(available, ini.locales);
+      availableLocales.push.apply(availableLocales, ini.locales);
       for (var i = 0; i < ini.resources.length; i++) {
         var parts = ini.resources[i].split('en-US');
         ctx.linkResource(function(locale) {
@@ -72,7 +74,7 @@ define(function (require, exports, module) {
       }
       iniToLoad--;
       if (iniToLoad == 0) {
-        freeze(lang, available);
+        freeze(lang, availableLocales);
       }
     }
 
@@ -155,8 +157,6 @@ define(function (require, exports, module) {
 
   function bindPublicAPI() {
     navigator.mozL10n = ctx;
-    ctx.addEventListener('error', console.error.bind(console));
-    ctx.addEventListener('warning', console.warn.bind(console));
     ctx.localize = function() {};
     ctx.language = {
       get code() { 
