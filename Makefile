@@ -23,7 +23,7 @@ ifeq ($(INSECURE), 1)
 LIB_FILES += tests/lib/compiler/insecure/*.js
 endif
 
-BINDINGS?=html
+BINDINGS?=webl10n
 
 .PHONY: build
 build: install-git-hook
