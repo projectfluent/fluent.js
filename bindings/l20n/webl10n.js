@@ -9,7 +9,7 @@ define(function (require, exports, module) {
   var ctx = L20n.getContext();
   navigator.mozL10n = ctx;
 
-  if (document) {
+  if (typeof(document) !== 'undefined') {
     bootstrap();
   }
 
