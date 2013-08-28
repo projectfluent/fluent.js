@@ -18,8 +18,8 @@ define(function (require, exports, module) {
 
   function bootstrap(lang) {
     bootstrapped = true;
-    ctx.addEventListener('error', console.error.bind(console));
-    ctx.addEventListener('warning', console.warn.bind(console));
+    ctx.addEventListener('warning', console.error.bind(console));
+    ctx.addEventListener('info', console.warn.bind(console));
 
     var availableLocales = [];
     var localePlaceable = /\{\{\s*locale\s*\}\}/;
