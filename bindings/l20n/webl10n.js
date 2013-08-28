@@ -180,67 +180,35 @@ define(function (require, exports, module) {
     ctx.getDictionary = getSubDictionary;
   }
 
-  function getEntry(id, args, nested) {
-    var entries = {};
-    var entry = locales[curLocale].getEntry(id);
-    if (!entry) {
-      return {};
-    }
-
-    var entity = entry.get(args);
-    entries[id] = {'_': entity.value};
-
-    // add attributes when we have them
-    if (entry.value.type === 'ComplexString') {
-      entry.value.body.forEach(function (chunk) {
-        if (chunk.type == 'Identifier') {
-          var subentries = getEntry(chunk.name);
-          for (var e in subentries) {
-            entries[e] = subentries[e];
-          }
-        }
-      });
-    }
-    return entries;
-  }
-
   // return a sub-dictionary sufficient to translate a given fragment
   function getSubDictionary(fragment) {
-    if (!fragment) { // by default, return a clone of the whole dictionary
-      // XXX this should use a special ctx method, ctx.getEntities
-       return {};
+    var ast = {
+      type: 'WebL10n',
+      body: []
+    };
+
+    if (!fragment) {
+      ast.body = ctx.getSources();
+      return ast;
     }
 
-    var dict = {};
     var elements = getTranslatableChildren(fragment);
 
-    // XXX if only webl10n distinguished between references to entities and 
-    // ctxdata... 
-
     for (var i = 0, l = elements.length; i < l; i++) {
-      var ent = getL10nAttributes(elements[i]);
-      var entries = getEntry(ent.id, ent.args, true);
-      if (entries) {
-        for (var e in entries) {
-          dict[e] = entries[e];
-        }
-      }
-      //for (var prop in data) {
-      //  var str = data[prop];
-
-        /*if (reIndex.test(str)) { // macro index
-          for (var j = 0; j < kPluralForms.length; j++) {
-            var key = id + '[' + kPluralForms[j] + ']';
-            if (key in gL10nData) {
-              dict[key] = gL10nData[key];
-              checkGlobalArguments(gL10nData[key]);
-            }
+      var id = elements[i].getAttribute('data-l10n-id');
+      var source = ctx.getSource(id);
+      ast.body.push(source);
+      // check for any dependencies
+      // XXX should this be recursive?
+      if (source.value.type === 'ComplexString') {
+        source.value.body.forEach(function (chunk) {
+          if (chunk.type == 'Identifier') {
+            ast.body.push(ctx.getSource(chunk.name));
           }
-        }*/
-      //}
+        });
+      }
     }
-
-    return dict;
+    return ast;
   }
 
   function getTranslatableChildren(element) {
