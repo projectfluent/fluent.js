@@ -244,7 +244,12 @@ define(function (require, exports, module) {
 
   function translateNode(node) {
     var attrs = getL10nAttributes(node);
-    node.textContent = navigator.mozL10n.get(attrs.id, attrs.args);
+    var entity = navigator.mozL10n.getEntity(attrs.id, attrs.args);
+    node.textContent = entity.value;
+
+    for (var i in entity.attributes) {
+      node.setAttribute(i, entity.attributes[i]);
+    }
   }
 
   function fireLocalizedEvent() {
