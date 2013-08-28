@@ -3,151 +3,127 @@ define(function (require, exports, module) {
 
   var L20n = require('../l20n');
   var io = require('./platform/io');
-  var Parser = require('./parser').Parser;
-  var Locale = require('./context').Locale;
-  var Resource = require('./context').Resource;
-  var Compiler = require('./compiler').Compiler;
 
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
-  var resLinks = null;
+  var ctx = L20n.getContext();
 
-  var locales = {};
-  var curLocale = null;
+  navigator.mozL10n = {
+    get: ctx.get.bind(ctx),
+    localize: function() {},
+    language: {
+      get code() { 
+        return ctx.supportedLocales[0];
+      },
+      set code(lang) {
+        ctx.requestLocales(lang);
+      },
+      get direction() {
+        if (rtlLocales.indexOf(ctx.supportedLocales[0]) >= 0) {
+          return 'rtl';
+        } else {
+          return 'ltr';
+        }
+      }
+    },
+    getDictionary: getSubDictionary,
+    ready: ctx.ready.bind(ctx)
+  };
 
-  webL10nBridge();
+  ctx.ready(translateDocument);
+  bootstrap();
 
-  function setLocale(lang) {
-    curLocale = lang;
-    if (!resLinks) {
-      indexResources(document, createLocale);
-    } else {
-      createLocale();
+
+  function bootstrap() {
+    var localePlaceable = /\{\{\s*locale\s*\}\}/;
+
+    var head = document.head;
+    var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + \
+                                         '[href$=".ini"]');
+    var jsonLinks = head.querySelectorAll('link[type="application/l10n"]' + \
+                                          '[href$=".json"]');
+
+    for (var i = 0; i < jsonLinks.length; i++) {
+      var parts = jsonLinks[i].getAttribute('href').split(localePlaceable);
+      ctx.linkResource(function(locale) {
+        return parts[0] + locale + parts[1];
+      });
     }
-  }
 
-  function createLocale() {
-
-    var parser = new Parser();
-    var compiler = new Compiler();
-    var locale = new Locale(curLocale, parser, compiler);
-
-    resLinks[curLocale].forEach(function(res) {
-      var resource = new Resource(res, parser);
-      locale.resources.push(resource); 
-    });
-
-    locale.build();
-
-    locales[curLocale] = locale;
-    fireLocalizedEvent();
-  }
-
-
-  function webL10nBridge() {
-    if (!navigator.mozL10n) {
-      navigator.mozL10n = {
-        get: function(id, args) {
-          // it would be better to use context here
-          // to deal with fallbacks and imitate client side l10n 
-          var entry = locales[curLocale].getEntry(id);
-          if (!entry) {
-            return null;
-          }
-          var val = entry.get(args);
-          return val.value;
-        },
-        localize: function() {},
-        language: {
-          get code() { return curLocale },
-          set code(lang) {
-            setLocale(lang);
-          },
-          get direction() {
-            // getting direction is the only way in BTO that we know
-            // that we work on the default locale
-            translateDocument();
-            return (rtlLocales.indexOf(curLocale) >= 0) ? 'rtl' : 'ltr';
-          }
-        },
-        getDictionary: getSubDictionary,
-        ready: function() {}
-      };
-    }
-  }
-
-  function indexResources(doc, cb) {
-    resLinks = {};
-    var headNode = doc.head;
-    var links = headNode.querySelectorAll('link[type="application/l10n"]');
-
-    var iniToLoad = links.length;
+    var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
-      return cb();
-    }
-    for (var i = 0; i < links.length; i++) {
-      loadINI(links[i].getAttribute('href'), iniLoaded);
+      return requestLocales();
     }
 
-    function iniLoaded(err) {
+    for (var i = 0; i < iniLinks.length; i++) {
+      var url = iniLinks[i].getAttribute('href');
+      io.load(url, iniLoaded.bind(null, url));
+    }
+
+    var available = [];
+
+    function iniLoaded(url, err, text) {
       if (err) {
         throw err;
       }
+      var ini = parseINI(text, url);
+      available.push.apply(available, ini.locales);
+      for (var i = 0; i < ini.resources.length; i++) {
+        var parts = ini.resources[i].split('en-US');
+        ctx.linkResource(function(locale) {
+          return parts[0] + locale + parts[1];
+        });
+      }
       iniToLoad--;
       if (iniToLoad == 0) {
-        cb();
+        requestLocales(available);
       }
     }
   }
 
-  function loadINI(url, cb) {
-    io.load(url, function iniLoaded(err, text) {
-      var res = addResourcesFromINI(url, text);
-      for (var loc in res) {
-        if (!resLinks[loc]) {
-          resLinks[loc] = [];
-        }
-        for (var r in res[loc]) {
-          resLinks[loc].push(res[loc][r]);
-        }
-      }
-      cb();
-    });
+  function requestLocales(available) {
+    if (!available) {
+      var metaLocs = headNode.querySelector('meta[name="locales"]');
+      available = metaLocs.getAttribute('content').split(',').map(String.trim);
+    }
+    ctx.registerLocales('en-US', available);
+    //ctx.requestLocales(navigator.language);
+    ctx.requestLocales('fr');
   }
 
   var patterns = {
     ini: {
       section: /^\s*\[(.*)\]\s*$/,
-      import: /^\s*@import\s+url\((.*)\)\s*$/i,
-      locale: /{{\s*locale\s*}}/
+      import: /^\s*@import\s+url\((.*)\)\s*$/i
     }
   };
 
-  function addResourcesFromINI(iniPath, source) {
+  function parseINI(source, iniPath) {
     var entries = source.split(/[\r\n]+/);
-    var langs = ['en-US'];
-    var currentLang = 'en-US';
-    var resources = {'en-US': []};
-    var match, uri;
-
+    var locales = ['en-US'];
     var genericSection = true;
+    var uris = [];
 
     for (var i = 0; i < entries.length; i++) {
       var line = entries[i];
-      if (patterns['ini']['section'].test(line)) {
-        match = patterns['ini']['section'].exec(line);
-        langs.push(match[1]);
-        resources[match[1]] = [];
-        currentLang = match[1];
-        genericSection = false;
+      // we only care about en-US resources
+      if (genericSection && patterns['ini']['import'].test(line)) {
+        var match = patterns['ini']['import'].exec(line);
+        var uri = relativePath(iniPath, match[1]);
+        uris.push(uri);
+        continue;
       }
-      if (patterns['ini']['import'].test(line)) {
-        match = patterns['ini']['import'].exec(line);
-        uri = relativePath(iniPath, match[1]);
-        resources[currentLang].push(uri);
+      // but we need the list of all locales in the ini, too
+      if (patterns['ini']['section'].test(line)) {
+        genericSection = false;
+        var match = patterns['ini']['section'].exec(line);
+        locales.push(match[1]);
       }
     }
-    return resources;
+    return {
+      locales: locales,
+      resources: uris
+    };
   }
 
   function relativePath(baseUrl, url) {
