@@ -7,14 +7,17 @@ define(function (require, exports, module) {
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   var ctx = L20n.getContext();
-  navigator.mozL10n = ctx;
 
+  bindPublicAPI();
+
+  var bootstrapped = false;
   if (typeof(document) !== 'undefined') {
     bootstrap();
   }
 
 
-  function bootstrap() {
+  function bootstrap(lang) {
+    bootstrapped = true;
     var localePlaceable = /\{\{\s*locale\s*\}\}/;
 
     var head = document.head;
@@ -44,11 +47,9 @@ define(function (require, exports, module) {
       });
     }
 
-    bindPublicAPI();
-
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
-      return requestLocales();
+      return freeze(lang);
     }
     for (var i = 0; i < iniLinks.length; i++) {
       var url = iniLinks[i].getAttribute('href');
@@ -71,13 +72,13 @@ define(function (require, exports, module) {
       }
       iniToLoad--;
       if (iniToLoad == 0) {
-        requestLocales(available);
+        freeze(lang, available);
       }
     }
 
   }
 
-  function requestLocales(available) {
+  function freeze(lang, available) {
     if (!available) {
       var metaLocs = document.head.querySelector('meta[name="locales"]');
       if (metaLocs) {
@@ -88,7 +89,7 @@ define(function (require, exports, module) {
       }
     }
     ctx.registerLocales('en-US', available);
-    ctx.requestLocales(navigator.language);
+    ctx.requestLocales(lang || navigator.language);
 
     // listen to language change events
     if ('mozSettings' in navigator && navigator.mozSettings) {
@@ -153,6 +154,7 @@ define(function (require, exports, module) {
   }
 
   function bindPublicAPI() {
+    navigator.mozL10n = ctx;
     ctx.addEventListener('error', console.error.bind(console));
     ctx.addEventListener('warning', console.warn.bind(console));
     ctx.localize = function() {};
@@ -161,7 +163,11 @@ define(function (require, exports, module) {
         return ctx.supportedLocales[0];
       },
       set code(lang) {
-        ctx.requestLocales(lang);
+        if (!bootstrapped) {
+          bootstrap(lang);
+        } else {
+          ctx.requestLocales(lang);
+        }
       },
       get direction() {
         if (rtlLocales.indexOf(ctx.supportedLocales[0]) >= 0) {
