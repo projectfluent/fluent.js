@@ -25,10 +25,13 @@ define(function (require, exports, module) {
 
     for (var i = 0; i < jsonLinks.length; i++) {
       var parts = jsonLinks[i].getAttribute('href').split(localePlaceable);
+      // XXX this should use a special method for loading JSON
       ctx.linkResource(function(locale) {
         return parts[0] + locale + parts[1];
       });
     }
+
+    // XXX what to do with <script>s with JSON?
 
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
@@ -190,15 +193,15 @@ define(function (require, exports, module) {
   // return a sub-dictionary sufficient to translate a given fragment
   function getSubDictionary(fragment) {
     if (!fragment) { // by default, return a clone of the whole dictionary
-      var dict = {};
-      for (var id in locales[curLocale].entries) {
-        dict[id] = {'_': navigator.mozL10n.get(id)};
-      }
-      return dict;
+      // XXX this should use a special ctx method, ctx.getEntities
+       return {};
     }
 
     var dict = {};
     var elements = getTranslatableChildren(fragment);
+
+    // XXX if only webl10n distinguished between references to entities and 
+    // ctxdata... 
 
     for (var i = 0, l = elements.length; i < l; i++) {
       var ent = getL10nAttributes(elements[i]);
