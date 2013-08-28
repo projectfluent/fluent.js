@@ -68,10 +68,10 @@ define(function (require, exports, module) {
             // that we work on the default locale
             translateDocument();
             return (rtlLocales.indexOf(curLocale) >= 0) ? 'rtl' : 'ltr';
-          },
+          }
         },
         getDictionary: getSubDictionary,
-        ready: function() {},
+        ready: function() {}
       };
     }
   }
@@ -87,7 +87,7 @@ define(function (require, exports, module) {
     }
     for (var i = 0; i < links.length; i++) {
       loadINI(links[i].getAttribute('href'), iniLoaded);
-    };
+    }
 
     function iniLoaded(err) {
       if (err) {
@@ -119,9 +119,9 @@ define(function (require, exports, module) {
     ini: {
       section: /^\s*\[(.*)\]\s*$/,
       import: /^\s*@import\s+url\((.*)\)\s*$/i,
-      locale: /{{\s*locale\s*}}/,
+      locale: /{{\s*locale\s*}}/
     }
-  }
+  };
 
   function addResourcesFromINI(iniPath, source) {
     var entries = source.split(/[\r\n]+/);
