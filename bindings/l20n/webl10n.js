@@ -22,7 +22,6 @@ define(function (require, exports, module) {
     ctx.addEventListener('warning', console.info.bind(console));
 
     var availableLocales = [];
-    var localePlaceable = /\{\{\s*locale\s*\}\}/;
 
     var head = document.head;
     var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + 
@@ -31,10 +30,8 @@ define(function (require, exports, module) {
                                           '[href$=".json"]');
 
     for (var i = 0; i < jsonLinks.length; i++) {
-      var parts = jsonLinks[i].getAttribute('href').split(localePlaceable);
-      ctx.linkResource(function(locale) {
-        return parts[0] + locale + parts[1];
-      });
+      var uri = jsonLinks[i].getAttribute('href');
+      ctx.linkResource(uri.replace.bind(uri, /\{\{\s*locale\s*\}\}/));
     }
 
     var scripts = head.querySelectorAll('script[type="application/l10n"]');
@@ -67,10 +64,8 @@ define(function (require, exports, module) {
       var ini = parseINI(text, url);
       availableLocales.push.apply(availableLocales, ini.locales);
       for (var i = 0; i < ini.resources.length; i++) {
-        var parts = ini.resources[i].split('en-US');
-        ctx.linkResource(function(locale) {
-          return parts[0] + locale + parts[1];
-        });
+        var uri = ini.resources[i].replace('en-US', '{{locale}}');
+        ctx.linkResource(uri.replace.bind(uri, '{{locale}}'));
       }
       iniToLoad--;
       if (iniToLoad == 0) {
