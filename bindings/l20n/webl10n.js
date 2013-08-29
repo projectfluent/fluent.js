@@ -151,29 +151,35 @@ define(function (require, exports, module) {
   }
 
   function bindPublicAPI() {
-    navigator.mozL10n = ctx;
-    ctx.localize = localizeElement;
-    ctx.translate = translateFragment;
-    ctx.language = {
-      get code() { 
-        return ctx.supportedLocales[0];
-      },
-      set code(lang) {
-        if (!bootstrapped) {
-          bootstrap(lang);
-        } else {
-          ctx.requestLocales(lang);
+    navigator.mozL10n = {
+      get: ctx.get.bind(ctx),
+      localize: localizeElement,
+      translate: translateFragment,
+      language: {
+        get code() { 
+          return ctx.supportedLocales[0];
+        },
+        set code(lang) {
+          if (!bootstrapped) {
+            bootstrap(lang);
+          } else {
+            ctx.requestLocales(lang);
+          }
+        },
+        get direction() {
+          if (rtlLocales.indexOf(ctx.supportedLocales[0]) >= 0) {
+            return 'rtl';
+          } else {
+            return 'ltr';
+          }
         }
       },
-      get direction() {
-        if (rtlLocales.indexOf(ctx.supportedLocales[0]) >= 0) {
-          return 'rtl';
-        } else {
-          return 'ltr';
-        }
+      ready: ctx.ready.bind(ctx),
+      getDictionary: getSubDictionary,
+      get readyState() {
+        return ctx.isReady ? 'complete' : 'loading';
       }
     };
-    ctx.getDictionary = getSubDictionary;
   }
 
   // return a sub-dictionary sufficient to translate a given fragment
@@ -243,7 +249,7 @@ define(function (require, exports, module) {
 
   function translateNode(node) {
     var attrs = getL10nAttributes(node);
-    var entity = navigator.mozL10n.getEntity(attrs.id, attrs.args);
+    var entity = ctx.getEntity(attrs.id, attrs.args);
     node.textContent = entity.value;
 
     for (var i in entity.attributes) {
