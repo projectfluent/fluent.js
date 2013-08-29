@@ -152,7 +152,8 @@ define(function (require, exports, module) {
 
   function bindPublicAPI() {
     navigator.mozL10n = ctx;
-    ctx.localize = function() {};
+    ctx.localize = localizeElement;
+    ctx.translate = translateFragment;
     ctx.language = {
       get code() { 
         return ctx.supportedLocales[0];
@@ -248,6 +249,50 @@ define(function (require, exports, module) {
     for (var i in entity.attributes) {
       node.setAttribute(i, entity.attributes[i]);
     }
+  }
+  
+  // localize an element as soon as ctx is ready
+  function localizeElement(element, id, args) {
+    if (!element || !id) {
+      return;
+    }
+
+    // set the data-l10n-[id|args] attributes
+    element.setAttribute('data-l10n-id', id);
+    if (args) {
+      element.setAttribute('data-l10n-args', JSON.stringify(args));
+    } else {
+      element.removeAttribute('data-l10n-args');
+    }
+
+    // if ctx is ready, translate now;
+    // if not, the element will be translated along with the document anyway.
+    if (ctx.isReady) {
+      translateNode(element);
+    }
+  }
+  
+  // translate an array of HTML elements
+  // -- returns an array of elements that could not be translated
+  function translateElements(elements) {
+    var untranslated = [];
+    for (var i = 0, l = elements.length; i < l; i++) {
+      if (!translateNode(elements[i])) {
+        untranslated.push(elements[i]);
+      }
+    }
+    return untranslated;
+  }
+
+  // translate an HTML subtree
+  // -- returns an array of elements that could not be translated
+  function translateFragment(element) {
+    element = element || document.documentElement;
+    var untranslated = translateElements(getTranslatableChildren(element));
+    if (!translateNode(element)) {
+      untranslated.push(element);
+    }
+    return untranslated;
   }
 
   function fireLocalizedEvent() {
