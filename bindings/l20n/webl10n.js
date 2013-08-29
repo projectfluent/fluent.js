@@ -4,19 +4,21 @@ define(function (require, exports, module) {
   var L20n = require('../l20n');
   var io = require('./platform/io');
 
-  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
-
   var ctx = L20n.getContext();
 
-  bindPublicAPI();
+  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   var bootstrapped = false;
-  if (typeof(document) !== 'undefined') {
+  if (typeof(document) === 'undefined') {
+    // during build time, we don't bootstrap until mozL10n.language.code is set
+    bindPublicAPI();
+  } else {
+    bindPublicAPI();
     bootstrap();
   }
 
 
-  function bootstrap(lang) {
+  function bootstrap(lang, forceDOMLocalization) {
     bootstrapped = true;
     ctx.addEventListener('error', console.warn.bind(console));
     ctx.addEventListener('warning', console.info.bind(console));
@@ -41,10 +43,10 @@ define(function (require, exports, module) {
     }
 
     if (document.readyState !== 'loading') {
-      ctx.ready(translateDocument);
+      ctx.ready(translateDocument.bind(null, forceDOMLocalization));
     } else {
       document.addEventListener('readystatechange', function() {
-        ctx.ready(translateDocument);
+        ctx.ready(translateDocument.bind(null, forceDOMLocalization));
       });
     }
 
@@ -161,7 +163,8 @@ define(function (require, exports, module) {
         },
         set code(lang) {
           if (!bootstrapped) {
-            bootstrap(lang);
+            // build-time optimization uses this
+            bootstrap(lang, true);
           } else {
             ctx.requestLocales(lang);
           }
@@ -239,10 +242,13 @@ define(function (require, exports, module) {
     return { id: l10nId, args: args };
   }
 
-  function translateDocument() {
-    var nodes = document.querySelectorAll('[data-l10n-id]');
-    for (var i = 0; i < nodes.length; i++) {
-      translateNode(nodes[i]);
+  function translateDocument(forceDOMLocalization) {
+    if (forceDOMLocalization ||
+        document.documentElement.lang !== navigator.language) {
+      var nodes = document.querySelectorAll('[data-l10n-id]');
+      for (var i = 0; i < nodes.length; i++) {
+        translateNode(nodes[i]);
+      }
     }
     fireLocalizedEvent();
   }
