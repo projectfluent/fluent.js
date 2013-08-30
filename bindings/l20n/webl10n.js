@@ -4,16 +4,23 @@ define(function (require, exports, module) {
   var L20n = require('../l20n');
   var io = require('./platform/io');
 
-  var ctx = L20n.getContext();
-
+  var ctx;
+  var bootstrapped = false;
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
-  var bootstrapped = false;
   if (typeof(document) === 'undefined') {
     // during build time, we don't bootstrap until mozL10n.language.code is set
-    bindPublicAPI();
+    Object.defineProperty(navigator, 'mozL10n', {
+      get: function() {
+        bootstrapped = false;
+        ctx = L20n.getContext();
+        return createPublicAPI(ctx);
+      },
+      enumerable: true
+    });
   } else {
-    bindPublicAPI();
+    ctx = L20n.getContext();
+    navigator.mozL10n = createPublicAPI(ctx);
     bootstrap();
   }
 
@@ -152,8 +159,8 @@ define(function (require, exports, module) {
     return dirs.join('/');
   }
 
-  function bindPublicAPI() {
-    navigator.mozL10n = {
+  function createPublicAPI(ctx) {
+    return {
       get: ctx.get.bind(ctx),
       localize: localizeElement,
       translate: translateFragment,
