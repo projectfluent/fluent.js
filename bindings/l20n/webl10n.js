@@ -255,7 +255,13 @@ define(function (require, exports, module) {
 
   function translateNode(node) {
     var attrs = getL10nAttributes(node);
+    if (!attrs.id) {
+      return true;
+    }
     var entity = ctx.getEntity(attrs.id, attrs.args);
+    if (!entity) {
+      return false;
+    }
     node.textContent = entity.value;
 
     for (var i in entity.attributes) {
