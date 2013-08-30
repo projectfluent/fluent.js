@@ -21,7 +21,11 @@ define(function (require, exports, module) {
   } else {
     ctx = L20n.getContext();
     navigator.mozL10n = createPublicAPI(ctx);
-    bootstrap();
+    if (document.readyState !== 'loading') {
+      window.setTimeout(bootstrap);
+    } else {
+      document.addEventListener('DOMContentLoaded', bootstrap);
+    }
   }
 
 
@@ -49,13 +53,7 @@ define(function (require, exports, module) {
       ctx.addDictionary(scripts[i], scripts[i].getAttribute('lang'));
     }
 
-    if (document.readyState !== 'loading') {
-      ctx.ready(translateDocument.bind(null, forceDOMLocalization));
-    } else {
-      document.addEventListener('readystatechange', function() {
-        ctx.ready(translateDocument.bind(null, forceDOMLocalization));
-      });
-    }
+    ctx.ready(translateDocument.bind(null, forceDOMLocalization));
 
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
