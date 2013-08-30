@@ -149,11 +149,6 @@ define(function (require, exports, module) {
         return elem !== '.';
       });
 
-    if (dirs[0] !== '' && dirs[0] !== '..') {
-      // if the base path doesn't start with / or ..
-      dirs.unshift('.');
-    }
-
     return dirs.join('/');
   }
 
