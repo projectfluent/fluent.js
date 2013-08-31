@@ -23,20 +23,23 @@ define(function (require, exports, module) {
     navigator.mozL10n = createPublicAPI(ctx);
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
-        bootstrap(navigator.language);
+        // call bootstrap without any arguments
+        bootstrap();
       });
     } else {
-      window.setTimeout(bootstrap.bind(null, navigator.language));
+      window.setTimeout(bootstrap);
     }
   }
 
 
-  function bootstrap(lang, forceDOMLocalization) {
+
+  function bootstrap(forcedLocale) {
     bootstrapped = true;
     ctx.addEventListener('error', console.warn.bind(console));
     ctx.addEventListener('warning', console.info.bind(console));
 
     var availableLocales = [];
+    var isPretranslated = document.documentElement.lang === navigator.language;
 
     var head = document.head;
     var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + 
@@ -49,18 +52,49 @@ define(function (require, exports, module) {
       ctx.linkResource(uri.replace.bind(uri, /\{\{\s*locale\s*\}\}/));
     }
 
-    var scripts = head.querySelectorAll('script[type="application/l10n"]');
-    for (var i = 0; i < scripts.length; i++) {
-      // pass the node to save memory
-      ctx.addDictionary(scripts[i], scripts[i].getAttribute('lang'));
+    if (!isPretranslated) {
+      var body = document.body;
+      var scripts = body.querySelectorAll('script[type="application/l10n"]');
+      if (scripts.length) {
+        var inline = L20n.getContext();
+        for (var i = 0; i < scripts.length; i++) {
+          // pass the node to save memory
+          inline.addDictionary(scripts[i], scripts[i].getAttribute('lang'));
+        }
+        inline.once(function() {
+          translateDocument(inline);
+          isPretranslated = true;
+        });
+        inline.registerLocales('en-US', [navigator.language]);
+        inline.requestLocales(navigator.language);
+      }
     }
 
-    ctx.ready(translateDocument.bind(null, forceDOMLocalization));
+    ctx.ready(function() {
+      // XXX instead of using a flag, we could store the list of 
+      // yet-to-localize nodes that we get from the inline context, and 
+      // localize them here.
+      if (!isPretranslated) {
+        translateDocument(ctx);
+      }
+      isPretranslated = false;
+      fireLocalizedEvent(ctx);
+    });
+
+    // listen to language change events
+    if ('mozSettings' in navigator && navigator.mozSettings) {
+      navigator.mozSettings.addObserver('language.current', function(event) {
+        ctx.requestLocales(event.settingValue);
+      });
+    }
 
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
-      return freeze(lang);
+      ctx.registerLocales('en-US', getAvailable());
+      ctx.requestLocales(forcedLocale || navigator.language);
+      return;
     }
+
     for (var i = 0; i < iniLinks.length; i++) {
       var url = iniLinks[i].getAttribute('href');
       io.load(url, iniLoaded.bind(null, url));
@@ -78,30 +112,25 @@ define(function (require, exports, module) {
       }
       iniToLoad--;
       if (iniToLoad == 0) {
-        freeze(lang, availableLocales);
+        ctx.registerLocales('en-US', availableLocales);
+        ctx.requestLocales(forcedLocale || navigator.language);
+      }
+    }
+
+    function isDOMLocalizationNeeded() {
+      if (forceDOMLocalization) {
+        return true;
       }
     }
 
   }
 
-  function freeze(lang, available) {
-    if (!available) {
-      var metaLocs = document.head.querySelector('meta[name="locales"]');
-      if (metaLocs) {
-        available = metaLocs.getAttribute('content').split(',')
-                                                    .map(String.trim);
-      } else {
-        available = [];
-      }
-    }
-    ctx.registerLocales('en-US', available);
-    ctx.requestLocales(lang);
-
-    // listen to language change events
-    if ('mozSettings' in navigator && navigator.mozSettings) {
-      navigator.mozSettings.addObserver('language.current', function(event) {
-        ctx.requestLocales(event.settingValue);
-      });
+  function getAvailable() {
+    var metaLocs = document.head.querySelector('meta[name="locales"]');
+    if (metaLocs) {
+      return metaLocs.getAttribute('content').split(',').map(String.trim);
+    } else {
+      return [];
     }
   }
 
@@ -157,8 +186,8 @@ define(function (require, exports, module) {
   function createPublicAPI(ctx) {
     return {
       get: ctx.get.bind(ctx),
-      localize: localizeElement,
-      translate: translateFragment,
+      localize: localizeElement.bind(null, ctx),
+      translate: translateFragment.bind(null, ctx),
       language: {
         get code() { 
           return ctx.supportedLocales[0];
@@ -166,7 +195,7 @@ define(function (require, exports, module) {
         set code(lang) {
           if (!bootstrapped) {
             // build-time optimization uses this
-            bootstrap(lang, true);
+            bootstrap(lang);
           } else {
             ctx.requestLocales(lang);
           }
@@ -244,18 +273,7 @@ define(function (require, exports, module) {
     return { id: l10nId, args: args };
   }
 
-  function translateDocument(forceDOMLocalization) {
-    if (forceDOMLocalization ||
-        document.documentElement.lang !== navigator.language) {
-      var nodes = document.querySelectorAll('[data-l10n-id]');
-      for (var i = 0; i < nodes.length; i++) {
-        translateNode(nodes[i]);
-      }
-    }
-    fireLocalizedEvent();
-  }
-
-  function translateNode(node) {
+  function translateNode(ctx, node) {
     var attrs = getL10nAttributes(node);
     if (!attrs.id) {
       return true;
@@ -272,7 +290,7 @@ define(function (require, exports, module) {
   }
   
   // localize an element as soon as ctx is ready
-  function localizeElement(element, id, args) {
+  function localizeElement(ctx, element, id, args) {
     if (!element || !id) {
       return;
     }
@@ -288,16 +306,16 @@ define(function (require, exports, module) {
     // if ctx is ready, translate now;
     // if not, the element will be translated along with the document anyway.
     if (ctx.isReady) {
-      translateNode(element);
+      translateNode(ctx, element);
     }
   }
   
   // translate an array of HTML elements
   // -- returns an array of elements that could not be translated
-  function translateElements(elements) {
+  function translateElements(ctx, elements) {
     var untranslated = [];
     for (var i = 0, l = elements.length; i < l; i++) {
-      if (!translateNode(elements[i])) {
+      if (!translateNode(ctx, elements[i])) {
         untranslated.push(elements[i]);
       }
     }
@@ -306,16 +324,23 @@ define(function (require, exports, module) {
 
   // translate an HTML subtree
   // -- returns an array of elements that could not be translated
-  function translateFragment(element) {
+  function translateFragment(ctx, element) {
     element = element || document.documentElement;
-    var untranslated = translateElements(getTranslatableChildren(element));
-    if (!translateNode(element)) {
+    var untranslated = translateElements(ctx, getTranslatableChildren(element));
+    if (!translateNode(ctx, element)) {
       untranslated.push(element);
     }
     return untranslated;
   }
 
-  function fireLocalizedEvent() {
+  function translateDocument(ctx) {
+    var nodes = document.querySelectorAll('[data-l10n-id]');
+    for (var i = 0; i < nodes.length; i++) {
+      translateNode(ctx, nodes[i]);
+    }
+  }
+
+  function fireLocalizedEvent(ctx) {
     var event = document.createEvent('Event');
     event.initEvent('localized', false, false);
     event.language = ctx.supportedLocales[0];
