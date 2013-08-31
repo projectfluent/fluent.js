@@ -5,14 +5,15 @@ define(function (require, exports, module) {
   var io = require('./platform/io');
 
   var ctx;
-  var bootstrapped = false;
+  var isBootstrapped = false;
+  var isPretranslated;
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   if (typeof(document) === 'undefined') {
     // during build time, we don't bootstrap until mozL10n.language.code is set
     Object.defineProperty(navigator, 'mozL10n', {
       get: function() {
-        bootstrapped = false;
+        isBootstrapped = false;
         ctx = L20n.getContext();
         return createPublicAPI(ctx);
       },
@@ -21,25 +22,51 @@ define(function (require, exports, module) {
   } else {
     ctx = L20n.getContext();
     navigator.mozL10n = createPublicAPI(ctx);
-    if (document.readyState === 'loading') {
+    isPretranslated = document.documentElement.lang === navigator.language;
+
+    if (isPretranslated) {
+      window.setTimeout(bootstrap);
+    } else if (document.readyState === 'loading') {
+      // wait for interactive to perform inline localization
       document.addEventListener('DOMContentLoaded', function() {
-        // call bootstrap without any arguments
-        bootstrap();
+        inlineLocalization();
+        window.setTimeout(bootstrap);
       });
     } else {
+      // perform inline localization right now
+      inlineLocalization();
       window.setTimeout(bootstrap);
     }
   }
 
+  function inlineLocalization() {
+    var body = document.body;
+    var scripts = body.querySelectorAll('script[type="application/l10n"]');
+    if (scripts.length) {
+      var inline = L20n.getContext();
+      var langs = [];
+      for (var i = 0; i < scripts.length; i++) {
+        var lang = scripts[i].getAttribute('lang');
+        langs.push(lang);
+        // pass the node to save memory
+        inline.addDictionary(scripts[i], lang);
+      }
+      inline.once(function() {
+        translateDocument(inline);
+        isPretranslated = true;
+      });
+      inline.registerLocales('en-US', langs);
+      inline.requestLocales(navigator.language);
+    }
+  }
 
 
   function bootstrap(forcedLocale) {
-    bootstrapped = true;
+    isBootstrapped = true;
     ctx.addEventListener('error', console.warn.bind(console));
     ctx.addEventListener('warning', console.info.bind(console));
 
     var availableLocales = [];
-    var isPretranslated = document.documentElement.lang === navigator.language;
 
     var head = document.head;
     var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + 
@@ -50,27 +77,6 @@ define(function (require, exports, module) {
     for (var i = 0; i < jsonLinks.length; i++) {
       var uri = jsonLinks[i].getAttribute('href');
       ctx.linkResource(uri.replace.bind(uri, /\{\{\s*locale\s*\}\}/));
-    }
-
-    if (!isPretranslated) {
-      var body = document.body;
-      var scripts = body.querySelectorAll('script[type="application/l10n"]');
-      if (scripts.length) {
-        var inline = L20n.getContext();
-        var langs = [];
-        for (var i = 0; i < scripts.length; i++) {
-          var lang = scripts[i].getAttribute('lang');
-          langs.push(lang);
-          // pass the node to save memory
-          inline.addDictionary(scripts[i], lang);
-        }
-        inline.once(function() {
-          translateDocument(inline);
-          isPretranslated = true;
-        });
-        inline.registerLocales('en-US', langs);
-        inline.requestLocales(navigator.language);
-      }
     }
 
     ctx.ready(function() {
@@ -94,7 +100,9 @@ define(function (require, exports, module) {
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
       ctx.registerLocales('en-US', getAvailable());
-      ctx.requestLocales(forcedLocale || navigator.language);
+      window.setTimeout(function() {
+        ctx.requestLocales(forcedLocale || navigator.language);
+      });
       return;
     }
 
@@ -190,7 +198,7 @@ define(function (require, exports, module) {
           return ctx.supportedLocales[0];
         },
         set code(lang) {
-          if (!bootstrapped) {
+          if (!isBootstrapped) {
             // build-time optimization uses this
             bootstrap(lang);
           } else {
