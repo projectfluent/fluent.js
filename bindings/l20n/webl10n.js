@@ -269,6 +269,34 @@ define(function (require, exports, module) {
     }
     return { id: l10nId, args: args };
   }
+  
+  function setTextContent(element, text) {
+    // standard case: no element children
+    if (!element.firstElementChild) {
+      element.textContent = text;
+      return;
+    }
+
+    // this element has element children: replace the content of the first
+    // (non-blank) child textNode and clear other child textNodes
+    var found = false;
+    var reNotBlank = /\S/;
+    for (var child = element.firstChild; child; child = child.nextSibling) {
+      if (child.nodeType === 3 && reNotBlank.test(child.nodeValue)) {
+        if (found) {
+          child.nodeValue = '';
+        } else {
+          child.nodeValue = text;
+          found = true;
+        }
+      }
+    }
+    // if no (non-empty) textNode is found, insert a textNode before the
+    // element's first child.
+    if (!found) {
+      element.insertBefore(document.createTextNode(text), element.firstChild);
+    }
+  }
 
   function translateNode(ctx, node) {
     var attrs = getL10nAttributes(node);
@@ -279,7 +307,7 @@ define(function (require, exports, module) {
     if (!entity) {
       return false;
     }
-    node.textContent = entity.value;
+    setTextContent(node, entity.value);
 
     for (var i in entity.attributes) {
       node.setAttribute(i, entity.attributes[i]);
