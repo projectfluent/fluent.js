@@ -57,15 +57,18 @@ define(function (require, exports, module) {
       var scripts = body.querySelectorAll('script[type="application/l10n"]');
       if (scripts.length) {
         var inline = L20n.getContext();
+        var langs = [];
         for (var i = 0; i < scripts.length; i++) {
+          var lang = scripts[i].getAttribute('lang');
+          langs.push(lang);
           // pass the node to save memory
-          inline.addDictionary(scripts[i], scripts[i].getAttribute('lang'));
+          inline.addDictionary(scripts[i], lang);
         }
         inline.once(function() {
           translateDocument(inline);
           isPretranslated = true;
         });
-        inline.registerLocales('en-US', [navigator.language]);
+        inline.registerLocales('en-US', langs);
         inline.requestLocales(navigator.language);
       }
     }
@@ -114,12 +117,6 @@ define(function (require, exports, module) {
       if (iniToLoad == 0) {
         ctx.registerLocales('en-US', availableLocales);
         ctx.requestLocales(forcedLocale || navigator.language);
-      }
-    }
-
-    function isDOMLocalizationNeeded() {
-      if (forceDOMLocalization) {
-        return true;
       }
     }
 
