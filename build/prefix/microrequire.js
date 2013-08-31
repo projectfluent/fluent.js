@@ -25,7 +25,7 @@ function normalize(path) {
 }
 
 function join(a, b) {
-  return a ? a.trim().replace(/\/*$/, '/') + b.trim() : b.trim();
+  return a ? a.trim().replace(/\/{0,}$/, '/') + b.trim() : b.trim();
 }
 
 function dirname(path) {
