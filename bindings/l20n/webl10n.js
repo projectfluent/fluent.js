@@ -21,10 +21,12 @@ define(function (require, exports, module) {
   } else {
     ctx = L20n.getContext();
     navigator.mozL10n = createPublicAPI(ctx);
-    if (document.readyState !== 'loading') {
-      window.setTimeout(bootstrap);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        bootstrap(navigator.language);
+      });
     } else {
-      document.addEventListener('DOMContentLoaded', bootstrap);
+      window.setTimeout(bootstrap.bind(null, navigator.language));
     }
   }
 
@@ -93,7 +95,7 @@ define(function (require, exports, module) {
       }
     }
     ctx.registerLocales('en-US', available);
-    ctx.requestLocales(lang || navigator.language);
+    ctx.requestLocales(lang);
 
     // listen to language change events
     if ('mozSettings' in navigator && navigator.mozSettings) {
