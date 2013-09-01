@@ -24,41 +24,52 @@ define(function (require, exports, module) {
     navigator.mozL10n = createPublicAPI(ctx);
     isPretranslated = document.documentElement.lang === navigator.language;
 
-    window.addEventListener('load', function() {
-      bootstrap();
-    });
-    if (!isPretranslated) {
+    if (isPretranslated) {
+      window.addEventListener('load', function() {
+        window.setTimeout(bootstrap);
+      });
+    } else {
       if (document.readyState === 'loading') {
-        // wait for interactive to perform inline localization
-        document.addEventListener('DOMContentLoaded', function() {
-          inlineLocalization();
-        });
+        document.addEventListener('DOMContentLoaded', pretranslate);
       } else {
-        // perform inline localization right now
-        inlineLocalization();
+        pretranslate();
       }
+    }
+  }
+
+  function pretranslate() {
+    if (inlineLocalization()) {
+      window.addEventListener('load', function() {
+        window.setTimeout(bootstrap);
+      });
+    } else {
+      bootstrap();
     }
   }
 
   function inlineLocalization() {
     var body = document.body;
     var scripts = body.querySelectorAll('script[type="application/l10n"]');
-    if (scripts.length) {
-      var inline = L20n.getContext();
-      var langs = [];
-      for (var i = 0; i < scripts.length; i++) {
-        var lang = scripts[i].getAttribute('lang');
-        langs.push(lang);
-        // pass the node to save memory
-        inline.addDictionary(scripts[i], lang);
-      }
-      inline.once(function() {
-        translateFragment(inline);
-        isPretranslated = true;
-      });
-      inline.registerLocales('en-US', langs);
-      inline.requestLocales(navigator.language);
+    if (scripts.length === 0) {
+      return false;
     }
+    var inline = L20n.getContext();
+    var langs = [];
+    for (var i = 0; i < scripts.length; i++) {
+      var lang = scripts[i].getAttribute('lang');
+      langs.push(lang);
+      // pass the node to save memory
+      inline.addDictionary(scripts[i], lang);
+    }
+    inline.once(function() {
+      translateFragment(inline);
+      isPretranslated = true;
+    });
+    inline.registerLocales('en-US', langs);
+    inline.requestLocales(navigator.language);
+    // XXX check if we actually negotiatied navigator.language (i.e. the 
+    // corresponding <script> was present)?
+    return true;
   }
 
 
