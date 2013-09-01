@@ -240,10 +240,11 @@ define(function (require, exports, module) {
       if (!source) {
         continue;
       }
+
       ast.body.push(source);
       // check for any dependencies
       // XXX should this be recursive?
-      if (source.value.type === 'ComplexString') {
+      if (source.value && source.value.type === 'ComplexString') {
         source.value.body.forEach(function (chunk) {
           if (chunk.type == 'Identifier') {
             ast.body.push(ctx.getSource(chunk.name));
