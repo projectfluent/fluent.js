@@ -235,7 +235,7 @@ define(function (require, exports, module) {
   function getSubDictionary(fragment) {
     var ast = {
       type: 'WebL10n',
-      body: []
+      body: {}
     };
 
     if (!fragment) {
@@ -252,13 +252,13 @@ define(function (require, exports, module) {
         continue;
       }
 
-      ast.body.push(source);
+      ast.body[id] = source;
       // check for any dependencies
       // XXX should this be recursive?
       if (source.value && source.value.type === 'ComplexString') {
         source.value.body.forEach(function (chunk) {
           if (chunk.type == 'Identifier') {
-            ast.body.push(ctx.getSource(chunk.name));
+            ast.body[chunk.name] = ctx.getSource(chunk.name);
           }
         });
       }
