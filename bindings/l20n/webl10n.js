@@ -24,18 +24,19 @@ define(function (require, exports, module) {
     navigator.mozL10n = createPublicAPI(ctx);
     isPretranslated = document.documentElement.lang === navigator.language;
 
-    if (isPretranslated) {
-      window.setTimeout(bootstrap);
-    } else if (document.readyState === 'loading') {
-      // wait for interactive to perform inline localization
-      document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('load', function() {
+      bootstrap();
+    });
+    if (!isPretranslated) {
+      if (document.readyState === 'loading') {
+        // wait for interactive to perform inline localization
+        document.addEventListener('DOMContentLoaded', function() {
+          inlineLocalization();
+        });
+      } else {
+        // perform inline localization right now
         inlineLocalization();
-        window.setTimeout(bootstrap);
-      });
-    } else {
-      // perform inline localization right now
-      inlineLocalization();
-      window.setTimeout(bootstrap);
+      }
     }
   }
 
@@ -100,9 +101,7 @@ define(function (require, exports, module) {
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
       ctx.registerLocales('en-US', getAvailable());
-      window.setTimeout(function() {
-        ctx.requestLocales(forcedLocale || navigator.language);
-      });
+      ctx.requestLocales(forcedLocale || navigator.language);
       return;
     }
 
