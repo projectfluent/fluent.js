@@ -53,7 +53,7 @@ define(function (require, exports, module) {
         inline.addDictionary(scripts[i], lang);
       }
       inline.once(function() {
-        translateDocument(inline);
+        translateFragment(inline);
         isPretranslated = true;
       });
       inline.registerLocales('en-US', langs);
@@ -85,7 +85,7 @@ define(function (require, exports, module) {
       // yet-to-localize nodes that we get from the inline context, and 
       // localize them here.
       if (!isPretranslated) {
-        translateDocument(ctx);
+        translateFragment(ctx);
       }
       isPretranslated = false;
       fireLocalizedEvent(ctx);
@@ -363,13 +363,6 @@ define(function (require, exports, module) {
       untranslated.push(element);
     }
     return untranslated;
-  }
-
-  function translateDocument(ctx) {
-    var nodes = document.querySelectorAll('[data-l10n-id]');
-    for (var i = 0; i < nodes.length; i++) {
-      translateNode(ctx, nodes[i]);
-    }
   }
 
   function fireLocalizedEvent(ctx) {
