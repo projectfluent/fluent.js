@@ -6,6 +6,7 @@ var colors = require('colors');
 
 var Parser = require('../lib/l20n/parser').Parser;
 var Compiler = require('../lib/l20n/compiler').Compiler;
+var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
 
 program
   .version('0.0.1')
@@ -14,6 +15,7 @@ program
   .option('-a, --ast', 'Treat input as AST, not source code')
   .option('-n, --no-color', 'Print without color')
   .option('-l, --with-local', 'Print local entities and attributes')
+  .option('-p, --plural <locale>', 'Select the plural rule [en-US]', 'en-US')
   .parse(process.argv);
 
 var parser = new Parser();
@@ -91,6 +93,15 @@ function compileAndPrint(err, code) {
   } else {
     var ast = parser.parse(code.toString());
   }
+
+  ast.body['plural'] = {
+    type: 'Macro',
+    args: [{
+      type: 'Identifier',
+      name: 'n'
+    }],
+    expression: getPluralRule(program.plural)
+  };
 
   var env = compiler.compile(ast);
   for (var id in env) {
