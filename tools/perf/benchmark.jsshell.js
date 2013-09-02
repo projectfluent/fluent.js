@@ -1,11 +1,8 @@
 load('../../dist/shell/l20n.js');
 var parser = new L20n.Parser(true); 
 var compiler = new L20n.Compiler();
-var retr = new L20n.RetranslationManager();
 
-compiler.setGlobals(retr.globals);
-
-var code = read('./example.lol');
+var code = read('./example.properties');
 var data = {
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
@@ -25,6 +22,14 @@ var data = {
   "link2": "LINK2"
 }
 var ast = parser.parse(code);
+ast.body['plural'] = {
+  type: 'Macro',
+  args: [{
+    type: 'Identifier',
+    name: 'n'
+  }],
+  expression: L20n.getPluralRule('en-US')
+};
 var env = compiler.compile(ast);
 var ids = [];
 for (var id in env) {

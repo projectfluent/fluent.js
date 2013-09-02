@@ -3,16 +3,12 @@ var fs = require('fs');
 var L20n = require('../../lib/l20n');
 var Parser = require('../../lib/l20n/parser').Parser;
 var Compiler = require('../../lib/l20n/compiler').Compiler;
-var RetranslationManager = require('../../lib/l20n/retranslation').RetranslationManager;
-require('../../lib/l20n/platform/globals');
+var getPluralRule = require('../../lib/l20n/plurals').getPluralRule;
 
 var parser = new Parser(true); 
 var compiler = new Compiler();
-var retr = new RetranslationManager();
 
-compiler.setGlobals(retr.globals);
-
-var code = fs.readFileSync(__dirname + '/example.lol').toString();
+var code = fs.readFileSync(__dirname + '/example.properties').toString();
 var data = {
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
@@ -32,6 +28,15 @@ var data = {
   "link2": "LINK2"
 }
 var ast = parser.parse(code);
+ast.body['plural'] = {
+  type: 'Macro',
+  args: [{
+    type: 'Identifier',
+    name: 'n'
+  }],
+  expression: getPluralRule('en-US')
+};
+
 var env = compiler.compile(ast);
 var ids = [];
 for (var id in env) {
@@ -62,7 +67,8 @@ cumulative.get = process.hrtime(start);
 var ctx = L20n.getContext();
 ctx.ready(printResults);
 //ctx.addResource('<foo "Foo">');
-ctx.linkResource(__dirname + '/foo.lol');
+ctx.linkResource(__dirname + '/foo.properties');
+ctx.registerLocales('en-US');
 ctx.requestLocales();
 
 function printResults() {
