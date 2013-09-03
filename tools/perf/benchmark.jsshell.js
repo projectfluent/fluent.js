@@ -21,22 +21,6 @@ var data = {
   "link1": "LINK1",
   "link2": "LINK2"
 }
-var ast = parser.parse(code);
-ast.body['plural'] = {
-  type: 'Macro',
-  args: [{
-    type: 'Identifier',
-    name: 'n'
-  }],
-  expression: L20n.getPluralRule('en-US')
-};
-var env = compiler.compile(ast);
-var ids = [];
-for (var id in env) {
-  if (env[id].get) {
-    ids.push(id);
-  }
-}
 
 function micro(time) {
   // time is in milliseconds with decimals
@@ -46,21 +30,39 @@ function micro(time) {
 var times = {};
 times.start = dateNow();
 
-parser.parse(code);
-times.parse = dateNow();
+var ast = parser.parse(code);
+times.parseEnd = dateNow();
 
-compiler.compile(ast);
+ast.body['plural'] = {
+  type: 'Macro',
+  args: [{
+    type: 'Identifier',
+    name: 'n'
+  }],
+  expression: L20n.getPluralRule('en-US')
+};
+
 times.compile = dateNow();
+var env = compiler.compile(ast);
+times.compileEnd = dateNow();
 
+var ids = [];
+for (var id in env) {
+  if (env[id].get) {
+    ids.push(id);
+  }
+}
+
+times.get = dateNow();
 for (var i = 0, len = ids.length; i < len; i++) {
    env[ids[i]].get(data);
 }
-times.get = dateNow();
+times.getEnd = dateNow();
 
 var results = {
-  parse: micro(times.parse - times.start),
-  compile: micro(times.compile - times.parse),
-  get: micro(times.get - times.compile),
+  parse: micro(times.parseEnd - times.start),
+  compile: micro(times.compileEnd - times.compile),
+  get: micro(times.getEnd - times.get),
 };
 
 print(JSON.stringify(results));

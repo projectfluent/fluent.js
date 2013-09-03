@@ -27,23 +27,6 @@ var data = {
   "link1": "LINK1",
   "link2": "LINK2"
 }
-var ast = parser.parse(code);
-ast.body['plural'] = {
-  type: 'Macro',
-  args: [{
-    type: 'Identifier',
-    name: 'n'
-  }],
-  expression: getPluralRule('en-US')
-};
-
-var env = compiler.compile(ast);
-var ids = [];
-for (var id in env) {
-  if (env[id].get) {
-    ids.push(id);
-  }
-}
 
 function micro(time) {
   // time is [seconds, nanoseconds]
@@ -53,17 +36,36 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-parser.parse(code);
-cumulative.parse = process.hrtime(start);
+var ast = parser.parse(code);
+cumulative.parseEnd = process.hrtime(start);
 
-compiler.compile(ast);
+ast.body['plural'] = {
+  type: 'Macro',
+  args: [{
+    type: 'Identifier',
+    name: 'n'
+  }],
+  expression: getPluralRule('en-US')
+};
+
 cumulative.compile = process.hrtime(start);
+var env = compiler.compile(ast);
+cumulative.compileEnd = process.hrtime(start);
 
+var ids = [];
+for (var id in env) {
+  if (env[id].get) {
+    ids.push(id);
+  }
+}
+
+cumulative.get = process.hrtime(start);
 for (var i = 0, len = ids.length; i < len; i++) {
    env[ids[i]].get(data);
 }
-cumulative.get = process.hrtime(start);
+cumulative.getEnd = process.hrtime(start);
 
+cumulative.ready = process.hrtime(start);
 var ctx = L20n.getContext();
 ctx.ready(printResults);
 //ctx.addResource('<foo "Foo">');
@@ -72,12 +74,12 @@ ctx.registerLocales('en-US');
 ctx.requestLocales();
 
 function printResults() {
-  cumulative.ready = process.hrtime(start);
+  cumulative.readyEnd = process.hrtime(start);
   var results = {
-    parse: micro(cumulative.parse),
-    compile: micro(cumulative.compile) - micro(cumulative.parse),
-    get: micro(cumulative.get) - micro(cumulative.compile),
-    ready: micro(cumulative.ready) - micro(cumulative.get),
+    parse: micro(cumulative.parseEnd),
+    compile: micro(cumulative.compileEnd) - micro(cumulative.compile),
+    get: micro(cumulative.getEnd) - micro(cumulative.get),
+    ready: micro(cumulative.readyEnd) - micro(cumulative.ready),
   };
   console.log(JSON.stringify(results));
 }
