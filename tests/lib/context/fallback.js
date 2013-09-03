@@ -18,7 +18,7 @@ describe('No locale fallback', function() {
     ctx = new Context();
     whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('pl');
     ctx.requestLocales('pl');
@@ -32,8 +32,9 @@ describe('No locale fallback', function() {
 
   it('[v] (ValueError)', function() {
     var entity = ctx.getEntity('v');
-    entity.value.should.equal('V {{ boo }} pl');
-    entity.should.have.property('locale', 'pl');
+    entity.should.be.false;
+    //entity.value.should.equal('V {{ boo }} pl');
+    //entity.should.have.property('locale', 'pl');
   });
   it('[v] emits 2 errors', function(done) {
     var count = 0;
@@ -75,8 +76,9 @@ describe('No locale fallback', function() {
 
   it('[i] (IndexError)', function() {
     var entity = ctx.getEntity('i');
-    entity.value.should.equal('i');
-    entity.should.have.property('locale', null);
+    entity.should.be.false;
+    //entity.value.should.equal('i');
+    //entity.should.have.property('locale', null);
   });
   it('[i] emits 2 errors', function(done) {
     var count = 0;
@@ -118,8 +120,9 @@ describe('No locale fallback', function() {
 
   it('[m] (translation missing)', function() {
     var entity = ctx.getEntity('m');
-    entity.value.should.equal('m');
-    entity.should.have.property('locale', null);
+    entity.should.be.false;
+    //entity.value.should.equal('m');
+    //entity.should.have.property('locale', null);
   });
   it('[m] emits 1 error', function(done) {
     var count = 0;
@@ -161,7 +164,7 @@ describe('One fallback locale', function() {
     ctx = new Context();
     whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('de', ['de', 'pl']);
     ctx.requestLocales('pl', 'de');
@@ -219,8 +222,9 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[vv]', function() {
         var entity = ctx.getEntity('vv');
-        entity.value.should.equal('VV {{ boo }} pl');
-        entity.should.have.property('locale', 'pl');
+        entity.should.be.false;
+        //entity.value.should.equal('VV {{ boo }} pl');
+        //entity.should.have.property('locale', 'pl');
       });
       it('[vv] emits 3 errors', function(done) {
         var count = 0;
@@ -280,8 +284,9 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale:', function() {
       it('[vi]', function() {
         var entity = ctx.getEntity('vi');
-        entity.value.should.equal('VI {{ boo }} pl');
-        entity.should.have.property('locale', 'pl');
+        entity.should.be.false;
+        //entity.value.should.equal('VI {{ boo }} pl');
+        //entity.should.have.property('locale', 'pl');
       });
       it('[vi] emits 3 errors', function(done) {
         var count = 0;
@@ -341,8 +346,9 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[vm]', function() {
         var entity = ctx.getEntity('vm');
-        entity.value.should.equal('VM {{ boo }} pl');
-        entity.should.have.property('locale', 'pl');
+        entity.should.be.false;
+        //entity.value.should.equal('VM {{ boo }} pl');
+        //entity.should.have.property('locale', 'pl');
       });
       it('[vm] emits 2 errors', function(done) {
         var count = 0;
@@ -437,8 +443,9 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale', function() {
       it('[iv]', function() {
         var entity = ctx.getEntity('iv');
-        entity.value.should.equal('IV {{ boo }} de');
-        entity.should.have.property('locale', 'de');
+        entity.should.be.false;
+        //entity.value.should.equal('IV {{ boo }} de');
+        //entity.should.have.property('locale', 'de');
       });
       it('[iv] emits 3 errors', function(done) {
         var count = 0;
@@ -498,8 +505,9 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale', function() {
       it('[ii]', function() {
         var entity = ctx.getEntity('ii');
-        entity.value.should.equal('ii');
-        entity.should.have.property('locale', null);
+        entity.should.be.false;
+        //entity.value.should.equal('ii');
+        //entity.should.have.property('locale', null);
       });
       it('[ii] emits 3 errors', function(done) {
         var count = 0;
@@ -554,8 +562,9 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[im]', function() {
         var entity = ctx.getEntity('im');
-        entity.value.should.equal('im');
-        entity.should.have.property('locale', null);
+        entity.should.be.false;
+        //entity.value.should.equal('im');
+        //entity.should.have.property('locale', null);
       });
       it('[im] emits 2 errors', function(done) {
         var count = 0;
@@ -634,8 +643,9 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[mv]', function() {
         var entity = ctx.getEntity('mv');
-        entity.value.should.equal('MV {{ boo }} de');
-        entity.should.have.property('locale', 'de');
+        entity.should.be.false;
+        //entity.value.should.equal('MV {{ boo }} de');
+        //entity.should.have.property('locale', 'de');
       });
       it('[mv] emits 2 errors', function(done) {
         var count = 0;
@@ -688,8 +698,9 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale:', function() {
       it('[mi]', function() {
         var entity = ctx.getEntity('mi');
-        entity.value.should.equal('mi');
-        entity.should.have.property('locale', null);
+        entity.should.be.false;
+        //entity.value.should.equal('mi');
+        //entity.should.have.property('locale', null);
       });
       it('[mi] emits 2 errors', function(done) {
         var count = 0;
@@ -742,8 +753,9 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[mm]', function() {
         var entity = ctx.getEntity('mm');
-        entity.value.should.equal('mm');
-        entity.should.have.property('locale', null);
+        entity.should.be.false;
+        //entity.value.should.equal('mm');
+        //entity.should.have.property('locale', null);
       });
       it('[mm] emits 1 error', function(done) {
         var count = 0;
@@ -788,14 +800,14 @@ describe('One fallback locale', function() {
   });
 });
 
-describe('Two fallback locales', function() {
+describe.skip('Two fallback locales', function() {
   var ctx;
 
   beforeEach(function(done) {
     ctx = new Context();
     whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl', 'de', 'en-US');
