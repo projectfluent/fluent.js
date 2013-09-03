@@ -253,21 +253,24 @@ define(function (require, exports, module) {
     var elements = getTranslatableChildren(fragment);
 
     for (var i = 0, l = elements.length; i < l; i++) {
-      var id = elements[i].getAttribute('data-l10n-id');
-      var source = ctx.getSource(id);
+      var attrs = getL10nAttributes(elements[i]);
+      var source = ctx.getSource(attrs.id);
       if (!source) {
         continue;
       }
+      ast.body[attrs.id] = source;
 
-      ast.body[id] = source;
       // check for any dependencies
-      // XXX should this be recursive?
-      if (source.value && source.value.type === 'ComplexString') {
-        source.value.content.forEach(function (chunk) {
-          if (chunk.type == 'Identifier') {
-            ast.body[chunk.name] = ctx.getSource(chunk.name);
-          }
-        });
+      var entity = ctx.getEntity(attrs.id, attrs.args);
+      if (!entity) {
+        console.warn(attrs.id + ': could not fully evaluate entity');
+        continue;
+      }
+      for (var id in entity.identifiers) {
+        var depSource = ctx.getSource(id);
+        if (depSource) {
+          ast.body[id] = depSource;
+        }
       }
     }
     return ast;
@@ -290,7 +293,7 @@ define(function (require, exports, module) {
       try {
         args = JSON.parse(l10nArgs);
       } catch (e) {
-        consoleWarn('could not parse arguments for #' + l10nId);
+        console.warn('could not parse arguments for ' + l10nId);
       }
     }
     return { id: l10nId, args: args };
