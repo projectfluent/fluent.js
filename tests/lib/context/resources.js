@@ -20,8 +20,8 @@ describe('A context without any resources', function() {
 
 describe('addResource without registerLocales', function() {
   var ctx = new Context();
-  ctx.addResource('<foo "Foo">');
-  ctx.addResource('<bar "Bar">');
+  ctx.addResource('foo=Foo');
+  ctx.addResource('bar=Bar');
 
   before(function(done) {
     whenReady(ctx, done);
@@ -42,7 +42,7 @@ describe('addResource without registerLocales', function() {
 
 describe('addResource with registerLocales', function() {
   var ctx = new Context();
-  ctx.addResource('<foo "Foo">');
+  ctx.addResource('foo=Foo');
 
   before(function(done) {
     whenReady(ctx, done);
@@ -68,7 +68,7 @@ describe('addResource with registerLocales', function() {
 
 describe('linkResource(String) without registerLocales', function() {
   var ctx = new Context();
-  ctx.linkResource(__dirname + '/fixtures/strings.lol');
+  ctx.linkResource(__dirname + '/fixtures/strings.properties');
 
   before(function(done) {
     whenReady(ctx, done);
@@ -84,7 +84,7 @@ describe('linkResource(String) without registerLocales', function() {
 
 describe('linkResource(String) with registerLocales', function() {
   var ctx = new Context();
-  ctx.linkResource(__dirname + '/fixtures/strings.lol');
+  ctx.linkResource(__dirname + '/fixtures/strings.properties');
 
   before(function(done) {
     whenReady(ctx, done);
@@ -111,7 +111,7 @@ describe('linkResource(String) with registerLocales', function() {
 describe('linkResource(Function) without registerLocales', function() {
   var ctx = new Context();
   ctx.linkResource(function(locale) {
-    return __dirname + '/fixtures/' + locale + '.lol';
+    return __dirname + '/fixtures/' + locale + '.properties';
   });
 
   before(function(done) {
@@ -130,7 +130,7 @@ describe('linkResource(Function) without registerLocales', function() {
 describe('linkResource(Function) with registerLocales', function() {
   var ctx = new Context();
   ctx.linkResource(function(locale) {
-    return __dirname + '/fixtures/' + locale + '.lol';
+    return __dirname + '/fixtures/' + locale + '.properties';
   });
 
   before(function(done) {
@@ -155,13 +155,14 @@ describe('linkResource(Function) with registerLocales', function() {
   })
 });
 
-describe('Parser errors', function() {
+// XXX parser doesn't throw yet
+describe.skip('Parser errors', function() {
   var ctx;
 
   beforeEach(function() {
     ctx = new Context();
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
   });
 
@@ -184,7 +185,7 @@ describe('Missing resources', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.addResource('<foo "Foo">');
-    ctx.linkResource(__dirname + '/fixtures/missing.lol');
+    ctx.linkResource(__dirname + '/fixtures/missing.properties');
   });
 
   it('should get ready', function(done) {
@@ -194,30 +195,7 @@ describe('Missing resources', function() {
   it('should emit a warning', function(done) {
     ctx.addEventListener('warning', function(e) {
       e.should.be.an.instanceOf(io.Error);
-      e.should.match(/missing.lol/);
-      done();
-    });
-    ctx.requestLocales();
-  });
-});
-
-describe('Recursive imports', function() {
-  var ctx;
-
-  beforeEach(function() {
-    ctx = new Context();
-    ctx.addResource('<foo "Foo">');
-    ctx.linkResource(__dirname + '/fixtures/recursive.lol');
-  });
-
-  it('should get ready', function(done) {
-    whenReady(ctx, done);
-    ctx.requestLocales();
-  });
-  it('should emit an error', function(done) {
-    ctx.addEventListener('error', function(e) {
-      e.should.be.an.instanceOf(Context.Error);
-      e.should.match(/Too many nested/);
+      e.should.match(/missing.properties/);
       done();
     });
     ctx.requestLocales();
@@ -232,27 +210,19 @@ describe('No valid resources', function() {
 
   beforeEach(function() {
     ctx = new Context();
-    ctx.linkResource(__dirname + '/fixtures/missing.lol');
-    ctx.linkResource(__dirname + '/fixtures/recursive.lol');
+    ctx.linkResource(__dirname + '/fixtures/missing.properties');
+    ctx.linkResource(__dirname + '/fixtures/another.properties');
   });
 
   it('should get ready', function(done) {
     whenReady(ctx, done);
     ctx.requestLocales();
   });
-  it('should emit two errors', function(done) {
+  it('should emit one error', function(done) {
     var count = 0;
     ctx.addEventListener('error', function(e) {
       count++;
-      if (count >= 2)
-        done();
-    });
-    ctx.requestLocales();
-  });
-  it('should emit an error about recursion', function(done) {
-    ctx.addEventListener('error', function(e) {
-      e.should.be.an.instanceOf(Context.Error);
-      if (/Too many nested/.test(e.message))
+      if (count >= 1)
         done();
     });
     ctx.requestLocales();
@@ -261,6 +231,31 @@ describe('No valid resources', function() {
     ctx.addEventListener('error', function(e) {
       e.should.be.an.instanceOf(Context.Error);
       if (/no valid resources/.test(e.message))
+        done();
+    });
+    ctx.requestLocales();
+  });
+  it('should emit two warnings', function(done) {
+    var count = 0;
+    ctx.addEventListener('warning', function(e) {
+      count++;
+      if (count >= 2)
+        done();
+    });
+    ctx.requestLocales();
+  });
+  it('should emit a warning about missing file: missing.properties', function(done) {
+    ctx.addEventListener('warning', function(e) {
+      e.should.be.an.instanceOf(io.Error);
+      if (/missing.properties/.test(e.message))
+        done();
+    });
+    ctx.requestLocales();
+  });
+  it('should emit a warning about missing file: another.properties', function(done) {
+    ctx.addEventListener('warning', function(e) {
+      e.should.be.an.instanceOf(io.Error);
+      if (/another.properties/.test(e.message))
         done();
     });
     ctx.requestLocales();
