@@ -15,9 +15,7 @@ endif
 
 
 LIB_FILES = \
-  tests/lib/*.js \
   tests/lib/context/*.js \
-  tests/lib/compiler/*.js \
   tests/integration/*.js
 ifeq ($(INSECURE), 1)
 LIB_FILES += tests/lib/compiler/insecure/*.js
