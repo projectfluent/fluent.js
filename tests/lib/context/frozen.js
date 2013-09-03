@@ -6,7 +6,7 @@ describe('A non-frozen context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
-    ctx.addResource('<dummy "Dummy">');
+    ctx.addResource('dummy=Dummy');
   });
 
   it('should throw on get', function() {
@@ -19,24 +19,19 @@ describe('A non-frozen context', function() {
       ctx.getEntity('dummy');
     }).should.throw(/Context not ready/);
   })
-  it('should not throw on localize', function() {
-    (function(){
-      ctx.localize(['dummy'], function(l10n) {});
-    }).should.not.throw();
-  })
 });
 
 describe('A frozen, non-ready context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
-    ctx.addResource('<dummy "Dummy">');
+    ctx.linkResource('./fixtures/en-US.properties');
     ctx.requestLocales();
   });
 
   it('should throw on addResource', function() {
     (function(){
-      ctx.addResource('<dummy "Dummy">');
+      ctx.addResource('dummy=Dummy');
     }).should.throw(/Context is frozen/);
   })
   it('should throw on linkResource', function() {
@@ -59,11 +54,6 @@ describe('A frozen, non-ready context', function() {
       ctx.getEntity('dummy');
     }).should.throw(/Context not ready/);
   })
-  it('should not throw on localize', function() {
-    (function(){
-      ctx.localize(['dummy'], function(l10n) {});
-    }).should.not.throw();
-  })
   it('should throw on registerLocales', function() {
     (function(){
       ctx.registerLocales('en-US');
@@ -85,7 +75,7 @@ describe('A frozen, ready context', function() {
   var ctx;
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.addResource('<dummy "Dummy">');
+    ctx.addResource('dummy=Dummy');
     ctx.addEventListener('ready', function onReady() {
       ctx.removeEventListener('ready', onReady);
       done();
@@ -95,7 +85,7 @@ describe('A frozen, ready context', function() {
 
   it('should throw on addResource', function() {
     (function(){
-      ctx.addResource('<dummy "Dummy">');
+      ctx.addResource('dummy=Dummy');
     }).should.throw(/Context is frozen/);
   })
   it('should throw on linkResource', function() {
@@ -121,11 +111,6 @@ describe('A frozen, ready context', function() {
   it('should not throw on getEntity of an unknown entity', function() {
     (function(){
       ctx.getEntity('missing');
-    }).should.not.throw();
-  })
-  it('should not throw on localize', function() {
-    (function(){
-      ctx.localize(['dummy'], function(l10n) {});
     }).should.not.throw();
   })
   it('should throw on registerLocales', function() {

@@ -14,9 +14,9 @@ describe('Language negotiation without registerLocales', function() {
 
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.addResource('<foo "Foo">');
-    ctx.requestLocales();
     whenReady(ctx, done);
+    ctx.addResource('foo=Foo');
+    ctx.requestLocales();
   });
 
   it('used the i-default locale', function() {
@@ -30,12 +30,12 @@ describe('Language negotiation with registerLocales', function() {
 
   beforeEach(function(done) {
     ctx = new Context();
+    whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('csb', 'pl', 'de');
-    whenReady(ctx, done);
   });
 
   it('sets the correct fallback chain', function() {
@@ -51,12 +51,12 @@ describe('supportedLocales', function() {
 
   beforeEach(function(done) {
     ctx = new Context();
+    whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('csb', 'pl', 'de');
-    whenReady(ctx, done);
   });
 
   it('cannot be overwritten', function() {
@@ -91,7 +91,7 @@ describe('Language negotiator', function() {
     ctx = new Context();
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.properties';
     });
   });
 
@@ -105,20 +105,6 @@ describe('Language negotiator', function() {
   it('can be overridden', function(done) {
     ctx.registerLocaleNegotiator(function(available, requested, def) {
       return ['de'];
-    });
-    whenReady(ctx, function() {
-      ctx.get('foo').should.equal('Foo de');
-      done();
-    });
-    ctx.requestLocales('pl');
-  });
-  // XXX Bug 908777 - Allow locale negotiator to be asynchronous
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=908777
-  it.skip('can be asynchronous', function(done) {
-    ctx.registerLocaleNegotiator(function(available, requested, def, cb) {
-      setTimeout(function() {
-        cb(['de']);
-      });
     });
     whenReady(ctx, function() {
       ctx.get('foo').should.equal('Foo de');
@@ -169,7 +155,7 @@ describe('requestLocales errors', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
-    ctx.addResource('<dummy "Dummy">');
+    ctx.addResource('dummy=Dummy');
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
   });
 
