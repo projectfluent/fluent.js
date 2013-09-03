@@ -31,14 +31,6 @@ var data = {
   "link1": "LINK1",
   "link2": "LINK2"
 }
-var ast = parser.parse(code);
-var env = compiler.compile(ast);
-var ids = [];
-for (var id in env) {
-  if (env[id].get) {
-    ids.push(id);
-  }
-}
 
 function micro(time) {
   // time is [seconds, nanoseconds]
@@ -48,12 +40,20 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-parser.parse(code);
+var ast = parser.parse(code);
 cumulative.parse = process.hrtime(start);
 
-compiler.compile(ast);
+var env = compiler.compile(ast);
 cumulative.compile = process.hrtime(start);
 
+var ids = [];
+for (var id in env) {
+  if (env[id].get) {
+    ids.push(id);
+  }
+}
+
+cumulative.getStart = process.hrtime(start);
 for (var i = 0, len = ids.length; i < len; i++) {
    env[ids[i]].get(data);
 }
@@ -70,7 +70,7 @@ function printResults() {
   var results = {
     parse: micro(cumulative.parse),
     compile: micro(cumulative.compile) - micro(cumulative.parse),
-    get: micro(cumulative.get) - micro(cumulative.compile),
+    get: micro(cumulative.get) - micro(cumulative.getStart),
     ready: micro(cumulative.ready) - micro(cumulative.get),
   };
   console.log(JSON.stringify(results));

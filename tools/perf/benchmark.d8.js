@@ -24,14 +24,6 @@ var data = {
   "link1": "LINK1",
   "link2": "LINK2"
 }
-var ast = parser.parse(code);
-var env = compiler.compile(ast);
-var ids = [];
-for (var id in env) {
-  if (env[id].get) {
-    ids.push(id);
-  }
-}
 
 function micro(time) {
   // time is in milliseconds
@@ -41,12 +33,20 @@ function micro(time) {
 var times = {};
 times.start = Date.now();
 
-parser.parse(code);
+var ast = parser.parse(code);
 times.parse = Date.now();
 
-compiler.compile(ast);
+var env = compiler.compile(ast);
 times.compile = Date.now();
 
+var ids = [];
+for (var id in env) {
+  if (env[id].get) {
+    ids.push(id);
+  }
+}
+
+times.getStart = Date.now();
 for (var i = 0, len = ids.length; i < len; i++) {
    env[ids[i]].get(data);
 }
@@ -55,7 +55,7 @@ times.get = Date.now();
 var results = {
   parse: micro(times.parse - times.start),
   compile: micro(times.compile - times.parse),
-  get: micro(times.get - times.compile),
+  get: micro(times.get - times.getStart),
 };
 
 print(JSON.stringify(results));
