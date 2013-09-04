@@ -267,6 +267,9 @@ define(function (require, exports, module) {
         continue;
       }
       for (var id in entity.identifiers) {
+        if (!entity.identifiers.hasOwnProperty(id)) {
+          continue;
+        }
         var depSource = ctx.getSource(id);
         if (depSource) {
           ast.body[id] = depSource;
@@ -338,8 +341,10 @@ define(function (require, exports, module) {
     }
     setTextContent(node, entity.value);
 
-    for (var i in entity.attributes) {
-      node.setAttribute(i, entity.attributes[i]);
+    for (var key in entity.attributes) {
+      if (entity.attributes.hasOwnProperty(key)) {
+        node.setAttribute(key, entity.attributes[key]);
+      }
     }
   }
   
