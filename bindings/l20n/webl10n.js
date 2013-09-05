@@ -30,7 +30,7 @@ define(function (require, exports, module) {
     ctx = L20n.getContext();
     navigator.mozL10n = createPublicAPI(ctx);
     ctx.addEventListener('error', console.error.bind(console));
-    ctx.addEventListener('warning', console.warning.bind(console));
+    ctx.addEventListener('warning', console.warn.bind(console));
 
     isPretranslated = document.documentElement.lang === navigator.language;
     if (isPretranslated) {
@@ -64,7 +64,7 @@ define(function (require, exports, module) {
     }
     var inline = L20n.getContext();
     inline.addEventListener('error', console.error.bind(console));
-    inline.addEventListener('warning', console.warning.bind(console));
+    inline.addEventListener('warning', console.warn.bind(console));
 
     var langs = [];
     for (var i = 0; i < scripts.length; i++) {
