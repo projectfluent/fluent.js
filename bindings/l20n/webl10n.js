@@ -217,7 +217,13 @@ define(function (require, exports, module) {
 
   function createPublicAPI(ctx) {
     return {
-      get: ctx.get.bind(ctx),
+      get: function l10n_get(id, data) {
+        var entity = ctx.getEntity(id, data);
+        if (!entity) {
+          return '';
+        }
+        return entity.value;
+      },
       localize: localizeElement.bind(null, ctx),
       translate: translateFragment.bind(null, ctx),
       language: {
