@@ -9,11 +9,11 @@ var compiler = new Compiler();
 describe('Env object', function(){
   var source, ctxdata, ast, env;
   beforeEach(function() {
-    source = '                                                                \
-      <foo "Foo">                                                             \
-      <getFoo "{{ foo }}">                                                    \
-      <getBar "{{ bar }}">                                                    \
-    ';
+    source = [
+      'foo=Foo',
+      'getFoo={{ foo }}',
+      'getBar={{ bar }}'
+    ].join('\n');
     ast = parser.parse(source);
     env = compiler.compile(ast);
   });
@@ -26,10 +26,10 @@ describe('Env object', function(){
     }).should.throw(/unknown entry: bar/);
   });
   it('cannot be modified by another compilation', function() {
-    source2 = '                                                               \
-      <foo "Baz">                                                             \
-      <bar "Bar">                                                             \
-    ';
+    source2 = [
+      'foo=Foo',
+      'bar=Bar'
+    ].join('\n');
     ast2 = parser.parse(source2);
     env2 = compiler.compile(ast2);
 
