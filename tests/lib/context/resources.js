@@ -13,9 +13,27 @@ function whenReady(ctx, callback) {
 
 describe('A context without any resources', function() {
   var ctx = new Context();
-  it('should throw on requestLocales', function() {
-    ctx.requestLocales.should.throw(/Context has no resources/);
-  })
+  beforeEach(function() {
+    ctx = new Context();
+  });
+
+  it('should emit one warning', function(done) {
+    var count = 0;
+    ctx.addEventListener('warning', function(e) {
+      count++;
+      if (count >= 1)
+        done();
+    });
+    ctx.requestLocales();
+  });
+  it('should emit a warning about no resources', function(done) {
+    ctx.addEventListener('warning', function(e) {
+      e.should.be.an.instanceOf(Context.Error);
+      if (/no resources/.test(e.message))
+        done();
+    });
+    ctx.requestLocales();
+  });
 });
 
 describe('addResource without registerLocales', function() {
