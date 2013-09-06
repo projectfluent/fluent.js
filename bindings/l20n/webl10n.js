@@ -382,7 +382,7 @@ define(function (require, exports, module) {
 
     for (var key in entity.attributes) {
       if (entity.attributes.hasOwnProperty(key)) {
-        node.setAttribute(key, entity.attributes[key]);
+        node[key] = entity.attributes[key];
       }
     }
   }
