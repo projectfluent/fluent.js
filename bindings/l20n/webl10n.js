@@ -382,7 +382,13 @@ define(function (require, exports, module) {
 
     for (var key in entity.attributes) {
       if (entity.attributes.hasOwnProperty(key)) {
-        node[key] = entity.attributes[key];
+        var attr = entity.attributes[key];
+        var pos = key.indexOf('.');
+        if (pos !== -1) {
+          node[key.substr(0, pos)][key.substr(pos + 1)] = attr;
+        } else {
+          node[key] = attr;
+        }
       }
     }
   }
