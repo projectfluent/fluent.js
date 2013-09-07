@@ -9,287 +9,64 @@ describe('Example', function() {
     parser = new Parser();
   });
 
-  it('empty entity', function() {
-    var ast = parser.parse('<id>');
-    ast.body.length.should.equal(1);
-    ast.body[0].type.should.equal('JunkEntry');
-  });
-  it('empty entity with white space', function() {
-    var ast = parser.parse('<id >');
-    ast.body.length.should.equal(1);
-    ast.body[0].type.should.equal('JunkEntry');
-  });
   it('string value', function() {
-    var ast = parser.parse("<id 'string'>");
-    ast.body.length.should.equal(1);
-    ast.body[0].type.should.equal('Entity');
-    ast.body[0].id.name.should.equal('id');
-    ast.body[0].value.content.should.equal('string');
-
-    var ast = parser.parse("<id '''string'''>");
-    ast.body.length.should.equal(1);
-    ast.body[0].type.should.equal('Entity');
-    ast.body[0].id.name.should.equal('id');
-    ast.body[0].value.content.should.equal('string');
-
-    var ast = parser.parse('<id """string""">');
-    ast.body.length.should.equal(1);
-    ast.body[0].type.should.equal('Entity');
-    ast.body[0].id.name.should.equal('id');
-    ast.body[0].value.content.should.equal('string');
-
-  });
-  it('string value quotes', function() {
-    //var ast = parser.parse('<id "str\\"ing">');
-    //ast.body[0].value.content.should.equal('str"ing');
-
-    //var ast = parser.parse("<id 'str\\'ing'>");
-    //ast.body[0].value.content.should.equal("str'ing");
-
-    //var ast = parser.parse('<id """str"ing""">');
-    //ast.body[0].value.content.should.equal('str"ing');
-
-    //var ast = parser.parse("<id '''str'ing'''>");
-    //ast.body[0].value.content.should.equal("str'ing");
-
-    var ast = parser.parse('<id """"string\\"""">');
-    ast.body[0].value.content.should.equal('"string\\"');
-    //ast.body[0].value.content.should.equal('"string"');
-
-    //var ast = parser.parse("<id ''''string\\''''>");
-    //ast.body[0].value.content.should.equal("'string'");
-
-    //var ast = parser.parse("<id 'test \{{ more'>");
-    //ast.body[0].value.content.should.equal("test {{ more");
-
-    //var ast = parser.parse("<id 'test \\\\ more'>");
-    //ast.body[0].value.content.should.equal("test \ more");
-
-    //var ast = parser.parse("<id 'test \\a more'>");
-    //ast.body[0].value.content.should.equal("test \\a more");*/
+    var ast = parser.parse("id = string");
+    should.not.exist(ast.body['id'].type);
+    ast.body['id'].value.content.should.equal('string');
   });
   it('basic errors', function() {
     var strings = [
-      '< "str\\"ing">',
-      "<>",
-      "<id",
-      "<id ",
-      "id>",
-      '<id "value>',
-      '<id value">',
-      "<id 'value>",
-      "<id value'",
-      "<id'value'>",
-      '<id"value">',
-      '<id """value"""">',
-      '< id "value">',
-      '<()>',
-      '<+s>',
-      '<id-id2>',
-      '<-id>',
-      '<id 2>',
-      '<"id">',
-      '<\'id\'>',
-      '<2>',
-      '<09>',
+      "",
+      "id",
+      "id ",
+      "id =",
+      "+id",
+      "=id",
     ];
 
     for (var i in strings) {
       var ast = parser.parse(strings[i]);
-      ast.body[0].type.should.equal('JunkEntry');
+      Object.keys(ast.body).length.should.equal(0);
     }
   });
   it('basic attributes', function() {
-    var ast = parser.parse("<id attr1: 'foo'>");
-    ast.body[0].attrs.length.should.equal(1);
-    ast.body[0].attrs[0].key.name.should.equal('attr1');
-    ast.body[0].attrs[0].value.content.should.equal('foo');
-
-    ast = parser.parse("<id attr1: 'foo' attr2: 'foo2'    >");
-    ast.body[0].attrs.length.should.equal(2);
-    ast.body[0].attrs[0].key.name.should.equal('attr1');
-    ast.body[0].attrs[0].value.content.should.equal('foo');
-
-    ast = parser.parse("<id attr1: 'foo' attr2: 'foo2' attr3: 'foo3' >");
-    ast.body[0].attrs.length.should.equal(3);
-    ast.body[0].attrs[0].key.name.should.equal('attr1');
-    ast.body[0].attrs[0].value.content.should.equal('foo');
-    ast.body[0].attrs[1].key.name.should.equal('attr2');
-    ast.body[0].attrs[1].value.content.should.equal('foo2');
-    ast.body[0].attrs[2].key.name.should.equal('attr3');
-    ast.body[0].attrs[2].value.content.should.equal('foo3');
-
-    ast = parser.parse("<id 'value' attr1: 'foo'>");
-    ast.body[0].value.content.should.equal('value');
-    ast.body[0].attrs[0].key.name.should.equal('attr1');
-    ast.body[0].attrs[0].value.content.should.equal('foo');
+    var ast = parser.parse("id.attr1 = foo");
+    ast.body['id'].attrs['attr1'].value.content.should.equal('foo');
   });
-  it('attributes with indexes', function() {
-    var ast = parser.parse("<id attr[2]: 'foo'>");
-    ast.body[0].attrs[0].index[0].value.should.equal(2);
-
-    ast = parser.parse("<id attr[2+3?'foo':'foo2']: 'foo'>");
-    ast.body[0].attrs[0].index[0].test.left.value.should.equal(2);
-    ast.body[0].attrs[0].index[0].test.right.value.should.equal(3);
-
-    ast = parser.parse("<id attr[2, 3]: 'foo'>");
-    ast.body[0].attrs[0].index[0].value.should.equal(2);
-    ast.body[0].attrs[0].index[1].value.should.equal(3);
+  it('plural macro', function() {
+    var ast = parser.parse("id = {[ plural(m) ]} \nid[one] = foo");
+    ast.body['id'].value.type.should.equal('Hash');
+    ast.body['id'].value.content[0].type.should.equal('HashItem');
+    ast.body['id'].value.content[0].value.content.should.equal('foo');
+    ast.body['id'].index.length.should.equal(1);
+    ast.body['id'].index[0].type.should.equal('CallExpression');
+    ast.body['id'].index[0].callee.type.should.equal('Identifier');
+    ast.body['id'].index[0].callee.name.should.equal('plural');
+    ast.body['id'].index[0].arguments.length.should.equal(1);
+    ast.body['id'].index[0].arguments[0].type.should.equal('Identifier');
+    ast.body['id'].index[0].arguments[0].name.should.equal('m');
   });
-  it('atribute errors', function() {
+  it('plural macro errors', function() {
     var strings = [
-      '<id : "foo">',
-      "<id 2: >",
-      "<id a: >",
-      "<id: ''>",
-      "<id a: b:>",
-      "<id a: 'foo' 'heh'>",
-      "<id a: 2>",
-      "<id 'a': 'a'>",
-      "<id \"a\": 'a'>",
-      "<id 2: 'a'>",
-      "<id a2:'a'a3:'v'>", 
+      'id = {[ plural(m) ] \nid[one] = foo',
+      'id = {[ plural(m) \nid[one] = foo',
+      'id = { plural(m) ]} \nid[one] = foo',
+      'id = plural(m) ]} \nid[one] = foo',
+      'id = {[ m ]} \nid[one] = foo',
+      'id = {[ plural ]} \nid[one] = foo',
+      'id = {[ plural() ]} \nid[one] = foo',
+      'id = {[ plural(m ]} \nid[one] = foo',
+      'id = {[ pluralm) ]} \nid[one] = foo',
+      'id = {[ watch(m) ]} \nid[one] = foo',
+
     ];
     for (var i in strings) {
-      var ast = parser.parse(strings[i]);
-      ast.body[0].type.should.equal('JunkEntry');
-    }
-  });
-  it('hash value', function() {
-    var ast = parser.parse("<id {a: 'b', a2: 'c', d: 'd' }>");
-    ast.body.length.should.equal(1);
-    ast.body[0].value.content.length.should.equal(3);
-    ast.body[0].value.content[0].value.content.should.equal('b');
-    
-    var ast = parser.parse("<id {a: '2', b: '3'} >");
-    ast.body.length.should.equal(1);
-    ast.body[0].value.content.length.should.equal(2);
-    ast.body[0].value.content[0].value.content.should.equal('2');
-    ast.body[0].value.content[1].value.content.should.equal('3');
-  });
-  it('hash value with trailing comma', function() {
-    var ast = parser.parse("<id {a: '2', b: '3', } >");
-    ast.body.length.should.equal(1);
-    ast.body[0].value.content.length.should.equal(2);
-    ast.body[0].value.content[0].value.content.should.equal('2');
-    ast.body[0].value.content[1].value.content.should.equal('3');
-  });
-  it('nested hash value', function() {
-    ast = parser.parse("<id {a: 'foo', b: {a2: 'p'}}>");
-    ast.body.length.should.equal(1);
-    ast.body[0].value.content.length.should.equal(2);
-    ast.body[0].value.content[0].value.content.should.equal('foo');
-    ast.body[0].value.content[1].value.content[0].key.name.should.equal('a2');
-    ast.body[0].value.content[1].value.content[0].value.content.should.equal('p');
-  });
-  it('hash with default', function() {
-    var ast = parser.parse("<id {a: 'v', *b: 'c'}>");
-    ast.body[0].value.content[1].default.should.equal(true);
-  });
-  it('hash  errors', function() {
-    var strings = [
-      '<id {}>',
-      '<id {a: 2}>',
-      "<id {a: 'd'>",
-      "<id a: 'd'}>",
-      "<id {{a: 'd'}>",
-      "<id {a: 'd'}}>",
-      "<id {a:} 'd'}>",
-      "<id {2}>",
-      "<id {'a': 'foo'}>",
-      "<id {\"a\": 'foo'}>",
-      "<id {2: 'foo'}>",
-      "<id {a:'foo'b:'foo'}>",
-      "<id {a }>",
-      '<id {a: 2, b , c: 3 } >',
-      '<id {*a: "v", *b: "c"}>',
-      '<id {}>',
-    ];
-    for (var i in strings) {
-      var ast = parser.parse(strings[i]);
-      ast.body[0].type.should.equal('JunkEntry');
-    }
-  });
-  it('index', function() {
-    //var ast = parser.parse("<id[]>");
-    //ast.body.length.should.equal(1);
-    //ast.body[0].index.length.should.equal(0);
-    //var ast = parser.parse("<id[ ] >");
-    var ast = parser.parse("<id['foo'] 'foo2'>");
-    ast.body[0].index[0].content.should.equal('foo');
-    ast.body[0].value.content.should.equal('foo2');
-
-    var ast = parser.parse("<id[2] 'foo2'>");
-    ast.body[0].index[0].value.should.equal(2);
-    ast.body[0].value.content.should.equal('foo2');
-
-    var ast = parser.parse("<id[2, 'foo', 3] 'foo2'>");
-    ast.body[0].index[0].value.should.equal(2);
-    ast.body[0].index[1].content.should.equal('foo');
-    ast.body[0].index[2].value.should.equal(3);
-    ast.body[0].value.content.should.equal('foo2');
-  });
-  it('index errors', function() {
-    var strings = [
-      '<id[ "foo">',
-      '<id] "foo">',
-      '<id[ \'] "foo">',
-      '<id{ ] "foo">',
-      '<id[ } "foo">',
-      '<id[" ] "["a"]>',
-      '<id[a]["a"]>',
-      '<id["foo""foo"] "fo">',
-      '<id[a, b, ] "foo">',
-    ];
-    for (var i in strings) {
-      var ast = parser.parse(strings[i]);
-      ast.body[0].type.should.equal('JunkEntry');
-    }
-  });
-  it('macro', function() {
-    var ast = parser.parse("<id($n) {2}>");
-    ast.body.length.should.equal(1);
-    ast.body[0].args.length.should.equal(1);
-    ast.body[0].expression.value.should.equal(2);
-
-    ast = parser.parse("<id( $n, $m, $a ) {2}  >");
-    ast.body.length.should.equal(1);
-    ast.body[0].args.length.should.equal(3);
-    ast.body[0].expression.value.should.equal(2);
-  });
-  it('macro errors', function() {
-    var strings = [
-      '<id (n) {2}>',
-      '<id ($n) {2}>',
-      '<(n) {2}>',
-      '<id(() {2}>',
-      '<id()) {2}>',
-      '<id[) {2}>',
-      '<id(] {2}>',
-      '<id(-) {2}>',
-      '<id(2+2) {2}>',
-      '<id("a") {2}>',
-      '<id(\'a\') {2}>',
-      '<id(2) {2}>',
-      '<_id($n) {2}>',
-      '<id($n) 2}>',
-      '<id($n',
-      '<id($n ',
-      '<id($n)',
-      '<id($n) ',
-      '<id($n) {',
-      '<id($n) { ',
-      '<id($n) {2',
-      '<id($n) {2}',
-      '<id(nm nm) {2}>',
-      '<id($n) {}>',
-      '<id($n, $m ,) {2}>',
-    ];
-    for (var i in strings) {
-      var ast = parser.parse(strings[i]);
-      ast.body[0].type.should.equal('JunkEntry');
+      (function() {
+        var ast = parser.parse(strings[i]);
+      }).should.throw('Expected macro call')
     } 
   });
+  return;
   it('expression', function() {
     var ast = parser.parse("<id[0 == 1 || 1] 'foo'>");
     ast.body[0].index[0].operator.token.should.equal('||');
