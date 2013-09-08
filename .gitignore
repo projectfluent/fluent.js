@@ -2,5 +2,6 @@ node_modules
 dist
 build/cov
 tools/*.lol
+tools/*.properties
 tools/*.json
 tools/perf/*.json
