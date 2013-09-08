@@ -44,7 +44,8 @@ describe('Primitives:', function(){
       source = [
         'foo=Foo',
         'bar={{ foo }} Bar',
-        'baz={{ missing }}'
+        'baz={{ missing }}',
+        'qux={{ malformed }'
       ].join('\n');
     });
     it('returns the value', function(){
@@ -59,6 +60,11 @@ describe('Primitives:', function(){
       (function() {
         env.baz.getString();
       }).should.throw(/unknown entry/);
+    });
+    it('throws when the value is not valid syntax', function(){
+      (function() {
+        env.qux.getString();
+      }).should.throw(/malformed string/i);
     });
   });
   
