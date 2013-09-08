@@ -10,268 +10,259 @@ describe('Macros', function(){
   var source, ctxdata, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
+    ast.body['plural'] = {
+      type: 'Macro',
+      args: [{
+        type: 'Identifier',
+        name: 'n'
+      }],
+      expression: function(n) {
+        return (n == 1) ? 'one' : 'other';
+      }
+    };
     env = compiler.compile(ast);
   });
 
-  describe('calling', function(){
+  describe('referencing macros', function(){
     before(function() {
-      source = '                                                              \
-        <foo "Foo">                                                           \
-        <bar {                                                                \
-          baz: "Baz"                                                          \
-        }                                                                     \
-         attr: "Attr"                                                         \
-        >                                                                     \
-        <identity($n) { $n }>                                                 \
-                                                                              \
-        <callFoo "{{ foo() }}">                                               \
-        <callBar "{{ bar() }}">                                               \
-        <callBaz "{{ bar.baz() }}">                                           \
-        <callAttr "{{ bar::attr() }}">                                        \
-        <callMissingAttr "{{ bar::missing() }}">                              \
-                                                                              \
-        <returnMacro() { identity }>                                          \
-        <returnMacroProp() { identity.property }>                             \
-        <returnMacroAttr() { identity::attribute }>                           \
-                                                                              \
-        <placeMacro "{{ identity }}">                                         \
-        <placeMacroProp "{{ identity.property }}">                            \
-        <placeMacroAttr "{{ identity::attribute }}">                          \
-      ';
-    });
-    it('throws if an entity is called', function() {
-      (function() {
-        env.callFoo.getString();
-      }).should.throw(/non-callable/);
-    });
-    it('throws if a hash entity is called', function() {
-      (function() {
-        env.callBar.getString();
-      }).should.throw(/non-callable/);
-    });
-    it('throws if a property of an entity is called', function() {
-      (function() {
-        env.callBaz.getString();
-      }).should.throw(/non-callable/);
-    });
-    it('throws if an attribute of an entity is called', function() {
-      (function() {
-        env.callAttr.getString();
-      }).should.throw(/non-callable/);
-    });
-    it('throws if a missing attribute of an entity is called', function() {
-      (function() {
-        env.callMissingAttr.getString();
-      }).should.throw(/has no attribute/);
-    });
-    it('throws when trying to resolve (not call) a macro', function() {
-      (function() {
-        env.returnMacro._call([]);
-      }).should.throw(/Uncalled macro: identity/);
-    });
-    it('throws when trying to access a property of a macro', function() {
-      (function() {
-        env.returnMacroProp._call([]);
-      }).should.throw(/Cannot get property of a macro: property/);
-    });
-    it('throws when trying to access an attribute of a macro', function() {
-      (function() {
-        env.returnMacroAttr._call([]);
-      }).should.throw(/non-entity/);
+      ctxdata = {
+        n: 1
+      };
+      source = [
+        'placeMacro={{ plural }}'
+      ].join('\n');
     });
     it('throws when resolving (not calling) a macro in a complex string', function() {
       (function() {
-        env.placeMacro.getString();
+        env.placeMacro.getString(ctxdata);
       }).should.throw(/uncalled/i);
     });
-    it('throws when accessing a property of a macro in a complex string', function() {
-      (function() {
-        env.placeMacroProp.getString();
-      }).should.throw(/Cannot get property of a macro: property/);
-    });
-    it('throws when accessing an attribute of a macro in a complex string', function() {
-      (function() {
-        env.placeMacroAttr.getString();
-      }).should.throw(/non-entity/);
-    });
   });
 
-  describe('arguments', function(){
-    before(function() {
-      source = '                                                              \
-        <foo "Foo">                                                           \
-        <bar {                                                                \
-          baz: "Baz"                                                          \
-        }>                                                                    \
-                                                                              \
-        <identity($n) { $n }>                                                 \
-        <sum($n, $k) { $n + $k }>                                             \
-        <getBaz($n) { $n.baz }>                                               \
-        <say() { "Hello" }>                                                   \
-        <call($n) { $n() }>                                                   \
-        <callWithArg($n, $arg) { $n($arg) }>                                  \
-                                                                              \
-        <noArg "{{ identity() }}">                                            \
-        <tooFewArgs "{{ sum(2) }}">                                           \
-        <tooManyArgs "{{ sum(2, 3, 4) }}">                                    \
-        <stringArg "{{ identity(\'string\') }}">                              \
-        <numberArg "{{ identity(1) }}">                                       \
-        <entityArg "{{ identity(foo) }}">                                     \
-        <entityReferenceArg "{{ getBaz(bar) }}">                              \
-        <macroArg "{{ identity(say) }}">                                      \
-        <callMacro "{{ call(say) }}">                                         \
-        <callMacroWithArg "{{ callWithArg(identity, 2) }}">                   \
-      ';
-    });
-    it('throws if no required args are provided', function() {
-      (function() {
-        env.noArg.getString();
-      }).should.throw(/takes exactly/);
-    });
-    it('throws if too few args are provided', function() {
-      (function() {
-        env.tooFewArgs.getString();
-      }).should.throw(/takes exactly/);
-    });
-    it('throws if too many args are provided', function() {
-      (function() {
-        env.tooManyArgs.getString();
-      }).should.throw(/takes exactly/);
-    });
-    it('strings are passed correctly', function() {
-      var value = env.stringArg.getString();
-      value.should.equal('string');
-    });
-    it('numbers are passed correctly', function() {
-      var value = env.numberArg.getString();
-      value.should.equal('1');
-    });
-    it('entities are passed by reference', function() {
-      var value = env.entityArg.getString();
-      value.should.equal('Foo');
-    });
-    it('entities are passed by reference', function() {
-      var value = env.entityReferenceArg.getString();
-      value.should.equal('Baz');
-    });
-    it('macro references are passed correctly', function() {
-      var value = env.callMacro.getString();
-      value.should.equal('Hello');
-    });
-    it('macro references and their args are passed correctly', function() {
-      var value = env.callMacroWithArg.getString();
-      value.should.equal('2');
-    });
-  });
-
-  describe('return values', function(){
-    before(function() {
-      source = '                                                              \
-        <foo "Foo">                                                           \
-        <bar {                                                                \
-         *bar: "Bar",                                                         \
-          baz: "Baz"                                                          \
-        }>                                                                    \
-                                                                              \
-        <string() { "foo" }>                                                  \
-        <number() { 1 }>                                                      \
-        <stringEntity() { foo }>                                              \
-        <hashEntity() { bar }>                                                \
-                                                                              \
-        <stringMissingProp "{{ stringEntity().missing }}">                    \
-        <stringMissingAttr "{{ (stringEntity())::missing }}">                 \
-        <hashBazProp "{{ hashEntity().baz }}">                                \
-        <hashMissingProp "{{ hashEntity().missing }}">                        \
-        <hashMissingAttr "{{ (stringEntity())::missing }}">                   \
-      ';
-    });
-    it('returns strings', function() {
-      var value = env.string._call([]);
-      value[1].should.equal('foo');
-    });
-    it('returns numbers', function() {
-      var value = env.number._call([]);
-      value[1].should.equal(1);
-    });
-    it('returns entities which are strings', function() {
-      var value = env.stringEntity._call([]);
-      value[1].should.equal('Foo');
-    });
-    it('returns resolved entities which are hashes', function() {
-      var value = env.hashEntity._call([]);
-      value[1].should.equal('Bar');
-    });
-    it('throws when trying to access a property of macro\'s return value', function() {
-      (function() {
-        env.stringMissingProp.getString();
-      }).should.throw(/Cannot get property of a string: missing/);
-    });
-    it('throws when trying to access an attribute of macro\'s return value', function() {
-      (function() {
-        env.stringMissingAttr.getString();
-      }).should.throw(/non-entity/);
-    });
-
-    it('resolves the hash and throws when trying to access a property of macro\'s return value', function() {
-      (function() {
-        env.hashBazProp.getString();
-      }).should.throw(/Cannot get property of a string: baz/);
-    });
-    it('resolves the hash and throws when trying to access a missing property of macro\'s return value', function() {
-      (function() {
-        env.hashMissingProp.getString();
-      }).should.throw(/Cannot get property of a string: missing/);
-    });
-    it('resolves the hash and throws when trying to access an attribute of macro\'s return value', function() {
-      (function() {
-        env.hashMissingAttr.getString();
-      }).should.throw(/non-entity/);
-    });
-  });
-
-  describe('and ctxdata:', function(){
+  describe('passing arguments', function(){
     before(function() {
       ctxdata = {
-        n: 3
+        n: 1
       };
-      source = '                                                              \
-        <identity($n) { $n }>                                                 \
-        <getFromContext() { $n }>                                             \
-                                                                              \
-        <foo "{{ $n }}">                                                      \
-        <bar {                                                                \
-         *key: "{{ $n }}",                                                    \
-        }>                                                                    \
-                                                                              \
-        <getFoo($n) { foo }>                                                  \
-        <getBar($n) { bar }>                                                  \
-        <getBarKey($n) { bar.key }>                                           \
-      ';
+      source = [
+        'foo=Foo',
+        'useFoo={{ foo }}',
+        'bar={[ plural(n) ]}',
+        'bar[one]=One',
+        'bar.attr=Attr',
+
+        'passFoo={[ plural(foo) ]}',
+        'passFoo[one]=One',
+
+        'passUseFoo={[ plural(useFoo) ]}',
+        'passUseFoo[one]=One',
+
+        'passBar={[ plural(bar) ]}',
+        'passBar[one]=One',
+
+        'passPlural={[ plural(plural) ]}',
+        'passPlural[one]=One',
+
+        'passMissing={[ plural(missing) ]}',
+        'passMissing[one]=One',
+
+        'passWatch={[ plural(watch) ]}',
+        'passWatch[one]=One',
+      ].join('\n');
     });
-    it('does not look at ctxdata if the arg is passed', function() {
-      var value = env.identity._call([[null, 'foo']], ctxdata);
-      value[1].should.equal('foo');
-    });
-    it('does not look at ctxdata if the arg is defined, but is not passed', function() {
+    it('throws if an entity is passed', function() {
       (function() {
-        env.identity._call([], ctxdata);
-      }).should.throw(/takes exactly/);
+        env.passFoo.getString(ctxdata);
+      }).should.throw(/must be numbers/);
     });
-    it('takes ctxdata if no args are defined', function() {
-      var value = env.getFromContext._call([], ctxdata);
-      value[1].should.equal(3);
+    it('throws if a complex entity is passed', function() {
+      (function() {
+        env.passUseFoo.getString(ctxdata);
+      }).should.throw(/must be numbers/);
     });
-    it('does not leak args into string entities', function() {
-      var value = env.getFoo._call([[null, 'foo']], ctxdata);
-      value[1].should.equal('3');
+    it('throws if a hash entity is passed', function() {
+      (function() {
+        env.passBar.getString(ctxdata);
+      }).should.throw(/must be numbers/);
     });
-    it('does not leak args into hash entities', function() {
-      var value = env.getBar._call([[null, 'foo']], ctxdata);
-      value[1].should.equal('3');
+    it('throws if a macro is passed', function() {
+      (function() {
+        env.passPlural.getString(ctxdata);
+      }).should.throw(/must be numbers/);
     });
-    it('does not leak args into members of hash entities', function() {
-      var value = env.getBarKey._call([[null, 'foo']], ctxdata);
-      value[1].should.equal('3');
+    it('throws if a missing entry is passed', function() {
+      (function() {
+        env.passMissing.getString(ctxdata);
+      }).should.throw(/unknown entry/);
+    });
+    it('throws if a native function is passed', function() {
+      (function() {
+        env.passWatch.getString(ctxdata);
+      }).should.throw(/unknown entry/);
+    });
+  });
+});
+
+describe('A simple plural macro', function(){
+  var source, ctxdata, ast, env;
+  beforeEach(function() {
+    ast = parser.parse(source);
+    ast.body['plural'] = {
+      type: 'Macro',
+      args: [{
+        type: 'Identifier',
+        name: 'n'
+      }],
+      expression: function(n) {
+        // a made-up plural rule:
+        // [0, 1) -> other
+        // [1, Inf) -> many
+        return (n >= 0 && n < 1) ? 'other' : 'many';
+      }
+    };
+    env = compiler.compile(ast);
+  });
+
+  describe('an entity with all plural forms defined', function(){
+    before(function() {
+      source = [
+        'foo={[ plural(n) ]}',
+        'foo[zero]=Zero',
+        'foo[one]=One',
+        'foo[two]=Two',
+        'foo[few]=Few',
+        'foo[many]=Many',
+        'foo[other]=Other'
+      ].join('\n');
+    });
+    it('returns zero for 0', function() {
+      var value = env.foo.getString({n: 0});
+      value.should.equal('Zero');
+    });
+    it('returns one for 1', function() {
+      var value = env.foo.getString({n: 1});
+      value.should.equal('One');
+    });
+    it('returns two for 2', function() {
+      var value = env.foo.getString({n: 2});
+      value.should.equal('Two');
+    });
+    it('returns many for 3', function() {
+      var value = env.foo.getString({n: 3});
+      value.should.equal('Many');
+    });
+    it('returns many for 5', function() {
+      var value = env.foo.getString({n: 5});
+      value.should.equal('Many');
+    });
+    it('returns other for 0.5', function() {
+      var value = env.foo.getString({n: .5});
+      value.should.equal('Other');
+    });
+  });
+
+  describe('an entity without the zero, one and two forms', function(){
+    before(function() {
+      source = [
+        'foo={[ plural(n) ]}',
+        'foo[many]=Many',
+        'foo[other]=Other'
+      ].join('\n');
+    });
+    it('returns other for 0', function() {
+      var value = env.foo.getString({n: 0});
+      value.should.equal('Other');
+    });
+    it('returns many for 1', function() {
+      var value = env.foo.getString({n: 1});
+      value.should.equal('Many');
+    });
+    it('returns many for 2', function() {
+      var value = env.foo.getString({n: 2});
+      value.should.equal('Many');
+    });
+    it('returns many for 3', function() {
+      var value = env.foo.getString({n: 3});
+      value.should.equal('Many');
+    });
+    it('returns many for 5', function() {
+      var value = env.foo.getString({n: 5});
+      value.should.equal('Many');
+    });
+    it('returns other for 0.5', function() {
+      var value = env.foo.getString({n: .5});
+      value.should.equal('Other');
+    });
+  });
+
+  describe('an entity without the many form', function(){
+    before(function() {
+      source = [
+        'foo={[ plural(n) ]}',
+        'foo[other]=Other'
+      ].join('\n');
+    });
+    it('returns other for 0', function() {
+      var value = env.foo.getString({n: 0});
+      value.should.equal('Other');
+    });
+    it('returns other for 1', function() {
+      var value = env.foo.getString({n: 1});
+      value.should.equal('Other');
+    });
+    it('returns other for 2', function() {
+      var value = env.foo.getString({n: 2});
+      value.should.equal('Other');
+    });
+    it('returns other for 3', function() {
+      var value = env.foo.getString({n: 3});
+      value.should.equal('Other');
+    });
+    it('returns other for 5', function() {
+      var value = env.foo.getString({n: 5});
+      value.should.equal('Other');
+    });
+    it('returns other for 0.5', function() {
+      var value = env.foo.getString({n: .5});
+      value.should.equal('Other');
+    });
+  });
+
+  describe('an entity without the other form, but with the one form', function(){
+    before(function() {
+      source = [
+        'foo={[ plural(n) ]}',
+        'foo[one]=One'
+      ].join('\n');
+    });
+    it('returns other for 0', function() {
+      (function() {
+        env.foo.getString({n: 0});
+      }).should.throw(/tried "other"/);
+    });
+    it('returns one for 1', function() {
+      var value = env.foo.getString({n: 1});
+      value.should.equal('One');
+    });
+    it('returns other for 2', function() {
+      (function() {
+        env.foo.getString({n: 2});
+      }).should.throw(/tried "many"/);
+    });
+    it('returns other for 3', function() {
+      (function() {
+        env.foo.getString({n: 3});
+      }).should.throw(/tried "many"/);
+    });
+    it('returns other for 5', function() {
+      (function() {
+        env.foo.getString({n: 5});
+      }).should.throw(/tried "many"/);
+    });
+    it('returns other for 0.5', function() {
+      (function() {
+        env.foo.getString({n: .5});
+      }).should.throw(/tried "other"/);
     });
   });
 
