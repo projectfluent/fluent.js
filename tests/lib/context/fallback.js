@@ -34,9 +34,8 @@ describe('No locale fallback', function() {
 
   it('[v] (ValueError)', function() {
     var entity = ctx.getEntity('v');
-    entity.should.be.false;
-    //entity.value.should.equal('V {{ boo }} pl');
-    //entity.should.have.property('locale', 'pl');
+    entity.value.should.equal('V {{ boo }} pl');
+    entity.should.have.property('locale', 'pl');
   });
   it('[v] emits 2 errors', function(done) {
     var count = 0;
@@ -78,9 +77,8 @@ describe('No locale fallback', function() {
 
   it('[i] (IndexError)', function() {
     var entity = ctx.getEntity('i');
-    entity.should.be.false;
-    //entity.value.should.equal('i');
-    //entity.should.have.property('locale', null);
+    entity.value.should.equal('i');
+    entity.should.have.property('locale', null);
   });
   it('[i] emits 2 errors', function(done) {
     var count = 0;
@@ -122,9 +120,8 @@ describe('No locale fallback', function() {
 
   it('[m] (translation missing)', function() {
     var entity = ctx.getEntity('m');
-    entity.should.be.false;
-    //entity.value.should.equal('m');
-    //entity.should.have.property('locale', null);
+    entity.value.should.equal('m');
+    entity.should.have.property('locale', null);
   });
   it('[m] emits 1 error', function(done) {
     var count = 0;
@@ -224,9 +221,8 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[vv]', function() {
         var entity = ctx.getEntity('vv');
-        entity.should.be.false;
-        //entity.value.should.equal('VV {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VV {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
       it('[vv] emits 3 errors', function(done) {
         var count = 0;
@@ -286,9 +282,8 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale:', function() {
       it('[vi]', function() {
         var entity = ctx.getEntity('vi');
-        entity.should.be.false;
-        //entity.value.should.equal('VI {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VI {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
       it('[vi] emits 3 errors', function(done) {
         var count = 0;
@@ -348,7 +343,6 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[vm]', function() {
         var entity = ctx.getEntity('vm');
-        entity.should.be.false;
         //entity.value.should.equal('VM {{ boo }} pl');
         //entity.should.have.property('locale', 'pl');
       });
@@ -445,9 +439,8 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale', function() {
       it('[iv]', function() {
         var entity = ctx.getEntity('iv');
-        entity.should.be.false;
-        //entity.value.should.equal('IV {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('IV {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
       it('[iv] emits 3 errors', function(done) {
         var count = 0;
@@ -507,9 +500,8 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale', function() {
       it('[ii]', function() {
         var entity = ctx.getEntity('ii');
-        entity.should.be.false;
-        //entity.value.should.equal('ii');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('ii');
+        entity.should.have.property('locale', null);
       });
       it('[ii] emits 3 errors', function(done) {
         var count = 0;
@@ -564,9 +556,8 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[im]', function() {
         var entity = ctx.getEntity('im');
-        entity.should.be.false;
-        //entity.value.should.equal('im');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('im');
+        entity.should.have.property('locale', null);
       });
       it('[im] emits 2 errors', function(done) {
         var count = 0;
@@ -645,9 +636,8 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[mv]', function() {
         var entity = ctx.getEntity('mv');
-        entity.should.be.false;
-        //entity.value.should.equal('MV {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('MV {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
       it('[mv] emits 2 errors', function(done) {
         var count = 0;
@@ -700,9 +690,8 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale:', function() {
       it('[mi]', function() {
         var entity = ctx.getEntity('mi');
-        entity.should.be.false;
-        //entity.value.should.equal('mi');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('mi');
+        entity.should.have.property('locale', null);
       });
       it('[mi] emits 2 errors', function(done) {
         var count = 0;
@@ -755,9 +744,8 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[mm]', function() {
         var entity = ctx.getEntity('mm');
-        entity.should.be.false;
-        //entity.value.should.equal('mm');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('mm');
+        entity.should.have.property('locale', null);
       });
       it('[mm] emits 1 error', function(done) {
         var count = 0;
@@ -825,23 +813,20 @@ describe('Two fallback locales', function() {
 
       it('[vvv]', function() {
         var entity = ctx.getEntity('vvv');
-        entity.should.be.false;
-        //entity.value.should.equal('VVV {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VVV {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
 
       it('[vvi]', function() {
         var entity = ctx.getEntity('vvi');
-        entity.should.be.false;
-        //entity.value.should.equal('VVI {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VVI {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
 
       it('[vvm]', function() {
         var entity = ctx.getEntity('vvm');
-        entity.should.be.false;
-        //entity.value.should.equal('VVM {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VVM {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
     });
     describe('IndexError in second locale', function() {
@@ -853,23 +838,20 @@ describe('Two fallback locales', function() {
 
       it('[viv]', function() {
         var entity = ctx.getEntity('viv');
-        entity.should.be.false;
-        //entity.value.should.equal('VIV {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VIV {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
 
       it('[vii]', function() {
         var entity = ctx.getEntity('vii');
-        entity.should.be.false;
-        //entity.value.should.equal('VII {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VII {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
 
       it('[vim]', function() {
         var entity = ctx.getEntity('vim');
-        entity.should.be.false;
-        //entity.value.should.equal('VIM {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VIM {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
     });
     describe('Entity missing in second locale', function() {
@@ -881,23 +863,20 @@ describe('Two fallback locales', function() {
 
       it('[vmv]', function() {
         var entity = ctx.getEntity('vmv');
-        entity.should.be.false;
-        //entity.value.should.equal('VMV {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VMV {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
 
       it('[vmi]', function() {
         var entity = ctx.getEntity('vmi');
-        entity.should.be.false;
-        //entity.value.should.equal('VMI {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VMI {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
 
       it('[vmm]', function() {
         var entity = ctx.getEntity('vmm');
-        entity.should.be.false;
-        //entity.value.should.equal('VMM {{ boo }} pl');
-        //entity.should.have.property('locale', 'pl');
+        entity.value.should.equal('VMM {{ boo }} pl');
+        entity.should.have.property('locale', 'pl');
       });
     });
   });
@@ -912,23 +891,20 @@ describe('Two fallback locales', function() {
 
       it('[ivv]', function() {
         var entity = ctx.getEntity('ivv');
-        entity.should.be.false;
-        //entity.value.should.equal('IVV {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('IVV {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
 
       it('[ivi]', function() {
         var entity = ctx.getEntity('ivi');
-        entity.should.be.false;
-        //entity.value.should.equal('IVI {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('IVI {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
 
       it('[ivm]', function() {
         var entity = ctx.getEntity('ivm');
-        entity.should.be.false;
-        //entity.value.should.equal('IVM {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('IVM {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
     });
     describe('IndexError in second locale', function() {
@@ -940,23 +916,20 @@ describe('Two fallback locales', function() {
 
       it('[iiv]', function() {
         var entity = ctx.getEntity('iiv');
-        entity.should.be.false;
-        //entity.value.should.equal('IIV {{ boo }} en-US');
-        //entity.should.have.property('locale', 'en-US');
+        entity.value.should.equal('IIV {{ boo }} en-US');
+        entity.should.have.property('locale', 'en-US');
       });
 
       it('[iii]', function() {
         var entity = ctx.getEntity('iii');
-        entity.should.be.false;
-        //entity.value.should.equal('iii');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('iii');
+        entity.should.have.property('locale', null);
       });
 
       it('[iim]', function() {
         var entity = ctx.getEntity('iim');
-        entity.should.be.false;
-        //entity.value.should.equal('iim');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('iim');
+        entity.should.have.property('locale', null);
       });
     });
     describe('Entity missing in second locale', function() {
@@ -968,23 +941,20 @@ describe('Two fallback locales', function() {
 
       it('[imv]', function() {
         var entity = ctx.getEntity('imv');
-        entity.should.be.false;
-        //entity.value.should.equal('IMV {{ boo }} en-US');
-        //entity.should.have.property('locale', 'en-US');
+        entity.value.should.equal('IMV {{ boo }} en-US');
+        entity.should.have.property('locale', 'en-US');
       });
 
       it('[imi]', function() {
         var entity = ctx.getEntity('imi');
-        entity.should.be.false;
-        //entity.value.should.equal('imi');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('imi');
+        entity.should.have.property('locale', null);
       });
 
       it('[imm]', function() {
         var entity = ctx.getEntity('imm');
-        entity.should.be.false;
-        //entity.value.should.equal('imm');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('imm');
+        entity.should.have.property('locale', null);
       });
     });
   });
@@ -999,23 +969,20 @@ describe('Two fallback locales', function() {
 
       it('[mvv]', function() {
         var entity = ctx.getEntity('mvv');
-        entity.should.be.false;
-        //entity.value.should.equal('MVV {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('MVV {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
 
       it('[mvi]', function() {
         var entity = ctx.getEntity('mvi');
-        entity.should.be.false;
-        //entity.value.should.equal('MVI {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('MVI {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
 
       it('[mvm]', function() {
         var entity = ctx.getEntity('mvm');
-        entity.should.be.false;
-        //entity.value.should.equal('MVM {{ boo }} de');
-        //entity.should.have.property('locale', 'de');
+        entity.value.should.equal('MVM {{ boo }} de');
+        entity.should.have.property('locale', 'de');
       });
     });
     describe('IndexError in second locale', function() {
@@ -1027,23 +994,20 @@ describe('Two fallback locales', function() {
 
       it('[miv]', function() {
         var entity = ctx.getEntity('miv');
-        entity.should.be.false;
-        //entity.value.should.equal('MIV {{ boo }} en-US');
-        //entity.should.have.property('locale', 'en-US');
+        entity.value.should.equal('MIV {{ boo }} en-US');
+        entity.should.have.property('locale', 'en-US');
       });
 
       it('[mii]', function() {
         var entity = ctx.getEntity('mii');
-        entity.should.be.false;
-        //entity.value.should.equal('mii');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('mii');
+        entity.should.have.property('locale', null);
       });
 
       it('[mim]', function() {
         var entity = ctx.getEntity('mim');
-        entity.should.be.false;
-        //entity.value.should.equal('mim');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('mim');
+        entity.should.have.property('locale', null);
       });
     });
     describe('Entity missing in second locale', function() {
@@ -1055,23 +1019,20 @@ describe('Two fallback locales', function() {
 
       it('[mmv]', function() {
         var entity = ctx.getEntity('mmv');
-        entity.should.be.false;
-        //entity.value.should.equal('MMV {{ boo }} en-US');
-        //entity.should.have.property('locale', 'en-US');
+        entity.value.should.equal('MMV {{ boo }} en-US');
+        entity.should.have.property('locale', 'en-US');
       });
 
       it('[mmi]', function() {
         var entity = ctx.getEntity('mmi');
-        entity.should.be.false;
-        //entity.value.should.equal('mmi');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('mmi');
+        entity.should.have.property('locale', null);
       });
 
       it('[mmm]', function() {
         var entity = ctx.getEntity('mmm');
-        entity.should.be.false;
-        //entity.value.should.equal('mmm');
-        //entity.should.have.property('locale', null);
+        entity.value.should.equal('mmm');
+        entity.should.have.property('locale', null);
       });
     });
   });

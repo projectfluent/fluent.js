@@ -219,7 +219,9 @@ define(function (require, exports, module) {
     return {
       get: function l10n_get(id, data) {
         var entity = ctx.getEntity(id, data);
-        if (!entity) {
+        // entity.locale is null if the entity could not be displayed in any of 
+        // the locales in the current fallback chain
+        if (!entity.locale) {
           return '';
         }
         return entity.value;
@@ -375,7 +377,7 @@ define(function (require, exports, module) {
       return true;
     }
     var entity = ctx.getEntity(attrs.id, attrs.args);
-    if (!entity) {
+    if (!entity.locale) {
       return false;
     }
     setTextContent(node, entity.value);
@@ -391,6 +393,7 @@ define(function (require, exports, module) {
         }
       }
     }
+    return true;
   }
   
   // localize an element as soon as ctx is ready
