@@ -131,10 +131,9 @@ describe('Context data', function(){
     it('digit returns a string value', function(){
       env.stringNumProp.getString(ctxdata).should.equal('1');
     });
-    it('digit throws when used in a macro', function(){
-      (function() {
-        var value = env.stringNumIndex.getString(ctxdata);
-      }).should.throw(/must be numbers/);
+    it('digit works used in a macro', function(){
+      var value = env.stringNumIndex.getString(ctxdata);
+      value.should.equal('One');
     });
   });
 
@@ -226,10 +225,32 @@ describe('Context data', function(){
     });
   });
 
-  describe('and arrays', function(){
+  describe('and arrays where first element is number', function(){
     before(function() {
       ctxdata = {
-        arr: [3, 4]
+        arr: [1, 2]
+      };
+      source = [
+        'arrProp={{ arr }}',
+        'arrIndex={[ plural(arr) ]}',
+        'arrIndex[one]=One'
+      ].join('\n');
+    });
+    it('throws', function(){
+      (function() {
+        env.arrProp.getString(ctxdata);
+      }).should.throw('Cannot resolve ctxdata of type object');
+    });
+    it('throws when used in a macro', function(){
+      var value = env.arrIndex.getString(ctxdata);
+      value.should.equal('One');
+    });
+  });
+
+  describe('and arrays where first element is not a number', function(){
+    before(function() {
+      ctxdata = {
+        arr: ['a', 'b']
       };
       source = [
         'arrProp={{ arr }}',
