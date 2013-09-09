@@ -397,7 +397,10 @@ define(function (require, exports, module) {
     if (!entity.locale) {
       return false;
     }
-    setTextContent(node, entity.value);
+
+    if (entity.value) {
+      setTextContent(node, entity.value);
+    }
 
     for (var key in entity.attributes) {
       if (entity.attributes.hasOwnProperty(key)) {
