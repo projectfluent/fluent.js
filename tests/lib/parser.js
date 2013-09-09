@@ -60,11 +60,15 @@ describe('Example', function() {
       'id = {[ watch(m) ]} \nid[one] = foo',
 
     ];
+    var errorsThrown = 0;
+    parser.addEventListener('error', function() {
+      errorsThrown += 1;
+    });
+
     for (var i in strings) {
-      (function() {
-        var ast = parser.parse(strings[i]);
-      }).should.throw('Expected macro call')
+      var ast = parser.parse(strings[i]);
     } 
+    errorsThrown.should.equal(strings.length);
   });
   it('comment', function() {
     var ast = parser.parse('#test');
