@@ -10,6 +10,17 @@ define(function (require, exports, module) {
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
   var buildMessages;
 
+  function waitFor(state, callback) {
+    if (document.readyState === state) {
+      return callback();
+    }
+    document.addEventListener('readystatechange', function() {
+      if (document.readyState === state) {
+        callback();
+      }
+    });
+  }
+
   if (typeof(document) === 'undefined') {
     // during build time, we don't bootstrap until mozL10n.language.code is set
     Object.defineProperty(navigator, 'mozL10n', {
@@ -33,22 +44,28 @@ define(function (require, exports, module) {
     ctx.addEventListener('warning', console.warn.bind(console));
 
     isPretranslated = document.documentElement.lang === navigator.language;
+
     if (isPretranslated) {
-      window.addEventListener('load', function() {
+      // if the DOM has been pretranslated, defer bootstrap as long as possible
+      waitFor('complete', function() {
         window.setTimeout(bootstrap);
       });
     } else {
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', pretranslate);
+      // otherwise, if the DOM is loaded, bootstrap now to fire 'localized'
+      if (document.readyState === 'complete') {
+        window.setTimeout(bootstrap);
       } else {
-        pretranslate();
+        // or wait for the DOM to be interactive to try to pretranslate it 
+        // using the inline resources
+        waitFor('interactive', pretranslate);
       }
     }
   }
 
   function pretranslate() {
     if (inlineLocalization()) {
-      window.addEventListener('load', function() {
+      // if inlineLocalization succeeded, defer bootstrap
+      waitFor('complete', function() {
         window.setTimeout(bootstrap);
       });
     } else {
