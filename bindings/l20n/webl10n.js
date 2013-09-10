@@ -1,6 +1,8 @@
 define(function (require, exports, module) {
   'use strict';
 
+  var DEBUG = false;
+
   var L20n = require('../l20n');
   var io = require('./platform/io');
 
@@ -28,11 +30,11 @@ define(function (require, exports, module) {
         isBootstrapped = false;
         buildMessages = {
           error: [],
-          warning: []
+          warn: []
         };
         ctx = L20n.getContext();
         ctx.addEventListener('error', addMessage.bind(null, 'error'));
-        ctx.addEventListener('warning', addMessage.bind(null, 'warning'));
+        ctx.addEventListener('warning', addMessage.bind(null, 'warn'));
         return createPublicAPI(ctx);
       },
       enumerable: true
@@ -40,8 +42,8 @@ define(function (require, exports, module) {
   } else {
     ctx = L20n.getContext();
     navigator.mozL10n = createPublicAPI(ctx);
-    ctx.addEventListener('error', console.error.bind(console));
-    ctx.addEventListener('warning', console.warn.bind(console));
+    ctx.addEventListener('error', logMessage.bind(null, 'error'));
+    ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
 
     isPretranslated = document.documentElement.lang === navigator.language;
 
@@ -80,8 +82,8 @@ define(function (require, exports, module) {
       return false;
     }
     var inline = L20n.getContext();
-    inline.addEventListener('error', console.error.bind(console));
-    inline.addEventListener('warning', console.warn.bind(console));
+    inline.addEventListener('error', logMessage.bind(null, 'error'));
+    inline.addEventListener('warning', logMessage.bind(null, 'warn'));
 
     var langs = [];
     for (var i = 0; i < scripts.length; i++) {
@@ -273,6 +275,12 @@ define(function (require, exports, module) {
     };
   }
 
+  function logMessage(type, e) {
+    if (DEBUG) {
+      console[type](e);
+    }
+  }
+
   function addMessage(type, e) {
     if (e instanceof L20n.Context.TranslationError &&
         e.locale === ctx.supportedLocales[0] &&
@@ -282,10 +290,10 @@ define(function (require, exports, module) {
   }
 
   function flushBuildMessages(variant) {
-    if (buildMessages.warning.length) {
+    if (buildMessages.warn.length) {
       console.log('[l10n] [' + ctx.supportedLocales[0] + ']: ' +
-                  buildMessages.warning.length + ' missing ' + variant + ': ' +
-                  buildMessages.warning.join(', '));
+                  buildMessages.warn.length + ' missing ' + variant + ': ' +
+                  buildMessages.warn.join(', '));
     }
     if (buildMessages.error.length) {
       console.log('[l10n] [' + ctx.supportedLocales[0] + ']: ' +
@@ -294,7 +302,7 @@ define(function (require, exports, module) {
     }
     buildMessages = {
       error: [],
-      warning: []
+      warn: []
     };
   }
 
