@@ -193,12 +193,20 @@ define(function (require, exports, module) {
     };
   }
 
+  function camelCaseToDashed(string) {
+    return string
+      .replace(/[A-Z]/g, function (match) {
+        return '-' + match.toLowerCase();
+      })
+      .replace(/^-/, '');
+  }
+
   function translateNode(node, id, entity) {
     if (!entity) {
       return;
     }
     for (var key in entity.attributes) {
-      node.setAttribute(key, entity.attributes[key]);
+      node.setAttribute(camelCaseToDashed(key), entity.attributes[key]);
     }
     if (entity.value) {
       if (node.hasAttribute('data-l10n-overlay')) {

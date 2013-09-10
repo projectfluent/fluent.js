@@ -123,6 +123,17 @@ describe('Example', function() {
     ast.body[0].value.content.should.equal('value');
     ast.body[0].attrs[0].key.name.should.equal('attr1');
     ast.body[0].attrs[0].value.content.should.equal('foo');
+
+  });
+  it('camelCase attributes', function() {
+    ast = parser.parse("<id 'value' atTr1: 'foo'>");
+    ast.body[0].value.content.should.equal('value');
+    ast.body[0].attrs[0].key.name.should.equal('atTr1');
+    ast.body[0].attrs[0].value.content.should.equal('foo');
+
+    ast = parser.parse("<id atTr1: 'foo'>");
+    ast.body[0].attrs[0].key.name.should.equal('atTr1');
+    ast.body[0].attrs[0].value.content.should.equal('foo');
   });
   it('attributes with indexes', function() {
     var ast = parser.parse("<id attr[2]: 'foo'>");
@@ -136,7 +147,7 @@ describe('Example', function() {
     ast.body[0].attrs[0].index[0].value.should.equal(2);
     ast.body[0].attrs[0].index[1].value.should.equal(3);
   });
-  it('atribute errors', function() {
+  it('attribute errors', function() {
     var strings = [
       '<id : "foo">',
       "<id 2: >",
@@ -186,7 +197,7 @@ describe('Example', function() {
     var ast = parser.parse("<id {a: 'v', *b: 'c'}>");
     ast.body[0].value.content[1].default.should.equal(true);
   });
-  it('hash  errors', function() {
+  it('hash errors', function() {
     var strings = [
       '<id {}>',
       '<id {a: 2}>',
