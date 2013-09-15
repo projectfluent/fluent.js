@@ -61,13 +61,26 @@ ctx.registerLocaleNegotiator(function(available, requested, defLocale) {
 });
 ```
 
-`negotiator` is a function which takes three arguments:
+`negotiator` is a function which takes the following arguments:
 
  - `available` - all locales available to the `Context` instance,
  - `requested` - locales preferred by the user,
- - `defLocale` - the default locale to be used as the ultimate fallback.
+ - `defLocale` - the default locale to be used as the ultimate fallback,
+ - `callback` - the function to call when the negotiation completes (useful for 
+   asynchronous negotiators).
 
-It must return an array which is the final fallback chain of locales.
+It must return an array which is the final fallback chain of locales, or if the 
+negotiation is asynchronous, it must return a falsy value and call the 
+`callback` argument upon completion.
+
+```javascript
+ctx.registerLocaleNegotiator(function(available, requested, defLocale, callback) {
+  YourApp.getAllAvailableLanguages(function(allAvailable) {
+    var fallbackChain = YourApp.intersect(allAvailable, requested); 
+    cb(fallbackChain);
+  });
+});
+```
 
 
 ### ctx.requestLocales(...requestedLocales: String?)
