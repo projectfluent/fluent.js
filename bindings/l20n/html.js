@@ -202,9 +202,9 @@ define(function (require) {
     if (!entity) {
       return;
     }
-    for (var key in entity.attributes) {
+    Object.keys(entity.attributes).forEach(function(key) {
       node.setAttribute(camelCaseToDashed(key), entity.attributes[key]);
-    }
+    });
     if (entity.value) {
       if (node.hasAttribute('data-l10n-overlay')) {
         overlayNode(node, entity.value);

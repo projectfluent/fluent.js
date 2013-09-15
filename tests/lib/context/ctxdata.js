@@ -211,3 +211,35 @@ describe('ctx.get with ctxdata passed directly', function() {
     ctx.get('userGender').should.equal('masculine');
   });
 });
+
+describe('Object.prototype manipulation', function() {
+  'use strict';
+  var ctx = new Context();
+  ctx.addResource('                                                           \
+    <foo "{{ $foo }}">                                                        \
+    <bar "{{ $bar }}">                                                        \
+  ');
+
+  before(function(done) {
+    Object.prototype.bar = 'Bar';
+    whenReady(ctx, done);
+    ctx.requestLocales();
+  });
+  after(function() {
+    delete Object.prototype.bar;
+  });
+
+  it('neither $foo nor $bar are defined', function() {
+    ctx.get('foo').should.equal('{{ $foo }}');
+    ctx.get('bar').should.equal('{{ $bar }}');
+  });
+  it('after updateData(), only $foo is defined', function() {
+    ctx.updateData({ foo: 'Foo' });
+    ctx.get('foo').should.equal('Foo');
+    ctx.get('bar').should.equal('{{ $bar }}');
+  });
+  it('when passed directly, only $foo is defined', function() {
+    ctx.get('foo', { foo: 'Foo' }).should.equal('Foo');
+    ctx.get('bar', { foo: 'Foo' }).should.equal('{{ $bar }}');
+  });
+});
