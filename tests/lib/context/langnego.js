@@ -112,6 +112,20 @@ describe('Language negotiator', function() {
     });
     ctx.requestLocales('pl');
   });
+  // Bug 908777 - Allow locale negotiator to be asynchronous
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=908777
+  it('can be asynchronous', function(done) {
+    ctx.registerLocaleNegotiator(function(available, requested, def, cb) {
+      setTimeout(function() {
+        cb(['de']);
+      });
+    });
+    whenReady(ctx, function() {
+      ctx.get('foo').should.equal('Foo de');
+      done();
+    });
+    ctx.requestLocales('pl');
+  });
 });
 
 describe('registerLocales errors', function() {
