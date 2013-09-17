@@ -1,8 +1,12 @@
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
-var Parser = require('../../../lib/l20n/parser').Parser;
-var io = require('../../../lib/l20n/platform/io');
+var Parser = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/parser').Parser
+  : require('../../../lib/l20n/parser').Parser;
+var io = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/platform/io')
+  : require('../../../lib/l20n/platform/io');
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {

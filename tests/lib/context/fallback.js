@@ -1,7 +1,9 @@
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
-var Compiler = require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/compiler').Compiler
+  : require('../../../lib/l20n/compiler').Compiler;
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {
