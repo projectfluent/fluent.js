@@ -12,6 +12,9 @@ define(function (require, exports, module) {
   // each localization should decide which direction it wants to use
   var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
+  // absolute URLs start with a slash or contain a colon (for schema)
+  var reAbsolute = /^\/|:/;
+
   var documentLocalized = false;
 
   bootstrap();
@@ -143,21 +146,15 @@ define(function (require, exports, module) {
   }
 
   function relativeToManifest(manifestUrl, url) {
-    if (url[0] == '/') {
+    if (reAbsolute.test(url)) {
       return url;
     }
     var dirs = manifestUrl.split('/')
-                          .slice(0, -1)
-                          .concat(url.split('/'))
-                          .filter(function(elem) {
-                            return elem !== '.';
-                          });
-
-    if (dirs[0] !== '' && dirs[0] !== '..') {
-      // if the manifest path doesn't start with / or ..
-      dirs.unshift('.');
-    }
-
+      .slice(0, -1)
+      .concat(url.split('/'))
+      .filter(function(elem) {
+        return elem !== '.';
+      });
     return dirs.join('/');
   }
 
