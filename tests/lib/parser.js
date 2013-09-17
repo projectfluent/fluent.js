@@ -749,28 +749,28 @@ describe('Example', function() {
   describe('detecting non-complex (simple) strings', function() {
     it('should return not-complex for simple strings', function() {
       var ast = parser.parse("<id 'string'>");
-      ast.body[0].value.should.have.property('isNotComplex', true);
+      ast.body[0].value.should.have.property('maybeComplex', false);
     });
     it('should return maybe-complex for complex strings', function() {
       var ast = parser.parse("<id '{{ reference }}'>");
-      should.not.exist(ast.body[0].value.isNotComplex);
+      ast.body[0].value.should.have.property('maybeComplex', true);
     });
     it('should return maybe-complex for simple strings with braces escaped', function() {
       var ast = parser.parse("<id '\\{{ string }}'>");
-      should.not.exist(ast.body[0].value.isNotComplex);
+      ast.body[0].value.should.have.property('maybeComplex', true);
 
       var ast = parser.parse("<id '\\\\{{ string }}'>");
-      should.not.exist(ast.body[0].value.isNotComplex);
+      ast.body[0].value.should.have.property('maybeComplex', true);
     });
     it('should return not-complex for simple strings with braces not next to each other', function() {
       var ast = parser.parse("<id '{a{ string }}'>");
-      ast.body[0].value.should.have.property('isNotComplex', true);
+      ast.body[0].value.should.have.property('maybeComplex', false);
 
       var ast = parser.parse("<id '{\\{ string }}'>");
-      ast.body[0].value.should.have.property('isNotComplex', true);
+      ast.body[0].value.should.have.property('maybeComplex', false);
 
       var ast = parser.parse("<id '{\\\\{ string }}'>");
-      ast.body[0].value.should.have.property('isNotComplex', true);
+      ast.body[0].value.should.have.property('maybeComplex', false);
     });
   });
 });
