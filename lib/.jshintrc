@@ -1,0 +1,33 @@
+{
+  "bitwise": true,
+  "boss": true,
+  "curly": false,
+  "eqeqeq": true,
+  "eqnull": true,
+  "forin": false,
+  "immed": true,
+  "multistr": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "strict": true,
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+
+  "browser": true,
+  "devel": true,
+
+  "quotmark": "single",
+  "maxcomplexity": 20,
+  "maxerr": 50,
+  "maxlen": 80,
+
+  "globals": {
+    "define": true,
+
+    "module": false,
+    "require": false
+  }
+}

@@ -1,12 +1,19 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/compiler').Compiler :
+  require('../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser();
 var compiler = new Compiler();
 
-describe('Context data', function(){
+describe('Context data', function() {
+  'use strict';
+
+  // jsHint incorrectly claims function expressions on which the property
+  // is accessed just after its definition doesn't require parens;
+  // ignore this warning.
+  /* jshint -W068 */
+
   var source, ctxdata, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
@@ -58,7 +65,7 @@ describe('Context data', function(){
       var value = env.passAsArg.getString(ctxdata);
       value.should.equal('many');
     });
-    it('is accessible from macro\s body', function() {
+    it('is accessible from macro\'s body', function() {
       var value = env.noArgs.getString(ctxdata);
       value.should.equal('many');
     });
@@ -80,27 +87,27 @@ describe('Context data', function(){
     });
     it('throws when a missing property of ctxdata is referenced', function(){
       (function() {
-        var value = env.missing.getString(ctxdata);
+        env.missing.getString(ctxdata);
       }).should.throw(/unknown variable/);
     });
     it('throws when a property of a missing property of ctxdata is referenced', function(){
       (function() {
-        var value = env.missingTwice.getString(ctxdata);
+        env.missingTwice.getString(ctxdata);
       }).should.throw(/unknown variable/);
     });
     it('throws when $nested is referenced', function(){
       (function() {
-        var value = env.nested.getString(ctxdata);
+        env.nested.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when a missing property of $nested is referenced', function(){
       (function() {
-        var value = env.nestedMissing.getString(ctxdata);
+        env.nestedMissing.getString(ctxdata);
       }).should.throw(/not defined/);
     });
     it('throws when a property of a missing property of $nested is referenced', function(){
       (function() {
-        var value = env.nestedMissingTwice.getString(ctxdata);
+        env.nestedMissingTwice.getString(ctxdata);
       }).should.throw(/not defined/);
     });
   });
@@ -125,7 +132,7 @@ describe('Context data', function(){
     });
     it('throws when a property of a string property of ctxdata is referenced', function(){
       (function() {
-        var value = env.propertyMissing.getString(ctxdata);
+        env.propertyMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a string: missing/);
     });
     it('returns a string value when nested', function(){
@@ -133,7 +140,7 @@ describe('Context data', function(){
     });
     it('throws when a property of a string property of $nested is referenced', function(){
       (function() {
-        var value = env.nestedPropertyMissing.getString(ctxdata);
+        env.nestedPropertyMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a string: missing/);
     });
   });
@@ -164,17 +171,17 @@ describe('Context data', function(){
     });
     it('throws when a property of a number property of $nested is referenced', function(){
       (function() {
-        var value = env.numberMissing.getString(ctxdata);
+        env.numberMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a number: missing/);
     });
     it('throws when a built-in property of a number property of $nested is referenced', function(){
       (function() {
-        var value = env.numberMissing.getString(ctxdata);
+        env.numberMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a number: missing/);
     });
     it('throws when a number property of $nested is used in an index', function(){
       (function() {
-        var value = env.numberIndex.getString(ctxdata);
+        env.numberIndex.getString(ctxdata);
       }).should.throw(/Index must be a string/);
     });
   });
@@ -204,12 +211,12 @@ describe('Context data', function(){
     });
     it('throws when a property of a bool property of $nested is referenced', function(){
       (function() {
-        var value = env.boolMissing.getString(ctxdata);
+        env.boolMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a boolean: missing/);
     });
     it('throws when a bool property of $nested is used in an index', function(){
       (function() {
-        var value = env.boolIndex.getString(ctxdata);
+        env.boolIndex.getString(ctxdata);
       }).should.throw(/Index must be a string/);
     });
   });
@@ -234,22 +241,22 @@ describe('Context data', function(){
     });
     it('throws', function(){
       (function() {
-        var value = env.just.getString(ctxdata);
+        env.just.getString(ctxdata);
       }).should.throw(/Placeables must be strings or numbers/);
     });
     it('throws when nested', function(){
       (function() {
-        var value = env.undef.getString(ctxdata);
+        env.undef.getString(ctxdata);
       }).should.throw(/Placeables must be strings or numbers/);
     });
     it('throws when a property of an undefined property of $nested is referenced', function(){
       (function() {
-        var value = env.undefMissing.getString(ctxdata);
+        env.undefMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a undefined: missing/);
     });
     it('throws when an undefined property of $nested is used in an index', function(){
       (function() {
-        var value = env.undefIndex.getString(ctxdata);
+        env.undefIndex.getString(ctxdata);
       }).should.throw(/Hash key lookup failed/);
     });
   });
@@ -273,22 +280,22 @@ describe('Context data', function(){
     });
     it('throws', function(){
       (function() {
-        var value = env.just.getString(ctxdata);
+        env.just.getString(ctxdata);
       }).should.throw(/Placeables must be strings or numbers/);
     });
     it('throws when nested', function(){
       (function() {
-        var value = env.nullable.getString(ctxdata);
+        env.nullable.getString(ctxdata);
       }).should.throw(/Placeables must be strings or numbers/);
     });
     it('throws when a property of a null property of $nested is referenced', function(){
       (function() {
-        var value = env.nullableMissing.getString(ctxdata);
+        env.nullableMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of a null: missing/);
     });
     it('throws when a null property of $nested is used in an index', function(){
       (function() {
-        var value = env.nullableIndex.getString(ctxdata);
+        env.nullableIndex.getString(ctxdata);
       }).should.throw(/Index must be a string/);
     });
   });
@@ -313,27 +320,27 @@ describe('Context data', function(){
     });
     it('throws', function(){
       (function() {
-        var value = env.just.getString(ctxdata);
+        env.just.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when nested', function(){
       (function() {
-        var value = env.arr.getString(ctxdata);
+        env.arr.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when a property of an array-typed property of $nested is referenced', function(){
       (function() {
-        var value = env.arrMissing.getString(ctxdata);
+        env.arrMissing.getString(ctxdata);
       }).should.throw(/Cannot get property of an array: missing/);
     });
     it('throws when a built-in property of an array-typed property of $nested is referenced', function(){
       (function() {
-        var value = env.arrLength.getString(ctxdata);
+        env.arrLength.getString(ctxdata);
       }).should.throw(/Cannot get property of an array: length/);
     });
     it('throws when an array-typed property of $nested is used in an index', function(){
       (function() {
-        var value = env.arrIndex.getString(ctxdata);
+        env.arrIndex.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });
@@ -358,12 +365,12 @@ describe('Context data', function(){
     });
     it('throws if accessed without a key', function(){
       (function() {
-        var value = env.just.getString(ctxdata);
+        env.just.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws if accessed without a key when nested', function(){
       (function() {
-        var value = env.obj.getString(ctxdata);
+        env.obj.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('returns a string value of the requested key', function(){
@@ -371,17 +378,17 @@ describe('Context data', function(){
     });
     it('throws when a property of an object-typed property of $nested is referenced', function(){
       (function() {
-        var value = env.objMissing.getString(ctxdata);
+        env.objMissing.getString(ctxdata);
       }).should.throw(/missing is not defined on the object/);
     });
     it('throws when a built-in property of an object-typed property of $nested is referenced', function(){
       (function() {
-        var value = env.objValueOf.getString(ctxdata);
+        env.objValueOf.getString(ctxdata);
       }).should.throw(/valueOf is not defined on the object/);
     });
     it('throws when an object-typed property of $nested is used in an index', function(){
       (function() {
-        var value = env.objIndex.getString(ctxdata);
+        env.objIndex.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });
@@ -407,12 +414,12 @@ describe('Context data', function(){
     });
     it('throws if accessed without a key', function(){
       (function() {
-        var value = env.just.getString(ctxdata);
+        env.just.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws if accessed without a key when nested', function(){
       (function() {
-        var value = env.fn.getString(ctxdata);
+        env.fn.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('returns a string value of the requested key', function(){
@@ -420,17 +427,17 @@ describe('Context data', function(){
     });
     it('throws when a property of an object-typed property of $nested is referenced', function(){
       (function() {
-        var value = env.fnMissing.getString(ctxdata);
+        env.fnMissing.getString(ctxdata);
       }).should.throw(/missing is not defined on the object/);
     });
     it('throws when a built-in property of an object-typed property of $nested is referenced', function(){
       (function() {
-        var value = env.fnValueOf.getString(ctxdata);
+        env.fnValueOf.getString(ctxdata);
       }).should.throw(/valueOf is not defined on the object/);
     });
     it('throws when an object-typed property of $nested is used in an index', function(){
       (function() {
-        var value = env.fnIndex.getString(ctxdata);
+        env.fnIndex.getString(ctxdata);
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });

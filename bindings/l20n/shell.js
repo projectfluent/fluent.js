@@ -1,4 +1,4 @@
-define(function (require, exports, module) {
+define(function (require) {
   'use strict';
 
   var L20n = require('../l20n');

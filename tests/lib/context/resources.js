@@ -1,14 +1,15 @@
-var Context = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/context').Context
-  : require('../../../lib/l20n/context').Context;
-var Parser = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/parser').Parser
-  : require('../../../lib/l20n/parser').Parser;
-var io = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/platform/io')
-  : require('../../../lib/l20n/platform/io');
+var Context = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/context').Context :
+  require('../../../lib/l20n/context').Context;
+var Parser = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/parser').Parser :
+  require('../../../lib/l20n/parser').Parser;
+var io = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/platform/io') :
+  require('../../../lib/l20n/platform/io');
 
 function whenReady(ctx, callback) {
+  'use strict';
   ctx.addEventListener('ready', function onReady() {
     ctx.removeEventListener('ready', onReady);
     callback();
@@ -16,6 +17,7 @@ function whenReady(ctx, callback) {
 }
 
 describe('A context without any resources', function() {
+  'use strict';
   var ctx = new Context();
   beforeEach(function() {
     ctx = new Context();
@@ -23,24 +25,27 @@ describe('A context without any resources', function() {
 
   it('should emit one warning', function(done) {
     var count = 0;
-    ctx.addEventListener('warning', function(e) {
+    ctx.addEventListener('warning', function() {
       count++;
-      if (count >= 1)
+      if (count >= 1) {
         done();
+      }
     });
     ctx.requestLocales();
   });
   it('should emit a warning about no resources', function(done) {
     ctx.addEventListener('warning', function(e) {
       e.should.be.an.instanceOf(Context.Error);
-      if (/no resources/.test(e.message))
+      if (/no resources/.test(e.message)) {
         done();
+      }
     });
     ctx.requestLocales();
   });
 });
 
 describe('addResource without registerLocales', function() {
+  'use strict';
   var ctx = new Context();
   ctx.addResource('<foo "Foo">');
   ctx.addResource('<bar "Bar">');
@@ -54,15 +59,16 @@ describe('addResource without registerLocales', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'i-default');
-  })
+  });
   it('should add the second resource to i-default', function() {
     var val = ctx.getEntity('bar');
     val.value.should.equal('Bar');
     val.should.have.property('locale', 'i-default');
-  })
+  });
 });
 
 describe('addResource with registerLocales', function() {
+  'use strict';
   var ctx = new Context();
   ctx.addResource('<foo "Foo">');
 
@@ -75,20 +81,21 @@ describe('addResource with registerLocales', function() {
   it('should add to pl', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', 'pl')
-  })
+    val.should.have.property('locale', 'pl');
+  });
   it('should change locale without an error', function(done) {
     whenReady(ctx, done);
     ctx.requestLocales('de');
-  })
+  });
   it('should add to en-US', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', 'de')
-  })
+    val.should.have.property('locale', 'de');
+  });
 });
 
 describe('linkResource(String) without registerLocales', function() {
+  'use strict';
   var ctx = new Context();
   ctx.linkResource(__dirname + '/fixtures/strings.lol');
 
@@ -101,10 +108,11 @@ describe('linkResource(String) without registerLocales', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'i-default');
-  })
+  });
 });
 
 describe('linkResource(String) with registerLocales', function() {
+  'use strict';
   var ctx = new Context();
   ctx.linkResource(__dirname + '/fixtures/strings.lol');
 
@@ -117,20 +125,21 @@ describe('linkResource(String) with registerLocales', function() {
   it('should add to pl', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', 'pl')
-  })
+    val.should.have.property('locale', 'pl');
+  });
   it('should change locale without an error', function(done) {
     whenReady(ctx, done);
     ctx.requestLocales('de');
-  })
+  });
   it('should add to en-US', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo');
-    val.should.have.property('locale', 'de')
-  })
+    val.should.have.property('locale', 'de');
+  });
 });
 
 describe('linkResource(Function) without registerLocales', function() {
+  'use strict';
   var ctx = new Context();
   ctx.linkResource(function(locale) {
     return __dirname + '/fixtures/' + locale + '.lol';
@@ -144,12 +153,13 @@ describe('linkResource(Function) without registerLocales', function() {
   it('should add to i-default', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo i');
-    val.should.have.property('locale', 'i-default')
-  })
+    val.should.have.property('locale', 'i-default');
+  });
 
 });
 
 describe('linkResource(Function) with registerLocales', function() {
+  'use strict';
   var ctx = new Context();
   ctx.linkResource(function(locale) {
     return __dirname + '/fixtures/' + locale + '.lol';
@@ -164,20 +174,21 @@ describe('linkResource(Function) with registerLocales', function() {
   it('should add to pl', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo pl');
-    val.should.have.property('locale', 'pl')
-  })
+    val.should.have.property('locale', 'pl');
+  });
   it('should change locale without an error', function(done) {
     whenReady(ctx, done);
     ctx.requestLocales('en-US');
-  })
+  });
   it('should add to en-US', function() {
     var val = ctx.getEntity('foo');
     val.value.should.equal('Foo en-US');
-    val.should.have.property('locale', 'en-US')
-  })
+    val.should.have.property('locale', 'en-US');
+  });
 });
 
 describe('Parser errors', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function() {
@@ -201,6 +212,7 @@ describe('Parser errors', function() {
 });
 
 describe('Missing resources', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function() {
@@ -224,6 +236,7 @@ describe('Missing resources', function() {
 });
 
 describe('Recursive imports', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function() {
@@ -250,6 +263,7 @@ describe('Recursive imports', function() {
 // missing or broken
 // https://bugzilla.mozilla.org/show_bug.cgi?id=908780
 describe('No valid resources', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function() {
@@ -264,26 +278,29 @@ describe('No valid resources', function() {
   });
   it('should emit two errors', function(done) {
     var count = 0;
-    ctx.addEventListener('error', function(e) {
+    ctx.addEventListener('error', function() {
       count++;
-      if (count >= 2)
+      if (count >= 2) {
         done();
+      }
     });
     ctx.requestLocales();
   });
   it('should emit an error about recursion', function(done) {
     ctx.addEventListener('error', function(e) {
       e.should.be.an.instanceOf(Context.Error);
-      if (/Too many nested/.test(e.message))
+      if (/Too many nested/.test(e.message)) {
         done();
+      }
     });
     ctx.requestLocales();
   });
   it('should emit an error about no valid resources', function(done) {
     ctx.addEventListener('error', function(e) {
       e.should.be.an.instanceOf(Context.Error);
-      if (/no valid resources/.test(e.message))
+      if (/no valid resources/.test(e.message)) {
         done();
+      }
     });
     ctx.requestLocales();
   });

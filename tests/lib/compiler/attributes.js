@@ -1,12 +1,19 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/compiler').Compiler :
+  require('../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser();
 var compiler = new Compiler();
 
-describe('Attributes', function(){
+describe('Attributes', function() {
+  'use strict';
+
+  // jsHint incorrectly claims function expressions on which the property
+  // is accessed just after its definition doesn't require parens;
+  // ignore this warning.
+  /* jshint -W068 */
+
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
@@ -81,11 +88,11 @@ describe('Attributes', function(){
     });
     it('returns the value', function(){
       var entity = env.foo.get();
-      entity.attributes.attr.should.equal("An attribute");
+      entity.attributes.attr.should.equal('An attribute');
     });
     it('returns the value with a placeable', function(){
       var entity = env.foo.get();
-      entity.attributes.attrComplex.should.equal("An attribute of Foo");
+      entity.attributes.attrComplex.should.equal('An attribute of Foo');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
     it('is detected to be non-complex (simple)', function(){
@@ -96,7 +103,7 @@ describe('Attributes', function(){
     });
     it('can be accessed from another entity ', function(){
       var value = env.getFoo.getString();
-      value.should.equal("An attribute");
+      value.should.equal('An attribute');
     });
   });
 
@@ -121,7 +128,7 @@ describe('Attributes', function(){
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutWin.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('throws for a missing property', function(){
       (function() {
@@ -146,15 +153,15 @@ describe('Attributes', function(){
     });
     it('returns the defval with no property expression', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('returns the defval for a missing property', function(){
       var value = env.aboutMac.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
   });
 
@@ -174,15 +181,15 @@ describe('Attributes', function(){
     });
     it('returns the index with no property expression', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('returns the index for a missing property', function(){
       var value = env.aboutMac.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
   });
 
@@ -202,15 +209,15 @@ describe('Attributes', function(){
     });
     it('returns the index with no property expression', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('returns the index for a missing property', function(){
       var value = env.aboutMac.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
   });
 
@@ -235,7 +242,7 @@ describe('Attributes', function(){
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('throws for a missing property', function(){
       (function() {
@@ -260,15 +267,15 @@ describe('Attributes', function(){
     });
     it('returns the index with no property expression', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('returns the index for a missing property', function(){
       var value = env.aboutMac.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
   });
 
@@ -293,23 +300,23 @@ describe('Attributes', function(){
     });
     it('returns the defvals with no property expression', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('returns the second defval with one property expression', function(){
       var value = env.aboutWin.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('can have nested members accessed by another entity ', function(){
       var value = env.aboutMetro.getString();
-      value.should.equal("About Firefox for Windows 8");
+      value.should.equal('About Firefox for Windows 8');
     });
     it('returns the defvals for a missing property', function(){
       var value = env.aboutMac.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
   });
 
@@ -340,27 +347,27 @@ describe('Attributes', function(){
     });
     it('returns the indexed keys with no property expression', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('returns the second index with one property expression', function(){
       var value = env.aboutWin.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('can have members accessed by another entity ', function(){
       var value = env.aboutLinux.getString();
-      value.should.equal("About Firefox for Linux");
+      value.should.equal('About Firefox for Linux');
     });
     it('can have nested members accessed by another entity ', function(){
       var value = env.aboutMetro.getString();
-      value.should.equal("About Firefox for Windows 8");
+      value.should.equal('About Firefox for Windows 8');
     });
     it('returns the indexed keys for a missing property', function(){
       var value = env.aboutMac.getString();
-      value.should.equal("About Firefox for Windows");
+      value.should.equal('About Firefox for Windows');
     });
     it('returns the second index with one property expression different than the first index', function(){
       var value = env.aboutMobile.getString();
-      value.should.equal("About Firefox for Mobile");
+      value.should.equal('About Firefox for Mobile');
     });
   });
 
@@ -384,7 +391,7 @@ describe('Attributes', function(){
     });
     it('returns the index of the entity', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox Beta");
+      value.should.equal('About Firefox Beta');
     });
     it('throws because of the missing index of the attribute', function(){
       (function() {
@@ -413,11 +420,11 @@ describe('Attributes', function(){
     });
     it('returns the index of the entity', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox Beta");
+      value.should.equal('About Firefox Beta');
     });
     it('returns the index of the attribute', function(){
       var value = env.press.getString();
-      value.should.equal("Press A");
+      value.should.equal('Press A');
     });
   });
 
@@ -432,11 +439,11 @@ describe('Attributes', function(){
     });
     it('returns the value', function(){
       var entity = env.brandName.get();
-      entity.attributes.title.should.equal("Mozilla Firefox");
+      entity.attributes.title.should.equal('Mozilla Firefox');
     });
     it('can be referenced from another entity', function(){
       var value = env.about.getString();
-      value.should.equal("About Mozilla Firefox");
+      value.should.equal('About Mozilla Firefox');
     });
   });
 
@@ -454,11 +461,11 @@ describe('Attributes', function(){
     });
     it('returns the value', function(){
       var entity = env.brandName.get();
-      entity.attributes.license.should.equal("Firefox's license");
+      entity.attributes.license.should.equal('Firefox\'s license');
     });
     it('can be referenced from another entity', function(){
       var value = env.about.getString();
-      value.should.equal("About Firefox's license");
+      value.should.equal('About Firefox\'s license');
     });
   });
 
@@ -473,11 +480,11 @@ describe('Attributes', function(){
     });
     it('returns the value', function(){
       var value = env.brandName.getString();
-      value.should.equal("Mozilla Firefox");
+      value.should.equal('Mozilla Firefox');
     });
     it('can be referenced from another entity', function(){
       var value = env.about.getString();
-      value.should.equal("About Mozilla Firefox");
+      value.should.equal('About Mozilla Firefox');
     });
   });
 
@@ -517,7 +524,7 @@ describe('Attributes', function(){
     });
     it('returns the value', function(){
       var value = env.quux.getString();
-      value.should.equal("Foo Bar Baz");
+      value.should.equal('Foo Bar Baz');
     });
   });
 
