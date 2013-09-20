@@ -1,12 +1,19 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/compiler').Compiler :
+  require('../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser(true);
 var compiler = new Compiler();
 
-describe('Primitives:', function(){
+describe('Primitives:', function() {
+  'use strict';
+
+  // jsHint incorrectly claims function expressions on which the property
+  // is accessed just after its definition doesn't require parens;
+  // ignore this warning.
+  /* jshint -W068 */
+
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
@@ -108,7 +115,7 @@ describe('Primitives:', function(){
     });
     it('returns the value', function(){
       var value = env.foo.getString();
-      value.should.equal("Foo");
+      value.should.equal('Foo');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
     it('is detected to be non-complex (simple)', function(){
@@ -152,7 +159,7 @@ describe('Primitives:', function(){
     });
     it('returns the value', function(){
       var value = env.bar.getString();
-      value.should.equal("Foo Bar");
+      value.should.equal('Foo Bar');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
     it('is detected to be maybe-complex', function(){
@@ -183,7 +190,7 @@ describe('Primitives:', function(){
     });
     it('returns the value', function(){
       var value = env.bar.getString();
-      value.should.equal("Foo");
+      value.should.equal('Foo');
     });
     it('is not detected to be non-complex (simple)', function(){
       env.bar.value.should.be.a('function');
@@ -237,7 +244,7 @@ describe('Primitives:', function(){
     });
     it('returns the value', function(){
       var value = env.foo.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
     it('is detected to be non-complex (simple)', function(){
@@ -289,7 +296,7 @@ describe('Primitives:', function(){
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
   });
 
@@ -310,7 +317,7 @@ describe('Primitives:', function(){
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
   });
 
@@ -326,11 +333,11 @@ describe('Primitives:', function(){
     });
     it('returns the value', function(){
       var value = env.foo.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
   });
 
@@ -386,7 +393,7 @@ describe('Primitives:', function(){
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
   });
 
@@ -407,7 +414,7 @@ describe('Primitives:', function(){
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
   });
 
@@ -423,11 +430,11 @@ describe('Primitives:', function(){
     });
     it('returns the valid value if requested directly', function(){
       var value = env.foo.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.getString();
-      value.should.equal("Bar");
+      value.should.equal('Bar');
     });
   });
 

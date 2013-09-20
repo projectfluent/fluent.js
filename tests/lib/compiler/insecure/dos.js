@@ -1,14 +1,15 @@
 var Parser = require('../../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV
-  ? require('../../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV ?
+  require('../../../../build/cov/lib/l20n/compiler').Compiler :
+  require('../../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser();
 var compiler = new Compiler();
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
-describe('Reference bombs', function(){
-  var source, ctxdata, ast, env;
+describe('Reference bombs', function() {
+  'use strict';
+  var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
     env = compiler.compile(ast);
@@ -31,9 +32,10 @@ describe('Reference bombs', function(){
       ';
     });
     it('throws', function() {
-      (function() {
+      function brokenFun() {
         env.lolz.getString();
-      }).should.throw(/too many characters/);
+      }
+      brokenFun.should.throw(/too many characters/);
     });
   });
 
@@ -111,9 +113,10 @@ describe('Reference bombs', function(){
       ';
     });
     it('throws', function() {
-      (function() {
+      function brokenFun() {
         env.malice.getString();
-      }).should.throw(/too many placeables/i);
+      }
+      brokenFun.should.throw(/too many placeables/i);
     });
   });
 

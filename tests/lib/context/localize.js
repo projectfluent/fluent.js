@@ -1,13 +1,14 @@
-var Context = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/context').Context
-  : require('../../../lib/l20n/context').Context;
-var RetranslationManager = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/retranslation').RetranslationManager
-  : require('../../../lib/l20n/retranslation').RetranslationManager;
+var Context = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/context').Context :
+  require('../../../lib/l20n/context').Context;
+var RetranslationManager = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/retranslation').RetranslationManager :
+  require('../../../lib/l20n/retranslation').RetranslationManager;
 var Global = require('../../../lib/l20n/platform/globals').Global;
 var EventEmitter = require('../../../lib/l20n/events').EventEmitter;
 
 function whenReady(ctx, callback) {
+  'use strict';
   ctx.addEventListener('ready', function onReady() {
     ctx.removeEventListener('ready', onReady);
     callback();
@@ -15,6 +16,13 @@ function whenReady(ctx, callback) {
 }
 
 describe('ctx.localize errors', function() {
+  'use strict';
+
+  // jsHint incorrectly claims function expressions on which the property
+  // is accessed just after its definition doesn't require parens;
+  // ignore this warning.
+  /* jshint -W068 */
+
   var ctx;
 
   beforeEach(function() {
@@ -29,6 +37,7 @@ describe('ctx.localize errors', function() {
 });
 
 describe('Asynchronous ctx.localize', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function() {
@@ -38,7 +47,7 @@ describe('Asynchronous ctx.localize', function() {
 
   it('should fire when context becomes ready', function(done) {
     var now = false;
-    ctx.localize(['foo'], function(l10n) {
+    ctx.localize(['foo'], function() {
       if (now) {
         done();
       }
@@ -70,8 +79,8 @@ describe('Asynchronous ctx.localize', function() {
   });
   it('should fire again when locales change', function(done) {
     var i = 0;
-    ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+    ctx.localize(['foo'], function() {
+      if (i++ === 1) {
         done();
       }
     });
@@ -84,7 +93,7 @@ describe('Asynchronous ctx.localize', function() {
   it('should have reason.locales when locales change', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+      if (i++ === 1) {
         l10n.reason.should.have.property('locales');
         done();
       }
@@ -98,7 +107,7 @@ describe('Asynchronous ctx.localize', function() {
   it('should use the default when requesting no specific locales', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+      if (i++ === 1) {
         l10n.reason.locales[0].should.equal('en-US');
         done();
       }
@@ -112,7 +121,7 @@ describe('Asynchronous ctx.localize', function() {
   it('should have non-empty reason.locales when locales change', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+      if (i++ === 1) {
         l10n.reason.locales[0].should.equal('de');
         done();
       }
@@ -147,17 +156,19 @@ describe('Asynchronous ctx.localize', function() {
         if (!conditions[0]) {
           conditions[0] = true;
         }
-        return "foo";
+        return 'foo';
       }
 
       function activate() {
+        /* jshint validthis: true */
         if (!this.isActive) {
           conditions[1] = true;
-          ee.addEventListener('trigger', onchange); 
+          ee.addEventListener('trigger', onchange);
         }
       }
 
       function deactivate() {
+        /* jshint validthis: true */
         conditions[4] = true;
         ee.removeEventListener('trigger', onchange);
         this.isActive = false;
@@ -217,17 +228,19 @@ describe('Asynchronous ctx.localize', function() {
         if (!conditions[0]) {
           conditions[0] = true;
         }
-        return "foo";
+        return 'foo';
       }
 
       function activate() {
+        /* jshint validthis: true */
         if (!this.isActive) {
           conditions[1] = true;
-          ee.addEventListener('trigger', onchange); 
+          ee.addEventListener('trigger', onchange);
         }
       }
 
       function deactivate() {
+        /* jshint validthis: true */
         conditions[4] = true;
         ee.removeEventListener('trigger', onchange);
         this.isActive = false;
@@ -246,7 +259,7 @@ describe('Asynchronous ctx.localize', function() {
     ctx.addEventListener('error', function(e){console.log(e);});
     ctx.requestLocales();
 
-    var handler = ctx.localize(['foo2'], function(l10n) {
+    var handler = ctx.localize(['foo2'], function() {
       if (!conditions[2]) {
         conditions[2] = true;
         ee.emit('trigger');
@@ -266,6 +279,7 @@ describe('Asynchronous ctx.localize', function() {
 });
 
 describe('Synchronous ctx.localize in monolingual mode', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function(done) {
@@ -276,7 +290,7 @@ describe('Synchronous ctx.localize in monolingual mode', function() {
   });
   it('should fire immediately', function(done) {
     var now = true;
-    ctx.localize(['foo'], function(l10n) {
+    ctx.localize(['foo'], function() {
       if (now) {
         done();
       }
@@ -296,6 +310,7 @@ describe('Synchronous ctx.localize in monolingual mode', function() {
 });
 
 describe('Synchronous ctx.localize in multilingual mode', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function(done) {
@@ -307,7 +322,7 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
   });
   it('should fire immediately', function(done) {
     var now = true;
-    ctx.localize(['foo'], function(l10n) {
+    ctx.localize(['foo'], function() {
       if (now) {
         done();
       }
@@ -326,8 +341,8 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
   });
   it('should fire again when locales change', function(done) {
     var i = 0;
-    ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+    ctx.localize(['foo'], function() {
+      if (i++ === 1) {
         done();
       }
     });
@@ -336,7 +351,7 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
   it('should have non-empty reason.locales when locales change', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+      if (i++ === 1) {
         l10n.reason.locales[0].should.equal('de');
         done();
       }
@@ -346,7 +361,7 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
   it('should use the default lcoale if no locales have been requested', function(done) {
     var i = 0;
     ctx.localize(['foo'], function(l10n) {
-      if (i++ == 1) {
+      if (i++ === 1) {
         l10n.reason.locales[0].should.equal('en-US');
         done();
       }
@@ -356,6 +371,7 @@ describe('Synchronous ctx.localize in multilingual mode', function() {
 });
 
 describe('l10n object passed to ctx.localize\'s callback', function() {
+  'use strict';
   var ctx;
 
   beforeEach(function(done) {

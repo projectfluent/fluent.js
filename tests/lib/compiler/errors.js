@@ -1,12 +1,19 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV ?
+  require('../../../build/cov/lib/l20n/compiler').Compiler :
+  require('../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser();
 var compiler = new Compiler();
 
-describe('Compiler errors:', function(){
+describe('Compiler errors:', function() {
+  'use strict';
+
+  // jsHint incorrectly claims function expressions on which the property
+  // is accessed just after its definition doesn't require parens;
+  // ignore this warning.
+  /* jshint -W068 */
+
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
@@ -24,7 +31,7 @@ describe('Compiler errors:', function(){
       ';
     });
     it('works with the default index', function(){
-      env.prompt.getString().should.equal("Remove file?");
+      env.prompt.getString().should.equal('Remove file?');
     });
   });
   describe('A complex string referencing a missing entity', function(){
@@ -64,10 +71,10 @@ describe('Compiler errors:', function(){
       ';
     });
     it('is found', function(){
-      env.prompt.getString().should.equal("Keep file?");
+      env.prompt.getString().should.equal('Keep file?');
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Remove file?");
+      env.bypass.getString().should.equal('Remove file?');
     });
   });
   describe('A missing entity in the index', function(){
@@ -89,7 +96,7 @@ describe('Compiler errors:', function(){
       }).should.throw(/unknown entry/);
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Remove file?");
+      env.bypass.getString().should.equal('Remove file?');
     });
   });
   describe('A complex string referencing an existing entity in the index', function(){
@@ -104,10 +111,10 @@ describe('Compiler errors:', function(){
       ';
     });
     it('works', function(){
-      env.prompt.getString().should.equal("Keep file?");
+      env.prompt.getString().should.equal('Keep file?');
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Remove file?");
+      env.bypass.getString().should.equal('Remove file?');
     });
   });
   describe('A complex string referencing a missing entity in the index', function(){
@@ -129,7 +136,7 @@ describe('Compiler errors:', function(){
       }).should.throw(/unknown entry/);
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Remove file?");
+      env.bypass.getString().should.equal('Remove file?');
     });
   });
 
@@ -148,13 +155,13 @@ describe('Compiler errors:', function(){
       ';
     });
     it('uses the default value', function(){
-      env.settings.getString().should.equal("Preferences");
+      env.settings.getString().should.equal('Preferences');
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Options");
+      env.bypass.getString().should.equal('Options');
     });
     it('if a property expression fails, uses the default value', function(){
-      env.bypassNoKey.getString().should.equal("Preferences");
+      env.bypassNoKey.getString().should.equal('Preferences');
     });
   });
   describe('No index, without a default value set', function(){
@@ -177,7 +184,7 @@ describe('Compiler errors:', function(){
       }).should.throw('Hash key lookup failed.');
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Options");
+      env.bypass.getString().should.equal('Options');
     });
     it('if a property expression fails, throws an IndexError', function(){
       (function() {
@@ -209,19 +216,19 @@ describe('Compiler errors:', function(){
       ';
     });
     it('selects the right key', function(){
-      env.settings.getString({os: "win"}).should.equal("Options");
+      env.settings.getString({os: 'win'}).should.equal('Options');
     });
     it('falls back to the default value if the key is not found', function(){
-      env.settings.getString({os: "mac"}).should.equal("Preferences");
+      env.settings.getString({os: 'mac'}).should.equal('Preferences');
     });
     it('can be bypassed', function(){
-      env.bypass.getString({os: "mac"}).should.equal("Options");
+      env.bypass.getString({os: 'mac'}).should.equal('Options');
     });
     it('if a property expression fails, uses the index', function(){
-      env.bypassNoKey.getString({os: "win"}).should.equal("Options");
+      env.bypassNoKey.getString({os: 'win'}).should.equal('Options');
     });
     it('if a property expression and index lookup fails, uses the default value', function(){
-      env.bypassNoKey.getString({os: "mac"}).should.equal("Preferences");
+      env.bypassNoKey.getString({os: 'mac'}).should.equal('Preferences');
     });
   });
   describe('An invalid reference in the index, with a default value set', function(){
@@ -245,7 +252,7 @@ describe('Compiler errors:', function(){
       }).should.throw(/unknown variable/);
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Options");
+      env.bypass.getString().should.equal('Options');
     });
     it('if a property expression fails, throws an IndexError', function(){
       (function() {
@@ -270,29 +277,29 @@ describe('Compiler errors:', function(){
       ';
     });
     it('selects the right key', function(){
-      env.settings.getString({os: "win"}).should.equal("Options");
+      env.settings.getString({os: 'win'}).should.equal('Options');
     });
     it('throws an IndexError instead of returning the default value', function(){
       (function() {
-        env.settings.getString({os: "mac"});
+        env.settings.getString({os: 'mac'});
       }).should.throw(Compiler.IndexError);
       (function() {
-        env.settings.getString({os: "mac"});
+        env.settings.getString({os: 'mac'});
       }).should.throw(/Hash key lookup failed/);
     });
     it('can be bypassed', function(){
-      env.bypass.getString({os: "mac"}).should.equal("Options");
+      env.bypass.getString({os: 'mac'}).should.equal('Options');
     });
     it('if a property expression fails, uses the index', function(){
-      env.bypassNoKey.getString({os: "win"}).should.equal("Options");
+      env.bypassNoKey.getString({os: 'win'}).should.equal('Options');
     });
     it('if a property expression fails and index lookup fails, throws an IndexError', function(){
       (function() {
         // This will actually throw a ValueError, not IndexError.  See above.
-        env.bypassNoKey.getString({os: "mac"});
+        env.bypassNoKey.getString({os: 'mac'});
       }).should.throw(Compiler.ValueError);
       (function() {
-        env.bypassNoKey.getString({os: "mac"});
+        env.bypassNoKey.getString({os: 'mac'});
       }).should.throw('Hash key lookup failed (tried "lin", "mac").');
     });
   });
@@ -317,7 +324,7 @@ describe('Compiler errors:', function(){
       }).should.throw(/unknown variable/);
     });
     it('can be bypassed', function(){
-      env.bypass.getString().should.equal("Options");
+      env.bypass.getString().should.equal('Options');
     });
     it('if a property expression fails, throws an IndexError', function(){
       (function() {
