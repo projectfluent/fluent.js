@@ -1,7 +1,7 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV ?
-  require('../../../build/cov/lib/l20n/compiler').Compiler :
-  require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/compiler').Compiler
+  : require('../../../lib/l20n/compiler').Compiler;
 var RetranslationManager = require('../../../lib/l20n/retranslation').RetranslationManager;
 var Global = require('../../../lib/l20n/platform/globals').Global;
 
@@ -9,11 +9,11 @@ var parser = new Parser(true);
 var compiler = new Compiler();
 
 function NestedGlobal() {
-  'use strict';
-
   Global.call(this);
   this.id = 'nested';
   this._get = _get;
+
+  var self = this;
 
   function _get() {
     return {
@@ -24,7 +24,7 @@ function NestedGlobal() {
       nullable: null,
       arr: [3, 4],
       obj: { key: 'value' }
-    };
+    }
   }
 }
 
@@ -34,14 +34,7 @@ RetranslationManager.registerGlobal(NestedGlobal);
 
 var retr = new RetranslationManager();
 
-describe('No globals:', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
+describe('No globals:', function(){
   var source, ast, env;
   before(function() {
     source = '                                                                \
@@ -61,14 +54,7 @@ describe('No globals:', function() {
 });
 
 
-describe('Globals:', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
+describe('Globals:', function(){
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
@@ -103,12 +89,12 @@ describe('Globals:', function() {
       var value = env.greeting.getString();
       var hour = (new Date()).getHours();
       value.should.equal(hour >= 6 && hour < 12 ?
-                         'Good morning' :
+                         "Good morning" :
                           hour >= 12 && hour < 19 ?
-                            'Good afternoon' :
+                            "Good afternoon" :
                             hour >= 19 && hour < 23 ?
-                              'Good evening' :
-                              'Y U NO asleep?');
+                              "Good evening" :
+                              "Y U NO asleep?");
     });
   });
 
@@ -124,27 +110,27 @@ describe('Globals:', function() {
     });
     it('throws when a missing global is referenced', function(){
       (function() {
-        env.missing.getString();
+        var value = env.missing.getString();
       }).should.throw(/unknown global/);
     });
     it('throws when a property of a missing global is referenced', function(){
       (function() {
-        env.missingTwice.getString();
+        var value = env.missingTwice.getString();
       }).should.throw(/unknown global/);
     });
     it('throws when @nested is referenced', function(){
       (function() {
-        env.nested.getString();
+        var value = env.nested.getString();
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when a missing property of @nested is referenced', function(){
       (function() {
-        env.nestedMissing.getString();
+        var value = env.nestedMissing.getString();
       }).should.throw(/not defined/);
     });
     it('throws when a property of a missing property of @nested is referenced', function(){
       (function() {
-        env.nestedMissingTwice.getString();
+        var value = env.nestedMissingTwice.getString();
       }).should.throw(/not defined/);
     });
   });
@@ -161,7 +147,7 @@ describe('Globals:', function() {
     });
     it('throws when a property of a string property of @nested is referenced', function(){
       (function() {
-        env.propertyMissing.getString();
+        var value = env.propertyMissing.getString();
       }).should.throw(/Cannot get property of a string: missing/);
     });
   });
@@ -182,17 +168,17 @@ describe('Globals:', function() {
     });
     it('throws when a property of a number property of @nested is referenced', function(){
       (function() {
-        env.numberMissing.getString();
+        var value = env.numberMissing.getString();
       }).should.throw(/Cannot get property of a number: missing/);
     });
     it('throws when a built-in property of a number property of @nested is referenced', function(){
       (function() {
-        env.numberMissing.getString();
+        var value = env.numberMissing.getString();
       }).should.throw(/Cannot get property of a number: missing/);
     });
     it('throws when a number property of @nested is used in an index', function(){
       (function() {
-        env.numberIndex.getString();
+        var value = env.numberIndex.getString();
       }).should.throw(/Index must be a string/);
     });
   });
@@ -212,12 +198,12 @@ describe('Globals:', function() {
     });
     it('throws when a property of a bool property of @nested is referenced', function(){
       (function() {
-        env.boolMissing.getString();
+        var value = env.boolMissing.getString();
       }).should.throw(/Cannot get property of a boolean: missing/);
     });
     it('throws when a bool property of @nested is used in an index', function(){
       (function() {
-        env.boolIndex.getString();
+        var value = env.boolIndex.getString();
       }).should.throw(/Index must be a string/);
     });
   });
@@ -235,17 +221,17 @@ describe('Globals:', function() {
     });
     it('throws', function(){
       (function() {
-        env.undef.getString();
+        var value = env.undef.getString();
       }).should.throw(/Placeables must be strings or numbers/);
     });
     it('throws when a property of an undefined property of @nested is referenced', function(){
       (function() {
-        env.undefMissing.getString();
+        var value = env.undefMissing.getString();
       }).should.throw(/Cannot get property of a undefined: missing/);
     });
     it('throws when an undefined property of @nested is used in an index', function(){
       (function() {
-        env.undefIndex.getString();
+        var value = env.undefIndex.getString();
       }).should.throw(/Hash key lookup failed/);
     });
   });
@@ -262,17 +248,17 @@ describe('Globals:', function() {
     });
     it('throws', function(){
       (function() {
-        env.nullable.getString();
+        var value = env.nullable.getString();
       }).should.throw(/Placeables must be strings or numbers/);
     });
     it('throws when a property of a null property of @nested is referenced', function(){
       (function() {
-        env.nullableMissing.getString();
+        var value = env.nullableMissing.getString();
       }).should.throw(/Cannot get property of a null: missing/);
     });
     it('throws when a null property of @nested is used in an index', function(){
       (function() {
-        env.nullableIndex.getString();
+        var value = env.nullableIndex.getString();
       }).should.throw(/Index must be a string/);
     });
   });
@@ -290,22 +276,22 @@ describe('Globals:', function() {
     });
     it('throws', function(){
       (function() {
-        env.arr.getString();
+        var value = env.arr.getString();
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('throws when a property of an array-typed property of @nested is referenced', function(){
       (function() {
-        env.arrMissing.getString();
+        var value = env.arrMissing.getString();
       }).should.throw(/Cannot get property of an array: missing/);
     });
     it('throws when a built-in property of an array-typed property of @nested is referenced', function(){
       (function() {
-        env.arrLength.getString();
+        var value = env.arrLength.getString();
       }).should.throw(/Cannot get property of an array: length/);
     });
     it('throws when an array-typed property of @nested is used in an index', function(){
       (function() {
-        env.arrIndex.getString();
+        var value = env.arrIndex.getString();
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });
@@ -324,7 +310,7 @@ describe('Globals:', function() {
     });
     it('throws if accessed without a key', function(){
       (function() {
-        env.obj.getString();
+        var value = env.obj.getString();
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
     it('returns a string value of the requested key', function(){
@@ -332,17 +318,17 @@ describe('Globals:', function() {
     });
     it('throws when a property of an object-typed property of @nested is referenced', function(){
       (function() {
-        env.objMissing.getString();
+        var value = env.objMissing.getString();
       }).should.throw(/missing is not defined on the object/);
     });
     it('throws when a built-in property of an object-typed property of @nested is referenced', function(){
       (function() {
-        env.objValueOf.getString();
+        var value = env.objValueOf.getString();
       }).should.throw(/valueOf is not defined on the object/);
     });
     it('throws when an object-typed property of @nested is used in an index', function(){
       (function() {
-        env.objIndex.getString();
+        var value = env.objIndex.getString();
       }).should.throw('Cannot resolve ctxdata or global of type object');
     });
   });

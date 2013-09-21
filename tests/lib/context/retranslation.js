@@ -1,9 +1,8 @@
-var Context = process.env.L20N_COV ?
-  require('../../../build/cov/lib/l20n/context').Context :
-  require('../../../lib/l20n/context').Context;
+var Context = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/context').Context
+  : require('../../../lib/l20n/context').Context;
 
 function whenReady(ctx, callback) {
-  'use strict';
   ctx.addEventListener('ready', function onReady() {
     ctx.removeEventListener('ready', onReady);
     callback();
@@ -11,7 +10,6 @@ function whenReady(ctx, callback) {
 }
 
 describe('ctx.ready', function() {
-  'use strict';
   var ctx;
 
   beforeEach(function() {

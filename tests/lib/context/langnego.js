@@ -1,9 +1,8 @@
-var Context = process.env.L20N_COV ?
-  require('../../../build/cov/lib/l20n/context').Context :
-  require('../../../lib/l20n/context').Context;
+var Context = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/context').Context
+  : require('../../../lib/l20n/context').Context;
 
 function whenReady(ctx, callback) {
-  'use strict';
   ctx.addEventListener('ready', function onReady() {
     ctx.removeEventListener('ready', onReady);
     callback();
@@ -11,7 +10,6 @@ function whenReady(ctx, callback) {
 }
 
 describe('Language negotiation without registerLocales', function() {
-  'use strict';
   var ctx;
 
   beforeEach(function(done) {
@@ -28,7 +26,6 @@ describe('Language negotiation without registerLocales', function() {
 });
 
 describe('Language negotiation with registerLocales', function() {
-  'use strict';
   var ctx;
 
   beforeEach(function(done) {
@@ -50,13 +47,6 @@ describe('Language negotiation with registerLocales', function() {
 });
 
 describe('supportedLocales', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
   var ctx;
 
   beforeEach(function(done) {
@@ -70,9 +60,7 @@ describe('supportedLocales', function() {
   });
 
   it('cannot be overwritten', function() {
-    try {
-      ctx.supportedLocales = 42;
-    } catch (e) {}
+    ctx.supportedLocales = 42;
     ctx.supportedLocales.should.have.property('length', 3);
     ctx.supportedLocales[0].should.equal('pl');
     ctx.supportedLocales[1].should.equal('de');
@@ -80,9 +68,7 @@ describe('supportedLocales', function() {
   });
 
   it('cannot be deleted', function() {
-    try {
-      delete ctx.supportedLocales;
-    } catch (e) {}
+    delete ctx.supportedLocales;
     ctx.supportedLocales.should.have.property('length', 3);
     ctx.supportedLocales[0].should.equal('pl');
     ctx.supportedLocales[1].should.equal('de');
@@ -99,7 +85,6 @@ describe('supportedLocales', function() {
 });
 
 describe('Language negotiator', function() {
-  'use strict';
   var ctx;
 
   beforeEach(function() {
@@ -118,7 +103,7 @@ describe('Language negotiator', function() {
     ctx.requestLocales('pl');
   });
   it('can be overridden', function(done) {
-    ctx.registerLocaleNegotiator(function(/* available, requested, def */) {
+    ctx.registerLocaleNegotiator(function(available, requested, def) {
       return ['de'];
     });
     whenReady(ctx, function() {
@@ -144,13 +129,6 @@ describe('Language negotiator', function() {
 });
 
 describe('registerLocales errors', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -160,17 +138,17 @@ describe('registerLocales errors', function() {
     (function() {
       ctx.registerLocales('en-US');
     }).should.not.throw();
-  });
+  })
   it('should not throw if there are no arguments', function() {
     (function() {
       ctx.registerLocales();
     }).should.not.throw();
-  });
+  })
   it('should not throw if the first argument is undefined', function() {
     (function() {
       ctx.registerLocales(undefined);
     }).should.not.throw();
-  });
+  })
   it('should throw otherwise', function() {
     (function() {
       ctx.registerLocales(null);
@@ -184,17 +162,10 @@ describe('registerLocales errors', function() {
     (function() {
       ctx.registerLocales(true);
     }).should.throw(/Language codes must be strings/);
-  });
+  })
 });
 
 describe('requestLocales errors', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -206,30 +177,30 @@ describe('requestLocales errors', function() {
     (function() {
       ctx.requestLocales('en-US');
     }).should.not.throw();
-  });
+  })
   it('should not throw if there are no arguments', function() {
     (function() {
       ctx.requestLocales();
     }).should.not.throw();
-  });
+  })
   it('should throw if the argument is undefined', function() {
     (function() {
       ctx.requestLocales(undefined);
     }).should.throw(/Language codes must be strings/);
-  });
+  })
   it('should throw if the argument is null', function() {
     (function() {
       ctx.requestLocales(null);
     }).should.throw(/Language codes must be strings/);
-  });
+  })
   it('should throw if the argument is a boolean', function() {
     (function() {
       ctx.requestLocales(false);
     }).should.throw(/Language codes must be strings/);
-  });
+  })
   it('should throw if the argument is a number', function() {
     (function() {
       ctx.requestLocales(7);
     }).should.throw(/Language codes must be strings/);
-  });
+  })
 });

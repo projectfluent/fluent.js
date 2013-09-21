@@ -1,19 +1,12 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV ?
-  require('../../../build/cov/lib/l20n/compiler').Compiler :
-  require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/compiler').Compiler
+  : require('../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser();
 var compiler = new Compiler();
 
-describe('Macros', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
+describe('Macros', function(){
   var source, ctxdata, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);

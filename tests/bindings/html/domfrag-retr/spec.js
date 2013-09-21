@@ -1,17 +1,16 @@
-describe('Example 1', function() {
-  'use strict';
-  describe('First translation', function() {
-    it('title should be "0 MB (megabajtów)"', function() {
+describe("Example 1", function() {
+  describe("First translation", function() {
+    it("title should be '0 MB (megabajtów)'", function() {
       var node = document.querySelector('#progress1 span');
       expect(node.getAttribute('title')).toEqual('0 MB (megabajtów)');
     });
-    it('payload should be green', function() {
+    it("payload should be green", function() {
       var node = document.querySelector('#progress1 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(0, 128, 0)');
     });
   });
-  describe('Retranslation', function() {
+  describe("Retranslation", function() {
     var buffer;
     beforeEach(function() {
       var node = document.querySelector('#progress1');
@@ -22,13 +21,13 @@ describe('Example 1', function() {
     afterEach(function() {
       var node = document.querySelector('#progress1');
       node.innerHTML = buffer;
-      document.l10nData.kilobytes1 = 0;
+      document.l10nData['kilobytes1'] = 0;
     });
-    it('title should be "0.125 MB (megabajtów)"', function() {
+    it("title should be '0.125 MB (megabajtów)'", function() {
       var node = document.querySelector('#progress1 span');
       expect(node.getAttribute('title')).toEqual('0.125 MB (megabajtów)');
     });
-    it('payload should be green', function() {
+    it("payload should be green", function() {
       var node = document.querySelector('#progress1 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(0, 128, 0)');
@@ -36,20 +35,19 @@ describe('Example 1', function() {
   });
 });
 
-describe('Example 2', function() {
-  'use strict';
-  describe('First translation', function() {
-    it('title should be gone', function() {
+describe("Example 2", function() {
+  describe("First translation", function() {
+    it("title should be gone", function() {
       var node = document.querySelector('#progress2 span');
       expect(node.getAttribute('title')).toBeNull();
     });
-    it('payload should be green', function() {
+    it("payload should be green", function() {
       var node = document.querySelector('#progress2 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(0, 128, 0)');
     });
   });
-  describe('Retranslation', function() {
+  describe("Retranslation", function() {
     var buffer;
     beforeEach(function() {
       var node = document.querySelector('#progress2');
@@ -60,13 +58,13 @@ describe('Example 2', function() {
     afterEach(function() {
       var node = document.querySelector('#progress2');
       node.innerHTML = buffer;
-      document.l10nData.kilobytes2 = 0;
+      document.l10nData['kilobytes2'] = 0;
     });
-    it('title should be gone', function() {
+    it("title should be gone", function() {
       var node = document.querySelector('#progress2 span');
       expect(node.getAttribute('title')).toBeNull();
     });
-    it('payload should be green', function() {
+    it("payload should be green", function() {
       var node = document.querySelector('#progress2 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(0, 128, 0)');
@@ -74,20 +72,19 @@ describe('Example 2', function() {
   });
 });
 
-describe('Example 3', function() {
-  'use strict';
-  describe('First translation', function() {
-    it('title should be "0 MB (megabajtów)"', function() {
+describe("Example 3", function() {
+  describe("First translation", function() {
+    it("title should be '0 MB (megabajtów)'", function() {
       var node = document.querySelector('#progress3 span');
       expect(node.getAttribute('title')).toEqual('0 MB (megabajtów)');
     });
-    it('payload should be red', function() {
+    it("payload should be red", function() {
       var node = document.querySelector('#progress3 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(255, 0, 0)');
     });
   });
-  describe('Retranslation', function() {
+  describe("Retranslation", function() {
     var buffer;
     beforeEach(function() {
       var node = document.querySelector('#progress3');
@@ -98,13 +95,13 @@ describe('Example 3', function() {
     afterEach(function() {
       var node = document.querySelector('#progress3');
       node.innerHTML = buffer;
-      document.l10nData.kilobytes3 = 0;
+      document.l10nData['kilobytes3'] = 0;
     });
-    it('title should be "0.125 MB (megabajtów)"', function() {
+    it("title should be '0.125 MB (megabajtów)'", function() {
       var node = document.querySelector('#progress3 span');
       expect(node.getAttribute('title')).toEqual('0.125 MB (megabajtów)');
     });
-    it('payload should be red', function() {
+    it("payload should be red", function() {
       var node = document.querySelector('#progress3 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(255, 0, 0)');
@@ -112,20 +109,19 @@ describe('Example 3', function() {
   });
 });
 
-describe('Example 4', function() {
-  'use strict';
-  describe('First translation', function() {
-    it('title should be "{{ kilobytes4 / 1024 }} MB"', function() {
+describe("Example 4", function() {
+  describe("First translation", function() {
+    it("title should be '{{ kilobytes4 / 1024 }} MB'", function() {
       var node = document.querySelector('#progress4 span');
       expect(node.getAttribute('title')).toEqual('{{ kilobytes4 / 1024 }} MB');
     });
-    it('payload should be green', function() {
+    it("payload should be green", function() {
       var node = document.querySelector('#progress4 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(0, 128, 0)');
     });
   });
-  describe('Retranslation', function() {
+  describe("Retranslation", function() {
     var buffer;
     beforeEach(function() {
       var node = document.querySelector('#progress4');
@@ -136,13 +132,13 @@ describe('Example 4', function() {
     afterEach(function() {
       var node = document.querySelector('#progress4');
       node.innerHTML = buffer;
-      document.l10nData.kilobytes4 = 0;
+      document.l10nData['kilobytes4'] = 0;
     });
-    it('title should be "{{ kilobytes4 / 1024 }} MB"', function() {
+    it("title should be '{{ kilobytes4 / 1024 }} MB'", function() {
       var node = document.querySelector('#progress4 span');
       expect(node.getAttribute('title')).toEqual('{{ kilobytes4 / 1024 }} MB');
     });
-    it('payload should be green', function() {
+    it("payload should be green", function() {
       var node = document.querySelector('#progress4 span');
       var css = window.getComputedStyle(node);
       expect(css.getPropertyValue('color')).toEqual('rgb(0, 128, 0)');

@@ -1,4 +1,4 @@
-define(function (require) {
+define(function (require, exports, module) {
   'use strict';
 
   var L20n = require('../l20n');
@@ -21,7 +21,7 @@ define(function (require) {
 
   function bootstrap() {
     var headNode = document.head;
-    var data =
+    var data = 
       headNode.querySelector('script[type="application/l10n-data+json"]');
     if (data) {
       ctx.updateData(JSON.parse(data.textContent));
@@ -266,6 +266,7 @@ define(function (require) {
 
     l10nNode._l20nSourceNode = sourceNode;
     node.parentNode.replaceChild(l10nNode, node);
+    return;
   }
 
 
@@ -294,13 +295,13 @@ define(function (require) {
         var pathToParent = getPathTo(element.parentNode, context);
         return pathToParent + '/' + element.tagName + '[' + (index + 1) + ']';
       }
-      if (sibling.nodeType === TYPE_ELEMENT &&
+      if (sibling.nodeType === TYPE_ELEMENT && 
           sibling.tagName === element.tagName) {
         index++;
       }
     }
 
-    throw new Error('Can\'t find the path to element ' + element);
+    throw "Can't find the path to element " + element;
   }
 
   function getElementByPath(path, context) {

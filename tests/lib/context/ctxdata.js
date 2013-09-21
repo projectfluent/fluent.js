@@ -1,9 +1,8 @@
-var Context = process.env.L20N_COV ?
-  require('../../../build/cov/lib/l20n/context').Context :
-  require('../../../lib/l20n/context').Context;
+var Context = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/context').Context
+  : require('../../../lib/l20n/context').Context;
 
 function whenReady(ctx, callback) {
-  'use strict';
   ctx.addEventListener('ready', function onReady() {
     ctx.removeEventListener('ready', onReady);
     callback();
@@ -11,13 +10,6 @@ function whenReady(ctx, callback) {
 }
 
 describe('ctx.updateData', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
   var ctx = new Context();
   ctx.addResource('                                                           \
     <foo "{{ $foo }}">                                                        \
@@ -71,7 +63,7 @@ describe('ctx.updateData', function() {
     ctx.get('bar').should.equal('Bar');
   });
   it('update bar to a dict', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: {
         bar: 'BarBar'
       }
@@ -80,7 +72,7 @@ describe('ctx.updateData', function() {
     ctx.get('barBar').should.equal('BarBar');
   });
   it('add a member to bar', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: {
         baz: 'BarBaz'
       }
@@ -89,7 +81,7 @@ describe('ctx.updateData', function() {
     ctx.get('barBaz').should.equal('BarBaz');
   });
   it('remove bar.baz', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: {
         baz: undefined
       }
@@ -98,14 +90,14 @@ describe('ctx.updateData', function() {
     ctx.get('barBaz').should.equal('{{ $bar.baz }}');
   });
   it('update bar to a string', function() {
-    ctx.updateData({
-      bar: 'Bar'
+    ctx.updateData({ 
+      bar: "Bar"
     });
     ctx.get('foo').should.equal('Foo');
     ctx.get('bar').should.equal('Bar');
   });
   it('update bar to a dict again', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: {
         bar: 'BarBar',
         baz: 'BarBaz'
@@ -115,10 +107,10 @@ describe('ctx.updateData', function() {
     ctx.get('barBaz').should.equal('BarBaz');
   });
   it('update bar.baz to a dict', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: {
         baz: {
-          qux: 'BarBazQux'
+          qux: "BarBazQux"
         }
       }
     });
@@ -127,7 +119,7 @@ describe('ctx.updateData', function() {
     ctx.get('barBazQux').should.equal('BarBazQux');
   });
   it('remove bar.baz.qux', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: {
         baz: {
           qux: undefined
@@ -139,7 +131,7 @@ describe('ctx.updateData', function() {
     ctx.get('barBazQux').should.equal('{{ $bar.baz.qux }}');
   });
   it('remove bar', function() {
-    ctx.updateData({
+    ctx.updateData({ 
       bar: undefined
     });
     ctx.get('foo').should.equal('Foo');
@@ -151,13 +143,12 @@ describe('ctx.updateData', function() {
 });
 
 describe('ctx.get with ctxdata passed directly', function() {
-  'use strict';
   var ctx = new Context();
   ctx.updateData({
-    foo: 'Foo',
+    foo: "Foo",
     user: {
-      name: 'Bob',
-      gender: 'masculine'
+      name: "Bob",
+      gender: "masculine"
     }
   });
   ctx.addResource('                                                           \
@@ -198,8 +189,8 @@ describe('ctx.get with ctxdata passed directly', function() {
     ctx.get('userGender', { user: { name: 'Ben' } }).should.equal('masculine');
   });
   it('removes second-level members, but only locally', function() {
-    ctx.get('userName', {
-      user: {
+    ctx.get('userName', { 
+      user: { 
         name: undefined
       }
     }).should.equal('{{ $user.name }}');

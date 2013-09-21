@@ -1,19 +1,12 @@
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV ?
-  require('../../../build/cov/lib/l20n/compiler').Compiler :
-  require('../../../lib/l20n/compiler').Compiler;
+var Compiler = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/compiler').Compiler
+  : require('../../../lib/l20n/compiler').Compiler;
 
 var parser = new Parser();
 var compiler = new Compiler();
 
-describe('Expressions', function() {
-  'use strict';
-
-  // jsHint incorrectly claims function expressions on which the property
-  // is accessed just after its definition doesn't require parens;
-  // ignore this warning.
-  /* jshint -W068 */
-
+describe('Expressions', function(){
   var source, ast, env;
   beforeEach(function() {
     ast = parser.parse(source);
@@ -219,37 +212,37 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-      env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-      env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-      env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-      env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-      env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-      env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-      env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
   });
@@ -278,37 +271,37 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
   });
@@ -333,42 +326,42 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -393,42 +386,42 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -453,42 +446,42 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -513,42 +506,42 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -569,37 +562,37 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers or two strings/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers or two strings/);
     });
   });
@@ -616,42 +609,42 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -668,42 +661,42 @@ describe('Expressions', function() {
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -720,47 +713,47 @@ describe('Expressions', function() {
     });
     it('throws if the second argument is 0' , function() {
       (function() {
-        env.expr._call([[null, 1], [null, 0]]);
+      var value = env.expr._call([[null, 1], [null, 0]]);
       }).should.throw(/Division by zero/);
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -777,47 +770,47 @@ describe('Expressions', function() {
     });
     it('throws if the second argument is 0' , function() {
       (function() {
-        env.expr._call([[null, 1], [null, 0]]);
+      var value = env.expr._call([[null, 1], [null, 0]]);
       }).should.throw(/Modulo zero/);
     });
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two bools', function() {
       (function() {
-        env.expr._call([[null, true], [null, true]]);
+      var value = env.expr._call([[null, true], [null, true]]);
       }).should.throw(/takes two numbers/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two numbers/);
     });
   });
@@ -843,42 +836,42 @@ describe('Expressions', function() {
 
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are two numbers', function() {
       (function() {
-        env.expr._call([[null, 1], [null, 0]]);
+      var value = env.expr._call([[null, 1], [null, 0]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two booleans/);
     });
   });
@@ -904,42 +897,42 @@ describe('Expressions', function() {
 
     it('throws if the arguments are a string and a number', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 1]]);
+      var value = env.expr._call([[null, 'foo'], [null, 1]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a string and a bool', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, true]]);
+      var value = env.expr._call([[null, 'foo'], [null, true]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a string and a null', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, null]]);
+      var value = env.expr._call([[null, 'foo'], [null, null]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a number and a bool', function() {
       (function() {
-        env.expr._call([[null, 1], [null, true]]);
+      var value = env.expr._call([[null, 1], [null, true]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are a number and a null', function() {
       (function() {
-        env.expr._call([[null, 1], [null, null]]);
+      var value = env.expr._call([[null, 1], [null, null]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are two strings', function() {
       (function() {
-        env.expr._call([[null, 'foo'], [null, 'bar']]);
+      var value = env.expr._call([[null, 'foo'], [null, 'bar']]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are two numbers', function() {
       (function() {
-        env.expr._call([[null, 1], [null, 0]]);
+      var value = env.expr._call([[null, 1], [null, 0]]);
       }).should.throw(/takes two booleans/);
     });
     it('throws if the arguments are two nulls', function() {
       (function() {
-        env.expr._call([[null, null], [null, null]]);
+      var value = env.expr._call([[null, null], [null, null]]);
       }).should.throw(/takes two booleans/);
     });
   });
