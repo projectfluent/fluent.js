@@ -1,14 +1,14 @@
 <title "L20n example">
-<hello "Hello, world!">
+<hello "Hello,&nbsp;world!">
 
 
 /* ------------------------------------------------------------------------- */
 
 <l20n "L20n">
 <intro[$build] {
-  dev: "You're using a dev build of {{ l20n }} (with AMD modules).",
+  dev: "You're using a <em>dev</em> build of {{ l20n }} (with AMD modules).",
   prod: """
-    You're using a production-ready single-file version of {{ l20n }}
+    You're using a <em>production-ready single-file</em> version of {{ l20n }}
     (built with make build and found in dist/html).
   """,
  *unknown: "You're using an unknown version of {{ l20n }}."
@@ -49,7 +49,7 @@
 <langNego[$mode] {
   multi: """
     In order to test language negotiation, go to your
-    browser's {{ _options }} and change the Accept-Language
+    browser's {{ _options }} and change the <code>Accept-Language</code>
     header.  Try setting French (fr) or Polish (pl) as your
     first choice and observe the language fallback at work 
     in the web console.

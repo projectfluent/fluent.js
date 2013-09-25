@@ -82,6 +82,55 @@ Use the `data-l10n-id` attribute on a node to mark it as localizable.
 Notice that you don't have to put the text content in the HTML anymore (you 
 still can if you want to).  All content lives in the localization resources.
 
+A safe subset of HTML [elements][] (e.g. `em`, `sup`), [attributes][] (e.g.
+`title`) and entities can be used in translations.  In addition to the 
+pre-defined whitelists, any element found in the original source HTML is 
+allowed in the translation as well.  Consider the following source HTML:
+
+```html
+<p data-l10n-id="save">
+  <input type="submit">
+  <a href="/main" class="btn-cancel"></a>
+</p>
+```
+
+Assume the following malicious translation:
+
+```php
+<save """
+  <input value="Save" type="text"> or
+  <a href="http://myevilwebsite.com"
+     onclick="alert('pwnd!')"
+     title="Back to the homepage">cancel</a>.
+""">
+```
+
+The result will be:
+
+```html
+<p data-l10n-id="back">
+  <input value="Save" type="submit"> or
+  <a href="/main" class="btn-cancel"
+     title="Back to the homepage">cancel</a>.
+</p>
+```
+
+The `input` element is not on the default whitelist but since it's present in 
+the source HTML, it is also allowed in the translation.  The `value` attribute 
+is allowed on `input` elements, but `type` is not.  Similarly, `href` and 
+`onclick` attributes are not allowed in translations and they are not inserted 
+in the final DOM.  However, the `title` attribute is safe.
+
+It is important to note that applying translations doesn't replace DOM 
+elements, but only modifies their text nodes and their attributes.  The 
+limitation of the current implementation is that it is yet not possible to 
+reorder elements in the translation (things may break if you try).  See [bug 
+922576][].
+
+[bug 922576]: https://bugzilla.mozilla.org/show_bug.cgi?id=922576
+[elements]: http://www.w3.org/html/wg/drafts/html/CR/text-level-semantics.html#text-level-semantics
+[attributes]: http://www.w3.org/html/wg/drafts/html/CR/dom.html#the-translate-attribute
+
 When all DOM nodes are localized, `document` will fire a `DocumentLocalized` 
 event.
 
