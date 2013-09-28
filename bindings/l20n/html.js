@@ -30,7 +30,7 @@ define(function (require) {
     if (scripts.length) {
       for (var i = 0; i < scripts.length; i++) {
         if (scripts[i].hasAttribute('src')) {
-          ctx.linkResource(scripts[i].getAttribute('src'));
+          ctx.linkResource(scripts[i].src);
         } else {
           ctx.addResource(scripts[i].textContent);
         }
@@ -40,7 +40,7 @@ define(function (require) {
       var link = headNode.querySelector('link[rel="localization"]');
       if (link) {
         // XXX add errback
-        loadManifest(link.getAttribute('href'));
+        loadManifest(link.href);
       } else {
         console.warn('L20n: No resources found. (Put them above l20n.js.)');
       }
