@@ -202,11 +202,11 @@ describe('Primitives:', function() {
         env.missing.getString();
       }).should.throw(/Cannot get property of a string: missing/);
     });
-    // see Compiler:StringLiteral
+    // see Compiler:propertyExpression
     it('throws when trying to access an "undefined" property of a string member', function(){
       (function() {
         env.undef.getString({ undef: undefined });
-      }).should.throw(/Cannot get property of a string: undefined/);
+      }).should.throw(/Property name must evaluate to a string/);
     });
   });
   
