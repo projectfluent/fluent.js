@@ -260,7 +260,7 @@ define(function (require) {
   // which third-party code might have created references (e.g. two-way 
   // bindings in MVC frameworks).
   function overlayElement(sourceElement, translationElement) {
-    var result = new DocumentFragment();
+    var result = document.createDocumentFragment();
 
     var childElement;
     while (childElement = sourceElement.children[0]) {
