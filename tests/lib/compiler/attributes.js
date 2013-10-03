@@ -27,27 +27,16 @@ describe('Attributes', function() {
          attr: "An attribute"                                                 \
         >                                                                     \
         <getAttr "{{ foo::missing }}">                                        \
-        <getAttrOfAttr "{{ foo::attr::invalid }}">                            \
         <getPropOfAttr "{{ foo::attr.missing }}">                             \
         <getPropOfMissing "{{ foo::missing.another }}">                       \
         <getAttrOfParen "{{ (foo::attr)::invalid }}">                         \
         <getAttrOfMissing "{{ (foo::missing)::invalid }}">                    \
-                                                                              \
-        <bar {                                                                \
-          bar: "Bar"                                                          \
-        }>                                                                    \
-        <getAttrOfMember "{{ bar.bar::invalid }}">                            \
       ';
     });
     it('throws if the attribute does not exist', function(){
       (function() {
         env.getAttr.getString();
       }).should.throw(/has no attribute missing/);
-    });
-    it('throws if the syntax is not valid (attr of an attr)', function(){
-      (function() {
-        env.getAttrOfAttr.getString();
-      }).should.throw(/Malformed string/);
     });
     it('throws when trying to get a property of a string attribute', function(){
       (function() {
@@ -68,11 +57,6 @@ describe('Attributes', function() {
       (function() {
         env.getAttrOfMissing.getString();
       }).should.throw(/has no attribute missing/);
-    });
-    it('throws if the syntax is not valid (attr of a hash member)', function(){
-      (function() {
-        env.getAttrOfMember.getString();
-      }).should.throw(/Malformed string/);
     });
   });
 
@@ -95,10 +79,10 @@ describe('Attributes', function() {
       entity.attributes.attrComplex.should.equal('An attribute of Foo');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
-    it('is detected to be non-complex (simple)', function(){
+    it('is detected to be non-complex', function(){
       env.foo.attributes.attr.value.should.be.a('string');
     });
-    it('is detected to be maybe-complex', function(){
+    it('is detected to be complex', function(){
       env.foo.attributes.attrComplex.value.should.be.a('function');
     });
     it('can be accessed from another entity ', function(){

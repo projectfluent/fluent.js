@@ -3,7 +3,7 @@ var Compiler = process.env.L20N_COV ?
   require('../../../build/cov/lib/l20n/compiler').Compiler :
   require('../../../lib/l20n/compiler').Compiler;
 
-var parser = new Parser();
+var parser = new Parser(true);
 var compiler = new Compiler();
 
 describe('Hash', function() {
@@ -29,7 +29,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -78,7 +78,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -126,7 +126,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -167,7 +167,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -208,7 +208,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -249,7 +249,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -298,7 +298,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -339,7 +339,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';
@@ -391,7 +391,7 @@ describe('Hash', function() {
         }>                                                                    \
         <plain "{{ brandName }}">                                             \
         <property "{{ brandName.masculine }}">                                \
-        <computed "{{ brandName[\\"masculine\\"] }}">                         \
+        <computed "{{ brandName[\'masculine\'] }}">                           \
         <missing "{{ brandName.missing }}">                                   \
         <missingTwice "{{ brandName.missing.another }}">                      \
       ';

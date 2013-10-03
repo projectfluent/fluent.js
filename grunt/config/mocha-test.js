@@ -3,11 +3,11 @@
 var insecure = require('../var/insecure');
 
 var src = [
-  'tests/lib/*.js',
+  'tests/lib/parser/*.js',
   'tests/lib/context/*.js',
   'tests/lib/compiler/*.js',
   'tests/integration/*.js',
-].concat(insecure ? ['tests/lib/compiler/insecure/*.js'] : []);
+].concat(insecure ? ['tests/lib/*/insecure/*.js'] : []);
 
 module.exports = {
   dot: {

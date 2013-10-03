@@ -34,7 +34,7 @@ describe('Primitives:', function() {
         }>                                                                    \
       ';
     });
-    it('returns the value in a complex string', function(){
+    it('returns the value in the placeable', function(){
       env.one.getString().should.equal('1');
     });
     it('throws when trying to access a property of a number', function(){
@@ -106,8 +106,8 @@ describe('Primitives:', function() {
         <foo "Foo">                                                           \
         <fooMissing "{{ foo.missing }} ">                                     \
         <fooLength "{{ foo.length }} ">                                       \
-        <literalMissing "{{ \\"string\\".missing }} ">                        \
-        <literalLength "{{ \\"string\\".length }} ">                          \
+        <literalMissing "{{ \'string\'.missing }} ">                          \
+        <literalLength "{{ \'string\'.length }} ">                            \
         <literalIndex["string".missing] {                                     \
           key: "value"                                                        \
         }>                                                                    \
@@ -118,7 +118,7 @@ describe('Primitives:', function() {
       value.should.equal('Foo');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
-    it('is detected to be non-complex (simple)', function(){
+    it('is detected to be non-complex', function(){
       env.foo.value.should.be.a('string');
     });
     it('throws when trying to access a property of a string', function(){
@@ -153,6 +153,8 @@ describe('Primitives:', function() {
       source = '                                                              \
         <foo "Foo">                                                           \
         <bar "{{ foo }} Bar">                                                 \
+        <barMissing "{{ bar.missing }} ">                                     \
+        <barLength "{{ bar.length }} ">                                       \
         <baz "{{ missing }}">                                                 \
         <quux "{{ foo.missing }} ">                                           \
       ';
@@ -162,7 +164,7 @@ describe('Primitives:', function() {
       value.should.equal('Foo Bar');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
-    it('is detected to be maybe-complex', function(){
+    it('is detected to be complex', function(){
       env.bar.value.should.be.a('function');
     });
     it('throws when the referenced entity cannot be found', function(){
@@ -192,7 +194,7 @@ describe('Primitives:', function() {
       var value = env.bar.getString();
       value.should.equal('Foo');
     });
-    it('is not detected to be non-complex (simple)', function(){
+    it('is not detected to be non-complex', function(){
       env.bar.value.should.be.a('function');
     });
     it('throws when trying to access a property of a string member', function(){
@@ -247,7 +249,7 @@ describe('Primitives:', function() {
       value.should.equal('Bar');
     });
     // Bug 817610 - Optimize a fast path for String entities in the Compiler
-    it('is detected to be non-complex (simple)', function(){
+    it('is detected to be non-complex', function(){
       env.foo.value.should.be.a('function');
     });
   });
