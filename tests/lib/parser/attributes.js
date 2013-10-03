@@ -67,6 +67,14 @@ describe('Example', function() {
   });
 });
 describe('Errors', function() {
+  // Strict mode has to be disabled since it disallows access
+  // to arguments objects of other functions.
+  /* jshint strict: false */
+
+  // jsHint incorrectly claims function expressions on which the property
+  // is accessed just after its definition doesn't require parens;
+  // ignore this warning.
+  /* jshint -W068 */
   var parser;
   beforeEach(function() {
     parser = new Parser(true);
