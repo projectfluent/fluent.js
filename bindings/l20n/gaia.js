@@ -1,19 +1,17 @@
 define(function (require) {
   'use strict';
 
+  var DEBUG = false;
+
   var L20n = require('../l20n');
   var io = require('./platform/io');
 
-  var localizeHandler;
-  var ctx = L20n.getContext(document.location.host);
-
-  // http://www.w3.org/International/questions/qa-scripts
-  // XXX: bug 884308
-  // each localization should decide which direction it wants to use
-  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
-
   // absolute URLs start with a slash or contain a colon (for schema)
   var reAbsolute = /^\/|:/;
+
+  // http://www.w3.org/International/questions/qa-scripts
+  // XXX: Bug 884308: this should be defined by each localization independently
+  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
 
   var whitelist = {
     elements: [
@@ -38,90 +36,40 @@ define(function (require) {
     }
   };
 
+  // Start-up logic (pre-bootstrap)
+  // =========================================================================
+
+  var ctx = L20n.getContext(document.location.host);
+  bindPublicAPI(ctx);
+
+  var localizeHandler;
   var documentLocalized = false;
 
-  bootstrap();
-
-  function bootstrap() {
-    var headNode = document.head;
-    var data =
-      headNode.querySelector('script[type="application/l10n-data+json"]');
-    if (data) {
-      ctx.updateData(JSON.parse(data.textContent));
-    }
-    var scripts = headNode.querySelectorAll('script[type="application/l20n"]');
-    if (scripts.length) {
-      for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].hasAttribute('src')) {
-          ctx.linkResource(scripts[i].getAttribute('src'));
-        } else {
-          ctx.addResource(scripts[i].textContent);
-        }
-      }
-      ctx.requestLocales();
-    } else {
-      var metaLoc = headNode.querySelector('meta[name="locales"]');
-      var metaDefLoc = headNode.querySelector('meta[name="default_locale"]');
-      var metaRes = headNode.querySelector('meta[name="resources"]');
-      if (metaLoc && metaDefLoc && metaRes) {
-        setupCtxFromManifest({
-          'locales': metaLoc.getAttribute('content').split(',')
-                            .map(String.trim),
-          'default_locale': metaDefLoc.getAttribute('content'),
-          'resources': metaRes.getAttribute('content').split('|')
-                              .map(String.trim)
-        });
-      } else {
-        var link = headNode.querySelector('link[rel="localization"]');
-        if (link) {
-          // XXX add errback
-          loadManifest(link.getAttribute('href'));
-        } else {
-          console.warn('L20n: No resources found. (Put them above l20n.js.)');
-        }
-      }
-    }
-
-    if (document.readyState !== 'loading') {
-      collectNodes();
-    } else {
-      document.addEventListener('readystatechange', collectNodes);
-    }
-    bindPublicAPI();
+  // if the DOM is loaded, bootstrap now to fire 'DocumentLocalized'
+  if (document.readyState === 'complete') {
+    window.setTimeout(bootstrap);
+  } else {
+    // or wait for the DOM to be interactive to try to pretranslate it 
+    // using the inline resources
+    waitFor('interactive', bootstrap);
   }
 
-  function collectNodes() {
-    var nodes = getNodes(document.body);
-    localizeHandler = ctx.localize(nodes.ids, function(l10n) {
-      if (!nodes) {
-        nodes = getNodes(document.body);
-      }
-      for (var i = 0; i < nodes.nodes.length; i++) {
-        translateNode(nodes.nodes[i],
-                      nodes.ids[i],
-                      l10n.entities[nodes.ids[i]]);
-      }
-
-      // 'locales' in l10n.reason means that localize has been
-      // called because of locale change
-      if ('locales' in l10n.reason && l10n.reason.locales.length) {
-        setDocumentLanguage(l10n.reason.locales[0]);
-      }
-
-      nodes = null;
-      if (!documentLocalized) {
-        documentLocalized = true;
-        fireLocalizedEvent();
+  function waitFor(state, callback) {
+    if (document.readyState === state) {
+      return callback();
+    }
+    document.addEventListener('readystatechange', function() {
+      if (document.readyState === state) {
+        callback();
       }
     });
-
-    // TODO this might fail; silence the error
-    document.removeEventListener('readystatechange', collectNodes);
   }
 
-  function bindPublicAPI() {
-    ctx.addEventListener('error', console.error.bind(console));
-    ctx.addEventListener('warning', console.warn.bind(console));
+  function bindPublicAPI(ctx) {
+    if (DEBUG) {
+      ctx.addEventListener('error', console.error.bind(console));
+      ctx.addEventListener('warning', console.warn.bind(console));
+    }
     ctx.localizeNode = function localizeNode(node) {
       var nodes = getNodes(node);
       var many = localizeHandler.extend(nodes.ids);
@@ -142,6 +90,62 @@ define(function (require) {
       }
     };
     document.l10n = ctx;
+  }
+
+
+  // Bootstrap: set up the context and call requestLocales()
+  // ==========================================================================
+
+  function bootstrap() {
+    var headNode = document.head;
+    var data =
+      headNode.querySelector('script[type="application/l10n-data+json"]');
+    if (data) {
+      ctx.updateData(JSON.parse(data.textContent));
+    }
+
+    var metaLoc = headNode.querySelector('meta[name="locales"]');
+    var metaDefLoc = headNode.querySelector('meta[name="default_locale"]');
+    var metaRes = headNode.querySelector('meta[name="resources"]');
+    if (metaLoc && metaDefLoc && metaRes) {
+      setupCtxFromManifest({
+        'locales': metaLoc.getAttribute('content').split(',')
+                          .map(String.trim),
+        'default_locale': metaDefLoc.getAttribute('content'),
+        'resources': metaRes.getAttribute('content').split('|')
+                            .map(String.trim)
+      });
+      return collectNodes();
+    }
+
+    var scripts = headNode.querySelectorAll('script[type="application/l20n"]');
+    if (scripts.length) {
+      for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].hasAttribute('src')) {
+          ctx.linkResource(scripts[i].getAttribute('src'));
+        } else {
+          ctx.addResource(scripts[i].textContent);
+        }
+      }
+      ctx.requestLocales();
+      return collectNodes();
+    }
+
+    console.error('L20n: No resources found. (Put them above l20n.js.)');
+  }
+
+  function loadManifest(url) {
+    io.load(url, function(err, text) {
+      var manifest = parseManifest(text, url);
+      setupCtxFromManifest(manifest);
+    });
+  }
+
+  function parseManifest(text, url) {
+    var manifest = JSON.parse(text);
+    manifest.resources = manifest.resources.map(
+      relativeToManifest.bind(this, url));
+    return manifest;
   }
 
   function setDocumentLanguage(loc) {
@@ -197,20 +201,40 @@ define(function (require) {
     return dirs.join('/');
   }
 
-  function loadManifest(url) {
-    io.load(url, function manifestLoaded(err, text) {
-        var manifest = JSON.parse(text);
-        manifest.resources = manifest.resources.map(
-                               relativeToManifest.bind(this, url));
-        setupCtxFromManifest(manifest);
-      }
-    );
-  }
-
   function fireLocalizedEvent() {
     var event = document.createEvent('Event');
     event.initEvent('DocumentLocalized', false, false);
     document.dispatchEvent(event);
+  }
+
+
+  // DOM Localization
+  // ==========================================================================
+
+  function collectNodes() {
+    var nodes = getNodes(document);
+    localizeHandler = ctx.localize(nodes.ids, function localizeHandler(l10n) {
+      if (!nodes) {
+        nodes = getNodes(document);
+      }
+      for (var i = 0; i < nodes.nodes.length; i++) {
+        translateNode(nodes.nodes[i],
+                      nodes.ids[i],
+                      l10n.entities[nodes.ids[i]]);
+      }
+
+      // 'locales' in l10n.reason means that localize has been
+      // called because of locale change
+      if ('locales' in l10n.reason && l10n.reason.locales.length) {
+        setDocumentLanguage(l10n.reason.locales[0]);
+      }
+
+      nodes = null;
+      if (!documentLocalized) {
+        documentLocalized = true;
+        fireLocalizedEvent();
+      }
+    });
   }
 
   function getNodes(node) {
