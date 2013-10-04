@@ -19,12 +19,10 @@ var perfCommand;
 
 if (grunt.file.exists(reference)) {
   perfCommand = 'node ./tools/perf/run ' + benchmark + ' \
-        --progress \
         --sample ' + samplesize + ' \
         --compare ' + reference;
 } else {
   perfCommand = 'node ./tools/perf/run ' + benchmark + ' \
-        --progress \
         --sample ' + samplesize;
 }
 
