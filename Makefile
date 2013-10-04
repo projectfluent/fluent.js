@@ -50,12 +50,10 @@ reference:
 perf:
 ifneq ($(wildcard $(REFERENCE)),)
 	@$(NODE) ./tools/perf/run $(BENCHMARK) \
-        --progress \
         --sample $(SAMPLESIZE) \
         --compare $(REFERENCE)
 else
 	@$(NODE) ./tools/perf/run $(BENCHMARK) \
-        --progress \
         --sample $(SAMPLESIZE)
 endif
 
