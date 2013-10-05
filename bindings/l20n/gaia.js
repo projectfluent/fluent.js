@@ -303,21 +303,39 @@ define(function (require) {
   function overlayElement(sourceElement, translationElement) {
     var result = document.createDocumentFragment();
 
+    // take one node from translationElement at a time and check it against the 
+    // whitelist or try to match it with a corresponding element in the source
     var childElement;
-    while (childElement = sourceElement.children[0]) {
-      // for each child element, try to find a corresponding element in the 
-      // translation and 1) move all nodes preceding it into `result` and 2) 
-      // move the child element from `sourceElement` into `result` and modify 
-      // its text nodes and attributes (see `insertUntil` for details);
-      // the original child into `result` 
-      // XXX sadly, this assumes a specific order of child elements in the 
-      // transaltion; https://bugzil.la/922576
-      insertUntil(childElement, translationElement, result);
-    }
+    while (childElement = translationElement.childNodes[0]) {
+      translationElement.removeChild(childElement);
 
-    // also handle the nodes in `translationElement` which are directly before 
-    // the end of it
-    insertUntil(null, translationElement, result);
+      if (childElement.nodeType === Node.TEXT_NODE) {
+        result.appendChild(childElement);
+        continue;
+      }
+
+      var sourceChild = getElementOfType(sourceElement, childElement);
+      if (sourceChild) {
+        // there is a corresponding element in the source, let's use it
+        overlayElement(sourceChild, childElement);
+        result.appendChild(sourceChild);
+        continue;
+      }
+
+      if (isElementAllowed(childElement)) {
+        result.appendChild(childElement);
+        for (var k = 0, attr; attr = childElement.attributes[k]; k++) {
+          if (!isAttrAllowed(attr, childElement)) {
+            childElement.removeAttribute(attr.name);
+          }
+        }
+        continue;
+      }
+
+      // otherwise just take this child's textContent
+      var text = new Text(childElement.textContent);
+      result.appendChild(text);
+    }
 
     // clear `sourceElement` and append `result` which by this time contains 
     // `sourceElement`'s original children, overlayed with translation
@@ -337,50 +355,9 @@ define(function (require) {
     }
   }
 
-  function insertUntil(sourceChild, translationElement, result) {
-    var untilElement;
-    if (sourceChild) {
-      // try to find an element in the translation node corresponding to the 
-      // sourceChild in the source
-      untilElement = getElementOfType(translationElement, sourceChild,
-                                      getIndexOfType(sourceChild));
-    }
-    var child;
-    while (child = translationElement.childNodes[0]) {
-      if (child === untilElement) {
-        // we want to reuse the existing sourceChild instead of replacing it 
-        // with the translation element
-        overlayElement(sourceChild, translationElement.removeChild(child));
-        result.insertBefore(sourceChild, null);
-        // we've reached the untilElement, we're done
-        return;
-      } else if (!child.tagName) {
-        // it's a text node
-        result.insertBefore(translationElement.removeChild(child), null);
-      } else {
-        // XXX the whitelist should be amendable; https://bugzil.la/922573
-        if (whitelist.elements.indexOf(child.tagName.toLowerCase()) !== -1) {
-          // if it's one of the safe whitelisted elements
-          result.insertBefore(translationElement.removeChild(child), null);
-          for (var k = 0, attr; attr = child.attributes[k]; k++) {
-            if (!isAttrAllowed(attr, child)) {
-              child.removeAttribute(attr.name);
-            }
-          }
-        } else {
-          // otherwise just take this child's textContent
-          translationElement.removeChild(child);
-          var text = new Text(child.textContent);
-          result.insertBefore(text, null);
-        }
-      }
-    }
-    // no more children in the translation, but untilElement hasn't been found;
-    // remove the sourceChild from its parent;  the translation doesn't need 
-    // it, or is broken
-    if (sourceChild) {
-      sourceChild.parentNode.removeChild(sourceChild);
-    }
+  // XXX the whitelist should be amendable; https://bugzil.la/922573
+  function isElementAllowed(element) {
+    return whitelist.elements.indexOf(element.tagName.toLowerCase()) !== -1;
   }
 
   function isAttrAllowed(attr, element) {
@@ -409,22 +386,12 @@ define(function (require) {
     return false;
   }
 
-  function getIndexOfType(element) {
-    var index = 0;
-    var child;
-    while (child = element.previousElementSibling) {
-      if (child.tagName === element.tagName) {
-        index++;
-      }
-    }
-    return index;
-  }
-
   // ideally, we'd use querySelector(':scope > ELEMENT:nth-of-type(index)'),
   // but 1) :scope is not widely supported yet and 2) it doesn't work with 
   // DocumentFragments.  :scope is needed to query only immediate children
   // https://developer.mozilla.org/en-US/docs/Web/CSS/:scope
-  function getElementOfType(context, element, index) {
+  function getElementOfType(context, element) {
+    var index = getIndexOfType(element);
     var nthOfType = 0;
     for (var i = 0, child; child = context.children[i]; i++) {
       if (child.nodeType === Node.ELEMENT_NODE &&
@@ -436,6 +403,17 @@ define(function (require) {
       }
     }
     return null;
+  }
+
+  function getIndexOfType(element) {
+    var index = 0;
+    var child;
+    while (child = element.previousElementSibling) {
+      if (child.tagName === element.tagName) {
+        index++;
+      }
+    }
+    return index;
   }
 
   // same as exports = L20n;
