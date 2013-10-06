@@ -426,7 +426,14 @@ define(function (require, exports, module) {
   
   // localize an element as soon as ctx is ready
   function localizeElement(ctx, element, id, args) {
-    if (!element || !id) {
+    if (!element) {
+      return;
+    }
+
+    if (!id) {
+      element.removeAttribute('data-l10n-id');
+      element.removeAttribute('data-l10n-args');
+      setTextContent(element, '');
       return;
     }
 
