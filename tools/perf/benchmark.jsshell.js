@@ -4,6 +4,7 @@ var compiler = new L20n.Compiler();
 
 var code = read('./example.properties');
 var data = {
+  "brandShortName": "BRANDSHORTNAME",
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
   "linkSpeed": "LINKSPEED",
@@ -13,7 +14,7 @@ var data = {
   "device": "DEVICE",
   "code": "CODE",
   "app": "APP",
-  "size": "SIZE",
+  "size": 100,
   "unit": "UNIT",
   "list": "LIST",
   "level": "LEVEL",

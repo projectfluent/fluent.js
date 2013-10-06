@@ -10,6 +10,7 @@ var compiler = new Compiler();
 
 var code = fs.readFileSync(__dirname + '/example.properties').toString();
 var data = {
+  "brandShortName": "BRANDSHORTNAME",
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
   "linkSpeed": "LINKSPEED",
@@ -19,7 +20,7 @@ var data = {
   "device": "DEVICE",
   "code": "CODE",
   "app": "APP",
-  "size": "SIZE",
+  "size": 100,
   "unit": "UNIT",
   "list": "LIST",
   "level": "LEVEL",
