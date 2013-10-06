@@ -97,13 +97,6 @@ define(function (require, exports, module) {
       isPretranslated = true;
     });
     inline.registerLocales('en-US', langs);
-    inline.registerLocaleNegotiator(function(available, requested, defLoc) {
-      if (available.indexOf(requested[0]) === -1 || requested[0] === defLoc) {
-        return [defLoc];
-      } else {
-        return [requested[0], defLoc];
-      }
-    });
     inline.requestLocales(navigator.language);
     // XXX check if we actually negotiatied navigator.language (i.e. the 
     // corresponding <script> was present)?

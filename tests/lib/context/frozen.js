@@ -59,11 +59,6 @@ describe('A frozen, non-ready context', function() {
       ctx.registerLocales('en-US');
     }).should.throw(/Context is frozen/);
   })
-  it('should throw on registerLocaleNegotiator', function() {
-    (function(){
-      ctx.registerLocaleNegotiator(function() {});
-    }).should.throw(/Context is frozen/);
-  })
   it('should throw on requestLocales', function() {
     (function(){
       ctx.requestLocales('en-US');

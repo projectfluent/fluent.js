@@ -35,14 +35,13 @@ describe('Language negotiation with registerLocales', function() {
       return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('csb', 'pl', 'de');
+    ctx.requestLocales('pl', 'de');
   });
 
   it('sets the correct fallback chain', function() {
-    ctx.supportedLocales.should.have.property('length', 3);
+    ctx.supportedLocales.should.have.property('length', 2);
     ctx.supportedLocales[0].should.equal('pl');
-    ctx.supportedLocales[1].should.equal('de');
-    ctx.supportedLocales[2].should.equal('en-US');
+    ctx.supportedLocales[1].should.equal('en-US');
   });
 });
 
@@ -56,23 +55,21 @@ describe('supportedLocales', function() {
       return __dirname + '/fixtures/' + locale + '.properties';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
-    ctx.requestLocales('csb', 'pl', 'de');
+    ctx.requestLocales('pl', 'de');
   });
 
   it('cannot be overwritten', function() {
     ctx.supportedLocales = 42;
-    ctx.supportedLocales.should.have.property('length', 3);
+    ctx.supportedLocales.should.have.property('length', 2);
     ctx.supportedLocales[0].should.equal('pl');
-    ctx.supportedLocales[1].should.equal('de');
-    ctx.supportedLocales[2].should.equal('en-US');
+    ctx.supportedLocales[1].should.equal('en-US');
   });
 
   it('cannot be deleted', function() {
     delete ctx.supportedLocales;
-    ctx.supportedLocales.should.have.property('length', 3);
+    ctx.supportedLocales.should.have.property('length', 2);
     ctx.supportedLocales[0].should.equal('pl');
-    ctx.supportedLocales[1].should.equal('de');
-    ctx.supportedLocales[2].should.equal('en-US');
+    ctx.supportedLocales[1].should.equal('en-US');
   });
 
   it('cannot be redefined', function() {
@@ -98,30 +95,6 @@ describe('Language negotiator', function() {
   it('is Intl.prioritizeLocales by default', function(done) {
     whenReady(ctx, function() {
       ctx.get('foo').should.equal('Foo pl');
-      done();
-    });
-    ctx.requestLocales('pl');
-  });
-  it('can be overridden', function(done) {
-    ctx.registerLocaleNegotiator(function(available, requested, def) {
-      return ['de'];
-    });
-    whenReady(ctx, function() {
-      ctx.get('foo').should.equal('Foo de');
-      done();
-    });
-    ctx.requestLocales('pl');
-  });
-  // Bug 908777 - Allow locale negotiator to be asynchronous
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=908777
-  it('can be asynchronous', function(done) {
-    ctx.registerLocaleNegotiator(function(available, requested, def, cb) {
-      setTimeout(function() {
-        cb(['de']);
-      });
-    });
-    whenReady(ctx, function() {
-      ctx.get('foo').should.equal('Foo de');
       done();
     });
     ctx.requestLocales('pl');
