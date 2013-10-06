@@ -432,7 +432,7 @@ define(function (require, exports, module) {
 
     // set the data-l10n-[id|args] attributes
     element.setAttribute('data-l10n-id', id);
-    if (args) {
+    if (args && typeof args === 'object') {
       element.setAttribute('data-l10n-args', JSON.stringify(args));
     } else {
       element.removeAttribute('data-l10n-args');
