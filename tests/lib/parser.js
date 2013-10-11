@@ -86,42 +86,37 @@ describe('Example', function() {
     }  
   });
   it('complex string', function() {
-    var ast = parser.parseString("test {{ var }} test2");
-    ast.content[0].content.should.equal('test ');
-    ast.content[1].name.should.equal('var');
-    ast.content[2].content.should.equal(' test2');
+    var ast = parser.parse('test = test {{ var }} test2');
+    ast.body['test'].value.content[0].content.should.equal('test ');
+    ast.body['test'].value.content[1].name.should.equal('var');
+    ast.body['test'].value.content[2].content.should.equal(' test2');
 
-    var ast = parser.parseString("test \\\" {{ var }} test2");
-    ast.content[0].content.should.equal('test " ');
-    ast.content[1].name.should.equal('var');
-    ast.content[2].content.should.equal(' test2');
+    var ast = parser.parse("test = test \\\" {{ var }} test2");
+    ast.body['test'].value.content[0].content.should.equal('test " ');
+    ast.body['test'].value.content[1].name.should.equal('var');
+    ast.body['test'].value.content[2].content.should.equal(' test2');
   });
   it('complex string errors', function() {
     var strings = [
-      ['test {{ var ', 'Expected "}}"'],
-      ['test {{ var } ', 'Expected "}}"'],
-      ['test {{ var } }', 'Expected "}}"'],
-      ['test {{ var }} {{', 'Expected "}}"'],
-      ['test {{ var }} {{}', 'Expected "}}"'],
-      ['test {{ {{ }}', 'Expected "}}"'],
-      ['test {{ {{ } }}', 'Expected "}}"'],
-      ['test {{ {{ } }}}', 'Expected "}}"'],
-      ['test {{{ }', 'Expected "}}"'],
+      ['test = test {{ var ', 'Expected "}}"'],
+      ['test = test {{ var } ', 'Expected "}}"'],
+      ['test = test {{ var } }', 'Expected "}}"'],
+      ['test = test {{ var }} {{', 'Expected "}}"'],
+      ['test = test {{ var }} {{}', 'Expected "}}"'],
+      ['test = test {{ {{ }}', 'Expected "}}"'],
+      ['test = test {{ {{ } }}', 'Expected "}}"'],
+      ['test = test {{ {{ } }}}', 'Expected "}}"'],
+      ['test = test {{{ }', 'Expected "}}"'],
     ];
+
+    var errorsThrown = 0;
+    parser.addEventListener('error', function() {
+      errorsThrown += 1;
+    });
+
     for (var i in strings) {
-      (function() {
-        var ast = parser.parseString(strings[i][0]);
-      }).should.throw(strings[i][1]);
-    }  
-  });
-  describe('detecting non-complex (simple) strings', function() {
-    it('should return not-complex for simple strings', function() {
-      var ast = parser.parse("id = string");
-      should.not.exist(ast.body['id'].maybeComplex);
-    });
-    it('should return maybe-complex for complex strings', function() {
-      var ast = parser.parse("id = {{ reference }}");
-      ast.body['id'].value.maybeComplex.should.equal(true);
-    });
+      var ast = parser.parse(strings[i][0]);
+    }
+    errorsThrown.should.equal(strings.length);
   });
 });

@@ -61,11 +61,6 @@ describe('Primitives:', function(){
         env.baz.getString();
       }).should.throw(/unknown entry/);
     });
-    it('throws when the value is not valid syntax', function(){
-      (function() {
-        env.qux.getString();
-      }).should.throw(/malformed string/i);
-    });
   });
   
   describe('Complex string referencing an entity with null value', function(){
