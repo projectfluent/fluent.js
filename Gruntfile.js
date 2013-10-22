@@ -75,7 +75,6 @@ module.exports = function (grunt) {
     'clean',
     'compile:html',
     'uglify:html',
-    'docco',
   ]);
 
   grunt.registerTask('gh-pages', [
