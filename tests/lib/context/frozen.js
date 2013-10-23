@@ -16,14 +16,14 @@ describe('A non-frozen context', function() {
     ctx.addResource('<dummy "Dummy">');
   });
 
-  it('should throw on get', function() {
+  it('should throw on getSync', function() {
     (function(){
-      ctx.get('dummy');
+      ctx.getSync('dummy');
     }).should.throw(/Context not ready/);
   });
-  it('should throw on getEntity', function() {
+  it('should throw on getEntitySync', function() {
     (function(){
-      ctx.getEntity('dummy');
+      ctx.getEntitySync('dummy');
     }).should.throw(/Context not ready/);
   });
   it('should not throw on localize', function() {
@@ -63,14 +63,14 @@ describe('A frozen, non-ready context', function() {
       ctx.requestLocales();
     }).should.throw(/Context not ready/);
   });
-  it('should throw on get', function() {
+  it('should throw on getSync', function() {
     (function(){
-      ctx.get('dummy');
+      ctx.getSync('dummy');
     }).should.throw(/Context not ready/);
   });
-  it('should throw on getEntity', function() {
+  it('should throw on getEntitySync', function() {
     (function(){
-      ctx.getEntity('dummy');
+      ctx.getEntitySync('dummy');
     }).should.throw(/Context not ready/);
   });
   it('should not throw on localize', function() {
@@ -124,24 +124,24 @@ describe('A frozen, ready context', function() {
       ctx.linkResource('./fixtures/en-US.lol');
     }).should.throw(/Context is frozen/);
   });
-  it('should not throw on get of a known entity', function() {
+  it('should not throw on getSync of a known entity', function() {
     (function(){
-      ctx.get('dummy');
+      ctx.getSync('dummy');
     }).should.not.throw();
   });
-  it('should not throw on get of an unknown entity', function() {
+  it('should not throw on getSync of an unknown entity', function() {
     (function(){
-      ctx.get('missing');
+      ctx.getSync('missing');
     }).should.not.throw();
   });
-  it('should not throw on getEntity of a known entity', function() {
+  it('should not throw on getEntitySync of a known entity', function() {
     (function(){
-      ctx.getEntity('dummy');
+      ctx.getEntitySync('dummy');
     }).should.not.throw();
   });
-  it('should not throw on getEntity of an unknown entity', function() {
+  it('should not throw on getEntitySync of an unknown entity', function() {
     (function(){
-      ctx.getEntity('missing');
+      ctx.getEntitySync('missing');
     }).should.not.throw();
   });
   it('should not throw on localize', function() {

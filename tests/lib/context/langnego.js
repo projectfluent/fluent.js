@@ -112,7 +112,7 @@ describe('Language negotiator', function() {
 
   it('is Intl.prioritizeLocales by default', function(done) {
     whenReady(ctx, function() {
-      ctx.get('foo').should.equal('Foo pl');
+      ctx.getSync('foo').should.equal('Foo pl');
       done();
     });
     ctx.requestLocales('pl');
@@ -122,7 +122,7 @@ describe('Language negotiator', function() {
       return ['de'];
     });
     whenReady(ctx, function() {
-      ctx.get('foo').should.equal('Foo de');
+      ctx.getSync('foo').should.equal('Foo de');
       done();
     });
     ctx.requestLocales('pl');
@@ -136,7 +136,7 @@ describe('Language negotiator', function() {
       });
     });
     whenReady(ctx, function() {
-      ctx.get('foo').should.equal('Foo de');
+      ctx.getSync('foo').should.equal('Foo de');
       done();
     });
     ctx.requestLocales('pl');

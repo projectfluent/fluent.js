@@ -64,7 +64,8 @@ ctx.requestLocales();
 When you freeze the context by calling `requestLocales`, the resource files 
 will be retrieved, parsed and compiled.  You can listen to the `ready` event 
 (emitted by the `Context` instance when all the resources have been compiled) 
-and use `ctx.get` and `ctx.getEntity` to get translations synchronously.
+and use `ctx.getSync` and `ctx.getEntitySync` to get translations 
+synchronously.
 
 Alternatively, you can register callbacks to execute when the context is ready 
 (or when globals change and translations need to be updated) with 

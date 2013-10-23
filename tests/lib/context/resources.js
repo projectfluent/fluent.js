@@ -56,12 +56,12 @@ describe('addResource without registerLocales', function() {
   });
 
   it('should add the first resource to i-default', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'i-default');
   });
   it('should add the second resource to i-default', function() {
-    var val = ctx.getEntity('bar');
+    var val = ctx.getEntitySync('bar');
     val.value.should.equal('Bar');
     val.should.have.property('locale', 'i-default');
   });
@@ -79,7 +79,7 @@ describe('addResource with registerLocales', function() {
   });
 
   it('should add to pl', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'pl');
   });
@@ -88,7 +88,7 @@ describe('addResource with registerLocales', function() {
     ctx.requestLocales('de');
   });
   it('should add to en-US', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'de');
   });
@@ -105,7 +105,7 @@ describe('linkResource(String) without registerLocales', function() {
   });
 
   it('should add to i-default', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'i-default');
   });
@@ -123,7 +123,7 @@ describe('linkResource(String) with registerLocales', function() {
   });
 
   it('should add to pl', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'pl');
   });
@@ -132,7 +132,7 @@ describe('linkResource(String) with registerLocales', function() {
     ctx.requestLocales('de');
   });
   it('should add to en-US', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo');
     val.should.have.property('locale', 'de');
   });
@@ -151,7 +151,7 @@ describe('linkResource(Function) without registerLocales', function() {
   });
 
   it('should add to i-default', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo i');
     val.should.have.property('locale', 'i-default');
   });
@@ -172,7 +172,7 @@ describe('linkResource(Function) with registerLocales', function() {
   });
 
   it('should add to pl', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo pl');
     val.should.have.property('locale', 'pl');
   });
@@ -181,7 +181,7 @@ describe('linkResource(Function) with registerLocales', function() {
     ctx.requestLocales('en-US');
   });
   it('should add to en-US', function() {
-    var val = ctx.getEntity('foo');
+    var val = ctx.getEntitySync('foo');
     val.value.should.equal('Foo en-US');
     val.should.have.property('locale', 'en-US');
   });

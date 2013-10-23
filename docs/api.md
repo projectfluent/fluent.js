@@ -10,7 +10,8 @@ ctx.requestLocales();
 When you freeze the context by calling `requestLocales`, the resource files 
 will be retrieved, parsed and compiled.  You can listen to the `ready` event 
 (emitted by the `Context` instance when all the resources have been compiled) 
-and use `ctx.get` and `ctx.getEntity` to get translations synchronously.
+and use `ctx.getSync` and `ctx.getEntitySync` to get translations 
+synchronously.
 
 Alternatively, you can register callbacks to execute when the context is ready 
 (or when globals change and translations need to be updated) with 
@@ -258,7 +259,7 @@ will make the internally-stored context data look like this:
 ```
 
 
-### ctx.get(id: String, ctxdata: Object?)
+### ctx.getSync(id: String, ctxdata: Object?)
 
 Retrieve a string value of an entity called `id`.
 
@@ -268,7 +269,7 @@ extend the context data available for the evaluation of this entity.
 Returns a string.
 
 
-### ctx.getEntity(id: String, ctxdata: Object?)
+### ctx.getEntitySync(id: String, ctxdata: Object?)
 
 Retrieve an object with data evaluated from an entity called `id`.
 
@@ -307,7 +308,7 @@ translation of any of the entities changes.
 The callback function is passed an `l10n` object with the following properties:
 
   - `entities`: an object whose keys are the identifiers and value are the 
-    entity objects as returned by `getEntity`,
+    entity objects as returned by `getEntitySync`,
   - `reason`: an object with the reason why `callback` was invoked.
 
 The `reason` object can be:
