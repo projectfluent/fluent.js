@@ -1,11 +1,11 @@
 /* -*- Mode: js; js-indent-level: 2; indent-tabs-mode: nil -*- */
 /* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 
-(function(window, undefined) {
+(function (window, undefined) {
 
 function define(name, payload) {
   define.modules[name] = payload;
-};
+}
 
 // un-instantiated modules
 define.modules = {};
@@ -18,6 +18,7 @@ function normalize(path) {
   for (var i = 0; i < parts.length; i++) {
     if (parts[i] == '.') {
       // don't add it to `normalized`
+      continue;
     } else if (parts[i] == '..') {
       normalized.pop();
     } else {
@@ -41,17 +42,17 @@ function req(leaf, name) {
     return define.exports[name];
   }
   if (!(name in define.modules)) {
-    throw new Error("Module not defined: " + name);
+    throw new Error('Module not defined: ' + name);
   }
 
   var module = define.modules[name];
-  if (typeof module == "function") {
+  if (typeof module == 'function') {
     var exports = {};
-    var reply = module(req.bind(null, name), exports, { id: name, uri: "" });
+    var reply = module(req.bind(null, name), exports, { id: name, uri: '' });
     module = (reply !== undefined) ? reply : exports;
   }
   return define.exports[name] = module;
-};
+}
 
 // for the top-level required modules, leaf is null
 var require = req.bind(null, null);
