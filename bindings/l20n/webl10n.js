@@ -477,5 +477,3 @@ define(function (require, exports, module) {
 
   return L20n;
 });
-
-
