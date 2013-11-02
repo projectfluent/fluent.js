@@ -1,40 +1,22 @@
 define(function (require, exports, module) {
   'use strict';
 
-  var DEBUG = false;
 
   var L20n = require('../l20n');
-  var io = require('./platform/io');
 
   var ctx;
   var isBootstrapped = false;
-  var isPretranslated;
-  var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
-  var buildMessages;
+  var isPretranslated = false;
 
-  function waitFor(state, callback) {
-    if (document.readyState === state) {
-      return callback();
-    }
-    document.addEventListener('readystatechange', function() {
-      if (document.readyState === state) {
-        callback();
-      }
-    });
-  }
 
   if (typeof(document) === 'undefined') {
     // during build time, we don't bootstrap until mozL10n.language.code is set
     Object.defineProperty(navigator, 'mozL10n', {
       get: function() {
         isBootstrapped = false;
-        buildMessages = {
-          error: [],
-          warn: []
-        };
         ctx = L20n.getContext();
-        ctx.addEventListener('error', addMessage.bind(null, 'error'));
-        ctx.addEventListener('warning', addMessage.bind(null, 'warn'));
+        ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
+        ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
         return createPublicAPI(ctx);
       },
       enumerable: true
@@ -62,6 +44,18 @@ define(function (require, exports, module) {
         waitFor('interactive', pretranslate);
       }
     }
+  }
+
+  function waitFor(state, callback) {
+    if (document.readyState === state) {
+      callback();
+      return;
+    }
+    document.addEventListener('readystatechange', function l10n_onrsc() {
+      if (document.readyState === state) {
+        callback();
+      }
+    });
   }
 
   function pretranslate() {
@@ -145,7 +139,8 @@ define(function (require, exports, module) {
       return;
     }
 
-    for (var i = 0; i < iniLinks.length; i++) {
+    var io = require('./platform/io');
+    for (i = 0; i < iniLinks.length; i++) {
       var url = iniLinks[i].getAttribute('href');
       io.load(url, iniLoaded.bind(null, url));
     }
@@ -154,6 +149,7 @@ define(function (require, exports, module) {
       if (err) {
         throw err;
       }
+
       var ini = parseINI(text, url);
       availableLocales.push.apply(availableLocales, ini.locales);
       for (var i = 0; i < ini.resources.length; i++) {
@@ -161,7 +157,7 @@ define(function (require, exports, module) {
         ctx.linkResource(uri.replace.bind(uri, '{{locale}}'));
       }
       iniToLoad--;
-      if (iniToLoad == 0) {
+      if (iniToLoad === 0) {
         ctx.registerLocales('en-US', availableLocales);
         ctx.requestLocales(forcedLocale || navigator.language);
       }
@@ -179,14 +175,13 @@ define(function (require, exports, module) {
   }
 
   var patterns = {
-    ini: {
-      section: /^\s*\[(.*)\]\s*$/,
-      import: /^\s*@import\s+url\((.*)\)\s*$/i
-    }
+    section: /^\s*\[(.*)\]\s*$/,
+    import: /^\s*@import\s+url\((.*)\)\s*$/i,
+    entry: /[\r\n]+/
   };
 
   function parseINI(source, iniPath) {
-    var entries = source.split(/[\r\n]+/);
+    var entries = source.split(patterns['entry']);
     var locales = ['en-US'];
     var genericSection = true;
     var uris = [];
@@ -194,16 +189,17 @@ define(function (require, exports, module) {
     for (var i = 0; i < entries.length; i++) {
       var line = entries[i];
       // we only care about en-US resources
-      if (genericSection && patterns['ini']['import'].test(line)) {
-        var match = patterns['ini']['import'].exec(line);
+      if (genericSection && patterns['import'].test(line)) {
+        var match = patterns['import'].exec(line);
         var uri = relativePath(iniPath, match[1]);
         uris.push(uri);
         continue;
       }
+
       // but we need the list of all locales in the ini, too
-      if (patterns['ini']['section'].test(line)) {
+      if (patterns['section'].test(line)) {
         genericSection = false;
-        var match = patterns['ini']['section'].exec(line);
+        var match = patterns['section'].exec(line);
         locales.push(match[1]);
       }
     }
@@ -217,31 +213,33 @@ define(function (require, exports, module) {
     if (url[0] == '/') {
       return url;
     }
+
     var dirs = baseUrl.split('/')
       .slice(0, -1)
       .concat(url.split('/'))
-      .filter(function(elem) {
-        return elem !== '.';
+      .filter(function(path) {
+        return path !== '.';
       });
 
     return dirs.join('/');
   }
 
   function createPublicAPI(ctx) {
+    var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
     return {
       get: function l10n_get(id, data) {
         var entity = ctx.getEntity(id, data);
-        // entity.locale is null if the entity could not be displayed in any of 
+        // entity.locale is null if the entity could not be displayed in any of
         // the locales in the current fallback chain
         if (!entity.locale) {
           return '';
         }
         return entity.value;
       },
-      localize: localizeElement.bind(null, ctx),
+      localize: localizeNode.bind(null, ctx),
       translate: translateFragment.bind(null, ctx),
       language: {
-        get code() { 
+        get code() {
           return ctx.supportedLocales[0];
         },
         set code(lang) {
@@ -268,13 +266,18 @@ define(function (require, exports, module) {
     };
   }
 
+  var DEBUG = false;
   function logMessage(type, e) {
     if (DEBUG) {
       console[type](e);
     }
   }
 
-  function addMessage(type, e) {
+  var buildMessages;
+  function addBuildMessage(type, e) {
+    if (!(type in buildMessages)) {
+      buildMessages[type] = [];
+    }
     if (e instanceof L20n.Context.TranslationError &&
         e.locale === ctx.supportedLocales[0] &&
         buildMessages[type].indexOf(e.entity) === -1) {
@@ -283,20 +286,14 @@ define(function (require, exports, module) {
   }
 
   function flushBuildMessages(variant) {
-    if (buildMessages.warn.length) {
-      console.log('[l10n] [' + ctx.supportedLocales[0] + ']: ' +
-                  buildMessages.warn.length + ' missing ' + variant + ': ' +
-                  buildMessages.warn.join(', '));
+    for (var type in buildMessages) {
+      if (buildMessages[type].length) {
+        console.log('[l10n] [' + ctx.supportedLocales[0] + ']: ' +
+            buildMessages[type].length + ' missing ' + variant + ': ' +
+            buildMessages[type].join(', '));
+        buildMessages[type] = [];
+      }
     }
-    if (buildMessages.error.length) {
-      console.log('[l10n] [' + ctx.supportedLocales[0] + ']: ' +
-                  buildMessages.error.length + ' broken ' + variant + ': ' +
-                  buildMessages.error.join(', '));
-    }
-    buildMessages = {
-      error: [],
-      warn: []
-    };
   }
 
   // return a sub-dictionary sufficient to translate a given fragment
@@ -360,7 +357,7 @@ define(function (require, exports, module) {
     }
     return { id: l10nId, args: args };
   }
-  
+
   function setTextContent(element, text) {
     // standard case: no element children
     if (!element.firstElementChild) {
@@ -394,6 +391,7 @@ define(function (require, exports, module) {
     if (!attrs.id) {
       return true;
     }
+
     var entity = ctx.getEntity(attrs.id, attrs.args);
     if (!entity.locale) {
       return false;
@@ -417,8 +415,8 @@ define(function (require, exports, module) {
     return true;
   }
   
-  // localize an element as soon as ctx is ready
-  function localizeElement(ctx, element, id, args) {
+  // localize an node as soon as ctx is ready
+  function localizeNode(ctx, element, id, args) {
     if (!element) {
       return;
     }
@@ -445,9 +443,9 @@ define(function (require, exports, module) {
     }
   }
   
-  // translate an array of HTML elements
-  // -- returns an array of elements that could not be translated
-  function translateElements(ctx, elements) {
+  // translate an array of HTML nodes
+  // -- returns an array of nodes that could not be translated
+  function translateNodes(ctx, elements) {
     var untranslated = [];
     for (var i = 0, l = elements.length; i < l; i++) {
       if (!translateNode(ctx, elements[i])) {
@@ -461,7 +459,7 @@ define(function (require, exports, module) {
   // -- returns an array of elements that could not be translated
   function translateFragment(ctx, element) {
     element = element || document.documentElement;
-    var untranslated = translateElements(ctx, getTranslatableChildren(element));
+    var untranslated = translateNodes(ctx, getTranslatableChildren(element));
     if (!translateNode(ctx, element)) {
       untranslated.push(element);
     }
@@ -469,11 +467,15 @@ define(function (require, exports, module) {
   }
 
   function fireLocalizedEvent(ctx) {
-    var event = document.createEvent('Event');
-    event.initEvent('localized', false, false);
-    event.language = ctx.supportedLocales[0];
+    var event = new CustomEvent('localized', {
+      'detail': {
+        'language': ctx.supportedLocales[0]
+      }
+    });
     window.dispatchEvent(event);
   }
 
   return L20n;
 });
+
+
