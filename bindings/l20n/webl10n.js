@@ -273,7 +273,7 @@ define(function (require, exports, module) {
     }
   }
 
-  var buildMessages;
+  var buildMessages = {};
   function addBuildMessage(type, e) {
     if (!(type in buildMessages)) {
       buildMessages[type] = [];
@@ -467,11 +467,9 @@ define(function (require, exports, module) {
   }
 
   function fireLocalizedEvent(ctx) {
-    var event = new CustomEvent('localized', {
-      'detail': {
-        'language': ctx.supportedLocales[0]
-      }
-    });
+    var event = document.createEvent('Event');
+    event.initEvent('localized', false, false);
+    event.language = ctx.supportedLocales[0];
     window.dispatchEvent(event);
   }
 
