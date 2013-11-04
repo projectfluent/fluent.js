@@ -119,4 +119,8 @@ describe('Example', function() {
     }
     errorsThrown.should.equal(strings.length);
   });
+  it('aria attribute', function() {
+    var ast = parser.parse('test = test\ntest.ariaLabel = aria foo');
+    ast.body['test'].attrs['aria-label'].value.content.should.equal('aria foo');
+  });
 });
