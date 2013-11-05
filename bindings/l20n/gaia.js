@@ -323,12 +323,12 @@ define(function (require) {
       }
 
       if (isElementAllowed(childElement)) {
-        result.appendChild(childElement);
         for (var k = 0, attr; attr = childElement.attributes[k]; k++) {
           if (!isAttrAllowed(attr, childElement)) {
             childElement.removeAttribute(attr.name);
           }
         }
+        result.appendChild(childElement);
         continue;
       }
 
