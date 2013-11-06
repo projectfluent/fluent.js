@@ -20,6 +20,13 @@ function removeDependencies(src) {
 }
 removeDependencies.onRead = true;
 
+function insertBlanks(src) {
+  return String(src).replace(
+    /^(define.'.*', functio)/,
+    '\n\n\n$1');
+}
+insertBlanks.onRead = true;
+
 function buildL20n(bindings) {
   console.log('\nCreating dist/'+bindings+'/l20n.js');
 
@@ -45,7 +52,8 @@ function buildL20n(bindings) {
     filter: [
       copy.filter.moduleDefines,
       removeAmdefine,
-      removeDependencies
+      removeDependencies,
+      insertBlanks
     ],
     dest: 'dist/' + bindings + '/l20n.js'
   });
