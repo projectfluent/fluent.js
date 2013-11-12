@@ -159,7 +159,7 @@ Add a resource identified by a URL to the Context instance.  The resource is
 added to all registered locales.
 
 ```javascript
-ctx.linkResource('../locale/app.lol');
+ctx.linkResource('../locale/strings.l20n');
 ```
 
 
@@ -174,7 +174,7 @@ code of the current locale, which needs to be first registered with
 
 ```javascript
 ctx.linkResource(function(locale) {
-  return '../locales/' + locale + '/strings.lol';
+  return '../locales/' + locale + '/strings.l20n';
 });
 ```
 

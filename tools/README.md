@@ -23,7 +23,7 @@ an AST and output the result.
 Examples:
 
     echo "<foo 'Foo'>" | ./parse.js
-    ./parse.js file.lol
+    ./parse.js file.l20n
 
 
 compile.js
@@ -47,8 +47,8 @@ Examples:
 
     echo "<foo 'Foo'>" | ./compile.js
     echo "<foo 'Foo'>" | ./parse.js --raw |  ./compile.js --ast
-    ./compile.js file.lol
-    ./compile.js -d ctxdata.json file.lol
+    ./compile.js file.l20n
+    ./compile.js -d ctxdata.json file.l20n
 
 
 perf

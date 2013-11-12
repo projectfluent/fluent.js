@@ -57,7 +57,7 @@ languages.  You can have more than one context at the same time.
 
 ```javascript
 var ctx = L20n.getContext();
-ctx.linkResource('./locales/strings.lol');
+ctx.linkResource('./locales/strings.l20n');
 ctx.requestLocales();
 ```
 

@@ -44,7 +44,7 @@ a Language Pack Service in the future that can tap into this scenario on the
 client side.
 
 ```html
-<script type="application/l20n" src="../locales/browser.l20n"></script>
+<script type="application/l20n" src="../locales/strings.l20n"></script>
 ```
 
 Once you're ready to provide a multilingual version of your app, use 
@@ -52,7 +52,7 @@ a localization *manifest* to define available languages and their resource
 files.
 
 ```html
-<link rel="localization" href="../locales/browser.json">
+<link rel="localization" href="../locales/manifest.json">
 ```
 
 An example of the manifest file:
@@ -64,7 +64,7 @@ An example of the manifest file:
     "pl"
   ],
   "resources": [
-    "../locales/{{locale}}/browser.l20n",
+    "../locales/{{locale}}/strings.l20n",
     "/shared/{{locale}}/date.l20n"
   ]
 }

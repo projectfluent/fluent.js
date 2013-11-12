@@ -17,7 +17,7 @@ describe('ctx.ready', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
   });
 

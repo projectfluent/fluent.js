@@ -55,7 +55,7 @@ describe('A frozen, non-ready context', function() {
   });
   it('should throw on linkResource', function() {
     (function(){
-      ctx.linkResource('./fixtures/en-US.lol');
+      ctx.linkResource('./fixtures/en-US.l20n');
     }).should.throw(/Context is frozen/);
   });
   it('should throw on requestLocales', function() {
@@ -121,7 +121,7 @@ describe('A frozen, ready context', function() {
   });
   it('should throw on linkResource', function() {
     (function(){
-      ctx.linkResource('./fixtures/en-US.lol');
+      ctx.linkResource('./fixtures/en-US.l20n');
     }).should.throw(/Context is frozen/);
   });
   it('should not throw on getSync of a known entity', function() {

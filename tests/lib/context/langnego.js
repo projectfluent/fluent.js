@@ -34,7 +34,7 @@ describe('Language negotiation with registerLocales', function() {
   beforeEach(function(done) {
     ctx = new Context();
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('csb', 'pl', 'de');
@@ -62,7 +62,7 @@ describe('supportedLocales', function() {
   beforeEach(function(done) {
     ctx = new Context();
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('csb', 'pl', 'de');
@@ -106,7 +106,7 @@ describe('Language negotiator', function() {
     ctx = new Context();
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
   });
 

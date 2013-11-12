@@ -187,16 +187,16 @@ describe('Example', function() {
   });
 
   it('import', function() {
-    var ast = parser.parse('import("./foo.lol")');
+    var ast = parser.parse('import("./foo.l20n")');
     ast.body[0].type.should.equal('ImportStatement');
-    ast.body[0].uri.content.should.equal('./foo.lol');
+    ast.body[0].uri.content.should.equal('./foo.l20n');
   });
   it('import errors', function() {
     var strings = [
-      '@import("foo.lol")',
+      '@import("foo.l20n")',
       'import)(',
       'import(()',
-      'import("foo.lol"]',
+      'import("foo.l20n"]',
     ];
     for (var i in strings) {
       var ast = parser.parse(strings[i]);

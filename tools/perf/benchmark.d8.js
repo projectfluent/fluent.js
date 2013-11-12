@@ -5,7 +5,7 @@ var retr = new L20n.RetranslationManager();
 
 compiler.setGlobals(retr.globals);
 
-var code = read('./example.lol');
+var code = read('./example.l20n');
 var data = {
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",

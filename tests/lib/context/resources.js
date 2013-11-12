@@ -97,7 +97,7 @@ describe('addResource with registerLocales', function() {
 describe('linkResource(String) without registerLocales', function() {
   'use strict';
   var ctx = new Context();
-  ctx.linkResource(__dirname + '/fixtures/strings.lol');
+  ctx.linkResource(__dirname + '/fixtures/strings.l20n');
 
   before(function(done) {
     whenReady(ctx, done);
@@ -114,7 +114,7 @@ describe('linkResource(String) without registerLocales', function() {
 describe('linkResource(String) with registerLocales', function() {
   'use strict';
   var ctx = new Context();
-  ctx.linkResource(__dirname + '/fixtures/strings.lol');
+  ctx.linkResource(__dirname + '/fixtures/strings.l20n');
 
   before(function(done) {
     whenReady(ctx, done);
@@ -142,7 +142,7 @@ describe('linkResource(Function) without registerLocales', function() {
   'use strict';
   var ctx = new Context();
   ctx.linkResource(function(locale) {
-    return __dirname + '/fixtures/' + locale + '.lol';
+    return __dirname + '/fixtures/' + locale + '.l20n';
   });
 
   before(function(done) {
@@ -162,7 +162,7 @@ describe('linkResource(Function) with registerLocales', function() {
   'use strict';
   var ctx = new Context();
   ctx.linkResource(function(locale) {
-    return __dirname + '/fixtures/' + locale + '.lol';
+    return __dirname + '/fixtures/' + locale + '.l20n';
   });
 
   before(function(done) {
@@ -194,7 +194,7 @@ describe('Parser errors', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
   });
 
@@ -218,7 +218,7 @@ describe('Missing resources', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.addResource('<foo "Foo">');
-    ctx.linkResource(__dirname + '/fixtures/missing.lol');
+    ctx.linkResource(__dirname + '/fixtures/missing.l20n');
   });
 
   it('should get ready', function(done) {
@@ -228,7 +228,7 @@ describe('Missing resources', function() {
   it('should emit a warning', function(done) {
     ctx.addEventListener('warning', function(e) {
       e.should.be.an.instanceOf(io.Error);
-      e.should.match(/missing.lol/);
+      e.should.match(/missing.l20n/);
       done();
     });
     ctx.requestLocales();
@@ -242,7 +242,7 @@ describe('Recursive imports', function() {
   beforeEach(function() {
     ctx = new Context();
     ctx.addResource('<foo "Foo">');
-    ctx.linkResource(__dirname + '/fixtures/recursive.lol');
+    ctx.linkResource(__dirname + '/fixtures/recursive.l20n');
   });
 
   it('should get ready', function(done) {
@@ -268,8 +268,8 @@ describe('No valid resources', function() {
 
   beforeEach(function() {
     ctx = new Context();
-    ctx.linkResource(__dirname + '/fixtures/missing.lol');
-    ctx.linkResource(__dirname + '/fixtures/recursive.lol');
+    ctx.linkResource(__dirname + '/fixtures/missing.l20n');
+    ctx.linkResource(__dirname + '/fixtures/recursive.l20n');
   });
 
   it('should get ready', function(done) {

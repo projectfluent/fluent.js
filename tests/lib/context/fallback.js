@@ -22,7 +22,7 @@ describe('No locale fallback', function() {
     ctx = new Context();
     whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
     ctx.registerLocales('pl');
     ctx.requestLocales('pl');
@@ -185,7 +185,7 @@ describe('One fallback locale', function() {
     ctx = new Context();
     whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
     ctx.registerLocales('de', ['de', 'pl']);
     ctx.requestLocales('pl', 'de');
@@ -886,7 +886,7 @@ describe('Two fallback locales', function() {
     ctx = new Context();
     whenReady(ctx, done);
     ctx.linkResource(function(locale) {
-      return __dirname + '/fixtures/' + locale + '.lol';
+      return __dirname + '/fixtures/' + locale + '.l20n';
     });
     ctx.registerLocales('en-US', ['de', 'en-US', 'pl']);
     ctx.requestLocales('pl', 'de', 'en-US');

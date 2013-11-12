@@ -62,7 +62,7 @@ describe('A single-locale context with linkResource', function() {
   beforeEach(function(done) {
     ctx = L20n.getContext();
     ctx.ready(done);
-    ctx.linkResource(__dirname + '/fixtures/basic/single.lol');
+    ctx.linkResource(__dirname + '/fixtures/basic/single.l20n');
     ctx.requestLocales();
   });
 

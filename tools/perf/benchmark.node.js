@@ -12,7 +12,7 @@ var retr = new RetranslationManager();
 
 compiler.setGlobals(retr.globals);
 
-var code = fs.readFileSync(__dirname + '/example.lol').toString();
+var code = fs.readFileSync(__dirname + '/example.l20n').toString();
 var data = {
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
@@ -62,7 +62,7 @@ cumulative.get = process.hrtime(start);
 var ctx = L20n.getContext();
 ctx.ready(printResults);
 //ctx.addResource('<foo "Foo">');
-ctx.linkResource(__dirname + '/foo.lol');
+ctx.linkResource(__dirname + '/foo.l20n');
 ctx.requestLocales();
 
 function printResults() {
