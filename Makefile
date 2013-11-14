@@ -23,7 +23,10 @@ ifeq ($(INSECURE), 1)
 LIB_FILES += tests/lib/compiler/insecure/*.js
 endif
 
-BINDINGS?=webl10n
+.PHONY: all
+all:
+	$(NODE) build/Makefile.js buildtime
+	$(NODE) build/Makefile.js runtime
 
 .PHONY: build
 build: install-git-hook

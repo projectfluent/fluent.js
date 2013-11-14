@@ -9,94 +9,16 @@ define(function (require, exports, module) {
   var isPretranslated = false;
 
 
-  if (typeof(document) === 'undefined') {
-    // during build time, we don't bootstrap until mozL10n.language.code is set
-    Object.defineProperty(navigator, 'mozL10n', {
-      get: function() {
-        isBootstrapped = false;
-        ctx = L20n.getContext();
-        ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
-        ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
-        return createPublicAPI(ctx);
-      },
-      enumerable: true
-    });
-  } else {
-    ctx = L20n.getContext();
-    navigator.mozL10n = createPublicAPI(ctx);
-    ctx.addEventListener('error', logMessage.bind(null, 'error'));
-    ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
-
-    isPretranslated = document.documentElement.lang === navigator.language;
-
-    if (isPretranslated) {
-      // if the DOM has been pretranslated, defer bootstrap as long as possible
-      waitFor('complete', function() {
-        window.setTimeout(bootstrap);
-      });
-    } else {
-      // otherwise, if the DOM is loaded, bootstrap now to fire 'localized'
-      if (document.readyState === 'complete') {
-        window.setTimeout(bootstrap);
-      } else {
-        // or wait for the DOM to be interactive to try to pretranslate it 
-        // using the inline resources
-        waitFor('interactive', pretranslate);
-      }
-    }
-  }
-
-  function waitFor(state, callback) {
-    if (document.readyState === state) {
-      callback();
-      return;
-    }
-    document.addEventListener('readystatechange', function l10n_onrsc() {
-      if (document.readyState === state) {
-        callback();
-      }
-    });
-  }
-
-  function pretranslate() {
-    if (inlineLocalization()) {
-      // if inlineLocalization succeeded, defer bootstrap
-      waitFor('complete', function() {
-        window.setTimeout(bootstrap);
-      });
-    } else {
-      bootstrap();
-    }
-  }
-
-  function inlineLocalization() {
-    var body = document.body;
-    var scripts = body.querySelectorAll('script[type="application/l10n"]');
-    if (scripts.length === 0) {
-      return false;
-    }
-    var inline = L20n.getContext();
-    inline.addEventListener('error', logMessage.bind(null, 'error'));
-    inline.addEventListener('warning', logMessage.bind(null, 'warn'));
-
-    var langs = [];
-    for (var i = 0; i < scripts.length; i++) {
-      var lang = scripts[i].getAttribute('lang');
-      langs.push(lang);
-      // pass the node to save memory
-      inline.addDictionary(scripts[i], lang);
-    }
-    inline.once(function() {
-      translateFragment(inline);
-      isPretranslated = true;
-    });
-    inline.registerLocales('en-US', langs);
-    inline.requestLocales(navigator.language);
-    // XXX check if we actually negotiatied navigator.language (i.e. the 
-    // corresponding <script> was present)?
-    return true;
-  }
-
+  Object.defineProperty(navigator, 'mozL10n', {
+    get: function() {
+      isBootstrapped = false;
+      ctx = L20n.getContext();
+      ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
+      ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
+      return createPublicAPI(ctx);
+    },
+    enumerable: true
+  });
 
   function bootstrap(forcedLocale) {
     isBootstrapped = true;
@@ -264,13 +186,6 @@ define(function (require, exports, module) {
         return ctx.isReady ? 'complete' : 'loading';
       }
     };
-  }
-
-  var DEBUG = false;
-  function logMessage(type, e) {
-    if (DEBUG) {
-      console[type](e);
-    }
   }
 
   var buildMessages = {};
