@@ -24,38 +24,17 @@ element.
 ```
 
 
-Adding Resources
-----------------
+Create Manifest
+---------------
 
-You can embed localization resources right in your HTML.  This may be useful 
-when you first start a new project, or when determining server-side language 
-negotiation.
-
-```html
-<script type="application/l20n">
-  <brandName "Firefox">
-  <about "About {{ brandName }}">
-</script>
-```
-
-An alternative is to include localization resources in `script` elements.  Note 
-that this still only works for a single language.  We plan to add support for 
-a Language Pack Service in the future that can tap into this scenario on the 
-client side.
-
-```html
-<script type="application/l20n" src="../locales/strings.l20n"></script>
-```
-
-Once you're ready to provide a multilingual version of your app, use 
-a localization *manifest* to define available languages and their resource 
+Use a localization *manifest* to define available languages and their resource 
 files.
 
 ```html
 <link rel="localization" href="../locales/manifest.json">
 ```
 
-An example of the manifest file:
+An example of the manifest file (all keys are required):
     
 ```json
 {
@@ -63,6 +42,7 @@ An example of the manifest file:
     "en-US",
     "pl"
   ],
+  "default_locale": "en-US",
   "resources": [
     "../locales/{{locale}}/strings.l20n",
     "/shared/{{locale}}/date.l20n"
@@ -70,10 +50,11 @@ An example of the manifest file:
 }
 ```
 
-Making HTML Elements Localizable
---------------------------------
 
-Use the `data-l10n-id` attribute on a node to mark it as localizable.
+Make HTML Elements Localizable
+------------------------------
+
+Use the `data-l10n-id` attribute on an HTML element to mark it as localizable.
 
 ```html
 <p data-l10n-id="about"></p>
@@ -122,17 +103,22 @@ is allowed on `input` elements, but `type` is not.  Similarly, `href` and
 in the final DOM.  However, the `title` attribute is safe.
 
 It is important to note that applying translations doesn't replace DOM 
-elements, but only modifies their text nodes and their attributes.  The 
-limitation of the current implementation is that it is yet not possible to 
-reorder elements in the translation (things may break if you try).  See [bug 
-922576][].
+elements, but only modifies their text nodes and their attributes.  This makes 
+it possible to use L20n in conjunction with MVC frameworks.
 
-[bug 922576]: https://bugzilla.mozilla.org/show_bug.cgi?id=922576
 [elements]: http://www.w3.org/html/wg/drafts/html/CR/text-level-semantics.html#text-level-semantics
 [attributes]: http://www.w3.org/html/wg/drafts/html/CR/dom.html#the-translate-attribute
 
-When all DOM nodes are localized, `document` will fire a `DocumentLocalized` 
-event.
+When all DOM nodes are localized, the `document` element will fire 
+a `DocumentLocalized` event, which you can listen to:
+
+```javascript
+document.addEventListener('DocumentLocalized', function() {
+  // the DOM has been localized and the user sees it in their language
+  YourApp.init();
+});
+```
+
 
 Exposing Context Data
 ---------------------
@@ -171,3 +157,43 @@ Based on the context data defined above, this will produce:
 
     Jane has invited you to her circles.
 
+
+Monolingual mode
+----------------
+
+L20n can also operate in the so-called monolingual mode, when there is only one 
+locale available.  It doesn't have any specific locale code (internally, it's 
+called `i-default` in compliance to [RFC 2277][]).  There is no language 
+negotiation nor locale fallback possible in the monolingual mode.  L20n simply 
+always uses this one default locale.
+
+[RFC 2277]: http://www.iana.org/assignments/lang-tags/i-default
+
+The monolingual mode may be useful when you first start a new project, when you 
+want to test something quickly or when using server-side language negotiation.
+
+In order to enable the monolingual mode, remove the manifest `link` from your 
+HTML.  With no information about the available and the default locales, L20n 
+will switch to the monolingual mode.  You can then embed localization resources 
+right in your HTML.
+
+```html
+<script type="application/l20n">
+  <brandName "Firefox">
+  <about "About {{ brandName }}">
+</script>
+```
+
+An alternative is to include localization resources in `script` elements.  Note 
+that this still only works for a single language.  We plan to add support for 
+a Language Pack Service in the future that can tap into this scenario on the 
+client side.
+
+```html
+<script type="application/l20n" src="../locales/strings.l20n"></script>
+```
+
+Note that you currently _cannot_ use the manifest file _and_ manually add 
+resources via `script` tags at the same time (bug [923670][]).
+
+[923670]: https://bugzil.la/923670
