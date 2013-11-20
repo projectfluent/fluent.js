@@ -100,6 +100,9 @@ define(function (require, exports, module) {
     }
 
     ctx.ready(function() {
+      // on runtime, we can optimize the memory footprint of Locale objects by 
+      // removing the AST and the downloaded resources
+      ctx.cleanBuiltLocales();
       // XXX instead of using a flag, we could store the list of 
       // yet-to-localize nodes that we get from the inline context, and 
       // localize them here.
