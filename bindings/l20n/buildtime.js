@@ -1,8 +1,4 @@
-define(function (require, exports, module) {
   'use strict';
-
-
-  var L20n = require('../l20n');
 
   var ctx;
   var isBootstrapped = false;
@@ -12,7 +8,7 @@ define(function (require, exports, module) {
   Object.defineProperty(navigator, 'mozL10n', {
     get: function() {
       isBootstrapped = false;
-      ctx = L20n.getContext();
+      ctx = new Context();
       ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
       ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
       return createPublicAPI(ctx);
@@ -193,7 +189,7 @@ define(function (require, exports, module) {
     if (!(type in buildMessages)) {
       buildMessages[type] = [];
     }
-    if (e instanceof L20n.Context.TranslationError &&
+    if (e instanceof Context.TranslationError &&
         e.locale === ctx.supportedLocales[0] &&
         buildMessages[type].indexOf(e.entity) === -1) {
       buildMessages[type].push(e.entity);
@@ -387,6 +383,3 @@ define(function (require, exports, module) {
     event.language = ctx.supportedLocales[0];
     window.dispatchEvent(event);
   }
-
-  return L20n;
-});

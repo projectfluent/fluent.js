@@ -1,14 +1,10 @@
-define(function (require, exports, module) {
   'use strict';
-
-
-  var L20n = require('../l20n');
 
   var ctx;
   var isBootstrapped = false;
   var isPretranslated = false;
 
-  ctx = L20n.getContext();
+  ctx = new Context();
   navigator.mozL10n = createPublicAPI(ctx);
   ctx.addEventListener('error', logMessage.bind(null, 'error'));
   ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
@@ -60,7 +56,7 @@ define(function (require, exports, module) {
     if (scripts.length === 0) {
       return false;
     }
-    var inline = L20n.getContext();
+    var inline = new Context();
     inline.addEventListener('error', logMessage.bind(null, 'error'));
     inline.addEventListener('warning', logMessage.bind(null, 'warn'));
 
@@ -392,6 +388,3 @@ define(function (require, exports, module) {
     event.language = ctx.supportedLocales[0];
     window.dispatchEvent(event);
   }
-
-  return L20n;
-});
