@@ -1,5 +1,8 @@
   'use strict';
 
+  var Context = require('./context').Context;
+  var io = require('./platform/io');
+
   var ctx;
   var isBootstrapped = false;
   var isPretranslated = false;
@@ -212,13 +215,11 @@
     var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
     return {
       get: function l10n_get(id, data) {
-        var entity = ctx.getEntity(id, data);
-        // entity.locale is null if the entity could not be displayed in any of
-        // the locales in the current fallback chain
-        if (!entity.locale) {
+        var value = ctx.get(id, data);
+        if (value === null) {
           return '';
         }
-        return entity.value;
+        return value;
       },
       localize: localizeNode.bind(null, ctx),
       translate: translateFragment.bind(null, ctx),
@@ -309,7 +310,7 @@
     }
 
     var entity = ctx.getEntity(attrs.id, attrs.args);
-    if (!entity.locale) {
+    if (entity === null) {
       return false;
     }
 

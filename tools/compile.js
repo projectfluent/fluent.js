@@ -5,7 +5,7 @@ var program = require('commander');
 var colors = require('colors');
 
 var Parser = require('../lib/l20n/parser').Parser;
-var Compiler = require('../lib/l20n/compiler').Compiler;
+var compile = require('../lib/l20n/compiler').compile;
 var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
 
 program
@@ -19,9 +19,7 @@ program
   .parse(process.argv);
 
 var parser = new Parser();
-var compiler = new Compiler();
 parser.addEventListener('error', logError);
-compiler.addEventListener('error', logError);
 
 var data = {};
 if (program.data) {
@@ -34,7 +32,7 @@ var ERROR = 'red';
 var FALLBACK = 'yellow';
 
 function color(str, col) {
-  if (program.color && col) {
+  if (program.color && col && str) {
     return str[col];
   }
   return str;
@@ -54,27 +52,15 @@ function singleline(str) {
 }
 
 function getString(entity) {
-  try {
-    return color(singleline(entity.getString(data)), VALUE);
-  } catch (e) {
-    if (!(e instanceof Compiler.Error)) {
-      logError(e);
-      return color('(' + e.name + ')', FALLBACK);
-    }
-    if (e.source) {
-      return color(singleline(e.source), FALLBACK);
-    } else {
-      return color(entity.id, FALLBACK);
-    }
+  if (typeof entity !== 'string') {
+    entity = entity.getString(data);
   }
+  return color(singleline(entity), VALUE);
 }
 
-function print(entity) {
-  if (entity.local && !program.withLocal) {
-    return;
-  }
+function print(id, entity) {
   // print the string value of the entity
-  console.log(color(entity.id, ID), getString(entity));
+  console.log(color(id, ID), getString(entity));
   // print the string values of the attributes
   for (var attr in entity.attributes) {
     if (entity.attributes[attr].local && !program.withLocal) {
@@ -94,21 +80,13 @@ function compileAndPrint(err, code) {
     var ast = parser.parse(code.toString());
   }
 
-  ast.body['plural'] = {
-    type: 'Macro',
-    args: [{
-      type: 'Identifier',
-      name: 'n'
-    }],
-    expression: getPluralRule(program.plural)
-  };
-
-  var env = compiler.compile(ast);
+  var env = compile(ast);
+  env.__plural = getPluralRule('en-US');
   for (var id in env) {
-    if (env[id].expression) {
+    if (id.indexOf('__') === 0) {
       continue;
     }
-    print(env[id]);
+    print(id, env[id]);
   }
 }
 

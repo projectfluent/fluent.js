@@ -1,5 +1,9 @@
   'use strict';
 
+  var Context = require('./context').Context;
+  var io = require('./platform/io');
+  var rePlaceables = require('./compiler').rePlaceables;
+
   var ctx;
   var isBootstrapped = false;
   var isPretranslated = false;
@@ -146,13 +150,11 @@
     var rtlLocales = ['ar', 'fa', 'he', 'ps', 'ur'];
     return {
       get: function l10n_get(id, data) {
-        var entity = ctx.getEntity(id, data);
-        // entity.locale is null if the entity could not be displayed in any of
-        // the locales in the current fallback chain
-        if (!entity.locale) {
+        var value = ctx.get(id, data);
+        if (value === null) {
           return '';
         }
-        return entity.value;
+        return value;
       },
       localize: localizeNode.bind(null, ctx),
       translate: translateFragment.bind(null, ctx),
@@ -177,7 +179,7 @@
         }
       },
       ready: ctx.ready.bind(ctx),
-      getDictionary: getSubDictionary,
+      getDictionary: getDictionary,
       get readyState() {
         return ctx.isReady ? 'complete' : 'loading';
       }
@@ -207,44 +209,66 @@
     }
   }
 
-  // return a sub-dictionary sufficient to translate a given fragment
-  function getSubDictionary(fragment) {
-    var ast = {
-      type: 'WebL10n',
-      body: {}
-    };
+
+  /* API for webapp-optimize */
+
+  // return an array of all {{placeables}} found in a string
+  function getPlaceableNames(str) {
+    var placeables = [];
+    var match;
+    while (match = rePlaceables.exec(str)) {
+      placeables.push(match[1]);
+    }
+    return placeables;
+  }
+
+  // recursively walk an entity and put all dependencies required for string
+  // interpolation in the AST
+  function getPlaceables(ast, val) {
+    if (typeof val === 'string') {
+      var placeables = getPlaceableNames(val);
+      for (var i = 0; i < placeables.length; i++) {
+        var id = placeables[i];
+        ast[id] = ctx.getEntitySource(id);
+      }
+    } else {
+      for (var prop in val) {
+        if (!val.hasOwnProperty(prop) || val === '_index') {
+          continue;
+        }
+        getPlaceables(ast, val[prop]);
+      }
+    }
+  }
+
+  function getDictionary(fragment) {
+    var ast = {};
 
     if (!fragment) {
-      ast.body = ctx.getSources();
-      flushBuildMessages('compared to en-US');
+      var sourceLocale = ctx.getLocale('en-US');
+      if (!sourceLocale.isReady) {
+        sourceLocale.build(null);
+      }
+      // iterate over all strings in en-US
+      for (var id in sourceLocale.ast) {
+        ast[id] = ctx.getEntitySource(id);
+      }
       return ast;
     }
 
     var elements = getTranslatableChildren(fragment);
 
-    for (var i = 0, l = elements.length; i < l; i++) {
+    for (var i = 0; i < elements.length; i++) {
       var attrs = getL10nAttributes(elements[i]);
-      var source = ctx.getSource(attrs.id);
-      if (!source) {
-        continue;
-      }
-      ast.body[attrs.id] = source;
-
-      // check for any dependencies
-      var entity = ctx.getEntity(attrs.id, attrs.args);
-      for (var id in entity.identifiers) {
-        if (!entity.identifiers.hasOwnProperty(id)) {
-          continue;
-        }
-        var depSource = ctx.getSource(id);
-        if (depSource) {
-          ast.body[id] = depSource;
-        }
-      }
+      var val = ctx.getEntitySource(attrs.id);
+      ast[attrs.id] = val;
+      getPlaceables(ast, val);
     }
-    flushBuildMessages('in the visible DOM');
     return ast;
-  }
+  };
+
+
+  /* DOM translation functions */
 
   function getTranslatableChildren(element) {
     return element ? element.querySelectorAll('*[data-l10n-id]') : [];
@@ -304,7 +328,7 @@
     }
 
     var entity = ctx.getEntity(attrs.id, attrs.args);
-    if (!entity.locale) {
+    if (entity === null) {
       return false;
     }
 
