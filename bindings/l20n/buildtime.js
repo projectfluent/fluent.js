@@ -34,7 +34,7 @@
 
     for (var i = 0; i < jsonLinks.length; i++) {
       var uri = jsonLinks[i].getAttribute('href');
-      ctx.linkResource(uri);
+      ctx.resLinks.push(uri);
     }
 
     ctx.ready(function() {
@@ -77,7 +77,7 @@
       availableLocales.push.apply(availableLocales, ini.locales);
       for (var i = 0; i < ini.resources.length; i++) {
         var uri = ini.resources[i].replace('en-US', '{{locale}}');
-        ctx.linkResource(uri);
+        ctx.resLinks.push(uri);
       }
       iniToLoad--;
       if (iniToLoad === 0) {
