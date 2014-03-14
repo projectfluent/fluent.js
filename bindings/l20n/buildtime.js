@@ -13,6 +13,7 @@
     get: function() {
       isBootstrapped = false;
       ctx = new Context();
+      ctx.isBuildtime = true;
       ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
       ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
       return createPublicAPI(ctx);
@@ -33,7 +34,7 @@
 
     for (var i = 0; i < jsonLinks.length; i++) {
       var uri = jsonLinks[i].getAttribute('href');
-      ctx.linkResource(uri.replace.bind(uri, /\{\{\s*locale\s*\}\}/));
+      ctx.linkResource(uri);
     }
 
     ctx.ready(function() {
@@ -76,7 +77,7 @@
       availableLocales.push.apply(availableLocales, ini.locales);
       for (var i = 0; i < ini.resources.length; i++) {
         var uri = ini.resources[i].replace('en-US', '{{locale}}');
-        ctx.linkResource(uri.replace.bind(uri, '{{locale}}'));
+        ctx.linkResource(uri);
       }
       iniToLoad--;
       if (iniToLoad === 0) {

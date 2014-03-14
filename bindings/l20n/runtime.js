@@ -88,20 +88,21 @@
     var availableLocales = [];
 
     var head = document.head;
-    var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + 
-                                         '[href$=".ini"]');
-    var jsonLinks = head.querySelectorAll('link[type="application/l10n"]' + 
-                                          '[href$=".json"]');
+    var resLinks = head.querySelectorAll('link[type="application/l10n"]');
+    var iniLinks = [];
+    var i;
 
-    for (var i = 0; i < jsonLinks.length; i++) {
-      var uri = jsonLinks[i].getAttribute('href');
-      ctx.linkResource(uri.replace.bind(uri, /\{\{\s*locale\s*\}\}/));
+    for (i = 0; i < resLinks.length; i++) {
+      var url = resLinks[i].getAttribute('href');
+      var type = url.substr(url.lastIndexOf('.') + 1);
+      if (type === 'ini') {
+        iniLinks.push(url);
+      } else {
+        ctx.resLinks.push(url);
+      }
     }
 
     ctx.ready(function() {
-      // on runtime, we can optimize the memory footprint of Locale objects by 
-      // removing the AST and the downloaded resources
-      ctx.cleanBuiltLocales();
       // XXX instead of using a flag, we could store the list of 
       // yet-to-localize nodes that we get from the inline context, and 
       // localize them here.
@@ -112,44 +113,49 @@
       fireLocalizedEvent(ctx);
     });
 
+    var iniLoads = iniLinks.length;
+
+    if (iniLoads === 0) {
+      onIniLoaded();
+    }
+    function onIniLoaded() {
+      iniLoads--;
+      if (iniLoads <= 0) {
+        ctx.registerLocales('en-US', availableLocales);
+        ctx.requestLocales(forcedLocale || navigator.language);
+      }
+    }
+
+    for (i = 0; i < iniLinks.length; i++) {
+      loadINI(iniLinks[i], onIniLoaded);
+    }
+
     // listen to language change events
     if ('mozSettings' in navigator && navigator.mozSettings) {
       navigator.mozSettings.addObserver('language.current', function(event) {
         ctx.requestLocales(event.settingValue);
       });
     }
+  }
 
-    var iniToLoad = iniLinks.length;
-    if (iniToLoad === 0) {
-      ctx.registerLocales('en-US', getAvailable());
-      ctx.requestLocales(forcedLocale || navigator.language);
-      return;
-    }
-
-    var io = require('./platform/io');
-    for (i = 0; i < iniLinks.length; i++) {
-      var url = iniLinks[i].getAttribute('href');
-      io.load(url, iniLoaded.bind(null, url));
-    }
-
-    function iniLoaded(url, err, text) {
-      if (err) {
-        throw err;
+  function loadINI(url, cb) {
+    io.load(url, function(err, source) {
+      if (!source) {
+        cb();
+        return;
       }
 
-      var ini = parseINI(text, url);
-      availableLocales.push.apply(availableLocales, ini.locales);
+      var ini = parseINI(source, url);
+      var pos = ctx.resLinks.indexOf(url);
+
+      var patterns = [];
       for (var i = 0; i < ini.resources.length; i++) {
-        var uri = ini.resources[i].replace('en-US', '{{locale}}');
-        ctx.linkResource(uri.replace.bind(uri, '{{locale}}'));
+        patterns.push(ini.resources[i].replace('en-US', '{{locale}}'));
       }
-      iniToLoad--;
-      if (iniToLoad === 0) {
-        ctx.registerLocales('en-US', availableLocales);
-        ctx.requestLocales(forcedLocale || navigator.language);
-      }
-    }
-
+      var args = [pos, 1].concat(patterns);
+      ctx.resLinks.splice.apply(ctx.resLinks, args);
+      cb();
+    });
   }
 
   function getAvailable() {
