@@ -121,7 +121,7 @@
     function onIniLoaded() {
       iniLoads--;
       if (iniLoads <= 0) {
-        ctx.registerLocales('en-US', availableLocales);
+        ctx.registerLocales('en-US', getAvailable());
         ctx.requestLocales(forcedLocale || navigator.language);
       }
     }
