@@ -3,11 +3,10 @@
   var Context = require('./context').Context;
   var io = require('./platform/io');
 
-  var ctx;
   var isBootstrapped = false;
   var isPretranslated = false;
 
-  ctx = new Context();
+  var ctx = new Context();
   navigator.mozL10n = createPublicAPI(ctx);
   ctx.addEventListener('error', logMessage.bind(null, 'error'));
   ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
@@ -55,32 +54,34 @@
 
   function inlineLocalization() {
     var body = document.body;
-    var scripts = body.querySelectorAll('script[type="application/l10n"]');
-    if (scripts.length === 0) {
+    var script = body.querySelector('script[type="application/l10n"][lang="' +
+                                    navigator.language + '"]');
+    if (!script) {
       return false;
     }
-    var inline = new Context();
-    inline.addEventListener('error', logMessage.bind(null, 'error'));
-    inline.addEventListener('warning', logMessage.bind(null, 'warn'));
 
-    var langs = [];
-    for (var i = 0; i < scripts.length; i++) {
-      var lang = scripts[i].getAttribute('lang');
-      langs.push(lang);
-      // pass the node to save memory
-      inline.addDictionary(scripts[i], lang);
-    }
-    inline.once(function() {
-      translateFragment(inline);
-      isPretranslated = true;
-    });
-    inline.registerLocales('en-US', langs);
-    inline.requestLocales(navigator.language);
-    // XXX check if we actually negotiatied navigator.language (i.e. the 
-    // corresponding <script> was present)?
+    ctx.supportedLocales = [navigator.language];
+    var locale = ctx.getLocale(navigator.language);
+    // the inline localization is happenning very early, when the ctx is not
+    // yet ready and when the resources haven't been downloaded yet;  add the
+    // inlined JSON directly to the current locale
+    locale.addAST(JSON.parse(script.innerHTML));
+    // avoid errors in ctx.get*
+    ctx.isReady = true;
+    // make sure the locale is not actually built in ctx.get*
+    locale.isReady = true;
+    // localize the visible DOM
+    translateFragment(ctx);
+    // record the fact that the locale already has the inlined strings
+    locale.isPartial = true;
+    // restore readiness of locale and ctx thanks to which proper localization
+    // resources can be added later on (in ctx.freeze)
+    locale.isReady = false;
+    ctx.isReady = false;
+    // the visible DOM is now pretranslated
+    isPretranslated = true;
     return true;
   }
-
 
   function bootstrap(forcedLocale) {
     isBootstrapped = true;
