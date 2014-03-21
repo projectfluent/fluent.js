@@ -7,6 +7,8 @@ var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
 var ctx = new Context();
 
+// Public API
+
 navigator.mozL10n = {
   translate: translateFragment,
   localize: localizeElement,
@@ -98,6 +100,19 @@ function initDocumentLocalization(cb) {
   }
 }
 
+function initLocale(lang, forced) {
+  ctx.registerLocales('en-US');
+  ctx.requestLocales(navigator.language);
+}
+
+function fireLocalizedEvent() {
+  var event = document.createEvent('Event');
+  event.initEvent('localized', false, false);
+  event.language = ctx.supportedLocales[0];
+  window.dispatchEvent(event);
+}
+
+// INI loader functions
 
 function loadINI(url, cb) {
   io.load(url, function(err, source) {
@@ -168,17 +183,7 @@ function parseINI(source, iniPath) {
   };
 }
 
-function initLocale(lang, forced) {
-  ctx.registerLocales('en-US');
-  ctx.requestLocales(navigator.language);
-}
-
-function fireLocalizedEvent() {
-  var event = document.createEvent('Event');
-  event.initEvent('localized', false, false);
-  event.language = ctx.supportedLocales[0];
-  window.dispatchEvent(event);
-}
+// HTML translation functions
 
 function translateFragment(element) {
   element = element || document.documentElement;
