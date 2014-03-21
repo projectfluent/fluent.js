@@ -98,9 +98,9 @@
   }
 
   var patterns = {
-    section: /^\s*\[(.*)\]\s*$/,
-    import: /^\s*@import\s+url\((.*)\)\s*$/i,
-    entry: /[\r\n]+/
+    'section': /^\s*\[(.*)\]\s*$/,
+    'import': /^\s*@import\s+url\((.*)\)\s*$/i,
+    'entry': /[\r\n]+/
   };
 
   function parseINI(source, iniPath) {
