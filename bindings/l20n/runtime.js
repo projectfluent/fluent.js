@@ -76,9 +76,8 @@ function initDocumentLocalization(cb) {
     var type = url.substr(url.lastIndexOf('.') + 1);
     if (type === 'ini') {
       iniLinks.push(url);
-    } else {
-      ctx.resLinks.push(url);
     }
+    ctx.resLinks.push(url);
   }
 
   var iniLoads = iniLinks.length;
