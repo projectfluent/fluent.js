@@ -6,6 +6,10 @@ var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
 var ctx = new Context();
+ctx.ready(onReady);
+ctx.addEventListener('error', logMessage.bind(null, 'error'));
+ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
+
 
 // Public API
 
@@ -62,8 +66,49 @@ if (window.document) {
       window.setTimeout(initDocumentLocalization.bind(null, initLocale));
     });
   } else {
+    if (document.readyState === 'complete') {
+      window.setTimeout(initDocumentLocalization.bind(null, initLocale));
+    } else {
+      waitFor('interactive', pretranslate);
+    }
+  }
+
+  if ('mozSettings' in navigator && navigator.mozSettings) {
+    navigator.mozSettings.addObserver('language.current', function(event) {
+      navigator.mozL10n.language.code = event.settingValue;
+    });
+  }
+}
+
+function pretranslate() {
+  if (inlineLocalization()) {
+    waitFor('interactive', function() {
+      window.setTimeout(initDocumentLocalization.bind(null, initLocale));
+    });
+  } else {
     initDocumentLocalization(initLocale);
   }
+}
+
+function inlineLocalization() {
+  var lang = navigator.language;
+  var script = document.documentElement.querySelector('script[type="application/l10n"][lang="' +
+      lang + '"]');
+  if (!script) {
+    return false;
+  }
+  var locale = ctx.getLocale(lang);
+  // the inline localization is happenning very early, when the ctx is not
+  // yet ready and when the resources haven't been downloaded yet;  add the
+  // inlined JSON directly to the current locale
+  locale.addAST(JSON.parse(script.innerHTML));
+  // record the fact that the locale already has the inlined strings
+  locale.isPartial = true;
+  // localize the visible DOM
+  translateFragment(null, locale);
+  // the visible DOM is now pretranslated
+  isPretranslated = true;
+  return true;
 }
 
 function initDocumentLocalization(cb) {
@@ -97,16 +142,20 @@ function initDocumentLocalization(cb) {
   }
 }
 
-function initLocale(lang, forced) {
-  ctx.ready(onReady.bind(null, forced));
-  ctx.registerLocales('en-US');
-  ctx.requestLocales(navigator.language);
+function initLocale(lang) {
+  if (!lang) {
+    lang = navigator.language;
+  }
+  ctx.registerLocales('en-US', [lang]);
+  ctx.requestLocales(lang);
 }
 
-function onReady(forced) {
-  if (forced || !isPretranslated) {
+function onReady() {
+  if (!isPretranslated) {
     translateFragment();
   }
+
+  isPretranslated = false;
   fireLocalizedEvent();
 }
 
@@ -115,6 +164,13 @@ function fireLocalizedEvent() {
   event.initEvent('localized', false, false);
   event.language = ctx.supportedLocales[0];
   window.dispatchEvent(event);
+}
+
+var DEBUG = false;
+function logMessage(type, e) {
+  if (DEBUG) {
+    console[type](e);
+  }
 }
 
 // INI loader functions
@@ -190,13 +246,14 @@ function parseINI(source, iniPath) {
 
 // HTML translation functions
 
-function translateFragment(element) {
+function translateFragment(element, loc) {
   element = element || document.documentElement;
 
-  translateElement(element);
-  var nodes = getTranslatableChildren(element);
-  for (var node of nodes) {
-    translateElement(node);
+
+  translateElement(element, loc);
+  
+  for (var node of getTranslatableChildren(element)) {
+    translateElement(node, loc);
   }
 }
 
@@ -236,23 +293,26 @@ function getL10nAttributes(element) {
   var l10nId = element.getAttribute('data-l10n-id');
   var l10nArgs = element.getAttribute('data-l10n-args');
 
-  var args = {};
-  if (l10nArgs) {
-    args = JSON.parse(l10nArgs);
-  }
+  var args = l10nArgs ? JSON.parse(l10nArgs) : {};
+
   return {id: l10nId, args: args};
 }
 
-function translateElement(element) {
+function translateElement(element, loc) {
   var l10n = getL10nAttributes(element);
   if (!l10n.id) {
     return;
   }
 
-  var entity = ctx.getEntity(l10n.id, l10n.args);
+  var entity;
+  if (loc) {
+    entity = loc.getEntity(l10n.id, l10n.args);
+  } else {
+    entity = ctx.getEntity(l10n.id, l10n.args);
+  }
+
   if (!entity) {
-    console.log(l10n);
-    console.dir(entity);
+    return;
   }
 
   if (entity.value) {
