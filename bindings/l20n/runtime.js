@@ -2,13 +2,17 @@
 
 var Context = require('./context').Context;
 
+var DEBUG = false;
 var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
 var ctx = new Context();
 ctx.ready(onReady);
-ctx.addEventListener('error', logMessage.bind(null, 'error'));
-ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
+
+if (DEBUG) {
+  ctx.addEventListener('error', logMessage.bind(null, 'error'));
+  ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
+}
 
 
 // Public API
@@ -73,11 +77,7 @@ if (window.document) {
     }
   }
 
-  if ('mozSettings' in navigator && navigator.mozSettings) {
-    navigator.mozSettings.addObserver('language.current', function(event) {
-      navigator.mozL10n.language.code = event.settingValue;
-    });
-  }
+
 }
 
 function pretranslate() {
@@ -157,6 +157,12 @@ function onReady() {
 
   isPretranslated = false;
   fireLocalizedEvent();
+
+  if (navigator.mozSettings) {
+    navigator.mozSettings.addObserver('language.current', function(event) {
+      navigator.mozL10n.language.code = event.settingValue;
+    });
+  }
 }
 
 function fireLocalizedEvent() {
@@ -166,7 +172,6 @@ function fireLocalizedEvent() {
   window.dispatchEvent(event);
 }
 
-var DEBUG = false;
 function logMessage(type, e) {
   if (DEBUG) {
     console[type](e);
