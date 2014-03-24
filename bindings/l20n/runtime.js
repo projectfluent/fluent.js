@@ -320,20 +320,27 @@ function translateElement(element, loc) {
     return;
   }
 
+  if (typeof entity === 'string') {
+    setTextContent(element, entity);
+    return true;
+  }
+
   if (entity.value) {
     setTextContent(element, entity.value);
   }
 
-  for (var key in entity.attributes) {
-    if (entity.attributes.hasOwnProperty(key)) {
-      var attr = entity.attributes[key];
-      var pos = key.indexOf('.');
-      if (pos !== -1) {
-        element[key.substr(0, pos)][key.substr(pos + 1)] = attr;
-      } else if (key === 'ariaLabel') {
-        element.setAttribute('aria-label', attr);
-      } else {
-        element[key] = attr;
+  if (entity.attributes) {
+    for (var key in entity.attributes) {
+      if (entity.attributes.hasOwnProperty(key)) {
+        var attr = entity.attributes[key];
+        var pos = key.indexOf('.');
+        if (pos !== -1) {
+          element[key.substr(0, pos)][key.substr(pos + 1)] = attr;
+        } else if (key === 'ariaLabel') {
+          element.setAttribute('aria-label', attr);
+        } else {
+          element[key] = attr;
+        }
       }
     }
   }

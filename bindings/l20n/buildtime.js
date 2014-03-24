@@ -333,18 +333,25 @@
       return false;
     }
 
+    if (typeof entity === 'string') {
+      setTextContent(node, entity);
+      return true;
+    }
+
     if (entity.value) {
       setTextContent(node, entity.value);
     }
 
-    for (var key in entity.attributes) {
-      if (entity.attributes.hasOwnProperty(key)) {
-        var attr = entity.attributes[key];
-        var pos = key.indexOf('.');
-        if (pos !== -1) {
-          node[key.substr(0, pos)][key.substr(pos + 1)] = attr;
-        } else {
-          node[key] = attr;
+    if (entity.attributes) {
+      for (var key in entity.attributes) {
+        if (entity.attributes.hasOwnProperty(key)) {
+          var attr = entity.attributes[key];
+          var pos = key.indexOf('.');
+          if (pos !== -1) {
+            node[key.substr(0, pos)][key.substr(pos + 1)] = attr;
+          } else {
+            node[key] = attr;
+          }
         }
       }
     }
