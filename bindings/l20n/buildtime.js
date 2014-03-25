@@ -24,8 +24,6 @@
   function bootstrap(forcedLocale) {
     isBootstrapped = true;
 
-    var availableLocales = [];
-
     var head = document.head;
     var iniLinks = head.querySelectorAll('link[type="application/l10n"]' + 
                                          '[href$=".ini"]');
@@ -57,7 +55,6 @@
 
     var iniToLoad = iniLinks.length;
     if (iniToLoad === 0) {
-      ctx.registerLocales('en-US', getAvailable());
       ctx.requestLocales(forcedLocale || navigator.language);
       return;
     }
@@ -74,27 +71,16 @@
       }
 
       var ini = parseINI(text, url);
-      availableLocales.push.apply(availableLocales, ini.locales);
       for (var i = 0; i < ini.resources.length; i++) {
         var uri = ini.resources[i].replace('en-US', '{{locale}}');
         ctx.resLinks.push(uri);
       }
       iniToLoad--;
       if (iniToLoad === 0) {
-        ctx.registerLocales('en-US', availableLocales);
         ctx.requestLocales(forcedLocale || navigator.language);
       }
     }
 
-  }
-
-  function getAvailable() {
-    var metaLocs = document.head.querySelector('meta[name="locales"]');
-    if (metaLocs) {
-      return metaLocs.getAttribute('content').split(',').map(String.trim);
-    } else {
-      return [];
-    }
   }
 
   var patterns = {
@@ -212,6 +198,30 @@
 
 
   /* API for webapp-optimize */
+
+  Context.prototype.getEntitySource = function getEntitySource(id) {
+    if (!this.isReady) {
+      throw new Context.Error('Context not ready');
+    }
+    var cur = 0;
+    var loc;
+    var locale;
+    while (loc = this.supportedLocales[cur]) {
+      locale = this.getLocale(loc);
+      if (!locale.isReady) {
+        // build without callback, synchronously
+        locale.build(null);
+      }
+      if (locale.ast && locale.ast.hasOwnProperty(id)) {
+        return locale.ast[id];
+      }
+      var e = new Context.TranslationError('Not found', id,
+                                           this.supportedLocales, locale);
+      this._emitter.emit('warning', e);
+      cur++;
+    }
+    return '';
+  }
 
   // return an array of all {{placeables}} found in a string
   function getPlaceableNames(str) {

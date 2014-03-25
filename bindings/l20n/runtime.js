@@ -146,7 +146,6 @@ function initLocale(lang) {
   if (!lang) {
     lang = navigator.language;
   }
-  ctx.registerLocales('en-US', [lang]);
   ctx.requestLocales(lang);
 }
 
