@@ -298,13 +298,14 @@ function getL10nAttributes(element) {
   var l10nId = element.getAttribute('data-l10n-id');
   var l10nArgs = element.getAttribute('data-l10n-args');
 
-  var args = l10nArgs ? JSON.parse(l10nArgs) : {};
+  var args = l10nArgs ? JSON.parse(l10nArgs) : null;
 
   return {id: l10nId, args: args};
 }
 
 function translateElement(element, loc) {
   var l10n = getL10nAttributes(element);
+
   if (!l10n.id) {
     return;
   }
