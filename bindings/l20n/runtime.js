@@ -67,11 +67,11 @@ if (window.document) {
 
   if (isPretranslated) {
     waitFor('complete', function() {
-      window.setTimeout(initDocumentLocalization.bind(null, initLocale));
+      window.setTimeout(initDocumentLocalization);
     });
   } else {
     if (document.readyState === 'complete') {
-      window.setTimeout(initDocumentLocalization.bind(null, initLocale));
+      window.setTimeout(initDocumentLocalization);
     } else {
       waitFor('interactive', pretranslate);
     }
@@ -83,10 +83,10 @@ if (window.document) {
 function pretranslate() {
   if (inlineLocalization()) {
     waitFor('interactive', function() {
-      window.setTimeout(initDocumentLocalization.bind(null, initLocale));
+      window.setTimeout(initDocumentLocalization);
     });
   } else {
-    initDocumentLocalization(initLocale);
+    initDocumentLocalization();
   }
 }
 
@@ -111,7 +111,7 @@ function inlineLocalization() {
   return true;
 }
 
-function initDocumentLocalization(cb) {
+function initDocumentLocalization() {
   var resLinks = document.head.querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
   var link;
@@ -127,13 +127,14 @@ function initDocumentLocalization(cb) {
 
   var iniLoads = iniLinks.length;
   if (iniLoads === 0) {
-    onIniLoaded();
+    initLocale();
+    return;
   }
 
   function onIniLoaded() {
     iniLoads--;
     if (iniLoads <= 0) {
-      cb();
+      initLocale();
     }
   }
 
