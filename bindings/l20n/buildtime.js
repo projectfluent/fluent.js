@@ -4,37 +4,27 @@ var Context = require('./context').Context;
 var rePlaceables = require('./compiler').rePlaceables;
 
 var DEBUG = true;
-var isBootstrapped = false;
-var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
-var ctx = new Context();
-ctx.isBuildtime = true;
-ctx.ready(onReady);
-
-if (DEBUG) {
-  ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
-  ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
-}
+var ctx;
 
 // Public API
 
 navigator.mozL10n = {
   translate: translateFragment,
   localize: localizeElement,
-  get: ctx.get.bind(ctx),
-  ready: ctx.ready.bind(ctx),
+  get: function(id, ctxdata){
+    return ctx.get(id, ctxdata);
+  },
+  ready: function(callback){
+    return ctx.ready(callback);
+  },
   get readyState() {
     return ctx.isReady ? 'complete' : 'loading';
   },
   language: {
     set code(lang) {
-      if (!isBootstrapped) {
-        initDocumentLocalization(lang);
-      } else {
-        ctx.requestLocales(lang);
-        isBootstrapped = true;
-      }
+      ctx.requestLocales(lang);
     },
     get code() {
       return ctx.supportedLocales[0];
@@ -44,13 +34,30 @@ navigator.mozL10n = {
     },
   },
   getDictionary: getDictionary,
+  bootstrap: bootstrap
 };
+
+
+function bootstrap(callback) {
+  ctx = new Context();
+  ctx.isBuildtime = true;
+  ctx.ready(onReady);
+
+  if (DEBUG) {
+    ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
+    ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
+  }
+  initDocumentLocalization(callback);
+}
 
 function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
-function initDocumentLocalization(lang) {
+function initDocumentLocalization(callback) {
+  if (!callback) {
+    callback = ctx.requestLocales.bind(ctx, navigator.language);
+  }
   var resLinks = document.head.querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
   var link;
@@ -66,14 +73,14 @@ function initDocumentLocalization(lang) {
 
   var iniLoads = iniLinks.length;
   if (iniLoads === 0) {
-    initLocale(lang);
+    callback();
     return;
   }
 
   function onIniLoaded() {
     iniLoads--;
     if (iniLoads <= 0) {
-      initLocale(lang);
+      callback();
     }
   }
 
@@ -82,23 +89,13 @@ function initDocumentLocalization(lang) {
   }
 }
 
-function initLocale(lang) {
-  if (!lang) {
-    lang = navigator.language;
-  }
-  ctx.requestLocales(lang);
-}
-
 function onReady() {
-  if (!isPretranslated) {
-    translateFragment();
-  }
-
-  isPretranslated = false;
+  translateFragment();
   fireLocalizedEvent();
 }
 
 var buildMessages = {};
+
 function addBuildMessage(type, e) {
   if (!(type in buildMessages)) {
     buildMessages[type] = [];
