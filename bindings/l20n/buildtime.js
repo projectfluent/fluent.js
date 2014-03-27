@@ -11,17 +11,6 @@ var ctx;
 // Public API
 
 navigator.mozL10n = {
-  translate: translateFragment,
-  localize: localizeElement,
-  get: function(id, ctxdata){
-    return ctx.get(id, ctxdata);
-  },
-  ready: function(callback){
-    return ctx.ready(callback);
-  },
-  get readyState() {
-    return ctx.isReady ? 'complete' : 'loading';
-  },
   language: {
     set code(lang) {
       ctx.requestLocales(lang);

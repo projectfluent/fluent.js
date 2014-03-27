@@ -20,12 +20,8 @@ if (DEBUG) {
 navigator.mozL10n = {
   translate: translateFragment,
   localize: localizeElement,
-  get: function(id, ctxdata){
-    return ctx.get(id, ctxdata);
-  },
-  ready: function(callback){
-    return ctx.ready(callback);
-  },
+  get: ctx.get.bind(ctx),
+  ready: ctx.ready.bind(ctx),
   get readyState() {
     return ctx.isReady ? 'complete' : 'loading';
   },
