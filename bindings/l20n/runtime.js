@@ -20,14 +20,18 @@ if (DEBUG) {
 navigator.mozL10n = {
   translate: translateFragment,
   localize: localizeElement,
-  get: ctx.get.bind(ctx),
-  ready: ctx.ready.bind(ctx),
+  get: function(id, ctxdata){
+    return ctx.get(id, ctxdata);
+  },
+  ready: function(callback){
+    return ctx.ready(callback);
+  },
   get readyState() {
     return ctx.isReady ? 'complete' : 'loading';
   },
   language: {
     set code(lang) {
-      initLocale(lang, true);
+      ctx.requestLocales(lang);
     },
     get code() {
       return ctx.supportedLocales[0];
@@ -77,7 +81,6 @@ if (window.document) {
     }
   }
 
-
 }
 
 function pretranslate() {
@@ -111,7 +114,10 @@ function inlineLocalization() {
   return true;
 }
 
-function initDocumentLocalization() {
+function initDocumentLocalization(callback) {
+  if (!callback) {
+    callback = ctx.requestLocales.bind(ctx, navigator.language);
+  }
   var resLinks = document.head.querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
   var link;
@@ -127,27 +133,20 @@ function initDocumentLocalization() {
 
   var iniLoads = iniLinks.length;
   if (iniLoads === 0) {
-    initLocale();
+    callback();
     return;
   }
 
   function onIniLoaded() {
     iniLoads--;
     if (iniLoads <= 0) {
-      initLocale();
+      callback();
     }
   }
 
   for (link of iniLinks) {
     loadINI(link, onIniLoaded);
   }
-}
-
-function initLocale(lang) {
-  if (!lang) {
-    lang = navigator.language;
-  }
-  ctx.requestLocales(lang);
 }
 
 function onReady() {
