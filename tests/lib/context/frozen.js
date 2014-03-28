@@ -1,12 +1,21 @@
+'use strict';
+
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
+
+function whenReady(ctx, callback) {
+  ctx.addEventListener('ready', function onReady() {
+    ctx.removeEventListener('ready', onReady);
+    callback();
+  });
+}
 
 describe('A non-frozen context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
-    ctx.addResource('dummy=Dummy');
+    ctx.resLinks.push(__dirname + '/fixtures/strings.properties');
   });
 
   it('should throw on get', function() {
@@ -25,20 +34,10 @@ describe('A frozen, non-ready context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
-    ctx.linkResource('./fixtures/en-US.properties');
+    ctx.resLinks.push(__dirname + '/fixtures/strings.properties');
     ctx.requestLocales();
   });
 
-  it('should throw on addResource', function() {
-    (function(){
-      ctx.addResource('dummy=Dummy');
-    }).should.throw(/Context is frozen/);
-  })
-  it('should throw on linkResource', function() {
-    (function(){
-      ctx.linkResource('./fixtures/en-US.lol');
-    }).should.throw(/Context is frozen/);
-  })
   it('should throw on requestLocales', function() {
     (function(){
       ctx.requestLocales();
@@ -54,11 +53,6 @@ describe('A frozen, non-ready context', function() {
       ctx.getEntity('dummy');
     }).should.throw(/Context not ready/);
   })
-  it('should throw on registerLocales', function() {
-    (function(){
-      ctx.registerLocales('en-US');
-    }).should.throw(/Context is frozen/);
-  })
   it('should throw on requestLocales', function() {
     (function(){
       ctx.requestLocales('en-US');
@@ -70,7 +64,7 @@ describe('A frozen, ready context', function() {
   var ctx;
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.addResource('dummy=Dummy');
+    ctx.resLinks.push(__dirname + '/fixtures/strings.properties');
     ctx.addEventListener('ready', function onReady() {
       ctx.removeEventListener('ready', onReady);
       done();
@@ -78,16 +72,6 @@ describe('A frozen, ready context', function() {
     ctx.requestLocales();
   });
 
-  it('should throw on addResource', function() {
-    (function(){
-      ctx.addResource('dummy=Dummy');
-    }).should.throw(/Context is frozen/);
-  })
-  it('should throw on linkResource', function() {
-    (function(){
-      ctx.linkResource('./fixtures/en-US.lol');
-    }).should.throw(/Context is frozen/);
-  })
   it('should not throw on get of a known entity', function() {
     (function(){
       ctx.get('dummy');
@@ -108,19 +92,30 @@ describe('A frozen, ready context', function() {
       ctx.getEntity('missing');
     }).should.not.throw();
   })
-  it('should throw on registerLocales', function() {
-    (function(){
-      ctx.registerLocales('en-US');
-    }).should.throw(/Context is frozen/);
-  })
-  it('should throw on registerLocaleNegotiator', function() {
-    (function(){
-      ctx.registerLocales('en-US');
-    }).should.throw(/Context is frozen/);
-  })
   it('should not throw on requestLocales', function() {
     (function(){
       ctx.requestLocales('en-US');
     }).should.not.throw();
   })
+});
+
+describe('A frozen, ready context', function() {
+  var ctx;
+  beforeEach(function(done) {
+    ctx = new Context();
+    ctx.resLinks.push(__dirname + '/fixtures/{{locale}}.properties');
+    whenReady(ctx, done);
+    ctx.requestLocales('en-US');
+  });
+
+  it('should return translations for the current built fallback chain ', function() {
+    // Bug 942183 - Error when localizeNode is done quickly after
+    // requestLocales https://bugzil.la/942183
+    // Changing locales triggers the build process for the 'pl' locale.
+    // However, synchronous methods called right after the change should still
+    // return translations for the previous fallback chain
+    ctx.requestLocales('pl');
+    var entity = ctx.getEntity('foo');
+    entity.should.equal('Foo en-US');
+  });
 });

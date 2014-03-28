@@ -1,26 +1,20 @@
+'use strict';
+
+var should = require('should');
+
 var Parser = require('../../../lib/l20n/parser').Parser;
-var Compiler = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../lib/l20n/compiler').Compiler;
+var compile = process.env.L20N_COV
+  ? require('../../../build/cov/lib/l20n/compiler').compile
+  : require('../../../lib/l20n/compiler').compile;
+var getPluralRule = require('../../../lib/l20n/plurals').getPluralRule;
 
 var parser = new Parser();
-var compiler = new Compiler();
 
 describe('Index', function(){
-  var source, ctxdata, ast, env;
+  var source, env;
   beforeEach(function() {
-    ast = parser.parse(source);
-    ast.body['plural'] = {
-      type: 'Macro',
-      args: [{
-        type: 'Identifier',
-        name: 'n'
-      }],
-      expression: function(n) {
-        return (n == 1) ? 'one' : 'other';
-      }
-    };
-    env = compiler.compile(ast);
+    env = compile(parser.parse(source));
+    env.__plural = getPluralRule('en-US');
   });
 
   describe('Cyclic reference to the same entity', function(){
@@ -30,10 +24,9 @@ describe('Index', function(){
         'foo[one]=One'
       ].join('\n');
     });
-    it('throws', function() {
-      (function() {
-        env.foo.getString();
-      }).should.throw(/must be numbers/);
+    it('is undefined', function() {
+      var value = env.foo.toString();
+      should.equal(value, undefined);
     });
   });
 
@@ -45,10 +38,10 @@ describe('Index', function(){
         'foo.attr[one]=One'
       ].join('\n');
     });
-    it('throws', function() {
-      (function() {
-        env.foo.get();
-      }).should.throw(/must be numbers/);
+    it('value of the attribute is undefined', function() {
+      var entity = env.foo.valueOf();
+      should.equal(entity.value, 'Foo');
+      should.equal(entity.attr, undefined);
     });
   });
 
