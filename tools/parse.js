@@ -15,7 +15,7 @@ program
   .parse(process.argv);
 
 var parser = new Parser();
-parser.addEventListener('error', logError);
+parser._emitter.addEventListener('error', logError);
 
 function color(str, col) {
   if (program.color) {

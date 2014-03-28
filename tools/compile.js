@@ -19,7 +19,7 @@ program
   .parse(process.argv);
 
 var parser = new Parser();
-parser.addEventListener('error', logError);
+parser._emitter.addEventListener('error', logError);
 
 var data = {};
 if (program.data) {
@@ -46,16 +46,13 @@ function logError(err) {
 }
 
 function singleline(str) {
-  return str.replace(/\n/g, ' ')
-            .replace(/\s{3,}/g, ' ')
-            .trim();
+  return str && str.replace(/\n/g, ' ')
+                   .replace(/\s{3,}/g, ' ')
+                   .trim();
 }
 
 function getString(entity) {
-  if (typeof entity !== 'string') {
-    entity = entity.getString(data);
-  }
-  return color(singleline(entity), VALUE);
+  return color(singleline(entity.toString(data)), VALUE);
 }
 
 function print(id, entity) {
