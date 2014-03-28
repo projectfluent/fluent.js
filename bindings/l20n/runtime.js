@@ -1,6 +1,9 @@
 'use strict';
 
-var Context = require('./context').Context;
+/* jshint -W104 */
+/* global Context */
+/* global loadINI */
+/* global translateFragment, localizeElement */
 
 var DEBUG = false;
 var isPretranslated = false;
@@ -97,13 +100,13 @@ function pretranslate() {
 }
 
 function inlineLocalization() {
-  var lang = navigator.language;
-  var script = document.documentElement.querySelector('script[type="application/l10n"][lang="' +
-      lang + '"]');
+  var script = document.documentElement
+                       .querySelector('script[type="application/l10n"]' +
+                       '[lang="' + navigator.language + '"]');
   if (!script) {
     return false;
   }
-  var locale = ctx.getLocale(lang);
+  var locale = ctx.getLocale(navigator.language);
   // the inline localization is happenning very early, when the ctx is not
   // yet ready and when the resources haven't been downloaded yet;  add the
   // inlined JSON directly to the current locale
@@ -121,7 +124,8 @@ function initDocumentLocalization(callback) {
   if (!callback) {
     callback = ctx.requestLocales.bind(ctx, navigator.language);
   }
-  var resLinks = document.head.querySelectorAll('link[type="application/l10n"]');
+  var resLinks = document.head
+                         .querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
   var link;
 

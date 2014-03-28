@@ -1,0 +1,27 @@
+{
+  "bitwise": true,
+  "boss": true,
+  "curly": false,
+  "eqeqeq": true,
+  "eqnull": true,
+  "forin": true,
+  "immed": true,
+  "multistr": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "strict": true,
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+  "validthis": true,
+
+  "node": true,
+  "devel": true,
+
+  "quotmark": "single",
+  "maxcomplexity": 20,
+  "maxerr": 50,
+  "maxlen": 80
+}

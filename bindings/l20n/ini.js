@@ -1,5 +1,9 @@
 'use strict';
 
+/* jshint -W104 */
+/* global ctx, io */
+/* exported loadINI */
+
 function loadINI(url, cb) {
   io.load(url, function(err, source) {
     if (!source) {

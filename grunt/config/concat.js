@@ -4,12 +4,9 @@ module.exports = {
   options: {
     separator: '',
     banner: '' +
-      '/* -*- Mode: js; js-indent-level: 2; indent-tabs-mode: nil -*- */\n' +
-      '/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */\n' +
+      '\'use strict\';\n' +
       '\n' +
-      '(function(window, undefined) {\n' +
-      '  \'use strict\';\n' +
-      '\n',
+      '(function(window, undefined) {\n',
     footer: '})(this);\n',
     process: function(src) {
       src = src.replace(
@@ -20,6 +17,15 @@ module.exports = {
         '');
       src = src.replace(
         /.*'use strict';\n/g,
+        '');
+      src = src.replace(
+        /\/\* jshint .*\*\/\n/g,
+        '');
+      src = src.replace(
+        /\/\* global .*\*\/\n/g,
+        '');
+      src = src.replace(
+        /\/\* exported .*\*\/\n/g,
         '');
       return src;
     }

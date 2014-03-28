@@ -11,7 +11,8 @@ module.exports = {
   },
   webl10n: {
     files: {
-      'dist/webl10n/l10n.min.js': ['dist/webl10n/l10n.js'],
+      'dist/runtime/l10n.min.js': ['dist/runtime/l10n.js'],
+      'dist/buildtime/l10n.min.js': ['dist/buildtime/l10n.js'],
     }
   },
 };

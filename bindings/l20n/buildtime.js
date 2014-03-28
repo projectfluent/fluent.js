@@ -1,7 +1,9 @@
 'use strict';
 
-var Context = require('./context').Context;
-var rePlaceables = require('./compiler').rePlaceables;
+/* jshint -W104 */
+/* global Context, rePlaceables */
+/* global loadINI */
+/* global translateFragment, getTranslatableChildren, getL10nAttributes */
 
 var DEBUG = true;
 var requiresInlineLocale = false; // netError requires inline locale
@@ -49,7 +51,8 @@ function initDocumentLocalization(callback) {
   if (!callback) {
     callback = ctx.requestLocales.bind(ctx, navigator.language);
   }
-  var resLinks = document.head.querySelectorAll('link[type="application/l10n"]');
+  var resLinks = document.head
+                         .querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
   var containsFetchableLocale = false;
   var link;
@@ -146,7 +149,7 @@ Context.prototype.getEntitySource = function getEntitySource(id) {
     cur++;
   }
   return '';
-}
+};
 
 // return an array of all {{placeables}} found in a string
 function getPlaceableNames(str) {
@@ -189,6 +192,7 @@ function getDictionary(fragment) {
     for (var id in sourceLocale.ast) {
       ast[id] = ctx.getEntitySource(id);
     }
+    flushBuildMessages('compared to en-US');
     return ast;
   }
 
@@ -205,8 +209,9 @@ function getDictionary(fragment) {
     ast[attrs.id] = val;
     getPlaceables(ast, val);
   }
+  flushBuildMessages('in the visible DOM');
   return ast;
-};
+}
 
 
 /* DOM translation functions */

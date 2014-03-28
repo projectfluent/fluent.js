@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 define(function (require, exports, module) {
   'use strict';
 
@@ -10,3 +12,5 @@ define(function (require, exports, module) {
   return L20n;
 
 });
+
+/* jshint ignore:end */
