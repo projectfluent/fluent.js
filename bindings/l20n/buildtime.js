@@ -4,6 +4,7 @@ var Context = require('./context').Context;
 var rePlaceables = require('./compiler').rePlaceables;
 
 var DEBUG = true;
+var requiresInlineLocale = false; // netError requires inline locale
 var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
 var ctx;
@@ -30,6 +31,7 @@ navigator.mozL10n = {
 function bootstrap(callback) {
   ctx = new Context();
   ctx.isBuildtime = true;
+  requiresInlineLocale = false;
   ctx.ready(onReady);
 
   if (DEBUG) {
@@ -49,12 +51,16 @@ function initDocumentLocalization(callback) {
   }
   var resLinks = document.head.querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
+  var containsFetchableLocale = false;
   var link;
 
   for (link of resLinks) {
     var url = link.getAttribute('href');
     var type = url.substr(url.lastIndexOf('.') + 1);
     if (type === 'ini') {
+      if (!('noFetch' in link.dataset)) {
+        containsFetchableLocale = true;
+      }
       iniLinks.push(url);
     }
     ctx.resLinks.push(url);
@@ -62,6 +68,10 @@ function initDocumentLocalization(callback) {
 
   var iniLoads = iniLinks.length;
   if (iniLoads === 0) {
+    if (!containsFetchableLocale) {
+      requiresInlineLocale = true;
+      document.documentElement.dataset.noCompleteBug = true;
+    }
     callback();
     return;
   }
@@ -69,6 +79,10 @@ function initDocumentLocalization(callback) {
   function onIniLoaded() {
     iniLoads--;
     if (iniLoads <= 0) {
+      if (!containsFetchableLocale) {
+        requiresInlineLocale = true;
+        document.documentElement.dataset.noCompleteBug = true;
+      }
       callback();
     }
   }
@@ -176,6 +190,11 @@ function getDictionary(fragment) {
       ast[id] = ctx.getEntitySource(id);
     }
     return ast;
+  }
+
+  // don't build inline JSON for default language
+  if (!requiresInlineLocale && ctx.supportedLocales[0] === 'en-US') {
+    return {};
   }
 
   var elements = getTranslatableChildren(fragment);

@@ -65,6 +65,13 @@ function waitFor(state, callback) {
 if (window.document) {
   isPretranslated = (document.documentElement.lang === navigator.language);
 
+  // this is a special case for netError bug
+  if (document.documentElement.dataset.noCompleteBug) {
+    pretranslate();
+    return;
+  }
+
+
   if (isPretranslated) {
     waitFor('complete', function() {
       window.setTimeout(initDocumentLocalization);
