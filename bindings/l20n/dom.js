@@ -7,7 +7,7 @@
 function translateFragment(element, loc) {
   element = element || document.documentElement;
   translateElement(element, loc);
-  
+
   for (var node of getTranslatableChildren(element)) {
     translateElement(node, loc);
   }

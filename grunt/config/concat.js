@@ -19,13 +19,13 @@ module.exports = {
         /.*'use strict';\n/g,
         '');
       src = src.replace(
-        /\/\* jshint .*\*\/\n/g,
+        /.*\/\* jshint .*\*\/\n/g,
         '');
       src = src.replace(
-        /\/\* global .*\*\/\n/g,
+        /.*\/\* global .*\*\/\n/g,
         '');
       src = src.replace(
-        /\/\* exported .*\*\/\n/g,
+        /.*\/\* exported .*\*\/\n/g,
         '');
       return src;
     }
