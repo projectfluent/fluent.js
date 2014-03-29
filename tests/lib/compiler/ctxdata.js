@@ -2,19 +2,12 @@
 
 var should = require('should');
 
-var Parser = require('../../../lib/l20n/parser').Parser;
-var compile = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').compile
-  : require('../../../lib/l20n/compiler').compile;
-var getPluralRule = require('../../../lib/l20n/plurals').getPluralRule;
-
-var parser = new Parser();
+var compile = require('./helper').compile;
 
 describe('Context data', function(){
   var source, ctxdata, env;
   beforeEach(function() {
-    env = compile(parser.parse(source));
-    env.__plural = getPluralRule('en-US');
+    env = compile(source);
   });
 
   describe('in entities', function(){

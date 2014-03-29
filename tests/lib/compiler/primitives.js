@@ -1,18 +1,12 @@
 'use strict';
 
-var Parser = require('../../../lib/l20n/parser').Parser;
-var compile = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').compile
-  : require('../../../lib/l20n/compiler').compile;
-var getPluralRule = require('../../../lib/l20n/plurals').getPluralRule;
+var compile = require('./helper').compile;
 
-var parser = new Parser();
 
 describe('Primitives:', function(){
   var source, env;
   beforeEach(function() {
-    env = compile(parser.parse(source));
-    env.__plural = getPluralRule('en-US');
+    env = compile(source);
   });
 
   describe('Simple string value', function(){
@@ -22,7 +16,7 @@ describe('Primitives:', function(){
       ].join('\n');
     });
     it('returns the value', function(){
-      env.foo.should.equal('Foo');
+      env.foo.toString().should.equal('Foo');
     });
   });
 

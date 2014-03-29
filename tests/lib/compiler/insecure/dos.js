@@ -2,18 +2,13 @@
 
 var should = require('should');
 
-var Parser = require('../../../../lib/l20n/parser').Parser;
-var compile = process.env.L20N_COV
-  ? require('../../../../build/cov/lib/l20n/compiler').compile
-  : require('../../../../lib/l20n/compiler').compile;
-
-var parser = new Parser();
+var compile = require('../helper').compile;
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 describe('Reference bombs', function(){
   var source, env;
   beforeEach(function() {
-    env = compile(parser.parse(source));
+    env = compile(source);
   });
 
   describe('Billion Laughs', function(){

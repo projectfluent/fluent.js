@@ -1,11 +1,6 @@
 'use strict';
 
-var Parser = require('../../../lib/l20n/parser').Parser;
-var compile = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').compile
-  : require('../../../lib/l20n/compiler').compile;
-
-var parser = new Parser();
+var compile = require('./helper').compile;
 
 describe('Env object', function(){
   var source, env;
@@ -15,11 +10,11 @@ describe('Env object', function(){
       'getFoo={{ foo }}',
       'getBar={{ bar }}'
     ].join('\n');
-    env = compile(parser.parse(source));
+    env = compile(source);
   });
 
   it('works', function() {
-    env.foo.should.equal('Foo');
+    env.foo.toString().should.equal('Foo');
     env.getFoo.toString().should.equal('Foo');
     env.getBar.toString().should.equal('{{ bar }}');
   });
@@ -28,9 +23,9 @@ describe('Env object', function(){
       'foo=Foo',
       'bar=Bar'
     ].join('\n');
-    var env2 = compile(parser.parse(source2));
+    var env2 = compile(source2);
 
-    env.foo.should.equal('Foo');
+    env.foo.toString().should.equal('Foo');
     env.getFoo.toString().should.equal('Foo');
     env.getBar.toString().should.equal('{{ bar }}');
   });

@@ -2,19 +2,12 @@
 
 var should = require('should');
 
-var Parser = require('../../../lib/l20n/parser').Parser;
-var compile = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').compile
-  : require('../../../lib/l20n/compiler').compile;
-var getPluralRule = require('../../../lib/l20n/plurals').getPluralRule;
-
-var parser = new Parser();
+var compile = require('./helper').compile;
 
 describe('Macros', function(){
   var source, ctxdata, env;
   beforeEach(function() {
-    env = compile(parser.parse(source));
-    env.__plural = getPluralRule('en-US');
+    env = compile(source);
   });
 
   describe('referencing macros', function(){
@@ -94,7 +87,7 @@ describe('Macros', function(){
 describe('A simple plural macro', function(){
   var source, env;
   beforeEach(function() {
-    env = compile(parser.parse(source));
+    env = compile(source);
     env.__plural = function(n) {
       // a made-up plural rule:
       // [0, 1) -> other
