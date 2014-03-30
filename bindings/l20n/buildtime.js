@@ -106,11 +106,10 @@ function addBuildMessage(type, e) {
   if (!(type in buildMessages)) {
     buildMessages[type] = [];
   }
-  if (e instanceof Context.TranslationError &&
-      e.locale === ctx.supportedLocales[0] &&
-      buildMessages[type].indexOf(e.entity) === -1) {
-        buildMessages[type].push(e.entity);
-      }
+  if (e instanceof Context.Error && e.loc === ctx.supportedLocales[0] &&
+      buildMessages[type].indexOf(e.id) === -1) {
+    buildMessages[type].push(e.id);
+  }
 }
 
 function flushBuildMessages(variant) {
@@ -143,8 +142,7 @@ Context.prototype.getEntitySource = function getEntitySource(id) {
     if (locale.ast && locale.ast.hasOwnProperty(id)) {
       return locale.ast[id];
     }
-    var e = new Context.TranslationError('Not found', id,
-        this.supportedLocales, locale);
+    var e = new Context.Error(id + ' not found in ' + loc, id, loc);
     this._emitter.emit('warning', e);
     cur++;
   }
