@@ -117,8 +117,6 @@ function inlineLocalization() {
   // yet ready and when the resources haven't been downloaded yet;  add the
   // inlined JSON directly to the current locale
   locale.addAST(JSON.parse(script.innerHTML));
-  // record the fact that the locale already has the inlined strings
-  locale.isPartial = true;
   // localize the visible DOM
   translateFragment(null, locale);
   // the visible DOM is now pretranslated
