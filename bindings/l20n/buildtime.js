@@ -33,8 +33,8 @@ navigator.mozL10n = {
 function bootstrap(callback) {
   ctx = new Context();
   ctx.isBuildtime = true;
-  requiresInlineLocale = false;
   ctx.ready(onReady);
+  requiresInlineLocale = false;
 
   if (DEBUG) {
     ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
@@ -96,6 +96,8 @@ function initDocumentLocalization(callback) {
 }
 
 function onReady() {
+  document.documentElement.lang = ctx.supportedLocales[0];
+  document.documentElement.dir = getDirection(ctx.supportedLocales[0]);
   translateFragment();
   fireLocalizedEvent();
 }
