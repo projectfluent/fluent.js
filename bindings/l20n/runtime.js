@@ -21,7 +21,9 @@ if (DEBUG) {
 // Public API
 
 navigator.mozL10n = {
-  translate: translateFragment,
+  translate: function translate(element) {
+    return translateFragment(element);
+  },
   localize: localizeElement,
   get: function get(id, ctxdata) {
     var value = ctx.get(id, ctxdata);
@@ -73,9 +75,6 @@ function waitFor(state, callback) {
 
 if (window.document) {
   isPretranslated = (document.documentElement.lang === navigator.language);
-
-  document.documentElement.lang = navigator.language;
-  document.documentElement.dir = getDirection(navigator.language);
 
   // this is a special case for netError bug
   if (document.documentElement.dataset.noCompleteBug) {
@@ -166,9 +165,6 @@ function initDocumentLocalization(callback) {
 }
 
 function onReady() {
-  document.documentElement.lang = ctx.supportedLocales[0];
-  document.documentElement.dir = getDirection(ctx.supportedLocales[0]);
-
   if (!isPretranslated) {
     translateFragment();
   }

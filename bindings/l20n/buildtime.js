@@ -96,8 +96,6 @@ function initDocumentLocalization(callback) {
 }
 
 function onReady() {
-  document.documentElement.lang = ctx.supportedLocales[0];
-  document.documentElement.dir = getDirection(ctx.supportedLocales[0]);
   translateFragment();
   fireLocalizedEvent();
 }

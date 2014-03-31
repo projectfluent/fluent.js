@@ -1,11 +1,16 @@
 'use strict';
 
 /* jshint -W104 */
-/* global ctx */
+/* global ctx, getDirection */
 /* exported translateFragment, localizeElement */
 
 function translateFragment(element, loc) {
-  element = element || document.documentElement;
+  if (!element) {
+    element = document.documentElement;
+    var lang = loc ? loc.id : ctx.supportedLocales[0];
+    document.documentElement.lang = lang;
+    document.documentElement.dir = getDirection(lang);
+  }
   translateElement(element, loc);
 
   for (var node of getTranslatableChildren(element)) {
