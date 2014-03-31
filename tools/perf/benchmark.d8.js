@@ -1,6 +1,9 @@
-load('../../dist/shell/l20n.js');
-var parser = new L20n.Parser(true); 
-var compiler = new L20n.Compiler();
+load('../../dist/shell/l10n.js');
+
+var parser = new L20n.Parser();
+var env = {
+  __plural: L20n.getPluralRule('en-US')
+};
 
 var code = read('./example.properties');
 var data = {
@@ -33,29 +36,13 @@ times.start = Date.now();
 var ast = parser.parse(code);
 times.parseEnd = Date.now();
 
-ast.body['plural'] = {
-  type: 'Macro',
-  args: [{
-    type: 'Identifier',
-    name: 'n'
-  }],
-  expression: L20n.getPluralRule('en-US')
-};
-
 times.compile = Date.now();
-var env = compiler.compile(ast);
+L20n.compile(ast, env);
 times.compileEnd = Date.now();
 
-var ids = [];
-for (var id in env) {
-  if (env[id].get) {
-    ids.push(id);
-  }
-}
-
 times.get = Date.now();
-for (var i = 0, len = ids.length; i < len; i++) {
-   env[ids[i]].get(data);
+for (var id in env) {
+   env[id].valueOf(data);
 }
 times.getEnd = Date.now();
 

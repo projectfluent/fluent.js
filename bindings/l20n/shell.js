@@ -1,16 +1,19 @@
-/* jshint ignore:start */
+'use strict';
 
-define(function (require, exports, module) {
-  'use strict';
+/* global Context, Parser, Entity, getPluralRule */
 
-  var L20n = require('../l20n');
-  L20n.Context = require('../l20n/context').Context;
-  L20n.Parser = require('../l20n/parser').Parser;
-  L20n.Compiler = require('../l20n/compiler').Compiler;
-  L20n.getPluralRule = require('../l20n/plurals').getPluralRule;
-
-  return L20n;
-
-});
-
-/* jshint ignore:end */
+window.L20n = {
+  Context: Context,
+  Parser: Parser,
+  getPluralRule: getPluralRule,
+  getContext: function L20n_getContext(id) {
+    return new Context(id);
+  },
+  compile: function compile(ast, env) {
+    for (var id in ast) {
+      if (ast.hasOwnProperty(id)) {
+        env[id] = new Entity(id, ast[id], env);
+      }
+    }
+  },
+};

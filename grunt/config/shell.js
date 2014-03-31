@@ -5,14 +5,21 @@ var grunt = require('grunt');
 var reference = 'tools/perf/reference.json';
 var samplesize = 150;
 
+var engine = grunt.option('engine') || 'node';
 var benchmark;
 
-if (process.env.BENCHMARK) {
-  benchmark = process.env.BENCHMARK;
-} else if (process.env.JSSHELL) {
-  benchmark = process.env.JSSHELL + ' benchmark.jsshell.js';
-} else {
-  benchmark = 'node benchmark.node.js';
+switch(engine) {
+  case 'jsshell':
+    benchmark = 'js benchmark.jsshell.js';
+    break;
+  case 'd8':
+    benchmark = 'd8 benchmark.d8.js';
+    break;
+  case 'node':
+    benchmark = 'node benchmark.node.js';
+    break;
+  default:
+    grunt.fatal('Unknown engine: ' + grunt.option('engine'));
 }
 
 var perfCommand;

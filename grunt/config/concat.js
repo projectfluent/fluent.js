@@ -60,4 +60,17 @@ module.exports = {
     ],
     dest: 'dist/buildtime/l10n.js',
   },
+  shell: {
+    src: [
+      'lib/client/l20n/platform/io.js',
+      'lib/l20n/events.js',
+      'lib/l20n/plurals.js',
+      'lib/l20n/parser.js',
+      'lib/l20n/compiler.js',
+      'lib/l20n/locale.js',
+      'lib/l20n/context.js',
+      'bindings/l20n/shell.js',
+    ],
+    dest: 'dist/shell/l10n.js',
+  },
 };

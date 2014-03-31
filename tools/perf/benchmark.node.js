@@ -1,12 +1,11 @@
 var fs = require('fs');
 
 var L20n = require('../../lib/l20n');
-var Parser = require('../../lib/l20n/parser').Parser;
-var Compiler = require('../../lib/l20n/compiler').Compiler;
-var getPluralRule = require('../../lib/l20n/plurals').getPluralRule;
 
-var parser = new Parser(true); 
-var compiler = new Compiler();
+var parser = new L20n.Parser();
+var env = {
+  __plural: L20n.getPluralRule('en-US')
+};
 
 var code = fs.readFileSync(__dirname + '/example.properties').toString();
 var data = {
@@ -40,39 +39,21 @@ var start = process.hrtime();
 var ast = parser.parse(code);
 cumulative.parseEnd = process.hrtime(start);
 
-ast.body['plural'] = {
-  type: 'Macro',
-  args: [{
-    type: 'Identifier',
-    name: 'n'
-  }],
-  expression: getPluralRule('en-US')
-};
-
 cumulative.compile = process.hrtime(start);
-var env = compiler.compile(ast);
+L20n.compile(ast, env);
 cumulative.compileEnd = process.hrtime(start);
 
-var ids = [];
-for (var id in env) {
-  if (env[id].get) {
-    ids.push(id);
-  }
-}
-
 cumulative.get = process.hrtime(start);
-for (var i = 0, len = ids.length; i < len; i++) {
-   env[ids[i]].get(data);
+for (var id in env) {
+   env[id].valueOf(data);
 }
 cumulative.getEnd = process.hrtime(start);
 
 cumulative.ready = process.hrtime(start);
 var ctx = L20n.getContext();
 ctx.ready(printResults);
-//ctx.addResource('<foo "Foo">');
-ctx.linkResource(__dirname + '/foo.properties');
-ctx.registerLocales('en-US');
-ctx.requestLocales();
+ctx.resLinks.push(__dirname + '/foo.properties');
+ctx.requestLocales('en-US');
 
 function printResults() {
   cumulative.readyEnd = process.hrtime(start);
