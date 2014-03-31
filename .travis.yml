@@ -1,3 +1,15 @@
 language: node_js
 node_js:
   - "0.10"
+before_script:
+  - npm install -g grunt-cli
+notifications:
+  irc:
+    channels:
+      - "irc.mozilla.org#l20n"
+    on_success: always
+    on_failure: always
+    use_notice: true
+    template:
+      - "#%{build_number} %{message} %{build_url}"
+      - "Change by %{author}: %{compare_url}"
