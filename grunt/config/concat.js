@@ -6,8 +6,8 @@ module.exports = {
     banner: '' +
       '\'use strict\';\n' +
       '\n' +
-      '(function(window, undefined) {\n',
-    footer: '})(this);\n',
+      '(function(window, undefined) {',
+    footer: '\n})(this);\n',
     process: function(src) {
       src = src.replace(
         /.*var .* = require.*;\n/g,
@@ -27,6 +27,9 @@ module.exports = {
       src = src.replace(
         /.*\/\* exported .*\*\/\n/g,
         '');
+      src = src.replace(
+        /\n(?!\n)/g,
+        '\n  ');
       return src;
     }
   },
