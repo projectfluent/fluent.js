@@ -21,16 +21,10 @@ if (DEBUG) {
 // Public API
 
 navigator.mozL10n = {
+  get: ctx.get.bind(ctx),
+  localize: localizeElement,
   translate: function translate(element) {
     return translateFragment(element);
-  },
-  localize: localizeElement,
-  get: function get(id, ctxdata) {
-    var value = ctx.get(id, ctxdata);
-    if (value === null) {
-      return '';
-    }
-    return value;
   },
   ready: ctx.ready.bind(ctx),
   get readyState() {
