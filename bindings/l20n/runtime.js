@@ -151,9 +151,11 @@ function initDocumentLocalization(callback) {
     return;
   }
 
-  function onIniLoaded() {
-    iniLoads--;
-    if (iniLoads <= 0) {
+  function onIniLoaded(err) {
+    if (err) {
+      ctx._emitter.emit('error', err);
+    }
+    if (--iniLoads <= 0) {
       callback();
     }
   }

@@ -4,22 +4,26 @@
 /* global ctx, io */
 /* exported loadINI */
 
-function loadINI(url, cb) {
+function loadINI(url, callback) {
   io.load(url, function(err, source) {
-    if (!source) {
-      cb();
-      return;
-    }
-
-    var ini = parseINI(source, url);
     var pos = ctx.resLinks.indexOf(url);
 
-    var patterns = ini.resources.map(function(x) {
+    if (err) {
+      // remove the ini link from resLinks
+      ctx.resLinks.splice(pos, 1);
+      return callback(err);
+    }
+
+    if (!source) {
+      ctx.resLinks.splice(pos, 1);
+      return callback(new Error('Empty file: ' + url));
+    }
+
+    var patterns = parseINI(source, url).resources.map(function(x) {
       return x.replace('en-US', '{{locale}}');
     });
-    var args = [pos, 1].concat(patterns);
-    ctx.resLinks.splice.apply(ctx.resLinks, args);
-    cb();
+    ctx.resLinks.splice.apply(ctx.resLinks, [pos, 1].concat(patterns));
+    callback();
   });
 }
 
