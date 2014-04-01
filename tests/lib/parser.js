@@ -1,16 +1,12 @@
 var should = require('should');
 
-var Parser = process.env.L20N_COV
-  ? require('../../build/cov/lib/l20n/parser').Parser
-  : require('../../lib/l20n/parser').Parser;
+var parse = process.env.L20N_COV
+  ? require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
+  : require('../../lib/l20n/parser').parse.bind(null,null);
 
 describe('Example', function() {
-  var parser;
-  beforeEach(function() {
-    parser = new Parser();
-  });
   it('string value', function() {
-    var ast = parser.parse("id = string");
+    var ast = parse("id = string");
     should.not.exist(ast['id'].type);
     ast['id'].should.equal('string');
   });
@@ -25,16 +21,16 @@ describe('Example', function() {
     ];
 
     for (var i in strings) {
-      var ast = parser.parse(strings[i]);
+      var ast = parse(strings[i]);
       Object.keys(ast).length.should.equal(0);
     }
   });
   it('basic attributes', function() {
-    var ast = parser.parse("id.attr1 = foo");
+    var ast = parse("id.attr1 = foo");
     ast['id']['attr1'].should.equal('foo');
   });
   it('plural macro', function() {
-    var ast = parser.parse("id = {[ plural(m) ]} \nid[one] = foo");
+    var ast = parse("id = {[ plural(m) ]} \nid[one] = foo");
     ast['id']['_'].should.be.an.instanceOf(Object);
     ast['id']['_']['one'].should.equal('foo');
     ast['id']['_index'].length.should.equal(2);
@@ -54,17 +50,18 @@ describe('Example', function() {
 
     ];
     var errorsThrown = 0;
-    parser._emitter.addEventListener('error', function() {
-      errorsThrown += 1;
-    });
 
     for (var i in strings) {
-      var ast = parser.parse(strings[i]);
+      try {
+        parse(strings[i]);
+      } catch (e) {
+        errorsThrown += 1;
+      }
     } 
     errorsThrown.should.equal(strings.length);
   });
   it('comment', function() {
-    var ast = parser.parse('#test');
+    var ast = parse('#test');
     Object.keys(ast).length.should.equal(0);
   });
   it('comment errors', function() {
@@ -74,7 +71,7 @@ describe('Example', function() {
       'f# foo',
     ];
     for (var i in strings) {
-      var ast = parser.parse(strings[i]);
+      var ast = parse(strings[i]);
       Object.keys(ast).length.should.equal(0);
     }  
   });
