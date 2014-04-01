@@ -28,8 +28,9 @@ module.exports = {
         /.*\/\* exported .*\*\/\n/g,
         '');
       src = src.replace(
-        /\n(?!\n)/g,
-        '\n  ');
+        /\n([^\n])/g, function(match, p1) {
+          return '\n  ' + p1;
+        });
       return src;
     }
   },
