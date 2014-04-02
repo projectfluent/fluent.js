@@ -1,4 +1,5 @@
 'use strict';
+var assert = require('assert');
 
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
@@ -21,8 +22,8 @@ describe('Language negotiation without arguments', function() {
   });
 
   it('used the en-US locale', function() {
-    ctx.supportedLocales.should.have.property('length', 1);
-    ctx.supportedLocales[0].should.equal('en-US');
+    assert.strictEqual(ctx.supportedLocales.length, 1);
+    assert.strictEqual(ctx.supportedLocales[0], 'en-US');
   });
 });
 
@@ -36,8 +37,8 @@ describe('Language negotiation with arguments', function() {
   });
 
   it('sets the correct fallback chain', function() {
-    ctx.supportedLocales.should.have.property('length', 2);
-    ctx.supportedLocales[0].should.equal('pl');
-    ctx.supportedLocales[1].should.equal('en-US');
+    assert.strictEqual(ctx.supportedLocales.length, 2);
+    assert.strictEqual(ctx.supportedLocales[0], 'pl');
+    assert.strictEqual(ctx.supportedLocales[1], 'en-US');
   });
 });

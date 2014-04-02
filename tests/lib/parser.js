@@ -1,9 +1,9 @@
 var assert = require('assert');
 var parse;
 
-try {
+if (this.navigator) {
   parse = navigator.mozL10n.debug.parse.bind(null, null);
-} catch (e) {
+} else {
   parse = process.env.L20N_COV
     ? require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
     : require('../../lib/l20n/parser').parse.bind(null,null);

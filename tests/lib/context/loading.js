@@ -1,5 +1,7 @@
 'use strict';
 
+var assert = require('assert');
+
 var Context = process.env.L20N_COV
   ? require('../../../build/cov/lib/l20n/context').Context
   : require('../../../lib/l20n/context').Context;
@@ -19,14 +21,14 @@ describe('A non-loading context', function() {
   });
 
   it('should throw on get', function() {
-    (function(){
+    assert.throws(function(){
       ctx.get('dummy');
-    }).should.throw(/Context not ready/);
+    }, /Context not ready/);
   })
   it('should throw on getEntity', function() {
-    (function(){
+    assert.throws(function(){
       ctx.getEntity('dummy');
-    }).should.throw(/Context not ready/);
+    }, /Context not ready/);
   })
 });
 
@@ -39,24 +41,24 @@ describe('A loading, non-ready context', function() {
   });
 
   it('should throw on requestLocales', function() {
-    (function(){
+    assert.throws(function(){
       ctx.requestLocales();
-    }).should.throw(/Context not ready/);
+    }, /Context not ready/);
   })
   it('should throw on get', function() {
-    (function(){
+    assert.throws(function(){
       ctx.get('dummy');
-    }).should.throw(/Context not ready/);
+    }, /Context not ready/);
   })
   it('should throw on getEntity', function() {
-    (function(){
+    assert.throws(function(){
       ctx.getEntity('dummy');
-    }).should.throw(/Context not ready/);
+    }, /Context not ready/);
   })
   it('should throw on requestLocales', function() {
-    (function(){
+    assert.throws(function(){
       ctx.requestLocales('en-US');
-    }).should.throw(/Context not ready/);
+    }, /Context not ready/);
   })
 });
 
@@ -73,29 +75,29 @@ describe('A loading, ready context', function() {
   });
 
   it('should not throw on get of a known entity', function() {
-    (function(){
+    assert.doesNotThrow(function(){
       ctx.get('dummy');
-    }).should.not.throw();
+    });
   })
   it('should not throw on get of an unknown entity', function() {
-    (function(){
+    assert.doesNotThrow(function(){
       ctx.get('missing');
-    }).should.not.throw();
+    });
   })
   it('should not throw on getEntity of a known entity', function() {
-    (function(){
+    assert.doesNotThrow(function(){
       ctx.getEntity('dummy');
-    }).should.not.throw();
+    });
   })
   it('should not throw on getEntity of an unknown entity', function() {
-    (function(){
+    assert.doesNotThrow(function(){
       ctx.getEntity('missing');
-    }).should.not.throw();
+    });
   })
   it('should not throw on requestLocales', function() {
-    (function(){
+    assert.doesNotThrow(function(){
       ctx.requestLocales('en-US');
-    }).should.not.throw();
+    });
   })
 });
 
@@ -116,6 +118,6 @@ describe('A loading, ready context', function() {
     // return translations for the previous fallback chain
     ctx.requestLocales('pl');
     var entity = ctx.getEntity('foo');
-    entity.should.equal('Foo en-US');
+    assert.strictEqual(entity, 'Foo en-US');
   });
 });
