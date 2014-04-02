@@ -1,14 +1,18 @@
-var should = require('should');
+var assert = require('assert');
+var parse;
 
-var parse = process.env.L20N_COV
-  ? require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
-  : require('../../lib/l20n/parser').parse.bind(null,null);
+try {
+  parse = navigator.mozL10n.debug.parse.bind(null, null);
+} catch (e) {
+  parse = process.env.L20N_COV
+    ? require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
+    : require('../../lib/l20n/parser').parse.bind(null,null);
+}
 
-describe('Example', function() {
+describe('L10n Parser', function() {
   it('string value', function() {
     var ast = parse("id = string");
-    should.not.exist(ast['id'].type);
-    ast['id'].should.equal('string');
+    assert.strictEqual(ast['id'], 'string');
   });
   it('basic errors', function() {
     var strings = [
@@ -22,20 +26,20 @@ describe('Example', function() {
 
     for (var i in strings) {
       var ast = parse(strings[i]);
-      Object.keys(ast).length.should.equal(0);
+      assert.equal(Object.keys(ast).length, 0);
     }
   });
   it('basic attributes', function() {
     var ast = parse("id.attr1 = foo");
-    ast['id']['attr1'].should.equal('foo');
+    assert.equal(ast['id']['attr1'], 'foo');
   });
   it('plural macro', function() {
     var ast = parse("id = {[ plural(m) ]} \nid[one] = foo");
-    ast['id']['_'].should.be.an.instanceOf(Object);
-    ast['id']['_']['one'].should.equal('foo');
-    ast['id']['_index'].length.should.equal(2);
-    ast['id']['_index'][0].should.equal('plural');
-    ast['id']['_index'][1].should.equal('m');
+    assert.ok(ast['id']['_'] instanceof Object);
+    assert.equal(ast['id']['_']['one'], 'foo');
+    assert.equal(ast['id']['_index'].length, 2);
+    assert.equal(ast['id']['_index'][0], 'plural');
+    assert.equal(ast['id']['_index'][1], 'm');
   });
   it('plural macro errors', function() {
     var strings = [
@@ -58,11 +62,11 @@ describe('Example', function() {
         errorsThrown += 1;
       }
     } 
-    errorsThrown.should.equal(strings.length);
+    assert.equal(errorsThrown, strings.length);
   });
   it('comment', function() {
     var ast = parse('#test');
-    Object.keys(ast).length.should.equal(0);
+    assert.equal(Object.keys(ast).length, 0);
   });
   it('comment errors', function() {
     var strings = [
@@ -72,7 +76,7 @@ describe('Example', function() {
     ];
     for (var i in strings) {
       var ast = parse(strings[i]);
-      Object.keys(ast).length.should.equal(0);
+      assert.equal(Object.keys(ast).length, 0);
     }  
   });
 });
