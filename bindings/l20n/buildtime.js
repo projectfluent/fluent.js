@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Context, rePlaceables */
+/* global Locale, Context, rePlaceables */
 /* global loadINI */
 /* global translateFragment, getTranslatableChildren, getL10nAttributes */
 
@@ -32,7 +32,6 @@ navigator.mozL10n = {
 
 function bootstrap(callback) {
   ctx = new Context();
-  ctx.isBuildtime = true;
   ctx.ready(onReady);
   requiresInlineLocale = false;
 
@@ -125,6 +124,18 @@ function flushBuildMessages(variant) {
 
 
 /* API for webapp-optimize */
+
+Locale.prototype.addAST = function(ast) {
+  if (!this.ast) {
+    this.ast = {};
+  }
+  for (var id in ast) {
+    if (ast.hasOwnProperty(id)) {
+      this.ast[id] = ast[id];
+      this.entries[id] = ast[id];
+    }
+  }
+};
 
 Context.prototype.getEntitySource = function getEntitySource(id) {
   /* jshint -W084 */
