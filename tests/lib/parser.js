@@ -37,7 +37,7 @@ describe('Example', function() {
     ast['id']['_index'][0].should.equal('plural');
     ast['id']['_index'][1].should.equal('m');
   });
-  it.skip('plural macro errors', function() {
+  it('plural macro errors', function() {
     var strings = [
       'id = {[ plural(m) ] \nid[one] = foo',
       'id = {[ plural(m) \nid[one] = foo',
