@@ -4,7 +4,7 @@ var fs = require('fs');
 var program = require('commander');
 var colors = require('colors');
 
-var Parser = require('../lib/l20n/parser').Parser;
+var parse = require('../lib/l20n/parser').parse.bind(null, null);
 var compile = require('../lib/l20n/compiler').compile;
 var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
 
@@ -18,8 +18,6 @@ program
   .option('-p, --plural <locale>', 'Select the plural rule [en-US]', 'en-US')
   .parse(process.argv);
 
-var parser = new Parser();
-parser._emitter.addEventListener('error', logError);
 
 var data = {};
 if (program.data) {
@@ -74,7 +72,11 @@ function compileAndPrint(err, code) {
   if (program.ast) {
     var ast = code.toString();
   } else {
+    try {
     var ast = parser.parse(code.toString());
+    } catch (e) {
+      logError(e);
+    }
   }
 
   var env = compile(ast);
