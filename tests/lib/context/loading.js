@@ -11,7 +11,7 @@ function whenReady(ctx, callback) {
   });
 }
 
-describe('A non-frozen context', function() {
+describe('A non-loading context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -30,7 +30,7 @@ describe('A non-frozen context', function() {
   })
 });
 
-describe('A frozen, non-ready context', function() {
+describe('A loading, non-ready context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -60,7 +60,7 @@ describe('A frozen, non-ready context', function() {
   })
 });
 
-describe('A frozen, ready context', function() {
+describe('A loading, ready context', function() {
   var ctx;
   beforeEach(function(done) {
     ctx = new Context();
@@ -99,7 +99,7 @@ describe('A frozen, ready context', function() {
   })
 });
 
-describe('A frozen, ready context', function() {
+describe('A loading, ready context', function() {
   var ctx;
   beforeEach(function(done) {
     ctx = new Context();

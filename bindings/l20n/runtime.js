@@ -59,6 +59,7 @@ function waitFor(state, callback) {
     callback();
     return;
   }
+
   document.addEventListener('readystatechange', function l10n_onrsc() {
     if (readyStates[document.readyState] >= state) {
       document.removeEventListener('readystatechange', l10n_onrsc);
@@ -70,7 +71,7 @@ function waitFor(state, callback) {
 if (window.document) {
   isPretranslated = (document.documentElement.lang === navigator.language);
 
-  // this is a special case for netError bug
+  // this is a special case for netError bug; see https://bugzil.la/444165
   if (document.documentElement.dataset.noCompleteBug) {
     pretranslate();
     return;
@@ -108,6 +109,7 @@ function inlineLocalization() {
   if (!script) {
     return false;
   }
+
   var locale = ctx.getLocale(navigator.language);
   // the inline localization is happenning very early, when the ctx is not
   // yet ready and when the resources haven't been downloaded yet;  add the
@@ -145,7 +147,7 @@ function initDocumentLocalization() {
     if (err) {
       ctx._emitter.emit('error', err);
     }
-    if (--iniLoads <= 0) {
+    if (--iniLoads === 0) {
       initLocale();
     }
   }
@@ -157,6 +159,7 @@ function initDocumentLocalization() {
 
 function initLocale() {
   ctx.requestLocales(navigator.language);
+  // mozSettings won't be required here when https://bugzil.la/780953 lands
   if (navigator.mozSettings) {
     navigator.mozSettings.addObserver('language.current', function(event) {
       navigator.mozL10n.language.code = event.settingValue;

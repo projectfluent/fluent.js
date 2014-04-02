@@ -88,21 +88,20 @@ function translateElement(element, loc) {
     setTextContent(element, entity.value);
   }
 
-  if (entity.attributes) {
-    for (var key in entity.attributes) {
-      if (entity.attributes.hasOwnProperty(key)) {
-        var attr = entity.attributes[key];
-        var pos = key.indexOf('.');
-        if (pos !== -1) {
-          element[key.substr(0, pos)][key.substr(pos + 1)] = attr;
-        } else if (key === 'ariaLabel') {
-          element.setAttribute('aria-label', attr);
-        } else {
-          element[key] = attr;
-        }
+  for (var key in entity.attributes) {
+    if (entity.attributes.hasOwnProperty(key)) {
+      var attr = entity.attributes[key];
+      var pos = key.indexOf('.');
+      if (pos !== -1) {
+        element[key.substr(0, pos)][key.substr(pos + 1)] = attr;
+      } else if (key === 'ariaLabel') {
+        element.setAttribute('aria-label', attr);
+      } else {
+        element[key] = attr;
       }
     }
   }
+
   return true;
 }
 
@@ -118,7 +117,8 @@ function setTextContent(element, text) {
   var found = false;
   var reNotBlank = /\S/;
   for (var child = element.firstChild; child; child = child.nextSibling) {
-    if (child.nodeType === 3 && reNotBlank.test(child.nodeValue)) {
+    if (child.nodeType === Node.TEXT_NODE &&
+        reNotBlank.test(child.nodeValue)) {
       if (found) {
         child.nodeValue = '';
       } else {

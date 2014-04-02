@@ -4,9 +4,10 @@ module.exports = {
   options: {
     separator: '',
     banner: '' +
-      '\'use strict\';\n' +
+      '(function(window, undefined) {\n' +
+      '  \'use strict\';\n' +
       '\n' +
-      '(function(window, undefined) {',
+      '  /* jshint validthis:true */',
     footer: '\n})(this);\n',
     process: function(src) {
       src = src.replace(
@@ -17,9 +18,6 @@ module.exports = {
         '');
       src = src.replace(
         /.*'use strict';\n/g,
-        '');
-      src = src.replace(
-        /.*\/\* jshint .*\*\/\n/g,
         '');
       src = src.replace(
         /.*\/\* global .*\*\/\n/g,

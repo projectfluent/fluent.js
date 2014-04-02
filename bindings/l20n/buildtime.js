@@ -127,9 +127,12 @@ function flushBuildMessages(variant) {
 /* API for webapp-optimize */
 
 Context.prototype.getEntitySource = function getEntitySource(id) {
+  /* jshint -W084 */
+
   if (!this.isReady) {
     throw new Context.Error('Context not ready');
   }
+
   var cur = 0;
   var loc;
   var locale;
