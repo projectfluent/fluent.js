@@ -40,6 +40,9 @@ navigator.mozL10n = {
     get direction() {
       return getDirection(ctx.supportedLocales[0]);
     }
+  },
+  getContext() {
+    return new Context();
   }
 };
 

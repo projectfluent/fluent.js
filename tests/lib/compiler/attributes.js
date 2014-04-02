@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var compile = require('./helper').compile;
 
 describe('Attributes', function(){
@@ -19,17 +20,11 @@ describe('Attributes', function(){
     });
     it('returns the value', function(){
       var entity = env.foo.valueOf();
-      entity.attributes.attr.should.equal('An attribute');
+      assert.strictEqual(entity.attributes.attr, 'An attribute');
     });
     it('returns the value with a placeable', function(){
       var entity = env.foo.valueOf();
-      entity.attributes.attrComplex.should.equal('An attribute referencing Bar');
-    });
-    it('is a string', function(){
-      env.foo.attributes.attr.should.have.property('value');
-    });
-    it('is an object', function(){
-      env.foo.attributes.attrComplex.should.have.property('value');
+      assert.strictEqual(entity.attributes.attrComplex, 'An attribute referencing Bar');
     });
   });
 
@@ -43,11 +38,11 @@ describe('Attributes', function(){
     });
     it('returns the value of the entity', function(){
       var value = env.update.toString();
-      value.should.equal("Update");
+      assert.strictEqual(value, "Update");
     });
     it('returns the value of the attribute\'s member', function(){
       var entity = env.update.valueOf({n: 1});
-      entity.attributes.innerHTML.should.equal("One update available");
+      assert.strictEqual(entity.attributes.innerHTML, "One update available");
     });
   });
 
@@ -65,11 +60,11 @@ describe('Attributes', function(){
     });
     it('returns the value of the entity', function(){
       var entity = env.update.valueOf({n: 1, k: 2});
-      entity.value.should.equal("One update");
+      assert.strictEqual(entity.value, "One update");
     });
     it('returns the value of the attribute', function(){
       var entity = env.update.valueOf({n: 1, k: 2});
-      entity.attributes.innerHTML.should.equal("2 updates innerHTML");
+      assert.strictEqual(entity.attributes.innerHTML, "2 updates innerHTML");
     });
   });
 
@@ -82,11 +77,11 @@ describe('Attributes', function(){
     });
     it('returns the value of the entity', function(){
       var entity = env.brandName.valueOf();
-      entity.value.should.equal("Firefox");
+      assert.strictEqual(entity.value, "Firefox");
     });
     it('returns the value of the attribute', function(){
       var entity = env.brandName.valueOf();
-      entity.attributes.title.should.equal("Mozilla Firefox");
+      assert.strictEqual(entity.attributes.title, "Mozilla Firefox");
     });
   });
 
@@ -99,7 +94,7 @@ describe('Attributes', function(){
     });
     it('returns the raw string of the attribute', function(){
       var entity = env.brandName.valueOf();
-      entity.attributes.title.should.equal("Mozilla {{ brandName.title }}");
+      assert.strictEqual(entity.attributes.title, "Mozilla {{ brandName.title }}");
     });
   });
 

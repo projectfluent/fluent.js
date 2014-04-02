@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var compile = require('./helper').compile;
 
 describe('Env object', function(){
@@ -14,9 +15,9 @@ describe('Env object', function(){
   });
 
   it('works', function() {
-    env.foo.toString().should.equal('Foo');
-    env.getFoo.toString().should.equal('Foo');
-    env.getBar.toString().should.equal('{{ bar }}');
+    assert.strictEqual(env.foo.toString(), 'Foo');
+    assert.strictEqual(env.getFoo.toString(), 'Foo');
+    assert.strictEqual(env.getBar.toString(), '{{ bar }}');
   });
   it('cannot be modified by another compilation', function() {
     var source2 = [
@@ -25,8 +26,8 @@ describe('Env object', function(){
     ].join('\n');
     var env2 = compile(source2);
 
-    env.foo.toString().should.equal('Foo');
-    env.getFoo.toString().should.equal('Foo');
-    env.getBar.toString().should.equal('{{ bar }}');
+    assert.strictEqual(env.foo.toString(), 'Foo');
+    assert.strictEqual(env.getFoo.toString(), 'Foo');
+    assert.strictEqual(env.getBar.toString(), '{{ bar }}');
   });
 });

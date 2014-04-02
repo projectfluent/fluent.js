@@ -1,7 +1,6 @@
 'use strict';
 
-var should = require('should');
-
+var assert = require('assert');
 var compile = require('../helper').compile;
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
@@ -29,7 +28,7 @@ describe('Reference bombs', function(){
     });
     it('throws', function() {
       var value = env.lolz.toString();
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
   });
 
@@ -103,7 +102,7 @@ describe('Reference bombs', function(){
     });
     it('throws', function() {
       var value = env.malice.toString();
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
   });
 

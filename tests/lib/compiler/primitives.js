@@ -1,7 +1,7 @@
 'use strict';
 
+var assert = require('assert');
 var compile = require('./helper').compile;
-
 
 describe('Primitives:', function(){
   var source, env;
@@ -16,7 +16,7 @@ describe('Primitives:', function(){
       ].join('\n');
     });
     it('returns the value', function(){
-      env.foo.toString().should.equal('Foo');
+      assert.strictEqual(env.foo.toString(), 'Foo');
     });
   });
 
@@ -31,11 +31,11 @@ describe('Primitives:', function(){
     });
     it('returns the value', function(){
       var value = env.bar.toString();
-      value.should.equal('Foo Bar');
+      assert.strictEqual(value, 'Foo Bar');
     });
     it('returns the raw string if the referenced entity is not found', function(){
       var value = env.baz.toString();
-      value.should.equal('{{ missing }}');
+      assert.strictEqual(value, '{{ missing }}');
     });
   });
   
@@ -48,15 +48,15 @@ describe('Primitives:', function(){
     });
     it('returns the null value', function(){
       var entity = env.foo.valueOf();
-      entity.should.have.property('value', null);
+      assert.strictEqual(entity.value, null);
     });
     it('returns the attribute', function(){
       var entity = env.foo.valueOf();
-      entity.attributes['attr'].should.equal('Foo');
+      assert.strictEqual(entity.attributes.attr, 'Foo');
     });
     it('returns the raw string when the referenced entity has null value', function(){
       var value = env.bar.toString();
-      value.should.equal('{{ foo }} Bar');
+      assert.strictEqual(value, '{{ foo }} Bar');
     });
   });
 
@@ -69,7 +69,7 @@ describe('Primitives:', function(){
     });
     it('returns the raw string', function(){
       var value = env.foo.toString();
-      value.should.equal('{{ foo }}');
+      assert.strictEqual(value, '{{ foo }}');
     });
   });
 
@@ -81,7 +81,7 @@ describe('Primitives:', function(){
     });
     it('returns the raw string', function(){
       var value = env.foo.toString();
-      value.should.equal('{{ foo }}');
+      assert.strictEqual(value, '{{ foo }}');
     });
   });
 
@@ -96,11 +96,11 @@ describe('Primitives:', function(){
     });
     it('returns the raw string', function(){
       var value = env.foo.toString({n: 1});
-      value.should.equal('{{ foo }}');
+      assert.strictEqual(value, '{{ foo }}');
     });
     it('returns the valid value if requested directly', function(){
       var value = env.bar.toString({n: 2});
-      value.should.equal("Bar");
+      assert.strictEqual(value, 'Bar');
     });
   });
 

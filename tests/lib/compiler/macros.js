@@ -1,7 +1,6 @@
 'use strict';
 
-var should = require('should');
-
+var assert = require('assert');
 var compile = require('./helper').compile;
 
 describe('Macros', function(){
@@ -21,8 +20,8 @@ describe('Macros', function(){
       ].join('\n');
     });
     it('throws when resolving (not calling) a macro in a complex string', function() {
-      env.placeMacro.toString(ctxdata).should.equal('{{ plural }}');
-      env.placeRealMacro.toString(ctxdata).should.equal('{{ __plural }}');
+      assert.strictEqual(env.placeMacro.toString(ctxdata), '{{ plural }}');
+      assert.strictEqual(env.placeRealMacro.toString(ctxdata), '{{ __plural }}');
     });
   });
 
@@ -59,27 +58,27 @@ describe('Macros', function(){
     });
     it('throws if an entity is passed', function() {
       var value = env.passFoo.toString(ctxdata);
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('throws if a complex entity is passed', function() {
       var value = env.passUseFoo.toString(ctxdata);
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('throws if a hash entity is passed', function() {
       var value = env.passBar.toString(ctxdata);
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('throws if a macro is passed', function() {
       var value = env.passPlural.toString(ctxdata);
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('throws if a missing entry is passed', function() {
       var value = env.passMissing.toString(ctxdata);
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('throws if a native function is passed', function() {
       var value = env.passWatch.toString(ctxdata);
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
   });
 });
@@ -110,27 +109,27 @@ describe('A simple plural macro', function(){
     });
     it('returns zero for 0', function() {
       var value = env.foo.toString({n: 0});
-      value.should.equal('Zero');
+      assert.strictEqual(value, 'Zero');
     });
     it('returns one for 1', function() {
       var value = env.foo.toString({n: 1});
-      value.should.equal('One');
+      assert.strictEqual(value, 'One');
     });
     it('returns two for 2', function() {
       var value = env.foo.toString({n: 2});
-      value.should.equal('Two');
+      assert.strictEqual(value, 'Two');
     });
     it('returns many for 3', function() {
       var value = env.foo.toString({n: 3});
-      value.should.equal('Many');
+      assert.strictEqual(value, 'Many');
     });
     it('returns many for 5', function() {
       var value = env.foo.toString({n: 5});
-      value.should.equal('Many');
+      assert.strictEqual(value, 'Many');
     });
     it('returns other for 0.5', function() {
       var value = env.foo.toString({n: .5});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
   });
 
@@ -144,27 +143,27 @@ describe('A simple plural macro', function(){
     });
     it('returns other for 0', function() {
       var value = env.foo.toString({n: 0});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
     it('returns many for 1', function() {
       var value = env.foo.toString({n: 1});
-      value.should.equal('Many');
+      assert.strictEqual(value, 'Many');
     });
     it('returns many for 2', function() {
       var value = env.foo.toString({n: 2});
-      value.should.equal('Many');
+      assert.strictEqual(value, 'Many');
     });
     it('returns many for 3', function() {
       var value = env.foo.toString({n: 3});
-      value.should.equal('Many');
+      assert.strictEqual(value, 'Many');
     });
     it('returns many for 5', function() {
       var value = env.foo.toString({n: 5});
-      value.should.equal('Many');
+      assert.strictEqual(value, 'Many');
     });
     it('returns other for 0.5', function() {
       var value = env.foo.toString({n: .5});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
   });
 
@@ -177,27 +176,27 @@ describe('A simple plural macro', function(){
     });
     it('returns other for 0', function() {
       var value = env.foo.toString({n: 0});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
     it('returns other for 1', function() {
       var value = env.foo.toString({n: 1});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
     it('returns other for 2', function() {
       var value = env.foo.toString({n: 2});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
     it('returns other for 3', function() {
       var value = env.foo.toString({n: 3});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
     it('returns other for 5', function() {
       var value = env.foo.toString({n: 5});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
     it('returns other for 0.5', function() {
       var value = env.foo.toString({n: .5});
-      value.should.equal('Other');
+      assert.strictEqual(value, 'Other');
     });
   });
 
@@ -210,27 +209,27 @@ describe('A simple plural macro', function(){
     });
     it('returns other for 0', function() {
       var value = env.foo.toString({n: 0});
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('returns one for 1', function() {
       var value = env.foo.toString({n: 1});
-      value.should.equal('One');
+      assert.strictEqual(value, 'One');
     });
     it('returns other for 2', function() {
       var value = env.foo.toString({n: 2});
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('returns other for 3', function() {
       var value = env.foo.toString({n: 3});
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('returns other for 5', function() {
       var value = env.foo.toString({n: 5});
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
     it('returns other for 0.5', function() {
       var value = env.foo.toString({n: .5});
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
   });
 

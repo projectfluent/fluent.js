@@ -1,7 +1,6 @@
 'use strict';
 
-var should = require('should');
-
+var assert = require('assert');
 var compile = require('./helper').compile;
 
 describe('Index', function(){
@@ -19,7 +18,7 @@ describe('Index', function(){
     });
     it('is undefined', function() {
       var value = env.foo.toString();
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
   });
 
@@ -33,8 +32,8 @@ describe('Index', function(){
     });
     it('value of the attribute is undefined', function() {
       var entity = env.foo.valueOf();
-      should.equal(entity.value, 'Foo');
-      should.equal(entity.attr, undefined);
+      assert.strictEqual(entity.value, 'Foo');
+      assert.strictEqual(entity.attributes.attr, undefined);
     });
   });
 

@@ -1,7 +1,6 @@
 'use strict';
 
-var should = require('should');
-
+var assert = require('assert');
 var compile = require('./helper').compile;
 
 describe('Compiler errors:', function(){
@@ -20,7 +19,7 @@ describe('Compiler errors:', function(){
       ].join('\n');
     });
     it('works with the default index', function(){
-      env.prompt.toString({n: 1}).should.equal("One File");
+      assert.strictEqual(env.prompt.toString({n: 1}), "One File");
     });
   });
 
@@ -34,7 +33,7 @@ describe('Compiler errors:', function(){
     });
     it('returns the raw string', function(){
       var value = env.prompt.toString({n: 1});
-      value.should.equal('One {{ file }}');
+      assert.strictEqual(value, 'One {{ file }}');
     });
   });
 
@@ -48,11 +47,11 @@ describe('Compiler errors:', function(){
       ].join('\n');
     });
     it('is found', function(){
-      env.prompt.toString({n: 1}).should.equal("One File");
+      assert.strictEqual(env.prompt.toString({n: 1}), "One File");
     });
     it('throws an IndexError if n is not defined', function(){
       var value = env.prompt.toString();
-      value.should.equal('Files');
+      assert.strictEqual(value, 'Files');
     });
   });
 
@@ -65,11 +64,11 @@ describe('Compiler errors:', function(){
       ].join('\n');
     });
     it('is found', function(){
-      env.prompt.toString({n: 1}).should.equal("One File");
+      assert.strictEqual(env.prompt.toString({n: 1}), 'One File');
     });
     it('throws an IndexError if n is not defined', function(){
       var value = env.prompt.toString();
-      should.equal(value, undefined);
+      assert.strictEqual(value, undefined);
     });
   });
 
