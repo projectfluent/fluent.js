@@ -95,9 +95,11 @@ L10n.Context.prototype.getEntitySource = function(id) {
       // build without callback, synchronously
       locale.build(null);
     }
+
     if (locale.ast && locale.ast.hasOwnProperty(id)) {
       return locale.ast[id];
     }
+
     var e = new L10n.Context.Error(id + ' not found in ' + loc, id, loc);
     this._emitter.emit('warning', e);
     cur++;
@@ -186,10 +188,11 @@ function addBuildMessage(type, e) {
 
 function flushBuildMessages(variant) {
   for (var type in buildMessages) {
-    if (buildMessages[type].length) {
+    let messages = buildMessages[type];
+    if (messages.length) {
       console.log('[l10n] [' + this.ctx.supportedLocales[0] +
-          ']: ' + buildMessages[type].length + ' missing ' + variant + ': ' +
-          buildMessages[type].join(', '));
+          ']: ' + messages.length + ' missing ' + variant + ': ' +
+          messages.join(', '));
       buildMessages[type] = [];
     }
   }
