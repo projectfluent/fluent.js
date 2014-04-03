@@ -1,10 +1,11 @@
 'use strict';
 
 /* jshint -W104 */
-/* global ctx, io */
+/* global io */
 /* exported loadINI */
 
 function loadINI(url, callback) {
+  var ctx = navigator.mozL10n.ctx;
   io.load(url, function(err, source) {
     var pos = ctx.resLinks.indexOf(url);
 

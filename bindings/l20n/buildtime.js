@@ -1,37 +1,14 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Locale, Context, rePlaceables */
-/* global loadINI */
-/* global translateFragment, getTranslatableChildren, getL10nAttributes */
 
 var DEBUG = true;
 var requiresInlineLocale = false; // netError requires inline locale
-var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
-var ctx;
+navigator.mozL10n._exposePrivateMethods();
 
-// Public API
-
-navigator.mozL10n = {
-  language: {
-    set code(lang) {
-      ctx.requestLocales(lang);
-    },
-    get code() {
-      return ctx.supportedLocales[0];
-    },
-    get direction() {
-      return getDirection(ctx.supportedLocales[0]);
-    },
-  },
-  getDictionary: getDictionary,
-  bootstrap: bootstrap
-};
-
-
-function bootstrap(callback) {
-  ctx = new Context();
+navigator.mozL10n.bootstrap = function bootstrap(callback) {
+  var ctx = navigator.mozL10n.ctx = new navigator.mozL10n.Context();
   ctx.ready(onReady);
   requiresInlineLocale = false;
 
@@ -39,17 +16,11 @@ function bootstrap(callback) {
     ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
     ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
   }
-  initDocumentLocalization(callback);
-}
+  initResources(callback);
+};
 
-function getDirection(lang) {
-  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
-}
-
-function initDocumentLocalization(callback) {
-  if (!callback) {
-    callback = ctx.requestLocales.bind(ctx, navigator.language);
-  }
+function initResources(callback) {
+  var ctx = navigator.mozL10n.ctx;
   var resLinks = document.head
                          .querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
@@ -70,17 +41,12 @@ function initDocumentLocalization(callback) {
 
   var iniLoads = iniLinks.length;
   if (iniLoads === 0) {
-    if (!containsFetchableLocale) {
-      requiresInlineLocale = true;
-      document.documentElement.dataset.noCompleteBug = true;
-    }
-    callback();
+    onIniLoaded();
     return;
   }
 
   function onIniLoaded() {
-    iniLoads--;
-    if (iniLoads <= 0) {
+    if (--iniLoads <= 0) {
       if (!containsFetchableLocale) {
         requiresInlineLocale = true;
         document.documentElement.dataset.noCompleteBug = true;
@@ -90,42 +56,19 @@ function initDocumentLocalization(callback) {
   }
 
   for (link of iniLinks) {
-    loadINI(link, onIniLoaded);
+    navigator.mozL10n.loadINI(link, onIniLoaded);
   }
 }
 
 function onReady() {
-  translateFragment();
-  fireLocalizedEvent();
-}
-
-var buildMessages = {};
-
-function addBuildMessage(type, e) {
-  if (!(type in buildMessages)) {
-    buildMessages[type] = [];
-  }
-  if (e instanceof Context.Error && e.loc === ctx.supportedLocales[0] &&
-      buildMessages[type].indexOf(e.id) === -1) {
-    buildMessages[type].push(e.id);
-  }
-}
-
-function flushBuildMessages(variant) {
-  for (var type in buildMessages) {
-    if (buildMessages[type].length) {
-      console.log('[l10n] [' + ctx.supportedLocales[0] + ']: ' +
-          buildMessages[type].length + ' missing ' + variant + ': ' +
-          buildMessages[type].join(', '));
-      buildMessages[type] = [];
-    }
-  }
+  navigator.mozL10n.translate();
+  navigator.mozL10n.fireLocalizedEvent();
 }
 
 
 /* API for webapp-optimize */
 
-Locale.prototype.addAST = function(ast) {
+navigator.mozL10n.Locale.prototype.addAST = function(ast) {
   if (!this.ast) {
     this.ast = {};
   }
@@ -137,8 +80,10 @@ Locale.prototype.addAST = function(ast) {
   }
 };
 
-Context.prototype.getEntitySource = function getEntitySource(id) {
+navigator.mozL10n.Context.prototype.getEntitySource = function(id) {
   /* jshint -W084 */
+
+  var Context = navigator.mozL10n.Context;
 
   if (!this.isReady) {
     throw new Context.Error('Context not ready');
@@ -167,7 +112,7 @@ Context.prototype.getEntitySource = function getEntitySource(id) {
 function getPlaceableNames(str) {
   var placeables = [];
   var match;
-  while (match = rePlaceables.exec(str)) {
+  while (match = navigator.mozL10n.rePlaceables.exec(str)) {
     placeables.push(match[1]);
   }
   return placeables;
@@ -180,7 +125,7 @@ function getPlaceables(ast, val) {
     var placeables = getPlaceableNames(val);
     for (var i = 0; i < placeables.length; i++) {
       var id = placeables[i];
-      ast[id] = ctx.getEntitySource(id);
+      ast[id] = navigator.mozL10n.ctx.getEntitySource(id);
     }
   } else {
     for (var prop in val) {
@@ -192,7 +137,8 @@ function getPlaceables(ast, val) {
   }
 }
 
-function getDictionary(fragment) {
+navigator.mozL10n.getDictionary = function getDictionary(fragment) {
+  var ctx = navigator.mozL10n.ctx;
   var ast = {};
 
   if (!fragment) {
@@ -213,24 +159,42 @@ function getDictionary(fragment) {
     return {};
   }
 
-  var elements = getTranslatableChildren(fragment);
+  var elements = navigator.mozL10n.getTranslatableChildren(fragment);
 
   for (var i = 0; i < elements.length; i++) {
-    var attrs = getL10nAttributes(elements[i]);
+    var attrs = navigator.mozL10n.getL10nAttributes(elements[i]);
     var val = ctx.getEntitySource(attrs.id);
     ast[attrs.id] = val;
     getPlaceables(ast, val);
   }
   flushBuildMessages('in the visible DOM');
+
   return ast;
+};
+
+
+/* Error logging */
+
+var buildMessages = {};
+
+function addBuildMessage(type, e) {
+  if (!(type in buildMessages)) {
+    buildMessages[type] = [];
+  }
+  if (e instanceof navigator.mozL10n.Context.Error &&
+      e.loc === navigator.mozL10n.ctx.supportedLocales[0] &&
+      buildMessages[type].indexOf(e.id) === -1) {
+    buildMessages[type].push(e.id);
+  }
 }
 
-
-/* DOM translation functions */
-
-function fireLocalizedEvent() {
-  var event = document.createEvent('Event');
-  event.initEvent('localized', false, false);
-  event.language = ctx.supportedLocales[0];
-  window.dispatchEvent(event);
+function flushBuildMessages(variant) {
+  for (var type in buildMessages) {
+    if (buildMessages[type].length) {
+      console.log('[l10n] [' + navigator.mozL10n.ctx.supportedLocales[0] +
+          ']: ' + buildMessages[type].length + ' missing ' + variant + ': ' +
+          buildMessages[type].join(', '));
+      buildMessages[type] = [];
+    }
+  }
 }

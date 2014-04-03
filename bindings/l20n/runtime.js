@@ -1,47 +1,60 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Context */
+/* global Locale, Context, rePlaceables */
 /* global loadINI */
 /* global translateFragment, localizeElement */
+/* global getTranslatableChildren, getL10nAttributes */
 
 var DEBUG = false;
 var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
-var ctx = new Context();
-ctx.ready(onReady);
-
-if (DEBUG) {
-  ctx.addEventListener('error', logMessage.bind(null, 'error'));
-  ctx.addEventListener('warning', logMessage.bind(null, 'warn'));
-}
-
-
 // Public API
 
 navigator.mozL10n = {
-  get: ctx.get.bind(ctx),
+  ctx: new Context(),
+  get: function(id, ctxdata) {
+    return navigator.mozL10n.ctx.get(id, ctxdata);
+  },
   localize: localizeElement,
   translate: function translate(element) {
     return translateFragment(element);
   },
-  ready: ctx.ready.bind(ctx),
+  ready: function(callback) {
+    return navigator.mozL10n.ctx.ready(callback);
+  },
   get readyState() {
-    return ctx.isReady ? 'complete' : 'loading';
+    return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
   },
   language: {
     set code(lang) {
-      ctx.requestLocales(lang);
+      navigator.mozL10n.ctx.requestLocales(lang);
     },
     get code() {
-      return ctx.supportedLocales[0];
+      return navigator.mozL10n.ctx.supportedLocales[0];
     },
     get direction() {
-      return getDirection(ctx.supportedLocales[0]);
+      return getDirection(navigator.mozL10n.ctx.supportedLocales[0]);
     }
+  },
+  _exposePrivateMethods: function() {
+    this.Context = Context;
+    this.Locale =  Locale;
+    this.rePlaceables = rePlaceables;
+    this.getTranslatableChildren = getTranslatableChildren;
+    this.getL10nAttributes = getL10nAttributes;
+    this.loadINI = loadINI;
+    this.fireLocalizedEvent = fireLocalizedEvent;
   }
 };
+
+navigator.mozL10n.ctx.ready(onReady);
+
+if (DEBUG) {
+  navigator.mozL10n.ctx.addEventListener('error', createLogger('error'));
+  navigator.mozL10n.ctx.addEventListener('warning', createLogger('warn'));
+}
 
 function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
@@ -80,11 +93,11 @@ if (window.document) {
 
   if (isPretranslated) {
     waitFor('complete', function() {
-      window.setTimeout(initDocumentLocalization);
+      window.setTimeout(initResources);
     });
   } else {
     if (document.readyState === 'complete') {
-      window.setTimeout(initDocumentLocalization);
+      window.setTimeout(initResources);
     } else {
       waitFor('interactive', pretranslate);
     }
@@ -95,10 +108,10 @@ if (window.document) {
 function pretranslate() {
   if (inlineLocalization()) {
     waitFor('interactive', function() {
-      window.setTimeout(initDocumentLocalization);
+      window.setTimeout(initResources);
     });
   } else {
-    initDocumentLocalization();
+    initResources();
   }
 }
 
@@ -110,7 +123,7 @@ function inlineLocalization() {
     return false;
   }
 
-  var locale = ctx.getLocale(navigator.language);
+  var locale = navigator.mozL10n.ctx.getLocale(navigator.language);
   // the inline localization is happenning very early, when the ctx is not
   // yet ready and when the resources haven't been downloaded yet;  add the
   // inlined JSON directly to the current locale
@@ -122,7 +135,7 @@ function inlineLocalization() {
   return true;
 }
 
-function initDocumentLocalization() {
+function initResources() {
   var resLinks = document.head
                          .querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
@@ -134,7 +147,7 @@ function initDocumentLocalization() {
     if (type === 'ini') {
       iniLinks.push(url);
     }
-    ctx.resLinks.push(url);
+    navigator.mozL10n.ctx.resLinks.push(url);
   }
 
   var iniLoads = iniLinks.length;
@@ -145,7 +158,7 @@ function initDocumentLocalization() {
 
   function onIniLoaded(err) {
     if (err) {
-      ctx._emitter.emit('error', err);
+      navigator.mozL10n.ctx._emitter.emit('error', err);
     }
     if (--iniLoads === 0) {
       initLocale();
@@ -158,7 +171,7 @@ function initDocumentLocalization() {
 }
 
 function initLocale() {
-  ctx.requestLocales(navigator.language);
+  navigator.mozL10n.ctx.requestLocales(navigator.language);
   // mozSettings won't be required here when https://bugzil.la/780953 lands
   if (navigator.mozSettings) {
     navigator.mozSettings.addObserver('language.current', function(event) {
@@ -179,12 +192,14 @@ function onReady() {
 function fireLocalizedEvent() {
   var event = document.createEvent('Event');
   event.initEvent('localized', false, false);
-  event.language = ctx.supportedLocales[0];
+  event.language = navigator.mozL10n.ctx.supportedLocales[0];
   window.dispatchEvent(event);
 }
 
-function logMessage(type, e) {
+function createLogger(type) {
   if (DEBUG) {
-    console[type](e);
+    return console[type];
+  } else {
+    return function() {};
   }
 }

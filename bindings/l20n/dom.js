@@ -1,13 +1,13 @@
 'use strict';
 
 /* jshint -W104 */
-/* global ctx, getDirection */
+/* global getDirection */
 /* exported translateFragment, localizeElement */
 
 function translateFragment(element, loc) {
   if (!element) {
     element = document.documentElement;
-    var lang = loc ? loc.id : ctx.supportedLocales[0];
+    var lang = loc ? loc.id : navigator.mozL10n.ctx.supportedLocales[0];
     document.documentElement.lang = lang;
     document.documentElement.dir = getDirection(lang);
   }
@@ -41,7 +41,7 @@ function localizeElement(element, id, args) {
     element.removeAttribute('data-l10n-args');
   }
 
-  if (ctx.isReady) {
+  if (navigator.mozL10n.ctx.isReady) {
     translateElement(element);
   }
 }
@@ -72,7 +72,7 @@ function translateElement(element, loc) {
   if (loc) {
     entity = loc.getEntity(l10n.id, l10n.args);
   } else {
-    entity = ctx.getEntity(l10n.id, l10n.args);
+    entity = navigator.mozL10n.ctx.getEntity(l10n.id, l10n.args);
   }
 
   if (!entity) {
