@@ -1,12 +1,10 @@
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
   var Context = L10n.Context;
-  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/context';
 } else {
   var Context = process.env.L20N_COV
     ? require('../../../build/cov/lib/l20n/context').Context
     : require('../../../lib/l20n/context').Context;
-  var path = __dirname;
 }
 
 
@@ -23,6 +21,11 @@ describe('Missing resources', function() {
 
   beforeEach(function() {
     ctx = new Context();
+    if (typeof navigator !== 'undefined') {
+      var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/context';
+    } else {
+      var path = __dirname;
+    }
     ctx.resLinks.push(path + '/fixtures/en-US.properties');
     ctx.resLinks.push(path + '/fixtures/missing.properties');
   });
@@ -38,6 +41,11 @@ describe('No valid resources', function() {
 
   beforeEach(function() {
     ctx = new Context();
+    if (typeof navigator !== 'undefined') {
+      var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/context';
+    } else {
+      var path = __dirname;
+    }
     ctx.resLinks.push(path + '/fixtures/missing.properties');
     ctx.resLinks.push(path + '/fixtures/another.properties');
   });

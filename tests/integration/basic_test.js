@@ -5,18 +5,21 @@ if (typeof navigator !== 'undefined') {
       return new L10n.Context();
     }
   };
-  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/integration';
 } else {
   assert = require('assert');
   var L20n = process.env.L20N_COV
     ? require('../../build/cov/lib/l20n')
     : require('../../lib/l20n');
-  var path = __dirname;
 }
 
 describe('A simple context with linkResource', function() {
   var ctx;
   beforeEach(function(done) {
+    if (typeof navigator !== 'undefined') {
+      var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/integration';
+    } else {
+      var path = __dirname;
+    }
     ctx = L20n.getContext();
     ctx.resLinks.push(path + '/fixtures/basic.properties');
     ctx.ready(done);

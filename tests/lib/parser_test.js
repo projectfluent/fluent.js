@@ -1,8 +1,8 @@
 var parse;
 
 if (typeof navigator !== 'undefined') {
-  navigator.mozL10n._getInternalAPI();
-  parse = navigator.mozL10n.parse.bind(null, null);
+  var L10n = navigator.mozL10n._getInternalAPI();
+  parse = L10n.parse.bind(null, null);
 } else {
   assert = require('assert');
   parse = process.env.L20N_COV
