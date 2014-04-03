@@ -1,7 +1,9 @@
-'use strict';
-
-var assert = require('assert');
 var compile = require('./helper').compile;
+
+if (typeof navigator !== 'undefined') {
+} else {
+  assert = require('assert');
+}
 
 describe('Attributes', function(){
   var source, env;

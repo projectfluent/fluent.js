@@ -1,9 +1,12 @@
-'use strict';
-var assert = require('assert');
-
-var Context = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/context').Context
-  : require('../../../lib/l20n/context').Context;
+if (typeof navigator !== 'undefined') {
+  var L10n = navigator.mozL10n._getInternalAPI();
+  var Context = L10n.Context;
+} else {
+  assert = require('assert');
+  var Context = process.env.L20N_COV
+    ? require('../../../build/cov/lib/l20n/context').Context
+    : require('../../../lib/l20n/context').Context;
+}
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {

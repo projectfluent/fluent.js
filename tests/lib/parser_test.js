@@ -1,9 +1,10 @@
-var assert = require('assert');
 var parse;
 
-if (this.navigator) {
-  parse = navigator.mozL10n.debug.parse.bind(null, null);
+if (typeof navigator !== 'undefined') {
+  navigator.mozL10n._getInternalAPI();
+  parse = navigator.mozL10n.parse.bind(null, null);
 } else {
+  assert = require('assert');
   parse = process.env.L20N_COV
     ? require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
     : require('../../lib/l20n/parser').parse.bind(null,null);

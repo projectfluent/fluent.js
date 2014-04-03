@@ -1,15 +1,24 @@
-'use strict';
-var assert = require('assert');
-
-var L20n = process.env.L20N_COV
-  ? require('../../build/cov/lib/l20n')
-  : require('../../lib/l20n');
+if (typeof navigator !== 'undefined') {
+  var L10n = navigator.mozL10n._getInternalAPI();
+  var L20n = {
+    getContext: function() {
+      return new L10n.Context();
+    }
+  };
+  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/integration';
+} else {
+  assert = require('assert');
+  var L20n = process.env.L20N_COV
+    ? require('../../build/cov/lib/l20n')
+    : require('../../lib/l20n');
+  var path = __dirname;
+}
 
 describe('A simple context with linkResource', function() {
   var ctx;
   beforeEach(function(done) {
     ctx = L20n.getContext();
-    ctx.resLinks.push(__dirname + '/fixtures/basic.properties');
+    ctx.resLinks.push(path + '/fixtures/basic.properties');
     ctx.ready(done);
     ctx.requestLocales('en-US');
   });

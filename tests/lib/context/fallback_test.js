@@ -1,12 +1,14 @@
-'use strict';
-var assert = require('assert');
+if (typeof navigator !== 'undefined') {
+  var L10n = navigator.mozL10n._getInternalAPI();
+  var Context = L10n.Context;
+  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/context';
+} else {
+  var Context = process.env.L20N_COV
+    ? require('../../../build/cov/lib/l20n/context').Context
+    : require('../../../lib/l20n/context').Context;
+  var path = __dirname;
+}
 
-var Context = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/context').Context
-  : require('../../../lib/l20n/context').Context;
-var Compiler = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/compiler').Compiler
-  : require('../../../lib/l20n/compiler').Compiler;
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {
@@ -15,12 +17,12 @@ function whenReady(ctx, callback) {
   });
 }
 
-describe('One fallback locale', function() {
+describe.skip('One fallback locale', function() {
   var ctx;
 
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.resLinks.push(__dirname + '/fixtures/{{locale}}.properties');
+    ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
     whenReady(ctx, done);
     ctx.requestLocales('pl');
   });

@@ -1,12 +1,15 @@
-'use strict';
+if (typeof navigator !== 'undefined') {
+  var L10n = navigator.mozL10n._getInternalAPI();
+  var Context = L10n.Context;
+  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/context';
+} else {
+  var Context = process.env.L20N_COV
+    ? require('../../../build/cov/lib/l20n/context').Context
+    : require('../../../lib/l20n/context').Context;
+  var path = __dirname;
+}
 
-var Context = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/context').Context
-  : require('../../../lib/l20n/context').Context;
-var Parser = require('../../../lib/l20n/parser').Parser;
-var io = process.env.L20N_COV
-  ? require('../../../build/cov/lib/l20n/platform/io')
-  : require('../../../lib/l20n/platform/io');
+
 
 function whenReady(ctx, callback) {
   ctx.addEventListener('ready', function onReady() {
@@ -20,8 +23,8 @@ describe('Missing resources', function() {
 
   beforeEach(function() {
     ctx = new Context();
-    ctx.resLinks.push(__dirname + '/fixtures/en-US.properties');
-    ctx.resLinks.push(__dirname + '/fixtures/missing.properties');
+    ctx.resLinks.push(path + '/fixtures/en-US.properties');
+    ctx.resLinks.push(path + '/fixtures/missing.properties');
   });
 
   it('should get ready', function(done) {
@@ -35,8 +38,8 @@ describe('No valid resources', function() {
 
   beforeEach(function() {
     ctx = new Context();
-    ctx.resLinks.push(__dirname + '/fixtures/missing.properties');
-    ctx.resLinks.push(__dirname + '/fixtures/another.properties');
+    ctx.resLinks.push(path + '/fixtures/missing.properties');
+    ctx.resLinks.push(path + '/fixtures/another.properties');
   });
 
   it('should get ready', function(done) {
