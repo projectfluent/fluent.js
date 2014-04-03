@@ -5,10 +5,10 @@
 var DEBUG = true;
 var requiresInlineLocale = false; // netError requires inline locale
 
-navigator.mozL10n._exposePrivateMethods();
+var L10n = navigator.mozL10n._getInternalAPI();
 
 navigator.mozL10n.bootstrap = function bootstrap(callback) {
-  var ctx = navigator.mozL10n.ctx = new navigator.mozL10n.Context();
+  var ctx = navigator.mozL10n.ctx = new L10n.Context();
   ctx.ready(onReady.bind(this));
   requiresInlineLocale = false;
 
@@ -55,19 +55,19 @@ function initResources(callback) {
   }
 
   for (link of iniLinks) {
-    navigator.mozL10n.loadINI(link, onIniLoaded);
+    L10n.loadINI.call(this, link, onIniLoaded);
   }
 }
 
 function onReady() {
-  navigator.mozL10n.translate();
-  navigator.mozL10n.fireLocalizedEvent();
+  this.translate();
+  L10n.fireLocalizedEvent.call(this);
 }
 
 
 /* API for webapp-optimize */
 
-navigator.mozL10n.Locale.prototype.addAST = function(ast) {
+L10n.Locale.prototype.addAST = function(ast) {
   if (!this.ast) {
     this.ast = {};
   }
@@ -79,13 +79,11 @@ navigator.mozL10n.Locale.prototype.addAST = function(ast) {
   }
 };
 
-navigator.mozL10n.Context.prototype.getEntitySource = function(id) {
+L10n.Context.prototype.getEntitySource = function(id) {
   /* jshint -W084 */
 
-  var Context = navigator.mozL10n.Context;
-
   if (!this.isReady) {
-    throw new Context.Error('Context not ready');
+    throw new L10n.Context.Error('Context not ready');
   }
 
   var cur = 0;
@@ -100,7 +98,7 @@ navigator.mozL10n.Context.prototype.getEntitySource = function(id) {
     if (locale.ast && locale.ast.hasOwnProperty(id)) {
       return locale.ast[id];
     }
-    var e = new Context.Error(id + ' not found in ' + loc, id, loc);
+    var e = new L10n.Context.Error(id + ' not found in ' + loc, id, loc);
     this._emitter.emit('warning', e);
     cur++;
   }
@@ -111,7 +109,7 @@ navigator.mozL10n.Context.prototype.getEntitySource = function(id) {
 function getPlaceableNames(str) {
   var placeables = [];
   var match;
-  while (match = this.rePlaceables.exec(str)) {
+  while (match = L10n.rePlaceables.exec(str)) {
     placeables.push(match[1]);
   }
   return placeables;
@@ -121,7 +119,7 @@ function getPlaceableNames(str) {
 // interpolation in the AST
 function getPlaceables(ast, val) {
   if (typeof val === 'string') {
-    var placeables = getPlaceableNames.call(this, val);
+    var placeables = getPlaceableNames(val);
     for (var i = 0; i < placeables.length; i++) {
       var id = placeables[i];
       ast[id] = this.ctx.getEntitySource(id);
@@ -157,10 +155,10 @@ navigator.mozL10n.getDictionary = function getDictionary(fragment) {
     return {};
   }
 
-  var elements = this.getTranslatableChildren(fragment);
+  var elements = L10n.getTranslatableChildren(fragment);
 
   for (var i = 0; i < elements.length; i++) {
-    var attrs = this.getL10nAttributes(elements[i]);
+    var attrs = L10n.getL10nAttributes(elements[i]);
     var val = this.ctx.getEntitySource(attrs.id);
     ast[attrs.id] = val;
     getPlaceables.call(this, ast, val);
@@ -179,7 +177,7 @@ function addBuildMessage(type, e) {
   if (!(type in buildMessages)) {
     buildMessages[type] = [];
   }
-  if (e instanceof this.Context.Error &&
+  if (e instanceof L10n.Context.Error &&
       e.loc === this.ctx.supportedLocales[0] &&
       buildMessages[type].indexOf(e.id) === -1) {
     buildMessages[type].push(e.id);

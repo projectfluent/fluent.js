@@ -40,14 +40,16 @@ navigator.mozL10n = {
       return getDirection(navigator.mozL10n.ctx.supportedLocales[0]);
     }
   },
-  _exposePrivateMethods: function() {
-    this.Context = Context;
-    this.Locale =  Locale;
-    this.rePlaceables = rePlaceables;
-    this.getTranslatableChildren = getTranslatableChildren;
-    this.getL10nAttributes = getL10nAttributes;
-    this.loadINI = loadINI;
-    this.fireLocalizedEvent = fireLocalizedEvent;
+  _getInternalAPI: function() {
+    return {
+      Context: Context,
+      Locale: Locale,
+      rePlaceables: rePlaceables,
+      getTranslatableChildren:  getTranslatableChildren,
+      getL10nAttributes: getL10nAttributes,
+      loadINI: loadINI,
+      fireLocalizedEvent: fireLocalizedEvent
+    };
   }
 };
 
@@ -191,7 +193,7 @@ function initLocale() {
 
 function onReady() {
   if (!isPretranslated) {
-    translateFragment.call(this);
+    this.translate();
   }
   isPretranslated = false;
 
