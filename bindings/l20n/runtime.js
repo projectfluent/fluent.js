@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Locale, Context, rePlaceables */
+/* global Locale, Context, rePlaceables, parse */
 /* global loadINI */
 /* global translateFragment, localizeElement */
 /* global getTranslatableChildren, getL10nAttributes */
@@ -48,8 +48,8 @@ navigator.mozL10n = {
       getTranslatableChildren:  getTranslatableChildren,
       getL10nAttributes: getL10nAttributes,
       loadINI: loadINI,
-      fireLocalizedEvent: fireLocalizedEvent
-      parse: parse,
+      fireLocalizedEvent: fireLocalizedEvent,
+      parse: parse
     };
   }
 };
