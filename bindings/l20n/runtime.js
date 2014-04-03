@@ -14,12 +14,14 @@ var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
 
 navigator.mozL10n = {
   ctx: new Context(),
-  get: function(id, ctxdata) {
+  get: function get(id, ctxdata) {
     return navigator.mozL10n.ctx.get(id, ctxdata);
   },
-  localize: localizeElement,
+  localize: function localize(element, id, args) {
+    return localizeElement.call(navigator.mozL10n, element, id, args);
+  },
   translate: function translate(element) {
-    return translateFragment(element);
+    return translateFragment.call(navigator.mozL10n, element);
   },
   ready: function(callback) {
     return navigator.mozL10n.ctx.ready(callback);
@@ -49,11 +51,9 @@ navigator.mozL10n = {
   }
 };
 
-navigator.mozL10n.ctx.ready(onReady);
-
 if (DEBUG) {
-  navigator.mozL10n.ctx.addEventListener('error', createLogger('error'));
-  navigator.mozL10n.ctx.addEventListener('warning', createLogger('warn'));
+  navigator.mozL10n.ctx.addEventListener('error', console.error);
+  navigator.mozL10n.ctx.addEventListener('warning', console.warn);
 }
 
 function getDirection(lang) {
@@ -86,32 +86,33 @@ if (window.document) {
 
   // this is a special case for netError bug; see https://bugzil.la/444165
   if (document.documentElement.dataset.noCompleteBug) {
-    pretranslate();
+    pretranslate.call(navigator.mozL10n);
     return;
   }
 
 
   if (isPretranslated) {
     waitFor('complete', function() {
-      window.setTimeout(initResources);
+      window.setTimeout(initResources.bind(navigator.mozL10n));
     });
   } else {
     if (document.readyState === 'complete') {
-      window.setTimeout(initResources);
+      window.setTimeout(initResources.bind(navigator.mozL10n));
     } else {
-      waitFor('interactive', pretranslate);
+      waitFor('interactive', pretranslate.bind(navigator.mozL10n));
     }
   }
 
 }
 
 function pretranslate() {
-  if (inlineLocalization()) {
-    waitFor('interactive', function() {
-      window.setTimeout(initResources);
-    });
+  /* jshint -W068 */
+  if (inlineLocalization.call(this)) {
+    waitFor('interactive', (function() {
+      window.setTimeout(initResources.bind(this));
+    }).bind(this));
   } else {
-    initResources();
+    initResources.call(this);
   }
 }
 
@@ -123,13 +124,20 @@ function inlineLocalization() {
     return false;
   }
 
-  var locale = navigator.mozL10n.ctx.getLocale(navigator.language);
+  var locale = this.ctx.getLocale(navigator.language);
   // the inline localization is happenning very early, when the ctx is not
   // yet ready and when the resources haven't been downloaded yet;  add the
   // inlined JSON directly to the current locale
   locale.addAST(JSON.parse(script.innerHTML));
   // localize the visible DOM
-  translateFragment(null, locale);
+  var l10n = {
+    ctx: locale,
+    language: {
+      code: locale.id,
+      direction: getDirection(locale.id)
+    }
+  };
+  translateFragment.call(l10n);
   // the visible DOM is now pretranslated
   isPretranslated = true;
   return true;
@@ -147,31 +155,32 @@ function initResources() {
     if (type === 'ini') {
       iniLinks.push(url);
     }
-    navigator.mozL10n.ctx.resLinks.push(url);
+    this.ctx.resLinks.push(url);
   }
 
   var iniLoads = iniLinks.length;
   if (iniLoads === 0) {
-    initLocale();
+    initLocale.call(this);
     return;
   }
 
   function onIniLoaded(err) {
     if (err) {
-      navigator.mozL10n.ctx._emitter.emit('error', err);
+      this.ctx._emitter.emit('error', err);
     }
     if (--iniLoads === 0) {
-      initLocale();
+      initLocale.call(this);
     }
   }
 
   for (link of iniLinks) {
-    loadINI(link, onIniLoaded);
+    loadINI.call(this, link, onIniLoaded.bind(this));
   }
 }
 
 function initLocale() {
-  navigator.mozL10n.ctx.requestLocales(navigator.language);
+  this.ctx.ready(onReady.bind(this));
+  this.ctx.requestLocales(navigator.language);
   // mozSettings won't be required here when https://bugzil.la/780953 lands
   if (navigator.mozSettings) {
     navigator.mozSettings.addObserver('language.current', function(event) {
@@ -182,24 +191,16 @@ function initLocale() {
 
 function onReady() {
   if (!isPretranslated) {
-    translateFragment();
+    translateFragment.call(this);
   }
   isPretranslated = false;
 
-  fireLocalizedEvent();
+  fireLocalizedEvent.call(this);
 }
 
 function fireLocalizedEvent() {
   var event = document.createEvent('Event');
   event.initEvent('localized', false, false);
-  event.language = navigator.mozL10n.ctx.supportedLocales[0];
+  event.language = this.ctx.supportedLocales[0];
   window.dispatchEvent(event);
-}
-
-function createLogger(type) {
-  if (DEBUG) {
-    return console[type];
-  } else {
-    return function() {};
-  }
 }

@@ -1,20 +1,18 @@
 'use strict';
 
 /* jshint -W104 */
-/* global getDirection */
 /* exported translateFragment, localizeElement */
 
-function translateFragment(element, loc) {
+function translateFragment(element) {
   if (!element) {
     element = document.documentElement;
-    var lang = loc ? loc.id : navigator.mozL10n.ctx.supportedLocales[0];
-    document.documentElement.lang = lang;
-    document.documentElement.dir = getDirection(lang);
+    document.documentElement.lang = this.language.code;
+    document.documentElement.dir = this.language.direction;
   }
-  translateElement(element, loc);
+  translateElement.call(this, element);
 
   for (var node of getTranslatableChildren(element)) {
-    translateElement(node, loc);
+    translateElement.call(this, node);
   }
 }
 
@@ -41,8 +39,8 @@ function localizeElement(element, id, args) {
     element.removeAttribute('data-l10n-args');
   }
 
-  if (navigator.mozL10n.ctx.isReady) {
-    translateElement(element);
+  if (this.ctx.isReady) {
+    translateElement.call(this, element);
   }
 }
 
@@ -61,19 +59,14 @@ function getL10nAttributes(element) {
 
 
 
-function translateElement(element, loc) {
+function translateElement(element) {
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
     return;
   }
 
-  var entity;
-  if (loc) {
-    entity = loc.getEntity(l10n.id, l10n.args);
-  } else {
-    entity = navigator.mozL10n.ctx.getEntity(l10n.id, l10n.args);
-  }
+  var entity = this.ctx.getEntity(l10n.id, l10n.args);
 
   if (!entity) {
     return;

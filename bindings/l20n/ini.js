@@ -5,7 +5,7 @@
 /* exported loadINI */
 
 function loadINI(url, callback) {
-  var ctx = navigator.mozL10n.ctx;
+  var ctx = this.ctx;
   io.load(url, function(err, source) {
     var pos = ctx.resLinks.indexOf(url);
 

@@ -9,18 +9,17 @@ navigator.mozL10n._exposePrivateMethods();
 
 navigator.mozL10n.bootstrap = function bootstrap(callback) {
   var ctx = navigator.mozL10n.ctx = new navigator.mozL10n.Context();
-  ctx.ready(onReady);
+  ctx.ready(onReady.bind(this));
   requiresInlineLocale = false;
 
   if (DEBUG) {
-    ctx.addEventListener('error', addBuildMessage.bind(null, 'error'));
-    ctx.addEventListener('warning', addBuildMessage.bind(null, 'warn'));
+    ctx.addEventListener('error', addBuildMessage.bind(this, 'error'));
+    ctx.addEventListener('warning', addBuildMessage.bind(this, 'warn'));
   }
-  initResources(callback);
+  initResources.call(this, callback);
 };
 
 function initResources(callback) {
-  var ctx = navigator.mozL10n.ctx;
   var resLinks = document.head
                          .querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
@@ -36,7 +35,7 @@ function initResources(callback) {
       }
       iniLinks.push(url);
     }
-    ctx.resLinks.push(url);
+    this.ctx.resLinks.push(url);
   }
 
   var iniLoads = iniLinks.length;
@@ -112,7 +111,7 @@ navigator.mozL10n.Context.prototype.getEntitySource = function(id) {
 function getPlaceableNames(str) {
   var placeables = [];
   var match;
-  while (match = navigator.mozL10n.rePlaceables.exec(str)) {
+  while (match = this.rePlaceables.exec(str)) {
     placeables.push(match[1]);
   }
   return placeables;
@@ -122,52 +121,51 @@ function getPlaceableNames(str) {
 // interpolation in the AST
 function getPlaceables(ast, val) {
   if (typeof val === 'string') {
-    var placeables = getPlaceableNames(val);
+    var placeables = getPlaceableNames.call(this, val);
     for (var i = 0; i < placeables.length; i++) {
       var id = placeables[i];
-      ast[id] = navigator.mozL10n.ctx.getEntitySource(id);
+      ast[id] = this.ctx.getEntitySource(id);
     }
   } else {
     for (var prop in val) {
       if (!val.hasOwnProperty(prop) || val === '_index') {
         continue;
       }
-      getPlaceables(ast, val[prop]);
+      getPlaceables.call(this, ast, val[prop]);
     }
   }
 }
 
 navigator.mozL10n.getDictionary = function getDictionary(fragment) {
-  var ctx = navigator.mozL10n.ctx;
   var ast = {};
 
   if (!fragment) {
-    var sourceLocale = ctx.getLocale('en-US');
+    var sourceLocale = this.ctx.getLocale('en-US');
     if (!sourceLocale.isReady) {
       sourceLocale.build(null);
     }
     // iterate over all strings in en-US
     for (var id in sourceLocale.ast) {
-      ast[id] = ctx.getEntitySource(id);
+      ast[id] = this.ctx.getEntitySource(id);
     }
-    flushBuildMessages('compared to en-US');
+    flushBuildMessages.call(this, 'compared to en-US');
     return ast;
   }
 
   // don't build inline JSON for default language
-  if (!requiresInlineLocale && ctx.supportedLocales[0] === 'en-US') {
+  if (!requiresInlineLocale && this.ctx.supportedLocales[0] === 'en-US') {
     return {};
   }
 
-  var elements = navigator.mozL10n.getTranslatableChildren(fragment);
+  var elements = this.getTranslatableChildren(fragment);
 
   for (var i = 0; i < elements.length; i++) {
-    var attrs = navigator.mozL10n.getL10nAttributes(elements[i]);
-    var val = ctx.getEntitySource(attrs.id);
+    var attrs = this.getL10nAttributes(elements[i]);
+    var val = this.ctx.getEntitySource(attrs.id);
     ast[attrs.id] = val;
-    getPlaceables(ast, val);
+    getPlaceables.call(this, ast, val);
   }
-  flushBuildMessages('in the visible DOM');
+  flushBuildMessages.call(this, 'in the visible DOM');
 
   return ast;
 };
@@ -181,8 +179,8 @@ function addBuildMessage(type, e) {
   if (!(type in buildMessages)) {
     buildMessages[type] = [];
   }
-  if (e instanceof navigator.mozL10n.Context.Error &&
-      e.loc === navigator.mozL10n.ctx.supportedLocales[0] &&
+  if (e instanceof this.Context.Error &&
+      e.loc === this.ctx.supportedLocales[0] &&
       buildMessages[type].indexOf(e.id) === -1) {
     buildMessages[type].push(e.id);
   }
@@ -191,7 +189,7 @@ function addBuildMessage(type, e) {
 function flushBuildMessages(variant) {
   for (var type in buildMessages) {
     if (buildMessages[type].length) {
-      console.log('[l10n] [' + navigator.mozL10n.ctx.supportedLocales[0] +
+      console.log('[l10n] [' + this.ctx.supportedLocales[0] +
           ']: ' + buildMessages[type].length + ' missing ' + variant + ': ' +
           buildMessages[type].join(', '));
       buildMessages[type] = [];
