@@ -49,6 +49,7 @@ navigator.mozL10n = {
       getL10nAttributes: getL10nAttributes,
       loadINI: loadINI,
       fireLocalizedEvent: fireLocalizedEvent
+      parse: parse,
     };
   }
 };
