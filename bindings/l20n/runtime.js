@@ -54,6 +54,8 @@ navigator.mozL10n = {
   }
 };
 
+navigator.mozL10n.ctx.ready(onReady.bind(navigator.mozL10n));
+
 if (DEBUG) {
   navigator.mozL10n.ctx.addEventListener('error', console.error);
   navigator.mozL10n.ctx.addEventListener('warning', console.warn);
@@ -182,7 +184,6 @@ function initResources() {
 }
 
 function initLocale() {
-  this.ctx.ready(onReady.bind(this));
   this.ctx.requestLocales(navigator.language);
   // mozSettings won't be required here when https://bugzil.la/780953 lands
   if (navigator.mozSettings) {
