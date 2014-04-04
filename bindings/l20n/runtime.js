@@ -24,7 +24,8 @@ navigator.mozL10n = {
     return translateFragment.call(navigator.mozL10n, element);
   },
   ready: function(callback) {
-    return navigator.mozL10n.ctx.ready(callback);
+    // XXX this should use ctx.ready https://bugzil.la/882592
+    return navigator.mozL10n.ctx.once(callback);
   },
   get readyState() {
     return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
