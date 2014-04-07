@@ -22,7 +22,7 @@
   "quotmark": "single",
   "maxcomplexity": 20,
   "maxerr": 50,
-  "maxlen": 80,
+  "maxlen": 78,
 
   "globals": {}
 }
