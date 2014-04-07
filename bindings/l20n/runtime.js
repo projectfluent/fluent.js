@@ -23,9 +23,20 @@ navigator.mozL10n = {
   translate: function translate(element) {
     return translateFragment.call(navigator.mozL10n, element);
   },
-  ready: function(callback) {
-    // XXX this should use ctx.ready https://bugzil.la/882592
-    return navigator.mozL10n.ctx.once(callback);
+  ready: function ready(callback) {
+    if (!callback) {
+      return;
+    }
+
+    // XXX full compatibility with webL10n, which means that the callback may
+    // be invoked once or multiple times, depending on when mozL10n.ready()
+    // was called.
+    // This should just use ctx.ready. See https://bugzil.la/882592
+    if (navigator.mozL10n.ctx.isReady) {
+      window.setTimeout(callback);
+    } else {
+      navigator.mozL10n.ctx.addEventListener('ready', callback);
+    }
   },
   get readyState() {
     return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
@@ -98,7 +109,7 @@ if (window.document) {
 
 
   if (isPretranslated) {
-    waitFor('complete', function() {
+    waitFor('interactive', function() {
       window.setTimeout(initResources.bind(navigator.mozL10n));
     });
   } else {
