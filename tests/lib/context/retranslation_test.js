@@ -24,6 +24,7 @@ describe('ctx.ready', function() {
     });
     ctx.requestLocales('pl');
   });
+
   it('should fire asynchronously when language changes', function(done) {
     var now = false;
     ctx.ready(function() {
@@ -37,6 +38,7 @@ describe('ctx.ready', function() {
     });
     ctx.requestLocales('pl');
   });
+
   it('should fire synchronously when context is ready', function(done) {
     ctx.once(function() {
       ctx.ready(function() {
@@ -45,6 +47,7 @@ describe('ctx.ready', function() {
     });
     ctx.requestLocales('pl');
   });
+
   it('should fire synchronously when language changes', function(done) {
     var now = false;
     ctx.once(function() {
@@ -60,4 +63,5 @@ describe('ctx.ready', function() {
     });
     ctx.requestLocales('pl');
   });
+
 });

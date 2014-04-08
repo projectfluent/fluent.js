@@ -14,10 +14,12 @@ if (typeof navigator !== 'undefined') {
 
 describe('L10n Parser', function() {
   'use strict';
+
   it('string value', function() {
     var ast = parse('id = string');
     assert.strictEqual(ast.id, 'string');
   });
+
   it('basic errors', function() {
     var strings = [
       '',
@@ -35,10 +37,12 @@ describe('L10n Parser', function() {
       }
     }
   });
+
   it('basic attributes', function() {
     var ast = parse('id.attr1 = foo');
     assert.equal(ast.id.attr1, 'foo');
   });
+
   it('plural macro', function() {
     var ast = parse('id = {[ plural(m) ]} \nid[one] = foo');
     assert.ok(ast.id._ instanceof Object);
@@ -47,6 +51,7 @@ describe('L10n Parser', function() {
     assert.equal(ast.id._index[0], 'plural');
     assert.equal(ast.id._index[1], 'm');
   });
+
   it('plural macro errors', function() {
     var strings = [
       'id = {[ plural(m) ] \nid[one] = foo',
@@ -72,10 +77,12 @@ describe('L10n Parser', function() {
     }
     assert.equal(errorsThrown, strings.length);
   });
+
   it('comment', function() {
     var ast = parse('#test');
     assert.equal(Object.keys(ast).length, 0);
   });
+
   it('comment errors', function() {
     var strings = [
       ' # foo',
@@ -89,4 +96,5 @@ describe('L10n Parser', function() {
       }
     }
   });
+
 });

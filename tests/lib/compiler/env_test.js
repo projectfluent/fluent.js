@@ -6,6 +6,7 @@ var compile = require('./helper').compile;
 
 describe('Env object', function(){
   var source, env;
+
   beforeEach(function() {
     source = [
       'foo=Foo',
@@ -20,6 +21,7 @@ describe('Env object', function(){
     assert.strictEqual(env.getFoo.toString(), 'Foo');
     assert.strictEqual(env.getBar.toString(), '{{ bar }}');
   });
+
   it('cannot be modified by another compilation', function() {
     var source2 = [
       'foo=Foo',
@@ -31,4 +33,5 @@ describe('Env object', function(){
     assert.strictEqual(env.getFoo.toString(), 'Foo');
     assert.strictEqual(env.getBar.toString(), '{{ bar }}');
   });
+
 });
