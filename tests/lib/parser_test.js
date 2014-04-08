@@ -6,8 +6,8 @@ if (typeof navigator !== 'undefined') {
   parse = L10n.parse.bind(null, null);
 } else {
   assert = require('assert');
-  parse = process.env.L20N_COV
-    ? require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
+  parse = process.env.L20N_COV ?
+    require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
     : require('../../lib/l20n/parser').parse.bind(null,null);
 }
 

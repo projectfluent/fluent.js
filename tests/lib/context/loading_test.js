@@ -6,8 +6,8 @@ if (typeof navigator !== 'undefined') {
   var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/lib/context';
 } else {
   assert = require('assert');
-  var Context = process.env.L20N_COV
-    ? require('../../../build/cov/lib/l20n/context').Context
+  var Context = process.env.L20N_COV ?
+    require('../../../build/cov/lib/l20n/context').Context
     : require('../../../lib/l20n/context').Context;
   var path = __dirname;
 }

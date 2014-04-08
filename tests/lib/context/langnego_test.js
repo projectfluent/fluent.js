@@ -5,8 +5,8 @@ if (typeof navigator !== 'undefined') {
   var Context = L10n.Context;
 } else {
   assert = require('assert');
-  var Context = process.env.L20N_COV
-    ? require('../../../build/cov/lib/l20n/context').Context
+  var Context = process.env.L20N_COV ?
+    require('../../../build/cov/lib/l20n/context').Context
     : require('../../../lib/l20n/context').Context;
 }
 
