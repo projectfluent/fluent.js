@@ -23,7 +23,7 @@ if (typeof navigator !== 'undefined') {
   var path = __dirname;
 }
 
-describe('A simple context with linkResource', function() {
+describe('A simple context with one resource', function() {
   var ctx;
 
   beforeEach(function(done) {
