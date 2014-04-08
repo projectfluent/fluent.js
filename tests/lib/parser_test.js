@@ -1,4 +1,5 @@
-/* global it, assert:true, describe, navigator */
+/* global it, assert:true, describe */
+/* global navigator, process */
 
 var parse;
 

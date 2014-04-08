@@ -1,4 +1,5 @@
-/* global assert:true, it, describe, beforeEach, navigator */
+/* global it, assert:true, describe, beforeEach */
+/* global navigator, process, __dirname */
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
