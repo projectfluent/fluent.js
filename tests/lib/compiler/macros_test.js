@@ -1,3 +1,4 @@
+/* global it, before, beforeEach, assert:true, describe */
 'use strict';
 
 var assert = require('assert');
@@ -21,7 +22,8 @@ describe('Macros', function(){
     });
     it('throws when resolving (not calling) a macro in a complex string', function() {
       assert.strictEqual(env.placeMacro.toString(ctxdata), '{{ plural }}');
-      assert.strictEqual(env.placeRealMacro.toString(ctxdata), '{{ __plural }}');
+      assert.strictEqual(env.placeRealMacro.toString(ctxdata),
+                         '{{ __plural }}');
     });
   });
 
@@ -128,7 +130,7 @@ describe('A simple plural macro', function(){
       assert.strictEqual(value, 'Many');
     });
     it('returns other for 0.5', function() {
-      var value = env.foo.toString({n: .5});
+      var value = env.foo.toString({n: 0.5});
       assert.strictEqual(value, 'Other');
     });
   });
@@ -162,7 +164,7 @@ describe('A simple plural macro', function(){
       assert.strictEqual(value, 'Many');
     });
     it('returns other for 0.5', function() {
-      var value = env.foo.toString({n: .5});
+      var value = env.foo.toString({n: 0.5});
       assert.strictEqual(value, 'Other');
     });
   });
@@ -195,7 +197,7 @@ describe('A simple plural macro', function(){
       assert.strictEqual(value, 'Other');
     });
     it('returns other for 0.5', function() {
-      var value = env.foo.toString({n: .5});
+      var value = env.foo.toString({n: 0.5});
       assert.strictEqual(value, 'Other');
     });
   });
@@ -228,7 +230,7 @@ describe('A simple plural macro', function(){
       assert.strictEqual(value, undefined);
     });
     it('returns other for 0.5', function() {
-      var value = env.foo.toString({n: .5});
+      var value = env.foo.toString({n: 0.5});
       assert.strictEqual(value, undefined);
     });
   });

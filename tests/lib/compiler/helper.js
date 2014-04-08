@@ -1,5 +1,5 @@
+/* global navigator */
 'use strict';
-
 
 if (typeof navigator !== 'undefined') {
   navigator.mozL10n._exposePrivateMethods();
@@ -8,9 +8,9 @@ if (typeof navigator !== 'undefined') {
   var getPluralRule = navigator.mozL10n.getPluralRule;
 } else {
   var parse = require('../../../lib/l20n/parser').parse;
-  var Entity = process.env.L20N_COV
-    ? require('../../../build/cov/lib/l20n/compiler').Entity
-    : require('../../../lib/l20n/compiler').Entity;
+  var Entity = process.env.L20N_COV ?
+    require('../../../build/cov/lib/l20n/compiler').Entity :
+    require('../../../lib/l20n/compiler').Entity;
   var getPluralRule = require('../../../lib/l20n/plurals').getPluralRule;
 }
 
@@ -26,4 +26,4 @@ exports.compile = function compile(source) {
     }
   }
   return env;
-}
+};

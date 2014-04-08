@@ -1,3 +1,4 @@
+/* global it, before, beforeEach, assert:true, describe */
 'use strict';
 
 var assert = require('assert');
@@ -13,7 +14,7 @@ describe('Context data', function(){
     before(function() {
       ctxdata = {
         unreadNotifications: 3,
-        foo: "Foo"
+        foo: 'Foo'
       };
       source = [
         'unread=Unread notifications: {{ unreadNotifications }}',
@@ -254,7 +255,7 @@ describe('Context data', function(){
   describe('and objects', function(){
     before(function() {
       ctxdata = {
-        obj: { 
+        obj: {
           key: 'value'
         }
       };

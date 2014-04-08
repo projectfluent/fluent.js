@@ -1,3 +1,4 @@
+/* global it, beforeEach, assert:true, describe */
 'use strict';
 
 var assert = require('assert');
@@ -24,7 +25,7 @@ describe('Env object', function(){
       'foo=Foo',
       'bar=Bar'
     ].join('\n');
-    var env2 = compile(source2);
+    compile(source2);
 
     assert.strictEqual(env.foo.toString(), 'Foo');
     assert.strictEqual(env.getFoo.toString(), 'Foo');

@@ -1,9 +1,8 @@
-var compile = require('./helper').compile;
+/* global it, before, beforeEach, assert:true, describe */
+'use strict';
 
-if (typeof navigator !== 'undefined') {
-} else {
-  assert = require('assert');
-}
+var assert = require('assert');
+var compile = require('./helper').compile;
 
 describe('Attributes', function(){
   var source, env;
@@ -26,7 +25,8 @@ describe('Attributes', function(){
     });
     it('returns the value with a placeable', function(){
       var entity = env.foo.valueOf();
-      assert.strictEqual(entity.attributes.attrComplex, 'An attribute referencing Bar');
+      assert.strictEqual(entity.attributes.attrComplex,
+                         'An attribute referencing Bar');
     });
   });
 
@@ -40,11 +40,11 @@ describe('Attributes', function(){
     });
     it('returns the value of the entity', function(){
       var value = env.update.toString();
-      assert.strictEqual(value, "Update");
+      assert.strictEqual(value, 'Update');
     });
     it('returns the value of the attribute\'s member', function(){
       var entity = env.update.valueOf({n: 1});
-      assert.strictEqual(entity.attributes.innerHTML, "One update available");
+      assert.strictEqual(entity.attributes.innerHTML, 'One update available');
     });
   });
 
@@ -62,11 +62,11 @@ describe('Attributes', function(){
     });
     it('returns the value of the entity', function(){
       var entity = env.update.valueOf({n: 1, k: 2});
-      assert.strictEqual(entity.value, "One update");
+      assert.strictEqual(entity.value, 'One update');
     });
     it('returns the value of the attribute', function(){
       var entity = env.update.valueOf({n: 1, k: 2});
-      assert.strictEqual(entity.attributes.innerHTML, "2 updates innerHTML");
+      assert.strictEqual(entity.attributes.innerHTML, '2 updates innerHTML');
     });
   });
 
@@ -79,11 +79,11 @@ describe('Attributes', function(){
     });
     it('returns the value of the entity', function(){
       var entity = env.brandName.valueOf();
-      assert.strictEqual(entity.value, "Firefox");
+      assert.strictEqual(entity.value, 'Firefox');
     });
     it('returns the value of the attribute', function(){
       var entity = env.brandName.valueOf();
-      assert.strictEqual(entity.attributes.title, "Mozilla Firefox");
+      assert.strictEqual(entity.attributes.title, 'Mozilla Firefox');
     });
   });
 
@@ -96,7 +96,8 @@ describe('Attributes', function(){
     });
     it('returns the raw string of the attribute', function(){
       var entity = env.brandName.valueOf();
-      assert.strictEqual(entity.attributes.title, "Mozilla {{ brandName.title }}");
+      assert.strictEqual(entity.attributes.title,
+                         'Mozilla {{ brandName.title }}');
     });
   });
 

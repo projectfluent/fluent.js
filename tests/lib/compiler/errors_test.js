@@ -1,3 +1,4 @@
+/* global it, before, beforeEach, assert:true, describe */
 'use strict';
 
 var assert = require('assert');
@@ -19,7 +20,7 @@ describe('Compiler errors:', function(){
       ].join('\n');
     });
     it('works with the default index', function(){
-      assert.strictEqual(env.prompt.toString({n: 1}), "One File");
+      assert.strictEqual(env.prompt.toString({n: 1}), 'One File');
     });
   });
 
@@ -47,7 +48,7 @@ describe('Compiler errors:', function(){
       ].join('\n');
     });
     it('is found', function(){
-      assert.strictEqual(env.prompt.toString({n: 1}), "One File");
+      assert.strictEqual(env.prompt.toString({n: 1}), 'One File');
     });
     it('throws an IndexError if n is not defined', function(){
       var value = env.prompt.toString();
