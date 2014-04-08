@@ -1,3 +1,5 @@
+/* global it, assert:true, describe, beforeEach, navigator */
+
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
   var L20n = {
