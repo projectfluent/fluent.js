@@ -20,7 +20,7 @@ describe('A non-loading context', function() {
 
   beforeEach(function() {
     ctx = new Context();
-    ctx.resLinks.push(path + '/fixtures/strings.properties');
+    ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
   });
 
   it('should throw on get', function() {
@@ -41,7 +41,7 @@ describe('A loading, non-ready context', function() {
   var ctx;
   beforeEach(function() {
     ctx = new Context();
-    ctx.resLinks.push(path + '/fixtures/strings.properties');
+    ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
     ctx.requestLocales();
   });
 
@@ -76,7 +76,7 @@ describe('A loading, ready context', function() {
 
   beforeEach(function(done) {
     ctx = new Context();
-    ctx.resLinks.push(path + '/fixtures/strings.properties');
+    ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
     ctx.addEventListener('ready', function onReady() {
       ctx.removeEventListener('ready', onReady);
       done();
