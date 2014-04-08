@@ -8,19 +8,12 @@ if (typeof navigator !== 'undefined') {
     : require('../../../lib/l20n/context').Context;
 }
 
-function whenReady(ctx, callback) {
-  ctx.addEventListener('ready', function onReady() {
-    ctx.removeEventListener('ready', onReady);
-    callback();
-  });
-}
-
 describe('Language negotiation without arguments', function() {
   var ctx;
 
   beforeEach(function(done) {
     ctx = new Context();
-    whenReady(ctx, done);
+    ctx.once(done);
     ctx.requestLocales();
   });
 
@@ -35,7 +28,7 @@ describe('Language negotiation with arguments', function() {
 
   beforeEach(function(done) {
     ctx = new Context();
-    whenReady(ctx, done);
+    ctx.once(done);
     ctx.requestLocales('pl');
   });
 

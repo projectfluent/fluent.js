@@ -10,13 +10,6 @@ if (typeof navigator !== 'undefined') {
   var path = __dirname;
 }
 
-function whenReady(ctx, callback) {
-  ctx.addEventListener('ready', function onReady() {
-    ctx.removeEventListener('ready', onReady);
-    callback();
-  });
-}
-
 describe('A non-loading context', function() {
   var ctx;
   beforeEach(function() {
@@ -125,7 +118,7 @@ describe('A loading, ready context', function() {
       var path = __dirname;
     }
     ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
-    whenReady(ctx, done);
+    ctx.once(done);
     ctx.requestLocales('en-US');
   });
 

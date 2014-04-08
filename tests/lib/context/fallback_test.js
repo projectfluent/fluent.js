@@ -9,20 +9,13 @@ if (typeof navigator !== 'undefined') {
   var path = __dirname;
 }
 
-function whenReady(ctx, callback) {
-  ctx.addEventListener('ready', function onReady() {
-    ctx.removeEventListener('ready', onReady);
-    callback();
-  });
-}
-
 describe('One fallback locale', function() {
   var ctx;
 
   beforeEach(function(done) {
     ctx = new Context();
     ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
-    whenReady(ctx, done);
+    ctx.once(done);
     ctx.requestLocales('pl');
   });
 

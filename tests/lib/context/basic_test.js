@@ -8,8 +8,8 @@ if (typeof navigator !== 'undefined') {
 } else {
   assert = require('assert');
   var L20n = process.env.L20N_COV
-    ? require('../../build/cov/lib/l20n')
-    : require('../../lib/l20n');
+    ? require('../../../build/cov/lib/l20n')
+    : require('../../../lib/l20n');
 }
 
 if (typeof navigator !== 'undefined') {

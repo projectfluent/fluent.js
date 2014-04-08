@@ -9,13 +9,6 @@ if (typeof navigator !== 'undefined') {
   var path = __dirname;
 }
 
-function whenReady(ctx, callback) {
-  ctx.addEventListener('ready', function onReady() {
-    ctx.removeEventListener('ready', onReady);
-    callback();
-  });
-}
-
 describe('Missing resources', function() {
   var ctx;
 
@@ -27,7 +20,7 @@ describe('Missing resources', function() {
   });
 
   it('should get ready', function(done) {
-    whenReady(ctx, done);
+    ctx.once(done);
     ctx.requestLocales();
   });
 });
@@ -42,7 +35,7 @@ describe('No valid resources', function() {
   });
 
   it('should get ready', function(done) {
-    whenReady(ctx, done);
+    ctx.once(done);
     ctx.requestLocales();
   });
 });

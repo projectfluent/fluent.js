@@ -7,13 +7,6 @@ if (typeof navigator !== 'undefined') {
     : require('../../../lib/l20n/context').Context;
 }
 
-function whenReady(ctx, callback) {
-  ctx.addEventListener('ready', function onReady() {
-    ctx.removeEventListener('ready', onReady);
-    callback();
-  });
-}
-
 describe('ctx.ready', function() {
   var ctx;
 
@@ -34,14 +27,14 @@ describe('ctx.ready', function() {
         done();
       }
     });
-    whenReady(ctx, function() {
+    ctx.once(function() {
       now = true;
       ctx.requestLocales('de');
     });
     ctx.requestLocales('pl');
   });
   it('should fire synchronously when context is ready', function(done) {
-    whenReady(ctx, function() {
+    ctx.once(function() {
       ctx.ready(function() {
         done();
       });
@@ -50,7 +43,7 @@ describe('ctx.ready', function() {
   });
   it('should fire synchronously when language changes', function(done) {
     var now = false;
-    whenReady(ctx, function() {
+    ctx.once(function() {
       ctx.ready(function() {
         if (now) {
           done();
