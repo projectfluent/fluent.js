@@ -13,6 +13,7 @@ module.exports = function (grunt) {
     ['jshint', 'main'],
     ['jshint', 'lib'],
     ['jshint', 'bindings'],
+    ['jshint', 'tests'],
     ['jsonlint', 'all'],
   ];
 
@@ -64,6 +65,7 @@ module.exports = function (grunt) {
     'jshint:main',
     'jshint:lib',
     'jshint:bindings',
+    'jshint:tests',
     'jsonlint:all',
   ]);
 

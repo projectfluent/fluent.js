@@ -22,4 +22,10 @@ module.exports = {
       jshintrc: 'bindings/.jshintrc',
     },
   },
+  tests: {
+    src: ['tests/**/*.js'],
+    options: {
+      jshintrc: 'tests/.jshintrc',
+    },
+  },
 };
