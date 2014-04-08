@@ -11,6 +11,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Language negotiation without arguments', function() {
+  'use strict';
+
   var ctx;
 
   beforeEach(function(done) {
@@ -26,6 +28,8 @@ describe('Language negotiation without arguments', function() {
 });
 
 describe('Language negotiation with arguments', function() {
+  'use strict';
+
   var ctx;
 
   beforeEach(function(done) {

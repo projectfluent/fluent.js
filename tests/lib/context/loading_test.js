@@ -13,6 +13,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('A non-loading context', function() {
+  'use strict';
+
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -33,6 +35,8 @@ describe('A non-loading context', function() {
 });
 
 describe('A loading, non-ready context', function() {
+  'use strict';
+
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -66,6 +70,8 @@ describe('A loading, non-ready context', function() {
 });
 
 describe('A loading, ready context', function() {
+  'use strict';
+
   var ctx;
   beforeEach(function(done) {
     ctx = new Context();
@@ -109,6 +115,8 @@ describe('A loading, ready context', function() {
 });
 
 describe('A loading, ready context', function() {
+  'use strict';
+
   var ctx;
   beforeEach(function(done) {
     ctx = new Context();

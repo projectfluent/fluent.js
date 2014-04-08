@@ -1,4 +1,5 @@
 /* global it, assert:true, describe, navigator */
+
 var parse;
 
 if (typeof navigator !== 'undefined') {
@@ -12,6 +13,7 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('L10n Parser', function() {
+  'use strict';
   it('string value', function() {
     var ast = parse('id = string');
     assert.strictEqual(ast.id, 'string');

@@ -10,6 +10,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('ctx.ready', function() {
+  'use strict';
+
   var ctx;
 
   beforeEach(function() {

@@ -12,6 +12,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Missing resources', function() {
+  'use strict';
+
   var ctx;
 
   beforeEach(function() {
@@ -28,6 +30,8 @@ describe('Missing resources', function() {
 });
 
 describe('No valid resources', function() {
+  'use strict';
+
   var ctx;
 
   beforeEach(function() {

@@ -12,6 +12,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('One fallback locale', function() {
+  'use strict';
+
   var ctx;
 
   beforeEach(function(done) {

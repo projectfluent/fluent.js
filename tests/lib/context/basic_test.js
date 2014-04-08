@@ -21,6 +21,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('A simple context with linkResource', function() {
+  'use strict';
+
   var ctx;
   beforeEach(function(done) {
     ctx = L20n.getContext();
@@ -60,4 +62,3 @@ describe('A simple context with linkResource', function() {
     assert.strictEqual(value, '3 unread');
   });
 });
-
