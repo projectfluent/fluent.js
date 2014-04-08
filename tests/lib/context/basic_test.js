@@ -13,7 +13,7 @@ if (typeof navigator !== 'undefined') {
 }
 
 if (typeof navigator !== 'undefined') {
-  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/integration';
+  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/context';
 } else {
   var path = __dirname;
 }
