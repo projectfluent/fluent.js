@@ -1,12 +1,11 @@
 /* global it, assert:true, describe, beforeEach */
 /* global navigator, process, __dirname */
+'use strict';
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
   var L20n = {
     getContext: function() {
-      'use strict';
-
       return new L10n.Context();
     }
   };
@@ -24,8 +23,6 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('A simple context with linkResource', function() {
-  'use strict';
-
   var ctx;
 
   beforeEach(function(done) {

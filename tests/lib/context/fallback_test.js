@@ -1,5 +1,6 @@
 /* global it, assert:true, describe, beforeEach */
 /* global navigator, process, __dirname */
+'use strict';
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
@@ -13,8 +14,6 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('One fallback locale', function() {
-  'use strict';
-
   var ctx;
 
   beforeEach(function(done) {

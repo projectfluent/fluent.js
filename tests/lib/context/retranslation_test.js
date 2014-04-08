@@ -1,5 +1,6 @@
 /* global it, describe, beforeEach */
 /* global navigator, process */
+'use strict';
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
@@ -11,8 +12,6 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('ctx.ready', function() {
-  'use strict';
-
   var ctx;
 
   beforeEach(function() {

@@ -1,5 +1,6 @@
 /* global it, assert:true, describe, beforeEach */
 /* global navigator, process, __dirname */
+'use strict';
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
@@ -14,9 +15,8 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('A non-loading context', function() {
-  'use strict';
-
   var ctx;
+
   beforeEach(function() {
     ctx = new Context();
     ctx.resLinks.push(path + '/fixtures/strings.properties');
@@ -33,11 +33,10 @@ describe('A non-loading context', function() {
       ctx.getEntity('dummy');
     }, /Context not ready/);
   });
+
 });
 
 describe('A loading, non-ready context', function() {
-  'use strict';
-
   var ctx;
   beforeEach(function() {
     ctx = new Context();
@@ -68,12 +67,12 @@ describe('A loading, non-ready context', function() {
       ctx.requestLocales('en-US');
     }, /Context not ready/);
   });
+
 });
 
 describe('A loading, ready context', function() {
-  'use strict';
-
   var ctx;
+
   beforeEach(function(done) {
     ctx = new Context();
     ctx.resLinks.push(path + '/fixtures/strings.properties');
@@ -113,12 +112,12 @@ describe('A loading, ready context', function() {
       ctx.requestLocales('en-US');
     });
   });
+
 });
 
 describe('A loading, ready context', function() {
-  'use strict';
-
   var ctx;
+
   beforeEach(function(done) {
     ctx = new Context();
     ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
@@ -136,4 +135,5 @@ describe('A loading, ready context', function() {
     var entity = ctx.getEntity('foo');
     assert.strictEqual(entity, 'Foo en-US');
   });
+
 });

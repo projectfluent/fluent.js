@@ -1,5 +1,6 @@
 /* global it, assert:true, describe, beforeEach */
 /* global navigator, process, __dirname */
+'use strict';
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
@@ -14,8 +15,6 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Missing resources', function() {
-  'use strict';
-
   var ctx;
 
   beforeEach(function(done) {
@@ -29,11 +28,10 @@ describe('Missing resources', function() {
   it('should get ready', function() {
     assert.strictEqual(ctx.isReady, true);
   });
+
 });
 
 describe('No valid resources', function() {
-  'use strict';
-
   var ctx;
 
   beforeEach(function(done) {
@@ -47,4 +45,5 @@ describe('No valid resources', function() {
   it('should get ready', function() {
     assert.strictEqual(ctx.isReady, true);
   });
+
 });
