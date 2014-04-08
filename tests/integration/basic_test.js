@@ -12,14 +12,15 @@ if (typeof navigator !== 'undefined') {
     : require('../../lib/l20n');
 }
 
+if (typeof navigator !== 'undefined') {
+  var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/integration';
+} else {
+  var path = __dirname;
+}
+
 describe('A simple context with linkResource', function() {
   var ctx;
   beforeEach(function(done) {
-    if (typeof navigator !== 'undefined') {
-      var path = 'http://gallery.gaiamobile.org:8080/test/unit/l10n/integration';
-    } else {
-      var path = __dirname;
-    }
     ctx = L20n.getContext();
     ctx.resLinks.push(path + '/fixtures/basic.properties');
     ctx.ready(done);
