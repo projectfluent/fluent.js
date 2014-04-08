@@ -1,20 +1,20 @@
 /* global it, assert:true, describe */
-/* global navigator, process */
+/* global window, navigator, process */
+'use strict';
 
+var assert = require('assert') || window.assert;
 var parse;
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
   parse = L10n.parse.bind(null, null);
 } else {
-  assert = require('assert');
   parse = process.env.L20N_COV ?
     require('../../build/cov/lib/l20n/parser').parse.bind(null, null)
     : require('../../lib/l20n/parser').parse.bind(null,null);
 }
 
 describe('L10n Parser', function() {
-  'use strict';
 
   it('string value', function() {
     var ast = parse('id = string');
