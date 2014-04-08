@@ -1,4 +1,5 @@
 /* global it, before, beforeEach, assert:true, describe */
+/* jshint -W101 */
 'use strict';
 
 var assert = require('assert');
