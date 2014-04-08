@@ -77,40 +77,45 @@ describe('A loading, ready context', function() {
   beforeEach(function(done) {
     ctx = new Context();
     ctx.resLinks.push(path + '/fixtures/{{locale}}.properties');
-    ctx.addEventListener('ready', function onReady() {
-      ctx.removeEventListener('ready', onReady);
-      done();
-    });
+    ctx.once(done);
     ctx.requestLocales();
   });
 
   it('should not throw on get of a known entity', function() {
     assert.doesNotThrow(function(){
-      ctx.get('dummy');
+      ctx.get('foo');
     });
+    assert.strictEqual(ctx.get('foo'), 'Foo en-US');
   });
 
   it('should not throw on get of an unknown entity', function() {
     assert.doesNotThrow(function(){
       ctx.get('missing');
     });
+    assert.strictEqual(ctx.get('missing'), '');
   });
 
   it('should not throw on getEntity of a known entity', function() {
     assert.doesNotThrow(function(){
-      ctx.getEntity('dummy');
+      ctx.getEntity('foo');
     });
+    assert.strictEqual(ctx.getEntity('foo'), 'Foo en-US');
   });
 
   it('should not throw on getEntity of an unknown entity', function() {
     assert.doesNotThrow(function(){
       ctx.getEntity('missing');
     });
+    assert.strictEqual(ctx.getEntity('missing'), null);
   });
 
-  it('should not throw on requestLocales', function() {
+  it('should not throw on requestLocales', function(done) {
+    ctx.once(function() {
+      assert.strictEqual(ctx.isReady, true);
+      done();
+    });
     assert.doesNotThrow(function(){
-      ctx.requestLocales('en-US');
+      ctx.requestLocales('pl');
     });
   });
 
@@ -133,8 +138,7 @@ describe('A loading, ready context', function() {
     // However, synchronous methods called right after the change should still
     // return translations for the previous fallback chain
     ctx.requestLocales('pl');
-    var entity = ctx.getEntity('foo');
-    assert.strictEqual(entity, 'Foo en-US');
+    assert.strictEqual(ctx.get('foo'), 'Foo en-US');
   });
 
 });

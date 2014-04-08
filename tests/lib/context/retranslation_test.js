@@ -34,9 +34,9 @@ describe('ctx.ready', function() {
     });
     ctx.once(function() {
       now = true;
-      ctx.requestLocales('de');
+      ctx.requestLocales('pl');
     });
-    ctx.requestLocales('pl');
+    ctx.requestLocales('en-US');
   });
 
   it('should fire synchronously when context is ready', function(done) {
@@ -45,7 +45,7 @@ describe('ctx.ready', function() {
         done();
       });
     });
-    ctx.requestLocales('pl');
+    ctx.requestLocales('en-US');
   });
 
   it('should fire synchronously when language changes', function(done) {
@@ -58,10 +58,10 @@ describe('ctx.ready', function() {
       });
       setTimeout(function() {
         now = true;
-        ctx.requestLocales('de');
+        ctx.requestLocales('pl');
       });
     });
-    ctx.requestLocales('pl');
+    ctx.requestLocales('en-US');
   });
 
 });
