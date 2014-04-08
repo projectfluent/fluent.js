@@ -33,11 +33,13 @@ describe('A simple context with linkResource', function() {
     var value = ctx.get('brandName');
     assert.strictEqual(value, 'Firefox');
   });
-  it('should return the value of about with the value of brandName in it', function() {
+  it('should return the value of about with the value' +
+     ' of brandName in it', function() {
     var value = ctx.get('about');
     assert.strictEqual(value, 'About Firefox');
   });
-  it('should return the value of cert with the value of organization passed directly', function() {
+  it('should return the value of cert with the value of ' +
+     'organization passed directly', function() {
     var value = ctx.get('cert', {organization: 'Mozilla Foundation'});
     assert.strictEqual(value, 'Certificate signed by Mozilla Foundation');
   });
