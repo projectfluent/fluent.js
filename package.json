@@ -1,6 +1,6 @@
 {
   "name": "mozL10n",
-  "description": "A natural-language localization framework",
+  "description": "A localization library for Firefox OS",
   "version": "1.0.0",
   "homepage": "http://l20n.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
@@ -20,7 +20,7 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "bugs": "https://bugzilla.mozilla.org/page.cgi?id=productdashboard.html&tab=summary&product=L20n&bug_status=open",
+  "bugs": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox%20OS&component=Gaia::L10n",
   "scripts": {
     "test": "grunt merge-conflict lint test"
   },
