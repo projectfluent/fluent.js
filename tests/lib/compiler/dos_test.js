@@ -1,9 +1,28 @@
 /* global it, before, beforeEach, assert:true, describe */
+/* global window, navigator, process */
 /* jshint -W101 */
 'use strict';
 
-var assert = require('assert');
-var compile = require('../helper').compile;
+var assert = require('assert') || window.assert;
+
+if (typeof navigator !== 'undefined') {
+  var L10n = navigator.mozL10n._getInternalAPI();
+} else {
+  var L10n = {
+    parse: require('../../../lib/l20n/parser').parse,
+    compile: process.env.L20N_COV ?
+      require('../../../build/cov/lib/l20n/compiler').compile :
+      require('../../../lib/l20n/compiler').compile,
+    getPluralRule: require('../../../lib/l20n/plurals').getPluralRule
+  };
+}
+
+function compile(source) {
+  var ast = L10n.parse(null, source);
+  var env = L10n.compile(null, ast);
+  env.__plural = L10n.getPluralRule('en-US');
+  return env;
+}
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 describe('Reference bombs', function(){
@@ -19,16 +38,19 @@ describe('Reference bombs', function(){
         'lol1={{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}}',
         'lol2={{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}}',
         'lol3={{lol2}} {{lol2}} {{lol2}} {{lol2}} {{lol2}} {{lol2}} {{lol2}} {{lol2}} {{lol2}} {{lol2}}',
-        'lol4={{lol3}} {{lol3}} {{lol3}} {{lol3}} {{lol3}} {{lol3}} {{lol3}} {{lol3}} {{lol3}} {{lol3}}',
-        'lol5={{lol4}} {{lol4}} {{lol4}} {{lol4}} {{lol4}} {{lol4}} {{lol4}} {{lol4}} {{lol4}} {{lol4}}',
-        'lol6={{lol5}} {{lol5}} {{lol5}} {{lol5}} {{lol5}} {{lol5}} {{lol5}} {{lol5}} {{lol5}} {{lol5}}',
-        'lol7={{lol6}} {{lol6}} {{lol6}} {{lol6}} {{lol6}} {{lol6}} {{lol6}} {{lol6}} {{lol6}} {{lol6}}',
-        'lol8={{lol7}} {{lol7}} {{lol7}} {{lol7}} {{lol7}} {{lol7}} {{lol7}} {{lol7}} {{lol7}} {{lol7}}',
-        'lol9={{lol8}} {{lol8}} {{lol8}} {{lol8}} {{lol8}} {{lol8}} {{lol8}} {{lol8}} {{lol8}} {{lol8}}',
-        'lolz={{ lol9 }}'
+        // normally, we'd continue with lol4 through lol9 in the same manner,
+        // but this would make the test itself dangerous if the guards in the
+        // compiler fail.  Given MAX_PLACEABLE_LENGTH of 2500, lol3 is enough
+        // to test this.
+        'lolz={{ lol3 }}'
       ].join('\n');
     });
-    it('throws', function() {
+    it('resolve() throws', function() {
+      assert.throws(function() {
+        env.lolz.resolve();
+      }, /too many characters in placeable/i);
+    });
+    it('toString() returns undefined', function() {
       var value = env.lolz.toString();
       assert.strictEqual(value, undefined);
     });
@@ -102,7 +124,12 @@ describe('Reference bombs', function(){
       '   {{alice}} {{alice}} {{alice}} {{alice}} {{alice}} {{alice}}'
       ].join('\n');
     });
-    it('throws', function() {
+    it('resolve() throws', function() {
+      assert.throws(function() {
+        env.malice.resolve();
+      }, /too many placeables/i);
+    });
+    it('toString() returns undefined', function() {
       var value = env.malice.toString();
       assert.strictEqual(value, undefined);
     });

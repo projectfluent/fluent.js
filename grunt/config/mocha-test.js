@@ -1,12 +1,10 @@
 'use strict';
 
-var insecure = require('../var/insecure');
-
 var src = [
   'tests/lib/*.js',
   'tests/lib/context/*.js',
   'tests/lib/compiler/*.js',
-].concat(insecure ? ['tests/lib/*/insecure/*.js'] : []);
+];
 
 module.exports = {
   dot: {

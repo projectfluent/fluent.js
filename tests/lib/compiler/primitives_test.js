@@ -1,9 +1,27 @@
 /* global it, before, beforeEach, assert:true, describe */
-/* jshint -W101 */
+/* global window, navigator, process */
 'use strict';
 
-var assert = require('assert');
-var compile = require('./helper').compile;
+var assert = require('assert') || window.assert;
+
+if (typeof navigator !== 'undefined') {
+  var L10n = navigator.mozL10n._getInternalAPI();
+} else {
+  var L10n = {
+    parse: require('../../../lib/l20n/parser').parse,
+    compile: process.env.L20N_COV ?
+      require('../../../build/cov/lib/l20n/compiler').compile :
+      require('../../../lib/l20n/compiler').compile,
+    getPluralRule: require('../../../lib/l20n/plurals').getPluralRule
+  };
+}
+
+function compile(source) {
+  var ast = L10n.parse(null, source);
+  var env = L10n.compile(null, ast);
+  env.__plural = L10n.getPluralRule('en-US');
+  return env;
+}
 
 describe('Primitives:', function(){
   var source, env;
@@ -41,13 +59,14 @@ describe('Primitives:', function(){
       assert.strictEqual(value, 'Foo Bar');
     });
 
-    it('returns the raw string if the referenced entity is not found', function(){
+    it('returns the raw string if the referenced entity is ' +
+       'not found', function(){
       var value = env.baz.toString();
       assert.strictEqual(value, '{{ missing }}');
     });
 
   });
-  
+
   describe('Complex string referencing an entity with null value', function(){
 
     before(function() {
@@ -67,7 +86,8 @@ describe('Primitives:', function(){
       assert.strictEqual(entity.attributes.attr, 'Foo');
     });
 
-    it('returns the raw string when the referenced entity has null value', function(){
+    it('returns the raw string when the referenced entity has ' +
+       'null value', function(){
       var value = env.bar.toString();
       assert.strictEqual(value, '{{ foo }} Bar');
     });

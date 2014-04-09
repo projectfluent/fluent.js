@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Locale, Context, rePlaceables, parse */
+/* global Locale, Context, getPluralRule, rePlaceables, parse, compile */
 /* global loadINI */
 /* global translateFragment, localizeElement */
 /* global getTranslatableChildren, getL10nAttributes */
@@ -56,12 +56,14 @@ navigator.mozL10n = {
     return {
       Context: Context,
       Locale: Locale,
+      getPluralRule: getPluralRule,
       rePlaceables: rePlaceables,
       getTranslatableChildren:  getTranslatableChildren,
       getL10nAttributes: getL10nAttributes,
       loadINI: loadINI,
       fireLocalizedEvent: fireLocalizedEvent,
-      parse: parse
+      parse: parse,
+      compile: compile
     };
   }
 };
