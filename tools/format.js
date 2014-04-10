@@ -46,7 +46,8 @@ function makeError(err) {
   return color(name + message, ERROR);
 }
 
-function singleline(str) {
+function singleline(formatted) {
+  var str = formatted[1];
   return str && str.replace(/\n/g, ' ')
                    .replace(/\s{3,}/g, ' ')
                    .trim();

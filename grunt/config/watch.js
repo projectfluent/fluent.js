@@ -5,7 +5,7 @@ module.exports = {
     files: [
       'Gruntfile.js',
       'grunt/**/*.js',
-      'test/**/*/js',
+      'test/**/*.js',
     ],
     tasks: ['jshint:mainFiltered'],
   },

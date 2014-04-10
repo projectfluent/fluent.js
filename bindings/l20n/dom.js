@@ -1,8 +1,7 @@
 'use strict';
 
-/* jshint -W104 */
-/* global pendingElements:true, L10nError */
-/* exported translateFragment, translateDocument, localizeElement */
+/* global allowed, pendingElements:true */
+/* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
 function translateDocument() {
@@ -40,14 +39,18 @@ function getTranslatableChildren(element) {
   return element ? element.querySelectorAll('*[data-l10n-id]') : [];
 }
 
-var allowedHtmlAttrs = {
-  'ariaLabel': 'aria-label',
-  'ariaValueText': 'aria-valuetext',
-  'ariaMozHint': 'aria-moz-hint',
-  'label': 'label',
-  'placeholder': 'placeholder',
-  'title': 'title'
-};
+function camelCaseToDashed(string) {
+  // XXX workaround for https://bugzil.la/1141934
+  if (string === 'ariaValueText') {
+    return 'aria-valuetext';
+  }
+
+  return string
+    .replace(/[A-Z]/g, function (match) {
+      return '-' + match.toLowerCase();
+    })
+    .replace(/^-/, '');
+}
 
 function translateElement(element) {
   if (!this.ctx.isReady) {
@@ -66,35 +69,159 @@ function translateElement(element) {
 
   var entity = this.ctx.getEntity(l10n.id, l10n.args);
 
-  if (!entity) {
-    return false;
-  }
-
   if (typeof entity.value === 'string') {
-    setTextContent.call(this, l10n.id, element, entity.value);
-  }
-
-  for (var key in entity.attrs) {
-    var attr = entity.attrs[key];
-    if (allowedHtmlAttrs.hasOwnProperty(key)) {
-      element.setAttribute(allowedHtmlAttrs[key], attr);
-    } else if (key === 'innerHTML') {
-      // XXX: to be removed once bug 994357 lands
-      element.innerHTML = attr;
+    if (!entity.overlay) {
+      element.textContent = entity.value;
+    } else {
+      // start with an inert template element and move its children into
+      // `element` but such that `element`'s own children are not replaced
+      var translation = element.ownerDocument.createElement('template');
+      translation.innerHTML = entity.value;
+      // overlay the node with the DocumentFragment
+      overlayElement(element, translation.content);
     }
   }
 
-  return true;
+  for (var key in entity.attrs) {
+    // XXX A temporary special-case for translations using the old method
+    // of declaring innerHTML.  To be removed in https://bugzil.la/1027117
+    if (key === 'innerHTML') {
+      element.innerHTML = entity.attrs[key];
+      continue;
+    }
+    var attrName = camelCaseToDashed(key);
+    if (isAttrAllowed({ name: attrName }, element)) {
+      element.setAttribute(attrName, entity.attrs[key]);
+    }
+  }
 }
 
-function setTextContent(id, element, text) {
-  if (element.firstElementChild) {
-    throw new L10nError(
-      'setTextContent is deprecated (https://bugzil.la/1053629). ' +
-      'Setting text content of elements with child elements is no longer ' +
-      'supported by l10n.js. Offending data-l10n-id: "' + id +
-      '" on element ' + element.outerHTML + ' in ' + this.ctx.id);
+// The goal of overlayElement is to move the children of `translationElement`
+// into `sourceElement` such that `sourceElement`'s own children are not
+// replaced, but onle have their text nodes and their attributes modified.
+//
+// We want to make it possible for localizers to apply text-level semantics to
+// the translations and make use of HTML entities. At the same time, we
+// don't trust translations so we need to filter unsafe elements and
+// attribtues out and we don't want to break the Web by replacing elements to
+// which third-party code might have created references (e.g. two-way
+// bindings in MVC frameworks).
+function overlayElement(sourceElement, translationElement) {
+  var result = translationElement.ownerDocument.createDocumentFragment();
+  var k, attr;
+
+  // take one node from translationElement at a time and check it against
+  // the allowed list or try to match it with a corresponding element
+  // in the source
+  var childElement;
+  while ((childElement = translationElement.childNodes[0])) {
+    translationElement.removeChild(childElement);
+
+    if (childElement.nodeType === Node.TEXT_NODE) {
+      result.appendChild(childElement);
+      continue;
+    }
+
+    var index = getIndexOfType(childElement);
+    var sourceChild = getNthElementOfType(sourceElement, childElement, index);
+    if (sourceChild) {
+      // there is a corresponding element in the source, let's use it
+      overlayElement(sourceChild, childElement);
+      result.appendChild(sourceChild);
+      continue;
+    }
+
+    if (isElementAllowed(childElement)) {
+      for (k = 0, attr; (attr = childElement.attributes[k]); k++) {
+        if (!isAttrAllowed(attr, childElement)) {
+          childElement.removeAttribute(attr.name);
+        }
+      }
+      result.appendChild(childElement);
+      continue;
+    }
+
+    // otherwise just take this child's textContent
+    result.appendChild(
+      document.createTextNode(childElement.textContent));
   }
 
-  element.textContent = text;
+  // clear `sourceElement` and append `result` which by this time contains
+  // `sourceElement`'s original children, overlayed with translation
+  sourceElement.textContent = '';
+  sourceElement.appendChild(result);
+
+  // if we're overlaying a nested element, translate the allowed
+  // attributes; top-level attributes are handled in `translateElement`
+  // XXX attributes previously set here for another language should be
+  // cleared if a new language doesn't use them; https://bugzil.la/922577
+  if (translationElement.attributes) {
+    for (k = 0, attr; (attr = translationElement.attributes[k]); k++) {
+      if (isAttrAllowed(attr, sourceElement)) {
+        sourceElement.setAttribute(attr.name, attr.value);
+      }
+    }
+  }
+}
+
+// XXX the allowed list should be amendable; https://bugzil.la/922573
+function isElementAllowed(element) {
+  return allowed.elements.indexOf(element.tagName.toLowerCase()) !== -1;
+}
+
+function isAttrAllowed(attr, element) {
+  var attrName = attr.name.toLowerCase();
+  var tagName = element.tagName.toLowerCase();
+  // is it a globally safe attribute?
+  if (allowed.attributes.global.indexOf(attrName) !== -1) {
+    return true;
+  }
+  // are there no allowed attributes for this element?
+  if (!allowed.attributes[tagName]) {
+    return false;
+  }
+  // is it allowed on this element?
+  // XXX the allowed list should be amendable; https://bugzil.la/922573
+  if (allowed.attributes[tagName].indexOf(attrName) !== -1) {
+    return true;
+  }
+  // special case for value on inputs with type button, reset, submit
+  if (tagName === 'input' && attrName === 'value') {
+    var type = element.type.toLowerCase();
+    if (type === 'submit' || type === 'button' || type === 'reset') {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Get n-th immediate child of context that is of the same type as element.
+// XXX Use querySelector(':scope > ELEMENT:nth-of-type(index)'), when:
+// 1) :scope is widely supported in more browsers and 2) it works with
+// DocumentFragments.
+function getNthElementOfType(context, element, index) {
+  /* jshint boss:true */
+  var nthOfType = 0;
+  for (var i = 0, child; child = context.children[i]; i++) {
+    if (child.nodeType === Node.ELEMENT_NODE &&
+        child.tagName === element.tagName) {
+      if (nthOfType === index) {
+        return child;
+      }
+      nthOfType++;
+    }
+  }
+  return null;
+}
+
+// Get the index of the element among siblings of the same type.
+function getIndexOfType(element) {
+  var index = 0;
+  var child;
+  while ((child = element.previousElementSibling)) {
+    if (child.tagName === element.tagName) {
+      index++;
+    }
+  }
+  return index;
 }

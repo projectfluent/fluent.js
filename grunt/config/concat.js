@@ -58,6 +58,7 @@ module.exports = {
       'lib/l20n/pseudo.js',
       'lib/l20n/locale.js',
       'lib/l20n/context.js',
+      'bindings/l20n/allowed.js',
       'bindings/l20n/runtime.js',
       'bindings/l20n/dom.js',
     ],
