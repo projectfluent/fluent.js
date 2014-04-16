@@ -38,6 +38,9 @@ navigator.mozL10n = {
       navigator.mozL10n.ctx.addEventListener('ready', callback);
     }
   },
+  once: function once(callback) {
+    return navigator.mozL10n.ctx.once(callback);
+  },
   get readyState() {
     return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
   },
