@@ -220,8 +220,12 @@ function onReady() {
 }
 
 function fireLocalizedEvent() {
-  var event = document.createEvent('Event');
-  event.initEvent('localized', false, false);
-  event.language = this.ctx.supportedLocales[0];
+  var event = new CustomEvent('localized', {
+    'bubbles': false,
+    'cancelable': false,
+    'detail': {
+      'language': this.ctx.supportedLocales[0]
+    }
+  });
   window.dispatchEvent(event);
 }
