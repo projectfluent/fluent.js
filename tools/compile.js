@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 var fs = require('fs');
 var program = require('commander');
 var colors = require('colors');
@@ -24,10 +26,9 @@ if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
+var VALUE;
 var ID = 'cyan';
-var VALUE = undefined;
 var ERROR = 'red';
-var FALLBACK = 'yellow';
 
 function color(str, col) {
   if (program.color && col && str) {
@@ -37,7 +38,6 @@ function color(str, col) {
 }
 
 function logError(err) {
-  var error = {};
   var message  = ': ' + err.message.replace('\n', '');
   var name = err.name + (err.entry ? ' in ' + err.entry : '');
   console.warn(color(name + message, ERROR));
@@ -50,18 +50,16 @@ function singleline(str) {
 }
 
 function getString(entity) {
-  return color(singleline(entity.toString(data)), VALUE);
+  return singleline(entity.toString(data));
 }
 
 function print(id, entity) {
   // print the string value of the entity
-  console.log(color(id, ID), getString(entity));
+  console.log(color(id, ID), color(getString(entity), VALUE));
   // print the string values of the attributes
   for (var attr in entity.attributes) {
-    if (entity.attributes[attr].local && !program.withLocal) {
-      continue;
-    }
-    console.log(color(' ::' + attr, ID), getString(entity.attributes[attr]));
+    console.log(color(' ::' + attr, ID),
+                color(getString(entity.attributes[attr]), VALUE));
   }
 }
 
@@ -73,13 +71,13 @@ function compileAndPrint(err, code) {
     var ast = code.toString();
   } else {
     try {
-    var ast = parser.parse(code.toString());
+    var ast = parse(code.toString());
     } catch (e) {
       logError(e);
     }
   }
 
-  var env = compile(ast);
+  var env = compile(null, ast);
   env.__plural = getPluralRule('en-US');
   for (var id in env) {
     if (id.indexOf('__') === 0) {

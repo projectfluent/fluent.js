@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 var fs = require('fs');
 var program = require('commander');
 var prettyjson = require('prettyjson');
@@ -22,7 +24,6 @@ function color(str, col) {
 }
 
 function logError(err) {
-  var error = {};
   var message  = ': ' + err.message.replace('\n', '');
   var name = err.name + (err.entry ? ' in ' + err.entry : '');
   console.warn(color(name, 'red') + message);
