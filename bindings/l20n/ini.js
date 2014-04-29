@@ -56,7 +56,8 @@ function parseINI(source, iniPath) {
   var uris = [];
   var match;
 
-  for (var line of entries) {
+  for (var i = 0; i < entries.length; i++) {
+    var line = entries[i];
     // we only care about en-US resources
     if (genericSection && iniPatterns['import'].test(line)) {
       match = iniPatterns['import'].exec(line);

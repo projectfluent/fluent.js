@@ -11,8 +11,9 @@ function translateFragment(element) {
   }
   translateElement.call(this, element);
 
-  for (var node of getTranslatableChildren(element)) {
-    translateElement.call(this, node);
+  var nodes = getTranslatableChildren(element);
+  for (var i = 0; i < nodes.length; i++ ) {
+    translateElement.call(this, nodes[i]);
   }
 }
 

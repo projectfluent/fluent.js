@@ -28,9 +28,10 @@ function initResources(callback) {
                          .querySelectorAll('link[type="application/l10n"]');
   var iniLinks = [];
   var containsFetchableLocale = false;
-  var link;
+  var i;
 
-  for (link of resLinks) {
+  for (i = 0; i < resLinks.length; i++) {
+    var link = resLinks[i];
     var url = link.getAttribute('href');
     var type = url.substr(url.lastIndexOf('.') + 1);
     if (type === 'ini') {
@@ -58,8 +59,8 @@ function initResources(callback) {
     }
   }
 
-  for (link of iniLinks) {
-    L10n.loadINI.call(this, link, onIniLoaded);
+  for (i = 0; i < iniLinks.length; i++) {
+    L10n.loadINI.call(this, iniLinks[i], onIniLoaded);
   }
 }
 
