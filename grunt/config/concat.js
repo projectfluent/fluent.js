@@ -49,6 +49,8 @@ module.exports = {
   },
   buildtime: {
     src: [
+      'lib/l20n/util.js',
+      'lib/l20n/pseudo.js',
       'bindings/l20n/buildtime.js',
     ],
     dest: 'dist/buildtime/l10n.js',

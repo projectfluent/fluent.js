@@ -1,14 +1,15 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Locale, Context, getPluralRule, rePlaceables, parse, compile */
+/* global Entity, Locale, Context */
+/* global getPluralRule, rePlaceables, parse, compile */
 /* global loadINI */
 /* global translateFragment, localizeElement */
 /* global getTranslatableChildren, getL10nAttributes */
 
 var DEBUG = false;
 var isPretranslated = false;
-var rtlList = ['ar', 'he', 'fa', 'ps', 'ur'];
+var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
 // Public API
 
@@ -47,6 +48,7 @@ navigator.mozL10n = {
     return {
       Context: Context,
       Locale: Locale,
+      Entity: Entity,
       getPluralRule: getPluralRule,
       rePlaceables: rePlaceables,
       getTranslatableChildren:  getTranslatableChildren,

@@ -1,5 +1,14 @@
 'use strict';
 
+/* Buildtime optimizations logic
+ *
+ * Below are defined functions to perform buildtime optimizations in Gaia.
+ * These include flattening all localization resources into a single JSON file
+ * and embedding a subset of translations in HTML to reduce file IO.
+ *
+ */
+
+/* global PSEUDO_STRATEGIES, walkContent */
 /* jshint -W104 */
 
 var DEBUG = false;
@@ -7,7 +16,13 @@ var requiresInlineLocale = false; // netError requires inline locale
 
 var L10n = navigator.mozL10n._getInternalAPI();
 
-navigator.mozL10n.bootstrap = function bootstrap(callback, debug) {
+navigator.mozL10n._getInternalAPI = function() {
+  L10n.walkContent = walkContent;
+  L10n.PSEUDO_STRATEGIES = PSEUDO_STRATEGIES;
+  return L10n;
+};
+
+navigator.mozL10n.bootstrap = function(callback, debug) {
   var ctx = navigator.mozL10n.ctx = new L10n.Context();
   ctx.ready(onReady.bind(this));
   requiresInlineLocale = false;
@@ -72,6 +87,21 @@ function onReady() {
 
 /* API for webapp-optimize */
 
+L10n.Entity.prototype.toString = function(ctxdata) {
+  var value;
+  try {
+    value = this.resolve(ctxdata);
+  } catch (e) {
+    return undefined;
+  }
+  var currentLoc = navigator.mozL10n.language.code;
+  if (PSEUDO_STRATEGIES.hasOwnProperty(currentLoc)) {
+    return PSEUDO_STRATEGIES[currentLoc](value);
+  } else {
+    return value;
+  }
+};
+
 L10n.Locale.prototype.addAST = function(ast) {
   if (!this.ast) {
     this.ast = {};
@@ -102,7 +132,12 @@ L10n.Context.prototype.getEntitySource = function(id) {
     }
 
     if (locale.ast && locale.ast.hasOwnProperty(id)) {
-      return locale.ast[id];
+      if (PSEUDO_STRATEGIES.hasOwnProperty(this.supportedLocales[0])) {
+        return walkContent(locale.ast[id],
+                           PSEUDO_STRATEGIES[this.supportedLocales[0]]);
+      } else {
+        return locale.ast[id];
+      }
     }
 
     var e = new L10n.Context.Error(id + ' not found in ' + loc, id, loc);
@@ -114,6 +149,7 @@ L10n.Context.prototype.getEntitySource = function(id) {
 
 // return an array of all {{placeables}} found in a string
 function getPlaceableNames(str) {
+  /* jshint boss:true */
   var placeables = [];
   var match;
   while (match = L10n.rePlaceables.exec(str)) {
@@ -122,22 +158,14 @@ function getPlaceableNames(str) {
   return placeables;
 }
 
-// recursively walk an entity and put all dependencies required for string
-// interpolation in the AST
+// put all dependencies required for string interpolation in the AST
+// XXX only first-level deps are supported for now to avoid having to check
+// for cyclic and recursive references
 function getPlaceables(ast, val) {
-  if (typeof val === 'string') {
-    var placeables = getPlaceableNames(val);
-    for (var i = 0; i < placeables.length; i++) {
-      var id = placeables[i];
-      ast[id] = this.ctx.getEntitySource(id);
-    }
-  } else {
-    for (var prop in val) {
-      if (!val.hasOwnProperty(prop) || val === '_index') {
-        continue;
-      }
-      getPlaceables.call(this, ast, val[prop]);
-    }
+  var placeables = getPlaceableNames(val);
+  for (var i = 0; i < placeables.length; i++) {
+    var id = placeables[i];
+    ast[id] = this.ctx.getEntitySource(id);
   }
 }
 
@@ -168,7 +196,7 @@ navigator.mozL10n.getDictionary = function getDictionary(skipLoc, fragment) {
     var attrs = L10n.getL10nAttributes(elements[i]);
     var val = this.ctx.getEntitySource(attrs.id);
     ast[attrs.id] = val;
-    getPlaceables.call(this, ast, val);
+    walkContent(val, getPlaceables.bind(this, ast));
   }
   flushBuildMessages.call(this, 'in the visible DOM');
 
