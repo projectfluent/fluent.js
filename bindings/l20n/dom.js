@@ -85,13 +85,13 @@ function translateElement(element) {
   for (var key in entity.attributes) {
     if (entity.attributes.hasOwnProperty(key)) {
       var attr = entity.attributes[key];
-      var pos = key.indexOf('.');
-      if (pos !== -1) {
-        element[key.substr(0, pos)][key.substr(pos + 1)] = attr;
-      } else if (key === 'ariaLabel') {
+      if (key === 'ariaLabel') {
         element.setAttribute('aria-label', attr);
+      } else if (key === 'innerHTML') {
+        // XXX: to be removed once bug 994357 lands
+        element.innerHTML = attr;
       } else {
-        element[key] = attr;
+        element.setAttribute(key, attr);
       }
     }
   }
