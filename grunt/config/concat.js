@@ -34,6 +34,7 @@ module.exports = {
   },
   runtime: {
     src: [
+      'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',
       'lib/l20n/events.js',
       'lib/l20n/plurals.js',
@@ -57,6 +58,7 @@ module.exports = {
   },
   shell: {
     src: [
+      'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',
       'lib/l20n/events.js',
       'lib/l20n/plurals.js',

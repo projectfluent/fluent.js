@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Entity, Locale, Context */
+/* global Entity, Locale, Context, L10nError */
 /* global getPluralRule, rePlaceables, parse, compile */
 /* global loadINI */
 /* global translateFragment, localizeElement */
@@ -46,6 +46,7 @@ navigator.mozL10n = {
   },
   _getInternalAPI: function() {
     return {
+      Error: L10nError,
       Context: Context,
       Locale: Locale,
       Entity: Entity,
