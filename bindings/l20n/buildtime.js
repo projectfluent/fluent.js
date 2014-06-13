@@ -24,7 +24,6 @@ navigator.mozL10n._getInternalAPI = function() {
 
 navigator.mozL10n.bootstrap = function(callback, debug) {
   var ctx = navigator.mozL10n.ctx = new L10n.Context();
-  ctx.ready(onReady.bind(this));
   requiresInlineLocale = false;
 
   if (debug) {
@@ -77,11 +76,6 @@ function initResources(callback) {
   for (i = 0; i < iniLinks.length; i++) {
     L10n.loadINI.call(this, iniLinks[i], onIniLoaded);
   }
-}
-
-function onReady() {
-  this.translate();
-  L10n.fireLocalizedEvent.call(this);
 }
 
 
@@ -169,10 +163,12 @@ function getPlaceables(ast, val) {
   }
 }
 
-navigator.mozL10n.getDictionary = function getDictionary(skipLoc, fragment) {
+navigator.mozL10n.getDictionary = function getDictionary(defLoc, fragment) {
   var ast = {};
 
   if (!fragment) {
+    // en-US is the de facto source locale of Gaia;  defLoc can be something
+    // else, as configured in GAIA_DEFAULT_LOCALE
     var sourceLocale = this.ctx.getLocale('en-US');
     if (!sourceLocale.isReady) {
       sourceLocale.build(null);
@@ -186,7 +182,7 @@ navigator.mozL10n.getDictionary = function getDictionary(skipLoc, fragment) {
   }
 
   // don't build inline JSON for default language
-  if (!requiresInlineLocale && this.ctx.supportedLocales[0] === skipLoc) {
+  if (!requiresInlineLocale && this.ctx.supportedLocales[0] === defLoc) {
     return null;
   }
 
