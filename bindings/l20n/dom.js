@@ -1,15 +1,18 @@
 'use strict';
 
 /* jshint -W104 */
-/* exported translateFragment, localizeElement */
+/* exported translateFragment, translateDocument, localizeElement */
+
+function translateDocument() {
+  document.documentElement.lang = this.language.code;
+  document.documentElement.dir = this.language.direction;
+  translateFragment.call(this, document.documentElement);
+}
 
 function translateFragment(element) {
-  if (!element) {
-    element = document.documentElement;
-    document.documentElement.lang = this.language.code;
-    document.documentElement.dir = this.language.direction;
+  if (element.hasAttribute('data-l10n-id')) {
+    translateElement.call(this, element);
   }
-  translateElement.call(this, element);
 
   var nodes = getTranslatableChildren(element);
   for (var i = 0; i < nodes.length; i++ ) {
@@ -22,10 +25,6 @@ function getTranslatableChildren(element) {
 }
 
 function localizeElement(element, id, args) {
-  if (!element) {
-    return;
-  }
-
   if (!id) {
     element.removeAttribute('data-l10n-id');
     element.removeAttribute('data-l10n-args');
@@ -38,10 +37,6 @@ function localizeElement(element, id, args) {
     element.setAttribute('data-l10n-args', JSON.stringify(args));
   } else {
     element.removeAttribute('data-l10n-args');
-  }
-
-  if (this.ctx.isReady) {
-    translateElement.call(this, element);
   }
 }
 
@@ -64,13 +59,13 @@ function translateElement(element) {
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
-    return;
+    return false;
   }
 
   var entity = this.ctx.getEntity(l10n.id, l10n.args);
 
   if (!entity) {
-    return;
+    return false;
   }
 
   if (typeof entity === 'string') {

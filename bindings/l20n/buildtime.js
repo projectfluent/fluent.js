@@ -163,6 +163,8 @@ function getPlaceables(ast, val) {
   }
 }
 
+navigator.mozL10n.translateDocument = L10n.translateDocument;
+
 navigator.mozL10n.getDictionary = function getDictionary(defLoc, fragment) {
   var ast = {};
 
