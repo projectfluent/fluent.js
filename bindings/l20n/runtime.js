@@ -4,7 +4,8 @@
 /* global getPluralRule, rePlaceables, parse, compile */
 /* global translateDocument, loadINI */
 /* global translateFragment, localizeElement, translateElement */
-/* global getTranslatableChildren, getL10nAttributes */
+/* global setL10nAttributes, getL10nAttributes */
+/* global getTranslatableChildren */
 
 var DEBUG = false;
 var isPretranslated = false;
@@ -35,6 +36,8 @@ navigator.mozL10n = {
   translateFragment: function (fragment) {
     return translateFragment.call(navigator.mozL10n, fragment);
   },
+  setAttributes: setL10nAttributes,
+  getAttributes: getL10nAttributes,
   ready: function ready(callback) {
     return navigator.mozL10n.ctx.ready(callback);
   },
@@ -65,7 +68,6 @@ navigator.mozL10n = {
       rePlaceables: rePlaceables,
       getTranslatableChildren:  getTranslatableChildren,
       translateDocument: translateDocument,
-      getL10nAttributes: getL10nAttributes,
       loadINI: loadINI,
       fireLocalizedEvent: fireLocalizedEvent,
       parse: parse,

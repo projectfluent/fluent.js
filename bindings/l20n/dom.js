@@ -2,6 +2,7 @@
 
 /* jshint -W104 */
 /* exported translateFragment, translateDocument, localizeElement */
+/* exported setL10nAttributes, getL10nAttributes */
 
 function translateDocument() {
   document.documentElement.lang = this.language.code;
@@ -18,6 +19,20 @@ function translateFragment(element) {
   for (var i = 0; i < nodes.length; i++ ) {
     translateElement.call(this, nodes[i]);
   }
+}
+
+function setL10nAttributes(element, id, args) {
+  element.setAttribute('data-l10n-id', id);
+  if (args) {
+    element.setAttribute('data-l10n-args', JSON.stringify(args));
+  }
+}
+
+function getL10nAttributes(element) {
+  return {
+    id: element.getAttribute('data-l10n-id'),
+    args: JSON.parse(element.getAttribute('data-l10n-args'))
+  };
 }
 
 function getTranslatableChildren(element) {
@@ -39,21 +54,6 @@ function localizeElement(element, id, args) {
     element.removeAttribute('data-l10n-args');
   }
 }
-
-function getL10nAttributes(element) {
-  if (!element) {
-    return {};
-  }
-
-  var l10nId = element.getAttribute('data-l10n-id');
-  var l10nArgs = element.getAttribute('data-l10n-args');
-
-  var args = l10nArgs ? JSON.parse(l10nArgs) : null;
-
-  return {id: l10nId, args: args};
-}
-
-
 
 function translateElement(element) {
   var l10n = getL10nAttributes(element);
