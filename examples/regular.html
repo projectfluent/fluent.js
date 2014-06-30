@@ -5,9 +5,25 @@
 
     <link rel="resource" type="application/l10n" href="locales/example.ini">
     <script defer="" src="../dist/runtime/l10n.js"></script>
+    <script defer="">
+      function onload() {
+        var l10n = navigator.mozL10n._getInternalAPI();
+
+        var ctx = new l10n.Context();
+
+        function onLoaded() {
+          ctx.get('title', null, function(entity) {
+            console.log(entity);
+          });
+        }
+
+        ctx.addResource('./locales/example.{locale}.properties', onLoaded);
+
+      }
+    </script>
   </head>
 
-  <body>
+  <body onload="onload()">
     <h1 data-l10n-id="hello"></h1>
   </body>
 </html>
