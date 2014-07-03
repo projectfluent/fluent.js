@@ -7,7 +7,11 @@ var program = require('commander');
 var prettyjson = require('prettyjson');
 var colors = require('colors');
 
-var parse = require('../lib/l20n/parser').parse.bind(null, null);
+var PropertiesParser =
+  require('../lib/l20n/format/properties/parser').PropertiesParser;
+
+var propParser = new PropertiesParser();
+var parse = propParser.parse.bind(null, null);
 
 program
   .version('0.0.1')

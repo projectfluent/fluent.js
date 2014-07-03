@@ -6,7 +6,11 @@ var fs = require('fs');
 var program = require('commander');
 var colors = require('colors');
 
-var parse = require('../lib/l20n/parser').parse.bind(null, null);
+var PropertiesParser =
+  require('../lib/l20n/format/properties/parser').PropertiesParser;
+
+var propParser = new PropertiesParser();
+var parse = propParser.parse.bind(null, null);
 var compile = require('../lib/l20n/compiler').compile;
 var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
 

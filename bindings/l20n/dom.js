@@ -78,16 +78,14 @@ function translateElement(element) {
   }
 
   for (var key in entity.attributes) {
-    if (entity.attributes.hasOwnProperty(key)) {
-      var attr = entity.attributes[key];
-      if (key === 'ariaLabel') {
-        element.setAttribute('aria-label', attr);
-      } else if (key === 'innerHTML') {
-        // XXX: to be removed once bug 994357 lands
-        element.innerHTML = attr;
-      } else {
-        element.setAttribute(key, attr);
-      }
+    var attr = entity.attributes[key];
+    if (key === 'ariaLabel') {
+      element.setAttribute('aria-label', attr);
+    } else if (key === 'innerHTML') {
+      // XXX: to be removed once bug 994357 lands
+      element.innerHTML = attr;
+    } else {
+      element.setAttribute(key, attr);
     }
   }
 

@@ -1,7 +1,7 @@
 'use strict';
 
 /* global Entity, Locale, Context, L10nError */
-/* global getPluralRule, rePlaceables, parse, compile */
+/* global getPluralRule, rePlaceables, PropertiesParser, compile */
 /* global translateDocument, loadINI */
 /* global translateFragment, localizeElement, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
@@ -69,7 +69,7 @@ navigator.mozL10n = {
       getTranslatableChildren:  getTranslatableChildren,
       translateDocument: translateDocument,
       loadINI: loadINI,
-      parse: parse,
+      PropertiesParser: PropertiesParser,
       compile: compile
     };
   }
