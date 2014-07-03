@@ -6,6 +6,7 @@
 /* global translateFragment, localizeElement, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global getTranslatableChildren */
+/* global walkContent, PSEUDO_STRATEGIES */
 
 var DEBUG = false;
 var isPretranslated = false;
@@ -71,7 +72,9 @@ navigator.mozL10n = {
       loadINI: loadINI,
       fireLocalizedEvent: fireLocalizedEvent,
       PropertiesParser: PropertiesParser,
-      compile: compile
+      compile: compile,
+      walkContent: walkContent,
+      PSEUDO_STRATEGIES: PSEUDO_STRATEGIES
     };
   }
 };
@@ -109,7 +112,8 @@ function waitFor(state, callback) {
 }
 
 if (window.document) {
-  isPretranslated = (document.documentElement.lang === navigator.language);
+  isPretranslated = !PSEUDO_STRATEGIES.hasOwnProperty(navigator.language) &&
+                    (document.documentElement.lang === navigator.language);
 
   // this is a special case for netError bug; see https://bugzil.la/444165
   if (document.documentElement.dataset.noCompleteBug) {
@@ -144,14 +148,15 @@ function pretranslate() {
 }
 
 function inlineLocalization() {
+  var locale = this.ctx.getLocale(navigator.language);
+  var scriptLoc = locale.isPseudo ? this.ctx.defaultLocale : locale.id;
   var script = document.documentElement
                        .querySelector('script[type="application/l10n"]' +
-                       '[lang="' + navigator.language + '"]');
+                       '[lang="' + scriptLoc + '"]');
   if (!script) {
     return false;
   }
 
-  var locale = this.ctx.getLocale(navigator.language);
   // the inline localization is happenning very early, when the ctx is not
   // yet ready and when the resources haven't been downloaded yet;  add the
   // inlined JSON directly to the current locale
