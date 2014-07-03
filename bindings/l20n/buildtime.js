@@ -101,10 +101,8 @@ L10n.Locale.prototype.addAST = function(ast) {
     this.ast = {};
   }
   for (var id in ast) {
-    if (ast.hasOwnProperty(id)) {
-      this.ast[id] = ast[id];
-      this.entries[id] = ast[id];
-    }
+    this.ast[id] = ast[id];
+    this.entries[id] = ast[id];
   }
 };
 
