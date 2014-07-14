@@ -102,6 +102,8 @@ L10n.Locale.prototype.addAST = function(ast) {
   }
 
   var keys = Object.keys(ast);
+
+  /* jshint -W084 */
   for (var i = 0, key; key = keys[i]; i++) {
     this.entries[key] = ast[key];
     this.ast[key] = ast[key];
