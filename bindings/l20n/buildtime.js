@@ -105,7 +105,7 @@ L10n.Context.prototype.getEntitySource = function(id) {
       locale.build(null);
     }
 
-    if (locale.ast) {
+    if (locale.ast && id in locale.ast) {
       return locale.ast[id];
     }
 
