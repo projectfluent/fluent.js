@@ -1,6 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
+/* global isPretranslated, pendingElements:true */
 /* exported translateFragment, translateDocument, localizeElement */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -56,6 +57,14 @@ function localizeElement(element, id, args) {
 }
 
 function translateElement(element) {
+  if (isPretranslated && !this.ctx.isReady) {
+    if (!pendingElements) {
+      pendingElements = [];
+    }
+    pendingElements.push(element);
+    return;
+  }
+
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {

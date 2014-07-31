@@ -11,7 +11,8 @@
 var DEBUG = false;
 var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
-var nodeObserver = false;
+var nodeObserver = null;
+var pendingElements = null;
 
 var moConfig = {
   attributes: true,
@@ -115,36 +116,22 @@ if (window.document) {
   isPretranslated = !PSEUDO_STRATEGIES.hasOwnProperty(navigator.language) &&
                     (document.documentElement.lang === navigator.language);
 
-  // this is a special case for netError bug; see https://bugzil.la/444165
-  if (document.documentElement.dataset.noCompleteBug) {
-    pretranslate.call(navigator.mozL10n);
-    return;
-  }
-
-
-  if (isPretranslated) {
-    waitFor('interactive', function() {
-      window.setTimeout(initResources.bind(navigator.mozL10n));
-    });
-  } else {
-    if (document.readyState === 'complete') {
-      window.setTimeout(initResources.bind(navigator.mozL10n));
-    } else {
-      waitFor('interactive', pretranslate.bind(navigator.mozL10n));
-    }
-  }
-
+  // XXX always pretranslate if data-no-complete-bug is set;  this is
+  // a workaround for a netError page not firing some onreadystatechange
+  // events;  see https://bugzil.la/444165
+  var pretranslate = document.documentElement.dataset.noCompleteBug ?
+    true : !isPretranslated;
+  waitFor('interactive', init.bind(navigator.mozL10n, pretranslate));
 }
 
-function pretranslate() {
-  /* jshint -W068 */
-  if (inlineLocalization.call(this)) {
-    waitFor('interactive', (function() {
-      window.setTimeout(initResources.bind(this));
-    }).bind(this));
-  } else {
-    initResources.call(this);
+function init(pretranslate) {
+  nodeObserver = new MutationObserver(onMutations.bind(navigator.mozL10n));
+  nodeObserver.observe(document, moConfig);
+
+  if (pretranslate) {
+    inlineLocalization.call(navigator.mozL10n);
   }
+  window.setTimeout(initResources.bind(navigator.mozL10n));
 }
 
 function inlineLocalization() {
@@ -154,7 +141,7 @@ function inlineLocalization() {
                        .querySelector('script[type="application/l10n"]' +
                        '[lang="' + scriptLoc + '"]');
   if (!script) {
-    return false;
+    return;
   }
 
   // the inline localization is happenning very early, when the ctx is not
@@ -173,7 +160,6 @@ function inlineLocalization() {
 
   // the visible DOM is now pretranslated
   isPretranslated = true;
-  return true;
 }
 
 function initResources() {
@@ -259,9 +245,12 @@ function onReady() {
   }
   isPretranslated = false;
 
-  if (!nodeObserver) {
-    nodeObserver = new MutationObserver(onMutations.bind(this));
-    nodeObserver.observe(document, moConfig);
+  if (pendingElements) {
+    /* jshint boss:true */
+    for (var i = 0, element; element = pendingElements[i]; i++) {
+      translateElement.call(this, element);
+    }
+    pendingElements = null;
   }
 
   fireLocalizedEvent.call(this);
