@@ -142,7 +142,7 @@ navigator.mozL10n.translateDocument = L10n.translateDocument;
 
 navigator.mozL10n.getDictionary = function getDictionary(fragment) {
   // don't do anything for pseudolocales
-  if (this.ctx.supportedLocales[0] in L10n.PSEUDO_STRATEGIES) {
+  if (this.ctx.supportedLocales[0] in this.qps) {
     return null;
   }
 

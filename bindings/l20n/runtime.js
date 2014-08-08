@@ -60,6 +60,7 @@ navigator.mozL10n = {
       return getDirection(navigator.mozL10n.ctx.supportedLocales[0]);
     }
   },
+  qps: PSEUDO_STRATEGIES,
   _getInternalAPI: function() {
     return {
       Error: L10nError,
@@ -74,8 +75,7 @@ navigator.mozL10n = {
       fireLocalizedEvent: fireLocalizedEvent,
       PropertiesParser: PropertiesParser,
       compile: compile,
-      walkContent: walkContent,
-      PSEUDO_STRATEGIES: PSEUDO_STRATEGIES
+      walkContent: walkContent
     };
   }
 };
