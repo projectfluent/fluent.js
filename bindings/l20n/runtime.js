@@ -129,11 +129,15 @@ function init(pretranslate) {
   nodeObserver.observe(document, moConfig);
 
   if (pretranslate) {
-    inlineLocalization.call(navigator.mozL10n);
+    //XXX: bring back if bug 994370 gets reverted
+    //inlineLocalization.call(navigator.mozL10n);
+    initResources.call(navigator.mozL10n);
+  } else {
+    window.setTimeout(initResources.bind(navigator.mozL10n));
   }
-  window.setTimeout(initResources.bind(navigator.mozL10n));
 }
 
+/*
 function inlineLocalization() {
   var locale = this.ctx.getLocale(navigator.language);
   var scriptLoc = locale.isPseudo ? this.ctx.defaultLocale : locale.id;
@@ -161,6 +165,7 @@ function inlineLocalization() {
   // the visible DOM is now pretranslated
   isPretranslated = true;
 }
+*/
 
 function initResources() {
   var resLinks = document.head
