@@ -124,14 +124,21 @@ if (window.document) {
   waitFor('interactive', init.bind(navigator.mozL10n, pretranslate));
 }
 
-function init(pretranslate) {
+function initObserver() {
   nodeObserver = new MutationObserver(onMutations.bind(navigator.mozL10n));
   nodeObserver.observe(document, moConfig);
+}
 
+function init(pretranslate) {
   if (pretranslate) {
     inlineLocalization.call(navigator.mozL10n);
     initResources.call(navigator.mozL10n);
   } else {
+    // if pretranslate is false, we want to initialize MO
+    // early, to collect nodes injected between now and when resources
+    // are loaded because we're not going to translate the whole
+    // document once l10n resources are ready.
+    initObserver();
     window.setTimeout(initResources.bind(navigator.mozL10n));
   }
 }
@@ -255,6 +262,9 @@ function onReady() {
     pendingElements = null;
   }
 
+  if (!nodeObserver) {
+    initObserver();
+  }
   fireLocalizedEvent.call(this);
 }
 

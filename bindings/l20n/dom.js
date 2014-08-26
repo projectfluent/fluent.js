@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global isPretranslated, pendingElements:true */
+/* global pendingElements:true */
 /* exported translateFragment, translateDocument, localizeElement */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -57,7 +57,7 @@ function localizeElement(element, id, args) {
 }
 
 function translateElement(element) {
-  if (isPretranslated && !this.ctx.isReady) {
+  if (!this.ctx.isReady) {
     if (!pendingElements) {
       pendingElements = [];
     }
