@@ -2,7 +2,7 @@
 
 /* global Entity, Locale, Context, L10nError */
 /* global getPluralRule, rePlaceables, PropertiesParser, compile */
-/* global translateDocument, io */
+/* global translateDocument, loadINI */
 /* global translateFragment, localizeElement, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global getTranslatableChildren */
@@ -13,9 +13,6 @@ var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 var nodeObserver = null;
 var pendingElements = null;
-var headScanCompleted = false;
-var manifestLoading = false;
-var manifest = {};
 
 var moConfig = {
   attributes: true,
@@ -74,8 +71,7 @@ navigator.mozL10n = {
       rePlaceables: rePlaceables,
       getTranslatableChildren:  getTranslatableChildren,
       translateDocument: translateDocument,
-      onLinkInjected: onLinkInjected,
-      onMetaInjected: onMetaInjected,
+      loadINI: loadINI,
       fireLocalizedEvent: fireLocalizedEvent,
       PropertiesParser: PropertiesParser,
       compile: compile,
@@ -176,111 +172,45 @@ function inlineLocalization() {
 }
 
 function initResources() {
-  var nodes = document.head
-                      .querySelectorAll('link[rel="localization"],' +
-                                        'link[rel="manifest"],' +
-                                        'meta[name="locales"],' +
-                                        'meta[name="default_locale"]');
-  for (var i = 0; i < nodes.length; i++) {
-    var nodeName = nodes[i].nodeName.toLowerCase();
-    switch (nodeName) {
-      case 'link':
-        onLinkInjected.call(this, nodes[i]);
-        break;
-      case 'meta':
-        onMetaInjected.call(this, nodes[i]);
-        break;
+  var resLinks = document.head
+                         .querySelectorAll('link[type="application/l10n"]');
+  var iniLinks = [];
+
+  for (var i = 0; i < resLinks.length; i++) {
+    var link = resLinks[i];
+    var url = link.getAttribute('href');
+    var type = url.substr(url.lastIndexOf('.') + 1);
+    if (type === 'ini') {
+      iniLinks.push(url);
     }
+    this.ctx.resLinks.push(url);
   }
 
-  headScanCompleted = true;
-
-  if (Object.keys(manifest).length === 2 ||
-      manifestLoading === false) {
+  var iniLoads = iniLinks.length;
+  if (iniLoads === 0) {
     initLocale.call(this);
-  }
-}
-
-function onLinkInjected(node) {
-  var url = node.getAttribute('href');
-  var rel = node.getAttribute('rel');
-  switch (rel) {
-    case 'manifest':
-      loadManifest.call(this, url);
-      break;
-    case 'localization':
-      this.ctx.resLinks.push(url);
-      break;
-  }
-}
-
-function onMetaInjected(node) {
-  if (Object.keys(manifest).length === 2) {
-    return;
-  }
-  var name = node.getAttribute('name');
-  switch (name) {
-    case 'locales':
-      manifest[name] = node.getAttribute('content').split(',').map(
-        Function.prototype.call, String.prototype.trim);
-      break;
-    case 'default_locale':
-      manifest[name] = node.getAttribute('content');
-      break;
-  }
-
-  if (Object.keys(manifest).length === 2) {
-    parseManifest.call(this);
-  }
-}
-
-function loadManifest(url) {
-  if (Object.keys(manifest).length === 2) {
     return;
   }
 
-  manifestLoading = true;
-
-  io.loadJSON(url, function(err, json) {
-    manifestLoading = false;
-
-    if (Object.keys(manifest).length === 2) {
-      return;
-    }
-
+  function onIniLoaded(err) {
     if (err) {
       this.ctx._emitter.emit('error', err);
-      if (headScanCompleted) {
-        initLocale.call(this);
-      }
-      return;
     }
-
-    if (!('default_locale' in manifest)) {
-      manifest.default_locale = json.default_locale;
+    if (--iniLoads === 0) {
+      initLocale.call(this);
     }
-    if (!('locales' in manifest)) {
-      manifest.locales = Object.keys(json.locales);
-    }
+  }
 
-    parseManifest.call(this);
-  }.bind(this));
-}
-
-function parseManifest() {
-  this.ctx.registerLocales(manifest.default_locale,
-                           manifest.locales);
-  manifest = {};
-  if (headScanCompleted) {
-    initLocale.call(this);
+  for (i = 0; i < iniLinks.length; i++) {
+    loadINI.call(this, iniLinks[i], onIniLoaded.bind(this));
   }
 }
 
 function initLocale() {
-  this.ctx.requestLocales.apply(this.ctx, navigator.languages);
+  this.ctx.requestLocales(navigator.language);
   window.addEventListener('languagechange', function l10n_langchange() {
-    this.ctx.requestLocales.apply(this.ctx, navigator.languages);
-  }.bind(this));
+    navigator.mozL10n.language.code = navigator.language;
+  });
 }
 
 function localizeMutations(mutations) {
