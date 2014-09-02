@@ -45,7 +45,6 @@ module.exports = {
       'lib/l20n/locale.js',
       'lib/l20n/context.js',
       'bindings/l20n/runtime.js',
-      'bindings/l20n/ini.js',
       'bindings/l20n/dom.js',
     ],
     dest: 'dist/runtime/l10n.js',
