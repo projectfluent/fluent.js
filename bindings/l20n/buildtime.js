@@ -11,13 +11,11 @@
 /* jshint -W104 */
 
 var DEBUG = false;
-var requiresInlineLocale = false; // netError requires inline locale
 
 var L10n = navigator.mozL10n._getInternalAPI();
 
 navigator.mozL10n.bootstrap = function(callback, debug) {
   var ctx = navigator.mozL10n.ctx = new L10n.Context();
-  requiresInlineLocale = false;
 
   if (debug) {
     DEBUG = true;
@@ -59,7 +57,6 @@ function initResources(callback) {
   function onIniLoaded() {
     if (--iniLoads <= 0) {
       if (!containsFetchableLocale) {
-        requiresInlineLocale = true;
         document.documentElement.dataset.noCompleteBug = true;
       }
       callback();
