@@ -2,7 +2,6 @@
 
 var src = [
   'tests/lib/*.js',
-  //'tests/lib/context/*.js',
   'tests/lib/compiler/*.js',
 ];
 
