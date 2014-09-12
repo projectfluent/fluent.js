@@ -32,7 +32,7 @@ describe('pseudo strategy', function() {
   });
 
   beforeEach(function() {
-    ast = propertiesParser.parse(null, source);
+    ast = propertiesParser.parse(source);
   });
 
   describe('accented English', function(){

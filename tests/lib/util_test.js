@@ -45,7 +45,7 @@ describe('walkContent', function() {
 
 
   beforeEach(function() {
-    ast = propertiesParser.parse(null, source);
+    ast = propertiesParser.parse(source);
   });
 
   describe('simple strings and attributes', function(){

@@ -14,8 +14,8 @@ if (typeof navigator !== 'undefined') {
     : require('../../lib/l20n/format/properties/parser').PropertiesParser;
 }
 
-var propertiesParser = new PropertiesParser();
-var parse = propertiesParser.parse.bind(null, null);
+var propertiesParser = new PropertiesParser(null);
+var parse = propertiesParser.parse;
 
 describe('L10n Parser', function() {
 

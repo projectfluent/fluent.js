@@ -25,7 +25,7 @@ if (typeof navigator !== 'undefined') {
 var propertiesParser = new PropertiesParser();
 
 function compile(source) {
-  var ast = propertiesParser.parse(null, source);
+  var ast = propertiesParser.parse(source);
   var env = L10n.compile(null, ast);
   env.__plural = L10n.getPluralRule('en-US');
   return env;
