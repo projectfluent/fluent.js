@@ -66,14 +66,8 @@ describe('Context', function() {
       });
     });
 
-    it('removes the ctx from _ctxMap', function() {
-      // XXX should it be possible to destroy contexts before they load?
-      ctx1.destroy();
-      assert.ok(
-        !l10n._ctxMap.has(ctx1),
-        'expected ctx to be removed from l10n._ctxMap');
-    });
     it('removes the resources from _resCache', function() {
+      // XXX should it be possible to destroy contexts before they load?
       ctx1.destroy();
       assert.ok(
         !l10n._resCache.res1,
