@@ -13,12 +13,11 @@ if (typeof navigator !== 'undefined') {
     : require('../../lib/l20n/env').Env;
 }
 
-describe('Registering languages', function() {
+describe('Creating Envs', function() {
   var l10n;
 
   beforeEach(function(done) {
-    l10n = new Env('myapp');
-    l10n.register({
+    l10n = new Env('myapp', {
       version: 2.0,
       locales: {
         'pl': {
@@ -32,8 +31,8 @@ describe('Registering languages', function() {
         }
       },
       default_locale: 'en-US'
-    });
-    l10n.addEventListener('availablelanguageschange', function() {
+    }, ['pl']);
+    l10n.ready.then(function() {
       done();
     });
   });
@@ -46,36 +45,18 @@ describe('Registering languages', function() {
     assert.deepEqual(l10n.available, ['pl', 'de', 'en-US']);
   });
 
-});
-
-describe('Requesting languages', function() {
-  var l10n;
-
-  beforeEach(function(done) {
-    l10n = new Env('myapp');
-    l10n.register({
-      version: 2.0,
-      locales: {
-        'pl': {
-          'version': '1.0-1'
-        },
-        'de': {
-          'version': '1.0-1'
-        },
-        'en-US': {
-          'version': '1.0-1'
-        }
-      },
-      default_locale: 'en-US'
-    });
-    l10n.addEventListener('availablelanguageschange', function() {
-      done();
-    });
-  });
-
   it('correctly sets the supported languages', function() {
-    l10n.request(['pl']);
     assert.deepEqual(l10n.supported, ['pl', 'en-US']);
   });
+
+  describe('Requesting new languages', function() {
+
+    it('correctly sets the supported languages', function() {
+      l10n.request(['de']);
+      assert.deepEqual(l10n.supported, ['de', 'en-US']);
+    });
+
+  });
+
 
 });

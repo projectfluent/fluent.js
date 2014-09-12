@@ -17,8 +17,7 @@ describe('Context', function() {
   var l10n;
 
   beforeEach(function(done) {
-    l10n = new Env('myapp');
-    l10n.register({
+    l10n = new Env('myapp', {
       version: 2.0,
       locales: {
         'pl': {
@@ -32,16 +31,16 @@ describe('Context', function() {
         }
       },
       default_locale: 'en-US'
-    });
-    l10n.addEventListener('availablelanguageschange', function() {
+    }, ['pl']);
+    l10n.ready.then(function() {
       done();
     });
   });
 
-  describe('ctx.loaded', function() {
+  describe('ctx.ready', function() {
     it('is a promise', function(done) {
       var ctx = l10n.require(['res1', 'res2']);
-      ctx.loaded.then(function() {
+      ctx.ready.then(function() {
         done();
       });
     });
@@ -62,7 +61,7 @@ describe('Context', function() {
 
     beforeEach(function(done) {
       ctx1 = l10n.require(['res1', 'res2']);
-      ctx1.loaded.then(function() {
+      ctx1.ready.then(function() {
         done();
       });
     });
@@ -84,19 +83,15 @@ describe('Context', function() {
         'expected res2 to be removed from l10n._resCache');
     });
     it('removes the resources uniquely associated with the ctx',
-       function(done) {
+       function() {
       ctx2 = l10n.require(['res1', 'res3']);
-        ctx1.destroy();
-        assert.ok(
-          l10n._resCache.res1,
-          'expected res1 to be defined in l10n._resCache');
-        assert.ok(
-          !l10n._resCache.res2,
-          'expected res2 to be removed from l10n._resCache');
-        assert.ok(
-          l10n._resCache.res3,
-          'expected res1 to be defined in l10n._resCache');
-        done();
+      ctx1.destroy();
+      assert.ok(
+        l10n._resCache.res1,
+        'expected res1 to be defined in l10n._resCache');
+      assert.ok(
+        !l10n._resCache.res2,
+        'expected res2 to be removed from l10n._resCache');
     });
   });
 
