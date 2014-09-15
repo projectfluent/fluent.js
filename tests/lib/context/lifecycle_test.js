@@ -3,14 +3,20 @@
 'use strict';
 
 var assert = require('assert') || window.assert;
+var path = function(basedir, leaf) {
+  return basedir + '/' + leaf;
+};
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
   var Env = L10n.Env;
+  var path = path.bind(
+    null, 'app://sharedtest.gaiamobile.org/test/unit/l10n/context');
 } else {
   var Env = process.env.L20N_COV ?
-    require('../../build/cov/lib/l20n/env').Env
-    : require('../../lib/l20n/env').Env;
+    require('../../../build/cov/lib/l20n/env').Env
+    : require('../../../lib/l20n/env').Env;
+  path = path.bind(null, __dirname);
 }
 
 describe('Context', function() {
@@ -39,7 +45,7 @@ describe('Context', function() {
 
   describe('ctx.ready', function() {
     it('is a promise', function(done) {
-      var ctx = l10n.require(['res1', 'res2']);
+      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
       ctx.ready.then(function() {
         done();
       });
@@ -48,10 +54,12 @@ describe('Context', function() {
 
   describe('ctx.get', function() {
     it('returns the value from the AST', function(done) {
-      var ctx = l10n.require(['res1', 'res2']);
+      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
       ctx.get('foo').then(function(val) {
-        assert.strictEqual(val, 'this is fooundefined');
+        assert.strictEqual(val, 'Foo pl');
         done();
+      }, function(err) {
+        done(err);
       });
     });
   });
@@ -60,7 +68,9 @@ describe('Context', function() {
     var ctx1, ctx2;
 
     beforeEach(function(done) {
-      ctx1 = l10n.require(['res1', 'res2']);
+      ctx1 = l10n.require([
+        path('fixtures/{locale}.properties'),
+        path('fixtures/basic.properties')]);
       ctx1.ready.then(function() {
         done();
       });
@@ -70,22 +80,26 @@ describe('Context', function() {
       // XXX should it be possible to destroy contexts before they load?
       ctx1.destroy();
       assert.ok(
-        !l10n._resCache.res1,
-        'expected res1 to be removed from l10n._resCache');
+        !l10n._resCache[path('fixtures/{locale}.properties')],
+        'expected fixtures/{locale}.properties to be removed from ' +
+          'l10n._resCache');
       assert.ok(
-        !l10n._resCache.res2,
-        'expected res2 to be removed from l10n._resCache');
+        !l10n._resCache[path('fixtures/basic.properties')],
+        'expected fixtures/basic.properties to be removed from ' +
+          'l10n._resCache');
     });
     it('removes the resources uniquely associated with the ctx',
        function() {
-      ctx2 = l10n.require(['res1', 'res3']);
+      ctx2 = l10n.require([path('fixtures/{locale}.properties')]);
       ctx1.destroy();
       assert.ok(
-        l10n._resCache.res1,
-        'expected res1 to be defined in l10n._resCache');
+        l10n._resCache[path('fixtures/{locale}.properties')],
+        'expected fixtures/{locale}.properties to be defined in ' +
+          'l10n._resCache');
       assert.ok(
-        !l10n._resCache.res2,
-        'expected res2 to be removed from l10n._resCache');
+        !l10n._resCache[path('fixtures/basic.properties')],
+        'expected fixtures/basic.properties to be removed from ' +
+          'l10n._resCache');
     });
   });
 

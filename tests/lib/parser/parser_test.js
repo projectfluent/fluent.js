@@ -10,8 +10,8 @@ if (typeof navigator !== 'undefined') {
   PropertiesParser = L10n.PropertiesParser;
 } else {
   PropertiesParser = process.env.L20N_COV ?
-    require('../../build/cov/lib/l20n/parser').PropertiesParser
-    : require('../../lib/l20n/format/properties/parser').PropertiesParser;
+    require('../../../build/cov/lib/l20n/parser').PropertiesParser
+    : require('../../../lib/l20n/format/properties/parser').PropertiesParser;
 }
 
 var propertiesParser = new PropertiesParser(null);

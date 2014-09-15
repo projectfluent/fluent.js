@@ -1,8 +1,11 @@
 'use strict';
 
 var src = [
-  'tests/lib/*.js',
-  'tests/lib/compiler/*.js',
+  'tests/lib/env/*_test.js',
+  'tests/lib/context/lifecycle_test.js',
+  'tests/lib/parser/*_test.js',
+  'tests/lib/compiler/*_test.js',
+  'tests/lib/*_test.js',
 ];
 
 module.exports = {
