@@ -22,7 +22,7 @@ if (typeof navigator !== 'undefined') {
 describe('Context', function() {
   var l10n;
 
-  beforeEach(function(done) {
+  beforeEach(function() {
     l10n = new Env('myapp', {
       version: 2.0,
       locales: {
@@ -38,17 +38,14 @@ describe('Context', function() {
       },
       default_locale: 'en-US'
     }, ['pl']);
-    l10n.ready.then(function() {
-      done();
-    });
   });
 
   describe('ctx.ready', function() {
     it('is a promise', function(done) {
       var ctx = l10n.require([path('fixtures/{locale}.properties')]);
-      ctx.ready.then(function() {
-        done();
-      });
+      ctx.ready.then(function(resources) {
+        assert.equal(resources[0].foo, 'Foo pl');
+      }).then(done, done);
     });
   });
 
@@ -57,10 +54,7 @@ describe('Context', function() {
       var ctx = l10n.require([path('fixtures/{locale}.properties')]);
       ctx.get('foo').then(function(val) {
         assert.strictEqual(val, 'Foo pl');
-        done();
-      }, function(err) {
-        done(err);
-      });
+      }).then(done, done);
     });
   });
 
@@ -71,9 +65,7 @@ describe('Context', function() {
       ctx1 = l10n.require([
         path('fixtures/{locale}.properties'),
         path('fixtures/basic.properties')]);
-      ctx1.ready.then(function() {
-        done();
-      });
+      ctx1.ready.then(done.bind(null, null));
     });
 
     it('removes the resources from _resCache', function() {

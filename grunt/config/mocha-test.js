@@ -3,6 +3,7 @@
 var src = [
   'tests/lib/env/*_test.js',
   'tests/lib/context/lifecycle_test.js',
+  'tests/lib/context/resources_test.js',
   'tests/lib/parser/*_test.js',
   'tests/lib/compiler/*_test.js',
   'tests/lib/*_test.js',

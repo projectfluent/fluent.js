@@ -37,22 +37,19 @@ describe('Creating Envs', function() {
   it('correctly sets the default language', function(done) {
     l10n.ready.then(function() {
       assert.strictEqual(l10n.default, 'en-US');
-      done();
-    });
+    }).then(done, done);
   });
 
   it('corectly sets the available languages', function(done) {
     l10n.ready.then(function() {
       assert.deepEqual(l10n.available, ['pl', 'de', 'en-US']);
-      done();
-    });
+    }).then(done, done);
   });
 
   it('correctly sets the supported languages', function(done) {
     l10n.ready.then(function() {
       assert.deepEqual(l10n.supported, ['pl', 'en-US']);
-      done();
-    });
+    }).then(done, done);
   });
 
   it('emits the availablelanguageschange event', function(done) {
@@ -72,9 +69,7 @@ describe('Creating Envs', function() {
   describe('Requesting new languages', function() {
 
     beforeEach(function(done) {
-      l10n.ready.then(function() {
-        done();
-      });
+      l10n.ready.then(done.bind(null, null));
     });
 
     it('correctly sets the supported languages', function() {
