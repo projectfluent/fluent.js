@@ -40,6 +40,8 @@ module.exports = {
       'lib/l20n/plurals.js',
       'lib/l20n/format/properties/parser.js',
       'lib/l20n/compiler.js',
+      'lib/l20n/util.js',
+      'lib/l20n/pseudo.js',
       'lib/l20n/locale.js',
       'lib/l20n/context.js',
       'bindings/l20n/runtime.js',
@@ -50,8 +52,6 @@ module.exports = {
   },
   buildtime: {
     src: [
-      'lib/l20n/util.js',
-      'lib/l20n/pseudo.js',
       'bindings/l20n/buildtime.js',
     ],
     dest: 'dist/buildtime/l10n.js',
@@ -64,6 +64,8 @@ module.exports = {
       'lib/l20n/plurals.js',
       'lib/l20n/format/properties/parser.js',
       'lib/l20n/compiler.js',
+      'lib/l20n/util.js',
+      'lib/l20n/pseudo.js',
       'lib/l20n/locale.js',
       'lib/l20n/context.js',
       'bindings/l20n/shell.js',

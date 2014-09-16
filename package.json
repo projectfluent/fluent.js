@@ -1,7 +1,7 @@
 {
-  "name": "mozL10n",
+  "name": "l20n",
   "description": "A localization library for Firefox OS",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "homepage": "http://l20n.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "licenses": [
