@@ -60,12 +60,6 @@ describe('Context', function() {
 
   describe('ctx.get racing against a lang change', function() {
 
-    beforeEach(function(done) {
-      // wait for l10n to register langs;
-      // see env/langs_test.js for cases when we don't wait
-      l10n.ready.then(done.bind(null, null));
-    });
-
     it('returns the value from the former chain', function(done) {
       var ctx = l10n.require([path('fixtures/{locale}.properties')]);
       l10n.request(['en-US']);
