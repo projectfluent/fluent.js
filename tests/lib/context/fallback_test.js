@@ -22,7 +22,7 @@ if (typeof navigator !== 'undefined') {
 describe('Two supported locales', function() {
   var l10n, ctx;
 
-  before(function() {
+  beforeEach(function() {
     l10n = new Env('myapp', {
       version: 2.0,
       locales: {
@@ -38,9 +38,7 @@ describe('Two supported locales', function() {
       },
       default_locale: 'en-US'
     }, ['pl']);
-  });
 
-  beforeEach(function() {
     ctx = l10n.require([path('fixtures/{locale}.properties')]);
   });
 

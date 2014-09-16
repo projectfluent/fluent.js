@@ -40,11 +40,11 @@ describe('Context', function() {
     }, ['pl']);
   });
 
-  describe('ctx.ready', function() {
+  describe('ctx.ready()', function() {
     it('is a promise', function(done) {
       var ctx = l10n.require([path('fixtures/{locale}.properties')]);
-      ctx.ready.then(function(resources) {
-        assert.equal(resources[0].foo, 'Foo pl');
+      ctx.ready().then(function(supported) {
+        assert.deepEqual(supported, ['pl', 'en-US']);
       }).then(done, done);
     });
   });
@@ -58,6 +58,31 @@ describe('Context', function() {
     });
   });
 
+  describe('ctx.get racing against a lang change', function() {
+
+    beforeEach(function(done) {
+      // wait for l10n to register langs;
+      // see env/langs_test.js for cases when we don't wait
+      l10n.ready.then(done.bind(null, null));
+    });
+
+    it('returns the value from the former chain', function(done) {
+      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
+      l10n.request(['en-US']);
+      ctx.get('foo').then(function(val) {
+        assert.strictEqual(val, 'Foo pl');
+      }).then(done, done);
+    });
+    it('returns the value from the new chain', function(done) {
+      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
+      l10n.request(['en-US']).then(function() {
+        return ctx.get('foo').then(function(val) {
+          assert.strictEqual(val, 'Foo en-US');
+        });
+      }).then(done, done);
+    });
+  });
+
   describe('ctx.destroy', function() {
     var ctx1, ctx2;
 
@@ -65,7 +90,7 @@ describe('Context', function() {
       ctx1 = l10n.require([
         path('fixtures/{locale}.properties'),
         path('fixtures/basic.properties')]);
-      ctx1.ready.then(done.bind(null, null));
+      ctx1.ready().then(done.bind(null, null));
     });
 
     it('removes the resources from _resCache', function() {

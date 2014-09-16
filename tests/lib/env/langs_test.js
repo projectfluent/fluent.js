@@ -72,9 +72,11 @@ describe('Creating Envs', function() {
       l10n.ready.then(done.bind(null, null));
     });
 
-    it('correctly sets the supported languages', function() {
-      l10n.request(['de']);
-      assert.deepEqual(l10n.supported, ['de', 'en-US']);
+    it('correctly sets the supported languages', function(done) {
+      l10n.request(['de']).then(function() {
+        assert.deepEqual(l10n.supported, ['de', 'en-US']);
+      }).then(done, done);
+      assert.deepEqual(l10n.supported, ['pl', 'en-US']);
     });
 
     it('emits the languagechange event', function(done) {
