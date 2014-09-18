@@ -37,15 +37,15 @@ describe('Missing resources', function() {
         }
       },
       default_locale: 'en-US'
-    }, ['pl']);
+    });
   });
 
   it('should create an incomplete context with one missing resource',
     function(done) {
-    var ctx = l10n.require([
+    var ctx = l10n.require(['pl'], [
       path('fixtures/{locale}.properties'),
       path('fixtures/missing.properties')]);
-    ctx.ready().then(function(supported) {
+    ctx.ready.then(function(supported) {
       assert.deepEqual(supported, ['pl', 'en-US']);
       assert.equal(
         l10n._resCache[path('fixtures/{locale}.properties')].pl.foo,
@@ -58,10 +58,10 @@ describe('Missing resources', function() {
 
   it('should create an incomplete context with no valid resources',
     function(done) {
-    var ctx = l10n.require([
+    var ctx = l10n.require(['pl'], [
       path('fixtures/missing.properties'),
       path('fixtures/another.properties')]);
-    ctx.ready().then(function() {
+    ctx.ready.then(function() {
       assert.equal(
         l10n._resCache[path('fixtures/missing.properties')].pl.name,
         'L10nError');

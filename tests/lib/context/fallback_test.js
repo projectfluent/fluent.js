@@ -37,9 +37,9 @@ describe('Two supported locales', function() {
         }
       },
       default_locale: 'en-US'
-    }, ['pl']);
+    });
 
-    ctx = l10n.require([path('fixtures/{locale}.properties')]);
+    ctx = l10n.require(['pl'], [path('fixtures/{locale}.properties')]);
   });
 
   describe('Translation in the 1st locale exists and is OK', function(done) {
