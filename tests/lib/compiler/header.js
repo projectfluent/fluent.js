@@ -11,9 +11,9 @@ if (typeof navigator !== 'undefined') {
   PropertiesParser = L10n.PropertiesParser;
 } else {
   var L10n = {
-    compile: process.env.L20N_COV ?
-      require('../../../build/cov/lib/l20n/compiler').compile :
-      require('../../../lib/l20n/compiler').compile,
+    Entity: process.env.L20N_COV ?
+      require('../../../build/cov/lib/l20n/compiler').Entity :
+      require('../../../lib/l20n/compiler').Entity,
     getPluralRule: require('../../../lib/l20n/plurals').getPluralRule
   };
 
@@ -24,11 +24,24 @@ if (typeof navigator !== 'undefined') {
 
 var propertiesParser = new PropertiesParser();
 
+function MockContext() {
+  this.cache = Object.create(null);
+  this.macros = Object.create(null);
+  this._getEntity = function(lang, id) {
+    return this.cache[id];
+  };
+  this._getMacro = function(lang, id) {
+    return this.macros[id] || L10n.getPluralRule(lang);
+  };
+}
+
 function compile(source) {
+  var ctx = new MockContext();
   var ast = propertiesParser.parse(source);
-  var env = L10n.compile(null, ast);
-  env.__plural = L10n.getPluralRule('en-US');
-  return env;
+  for (var id in ast) {
+    ctx.cache[id] = new L10n.Entity(id, ast[id], 'en-US');
+  }
+  return ctx;
 }
 
 exports.assert = assert;

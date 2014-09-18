@@ -10,9 +10,9 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Compiler errors:', function(){
-  var source, env;
+  var source, ctx;
   beforeEach(function() {
-    env = compile(source);
+    ctx = compile(source);
   });
 
   describe('A complex string referencing an existing entity', function(){
@@ -27,7 +27,7 @@ describe('Compiler errors:', function(){
     });
 
     it('works with the default index', function(){
-      assert.strictEqual(env.prompt.toString({n: 1}), 'One File');
+      assert.strictEqual(ctx.cache.prompt.format(ctx, {n: 1}), 'One File');
     });
 
   });
@@ -43,13 +43,13 @@ describe('Compiler errors:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.prompt.toString({n: 1});
+      var value = ctx.cache.prompt.format(ctx, {n: 1});
       assert.strictEqual(value, 'One {{ file }}');
     });
 
   });
 
-  describe('A ctxdata variable in the index, with "other"', function(){
+  describe('A args variable in the index, with "other"', function(){
 
     before(function() {
       source = [
@@ -61,17 +61,17 @@ describe('Compiler errors:', function(){
     });
 
     it('is found', function(){
-      assert.strictEqual(env.prompt.toString({n: 1}), 'One File');
+      assert.strictEqual(ctx.cache.prompt.format(ctx, {n: 1}), 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = env.prompt.toString();
+      var value = ctx.cache.prompt.format(ctx);
       assert.strictEqual(value, 'Files');
     });
 
   });
 
-  describe('A ctxdata variable in the index, without "other"', function(){
+  describe('A args variable in the index, without "other"', function(){
 
     before(function() {
       source = [
@@ -82,11 +82,11 @@ describe('Compiler errors:', function(){
     });
 
     it('is found', function(){
-      assert.strictEqual(env.prompt.toString({n: 1}), 'One File');
+      assert.strictEqual(ctx.cache.prompt.format(ctx, {n: 1}), 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = env.prompt.toString();
+      var value = ctx.cache.prompt.format(ctx);
       assert.strictEqual(value, undefined);
     });
 

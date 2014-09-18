@@ -110,9 +110,10 @@ describe('Two supported locales', function() {
     });
 
     describe('Entity missing in second locale:', function() {
-      it('[im]', function() {
-        var entity = ctx.getEntity('im');
-        assert.strictEqual(entity, undefined);
+      it('[im]', function(done) {
+        ctx.get('im').then(function(val) {
+          assert.strictEqual(val, undefined);
+        }).then(done, done);
       });
     });
   });

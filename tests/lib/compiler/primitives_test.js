@@ -10,9 +10,9 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Primitives:', function(){
-  var source, env;
+  var source, ctx;
   beforeEach(function() {
-    env = compile(source);
+    ctx = compile(source);
   });
 
   describe('Simple string value', function(){
@@ -24,7 +24,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      assert.strictEqual(env.foo.toString(), 'Foo');
+      assert.strictEqual(ctx.cache.foo.format(ctx), 'Foo');
     });
 
   });
@@ -41,13 +41,13 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      var value = env.bar.toString();
+      var value = ctx.cache.bar.format(ctx);
       assert.strictEqual(value, 'Foo Bar');
     });
 
     it('returns the raw string if the referenced entity is ' +
        'not found', function(){
-      var value = env.baz.toString();
+      var value = ctx.cache.baz.format(ctx);
       assert.strictEqual(value, '{{ missing }}');
     });
 
@@ -63,18 +63,18 @@ describe('Primitives:', function(){
     });
 
     it('returns the null value', function(){
-      var entity = env.foo.valueOf();
+      var entity = ctx.cache.foo.get(ctx);
       assert.strictEqual(entity.value, null);
     });
 
     it('returns the attribute', function(){
-      var entity = env.foo.valueOf();
+      var entity = ctx.cache.foo.get(ctx);
       assert.strictEqual(entity.attributes.attr, 'Foo');
     });
 
     it('returns the raw string when the referenced entity has ' +
        'null value', function(){
-      var value = env.bar.toString();
+      var value = ctx.cache.bar.format(ctx);
       assert.strictEqual(value, '{{ foo }} Bar');
     });
 
@@ -90,7 +90,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.foo.toString();
+      var value = ctx.cache.foo.format(ctx);
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -105,7 +105,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.foo.toString();
+      var value = ctx.cache.foo.format(ctx);
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -123,12 +123,12 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.foo.toString({n: 1});
+      var value = ctx.cache.foo.format(ctx, {n: 1});
       assert.strictEqual(value, '{{ foo }}');
     });
 
     it('returns the valid value if requested directly', function(){
-      var value = env.bar.toString({n: 2});
+      var value = ctx.cache.bar.format(ctx, {n: 2});
       assert.strictEqual(value, 'Bar');
     });
   });
