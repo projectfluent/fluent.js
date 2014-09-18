@@ -13,11 +13,10 @@ if (typeof navigator !== 'undefined') {
     : require('../../../lib/l20n/env').Env;
 }
 
-describe('Creating Envs', function() {
-  var l10n;
+describe('Newly created env', function() {
 
-  beforeEach(function() {
-    l10n = new Env('myapp', {
+  it('emits the availablelanguageschange event', function(done) {
+    var l10n = new Env('myapp', {
       version: 2.0,
       locales: {
         'pl': {
@@ -32,18 +31,10 @@ describe('Creating Envs', function() {
       },
       default_locale: 'en-US'
     });
-  });
-
-  it('correctly sets the default language', function(done) {
-    l10n.registered.then(function() {
-      assert.strictEqual(l10n.default, 'en-US');
-    }).then(done, done);
-  });
-
-  it('corectly sets the available languages', function(done) {
-    l10n.registered.then(function() {
-      assert.deepEqual(l10n.available, ['pl', 'de', 'en-US']);
-    }).then(done, done);
+    l10n.addEventListener('availablelanguageschange', function(available) {
+      assert.deepEqual(available, ['pl', 'de', 'en-US']);
+      done();
+    });
   });
 
 });
