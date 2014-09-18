@@ -31,7 +31,7 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = env.indexEntity.toString({n: 1});
+      var value = env.indexEntity.format({n: 1});
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro (resolve)', function() {
@@ -39,13 +39,13 @@ describe('Index', function(){
         env.indexUncalledMacro.resolve({n: 1});
       }, 'Macro plural expects 1 argument(s), yet 0 given');
     });
-    it('returns undefined when the index is an uncalled macro (toString)',
+    it('returns undefined when the index is an uncalled macro (format)',
       function() {
-      var value = env.indexUncalledMacro.toString({n: 1});
+      var value = env.indexUncalledMacro.format({n: 1});
       assert.strictEqual(value, undefined);
     });
     it('works when the index is a called macro', function() {
-      var value = env.indexCalledMacro.toString({n: 1});
+      var value = env.indexCalledMacro.format({n: 1});
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -61,7 +61,7 @@ describe('Index', function(){
     });
 
     it('is undefined', function() {
-      var value = env.foo.toString();
+      var value = env.foo.format();
       assert.strictEqual(value, undefined);
     });
 
@@ -79,7 +79,7 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      var entity = env.foo.valueOf();
+      var entity = env.foo.get();
       assert.strictEqual(entity.value, 'Foo');
       assert.strictEqual(entity.attributes.attr, undefined);
     });

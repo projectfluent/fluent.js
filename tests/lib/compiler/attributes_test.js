@@ -29,12 +29,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value', function(){
-      var entity = env.foo.valueOf();
+      var entity = env.foo.get();
       assert.strictEqual(entity.attributes.attr, 'An attribute');
     });
 
     it('returns the value with a placeable', function(){
-      var entity = env.foo.valueOf();
+      var entity = env.foo.get();
       assert.strictEqual(entity.attributes.attrComplex,
                          'An attribute referencing Bar');
     });
@@ -52,12 +52,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var value = env.update.toString();
+      var value = env.update.format();
       assert.strictEqual(value, 'Update');
     });
 
     it('returns the value of the attribute\'s member', function(){
-      var entity = env.update.valueOf({n: 1});
+      var entity = env.update.get({n: 1});
       assert.strictEqual(entity.attributes.innerHTML, 'One update available');
     });
 
@@ -78,12 +78,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var entity = env.update.valueOf({n: 1, k: 2});
+      var entity = env.update.get({n: 1, k: 2});
       assert.strictEqual(entity.value, 'One update');
     });
 
     it('returns the value of the attribute', function(){
-      var entity = env.update.valueOf({n: 1, k: 2});
+      var entity = env.update.get({n: 1, k: 2});
       assert.strictEqual(entity.attributes.innerHTML, '2 updates innerHTML');
     });
 
@@ -99,12 +99,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var entity = env.brandName.valueOf();
+      var entity = env.brandName.get();
       assert.strictEqual(entity.value, 'Firefox');
     });
 
     it('returns the value of the attribute', function(){
-      var entity = env.brandName.valueOf();
+      var entity = env.brandName.get();
       assert.strictEqual(entity.attributes.title, 'Mozilla Firefox');
     });
 
@@ -120,7 +120,7 @@ describe('Attributes', function(){
     });
 
     it('returns the raw string of the attribute', function(){
-      var entity = env.brandName.valueOf();
+      var entity = env.brandName.get();
       assert.strictEqual(entity.attributes.title,
                          'Mozilla {{ brandName.title }}');
     });

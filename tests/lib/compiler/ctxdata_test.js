@@ -34,17 +34,17 @@ describe('Context data', function(){
     });
 
     it('can be referenced from strings', function() {
-      var value = env.unread.toString(ctxdata);
+      var value = env.unread.format(ctxdata);
       assert.strictEqual(value, 'Unread notifications: 3');
     });
 
     it('can be passed as argument to a macro', function() {
-      var value = env.unreadPlural.toString(ctxdata);
+      var value = env.unreadPlural.format(ctxdata);
       assert.strictEqual(value, '3 unread notifications');
     });
 
     it('takes priority over entities of the same name', function() {
-      var value = env.useFoo.toString(ctxdata);
+      var value = env.useFoo.format(ctxdata);
       assert.strictEqual(value, 'Foo');
     });
 
@@ -70,37 +70,37 @@ describe('Context data', function(){
 
     it('returns the raw string when a missing property of ctxdata is ' +
        'referenced', function(){
-      var value = env.missingReference.toString(ctxdata);
+      var value = env.missingReference.format(ctxdata);
       assert.strictEqual(value, '{{ missing }}');
     });
 
     it('returns the raw string when an object is referenced', function(){
-      var value = env.nestedReference.toString(ctxdata);
+      var value = env.nestedReference.format(ctxdata);
       assert.strictEqual(value, '{{ nested }}');
     });
 
     it('returns the raw string when watch is referenced', function(){
-      var value = env.watchReference.toString(ctxdata);
+      var value = env.watchReference.format(ctxdata);
       assert.strictEqual(value, '{{ watch }}');
     });
 
     it('returns the raw string when hasOwnProperty is referenced', function(){
-      var value = env.hasOwnPropertyReference.toString(ctxdata);
+      var value = env.hasOwnPropertyReference.format(ctxdata);
       assert.strictEqual(value, '{{ hasOwnProperty }}');
     });
 
     it('returns the raw string when isPrototypeOf is referenced', function(){
-      var value = env.isPrototypeOfReference.toString(ctxdata);
+      var value = env.isPrototypeOfReference.format(ctxdata);
       assert.strictEqual(value, '{{ isPrototypeOf }}');
     });
 
     it('returns the raw string when toString is referenced', function(){
-      var value = env.toStringReference.toString(ctxdata);
+      var value = env.toStringReference.format(ctxdata);
       assert.strictEqual(value, '{{ toString }}');
     });
 
     it('returns the raw string when __proto__ is referenced', function(){
-      var value = env.protoReference.toString(ctxdata);
+      var value = env.protoReference.format(ctxdata);
       assert.strictEqual(value, '{{ __proto__ }}');
     });
 
@@ -124,20 +124,20 @@ describe('Context data', function(){
     });
 
     it('returns a string value', function(){
-      assert.strictEqual(env.stringProp.toString(ctxdata), 'string');
+      assert.strictEqual(env.stringProp.format(ctxdata), 'string');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.stringIndex.toString(ctxdata);
+      var value = env.stringIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
     it('digit returns a string value', function(){
-      assert.strictEqual(env.stringNumProp.toString(ctxdata), '1');
+      assert.strictEqual(env.stringNumProp.format(ctxdata), '1');
     });
 
     it('digit returns undefined when used in a macro', function(){
-      var value = env.stringNumIndex.toString(ctxdata);
+      var value = env.stringNumIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -161,20 +161,20 @@ describe('Context data', function(){
     });
 
     it('returns a number value', function(){
-      assert.strictEqual(env.numProp.toString(ctxdata), '1');
+      assert.strictEqual(env.numProp.format(ctxdata), '1');
     });
 
     it('returns a value when used in macro', function(){
-      assert.strictEqual(env.numIndex.toString(ctxdata), 'One');
+      assert.strictEqual(env.numIndex.format(ctxdata), 'One');
     });
 
     it('returns the raw string when NaN is referenced', function(){
-      var value = env.nanProp.toString(ctxdata);
+      var value = env.nanProp.format(ctxdata);
       assert.strictEqual(value, '{{ nan }}');
     });
 
     it('is undefined when NaN is used in macro', function(){
-      var value = env.nanIndex.toString(ctxdata);
+      var value = env.nanIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -194,12 +194,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string when referenced', function(){
-      var value = env.boolProp.toString(ctxdata);
+      var value = env.boolProp.format(ctxdata);
       assert.strictEqual(value, '{{ bool }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.boolIndex.toString(ctxdata);
+      var value = env.boolIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -219,12 +219,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string when referenced', function(){
-      var value = env.undefProp.toString(ctxdata);
+      var value = env.undefProp.format(ctxdata);
       assert.strictEqual(value, '{{ undef }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.undefIndex.toString(ctxdata);
+      var value = env.undefIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -244,12 +244,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.nullProp.toString(ctxdata);
+      var value = env.nullProp.format(ctxdata);
       assert.strictEqual(value, '{{ nullable }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.nullIndex.toString(ctxdata);
+      var value = env.nullIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -269,12 +269,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.arrProp.toString(ctxdata);
+      var value = env.arrProp.format(ctxdata);
       assert.strictEqual(value, '{{ arr }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.arrIndex.toString(ctxdata);
+      var value = env.arrIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -294,12 +294,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.arrProp.toString(ctxdata);
+      var value = env.arrProp.format(ctxdata);
       assert.strictEqual(value, '{{ arr }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.arrIndex.toString(ctxdata);
+      var value = env.arrIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
 
@@ -321,12 +321,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.objProp.toString(ctxdata);
+      var value = env.objProp.format(ctxdata);
       assert.strictEqual(value, '{{ obj }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = env.objIndex.toString(ctxdata);
+      var value = env.objIndex.format(ctxdata);
       assert.strictEqual(value, undefined);
     });
   });

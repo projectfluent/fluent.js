@@ -36,8 +36,8 @@ describe('Reference bombs', function(){
         env.lolz.resolve();
       }, /too many characters in placeable/i);
     });
-    it('toString() returns undefined', function() {
-      var value = env.lolz.toString();
+    it('format() returns undefined', function() {
+      var value = env.lolz.format();
       assert.strictEqual(value, undefined);
     });
   });
@@ -115,8 +115,8 @@ describe('Reference bombs', function(){
         env.malice.resolve();
       }, /too many placeables/i);
     });
-    it('toString() returns undefined', function() {
-      var value = env.malice.toString();
+    it('format() returns undefined', function() {
+      var value = env.malice.format();
       assert.strictEqual(value, undefined);
     });
   });

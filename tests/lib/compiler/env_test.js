@@ -22,9 +22,9 @@ describe('Env object', function(){
   });
 
   it('works', function() {
-    assert.strictEqual(env.foo.toString(), 'Foo');
-    assert.strictEqual(env.getFoo.toString(), 'Foo');
-    assert.strictEqual(env.getBar.toString(), '{{ bar }}');
+    assert.strictEqual(env.foo.format(), 'Foo');
+    assert.strictEqual(env.getFoo.format(), 'Foo');
+    assert.strictEqual(env.getBar.format(), '{{ bar }}');
   });
 
   it('cannot be modified by another compilation', function() {
@@ -34,9 +34,9 @@ describe('Env object', function(){
     ].join('\n');
     compile(source2);
 
-    assert.strictEqual(env.foo.toString(), 'Foo');
-    assert.strictEqual(env.getFoo.toString(), 'Foo');
-    assert.strictEqual(env.getBar.toString(), '{{ bar }}');
+    assert.strictEqual(env.foo.format(), 'Foo');
+    assert.strictEqual(env.getFoo.format(), 'Foo');
+    assert.strictEqual(env.getBar.format(), '{{ bar }}');
   });
 
 });

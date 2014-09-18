@@ -24,7 +24,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      assert.strictEqual(env.foo.toString(), 'Foo');
+      assert.strictEqual(env.foo.format(), 'Foo');
     });
 
   });
@@ -41,13 +41,13 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      var value = env.bar.toString();
+      var value = env.bar.format();
       assert.strictEqual(value, 'Foo Bar');
     });
 
     it('returns the raw string if the referenced entity is ' +
        'not found', function(){
-      var value = env.baz.toString();
+      var value = env.baz.format();
       assert.strictEqual(value, '{{ missing }}');
     });
 
@@ -63,18 +63,18 @@ describe('Primitives:', function(){
     });
 
     it('returns the null value', function(){
-      var entity = env.foo.valueOf();
+      var entity = env.foo.get();
       assert.strictEqual(entity.value, null);
     });
 
     it('returns the attribute', function(){
-      var entity = env.foo.valueOf();
+      var entity = env.foo.get();
       assert.strictEqual(entity.attributes.attr, 'Foo');
     });
 
     it('returns the raw string when the referenced entity has ' +
        'null value', function(){
-      var value = env.bar.toString();
+      var value = env.bar.format();
       assert.strictEqual(value, '{{ foo }} Bar');
     });
 
@@ -90,7 +90,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.foo.toString();
+      var value = env.foo.format();
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -105,7 +105,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.foo.toString();
+      var value = env.foo.format();
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -123,12 +123,12 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = env.foo.toString({n: 1});
+      var value = env.foo.format({n: 1});
       assert.strictEqual(value, '{{ foo }}');
     });
 
     it('returns the valid value if requested directly', function(){
-      var value = env.bar.toString({n: 2});
+      var value = env.bar.format({n: 2});
       assert.strictEqual(value, 'Bar');
     });
   });
