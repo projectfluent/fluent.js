@@ -10,7 +10,7 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Env object', function(){
-  var source, env;
+  var source, ctx;
 
   beforeEach(function() {
     source = [
@@ -18,13 +18,13 @@ describe('Env object', function(){
       'getFoo={{ foo }}',
       'getBar={{ bar }}'
     ].join('\n');
-    env = compile(source);
+    ctx = compile(source);
   });
 
   it('works', function() {
-    assert.strictEqual(env.foo.format(), 'Foo');
-    assert.strictEqual(env.getFoo.format(), 'Foo');
-    assert.strictEqual(env.getBar.format(), '{{ bar }}');
+    assert.strictEqual(ctx.cache.foo.format(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getFoo.format(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getBar.format(ctx), '{{ bar }}');
   });
 
   it('cannot be modified by another compilation', function() {
@@ -34,9 +34,9 @@ describe('Env object', function(){
     ].join('\n');
     compile(source2);
 
-    assert.strictEqual(env.foo.format(), 'Foo');
-    assert.strictEqual(env.getFoo.format(), 'Foo');
-    assert.strictEqual(env.getBar.format(), '{{ bar }}');
+    assert.strictEqual(ctx.cache.foo.format(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getFoo.format(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getBar.format(ctx), '{{ bar }}');
   });
 
 });

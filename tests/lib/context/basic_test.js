@@ -36,39 +36,39 @@ describe('A simple context with one resource', function() {
   });
 
   it('should return the string value of brandName', function() {
-    var value = ctx.get('brandName');
+    var value = ctx.get(ctx, 'brandName');
     assert.strictEqual(value, 'Firefox');
   });
 
   it('should return the value of about with the value' +
      ' of brandName in it', function() {
-    var value = ctx.get('about');
+    var value = ctx.get(ctx, 'about');
     assert.strictEqual(value, 'About Firefox');
   });
 
   it('should return the value of cert with the value of ' +
      'organization passed directly', function() {
-    var value = ctx.get('cert', {organization: 'Mozilla Foundation'});
+    var value = ctx.get(ctx, 'cert', {organization: 'Mozilla Foundation'});
     assert.strictEqual(value, 'Certificate signed by Mozilla Foundation');
   });
 
   it('should return the correct plural form for 0', function() {
-    var value = ctx.get('unreadMessages', {unread: 0});
+    var value = ctx.get(ctx, 'unreadMessages', {unread: 0});
     assert.strictEqual(value, '0 unread');
   });
 
   it('should return the correct plural form for 1', function() {
-    var value = ctx.get('unreadMessages', {unread: 1});
+    var value = ctx.get(ctx, 'unreadMessages', {unread: 1});
     assert.strictEqual(value, 'One unread');
   });
 
   it('should return the correct plural form for 2', function() {
-    var value = ctx.get('unreadMessages', {unread: 2});
+    var value = ctx.get(ctx, 'unreadMessages', {unread: 2});
     assert.strictEqual(value, '2 unread');
   });
 
   it('should return the correct plural form for 3', function() {
-    var value = ctx.get('unreadMessages', {unread: 3});
+    var value = ctx.get(ctx, 'unreadMessages', {unread: 3});
     assert.strictEqual(value, '3 unread');
   });
 });

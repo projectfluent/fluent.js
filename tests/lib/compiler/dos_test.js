@@ -12,9 +12,9 @@ if (typeof navigator !== 'undefined') {
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 describe('Reference bombs', function(){
-  var source, env;
+  var source, ctx;
   beforeEach(function() {
-    env = compile(source);
+    ctx = compile(source);
   });
 
   describe('Billion Laughs', function(){
@@ -33,11 +33,11 @@ describe('Reference bombs', function(){
     });
     it('resolve() throws', function() {
       assert.throws(function() {
-        env.lolz.resolve();
+        ctx.cache.lolz.resolve(ctx);
       }, /too many characters in placeable/i);
     });
     it('format() returns undefined', function() {
-      var value = env.lolz.format();
+      var value = ctx.cache.lolz.format(ctx);
       assert.strictEqual(value, undefined);
     });
   });
@@ -112,11 +112,11 @@ describe('Reference bombs', function(){
     });
     it('resolve() throws', function() {
       assert.throws(function() {
-        env.malice.resolve();
+        ctx.cache.malice.resolve(ctx);
       }, /too many placeables/i);
     });
     it('format() returns undefined', function() {
-      var value = env.malice.format();
+      var value = ctx.cache.malice.format(ctx);
       assert.strictEqual(value, undefined);
     });
   });

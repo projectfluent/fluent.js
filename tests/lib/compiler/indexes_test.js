@@ -10,10 +10,10 @@ if (typeof navigator !== 'undefined') {
 }
 
 describe('Index', function(){
-  var source, env;
+  var source, ctx;
 
   beforeEach(function() {
-    env = compile(source);
+    ctx = compile(source);
   });
 
   describe('Different values of index', function(){
@@ -31,21 +31,21 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = env.indexEntity.format({n: 1});
+      var value = ctx.cache.indexEntity.format(ctx, {n: 1});
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro (resolve)', function() {
       assert.throws(function() {
-        env.indexUncalledMacro.resolve({n: 1});
+        ctx.cache.indexUncalledMacro.resolve({n: 1});
       }, 'Macro plural expects 1 argument(s), yet 0 given');
     });
     it('returns undefined when the index is an uncalled macro (format)',
       function() {
-      var value = env.indexUncalledMacro.format({n: 1});
+      var value = ctx.cache.indexUncalledMacro.format(ctx, {n: 1});
       assert.strictEqual(value, undefined);
     });
     it('works when the index is a called macro', function() {
-      var value = env.indexCalledMacro.format({n: 1});
+      var value = ctx.cache.indexCalledMacro.format(ctx, {n: 1});
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -61,7 +61,7 @@ describe('Index', function(){
     });
 
     it('is undefined', function() {
-      var value = env.foo.format();
+      var value = ctx.cache.foo.format(ctx);
       assert.strictEqual(value, undefined);
     });
 
@@ -79,7 +79,7 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      var entity = env.foo.get();
+      var entity = ctx.cache.foo.get(ctx);
       assert.strictEqual(entity.value, 'Foo');
       assert.strictEqual(entity.attributes.attr, undefined);
     });
