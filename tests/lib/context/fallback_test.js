@@ -146,7 +146,7 @@ describe('Two supported locales', function() {
     describe('Entity missing in second locale:', function() {
       it('[mm]', function(done) {
         ctx.get('mm').then(function(val) {
-          assert.strictEqual(val, null);
+          assert.strictEqual(val, 'mm');
         }).then(done, done);
       });
     });
