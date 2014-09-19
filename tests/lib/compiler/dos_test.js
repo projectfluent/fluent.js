@@ -31,14 +31,10 @@ describe('Reference bombs', function(){
         'lolz={{ lol3 }}'
       ].join('\n');
     });
-    it('resolve() throws', function() {
+    it('throws', function() {
       assert.throws(function() {
-        ctx.cache.lolz.resolve(ctx);
+        ctx.cache.lolz.format(ctx);
       }, /too many characters in placeable/i);
-    });
-    it('format() returns undefined', function() {
-      var value = ctx.cache.lolz.format(ctx);
-      assert.strictEqual(value, undefined);
     });
   });
 
@@ -110,14 +106,10 @@ describe('Reference bombs', function(){
       '   {{alice}} {{alice}} {{alice}} {{alice}} {{alice}} {{alice}}'
       ].join('\n');
     });
-    it('resolve() throws', function() {
+    it('throws', function() {
       assert.throws(function() {
-        ctx.cache.malice.resolve(ctx);
+        ctx.cache.malice.format(ctx);
       }, /too many placeables/i);
-    });
-    it('format() returns undefined', function() {
-      var value = ctx.cache.malice.format(ctx);
-      assert.strictEqual(value, undefined);
     });
   });
 

@@ -89,9 +89,10 @@ describe('Primitives:', function(){
       ].join('\n');
     });
 
-    it('returns the raw string', function(){
-      var value = ctx.cache.foo.format(ctx);
-      assert.strictEqual(value, '{{ foo }}');
+    it('throws', function(){
+      assert.throws(function() {
+        ctx.cache.foo.format(ctx);
+      }, /cyclic/i);
     });
 
   });
@@ -104,9 +105,10 @@ describe('Primitives:', function(){
       ].join('\n');
     });
 
-    it('returns the raw string', function(){
-      var value = ctx.cache.foo.format(ctx);
-      assert.strictEqual(value, '{{ foo }}');
+    it('throws', function(){
+      assert.throws(function() {
+        ctx.cache.foo.format(ctx);
+      }, /cyclic/i);
     });
 
   });
@@ -122,9 +124,10 @@ describe('Primitives:', function(){
       ].join('\n');
     });
 
-    it('returns the raw string', function(){
-      var value = ctx.cache.foo.format(ctx, {n: 1});
-      assert.strictEqual(value, '{{ foo }}');
+    it('throws', function(){
+      assert.throws(function() {
+        ctx.cache.foo.format(ctx, {n: 1});
+      }, /cyclic/i);
     });
 
     it('returns the valid value if requested directly', function(){

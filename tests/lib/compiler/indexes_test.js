@@ -34,15 +34,10 @@ describe('Index', function(){
       var value = ctx.cache.indexEntity.format(ctx, {n: 1});
       assert.strictEqual(value, 'One entity');
     });
-    it('throws when the index is an uncalled macro (resolve)', function() {
+    it('throws when the index is an uncalled macro', function() {
       assert.throws(function() {
-        ctx.cache.indexUncalledMacro.resolve({n: 1});
+        ctx.cache.indexUncalledMacro.format({n: 1});
       }, 'Macro plural expects 1 argument(s), yet 0 given');
-    });
-    it('returns undefined when the index is an uncalled macro (format)',
-      function() {
-      var value = ctx.cache.indexUncalledMacro.format(ctx, {n: 1});
-      assert.strictEqual(value, undefined);
     });
     it('works when the index is a called macro', function() {
       var value = ctx.cache.indexCalledMacro.format(ctx, {n: 1});
@@ -60,9 +55,10 @@ describe('Index', function(){
       ].join('\n');
     });
 
-    it('is undefined', function() {
-      var value = ctx.cache.foo.format(ctx);
-      assert.strictEqual(value, undefined);
+    it('throws', function() {
+      assert.throws(function() {
+        ctx.cache.foo.format(ctx);
+      }, /cyclic/i);
     });
 
   });
