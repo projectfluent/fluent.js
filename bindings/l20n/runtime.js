@@ -127,7 +127,6 @@ function onMutations(mutations) {
 
   for (var i = 0; i < mutations.length; i++) {
     mutation = mutations[i];
-    console.log(mutation);
     if (mutation.type === 'childList') {
       var addedNode;
 
