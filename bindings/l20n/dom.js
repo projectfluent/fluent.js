@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Promise, moConfig */
+/* global Promise */
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -30,23 +30,21 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-function translateFragment(observer, element) {
+function translateFragment(element) {
   return Promise.all(
     getTranslatables(element).map(
-      translateElement.bind(this, observer)));
+      translateElement.bind(this)));
 }
 
-function translateElement(observer, element) {
+function translateElement(element) {
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
     return false;
   }
 
-  return this.get(l10n.id, l10n.args).then(function(entity) {
-    if (observer) {
-      observer.disconnect();
-    }
+  return this.ctx.get(l10n.id, l10n.args).then(function(entity) {
+    this.observer.stop();
 
     if (typeof entity === 'string') {
       setTextContent(element, entity);
@@ -66,10 +64,8 @@ function translateElement(observer, element) {
       }
     }
 
-    if (observer) {
-      observer.observe(document, moConfig);
-    }
-  });
+    this.observer.start();
+  }.bind(this));
 }
 
 function setTextContent(element, text) {

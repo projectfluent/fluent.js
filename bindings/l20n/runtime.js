@@ -5,15 +5,34 @@
 /* global setL10nAttributes, getL10nAttributes */
 /* global PSEUDO_STRATEGIES */
 
+
 // Public API
 
 navigator.mozL10n = {
-  get env() {
-    return env;
+  env: null,
+  ctx: null,
+  observer: {
+    _observer: null,
+    start: function() {
+      if (!this._observer) {
+        this._observer =
+          new MutationObserver(onMutations.bind(navigator.mozL10n));
+      }
+      return this._observer.observe(document, this.CONFIG);
+    },
+    stop: function() {
+      return this._observer.disconnect();
+    },
+    CONFIG: {
+      attributes: true,
+      characterData: false,
+      childList: true,
+      subtree: true,
+      attributeFilter: ['data-l10n-id', 'data-l10n-args']
+    }
   },
-  get ctx() {
-    return ctx;
-  },
+  resources: [],
+  rtlList: ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'],
 
   get: function get() {
     return 'xxx';
@@ -21,21 +40,21 @@ navigator.mozL10n = {
   localize: function() {},
   translate: function() {},
   translateFragment: function(fragment) {
-    return translateFragment.call(ctx, nodeObserver, fragment);
+    return translateFragment.call(this, fragment);
   },
   setAttributes: setL10nAttributes,
   getAttributes: getL10nAttributes,
 
   ready: function(callback) {
-    return ctx.ready.then(callback);
+    return this.ctx.ready.then(callback);
   },
   once: function(callback) {
-    return ctx.ready.then(callback);
+    return this.ctx.ready.then(callback);
   },
 
   request: function(langs) {
-    ctx = env.require(langs, resLinks);
-    ctx.ready.then(translateDocument.bind(ctx));
+    this.ctx = this.env.require(langs, this.resources);
+    return this.ctx.ready.then(translateDocument.bind(this));
   },
 
   readyState: 'complete',
@@ -43,23 +62,8 @@ navigator.mozL10n = {
   qps: PSEUDO_STRATEGIES
 };
 
-
-var resLinks = [];
-var env;
-var ctx;
-
-var nodeObserver = null;
-var moConfig = {
-  attributes: true,
-  characterData: false,
-  childList: true,
-  subtree: true,
-  attributeFilter: ['data-l10n-id', 'data-l10n-args']
-};
-
-var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 function getDirection(lang) {
-  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
+  return (navigator.mozL10n.rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
 var readyStates = {
@@ -96,21 +100,18 @@ function init() {
     var type = node.getAttribute('rel') || node.nodeName.toLowerCase();
     switch (type) {
       case 'manifest':
-        env = new Env(
+        navigator.mozL10n.env = new Env(
           document.URL,
           io.loadJSON(node.getAttribute('href')));
         break;
       case 'localization':
-        resLinks.push(node.getAttribute('href'));
+        navigator.mozL10n.resources.push(node.getAttribute('href'));
         break;
     }
   }
 
   navigator.mozL10n.request(navigator.languages);
-
-  nodeObserver = new MutationObserver(onMutations);
-  nodeObserver.observe(document, moConfig);
-
+  navigator.mozL10n.observer.start();
 
   window.addEventListener('languagechange', function langchange() {
     navigator.mozL10n.request(navigator.languages);
@@ -120,10 +121,10 @@ function init() {
 function translateDocument(supported) {
   document.documentElement.lang = supported[0];
   document.documentElement.dir = getDirection(supported[0]);
-  translateFragment.call(this, nodeObserver, document.documentElement);
+  translateFragment.call(this, document.documentElement);
 }
 
-function onMutations(mutations, self) {
+function onMutations(mutations) {
   var mutation;
 
   for (var i = 0; i < mutations.length; i++) {
@@ -140,15 +141,15 @@ function onMutations(mutations, self) {
         }
 
         if (addedNode.childElementCount) {
-          translateFragment.call(ctx, self, addedNode);
+          translateFragment.call(this, addedNode);
         } else if (addedNode.hasAttribute('data-l10n-id')) {
-          translateElement.call(ctx, self, addedNode);
+          translateElement.call(this, addedNode);
         }
       }
     }
 
     if (mutation.type === 'attributes') {
-      translateElement.call(ctx, self, mutation.target);
+      translateElement.call(this, mutation.target);
     }
   }
 }
