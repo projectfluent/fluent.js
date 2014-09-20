@@ -5,22 +5,65 @@
 /* global setL10nAttributes, getL10nAttributes */
 /* global PSEUDO_STRATEGIES */
 
-var resLinks = [];
-var env;
-var ctx;
 
-var nodeObserver = null;
-var moConfig = {
-  attributes: true,
-  characterData: false,
-  childList: true,
-  subtree: true,
-  attributeFilter: ['data-l10n-id', 'data-l10n-args']
+// Public API
+
+navigator.mozL10n = {
+  env: null,
+  ctx: null,
+  observer: {
+    _observer: null,
+    start: function() {
+      if (!this._observer) {
+        this._observer =
+          new MutationObserver(onMutations.bind(navigator.mozL10n));
+      }
+      return this._observer.observe(document, this.CONFIG);
+    },
+    stop: function() {
+      return this._observer.disconnect();
+    },
+    CONFIG: {
+      attributes: true,
+      characterData: false,
+      childList: true,
+      subtree: true,
+      attributeFilter: ['data-l10n-id', 'data-l10n-args']
+    }
+  },
+  resources: [],
+  rtlList: ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'],
+
+  get: function get() {
+    return 'xxx';
+  },
+  localize: function() {},
+  translate: function() {},
+  translateFragment: function(fragment) {
+    return translateFragment.call(this, fragment);
+  },
+  setAttributes: setL10nAttributes,
+  getAttributes: getL10nAttributes,
+
+  ready: function(callback) {
+    return this.ctx.ready().then(callback);
+  },
+  once: function(callback) {
+    return this.ctx.ready().then(callback);
+  },
+
+  request: function(langs) {
+    return this.env.request(langs).then(
+        translateDocument.bind(this));
+  },
+
+  readyState: 'complete',
+  language: {},
+  qps: PSEUDO_STRATEGIES
 };
 
-var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 function getDirection(lang) {
-  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
+  return (navigator.mozL10n.rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
 var readyStates = {
@@ -57,35 +100,36 @@ function init() {
     var type = node.getAttribute('rel') || node.nodeName.toLowerCase();
     switch (type) {
       case 'manifest':
-        env = new Env(
+        navigator.mozL10n.env = new Env(
           document.URL,
           io.loadJSON(node.getAttribute('href')),
           navigator.languages);
         break;
       case 'localization':
-        resLinks.push(node.getAttribute('href'));
+        navigator.mozL10n.resources.push(node.getAttribute('href'));
         break;
     }
   }
 
-  ctx = env.require(resLinks);
-  ctx.ready().then(translateDocument.bind(ctx));
+  navigator.mozL10n.ctx = navigator.mozL10n.env.require(
+      navigator.mozL10n.resources);
 
-  nodeObserver = new MutationObserver(onMutations.bind(ctx));
-  nodeObserver.observe(document, moConfig);
+  navigator.mozL10n.observer.start();
+  navigator.mozL10n.ctx.ready().then(
+      translateDocument.bind(navigator.mozL10n));
 
   window.addEventListener('languagechange', function langchange() {
-    env.request(navigator.languages).then(translateDocument.bind(ctx));
+    navigator.mozL10n.request(navigator.languages);
   });
 }
 
 function translateDocument(supported) {
   document.documentElement.lang = supported[0];
   document.documentElement.dir = getDirection(supported[0]);
-  translateFragment.call(this, nodeObserver, document.documentElement);
+  translateFragment.call(this, document.documentElement);
 }
 
-function onMutations(mutations, self) {
+function onMutations(mutations) {
   var mutation;
 
   for (var i = 0; i < mutations.length; i++) {
@@ -102,54 +146,17 @@ function onMutations(mutations, self) {
         }
 
         if (addedNode.childElementCount) {
-          translateFragment.call(this, self, addedNode);
+          translateFragment.call(this, addedNode);
         } else if (addedNode.hasAttribute('data-l10n-id')) {
-          translateElement.call(this, self, addedNode);
+          translateElement.call(this, addedNode);
         }
       }
     }
 
     if (mutation.type === 'attributes') {
-      translateElement.call(this, self, mutation.target);
+      translateElement.call(this, mutation.target);
     }
   }
 }
 
-
-// Public API
-
-navigator.mozL10n = {
-  get env() {
-    return env;
-  },
-  get ctx() {
-    return ctx;
-  },
-
-  get: function get() {
-    return 'xxx';
-  },
-  localize: function() {},
-  translate: function() {},
-  translateFragment: function(fragment) {
-    return translateFragment.call(ctx, null, fragment);
-  },
-  setAttributes: setL10nAttributes,
-  getAttributes: getL10nAttributes,
-
-  ready: function(callback) {
-    return ctx.ready().then(callback);
-  },
-  once: function(callback) {
-    return ctx.ready().then(callback);
-  },
-
-  request: function(langs) {
-    return env.request(langs).then(translateDocument.bind(ctx));
-  },
-
-  readyState: 'complete',
-  language: {},
-  qps: PSEUDO_STRATEGIES
-};
 
