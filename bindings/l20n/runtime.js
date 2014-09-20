@@ -5,6 +5,45 @@
 /* global setL10nAttributes, getL10nAttributes */
 /* global PSEUDO_STRATEGIES */
 
+// Public API
+
+navigator.mozL10n = {
+  get env() {
+    return env;
+  },
+  get ctx() {
+    return ctx;
+  },
+
+  get: function get() {
+    return 'xxx';
+  },
+  localize: function() {},
+  translate: function() {},
+  translateFragment: function(fragment) {
+    return translateFragment.call(ctx, nodeObserver, fragment);
+  },
+  setAttributes: setL10nAttributes,
+  getAttributes: getL10nAttributes,
+
+  ready: function(callback) {
+    return ctx.ready.then(callback);
+  },
+  once: function(callback) {
+    return ctx.ready.then(callback);
+  },
+
+  request: function(langs) {
+    ctx = env.require(langs, resLinks);
+    ctx.ready.then(translateDocument.bind(ctx));
+  },
+
+  readyState: 'complete',
+  language: {},
+  qps: PSEUDO_STRATEGIES
+};
+
+
 var resLinks = [];
 var env;
 var ctx;
@@ -114,42 +153,4 @@ function onMutations(mutations, self) {
   }
 }
 
-
-// Public API
-
-navigator.mozL10n = {
-  get env() {
-    return env;
-  },
-  get ctx() {
-    return ctx;
-  },
-
-  get: function get() {
-    return 'xxx';
-  },
-  localize: function() {},
-  translate: function() {},
-  translateFragment: function(fragment) {
-    return translateFragment.call(ctx, nodeObserver, fragment);
-  },
-  setAttributes: setL10nAttributes,
-  getAttributes: getL10nAttributes,
-
-  ready: function(callback) {
-    return ctx.ready.then(callback);
-  },
-  once: function(callback) {
-    return ctx.ready.then(callback);
-  },
-
-  request: function(langs) {
-    ctx = env.require(langs, resLinks);
-    ctx.ready.then(translateDocument.bind(ctx));
-  },
-
-  readyState: 'complete',
-  language: {},
-  qps: PSEUDO_STRATEGIES
-};
 
