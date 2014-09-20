@@ -29,9 +29,11 @@ describe('Macros', function(){
 
     it('throws when resolving (not calling) a macro in a complex ' +
        'string', function() {
-      assert.strictEqual(ctx.cache.placeMacro.format(ctx, args), '{{ plural }}');
-      assert.strictEqual(ctx.cache.placeRealMacro.format(ctx, args),
-                         '{{ __plural }}');
+      assert.strictEqual(
+        ctx.cache.placeMacro.format(ctx, args), '{{ plural }}');
+      assert.strictEqual(
+        ctx.cache.placeRealMacro.format(ctx, args),
+        '{{ __plural }}');
     });
 
   });
