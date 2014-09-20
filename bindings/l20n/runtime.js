@@ -63,33 +63,8 @@ navigator.mozL10n = {
   qps: PSEUDO_STRATEGIES
 };
 
-function getDirection(lang) {
-  return (navigator.mozL10n.rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
-}
-
-var readyStates = {
-  'loading': 0,
-  'interactive': 1,
-  'complete': 2
-};
-
-function waitFor(state, callback) {
-  state = readyStates[state];
-  if (readyStates[document.readyState] >= state) {
-    callback();
-    return;
-  }
-
-  document.addEventListener('readystatechange', function l10n_onrsc() {
-    if (readyStates[document.readyState] >= state) {
-      document.removeEventListener('readystatechange', l10n_onrsc);
-      callback();
-    }
-  });
-}
-
 if (window.document) {
-  waitFor('interactive', init);
+  init();
 }
 
 function init() {
@@ -143,6 +118,10 @@ function fireLocalizedEvent(supported) {
   window.dispatchEvent(event);
 }
 
+function getDirection(lang) {
+  return (navigator.mozL10n.rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
+}
+
 function onMutations(mutations) {
   var mutation;
 
@@ -172,5 +151,3 @@ function onMutations(mutations) {
     }
   }
 }
-
-
