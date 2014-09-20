@@ -34,6 +34,7 @@ module.exports = {
   },
   runtime: {
     src: [
+      'lib/l20n/debug.js',
       'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',
       'lib/l20n/events.js',
@@ -42,8 +43,9 @@ module.exports = {
       'lib/l20n/compiler.js',
       'lib/l20n/util.js',
       'lib/l20n/pseudo.js',
-      'lib/l20n/locale.js',
+      'lib/l20n/intl.js',
       'lib/l20n/context.js',
+      'lib/l20n/env.js',
       'bindings/l20n/runtime.js',
       'bindings/l20n/dom.js',
     ],
@@ -57,6 +59,7 @@ module.exports = {
   },
   shell: {
     src: [
+      'lib/l20n/debug.js',
       'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',
       'lib/l20n/events.js',
@@ -65,8 +68,9 @@ module.exports = {
       'lib/l20n/compiler.js',
       'lib/l20n/util.js',
       'lib/l20n/pseudo.js',
-      'lib/l20n/locale.js',
+      'lib/l20n/intl.js',
       'lib/l20n/context.js',
+      'lib/l20n/env.js',
       'bindings/l20n/shell.js',
     ],
     dest: 'dist/shell/l10n.js',
