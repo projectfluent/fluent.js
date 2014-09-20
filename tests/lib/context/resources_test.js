@@ -45,7 +45,7 @@ describe('Missing resources', function() {
     var ctx = l10n.require([
       path('fixtures/{locale}.properties'),
       path('fixtures/missing.properties')]);
-    ctx.ready().then(function(supported) {
+    ctx.ready.then(function(supported) {
       assert.deepEqual(supported, ['pl', 'en-US']);
       assert.equal(
         l10n._resCache[path('fixtures/{locale}.properties')].pl.foo,
@@ -61,7 +61,7 @@ describe('Missing resources', function() {
     var ctx = l10n.require([
       path('fixtures/missing.properties'),
       path('fixtures/another.properties')]);
-    ctx.ready().then(function() {
+    ctx.ready.then(function() {
       assert.equal(
         l10n._resCache[path('fixtures/missing.properties')].pl.name,
         'L10nError');

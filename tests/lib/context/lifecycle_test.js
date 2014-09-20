@@ -40,10 +40,10 @@ describe('Context', function() {
     }, ['pl']);
   });
 
-  describe('ctx.ready()', function() {
+  describe('ctx.ready', function() {
     it('is a promise', function(done) {
       var ctx = l10n.require([path('fixtures/{locale}.properties')]);
-      ctx.ready().then(function(supported) {
+      ctx.ready.then(function(supported) {
         assert.deepEqual(supported, ['pl', 'en-US']);
       }).then(done, done);
     });
@@ -84,7 +84,7 @@ describe('Context', function() {
       ctx1 = l10n.require([
         path('fixtures/{locale}.properties'),
         path('fixtures/basic.properties')]);
-      ctx1.ready().then(done.bind(null, null));
+      ctx1.ready.then(done.bind(null, null));
     });
 
     it('removes the resources from _resCache', function() {

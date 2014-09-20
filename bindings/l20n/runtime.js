@@ -47,15 +47,15 @@ navigator.mozL10n = {
   getAttributes: getL10nAttributes,
 
   ready: function(callback) {
-    return this.ctx.ready().then(callback);
+    return this.ctx.ready.then(callback);
   },
   once: function(callback) {
-    return this.ctx.ready().then(callback);
+    return this.ctx.ready.then(callback);
   },
 
   request: function(langs) {
     return this.env.request(langs).then(
-        translateDocument.bind(this));
+      translateDocument.bind(this));
   },
 
   readyState: 'complete',
@@ -91,7 +91,7 @@ function init() {
       navigator.mozL10n.resources);
 
   navigator.mozL10n.observer.start();
-  navigator.mozL10n.ctx.ready().then(
+  navigator.mozL10n.ctx.ready.then(
       translateDocument.bind(navigator.mozL10n));
 
   window.addEventListener('languagechange', function langchange() {
