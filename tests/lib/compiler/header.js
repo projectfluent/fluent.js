@@ -36,6 +36,7 @@ function MockContext() {
 }
 
 function compile(source) {
+  /* jshint -W089 */
   var ctx = new MockContext();
   var ast = propertiesParser.parse(source);
   for (var id in ast) {
