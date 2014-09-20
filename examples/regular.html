@@ -3,29 +3,14 @@
     <meta charset="utf-8">
     <title data-l10n-id="title"></title>
 
-    <meta name="locales" content="en-US">
-    <meta name="default_locale" content="en-US">
+    <link rel="manifest" href="locales/manifest.json">
     <link rel="localization" href="locales/example.{locale}.properties">
-    <script defer="" src="../dist/runtime/l10n.js"></script>
-    <script defer="">
-      function onload() {
-        var l10n = navigator.mozL10n._getInternalAPI();
-
-        var ctx = new l10n.Context();
-
-        function onLoaded() {
-          ctx.get('title', null, function(entity) {
-            console.log(entity);
-          });
-        }
-
-        ctx.addResource('./locales/example.{locale}.properties', onLoaded);
-
-      }
-    </script>
+    <script defer src="../dist/runtime/l10n.js"></script>
   </head>
 
-  <body onload="onload()">
+  <body>
     <h1 data-l10n-id="hello"></h1>
+    <script >
+    </script>
   </body>
 </html>

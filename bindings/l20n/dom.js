@@ -1,26 +1,9 @@
 'use strict';
 
 /* jshint -W104 */
-/* global pendingElements:true */
-/* exported translateFragment, translateDocument, localizeElement */
+/* global Promise, moConfig */
+/* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
-
-function translateDocument() {
-  document.documentElement.lang = this.language.code;
-  document.documentElement.dir = this.language.direction;
-  translateFragment.call(this, document.documentElement);
-}
-
-function translateFragment(element) {
-  if (element.hasAttribute('data-l10n-id')) {
-    translateElement.call(this, element);
-  }
-
-  var nodes = getTranslatableChildren(element);
-  for (var i = 0; i < nodes.length; i++ ) {
-    translateElement.call(this, nodes[i]);
-  }
-}
 
 function setL10nAttributes(element, id, args) {
   element.setAttribute('data-l10n-id', id);
@@ -36,69 +19,57 @@ function getL10nAttributes(element) {
   };
 }
 
-function getTranslatableChildren(element) {
-  return element ? element.querySelectorAll('*[data-l10n-id]') : [];
+function getTranslatables(element) {
+  var nodes = [];
+
+  if (element.hasAttribute('data-l10n-id')) {
+    nodes.push(element);
+  }
+
+  return nodes.concat.apply(
+    nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-function localizeElement(element, id, args) {
-  if (!id) {
-    element.removeAttribute('data-l10n-id');
-    element.removeAttribute('data-l10n-args');
-    setTextContent(element, '');
-    return;
-  }
-
-  element.setAttribute('data-l10n-id', id);
-  if (args && typeof args === 'object') {
-    element.setAttribute('data-l10n-args', JSON.stringify(args));
-  } else {
-    element.removeAttribute('data-l10n-args');
-  }
+function translateFragment(observer, element) {
+  return Promise.all(
+    getTranslatables(element).map(
+      translateElement.bind(this, observer)));
 }
 
-function translateElement(element) {
-  if (!this.ctx.isReady) {
-    if (!pendingElements) {
-      pendingElements = [];
-    }
-    pendingElements.push(element);
-    return;
-  }
-
+function translateElement(observer, element) {
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
     return false;
   }
 
-  var entity = this.ctx.getEntity(l10n.id, l10n.args);
-
-  if (!entity) {
-    return false;
-  }
-
-  if (typeof entity === 'string') {
-    setTextContent(element, entity);
-    return true;
-  }
-
-  if (entity.value) {
-    setTextContent(element, entity.value);
-  }
-
-  for (var key in entity.attributes) {
-    var attr = entity.attributes[key];
-    if (key === 'ariaLabel') {
-      element.setAttribute('aria-label', attr);
-    } else if (key === 'innerHTML') {
-      // XXX: to be removed once bug 994357 lands
-      element.innerHTML = attr;
-    } else {
-      element.setAttribute(key, attr);
+  return this.get(l10n.id, l10n.args).then(function(entity) {
+    if (observer) {
+      observer.disconnect();
     }
-  }
 
-  return true;
+    if (typeof entity === 'string') {
+      setTextContent(element, entity);
+    } else if (entity.value) {
+      setTextContent(element, entity.value);
+    }
+
+    for (var key in entity.attributes) {
+      var attr = entity.attributes[key];
+      if (key === 'ariaLabel') {
+        element.setAttribute('aria-label', attr);
+      } else if (key === 'innerHTML') {
+        // XXX: to be removed once bug 994357 lands
+        element.innerHTML = attr;
+      } else {
+        element.setAttribute(key, attr);
+      }
+    }
+
+    if (observer) {
+      observer.observe(document, moConfig);
+    }
+  });
 }
 
 function setTextContent(element, text) {
