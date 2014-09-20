@@ -7,6 +7,7 @@
 
 
 // Public API
+// XXX Rename to document.mozL10n
 
 navigator.mozL10n = {
   env: null,
@@ -126,7 +127,20 @@ function init() {
 function translateDocument(supported) {
   document.documentElement.lang = supported[0];
   document.documentElement.dir = getDirection(supported[0]);
-  translateFragment.call(this, document.documentElement);
+  return translateFragment.call(this, document.documentElement).then(
+      fireLocalizedEvent.bind(this, supported));
+}
+
+function fireLocalizedEvent(supported) {
+  // XXX rename to mozDOMLocalized
+  var event = new CustomEvent('localized', {
+    'bubbles': false,
+      'cancelable': false,
+      'detail': {
+        'languages': supported
+      }
+  });
+  window.dispatchEvent(event);
 }
 
 function onMutations(mutations) {
