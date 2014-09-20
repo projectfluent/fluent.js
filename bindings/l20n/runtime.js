@@ -7,6 +7,7 @@
 
 
 // Public API
+// XXX Rename to document.mozL10n
 
 navigator.mozL10n = {
   env: null,
@@ -62,33 +63,8 @@ navigator.mozL10n = {
   qps: PSEUDO_STRATEGIES
 };
 
-function getDirection(lang) {
-  return (navigator.mozL10n.rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
-}
-
-var readyStates = {
-  'loading': 0,
-  'interactive': 1,
-  'complete': 2
-};
-
-function waitFor(state, callback) {
-  state = readyStates[state];
-  if (readyStates[document.readyState] >= state) {
-    callback();
-    return;
-  }
-
-  document.addEventListener('readystatechange', function l10n_onrsc() {
-    if (readyStates[document.readyState] >= state) {
-      document.removeEventListener('readystatechange', l10n_onrsc);
-      callback();
-    }
-  });
-}
-
 if (window.document) {
-  waitFor('interactive', init);
+  init();
 }
 
 function init() {
@@ -121,7 +97,24 @@ function init() {
 function translateDocument(supported) {
   document.documentElement.lang = supported[0];
   document.documentElement.dir = getDirection(supported[0]);
-  translateFragment.call(this, document.documentElement);
+  return translateFragment.call(this, document.documentElement).then(
+      fireLocalizedEvent.bind(this, supported));
+}
+
+function fireLocalizedEvent(supported) {
+  // XXX rename to mozDOMLocalized
+  var event = new CustomEvent('localized', {
+    'bubbles': false,
+      'cancelable': false,
+      'detail': {
+        'languages': supported
+      }
+  });
+  window.dispatchEvent(event);
+}
+
+function getDirection(lang) {
+  return (navigator.mozL10n.rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
 function onMutations(mutations) {
@@ -153,5 +146,3 @@ function onMutations(mutations) {
     }
   }
 }
-
-
