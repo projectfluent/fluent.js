@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global pendingElements:true */
+/* global pendingElements:true, L10nError */
 /* exported translateFragment, translateDocument, localizeElement */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -44,7 +44,7 @@ function localizeElement(element, id, args) {
   if (!id) {
     element.removeAttribute('data-l10n-id');
     element.removeAttribute('data-l10n-args');
-    setTextContent(element, '');
+    setTextContent.call(this, id, element, '');
     return;
   }
 
@@ -78,12 +78,12 @@ function translateElement(element) {
   }
 
   if (typeof entity === 'string') {
-    setTextContent(element, entity);
+    setTextContent.call(this, l10n.id, element, entity);
     return true;
   }
 
   if (entity.value) {
-    setTextContent(element, entity.value);
+    setTextContent.call(this, l10n.id, element, entity.value);
   }
 
   for (var key in entity.attributes) {
@@ -101,31 +101,14 @@ function translateElement(element) {
   return true;
 }
 
-function setTextContent(element, text) {
-  // standard case: no element children
-  if (!element.firstElementChild) {
-    element.textContent = text;
-    return;
+function setTextContent(id, element, text) {
+  if (element.firstElementChild) {
+    throw new L10nError(
+      'setTextContent is deprecated (https://bugzil.la/1053629). ' +
+      'Setting text content of elements with child elements is no longer ' +
+      'supported by l10n.js. Offending data-l10n-id: "' + id +
+      '" on element ' + element.outerHTML + ' in ' + this.ctx.id);
   }
 
-  // this element has element children: replace the content of the first
-  // (non-blank) child textNode and clear other child textNodes
-  var found = false;
-  var reNotBlank = /\S/;
-  for (var child = element.firstChild; child; child = child.nextSibling) {
-    if (child.nodeType === Node.TEXT_NODE &&
-        reNotBlank.test(child.nodeValue)) {
-      if (found) {
-        child.nodeValue = '';
-      } else {
-        child.nodeValue = text;
-        found = true;
-      }
-    }
-  }
-  // if no (non-empty) textNode is found, insert a textNode before the
-  // element's first child.
-  if (!found) {
-    element.insertBefore(document.createTextNode(text), element.firstChild);
-  }
+  element.textContent = text;
 }
