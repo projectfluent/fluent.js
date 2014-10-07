@@ -49,28 +49,28 @@ describe('Context', function() {
     });
   });
 
-  describe('ctx.get', function() {
+  describe('ctx.formatEntity', function() {
     it('returns the value from the AST', function(done) {
       var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
-      ctx.get('foo').then(function(val) {
+      ctx.formatEntity('foo').then(function(val) {
         assert.strictEqual(val, 'Foo pl');
       }).then(done, done);
     });
   });
 
-  describe('ctx.get racing against a lang change', function() {
+  describe('ctx.formatEntity racing against a lang change', function() {
 
     it('returns the value from the former chain', function(done) {
       var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
       l10n.requestLanguages(['en-US']);
-      ctx.get('foo').then(function(val) {
+      ctx.formatEntity('foo').then(function(val) {
         assert.strictEqual(val, 'Foo pl');
       }).then(done, done);
     });
     it('returns the value from the new chain', function(done) {
       var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
       l10n.requestLanguages(['en-US']).then(function() {
-        return ctx.get('foo').then(function(val) {
+        return ctx.formatEntity('foo').then(function(val) {
           assert.strictEqual(val, 'Foo en-US');
         });
       }).then(done, done);

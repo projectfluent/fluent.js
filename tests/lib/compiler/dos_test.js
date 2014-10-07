@@ -33,7 +33,7 @@ describe('Reference bombs', function(){
     });
     it('throws', function() {
       assert.throws(function() {
-        ctx.cache.lolz.format(ctx);
+        ctx.cache.lolz.formatValue(ctx);
       }, /too many characters in placeable/i);
     });
   });
@@ -108,7 +108,7 @@ describe('Reference bombs', function(){
     });
     it('throws', function() {
       assert.throws(function() {
-        ctx.cache.malice.format(ctx);
+        ctx.cache.malice.formatValue(ctx);
       }, /too many placeables/i);
     });
   });

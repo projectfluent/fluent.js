@@ -24,7 +24,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      assert.strictEqual(ctx.cache.foo.format(ctx), 'Foo');
+      assert.strictEqual(ctx.cache.foo.formatValue(ctx), 'Foo');
     });
 
   });
@@ -41,13 +41,13 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      var value = ctx.cache.bar.format(ctx);
+      var value = ctx.cache.bar.formatValue(ctx);
       assert.strictEqual(value, 'Foo Bar');
     });
 
     it('returns the raw string if the referenced entity is ' +
        'not found', function(){
-      var value = ctx.cache.baz.format(ctx);
+      var value = ctx.cache.baz.formatValue(ctx);
       assert.strictEqual(value, '{{ missing }}');
     });
 
@@ -63,18 +63,18 @@ describe('Primitives:', function(){
     });
 
     it('returns the null value', function(){
-      var entity = ctx.cache.foo.get(ctx);
+      var entity = ctx.cache.foo.formatEntity(ctx);
       assert.strictEqual(entity.value, null);
     });
 
     it('returns the attribute', function(){
-      var entity = ctx.cache.foo.get(ctx);
+      var entity = ctx.cache.foo.formatEntity(ctx);
       assert.strictEqual(entity.attributes.attr, 'Foo');
     });
 
     it('returns the raw string when the referenced entity has ' +
        'null value', function(){
-      var value = ctx.cache.bar.format(ctx);
+      var value = ctx.cache.bar.formatValue(ctx);
       assert.strictEqual(value, '{{ foo }} Bar');
     });
 
@@ -91,7 +91,7 @@ describe('Primitives:', function(){
 
     it('throws', function(){
       assert.throws(function() {
-        ctx.cache.foo.format(ctx);
+        ctx.cache.foo.formatValue(ctx);
       }, /cyclic/i);
     });
 
@@ -107,7 +107,7 @@ describe('Primitives:', function(){
 
     it('throws', function(){
       assert.throws(function() {
-        ctx.cache.foo.format(ctx);
+        ctx.cache.foo.formatValue(ctx);
       }, /cyclic/i);
     });
 
@@ -126,12 +126,12 @@ describe('Primitives:', function(){
 
     it('throws', function(){
       assert.throws(function() {
-        ctx.cache.foo.format(ctx, {n: 1});
+        ctx.cache.foo.formatValue(ctx, {n: 1});
       }, /cyclic/i);
     });
 
     it('returns the valid value if requested directly', function(){
-      var value = ctx.cache.bar.format(ctx, {n: 2});
+      var value = ctx.cache.bar.formatValue(ctx, {n: 2});
       assert.strictEqual(value, 'Bar');
     });
   });

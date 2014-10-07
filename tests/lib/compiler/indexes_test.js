@@ -31,16 +31,16 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = ctx.cache.indexEntity.format(ctx, {n: 1});
+      var value = ctx.cache.indexEntity.formatValue(ctx, {n: 1});
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro', function() {
       assert.throws(function() {
-        ctx.cache.indexUncalledMacro.format({n: 1});
+        ctx.cache.indexUncalledMacro.formatValue({n: 1});
       }, 'Macro plural expects 1 argument(s), yet 0 given');
     });
     it('works when the index is a called macro', function() {
-      var value = ctx.cache.indexCalledMacro.format(ctx, {n: 1});
+      var value = ctx.cache.indexCalledMacro.formatValue(ctx, {n: 1});
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -57,7 +57,7 @@ describe('Index', function(){
 
     it('throws', function() {
       assert.throws(function() {
-        ctx.cache.foo.format(ctx);
+        ctx.cache.foo.formatValue(ctx);
       }, /cyclic/i);
     });
 
@@ -75,7 +75,7 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      var entity = ctx.cache.foo.get(ctx);
+      var entity = ctx.cache.foo.formatEntity(ctx);
       assert.strictEqual(entity.value, 'Foo');
       assert.strictEqual(entity.attributes.attr, undefined);
     });

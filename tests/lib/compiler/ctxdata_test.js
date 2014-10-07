@@ -34,17 +34,17 @@ describe('Context data', function(){
     });
 
     it('can be referenced from strings', function() {
-      var value = ctx.cache.unread.format(ctx, args);
+      var value = ctx.cache.unread.formatValue(ctx, args);
       assert.strictEqual(value, 'Unread notifications: 3');
     });
 
     it('can be passed as argument to a macro', function() {
-      var value = ctx.cache.unreadPlural.format(ctx, args);
+      var value = ctx.cache.unreadPlural.formatValue(ctx, args);
       assert.strictEqual(value, '3 unread notifications');
     });
 
     it('takes priority over entities of the same name', function() {
-      var value = ctx.cache.useFoo.format(ctx, args);
+      var value = ctx.cache.useFoo.formatValue(ctx, args);
       assert.strictEqual(value, 'Foo');
     });
 
@@ -70,37 +70,37 @@ describe('Context data', function(){
 
     it('returns the raw string when a missing property of args is ' +
        'referenced', function(){
-      var value = ctx.cache.missingReference.format(ctx, args);
+      var value = ctx.cache.missingReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ missing }}');
     });
 
     it('returns the raw string when an object is referenced', function(){
-      var value = ctx.cache.nestedReference.format(ctx, args);
+      var value = ctx.cache.nestedReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ nested }}');
     });
 
     it('returns the raw string when watch is referenced', function(){
-      var value = ctx.cache.watchReference.format(ctx, args);
+      var value = ctx.cache.watchReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ watch }}');
     });
 
     it('returns the raw string when hasOwnProperty is referenced', function(){
-      var value = ctx.cache.hasOwnPropertyReference.format(ctx, args);
+      var value = ctx.cache.hasOwnPropertyReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ hasOwnProperty }}');
     });
 
     it('returns the raw string when isPrototypeOf is referenced', function(){
-      var value = ctx.cache.isPrototypeOfReference.format(ctx, args);
+      var value = ctx.cache.isPrototypeOfReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ isPrototypeOf }}');
     });
 
     it('returns the raw string when toString is referenced', function(){
-      var value = ctx.cache.toStringReference.format(ctx, args);
+      var value = ctx.cache.toStringReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ toString }}');
     });
 
     it('returns the raw string when __proto__ is referenced', function(){
-      var value = ctx.cache.protoReference.format(ctx, args);
+      var value = ctx.cache.protoReference.formatValue(ctx, args);
       assert.strictEqual(value, '{{ __proto__ }}');
     });
 
@@ -124,20 +124,20 @@ describe('Context data', function(){
     });
 
     it('returns a string value', function(){
-      assert.strictEqual(ctx.cache.stringProp.format(ctx, args), 'string');
+      assert.strictEqual(ctx.cache.stringProp.formatValue(ctx, args), 'string');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.stringIndex.format(ctx, args);
+      var value = ctx.cache.stringIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
     it('digit returns a string value', function(){
-      assert.strictEqual(ctx.cache.stringNumProp.format(ctx, args), '1');
+      assert.strictEqual(ctx.cache.stringNumProp.formatValue(ctx, args), '1');
     });
 
     it('digit returns undefined when used in a macro', function(){
-      var value = ctx.cache.stringNumIndex.format(ctx, args);
+      var value = ctx.cache.stringNumIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -161,20 +161,20 @@ describe('Context data', function(){
     });
 
     it('returns a number value', function(){
-      assert.strictEqual(ctx.cache.numProp.format(ctx, args), '1');
+      assert.strictEqual(ctx.cache.numProp.formatValue(ctx, args), '1');
     });
 
     it('returns a value when used in macro', function(){
-      assert.strictEqual(ctx.cache.numIndex.format(ctx, args), 'One');
+      assert.strictEqual(ctx.cache.numIndex.formatValue(ctx, args), 'One');
     });
 
     it('returns the raw string when NaN is referenced', function(){
-      var value = ctx.cache.nanProp.format(ctx, args);
+      var value = ctx.cache.nanProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ nan }}');
     });
 
     it('is undefined when NaN is used in macro', function(){
-      var value = ctx.cache.nanIndex.format(ctx, args);
+      var value = ctx.cache.nanIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -194,12 +194,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string when referenced', function(){
-      var value = ctx.cache.boolProp.format(ctx, args);
+      var value = ctx.cache.boolProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ bool }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.boolIndex.format(ctx, args);
+      var value = ctx.cache.boolIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -219,12 +219,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string when referenced', function(){
-      var value = ctx.cache.undefProp.format(ctx, args);
+      var value = ctx.cache.undefProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ undef }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.undefIndex.format(ctx, args);
+      var value = ctx.cache.undefIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -244,12 +244,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = ctx.cache.nullProp.format(ctx, args);
+      var value = ctx.cache.nullProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ nullable }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.nullIndex.format(ctx, args);
+      var value = ctx.cache.nullIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -269,12 +269,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = ctx.cache.arrProp.format(ctx, args);
+      var value = ctx.cache.arrProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ arr }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.arrIndex.format(ctx, args);
+      var value = ctx.cache.arrIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -294,12 +294,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = ctx.cache.arrProp.format(ctx, args);
+      var value = ctx.cache.arrProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ arr }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.arrIndex.format(ctx, args);
+      var value = ctx.cache.arrIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
 
@@ -321,12 +321,12 @@ describe('Context data', function(){
     });
 
     it('returns the raw string', function(){
-      var value = ctx.cache.objProp.format(ctx, args);
+      var value = ctx.cache.objProp.formatValue(ctx, args);
       assert.strictEqual(value, '{{ obj }}');
     });
 
     it('is undefined when used in a macro', function(){
-      var value = ctx.cache.objIndex.format(ctx, args);
+      var value = ctx.cache.objIndex.formatValue(ctx, args);
       assert.strictEqual(value, undefined);
     });
   });
