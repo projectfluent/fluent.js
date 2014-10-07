@@ -42,7 +42,7 @@ describe('Context', function() {
 
   describe('ctx.ready', function() {
     it('is a promise', function(done) {
-      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
+      var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
       ctx.ready.then(function(supported) {
         assert.deepEqual(supported, ['pl', 'en-US']);
       }).then(done, done);
@@ -51,7 +51,7 @@ describe('Context', function() {
 
   describe('ctx.get', function() {
     it('returns the value from the AST', function(done) {
-      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
+      var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
       ctx.get('foo').then(function(val) {
         assert.strictEqual(val, 'Foo pl');
       }).then(done, done);
@@ -61,15 +61,15 @@ describe('Context', function() {
   describe('ctx.get racing against a lang change', function() {
 
     it('returns the value from the former chain', function(done) {
-      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
-      l10n.request(['en-US']);
+      var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
+      l10n.requestLanguages(['en-US']);
       ctx.get('foo').then(function(val) {
         assert.strictEqual(val, 'Foo pl');
       }).then(done, done);
     });
     it('returns the value from the new chain', function(done) {
-      var ctx = l10n.require([path('fixtures/{locale}.properties')]);
-      l10n.request(['en-US']).then(function() {
+      var ctx = l10n.createContext([path('fixtures/{locale}.properties')]);
+      l10n.requestLanguages(['en-US']).then(function() {
         return ctx.get('foo').then(function(val) {
           assert.strictEqual(val, 'Foo en-US');
         });
@@ -81,7 +81,7 @@ describe('Context', function() {
     var ctx1, ctx2;
 
     beforeEach(function(done) {
-      ctx1 = l10n.require([
+      ctx1 = l10n.createContext([
         path('fixtures/{locale}.properties'),
         path('fixtures/basic.properties')]);
       ctx1.ready.then(done.bind(null, null));
@@ -101,7 +101,7 @@ describe('Context', function() {
     });
     it('removes the resources uniquely associated with the ctx',
        function() {
-      ctx2 = l10n.require([path('fixtures/{locale}.properties')]);
+      ctx2 = l10n.createContext([path('fixtures/{locale}.properties')]);
       ctx1.destroy();
       assert.ok(
         l10n._resCache[path('fixtures/{locale}.properties')],

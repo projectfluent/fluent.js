@@ -35,19 +35,19 @@ describe('Creating Envs', function() {
   });
 
   it('correctly sets the default language', function(done) {
-    l10n.registered.then(function() {
+    l10n.registeredLanguages.then(function() {
       assert.strictEqual(l10n.default, 'en-US');
     }).then(done, done);
   });
 
   it('corectly sets the available languages', function(done) {
-    l10n.registered.then(function() {
+    l10n.registeredLanguages.then(function() {
       assert.deepEqual(l10n.available, ['pl', 'de', 'en-US']);
     }).then(done, done);
   });
 
   it('correctly sets the supported languages', function(done) {
-    l10n.supported.then(function(supported) {
+    l10n.supportedLanguages.then(function(supported) {
       assert.deepEqual(supported, ['pl', 'en-US']);
     }).then(done, done);
   });
@@ -55,11 +55,11 @@ describe('Creating Envs', function() {
   describe('Requesting new languages', function() {
 
     beforeEach(function(done) {
-      l10n.supported.then(done.bind(null, null));
+      l10n.supportedLanguages.then(done.bind(null, null));
     });
 
     it('correctly sets the supported languages', function(done) {
-      l10n.request(['de']).then(function(supported) {
+      l10n.requestLanguages(['de']).then(function(supported) {
         assert.deepEqual(supported, ['de', 'en-US']);
       }).then(done, done);
     });
@@ -69,7 +69,7 @@ describe('Creating Envs', function() {
         assert.deepEqual(supported, ['de', 'en-US']);
         done();
       });
-      l10n.request(['de']);
+      l10n.requestLanguages(['de']);
     });
 
   });

@@ -42,7 +42,7 @@ describe('Missing resources', function() {
 
   it('should create an incomplete context with one missing resource',
     function(done) {
-    var ctx = l10n.require([
+    var ctx = l10n.createContext([
       path('fixtures/{locale}.properties'),
       path('fixtures/missing.properties')]);
     ctx.ready.then(function(supported) {
@@ -58,7 +58,7 @@ describe('Missing resources', function() {
 
   it('should create an incomplete context with no valid resources',
     function(done) {
-    var ctx = l10n.require([
+    var ctx = l10n.createContext([
       path('fixtures/missing.properties'),
       path('fixtures/another.properties')]);
     ctx.ready.then(function() {

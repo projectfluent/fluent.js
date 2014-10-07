@@ -80,7 +80,7 @@ describe('Existing env', function() {
       },
       default_locale: 'en-US'
     }, ['pl']);
-    l10n.supported.then(done.bind(null, null), done);
+    l10n.supportedLanguages.then(done.bind(null, null), done);
   });
 
   it('emits the languagechange event', function(done) {
@@ -88,7 +88,7 @@ describe('Existing env', function() {
       assert.deepEqual(supported, ['de', 'en-US']);
       done();
     });
-    l10n.request(['de']);
+    l10n.requestLanguages(['de']);
   });
 
 });
