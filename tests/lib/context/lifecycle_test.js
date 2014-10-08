@@ -42,17 +42,19 @@ describe('Context', function() {
 
   describe('ctx.ready', function() {
     it('is a promise', function(done) {
-      var ctx = l10n.require(['pl'], [path('fixtures/{locale}.properties')]);
+      var ctx = l10n.createContext(
+        ['pl'], [path('fixtures/{locale}.properties')]);
       ctx.ready.then(function(supported) {
         assert.deepEqual(supported, ['pl', 'en-US']);
       }).then(done, done);
     });
   });
 
-  describe('ctx.get', function() {
+  describe('ctx.formatEntity', function() {
     it('returns the value from the AST', function(done) {
-      var ctx = l10n.require(['pl'], [path('fixtures/{locale}.properties')]);
-      ctx.get('foo').then(function(val) {
+      var ctx = l10n.createContext(
+        ['pl'], [path('fixtures/{locale}.properties')]);
+      ctx.formatEntity('foo').then(function(val) {
         assert.strictEqual(val, 'Foo pl');
       }).then(done, done);
     });
@@ -62,9 +64,10 @@ describe('Context', function() {
     var ctx1, ctx2;
 
     beforeEach(function(done) {
-      ctx1 = l10n.require(['pl'], [
-        path('fixtures/{locale}.properties'),
-        path('fixtures/basic.properties')]);
+      ctx1 = l10n.createContext(
+        ['pl'],
+        [path('fixtures/{locale}.properties'),
+         path('fixtures/basic.properties')]);
       ctx1.ready.then(done.bind(null, null));
     });
 
@@ -82,7 +85,8 @@ describe('Context', function() {
     });
     it('removes the resources uniquely associated with the ctx',
        function() {
-      ctx2 = l10n.require(['pl'], [path('fixtures/{locale}.properties')]);
+      ctx2 = l10n.createContext(
+        ['pl'], [path('fixtures/{locale}.properties')]);
       ctx1.destroy();
       assert.ok(
         l10n._resCache[path('fixtures/{locale}.properties')],

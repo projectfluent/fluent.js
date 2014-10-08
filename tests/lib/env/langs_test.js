@@ -35,13 +35,13 @@ describe('Creating Envs', function() {
   });
 
   it('correctly sets the default language', function(done) {
-    l10n.registered.then(function() {
+    l10n.registeredLanguages.then(function() {
       assert.strictEqual(l10n.default, 'en-US');
     }).then(done, done);
   });
 
   it('corectly sets the available languages', function(done) {
-    l10n.registered.then(function() {
+    l10n.registeredLanguages.then(function() {
       assert.deepEqual(l10n.available, ['pl', 'de', 'en-US']);
     }).then(done, done);
   });

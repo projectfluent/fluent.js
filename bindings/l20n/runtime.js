@@ -54,7 +54,7 @@ navigator.mozL10n = {
   },
 
   request: function(langs) {
-    this.ctx = this.env.require(langs, this.resources);
+    this.ctx = this.env.createContext(langs, this.resources);
     return this.ctx.ready.then(translateDocument.bind(this));
   },
 

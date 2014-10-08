@@ -39,12 +39,12 @@ describe('Two supported locales', function() {
       default_locale: 'en-US'
     });
 
-    ctx = l10n.require(['pl'], [path('fixtures/{locale}.properties')]);
+    ctx = l10n.createContext(['pl'], [path('fixtures/{locale}.properties')]);
   });
 
   describe('Translation in the 1st locale exists and is OK', function(done) {
     it('[e]', function() {
-      ctx.get('e').then(function(val) {
+      ctx.formatEntity('e').then(function(val) {
         assert.strictEqual(val, 'E pl');
       }).then(done, done);
     });
@@ -53,7 +53,7 @@ describe('Two supported locales', function() {
   describe.skip('ValueError in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[ve]', function(done) {
-        ctx.get('ve').then(function(val) {
+        ctx.formatEntity('ve').then(function(val) {
           assert.strictEqual(val, 'VE {{ boo }} pl');
         }).then(done, done);
       });
@@ -61,7 +61,7 @@ describe('Two supported locales', function() {
 
     describe('ValueError in second locale:', function() {
       it('[vv]', function(done) {
-        ctx.get('vv').then(function(val) {
+        ctx.formatEntity('vv').then(function(val) {
           assert.strictEqual(val, 'VV {{ boo }} pl');
         }).then(done, done);
       });
@@ -69,7 +69,7 @@ describe('Two supported locales', function() {
 
     describe('IndexError in second locale:', function() {
       it('[vi]', function(done) {
-        ctx.get('vi').then(function(val) {
+        ctx.formatEntity('vi').then(function(val) {
           assert.strictEqual(val, 'VI {{ boo }} pl');
         }).then(done, done);
       });
@@ -77,7 +77,7 @@ describe('Two supported locales', function() {
 
     describe('Entity missing in second locale:', function() {
       it('[vm]', function(done) {
-        ctx.get('vm').then(function(val) {
+        ctx.formatEntity('vm').then(function(val) {
           assert.strictEqual(val, 'VM {{ boo }} pl');
         }).then(done, done);
       });
@@ -87,7 +87,7 @@ describe('Two supported locales', function() {
   describe.skip('IndexError in first locale', function() {
     describe('Entity exists in second locale', function() {
       it('[ie]', function(done) {
-        ctx.get('ie').then(function(val) {
+        ctx.formatEntity('ie').then(function(val) {
           assert.strictEqual(val, undefined);
         }).then(done, done);
       });
@@ -95,7 +95,7 @@ describe('Two supported locales', function() {
 
     describe('ValueError in second locale', function() {
       it('[iv]', function(done) {
-        ctx.get('iv').then(function(val) {
+        ctx.formatEntity('iv').then(function(val) {
           assert.strictEqual(val, undefined);
         }).then(done, done);
       });
@@ -103,7 +103,7 @@ describe('Two supported locales', function() {
 
     describe('IndexError in second locale', function() {
       it('[ii]', function(done) {
-        ctx.get('ii').then(function(val) {
+        ctx.formatEntity('ii').then(function(val) {
           assert.strictEqual(val, undefined);
         }).then(done, done);
       });
@@ -111,7 +111,7 @@ describe('Two supported locales', function() {
 
     describe('Entity missing in second locale:', function() {
       it('[im]', function(done) {
-        ctx.get('im').then(function(val) {
+        ctx.formatEntity('im').then(function(val) {
           assert.strictEqual(val, undefined);
         }).then(done, done);
       });
@@ -121,7 +121,7 @@ describe('Two supported locales', function() {
   describe('Entity not found in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[me]', function(done) {
-        ctx.get('me').then(function(val) {
+        ctx.formatEntity('me').then(function(val) {
           assert.strictEqual(val, 'ME en-US');
         }).then(done, done);
       });
@@ -129,7 +129,7 @@ describe('Two supported locales', function() {
 
     describe.skip('ValueError in second locale:', function() {
       it('[mv]', function(done) {
-        ctx.get('mv').then(function(val) {
+        ctx.formatEntity('mv').then(function(val) {
           assert.strictEqual(val, 'MV {{ boo }} en-US');
         }).then(done, done);
       });
@@ -137,7 +137,7 @@ describe('Two supported locales', function() {
 
     describe.skip('IndexError in second locale:', function() {
       it('[mi]', function(done) {
-        ctx.get('mi').then(function(val) {
+        ctx.formatEntity('mi').then(function(val) {
           assert.strictEqual(val, undefined);
         }).then(done, done);
       });
@@ -145,7 +145,7 @@ describe('Two supported locales', function() {
 
     describe('Entity missing in second locale:', function() {
       it('[mm]', function(done) {
-        ctx.get('mm').then(function(val) {
+        ctx.formatEntity('mm').then(function(val) {
           assert.strictEqual(val, 'mm');
         }).then(done, done);
       });

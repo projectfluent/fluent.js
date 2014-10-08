@@ -22,9 +22,9 @@ describe('Env object', function(){
   });
 
   it('works', function() {
-    assert.strictEqual(ctx.cache.foo.format(ctx), 'Foo');
-    assert.strictEqual(ctx.cache.getFoo.format(ctx), 'Foo');
-    assert.strictEqual(ctx.cache.getBar.format(ctx), '{{ bar }}');
+    assert.strictEqual(ctx.cache.foo.formatValue(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getFoo.formatValue(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getBar.formatValue(ctx), '{{ bar }}');
   });
 
   it('cannot be modified by another compilation', function() {
@@ -34,9 +34,9 @@ describe('Env object', function(){
     ].join('\n');
     compile(source2);
 
-    assert.strictEqual(ctx.cache.foo.format(ctx), 'Foo');
-    assert.strictEqual(ctx.cache.getFoo.format(ctx), 'Foo');
-    assert.strictEqual(ctx.cache.getBar.format(ctx), '{{ bar }}');
+    assert.strictEqual(ctx.cache.foo.formatValue(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getFoo.formatValue(ctx), 'Foo');
+    assert.strictEqual(ctx.cache.getBar.formatValue(ctx), '{{ bar }}');
   });
 
 });

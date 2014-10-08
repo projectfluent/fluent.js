@@ -42,9 +42,10 @@ describe('Missing resources', function() {
 
   it('should create an incomplete context with one missing resource',
     function(done) {
-    var ctx = l10n.require(['pl'], [
-      path('fixtures/{locale}.properties'),
-      path('fixtures/missing.properties')]);
+    var ctx = l10n.createContext(
+      ['pl'],
+      [path('fixtures/{locale}.properties'),
+       path('fixtures/missing.properties')]);
     ctx.ready.then(function(supported) {
       assert.deepEqual(supported, ['pl', 'en-US']);
       assert.equal(
@@ -58,9 +59,10 @@ describe('Missing resources', function() {
 
   it('should create an incomplete context with no valid resources',
     function(done) {
-    var ctx = l10n.require(['pl'], [
-      path('fixtures/missing.properties'),
-      path('fixtures/another.properties')]);
+    var ctx = l10n.createContext(
+      ['pl'],
+      [path('fixtures/missing.properties'),
+       path('fixtures/another.properties')]);
     ctx.ready.then(function() {
       assert.equal(
         l10n._resCache[path('fixtures/missing.properties')].pl.name,
