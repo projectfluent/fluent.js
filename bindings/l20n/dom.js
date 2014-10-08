@@ -43,7 +43,7 @@ function translateElement(element) {
     return false;
   }
 
-  return this.ctx.get(l10n.id, l10n.args).then(function(entity) {
+  return this.ctx.formatEntity(l10n.id, l10n.args).then(function(entity) {
     this.observer.stop();
 
     if (typeof entity === 'string') {
