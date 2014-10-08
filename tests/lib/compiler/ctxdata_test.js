@@ -124,7 +124,8 @@ describe('Context data', function(){
     });
 
     it('returns a string value', function(){
-      assert.strictEqual(ctx.cache.stringProp.formatValue(ctx, args), 'string');
+      assert.strictEqual(
+        ctx.cache.stringProp.formatValue(ctx, args), 'string');
     });
 
     it('is undefined when used in a macro', function(){
