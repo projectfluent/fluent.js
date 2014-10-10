@@ -1,20 +1,20 @@
 /* global it, before, beforeEach, describe, requireApp */
 /* jshint -W101 */
 'use strict';
-var compile;
 
 if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/compiler/header.js');
+  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
 } else {
-  compile = require('./header.js').compile;
   var assert = require('assert');
+  var Resolver = require('./header.js').Resolver;
+  var createEntries = require('./header.js').createEntries;
 }
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 describe('Reference bombs', function(){
   var source, env;
   beforeEach(function() {
-    env = compile(source);
+    env = createEntries(source);
   });
 
   describe('Billion Laughs', function(){
@@ -33,11 +33,11 @@ describe('Reference bombs', function(){
     });
     it('resolve() throws', function() {
       assert.throws(function() {
-        env.lolz.resolve();
+        Resolver.format(env.lolz);
       }, /too many characters in placeable/i);
     });
     it('toString() returns undefined', function() {
-      var value = env.lolz.toString();
+      var value = Resolver.formatValue(env.lolz);
       assert.strictEqual(value, undefined);
     });
   });
@@ -112,11 +112,11 @@ describe('Reference bombs', function(){
     });
     it('resolve() throws', function() {
       assert.throws(function() {
-        env.malice.resolve();
+        Resolver.format(env.malice);
       }, /too many placeables/i);
     });
     it('toString() returns undefined', function() {
-      var value = env.malice.toString();
+      var value = Resolver.formatValue(env.malice);
       assert.strictEqual(value, undefined);
     });
   });

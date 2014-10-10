@@ -1,7 +1,7 @@
 'use strict';
 
-/* global Entity, Locale, Context, L10nError */
-/* global getPluralRule, rePlaceables, PropertiesParser, compile */
+/* global Locale, Context, L10nError, Resolver, PropertiesParser */
+/* global getPluralRule, rePlaceables */
 /* global translateDocument, io */
 /* global translateFragment, localizeElement, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
@@ -63,14 +63,13 @@ navigator.mozL10n = {
       Error: L10nError,
       Context: Context,
       Locale: Locale,
-      Entity: Entity,
+      Resolver: Resolver,
       getPluralRule: getPluralRule,
       rePlaceables: rePlaceables,
       translateDocument: translateDocument,
       onManifestInjected: onManifestInjected,
       onMetaInjected: onMetaInjected,
       PropertiesParser: PropertiesParser,
-      compile: compile,
       walkContent: walkContent
     };
   }
