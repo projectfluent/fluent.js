@@ -8,8 +8,8 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var L10n = {
     PropertiesParser: process.env.L20N_COV ?
-      require('../../build/cov/lib/l20n/parser').PropertiesParser
-      : require('../../lib/l20n/format/properties/parser').PropertiesParser
+      require('../../../build/cov/lib/l20n/parser').PropertiesParser
+      : require('../../../lib/l20n/format/properties/parser').PropertiesParser
   };
 }
 
@@ -20,7 +20,7 @@ describe('L10n Parser', function() {
 
   it('string value', function() {
     var ast = parse('id = string');
-    assert.strictEqual(ast.id, 'string');
+    assert.strictEqual(ast[0].$v, 'string');
   });
 
   it('basic errors', function() {
@@ -43,12 +43,13 @@ describe('L10n Parser', function() {
 
   it('basic attributes', function() {
     var ast = parse('id.attr1 = foo');
-    assert.equal(ast.id.attr1, 'foo');
+    assert.equal(ast[0].attr1, 'foo');
   });
 
   it('attribute errors', function() {
     var strings = [
-      'key.foo.bar = foo',
+      ['key.foo.bar = foo', /Nested attributes are not supported./],
+      ['key.$attr = foo', /Attribute can't start/],
     ];
 
     for (var i in strings) {
@@ -56,19 +57,20 @@ describe('L10n Parser', function() {
 
         /* jshint -W083 */
         assert.throws(function() {
-          parse(strings[i]);
-        }, /Nested attributes are not supported./);
+          parse(strings[i][0]);
+        }, strings[i][1]);
       }
     }
   });
 
   it('plural macro', function() {
     var ast = parse('id = {[ plural(m) ]} \nid[one] = foo');
-    assert.ok(ast.id._ instanceof Object);
-    assert.equal(ast.id._.one, 'foo');
-    assert.equal(ast.id._index.length, 2);
-    assert.equal(ast.id._index[0], 'plural');
-    assert.equal(ast.id._index[1], 'm');
+    assert.ok(ast[0].$v instanceof Object);
+    assert.equal(ast[0].$v.one, 'foo');
+    assert.equal(ast[0].$x.length, 2);
+    assert.equal(ast[0].$x[0].t, 'idOrVar');
+    assert.equal(ast[0].$x[0].v, 'plural');
+    assert.equal(ast[0].$x[1], 'm');
   });
 
   it('plural macro errors', function() {

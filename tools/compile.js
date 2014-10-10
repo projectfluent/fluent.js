@@ -11,7 +11,8 @@ var PropertiesParser =
 
 var propParser = new PropertiesParser();
 var parse = propParser.parse.bind(null, null);
-var compile = require('../lib/l20n/compiler').compile;
+var Resolver = require('../lib/l20n/resolver');
+var createEntries = require('../lib/l20n').createEntries;
 var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
 
 program
@@ -53,17 +54,17 @@ function singleline(str) {
                    .trim();
 }
 
-function getString(entity) {
-  return singleline(entity.toString(data));
+function format(entity) {
+  return singleline(Resolver.formatValue(entity, data));
 }
 
 function print(id, entity) {
   // print the string value of the entity
-  console.log(color(id, ID), color(getString(entity), VALUE));
+  console.log(color(id, ID), color(format(entity), VALUE));
   // print the string values of the attributes
-  for (var attr in entity.attributes) {
+  for (var attr in entity.attrs) {
     console.log(color(' ::' + attr, ID),
-                color(getString(entity.attributes[attr]), VALUE));
+                color(format(entity.attrs[attr]), VALUE));
   }
 }
 
@@ -71,23 +72,25 @@ function compileAndPrint(err, code) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
+
+  var ast;
   if (program.ast) {
-    var ast = code.toString();
+    ast = code.toString();
   } else {
     try {
-    var ast = parse(code.toString());
+      ast = parse(code.toString());
     } catch (e) {
       logError(e);
     }
   }
 
-  var env = compile(null, ast);
-  env.__plural = getPluralRule('en-US');
-  for (var id in env) {
+  var entries = createEntries(ast);
+  entries.__plural = getPluralRule('en-US');
+  for (var id in entries) {
     if (id.indexOf('__') === 0) {
       continue;
     }
-    print(id, env[id]);
+    print(id, entries[id]);
   }
 }
 

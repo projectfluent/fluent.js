@@ -54,19 +54,17 @@ describe('walkContent', function() {
       source = [
         'foo=Foo',
         'foo.attr=An attribute',
-        'foo.attrComplex=An attribute referencing {{ foo }}',
       ].join('\n');
     });
 
     it('walks the value', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.strictEqual(walked.foo._, 2);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.strictEqual(walked.$v, 2);
     });
 
-    it('walks the attributes', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.strictEqual(walked.foo.attr, 5);
-      assert.strictEqual(walked.foo.attrComplex, 11);
+    it('walks the attribute', function(){
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.strictEqual(walked.attr, 5);
     });
 
   });
@@ -85,17 +83,17 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.strictEqual(walked.foo._.one, 2);
-      assert.strictEqual(walked.foo._.two, 1);
-      assert.strictEqual(walked.foo._.few, 1);
-      assert.strictEqual(walked.foo._.many, 1);
-      assert.strictEqual(walked.foo._.other, 2);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.strictEqual(walked.$v.one, 2);
+      assert.strictEqual(walked.$v.two, 1);
+      assert.strictEqual(walked.$v.few, 1);
+      assert.strictEqual(walked.$v.many, 1);
+      assert.strictEqual(walked.$v.other, 2);
     });
 
     it('does not modify the index', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.deepEqual(walked.foo._index, ['plural', 'n']);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.deepEqual(walked.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
     });
 
   });
@@ -116,18 +114,20 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.strictEqual(walked.foo._.other._.one, 2);
-      assert.strictEqual(walked.foo._.other._.two, 1);
-      assert.strictEqual(walked.foo._.other._.few, 1);
-      assert.strictEqual(walked.foo._.other._.many, 1);
-      assert.strictEqual(walked.foo._.other._.other, 2);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.strictEqual(walked.$v.other.one, 2);
+      assert.strictEqual(walked.$v.other.two, 1);
+      assert.strictEqual(walked.$v.other.few, 1);
+      assert.strictEqual(walked.$v.other.many, 1);
+      assert.strictEqual(walked.$v.other.other, 2);
     });
 
     it('does not modify the indexes', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.deepEqual(walked.foo._index, ['plural', 'n']);
-      assert.deepEqual(walked.foo._.other._index, ['plural', 'n']);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.deepEqual(
+        walked.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
+      assert.deepEqual(
+        walked.$v.other.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
     });
 
   });
@@ -146,17 +146,17 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.strictEqual(walked.foo.attr._.one, 2);
-      assert.strictEqual(walked.foo.attr._.two, 1);
-      assert.strictEqual(walked.foo.attr._.few, 1);
-      assert.strictEqual(walked.foo.attr._.many, 1);
-      assert.strictEqual(walked.foo.attr._.other, 2);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.strictEqual(walked.attr.$v.one, 2);
+      assert.strictEqual(walked.attr.$v.two, 1);
+      assert.strictEqual(walked.attr.$v.few, 1);
+      assert.strictEqual(walked.attr.$v.many, 1);
+      assert.strictEqual(walked.attr.$v.other, 2);
     });
 
     it('does not modify the indexes', function(){
-      var walked = L10n.walkContent(ast, digest);
-      assert.deepEqual(walked.foo.attr._index, ['plural', 'n']);
+      var walked = L10n.walkContent(ast[0], digest);
+      assert.deepEqual(walked.attr.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
     });
 
   });

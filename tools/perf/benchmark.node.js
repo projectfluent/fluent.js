@@ -39,9 +39,9 @@ var start = process.hrtime();
 var ast = parser.parse(null, code);
 cumulative.parseEnd = process.hrtime(start);
 
-cumulative.createEntities = process.hrtime(start);
-L20n.createEntities(ast);
-cumulative.createEntitiesEnd = process.hrtime(start);
+cumulative.createEntries = process.hrtime(start);
+L20n.createEntries(ast);
+cumulative.createEntriesEnd = process.hrtime(start);
 
 cumulative.format = process.hrtime(start);
 for (var id in env) {
@@ -51,7 +51,7 @@ cumulative.formatEnd = process.hrtime(start);
 
 var results = {
   parse: micro(cumulative.parseEnd),
-  createEntities: micro(cumulative.createEntitiesEnd) - micro(cumulative.createEntities),
+  createEntries: micro(cumulative.createEntriesEnd) - micro(cumulative.createEntries),
   format: micro(cumulative.formatEnd) - micro(cumulative.format)
 };
 console.log(JSON.stringify(results));

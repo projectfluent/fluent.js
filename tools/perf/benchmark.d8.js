@@ -36,9 +36,9 @@ times.start = Date.now();
 var ast = parser.parse(null, code);
 times.parseEnd = Date.now();
 
-times.createEntities = Date.now();
-L20n.createEntities(ast);
-times.createEntitiesEnd = Date.now();
+times.createEntries = Date.now();
+L20n.createEntries(ast);
+times.createEntriesEnd = Date.now();
 
 times.format = Date.now();
 for (var id in env) {
@@ -48,7 +48,7 @@ times.formatEnd = Date.now();
 
 var results = {
   parse: micro(times.parseEnd - times.start),
-  createEntities: micro(times.createEntitiesEnd - times.createEntities),
+  createEntries: micro(times.createEntriesEnd - times.createEntries),
   format: micro(times.formatEnd - times.format),
 };
 

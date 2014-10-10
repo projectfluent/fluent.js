@@ -27,8 +27,8 @@ function createEntries(source) {
   var entries = Object.create(null);
   var ast = propertiesParser.parse(null, source);
 
-  for (var id in ast) {
-    entries[id] = L10n.Resolver.createEntity(id, ast[id], entries);
+  for (var i = 0, len = ast.length; i < len; i++) {
+    entries[ast[i].$i] = L10n.Resolver.createEntry(ast[i], entries);
   }
 
   entries.__plural = L10n.getPluralRule('en-US');
