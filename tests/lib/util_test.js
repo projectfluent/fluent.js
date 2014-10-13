@@ -1,9 +1,8 @@
 /* global it, assert:true, describe, before, beforeEach */
-/* global window, navigator, process */
+/* global navigator, process */
 'use strict';
 
-var assert = require('assert') || window.assert;
-var PropertiesParser, propertiesParser;
+var assert, PropertiesParser, propertiesParser;
 
 var reVowels = /[AEIOUaeiou]/;
 
@@ -30,6 +29,7 @@ describe('walkContent', function() {
         done();
       });
     } else {
+      assert = require('assert');
       L10n = {};
       L10n.walkContent = process.env.L20N_COV ?
         require('../../build/cov/lib/l20n/util').walkContent

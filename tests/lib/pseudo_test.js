@@ -1,9 +1,8 @@
 /* global it, assert:true, describe, before, beforeEach */
-/* global window, navigator, process */
+/* global navigator, process */
 'use strict';
 
-var assert = require('assert') || window.assert;
-var propertiesParser;
+var assert, propertiesParser;
 
 describe('pseudo strategy', function() {
   var PSEUDO_STRATEGIES, walkContent, strategy, source, ast;
@@ -18,6 +17,7 @@ describe('pseudo strategy', function() {
         done();
       });
     } else {
+      assert = require('assert');
       PSEUDO_STRATEGIES = process.env.L20N_COV ?
         require('../../build/cov/lib/l20n/pseudo').PSEUDO_STRATEGIES
         : require('../../lib/l20n/pseudo').PSEUDO_STRATEGIES;

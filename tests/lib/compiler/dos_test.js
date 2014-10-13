@@ -1,13 +1,13 @@
-/* global it, before, beforeEach, assert:true, describe, requireApp */
+/* global it, before, beforeEach, describe, requireApp */
 /* jshint -W101 */
 'use strict';
-var compile, assert;
+var compile;
 
 if (typeof navigator !== 'undefined') {
   requireApp('sharedtest/test/unit/l10n/lib/compiler/header.js');
 } else {
   compile = require('./header.js').compile;
-  assert = require('./header.js').assert;
+  var assert = require('assert');
 }
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
