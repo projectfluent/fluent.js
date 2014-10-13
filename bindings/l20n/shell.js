@@ -1,6 +1,6 @@
 'use strict';
 
-/* global Context, PropertiesParser, Entity, getPluralRule, Resolver */
+/* global Context, PropertiesParser, getPluralRule, Resolver */
 
 window.L20n = {
   Context: Context,
