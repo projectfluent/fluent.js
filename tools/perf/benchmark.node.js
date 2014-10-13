@@ -40,12 +40,12 @@ var ast = parser.parse(null, code);
 cumulative.parseEnd = process.hrtime(start);
 
 cumulative.compile = process.hrtime(start);
-L20n.compile(ast, env);
+L20n.createEntities(ast);
 cumulative.compileEnd = process.hrtime(start);
 
 cumulative.get = process.hrtime(start);
 for (var id in env) {
-   env[id].valueOf(data);
+  L20n.Resolver.formatEntity(env[id], data);
 }
 cumulative.getEnd = process.hrtime(start);
 

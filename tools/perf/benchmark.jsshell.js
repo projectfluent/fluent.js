@@ -38,12 +38,12 @@ var ast = parser.parse(null, code);
 times.parseEnd = dateNow();
 
 times.compile = dateNow();
-L20n.compile(ast, env);
+L20n.createEntities(ast);
 times.compileEnd = dateNow();
 
 times.get = dateNow();
 for (var id in env) {
-   env[id].valueOf(data);
+   L20n.Resolver.formatEntity(env[id], data);
 }
 times.getEnd = dateNow();
 

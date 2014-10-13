@@ -1,6 +1,6 @@
 'use strict';
 
-/* global Context, PropertiesParser, Entity, getPluralRule */
+/* global Context, PropertiesParser, Entity, getPluralRule, Resolver */
 
 window.L20n = {
   Context: Context,
@@ -9,9 +9,12 @@ window.L20n = {
   getContext: function L20n_getContext(id) {
     return new Context(id);
   },
-  compile: function compile(ast, env) {
+  createEntities: function compile(ast) {
+    var entries = Object.create(null);
     for (var id in ast) {
-      env[id] = new Entity(id, ast[id], env);
+      entries[id] = Resolver.createEntity(id, ast[id], entries);
     }
+    return entries;
   },
+  Resolver: Resolver
 };
