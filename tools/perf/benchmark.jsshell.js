@@ -1,6 +1,6 @@
 load('../../dist/shell/l10n.js');
 
-var parser = new L20n.Parser();
+var parser = new L20n.PropertiesParser();
 var env = {
   __plural: L20n.getPluralRule('en-US')
 };
@@ -34,7 +34,7 @@ function micro(time) {
 var times = {};
 times.start = dateNow();
 
-var ast = parser.parse(code);
+var ast = parser.parse(null, code);
 times.parseEnd = dateNow();
 
 times.compile = dateNow();

@@ -2,7 +2,7 @@ var fs = require('fs');
 
 var L20n = require('../../lib/l20n');
 
-var parser = new L20n.Parser();
+var parser = new L20n.PropertiesParser();
 var env = {
   __plural: L20n.getPluralRule('en-US')
 };
@@ -36,7 +36,7 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-var ast = parser.parse(code);
+var ast = parser.parse(null, code);
 cumulative.parseEnd = process.hrtime(start);
 
 cumulative.compile = process.hrtime(start);
