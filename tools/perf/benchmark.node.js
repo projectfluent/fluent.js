@@ -39,29 +39,19 @@ var start = process.hrtime();
 var ast = parser.parse(null, code);
 cumulative.parseEnd = process.hrtime(start);
 
-cumulative.compile = process.hrtime(start);
+cumulative.createEntities = process.hrtime(start);
 L20n.createEntities(ast);
-cumulative.compileEnd = process.hrtime(start);
+cumulative.createEntitiesEnd = process.hrtime(start);
 
-cumulative.get = process.hrtime(start);
+cumulative.format = process.hrtime(start);
 for (var id in env) {
   L20n.Resolver.formatEntity(env[id], data);
 }
-cumulative.getEnd = process.hrtime(start);
+cumulative.formatEnd = process.hrtime(start);
 
-cumulative.ready = process.hrtime(start);
-var ctx = L20n.getContext();
-ctx.ready(printResults);
-ctx.resLinks.push(__dirname + '/foo.properties');
-ctx.requestLocales('en-US');
-
-function printResults() {
-  cumulative.readyEnd = process.hrtime(start);
-  var results = {
-    parse: micro(cumulative.parseEnd),
-    compile: micro(cumulative.compileEnd) - micro(cumulative.compile),
-    get: micro(cumulative.getEnd) - micro(cumulative.get),
-    ready: micro(cumulative.readyEnd) - micro(cumulative.ready),
-  };
-  console.log(JSON.stringify(results));
-}
+var results = {
+  parse: micro(cumulative.parseEnd),
+  createEntities: micro(cumulative.createEntitiesEnd) - micro(cumulative.createEntities),
+  format: micro(cumulative.formatEnd) - micro(cumulative.format)
+};
+console.log(JSON.stringify(results));

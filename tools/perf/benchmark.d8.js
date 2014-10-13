@@ -36,20 +36,20 @@ times.start = Date.now();
 var ast = parser.parse(null, code);
 times.parseEnd = Date.now();
 
-times.compile = Date.now();
+times.createEntities = Date.now();
 L20n.createEntities(ast);
-times.compileEnd = Date.now();
+times.createEntitiesEnd = Date.now();
 
-times.get = Date.now();
+times.format = Date.now();
 for (var id in env) {
    L20n.Resolver.formatEntity(env[id], data);
 }
-times.getEnd = Date.now();
+times.formatEnd = Date.now();
 
 var results = {
   parse: micro(times.parseEnd - times.start),
-  compile: micro(times.compileEnd - times.compile),
-  get: micro(times.getEnd - times.get),
+  createEntities: micro(times.createEntitiesEnd - times.createEntities),
+  format: micro(times.formatEnd - times.format),
 };
 
 print(JSON.stringify(results));
