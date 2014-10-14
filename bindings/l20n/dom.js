@@ -86,8 +86,8 @@ function translateElement(element) {
     setTextContent.call(this, l10n.id, element, entity.value);
   }
 
-  for (var key in entity.attributes) {
-    var attr = entity.attributes[key];
+  for (var key in entity.attrs) {
+    var attr = entity.attrs[key];
     if (key === 'ariaLabel') {
       element.setAttribute('aria-label', attr);
     } else if (key === 'innerHTML') {
