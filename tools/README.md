@@ -23,16 +23,16 @@ an AST and output the result.
 Examples:
 
     echo "<foo 'Foo'>" | ./parse.js
-    ./parse.js file.lol
+    ./parse.js file.l20n
 
 
-compile.js
-----------
+format.js
+---------
 
-`compile.js` is a utility script that uses L20n's Compiler to parse and compile 
-a string into Entity objects and output the result.
+`format.js` is a utility script that uses L20n's Resolver to parse and 
+transform a source string into Entity objects and output the formatted result.
 
-    Usage: compile.js [options] [file]
+    Usage: format.js [options] [file]
     
     Options:
     
@@ -45,16 +45,16 @@ a string into Entity objects and output the result.
 
 Examples:
 
-    echo "<foo 'Foo'>" | ./compile.js
-    echo "<foo 'Foo'>" | ./parse.js --raw |  ./compile.js --ast
-    ./compile.js file.lol
-    ./compile.js -d ctxdata.json file.lol
+    echo "<foo 'Foo'>" | ./format.js
+    echo "<foo 'Foo'>" | ./parse.js --raw |  ./format.js --ast
+    ./format.js file.l20n
+    ./format.js -d ctxdata.json file.l20n
 
 
 perf
 ----
 
 Measure the performance impact of changes that you make to the L20n codebase by 
-running `./run.js` (or `make perf` from the root of the repository).
+running `./run.js` (or `grunt perf` from the root of the repository).
 
 See [perf/README](perf/README.md) for more information.
