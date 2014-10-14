@@ -9,13 +9,10 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var L10n = {
     PropertiesParser: process.env.L20N_COV ?
-      require('../../../build/cov/lib/l20n/parser').PropertiesParser
-      : require('../../../lib/l20n/format/properties/parser').PropertiesParser
+      require('../../../build/cov/lib/l20n/parser')
+      : require('../../../lib/l20n/format/properties/parser')
   };
 }
-
-var propertiesParser = new L10n.PropertiesParser();
-var parse = propertiesParser.parse.bind(null, null);
 
 describe('Quadratic Blowup', function(){
   var source;
@@ -90,7 +87,7 @@ describe('Quadratic Blowup', function(){
 
   it('throws', function() {
     assert.throws(function() {
-      parse(source);
+      L10n.PropertiesParser.parse(null, source);
     }, /too many placeables/i);
   });
 });

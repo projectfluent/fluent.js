@@ -1,6 +1,6 @@
 load('../../dist/shell/l10n.js');
 
-var parser = new L20n.PropertiesParser();
+var parser = L20n.PropertiesParser;
 var env = {
   __plural: L20n.getPluralRule('en-US')
 };

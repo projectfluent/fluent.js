@@ -8,18 +8,15 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var L10n = {
     PropertiesParser: process.env.L20N_COV ?
-      require('../../../build/cov/lib/l20n/parser').PropertiesParser
-      : require('../../../lib/l20n/format/properties/parser').PropertiesParser
+      require('../../../build/cov/lib/l20n/parser')
+      : require('../../../lib/l20n/format/properties/parser')
   };
 }
-
-var propertiesParser = new L10n.PropertiesParser();
-var parse = propertiesParser.parse.bind(null, null);
 
 describe('L10n Parser', function() {
 
   it('string value', function() {
-    var ast = parse('id = string');
+    var ast = L10n.PropertiesParser.parse(null, 'id = string');
     assert.strictEqual(ast[0].$v, 'string');
   });
 
@@ -35,14 +32,14 @@ describe('L10n Parser', function() {
 
     for (var i in strings) {
       if (strings.hasOwnProperty(i)) {
-        var ast = parse(strings[i]);
+        var ast = L10n.PropertiesParser.parse(null, strings[i]);
         assert.equal(Object.keys(ast).length, 0);
       }
     }
   });
 
   it('basic attributes', function() {
-    var ast = parse('id.attr1 = foo');
+    var ast = L10n.PropertiesParser.parse(null, 'id.attr1 = foo');
     assert.equal(ast[0].attr1, 'foo');
   });
 
@@ -57,14 +54,15 @@ describe('L10n Parser', function() {
 
         /* jshint -W083 */
         assert.throws(function() {
-          parse(strings[i][0]);
+          L10n.PropertiesParser.parse(null, strings[i][0]);
         }, strings[i][1]);
       }
     }
   });
 
   it('plural macro', function() {
-    var ast = parse('id = {[ plural(m) ]} \nid[one] = foo');
+    var ast = L10n.PropertiesParser.parse(null,
+      'id = {[ plural(m) ]} \nid[one] = foo');
     assert.ok(ast[0].$v instanceof Object);
     assert.equal(ast[0].$v.one, 'foo');
     assert.equal(ast[0].$x.length, 2);
@@ -88,7 +86,7 @@ describe('L10n Parser', function() {
     for (var i in strings) {
       if (strings.hasOwnProperty(i)) {
         try {
-          parse(strings[i]);
+          L10n.PropertiesParser.parse(null, strings[i]);
         } catch (e) {
           errorsThrown += 1;
         }
@@ -98,7 +96,7 @@ describe('L10n Parser', function() {
   });
 
   it('comment', function() {
-    var ast = parse('#test');
+    var ast = L10n.PropertiesParser.parse(null, '#test');
     assert.equal(Object.keys(ast).length, 0);
   });
 
@@ -110,7 +108,7 @@ describe('L10n Parser', function() {
     ];
     for (var i in strings) {
       if (strings.hasOwnProperty(i)) {
-        var ast = parse(strings[i]);
+        var ast = L10n.PropertiesParser.parse(null, strings[i]);
         assert.equal(Object.keys(ast).length, 0);
       }
     }

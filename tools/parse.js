@@ -8,10 +8,8 @@ var prettyjson = require('prettyjson');
 var colors = require('colors');
 
 var PropertiesParser =
-  require('../lib/l20n/format/properties/parser').PropertiesParser;
+  require('../lib/l20n/format/properties/parser');
 
-var propParser = new PropertiesParser();
-var parse = propParser.parse.bind(null, null);
 
 program
   .version('0.0.1')
@@ -38,7 +36,7 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
   try {
-    var ast = parse(data.toString()); 
+    var ast = PropertiesParser.parse(null, data.toString()); 
   } catch (e) {
     console.log(e);
     logError(e);

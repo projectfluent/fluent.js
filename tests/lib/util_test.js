@@ -2,7 +2,7 @@
 /* global navigator, process */
 'use strict';
 
-var assert, PropertiesParser, propertiesParser;
+var assert, PropertiesParser;
 
 var reVowels = /[AEIOUaeiou]/;
 
@@ -25,7 +25,6 @@ describe('walkContent', function() {
       require('/build/l10n.js', function() {
         L10n = navigator.mozL10n._getInternalAPI();
         PropertiesParser = L10n.PropertiesParser;
-        propertiesParser = new PropertiesParser();
         done();
       });
     } else {
@@ -36,16 +35,15 @@ describe('walkContent', function() {
         : require('../../lib/l20n/util').walkContent;
 
       PropertiesParser = process.env.L20N_COV ?
-        require('../../build/cov/lib/l20n/parser').PropertiesParser
-        : require('../../lib/l20n/format/properties/parser').PropertiesParser;
-      propertiesParser = new PropertiesParser();
+        require('../../build/cov/lib/l20n/parser')
+        : require('../../lib/l20n/format/properties/parser');
       done();
     }
   });
 
 
   beforeEach(function() {
-    ast = propertiesParser.parse(null, source);
+    ast = PropertiesParser.parse(null, source);
   });
 
   describe('simple strings and attributes', function(){

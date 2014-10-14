@@ -2,7 +2,8 @@
 /* global navigator, process */
 'use strict';
 
-var assert, propertiesParser;
+var assert;
+var PropertiesParser;
 
 describe('pseudo strategy', function() {
   var PSEUDO_STRATEGIES, walkContent, strategy, source, ast, walked;
@@ -12,8 +13,8 @@ describe('pseudo strategy', function() {
       require('/shared/js/l10n.js', function() {
         PSEUDO_STRATEGIES = navigator.mozL10n.qps;
         var L10n = navigator.mozL10n._getInternalAPI();
+        PropertiesParser = L10n.PropertiesParser;
         walkContent = L10n.walkContent;
-        propertiesParser = new L10n.PropertiesParser();
         done();
       });
     } else {
@@ -23,16 +24,15 @@ describe('pseudo strategy', function() {
         : require('../../lib/l20n/pseudo').PSEUDO_STRATEGIES;
       walkContent = require('../../lib/l20n/util').walkContent;
 
-      var PropertiesParser = process.env.L20N_COV ?
-        require('../../build/cov/lib/l20n/parser').PropertiesParser
-        : require('../../lib/l20n/format/properties/parser').PropertiesParser;
-      propertiesParser = new PropertiesParser();
+      PropertiesParser = process.env.L20N_COV ?
+        require('../../build/cov/lib/l20n/parser')
+        : require('../../lib/l20n/format/properties/parser');
       done();
     }
   });
 
   beforeEach(function() {
-    ast = propertiesParser.parse(null, source);
+    ast = PropertiesParser.parse(null, source);
     walked = pseudolocalize(ast, strategy);
   });
 

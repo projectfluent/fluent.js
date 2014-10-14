@@ -7,10 +7,8 @@ var program = require('commander');
 var colors = require('colors');
 
 var PropertiesParser =
-  require('../lib/l20n/format/properties/parser').PropertiesParser;
+  require('../lib/l20n/format/properties/parser');
 
-var propParser = new PropertiesParser();
-var parse = propParser.parse.bind(null, null);
 var Resolver = require('../lib/l20n/resolver');
 var createEntries = require('../lib/l20n').createEntries;
 var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
@@ -78,7 +76,7 @@ function compileAndPrint(err, code) {
     ast = code.toString();
   } else {
     try {
-      ast = parse(code.toString());
+      ast = PropertiesParser.parse(null, code.toString());
     } catch (e) {
       logError(e);
     }
