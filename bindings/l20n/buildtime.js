@@ -105,7 +105,7 @@ L10n.Context.prototype.getEntitySource = function(id) {
 
 navigator.mozL10n.translateDocument = L10n.translateDocument;
 
-navigator.mozL10n.getDictionary = function() {
+navigator.mozL10n.getAST = function() {
   // don't do anything for pseudolocales
   if (this.ctx.supportedLocales[0] in this.qps) {
     return null;
