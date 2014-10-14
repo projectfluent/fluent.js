@@ -69,6 +69,7 @@ L10n.Locale.prototype.addAST = function(ast) {
     this.astById = Object.create(null);
   }
 
+  /* jshint boss:true */
   for (var i = 0, node; node = ast[i]; i++) {
     this.entries[node.$i] = L10n.Resolver.createEntry(node, this.entries);
     this.astById[node.$i] = node;

@@ -1,4 +1,4 @@
-/* global it, beforeEach, describe */
+/* global assert:true, it, beforeEach, describe */
 /* global navigator, process */
 /* jshint -W101 */
 'use strict';

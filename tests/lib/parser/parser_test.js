@@ -1,4 +1,4 @@
-/* global it, assert:true, describe */
+/* global assert:true, it, assert:true, describe */
 /* global navigator, process */
 'use strict';
 

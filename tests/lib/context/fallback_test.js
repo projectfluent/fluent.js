@@ -1,4 +1,4 @@
-/* global it, describe, beforeEach */
+/* global assert:true, it, describe, beforeEach */
 /* global navigator, process, __dirname */
 'use strict';
 

@@ -1,4 +1,4 @@
-/* global it, before, beforeEach, describe, requireApp */
+/* global assert:true, it, before, beforeEach, describe, requireApp */
 'use strict';
 
 if (typeof navigator !== 'undefined') {

@@ -1,4 +1,4 @@
-/* global it, beforeEach, describe, requireApp */
+/* global assert:true, it, beforeEach, describe, requireApp */
 /* jshint -W101 */
 'use strict';
 
