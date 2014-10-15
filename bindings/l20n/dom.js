@@ -47,9 +47,9 @@ function translateElement(element) {
     this.observer.stop();
 
     if (typeof entity === 'string') {
-      setTextContent(element, entity);
+      setTextContent(l10n.id, element, entity);
     } else if (entity.value) {
-      setTextContent(element, entity.value);
+      setTextContent(l10n.id, element, entity.value);
     }
 
     for (var key in entity.attrs) {
