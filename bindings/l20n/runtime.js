@@ -77,7 +77,7 @@ function init() {
     switch (type) {
       case 'manifest':
         navigator.mozL10n.env = new Env(
-          document.URL,
+          window.document ? document.URL : null,
           io.loadJSON(node.getAttribute('href')),
           navigator.languages);
         break;

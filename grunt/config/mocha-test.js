@@ -6,7 +6,7 @@ var src = [
   'tests/lib/context/resources_test.js',
   'tests/lib/context/fallback_test.js',
   'tests/lib/parser/*_test.js',
-  'tests/lib/compiler/*_test.js',
+  'tests/lib/resolver/*_test.js',
   'tests/lib/*_test.js',
 ];
 

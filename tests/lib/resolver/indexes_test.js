@@ -1,19 +1,19 @@
-/* global it, before, beforeEach, assert:true, describe, requireApp */
+/* global assert:true, it, before, beforeEach, describe, requireApp */
 'use strict';
-var compile, assert;
 
 if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/compiler/header.js');
+  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
 } else {
-  compile = require('./header.js').compile;
-  assert = require('./header.js').assert;
+  var assert = require('assert');
+  var Resolver = require('./header.js').Resolver;
+  var createContext = require('./header.js').createContext;
 }
 
 describe('Index', function(){
   var source, ctx;
 
   beforeEach(function() {
-    ctx = compile(source);
+    ctx = createContext(source);
   });
 
   describe('Different values of index', function(){
@@ -31,7 +31,7 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = ctx.cache.indexEntity.formatValue(ctx, {n: 1});
+      var value = Resolver.formatValue(ctx.cache.indexEntity, ctx, {n: 1});
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro', function() {
@@ -39,8 +39,15 @@ describe('Index', function(){
         ctx.cache.indexUncalledMacro.formatValue({n: 1});
       }, 'Macro plural expects 1 argument(s), yet 0 given');
     });
+    it('returns undefined when the index is an uncalled macro (toString)',
+      function() {
+      var value = Resolver.formatValue(
+        ctx.cache.indexUncalledMacro, ctx, {n: 1});
+      assert.strictEqual(value, undefined);
+    });
     it('works when the index is a called macro', function() {
-      var value = ctx.cache.indexCalledMacro.formatValue(ctx, {n: 1});
+      var value = Resolver.formatValue(
+        ctx.cache.indexCalledMacro, ctx, {n: 1});
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -55,10 +62,9 @@ describe('Index', function(){
       ].join('\n');
     });
 
-    it('throws', function() {
-      assert.throws(function() {
-        ctx.cache.foo.formatValue(ctx);
-      }, /cyclic/i);
+    it('is undefined', function() {
+      var value = Resolver.formatValue(ctx.cache.foo);
+      assert.strictEqual(value, undefined);
     });
 
   });
@@ -75,9 +81,9 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      var entity = ctx.cache.foo.formatEntity(ctx);
+      var entity = Resolver.formatEntity(ctx.cache.foo);
       assert.strictEqual(entity.value, 'Foo');
-      assert.strictEqual(entity.attributes.attr, undefined);
+      assert.strictEqual(entity.attrs.attr, undefined);
     });
 
   });

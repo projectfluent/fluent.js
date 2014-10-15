@@ -1,18 +1,18 @@
-/* global it, before, beforeEach, assert:true, describe, requireApp */
+/* global assert:true, it, before, beforeEach, describe, requireApp */
 'use strict';
-var compile, assert;
 
 if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/compiler/header.js');
+  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
 } else {
-  compile = require('./header.js').compile;
-  assert = require('./header.js').assert;
+  var assert = require('assert');
+  var Resolver = require('./header.js').Resolver;
+  var createContext = require('./header.js').createContext;
 }
 
 describe('Compiler errors:', function(){
   var source, ctx;
   beforeEach(function() {
-    ctx = compile(source);
+    ctx = createContext(source);
   });
 
   describe('A complex string referencing an existing entity', function(){
@@ -28,7 +28,7 @@ describe('Compiler errors:', function(){
 
     it('works with the default index', function(){
       assert.strictEqual(
-        ctx.cache.prompt.formatValue(ctx, {n: 1}), 'One File');
+        Resolver.formatValue(ctx.cache.prompt, ctx, {n: 1}), 'One File');
     });
 
   });
@@ -44,7 +44,7 @@ describe('Compiler errors:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = ctx.cache.prompt.formatValue(ctx, {n: 1});
+      var value = Resolver.formatValue(ctx.cache.prompt, ctx, {n: 1});
       assert.strictEqual(value, 'One {{ file }}');
     });
 
@@ -63,11 +63,11 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        ctx.cache.prompt.formatValue(ctx, {n: 1}), 'One File');
+        Resolver.formatValue(ctx.cache.prompt, ctx, {n: 1}), 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = ctx.cache.prompt.formatValue(ctx);
+      var value = Resolver.formatValue(ctx.cache.prompt, ctx);
       assert.strictEqual(value, 'Files');
     });
 
@@ -85,11 +85,11 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        ctx.cache.prompt.formatValue(ctx, {n: 1}), 'One File');
+        Resolver.formatValue(ctx.cache.prompt, ctx, {n: 1}), 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = ctx.cache.prompt.formatValue(ctx);
+      var value = Resolver.formatValue(ctx.cache.prompt, ctx);
       assert.strictEqual(value, undefined);
     });
 

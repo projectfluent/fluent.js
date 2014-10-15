@@ -2,7 +2,7 @@ var fs = require('fs');
 
 var L20n = require('../../lib/l20n');
 
-var parser = new L20n.Parser();
+var parser = L20n.PropertiesParser;
 var env = {
   __plural: L20n.getPluralRule('en-US')
 };
@@ -36,32 +36,22 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-var ast = parser.parse(code);
+var ast = parser.parse(null, code);
 cumulative.parseEnd = process.hrtime(start);
 
-cumulative.compile = process.hrtime(start);
-L20n.compile(ast, env);
-cumulative.compileEnd = process.hrtime(start);
+cumulative.createEntries = process.hrtime(start);
+L20n.createEntries(ast);
+cumulative.createEntriesEnd = process.hrtime(start);
 
-cumulative.get = process.hrtime(start);
+cumulative.format = process.hrtime(start);
 for (var id in env) {
-   env[id].valueOf(data);
+  L20n.Resolver.formatEntity(env[id], data);
 }
-cumulative.getEnd = process.hrtime(start);
+cumulative.formatEnd = process.hrtime(start);
 
-cumulative.ready = process.hrtime(start);
-var ctx = L20n.getContext();
-ctx.ready(printResults);
-ctx.resLinks.push(__dirname + '/foo.properties');
-ctx.requestLocales('en-US');
-
-function printResults() {
-  cumulative.readyEnd = process.hrtime(start);
-  var results = {
-    parse: micro(cumulative.parseEnd),
-    compile: micro(cumulative.compileEnd) - micro(cumulative.compile),
-    get: micro(cumulative.getEnd) - micro(cumulative.get),
-    ready: micro(cumulative.readyEnd) - micro(cumulative.ready),
-  };
-  console.log(JSON.stringify(results));
-}
+var results = {
+  parse: micro(cumulative.parseEnd),
+  createEntries: micro(cumulative.createEntriesEnd) - micro(cumulative.createEntries),
+  format: micro(cumulative.formatEnd) - micro(cumulative.format)
+};
+console.log(JSON.stringify(results));

@@ -1,8 +1,7 @@
-/* global it, assert:true, describe, beforeEach */
-/* global window, navigator, process, __dirname */
+/* global assert:true, it, describe, beforeEach */
+/* global navigator, process, __dirname */
 'use strict';
 
-var assert = require('assert') || window.assert;
 var path = function(basedir, leaf) {
   return basedir + '/' + leaf;
 };
@@ -10,9 +9,10 @@ var path = function(basedir, leaf) {
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
   var Env = L10n.Env;
-  var path = path.bind(
+  path = path.bind(
     null, 'app://sharedtest.gaiamobile.org/test/unit/l10n/context');
 } else {
+  var assert = require('assert');
   var Env = process.env.L20N_COV ?
     require('../../../build/cov/lib/l20n/env').Env
     : require('../../../lib/l20n/env').Env;
