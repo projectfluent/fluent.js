@@ -1,6 +1,6 @@
 load('../../dist/shell/l10n.js');
 
-var parser = new L20n.Parser();
+var parser = L20n.PropertiesParser;
 var env = {
   __plural: L20n.getPluralRule('en-US')
 };
@@ -34,23 +34,23 @@ function micro(time) {
 var times = {};
 times.start = dateNow();
 
-var ast = parser.parse(code);
+var ast = parser.parse(null, code);
 times.parseEnd = dateNow();
 
-times.compile = dateNow();
-L20n.compile(ast, env);
-times.compileEnd = dateNow();
+times.createEntries = dateNow();
+L20n.createEntries(ast);
+times.createEntriesEnd = dateNow();
 
-times.get = dateNow();
+times.format = dateNow();
 for (var id in env) {
-   env[id].valueOf(data);
+   L20n.Resolver.formatEntity(env[id], data);
 }
-times.getEnd = dateNow();
+times.formatEnd = dateNow();
 
 var results = {
   parse: micro(times.parseEnd - times.start),
-  compile: micro(times.compileEnd - times.compile),
-  get: micro(times.getEnd - times.get),
+  createEntries: micro(times.createEntriesEnd - times.createEntries),
+  format: micro(times.formatEnd - times.format),
 };
 
 print(JSON.stringify(results));

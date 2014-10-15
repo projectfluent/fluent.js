@@ -1,7 +1,7 @@
 'use strict';
 
 /* jshint -W104 */
-/* global Promise */
+/* global Promise, L10nError */
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -52,8 +52,8 @@ function translateElement(element) {
       setTextContent(element, entity.value);
     }
 
-    for (var key in entity.attributes) {
-      var attr = entity.attributes[key];
+    for (var key in entity.attrs) {
+      var attr = entity.attrs[key];
       if (key === 'ariaLabel') {
         element.setAttribute('aria-label', attr);
       } else if (key === 'innerHTML') {
@@ -68,31 +68,14 @@ function translateElement(element) {
   }.bind(this));
 }
 
-function setTextContent(element, text) {
-  // standard case: no element children
-  if (!element.firstElementChild) {
-    element.textContent = text;
-    return;
+function setTextContent(id, element, text) {
+  if (element.firstElementChild) {
+    throw new L10nError(
+      'setTextContent is deprecated (https://bugzil.la/1053629). ' +
+      'Setting text content of elements with child elements is no longer ' +
+      'supported by l10n.js. Offending data-l10n-id: "' + id +
+      '" on element ' + element.outerHTML + ' in ' + this.ctx.id);
   }
 
-  // this element has element children: replace the content of the first
-  // (non-blank) child textNode and clear other child textNodes
-  var found = false;
-  var reNotBlank = /\S/;
-  for (var child = element.firstChild; child; child = child.nextSibling) {
-    if (child.nodeType === Node.TEXT_NODE &&
-        reNotBlank.test(child.nodeValue)) {
-      if (found) {
-        child.nodeValue = '';
-      } else {
-        child.nodeValue = text;
-        found = true;
-      }
-    }
-  }
-  // if no (non-empty) textNode is found, insert a textNode before the
-  // element's first child.
-  if (!found) {
-    element.insertBefore(document.createTextNode(text), element.firstChild);
-  }
+  element.textContent = text;
 }
