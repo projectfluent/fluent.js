@@ -60,7 +60,12 @@ navigator.mozL10n = {
 
   readyState: 'complete',
   language: {},
-  qps: PSEUDO_STRATEGIES
+  qps: PSEUDO_STRATEGIES,
+  _getInternalAPI: function() {
+    return {
+      Error: L10nError
+    };
+  },
 };
 
 if (window.document) {
