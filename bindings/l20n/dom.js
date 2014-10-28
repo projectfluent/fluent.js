@@ -40,22 +40,6 @@ function getTranslatableChildren(element) {
   return element ? element.querySelectorAll('*[data-l10n-id]') : [];
 }
 
-function localizeElement(element, id, args) {
-  if (!id) {
-    element.removeAttribute('data-l10n-id');
-    element.removeAttribute('data-l10n-args');
-    setTextContent.call(this, id, element, '');
-    return;
-  }
-
-  element.setAttribute('data-l10n-id', id);
-  if (args && typeof args === 'object') {
-    element.setAttribute('data-l10n-args', JSON.stringify(args));
-  } else {
-    element.removeAttribute('data-l10n-args');
-  }
-}
-
 var allowedHtmlAttrs = {
   'ariaLabel': 'aria-label',
   'ariaValueText': 'aria-valuetext'

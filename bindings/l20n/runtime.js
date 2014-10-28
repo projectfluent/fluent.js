@@ -3,7 +3,7 @@
 /* global Locale, Context, L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
 /* global translateDocument, io */
-/* global translateFragment, localizeElement, translateElement */
+/* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO_STRATEGIES */
 
@@ -28,9 +28,6 @@ navigator.mozL10n = {
   ctx: new Context(window.document ? document.URL : null),
   get: function get(id, ctxdata) {
     return navigator.mozL10n.ctx.get(id, ctxdata);
-  },
-  localize: function localize(element, id, args) {
-    return localizeElement.call(navigator.mozL10n, element, id, args);
   },
   translateFragment: function (fragment) {
     return translateFragment.call(navigator.mozL10n, fragment);
