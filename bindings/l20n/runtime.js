@@ -29,6 +29,12 @@ navigator.mozL10n = {
   get: function get(id, ctxdata) {
     return navigator.mozL10n.ctx.get(id, ctxdata);
   },
+  formatValue: function(id, ctxdata) {
+    return navigator.mozL10n.ctx.formatValue(id, ctxdata);
+  },
+  formatEntity: function(id, ctxdata) {
+    return navigator.mozL10n.ctx.formatEntity(id, ctxdata);
+  },
   translateFragment: function (fragment) {
     return translateFragment.call(navigator.mozL10n, fragment);
   },

@@ -35,8 +35,4 @@ describe('Billion Laughs', function(){
       Resolver.format(entries.lolz);
     }, /too many characters in placeable/i);
   });
-  it('toString() returns undefined', function() {
-    var value = Resolver.formatValue(entries.lolz);
-    assert.strictEqual(value, undefined);
-  });
 });

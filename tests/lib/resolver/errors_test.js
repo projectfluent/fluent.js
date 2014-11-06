@@ -28,7 +28,7 @@ describe('Compiler errors:', function(){
 
     it('works with the default index', function(){
       assert.strictEqual(
-        Resolver.formatValue(env.prompt, {n: 1}), 'One File');
+        Resolver.format(env.prompt, {n: 1}), 'One File');
     });
 
   });
@@ -44,7 +44,7 @@ describe('Compiler errors:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = Resolver.formatValue(env.prompt, {n: 1});
+      var value = Resolver.format(env.prompt, {n: 1});
       assert.strictEqual(value, 'One {{ file }}');
     });
 
@@ -63,11 +63,11 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        Resolver.formatValue(env.prompt, {n: 1}), 'One File');
+        Resolver.format(env.prompt, {n: 1}), 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = Resolver.formatValue(env.prompt);
+      var value = Resolver.format(env.prompt);
       assert.strictEqual(value, 'Files');
     });
 
@@ -85,11 +85,11 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        Resolver.formatValue(env.prompt, {n: 1}), 'One File');
+        Resolver.format(env.prompt, {n: 1}), 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = Resolver.formatValue(env.prompt);
+      var value = Resolver.format(env.prompt);
       assert.strictEqual(value, undefined);
     });
 

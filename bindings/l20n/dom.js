@@ -67,12 +67,7 @@ function translateElement(element) {
     return false;
   }
 
-  if (typeof entity === 'string') {
-    setTextContent.call(this, l10n.id, element, entity);
-    return true;
-  }
-
-  if (entity.value) {
+  if (typeof entity.value === 'string') {
     setTextContent.call(this, l10n.id, element, entity.value);
   }
 
