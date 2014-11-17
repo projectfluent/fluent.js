@@ -30,9 +30,9 @@ describe('Macros', function(){
     it('throws when resolving (not calling) a macro in a complex ' +
        'string', function() {
       assert.strictEqual(
-        Resolver.format(env.placeMacro, ctxdata), '{{ plural }}');
+        Resolver.format(ctxdata, env.placeMacro), '{{ plural }}');
       assert.strictEqual(
-        Resolver.format(env.placeRealMacro, ctxdata), '{{ __plural }}');
+        Resolver.format(ctxdata, env.placeRealMacro), '{{ __plural }}');
     });
 
   });
@@ -71,32 +71,32 @@ describe('Macros', function(){
     });
 
     it('throws if an entity is passed', function() {
-      var value = Resolver.format(env.passFoo, ctxdata);
+      var value = Resolver.format(ctxdata, env.passFoo);
       assert.strictEqual(value, undefined);
     });
 
     it('throws if a complex entity is passed', function() {
-      var value = Resolver.format(env.passUseFoo, ctxdata);
+      var value = Resolver.format(ctxdata, env.passUseFoo);
       assert.strictEqual(value, undefined);
     });
 
     it('throws if a hash entity is passed', function() {
-      var value = Resolver.format(env.passBar, ctxdata);
+      var value = Resolver.format(ctxdata, env.passBar);
       assert.strictEqual(value, undefined);
     });
 
     it('throws if a macro is passed', function() {
-      var value = Resolver.format(env.passPlural, ctxdata);
+      var value = Resolver.format(ctxdata, env.passPlural);
       assert.strictEqual(value, undefined);
     });
 
     it('throws if a missing entry is passed', function() {
-      var value = Resolver.format(env.passMissing, ctxdata);
+      var value = Resolver.format(ctxdata, env.passMissing);
       assert.strictEqual(value, undefined);
     });
 
     it('throws if a native function is passed', function() {
-      var value = Resolver.format(env.passWatch, ctxdata);
+      var value = Resolver.format(ctxdata, env.passWatch);
       assert.strictEqual(value, undefined);
     });
 
@@ -131,32 +131,32 @@ describe('A simple plural macro', function(){
     });
 
     it('returns zero for 0', function() {
-      var value = Resolver.format(env.foo, {n: 0});
+      var value = Resolver.format({n: 0}, env.foo);
       assert.strictEqual(value, 'Zero');
     });
 
     it('returns one for 1', function() {
-      var value = Resolver.format(env.foo, {n: 1});
+      var value = Resolver.format({n: 1}, env.foo);
       assert.strictEqual(value, 'One');
     });
 
     it('returns two for 2', function() {
-      var value = Resolver.format(env.foo, {n: 2});
+      var value = Resolver.format({n: 2}, env.foo);
       assert.strictEqual(value, 'Two');
     });
 
     it('returns many for 3', function() {
-      var value = Resolver.format(env.foo, {n: 3});
+      var value = Resolver.format({n: 3}, env.foo);
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 5', function() {
-      var value = Resolver.format(env.foo, {n: 5});
+      var value = Resolver.format({n: 5}, env.foo);
       assert.strictEqual(value, 'Many');
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format(env.foo, {n: 0.5});
+      var value = Resolver.format({n: 0.5}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
@@ -173,32 +173,32 @@ describe('A simple plural macro', function(){
     });
 
     it('returns other for 0', function() {
-      var value = Resolver.format(env.foo, {n: 0});
+      var value = Resolver.format({n: 0}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
     it('returns many for 1', function() {
-      var value = Resolver.format(env.foo, {n: 1});
+      var value = Resolver.format({n: 1}, env.foo);
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 2', function() {
-      var value = Resolver.format(env.foo, {n: 2});
+      var value = Resolver.format({n: 2}, env.foo);
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 3', function() {
-      var value = Resolver.format(env.foo, {n: 3});
+      var value = Resolver.format({n: 3}, env.foo);
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 5', function() {
-      var value = Resolver.format(env.foo, {n: 5});
+      var value = Resolver.format({n: 5}, env.foo);
       assert.strictEqual(value, 'Many');
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format(env.foo, {n: 0.5});
+      var value = Resolver.format({n: 0.5}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
@@ -214,32 +214,32 @@ describe('A simple plural macro', function(){
     });
 
     it('returns other for 0', function() {
-      var value = Resolver.format(env.foo, {n: 0});
+      var value = Resolver.format({n: 0}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 1', function() {
-      var value = Resolver.format(env.foo, {n: 1});
+      var value = Resolver.format({n: 1}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 2', function() {
-      var value = Resolver.format(env.foo, {n: 2});
+      var value = Resolver.format({n: 2}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 3', function() {
-      var value = Resolver.format(env.foo, {n: 3});
+      var value = Resolver.format({n: 3}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 5', function() {
-      var value = Resolver.format(env.foo, {n: 5});
+      var value = Resolver.format({n: 5}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format(env.foo, {n: 0.5});
+      var value = Resolver.format({n: 0.5}, env.foo);
       assert.strictEqual(value, 'Other');
     });
 
@@ -256,32 +256,32 @@ describe('A simple plural macro', function(){
     });
 
     it('returns other for 0', function() {
-      var value = Resolver.format(env.foo, {n: 0});
+      var value = Resolver.format({n: 0}, env.foo);
       assert.strictEqual(value, undefined);
     });
 
     it('returns one for 1', function() {
-      var value = Resolver.format(env.foo, {n: 1});
+      var value = Resolver.format({n: 1}, env.foo);
       assert.strictEqual(value, 'One');
     });
 
     it('returns other for 2', function() {
-      var value = Resolver.format(env.foo, {n: 2});
+      var value = Resolver.format({n: 2}, env.foo);
       assert.strictEqual(value, undefined);
     });
 
     it('returns other for 3', function() {
-      var value = Resolver.format(env.foo, {n: 3});
+      var value = Resolver.format({n: 3}, env.foo);
       assert.strictEqual(value, undefined);
     });
 
     it('returns other for 5', function() {
-      var value = Resolver.format(env.foo, {n: 5});
+      var value = Resolver.format({n: 5}, env.foo);
       assert.strictEqual(value, undefined);
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format(env.foo, {n: 0.5});
+      var value = Resolver.format({n: 0.5}, env.foo);
       assert.strictEqual(value, undefined);
     });
 

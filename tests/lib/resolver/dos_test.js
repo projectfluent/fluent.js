@@ -32,7 +32,7 @@ describe('Billion Laughs', function(){
 
   it('Resolver.format() throws', function() {
     assert.throws(function() {
-      Resolver.format(entries.lolz);
+      Resolver.format(null, entries.lolz);
     }, /too many characters in placeable/i);
   });
 });

@@ -31,16 +31,16 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = Resolver.format(env.indexEntity, {n: 1});
+      var value = Resolver.format({n: 1}, env.indexEntity);
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro', function() {
       assert.throws(function() {
-        Resolver.format(env.indexUncalledMacro, {n: 1});
+        Resolver.format({n: 1}, env.indexUncalledMacro);
       }, 'Macro plural expects 1 argument(s), yet 0 given');
     });
     it('works when the index is a called macro', function() {
-      var value = Resolver.format(env.indexCalledMacro, {n: 1});
+      var value = Resolver.format({n: 1}, env.indexCalledMacro);
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -56,7 +56,7 @@ describe('Index', function(){
     });
 
     it('is undefined', function() {
-      var value = Resolver.format(env.foo);
+      var value = Resolver.format(null, env.foo);
       assert.strictEqual(value, undefined);
     });
 
@@ -74,8 +74,8 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      assert.strictEqual(Resolver.format(env.foo), 'Foo');
-      assert.strictEqual(Resolver.format(env.foo.attrs.attr), undefined);
+      assert.strictEqual(Resolver.format(null, env.foo), 'Foo');
+      assert.strictEqual(Resolver.format(undefined, env.foo.attrs.attr));
     });
 
   });

@@ -28,12 +28,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value', function(){
-      var attr = Resolver.format(env.foo.attrs.attr);
+      var attr = Resolver.format(null, env.foo.attrs.attr);
       assert.strictEqual(attr, 'An attribute');
     });
 
     it('returns the value with a placeable', function(){
-      var attr = Resolver.format(env.foo.attrs.attrComplex);
+      var attr = Resolver.format(null, env.foo.attrs.attrComplex);
       assert.strictEqual(attr, 'An attribute referencing Bar');
     });
 
@@ -50,12 +50,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var value = Resolver.format(env.update);
+      var value = Resolver.format(null, env.update);
       assert.strictEqual(value, 'Update');
     });
 
     it('returns the value of the attribute\'s member', function(){
-      var attr = Resolver.format(env.update.attrs.innerHTML, {n: 1});
+      var attr = Resolver.format({n: 1}, env.update.attrs.innerHTML);
       assert.strictEqual(attr, 'One update available');
     });
 
@@ -76,12 +76,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var value = Resolver.format(env.update, {n: 1, k: 2});
+      var value = Resolver.format({n: 1, k: 2}, env.update);
       assert.strictEqual(value, 'One update');
     });
 
     it('returns the value of the attribute', function(){
-      var attr = Resolver.format(env.update.attrs.innerHTML, {n: 1, k: 2});
+      var attr = Resolver.format({n: 1, k: 2}, env.update.attrs.innerHTML);
       assert.strictEqual(attr, '2 updates innerHTML');
     });
 
@@ -97,12 +97,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var value = Resolver.format(env.brandName);
+      var value = Resolver.format(null, env.brandName);
       assert.strictEqual(value, 'Firefox');
     });
 
     it('returns the value of the attribute', function(){
-      var attr = Resolver.format(env.brandName.attrs.title);
+      var attr = Resolver.format(null, env.brandName.attrs.title);
       assert.strictEqual(attr, 'Mozilla Firefox');
     });
 
@@ -118,7 +118,7 @@ describe('Attributes', function(){
     });
 
     it('returns the raw string of the attribute', function(){
-      var attr = Resolver.format(env.brandName.attrs.title);
+      var attr = Resolver.format(null, env.brandName.attrs.title);
       assert.strictEqual(attr, 'Mozilla {{ brandName.title }}');
     });
 
