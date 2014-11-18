@@ -49,7 +49,7 @@ var ids = Object.keys(env).filter(function(id){return id !== '__plural';});
 
 cumulative.format = process.hrtime(start);
 for (var id in ids) {
-  L20n.Resolver.formatEntity(env[ids[id]], data);
+  L20n.Resolver.format(data, env[ids[id]]);
 }
 cumulative.formatEnd = process.hrtime(start);
 
