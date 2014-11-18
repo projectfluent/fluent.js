@@ -56,8 +56,9 @@ describe('Index', function(){
     });
 
     it('is undefined', function() {
-      var value = Resolver.format(null, env.foo);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(null, env.foo);
+      }, 'Cyclic reference detected: foo');
     });
 
   });
@@ -75,7 +76,9 @@ describe('Index', function(){
 
     it('value of the attribute is undefined', function() {
       assert.strictEqual(Resolver.format(null, env.foo), 'Foo');
-      assert.strictEqual(Resolver.format(undefined, env.foo.attrs.attr));
+      assert.throws(function() {
+        Resolver.format(null, env.foo.attrs.attr);
+      }, 'Unresolvable value');
     });
 
   });

@@ -128,9 +128,10 @@ describe('Context data', function(){
         Resolver.format(ctxdata, env.stringProp), 'string');
     });
 
-    it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.stringIndex);
-      assert.strictEqual(value, undefined);
+    it('throws when used in a macro', function(){
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.stringIndex);
+      }, 'Unresolvable value');
     });
 
     it('digit returns a string value', function(){
@@ -138,9 +139,10 @@ describe('Context data', function(){
         Resolver.format(ctxdata, env.stringNumProp), '1');
     });
 
-    it('digit returns undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.stringNumIndex);
-      assert.strictEqual(value, undefined);
+    it('digit throws when used in a macro', function(){
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.stringNumIndex);
+      }, 'Unresolvable value');
     });
 
   });
@@ -176,8 +178,9 @@ describe('Context data', function(){
     });
 
     it('is undefined when NaN is used in macro', function(){
-      var value = Resolver.format(ctxdata, env.nanIndex);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.nanIndex);
+      }, 'Arg must be a string or a number: nan');
     });
 
   });
@@ -201,8 +204,9 @@ describe('Context data', function(){
     });
 
     it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.boolIndex);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.boolIndex);
+      }, 'Arg must be a string or a number: bool');
     });
 
   });
@@ -226,8 +230,9 @@ describe('Context data', function(){
     });
 
     it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.undefIndex);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.undefIndex);
+      }, 'Arg must be a string or a number: undef');
     });
 
   });
@@ -251,8 +256,9 @@ describe('Context data', function(){
     });
 
     it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.nullIndex);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.nullIndex);
+      }, 'Arg must be a string or a number: nullable');
     });
 
   });
@@ -276,8 +282,9 @@ describe('Context data', function(){
     });
 
     it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.arrIndex);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.arrIndex);
+      }, 'Arg must be a string or a number: arr');
     });
 
   });
@@ -301,8 +308,9 @@ describe('Context data', function(){
     });
 
     it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.arrIndex);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.arrIndex);
+      }, 'Arg must be a string or a number: arr');
     });
 
   });
@@ -327,9 +335,10 @@ describe('Context data', function(){
       assert.strictEqual(value, '{{ obj }}');
     });
 
-    it('is undefined when used in a macro', function(){
-      var value = Resolver.format(ctxdata, env.objIndex);
-      assert.strictEqual(value, undefined);
+    it('throws used in a macro', function(){
+      assert.throws(function() {
+        Resolver.format(ctxdata, env.objIndex);
+      }, 'Arg must be a string or a number: obj');
     });
   });
 

@@ -67,8 +67,9 @@ describe('Compiler errors:', function(){
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = Resolver.format(null, env.prompt);
-      assert.strictEqual(value, 'Files');
+      assert.throws(function() {
+        Resolver.format(null, env.prompt);
+      }, 'Unknown reference: n');
     });
 
   });
@@ -89,8 +90,9 @@ describe('Compiler errors:', function(){
     });
 
     it('throws an IndexError if n is not defined', function(){
-      var value = Resolver.format(null, env.prompt);
-      assert.strictEqual(value, undefined);
+      assert.throws(function() {
+        Resolver.format(null, env.prompt);
+      }, 'Unknown reference: n');
     });
 
   });
