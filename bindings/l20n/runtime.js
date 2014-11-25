@@ -215,7 +215,7 @@ function onManifestInjected(url, callback) {
     }
 
     if (err) {
-      this.ctx._emitter.emit('error', err);
+      this.ctx._emitter.emit('fetcherror', err);
       this.ctx.registerLocales(this.ctx.defaultLocale);
       if (callback) {
         callback.call(this);
@@ -231,7 +231,8 @@ function onManifestInjected(url, callback) {
       } else {
         manifest.defaultLocale = this.ctx.defaultLocale;
         this.ctx._emitter.emit(
-          'warning', new L10nError('default_locale missing from manifest'));
+          'manifesterror',
+          new L10nError('default_locale missing from manifest'));
       }
     }
     if (!('locales' in manifest)) {
@@ -239,7 +240,8 @@ function onManifestInjected(url, callback) {
         manifest.locales = Object.keys(json.locales);
       } else {
         this.ctx._emitter.emit(
-          'warning', new L10nError('locales missing from manifest'));
+          'manifesterror',
+          new L10nError('locales missing from manifest'));
       }
     }
 

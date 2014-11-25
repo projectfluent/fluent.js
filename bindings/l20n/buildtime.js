@@ -21,10 +21,22 @@ navigator.mozL10n.bootstrap = function(file, debug) {
     DEBUG = true;
   }
 
+  ctx.addEventListener('notfounderror', function(e) {
+    if (e.loc === 'en-US') {
+      throw e;
+    }
+  });
+
+  var error = addBuildMessage.bind(this, 'error');
+  var warn = addBuildMessage.bind(this, 'warn');
+
   if (DEBUG) {
-    ctx.addEventListener('error', addBuildMessage.bind(this, 'error'));
-    ctx.addEventListener('warning', addBuildMessage.bind(this, 'warn'));
+    ctx.addEventListener('fetcherror', error);
+    ctx.addEventListener('manifesterror', warn);
+    ctx.addEventListener('parseerror', warn);
+    ctx.addEventListener('notfounderror', error);
   }
+
   initResources.call(this);
 };
 
@@ -104,8 +116,9 @@ L10n.Context.prototype.getEntitySource = function(id) {
       }
     }
 
-    var e = new L10n.Error(id + ' not found in ' + loc, id, loc);
-    this._emitter.emit('warning', e);
+    this._emitter.emit('notfounderror', new L10n.Error(
+      '"' + id + '"' + ' not found in ' + loc + ' in' + this.id,
+      id, loc));
     cur++;
   }
   return '';
