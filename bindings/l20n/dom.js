@@ -42,7 +42,8 @@ function getTranslatableChildren(element) {
 
 var allowedHtmlAttrs = {
   'ariaLabel': 'aria-label',
-  'ariaValueText': 'aria-valuetext'
+  'ariaValueText': 'aria-valuetext',
+  'ariaMozHint': 'aria-moz-hint'
 };
 
 function translateElement(element) {
