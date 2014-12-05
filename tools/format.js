@@ -10,7 +10,7 @@ var PropertiesParser =
   require('../lib/l20n/format/properties/parser');
 
 var Resolver = require('../lib/l20n/resolver');
-var createEntries = require('../lib/l20n').createEntries;
+var extendEntries = require('../lib/l20n').extendEntries;
 var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
 
 program
@@ -82,8 +82,10 @@ function compileAndPrint(err, code) {
     }
   }
 
-  var entries = createEntries(ast);
-  entries.__plural = getPluralRule('en-US');
+  var entries = {
+  __plural: getPluralRule('en-US')
+  };
+  extendEntries(entries, ast);
   for (var id in entries) {
     if (id.indexOf('__') === 0) {
       continue;
