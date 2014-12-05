@@ -38,19 +38,33 @@ var ast = parser.parse(null, code);
 times.parseEnd = dateNow();
 
 times.createEntries = dateNow();
-L20n.createEntries(ast);
+L20n.extendEntries(env, ast);
 times.createEntriesEnd = dateNow();
 
+var ids = Object.keys(env).filter(function(id){return id !== '__plural';});
+
 times.format = dateNow();
-for (var id in env) {
-   L20n.Resolver.formatEntity(env[id], data);
+for (var id in ids) {
+   L20n.Resolver.formatEntity(env[ids[id]], data);
 }
 times.formatEnd = dateNow();
+
+var ctx = new L20n.Context(null);
+var locale = ctx.getLocale('en-US');
+locale.addAST(ast);
+ctx.requestLocales(['en-US']);
+
+times.getEntity = dateNow();
+for (var id in ids) {
+  ctx.getEntity(ids[id], data);
+}
+times.getEntityEnd = dateNow();
 
 var results = {
   parse: micro(times.parseEnd - times.start),
   createEntries: micro(times.createEntriesEnd - times.createEntries),
   format: micro(times.formatEnd - times.format),
+  getEntity: micro(times.getEntityEnd - times.getEntity),
 };
 
 print(JSON.stringify(results));

@@ -1,6 +1,7 @@
 var fs = require('fs');
 
 var L20n = require('../../lib/l20n');
+var Context = require('../../lib/l20n/context').Context;
 
 var parser = L20n.PropertiesParser;
 var env = {
@@ -39,19 +40,34 @@ var start = process.hrtime();
 var ast = parser.parse(null, code);
 cumulative.parseEnd = process.hrtime(start);
 
+
 cumulative.createEntries = process.hrtime(start);
-L20n.createEntries(ast);
+L20n.extendEntries(env, ast);
 cumulative.createEntriesEnd = process.hrtime(start);
 
+var ids = Object.keys(env).filter(function(id){return id !== '__plural';});
+
 cumulative.format = process.hrtime(start);
-for (var id in env) {
-  L20n.Resolver.formatEntity(env[id], data);
+for (var id in ids) {
+  L20n.Resolver.formatEntity(env[ids[id]], data);
 }
 cumulative.formatEnd = process.hrtime(start);
+
+var ctx = new Context(null);
+var locale = ctx.getLocale('en-US');
+locale.addAST(ast);
+ctx.requestLocales(['en-US']);
+
+cumulative.getEntity = process.hrtime(start);
+for (var id in ids) {
+  ctx.getEntity(ids[id], data);
+}
+cumulative.getEntityEnd = process.hrtime(start);
 
 var results = {
   parse: micro(cumulative.parseEnd),
   createEntries: micro(cumulative.createEntriesEnd) - micro(cumulative.createEntries),
-  format: micro(cumulative.formatEnd) - micro(cumulative.format)
+  format: micro(cumulative.formatEnd) - micro(cumulative.format),
+  getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
 };
 console.log(JSON.stringify(results));
