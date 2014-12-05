@@ -40,10 +40,10 @@ function color(str, col) {
   return str;
 }
 
-function logError(err) {
+function makeError(err) {
   var message  = ': ' + err.message.replace('\n', '');
   var name = err.name + (err.entry ? ' in ' + err.entry : '');
-  console.warn(color(name + message, ERROR));
+  return color(name + message, ERROR);
 }
 
 function singleline(str) {
@@ -53,7 +53,11 @@ function singleline(str) {
 }
 
 function format(entity) {
-  return singleline(Resolver.formatValue(entity, data));
+  try {
+    return singleline(Resolver.format(data, entity));
+  } catch(err) {
+    return makeError(err);
+  }
 }
 
 function print(id, entity) {
@@ -78,7 +82,7 @@ function compileAndPrint(err, code) {
     try {
       ast = PropertiesParser.parse(null, code.toString());
     } catch (e) {
-      logError(e);
+      console.warn(makeError(e));
     }
   }
 

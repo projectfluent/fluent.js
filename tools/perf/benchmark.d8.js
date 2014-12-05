@@ -44,7 +44,7 @@ var ids = Object.keys(env).filter(function(id){return id !== '__plural';});
 
 times.format = Date.now();
 for (var id in ids) {
-   L20n.Resolver.formatEntity(env[ids[id]], data);
+   L20n.Resolver.format(data, env[ids[id]], data);
 }
 times.formatEnd = Date.now();
 
