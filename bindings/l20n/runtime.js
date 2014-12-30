@@ -94,6 +94,8 @@ if (DEBUG) {
     console.error.bind(console));
   navigator.mozL10n.ctx.addEventListener('parseerror',
     console.error.bind(console));
+  navigator.mozL10n.ctx.addEventListener('resolveerror',
+    console.error.bind(console));
 }
 
 function getDirection(lang) {

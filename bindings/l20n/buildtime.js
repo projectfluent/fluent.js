@@ -34,6 +34,7 @@ navigator.mozL10n.bootstrap = function(file, debug) {
     ctx.addEventListener('fetcherror', error);
     ctx.addEventListener('manifesterror', warn);
     ctx.addEventListener('parseerror', warn);
+    ctx.addEventListener('resolveerror', warn);
     ctx.addEventListener('notfounderror', error);
   }
 
