@@ -2,7 +2,7 @@
 
 /* global Locale, Context, L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
-/* global translateDocument, io */
+/* global translateDocument */
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO_STRATEGIES */
@@ -198,7 +198,7 @@ function onMetaInjected(node) {
 
   switch (node.getAttribute('name')) {
     case 'availableLanguages':
-      meta.availableLanguages = 
+      meta.availableLanguages =
         splitAvailableLanguagesString(node.getAttribute('content'));
       break;
     case 'defaultLanguage':
