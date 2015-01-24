@@ -70,8 +70,10 @@ function initResources() {
     document.documentElement.dataset.noCompleteBug = true;
   }
 
-  this.ctx.registerLocales(meta.defaultLanguage,
-                           Object.keys(meta.availableLanguages));
+  var availableLangs = meta.availableLanguages ?
+    Object.keys(meta.availableLanguages) : null;
+
+  this.ctx.registerLocales(meta.defaultLanguage, availableLangs);
 }
 
 
