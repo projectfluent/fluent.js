@@ -2,7 +2,7 @@
 
 /* global Locale, Context, L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
-/* global translateDocument */
+/* global translateDocument, Promise */
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO_STRATEGIES */
@@ -195,20 +195,27 @@ function initResources() {
     }
   }
 
+  var additionalLanguagesPromise;
+
   if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
     // if the environment supports langpacks, register extra languages…
-    navigator.mozApps.getAdditionalLanguages().then(function(extraLangs) {
-      registerLocales.call(this, meta, extraLangs);
-      initLocale.call(this);
-    }.bind(this));
+    additionalLanguagesPromise =
+      navigator.mozApps.getAdditionalLanguages().catch(function(e) {
+        console.error('Error while loading getAdditionalLanguages', e);
+      });
+
     // …and listen to langpacks being added and removed
     document.addEventListener('additionallanguageschange', function(evt) {
       registerLocales.call(this, meta, evt.detail);
     }.bind(this));
   } else {
-    registerLocales.call(this, meta);
-    initLocale.call(this);
+    additionalLanguagesPromise = Promise.resolve();
   }
+
+  additionalLanguagesPromise.then(function(extraLangs) {
+    registerLocales.call(this, meta, extraLangs);
+    initLocale.call(this);
+  }.bind(this));
 }
 
 function registerLocales(meta, extraLangs) {
