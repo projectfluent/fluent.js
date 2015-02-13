@@ -55,7 +55,7 @@ module.exports = {
     ],
     dest: 'dist/buildtime/l10n.js',
   },
-  shell: {
+  jsshell: {
     src: [
       'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',
@@ -69,6 +69,6 @@ module.exports = {
       'lib/l20n/context.js',
       'bindings/l20n/shell.js',
     ],
-    dest: 'dist/shell/l10n.js',
+    dest: 'dist/jsshell/l10n.js',
   },
 };

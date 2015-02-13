@@ -31,6 +31,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     concat: require('./grunt/config/concat'),
+    copy: require('./grunt/config/copy'),
     clean: require('./grunt/config/clean'),
     jshint: require('./grunt/config/lint/jshint'),
     jscoverage: require('./grunt/config/jscoverage'),
@@ -85,11 +86,18 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'concat:buildtime',
     'concat:runtime',
+    'concat:jsshell',
+  ]);
+
+  grunt.registerTask('dist', [
+    'concat:buildtime',
+    'concat:runtime',
+    'copy:gaia'
   ]);
 
   grunt.registerTask('default', [
     'lint',
     'test',
-    'build',
+    'dist',
   ]);
 };
