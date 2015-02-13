@@ -1,38 +1,42 @@
 'use strict';
 
+function strip(src) {
+  src = src.replace(
+    /.*var .* = require.*;\n/g,
+    '');
+  src = src.replace(
+    /.*exports.*;\n/g,
+    '');
+  src = src.replace(
+    /.*'use strict';\n/g,
+    '');
+  src = src.replace(
+    /.*\/\* global .*\*\/\n/g,
+    '');
+  src = src.replace(
+    /.*\/\* exported .*\*\/\n/g,
+    '');
+  src = src.replace(
+    /\n([^\n])/g, function(match, p1) {
+      return '\n  ' + p1;
+    });
+  return src;
+}
+
+var clientsideOpts = {
+  separator: '',
+  banner: '' +
+    '(function(window, undefined) {\n' +
+    '  \'use strict\';\n' +
+    '\n' +
+    '  /* jshint validthis:true */',
+  footer: '\n})(this);\n',
+  process: strip
+};
+
 module.exports = {
-  options: {
-    separator: '',
-    banner: '' +
-      '(function(window, undefined) {\n' +
-      '  \'use strict\';\n' +
-      '\n' +
-      '  /* jshint validthis:true */',
-    footer: '\n})(this);\n',
-    process: function(src) {
-      src = src.replace(
-        /.*var .* = require.*;\n/g,
-        '');
-      src = src.replace(
-        /.*exports.*;\n/g,
-        '');
-      src = src.replace(
-        /.*'use strict';\n/g,
-        '');
-      src = src.replace(
-        /.*\/\* global .*\*\/\n/g,
-        '');
-      src = src.replace(
-        /.*\/\* exported .*\*\/\n/g,
-        '');
-      src = src.replace(
-        /\n([^\n])/g, function(match, p1) {
-          return '\n  ' + p1;
-        });
-      return src;
-    }
-  },
   runtime: {
+    options: clientsideOpts,
     src: [
       'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',
@@ -50,12 +54,18 @@ module.exports = {
     dest: 'dist/runtime/l10n.js',
   },
   buildtime: {
-    src: [
-      'bindings/l20n/buildtime.js',
-    ],
-    dest: 'dist/buildtime/l10n.js',
+    files: {
+      'dist/buildtime/l10n.js': [
+        'bindings/l20n/buildtime.js'
+      ],
+      'dist/buildtime/qps.js': [
+        'lib/l20n/util.js',
+        'lib/l20n/pseudo.js'
+      ]
+    }
   },
   jsshell: {
+    options: clientsideOpts,
     src: [
       'lib/l20n/errors.js',
       'lib/client/l20n/platform/io.js',

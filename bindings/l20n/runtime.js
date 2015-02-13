@@ -5,7 +5,7 @@
 /* global translateDocument, Promise */
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
-/* global walkContent, PSEUDO_STRATEGIES */
+/* global walkContent, PSEUDO */
 
 var DEBUG = false;
 var isPretranslated = false;
@@ -59,7 +59,7 @@ navigator.mozL10n = {
       return getDirection(navigator.mozL10n.ctx.supportedLocales[0]);
     }
   },
-  qps: PSEUDO_STRATEGIES,
+  qps: PSEUDO,
   _config: {
     appVersion: null,
     localeSources: Object.create(null),
@@ -125,8 +125,9 @@ function waitFor(state, callback) {
 }
 
 if (window.document) {
-  isPretranslated = !PSEUDO_STRATEGIES.hasOwnProperty(navigator.language) &&
-                    (document.documentElement.lang === navigator.language);
+  isPretranslated =
+    navigator.mozL10n.ctx.qps.indexOf(navigator.language) === -1 &&
+      (document.documentElement.lang === navigator.language);
 
   // XXX always pretranslate if data-no-complete-bug is set;  this is
   // a workaround for a netError page not firing some onreadystatechange

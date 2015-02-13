@@ -4,12 +4,16 @@ module.exports = {
   gaia: {
     files: [
       {
-        src: 'dist/runtime/l10n.js',
-        dest: 'dist/gaia/shared/js/l10n.js'
+        expand: true,
+        cwd: 'dist/runtime',
+        src: '**',
+        dest: 'dist/gaia/shared/js/'
       },
       {
-        src: 'dist/buildtime/l10n.js',
-        dest: 'dist/gaia/build/l10n.js'
+        expand: true,
+        cwd: 'dist/buildtime',
+        src: '**',
+        dest: 'dist/gaia/build/l10n/'
       },
       {
         expand: true,

@@ -3,7 +3,7 @@
 'use strict';
 
 var program = require('commander');
-var PSEUDO_STRATEGIES = require('../lib/l20n/pseudo').PSEUDO_STRATEGIES;
+var PSEUDO = require('../lib/l20n/pseudo').PSEUDO;
 
 program
   .version('0.0.1')
@@ -14,7 +14,7 @@ program
   .parse(process.argv);
 
 function localize(str) {
-  return PSEUDO_STRATEGIES[program.locale].translate(str);
+  return PSEUDO[program.locale].translate(str);
 }
 
 process.stdin.setEncoding('utf8');
