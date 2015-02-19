@@ -205,10 +205,10 @@ function registerLocales(meta, extraLangs) {
   this.ctx.registerLocales(locales[0], Object.keys(locales[1]));
 }
 
-function getMatchingLangpack(lpVersions) {
-  for (var i in lpVersions) {
-    if (lpVersions[i].target === navigator.mozL10n._config.appVersion) {
-      return lpVersions[i];
+function getMatchingLangpack(appVersion, langpacks) {
+  for (var i = 0, langpack; (langpack = langpacks[i]); i++) {
+    if (langpack.target === appVersion) {
+      return langpack;
     }
   }
   return null;
@@ -227,14 +227,14 @@ function buildLocaleList(meta, extraLangs) {
 
   if (extraLangs) {
     for (loc in extraLangs) {
-      lp = getMatchingLangpack(extraLangs[loc]);
+      lp = getMatchingLangpack(this._config.appVersion, extraLangs[loc]);
 
       if (!lp) {
         continue;
       }
       if (!(loc in localeSources) ||
           !meta.availableLanguages[loc] ||
-          parseInt(lp.version) > meta.availableLanguages[loc]) {
+          parseInt(lp.revision) > meta.availableLanguages[loc]) {
         localeSources[loc] = 'extra';
       }
     }
@@ -250,8 +250,10 @@ function splitAvailableLanguagesString(str) {
   var langs = {};
 
   str.split(',').forEach(function(lang) {
+    // code:revision
     lang = lang.trim().split(':');
-    langs[lang[0]] = lang[1];
+    // if revision is missing, use NaN
+    langs[lang[0]] = parseInt(lang[1]);
   });
   return langs;
 }
