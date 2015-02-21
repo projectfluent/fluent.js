@@ -189,6 +189,8 @@ function initResources() {
     // …and listen to langpacks being added and removed
     document.addEventListener('additionallanguageschange', function(evt) {
       registerLocales.call(this, meta, evt.detail);
+      this.ctx.requestLocales.apply(
+        this.ctx, navigator.languages || [navigator.language]);
     }.bind(this));
   } else {
     additionalLanguagesPromise = Promise.resolve();
