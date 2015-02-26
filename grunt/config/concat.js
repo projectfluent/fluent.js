@@ -23,6 +23,12 @@ function strip(src) {
   return src;
 }
 
+function buildtimify(src) {
+  return src.replace(
+    /Runtime/g,
+    'Packaged');
+}
+
 var clientsideOpts = {
   separator: '',
   banner: '' +
@@ -32,6 +38,10 @@ var clientsideOpts = {
     '  /* jshint validthis:true */',
   footer: '\n})(this);\n',
   process: strip
+};
+
+var buildtimeOpts = {
+  process: buildtimify
 };
 
 module.exports = {
@@ -54,6 +64,7 @@ module.exports = {
     dest: 'dist/runtime/l10n.js',
   },
   buildtime: {
+    options: buildtimeOpts,
     files: {
       'dist/buildtime/l10n.js': [
         'bindings/l20n/buildtime.js'
