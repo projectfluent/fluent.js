@@ -43,7 +43,10 @@ function getTranslatableChildren(element) {
 var allowedHtmlAttrs = {
   'ariaLabel': 'aria-label',
   'ariaValueText': 'aria-valuetext',
-  'ariaMozHint': 'aria-moz-hint'
+  'ariaMozHint': 'aria-moz-hint',
+  'label': 'label',
+  'placeholder': 'placeholder',
+  'title': 'title'
 };
 
 function translateElement(element) {
@@ -78,8 +81,6 @@ function translateElement(element) {
     } else if (key === 'innerHTML') {
       // XXX: to be removed once bug 994357 lands
       element.innerHTML = attr;
-    } else {
-      element.setAttribute(key, attr);
     }
   }
 
