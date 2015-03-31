@@ -70,7 +70,7 @@ function translateElement(element) {
     return false;
   }
 
-  this.ctx.formatEntity(l10n.id, l10n.args).then(
+  this.ctx.formatEntity(this.ctx.supportedLocales, l10n.id, l10n.args).then(
     applyTranslation.bind(this, element));
 }
 
