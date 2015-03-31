@@ -62,7 +62,7 @@ module.exports = {
       'bindings/l20n/runtime.js',
       'bindings/l20n/dom.js',
     ],
-    dest: 'dist/runtime/l10n.js',
+    dest: 'dist/runtime/l10n3.js',
   },
   buildtime: {
     options: buildtimeOpts,
