@@ -1,25 +1,8 @@
 'use strict';
 
-/* global allowed, pendingElements:true */
+/* global allowed, fireLocalizedEvent, Promise, pendingElements:true */
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
-
-function translateDocument() {
-  document.documentElement.lang = this.language.code;
-  document.documentElement.dir = this.language.direction;
-  translateFragment.call(this, document.documentElement);
-}
-
-function translateFragment(element) {
-  if (element.hasAttribute('data-l10n-id')) {
-    translateElement.call(this, element);
-  }
-
-  var nodes = getTranslatableChildren(element);
-  for (var i = 0; i < nodes.length; i++ ) {
-    translateElement.call(this, nodes[i]);
-  }
-}
 
 function setL10nAttributes(element, id, args) {
   element.setAttribute('data-l10n-id', id);
@@ -35,8 +18,28 @@ function getL10nAttributes(element) {
   };
 }
 
-function getTranslatableChildren(element) {
-  return element ? element.querySelectorAll('*[data-l10n-id]') : [];
+function getTranslatables(element) {
+  var nodes = [];
+
+  if (element.hasAttribute('data-l10n-id')) {
+    nodes.push(element);
+  }
+
+  return nodes.concat.apply(
+    nodes, element.querySelectorAll('*[data-l10n-id]'));
+}
+
+function translateDocument() {
+  document.documentElement.lang = this.language.code;
+  document.documentElement.dir = this.language.direction;
+  return translateFragment.call(this, document.documentElement).then(
+      fireLocalizedEvent.bind(this));
+}
+
+function translateFragment(element) {
+  return Promise.all(
+    getTranslatables(element).map(
+      translateElement.bind(this)));
 }
 
 function camelCaseToDashed(string) {
@@ -67,7 +70,12 @@ function translateElement(element) {
     return false;
   }
 
-  var entity = this.ctx.getEntity(l10n.id, l10n.args);
+  this.ctx.formatEntity(l10n.id, l10n.args).then(
+    applyTranslation.bind(this, element));
+}
+
+function applyTranslation(element, entity) {
+  this.observer.stop();
 
   if (typeof entity.value === 'string') {
     if (!entity.overlay) {
@@ -94,6 +102,8 @@ function translateElement(element) {
       element.setAttribute(attrName, entity.attrs[key]);
     }
   }
+
+  this.observer.start();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`

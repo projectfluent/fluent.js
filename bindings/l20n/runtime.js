@@ -6,20 +6,13 @@
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO */
+/* global MozL10nMutationObserver */
 
 var DEBUG = false;
 var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
-var nodeObserver = null;
 var pendingElements = null;
 
-var moConfig = {
-  attributes: true,
-  characterData: false,
-  childList: true,
-  subtree: true,
-  attributeFilter: ['data-l10n-id', 'data-l10n-args']
-};
 
 // Public API
 
@@ -60,6 +53,7 @@ navigator.mozL10n = {
     }
   },
   qps: PSEUDO,
+  observer: new MozL10nMutationObserver(),
   _config: {
     appVersion: null,
     localeSources: Object.create(null),
@@ -137,17 +131,12 @@ if (window.document) {
   waitFor('interactive', init.bind(navigator.mozL10n, pretranslate));
 }
 
-function initObserver() {
-  nodeObserver = new MutationObserver(onMutations.bind(navigator.mozL10n));
-  nodeObserver.observe(document, moConfig);
-}
-
 function init(pretranslate) {
   if (!pretranslate) {
     // initialize MO early to collect nodes injected between now and when
     // resources are loaded because we're not going to translate the whole
     // document once l10n resources are ready
-    initObserver();
+    navigator.mozL10n.observer.start();
   }
   initResources.call(navigator.mozL10n);
 }
@@ -291,44 +280,6 @@ function initLocale() {
   }.bind(this));
 }
 
-function localizeMutations(mutations) {
-  var mutation;
-  var targets = new Set();
-
-  for (var i = 0; i < mutations.length; i++) {
-    mutation = mutations[i];
-    if (mutation.type === 'childList') {
-      var addedNode;
-
-      for (var j = 0; j < mutation.addedNodes.length; j++) {
-        addedNode = mutation.addedNodes[j];
-        if (addedNode.nodeType !== Node.ELEMENT_NODE) {
-          continue;
-        }
-        targets.add(addedNode);
-      }
-    }
-
-    if (mutation.type === 'attributes') {
-      targets.add(mutation.target);
-    }
-  }
-
-  targets.forEach(function(target) {
-    if (target.childElementCount) {
-      translateFragment.call(this, target);
-    } else if (target.hasAttribute('data-l10n-id')) {
-      translateElement.call(this, target);
-    }
-  }, this);
-}
-
-function onMutations(mutations, self) {
-  self.disconnect();
-  localizeMutations.call(this, mutations);
-  self.observe(document, moConfig);
-}
-
 function onReady() {
   if (!isPretranslated) {
     translateDocument.call(this);
@@ -343,9 +294,7 @@ function onReady() {
     pendingElements = null;
   }
 
-  if (!nodeObserver) {
-    initObserver();
-  }
+  this.observer.start();
   fireLocalizedEvent.call(this);
 }
 
