@@ -3,7 +3,7 @@
 /* global Locale, Context, L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
 /* global translateDocument, Promise */
-/* global translateFragment, translateElement */
+/* global translateFragment */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO */
 /* global MozL10nMutationObserver */
@@ -11,7 +11,6 @@
 var DEBUG = false;
 var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
-var pendingElements = null;
 
 
 // Public API
@@ -284,14 +283,6 @@ function onReady() {
     translateDocument.call(this);
   }
   isPretranslated = false;
-
-  if (pendingElements) {
-    /* jshint boss:true */
-    for (var i = 0, element; element = pendingElements[i]; i++) {
-      translateElement.call(this, element);
-    }
-    pendingElements = null;
-  }
 
   this.observer.start();
   fireLocalizedEvent.call(this);

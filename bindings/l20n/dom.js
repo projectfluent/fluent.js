@@ -1,6 +1,6 @@
 'use strict';
 
-/* global allowed, fireLocalizedEvent, Promise, pendingElements:true */
+/* global allowed, fireLocalizedEvent, Promise */
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -56,14 +56,6 @@ function camelCaseToDashed(string) {
 }
 
 function translateElement(element) {
-  if (!this.ctx.isReady) {
-    if (!pendingElements) {
-      pendingElements = [];
-    }
-    pendingElements.push(element);
-    return;
-  }
-
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
