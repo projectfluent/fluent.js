@@ -18,8 +18,8 @@ var pendingElements = null;
 
 navigator.mozL10n = {
   ctx: new Context(window.document ? document.URL : null),
-  get: function get(id, ctxdata) {
-    return navigator.mozL10n.ctx.get(id, ctxdata);
+  get: function get(id) {
+    return id;
   },
   formatValue: function(id, ctxdata) {
     return navigator.mozL10n.ctx.formatValue(id, ctxdata);
