@@ -1,6 +1,6 @@
 'use strict';
 
-/* global allowed, fireLocalizedEvent, Promise */
+/* global allowed, Promise */
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
@@ -32,8 +32,7 @@ function getTranslatables(element) {
 function translateDocument() {
   document.documentElement.lang = this.language.code;
   document.documentElement.dir = this.language.direction;
-  return translateFragment.call(this, document.documentElement).then(
-      fireLocalizedEvent.bind(this));
+  return translateFragment.call(this, document.documentElement);
 }
 
 function translateFragment(element) {
@@ -62,8 +61,9 @@ function translateElement(element) {
     return false;
   }
 
-  this.ctx.formatEntity(this.ctx.supportedLocales, l10n.id, l10n.args).then(
-    applyTranslation.bind(this, element));
+  return this.ctx.formatEntity(
+    this.ctx.supportedLocales, l10n.id, l10n.args).then(
+      applyTranslation.bind(this, element));
 }
 
 function applyTranslation(element, entity) {

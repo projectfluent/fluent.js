@@ -66,7 +66,6 @@ navigator.mozL10n = {
       getPluralRule: getPluralRule,
       rePlaceables: rePlaceables,
       translateDocument: translateDocument,
-      onMetaInjected: onMetaInjected,
       PropertiesParser: PropertiesParser,
       walkContent: walkContent,
       buildLocaleList: buildLocaleList
@@ -136,64 +135,16 @@ function init(pretranslate) {
     // document once l10n resources are ready
     navigator.mozL10n.observer.start();
   }
-  initResources.call(navigator.mozL10n);
-}
 
-function initResources() {
-  /* jshint boss:true */
-
-  var meta = {};
   var nodes = document.head
-                      .querySelectorAll('link[rel="localization"],' +
-                                        'meta[name="availableLanguages"],' +
-                                        'meta[name="defaultLanguage"],' +
-                                        'meta[name="appVersion"],' +
-                                        'script[type="application/l10n"]');
-  for (var i = 0, node; node = nodes[i]; i++) {
-    var type = node.getAttribute('rel') || node.nodeName.toLowerCase();
-    switch (type) {
-      case 'localization':
-        this.ctx.resLinks.push(node.getAttribute('href'));
-        break;
-      case 'meta':
-        onMetaInjected.call(this, node, meta);
-        break;
-      case 'script':
-        onScriptInjected.call(this, node);
-        break;
-    }
+                      .querySelectorAll('link[rel="localization"]');
+  for (var i = 0, node; (node = nodes[i]); i++) {
+    this.ctx.resLinks.push(node.getAttribute('href'));
   }
 
-  var additionalLanguagesPromise;
-
-  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    // if the environment supports langpacks, register extra languages…
-    additionalLanguagesPromise =
-      navigator.mozApps.getAdditionalLanguages().catch(function(e) {
-        console.error('Error while loading getAdditionalLanguages', e);
-      });
-
-    // …and listen to langpacks being added and removed
-    document.addEventListener('additionallanguageschange', function(evt) {
-      registerLocales.call(this, meta, evt.detail);
-      this.ctx.requestLocales.apply(
-        this.ctx, navigator.languages || [navigator.language]);
-    }.bind(this));
-  } else {
-    additionalLanguagesPromise = Promise.resolve();
-  }
-
-  additionalLanguagesPromise.then(function(extraLangs) {
-    registerLocales.call(this, meta, extraLangs);
-    initLocale.call(this);
-  }.bind(this));
+  initLocale.call(this);
 }
 
-function registerLocales(meta, extraLangs) {
-  var locales = buildLocaleList.call(this, meta, extraLangs);
-  navigator.mozL10n._config.localeSources = locales[1];
-  this.ctx.registerLocales(locales[0], Object.keys(locales[1]));
-}
 
 function getMatchingLangpack(appVersion, langpacks) {
   for (var i = 0, langpack; (langpack = langpacks[i]); i++) {
@@ -204,27 +155,27 @@ function getMatchingLangpack(appVersion, langpacks) {
   return null;
 }
 
-function buildLocaleList(meta, extraLangs) {
+function buildLocaleList(extraLangs) {
   var loc, lp;
   var localeSources = Object.create(null);
-  var defaultLocale = meta.defaultLanguage || this.ctx.defaultLocale;
+  var defaultLocale = getDefaultLanguage();
 
-  if (meta.availableLanguages) {
-    for (loc in meta.availableLanguages) {
-      localeSources[loc] = 'app';
-    }
+  var bundledLanguages = getBundledLanguages();
+
+  for (loc in bundledLanguages) {
+    localeSources[loc] = 'app';
   }
 
   if (extraLangs) {
     for (loc in extraLangs) {
-      lp = getMatchingLangpack(this._config.appVersion, extraLangs[loc]);
+      lp = getMatchingLangpack(getAppVersion(), extraLangs[loc]);
 
       if (!lp) {
         continue;
       }
       if (!(loc in localeSources) ||
-          !meta.availableLanguages[loc] ||
-          parseInt(lp.revision) > meta.availableLanguages[loc]) {
+          !bundledLanguages[loc] ||
+          parseInt(lp.revision) > bundledLanguages[loc]) {
         localeSources[loc] = 'extra';
       }
     }
@@ -248,44 +199,77 @@ function splitAvailableLanguagesString(str) {
   return langs;
 }
 
-function onMetaInjected(node, meta) {
-  switch (node.getAttribute('name')) {
-    case 'availableLanguages':
-      meta.availableLanguages =
-        splitAvailableLanguagesString(node.getAttribute('content'));
-      break;
-    case 'defaultLanguage':
-      meta.defaultLanguage = node.getAttribute('content');
-      break;
-    case 'appVersion':
-      navigator.mozL10n._config.appVersion = node.getAttribute('content');
-      break;
+// XXX take last found instead of first?
+// XXX optimize the number of qS?
+function getAppVersion() {
+  var meta = document.head.querySelector('meta[name="appVersion"]');
+  return navigator.mozL10n._config.appVersion = meta.getAttribute('content');
+}
+
+function getDefaultLanguage() {
+  var meta = document.head.querySelector('meta[name="defaultLanguage"]');
+  return meta.getAttribute('content').trim();
+}
+
+function getBundledLanguages() {
+  var meta = document.head.querySelector('meta[name="availableLanguages"]');
+  return splitAvailableLanguagesString(meta.getAttribute('content'));
+}
+
+function getAdditionalLanguages() {
+  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
+    return navigator.mozApps.getAdditionalLanguages().catch(function(e) {
+        console.error('Error while loading getAdditionalLanguages', e);
+      });
+  } else {
+    return Promise.resolve();
   }
 }
 
-function onScriptInjected(node) {
-  var lang = node.getAttribute('lang');
-  var locale = this.ctx.getLocale(lang);
-  locale.addAST(JSON.parse(node.textContent));
+function getAvailableLanguages(extraLangs) {
+  var locales = buildLocaleList(extraLangs);
+  navigator.mozL10n._config.localeSources = locales[1];
+  return Object.keys(locales[1]);
 }
 
+function negotiate(def, available, requested) {
+  var supportedLocale;
+  // Find the first locale in the requested list that is supported.
+  for (var i = 0; i < requested.length; i++) {
+    var locale = requested[i];
+    if (available.indexOf(locale) !== -1) {
+      supportedLocale = locale;
+      break;
+    }
+  }
+  if (!supportedLocale ||
+      supportedLocale === def) {
+    return [def];
+  }
+
+  return [supportedLocale, def];
+}
+
+
 function initLocale() {
-  this.ctx.requestLocales.apply(
-    this.ctx, navigator.languages || [navigator.language]);
-  window.addEventListener('languagechange', function l10n_langchange() {
-    this.ctx.requestLocales.apply(
-      this.ctx, navigator.languages || [navigator.language]);
-  }.bind(this));
+  var langs = Promise.all([
+    getDefaultLanguage(),
+    getAdditionalLanguages().then(getAvailableLanguages),
+    navigator.languages || [navigator.language]]).then(
+      Function.prototype.apply.bind(negotiate, null));
+  this.ctx.fetch(langs, 1);
 }
 
 function onReady() {
   if (!isPretranslated) {
-    translateDocument.call(this);
+    isPretranslated = false;
+    translateDocument.call(this).then(
+      fireLocalizedEvent.bind(this));
+  } else {
+    fireLocalizedEvent.call(this);
   }
-  isPretranslated = false;
 
   this.observer.start();
-  fireLocalizedEvent.call(this);
 }
 
 function fireLocalizedEvent() {
