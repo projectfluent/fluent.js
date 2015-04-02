@@ -13,6 +13,30 @@ var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
 
+// readyState
+
+var readyStates = {
+  'loading': 0,
+  'interactive': 1,
+  'complete': 2
+};
+
+var interactive = new Promise(function(resolve) {
+  var state = readyStates.interactive;
+
+  if (readyStates[document.readyState] >= state) {
+    return resolve();
+  }
+
+  document.addEventListener('readystatechange', function l10n_onrsc() {
+    if (readyStates[document.readyState] >= state) {
+      document.removeEventListener('readystatechange', l10n_onrsc);
+      resolve();
+    }
+  });
+});
+
+
 // Public API
 
 navigator.mozL10n = {
@@ -40,16 +64,10 @@ navigator.mozL10n = {
   get readyState() {
     return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
   },
+  languages: getSupportedLanguages(),
   language: {
-    set code(lang) {
-      navigator.mozL10n.ctx.requestLocales(lang);
-    },
-    get code() {
-      return navigator.mozL10n.ctx.supportedLocales[0];
-    },
-    get direction() {
-      return getDirection(navigator.mozL10n.ctx.supportedLocales[0]);
-    }
+    code: 'en-US',
+    direction: getDirection('en-US')
   },
   qps: PSEUDO,
   observer: new MozL10nMutationObserver(),
@@ -95,27 +113,6 @@ function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
-var readyStates = {
-  'loading': 0,
-  'interactive': 1,
-  'complete': 2
-};
-
-function waitFor(state, callback) {
-  state = readyStates[state];
-  if (readyStates[document.readyState] >= state) {
-    callback();
-    return;
-  }
-
-  document.addEventListener('readystatechange', function l10n_onrsc() {
-    if (readyStates[document.readyState] >= state) {
-      document.removeEventListener('readystatechange', l10n_onrsc);
-      callback();
-    }
-  });
-}
-
 if (window.document) {
   isPretranslated =
     document.documentElement.lang === navigator.language;
@@ -125,7 +122,7 @@ if (window.document) {
   // events;  see https://bugzil.la/444165
   var pretranslate = document.documentElement.dataset.noCompleteBug ?
     true : !isPretranslated;
-  waitFor('interactive', init.bind(navigator.mozL10n, pretranslate));
+  interactive.then(init.bind(navigator.mozL10n, pretranslate));
 }
 
 function init(pretranslate) {
@@ -155,12 +152,10 @@ function getMatchingLangpack(appVersion, langpacks) {
   return null;
 }
 
-function buildLocaleList(extraLangs) {
+function buildLocaleList(
+    defaultLocale, bundledLanguages, extraLangs, appVersion) {
   var loc, lp;
   var localeSources = Object.create(null);
-  var defaultLocale = getDefaultLanguage();
-
-  var bundledLanguages = getBundledLanguages();
 
   for (loc in bundledLanguages) {
     localeSources[loc] = 'app';
@@ -168,7 +163,7 @@ function buildLocaleList(extraLangs) {
 
   if (extraLangs) {
     for (loc in extraLangs) {
-      lp = getMatchingLangpack(getAppVersion(), extraLangs[loc]);
+      lp = getMatchingLangpack(appVersion, extraLangs[loc]);
 
       if (!lp) {
         continue;
@@ -202,34 +197,54 @@ function splitAvailableLanguagesString(str) {
 // XXX take last found instead of first?
 // XXX optimize the number of qS?
 function getAppVersion() {
-  var meta = document.head.querySelector('meta[name="appVersion"]');
-  return navigator.mozL10n._config.appVersion = meta.getAttribute('content');
+  return interactive.then(function() {
+    var meta = document.head.querySelector('meta[name="appVersion"]');
+    return navigator.mozL10n._config.appVersion =
+      meta.getAttribute('content');
+  });
 }
 
 function getDefaultLanguage() {
-  var meta = document.head.querySelector('meta[name="defaultLanguage"]');
-  return meta.getAttribute('content').trim();
+  return interactive.then(function() {
+    var meta = document.head.querySelector('meta[name="defaultLanguage"]');
+    return meta.getAttribute('content').trim();
+  });
 }
 
 function getBundledLanguages() {
-  var meta = document.head.querySelector('meta[name="availableLanguages"]');
-  return splitAvailableLanguagesString(meta.getAttribute('content'));
+  return interactive.then(function() {
+    var meta = document.head.querySelector('meta[name="availableLanguages"]');
+    return splitAvailableLanguagesString(meta.getAttribute('content'));
+  });
 }
 
 function getAdditionalLanguages() {
-  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    return navigator.mozApps.getAdditionalLanguages().catch(function(e) {
-        console.error('Error while loading getAdditionalLanguages', e);
-      });
-  } else {
-    return Promise.resolve();
-  }
+  return navigator.mozApps.getAdditionalLanguages().catch(function(e) {
+    console.error('Error while loading getAdditionalLanguages', e);
+  });
 }
 
 function getAvailableLanguages(extraLangs) {
-  var locales = buildLocaleList(extraLangs);
+  return Promise.all([
+    getDefaultLanguage(),
+    getBundledLanguages(),
+    extraLangs,
+    getAppVersion()]).then(
+      Function.prototype.apply.bind(buildLocaleList, null)).then(
+        saveLocaleSources);
+}
+
+function saveLocaleSources(locales) {
   navigator.mozL10n._config.localeSources = locales[1];
   return Object.keys(locales[1]);
+}
+
+function getSupportedLanguages() {
+  return Promise.all([
+    getDefaultLanguage(),
+    getAdditionalLanguages().then(getAvailableLanguages),
+    navigator.languages || [navigator.language]]).then(
+      Function.prototype.apply.bind(negotiate, null));
 }
 
 function negotiate(def, available, requested) {
@@ -252,12 +267,7 @@ function negotiate(def, available, requested) {
 
 
 function initLocale() {
-  var langs = Promise.all([
-    getDefaultLanguage(),
-    getAdditionalLanguages().then(getAvailableLanguages),
-    navigator.languages || [navigator.language]]).then(
-      Function.prototype.apply.bind(negotiate, null));
-  this.ctx.fetch(langs, 1);
+  this.ctx.fetch(navigator.mozL10n.languages, 1);
 }
 
 function onReady() {
@@ -274,10 +284,10 @@ function onReady() {
 
 function fireLocalizedEvent() {
   var event = new CustomEvent('localized', {
-    'bubbles': false,
-    'cancelable': false,
-    'detail': {
-      'language': this.ctx.supportedLocales[0]
+    bubbles: false,
+    cancelable: false,
+    detail: {
+      language: 'en-US'
     }
   });
   window.dispatchEvent(event);
