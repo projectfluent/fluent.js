@@ -39,13 +39,16 @@ var interactive = new Promise(function(resolve) {
 
 // Public API
 
+var meta = {
+  defaultLanguage: getDefaultLanguage(),
+  bundledLanguages: getBundledLanguages(),
+  appVersion: getAppVersion(),
+};
+
 navigator.mozL10n = {
   ctx: new Context(window.document ? document.URL : null),
   get: function get(id) {
     return id;
-  },
-  formatValue: function(id, ctxdata) {
-    return navigator.mozL10n.ctx.formatValue(id, ctxdata);
   },
   formatEntity: function(id, ctxdata) {
     return navigator.mozL10n.ctx.formatEntity(id, ctxdata);
@@ -65,6 +68,7 @@ navigator.mozL10n = {
     return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
   },
   languages: getSupportedLanguages(),
+  meta: meta,
   language: {
     code: 'en-US',
     direction: getDirection('en-US')
@@ -72,7 +76,6 @@ navigator.mozL10n = {
   qps: PSEUDO,
   observer: new MozL10nMutationObserver(),
   _config: {
-    appVersion: null,
     localeSources: Object.create(null),
   },
   _getInternalAPI: function() {
@@ -199,8 +202,7 @@ function splitAvailableLanguagesString(str) {
 function getAppVersion() {
   return interactive.then(function() {
     var meta = document.head.querySelector('meta[name="appVersion"]');
-    return navigator.mozL10n._config.appVersion =
-      meta.getAttribute('content');
+    return meta.getAttribute('content');
   });
 }
 
@@ -218,18 +220,12 @@ function getBundledLanguages() {
   });
 }
 
-function getAdditionalLanguages() {
-  return navigator.mozApps.getAdditionalLanguages().catch(function(e) {
-    console.error('Error while loading getAdditionalLanguages', e);
-  });
-}
-
 function getAvailableLanguages(extraLangs) {
   return Promise.all([
-    getDefaultLanguage(),
-    getBundledLanguages(),
+    meta.defaultLanguage,
+    meta.bundledLanguages,
     extraLangs,
-    getAppVersion()]).then(
+    meta.appVersion]).then(
       Function.prototype.apply.bind(buildLocaleList, null)).then(
         saveLocaleSources);
 }
@@ -241,8 +237,8 @@ function saveLocaleSources(locales) {
 
 function getSupportedLanguages() {
   return Promise.all([
-    getDefaultLanguage(),
-    getAdditionalLanguages().then(getAvailableLanguages),
+    meta.defaultLanguage,
+    navigator.mozApps.getAdditionalLanguages().then(getAvailableLanguages),
     navigator.languages || [navigator.language]]).then(
       Function.prototype.apply.bind(negotiate, null));
 }
