@@ -1,6 +1,6 @@
 'use strict';
 
-/* global Locale, Context, L10nError, Resolver, PropertiesParser */
+/* global Locale, Context, Env, L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
 /* global translateDocument, Promise */
 /* global translateFragment */
@@ -47,6 +47,8 @@ var meta = {
 
 navigator.mozL10n = {
   ctx: new Context(window.document ? document.URL : null),
+  env: new Env(window.document ? document.URL : null),
+  documentView: null,
   get: function get(id) {
     return id;
   },
@@ -136,12 +138,16 @@ function init(pretranslate) {
     navigator.mozL10n.observer.start();
   }
 
+  var resLinks = [];
   var nodes = document.head
                       .querySelectorAll('link[rel="localization"]');
   for (var i = 0, node; (node = nodes[i]); i++) {
-    this.ctx.resLinks.push(node.getAttribute('href'));
+    var link = node.getAttribute('href');
+    this.ctx.resLinks.push(link);
+    resLinks.push(link);
   }
 
+  this.documentView = this.env.createView(resLinks);
   initLocale.call(this);
 }
 

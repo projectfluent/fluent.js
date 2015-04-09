@@ -61,7 +61,7 @@ function translateElement(element) {
     return false;
   }
 
-  return this.ctx.formatEntity(
+  return this.documentView.formatEntity(
     this.languages, l10n.id, l10n.args).then(
       applyTranslation.bind(this, element));
 }
