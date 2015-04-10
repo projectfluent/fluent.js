@@ -269,7 +269,9 @@ function negotiate(def, available, requested) {
 
 
 function initLocale() {
-  this.ctx.fetch(navigator.mozL10n.languages, 1);
+  this.documentView.fetch(navigator.mozL10n.languages, 1).then(
+    // XXX still use the ready event
+    function() { this.ctx.setReady(); }.bind(this));
 }
 
 function onReady() {
