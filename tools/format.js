@@ -7,11 +7,11 @@ var program = require('commander');
 var colors = require('colors');
 
 var PropertiesParser =
-  require('../lib/l20n/format/properties/parser');
+  require('../src/lib/format/properties/parser');
 
-var Resolver = require('../lib/l20n/resolver');
-var extendEntries = require('../lib/l20n').extendEntries;
-var getPluralRule = require('../lib/l20n/plurals').getPluralRule;
+var Resolver = require('../src/lib/resolver');
+var extendEntries = require('../src/bindings/node').extendEntries;
+var getPluralRule = require('../src/lib/plurals').getPluralRule;
 
 program
   .version('0.0.1')

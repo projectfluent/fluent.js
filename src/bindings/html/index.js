@@ -6,9 +6,8 @@
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO */
+/* exported onReady, waitFor, init */
 
-var DEBUG = false;
-var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 var nodeObserver = null;
 var pendingElements = null;
@@ -24,7 +23,7 @@ var moConfig = {
 // Public API
 
 navigator.mozL10n = {
-  ctx: new Context(window.document ? document.URL : null),
+  ctx: null,
   get: function get(id, ctxdata) {
     return navigator.mozL10n.ctx.get(id, ctxdata);
   },
@@ -63,6 +62,7 @@ navigator.mozL10n = {
   _config: {
     appVersion: null,
     localeSources: Object.create(null),
+    isPretranslated: false,
   },
   _getInternalAPI: function() {
     return {
@@ -80,24 +80,6 @@ navigator.mozL10n = {
     };
   }
 };
-
-navigator.mozL10n.ctx.ready(onReady.bind(navigator.mozL10n));
-
-navigator.mozL10n.ctx.addEventListener('notfounderror',
-  function reportMissingEntity(e) {
-    if (DEBUG || e.loc === 'en-US') {
-      console.warn(e.toString());
-    }
-});
-
-if (DEBUG) {
-  navigator.mozL10n.ctx.addEventListener('fetcherror',
-    console.error.bind(console));
-  navigator.mozL10n.ctx.addEventListener('parseerror',
-    console.error.bind(console));
-  navigator.mozL10n.ctx.addEventListener('resolveerror',
-    console.error.bind(console));
-}
 
 function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
@@ -122,17 +104,6 @@ function waitFor(state, callback) {
       callback();
     }
   });
-}
-
-if (window.document) {
-  isPretranslated = document.documentElement.lang === navigator.language;
-
-  // XXX always pretranslate if data-no-complete-bug is set;  this is
-  // a workaround for a netError page not firing some onreadystatechange
-  // events;  see https://bugzil.la/444165
-  var pretranslate = document.documentElement.dataset.noCompleteBug ?
-    true : !isPretranslated;
-  waitFor('interactive', init.bind(navigator.mozL10n, pretranslate));
 }
 
 function initObserver() {
@@ -328,10 +299,10 @@ function onMutations(mutations, self) {
 }
 
 function onReady() {
-  if (!isPretranslated) {
+  if (!navigator.mozL10n._config.isPretranslated) {
     translateDocument.call(this);
   }
-  isPretranslated = false;
+  navigator.mozL10n._config.isPretranslated = false;
 
   if (pendingElements) {
     /* jshint boss:true */

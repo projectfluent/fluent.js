@@ -12,7 +12,7 @@ module.exports = function (grunt) {
   var filteredTasks = [
     ['jshint', 'main'],
     ['jshint', 'lib'],
-    ['jshint', 'bindings'],
+    ['jshint', 'html'],
     ['jshint', 'tests'],
     ['jsonlint', 'all'],
   ];
@@ -34,7 +34,6 @@ module.exports = function (grunt) {
     copy: require('./grunt/config/copy'),
     clean: require('./grunt/config/clean'),
     jshint: require('./grunt/config/lint/jshint'),
-    jscoverage: require('./grunt/config/jscoverage'),
     jsonlint: require('./grunt/config/lint/jsonlint'),
     'merge-conflict': require('./grunt/config/lint/merge-conflict'),
     mochaTest: require('./grunt/config/mocha-test'),
@@ -65,7 +64,7 @@ module.exports = function (grunt) {
   grunt.registerTask('lint', [
     'jshint:main',
     'jshint:lib',
-    'jshint:bindings',
+    'jshint:html',
     'jshint:tests',
     'jsonlint:all',
   ]);
@@ -73,26 +72,21 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['mochaTest:dot']);
 
-  // TODO first make sure `dist/docs` exists.
-  grunt.registerTask('coverage', function () {
-    process.env.L20N_COV = 1;
-    grunt.file.mkdir('dist/docs');
-    grunt.task.run([
-      'jscoverage',
-      'mochaTest:coverage',
-    ]);
-  });
-
   grunt.registerTask('build', [
-    'concat:buildtime',
-    'concat:runtime',
+    'concat:gaiabuild',
+    'concat:web',
     'concat:jsshell',
   ]);
 
   grunt.registerTask('dist', [
-    'concat:buildtime',
-    'concat:runtime',
+    'concat:gaiabuild',
+    'concat:web',
     'copy:gaia'
+  ]);
+
+  grunt.registerTask('release', [
+    'concat:web',
+    'uglify'
   ]);
 
   grunt.registerTask('default', [

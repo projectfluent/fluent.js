@@ -1,4 +1,4 @@
-load('../../dist/shell/l10n.js');
+load('../../dist/jsshell/l10n.js');
 
 var parser = L20n.PropertiesParser;
 var env = {

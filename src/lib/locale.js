@@ -3,7 +3,7 @@
 
 var Resolver = require('./resolver.js');
 var PropertiesParser = require('./format/properties/parser');
-var io = require('./platform/io');
+var io = require('../bindings/node/io');
 var getPluralRule = require('./plurals').getPluralRule;
 var PSEUDO = require('./pseudo.js').PSEUDO;
 var walkContent = require('./util.js').walkContent;

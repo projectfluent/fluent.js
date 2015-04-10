@@ -3,7 +3,7 @@
 'use strict';
 
 var program = require('commander');
-var PSEUDO = require('../lib/l20n/pseudo').PSEUDO;
+var PSEUDO = require('../src/lib/pseudo').PSEUDO;
 
 program
   .version('0.0.1')

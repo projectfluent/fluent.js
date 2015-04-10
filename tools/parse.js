@@ -8,7 +8,7 @@ var prettyjson = require('prettyjson');
 var colors = require('colors');
 
 var PropertiesParser =
-  require('../lib/l20n/format/properties/parser');
+  require('../src/lib/format/properties/parser');
 
 
 program

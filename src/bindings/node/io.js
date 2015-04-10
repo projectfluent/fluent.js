@@ -1,7 +1,7 @@
 'use strict';
 
 var fs = require('fs');
-var L10nError = require('../errors').L10nError;
+var L10nError = require('../../lib/errors').L10nError;
 
 exports.load = function load(url, callback, sync) {
   if (sync) {

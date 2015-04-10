@@ -1,7 +1,7 @@
 var fs = require('fs');
 
-var L20n = require('../../lib/l20n');
-var Context = require('../../lib/l20n/context').Context;
+var L20n = require('../../src/bindings/node');
+var Context = require('../../src/lib/context').Context;
 
 var parser = L20n.PropertiesParser;
 var env = {
