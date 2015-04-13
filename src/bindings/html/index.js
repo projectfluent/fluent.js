@@ -1,15 +1,14 @@
 'use strict';
 
-/* global Locale, Context, Env, L10nError, Resolver, PropertiesParser */
+/* global Locale, Context, L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
 /* global translateDocument, Promise */
 /* global translateFragment */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO */
 /* global MozL10nMutationObserver */
+/* exported onReady, waitFor, init */
 
-var DEBUG = false;
-var isPretranslated = false;
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
 
@@ -46,11 +45,14 @@ var meta = {
 };
 
 navigator.mozL10n = {
-  ctx: new Context(window.document ? document.URL : null),
-  env: new Env(window.document ? document.URL : null),
+  ctx: null,
+  env: null,
   documentView: null,
   get: function get(id) {
     return id;
+  },
+  formatValue: function(id, ctxdata) {
+    return navigator.mozL10n.ctx.formatValue(id, ctxdata);
   },
   formatEntity: function(id, ctxdata) {
     return navigator.mozL10n.ctx.formatEntity(id, ctxdata);
@@ -79,6 +81,7 @@ navigator.mozL10n = {
   observer: new MozL10nMutationObserver(),
   _config: {
     localeSources: Object.create(null),
+    isPretranslated: false,
   },
   _getInternalAPI: function() {
     return {
@@ -96,38 +99,8 @@ navigator.mozL10n = {
   }
 };
 
-navigator.mozL10n.ctx.ready(onReady.bind(navigator.mozL10n));
-
-navigator.mozL10n.ctx.addEventListener('notfounderror',
-  function reportMissingEntity(e) {
-    if (DEBUG || e.loc === 'en-US') {
-      console.warn(e.toString());
-    }
-});
-
-if (DEBUG) {
-  navigator.mozL10n.ctx.addEventListener('fetcherror',
-    console.error.bind(console));
-  navigator.mozL10n.ctx.addEventListener('parseerror',
-    console.error.bind(console));
-  navigator.mozL10n.ctx.addEventListener('resolveerror',
-    console.error.bind(console));
-}
-
 function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
-}
-
-if (window.document) {
-  isPretranslated =
-    document.documentElement.lang === navigator.language;
-
-  // XXX always pretranslate if data-no-complete-bug is set;  this is
-  // a workaround for a netError page not firing some onreadystatechange
-  // events;  see https://bugzil.la/444165
-  var pretranslate = document.documentElement.dataset.noCompleteBug ?
-    true : !isPretranslated;
-  interactive.then(init.bind(navigator.mozL10n, pretranslate));
 }
 
 function init(pretranslate) {
@@ -275,8 +248,8 @@ function initLocale() {
 }
 
 function onReady() {
-  if (!isPretranslated) {
-    isPretranslated = false;
+  if (!navigator.mozL10n._config.isPretranslated) {
+    navigator.mozL10n._config.isPretranslated = false;
     translateDocument.call(this).then(
       fireLocalizedEvent.bind(this));
   } else {

@@ -34,13 +34,6 @@ if (grunt.file.exists(reference)) {
 }
 
 module.exports = {
-  'gh-pages': {
-    options: {
-      stdout: true,
-    },
-    command: './build/gh-pages.sh',
-  },
-
   reference: {
     options: {
       stdout: true,

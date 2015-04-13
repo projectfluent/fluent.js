@@ -1,10 +1,10 @@
 'use strict';
 
-var Context = require('./l20n/context').Context;
+var Context = require('../../lib/context').Context;
 var PropertiesParser =
-  require('./l20n/format/properties/parser');
-var getPluralRule = require('./l20n/plurals').getPluralRule;
-var Resolver = require('./l20n/resolver');
+  require('../../lib/format/properties/parser');
+var getPluralRule = require('../../lib/plurals').getPluralRule;
+var Resolver = require('../../lib/resolver');
 
 exports.Context = Context;
 exports.PropertiesParser = PropertiesParser;

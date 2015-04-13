@@ -5,14 +5,14 @@ module.exports = {
     files: [
       {
         expand: true,
-        cwd: 'dist/runtime',
-        src: '**',
+        cwd: 'dist/web',
+        src: ['l10n.js', 'l10n3.js'],
         dest: 'dist/gaia/shared/js/'
       },
       {
         expand: true,
-        cwd: 'dist/buildtime',
-        src: '**',
+        cwd: 'dist/gaiabuild',
+        src: ['l10n.js', 'qps.js'],
         dest: 'dist/gaia/build/l10n/'
       },
       {

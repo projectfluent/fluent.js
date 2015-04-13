@@ -45,55 +45,56 @@ var buildtimeOpts = {
 };
 
 module.exports = {
-  runtime: {
+  web: {
     options: clientsideOpts,
     src: [
-      'lib/l20n/debug.js',
-      'lib/l20n/errors.js',
-      'lib/client/l20n/platform/io3.js',
-      'lib/l20n/events.js',
-      'lib/l20n/plurals.js',
-      'lib/l20n/format/properties/parser.js',
-      'lib/l20n/resolver3.js',
-      'lib/l20n/util.js',
-      'lib/l20n/pseudo.js',
-      'lib/l20n/locale.js',
-      'lib/l20n/context.js',
-      'lib/l20n/view.js',
-      'lib/l20n/env.js',
-      'bindings/l20n/allowed.js',
-      'bindings/l20n/observer.js',
-      'bindings/l20n/runtime.js',
-      'bindings/l20n/dom.js',
+      'src/lib/debug.js',
+      'src/lib/errors.js',
+      'src/lib/events.js',
+      'src/lib/plurals.js',
+      'src/lib/format/properties/parser.js',
+      'src/lib/resolver3.js',
+      'src/lib/util.js',
+      'src/lib/pseudo.js',
+      'src/lib/locale.js',
+      'src/lib/context.js',
+      'src/lib/view.js',
+      'src/lib/env.js',
+      'src/bindings/html/io3.js',
+      'src/bindings/html/allowed.js',
+      'src/bindings/html/observer.js',
+      'src/bindings/html/index.js',
+      'src/bindings/html/dom.js',
+      'src/runtime/web/index.js',
     ],
-    dest: 'dist/runtime/l10n3.js',
+    dest: 'dist/web/l10n3.js',
   },
-  buildtime: {
+  gaiabuild: {
     options: buildtimeOpts,
     files: {
-      'dist/buildtime/l10n.js': [
-        'bindings/l20n/buildtime.js'
+      'dist/gaiabuild/l10n.js': [
+        'src/bindings/gaiabuild/index.js'
       ],
-      'dist/buildtime/qps.js': [
-        'lib/l20n/util.js',
-        'lib/l20n/pseudo.js'
+      'dist/gaiabuild/qps.js': [
+        'src/lib/util.js',
+        'src/lib/pseudo.js'
       ]
     }
   },
   jsshell: {
     options: clientsideOpts,
     src: [
-      'lib/l20n/errors.js',
-      'lib/client/l20n/platform/io.js',
-      'lib/l20n/events.js',
-      'lib/l20n/plurals.js',
-      'lib/l20n/format/properties/parser.js',
-      'lib/l20n/resolver.js',
-      'lib/l20n/util.js',
-      'lib/l20n/pseudo.js',
-      'lib/l20n/locale.js',
-      'lib/l20n/context.js',
-      'bindings/l20n/shell.js',
+      'src/lib/errors.js',
+      'src/lib/events.js',
+      'src/lib/plurals.js',
+      'src/lib/format/properties/parser.js',
+      'src/lib/resolver.js',
+      'src/lib/util.js',
+      'src/lib/pseudo.js',
+      'src/lib/locale.js',
+      'src/lib/context.js',
+      'src/bindings/jsshell/io.js',
+      'src/bindings/jsshell/index.js',
     ],
     dest: 'dist/jsshell/l10n.js',
   },

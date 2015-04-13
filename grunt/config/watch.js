@@ -12,16 +12,16 @@ module.exports = {
 
   'jshint.lib': {
     files: [
-      'lib/**/*.js',
+      'src/lib/**/*.js',
     ],
     tasks: ['jshint:libFiltered', 'concat'],
   },
 
-  'jshint.bindings': {
+  'jshint.html': {
     files: [
-      'bindings/**/*.js',
+      'src/bindings/**/*.js',
     ],
-    tasks: ['jshint:bindingsFiltered', 'concat'],
+    tasks: ['jshint:htmlFiltered', 'concat'],
   },
 
   jsonlint: {
