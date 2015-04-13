@@ -1,6 +1,7 @@
 'use strict';
 
-/* global Context, Env, onReady, interactive, init */
+/* global Context, Env, onReady, interactive, init, initLocale */
+/* global getSupportedLanguages */
 
 var DEBUG = false;
 
@@ -35,3 +36,8 @@ if (window.document) {
     true : !navigator.mozL10n._config.isPretranslated;
   interactive.then(init.bind(navigator.mozL10n, pretranslate));
 }
+
+window.addEventListener('languagechange', function() {
+  navigator.mozL10n.languages = getSupportedLanguages();
+  initLocale.call(navigator.mozL10n);
+});
