@@ -1,7 +1,7 @@
 'use strict';
 
-/* global Context, Env, onReady, interactive, init, initLocale */
-/* global getSupportedLanguages */
+/* global Context, Env, onReady, whenInteractive */
+/* global init, initLocale, getSupportedLanguages */
 
 var DEBUG = false;
 
@@ -34,7 +34,9 @@ if (window.document) {
   // events;  see https://bugzil.la/444165
   var pretranslate = document.documentElement.dataset.noCompleteBug ?
     true : !navigator.mozL10n._config.isPretranslated;
-  interactive.then(init.bind(navigator.mozL10n, pretranslate));
+  // use a regular callback instead of .then() because this needs to run
+  // before other readystatechange handlers run (a promise would force a tick)
+  whenInteractive(init.bind(navigator.mozL10n, pretranslate));
 }
 
 window.addEventListener('languagechange', function() {

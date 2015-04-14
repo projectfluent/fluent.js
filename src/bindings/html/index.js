@@ -11,7 +11,6 @@
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
-
 // readyState
 
 var readyStates = {
@@ -20,19 +19,21 @@ var readyStates = {
   'complete': 2
 };
 
-var interactive = new Promise(function(resolve) {
-  var state = readyStates.interactive;
-
-  if (readyStates[document.readyState] >= state) {
-    return resolve();
+function whenInteractive(callback) {
+  if (readyStates[document.readyState] >= readyStates.interactive) {
+    return callback();
   }
 
   document.addEventListener('readystatechange', function l10n_onrsc() {
-    if (readyStates[document.readyState] >= state) {
+    if (readyStates[document.readyState] >= readyStates.interactive) {
       document.removeEventListener('readystatechange', l10n_onrsc);
-      resolve();
+      callback();
     }
   });
+}
+
+var interactive = new Promise(function(resolve) {
+  return whenInteractive(resolve);
 });
 
 
@@ -48,6 +49,8 @@ navigator.mozL10n = {
   ctx: null,
   env: null,
   documentView: null,
+  fetched: null,
+
   get: function get(id) {
     return id;
   },
@@ -63,13 +66,13 @@ navigator.mozL10n = {
   setAttributes: setL10nAttributes,
   getAttributes: getL10nAttributes,
   ready: function ready(callback) {
-    return navigator.mozL10n.ctx.ready(callback);
+    return this.fetched.then(callback);
   },
   once: function once(callback) {
-    return navigator.mozL10n.ctx.once(callback);
+    return this.fetched.then(callback);
   },
   get readyState() {
-    return navigator.mozL10n.ctx.isReady ? 'complete' : 'loading';
+    return 'complete';
   },
   languages: getSupportedLanguages(),
   meta: meta,
@@ -242,14 +245,14 @@ function negotiate(def, available, requested) {
 
 
 function initLocale() {
-  this.documentView.fetch(navigator.mozL10n.languages, 1).then(
-    // XXX still use the ready event
-    function() { this.ctx.setReady(); }.bind(this));
+  this.fetched = this.documentView.fetch(navigator.mozL10n.languages, 1);
+  return this.fetched.then(
+    onReady.bind(this));
 }
 
 function onReady() {
-  if (!navigator.mozL10n._config.isPretranslated) {
-    navigator.mozL10n._config.isPretranslated = false;
+  if (!this._config.isPretranslated) {
+    this._config.isPretranslated = false;
     translateDocument.call(this).then(
       fireLocalizedEvent.bind(this));
   } else {
