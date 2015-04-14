@@ -73,7 +73,7 @@ navigator.mozL10n = {
     code: 'en-US',
     direction: getDirection('en-US')
   },
-  qps: PSEUDO,
+  qps: {},
   observer: new MozL10nMutationObserver(),
   _config: {
     localeSources: Object.create(null),
