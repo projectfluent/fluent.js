@@ -1,6 +1,7 @@
 'use strict';
 
-/* global Set, translateFragment, translateElement */
+var translateFragment = require('./dom').translateFragment;
+var translateElement = require('./dom').translateElement;
 
 function MozL10nMutationObserver() {
   this._observer = null;
@@ -59,3 +60,5 @@ function onMutations(mutations) {
     }
   }, this);
 }
+
+exports.MozL10nMutationObserver = MozL10nMutationObserver;

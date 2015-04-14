@@ -1,8 +1,6 @@
 'use strict';
 
-/* exported allowed */
-
-var allowed = {
+module.exports = {
   elements: [
     'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
     'time', 'code', 'var', 'samp', 'kbd', 'sub', 'sup', 'i', 'b', 'u',

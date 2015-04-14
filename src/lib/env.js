@@ -1,16 +1,15 @@
 'use strict';
 
 /* jshint -W079 */
-var Set = require('es6-set');
 
 var L10nError = require('./errors').L10nError;
 var View = require('./view').View;
-var io = require('./platform/io');
 var PropertiesParser = require('./format/properties/parser');
 var Resolver = require('./resolver');
 var debug = require('./debug').debug;
 
-function Env(id) {
+function Env(io, id) {
+  this.io = io;
   this.id = id;
 
   this._resMap = Object.create(null);
@@ -58,9 +57,9 @@ var bindingsIO = {
   app: function(lang, ver, path, type) {
     switch (type) {
       case 'properties':
-        return io.load(path);
+        return this.io.load(path);
       case 'json':
-        return io.loadJSON(path);
+        return this.io.loadJSON(path);
       default:
         throw new L10nError('Unknown file type: ' + type);
     }
@@ -76,7 +75,7 @@ function load(lang, res, type, cont) {
   var source = navigator.mozL10n._config.localeSources[lang] || 'app';
   var appVersion = navigator.mozL10n.meta.appVersion;
 
-  var raw = bindingsIO[source](lang, appVersion, url, type);
+  var raw = bindingsIO[source].call(this, lang, appVersion, url, type);
 
   return cont ? raw.then(cont) : raw;
 }
@@ -96,7 +95,8 @@ Env.prototype._getResource = function(lang, res) {
   var cont = type === 'properties' ?
     PropertiesParser.parse.bind(PropertiesParser, null) : undefined;
 
-  return cache[res][lang] = load(lang, res, type, cont).then(function(ast) {
+  return cache[res][lang] = load.call(this, lang, res, type, cont).then(
+    function(ast) {
     debug(res, 'for', lang, 'loaded');
     return cache[res][lang] = createEntries(lang, ast);
   }, function(err) {

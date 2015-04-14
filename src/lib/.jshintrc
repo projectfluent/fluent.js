@@ -19,6 +19,7 @@
 
   "node": true,
   "devel": true,
+  "esnext": true,
 
   "quotmark": "single",
   "maxcomplexity": 20,

@@ -30,16 +30,16 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
-    concat: require('./grunt/config/concat'),
-    copy: require('./grunt/config/copy'),
-    clean: require('./grunt/config/clean'),
-    jshint: require('./grunt/config/lint/jshint'),
-    jsonlint: require('./grunt/config/lint/jsonlint'),
-    'merge-conflict': require('./grunt/config/lint/merge-conflict'),
-    mochaTest: require('./grunt/config/mocha-test'),
-    shell: require('./grunt/config/shell'),
-    uglify: require('./grunt/config/uglify'),
-    watch: require('./grunt/config/watch'),
+    concat: require('./build/config/concat'),
+    copy: require('./build/config/copy'),
+    clean: require('./build/config/clean'),
+    jshint: require('./build/config/lint/jshint'),
+    jsonlint: require('./build/config/lint/jsonlint'),
+    'merge-conflict': require('./build/config/lint/merge-conflict'),
+    mochaTest: require('./build/config/mocha-test'),
+    shell: require('./build/config/shell'),
+    uglify: require('./build/config/uglify'),
+    watch: require('./build/config/watch'),
   });
 
   // Add copies of watched tasks with an added filter option.

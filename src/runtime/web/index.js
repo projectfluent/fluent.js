@@ -1,9 +1,10 @@
 'use strict';
 
-/* global Env, whenInteractive */
-/* global init, initLocale, getSupportedLanguages */
+var Env = require('../../lib/env').Env;
+var bindings = require('../../bindings/html');
+var io = require('../../bindings/html/io');
 
-navigator.mozL10n.env = new Env(window.document ? document.URL : null);
+navigator.mozL10n.env = new Env(io, window.document ? document.URL : null);
 
 if (window.document) {
   navigator.mozL10n._config.isPretranslated =
@@ -16,10 +17,11 @@ if (window.document) {
     true : !navigator.mozL10n._config.isPretranslated;
   // use a regular callback instead of .then() because this needs to run
   // before other readystatechange handlers run (a promise would force a tick)
-  whenInteractive(init.bind(navigator.mozL10n, pretranslate));
+  bindings.whenInteractive(
+    bindings.init.bind(navigator.mozL10n, pretranslate));
 }
 
 window.addEventListener('languagechange', function() {
-  navigator.mozL10n.languages = getSupportedLanguages();
-  initLocale.call(navigator.mozL10n);
+  navigator.mozL10n.languages = bindings.getSupportedLanguages();
+  bindings.initLocale.call(navigator.mozL10n);
 });

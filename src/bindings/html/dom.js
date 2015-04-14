@@ -1,8 +1,6 @@
 'use strict';
 
-/* global allowed, Promise */
-/* exported translateFragment, translateDocument */
-/* exported setL10nAttributes, getL10nAttributes */
+var allowed = require('./allowed');
 
 function setL10nAttributes(element, id, args) {
   element.setAttribute('data-l10n-id', id);
@@ -227,3 +225,9 @@ function getIndexOfType(element) {
   }
   return index;
 }
+
+exports.translateDocument = translateDocument;
+exports.translateFragment = translateFragment;
+exports.translateElement = translateElement;
+exports.setL10nAttributes = setL10nAttributes;
+exports.getL10nAttributes = getL10nAttributes;

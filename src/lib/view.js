@@ -1,7 +1,5 @@
 'use strict';
 
-var Promise = require('rsvp').Promise;
-
 var Resolver = require('./resolver');
 var getPluralRule = require('./plurals').getPluralRule;
 var L10nError = require('./errors').L10nError;

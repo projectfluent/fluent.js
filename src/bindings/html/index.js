@@ -1,13 +1,10 @@
 'use strict';
 
-/* global L10nError, Resolver, PropertiesParser */
-/* global getPluralRule, rePlaceables */
-/* global translateDocument, Promise */
-/* global translateFragment */
-/* global setL10nAttributes, getL10nAttributes */
-/* global walkContent, PSEUDO */
-/* global MozL10nMutationObserver */
-/* exported onReady, waitFor, init */
+var translateDocument = require('./dom').translateDocument;
+var translateFragment = require('./dom').translateFragment;
+var setL10nAttributes = require('./dom').setL10nAttributes;
+var getL10nAttributes = require('./dom').getL10nAttributes;
+var MozL10nMutationObserver = require('./observer').MozL10nMutationObserver;
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
@@ -83,16 +80,7 @@ navigator.mozL10n = {
     isPretranslated: false,
   },
   _getInternalAPI: function() {
-    return {
-      Error: L10nError,
-      Resolver: Resolver,
-      getPluralRule: getPluralRule,
-      rePlaceables: rePlaceables,
-      translateDocument: translateDocument,
-      PropertiesParser: PropertiesParser,
-      walkContent: walkContent,
-      buildLocaleList: buildLocaleList
-    };
+    return {};
   }
 };
 
@@ -265,3 +253,8 @@ function fireLocalizedEvent() {
   });
   window.dispatchEvent(event);
 }
+
+exports.whenInteractive = whenInteractive;
+exports.init = init;
+exports.initLocale = initLocale;
+exports.getSupportedLanguages = getSupportedLanguages;

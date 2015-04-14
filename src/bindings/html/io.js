@@ -1,10 +1,8 @@
 'use strict';
 
-/* jshint browser:true */
-/* global Promise, L10nError */
-/* exported io */
+var L10nError = require('../../lib/errors').L10nError;
 
-var io = {
+module.exports = {
 
   _load: function(type, url) {
     return new Promise(function(resolve, reject) {

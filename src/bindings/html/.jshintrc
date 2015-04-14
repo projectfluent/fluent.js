@@ -19,10 +19,15 @@
   "validthis": true,
 
   "browser": true,
+  "node": true,
   "devel": true,
 
   "quotmark": "single",
   "maxcomplexity": 20,
   "maxerr": 50,
-  "maxlen": 78
+  "maxlen": 78,
+
+  "globals": {
+    "Promise": false
+  }
 }

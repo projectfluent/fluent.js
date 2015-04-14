@@ -1,7 +1,6 @@
 'use strict';
 
-var DEBUG = (typeof process === 'undefined') ?
-  true : !!process.env.DEBUG;
+var DEBUG = true;
 
 function debug() {
   if (!DEBUG) {
