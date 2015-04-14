@@ -46,7 +46,6 @@ var meta = {
 };
 
 navigator.mozL10n = {
-  ctx: null,
   env: null,
   documentView: null,
   fetched: null,
@@ -54,11 +53,8 @@ navigator.mozL10n = {
   get: function get(id) {
     return id;
   },
-  formatValue: function(id, ctxdata) {
-    return navigator.mozL10n.ctx.formatValue(id, ctxdata);
-  },
-  formatEntity: function(id, ctxdata) {
-    return navigator.mozL10n.ctx.formatEntity(id, ctxdata);
+  formatEntity: function(id, args) {
+    return navigator.mozL10n.documentView.formatEntity(id, args);
   },
   translateFragment: function (fragment) {
     return translateFragment.call(navigator.mozL10n, fragment);
@@ -119,7 +115,6 @@ function init(pretranslate) {
                       .querySelectorAll('link[rel="localization"]');
   for (var i = 0, node; (node = nodes[i]); i++) {
     var link = node.getAttribute('href');
-    this.ctx.resLinks.push(link);
     resLinks.push(link);
   }
 
