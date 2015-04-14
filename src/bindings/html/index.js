@@ -1,6 +1,6 @@
 'use strict';
 
-/* global Locale, Context, L10nError, Resolver, PropertiesParser */
+/* global L10nError, Resolver, PropertiesParser */
 /* global getPluralRule, rePlaceables */
 /* global translateDocument, Promise */
 /* global translateFragment */
@@ -85,8 +85,6 @@ navigator.mozL10n = {
   _getInternalAPI: function() {
     return {
       Error: L10nError,
-      Context: Context,
-      Locale: Locale,
       Resolver: Resolver,
       getPluralRule: getPluralRule,
       rePlaceables: rePlaceables,

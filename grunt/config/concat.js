@@ -56,8 +56,6 @@ module.exports = {
       'src/lib/resolver3.js',
       'src/lib/util.js',
       'src/lib/pseudo.js',
-      'src/lib/locale.js',
-      'src/lib/context.js',
       'src/lib/view.js',
       'src/lib/env.js',
       'src/bindings/html/io3.js',
