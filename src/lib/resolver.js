@@ -7,7 +7,7 @@ var KNOWN_MACROS = ['plural'];
 var MAX_PLACEABLE_LENGTH = 2500;
 var rePlaceables = /\{\{\s*(.+?)\s*\}\}/g;
 
-function createEntry(node, env) {
+function createEntry(node, lang) {
   var keys = Object.keys(node);
 
   // the most common scenario: a simple string with no arguments
@@ -26,7 +26,7 @@ function createEntry(node, env) {
     if (!attrs) {
       attrs = Object.create(null);
     }
-    attrs[key] = createAttribute(node[key], env, node.$i + '.' + key);
+    attrs[key] = createAttribute(node[key], lang, node.$i + '.' + key);
   }
 
   return {
@@ -34,13 +34,13 @@ function createEntry(node, env) {
     value: node.$v !== undefined ? node.$v : null,
     index: node.$x || null,
     attrs: attrs || null,
-    env: env,
+    lang: lang,
     // the dirty guard prevents cyclic or recursive references
     dirty: false
   };
 }
 
-function createAttribute(node, env, id) {
+function createAttribute(node, lang, id) {
   if (typeof node === 'string') {
     return node;
   }
@@ -49,13 +49,13 @@ function createAttribute(node, env, id) {
     id: id,
     value: node.$v || (node !== undefined ? node : null),
     index: node.$x || null,
-    env: env,
+    lang: lang,
     dirty: false
   };
 }
 
 
-function format(args, entity) {
+function format(view, args, entity) {
   var locals = {
     overlay: false
   };
@@ -75,16 +75,17 @@ function format(args, entity) {
   // if format fails, we want the exception to bubble up and stop the whole
   // resolving process;  however, we still need to clean up the dirty flag
   try {
-    rv = resolveValue(locals, args, entity.env, entity.value, entity.index);
+    rv = resolveValue(
+      locals, view, entity.lang, args, entity.value, entity.index);
   } finally {
     entity.dirty = false;
   }
   return rv;
 }
 
-function resolveIdentifier(args, env, id) {
+function resolveIdentifier(view, lang, args, id) {
   if (KNOWN_MACROS.indexOf(id) > -1) {
-    return [{}, env['__' + id]];
+    return [{}, view._getMacro(lang, id)];
   }
 
   if (args && args.hasOwnProperty(id)) {
@@ -98,18 +99,24 @@ function resolveIdentifier(args, env, id) {
 
   // XXX: special case for Node.js where still:
   // '__proto__' in Object.create(null) => true
-  if (id in env && id !== '__proto__') {
-    return format(args, env[id]);
+  if (id === '__proto__') {
+    throw new L10nError('Illegal id: ' + id);
+  }
+
+  var entity = view._getEntity(lang, id);
+
+  if (entity) {
+    return format(view, args, entity);
   }
 
   throw new L10nError('Unknown reference: ' + id);
 }
 
-function subPlaceable(args, env, id) {
+function subPlaceable(view, lang, args, id) {
   var res;
 
   try {
-    res = resolveIdentifier(args, env, id);
+    res = resolveIdentifier(view, lang, args, id);
   } catch (err) {
     return [{ error: err }, '{{ ' + id + ' }}'];
   }
@@ -133,12 +140,12 @@ function subPlaceable(args, env, id) {
   return [{}, '{{ ' + id + ' }}'];
 }
 
-function interpolate(locals, args, env, arr) {
+function interpolate(locals, view, lang, args, arr) {
   return arr.reduce(function(prev, cur) {
     if (typeof cur === 'string') {
       return [prev[0], prev[1] + cur];
     } else if (cur.t === 'idOrVar'){
-      var placeable = subPlaceable(args, env, cur.v);
+      var placeable = subPlaceable(view, lang, args, cur.v);
       if (placeable[0].overlay) {
         prev[0].overlay = true;
       }
@@ -147,9 +154,9 @@ function interpolate(locals, args, env, arr) {
   }, [locals, '']);
 }
 
-function resolveSelector(args, env, expr, index) {
+function resolveSelector(view, lang, args, expr, index) {
     var selectorName = index[0].v;
-    var selector = resolveIdentifier(args, env, selectorName)[1];
+    var selector = resolveIdentifier(view, lang, args, selectorName)[1];
 
     if (typeof selector !== 'function') {
       // selector is a simple reference to an entity or args
@@ -157,9 +164,9 @@ function resolveSelector(args, env, expr, index) {
     }
 
     var argValue = index[1] ?
-      resolveIdentifier(args, env, index[1])[1] : undefined;
+      resolveIdentifier(view, lang, args, index[1])[1] : undefined;
 
-    if (selector === env.__plural) {
+    if (selector === view._getMacro(lang, 'plural')) {
       // special cases for zero, one, two if they are defined on the hash
       if (argValue === 0 && 'zero' in expr) {
         return 'zero';
@@ -175,7 +182,7 @@ function resolveSelector(args, env, expr, index) {
     return selector(argValue);
 }
 
-function resolveValue(locals, args, env, expr, index) {
+function resolveValue(locals, view, lang, args, expr, index) {
   if (!expr) {
     return [locals, expr];
   }
@@ -192,21 +199,21 @@ function resolveValue(locals, args, env, expr, index) {
   }
 
   if (Array.isArray(expr)) {
-    return interpolate(locals, args, env, expr);
+    return interpolate(locals, view, lang, args, expr);
   }
 
   // otherwise, it's a dict
   if (index) {
     // try to use the index in order to select the right dict member
-    var selector = resolveSelector(args, env, expr, index);
+    var selector = resolveSelector(view, lang, args, expr, index);
     if (expr.hasOwnProperty(selector)) {
-      return resolveValue(locals, args, env, expr[selector]);
+      return resolveValue(locals, view, lang, args, expr[selector]);
     }
   }
 
   // if there was no index or no selector was found, try 'other'
   if ('other' in expr) {
-    return resolveValue(locals, args, env, expr.other);
+    return resolveValue(locals, view, lang, args, expr.other);
   }
 
   // XXX Specify entity id

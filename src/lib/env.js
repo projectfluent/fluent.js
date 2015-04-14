@@ -5,9 +5,9 @@ var Set = require('es6-set');
 
 var L10nError = require('./errors').L10nError;
 var View = require('./view').View;
-var io = require('./platform/io3');
+var io = require('./platform/io');
 var PropertiesParser = require('./format/properties/parser');
-var Resolver = require('./resolver3');
+var Resolver = require('./resolver');
 var debug = require('./debug').debug;
 
 function Env(id) {

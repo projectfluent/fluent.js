@@ -53,12 +53,12 @@ module.exports = {
       'src/lib/events.js',
       'src/lib/plurals.js',
       'src/lib/format/properties/parser.js',
-      'src/lib/resolver3.js',
+      'src/lib/resolver.js',
       'src/lib/util.js',
       'src/lib/pseudo.js',
       'src/lib/view.js',
       'src/lib/env.js',
-      'src/bindings/html/io3.js',
+      'src/bindings/html/io.js',
       'src/bindings/html/allowed.js',
       'src/bindings/html/observer.js',
       'src/bindings/html/index.js',
@@ -78,22 +78,5 @@ module.exports = {
         'src/lib/pseudo.js'
       ]
     }
-  },
-  jsshell: {
-    options: clientsideOpts,
-    src: [
-      'src/lib/errors.js',
-      'src/lib/events.js',
-      'src/lib/plurals.js',
-      'src/lib/format/properties/parser.js',
-      'src/lib/resolver.js',
-      'src/lib/util.js',
-      'src/lib/pseudo.js',
-      'src/lib/locale.js',
-      'src/lib/context.js',
-      'src/bindings/jsshell/io.js',
-      'src/bindings/jsshell/index.js',
-    ],
-    dest: 'dist/jsshell/l10n.js',
   },
 };
