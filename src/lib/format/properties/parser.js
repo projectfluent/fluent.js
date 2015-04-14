@@ -2,8 +2,7 @@
 
 var L10nError = require('../../errors').L10nError;
 
-// webpack external
-var unescape = require('unescape');
+var unescape = require('querystring').unescape;
 
 var MAX_PLACEABLES = 100;
 
