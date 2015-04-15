@@ -1,10 +1,9 @@
 'use strict';
 
-var translateDocument = require('./dom').translateDocument;
-var translateFragment = require('./dom').translateFragment;
-var setL10nAttributes = require('./dom').setL10nAttributes;
-var getL10nAttributes = require('./dom').getL10nAttributes;
-var MozL10nMutationObserver = require('./observer').MozL10nMutationObserver;
+import { 
+  translateDocument, translateFragment, setL10nAttributes, getL10nAttributes
+} from './dom';
+import MozL10nMutationObserver from './observer';
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
@@ -16,7 +15,7 @@ var readyStates = {
   'complete': 2
 };
 
-function whenInteractive(callback) {
+export function whenInteractive(callback) {
   if (readyStates[document.readyState] >= readyStates.interactive) {
     return callback();
   }
@@ -88,7 +87,7 @@ function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
-function init(pretranslate) {
+export function init(pretranslate) {
   if (!pretranslate) {
     // initialize MO early to collect nodes injected between now and when
     // resources are loaded because we're not going to translate the whole
@@ -198,7 +197,7 @@ function saveLocaleSources(locales) {
   return Object.keys(locales[1]);
 }
 
-function getSupportedLanguages() {
+export function getSupportedLanguages() {
   return Promise.all([
     meta.defaultLanguage,
     navigator.mozApps.getAdditionalLanguages().then(getAvailableLanguages),
@@ -225,7 +224,7 @@ function negotiate(def, available, requested) {
 }
 
 
-function initLocale() {
+export function initLocale() {
   this.fetched = this.documentView.fetch(navigator.mozL10n.languages, 1);
   return this.fetched.then(
     onReady.bind(this));
@@ -253,8 +252,3 @@ function fireLocalizedEvent() {
   });
   window.dispatchEvent(event);
 }
-
-exports.whenInteractive = whenInteractive;
-exports.init = init;
-exports.initLocale = initLocale;
-exports.getSupportedLanguages = getSupportedLanguages;

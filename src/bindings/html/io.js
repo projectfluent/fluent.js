@@ -1,6 +1,6 @@
 'use strict';
 
-var L10nError = require('../../lib/errors').L10nError;
+import { L10nError } from '../../lib/errors';
 
 function _load(type, url) {
   return new Promise(function(resolve, reject) {
@@ -41,10 +41,10 @@ function _load(type, url) {
   });
 }
 
-exports.load = function(url) {
+export function load(url) {
   return _load('text/plain', url);
-};
+}
 
-exports.loadJSON = function(url) {
+export function loadJSON(url) {
   return _load('application/json', url);
-};
+}

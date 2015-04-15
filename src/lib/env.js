@@ -8,7 +8,7 @@ var PropertiesParser = require('./format/properties/parser');
 var Resolver = require('./resolver');
 var debug = require('./debug').debug;
 
-function Env(io, id) {
+export function Env(io, id) {
   this.io = io;
   this.id = id;
 
@@ -114,5 +114,3 @@ function createEntries(lang, ast) {
   }
   return entries;
 }
-
-exports.Env = Env;

@@ -1,9 +1,8 @@
 'use strict';
 
-var translateFragment = require('./dom').translateFragment;
-var translateElement = require('./dom').translateElement;
+import { translateFragment, translateElement } from './dom';
 
-function MozL10nMutationObserver() {
+export default function MozL10nMutationObserver() {
   this._observer = null;
 }
 
@@ -60,5 +59,3 @@ function onMutations(mutations) {
     }
   }, this);
 }
-
-exports.MozL10nMutationObserver = MozL10nMutationObserver;

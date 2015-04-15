@@ -1,15 +1,15 @@
 'use strict';
 
-var allowed = require('./allowed');
+import allowed from './allowed';
 
-function setL10nAttributes(element, id, args) {
+export function setL10nAttributes(element, id, args) {
   element.setAttribute('data-l10n-id', id);
   if (args) {
     element.setAttribute('data-l10n-args', JSON.stringify(args));
   }
 }
 
-function getL10nAttributes(element) {
+export function getL10nAttributes(element) {
   return {
     id: element.getAttribute('data-l10n-id'),
     args: JSON.parse(element.getAttribute('data-l10n-args'))
@@ -27,13 +27,13 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-function translateDocument() {
+export function translateDocument() {
   document.documentElement.lang = this.language.code;
   document.documentElement.dir = this.language.direction;
   return translateFragment.call(this, document.documentElement);
 }
 
-function translateFragment(element) {
+export function translateFragment(element) {
   return Promise.all(
     getTranslatables(element).map(
       translateElement.bind(this)));
@@ -52,7 +52,7 @@ function camelCaseToDashed(string) {
     .replace(/^-/, '');
 }
 
-function translateElement(element) {
+export function translateElement(element) {
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
@@ -225,9 +225,3 @@ function getIndexOfType(element) {
   }
   return index;
 }
-
-exports.translateDocument = translateDocument;
-exports.translateFragment = translateFragment;
-exports.translateElement = translateElement;
-exports.setL10nAttributes = setL10nAttributes;
-exports.getL10nAttributes = getL10nAttributes;
