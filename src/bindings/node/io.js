@@ -1,9 +1,9 @@
 'use strict';
 
-var fs = require('fs');
-var L10nError = require('../../lib/errors').L10nError;
+import fs from 'fs';
+import { L10nError } from '../../lib/errors';
 
-exports.load = function(url) {
+function load(url) {
   return new Promise(function(resolve, reject) {
     fs.readFile(url, function(err, data) {
       if (err) {
@@ -13,8 +13,10 @@ exports.load = function(url) {
       }
     });
   });
-};
+}
 
-exports.loadJSON = function loadJSON(url) {
+function loadJSON(url) {
   return exports.load(url).then(JSON.parse);
-};
+}
+
+export default { load, loadJSON };
