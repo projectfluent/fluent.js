@@ -4,8 +4,8 @@ module.exports = {
   all: {
     src: [
       'package.json',
-      '{lib,examples,tests}/**/.jshintrc',
-      '{lib,examples,tests}/**/*.json',
+      '{src,examples,tests}/**/.jshintrc',
+      '{src,examples,tests}/**/*.json',
     ],
   },
 };

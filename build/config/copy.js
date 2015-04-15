@@ -5,21 +5,21 @@ module.exports = {
     files: [
       {
         expand: true,
-        cwd: 'dist/web',
+        cwd: 'build/dist/web',
         src: ['l10n.js', 'l10n3.js'],
-        dest: 'dist/gaia/shared/js/'
+        dest: 'build/dist/gaia/shared/js/'
       },
       {
         expand: true,
-        cwd: 'dist/gaiabuild',
+        cwd: 'build/dist/gaiabuild',
         src: ['l10n.js', 'qps.js'],
-        dest: 'dist/gaia/build/l10n/'
+        dest: 'build/dist/gaia/build/l10n/'
       },
       {
         expand: true,
         cwd: 'tests/',
         src: '**',
-        dest: 'dist/gaia/apps/sharedtest/test/unit/l10n/'
+        dest: 'build/dist/gaia/apps/sharedtest/test/unit/l10n/'
       }
     ]
   }

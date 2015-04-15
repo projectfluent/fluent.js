@@ -19,7 +19,6 @@
   "validthis": true,
 
   "browser": true,
-  "node": true,
   "devel": true,
   "esnext": true,
 

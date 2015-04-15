@@ -105,11 +105,9 @@ function Pseudo(id, name, charMap, modFn) {
   this.name = this.translate(name);
 }
 
-var PSEUDO = {
+export default {
   'qps-ploc': new Pseudo('qps-ploc', 'Runtime Accented',
                          ACCENTED_MAP, makeLonger),
   'qps-plocm': new Pseudo('qps-plocm', 'Runtime Mirrored',
                           FLIPPED_MAP, makeRTL)
 };
-
-exports.PSEUDO = PSEUDO;

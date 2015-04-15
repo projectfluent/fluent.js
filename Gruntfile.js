@@ -11,8 +11,7 @@ module.exports = function (grunt) {
   // no files would be processed during initial runs.
   var filteredTasks = [
     ['jshint', 'main'],
-    ['jshint', 'lib'],
-    ['jshint', 'html'],
+    ['jshint', 'src'],
     ['jshint', 'tests'],
     ['jsonlint', 'all'],
   ];
@@ -30,7 +29,7 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
-    concat: require('./build/config/concat'),
+    webpack: require('./build/config/webpack'),
     copy: require('./build/config/copy'),
     clean: require('./build/config/clean'),
     jshint: require('./build/config/lint/jshint'),
@@ -55,16 +54,9 @@ module.exports = function (grunt) {
   grunt.registerTask('reference', ['shell:reference']);
   grunt.registerTask('perf', ['shell:perf']);
 
-  grunt.registerTask('serve', [
-    'clean',
-    'concat',
-    'watch',
-  ]);
-
   grunt.registerTask('lint', [
     'jshint:main',
-    'jshint:lib',
-    'jshint:html',
+    'jshint:src',
     'jshint:tests',
     'jsonlint:all',
   ]);
@@ -73,25 +65,21 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['mochaTest:dot']);
 
   grunt.registerTask('build', [
-    'concat:gaiabuild',
-    'concat:web',
-    'concat:jsshell',
+    'lint',
+    'webpack:web',
   ]);
 
-  grunt.registerTask('dist', [
-    'concat:gaiabuild',
-    'concat:web',
+  grunt.registerTask('gaia', [
+    'build',
     'copy:gaia'
   ]);
 
   grunt.registerTask('release', [
-    'concat:web',
+    'build',
     'uglify'
   ]);
 
   grunt.registerTask('default', [
-    'lint',
-    'test',
-    'dist',
+    'build'
   ]);
 };

@@ -1,6 +1,5 @@
 node_modules
-dist
-build/cov
+build/dist
 tools/*.lol
 tools/*.properties
 tools/*.json

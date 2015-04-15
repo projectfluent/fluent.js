@@ -16,7 +16,7 @@ function load(url) {
 }
 
 function loadJSON(url) {
-  return exports.load(url).then(JSON.parse);
+  return load(url).then(JSON.parse);
 }
 
 export default { load, loadJSON };

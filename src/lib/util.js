@@ -1,10 +1,9 @@
 'use strict';
 
-
 /* Utility functions */
 
 // Recursively walk an AST node searching for content leaves
-function walkContent(node, fn) {
+export function walkContent(node, fn) {
   if (typeof node === 'string') {
     return fn(node);
   }
@@ -26,5 +25,3 @@ function walkContent(node, fn) {
   }
   return rv;
 }
-
-exports.walkContent = walkContent;

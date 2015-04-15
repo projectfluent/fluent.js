@@ -10,19 +10,10 @@ module.exports = {
       jshintrc: '.jshintrc',
     },
   },
-  lib: {
-    src: ['src/lib/**/*.js'],
+  src: {
+    src: ['src/**/*.js'],
     options: {
-      jshintrc: 'src/lib/.jshintrc',
-    },
-  },
-  html: {
-    src: [
-      'src/bindings/html/**/*.js',
-      'src/runtime/web/**/*.js'
-    ],
-    options: {
-      jshintrc: 'src/bindings/html/.jshintrc',
+      jshintrc: 'src/.jshintrc',
     },
   },
   tests: {
