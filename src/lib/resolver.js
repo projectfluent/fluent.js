@@ -219,8 +219,4 @@ function resolveValue(locals, view, lang, args, expr, index) {
   throw new L10nError('Unresolvable value');
 }
 
-export default {
-  createEntry: createEntry,
-  format: format,
-  rePlaceables: rePlaceables
-};
+export default { createEntry, format, rePlaceables };
