@@ -41,10 +41,12 @@ function _load(type, url) {
   });
 }
 
-export function load(url) {
-  return _load('text/plain', url);
-}
+export default {
+  load: function(url) {
+    return _load('text/plain', url);
+  },
+  loadJSON: function(url) {
+    return _load('application/json', url);
+  }
+};
 
-export function loadJSON(url) {
-  return _load('application/json', url);
-}

@@ -3,7 +3,7 @@
 import { Env } from '../../lib/env';
 import { whenInteractive, init, initLocale, getSupportedLanguages }
   from '../../bindings/html';
-import * as io from '../../bindings/html/io';
+import io from '../../bindings/html/io';
 
 navigator.mozL10n.env = new Env(io, window.document ? document.URL : null);
 
