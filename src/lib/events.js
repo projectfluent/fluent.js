@@ -1,6 +1,6 @@
 'use strict';
 
-function EventEmitter() {}
+export default function EventEmitter() {}
 
 EventEmitter.prototype.emit = function ee_emit() {
   if (!this._listeners) {
@@ -42,5 +42,3 @@ EventEmitter.prototype.removeEventListener = function ee_rm(type, listener) {
 
   typeListeners.splice(pos, 1);
 };
-
-exports.EventEmitter = EventEmitter;

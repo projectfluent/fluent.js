@@ -2,13 +2,13 @@
 
 /* jshint -W079 */
 
-var L10nError = require('./errors').L10nError;
-var View = require('./view').View;
-var PropertiesParser = require('./format/properties/parser');
-var Resolver = require('./resolver');
-var debug = require('./debug').debug;
+import { L10nError } from './errors';
+import View from './view';
+import Resolver from './resolver';
+import PropertiesParser from './format/properties/parser';
+import debug from './debug';
 
-export function Env(io, id) {
+export default function Env(io, id) {
   this.io = io;
   this.id = id;
 

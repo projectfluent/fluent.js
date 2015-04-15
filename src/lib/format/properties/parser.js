@@ -1,13 +1,11 @@
 'use strict';
 
-var L10nError = require('../../errors').L10nError;
-
-var unescape = require('querystring').unescape;
+import { L10nError } from '../../errors';
+import { unescape } from 'querystring';
 
 var MAX_PLACEABLES = 100;
 
-
-var PropertiesParser = {
+export default {
   patterns: null,
   entryIds: null,
 
@@ -204,5 +202,3 @@ var PropertiesParser = {
     }
   }
 };
-
-module.exports = PropertiesParser;

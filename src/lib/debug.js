@@ -2,7 +2,7 @@
 
 var DEBUG = true;
 
-function debug() {
+export default function debug() {
   if (!DEBUG) {
     return;
   }
@@ -19,5 +19,3 @@ function debug() {
 
   console.log.apply(console, args);
 }
-
-exports.debug = debug;

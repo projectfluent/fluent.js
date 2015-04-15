@@ -1,6 +1,6 @@
 'use strict';
 
-function getPluralRule(lang) {
+export default function getPluralRule(lang) {
   var locales2rules = {
     'af': 3,
     'ak': 4,
@@ -451,5 +451,3 @@ function getPluralRule(lang) {
   }
   return pluralRules[index];
 }
-
-exports.getPluralRule = getPluralRule;

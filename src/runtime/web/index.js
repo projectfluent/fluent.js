@@ -1,6 +1,6 @@
 'use strict';
 
-import { Env } from '../../lib/env';
+import Env from '../../lib/env';
 import { whenInteractive, init, initLocale, getSupportedLanguages }
   from '../../bindings/html';
 import io from '../../bindings/html/io';

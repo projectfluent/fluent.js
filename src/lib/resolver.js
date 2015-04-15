@@ -1,9 +1,8 @@
 'use strict';
 
-var L10nError = require('./errors').L10nError;
+import { L10nError } from './errors';
 
 var KNOWN_MACROS = ['plural'];
-
 var MAX_PLACEABLE_LENGTH = 2500;
 var rePlaceables = /\{\{\s*(.+?)\s*\}\}/g;
 
@@ -220,10 +219,8 @@ function resolveValue(locals, view, lang, args, expr, index) {
   throw new L10nError('Unresolvable value');
 }
 
-var Resolver = {
+export default {
   createEntry: createEntry,
   format: format,
   rePlaceables: rePlaceables
 };
-
-module.exports = Resolver;

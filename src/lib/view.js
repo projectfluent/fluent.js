@@ -1,11 +1,11 @@
 'use strict';
 
-var Resolver = require('./resolver');
-var getPluralRule = require('./plurals').getPluralRule;
-var L10nError = require('./errors').L10nError;
-var debug = require('./debug').debug;
+import { L10nError } from './errors';
+import Resolver from './resolver';
+import getPluralRule from './plurals';
+import debug from './debug';
 
-function View(env, resIds) {
+export default function View(env, resIds) {
   this._env = env;
   this._resIds = resIds;
 }
@@ -129,5 +129,3 @@ View.prototype._getMacro = function(lang, id) {
       return undefined;
   }
 };
-
-exports.View = View;
