@@ -5,7 +5,7 @@
 /* global translateDocument, Promise */
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
-/* global walkContent, PSEUDO */
+/* global walkContent, PSEUDO, L20nParser */
 /* exported onReady, waitFor, init */
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
@@ -75,6 +75,7 @@ navigator.mozL10n = {
       translateDocument: translateDocument,
       onMetaInjected: onMetaInjected,
       PropertiesParser: PropertiesParser,
+      L20nParser: L20nParser,
       walkContent: walkContent,
       buildLocaleList: buildLocaleList
     };

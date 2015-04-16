@@ -6,7 +6,6 @@ var unescape = require('querystring').unescape;
 
 var MAX_PLACEABLES = 100;
 
-
 var PropertiesParser = {
   patterns: null,
   entryIds: null,

@@ -3,6 +3,7 @@
 
 var Resolver = require('./resolver.js');
 var PropertiesParser = require('./format/properties/parser');
+var L20nParser = require('./format/l20n/parser');
 var io = require('../bindings/node/io');
 var getPluralRule = require('./plurals').getPluralRule;
 var PSEUDO = require('./pseudo.js').PSEUDO;
@@ -80,6 +81,14 @@ Locale.prototype.build = function L_build(callback) {
     onL10nLoaded(err);
   }
 
+  function onL20nLoaded(err, source) {
+    if (!err && source) {
+      var ast = L20nParser.parse(ctx, source);
+      self.addAST(ast);
+    }
+    onL10nLoaded(err);
+  }
+
   var idToFetch = this.isPseudo() ? ctx.defaultLocale : this.id;
   var appVersion = null;
   var source = 'app';
@@ -100,6 +109,9 @@ Locale.prototype.build = function L_build(callback) {
         break;
       case 'properties':
         cb = onPropLoaded;
+        break;
+      case 'l20n':
+        io.load(path, onL20nLoaded, sync);
         break;
     }
     bindingsIO[source](this.id,
