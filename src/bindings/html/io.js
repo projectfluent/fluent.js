@@ -2,7 +2,7 @@
 
 import { L10nError } from '../../lib/errors';
 
-function _load(type, url) {
+function load(type, url) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
 
@@ -41,12 +41,32 @@ function _load(type, url) {
   });
 }
 
-export default {
-  load: function(url) {
-    return _load('text/plain', url);
+const io = {
+  extra: function(lang, ver, path, type) {
+    if (type === 'properties') {
+      type = 'text';
+    }
+    return navigator.mozApps.getLocalizationResource(
+      lang, ver, path, type);
   },
-  loadJSON: function(url) {
-    return _load('application/json', url);
+  app: function(lang, ver, path, type) {
+    switch (type) {
+      case 'properties':
+        return load('text/plain', path);
+      case 'json':
+        return load('application/json', path);
+      default:
+        throw new L10nError('Unknown file type: ' + type);
+    }
+  },
+};
+
+export default {
+  fetch: function(getSource, ver, res, lang, parsers) {
+    var url = res.replace('{locale}', lang);
+    var type = res.substr(res.lastIndexOf('.') + 1);
+    var raw = io[getSource(lang) || 'app'](lang, ver, url, type);
+    return parsers[type] ? raw.then(parsers[type]) : raw;
   }
 };
 

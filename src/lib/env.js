@@ -2,14 +2,13 @@
 
 /* jshint -W079 */
 
-import { L10nError } from './errors';
 import View from './view';
 import Resolver from './resolver';
 import PropertiesParser from './format/properties/parser';
 import debug from './debug';
 
-export default function Env(io, id) {
-  this.io = io;
+export default function Env(fetch, id) {
+  this.fetch = fetch;
   this.id = id;
 
   this._resMap = Object.create(null);
@@ -43,43 +42,10 @@ Env.prototype.destroyView = function(view) {
   });
 };
 
-// XXX move this to bindings
-var bindingsIO = {
-  extra: function(lang, ver, path, type) {
-    if (type === 'properties') {
-      type = 'text';
-    }
-    return ver.then(
-      function(appVersion) {
-        /* global navigator */
-        return navigator.mozApps.getLocalizationResource(
-          lang, appVersion, path, type); });
-  },
-  app: function(lang, ver, path, type) {
-    switch (type) {
-      case 'properties':
-        return this.io.load(path);
-      case 'json':
-        return this.io.loadJSON(path);
-      default:
-        throw new L10nError('Unknown file type: ' + type);
-    }
-  },
+const parsers = {
+  properties: PropertiesParser.parse.bind(PropertiesParser, null),
+  json: null
 };
-
-function load(lang, res, type, cont) {
-  var url = res.replace('{locale}', lang);
-
-  debug('loading url', url);
-
-  /* global navigator */
-  var source = navigator.mozL10n.languageSources[lang] || 'app';
-  var appVersion = navigator.mozL10n.meta.appVersion;
-
-  var raw = bindingsIO[source].call(this, lang, appVersion, url, type);
-
-  return cont ? raw.then(cont) : raw;
-}
 
 Env.prototype._getResource = function(lang, res) {
   debug('getting resource', res, 'for', lang);
@@ -92,11 +58,7 @@ Env.prototype._getResource = function(lang, res) {
     return cache[res][lang];
   }
 
-  var type = res.substr(res.lastIndexOf('.') + 1);
-  var cont = type === 'properties' ?
-    PropertiesParser.parse.bind(PropertiesParser, null) : undefined;
-
-  return cache[res][lang] = load.call(this, lang, res, type, cont).then(
+  return cache[res][lang] = this.fetch(res, lang, parsers).then(
     function(ast) {
     debug(res, 'for', lang, 'loaded');
     return cache[res][lang] = createEntries(lang, ast);

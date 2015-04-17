@@ -9,14 +9,13 @@ import io from '../../bindings/html/io';
 
 let additionalLangs = navigator.mozApps.getAdditionalLanguages();
 
-navigator.mozL10n.env = new Env(io, document.URL);
-
 whenInteractive(init.bind(navigator.mozL10n));
 
 function init() {
   let meta = getMeta(document.head);
-  // XXX temp
-  navigator.mozL10n.meta = meta;
+  let getSource = lang => navigator.mozL10n.languageSources[lang];
+  let fetch = io.fetch.bind(io, getSource, meta.appVersion);
+  navigator.mozL10n.env = new Env(fetch, document.URL);
 
   navigator.mozL10n.languages = additionalLangs.then(
     additionalLangs => getSupportedLanguages(
