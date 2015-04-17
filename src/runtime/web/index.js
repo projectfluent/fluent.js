@@ -1,27 +1,44 @@
 'use strict';
 
 import Env from '../../lib/env';
-import { whenInteractive, init, initLocale, getSupportedLanguages }
-  from '../../bindings/html';
+import {
+  whenInteractive, getMeta, getResourceLinks, getSupportedLanguages,
+  getLanguageSources, initLocale
+} from '../../bindings/html';
 import io from '../../bindings/html/io';
 
-navigator.mozL10n.env = new Env(io, window.document ? document.URL : null);
+let additionalLangs = navigator.mozApps.getAdditionalLanguages();
 
-if (window.document) {
-  navigator.mozL10n._config.isPretranslated =
-    document.documentElement.lang === navigator.language;
+navigator.mozL10n.env = new Env(io, document.URL);
 
-  // XXX always pretranslate if data-no-complete-bug is set;  this is
-  // a workaround for a netError page not firing some onreadystatechange
-  // events;  see https://bugzil.la/444165
-  var pretranslate = document.documentElement.dataset.noCompleteBug ?
-    true : !navigator.mozL10n._config.isPretranslated;
-  // use a regular callback instead of .then() because this needs to run
-  // before other readystatechange handlers run (a promise would force a tick)
-  whenInteractive(init.bind(navigator.mozL10n, pretranslate));
-}
+whenInteractive(init.bind(navigator.mozL10n));
 
-window.addEventListener('languagechange', function() {
-  navigator.mozL10n.languages = getSupportedLanguages();
+function init() {
+  let meta = getMeta(document.head);
+  // XXX temp
+  navigator.mozL10n.meta = meta;
+
+  navigator.mozL10n.languages = additionalLangs.then(
+    additionalLangs => getSupportedLanguages(
+      meta, additionalLangs, navigator.languages));
+  navigator.mozL10n.languagesSources = getLanguageSources(
+    meta, additionalLangs);
+
+  this.documentView = this.env.createView(getResourceLinks());
   initLocale.call(navigator.mozL10n);
-});
+
+  window.addEventListener('languagechange', function() {
+    navigator.mozL10n.languages = additionalLangs.then(
+      additionalLangs => getSupportedLanguages(
+        meta, additionalLangs, navigator.languages));
+    initLocale.call(navigator.mozL10n);
+  });
+
+  document.addEventListener('additionallanguageschange', additionalLangs => {
+    navigator.mozL10n.languages = getSupportedLanguages(
+      meta, additionalLangs, navigator.languages);
+    navigator.mozL10n.languageSources = getLanguageSources(
+      meta, additionalLangs);
+    initLocale.call(navigator.mozL10n);
+  });
+}

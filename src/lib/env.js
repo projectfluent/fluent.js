@@ -43,6 +43,7 @@ Env.prototype.destroyView = function(view) {
   });
 };
 
+// XXX move this to bindings
 var bindingsIO = {
   extra: function(lang, ver, path, type) {
     if (type === 'properties') {
@@ -72,7 +73,7 @@ function load(lang, res, type, cont) {
   debug('loading url', url);
 
   /* global navigator */
-  var source = navigator.mozL10n._config.localeSources[lang] || 'app';
+  var source = navigator.mozL10n.languageSources[lang] || 'app';
   var appVersion = navigator.mozL10n.meta.appVersion;
 
   var raw = bindingsIO[source].call(this, lang, appVersion, url, type);
