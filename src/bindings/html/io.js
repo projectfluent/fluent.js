@@ -1,6 +1,7 @@
 'use strict';
 
 import { L10nError } from '../../lib/errors';
+import PropertiesParser from '../../lib/format/properties/parser';
 
 function load(type, url) {
   return new Promise(function(resolve, reject) {
@@ -61,8 +62,14 @@ const io = {
   },
 };
 
+const parsers = {
+  properties: PropertiesParser.parse.bind(PropertiesParser, null),
+  json: null
+};
+
+
 export default {
-  fetch: function(getSource, ver, res, lang, parsers) {
+  fetch: function(getSource, ver, res, lang) {
     var url = res.replace('{locale}', lang);
     var type = res.substr(res.lastIndexOf('.') + 1);
     var raw = io[getSource(lang) || 'app'](lang, ver, url, type);
