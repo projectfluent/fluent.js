@@ -1,7 +1,7 @@
 L20n: Localization 2.0 [![Build Status][travisimage]][travislink]
 =================================================================
 
-[travisimage]: https://travis-ci.org/l20n/l20n.js.png?branch=master
+[travisimage]: https://travis-ci.org/l20n/l20n.js.svg?branch=master
 [travislink]: https://travis-ci.org/l20n/l20n.js
 
 L20n reinvents software localization. Users should be able to benefit from the 
