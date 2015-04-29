@@ -34,12 +34,10 @@ View.prototype._formatValue = function(args, entity) {
 };
 
 View.prototype._formatEntity = function(args, entity) {
-  var rv = this._formatTuple.call(this, args, entity);
-  var locals = rv[0];
-  var value = rv[1];
+  var [locals, value] = this._formatTuple.call(this, args, entity);
 
   var formatted = {
-    value: value,
+    value,
     attrs: null,
     overlay: locals.overlay
   };
@@ -50,8 +48,12 @@ View.prototype._formatEntity = function(args, entity) {
 
   for (var key in entity.attrs) {
     /* jshint -W089 */
-    formatted.attrs[key] = this._formatValue.call(
+    var [attrLocals, attrValue] = this._formatTuple.call(
       this, args, entity.attrs[key]);
+    formatted.attrs[key] = attrValue;
+    if (attrLocals.overlay) {
+      formatted.overlay = true;
+    }
   }
 
   return formatted;
