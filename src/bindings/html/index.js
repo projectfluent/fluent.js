@@ -30,20 +30,20 @@ export function whenInteractive(callback) {
 
 // Public API
 
-navigator.mozL10n = {
+export const L10n = {
   env: null,
   documentView: null,
   fetched: null,
+  meta: null,
   languages: null,
   languageSources: Object.create(null),
-  meta: null,
   observer: new MozL10nMutationObserver(),
 
   formatEntity: function(id, args) {
-    return navigator.mozL10n.documentView.formatEntity(id, args);
+    return this.documentView.formatEntity(id, args);
   },
   translateFragment: function (fragment) {
-    return translateFragment.call(navigator.mozL10n, fragment);
+    return translateFragment.call(this, fragment);
   },
   setAttributes: setL10nAttributes,
   getAttributes: getL10nAttributes,
@@ -62,7 +62,49 @@ navigator.mozL10n = {
   once: function once(callback) {
     return this.fetched.then(callback);
   },
+
+  handleEvent: function(evt) {
+    switch (evt.type) {
+      case 'languagechange':
+        this.languages = Promise.all([
+          this.languages, navigator.mozApps.getAdditionalLanguages()]).then(
+            all => changeLanguage.call(
+              this, this.meta, ...all, navigator.languages));
+        break;
+      case 'additionallanguageschange':
+        this.languages = this.languages.then(
+          langs => changeLanguage.call(
+            this, this.meta, langs, evt.detail, navigator.languages));
+        break;
+    }
+  }
 };
+
+function changeLanguage(meta, prevLangs, additionalLangs, requestedLangs) {
+  let newLangs = getSupportedLanguages(
+    meta, additionalLangs, requestedLangs);
+  this.languageSources = getLanguageSources(
+    meta, additionalLangs);
+
+  if (!arrEqual(prevLangs, newLangs)) {
+    initLocale.call(this);
+
+    // XXX each l10n view should emit?
+    document.dispatchEvent(new CustomEvent('supportedlanguageschange', {
+      bubbles: false,
+      cancelable: false,
+      detail: {
+        languages: newLangs
+      }
+    }));
+  }
+  return newLangs;
+}
+
+function arrEqual(arr1, arr2) {
+  return arr1.length === arr2.length &&
+    arr1.every((elem, i) => elem === arr2[i]);
+}
 
 function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';

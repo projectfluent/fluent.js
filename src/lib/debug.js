@@ -1,6 +1,6 @@
 'use strict';
 
-var DEBUG = true;
+var DEBUG = false;
 
 export default function debug() {
   if (!DEBUG) {
