@@ -161,11 +161,11 @@ export function getLanguageSources(
 }
 
 
-export function getSupportedLanguages(meta, additionalLangs, requestedLangs) {
-  console.log(' ----- ' + Object.keys(meta).join());
+export function getSupportedLanguages(
+  { defaultLanguage, availableLanguages }, additionalLangs, requestedLangs) {
   return negotiate(
-    meta.defaultLanguage,
-    Object.keys(meta.availableLanguages).concat(additionalLangs),
+    defaultLanguage,
+    Object.keys(availableLanguages).concat(additionalLangs),
     requestedLangs);
 }
 
