@@ -4,7 +4,6 @@
 
 import View from './view';
 import Resolver from './resolver';
-import PropertiesParser from './format/properties/parser';
 import debug from './debug';
 
 export default function Env(fetch, id) {
@@ -42,11 +41,6 @@ Env.prototype.destroyView = function(view) {
   });
 };
 
-const parsers = {
-  properties: PropertiesParser.parse.bind(PropertiesParser, null),
-  json: null
-};
-
 Env.prototype._getResource = function(lang, res) {
   debug('getting resource', res, 'for', lang);
   var cache = this._resCache;
@@ -58,7 +52,7 @@ Env.prototype._getResource = function(lang, res) {
     return cache[res][lang];
   }
 
-  return cache[res][lang] = this.fetch(res, lang, parsers).then(
+  return cache[res][lang] = this.fetch(res, lang).then(
     function(ast) {
     debug(res, 'for', lang, 'loaded');
     return cache[res][lang] = createEntries(lang, ast);
