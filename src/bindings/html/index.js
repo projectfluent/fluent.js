@@ -46,19 +46,19 @@ export const L10n = {
 
 export function onlanguagechage(meta) {
   this.languages = Promise.all([
-    this.languages, navigator.mozApps.getAdditionalLanguages()]).then(
+    navigator.mozApps.getAdditionalLanguages(), this.languages]).then(
       all => changeLanguage.call(
         this, meta, ...all, navigator.languages));
 }
 
 export function onadditionallanguageschange(meta, evt) {
   this.languages = this.languages.then(
-    langs => changeLanguage.call(
-      this, meta, langs, evt.detail, navigator.languages));
+    prevLangs => changeLanguage.call(
+      this, meta, evt.detail, prevLangs, navigator.languages));
 }
 
 export function changeLanguage(
-  meta, prevLangs, additionalLangs, requestedLangs) {
+  meta, additionalLangs, prevLangs, requestedLangs) {
 
   let newLangs = getSupportedLanguages(
     meta, additionalLangs, requestedLangs);

@@ -36,8 +36,8 @@ function init() {
   this.languages = additionalLangsAtLaunch.then(
     additionalLangs =>
       changeLanguage.call(
-        this, meta, [], additionalLangs, navigator.languages),
-    changeLanguage.bind(this, meta, [], null, navigator.languages));
+        this, meta, additionalLangs, [], navigator.languages),
+    changeLanguage.bind(this, meta, null, [], navigator.languages));
 
   window.addEventListener('languagechange',
     onlanguagechage.bind(this, meta));
