@@ -7,40 +7,16 @@ import MozL10nMutationObserver from './observer';
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
-// readyState
-
-var readyStates = {
-  'loading': 0,
-  'interactive': 1,
-  'complete': 2
-};
-
-export function whenInteractive(callback) {
-  if (readyStates[document.readyState] >= readyStates.interactive) {
-    return callback();
-  }
-
-  document.addEventListener('readystatechange', function l10n_onrsc() {
-    if (readyStates[document.readyState] >= readyStates.interactive) {
-      document.removeEventListener('readystatechange', l10n_onrsc);
-      callback();
-    }
-  });
-}
-
 // Public API
 
 export const L10n = {
   env: null,
   documentView: null,
-  fetched: null,
-  meta: null,
   languages: null,
-  languageSources: Object.create(null),
   observer: new MozL10nMutationObserver(),
 
   formatEntity: function(id, args) {
-    return this.documentView.formatEntity(id, args);
+    return this.documentView.formatEntity(this.languages, id, args);
   },
   translateFragment: function (fragment) {
     return translateFragment.call(this, fragment);
@@ -56,38 +32,39 @@ export const L10n = {
   },
   qps: {},
   get: id => id,
+  // XXX temporary
+  _ready: new Promise(function(resolve) {
+    window.addEventListener('localized', resolve);
+  }),
   ready: function ready(callback) {
-    return this.fetched.then(callback);
+    return this._ready.then(callback);
   },
   once: function once(callback) {
-    return this.fetched.then(callback);
-  },
-
-  handleEvent: function(evt) {
-    switch (evt.type) {
-      case 'languagechange':
-        this.languages = Promise.all([
-          this.languages, navigator.mozApps.getAdditionalLanguages()]).then(
-            all => changeLanguage.call(
-              this, this.meta, ...all, navigator.languages));
-        break;
-      case 'additionallanguageschange':
-        this.languages = this.languages.then(
-          langs => changeLanguage.call(
-            this, this.meta, langs, evt.detail, navigator.languages));
-        break;
-    }
+    return this._ready.then(callback);
   }
 };
 
-function changeLanguage(meta, prevLangs, additionalLangs, requestedLangs) {
+export function onlanguagechage(meta) {
+  this.languages = Promise.all([
+    this.languages, navigator.mozApps.getAdditionalLanguages()]).then(
+      all => changeLanguage.call(
+        this, meta, ...all, navigator.languages));
+}
+
+export function onadditionallanguageschange(meta, evt) {
+  this.languages = this.languages.then(
+    langs => changeLanguage.call(
+      this, meta, langs, evt.detail, navigator.languages));
+}
+
+export function changeLanguage(
+  meta, prevLangs, additionalLangs, requestedLangs) {
+
   let newLangs = getSupportedLanguages(
     meta, additionalLangs, requestedLangs);
-  this.languageSources = getLanguageSources(
-    meta, additionalLangs);
 
   if (!arrEqual(prevLangs, newLangs)) {
-    initLocale.call(this);
+    fetchViews.call(this);
 
     // XXX each l10n view should emit?
     document.dispatchEvent(new CustomEvent('supportedlanguageschange', {
@@ -98,7 +75,11 @@ function changeLanguage(meta, prevLangs, additionalLangs, requestedLangs) {
       }
     }));
   }
-  return newLangs;
+
+  return {
+    langs: newLangs,
+    srcs: getLanguageSources(meta, additionalLangs, newLangs)
+  };
 }
 
 function arrEqual(arr1, arr2) {
@@ -174,40 +155,28 @@ function getMatchingLangpack(appVersion, langpacks) {
   return null;
 }
 
-export function getLanguageSources(
-  {availableLanguages, appVersion}, additionalLangs) {
+function getLanguageSources(
+  {availableLanguages, appVersion}, additionalLangs, langs) {
 
-  var loc, lp;
-  var localeSources = Object.create(null);
-
-  for (loc in availableLanguages) {
-    localeSources[loc] = 'app';
-  }
-
-  if (additionalLangs) {
-    for (loc in additionalLangs) {
-      lp = getMatchingLangpack(appVersion, additionalLangs[loc]);
-
-      if (!lp) {
-        continue;
-      }
-      if (!(loc in localeSources) ||
-          !availableLanguages[loc] ||
-          parseInt(lp.revision) > availableLanguages[loc]) {
-        localeSources[loc] = 'extra';
+  return langs.map(lang => {
+    if (additionalLangs && additionalLangs[lang]) {
+      let lp = getMatchingLangpack(appVersion, additionalLangs[lang]);
+      if (lp &&
+          (!(lang in availableLanguages) ||
+           parseInt(lp.revision) > availableLanguages[lang])) {
+        return 'extra';
       }
     }
-  }
 
-  return localeSources;
+    return 'app';
+  });
 }
 
-
-export function getSupportedLanguages(
+function getSupportedLanguages(
   { defaultLanguage, availableLanguages }, additionalLangs, requestedLangs) {
   return negotiate(
     defaultLanguage,
-    Object.keys(availableLanguages).concat(additionalLangs),
+    Object.keys(availableLanguages).concat(additionalLangs || []),
     requestedLangs);
 }
 
@@ -230,25 +199,24 @@ function negotiate(def, availableLangs, requested) {
 }
 
 
-export function initLocale() {
-  this.fetched = this.documentView.fetch(this.languages, 1);
-  return this.fetched.then(
+function fetchViews() {
+  return this.documentView.fetch(this.languages, 1).then(
     onReady.bind(this));
 }
 
 function onReady() {
   translateDocument.call(this).then(
-    fireLocalizedEvent.bind(this));
+    dispatchEvent.bind(this, window, 'localized'));
   this.observer.start();
 }
 
-function fireLocalizedEvent() {
-  var event = new CustomEvent('localized', {
+function dispatchEvent(root, name) {
+  var event = new CustomEvent(name, {
     bubbles: false,
     cancelable: false,
     detail: {
       language: 'en-US'
     }
   });
-  window.dispatchEvent(event);
+  root.dispatchEvent(event);
 }

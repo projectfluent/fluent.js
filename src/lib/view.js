@@ -11,7 +11,7 @@ export default function View(env, resIds) {
 }
 
 View.prototype.fetch = function(langs) {
-  // XXX add second arg: count of langs to fetch
+  // XXX add arg: count of langs to fetch
   return Promise.resolve(langs).then(
     this._fetchResources.bind(this));
 };
@@ -68,23 +68,25 @@ View.prototype.destroy = function() {
   this._env.destroyView(this);
 };
 
-View.prototype._fetchResources = function(supported) {
-  debug('fetching resources for', supported.join(', '));
+View.prototype._fetchResources = function({langs, srcs}) {
+  debug('fetching resources for', langs.join(', '));
 
-  if (supported.length === 0) {
+  if (langs.length === 0) {
     return Promise.reject(
       new L10nError('No more supported languages to try'));
   }
 
   return Promise.all(
     this._resIds.map(
-      this._env._getResource.bind(this._env, supported[0]))).then(
-        function() { return supported; });
+      this._env._getResource.bind(this._env, langs[0], srcs[0]))).then(
+        () => ({langs, srcs}));
 };
 
-View.prototype._fallback = function(method, id, args, supported) {
-  var lang = supported[0];
-  var entity = this._getEntity(lang, id);
+View.prototype._fallback = function(method, id, args, {langs, srcs}) {
+  let lang = langs[0];
+  let src = srcs[0];
+
+  let entity = this._getEntity({lang, src}, id);
 
   if (entity) {
     debug(id, 'found in', lang);
@@ -97,7 +99,8 @@ View.prototype._fallback = function(method, id, args, supported) {
     debug(id, 'missing from', lang);
   }
 
-  return this._fetchResources(supported.slice(1)).then(
+  let tail = {langs: langs.slice(1), srcs: srcs.slice(1)};
+  return this._fetchResources(tail).then(
     this._fallback.bind(this, method, id, args),
     function(err) {
       debug(err);
@@ -105,12 +108,12 @@ View.prototype._fallback = function(method, id, args, supported) {
     });
 };
 
-View.prototype._getEntity = function(lang, id) {
+View.prototype._getEntity = function({lang, src}, id) {
   var cache = this._env._resCache;
 
   // Look for `id` in every resource in order.
   for (var i = 0, resId; resId = this._resIds[i]; i++) {
-    var resource = cache[resId][lang];
+    var resource = cache[resId][lang][src];
     if (resource instanceof L10nError) {
       continue;
     }
@@ -123,7 +126,7 @@ View.prototype._getEntity = function(lang, id) {
 
 // XXX in the future macros will be stored in localization resources together 
 // with regular entities and this method will not be needed anymore
-View.prototype._getMacro = function(lang, id) {
+View.prototype._getMacro = function({lang, src}, id) {
   switch(id) {
     case 'plural':
       return getPluralRule(lang);

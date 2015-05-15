@@ -69,10 +69,10 @@ const parsers = {
 
 
 export default {
-  fetch: function(getSource, ver, res, lang) {
+  fetch: function(ver, source, res, lang) {
     var url = res.replace('{locale}', lang);
     var type = res.substr(res.lastIndexOf('.') + 1);
-    var raw = io[getSource(lang) || 'app'](lang, ver, url, type);
+    var raw = io[source](lang, ver, url, type);
     return parsers[type] ? raw.then(parsers[type]) : raw;
   }
 };

@@ -6,7 +6,7 @@ var KNOWN_MACROS = ['plural'];
 var MAX_PLACEABLE_LENGTH = 2500;
 var rePlaceables = /\{\{\s*(.+?)\s*\}\}/g;
 
-function createEntry(node, lang) {
+function createEntry(node, lang, src) {
   var keys = Object.keys(node);
 
   // the most common scenario: a simple string with no arguments
@@ -26,7 +26,7 @@ function createEntry(node, lang) {
     if (!attrs) {
       attrs = Object.create(null);
     }
-    attrs[key] = createAttribute(node[key], lang, node.$i + '.' + key);
+    attrs[key] = createAttribute(node[key], lang, src, node.$i + '.' + key);
   }
 
   return {
@@ -34,13 +34,13 @@ function createEntry(node, lang) {
     value: node.$v !== undefined ? node.$v : null,
     index: node.$x || null,
     attrs: attrs || null,
-    lang: lang,
+    lang: {lang, src},
     // the dirty guard prevents cyclic or recursive references
     dirty: false
   };
 }
 
-function createAttribute(node, lang, id) {
+function createAttribute(node, lang, src, id) {
   if (typeof node === 'string') {
     return node;
   }
@@ -49,7 +49,7 @@ function createAttribute(node, lang, id) {
     id: id,
     value: node.$v || (node !== undefined ? node : null),
     index: node.$x || null,
-    lang: lang,
+    lang: {lang, src},
     dirty: false
   };
 }
