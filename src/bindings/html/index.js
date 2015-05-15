@@ -54,6 +54,7 @@ export function onlanguagechage(appVersion, defaultLang, availableLangs) {
 
 export function onadditionallanguageschange(
   appVersion, defaultLang, availableLangs, evt) {
+
   this.languages = this.languages.then(
     prevLangs => changeLanguage.call(
       this, appVersion, defaultLang, availableLangs, evt.detail, prevLangs,
@@ -64,8 +65,10 @@ export function changeLanguage(
   appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
   requestedLangs) {
 
-  let newLangs = getSupportedLanguages(
-    defaultLang, availableLangs, additionalLangs, requestedLangs);
+  let allAvailableLangs = Object.keys(availableLangs).concat(
+    additionalLangs || []);
+  let newLangs = negotiate(
+    defaultLang, allAvailableLangs, requestedLangs);
 
   if (!arrEqual(prevLangs, newLangs)) {
     fetchViews.call(this);
@@ -177,14 +180,6 @@ function getLanguageSources(
 
     return 'app';
   });
-}
-
-function getSupportedLanguages(
-  defaultLang, availableLangs, additionalLangs, requestedLangs) {
-  return negotiate(
-    defaultLang,
-    Object.keys(availableLangs).concat(additionalLangs || []),
-    requestedLangs);
 }
 
 function negotiate(def, availableLangs, requested) {
