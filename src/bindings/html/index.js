@@ -44,24 +44,28 @@ export const L10n = {
   }
 };
 
-export function onlanguagechage(meta) {
+export function onlanguagechage(appVersion, defaultLang, availableLangs) {
   this.languages = Promise.all([
     navigator.mozApps.getAdditionalLanguages(), this.languages]).then(
       all => changeLanguage.call(
-        this, meta, ...all, navigator.languages));
+        this, appVersion, defaultLang, availableLangs, ...all,
+        navigator.languages));
 }
 
-export function onadditionallanguageschange(meta, evt) {
+export function onadditionallanguageschange(
+  appVersion, defaultLang, availableLangs, evt) {
   this.languages = this.languages.then(
     prevLangs => changeLanguage.call(
-      this, meta, evt.detail, prevLangs, navigator.languages));
+      this, appVersion, defaultLang, availableLangs, evt.detail, prevLangs,
+      navigator.languages));
 }
 
 export function changeLanguage(
-  meta, additionalLangs, prevLangs, requestedLangs) {
+  appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
+  requestedLangs) {
 
   let newLangs = getSupportedLanguages(
-    meta, additionalLangs, requestedLangs);
+    defaultLang, availableLangs, additionalLangs, requestedLangs);
 
   if (!arrEqual(prevLangs, newLangs)) {
     fetchViews.call(this);
@@ -78,7 +82,8 @@ export function changeLanguage(
 
   return {
     langs: newLangs,
-    srcs: getLanguageSources(meta, additionalLangs, newLangs)
+    srcs: getLanguageSources(
+      appVersion, availableLangs, additionalLangs, newLangs)
   };
 }
 
@@ -113,11 +118,9 @@ function getLangRevisionTuple(str) {
 }
 
 export function getMeta(head) {
-  let meta = {
-    availableLanguages: Object.create(null),
-    defaultLanguage: null,
-    appVersion: null
-  };
+  let availableLangs = Object.create(null);
+  let defaultLang = null;
+  let appVersion = null;
 
   // XXX take last found instead of first?
   let els = head.querySelectorAll(
@@ -129,21 +132,25 @@ export function getMeta(head) {
     let content = el.getAttribute('content').trim();
     switch (name) {
       case 'availableLanguages':
-        meta.availableLanguages = getLangRevisionMap(
-          meta.availableLanguages, content);
+        availableLangs = getLangRevisionMap(
+          availableLangs, content);
         break;
       case 'defaultLanguage':
         let [lang, rev] = getLangRevisionTuple(content);
-        meta.defaultLanguage = lang;
-        if (!(lang in meta.availableLanguages)) {
-          meta.availableLanguages[lang] = rev;
+        defaultLang = lang;
+        if (!(lang in availableLangs)) {
+          availableLangs[lang] = rev;
         }
         break;
       case 'appVersion':
-        meta.appVersion = content;
+        appVersion = content;
     }
   }
-  return meta;
+  return {
+    defaultLang,
+    availableLangs,
+    appVersion
+  };
 }
 
 function getMatchingLangpack(appVersion, langpacks) {
@@ -156,14 +163,14 @@ function getMatchingLangpack(appVersion, langpacks) {
 }
 
 function getLanguageSources(
-  {availableLanguages, appVersion}, additionalLangs, langs) {
+  availableLangs, appVersion, additionalLangs, langs) {
 
   return langs.map(lang => {
     if (additionalLangs && additionalLangs[lang]) {
       let lp = getMatchingLangpack(appVersion, additionalLangs[lang]);
       if (lp &&
-          (!(lang in availableLanguages) ||
-           parseInt(lp.revision) > availableLanguages[lang])) {
+          (!(lang in availableLangs) ||
+           parseInt(lp.revision) > availableLangs[lang])) {
         return 'extra';
       }
     }
@@ -173,10 +180,10 @@ function getLanguageSources(
 }
 
 function getSupportedLanguages(
-  { defaultLanguage, availableLanguages }, additionalLangs, requestedLangs) {
+  defaultLang, availableLangs, additionalLangs, requestedLangs) {
   return negotiate(
-    defaultLanguage,
-    Object.keys(availableLanguages).concat(additionalLangs || []),
+    defaultLang,
+    Object.keys(availableLangs).concat(additionalLangs || []),
     requestedLangs);
 }
 

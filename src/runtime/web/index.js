@@ -28,21 +28,27 @@ function whenInteractive(callback) {
 }
 
 function init() {
-  let meta = getMeta(document.head);
+  let {
+   defaultLang, availableLangs, appVersion
+  } = getMeta(document.head);
 
-  this.env = new Env(document.URL, io.fetch.bind(io, meta.appVersion));
+  this.env = new Env(document.URL, io.fetch.bind(io, appVersion));
   this.documentView = this.env.createView(getResourceLinks());
 
   this.languages = additionalLangsAtLaunch.then(
     additionalLangs =>
       changeLanguage.call(
-        this, meta, additionalLangs, [], navigator.languages),
-    changeLanguage.bind(this, meta, null, [], navigator.languages));
+        this, appVersion, defaultLang, availableLangs, additionalLangs, [],
+        navigator.languages),
+    changeLanguage.bind(
+      this, appVersion, defaultLang, availableLangs, null, [],
+      navigator.languages));
 
   window.addEventListener('languagechange',
-    onlanguagechage.bind(this, meta));
+    onlanguagechage.bind(this, appVersion, defaultLang, availableLangs));
   document.addEventListener('additionallanguageschange',
-    onadditionallanguageschange.bind(this, meta));
+    onadditionallanguageschange.bind(
+      this, appVersion, defaultLang, availableLangs));
 }
 
 whenInteractive(init.bind(navigator.mozL10n = L10n));
