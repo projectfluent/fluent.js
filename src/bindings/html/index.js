@@ -85,8 +85,8 @@ export function changeLanguage(
 
   return {
     langs: newLangs,
-    srcs: getLanguageSources(
-      appVersion, availableLangs, additionalLangs, newLangs)
+    srcs: newLangs.map(lang => getLangSource(
+      appVersion, availableLangs, additionalLangs, lang))
   };
 }
 
@@ -165,21 +165,17 @@ function getMatchingLangpack(appVersion, langpacks) {
   return null;
 }
 
-function getLanguageSources(
-  availableLangs, appVersion, additionalLangs, langs) {
-
-  return langs.map(lang => {
-    if (additionalLangs && additionalLangs[lang]) {
-      let lp = getMatchingLangpack(appVersion, additionalLangs[lang]);
-      if (lp &&
-          (!(lang in availableLangs) ||
-           parseInt(lp.revision) > availableLangs[lang])) {
-        return 'extra';
-      }
+function getLangSource(appVersion, availableLangs, additionalLangs, lang) {
+  if (additionalLangs && additionalLangs[lang]) {
+    let lp = getMatchingLangpack(appVersion, additionalLangs[lang]);
+    if (lp &&
+        (!(lang in availableLangs) ||
+         parseInt(lp.revision) > availableLangs[lang])) {
+      return 'extra';
     }
+  }
 
-    return 'app';
-  });
+  return 'app';
 }
 
 function negotiate(def, availableLangs, requested) {
