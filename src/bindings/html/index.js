@@ -34,7 +34,7 @@ export const L10n = {
   get: id => id,
   // XXX temporary
   _ready: new Promise(function(resolve) {
-    window.addEventListener('localized', resolve);
+    window.addEventListener('l10nready', resolve);
   }),
   ready: function ready(callback) {
     return this._ready.then(callback);
@@ -203,6 +203,8 @@ function fetchViews() {
 }
 
 function onReady() {
+  // XXX temporary
+  dispatchEvent(window, 'l10nready');
   translateDocument.call(this).then(
     dispatchEvent.bind(this, window, 'localized'));
   this.observer.start();
