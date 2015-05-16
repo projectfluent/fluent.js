@@ -1,7 +1,7 @@
 'use strict';
 
 import { 
-  translateDocument, translateFragment, setL10nAttributes, getL10nAttributes
+  translateDocument, setL10nAttributes, getL10nAttributes
 } from './dom';
 import MozL10nMutationObserver from './observer';
 
@@ -11,16 +11,10 @@ var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
 export const L10n = {
   env: null,
-  documentView: null,
+  views: [],
   languages: null,
   observer: new MozL10nMutationObserver(),
 
-  formatEntity: function(id, args) {
-    return this.documentView.formatEntity(this.languages, id, args);
-  },
-  translateFragment: function (fragment) {
-    return translateFragment.call(this, fragment);
-  },
   setAttributes: setL10nAttributes,
   getAttributes: getL10nAttributes,
 
@@ -198,15 +192,18 @@ function negotiate(def, availableLangs, requested) {
 
 
 function fetchViews() {
-  return this.documentView.fetch(this.languages, 1).then(
-    onReady.bind(this));
+  return Promise.all(
+    this.views.map(view => view.fetch(this.languages, 1))).then(
+      onReady.bind(this));
 }
 
 function onReady() {
   // XXX temporary
   dispatchEvent(window, 'l10nready');
-  translateDocument.call(this).then(
-    dispatchEvent.bind(this, window, 'localized'));
+  Promise.all(
+    this.views.map(view => translateDocument.call(view))).then(
+      dispatchEvent.bind(this, window, 'localized'));
+  // XXX when to start this?
   this.observer.start();
 }
 

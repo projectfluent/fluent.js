@@ -33,7 +33,8 @@ function init() {
   } = getMeta(document.head);
 
   this.env = new Env(document.URL, io.fetch.bind(io, appVersion));
-  this.documentView = this.env.createView(getResourceLinks());
+  this.views.push(
+    document.l10n = this.env.createView(getResourceLinks()));
 
   this.languages = additionalLangsAtLaunch.then(
     additionalLangs =>

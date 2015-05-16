@@ -9,7 +9,7 @@ export default function MozL10nMutationObserver() {
 MozL10nMutationObserver.prototype.start = function() {
   if (!this._observer) {
     this._observer =
-      new MutationObserver(onMutations.bind(navigator.mozL10n));
+      new MutationObserver(onMutations.bind(document.l10n));
   }
   return this._observer.observe(document, this.CONFIG);
 };
