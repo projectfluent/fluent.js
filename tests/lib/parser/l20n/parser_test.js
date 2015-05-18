@@ -133,12 +133,12 @@ describe('L10n Parser', function() {
   describe('Overlays', function() {
     it('string value with HTML markup', function() {
       var ast = parse(null, '<id "string <strong>foo</strong>">');
-      assert.strictEqual(ast[0].$v.o, true);
+      assert.strictEqual(ast[0].$v.$o, "string <strong>foo</strong>");
     });
 
     it('string value with an entity', function() {
       var ast = parse(null, '<id "string &nbsp; foo">');
-      assert.strictEqual(ast[0].$v.o, true);
+      assert.strictEqual(ast[0].$v.$o, "string &nbsp; foo");
     });
 
     it('string value with a smaller sign', function() {
@@ -153,9 +153,8 @@ describe('L10n Parser', function() {
 
     it('complex string value with HTML markup', function() {
       var ast = parse(null, '<id "string <strong>{{ $n }}</strong>">');
-      assert.strictEqual(ast[0].$v.v[0], 'string <strong>');
-      assert.deepEqual(ast[0].$v.v[1], {t: 'idOrVar', v: 'n'});
-      assert.strictEqual(ast[0].$v.o, true);
+      assert.strictEqual(ast[0].$v.$o[0], 'string <strong>');
+      assert.deepEqual(ast[0].$v.$o[1], {t: 'idOrVar', v: 'n'});
     });
   });
 
@@ -180,8 +179,7 @@ describe('L10n Parser', function() {
 
     it('hash value with an overlay', function() {
       var ast = parse(null, '<id {one: "<b>test</b>", many: "Many"}>');
-      assert.strictEqual(ast[0].$v.one.v, '<b>test</b>');
-      assert.strictEqual(ast[0].$v.one.o, true);
+      assert.strictEqual(ast[0].$v.one.$o, '<b>test</b>');
     });
 
     it('hash value with a complex string', function() {
@@ -240,8 +238,7 @@ describe('L10n Parser', function() {
 
     it('attribute with an overlay value', function() {
       var ast = parse(null, '<id title: "Title &nbsp;">');
-      assert.strictEqual(ast[0].title.v, 'Title &nbsp;');
-      assert.strictEqual(ast[0].title.o, true);
+      assert.strictEqual(ast[0].title.$o, 'Title &nbsp;');
     });
 
     it('attribute with a complex value', function() {
