@@ -1,4 +1,39 @@
-{
-  "title": "mozL10n example",
-  "hello": "Hello, world!"
-}
+[
+  {
+    "$i": "title",
+    "$v": "mozL10n example"
+  },
+  {
+    "$i": "hello",
+    "$v": {
+      "$o": "Hello, <em>world</em>!"
+    }
+  },
+  {
+    "$i": "name",
+    "$v": {
+      "$o": "Type <input placeholder=\"your name\"> and <input value=\"send\">"
+    }
+  },
+  {
+    "$i": "unreadEmails",
+    "$x": [
+      {
+        "t": "idOrVar",
+        "v": "plural"
+      },
+      "emailCount"
+    ],
+    "$v": {
+      "one": "You have one unread email",
+      "other": [
+        "You have ",
+        {
+          "t": "idOrVar",
+          "v": "emailCount"
+        },
+        " unread emails"
+      ]
+    }
+  }
+]
