@@ -133,12 +133,12 @@ describe('L10n Parser', function() {
   describe('Overlays', function() {
     it('string value with HTML markup', function() {
       var ast = parse(null, '<id "string <strong>foo</strong>">');
-      assert.strictEqual(ast[0].$v.$o, "string <strong>foo</strong>");
+      assert.strictEqual(ast[0].$v.$o, 'string <strong>foo</strong>');
     });
 
     it('string value with an entity', function() {
       var ast = parse(null, '<id "string &nbsp; foo">');
-      assert.strictEqual(ast[0].$v.$o, "string &nbsp; foo");
+      assert.strictEqual(ast[0].$v.$o, 'string &nbsp; foo');
     });
 
     it('string value with a smaller sign', function() {
