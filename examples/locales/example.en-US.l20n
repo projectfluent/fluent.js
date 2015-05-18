@@ -1,0 +1,3 @@
+<title "mozL10n example">
+<hello "Hello, <em>world</em>!">
+<name 'Type <input placeholder="your name"> and <input value="send">'>
