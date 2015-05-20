@@ -5,18 +5,18 @@ import Resolver from './resolver';
 import getPluralRule from './plurals';
 import debug from './debug';
 
-export default function View(env, resIds) {
+export default function Context(env, resIds) {
   this._env = env;
   this._resIds = resIds;
 }
 
-View.prototype.fetch = function(langs) {
+Context.prototype.fetch = function(langs) {
   // XXX add arg: count of langs to fetch
   return Promise.resolve(langs).then(
     this._fetchResources.bind(this));
 };
 
-View.prototype._formatTuple = function(args, entity) {
+Context.prototype._formatTuple = function(args, entity) {
   try {
     return Resolver.format(this, args, entity);
   } catch (err) {
@@ -24,7 +24,7 @@ View.prototype._formatTuple = function(args, entity) {
   }
 };
 
-View.prototype._formatValue = function(args, entity) {
+Context.prototype._formatValue = function(args, entity) {
   if (typeof entity === 'string') {
     return entity;
   }
@@ -33,7 +33,7 @@ View.prototype._formatValue = function(args, entity) {
   return this._formatTuple.call(this, args, entity)[1];
 };
 
-View.prototype._formatEntity = function(args, entity) {
+Context.prototype._formatEntity = function(args, entity) {
   var [locals, value] = this._formatTuple.call(this, args, entity);
 
   var formatted = {
@@ -59,16 +59,16 @@ View.prototype._formatEntity = function(args, entity) {
   return formatted;
 };
 
-View.prototype.formatEntity = function(langs, id, args) {
+Context.prototype.formatEntity = function(langs, id, args) {
   return this.fetch(langs).then(
     this._fallback.bind(this, '_formatEntity', id, args));
 };
 
-View.prototype.destroy = function() {
-  this._env.destroyView(this);
+Context.prototype.destroy = function() {
+  this._env.destroyContext(this);
 };
 
-View.prototype._fetchResources = function({langs, srcs}) {
+Context.prototype._fetchResources = function({langs, srcs}) {
   debug('fetching resources for', langs.join(', '));
 
   if (langs.length === 0) {
@@ -82,7 +82,7 @@ View.prototype._fetchResources = function({langs, srcs}) {
         () => ({langs, srcs}));
 };
 
-View.prototype._fallback = function(method, id, args, {langs, srcs}) {
+Context.prototype._fallback = function(method, id, args, {langs, srcs}) {
   let lang = langs[0];
   let src = srcs[0];
 
@@ -108,7 +108,7 @@ View.prototype._fallback = function(method, id, args, {langs, srcs}) {
     });
 };
 
-View.prototype._getEntity = function({lang, src}, id) {
+Context.prototype._getEntity = function({lang, src}, id) {
   var cache = this._env._resCache;
 
   // Look for `id` in every resource in order.
@@ -126,7 +126,7 @@ View.prototype._getEntity = function({lang, src}, id) {
 
 // XXX in the future macros will be stored in localization resources together 
 // with regular entities and this method will not be needed anymore
-View.prototype._getMacro = function({lang, src}, id) {
+Context.prototype._getMacro = function({lang, src}, id) {
   switch(id) {
     case 'plural':
       return getPluralRule(lang);

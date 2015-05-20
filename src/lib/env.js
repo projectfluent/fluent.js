@@ -2,7 +2,7 @@
 
 /* jshint -W079 */
 
-import View from './view';
+import Context from './context';
 import Resolver from './resolver';
 import debug from './debug';
 
@@ -14,29 +14,29 @@ export default function Env(id, fetch) {
   this._resCache = Object.create(null);
 }
 
-Env.prototype.createView = function(resIds) {
-  var view = new View(this, resIds);
+Env.prototype.createContext = function(resIds) {
+  var ctx = new Context(this, resIds);
 
   resIds.forEach(function(res) {
     if (!this._resMap[res]) {
       this._resMap[res] = new Set();
     }
-    this._resMap[res].add(view);
+    this._resMap[res].add(ctx);
   }, this);
 
-  return view;
+  return ctx;
 };
 
-Env.prototype.destroyView = function(view) {
+Env.prototype.destroyContext = function(ctx) {
   var cache = this._resCache;
   var map = this._resMap;
 
-  view._resIds.forEach(function(resId) {
+  ctx._resIds.forEach(function(resId) {
     if (map[resId].size === 1) {
       map[resId].clear();
       delete cache[resId];
     } else {
-      map[resId].delete(view);
+      map[resId].delete(ctx);
     }
   });
 };

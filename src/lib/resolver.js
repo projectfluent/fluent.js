@@ -55,7 +55,7 @@ function createAttribute(node, lang, src, id) {
 }
 
 
-function format(view, args, entity) {
+function format(ctx, args, entity) {
   var locals = {
     overlay: false
   };
@@ -76,16 +76,16 @@ function format(view, args, entity) {
   // resolving process;  however, we still need to clean up the dirty flag
   try {
     rv = resolveValue(
-      locals, view, entity.lang, args, entity.value, entity.index);
+      locals, ctx, entity.lang, args, entity.value, entity.index);
   } finally {
     entity.dirty = false;
   }
   return rv;
 }
 
-function resolveIdentifier(view, lang, args, id) {
+function resolveIdentifier(ctx, lang, args, id) {
   if (KNOWN_MACROS.indexOf(id) > -1) {
-    return [{}, view._getMacro(lang, id)];
+    return [{}, ctx._getMacro(lang, id)];
   }
 
   if (args && args.hasOwnProperty(id)) {
@@ -103,20 +103,20 @@ function resolveIdentifier(view, lang, args, id) {
     throw new L10nError('Illegal id: ' + id);
   }
 
-  var entity = view._getEntity(lang, id);
+  var entity = ctx._getEntity(lang, id);
 
   if (entity) {
-    return format(view, args, entity);
+    return format(ctx, args, entity);
   }
 
   throw new L10nError('Unknown reference: ' + id);
 }
 
-function subPlaceable(view, lang, args, id) {
+function subPlaceable(ctx, lang, args, id) {
   var res;
 
   try {
-    res = resolveIdentifier(view, lang, args, id);
+    res = resolveIdentifier(ctx, lang, args, id);
   } catch (err) {
     return [{ error: err }, '{{ ' + id + ' }}'];
   }
@@ -140,12 +140,12 @@ function subPlaceable(view, lang, args, id) {
   return [{}, '{{ ' + id + ' }}'];
 }
 
-function interpolate(locals, view, lang, args, arr) {
+function interpolate(locals, ctx, lang, args, arr) {
   return arr.reduce(function(prev, cur) {
     if (typeof cur === 'string') {
       return [prev[0], prev[1] + cur];
     } else if (cur.t === 'idOrVar'){
-      var placeable = subPlaceable(view, lang, args, cur.v);
+      var placeable = subPlaceable(ctx, lang, args, cur.v);
       if (placeable[0].overlay) {
         prev[0].overlay = true;
       }
@@ -154,9 +154,9 @@ function interpolate(locals, view, lang, args, arr) {
   }, [locals, '']);
 }
 
-function resolveSelector(view, lang, args, expr, index) {
+function resolveSelector(ctx, lang, args, expr, index) {
     var selectorName = index[0].v;
-    var selector = resolveIdentifier(view, lang, args, selectorName)[1];
+    var selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
 
     if (typeof selector !== 'function') {
       // selector is a simple reference to an entity or args
@@ -164,9 +164,9 @@ function resolveSelector(view, lang, args, expr, index) {
     }
 
     var argValue = index[1] ?
-      resolveIdentifier(view, lang, args, index[1])[1] : undefined;
+      resolveIdentifier(ctx, lang, args, index[1])[1] : undefined;
 
-    if (selector === view._getMacro(lang, 'plural')) {
+    if (selector === ctx._getMacro(lang, 'plural')) {
       // special cases for zero, one, two if they are defined on the hash
       if (argValue === 0 && 'zero' in expr) {
         return 'zero';
@@ -182,7 +182,7 @@ function resolveSelector(view, lang, args, expr, index) {
     return selector(argValue);
 }
 
-function resolveValue(locals, view, lang, args, expr, index) {
+function resolveValue(locals, ctx, lang, args, expr, index) {
   if (!expr) {
     return [locals, expr];
   }
@@ -199,21 +199,21 @@ function resolveValue(locals, view, lang, args, expr, index) {
   }
 
   if (Array.isArray(expr)) {
-    return interpolate(locals, view, lang, args, expr);
+    return interpolate(locals, ctx, lang, args, expr);
   }
 
   // otherwise, it's a dict
   if (index) {
     // try to use the index in order to select the right dict member
-    var selector = resolveSelector(view, lang, args, expr, index);
+    var selector = resolveSelector(ctx, lang, args, expr, index);
     if (expr.hasOwnProperty(selector)) {
-      return resolveValue(locals, view, lang, args, expr[selector]);
+      return resolveValue(locals, ctx, lang, args, expr[selector]);
     }
   }
 
   // if there was no index or no selector was found, try 'other'
   if ('other' in expr) {
-    return resolveValue(locals, view, lang, args, expr.other);
+    return resolveValue(locals, ctx, lang, args, expr.other);
   }
 
   // XXX Specify entity id

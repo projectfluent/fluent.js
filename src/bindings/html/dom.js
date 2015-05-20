@@ -61,13 +61,13 @@ export function translateElement(element) {
   }
 
   return this.formatEntity(
-    // XXX the view should have its own copy of languages
+    // XXX the ctx should have its own copy of languages
     navigator.mozL10n.languages, l10n.id, l10n.args).then(
       applyTranslation.bind(this, element));
 }
 
 function applyTranslation(element, entity) {
-  // XXX the view should have its own observer
+  // XXX the ctx should have its own observer
   navigator.mozL10n.observer.stop();
 
   var value;

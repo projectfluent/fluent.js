@@ -11,7 +11,7 @@ var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
 export const L10n = {
   env: null,
-  views: [],
+  ctxs: [],
   languages: null,
   observer: new MozL10nMutationObserver(),
 
@@ -65,9 +65,9 @@ export function changeLanguage(
     defaultLang, allAvailableLangs, requestedLangs);
 
   if (!arrEqual(prevLangs, newLangs)) {
-    fetchViews.call(this);
+    fetchCtxss.call(this);
 
-    // XXX each l10n view should emit?
+    // XXX each l10n ctx should emit?
     document.dispatchEvent(new CustomEvent('supportedlanguageschange', {
       bubbles: false,
       cancelable: false,
@@ -191,9 +191,9 @@ function negotiate(def, availableLangs, requested) {
 }
 
 
-function fetchViews() {
+function fetchCtxss() {
   return Promise.all(
-    this.views.map(view => view.fetch(this.languages, 1))).then(
+    this.ctxs.map(ctx => ctx.fetch(this.languages, 1))).then(
       onReady.bind(this));
 }
 
@@ -201,7 +201,7 @@ function onReady() {
   // XXX temporary
   dispatchEvent(window, 'l10nready');
   Promise.all(
-    this.views.map(view => translateDocument.call(view))).then(
+    this.ctxs.map(ctx => translateDocument.call(ctx))).then(
       dispatchEvent.bind(this, window, 'localized'));
   // XXX when to start this?
   this.observer.start();
