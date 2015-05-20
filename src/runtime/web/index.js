@@ -1,11 +1,12 @@
 'use strict';
 
-import Env from '../../lib/env';
-import {
-  getMeta, getResourceLinks, L10n,
-  changeLanguage, onlanguagechage, onadditionallanguageschange
-} from '../../bindings/html';
 import io from '../../bindings/html/io';
+import Env from '../../lib/env';
+import { L10n } from '../../bindings/html/service';
+import { getMeta, getResourceLinks } from '../../bindings/html/head';
+import {
+  changeLanguage, onlanguagechage, onadditionallanguageschange
+} from '../../bindings/html/langs';
 
 const additionalLangsAtLaunch = navigator.mozApps.getAdditionalLanguages();
 const readyStates = {
