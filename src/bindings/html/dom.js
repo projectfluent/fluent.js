@@ -27,10 +27,9 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument(doc) {
-  // XXX remove the global
-  document.documentElement.lang = navigator.mozL10n.language.code;
-  document.documentElement.dir = navigator.mozL10n.language.direction;
+export function translateDocument(doc, langs) {
+  document.documentElement.lang = langs.langs[0];
+  document.documentElement.dir = langs.dirs[0];
   return translateFragment.call(this, doc);
 }
 

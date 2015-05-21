@@ -5,56 +5,26 @@ import {
 } from './dom';
 
 export const L10n = {
-  env: null,
   views: [],
+  env: null,
   languages: null,
-
   setAttributes: setL10nAttributes,
   getAttributes: getL10nAttributes,
-
-  // legacy compat
-  readyState: 'complete',
-  language: {
-    code: 'en-US',
-    direction: 'ltr'
-  },
-  qps: {},
-  get: id => id,
-  // XXX temporary
-  _ready: new Promise(function(resolve) {
-    window.addEventListener('l10nready', resolve);
-  }),
-  ready: function ready(callback) {
-    return this._ready.then(callback);
-  },
-  once: function once(callback) {
-    return this._ready.then(callback);
-  }
 };
 
 export function initViews(langs) {
   return Promise.all(
-    this.views.map(view => initView(view, langs))).then(
-      onReady.bind(this)).catch(console.error.bind.console);
+    this.views.map(view => initView(view, langs)));
 }
 
 function initView(view, langs) {
   dispatchEvent(view.doc, 'supportedlanguageschange', langs);
-  return view.ctx.fetch(langs, 1);
-}
-
-function onReady() {
-  // XXX temporary
-  dispatchEvent(window, 'l10nready');
-
-  function translate(view) {
-    return translateDocument.call(view, view.doc.documentElement).then(
-      () => view.observer.start());
-  } 
-
-  Promise.all(
-    this.views.map(view => translate(view))).then(
-      dispatchEvent.bind(this, window, 'localized'));
+  return view.ctx.fetch(langs, 1).then(
+    translateDocument.bind(view, view.doc.documentElement, langs)).then(
+      () => {
+        dispatchEvent.bind(this, view.doc, 'DOMLocalized', langs);
+        view.observer.start();
+      });
 }
 
 function dispatchEvent(root, name, langs) {

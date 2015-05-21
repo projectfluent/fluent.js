@@ -49,6 +49,10 @@ function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
+function getDirection(lang) {
+  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
+}
+
 function arrEqual(arr1, arr2) {
   return arr1.length === arr2.length &&
     arr1.every((elem, i) => elem === arr2[i]);
