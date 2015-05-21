@@ -3,7 +3,6 @@
 import { L10nError } from './errors';
 import Resolver from './resolver';
 import getPluralRule from './plurals';
-import debug from './debug';
 
 export default function Context(env, resIds) {
   this._env = env;
@@ -69,8 +68,6 @@ Context.prototype.destroy = function() {
 };
 
 Context.prototype._fetchResources = function({langs, srcs}) {
-  debug('fetching resources for', langs.join(', '));
-
   if (langs.length === 0) {
     return Promise.reject(
       new L10nError('No more supported languages to try'));
@@ -89,23 +86,19 @@ Context.prototype._fallback = function(method, id, args, {langs, srcs}) {
   let entity = this._getEntity({lang, src}, id);
 
   if (entity) {
-    debug(id, 'found in', lang);
     try {
       return this[method](args, entity);
     } catch (e) {
-      debug(id, 'in', lang, 'is broken:', e);
+      console.error(id, ' in ', lang, ' is broken: ', e);
     }
   } else {
-    debug(id, 'missing from', lang);
+    console.error(id, ' missing from ', lang);
   }
 
   let tail = {langs: langs.slice(1), srcs: srcs.slice(1)};
   return this._fetchResources(tail).then(
     this._fallback.bind(this, method, id, args),
-    function(err) {
-      debug(err);
-      return id;
-    });
+    err => { console.error(err); return id; });
 };
 
 Context.prototype._getEntity = function({lang, src}, id) {

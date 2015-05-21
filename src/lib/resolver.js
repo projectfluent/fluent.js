@@ -16,8 +16,7 @@ function createEntry(node, lang, src) {
 
   var attrs;
 
-  /* jshint -W084 */
-  for (var i = 0, key; key = keys[i]; i++) {
+  for (var i = 0, key; (key = keys[i]); i++) {
     // skip $i (id), $v (value), $x (index)
     if (key[0] === '$') {
       continue;
