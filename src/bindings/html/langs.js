@@ -3,6 +3,8 @@
 import { prioritizeLocales } from '../../lib/intl';
 import { initViews } from './service';
 
+const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
+
 export function onlanguagechage(appVersion, defaultLang, availableLangs) {
   this.languages = Promise.all([
     navigator.mozApps.getAdditionalLanguages(), this.languages]).then(
@@ -30,25 +32,27 @@ export function changeLanguage(
   let newLangs = prioritizeLocales(
     defaultLang, allAvailableLangs, requestedLangs);
 
-  let langs = {
-    langs: newLangs,
-    srcs: newLangs.map(lang => getLangSource(
-      appVersion, availableLangs, additionalLangs, lang))
-  };
+  let langs = newLangs.map(lang => ({
+    code: lang,
+    src: getLangSource(appVersion, availableLangs, additionalLangs, lang),
+    dir: getDirection(lang)
+  }));
 
   if (!arrEqual(prevLangs, newLangs)) {
     initViews.call(this, langs);
   }
 
   return langs;
+}
 
+function getDirection(lang) {
+  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
 function arrEqual(arr1, arr2) {
   return arr1.length === arr2.length &&
     arr1.every((elem, i) => elem === arr2[i]);
 }
-
 
 function getMatchingLangpack(appVersion, langpacks) {
   for (var i = 0, langpack; (langpack = langpacks[i]); i++) {

@@ -38,27 +38,28 @@ Env.prototype.destroyContext = function(ctx) {
   });
 };
 
-Env.prototype._getResource = function(lang, src, res) {
-  var cache = this._resCache;
+Env.prototype._getResource = function(lang, res) {
+  let { code, src } = lang;
+  let cache = this._resCache;
 
   if (!cache[res]) {
     cache[res] = Object.create(null);
-    cache[res][lang] = Object.create(null);
-  } else if (!cache[res][lang]) {
-    cache[res][lang] = Object.create(null);
-  } else if (cache[res][lang][src]) {
-    return cache[res][lang][src];
+    cache[res][code] = Object.create(null);
+  } else if (!cache[res][code]) {
+    cache[res][code] = Object.create(null);
+  } else if (cache[res][code][src]) {
+    return cache[res][code][src];
   }
 
-  return cache[res][lang][src] = this.fetch(src, res, lang).then(
-    ast => cache[res][lang][src] = createEntries(lang, src, ast),
-    err => cache[res][lang][src] = err);
+  return cache[res][code][src] = this.fetch(src, res, code).then(
+    ast => cache[res][code][src] = createEntries(lang, ast),
+    err => cache[res][code][src] = err);
 };
 
-function createEntries(lang, src, ast) {
+function createEntries(lang, ast) {
   var entries = Object.create(null);
   for (var i = 0, node; node = ast[i]; i++) {
-    entries[node.$i] = Resolver.createEntry(node, lang, src);
+    entries[node.$i] = Resolver.createEntry(node, lang);
   }
   return entries;
 }

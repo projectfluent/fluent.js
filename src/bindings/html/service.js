@@ -4,10 +4,6 @@ import {
   translateDocument, setL10nAttributes, getL10nAttributes
 } from './dom';
 
-var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
-
-// Public API
-
 export const L10n = {
   env: null,
   views: [],
@@ -20,7 +16,7 @@ export const L10n = {
   readyState: 'complete',
   language: {
     code: 'en-US',
-    direction: getDirection('en-US')
+    direction: 'ltr'
   },
   qps: {},
   get: id => id,
@@ -35,10 +31,6 @@ export const L10n = {
     return this._ready.then(callback);
   }
 };
-
-function getDirection(lang) {
-  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
-}
 
 export function initViews(langs) {
   return Promise.all(

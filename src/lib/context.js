@@ -67,7 +67,7 @@ Context.prototype.destroy = function() {
   this._env.destroyContext(this);
 };
 
-Context.prototype._fetchResources = function({langs, srcs}) {
+Context.prototype._fetchResources = function(langs) {
   if (langs.length === 0) {
     return Promise.reject(
       new L10nError('No more supported languages to try'));
@@ -75,38 +75,36 @@ Context.prototype._fetchResources = function({langs, srcs}) {
 
   return Promise.all(
     this._resIds.map(
-      this._env._getResource.bind(this._env, langs[0], srcs[0]))).then(
-        () => ({langs, srcs}));
+      this._env._getResource.bind(this._env, langs[0]))).then(
+        () => langs);
 };
 
-Context.prototype._fallback = function(method, id, args, {langs, srcs}) {
+Context.prototype._fallback = function(method, id, args, langs) {
   let lang = langs[0];
-  let src = srcs[0];
 
-  let entity = this._getEntity({lang, src}, id);
+  let entity = this._getEntity(lang, id);
 
   if (entity) {
     try {
       return method.call(this, args, entity);
     } catch (e) {
-      console.error(id, ' in ', lang, ' is broken: ', e);
+      console.error(id, ' in ', lang.code, ' is broken: ', e);
     }
   } else {
-    console.error(id, ' missing from ', lang);
+    console.error(id, ' missing from ', lang.code);
   }
 
-  let tail = {langs: langs.slice(1), srcs: srcs.slice(1)};
-  return this._fetchResources(tail).then(
+  return this._fetchResources(langs.slice(1)).then(
     this._fallback.bind(this, method, id, args),
     err => { console.error(err); return id; });
 };
 
-Context.prototype._getEntity = function({lang, src}, id) {
+Context.prototype._getEntity = function(lang, id) {
   var cache = this._env._resCache;
 
   // Look for `id` in every resource in order.
   for (var i = 0, resId; resId = this._resIds[i]; i++) {
-    var resource = cache[resId][lang][src];
+    var resource = cache[resId][lang.code][lang.src];
     if (resource instanceof L10nError) {
       continue;
     }
@@ -119,10 +117,10 @@ Context.prototype._getEntity = function({lang, src}, id) {
 
 // XXX in the future macros will be stored in localization resources together 
 // with regular entities and this method will not be needed anymore
-Context.prototype._getMacro = function({lang, src}, id) {
+Context.prototype._getMacro = function(lang, id) {
   switch(id) {
     case 'plural':
-      return getPluralRule(lang);
+      return getPluralRule(lang.code);
     default:
       return undefined;
   }
