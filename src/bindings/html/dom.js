@@ -28,8 +28,8 @@ function getTranslatables(element) {
 }
 
 export function translateDocument(doc, langs) {
-  document.documentElement.lang = langs.langs[0];
-  document.documentElement.dir = langs.dirs[0];
+  doc.lang = langs[0].code;
+  doc.dir = langs[0].dir;
   return translateFragment.call(this, doc);
 }
 
