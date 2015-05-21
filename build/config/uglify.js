@@ -11,7 +11,7 @@ module.exports = {
   },
   web: {
     files: {
-      'build/dist/web/l10n3.min.js': ['build/dist/web/l10n3.js'],
+      'build/dist/web/l20n.min.js': ['build/dist/web/l20n.js'],
     }
   },
 };

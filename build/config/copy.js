@@ -6,7 +6,7 @@ module.exports = {
       {
         expand: true,
         cwd: 'build/dist/web',
-        src: ['l10n.js', 'l10n3.js'],
+        src: ['l10n.js', 'l20n.js'],
         dest: 'build/dist/gaia/shared/js/'
       },
       {

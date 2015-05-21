@@ -11,7 +11,7 @@ module.exports = {
     },
     output: {
       path: path('../dist'),
-      filename: '[name]/l10n3.js',
+      filename: '[name]/l20n.js',
       libraryTarget: 'this',
 
     },
@@ -33,7 +33,7 @@ module.exports = {
     entry: './bindings/node/index.js',
     output: {
       path: path('../dist'),
-      filename: './node/l10n3.js',
+      filename: './node/l20n.js',
       libraryTarget: 'commonjs2',
     },
     externals: {
