@@ -12,6 +12,10 @@ export function View(service, doc) {
   this.observer = new MozL10nMutationObserver();
 }
 
+View.prototype.formatValue = function(id, args) {
+  return this.ctx.formatValue(this.service.languages, id, args);
+};
+
 View.prototype.formatEntity = function(id, args) {
   return this.ctx.formatEntity(this.service.languages, id, args);
 };

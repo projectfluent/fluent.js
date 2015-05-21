@@ -32,6 +32,11 @@ Context.prototype._formatValue = function(args, entity) {
   return this._formatTuple.call(this, args, entity)[1];
 };
 
+Context.prototype.formatValue = function(langs, id, args) {
+  return this.fetch(langs).then(
+    this._fallback.bind(this, Context.prototype._formatValue, id, args));
+};
+
 Context.prototype._formatEntity = function(args, entity) {
   var [locals, value] = this._formatTuple.call(this, args, entity);
 
