@@ -1,5 +1,6 @@
 'use strict';
 
+import { prioritizeLocales } from '../../lib/intl';
 import { initViews } from './service';
 
 export function onlanguagechage(appVersion, defaultLang, availableLangs) {
@@ -26,7 +27,7 @@ export function changeLanguage(
 
   let allAvailableLangs = Object.keys(availableLangs).concat(
     additionalLangs || []);
-  let newLangs = negotiate(
+  let newLangs = prioritizeLocales(
     defaultLang, allAvailableLangs, requestedLangs);
 
   let langs = {
@@ -69,22 +70,4 @@ function getLangSource(appVersion, availableLangs, additionalLangs, lang) {
   }
 
   return 'app';
-}
-
-function negotiate(def, availableLangs, requested) {
-  var supportedLocale;
-  // Find the first locale in the requested list that is supported.
-  for (var i = 0; i < requested.length; i++) {
-    var locale = requested[i];
-    if (availableLangs.indexOf(locale) !== -1) {
-      supportedLocale = locale;
-      break;
-    }
-  }
-  if (!supportedLocale ||
-      supportedLocale === def) {
-    return [def];
-  }
-
-  return [supportedLocale, def];
 }
