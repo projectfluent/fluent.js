@@ -55,4 +55,4 @@ function init() {
       this, appVersion, defaultLang, availableLangs));
 }
 
-whenInteractive(init.bind(navigator.mozL10n = L10n));
+whenInteractive(init.bind(window.L10n = L10n));
