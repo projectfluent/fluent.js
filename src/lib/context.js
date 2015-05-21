@@ -60,7 +60,7 @@ Context.prototype._formatEntity = function(args, entity) {
 
 Context.prototype.formatEntity = function(langs, id, args) {
   return this.fetch(langs).then(
-    this._fallback.bind(this, '_formatEntity', id, args));
+    this._fallback.bind(this, Context.prototype._formatEntity, id, args));
 };
 
 Context.prototype.destroy = function() {
@@ -87,7 +87,7 @@ Context.prototype._fallback = function(method, id, args, {langs, srcs}) {
 
   if (entity) {
     try {
-      return this[method](args, entity);
+      return method.call(this, args, entity);
     } catch (e) {
       console.error(id, ' in ', lang, ' is broken: ', e);
     }
