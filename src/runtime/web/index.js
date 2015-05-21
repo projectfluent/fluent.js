@@ -3,7 +3,8 @@
 import io from '../../bindings/html/io';
 import Env from '../../lib/env';
 import { L10n } from '../../bindings/html/service';
-import { getMeta, getResourceLinks } from '../../bindings/html/head';
+import { View } from '../../bindings/html/view';
+import { getMeta } from '../../bindings/html/head';
 import {
   changeLanguage, onlanguagechage, onadditionallanguageschange
 } from '../../bindings/html/langs';
@@ -33,9 +34,10 @@ function init() {
    defaultLang, availableLangs, appVersion
   } = getMeta(document.head);
 
-  this.env = new Env(document.URL, io.fetch.bind(io, appVersion));
-  this.ctxs.push(
-    document.l10n = this.env.createContext(getResourceLinks()));
+  this.env = new Env(
+    document.URL, io.fetch.bind(io, appVersion));
+  this.views.push(
+    document.l10n = new View(this, document));
 
   this.languages = additionalLangsAtLaunch.then(
     additionalLangs =>

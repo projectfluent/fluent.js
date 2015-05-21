@@ -1,6 +1,6 @@
 'use strict';
 
-import { fetchContexts } from './service';
+import { initViews } from './service';
 
 export function onlanguagechage(appVersion, defaultLang, availableLangs) {
   this.languages = Promise.all([
@@ -29,24 +29,18 @@ export function changeLanguage(
   let newLangs = negotiate(
     defaultLang, allAvailableLangs, requestedLangs);
 
-  if (!arrEqual(prevLangs, newLangs)) {
-    fetchContexts.call(this);
-
-    // XXX each l10n ctx should emit?
-    document.dispatchEvent(new CustomEvent('supportedlanguageschange', {
-      bubbles: false,
-      cancelable: false,
-      detail: {
-        languages: newLangs
-      }
-    }));
-  }
-
-  return {
+  let langs = {
     langs: newLangs,
     srcs: newLangs.map(lang => getLangSource(
       appVersion, availableLangs, additionalLangs, lang))
   };
+
+  if (!arrEqual(prevLangs, newLangs)) {
+    initViews.call(this, langs);
+  }
+
+  return langs;
+
 }
 
 function arrEqual(arr1, arr2) {

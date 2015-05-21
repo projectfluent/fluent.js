@@ -3,7 +3,6 @@
 import { 
   translateDocument, setL10nAttributes, getL10nAttributes
 } from './dom';
-import MozL10nMutationObserver from './observer';
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
@@ -11,9 +10,8 @@ var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
 export const L10n = {
   env: null,
-  ctxs: [],
+  views: [],
   languages: null,
-  observer: new MozL10nMutationObserver(),
 
   setAttributes: setL10nAttributes,
   getAttributes: getL10nAttributes,
@@ -42,28 +40,37 @@ function getDirection(lang) {
   return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
 }
 
-export function fetchContexts() {
+export function initViews(langs) {
   return Promise.all(
-    this.ctxs.map(ctx => ctx.fetch(this.languages, 1))).then(
-      onReady.bind(this));
+    this.views.map(view => initView(view, langs))).then(
+      onReady.bind(this)).catch(console.error.bind.console);
+}
+
+function initView(view, langs) {
+  dispatchEvent(view.doc, 'supportedlanguageschange', langs);
+  return view.ctx.fetch(langs, 1);
 }
 
 function onReady() {
   // XXX temporary
   dispatchEvent(window, 'l10nready');
+
+  function translate(view) {
+    return translateDocument.call(view, view.doc.documentElement).then(
+      () => view.observer.start());
+  } 
+
   Promise.all(
-    this.ctxs.map(ctx => translateDocument.call(ctx))).then(
+    this.views.map(view => translate(view))).then(
       dispatchEvent.bind(this, window, 'localized'));
-  // XXX when to start this?
-  this.observer.start();
 }
 
-function dispatchEvent(root, name) {
+function dispatchEvent(root, name, langs) {
   var event = new CustomEvent(name, {
     bubbles: false,
     cancelable: false,
     detail: {
-      language: 'en-US'
+      languages: langs
     }
   });
   root.dispatchEvent(event);

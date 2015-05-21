@@ -27,11 +27,11 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument() {
+export function translateDocument(doc) {
   // XXX remove the global
   document.documentElement.lang = navigator.mozL10n.language.code;
   document.documentElement.dir = navigator.mozL10n.language.direction;
-  return translateFragment.call(this, document.documentElement);
+  return translateFragment.call(this, doc);
 }
 
 export function translateFragment(element) {
@@ -60,15 +60,12 @@ export function translateElement(element) {
     return false;
   }
 
-  return this.formatEntity(
-    // XXX the ctx should have its own copy of languages
-    navigator.mozL10n.languages, l10n.id, l10n.args).then(
-      applyTranslation.bind(this, element));
+  return this.formatEntity(l10n.id, l10n.args).then(
+    applyTranslation.bind(this, element));
 }
 
 function applyTranslation(element, entity) {
-  // XXX the ctx should have its own observer
-  navigator.mozL10n.observer.stop();
+  this.observer.stop();
 
   var value;
   if (entity.attrs && entity.attrs.innerHTML) {
@@ -102,7 +99,7 @@ function applyTranslation(element, entity) {
     }
   }
 
-  navigator.mozL10n.observer.start();
+  this.observer.start();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`

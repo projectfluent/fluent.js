@@ -15,7 +15,7 @@ MozL10nMutationObserver.prototype.start = function() {
 };
 
 MozL10nMutationObserver.prototype.stop = function() {
-  return this._observer.disconnect();
+  return this._observer && this._observer.disconnect();
 };
 
 MozL10nMutationObserver.prototype.CONFIG = {

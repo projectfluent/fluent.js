@@ -1,8 +1,8 @@
 'use strict';
 
-export function getResourceLinks() {
+export function getResourceLinks(head) {
   return Array.prototype.map.call(
-    document.head.querySelectorAll('link[rel="localization"]'),
+    head.querySelectorAll('link[rel="localization"]'),
     (el) => el.getAttribute('href'));
 }
 
