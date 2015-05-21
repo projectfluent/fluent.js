@@ -1,15 +1,11 @@
 'use strict';
 
-import { 
-  translateDocument, setL10nAttributes, getL10nAttributes
-} from './dom';
+import { translateDocument } from './dom';
 
 export const L10n = {
   views: [],
   env: null,
-  languages: null,
-  setAttributes: setL10nAttributes,
-  getAttributes: getL10nAttributes,
+  languages: null
 };
 
 export function initViews(langs) {
