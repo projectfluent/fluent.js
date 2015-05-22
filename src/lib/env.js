@@ -51,7 +51,7 @@ Env.prototype._getResource = function(lang, res) {
     return cache[res][code][src];
   }
 
-  return cache[res][code][src] = this.fetch(src, res, code).then(
+  return cache[res][code][src] = this.fetch(res, lang).then(
     ast => cache[res][code][src] = createEntries(lang, ast),
     err => cache[res][code][src] = err);
 };

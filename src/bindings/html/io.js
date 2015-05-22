@@ -43,14 +43,14 @@ function load(type, url) {
 }
 
 const io = {
-  extra: function(lang, ver, path, type) {
+  extra: function(code, ver, path, type) {
     if (type === 'properties') {
       type = 'text';
     }
     return navigator.mozApps.getLocalizationResource(
-      lang, ver, path, type);
+      code, ver, path, type);
   },
-  app: function(lang, ver, path, type) {
+  app: function(code, ver, path, type) {
     switch (type) {
       case 'properties':
         return load('text/plain', path);
@@ -69,10 +69,10 @@ const parsers = {
 
 
 export default {
-  fetch: function(ver, source, res, lang) {
-    var url = res.replace('{locale}', lang);
+  fetch: function(ver, res, lang) {
+    var url = res.replace('{locale}', lang.code);
     var type = res.substr(res.lastIndexOf('.') + 1);
-    var raw = io[source](lang, ver, url, type);
+    var raw = io[lang.src](lang.code, ver, url, type);
     return parsers[type] ? raw.then(parsers[type]) : raw;
   }
 };
