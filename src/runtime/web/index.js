@@ -6,10 +6,11 @@ import { L10n } from '../../bindings/html/service';
 import { View } from '../../bindings/html/view';
 import { getMeta } from '../../bindings/html/head';
 import {
-  changeLanguage, onlanguagechage, onadditionallanguageschange
+  changeLanguage, onlanguagechage, onadditionallanguageschange,
+  getAdditionalLanguages
 } from '../../bindings/html/langs';
 
-const additionalLangsAtLaunch = navigator.mozApps.getAdditionalLanguages();
+const additionalLangsAtLaunch = getAdditionalLanguages();
 const readyStates = {
   loading: 0,
   interactive: 1,
