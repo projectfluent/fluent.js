@@ -5,8 +5,9 @@ import Resolver from './resolver';
 import qps from './pseudo';
 import { walkContent} from './util';
 
-export default function Env(id, fetch) {
+export default function Env(id, defaultLang, fetch) {
   this.id = id;
+  this.defaultLang = defaultLang;
   this.fetch = fetch;
 
   this._resMap = Object.create(null);
@@ -54,7 +55,7 @@ Env.prototype._getResource = function(lang, res) {
   }
 
   let fetched = src === 'qps' ?
-    this.fetch(res, { code: 'en-US', src: 'app' }) :
+    this.fetch(res, { code: this.defaultLang, src: 'app' }) :
     this.fetch(res, lang);
 
   return cache[res][code][src] = fetched.then(
