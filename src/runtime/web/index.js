@@ -53,6 +53,9 @@ function init() {
   document.addEventListener('additionallanguageschange',
     onadditionallanguageschange.bind(
       this, appVersion, defaultLang, availableLangs));
+
+  L10n.change = onlanguagechage.bind(
+    this, appVersion, defaultLang, availableLangs);
 }
 
 whenInteractive(init.bind(window.L10n = L10n));

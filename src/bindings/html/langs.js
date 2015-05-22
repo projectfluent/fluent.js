@@ -5,18 +5,20 @@ import { initViews } from './service';
 
 const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
-export function onlanguagechage(appVersion, defaultLang, availableLangs) {
-  this.languages = Promise.all([
+export function onlanguagechage(
+  appVersion, defaultLang, availableLangs, requestedLangs) {
+
+  return this.languages = Promise.all([
     navigator.mozApps.getAdditionalLanguages(), this.languages]).then(
       all => changeLanguage.call(
         this, appVersion, defaultLang, availableLangs, ...all,
-        navigator.languages));
+        requestedLangs || navigator.languages));
 }
 
 export function onadditionallanguageschange(
   appVersion, defaultLang, availableLangs, evt) {
 
-  this.languages = this.languages.then(
+  return this.languages = this.languages.then(
     prevLangs => changeLanguage.call(
       this, appVersion, defaultLang, availableLangs, evt.detail, prevLangs,
       navigator.languages));
