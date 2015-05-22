@@ -2,6 +2,7 @@
 
 import { prioritizeLocales } from '../../lib/intl';
 import { initViews } from './service';
+import qps from '../../lib/pseudo';
 
 const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
@@ -39,14 +40,14 @@ export function changeLanguage(
   requestedLangs) {
 
   let allAvailableLangs = Object.keys(availableLangs).concat(
-    additionalLangs || []);
+    additionalLangs || []).concat(Object.keys(qps));
   let newLangs = prioritizeLocales(
     defaultLang, allAvailableLangs, requestedLangs);
 
-  let langs = newLangs.map(lang => ({
-    code: lang,
-    src: getLangSource(appVersion, availableLangs, additionalLangs, lang),
-    dir: getDirection(lang)
+  let langs = newLangs.map(code => ({
+    code: code,
+    src: getLangSource(appVersion, availableLangs, additionalLangs, code),
+    dir: getDirection(code)
   }));
 
   if (!arrEqual(prevLangs, newLangs)) {
@@ -56,12 +57,8 @@ export function changeLanguage(
   return langs;
 }
 
-function getDirection(lang) {
-  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
-}
-
-function getDirection(lang) {
-  return (rtlList.indexOf(lang) >= 0) ? 'rtl' : 'ltr';
+function getDirection(code) {
+  return (rtlList.indexOf(code) >= 0) ? 'rtl' : 'ltr';
 }
 
 function arrEqual(arr1, arr2) {
@@ -78,14 +75,18 @@ function getMatchingLangpack(appVersion, langpacks) {
   return null;
 }
 
-function getLangSource(appVersion, availableLangs, additionalLangs, lang) {
-  if (additionalLangs && additionalLangs[lang]) {
-    let lp = getMatchingLangpack(appVersion, additionalLangs[lang]);
+function getLangSource(appVersion, availableLangs, additionalLangs, code) {
+  if (additionalLangs && additionalLangs[code]) {
+    let lp = getMatchingLangpack(appVersion, additionalLangs[code]);
     if (lp &&
-        (!(lang in availableLangs) ||
-         parseInt(lp.revision) > availableLangs[lang])) {
+        (!(code in availableLangs) ||
+         parseInt(lp.revision) > availableLangs[code])) {
       return 'extra';
     }
+  }
+
+  if ((code in qps) && !(code in availableLangs)) {
+    return 'qps';
   }
 
   return 'app';

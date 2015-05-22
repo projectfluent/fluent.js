@@ -2,6 +2,8 @@
 
 import Context from './context';
 import Resolver from './resolver';
+import qps from './pseudo';
+import { walkContent} from './util';
 
 export default function Env(id, fetch) {
   this.id = id;
@@ -51,15 +53,28 @@ Env.prototype._getResource = function(lang, res) {
     return cache[res][code][src];
   }
 
-  return cache[res][code][src] = this.fetch(res, lang).then(
+  let fetched = src === 'qps' ?
+    this.fetch(res, { code: 'en-US', src: 'app' }) :
+    this.fetch(res, lang);
+
+  return cache[res][code][src] = fetched.then(
     ast => cache[res][code][src] = createEntries(lang, ast),
     err => cache[res][code][src] = err);
 };
 
 function createEntries(lang, ast) {
-  var entries = Object.create(null);
+  let entries = Object.create(null);
+  let createEntry = lang.src === 'qps' ?
+    createPseudoEntry : Resolver.createEntry;
+
   for (var i = 0, node; node = ast[i]; i++) {
-    entries[node.$i] = Resolver.createEntry(node, lang);
+    entries[node.$i] = createEntry(node, lang.code);
   }
+
   return entries;
+}
+
+function createPseudoEntry(node, code) {
+  return Resolver.createEntry(
+    walkContent(node, qps[code].translate), code);
 }
