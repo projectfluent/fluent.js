@@ -25,6 +25,30 @@ module.exports = {
           path('../../src')
         ],
         loader: 'babel',
+      }]
+    }
+  },
+  gaia: {
+    context: path('../../src'),
+    entry: {
+      gaia: './runtime/web/index.js',
+    },
+    output: {
+      path: path('../dist'),
+      filename: '[name]/l20n.js',
+      libraryTarget: 'this',
+
+    },
+    externals: {
+      'querystring': 'var window'
+    },
+    module: {
+      loaders: [{ 
+        test: /\.js$/,
+        include: [
+          path('../../src')
+        ],
+        loader: 'babel',
         query: {
           comments: false,
           whitelist: [
