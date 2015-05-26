@@ -52,7 +52,6 @@ module.exports = {
         query: {
           comments: false,
           whitelist: [
-            'es7.exportExtensions',
             'es6.modules',
             'es6.destructuring',
             'es6.arrowFunctions',
