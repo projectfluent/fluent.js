@@ -70,8 +70,9 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('gaia', [
-    'build',
-    'copy:gaia'
+    'lint',
+    'webpack:gaia',
+    'copy:stage'
   ]);
 
   grunt.registerTask('release', [

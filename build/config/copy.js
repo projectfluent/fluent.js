@@ -1,25 +1,25 @@
 'use strict';
 
 module.exports = {
-  gaia: {
+  stage: {
     files: [
       {
         expand: true,
-        cwd: 'build/dist/web',
+        cwd: 'build/dist/gaia',
         src: ['l10n.js', 'l20n.js'],
-        dest: 'build/dist/gaia/shared/js/'
+        dest: 'build/dist/stage/shared/js/'
       },
       {
         expand: true,
         cwd: 'build/dist/gaiabuild',
         src: ['l10n.js', 'qps.js'],
-        dest: 'build/dist/gaia/build/l10n/'
+        dest: 'build/dist/stage/build/l10n/'
       },
       {
         expand: true,
         cwd: 'tests/',
         src: '**',
-        dest: 'build/dist/gaia/apps/sharedtest/test/unit/l10n/'
+        dest: 'build/dist/stage/apps/sharedtest/test/unit/l10n/'
       }
     ]
   }
