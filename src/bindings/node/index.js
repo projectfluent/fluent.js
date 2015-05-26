@@ -3,11 +3,14 @@
 var Context = require('../../lib/context').Context;
 var PropertiesParser =
   require('../../lib/format/properties/parser');
+var L20nParser =
+  require('../../lib/format/l20n/parser');
 var getPluralRule = require('../../lib/plurals').getPluralRule;
 var Resolver = require('../../lib/resolver');
 
 exports.Context = Context;
 exports.PropertiesParser = PropertiesParser;
+exports.L20nParser = L20nParser;
 exports.getPluralRule = getPluralRule;
 exports.getContext = function L20n_getContext(id) {
     return new Context(id);

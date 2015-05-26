@@ -1,11 +1,13 @@
 load('../../dist/jsshell/l10n.js');
 
-var parser = L20n.PropertiesParser;
+var propertiesParser = L20n.PropertiesParser;
+var l20nParser = L20n.L20nParser;
 var env = {
   __plural: L20n.getPluralRule('en-US')
 };
 
-var code = read('./example.properties');
+var propCode = read('./example.properties');
+var l20nCode = read('./example.l20n');
 var data = {
   "brandShortName": "BRANDSHORTNAME",
   "ssid": "SSID",
@@ -34,8 +36,13 @@ function micro(time) {
 var times = {};
 times.start = dateNow();
 
-var ast = parser.parse(null, code);
+var ast = propertiesParser.parse(null, propCode);
 times.parseEnd = dateNow();
+
+times.l20nParseStart = dateNow();
+
+var ast = l20nParser.parse(null, l20nCode);
+times.l20nParseEnd = dateNow();
 
 times.createEntries = dateNow();
 L20n.extendEntries(env, ast);
@@ -48,7 +55,7 @@ for (var id in ids) {
    L20n.Resolver.format(data, env[ids[id]]);
 }
 times.formatEnd = dateNow();
-
+/*
 var ctx = new L20n.Context(null);
 var locale = ctx.getLocale('en-US');
 locale.addAST(ast);
@@ -59,12 +66,13 @@ for (var id in ids) {
   ctx.getEntity(ids[id], data);
 }
 times.getEntityEnd = dateNow();
-
+*/
 var results = {
-  parse: micro(times.parseEnd - times.start),
+  parseProp: micro(times.parseEnd - times.start),
+  parseL20n: micro(times.l20nParseEnd - times.l20nParseStart),
   createEntries: micro(times.createEntriesEnd - times.createEntries),
   format: micro(times.formatEnd - times.format),
-  getEntity: micro(times.getEntityEnd - times.getEntity),
+  //getEntity: micro(times.getEntityEnd - times.getEntity),
 };
 
 print(JSON.stringify(results));
