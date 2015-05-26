@@ -52,12 +52,14 @@ module.exports = {
         query: {
           comments: false,
           whitelist: [
+            'strict',
             'es6.modules',
             'es6.destructuring',
             'es6.arrowFunctions',
             'es6.properties.shorthand',
             'es6.forOf',
             'es6.spread',
+            'es6.blockScoping'
           ],
         }
       }]
