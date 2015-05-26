@@ -26,12 +26,12 @@ export function onlanguagechage(
 }
 
 export function onadditionallanguageschange(
-  appVersion, defaultLang, availableLangs, evt) {
+  appVersion, defaultLang, availableLangs, additionalLangs, requestedLangs) {
 
   return this.languages = this.languages.then(
     prevLangs => changeLanguage.call(
-      this, appVersion, defaultLang, availableLangs, evt.detail, prevLangs,
-      navigator.languages));
+      this, appVersion, defaultLang, availableLangs, additionalLangs,
+      prevLangs, requestedLangs || navigator.languages));
 }
 
 

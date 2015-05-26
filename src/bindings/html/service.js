@@ -18,7 +18,7 @@ function initView(view, langs) {
   return view.ctx.fetch(langs, 1).then(
     translateDocument.bind(view, view.doc.documentElement, langs)).then(
       () => {
-        dispatchEvent.bind(this, view.doc, 'DOMLocalized', langs);
+        dispatchEvent(view.doc, 'DOMLocalized', langs);
         view.observer.start();
       });
 }

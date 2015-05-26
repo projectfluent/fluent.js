@@ -50,10 +50,12 @@ function init() {
       navigator.languages));
 
   window.addEventListener('languagechange',
-    onlanguagechage.bind(this, appVersion, defaultLang, availableLangs));
+    () => onlanguagechage.call(
+      this, appVersion, defaultLang, availableLangs, navigator.languages));
   document.addEventListener('additionallanguageschange',
-    onadditionallanguageschange.bind(
-      this, appVersion, defaultLang, availableLangs));
+    evt => onadditionallanguageschange.call(
+      this, appVersion, defaultLang, availableLangs, evt.detail,
+      navigator.languages));
 
   L10n.change = onlanguagechage.bind(
     this, appVersion, defaultLang, availableLangs);
