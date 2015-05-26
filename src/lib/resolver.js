@@ -4,7 +4,6 @@ import { L10nError } from './errors';
 
 var KNOWN_MACROS = ['plural'];
 var MAX_PLACEABLE_LENGTH = 2500;
-var rePlaceables = /\{\{\s*(.+?)\s*\}\}/g;
 
 function createEntry(node, lang) {
   var keys = Object.keys(node);
@@ -219,4 +218,4 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
   throw new L10nError('Unresolvable value');
 }
 
-export default { createEntry, format, rePlaceables };
+export default { createEntry, format };
