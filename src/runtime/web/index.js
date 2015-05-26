@@ -40,14 +40,12 @@ function init() {
   this.views.push(
     document.l10n = new View(this, document));
 
+  let setLanguage = additionalLangs => changeLanguage.call(
+    this, appVersion, defaultLang, availableLangs, additionalLangs, [],
+    navigator.languages);
+
   this.languages = additionalLangsAtLaunch.then(
-    additionalLangs =>
-      changeLanguage.call(
-        this, appVersion, defaultLang, availableLangs, additionalLangs, [],
-        navigator.languages),
-    changeLanguage.bind(
-      this, appVersion, defaultLang, availableLangs, null, [],
-      navigator.languages));
+    setLanguage, setLanguage);
 
   window.addEventListener('languagechange',
     () => onlanguagechage.call(
