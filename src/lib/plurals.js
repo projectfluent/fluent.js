@@ -1,6 +1,6 @@
 'use strict';
 
-export default function getPluralRule(lang) {
+export default function getPluralRule(code) {
   var locales2rules = {
     'af': 3,
     'ak': 4,
@@ -445,7 +445,7 @@ export default function getPluralRule(lang) {
   };
 
   // return a function that gives the plural form name for a given integer
-  var index = locales2rules[lang.replace(/-.*$/, '')];
+  var index = locales2rules[code.replace(/-.*$/, '')];
   if (!(index in pluralRules)) {
     return function() { return 'other'; };
   }
