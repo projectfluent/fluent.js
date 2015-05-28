@@ -2,6 +2,8 @@
 
 'use strict';
 
+require('babel/register');
+
 var fs = require('fs');
 var program = require('commander');
 var prettyjson = require('prettyjson');
@@ -9,6 +11,7 @@ var colors = require('colors');
 
 var PropertiesParser =
   require('../src/lib/format/properties/parser');
+var L20nParser = require('../src/lib/format/l20n/parser');
 
 
 program
@@ -31,12 +34,21 @@ function logError(err) {
   console.warn(color(name, 'red') + message);
 }
 
-function print(err, data) {
+function print(type, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
+  var ast;
   try {
-    var ast = PropertiesParser.parse(null, data.toString()); 
+    switch (type) {
+      case 'properties':
+        ast = PropertiesParser.parse(null, data.toString());
+        break;
+      case 'l20n':
+        ast = L20nParser.parse(null, data.toString());
+        break;
+    }
+
   } catch (e) {
     console.log(e);
     logError(e);
@@ -52,7 +64,8 @@ function print(err, data) {
 }
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  var type = program.args[0].substr(program.args[0].lastIndexOf('.') + 1);
+  fs.readFile(program.args[0], print.bind(null, type));
 } else {
   process.stdin.resume();
   process.stdin.on('data', print.bind(null, null));

@@ -2,6 +2,7 @@
 
 import { L10nError } from '../../lib/errors';
 import PropertiesParser from '../../lib/format/properties/parser';
+import L20nParser from '../../lib/format/l20n/parser';
 
 function load(type, url) {
   return new Promise(function(resolve, reject) {
@@ -53,6 +54,7 @@ const io = {
   app: function(code, ver, path, type) {
     switch (type) {
       case 'properties':
+      case 'l20n':
         return load('text/plain', path);
       case 'json':
         return load('application/json', path);
@@ -64,6 +66,7 @@ const io = {
 
 const parsers = {
   properties: PropertiesParser.parse.bind(PropertiesParser, null),
+  l20n: L20nParser.parse.bind(L20nParser, null),
   json: null
 };
 

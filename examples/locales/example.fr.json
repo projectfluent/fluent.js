@@ -1,4 +1,39 @@
-{
-  "title": "Exemple de mozL10n",
-  "hello": "Salut le monde !"
-}
+[
+  {
+    "$i": "title",
+    "$v": "Exemple de mozL10n"
+  },
+  {
+    "$i": "hello",
+    "$v": {
+      "$o": "Salut <em>le monde</em> !"
+    }
+  },
+  {
+    "$i": "name",
+    "$v": {
+      "$o": "Ecrivez <input placeholder=\"votre nom\"> et <input value=\"envoyez\">."
+    }
+  },
+  {
+    "$i": "unreadEmails",
+    "$x": [
+      {
+        "t": "idOrVar",
+        "v": "plural"
+      },
+      "emailCount"
+    ],
+    "$v": {
+      "one": "Vous avez un email non lu.",
+      "other": [
+        "Vous avez ",
+        {
+          "t": "idOrVar",
+          "v": "emailCount"
+        },
+        " emails non lus."
+      ]
+    }
+  }
+]

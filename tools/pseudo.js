@@ -2,6 +2,8 @@
 
 'use strict';
 
+require('babel/register');
+
 var program = require('commander');
 var PSEUDO = require('../src/lib/pseudo').PSEUDO;
 

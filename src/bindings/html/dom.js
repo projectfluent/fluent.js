@@ -20,7 +20,8 @@ export function getL10nAttributes(element) {
 function getTranslatables(element) {
   var nodes = [];
 
-  if (element.hasAttribute('data-l10n-id')) {
+  if (typeof element.hasAttribute === 'function' &&
+      element.hasAttribute('data-l10n-id')) {
     nodes.push(element);
   }
 
