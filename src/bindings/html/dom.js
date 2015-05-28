@@ -29,17 +29,16 @@ function getTranslatables(element) {
 }
 
 export function translateDocument(doc, langs) {
-  let next = () => setDOMLocalized(doc, langs);
+  let setDOMLocalized = function() {
+    doc.localized = true;
+    dispatchEvent(doc, 'DOMLocalized', langs);
+  };
+
   doc.documentElement.lang = langs[0].code;
   doc.documentElement.dir = langs[0].dir;
   return translateFragment.call(
     this, doc.documentElement).then(
-      next, next);
-}
-
-function setDOMLocalized(doc, langs) {
-  doc.localized = true;
-  dispatchEvent(doc, 'DOMLocalized', langs);
+      setDOMLocalized, setDOMLocalized);
 }
 
 export function translateFragment(element) {
