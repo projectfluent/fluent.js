@@ -16,14 +16,11 @@ export function initViews(langs) {
 function initView(view, langs) {
   dispatchEvent(view.doc, 'supportedlanguageschange', langs);
   return view.ctx.fetch(langs, 1).then(
-    translateDocument.bind(view, view.doc.documentElement, langs)).then(
-      () => {
-        dispatchEvent(view.doc, 'DOMLocalized', langs);
-        view.observer.start();
-      });
+    translateDocument.bind(view, view.doc, langs)).then(
+      () => view.observer.start());
 }
 
-function dispatchEvent(root, name, langs) {
+export function dispatchEvent(root, name, langs) {
   var event = new CustomEvent(name, {
     bubbles: false,
     cancelable: false,

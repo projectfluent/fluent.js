@@ -1,6 +1,7 @@
 'use strict';
 
 import allowed from './allowed';
+import { dispatchEvent } from './service';
 
 export function setL10nAttributes(element, id, args) {
   element.setAttribute('data-l10n-id', id);
@@ -28,9 +29,17 @@ function getTranslatables(element) {
 }
 
 export function translateDocument(doc, langs) {
-  doc.lang = langs[0].code;
-  doc.dir = langs[0].dir;
-  return translateFragment.call(this, doc);
+  let next = () => setDOMLocalized(doc, langs);
+  doc.documentElement.lang = langs[0].code;
+  doc.documentElement.dir = langs[0].dir;
+  return translateFragment.call(
+    this, doc.documentElement).then(
+      next, next);
+}
+
+function setDOMLocalized(doc, langs) {
+  doc.localized = true;
+  dispatchEvent(doc, 'DOMLocalized', langs);
 }
 
 export function translateFragment(element) {

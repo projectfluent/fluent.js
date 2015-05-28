@@ -12,6 +12,14 @@ export function View(service, doc) {
 
   this.ctx = this.service.env.createContext(getResourceLinks(doc.head));
   this.observer = new MozL10nMutationObserver();
+
+  this.ready = new Promise(function(resolve) {
+    let viewReady = function(evt) {
+      doc.removeEventListener('DOMLocalized', viewReady);
+      resolve(evt.detail.languages);
+    };
+    doc.addEventListener('DOMLocalized', viewReady);
+  });
 }
 
 View.prototype.formatValue = function(id, args) {
