@@ -69,13 +69,13 @@ function createEntries(lang, ast) {
     createPseudoEntry : Resolver.createEntry;
 
   for (var i = 0, node; node = ast[i]; i++) {
-    entries[node.$i] = createEntry(node, lang.code);
+    entries[node.$i] = createEntry(node, lang);
   }
 
   return entries;
 }
 
-function createPseudoEntry(node, code) {
+function createPseudoEntry(node, lang) {
   return Resolver.createEntry(
-    walkContent(node, qps[code].translate), code);
+    walkContent(node, qps[lang.code].translate), lang);
 }
