@@ -95,7 +95,7 @@ export function translateElement(element) {
 }
 
 function applyTranslation(element, entity) {
-  this.observer.stop();
+  this.disconnect();
 
   var value;
   if (entity.attrs && entity.attrs.innerHTML) {
@@ -129,7 +129,7 @@ function applyTranslation(element, entity) {
     }
   }
 
-  this.observer.start();
+  this.observe();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`

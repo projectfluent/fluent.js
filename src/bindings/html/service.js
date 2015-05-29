@@ -17,7 +17,7 @@ function initView(view, langs) {
   dispatchEvent(view.doc, 'supportedlanguageschange', langs);
   return view.ctx.fetch(langs, 1).then(
     translateDocument.bind(view, view.doc, langs)).then(
-      () => view.observer.start());
+      () => view.observe());
 }
 
 export function dispatchEvent(root, name, langs) {
