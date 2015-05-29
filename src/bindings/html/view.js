@@ -11,7 +11,7 @@ export function View(service, doc) {
   this.doc = doc;
 
   this.ctx = this.service.env.createContext(getResourceLinks(doc.head));
-  this.observer = new MozL10nMutationObserver();
+  this.observer = new MozL10nMutationObserver(this);
 
   this.ready = new Promise(function(resolve) {
     let viewReady = function(evt) {

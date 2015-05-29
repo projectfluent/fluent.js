@@ -2,20 +2,21 @@
 
 import { translateFragment, translateElement } from './dom';
 
-export default function MozL10nMutationObserver() {
-  this._observer = null;
+export default function MozL10nMutationObserver(view) {
+  this.view = view;
+  this.observer = null;
 }
 
 MozL10nMutationObserver.prototype.start = function() {
-  if (!this._observer) {
-    this._observer =
-      new MutationObserver(onMutations.bind(document.l10n));
+  if (!this.observer) {
+    this.observer =
+      new MutationObserver(onMutations.bind(this.view));
   }
-  return this._observer.observe(document, this.CONFIG);
+  return this.observer.observe(this.view.doc, this.CONFIG);
 };
 
 MozL10nMutationObserver.prototype.stop = function() {
-  return this._observer && this._observer.disconnect();
+  return this.observer && this.observer.disconnect();
 };
 
 MozL10nMutationObserver.prototype.CONFIG = {
@@ -27,22 +28,18 @@ MozL10nMutationObserver.prototype.CONFIG = {
 };
 
 function onMutations(mutations) {
-  var mutation;
-  var targets = new Set();
+  let mutation;
+  let targets = new Set();
 
   for (var i = 0; i < mutations.length; i++) {
     mutation = mutations[i];
+
     if (mutation.type === 'childList') {
-      var addedNode;
-
       for (var j = 0; j < mutation.addedNodes.length; j++) {
-        addedNode = mutation.addedNodes[j];
-
-        if (addedNode.nodeType !== Node.ELEMENT_NODE) {
-          continue;
+        let addedNode = mutation.addedNodes[j];
+        if (addedNode.nodeType === Node.ELEMENT_NODE) {
+          targets.add(addedNode);
         }
-
-        targets.add(addedNode);
       }
     }
 
