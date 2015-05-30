@@ -2,13 +2,15 @@
 
 export function emit(listeners, ...args) {
   let type = args.shift();
-  if (!listeners[type]) {
-    return;
+
+  if (listeners[type]) {
+    listeners[type].slice().forEach(
+      listener => listener.apply(this, args));
   }
 
-  let typeListeners = listeners[type].slice();
-  for (let i = 0; i < typeListeners.length; i++) {
-    typeListeners[i].apply(this, args);
+  if (listeners['*']) {
+    listeners['*'].slice().forEach(
+      listener => listener.apply(this, args));
   }
 }
 
