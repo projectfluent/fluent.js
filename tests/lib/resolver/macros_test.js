@@ -1,4 +1,4 @@
-/* global assert:true, it, before, beforeEach, describe, requireApp */
+/* global assert:true, it, before, describe, requireApp */
 'use strict';
 
 if (typeof navigator !== 'undefined') {
@@ -7,32 +7,32 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var Resolver = require('./header.js').Resolver;
   var createEntries = require('./header.js').createEntries;
+  var MockContext = require('./header').MockContext;
 }
 
 describe('Macros', function(){
-  var source, ctxdata, env;
-  beforeEach(function() {
-    env = createEntries(source);
-  });
+  var entries, ctx, args;
 
   describe('referencing macros', function(){
 
     before(function() {
-      ctxdata = {
+      args = {
         n: 1
       };
-      source = [
+      entries = createEntries([
         'placeMacro={{ plural }}',
         'placeRealMacro={{ __plural }}'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('throws when resolving (not calling) a macro in a complex ' +
        'string', function() {
       assert.strictEqual(
-        Resolver.format(ctxdata, env.placeMacro)[1], '{{ plural }}');
+        Resolver.format(ctx, args, entries.placeMacro)[1], '{{ plural }}');
       assert.strictEqual(
-        Resolver.format(ctxdata, env.placeRealMacro)[1], '{{ __plural }}');
+        Resolver.format(
+          ctx, args, entries.placeRealMacro)[1], '{{ __plural }}');
     });
 
   });
@@ -40,10 +40,10 @@ describe('Macros', function(){
   describe('passing arguments', function(){
 
     before(function() {
-      ctxdata = {
+      args = {
         n: 1
       };
-      source = [
+      entries = createEntries([
         'foo=Foo',
         'useFoo={{ foo }}',
         'bar={[ plural(n) ]}',
@@ -67,42 +67,43 @@ describe('Macros', function(){
 
         'passWatch={[ plural(watch) ]}',
         'passWatch[one]=One',
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('throws if an entity is passed', function() {
       assert.throws(function() {
-        Resolver.format(ctxdata, env.passFoo);
+        Resolver.format(ctx, args, entries.passFoo);
       }, 'Unresolvable value');
     });
 
     it('throws if a complex entity is passed', function() {
       assert.throws(function() {
-        Resolver.format(ctxdata, env.passUseFoo);
+        Resolver.format(ctx, args, entries.passUseFoo);
       }, 'Unresolvable value');
     });
 
     it('throws if a hash entity is passed', function() {
       assert.throws(function() {
-        Resolver.format(ctxdata, env.passBar);
+        Resolver.format(ctx, args, entries.passBar);
       }, 'Unresolvable value');
     });
 
     it('throws if a macro is passed', function() {
       assert.throws(function() {
-        Resolver.format(ctxdata, env.passPlural);
+        Resolver.format(ctx, args, entries.passPlural);
       }, 'Unresolvable value');
     });
 
     it('throws if a missing entry is passed', function() {
       assert.throws(function() {
-        Resolver.format(ctxdata, env.passMissing);
+        Resolver.format(ctx, args, entries.passMissing);
       }, 'Unknown reference: missing');
     });
 
     it('throws if a native function is passed', function() {
       assert.throws(function() {
-        Resolver.format(ctxdata, env.passWatch);
+        Resolver.format(ctx, args, entries.passWatch);
       }, 'Unknown reference: watch');
     });
 
@@ -110,17 +111,15 @@ describe('Macros', function(){
 });
 
 describe('A simple plural macro', function(){
-  var source, env;
-
-  beforeEach(function() {
-    env = createEntries(source);
-    env.__plural = function() {
+  var entries, ctx;
+  var getSimpleMacro = function() {
+    return function() {
       return 'other';
     };
-  });
+  };
 
   before(function() {
-    source = [
+    entries = createEntries([
       'foo={[ plural(n) ]}',
       'foo[zero]=Zero',
       'foo[one]=One',
@@ -128,54 +127,54 @@ describe('A simple plural macro', function(){
       'foo[few]=Few',
       'foo[many]=Many',
       'foo[other]=Other'
-    ].join('\n');
+    ].join('\n'));
+    ctx = new MockContext(entries);
+    ctx._getMacro = getSimpleMacro;
   });
 
   it('returns zero for 0', function() {
-    var value = Resolver.format({n: 0}, env.foo)[1];
+    var value = Resolver.format(ctx, {n: 0}, entries.foo)[1];
     assert.strictEqual(value, 'Zero');
   });
 
   it('returns one for 1', function() {
-    var value = Resolver.format({n: 1}, env.foo)[1];
+    var value = Resolver.format(ctx, {n: 1}, entries.foo)[1];
     assert.strictEqual(value, 'One');
   });
 
   it('returns two for 2', function() {
-    var value = Resolver.format({n: 2}, env.foo)[1];
+    var value = Resolver.format(ctx, {n: 2}, entries.foo)[1];
     assert.strictEqual(value, 'Two');
   });
 
   it('returns other for 3', function() {
-    var value = Resolver.format({n: 3}, env.foo)[1];
+    var value = Resolver.format(ctx, {n: 3}, entries.foo)[1];
     assert.strictEqual(value, 'Other');
   });
 
   it('throws for no arg', function() {
     assert.throws(function() {
-      Resolver.format(null, env.foo);
+      Resolver.format(ctx, null, entries.foo);
     }, 'Unknown reference: n');
   });
 
 });
 
 describe('A more complex plural macro', function(){
-  var source, env;
-
-  beforeEach(function() {
-    env = createEntries(source);
-    env.__plural = function(n) {
+  var entries, ctx;
+  var getComplexMacro = function() {
+    return function(n) {
       // a made-up plural rule:
       // [0, 1) -> other
       // [1, Inf) -> many
       return (n >= 0 && n < 1) ? 'other' : 'many';
     };
-  });
+  };
 
   describe('an entity with all plural forms defined', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'foo={[ plural(n) ]}',
         'foo[zero]=Zero',
         'foo[one]=One',
@@ -183,42 +182,44 @@ describe('A more complex plural macro', function(){
         'foo[few]=Few',
         'foo[many]=Many',
         'foo[other]=Other'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
+      ctx._getMacro = getComplexMacro;
     });
 
     it('returns zero for 0', function() {
-      var value = Resolver.format({n: 0}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 0}, entries.foo)[1];
       assert.strictEqual(value, 'Zero');
     });
 
     it('returns one for 1', function() {
-      var value = Resolver.format({n: 1}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'One');
     });
 
     it('returns two for 2', function() {
-      var value = Resolver.format({n: 2}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 2}, entries.foo)[1];
       assert.strictEqual(value, 'Two');
     });
 
     it('returns many for 3', function() {
-      var value = Resolver.format({n: 3}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 3}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 5', function() {
-      var value = Resolver.format({n: 5}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 5}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format({n: 0.5}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 0.5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('throws for no arg', function() {
       assert.throws(function() {
-        Resolver.format(null, env.foo);
+        Resolver.format(ctx, null, entries.foo);
       }, 'Unknown reference: n');
     });
 
@@ -227,40 +228,42 @@ describe('A more complex plural macro', function(){
   describe('an entity without the zero, one and two forms', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'foo={[ plural(n) ]}',
         'foo[many]=Many',
         'foo[other]=Other'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
+      ctx._getMacro = getComplexMacro;
     });
 
     it('returns other for 0', function() {
-      var value = Resolver.format({n: 0}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 0}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns many for 1', function() {
-      var value = Resolver.format({n: 1}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 2', function() {
-      var value = Resolver.format({n: 2}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 2}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 3', function() {
-      var value = Resolver.format({n: 3}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 3}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 5', function() {
-      var value = Resolver.format({n: 5}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 5}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format({n: 0.5}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 0.5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
@@ -269,39 +272,41 @@ describe('A more complex plural macro', function(){
   describe('an entity without the many form', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'foo={[ plural(n) ]}',
         'foo[other]=Other'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
+      ctx._getMacro = getComplexMacro;
     });
 
     it('returns other for 0', function() {
-      var value = Resolver.format({n: 0}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 0}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 1', function() {
-      var value = Resolver.format({n: 1}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 2', function() {
-      var value = Resolver.format({n: 2}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 2}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 3', function() {
-      var value = Resolver.format({n: 3}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 3}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 5', function() {
-      var value = Resolver.format({n: 5}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 0.5', function() {
-      var value = Resolver.format({n: 0.5}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 0.5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
@@ -311,44 +316,46 @@ describe('A more complex plural macro', function(){
            'form', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'foo={[ plural(n) ]}',
         'foo[one]=One'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
+      ctx._getMacro = getComplexMacro;
     });
 
     it('throws for 0', function() {
       assert.throws(function() {
-        Resolver.format({n: 0}, env.foo);
+        Resolver.format(ctx, {n: 0}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('returns one for 1', function() {
-      var value = Resolver.format({n: 1}, env.foo)[1];
+      var value = Resolver.format(ctx, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'One');
     });
 
     it('throws for 2', function() {
       assert.throws(function() {
-        Resolver.format({n: 2}, env.foo);
+        Resolver.format(ctx, {n: 2}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('throws for 3', function() {
       assert.throws(function() {
-        Resolver.format({n: 3}, env.foo);
+        Resolver.format(ctx, {n: 3}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('throws for 5', function() {
       assert.throws(function() {
-        Resolver.format({n: 5}, env.foo);
+        Resolver.format(ctx, {n: 5}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('throws for 0.5', function() {
       assert.throws(function() {
-        Resolver.format({n: 0.5}, env.foo);
+        Resolver.format(ctx, {n: 0.5}, entries.foo);
       }, 'Unresolvable value');
     });
 

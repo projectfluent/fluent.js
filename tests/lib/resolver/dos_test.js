@@ -1,4 +1,4 @@
-/* global assert:true, it, beforeEach, describe, requireApp */
+/* global assert:true, it, before, describe, requireApp */
 /* jshint -W101 */
 'use strict';
 
@@ -8,15 +8,16 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var Resolver = require('./header.js').Resolver;
   var createEntries = require('./header.js').createEntries;
+  var MockContext = require('./header').MockContext;
 }
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 
 describe('Billion Laughs', function(){
-  var entries;
+  var entries, ctx;
 
-  beforeEach(function() {
-    var source = [
+  before(function() {
+    entries = createEntries([
       'lol0=LOL',
       'lol1={{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}} {{lol0}}',
       'lol2={{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}} {{lol1}}',
@@ -26,13 +27,13 @@ describe('Billion Laughs', function(){
       // compiler fail.  Given MAX_PLACEABLE_LENGTH of 2500, lol3 is enough
       // to test this.
       'lolz={{ lol3 }}'
-    ].join('\n');
-    entries = createEntries(source);
+    ].join('\n'));
+    ctx = new MockContext(entries);
   });
 
   it('Resolver.format() throws', function() {
     assert.throws(function() {
-      Resolver.format(null, entries.lolz);
+      Resolver.format(ctx, null, entries.lolz);
     }, /too many characters in placeable/i);
   });
 });

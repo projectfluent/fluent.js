@@ -23,5 +23,5 @@
   "quotmark": "single",
   "maxcomplexity": 20,
   "maxerr": 50,
-  "maxlen": 78
+  "maxlen": 80
 }

@@ -179,7 +179,7 @@ function resolveSelector(ctx, lang, args, expr, index) {
     var argValue = index[1] ?
       resolveIdentifier(ctx, lang, args, index[1])[1] : undefined;
 
-    if (selector === ctx._getMacro(lang, 'plural')) {
+    if (selectorName === 'plural') {
       // special cases for zero, one, two if they are defined on the hash
       if (argValue === 0 && 'zero' in expr) {
         return 'zero';

@@ -1,4 +1,4 @@
-/* global assert:true, it, before, beforeEach, describe, requireApp */
+/* global assert:true, it, before, describe, requireApp */
 'use strict';
 
 if (typeof navigator !== 'undefined') {
@@ -7,34 +7,33 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var Resolver = require('./header').Resolver;
   var createEntries = require('./header').createEntries;
+  var MockContext = require('./header').MockContext;
 }
 
 describe('Attributes', function(){
-  var source, env;
-
-  beforeEach(function() {
-    env = createEntries(source);
-  });
+  var entries, ctx;
 
   describe('with string values', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'foo=Foo',
         'foo.attr=An attribute',
         'foo.attrComplex=An attribute referencing {{ bar }}',
         'bar=Bar'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('returns the value', function(){
-      var formatted = Resolver.format(null, env.foo.attrs.attr);
+      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'An attribute');
     });
 
     it('returns the value with a placeable', function(){
-      var formatted = Resolver.format(null, env.foo.attrs.attrComplex);
+      var formatted = Resolver.format(
+        ctx, null, entries.foo.attrs.attrComplex);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'An attribute referencing Bar');
     });
@@ -44,21 +43,22 @@ describe('Attributes', function(){
   describe('with hash values', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'update=Update',
         'update.title={[ plural(n) ]}',
         'update.title[one]=One update available'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('returns the value of the entity', function(){
-      var formatted = Resolver.format(null, env.update);
+      var formatted = Resolver.format(ctx, null, entries.update);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'Update');
     });
 
     it('returns the value of the attribute\'s member', function(){
-      var formatted = Resolver.format({n: 1}, env.update.attrs.title);
+      var formatted = Resolver.format(ctx, {n: 1}, entries.update.attrs.title);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'One update available');
     });
@@ -69,24 +69,26 @@ describe('Attributes', function(){
   describe('with hash values, on entities with hash values ', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'update={[ plural(n) ]}',
         'update[one]=One update',
         'update[other]={{ n }} updates',
         'update.title={[ plural(k) ]}',
         'update.title[one]=One update title',
         'update.title[other]={{ k }} updates title'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('returns the value of the entity', function(){
-      var formatted = Resolver.format({n: 1, k: 2}, env.update);
+      var formatted = Resolver.format(ctx, {n: 1, k: 2}, entries.update);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'One update');
     });
 
     it('returns the value of the attribute', function(){
-      var formatted = Resolver.format({n: 1, k: 2}, env.update.attrs.title);
+      var formatted = Resolver.format(
+        ctx, {n: 1, k: 2}, entries.update.attrs.title);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], '2 updates title');
     });
@@ -96,19 +98,20 @@ describe('Attributes', function(){
   describe('with relative self-references', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'brandName=Firefox',
         'brandName.title=Mozilla {{ brandName }}'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('returns the value of the entity', function(){
-      var value = Resolver.format(null, env.brandName)[1];
+      var value = Resolver.format(ctx, null, entries.brandName)[1];
       assert.strictEqual(value, 'Firefox');
     });
 
     it('returns the value of the attribute', function(){
-      var attr = Resolver.format(null, env.brandName.attrs.title)[1];
+      var attr = Resolver.format(ctx, null, entries.brandName.attrs.title)[1];
       assert.strictEqual(attr, 'Mozilla Firefox');
     });
 
@@ -117,14 +120,15 @@ describe('Attributes', function(){
   describe('with cyclic self-references', function(){
 
     before(function() {
-      source = [
+      entries = createEntries([
         'brandName=Firefox',
         'brandName.title=Mozilla {{ brandName.title }}'
-      ].join('\n');
+      ].join('\n'));
+      ctx = new MockContext(entries);
     });
 
     it('returns the raw string of the attribute', function(){
-      var attr = Resolver.format(null, env.brandName.attrs.title)[1];
+      var attr = Resolver.format(ctx, null, entries.brandName.attrs.title)[1];
       assert.strictEqual(attr, 'Mozilla {{ brandName.title }}');
     });
 

@@ -11,11 +11,12 @@ if (typeof navigator !== 'undefined') {
     PropertiesParser:
       require('../../../src/lib/format/properties/parser'),
     Resolver: require('../../../src/lib/resolver'),
-    getPluralRule: require('../../../src/lib/plurals').getPluralRule
+    getPluralRule: require('../../../src/lib/plurals')
   };
 
-  exports.createEntries = createEntries;
   exports.Resolver = L10n.Resolver;
+  exports.createEntries = createEntries;
+  exports.MockContext = MockContext;
 }
 
 
@@ -24,10 +25,30 @@ function createEntries(source) {
   var entries = Object.create(null);
   var ast = L10n.PropertiesParser.parse(null, source);
 
+  var lang = {
+    code:'en-US',
+    src: 'app',
+    dir: 'ltr'
+  };
+
   for (var i = 0, len = ast.length; i < len; i++) {
-    entries[ast[i].$i] = L10n.Resolver.createEntry(ast[i], entries);
+    entries[ast[i].$i] = L10n.Resolver.createEntry(ast[i], lang);
   }
 
-  entries.__plural = L10n.getPluralRule('en-US');
   return entries;
+}
+
+function MockContext(entries) {
+  this._getEntity = function(lang, id) {
+    return entries[id];
+  };
+
+  this._getMacro = function(lang, id) {
+    switch(id) {
+      case 'plural':
+        return L10n.getPluralRule(lang.code);
+      default:
+        return undefined;
+    }
+  };
 }
