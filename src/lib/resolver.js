@@ -12,7 +12,7 @@ var nonLatin1 = /[^\x01-\xFF]/;
 var FSI = '\u2068';
 var PDI = '\u2069';
 
-function createEntry(node, lang) {
+export function createEntry(node, lang) {
   var keys = Object.keys(node);
 
   // the most common scenario: a simple string with no arguments
@@ -60,7 +60,7 @@ function createAttribute(node, lang, id) {
 }
 
 
-function format(ctx, args, entity) {
+export function format(ctx, args, entity) {
   var locals = {
     overlay: false
   };
@@ -235,5 +235,3 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
   // XXX Specify entity id
   throw new L10nError('Unresolvable value');
 }
-
-export default { createEntry, format };

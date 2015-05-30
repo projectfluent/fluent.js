@@ -1,11 +1,10 @@
 'use strict';
 
 import Context from './context';
-import Resolver from './resolver';
+import { createEntry } from './resolver';
 import PropertiesParser from './format/properties/parser';
 import L20nParser from './format/l20n/parser';
-import qps from './pseudo';
-import { walkContent} from './util';
+import { walkContent, qps } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 
 const parsers = {
@@ -91,17 +90,17 @@ Env.prototype._getResource = function(lang, res) {
 
 function createEntries(lang, ast) {
   let entries = Object.create(null);
-  let createEntry = lang.src === 'qps' ?
-    createPseudoEntry : Resolver.createEntry;
+  let create = lang.src === 'qps' ?
+    createPseudoEntry : createEntry;
 
   for (var i = 0, node; node = ast[i]; i++) {
-    entries[node.$i] = createEntry(node, lang);
+    entries[node.$i] = create(node, lang);
   }
 
   return entries;
 }
 
 function createPseudoEntry(node, lang) {
-  return Resolver.createEntry(
+  return createEntry(
     walkContent(node, qps[lang.code].translate), lang);
 }

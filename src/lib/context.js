@@ -1,7 +1,7 @@
 'use strict';
 
 import { L10nError } from './errors';
-import Resolver from './resolver';
+import { format } from './resolver';
 import getPluralRule from './plurals';
 
 export default function Context(env, resIds) {
@@ -17,7 +17,7 @@ Context.prototype.fetch = function(langs) {
 
 Context.prototype._formatTuple = function(args, entity) {
   try {
-    return Resolver.format(this, args, entity);
+    return format(this, args, entity);
   } catch (err) {
     this._env.emit('resolveerror', err);
     return [{ error: err }, entity.id];

@@ -1,5 +1,29 @@
 'use strict';
 
+// Recursively walk an AST node searching for content leaves
+export function walkContent(node, fn) {
+  if (typeof node === 'string') {
+    return fn(node);
+  }
+
+  if (node.t === 'idOrVar') {
+    return node;
+  }
+
+  var rv = Array.isArray(node) ? [] : {};
+  var keys = Object.keys(node);
+
+  for (var i = 0, key; (key = keys[i]); i++) {
+    // don't change identifier ($i) nor indices ($x)
+    if (key === '$i' || key === '$x') {
+      rv[key] = node[key];
+    } else {
+      rv[key] = walkContent(node[key], fn);
+    }
+  }
+  return rv;
+}
+
 /* Pseudolocalizations
  *
  * PSEUDO is a dict of strategies to be used to modify the English
@@ -106,7 +130,7 @@ function Pseudo(id, name, charMap, modFn) {
   this.name = this.translate(name);
 }
 
-export default {
+export const qps = {
   'qps-ploc': new Pseudo('qps-ploc', 'Runtime Accented',
                          ACCENTED_MAP, makeLonger),
   'qps-plocm': new Pseudo('qps-plocm', 'Runtime Mirrored',

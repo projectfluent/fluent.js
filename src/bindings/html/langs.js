@@ -2,7 +2,7 @@
 
 import { prioritizeLocales } from '../../lib/intl';
 import { initViews } from './service';
-import qps from '../../lib/pseudo';
+import { qps } from '../../lib/pseudo';
 
 const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
