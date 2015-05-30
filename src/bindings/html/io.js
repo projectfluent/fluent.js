@@ -1,8 +1,6 @@
 'use strict';
 
 import { L10nError } from '../../lib/errors';
-import PropertiesParser from '../../lib/format/properties/parser';
-import L20nParser from '../../lib/format/l20n/parser';
 
 function load(type, url) {
   return new Promise(function(resolve, reject) {
@@ -45,16 +43,12 @@ function load(type, url) {
 
 const io = {
   extra: function(code, ver, path, type) {
-    if (type === 'properties') {
-      type = 'text';
-    }
     return navigator.mozApps.getLocalizationResource(
       code, ver, path, type);
   },
   app: function(code, ver, path, type) {
     switch (type) {
-      case 'properties':
-      case 'l20n':
+      case 'text':
         return load('text/plain', path);
       case 'json':
         return load('application/json', path);
@@ -64,19 +58,10 @@ const io = {
   },
 };
 
-const parsers = {
-  properties: PropertiesParser.parse.bind(PropertiesParser, null),
-  l20n: L20nParser.parse.bind(L20nParser, null),
-  json: null
-};
-
-
 export default {
   fetch: function(ver, res, lang) {
     var url = res.replace('{locale}', lang.code);
-    var type = res.substr(res.lastIndexOf('.') + 1);
-    var raw = io[lang.src](lang.code, ver, url, type);
-    return parsers[type] ? raw.then(parsers[type]) : raw;
+    var type = res.endsWith('.json') ? 'json' : 'text';
+    return io[lang.src](lang.code, ver, url, type);
   }
 };
-

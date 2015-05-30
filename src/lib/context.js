@@ -19,6 +19,7 @@ Context.prototype._formatTuple = function(args, entity) {
   try {
     return Resolver.format(this, args, entity);
   } catch (err) {
+    this._env.emit('resolveerror', err);
     return [{ error: err }, entity.id];
   }
 };
@@ -74,8 +75,7 @@ Context.prototype.destroy = function() {
 
 Context.prototype._fetchResources = function(langs) {
   if (langs.length === 0) {
-    return Promise.reject(
-      new L10nError('No more supported languages to try'));
+    return Promise.resolve(langs);
   }
 
   return Promise.all(
@@ -87,21 +87,25 @@ Context.prototype._fetchResources = function(langs) {
 Context.prototype._fallback = function(method, id, args, langs) {
   let lang = langs[0];
 
+  if (!lang) {
+    let err = new L10nError(
+      '"' + id + '"' + ' not found in any language.', id);
+    this._env.emit('notfounderror', err);
+    return id;
+  }
+
   let entity = this._getEntity(lang, id);
 
   if (entity) {
-    try {
-      return method.call(this, args, entity);
-    } catch (e) {
-      console.error(id, ' in ', lang.code, ' is broken: ', e);
-    }
+    return method.call(this, args, entity);
   } else {
-    console.error(id, ' missing from ', lang.code);
+    let err = new L10nError(
+      '"' + id + '"' + ' not found in ' + lang.code + '.', id, lang.code);
+    this._env.emit('notfounderror', err);
   }
 
   return this._fetchResources(langs.slice(1)).then(
-    this._fallback.bind(this, method, id, args),
-    err => { console.error(err); return id; });
+    this._fallback.bind(this, method, id, args));
 };
 
 Context.prototype._getEntity = function(lang, id) {

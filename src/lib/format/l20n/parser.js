@@ -13,12 +13,12 @@ export default {
     unesc: /\\({{|u[0-9a-fA-F]{4}|.)/g,
   },
 
-  parse: function (ctx, string, simple) {
+  parse: function (env, string, simple) {
     this._source = string;
     this._index = 0;
     this._length = this._source.length;
     this.simpleMode = simple;
-    this.ctx = ctx;
+    this.env = env;
 
     return this.getL20n();
   },
@@ -308,8 +308,8 @@ export default {
           ast.push(entry);
         }
       } catch (e) {
-        if (this.ctx) {
-          this.ctx._emitter.emit('parsererror', e);
+        if (this.env) {
+          this.env.emit('parseerror', e);
         } else {
           throw e;
         }

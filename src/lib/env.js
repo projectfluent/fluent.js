@@ -2,9 +2,17 @@
 
 import Context from './context';
 import Resolver from './resolver';
+import PropertiesParser from './format/properties/parser';
+import L20nParser from './format/l20n/parser';
 import qps from './pseudo';
 import { walkContent} from './util';
 import { emit, addEventListener, removeEventListener } from './events';
+
+const parsers = {
+  properties: PropertiesParser.parse.bind(PropertiesParser),
+  l20n: L20nParser.parse.bind(L20nParser),
+  json: null
+};
 
 export default function Env(id, defaultLang, fetch) {
   this.id = id;
@@ -60,13 +68,25 @@ Env.prototype._getResource = function(lang, res) {
     return cache[res][code][src];
   }
 
-  let fetched = src === 'qps' ?
-    this.fetch(res, { code: this.defaultLang, src: 'app' }) :
-    this.fetch(res, lang);
+  let syntax = res.substr(res.lastIndexOf('.') + 1);
+  let parser = parsers[syntax];
 
-  return cache[res][code][src] = fetched.then(
-    ast => cache[res][code][src] = createEntries(lang, ast),
-    err => cache[res][code][src] = err);
+  let saveEntries = data => {
+    let ast = parser ? parser(this, data) : data;
+    cache[res][code][src] = createEntries(lang, ast);
+  };
+
+  let recover = err => {
+    this.emit('fetcherror', err);
+    cache[res][code][src] = err;
+  };
+
+  let langToFetch = src === 'qps' ?
+    { code: this.defaultLang, src: 'app' } :
+    lang;
+
+  return cache[res][code][src] = this.fetch(res, langToFetch).then(
+    saveEntries, recover);
 };
 
 function createEntries(lang, ast) {

@@ -22,7 +22,7 @@ export default {
     };
   },
 
-  parse: function(ctx, source) {
+  parse: function(env, source) {
     if (!this.patterns) {
       this.init();
     }
@@ -50,8 +50,8 @@ export default {
         try {
           this.parseEntity(entityMatch[1], entityMatch[2], ast);
         } catch (e) {
-          if (ctx) {
-            ctx._emitter.emit('parseerror', e);
+          if (env) {
+            env.emit('parseerror', e);
           } else {
             throw e;
           }
