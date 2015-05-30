@@ -5,14 +5,14 @@
 if (typeof navigator !== 'undefined') {
   var L20n = navigator.mozL10n._getInternalAPI();
   var path =
-    'app://sharedtest.gaiamobile.org/test/unit/l10n/lib/context';
+    'app://sharedtest.gaiamobile.org/test/unit/l10n/lib';
 } else {
   var assert = require('assert');
   var L20n = {
     Env: require('../../../src/lib/env'),
     io: require('../../../src/bindings/node/io')
   };
-  var path = __dirname;
+  var path = __dirname + '/..';
 }
 
 var fetch = L20n.io.fetch.bind(L20n.io);
