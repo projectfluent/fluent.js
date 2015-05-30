@@ -19,8 +19,8 @@ describe('pseudo strategy', function() {
       });
     } else {
       assert = require('assert');
-      PSEUDO = require('../../src/lib/pseudo').PSEUDO;
-      walkContent = require('../../src/lib/util').walkContent;
+      PSEUDO = require('../../src/lib/pseudo').qps;
+      walkContent = require('../../src/lib/pseudo').walkContent;
       PropertiesParser =
         require('../../src/lib/format/properties/parser');
       done();

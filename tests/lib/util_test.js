@@ -30,7 +30,7 @@ describe('walkContent', function() {
     } else {
       assert = require('assert');
       L10n = {};
-      L10n.walkContent = require('../../src/lib/util').walkContent;
+      L10n.walkContent = require('../../src/lib/pseudo').walkContent;
       PropertiesParser = require('../../src/lib/format/properties/parser');
       done();
     }
