@@ -1,44 +1,30 @@
 'use strict';
 
-export default function EventEmitter() {}
-
-EventEmitter.prototype.emit = function ee_emit() {
-  if (!this._listeners) {
+export function emit(listeners, ...args) {
+  let type = args.shift();
+  if (!listeners[type]) {
     return;
   }
 
-  var args = Array.prototype.slice.call(arguments);
-  var type = args.shift();
-  if (!this._listeners[type]) {
-    return;
-  }
-
-  var typeListeners = this._listeners[type].slice();
-  for (var i = 0; i < typeListeners.length; i++) {
+  let typeListeners = listeners[type].slice();
+  for (let i = 0; i < typeListeners.length; i++) {
     typeListeners[i].apply(this, args);
   }
-};
+}
 
-EventEmitter.prototype.addEventListener = function ee_add(type, listener) {
-  if (!this._listeners) {
-    this._listeners = {};
+export function addEventListener(listeners, type, listener) {
+  if (!(type in listeners)) {
+    listeners[type] = [];
   }
-  if (!(type in this._listeners)) {
-    this._listeners[type] = [];
-  }
-  this._listeners[type].push(listener);
-};
+  listeners[type].push(listener);
+}
 
-EventEmitter.prototype.removeEventListener = function ee_rm(type, listener) {
-  if (!this._listeners) {
-    return;
-  }
-
-  var typeListeners = this._listeners[type];
-  var pos = typeListeners.indexOf(listener);
+export function removeEventListener(listeners, type, listener) {
+  let typeListeners = listeners[type];
+  let pos = typeListeners.indexOf(listener);
   if (pos === -1) {
     return;
   }
 
   typeListeners.splice(pos, 1);
-};
+}

@@ -4,6 +4,7 @@ import Context from './context';
 import Resolver from './resolver';
 import qps from './pseudo';
 import { walkContent} from './util';
+import { emit, addEventListener, removeEventListener } from './events';
 
 export default function Env(id, defaultLang, fetch) {
   this.id = id;
@@ -12,6 +13,11 @@ export default function Env(id, defaultLang, fetch) {
 
   this._resMap = Object.create(null);
   this._resCache = Object.create(null);
+
+  let listeners = {};
+  this.emit = emit.bind(this, listeners);
+  this.addEventListener = addEventListener.bind(this, listeners);
+  this.removeEventListener = removeEventListener.bind(this, listeners);
 }
 
 Env.prototype.createContext = function(resIds) {
