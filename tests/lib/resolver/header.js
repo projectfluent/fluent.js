@@ -1,11 +1,9 @@
 /* global navigator, exports */
-/* exported Resolver */
 
 'use strict';
 
 if (typeof navigator !== 'undefined') {
   var L10n = navigator.mozL10n._getInternalAPI();
-  var Resolver = L10n.Resolver;
 } else {
   var L10n = {
     PropertiesParser:

@@ -3,13 +3,15 @@
 'use strict';
 
 if (typeof navigator !== 'undefined') {
-  var L10n = navigator.mozL10n._getInternalAPI();
-  var Context = L10n.Context;
+  var L20n = navigator.mozL10n._getInternalAPI();
   var path =
     'app://sharedtest.gaiamobile.org/test/unit/l10n/lib/context';
 } else {
   var assert = require('assert');
-  var Context = require('../../../src/lib/context').Context;
+  var L20n = {
+    Env: require('../../../src/lib/env'),
+    io: require('../../../src/bindings/node/io')
+  };
   var path = __dirname;
 }
 
@@ -19,45 +21,48 @@ function assertPromise(promise, expected, done) {
   }).then(done, done);
 }
 
-describe('One fallback locale', function() {
-  var ctx;
+var fetch = L20n.io.fetch.bind(L20n.io);
+var langs = [
+  { code: 'pl', src: 'app', dir: 'ltr' },
+  { code: 'en-US', src: 'app', dir: 'ltr' },
+];
 
-  beforeEach(function(done) {
-    ctx = new Context();
-    ctx.resLinks.push(path + '/fixtures/{locale}.properties');
-    ctx.once(done);
-    ctx.registerLocales('en-US', ['pl']);
-    ctx.requestLocales('pl');
+describe('One fallback locale', function() {
+  var env, ctx;
+
+  beforeEach(function() {
+    env = new L20n.Env('test', 'en-US', fetch);
+    ctx = env.createContext([path + '/fixtures/{locale}.properties']);
   });
 
   describe('Translation in the first locale exists and is OK', function() {
     it('[e]', function(done) {
-      assertPromise(ctx.formatValue('e'), 'E pl', done);
+      assertPromise(ctx.formatValue(langs, 'e'), 'E pl', done);
     });
   });
 
   describe('ValueError in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[ve]', function(done) {
-        assertPromise(ctx.formatValue('ve'), 'VE {{ boo }} pl', done);
+        assertPromise(ctx.formatValue(langs, 've'), 'VE {{ boo }} pl', done);
       });
     });
 
     describe('ValueError in second locale:', function() {
       it('[vv]', function(done) {
-        assertPromise(ctx.formatValue('vv'), 'VV {{ boo }} pl', done);
+        assertPromise(ctx.formatValue(langs, 'vv'), 'VV {{ boo }} pl', done);
       });
     });
 
     describe('IndexError in second locale:', function() {
       it('[vi]', function(done) {
-        assertPromise(ctx.formatValue('vi'), 'VI {{ boo }} pl', done);
+        assertPromise(ctx.formatValue(langs, 'vi'), 'VI {{ boo }} pl', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[vm]', function(done) {
-        assertPromise(ctx.formatValue('vm'), 'VM {{ boo }} pl', done);
+        assertPromise(ctx.formatValue(langs, 'vm'), 'VM {{ boo }} pl', done);
       });
     });
   });
@@ -65,25 +70,25 @@ describe('One fallback locale', function() {
   describe('IndexError in first locale', function() {
     describe('Entity exists in second locale', function() {
       it('[ie]', function(done) {
-        assertPromise(ctx.formatValue('ie'), 'ie', done);
+        assertPromise(ctx.formatValue(langs, 'ie'), 'ie', done);
       });
     });
 
     describe('ValueError in second locale', function() {
       it('[iv]', function(done) {
-        assertPromise(ctx.formatValue('iv'), 'iv', done);
+        assertPromise(ctx.formatValue(langs, 'iv'), 'iv', done);
       });
     });
 
     describe('IndexError in second locale', function() {
       it('[ii]', function(done) {
-        assertPromise(ctx.formatValue('ii'), 'ii', done);
+        assertPromise(ctx.formatValue(langs, 'ii'), 'ii', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[im]', function(done) {
-        assertPromise(ctx.formatValue('im'), 'im', done);
+        assertPromise(ctx.formatValue(langs, 'im'), 'im', done);
       });
     });
   });
@@ -91,25 +96,26 @@ describe('One fallback locale', function() {
   describe('Entity not found in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[me]', function(done) {
-        assertPromise(ctx.formatValue('me'), 'ME en-US', done);
+        assertPromise(ctx.formatValue(langs, 'me'), 'ME en-US', done);
       });
     });
 
     describe('ValueError in second locale:', function() {
       it('[mv]', function(done) {
-        assertPromise(ctx.formatValue('mv'), 'MV {{ boo }} en-US', done);
+        assertPromise(
+          ctx.formatValue(langs, 'mv'), 'MV {{ boo }} en-US', done);
       });
     });
 
     describe('IndexError in second locale:', function() {
       it('[mi]', function(done) {
-        assertPromise(ctx.formatValue('mi'), 'mi', done);
+        assertPromise(ctx.formatValue(langs, 'mi'), 'mi', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[mm]', function(done) {
-        assertPromise(ctx.formatValue('mm'), 'mm', done);
+        assertPromise(ctx.formatValue(langs, 'mm'), 'mm', done);
       });
     });
   });

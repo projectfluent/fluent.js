@@ -3,69 +3,78 @@
 'use strict';
 
 if (typeof navigator !== 'undefined') {
-  var L10n = navigator.mozL10n._getInternalAPI();
-  var L20n = {
-    getContext: function() {
-      return new L10n.Context();
-    }
-  };
-} else {
-  var assert = require('assert');
-  var L20n = require('../../../src/bindings/node');
-}
-
-if (typeof navigator !== 'undefined') {
+  var L20n = navigator.mozL10n._getInternalAPI();
   var path =
     'app://sharedtest.gaiamobile.org/test/unit/l10n/lib/context';
 } else {
+  var assert = require('assert');
+  var L20n = {
+    Env: require('../../../src/lib/env'),
+    io: require('../../../src/bindings/node/io')
+  };
   var path = __dirname;
 }
 
-describe('A simple context with one resource', function() {
-  var ctx;
+var fetch = L20n.io.fetch.bind(L20n.io);
+var langs = [
+  { code: 'en-US', src: 'app', dir: 'ltr' },
+];
 
-  beforeEach(function(done) {
-    ctx = L20n.getContext();
-    ctx.resLinks.push(path + '/fixtures/basic.properties');
-    ctx.ready(done);
-    ctx.registerLocales('en-US');
-    ctx.requestLocales('en-US');
+
+describe('A simple context with one resource', function() {
+  var env, ctx;
+
+  beforeEach(function() {
+    env = new L20n.Env('test', 'en-US', fetch);
+    ctx = env.createContext([path + '/fixtures/basic.properties']);
   });
 
-  it('should return the string value of brandName', function() {
-    var value = ctx.get('brandName');
-    assert.strictEqual(value, 'Firefox');
+  it('should return the string value of brandName', function(done) {
+    ctx.formatValue(langs, 'brandName').then(function(value) {
+      assert.strictEqual(value, 'Firefox');
+    }).then(done, done);
   });
 
   it('should return the value of about with the value' +
-     ' of brandName in it', function() {
-    var value = ctx.get('about');
-    assert.strictEqual(value, 'About Firefox');
+     ' of brandName in it', function(done) {
+    ctx.formatValue(langs, 'about').then(function(value) {
+      assert.strictEqual(value, 'About Firefox');
+    }).then(done, done);
   });
 
   it('should return the value of cert with the value of ' +
-     'organization passed directly', function() {
-    var value = ctx.get('cert', {organization: 'Mozilla Foundation'});
-    assert.strictEqual(value, 'Certificate signed by Mozilla Foundation');
+     'organization passed directly', function(done) {
+    var args = {organization: 'Mozilla Foundation'};
+    ctx.formatValue(langs, 'cert', args).then(function(value) {
+      assert.strictEqual(value, 'Certificate signed by Mozilla Foundation');
+    }).then(done, done);
   });
 
-  it('should return the correct plural form for 0', function() {
-    var value = ctx.get('unreadMessages', {unread: 0});
-    assert.strictEqual(value, '0 unread');
+  it('should return the correct plural form for 0', function(done) {
+    var args = {unread: 0};
+    ctx.formatValue(langs, 'unreadMessages', args).then(function(value) {
+      assert.strictEqual(value, '0 unread');
+    }).then(done, done);
   });
 
-  it('should return the correct plural form for 1', function() {
-    var value = ctx.get('unreadMessages', {unread: 1});
-    assert.strictEqual(value, 'One unread');
+  it('should return the correct plural form for 1', function(done) {
+    var args = {unread: 1};
+    ctx.formatValue(langs, 'unreadMessages', args).then(function(value) {
+      assert.strictEqual(value, 'One unread');
+    }).then(done, done);
   });
 
-  it('should return the correct plural form for 2', function() {
-    var value = ctx.get('unreadMessages', {unread: 2});
-    assert.strictEqual(value, '2 unread');
+  it('should return the correct plural form for 2', function(done) {
+    var args = {unread: 2};
+    ctx.formatValue(langs, 'unreadMessages', args).then(function(value) {
+      assert.strictEqual(value, '2 unread');
+    }).then(done, done);
   });
 
-  it('should return the correct plural form for 3', function() {
-    var value = ctx.get('unreadMessages', {unread: 3});
-    assert.strictEqual(value, '3 unread');
+  it('should return the correct plural form for 3', function(done) {
+    var args = {unread: 3};
+    ctx.formatValue(langs, 'unreadMessages', args).then(function(value) {
+      assert.strictEqual(value, '3 unread');
+    }).then(done, done);
   });
 });

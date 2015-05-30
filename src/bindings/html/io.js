@@ -60,8 +60,8 @@ const io = {
 
 export default {
   fetch: function(ver, res, lang) {
-    var url = res.replace('{locale}', lang.code);
-    var type = res.endsWith('.json') ? 'json' : 'text';
+    let url = res.replace('{locale}', lang.code);
+    let type = res.endsWith('.json') ? 'json' : 'text';
     return io[lang.src](lang.code, ver, url, type);
   }
 };

@@ -15,8 +15,10 @@ function load(url) {
   });
 }
 
-function loadJSON(url) {
-  return load(url).then(JSON.parse);
-}
-
-export default { load, loadJSON };
+export default {
+  fetch: function(res, lang) {
+    let url = res.replace('{locale}', lang.code);
+    return res.endsWith('.json') ?
+      load(url).then(JSON.parse) : load(url);
+  }
+};
