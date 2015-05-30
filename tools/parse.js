@@ -2,17 +2,13 @@
 
 'use strict';
 
-require('babel/register');
-
+require('colors');
 var fs = require('fs');
 var program = require('commander');
 var prettyjson = require('prettyjson');
-var colors = require('colors');
 
-var PropertiesParser =
-  require('../src/lib/format/properties/parser');
-var L20nParser = require('../src/lib/format/l20n/parser');
-
+var lib = require('./lib');
+var makeError = lib.makeError.bind(program);
 
 program
   .version('0.0.1')
@@ -21,38 +17,20 @@ program
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
 
-function color(str, col) {
-  if (program.color) {
-    return str[col];
-  }
-  return str;
-}
-
-function logError(err) {
-  var message  = ': ' + err.message.replace('\n', '');
-  var name = err.name + (err.entry ? ' in ' + err.entry : '');
-  console.warn(color(name, 'red') + message);
-}
 
 function print(type, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
+
   var ast;
   try {
-    switch (type) {
-      case 'properties':
-        ast = PropertiesParser.parse(null, data.toString());
-        break;
-      case 'l20n':
-        ast = L20nParser.parse(null, data.toString());
-        break;
-    }
-
+    ast = lib.parse(type, data.toString());
   } catch (e) {
-    console.log(e);
-    logError(e);
+    console.error(makeError(e));
+    process.exit(1);
   }
+
   if (program.raw) {
     console.log(JSON.stringify(ast, null, 2));
   } else {

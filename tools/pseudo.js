@@ -5,7 +5,7 @@
 require('babel/register');
 
 var program = require('commander');
-var PSEUDO = require('../src/lib/pseudo').PSEUDO;
+var qps = require('../src/lib/pseudo').qps;
 
 program
   .version('0.0.1')
@@ -16,7 +16,7 @@ program
   .parse(process.argv);
 
 function localize(str) {
-  return PSEUDO[program.locale].translate(str);
+  return qps[program.locale].translate(str);
 }
 
 process.stdin.setEncoding('utf8');

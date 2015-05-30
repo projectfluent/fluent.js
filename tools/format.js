@@ -2,18 +2,16 @@
 
 'use strict';
 
-require('babel/register');
-
+require('colors');
 var fs = require('fs');
 var program = require('commander');
-var colors = require('colors');
 
-var PropertiesParser =
-  require('../src/lib/format/properties/parser');
-
+require('babel/register');
 var Resolver = require('../src/lib/resolver');
-var extendEntries = require('../src/bindings/node').extendEntries;
-var getPluralRule = require('../src/lib/plurals').getPluralRule;
+var MockContext = require('../tests/lib/resolver/header').MockContext;
+var lib = require('./lib');
+var color = lib.color.bind(program);
+var makeError = lib.makeError.bind(program);
 
 program
   .version('0.0.1')
@@ -31,23 +29,6 @@ if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
-var VALUE;
-var ID = 'cyan';
-var ERROR = 'red';
-
-function color(str, col) {
-  if (program.color && col && str) {
-    return str[col];
-  }
-  return str;
-}
-
-function makeError(err) {
-  var message  = ': ' + err.message.replace('\n', '');
-  var name = err.name + (err.entry ? ' in ' + err.entry : '');
-  return color(name + message, ERROR);
-}
-
 function singleline(formatted) {
   var str = formatted[1];
   return str && str.replace(/\n/g, ' ')
@@ -55,55 +36,62 @@ function singleline(formatted) {
                    .trim();
 }
 
-function format(entity) {
+function format(ctx, entity) {
   try {
-    return singleline(Resolver.format(data, entity));
+    return singleline(Resolver.format(ctx, data, entity));
   } catch(err) {
     return makeError(err);
   }
 }
 
-function print(id, entity) {
-  // print the string value of the entity
-  console.log(color(id, ID), color(format(entity), VALUE));
-  // print the string values of the attributes
+function printEntry(ctx, id, entity) {
+  console.log(
+    color(id, 'cyan'),
+    color(format(ctx, entity)));
+
   for (var attr in entity.attrs) {
-    console.log(color(' ::' + attr, ID),
-                color(format(entity.attrs[attr]), VALUE));
+    console.log(
+      color(' ::' + attr, 'cyan'),
+      color(format(ctx, entity.attrs[attr])));
   }
 }
 
-function compileAndPrint(err, code) {
+function createEntries(lang, ast) {
+  return ast.reduce(function(seq, cur) {
+    seq[cur.$i] = Resolver.createEntry(cur, lang);
+    return seq;
+  }, Object.create(null));
+}
+
+function print(type, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
 
   var ast;
   if (program.ast) {
-    ast = code.toString();
+    ast = JSON.parse(data.toString());
   } else {
     try {
-      ast = PropertiesParser.parse(null, code.toString());
+      ast = lib.parse(type, data.toString());
     } catch (e) {
-      console.warn(makeError(e));
+      console.error(makeError(e));
+      process.exit(1);
     }
   }
 
-  var entries = {
-  __plural: getPluralRule('en-US')
-  };
-  extendEntries(entries, ast);
+  var entries = createEntries({code: program.plural}, ast);
+  var ctx = new MockContext(entries);
+
   for (var id in entries) {
-    if (id.indexOf('__') === 0) {
-      continue;
-    }
-    print(id, entries[id]);
+    printEntry(ctx, id, entries[id]);
   }
 }
 
 if (program.args.length) {
-  fs.readFile(program.args[0], compileAndPrint);
+  var type = program.args[0].substr(program.args[0].lastIndexOf('.') + 1);
+  fs.readFile(program.args[0], print.bind(null, type));
 } else {
   process.stdin.resume();
-  process.stdin.on('data', compileAndPrint.bind(null, null));
+  process.stdin.on('data', print.bind(null, null, null));
 }
