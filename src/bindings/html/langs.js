@@ -20,9 +20,9 @@ export function onlanguagechage(
 
   return this.languages = Promise.all([
     getAdditionalLanguages(), this.languages]).then(
-      all => changeLanguage.call(
-        this, appVersion, defaultLang, availableLangs, ...all,
-        requestedLangs || navigator.languages));
+      ([additionalLangs, prevLangs]) => changeLanguage.call(
+        this, appVersion, defaultLang, availableLangs, additionalLangs,
+        prevLangs, requestedLangs || navigator.languages));
 }
 
 export function onadditionallanguageschange(
