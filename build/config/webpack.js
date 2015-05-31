@@ -15,9 +15,6 @@ module.exports = {
       libraryTarget: 'this',
 
     },
-    externals: {
-      'querystring': 'var window'
-    },
     module: {
       loaders: [{ 
         test: /\.js$/,
@@ -38,9 +35,6 @@ module.exports = {
       filename: '[name]/l20n.js',
       libraryTarget: 'this',
 
-    },
-    externals: {
-      'querystring': 'var window'
     },
     module: {
       loaders: [{ 
@@ -74,7 +68,6 @@ module.exports = {
       libraryTarget: 'commonjs2',
     },
     externals: {
-      'querystring': true,
       'fs': true
     },
     module: {

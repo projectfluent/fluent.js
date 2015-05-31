@@ -1,7 +1,6 @@
 'use strict';
 
 import { L10nError } from '../../errors';
-import { unescape } from 'querystring';
 
 var MAX_PLACEABLES = 100;
 
@@ -186,7 +185,7 @@ export default {
       str = str.replace(this.patterns.controlChars, '$1');
     }
     return str.replace(this.patterns.unicode, function(match, token) {
-      return unescape('%u' + '0000'.slice(token.length) + token);
+      return String.fromCodePoint(parseInt(token, 16));
     });
   },
 
