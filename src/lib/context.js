@@ -19,7 +19,7 @@ Context.prototype._formatTuple = function(args, entity) {
   try {
     return format(this, args, entity);
   } catch (err) {
-    this._env.emit('resolveerror', err);
+    this._env.emit('resolveerror', err, this);
     return [{ error: err }, entity.id];
   }
 };
@@ -90,7 +90,7 @@ Context.prototype._fallback = function(method, id, args, langs) {
   if (!lang) {
     let err = new L10nError(
       '"' + id + '"' + ' not found in any language.', id);
-    this._env.emit('notfounderror', err);
+    this._env.emit('notfounderror', err, this);
     return id;
   }
 
@@ -101,7 +101,7 @@ Context.prototype._fallback = function(method, id, args, langs) {
   } else {
     let err = new L10nError(
       '"' + id + '"' + ' not found in ' + lang.code + '.', id, lang.code);
-    this._env.emit('notfounderror', err);
+    this._env.emit('notfounderror', err, this);
   }
 
   return this._fetchResources(langs.slice(1)).then(
