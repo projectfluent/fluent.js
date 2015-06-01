@@ -53,6 +53,7 @@ module.exports = {
             'es6.properties.shorthand',
             'es6.forOf',
             'es6.spread',
+            'es6.parameters.rest',
             'es6.blockScoping'
           ],
         }
