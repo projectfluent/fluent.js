@@ -1,7 +1,5 @@
 'use strict';
 
-import { dispatchEvent } from './service';
-
 const allowed = {
   elements: [
     'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
@@ -260,4 +258,15 @@ function getIndexOfType(element) {
     }
   }
   return index;
+}
+
+export function dispatchEvent(root, name, langs) {
+  var event = new CustomEvent(name, {
+    bubbles: false,
+    cancelable: false,
+    detail: {
+      languages: langs
+    }
+  });
+  root.dispatchEvent(event);
 }

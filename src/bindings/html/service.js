@@ -1,6 +1,6 @@
 'use strict';
 
-import { translateDocument } from './dom';
+import { translateDocument, dispatchEvent } from './dom';
 
 export const L10n = {
   views: [],
@@ -18,15 +18,4 @@ function initView(view, langs) {
   return view.ctx.fetch(langs, 1).then(
     translateDocument.bind(view, view.doc, langs)).then(
       () => view.observe());
-}
-
-export function dispatchEvent(root, name, langs) {
-  var event = new CustomEvent(name, {
-    bubbles: false,
-    cancelable: false,
-    detail: {
-      languages: langs
-    }
-  });
-  root.dispatchEvent(event);
 }
