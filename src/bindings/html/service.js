@@ -5,7 +5,8 @@ import { translateDocument, dispatchEvent } from './dom';
 export const L10n = {
   views: [],
   env: null,
-  languages: null
+  languages: null,
+  change: null
 };
 
 export function initViews(langs) {

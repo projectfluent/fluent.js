@@ -47,6 +47,9 @@ function init() {
   this.languages = additionalLangsAtLaunch.then(
     setLanguage, setLanguage);
 
+  this.change = onlanguagechage.bind(
+    this, appVersion, defaultLang, availableLangs);
+
   window.addEventListener('languagechange',
     () => onlanguagechage.call(
       this, appVersion, defaultLang, availableLangs, navigator.languages));
@@ -54,9 +57,6 @@ function init() {
     evt => onadditionallanguageschange.call(
       this, appVersion, defaultLang, availableLangs, evt.detail,
       navigator.languages));
-
-  L10n.change = onlanguagechage.bind(
-    this, appVersion, defaultLang, availableLangs);
 }
 
 whenInteractive(init.bind(window.L10n = L10n));
