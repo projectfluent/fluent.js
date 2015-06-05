@@ -30,6 +30,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     webpack: require('./build/config/webpack'),
+    babel: require('./build/config/babel'),
     copy: require('./build/config/copy'),
     clean: require('./build/config/clean'),
     jshint: require('./build/config/lint/jshint'),
@@ -71,7 +72,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('gaia', [
     'lint',
-    'webpack:gaia',
+    'babel:gaia',
     'copy:stage'
   ]);
 

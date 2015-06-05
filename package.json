@@ -42,6 +42,7 @@
     "colors": "~0.6.0",
     "commander": "~2.0",
     "grunt": "~0.4.1",
+    "grunt-babel": "^5.0.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-jshint": "^0.11.1",
