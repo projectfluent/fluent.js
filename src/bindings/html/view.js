@@ -13,36 +13,37 @@ const observerConfig = {
   attributeFilter: ['data-l10n-id', 'data-l10n-args']
 };
 
-export function View(service, doc) {
-  this.service = service;
-  this.doc = doc;
-  this.ctx = this.service.env.createContext(getResourceLinks(doc.head));
+export class View {
+  constructor(service, doc) {
+    this.service = service;
+    this.doc = doc;
+    this.ctx = this.service.env.createContext(getResourceLinks(doc.head));
 
-  this.ready = new Promise(function(resolve) {
-    let viewReady = function(evt) {
-      doc.removeEventListener('DOMLocalized', viewReady);
-      resolve(evt.detail.languages);
-    };
-    doc.addEventListener('DOMLocalized', viewReady);
-  });
+    this.ready = new Promise(function(resolve) {
+      let viewReady = function(evt) {
+        doc.removeEventListener('DOMLocalized', viewReady);
+        resolve(evt.detail.languages);
+      };
+      doc.addEventListener('DOMLocalized', viewReady);
+    });
 
-  let observer = new MutationObserver(onMutations.bind(this));
-  this.observe = () => observer.observe(this.doc, observerConfig);
-  this.disconnect = () => observer.disconnect();
+    let observer = new MutationObserver(onMutations.bind(this));
+    this.observe = () => observer.observe(this.doc, observerConfig);
+    this.disconnect = () => observer.disconnect();
+  }
+
+  formatValue(id, args) {
+    return this.ctx.formatValue(this.service.languages, id, args);
+  }
+
+  formatEntity(id, args) {
+    return this.ctx.formatEntity(this.service.languages, id, args);
+  }
 }
-
-View.prototype.formatValue = function(id, args) {
-  return this.ctx.formatValue(this.service.languages, id, args);
-};
-
-View.prototype.formatEntity = function(id, args) {
-  return this.ctx.formatEntity(this.service.languages, id, args);
-};
 
 View.prototype.setAttributes = setL10nAttributes;
 View.prototype.getAttributes = getL10nAttributes;
 View.prototype.translateFragment = translateFragment;
-
 
 function onMutations(mutations) {
   let mutation;
