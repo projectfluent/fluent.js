@@ -1,6 +1,6 @@
 'use strict';
 
-import io from '../../bindings/html/io';
+import io from './io';
 import Env from '../../lib/env';
 import { L10n } from '../../bindings/html/service';
 import { View } from '../../bindings/html/view';
