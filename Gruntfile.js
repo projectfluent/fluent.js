@@ -62,16 +62,19 @@ module.exports = function (grunt) {
     'jsonlint:all',
   ]);
 
-
-  grunt.registerTask('test', ['mochaTest:dot']);
+  grunt.registerTask('test', [
+    'mochaTest:dot'
+  ]);
 
   grunt.registerTask('build', [
     'lint',
+    'test',
     'webpack:web',
   ]);
 
   grunt.registerTask('gaia', [
     'lint',
+    'test',
     'babel:gaia',
     'copy:stage'
   ]);
