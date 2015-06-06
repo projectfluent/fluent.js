@@ -54,6 +54,18 @@ module.exports = {
       loaders: [babel]
     }
   },
+  gaiabuild: {
+    context: path('../../src'),
+    entry: './runtime/gaiabuild/index.js',
+    output: {
+      path: path('../dist'),
+      filename: 'gaiabuild/l20n.js',
+      libraryTarget: 'commonjs2',
+    },
+    module: {
+      loaders: [babel]
+    }
+  },
   node: {
     context: path('../../src'),
     entry: './runtime/node/index.js',

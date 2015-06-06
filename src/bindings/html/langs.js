@@ -27,7 +27,7 @@ export function negotiateLanguages(
   return langs;
 }
 
-function getDirection(code) {
+export function getDirection(code) {
   return (rtlList.indexOf(code) >= 0) ? 'rtl' : 'ltr';
 }
 
