@@ -62,7 +62,7 @@ module.exports = {
   },
   node: {
     context: path('../../src'),
-    entry: './bindings/node/index.js',
+    entry: './runtime/node/index.js',
     output: {
       path: path('../dist'),
       filename: './node/l20n.js',
