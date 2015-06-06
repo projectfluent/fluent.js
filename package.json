@@ -27,7 +27,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./src/bindings/node/index.js",
+  "main": "./src/runtime/node/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/l20n/l20n.js.git"

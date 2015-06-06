@@ -10,7 +10,7 @@ if (typeof navigator !== 'undefined') {
   var assert = require('assert');
   var L20n = {
     Env: require('../../../src/lib/env'),
-    io: require('../../../src/bindings/node/io'),
+    io: require('../../../src/runtime/node/io'),
     L10nError: require('../../../src/lib/errors').L10nError
   };
   var path = __dirname + '/..';
