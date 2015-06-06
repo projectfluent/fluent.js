@@ -1,7 +1,7 @@
 'use strict';
 
 require('colors');
-require('babel/register');
+require('../../node_modules/babel-core/register');
 var PropertiesParser =
   require('../../src/lib/format/properties/parser');
 var L20nParser = require('../../src/lib/format/l20n/parser');

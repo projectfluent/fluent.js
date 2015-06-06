@@ -2,7 +2,7 @@
 
 'use strict';
 
-require('babel/register');
+require('../node_modules/babel-core/register');
 
 var fs = require('fs');
 var program = require('commander');
@@ -20,7 +20,6 @@ program
   .parse(process.argv);
 
 function convertFile(err, data) {
-  var source = data.toString();
   var ast = PropertiesParser.parse(null, data.toString());
 
   var string = l20nSerializer.serialize(ast);

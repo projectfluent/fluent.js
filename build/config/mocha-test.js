@@ -1,6 +1,6 @@
 'use strict';
 
-require('babel/register');
+require('../../node_modules/babel-core/register');
 
 var src = [
   'tests/lib/*.js',

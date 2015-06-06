@@ -6,7 +6,7 @@ require('colors');
 var fs = require('fs');
 var program = require('commander');
 
-require('babel/register');
+require('../node_modules/babel-core/register');
 var Resolver = require('../src/lib/resolver');
 var MockContext = require('../tests/lib/resolver/header').MockContext;
 var lib = require('./lib');

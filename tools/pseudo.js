@@ -2,7 +2,7 @@
 
 'use strict';
 
-require('babel/register');
+require('../node_modules/babel-core/register');
 
 var program = require('commander');
 var qps = require('../src/lib/pseudo').qps;
