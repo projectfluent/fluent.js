@@ -55,11 +55,15 @@ export function translateDocument(doc, langs) {
     dispatchEvent(doc, 'DOMLocalized', langs);
   };
 
-  doc.documentElement.lang = langs[0].code;
-  doc.documentElement.dir = langs[0].dir;
-  return translateFragment.call(
-    this, doc.documentElement).then(
-      setDOMLocalized, setDOMLocalized);
+  if (langs[0].code === doc.documentElement.getAttribute('lang')) {
+    return Promise.resolve(setDOMLocalized());
+  }
+
+  return translateFragment.call(this, doc.documentElement).then(() => {
+      doc.documentElement.lang = langs[0].code;
+      doc.documentElement.dir = langs[0].dir;
+      setDOMLocalized();
+  });
 }
 
 export function translateFragment(element) {

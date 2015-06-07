@@ -30,6 +30,8 @@ export class View {
     let observer = new MutationObserver(onMutations.bind(this));
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
+
+    this.observe();
   }
 
   formatValue(id, args) {
