@@ -52,24 +52,6 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument(view, langs, doc) {
-  let setDOMLocalized = function() {
-    doc.localized = true;
-    dispatchEvent(doc, 'DOMLocalized', langs);
-  };
-
-  if (langs[0].code === doc.documentElement.getAttribute('lang')) {
-    return Promise.resolve(setDOMLocalized());
-  }
-
-  return translateFragment(view, langs, doc.documentElement).then(
-    () => {
-      doc.documentElement.lang = langs[0].code;
-      doc.documentElement.dir = langs[0].dir;
-      setDOMLocalized();
-    });
-}
-
 export function translateMutations(view, langs, mutations) {
   let targets = new Set();
 
@@ -314,15 +296,4 @@ function getIndexOfType(element) {
     }
   }
   return index;
-}
-
-export function dispatchEvent(root, name, langs) {
-  var event = new CustomEvent(name, {
-    bubbles: false,
-    cancelable: false,
-    detail: {
-      languages: langs
-    }
-  });
-  root.dispatchEvent(event);
 }
