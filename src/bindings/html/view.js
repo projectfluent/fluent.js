@@ -45,7 +45,7 @@ export class View {
   }
 
   translateFragment(frag) {
-    return translateFragment(this, frag);
+    return translateFragment(this.ctx, this, this.service.languages, frag);
   }
 }
 
@@ -54,35 +54,29 @@ View.prototype.getAttributes = getL10nAttributes;
 
 export function init(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
-  return translateDocument(this, this.doc, langs);
+  return translateDocument(this.ctx, this, langs, this.doc);
 }
 
 function onMutations(view, mutations) {
-  let mutation;
+  let {ctx, service} = view;
   let targets = new Set();
 
-  for (var i = 0; i < mutations.length; i++) {
-    mutation = mutations[i];
-
-    if (mutation.type === 'childList') {
-      for (var j = 0; j < mutation.addedNodes.length; j++) {
-        let addedNode = mutation.addedNodes[j];
-        if (addedNode.nodeType === Node.ELEMENT_NODE) {
-          targets.add(addedNode);
+  for (let mutation of mutations) {
+    switch (mutation.type) {
+      case 'attributes':
+        translateElement(ctx, view, service.languages, mutation.target);
+        break;
+      case 'childList':
+        for (let addedNode of mutation.addedNodes) {
+          if (addedNode.nodeType === Node.ELEMENT_NODE) {
+            targets.add(addedNode);
+          }
         }
-      }
-    }
-
-    if (mutation.type === 'attributes') {
-      translateElement(view, mutation.target);
     }
   }
 
-  targets.forEach(function(target) {
-    if (target.childElementCount) {
-      translateFragment(view, target);
-    } else if (target.hasAttribute('data-l10n-id')) {
-      translateElement(view, target);
-    }
-  });
+  targets.forEach(
+    target => target.childElementCount ?
+      translateFragment(ctx, view, service.languages, target) :
+      translateElement(ctx, view, service.languages, target));
 }
