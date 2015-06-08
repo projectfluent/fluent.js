@@ -54,8 +54,7 @@ View.prototype.getAttributes = getL10nAttributes;
 
 export function init(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
-  return this.ctx.fetch(langs, 1).then(
-    translateDocument.bind(null, this, this.doc, langs));
+  return translateDocument(this, this.doc, langs);
 }
 
 function onMutations(view, mutations) {
