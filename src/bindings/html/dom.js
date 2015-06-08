@@ -49,7 +49,7 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument(doc, langs) {
+export function translateDocument(view, doc, langs) {
   let setDOMLocalized = function() {
     doc.localized = true;
     dispatchEvent(doc, 'DOMLocalized', langs);
@@ -59,17 +59,18 @@ export function translateDocument(doc, langs) {
     return Promise.resolve(setDOMLocalized());
   }
 
-  return translateFragment.call(this, doc.documentElement).then(() => {
+  return translateFragment(view, doc.documentElement).then(
+    () => {
       doc.documentElement.lang = langs[0].code;
       doc.documentElement.dir = langs[0].dir;
       setDOMLocalized();
-  });
+    });
 }
 
-export function translateFragment(element) {
+export function translateFragment(view, frag) {
   return Promise.all(
-    getTranslatables(element).map(
-      translateElement.bind(this)));
+    getTranslatables(frag).map(
+      elem => translateElement(view, elem)));
 }
 
 function camelCaseToDashed(string) {
@@ -85,19 +86,19 @@ function camelCaseToDashed(string) {
     .replace(/^-/, '');
 }
 
-export function translateElement(element) {
+export function translateElement(view, element) {
   var l10n = getL10nAttributes(element);
 
   if (!l10n.id) {
     return false;
   }
 
-  return this.formatEntity(l10n.id, l10n.args).then(
-    applyTranslation.bind(this, element));
+  return view.formatEntity(l10n.id, l10n.args).then(
+    entity => applyTranslation(view, element, entity));
 }
 
-function applyTranslation(element, entity) {
-  this.disconnect();
+function applyTranslation(view, element, entity) {
+  view.disconnect();
 
   var value;
   if (entity.attrs && entity.attrs.innerHTML) {
@@ -131,7 +132,7 @@ function applyTranslation(element, entity) {
     }
   }
 
-  this.observe();
+  view.observe();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`

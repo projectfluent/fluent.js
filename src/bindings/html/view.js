@@ -27,7 +27,8 @@ export class View {
       doc.addEventListener('DOMLocalized', viewReady);
     });
 
-    let observer = new MutationObserver(onMutations.bind(this));
+    let observer = new MutationObserver(
+      mutations => onMutations(this, mutations));
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
 
@@ -41,13 +42,16 @@ export class View {
   formatEntity(id, args) {
     return this.ctx.formatEntity(this.service.languages, id, args);
   }
+
+  translateFragment(frag) {
+    return translateFragment(this, frag);
+  }
 }
 
 View.prototype.setAttributes = setL10nAttributes;
 View.prototype.getAttributes = getL10nAttributes;
-View.prototype.translateFragment = translateFragment;
 
-function onMutations(mutations) {
+function onMutations(view, mutations) {
   let mutation;
   let targets = new Set();
 
@@ -64,15 +68,15 @@ function onMutations(mutations) {
     }
 
     if (mutation.type === 'attributes') {
-      translateElement.call(this, mutation.target);
+      translateElement(view, mutation.target);
     }
   }
 
   targets.forEach(function(target) {
     if (target.childElementCount) {
-      translateFragment.call(this, target);
+      translateFragment(view, target);
     } else if (target.hasAttribute('data-l10n-id')) {
-      translateElement.call(this, target);
+      translateElement(view, target);
     }
-  }, this);
+  });
 }
