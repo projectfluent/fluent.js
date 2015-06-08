@@ -14,27 +14,6 @@ export function getAdditionalLanguages() {
   return Promise.resolve([]);
 }
 
-export function onlanguagechage(
-  fn, appVersion, defaultLang, availableLangs, requestedLangs) {
-
-  return this.languages = Promise.all([
-    getAdditionalLanguages(), this.languages]).then(
-      ([additionalLangs, prevLangs]) => changeLanguage(
-        fn, appVersion, defaultLang, availableLangs, additionalLangs,
-        prevLangs, requestedLangs || navigator.languages));
-}
-
-export function onadditionallanguageschange(
-  fn, appVersion, defaultLang, availableLangs, additionalLangs,
-  requestedLangs) {
-
-  return this.languages = this.languages.then(
-    prevLangs => changeLanguage(
-      fn, appVersion, defaultLang, availableLangs, additionalLangs,
-      prevLangs, requestedLangs || navigator.languages));
-}
-
-
 export function changeLanguage(
   fn, appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
   requestedLangs) {

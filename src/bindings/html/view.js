@@ -2,7 +2,8 @@
 
 import { getResourceLinks } from '../../bindings/html/head';
 import {
-  setL10nAttributes, getL10nAttributes, translateFragment, translateElement
+  setL10nAttributes, getL10nAttributes, dispatchEvent,
+  translateDocument, translateFragment, translateElement
 } from './dom';
 
 const observerConfig = {
@@ -50,6 +51,12 @@ export class View {
 
 View.prototype.setAttributes = setL10nAttributes;
 View.prototype.getAttributes = getL10nAttributes;
+
+export function init(langs) {
+  dispatchEvent(this.doc, 'supportedlanguageschange', langs);
+  return this.ctx.fetch(langs, 1).then(
+    translateDocument.bind(null, this, this.doc, langs));
+}
 
 function onMutations(view, mutations) {
   let mutation;
