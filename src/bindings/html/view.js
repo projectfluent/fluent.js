@@ -52,7 +52,7 @@ export class View {
 View.prototype.setAttributes = setL10nAttributes;
 View.prototype.getAttributes = getL10nAttributes;
 
-export function init(langs) {
+export function translate(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
   return translateDocument(this.ctx, this, langs, this.doc);
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 import Env from '../../lib/env';
-import { View, init as initView } from './view';
+import { View, translate } from './view';
 import { getMeta } from './head';
 import { getAdditionalLanguages, changeLanguage } from './langs';
 
@@ -12,9 +12,9 @@ export const L10n = {
   requestLanguages: null
 };
 
-export function initViews(langs) {
+export function translateViews(langs) {
   return Promise.all(
-    this.views.map(view => initView.call(view, langs)));
+    this.views.map(view => translate.call(view, langs)));
 }
 
 export function onlanguagechage(
@@ -23,7 +23,7 @@ export function onlanguagechage(
   return this.languages = Promise.all([
     getAdditionalLanguages(), this.languages]).then(
       ([additionalLangs, prevLangs]) => changeLanguage(
-        initViews.bind(this), appVersion, defaultLang, availableLangs,
+        translateViews.bind(this), appVersion, defaultLang, availableLangs,
         additionalLangs, prevLangs, requestedLangs || navigator.languages));
 }
 
@@ -33,7 +33,7 @@ export function onadditionallanguageschange(
 
   return this.languages = this.languages.then(
     prevLangs => changeLanguage(
-      initViews.bind(this), appVersion, defaultLang, availableLangs,
+      translateViews.bind(this), appVersion, defaultLang, availableLangs,
       additionalLangs, prevLangs, requestedLangs || navigator.languages));
 }
 
@@ -48,7 +48,7 @@ export function init(fetch, additionalLangsAtLaunch) {
     document.l10n = new View(this, document));
 
   let setLanguage = additionalLangs => changeLanguage(
-    initViews.bind(this), appVersion, defaultLang, availableLangs,
+    translateViews.bind(this), appVersion, defaultLang, availableLangs,
     additionalLangs, [], navigator.languages);
 
   this.languages = additionalLangsAtLaunch.then(
