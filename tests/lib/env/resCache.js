@@ -29,7 +29,7 @@ describe('Caching resources', function() {
   var res3 = path + '/fixtures/missing.properties';
 
   beforeEach(function(done) {
-    env = new L20n.Env('test', 'en-US', fetch);
+    env = new L20n.Env('en-US', fetch);
     ctx1 = env.createContext([res1, res3]);
     ctx2 = env.createContext([res1, res2]);
     Promise.all([

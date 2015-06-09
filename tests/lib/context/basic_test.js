@@ -25,7 +25,7 @@ describe('A simple context with one resource', function() {
   var env, ctx;
 
   beforeEach(function() {
-    env = new L20n.Env('test', 'en-US', fetch);
+    env = new L20n.Env('en-US', fetch);
     ctx = env.createContext([path + '/fixtures/basic.properties']);
   });
 

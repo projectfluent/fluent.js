@@ -24,7 +24,7 @@ describe('Creating a context', function() {
   var res2 = path + '/fixtures/en-US.properties';
 
   beforeEach(function() {
-    env = new L20n.Env('test', 'en-US', fetch);
+    env = new L20n.Env('en-US', fetch);
   });
 
   it('populates resMap with one ctx', function() {

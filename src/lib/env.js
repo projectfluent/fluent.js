@@ -14,8 +14,7 @@ const parsers = {
 };
 
 export default class Env {
-  constructor(id, defaultLang, fetch) {
-    this.id = id;
+  constructor(defaultLang, fetch) {
     this.defaultLang = defaultLang;
     this.fetch = fetch;
 

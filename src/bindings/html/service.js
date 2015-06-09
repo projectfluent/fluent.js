@@ -13,7 +13,7 @@ export class Service {
     this.appVersion = meta.appVersion;
 
     this.env = new Env(
-      document.URL, this.defaultLanguage, fetch.bind(null, this.appVersion));
+      this.defaultLanguage, fetch.bind(null, this.appVersion));
     this.views = [
       document.l10n = new View(this, document)
     ];
