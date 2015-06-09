@@ -50,7 +50,6 @@ function getTranslatables(element) {
 }
 
 export function translateDocument(ctx, obs, langs, doc) {
-  //XXX langs currently cannot be a promise 
   let setDOMLocalized = function() {
     doc.localized = true;
     dispatchEvent(doc, 'DOMLocalized', langs);
