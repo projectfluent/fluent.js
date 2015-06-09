@@ -6,7 +6,7 @@ import { getMeta } from './head';
 import { negotiateLanguages } from './langs';
 
 export class Service {
-  constructor(fetch, additionalLangsAtLaunch) {
+  constructor(fetch) {
     let meta = getMeta(document.head);
     this.defaultLanguage = meta.defaultLang;
     this.availableLanguages = meta.availableLangs;
@@ -19,7 +19,7 @@ export class Service {
     ];
 
     this.languages = changeLanguages.call(
-      this, additionalLangsAtLaunch, navigator.languages);
+      this, getAdditionalLanguages(), navigator.languages);
   }
 
   requestLanguages(requestedLangs = navigator.languages) {
