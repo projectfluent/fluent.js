@@ -1,9 +1,8 @@
 'use strict';
 
 import { fetch } from './io';
-import { Service, getAdditionalLanguages } from '../../bindings/html/service';
+import { Service } from '../../bindings/html/service';
 
-const additionalLangsAtLaunch = getAdditionalLanguages();
 const readyStates = {
   loading: 0,
   interactive: 1,
@@ -24,7 +23,7 @@ function whenInteractive(callback) {
 }
 
 function init() {
-  window.L10n = new Service(fetch, additionalLangsAtLaunch);
+  window.L10n = new Service(fetch);
   window.addEventListener('languagechange', window.L10n);
   document.addEventListener('additionallanguageschange', window.L10n);
 }
