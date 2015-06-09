@@ -1,6 +1,6 @@
 'use strict';
 
-import Env from '../../lib/env';
+import { Env } from '../../lib/env';
 import { View, translate } from './view';
 import { getMeta } from './head';
 import { negotiateLanguages } from './langs';

@@ -1,6 +1,6 @@
 'use strict';
 
-export default function getPluralRule(code) {
+export function getPluralRule(code) {
   var locales2rules = {
     'af': 3,
     'ak': 4,

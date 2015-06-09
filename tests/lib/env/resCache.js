@@ -9,14 +9,13 @@ if (typeof navigator !== 'undefined') {
 } else {
   var assert = require('assert');
   var L20n = {
-    Env: require('../../../src/lib/env'),
-    io: require('../../../src/runtime/node/io'),
+    Env: require('../../../src/lib/env').Env,
+    fetch: require('../../../src/runtime/node/io').fetch,
     L10nError: require('../../../src/lib/errors').L10nError
   };
   var path = __dirname + '/..';
 }
 
-var fetch = L20n.io.fetch.bind(L20n.io);
 var langs = [
   { code: 'en-US', src: 'app', dir: 'ltr' },
 ];
@@ -29,7 +28,7 @@ describe('Caching resources', function() {
   var res3 = path + '/fixtures/missing.properties';
 
   beforeEach(function(done) {
-    env = new L20n.Env('en-US', fetch);
+    env = new L20n.Env('en-US', L20n.fetch);
     ctx1 = env.createContext([res1, res3]);
     ctx2 = env.createContext([res1, res2]);
     Promise.all([

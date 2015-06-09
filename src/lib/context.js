@@ -2,9 +2,9 @@
 
 import { L10nError } from './errors';
 import { format } from './resolver';
-import getPluralRule from './plurals';
+import { getPluralRule } from './plurals';
 
-export default class Context {
+export class Context {
   constructor(env, resIds) {
     this._env = env;
     this._resIds = resIds;

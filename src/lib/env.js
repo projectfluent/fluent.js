@@ -1,6 +1,6 @@
 'use strict';
 
-import Context from './context';
+import { Context } from './context';
 import { createEntry } from './resolver';
 import PropertiesParser from './format/properties/parser';
 import L20nParser from './format/l20n/parser';
@@ -13,7 +13,7 @@ const parsers = {
   json: null
 };
 
-export default class Env {
+export class Env {
   constructor(defaultLang, fetch) {
     this.defaultLang = defaultLang;
     this.fetch = fetch;
