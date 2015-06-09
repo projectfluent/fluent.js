@@ -25,46 +25,29 @@ export class Service {
       setLanguage, setLanguage);
 
     this.requestLanguages = onlanguagechage.bind(
-      this, appVersion, defaultLang, availableLangs);
+      this, appVersion, defaultLang, availableLangs, null);
 
     this.handleEvent = function(evt) {
-      switch(evt.type) {
-        case 'languagechange':
-          onlanguagechage.call(
-            this, appVersion, defaultLang, availableLangs,
-            navigator.languages);
-          break;
-        case 'additionallanguageschange':
-          onadditionallanguageschange.call(
-            this, appVersion, defaultLang, availableLangs, evt.detail,
-            navigator.languages);
-        break;
-      }
+      return onlanguagechage.call(
+        this, appVersion, defaultLang, availableLangs, evt.detail,
+        navigator.languages);
     };
   }
 }
 
-export function translateViews(langs) {
+function translateViews(langs) {
   return Promise.all(
     this.views.map(view => translate.call(view, langs)));
 }
 
 export function onlanguagechage(
-  appVersion, defaultLang, availableLangs, requestedLangs) {
+  appVersion, defaultLang, availableLangs,
+  additionalLangs = getAdditionalLanguages(),
+  requestedLangs = navigator.languages) {
 
   return this.languages = Promise.all([
-    getAdditionalLanguages(), this.languages]).then(
+    additionalLangs, this.languages]).then(
       ([additionalLangs, prevLangs]) => changeLanguage(
         translateViews.bind(this), appVersion, defaultLang, availableLangs,
-        additionalLangs, prevLangs, requestedLangs || navigator.languages));
-}
-
-export function onadditionallanguageschange(
-  appVersion, defaultLang, availableLangs, additionalLangs,
-  requestedLangs) {
-
-  return this.languages = this.languages.then(
-    prevLangs => changeLanguage(
-      translateViews.bind(this), appVersion, defaultLang, availableLangs,
-      additionalLangs, prevLangs, requestedLangs || navigator.languages));
+        additionalLangs, prevLangs, requestedLangs));
 }
