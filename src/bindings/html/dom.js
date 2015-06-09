@@ -68,6 +68,29 @@ export function translateDocument(ctx, obs, langs, doc) {
     });
 }
 
+export function translateMutations(ctx, obs, langs, mutations) {
+  let targets = new Set();
+
+  for (let mutation of mutations) {
+    switch (mutation.type) {
+      case 'attributes':
+        translateElement(ctx, obs, langs, mutation.target);
+        break;
+      case 'childList':
+        for (let addedNode of mutation.addedNodes) {
+          if (addedNode.nodeType === Node.ELEMENT_NODE) {
+            targets.add(addedNode);
+          }
+        }
+    }
+  }
+
+  targets.forEach(
+    target => target.childElementCount ?
+      translateFragment(ctx, obs, langs, target) :
+      translateElement(ctx, obs, langs, target));
+}
+
 export function translateFragment(ctx, obs, langs, frag) {
   return Promise.all(
     getTranslatables(frag).map(

@@ -3,7 +3,7 @@
 import { getResourceLinks } from '../../bindings/html/head';
 import {
   setL10nAttributes, getL10nAttributes, dispatchEvent,
-  translateDocument, translateFragment, translateElement
+  translateDocument, translateFragment, translateMutations
 } from './dom';
 
 const observerConfig = {
@@ -28,9 +28,7 @@ export class View {
       doc.addEventListener('DOMLocalized', viewReady);
     });
 
-    let observer = new MutationObserver(
-      mutations => this.service.languages.then(
-        langs => onMutations(this.ctx, this, langs, mutations)));
+    let observer = new MutationObserver(onMutations.bind(this));
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
 
@@ -61,25 +59,7 @@ export function translate(langs) {
   return translateDocument(this.ctx, this, langs, this.doc);
 }
 
-function onMutations(ctx, obs, langs, mutations) {
-  let targets = new Set();
-
-  for (let mutation of mutations) {
-    switch (mutation.type) {
-      case 'attributes':
-        translateElement(ctx, obs, langs, mutation.target);
-        break;
-      case 'childList':
-        for (let addedNode of mutation.addedNodes) {
-          if (addedNode.nodeType === Node.ELEMENT_NODE) {
-            targets.add(addedNode);
-          }
-        }
-    }
-  }
-
-  targets.forEach(
-    target => target.childElementCount ?
-      translateFragment(ctx, obs, langs, target) :
-      translateElement(ctx, obs, langs, target));
+function onMutations(mutations) {
+  return this.service.languages.then(
+    langs => translateMutations(this.ctx, this, langs, mutations));
 }
