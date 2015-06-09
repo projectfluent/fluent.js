@@ -1,7 +1,7 @@
 'use strict';
 
 import { fetch } from './io';
-import { L10n, init } from '../../bindings/html/service';
+import { Service } from '../../bindings/html/service';
 import { getAdditionalLanguages } from '../../bindings/html/langs';
 
 const additionalLangsAtLaunch = getAdditionalLanguages();
@@ -16,13 +16,18 @@ function whenInteractive(callback) {
     return callback();
   }
 
-  document.addEventListener('readystatechange', function l10n_onrsc() {
+  document.addEventListener('readystatechange', function onrsc() {
     if (readyStates[document.readyState] >= readyStates.interactive) {
-      document.removeEventListener('readystatechange', l10n_onrsc);
+      document.removeEventListener('readystatechange', onrsc);
       callback();
     }
   });
 }
 
-whenInteractive(
-  init.bind(window.L10n = L10n, fetch, additionalLangsAtLaunch));
+function init() {
+  window.L10n = new Service(fetch, additionalLangsAtLaunch);
+  window.addEventListener('languagechange', window.L10n);
+  document.addEventListener('additionallanguageschange', window.L10n);
+}
+
+whenInteractive(init);
