@@ -12,8 +12,7 @@ export default class Context {
 
   fetch(langs) {
     // XXX add arg: count of langs to fetch
-    return Promise.resolve(langs).then(
-      this._fetchResources.bind(this));
+    return this._fetchResources(langs);
   }
 
   formatValue(langs, id, args) {

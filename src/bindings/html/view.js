@@ -29,7 +29,8 @@ export class View {
     });
 
     let observer = new MutationObserver(
-      mutations => onMutations(this, mutations));
+      mutations => this.service.languages.then(
+        langs => onMutations(this.ctx, this, langs, mutations)));
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
 
@@ -37,15 +38,18 @@ export class View {
   }
 
   formatValue(id, args) {
-    return this.ctx.formatValue(this.service.languages, id, args);
+    return this.service.languages.then(
+      langs => this.ctx.formatValue(langs, id, args));
   }
 
   formatEntity(id, args) {
-    return this.ctx.formatEntity(this.service.languages, id, args);
+    return this.service.languages.then(
+      langs => this.ctx.formatEntity(langs, id, args));
   }
 
   translateFragment(frag) {
-    return translateFragment(this.ctx, this, this.service.languages, frag);
+    return this.service.languages.then(
+      langs => translateFragment(this.ctx, this, langs, frag));
   }
 }
 
@@ -57,14 +61,13 @@ export function translate(langs) {
   return translateDocument(this.ctx, this, langs, this.doc);
 }
 
-function onMutations(view, mutations) {
-  let {ctx, service} = view;
+function onMutations(ctx, obs, langs, mutations) {
   let targets = new Set();
 
   for (let mutation of mutations) {
     switch (mutation.type) {
       case 'attributes':
-        translateElement(ctx, view, service.languages, mutation.target);
+        translateElement(ctx, obs, langs, mutation.target);
         break;
       case 'childList':
         for (let addedNode of mutation.addedNodes) {
@@ -77,6 +80,6 @@ function onMutations(view, mutations) {
 
   targets.forEach(
     target => target.childElementCount ?
-      translateFragment(ctx, view, service.languages, target) :
-      translateElement(ctx, view, service.languages, target));
+      translateFragment(ctx, obs, langs, target) :
+      translateElement(ctx, obs, langs, target));
 }
