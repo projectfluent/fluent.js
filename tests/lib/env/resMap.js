@@ -9,13 +9,11 @@ if (typeof navigator !== 'undefined') {
 } else {
   var assert = require('assert');
   var L20n = {
-    Env: require('../../../src/lib/env'),
-    io: require('../../../src/runtime/node/io')
+    Env: require('../../../src/lib/env').Env,
+    fetch: require('../../../src/runtime/node/io').fetch
   };
   var path = __dirname + '/..';
 }
-
-var fetch = L20n.io.fetch.bind(L20n.io);
 
 
 describe('Creating a context', function() {
@@ -24,7 +22,7 @@ describe('Creating a context', function() {
   var res2 = path + '/fixtures/en-US.properties';
 
   beforeEach(function() {
-    env = new L20n.Env('test', 'en-US', fetch);
+    env = new L20n.Env('en-US', L20n.fetch);
   });
 
   it('populates resMap with one ctx', function() {

@@ -1,42 +1,12 @@
 'use strict';
 
 import { prioritizeLocales } from '../../lib/intl';
-import { initViews } from './service';
 import { qps } from '../../lib/pseudo';
 
 const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
-export function getAdditionalLanguages() {
-  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    return navigator.mozApps.getAdditionalLanguages().catch(
-      () => []);
-  }
-
-  return Promise.resolve([]);
-}
-
-export function onlanguagechage(
-  appVersion, defaultLang, availableLangs, requestedLangs) {
-
-  return this.languages = Promise.all([
-    getAdditionalLanguages(), this.languages]).then(
-      ([additionalLangs, prevLangs]) => changeLanguage.call(
-        this, appVersion, defaultLang, availableLangs, additionalLangs,
-        prevLangs, requestedLangs || navigator.languages));
-}
-
-export function onadditionallanguageschange(
-  appVersion, defaultLang, availableLangs, additionalLangs, requestedLangs) {
-
-  return this.languages = this.languages.then(
-    prevLangs => changeLanguage.call(
-      this, appVersion, defaultLang, availableLangs, additionalLangs,
-      prevLangs, requestedLangs || navigator.languages));
-}
-
-
-export function changeLanguage(
-  appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
+export function negotiateLanguages(
+  fn, appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
   requestedLangs) {
 
   let allAvailableLangs = Object.keys(availableLangs).concat(
@@ -51,7 +21,7 @@ export function changeLanguage(
   }));
 
   if (!arrEqual(prevLangs, newLangs)) {
-    initViews.call(this, langs);
+    fn(langs);
   }
 
   return langs;

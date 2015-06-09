@@ -9,7 +9,7 @@ if (typeof navigator !== 'undefined') {
     PropertiesParser:
       require('../../../src/lib/format/properties/parser'),
     Resolver: require('../../../src/lib/resolver'),
-    getPluralRule: require('../../../src/lib/plurals')
+    getPluralRule: require('../../../src/lib/plurals').getPluralRule
   };
 
   exports.Resolver = L10n.Resolver;

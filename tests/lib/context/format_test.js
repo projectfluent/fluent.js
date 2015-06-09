@@ -9,8 +9,8 @@ if (typeof navigator !== 'undefined') {
 } else {
   var assert = require('assert');
   var L20n = {
-    Env: require('../../../src/lib/env'),
-    io: require('../../../src/runtime/node/io')
+    Env: require('../../../src/lib/env').Env,
+    fetch: require('../../../src/runtime/node/io').fetch
   };
   var path = __dirname + '/..';
 }
@@ -21,7 +21,6 @@ function assertPromise(promise, expected, done) {
   }).then(done, done);
 }
 
-var fetch = L20n.io.fetch.bind(L20n.io);
 var langs = [
   { code: 'pl', src: 'app', dir: 'ltr' },
   { code: 'en-US', src: 'app', dir: 'ltr' },
@@ -31,7 +30,7 @@ describe('One fallback locale', function() {
   var env, ctx;
 
   beforeEach(function() {
-    env = new L20n.Env('test', 'en-US', fetch);
+    env = new L20n.Env('en-US', L20n.fetch);
     ctx = env.createContext([path + '/fixtures/{locale}.properties']);
   });
 

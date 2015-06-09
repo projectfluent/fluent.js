@@ -49,7 +49,7 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument(doc, langs) {
+export function translateDocument(ctx, obs, langs, doc) {
   let setDOMLocalized = function() {
     doc.localized = true;
     dispatchEvent(doc, 'DOMLocalized', langs);
@@ -59,17 +59,41 @@ export function translateDocument(doc, langs) {
     return Promise.resolve(setDOMLocalized());
   }
 
-  return translateFragment.call(this, doc.documentElement).then(() => {
+  return translateFragment(ctx, obs, langs, doc.documentElement).then(
+    () => {
       doc.documentElement.lang = langs[0].code;
       doc.documentElement.dir = langs[0].dir;
       setDOMLocalized();
-  });
+    });
 }
 
-export function translateFragment(element) {
+export function translateMutations(ctx, obs, langs, mutations) {
+  let targets = new Set();
+
+  for (let mutation of mutations) {
+    switch (mutation.type) {
+      case 'attributes':
+        translateElement(ctx, obs, langs, mutation.target);
+        break;
+      case 'childList':
+        for (let addedNode of mutation.addedNodes) {
+          if (addedNode.nodeType === Node.ELEMENT_NODE) {
+            targets.add(addedNode);
+          }
+        }
+    }
+  }
+
+  targets.forEach(
+    target => target.childElementCount ?
+      translateFragment(ctx, obs, langs, target) :
+      translateElement(ctx, obs, langs, target));
+}
+
+export function translateFragment(ctx, obs, langs, frag) {
   return Promise.all(
-    getTranslatables(element).map(
-      translateElement.bind(this)));
+    getTranslatables(frag).map(
+      elem => translateElement(ctx, obs, langs, elem)));
 }
 
 function camelCaseToDashed(string) {
@@ -85,53 +109,53 @@ function camelCaseToDashed(string) {
     .replace(/^-/, '');
 }
 
-export function translateElement(element) {
-  var l10n = getL10nAttributes(element);
+export function translateElement(ctx, obs, langs, elem) {
+  var l10n = getL10nAttributes(elem);
 
   if (!l10n.id) {
     return false;
   }
 
-  return this.formatEntity(l10n.id, l10n.args).then(
-    applyTranslation.bind(this, element));
+  return ctx.formatEntity(langs, l10n.id, l10n.args).then(
+    translation => applyTranslation(obs, elem, translation));
 }
 
-function applyTranslation(element, entity) {
-  this.disconnect();
+function applyTranslation(obs, element, translation) {
+  obs.disconnect();
 
   var value;
-  if (entity.attrs && entity.attrs.innerHTML) {
+  if (translation.attrs && translation.attrs.innerHTML) {
     // XXX innerHTML is treated as value (https://bugzil.la/1142526)
-    value = entity.attrs.innerHTML;
+    value = translation.attrs.innerHTML;
     console.warn(
       'L10n Deprecation Warning: using innerHTML in translations is unsafe ' +
       'and will not be supported in future versions of l10n.js. ' +
       'See https://bugzil.la/1027117');
   } else {
-    value = entity.value;
+    value = translation.value;
   }
 
   if (typeof value === 'string') {
-    if (!entity.overlay) {
+    if (!translation.overlay) {
       element.textContent = value;
     } else {
       // start with an inert template element and move its children into
       // `element` but such that `element`'s own children are not replaced
-      var translation = element.ownerDocument.createElement('template');
-      translation.innerHTML = value;
+      var tmpl = element.ownerDocument.createElement('template');
+      tmpl.innerHTML = value;
       // overlay the node with the DocumentFragment
-      overlayElement(element, translation.content);
+      overlayElement(element, tmpl.content);
     }
   }
 
-  for (var key in entity.attrs) {
+  for (var key in translation.attrs) {
     var attrName = camelCaseToDashed(key);
     if (isAttrAllowed({ name: attrName }, element)) {
-      element.setAttribute(attrName, entity.attrs[key]);
+      element.setAttribute(attrName, translation.attrs[key]);
     }
   }
 
-  this.observe();
+  obs.observe();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`

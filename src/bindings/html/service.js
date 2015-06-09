@@ -1,21 +1,57 @@
 'use strict';
 
-import { translateDocument, dispatchEvent } from './dom';
+import { Env } from '../../lib/env';
+import { View, translate } from './view';
+import { getMeta } from './head';
+import { negotiateLanguages } from './langs';
 
-export const L10n = {
-  views: [],
-  env: null,
-  languages: null,
-  change: null
-};
+export class Service {
+  constructor(fetch, additionalLangsAtLaunch) {
+    let meta = getMeta(document.head);
+    this.defaultLanguage = meta.defaultLang;
+    this.availableLanguages = meta.availableLangs;
+    this.appVersion = meta.appVersion;
 
-export function initViews(langs) {
+    this.env = new Env(
+      this.defaultLanguage, fetch.bind(null, this.appVersion));
+    this.views = [
+      document.l10n = new View(this, document)
+    ];
+
+    this.languages = changeLanguages.call(
+      this, additionalLangsAtLaunch, navigator.languages);
+  }
+
+  requestLanguages(requestedLangs = navigator.languages) {
+    return changeLanguages.call(
+      this, getAdditionalLanguages(), requestedLangs);
+  }
+
+  handleEvent(evt) {
+    return changeLanguages.call(
+      this, evt.detail || getAdditionalLanguages(), navigator.languages);
+  }
+}
+
+export function getAdditionalLanguages() {
+  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
+    return navigator.mozApps.getAdditionalLanguages().catch(
+      () => []);
+  }
+
+  return Promise.resolve([]);
+}
+
+function translateViews(langs) {
   return Promise.all(
-    this.views.map(view => initView(view, langs)));
+    this.views.map(view => translate.call(view, langs)));
 }
 
-function initView(view, langs) {
-  dispatchEvent(view.doc, 'supportedlanguageschange', langs);
-  return view.ctx.fetch(langs, 1).then(
-    translateDocument.bind(view, view.doc, langs));
-}
+function changeLanguages(additionalLangs, requestedLangs) {
+  let prevLangs = this.languages || [];
+  return this.languages = Promise.all([
+    additionalLangs, prevLangs]).then(
+      ([additionalLangs, prevLangs]) => negotiateLanguages(
+        translateViews.bind(this), this.appVersion, this.defaultLanguage,
+        this.availableLanguages, additionalLangs, prevLangs, requestedLangs));
+  }

@@ -2,7 +2,8 @@
 
 import { getResourceLinks } from '../../bindings/html/head';
 import {
-  setL10nAttributes, getL10nAttributes, translateFragment, translateElement
+  setL10nAttributes, getL10nAttributes, dispatchEvent,
+  translateDocument, translateFragment, translateMutations
 } from './dom';
 
 const observerConfig = {
@@ -35,44 +36,30 @@ export class View {
   }
 
   formatValue(id, args) {
-    return this.ctx.formatValue(this.service.languages, id, args);
+    return this.service.languages.then(
+      langs => this.ctx.formatValue(langs, id, args));
   }
 
   formatEntity(id, args) {
-    return this.ctx.formatEntity(this.service.languages, id, args);
+    return this.service.languages.then(
+      langs => this.ctx.formatEntity(langs, id, args));
+  }
+
+  translateFragment(frag) {
+    return this.service.languages.then(
+      langs => translateFragment(this.ctx, this, langs, frag));
   }
 }
 
 View.prototype.setAttributes = setL10nAttributes;
 View.prototype.getAttributes = getL10nAttributes;
-View.prototype.translateFragment = translateFragment;
+
+export function translate(langs) {
+  dispatchEvent(this.doc, 'supportedlanguageschange', langs);
+  return translateDocument(this.ctx, this, langs, this.doc);
+}
 
 function onMutations(mutations) {
-  let mutation;
-  let targets = new Set();
-
-  for (var i = 0; i < mutations.length; i++) {
-    mutation = mutations[i];
-
-    if (mutation.type === 'childList') {
-      for (var j = 0; j < mutation.addedNodes.length; j++) {
-        let addedNode = mutation.addedNodes[j];
-        if (addedNode.nodeType === Node.ELEMENT_NODE) {
-          targets.add(addedNode);
-        }
-      }
-    }
-
-    if (mutation.type === 'attributes') {
-      translateElement.call(this, mutation.target);
-    }
-  }
-
-  targets.forEach(function(target) {
-    if (target.childElementCount) {
-      translateFragment.call(this, target);
-    } else if (target.hasAttribute('data-l10n-id')) {
-      translateElement.call(this, target);
-    }
-  }, this);
+  return this.service.languages.then(
+    langs => translateMutations(this.ctx, this, langs, mutations));
 }
