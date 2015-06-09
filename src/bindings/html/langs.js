@@ -5,16 +5,7 @@ import { qps } from '../../lib/pseudo';
 
 const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
-export function getAdditionalLanguages() {
-  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    return navigator.mozApps.getAdditionalLanguages().catch(
-      () => []);
-  }
-
-  return Promise.resolve([]);
-}
-
-export function changeLanguage(
+export function negotiateLanguages(
   fn, appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
   requestedLangs) {
 

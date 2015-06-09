@@ -1,8 +1,7 @@
 'use strict';
 
 import { fetch } from './io';
-import { Service } from '../../bindings/html/service';
-import { getAdditionalLanguages } from '../../bindings/html/langs';
+import { Service, getAdditionalLanguages } from '../../bindings/html/service';
 
 const additionalLangsAtLaunch = getAdditionalLanguages();
 const readyStates = {
