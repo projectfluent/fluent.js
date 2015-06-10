@@ -2,7 +2,7 @@
 
 import { getResourceLinks } from '../../bindings/html/head';
 import {
-  setL10nAttributes, getL10nAttributes, dispatchEvent,
+  setAttributes, getAttributes, dispatchEvent,
   translateDocument, translateFragment, translateMutations
 } from './dom';
 
@@ -51,8 +51,8 @@ export class View {
   }
 }
 
-View.prototype.setAttributes = setL10nAttributes;
-View.prototype.getAttributes = getL10nAttributes;
+View.prototype.setAttributes = setAttributes;
+View.prototype.getAttributes = getAttributes;
 
 export function translate(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
