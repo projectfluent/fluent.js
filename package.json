@@ -37,7 +37,7 @@
     "l10n"
   ],
   "devDependencies": {
-    "babel-core": "^5.1.9",
+    "babel-core": "~5.4.7",
     "babel-loader": "^5.0.0",
     "colors": "~0.6.0",
     "commander": "~2.0",
