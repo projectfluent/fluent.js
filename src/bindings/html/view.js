@@ -56,7 +56,9 @@ View.prototype.getAttributes = getAttributes;
 
 export function translate(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
-  return translateDocument(this.ctx, this, langs, this.doc);
+  // fetch the resources even if the document has been pretranslated
+  return this.ctx.fetch(langs).then(
+    translateDocument(this.ctx, this, langs, this.doc));
 }
 
 function onMutations(mutations) {
