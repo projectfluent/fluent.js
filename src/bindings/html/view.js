@@ -47,7 +47,7 @@ export class View {
 
   translateFragment(frag) {
     return this.service.languages.then(
-      langs => translateFragment(this.ctx, this, langs, frag));
+      langs => translateFragment(this, langs, frag));
   }
 }
 
@@ -58,10 +58,10 @@ export function translate(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
   // fetch the resources even if the document has been pretranslated
   return this.ctx.fetch(langs).then(
-    () => translateDocument(this.ctx, this, langs, this.doc));
+    () => translateDocument(this, langs, this.doc));
 }
 
 function onMutations(mutations) {
   return this.service.languages.then(
-    langs => translateMutations(this.ctx, this, langs, mutations));
+    langs => translateMutations(this, langs, mutations));
 }

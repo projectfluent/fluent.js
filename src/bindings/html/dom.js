@@ -49,7 +49,7 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument(ctx, obs, langs, doc) {
+export function translateDocument(view, langs, doc) {
   let setDOMLocalized = function() {
     doc.localized = true;
     dispatchEvent(doc, 'DOMLocalized', langs);
@@ -59,7 +59,7 @@ export function translateDocument(ctx, obs, langs, doc) {
     return Promise.resolve(setDOMLocalized());
   }
 
-  return translateFragment(ctx, obs, langs, doc.documentElement).then(
+  return translateFragment(view, langs, doc.documentElement).then(
     () => {
       doc.documentElement.lang = langs[0].code;
       doc.documentElement.dir = langs[0].dir;
@@ -67,13 +67,13 @@ export function translateDocument(ctx, obs, langs, doc) {
     });
 }
 
-export function translateMutations(ctx, obs, langs, mutations) {
+export function translateMutations(view, langs, mutations) {
   let targets = new Set();
 
   for (let mutation of mutations) {
     switch (mutation.type) {
       case 'attributes':
-        translateElement(ctx, obs, langs, mutation.target);
+        translateElement(view, langs, mutation.target);
         break;
       case 'childList':
         for (let addedNode of mutation.addedNodes) {
@@ -86,14 +86,14 @@ export function translateMutations(ctx, obs, langs, mutations) {
 
   targets.forEach(
     target => target.childElementCount ?
-      translateFragment(ctx, obs, langs, target) :
-      translateElement(ctx, obs, langs, target));
+      translateFragment(view, langs, target) :
+      translateElement(view, langs, target));
 }
 
-export function translateFragment(ctx, obs, langs, frag) {
+export function translateFragment(view, langs, frag) {
   return Promise.all(
     getTranslatables(frag).map(
-      elem => translateElement(ctx, obs, langs, elem)));
+      elem => translateElement(view, langs, elem)));
 }
 
 function camelCaseToDashed(string) {
@@ -109,19 +109,19 @@ function camelCaseToDashed(string) {
     .replace(/^-/, '');
 }
 
-export function translateElement(ctx, obs, langs, elem) {
+export function translateElement(view, langs, elem) {
   var l10n = getAttributes(elem);
 
   if (!l10n.id) {
     return false;
   }
 
-  return ctx.formatEntity(langs, l10n.id, l10n.args).then(
-    translation => applyTranslation(obs, elem, translation));
+  return view.ctx.formatEntity(langs, l10n.id, l10n.args).then(
+    translation => applyTranslation(view, elem, translation));
 }
 
-function applyTranslation(obs, element, translation) {
-  obs.disconnect();
+function applyTranslation(view, element, translation) {
+  view.disconnect();
 
   var value;
   if (translation.attrs && translation.attrs.innerHTML) {
@@ -155,7 +155,7 @@ function applyTranslation(obs, element, translation) {
     }
   }
 
-  obs.observe();
+  view.observe();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`
