@@ -62,7 +62,7 @@ export function translateMutations(view, langs, mutations) {
         break;
       case 'childList':
         for (let addedNode of mutation.addedNodes) {
-          if (addedNode.nodeType === Node.ELEMENT_NODE) {
+          if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
             targets.add(addedNode);
           }
         }
@@ -189,7 +189,7 @@ function overlayElement(sourceElement, translationElement) {
   while ((childElement = translationElement.childNodes[0])) {
     translationElement.removeChild(childElement);
 
-    if (childElement.nodeType === Node.TEXT_NODE) {
+    if (childElement.nodeType === childElement.TEXT_NODE) {
       result.appendChild(childElement);
       continue;
     }
@@ -215,7 +215,8 @@ function overlayElement(sourceElement, translationElement) {
 
     // otherwise just take this child's textContent
     result.appendChild(
-      document.createTextNode(childElement.textContent));
+      translationElement.ownerDocument.createTextNode(
+        childElement.textContent));
   }
 
   // clear `sourceElement` and append `result` which by this time contains
@@ -275,7 +276,7 @@ function getNthElementOfType(context, element, index) {
   /* jshint boss:true */
   var nthOfType = 0;
   for (var i = 0, child; child = context.children[i]; i++) {
-    if (child.nodeType === Node.ELEMENT_NODE &&
+    if (child.nodeType === child.ELEMENT_NODE &&
         child.tagName === element.tagName) {
       if (nthOfType === index) {
         return child;
