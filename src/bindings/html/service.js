@@ -18,7 +18,7 @@ export class Service {
       document.l10n = new View(this, document)
     ];
 
-    this.languages = changeLanguages.call(
+    changeLanguages.call(
       this, additionalLangsAtLaunch, navigator.languages);
   }
 
