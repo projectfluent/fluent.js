@@ -73,7 +73,7 @@ export function translateMutations(view, langs, mutations) {
   for (let mutation of mutations) {
     switch (mutation.type) {
       case 'attributes':
-        translateElement(view, langs, mutation.target);
+        targets.add(mutation.target);
         break;
       case 'childList':
         for (let addedNode of mutation.addedNodes) {
@@ -81,19 +81,29 @@ export function translateMutations(view, langs, mutations) {
             targets.add(addedNode);
           }
         }
+        break;
     }
   }
 
-  targets.forEach(
-    target => target.childElementCount ?
-      translateFragment(view, langs, target) :
-      translateElement(view, langs, target));
+  if (targets.size === 0) {
+    return;
+  }
+
+  let elements = [];
+
+  targets.forEach(target => target.childElementCount ?
+      elements.concat(getTranslatables(target)) : elements.push(target));
+
+  Promise.all(
+    elements.map(elem => getElementTranslation(view, langs, elem))).then(
+      translations => applyTranslations(view, elements, translations));
 }
 
 export function translateFragment(view, langs, frag) {
+  let elements = getTranslatables(frag);
   return Promise.all(
-    getTranslatables(frag).map(
-      elem => translateElement(view, langs, elem)));
+    elements.map(elem => getElementTranslation(view, langs, elem))).then(
+      translations => applyTranslations(view, elements, translations));
 }
 
 function camelCaseToDashed(string) {
@@ -109,20 +119,37 @@ function camelCaseToDashed(string) {
     .replace(/^-/, '');
 }
 
-export function translateElement(view, langs, elem) {
+function getElementTranslation(view, langs, elem) {
   var l10n = getAttributes(elem);
 
-  if (!l10n.id) {
-    return false;
-  }
+  return l10n.id ?
+    view.ctx.formatEntity(langs, l10n.id, l10n.args) : false;
+}
 
-  return view.ctx.formatEntity(langs, l10n.id, l10n.args).then(
-    translation => applyTranslation(view, elem, translation));
+export function translateElement(view, langs, elem) {
+  return getElementTranslation(view, langs, elem).then(translation => {
+    if (!translation) {
+      return false;
+    }
+
+    view.disconnect();
+    applyTranslation(view, elem, translation);
+    view.observe();
+  });
+}
+
+function applyTranslations(view, elements, translations) {
+  view.disconnect();
+  for (let i = 0; i < elements.length; i++) {
+    if (translations[i] === false) {
+      continue;
+    }
+    applyTranslation(view, elements[i], translations[i]);
+  }
+  view.observe();
 }
 
 function applyTranslation(view, element, translation) {
-  view.disconnect();
-
   var value;
   if (translation.attrs && translation.attrs.innerHTML) {
     // XXX innerHTML is treated as value (https://bugzil.la/1142526)
@@ -154,8 +181,6 @@ function applyTranslation(view, element, translation) {
       element.setAttribute(attrName, translation.attrs[key]);
     }
   }
-
-  view.observe();
 }
 
 // The goal of overlayElement is to move the children of `translationElement`
