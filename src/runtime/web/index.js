@@ -25,6 +25,7 @@ function whenInteractive(callback) {
 
 function init() {
   window.L10n = new Service(fetch);
+  window.L10n.requestLanguages(navigator.languages);
   window.addEventListener('languagechange', window.L10n);
   document.addEventListener('additionallanguageschange', window.L10n);
 }
