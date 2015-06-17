@@ -2,18 +2,25 @@
 
 import { L10nError } from '../../errors';
 
-var MAX_PLACEABLES_L20N = 100;
+var MAX_PLACEABLES = 100;
 
 export default {
-  _patterns: {
-    identifier: /[A-Za-z_]\w*/g,
-    unicode: /\\u([0-9a-fA-F]{1,4})/g,
-    index: /@cldr\.plural\(\$?(\w+)\)/g,
-    placeables: /\{\{\s*\$?([^\s]*?)\s*\}\}/,
-    unesc: /\\({{|u[0-9a-fA-F]{4}|.)/g,
+  _patterns: null,
+
+  init: function() {
+    this._patterns = {
+      identifier: /[A-Za-z_]\w*/g,
+      unicode: /\\u([0-9a-fA-F]{1,4})/g,
+      index: /@cldr\.plural\(\$?(\w+)\)/g,
+      placeables: /\{\{\s*\$?([^\s]*?)\s*\}\}/,
+      unesc: /\\({{|u[0-9a-fA-F]{4}|.)/g,
+    };
   },
 
   parse: function (env, string, simple) {
+    if (!this._patterns) {
+      this.init();
+    }
     this._source = string;
     this._index = 0;
     this._length = this._source.length;
@@ -341,9 +348,9 @@ export default {
     var len = chunks.length;
     var placeablesCount = (len - 1) / 2;
 
-    if (placeablesCount >= MAX_PLACEABLES_L20N) {
+    if (placeablesCount >= MAX_PLACEABLES) {
       throw new L10nError('Too many placeables (' + placeablesCount +
-                          ', max allowed is ' + MAX_PLACEABLES_L20N + ')');
+                          ', max allowed is ' + MAX_PLACEABLES + ')');
     }
 
     for (var i = 0; i < chunks.length; i++) {
