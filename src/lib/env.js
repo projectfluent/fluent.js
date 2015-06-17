@@ -18,7 +18,6 @@ export class Env {
     this.defaultLang = defaultLang;
     this.fetch = fetch;
 
-    this._resMap = Object.create(null);
     this._resCache = Object.create(null);
 
     let listeners = {};
@@ -28,43 +27,15 @@ export class Env {
   }
 
   createContext(resIds) {
-    var ctx = new Context(this, resIds);
-
-    resIds.forEach(function(res) {
-      if (!this._resMap[res]) {
-        this._resMap[res] = new Set();
-      }
-      this._resMap[res].add(ctx);
-    }, this);
-
-    return ctx;
-  }
-
-  destroyContext(ctx) {
-    var cache = this._resCache;
-    var map = this._resMap;
-
-    ctx._resIds.forEach(function(resId) {
-      if (map[resId].size === 1) {
-        map[resId].clear();
-        delete cache[resId];
-      } else {
-        map[resId].delete(ctx);
-      }
-    });
+    return new Context(this, resIds);
   }
 
   _getResource(lang, res) {
-    let { code, src } = lang;
     let cache = this._resCache;
+    let id = res + lang.code + lang.src;
 
-    if (!cache[res]) {
-      cache[res] = Object.create(null);
-      cache[res][code] = Object.create(null);
-    } else if (!cache[res][code]) {
-      cache[res][code] = Object.create(null);
-    } else if (cache[res][code][src]) {
-      return cache[res][code][src];
+    if (cache[id]) {
+      return cache[id];
     }
 
     let syntax = res.substr(res.lastIndexOf('.') + 1);
@@ -72,19 +43,19 @@ export class Env {
 
     let saveEntries = data => {
       let ast = parser ? parser(this, data) : data;
-      cache[res][code][src] = createEntries(lang, ast);
+      cache[id] = createEntries(lang, ast);
     };
 
     let recover = err => {
       this.emit('fetcherror', err);
-      cache[res][code][src] = err;
+      cache[id] = err;
     };
 
-    let langToFetch = src === 'qps' ?
+    let langToFetch = lang.src === 'qps' ?
       { code: this.defaultLang, src: 'app' } :
       lang;
 
-    return cache[res][code][src] = this.fetch(res, langToFetch).then(
+    return cache[id] = this.fetch(res, langToFetch).then(
       saveEntries, recover);
   }
 }

@@ -25,10 +25,6 @@ export class Context {
       this._fallback.bind(this, Context.prototype._formatEntity, id, args));
   }
 
-  destroy() {
-    this._env.destroyContext(this);
-  }
-
   /* private */
 
   _formatTuple(args, entity) {
@@ -115,7 +111,7 @@ export class Context {
 
     // Look for `id` in every resource in order.
     for (var i = 0, resId; resId = this._resIds[i]; i++) {
-      var resource = cache[resId][lang.code][lang.src];
+      var resource = cache[resId + lang.code + lang.src];
       if (resource instanceof L10nError) {
         continue;
       }
