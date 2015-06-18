@@ -1,3 +1,5 @@
+'use strict';
+
 var Path = require('path');
 var fs = require('fs');
 
@@ -22,12 +24,15 @@ function getPreamble(babel) {
   var t = babel.types;
   var body = [];
   body.push(
-    t.variableDeclaration("const", [
+    t.expressionStatement(
+      t.literal('use strict')));
+  body.push(
+    t.variableDeclaration('const', [
       t.variableDeclarator(
         t.identifier('modules'), t.newExpression(t.identifier('Map')))
     ]));
   body.push(
-    t.variableDeclaration("const", [
+    t.variableDeclaration('const', [
       t.variableDeclarator(
         t.identifier('moduleCache'), t.newExpression(t.identifier('Map')))
     ]));
@@ -108,16 +113,6 @@ function getModuleClosure(babel, id, body) {
   return t.expressionStatement(def);
 }
 
-function collectImports(body, path) {
-  var imports = [];
-  for (var i = 0; i < body.length; i++) {
-    if (body[i].type === 'ImportDeclaration') {
-      imports.push(getModuleIDFromPath(path, body[i].source.value));
-    }
-  }
-  return imports;
-}
-
 function removeUseStrict(body) {
   var pos = -1;
   for (var i = 0; i < body.length; i++) {
@@ -170,7 +165,7 @@ function turnImportsIntoGetModule(babel, path, body) {
         [babel.types.literal(source)]
       );
 
-      body[i] = babel.types.variableDeclaration("const", [
+      body[i] = babel.types.variableDeclaration('const', [
         babel.types.variableDeclarator(id, getModule)
       ]);
     }
@@ -191,7 +186,6 @@ function turnExportsIntoReturn(babel, body) {
           returns.push(body[i].declaration.id);
         }
         body[i] = body[i].declaration;
-        pos = i;
         break;
       case 'ExportDefaultDeclaration':
         if (!body[i].declaration.id) {
@@ -263,16 +257,14 @@ function getProgram(babel, id) {
 }
 
 module.exports = function (babel) {
-  return new babel.Transformer("l20n-bundler", {
-    Program: function (node, parent) {
+  return new babel.Transformer('l20n-bundler', {
+    Program: function (node) {
       var path = node._paths[0].parentPath.state.opts.filename;
       var id = Path.join(
         Path.relative('./src',
           Path.dirname(path)), Path.basename(path, '.js'));
         
       turnMainIntoModule(babel, node, path, id);
-
-
       return getProgram(babel, id);
     },
   });
