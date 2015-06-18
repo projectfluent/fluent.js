@@ -15,8 +15,8 @@ if (typeof navigator !== 'undefined') {
   var path = __dirname + '/..';
 }
 
-
-describe('Creating a context', function() {
+// resMap has been removed in PR #39
+describe.skip('Creating a context', function() {
   var env, ctx1, ctx2;
   var res1 = path + '/fixtures/basic.properties';
   var res2 = path + '/fixtures/en-US.properties';

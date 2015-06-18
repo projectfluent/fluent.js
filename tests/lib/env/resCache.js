@@ -40,12 +40,15 @@ describe('Caching resources', function() {
   });
 
   it('caches resources', function() {
-    assert(env._resCache[res1]['en-US'].app);
-    assert(env._resCache[res2]['en-US'].app);
-    assert(env._resCache[res3]['en-US'].app instanceof L20n.L10nError);
+    assert(env._resCache[res1 + 'en-USapp']);
+    assert(env._resCache[res2 + 'en-USapp']);
+    assert(env._resCache[res3 + 'en-USapp'] instanceof L20n.L10nError);
   });
 
-  it('clears the cache only if no other ctx uses the resource', function() {
+  // destroyContext has been removed in PR #39
+  it.skip('clears the cache only if no other ctx uses the resource',
+    function() {
+
     env.destroyContext(ctx2);
     assert(env._resCache[res1]['en-US'].app);
     assert(!env._resCache[res2]);
