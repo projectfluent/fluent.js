@@ -9,7 +9,6 @@ export default {
 
   init: function() {
     this._patterns = {
-      unicode: /\\u([0-9a-fA-F]{1,4})/g,
       index: /@cldr\.plural\(\$?(\w+)\)/g,
       placeables: /\{\{\s*\$?([^\s]*?)\s*\}\}/,
       unesc: /\\({{|u[0-9a-fA-F]{4}|.)/g,
