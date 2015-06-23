@@ -1,16 +1,9 @@
 /* global assert:true, it, beforeEach, describe */
-/* global navigator */
 /* jshint -W101 */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  var L10n = navigator.mozL10n._getInternalAPI();
-} else {
-  var assert = require('assert');
-  var L10n = {
-    PropertiesParser: require('../../../../src/lib/format/properties/parser')
-  };
-}
+import assert from 'assert';
+import PropertiesParser from '../../../../src/lib/format/properties/parser';
 
 describe('Quadratic Blowup', function(){
   var source;
@@ -85,7 +78,7 @@ describe('Quadratic Blowup', function(){
 
   it('throws', function() {
     assert.throws(function() {
-      L10n.PropertiesParser.parse(null, source);
+      PropertiesParser.parse(null, source);
     }, /too many placeables/i);
   });
 });
