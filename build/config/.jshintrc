@@ -6,15 +6,17 @@
   "eqnull": true,
   "forin": false,
   "immed": true,
-  "newcap": true,
   "multistr": true,
+  "newcap": true,
   "noarg": true,
   "noempty": true,
   "nonew": true,
   "strict": true,
+  "globalstrict": true,
   "trailing": true,
   "undef": true,
   "unused": true,
+  "validthis": true,
 
   "node": true,
   "devel": true,
@@ -24,5 +26,7 @@
   "maxerr": 50,
   "maxlen": 80,
 
-  "globals": {}
+  "globals": {
+    "Set": false
+  }
 }

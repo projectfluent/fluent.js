@@ -4,10 +4,10 @@ module.exports = {
   main: {
     src: [
       'Gruntfile.js',
-      'grunt/**/*.js',
+      'build/config/**/*.js',
     ],
     options: {
-      jshintrc: '.jshintrc',
+      jshintrc: 'build/config/.jshintrc',
     },
   },
   src: {
