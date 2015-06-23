@@ -2,18 +2,15 @@
 /* global navigator, __dirname */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  var L20n = navigator.mozL10n._getInternalAPI();
-  var path =
-    'app://sharedtest.gaiamobile.org/test/unit/l10n/lib';
-} else {
-  var assert = require('assert');
-  var L20n = {
-    Env: require('../../../src/lib/env').Env,
-    fetch: require('../../../src/runtime/node/io').fetch
-  };
-  var path = __dirname + '/..';
-}
+import assert from 'assert';
+import { Env } from '../../../src/lib/env';
+import { fetch } from '../../../src/runtime/node/io';
+
+const path = __dirname + '/..';
+const langs = [
+  { code: 'pl', src: 'app', dir: 'ltr' },
+  { code: 'en-US', src: 'app', dir: 'ltr' },
+];
 
 function assertPromise(promise, expected, done) {
   promise.then(function(value) {
@@ -21,16 +18,11 @@ function assertPromise(promise, expected, done) {
   }).then(done, done);
 }
 
-var langs = [
-  { code: 'pl', src: 'app', dir: 'ltr' },
-  { code: 'en-US', src: 'app', dir: 'ltr' },
-];
-
 describe('One fallback locale', function() {
   var env, ctx;
 
   beforeEach(function() {
-    env = new L20n.Env('en-US', L20n.fetch);
+    env = new Env('en-US', fetch);
     ctx = env.createContext([path + '/fixtures/{locale}.properties']);
   });
 
