@@ -1,5 +1,4 @@
 /* global assert:true, it, describe, beforeEach */
-/* global navigator, __dirname */
 'use strict';
 
 import assert from 'assert';
