@@ -9,7 +9,6 @@ export default {
 
   init: function() {
     this._patterns = {
-      identifier: /[A-Za-z_]\w*/g,
       unicode: /\\u([0-9a-fA-F]{1,4})/g,
       index: /@cldr\.plural\(\$?(\w+)\)/g,
       placeables: /\{\{\s*\$?([^\s]*?)\s*\}\}/,
@@ -215,17 +214,26 @@ export default {
     }
   },
 
-
   getIdentifier: function() {
-    const reId = this._patterns.identifier;
-    reId.lastIndex = this._index;
-    const match = reId.exec(this._source);
-    if (reId.lastIndex !== this._index + match[0].length) {
+    const start = this._index;
+    let cc = this._source.charCodeAt(this._index);
+
+    if ((cc >= 97 && cc <= 122) || // a-z
+        (cc >= 65 && cc <= 90) ||  // A-Z
+        cc === 95) {               // _
+      cc = this._source.charCodeAt(++this._index);
+    } else {
       throw this.error('Identifier has to start with [a-zA-Z_]');
     }
-    this._index = reId.lastIndex;
 
-    return match[0];
+    while ((cc >= 97 && cc <= 122) || // a-z
+           (cc >= 65 && cc <= 90) ||  // A-Z
+           (cc >= 48 && cc <= 57) ||  // 0-9
+           cc === 95) {               // _
+      cc = this._source.charCodeAt(++this._index);
+    }
+
+    return this._source.slice(start, this._index);
   },
 
   getComment: function() {
