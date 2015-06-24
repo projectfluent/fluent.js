@@ -1,4 +1,3 @@
-/* global it, before, describe */
 /* jshint -W101 */
 'use strict';
 

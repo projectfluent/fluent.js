@@ -1,4 +1,3 @@
-/* global Promise, assert:true, it, describe, beforeEach */
 'use strict';
 
 import assert from 'assert';

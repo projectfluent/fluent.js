@@ -1,4 +1,3 @@
-/* global assert:true, it, before, describe, requireApp */
 'use strict';
 
 import assert from 'assert';

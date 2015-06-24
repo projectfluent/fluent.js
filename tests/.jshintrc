@@ -25,5 +25,12 @@
   "quotmark": "single",
   "maxcomplexity": 20,
   "maxerr": 50,
-  "maxlen": 80
+  "maxlen": 80,
+
+  "globals": {
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false
+  }
 }

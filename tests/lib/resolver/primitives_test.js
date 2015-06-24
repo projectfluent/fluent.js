@@ -1,4 +1,3 @@
-/* global it, before, describe */
 'use strict';
 
 import assert from 'assert';

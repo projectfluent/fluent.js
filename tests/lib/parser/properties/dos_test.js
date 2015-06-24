@@ -1,4 +1,3 @@
-/* global assert:true, it, beforeEach, describe */
 /* jshint -W101 */
 'use strict';
 
