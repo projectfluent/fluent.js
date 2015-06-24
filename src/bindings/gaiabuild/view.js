@@ -16,11 +16,13 @@ export class View {
   translate(code) {
     let dir = getDirection(code);
     let langs = [{ code, dir, src: 'app' }];
-    return translateFragment(this, langs, this.doc.documentElement).then(
-      () => {
-        this.doc.documentElement.lang = code;
-        this.doc.documentElement.dir = dir;
-      });
+    let setDocLang = () => {
+      this.doc.documentElement.lang = code;
+      this.doc.documentElement.dir = dir;
+    };
+    return this.ctx.fetch(langs).then(
+      langs => translateFragment(this, langs, this.doc.documentElement)).then(
+      setDocLang);
   }
 
   observe() {}
