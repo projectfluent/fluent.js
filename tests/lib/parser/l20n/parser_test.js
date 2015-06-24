@@ -1,20 +1,11 @@
-/* global it, assert:true, describe */
-/* global navigator */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  var L10n = navigator.mozL10n._getInternalAPI();
-} else {
-  var assert = require('assert');
-  var L10n = {
-    L20nParser: require('../../../../src/lib/format/l20n/parser')
-  };
-}
+import assert from 'assert';
+import L20nParser from '../../../../src/lib/format/l20n/parser';
 
+var parse = L20nParser.parse.bind(L20nParser);
 
-var parse = L10n.L20nParser.parse.bind(L10n.L20nParser);
-
-describe('L10n Parser', function() {
+describe('L20n Parser', function() {
   describe('Parser', function() {
     it('malformed entity errors', function() {
       var strings = [

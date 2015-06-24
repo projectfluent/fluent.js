@@ -1,31 +1,11 @@
-/* global it, assert:true, describe, before, beforeEach */
-/* global navigator */
 'use strict';
 
-var assert;
-var PropertiesParser;
+import assert from 'assert';
+import { qps, walkContent } from '../../src/lib/pseudo';
+import PropertiesParser from '../../src/lib/format/properties/parser';
 
-describe('pseudo strategy', function() {
-  var PSEUDO, walkContent, strategy, source, ast, walked;
-
-  before(function(done) {
-    if (typeof navigator !== 'undefined') {
-      require('/shared/js/l10n.js', function() {
-        PSEUDO = navigator.mozL10n.qps;
-        var L10n = navigator.mozL10n._getInternalAPI();
-        PropertiesParser = L10n.PropertiesParser;
-        walkContent = L10n.walkContent;
-        done();
-      });
-    } else {
-      assert = require('assert');
-      PSEUDO = require('../../src/lib/pseudo').qps;
-      walkContent = require('../../src/lib/pseudo').walkContent;
-      PropertiesParser =
-        require('../../src/lib/format/properties/parser');
-      done();
-    }
-  });
+describe('qps strategy', function() {
+  var strategy, source, ast, walked;
 
   beforeEach(function() {
     ast = PropertiesParser.parse(null, source);
@@ -46,7 +26,7 @@ describe('pseudo strategy', function() {
   describe('accented English', function(){
 
     before(function() {
-      strategy = PSEUDO['qps-ploc'].translate;
+      strategy = qps['qps-ploc'].translate;
       source = [
         'foo=Foo',
 
@@ -112,7 +92,7 @@ describe('pseudo strategy', function() {
     /* jshint -W100 */
 
     before(function() {
-      strategy = PSEUDO['qps-plocm'].translate;
+      strategy = qps['qps-plocm'].translate;
       source = [
         'foo=Foo',
 

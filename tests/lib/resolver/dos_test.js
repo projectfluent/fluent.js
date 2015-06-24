@@ -1,15 +1,9 @@
-/* global assert:true, it, before, describe, requireApp */
 /* jshint -W101 */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
-} else {
-  var assert = require('assert');
-  var Resolver = require('./header.js').Resolver;
-  var createEntries = require('./header.js').createEntries;
-  var MockContext = require('./header').MockContext;
-}
+import assert from 'assert';
+import { format, createEntries } from './header';
+import { MockContext } from './header';
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 
@@ -31,9 +25,9 @@ describe('Billion Laughs', function(){
     ctx = new MockContext(entries);
   });
 
-  it('Resolver.format() throws', function() {
+  it('format() throws', function() {
     assert.throws(function() {
-      Resolver.format(ctx, null, entries.lolz);
+      format(ctx, null, entries.lolz);
     }, /too many characters in placeable/i);
   });
 });

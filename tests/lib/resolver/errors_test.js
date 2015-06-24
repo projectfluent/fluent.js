@@ -1,14 +1,8 @@
-/* global assert:true, it, before, describe, requireApp */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
-} else {
-  var assert = require('assert');
-  var Resolver = require('./header.js').Resolver;
-  var createEntries = require('./header.js').createEntries;
-  var MockContext = require('./header').MockContext;
-}
+import assert from 'assert';
+import { format, createEntries } from './header';
+import { MockContext } from './header';
 
 describe('Compiler errors:', function(){
   var entries, ctx;
@@ -27,7 +21,7 @@ describe('Compiler errors:', function(){
 
     it('works with the default index', function(){
       assert.strictEqual(
-        Resolver.format(ctx, {n: 1}, entries.prompt)[1], 'One File');
+        format(ctx, {n: 1}, entries.prompt)[1], 'One File');
     });
 
   });
@@ -44,7 +38,7 @@ describe('Compiler errors:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = Resolver.format(ctx, {n: 1}, entries.prompt)[1];
+      var value = format(ctx, {n: 1}, entries.prompt)[1];
       assert.strictEqual(value, 'One {{ file }}');
     });
 
@@ -64,12 +58,12 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        Resolver.format(ctx, {n: 1}, entries.prompt)[1], 'One File');
+        format(ctx, {n: 1}, entries.prompt)[1], 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
       assert.throws(function() {
-        Resolver.format(ctx, null, entries.prompt);
+        format(ctx, null, entries.prompt);
       }, 'Unknown reference: n');
     });
 
@@ -88,12 +82,12 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        Resolver.format(ctx, {n: 1}, entries.prompt)[1], 'One File');
+        format(ctx, {n: 1}, entries.prompt)[1], 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
       assert.throws(function() {
-        Resolver.format(ctx, null, entries.prompt);
+        format(ctx, null, entries.prompt);
       }, 'Unknown reference: n');
     });
 

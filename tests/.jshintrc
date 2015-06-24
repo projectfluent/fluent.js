@@ -4,7 +4,7 @@
   "curly": false,
   "eqeqeq": true,
   "eqnull": true,
-  "forin": true,
+  "forin": false,
   "immed": true,
   "multistr": true,
   "newcap": true,
@@ -12,6 +12,7 @@
   "noempty": true,
   "nonew": true,
   "strict": true,
+  "globalstrict": true,
   "trailing": true,
   "undef": true,
   "unused": true,
@@ -19,9 +20,17 @@
 
   "node": true,
   "devel": true,
+  "esnext": true,
 
   "quotmark": "single",
   "maxcomplexity": 20,
   "maxerr": 50,
-  "maxlen": 80
+  "maxlen": 80,
+
+  "globals": {
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false
+  }
 }

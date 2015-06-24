@@ -1,14 +1,8 @@
-/* global assert:true, it, before, describe, requireApp */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
-} else {
-  var assert = require('assert');
-  var Resolver = require('./header.js').Resolver;
-  var createEntries = require('./header.js').createEntries;
-  var MockContext = require('./header').MockContext;
-}
+import assert from 'assert';
+import { format, createEntries } from './header';
+import { MockContext } from './header';
 
 describe('Index', function(){
   var entries, ctx;
@@ -29,16 +23,16 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = Resolver.format(ctx, {n: 1}, entries.indexEntity)[1];
+      var value = format(ctx, {n: 1}, entries.indexEntity)[1];
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro', function() {
       assert.throws(function() {
-        Resolver.format(ctx, {n: 1}, entries.indexUncalledMacro);
+        format(ctx, {n: 1}, entries.indexUncalledMacro);
       }, 'Unresolvable value');
     });
     it('works when the index is a called macro', function() {
-      var value = Resolver.format(ctx, {n: 1}, entries.indexCalledMacro)[1];
+      var value = format(ctx, {n: 1}, entries.indexCalledMacro)[1];
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -56,7 +50,7 @@ describe('Index', function(){
 
     it('is undefined', function() {
       assert.throws(function() {
-        Resolver.format(ctx, null, entries.foo);
+        format(ctx, null, entries.foo);
       }, 'Cyclic reference detected: foo');
     });
 
@@ -75,9 +69,9 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      assert.strictEqual(Resolver.format(ctx, null, entries.foo)[1], 'Foo');
+      assert.strictEqual(format(ctx, null, entries.foo)[1], 'Foo');
       assert.throws(function() {
-        Resolver.format(ctx, null, entries.foo.attrs.attr);
+        format(ctx, null, entries.foo.attrs.attr);
       }, 'Unresolvable value');
     });
 

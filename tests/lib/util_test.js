@@ -1,8 +1,8 @@
-/* global it, assert:true, describe, before, beforeEach */
-/* global navigator */
 'use strict';
 
-var assert, PropertiesParser;
+import assert from 'assert';
+import { walkContent } from '../../src/lib/pseudo';
+import PropertiesParser from '../../src/lib/format/properties/parser';
 
 var reVowels = /[AEIOUaeiou]/;
 
@@ -18,24 +18,7 @@ function digest(str) {
 }
 
 describe('walkContent', function() {
-  var L10n, source, ast;
-
-  before(function(done) {
-    if (typeof navigator !== 'undefined') {
-      require('/build/l10n.js', function() {
-        L10n = navigator.mozL10n._getInternalAPI();
-        PropertiesParser = L10n.PropertiesParser;
-        done();
-      });
-    } else {
-      assert = require('assert');
-      L10n = {};
-      L10n.walkContent = require('../../src/lib/pseudo').walkContent;
-      PropertiesParser = require('../../src/lib/format/properties/parser');
-      done();
-    }
-  });
-
+  var source, ast;
 
   beforeEach(function() {
     ast = PropertiesParser.parse(null, source);
@@ -51,12 +34,12 @@ describe('walkContent', function() {
     });
 
     it('walks the value', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.strictEqual(walked.$v, 2);
     });
 
     it('walks the attribute', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.strictEqual(walked.attr, 5);
     });
 
@@ -76,7 +59,7 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.strictEqual(walked.$v.one, 2);
       assert.strictEqual(walked.$v.two, 1);
       assert.strictEqual(walked.$v.few, 1);
@@ -85,7 +68,7 @@ describe('walkContent', function() {
     });
 
     it('does not modify the index', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.deepEqual(walked.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
     });
 
@@ -107,7 +90,7 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.strictEqual(walked.$v.other.one, 2);
       assert.strictEqual(walked.$v.other.two, 1);
       assert.strictEqual(walked.$v.other.few, 1);
@@ -116,7 +99,7 @@ describe('walkContent', function() {
     });
 
     it('does not modify the indexes', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.deepEqual(
         walked.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
       assert.deepEqual(
@@ -139,7 +122,7 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.strictEqual(walked.attr.$v.one, 2);
       assert.strictEqual(walked.attr.$v.two, 1);
       assert.strictEqual(walked.attr.$v.few, 1);
@@ -148,7 +131,7 @@ describe('walkContent', function() {
     });
 
     it('does not modify the indexes', function(){
-      var walked = L10n.walkContent(ast[0], digest);
+      var walked = walkContent(ast[0], digest);
       assert.deepEqual(walked.attr.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
     });
 

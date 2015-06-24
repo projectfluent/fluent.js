@@ -1,14 +1,8 @@
-/* global assert:true, it, before, describe, requireApp */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
-} else {
-  var assert = require('assert');
-  var Resolver = require('./header.js').Resolver;
-  var createEntries = require('./header.js').createEntries;
-  var MockContext = require('./header').MockContext;
-}
+import assert from 'assert';
+import { format, createEntries } from './header';
+import { MockContext } from './header';
 
 describe('Primitives:', function(){
   var entries, ctx;
@@ -23,7 +17,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      assert.strictEqual(Resolver.format(ctx, null, entries.foo)[1], 'Foo');
+      assert.strictEqual(format(ctx, null, entries.foo)[1], 'Foo');
     });
 
   });
@@ -41,13 +35,13 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      var value = Resolver.format(ctx, null, entries.bar)[1];
+      var value = format(ctx, null, entries.bar)[1];
       assert.strictEqual(value, 'Foo Bar');
     });
 
     it('returns the raw string if the referenced entity is ' +
        'not found', function(){
-      var value = Resolver.format(ctx, null, entries.baz)[1];
+      var value = format(ctx, null, entries.baz)[1];
       assert.strictEqual(value, '{{ missing }}');
     });
 
@@ -64,18 +58,18 @@ describe('Primitives:', function(){
     });
 
     it('returns the null value', function(){
-      var value = Resolver.format(ctx, null, entries.foo)[1];
+      var value = format(ctx, null, entries.foo)[1];
       assert.strictEqual(value, null);
     });
 
     it('returns the attribute', function(){
-      var attr = Resolver.format(ctx, null, entries.foo.attrs.attr)[1];
+      var attr = format(ctx, null, entries.foo.attrs.attr)[1];
       assert.strictEqual(attr, 'Foo');
     });
 
     it('returns the raw string when the referenced entity has ' +
        'null value', function(){
-      var value = Resolver.format(ctx, null, entries.bar)[1];
+      var value = format(ctx, null, entries.bar)[1];
       assert.strictEqual(value, '{{ foo }} Bar');
     });
 
@@ -92,7 +86,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = Resolver.format(ctx, null, entries.foo)[1];
+      var value = format(ctx, null, entries.foo)[1];
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -108,7 +102,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = Resolver.format(ctx, null, entries.foo)[1];
+      var value = format(ctx, null, entries.foo)[1];
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -127,12 +121,12 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = Resolver.format(ctx, {n: 1}, entries.foo)[1];
+      var value = format(ctx, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, '{{ foo }}');
     });
 
     it('returns the valid value if requested directly', function(){
-      var value = Resolver.format(ctx, {n: 2}, entries.bar)[1];
+      var value = format(ctx, {n: 2}, entries.bar)[1];
       assert.strictEqual(value, 'Bar');
     });
   });
