@@ -1,14 +1,9 @@
-/* global assert:true, it, before, describe, requireApp */
+/* global it, before, describe */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
-} else {
-  var assert = require('assert');
-  var Resolver = require('./header').Resolver;
-  var createEntries = require('./header').createEntries;
-  var MockContext = require('./header').MockContext;
-}
+import assert from 'assert';
+import { format, createEntries } from './header';
+import { MockContext } from './header';
 
 describe('L10n Resolver overlay', function(){
   var entries, ctx;
@@ -30,37 +25,37 @@ describe('L10n Resolver overlay', function(){
     });
 
     it('detects no overlay in simple value', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo);
+      var formatted = format(ctx, null, entries.foo);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'Foo');
     });
 
     it('detects no overlay in simple attribute', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr);
+      var formatted = format(ctx, null, entries.foo.attrs.attr);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'An attribute');
     });
 
     it('detects overlay in simple value', function(){
-      var formatted = Resolver.format(ctx, null, entries.bar);
+      var formatted = format(ctx, null, entries.bar);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Bar <a>');
     });
 
     it('detects overlay in simple attribute', function(){
-      var formatted = Resolver.format(ctx, null, entries.bar.attrs.attr);
+      var formatted = format(ctx, null, entries.bar.attrs.attr);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'An attribute <a>');
     });
 
     it('detects overlay in simple hash value', function(){
-      var formatted = Resolver.format(ctx, {n: 1}, entries.baz);
+      var formatted = format(ctx, {n: 1}, entries.baz);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Baz <a>');
     });
 
     it('detects overlay in simple hash attribute', function(){
-      var formatted = Resolver.format(ctx, {n: 1}, entries.baz.attrs.attr);
+      var formatted = format(ctx, {n: 1}, entries.baz.attrs.attr);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'An attribute <a>');
     });
@@ -88,43 +83,43 @@ describe('L10n Resolver overlay', function(){
     });
 
     it('detects no overlay in a complex value', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo0);
+      var formatted = format(ctx, null, entries.foo0);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'Foo Bar');
     });
 
     it('detects overlay in a complex value', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo1);
+      var formatted = format(ctx, null, entries.foo1);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Bar <a>');
     });
 
     it('detects overlay in a placable', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo2);
+      var formatted = format(ctx, null, entries.foo2);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a>');
     });
 
     it('detects overlay in a placable and in value', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo3);
+      var formatted = format(ctx, null, entries.foo3);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a> <a>');
     });
 
     it('detects overlay in a complex hash value', function(){
-      var formatted = Resolver.format(ctx, {n: 1}, entries.hash1);
+      var formatted = format(ctx, {n: 1}, entries.hash1);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Bar <a>');
     });
 
     it('detects overlay in a placable in a hash value', function(){
-      var formatted = Resolver.format(ctx, {n: 1}, entries.hash2);
+      var formatted = format(ctx, {n: 1}, entries.hash2);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a>');
     });
 
     it('detects overlay in a placable and in hash value', function(){
-      var formatted = Resolver.format(ctx, {n: 1}, entries.hash3);
+      var formatted = format(ctx, {n: 1}, entries.hash3);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a> <a>');
     });
@@ -152,45 +147,45 @@ describe('L10n Resolver overlay', function(){
     });
 
     it('detects no overlay in a complex attribute', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr0);
+      var formatted = format(ctx, null, entries.foo.attrs.attr0);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'Foo Bar');
     });
 
     it('detects overlay in a complex attribute', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr1);
+      var formatted = format(ctx, null, entries.foo.attrs.attr1);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Bar <a>');
     });
 
     it('detects overlay in a placable', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr2);
+      var formatted = format(ctx, null, entries.foo.attrs.attr2);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a>');
     });
 
     it('detects overlay in a placable and in attribute', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr3);
+      var formatted = format(ctx, null, entries.foo.attrs.attr3);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a> <a>');
     });
 
     it('detects overlay in a complex hash attribute', function(){
-      var formatted = Resolver.format(
+      var formatted = format(
         ctx, {n: 1}, entries.foo.attrs.hashAttr1);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Bar <a>');
     });
 
     it('detects overlay in a placable in a hash attribute', function(){
-      var formatted = Resolver.format(
+      var formatted = format(
         ctx, {n: 1}, entries.foo.attrs.hashAttr2);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a>');
     });
 
     it('detects overlay in a placable and in hash attribute', function(){
-      var formatted = Resolver.format(
+      var formatted = format(
         ctx, {n: 1}, entries.foo.attrs.hashAttr3);
       assert.strictEqual(formatted[0].overlay, true);
       assert.strictEqual(formatted[1], 'Foo Baz <a> <a>');

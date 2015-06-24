@@ -1,14 +1,9 @@
-/* global assert:true, it, before, describe, requireApp */
+/* global it, before, describe */
 'use strict';
 
-if (typeof navigator !== 'undefined') {
-  requireApp('sharedtest/test/unit/l10n/lib/resolver/header.js');
-} else {
-  var assert = require('assert');
-  var Resolver = require('./header').Resolver;
-  var createEntries = require('./header').createEntries;
-  var MockContext = require('./header').MockContext;
-}
+import assert from 'assert';
+import { format, createEntries } from './header';
+import { MockContext } from './header';
 
 describe('Attributes', function(){
   var entries, ctx;
@@ -26,13 +21,13 @@ describe('Attributes', function(){
     });
 
     it('returns the value', function(){
-      var formatted = Resolver.format(ctx, null, entries.foo.attrs.attr);
+      var formatted = format(ctx, null, entries.foo.attrs.attr);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'An attribute');
     });
 
     it('returns the value with a placeable', function(){
-      var formatted = Resolver.format(
+      var formatted = format(
         ctx, null, entries.foo.attrs.attrComplex);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'An attribute referencing Bar');
@@ -52,13 +47,13 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var formatted = Resolver.format(ctx, null, entries.update);
+      var formatted = format(ctx, null, entries.update);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'Update');
     });
 
     it('returns the value of the attribute\'s member', function(){
-      var formatted = Resolver.format(ctx, {n: 1}, entries.update.attrs.title);
+      var formatted = format(ctx, {n: 1}, entries.update.attrs.title);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'One update available');
     });
@@ -81,13 +76,13 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var formatted = Resolver.format(ctx, {n: 1, k: 2}, entries.update);
+      var formatted = format(ctx, {n: 1, k: 2}, entries.update);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], 'One update');
     });
 
     it('returns the value of the attribute', function(){
-      var formatted = Resolver.format(
+      var formatted = format(
         ctx, {n: 1, k: 2}, entries.update.attrs.title);
       assert.strictEqual(formatted[0].overlay, false);
       assert.strictEqual(formatted[1], '2 updates title');
@@ -106,12 +101,12 @@ describe('Attributes', function(){
     });
 
     it('returns the value of the entity', function(){
-      var value = Resolver.format(ctx, null, entries.brandName)[1];
+      var value = format(ctx, null, entries.brandName)[1];
       assert.strictEqual(value, 'Firefox');
     });
 
     it('returns the value of the attribute', function(){
-      var attr = Resolver.format(ctx, null, entries.brandName.attrs.title)[1];
+      var attr = format(ctx, null, entries.brandName.attrs.title)[1];
       assert.strictEqual(attr, 'Mozilla Firefox');
     });
 
@@ -128,7 +123,7 @@ describe('Attributes', function(){
     });
 
     it('returns the raw string of the attribute', function(){
-      var attr = Resolver.format(ctx, null, entries.brandName.attrs.title)[1];
+      var attr = format(ctx, null, entries.brandName.attrs.title)[1];
       assert.strictEqual(attr, 'Mozilla {{ brandName.title }}');
     });
 
