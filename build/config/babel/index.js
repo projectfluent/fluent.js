@@ -12,15 +12,6 @@ module.exports = {
       'build/dist/gaia/l20n.js': 'src/runtime/web/index.js'
     }
   },
-  gaiabuild: {
-    options: {
-      plugins: bundler,
-      whitelist: 'es7.trailingFunctionCommas'
-    },
-    files: {
-      'build/dist/gaiabuild/l20n.js': 'src/runtime/gaiabuild/index.js'
-    }
-  },
   jsshell: {
     options: {
       plugins: bundler,
