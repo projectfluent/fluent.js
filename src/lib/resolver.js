@@ -13,6 +13,7 @@ var FSI = '\u2068';
 var PDI = '\u2069';
 
 const langs = new WeakMap();
+const resolutionChain = new WeakSet();
 
 export function createEntry(node, lang) {
   var keys = Object.keys(node);
@@ -41,8 +42,6 @@ export function createEntry(node, lang) {
     value: node.$v !== undefined ? node.$v : null,
     index: node.$x || null,
     attrs: attrs || null,
-    // the dirty guard prevents cyclic or recursive references
-    dirty: false
   };
 
   langs.set(entity, lang);
@@ -59,7 +58,6 @@ function createAttribute(node, lang, id) {
     value: node.$v || (node !== undefined ? node : null),
     index: node.$x || null,
     lang: lang,
-    dirty: false
   };
 
   langs.set(attr, lang);
@@ -68,7 +66,7 @@ function createAttribute(node, lang, id) {
 
 
 export function format(ctx, args, entity) {
-  var locals = {
+  let locals = {
     overlay: false
   };
 
@@ -76,21 +74,21 @@ export function format(ctx, args, entity) {
     return [locals, entity];
   }
 
-  if (entity.dirty) {
+  if (resolutionChain.has(entity)) {
     throw new L10nError('Cyclic reference detected: ' + entity.id);
   }
 
-  entity.dirty = true;
+  resolutionChain.add(entity);
 
-  var rv;
-
+  let rv;
   // if format fails, we want the exception to bubble up and stop the whole
-  // resolving process;  however, we still need to clean up the dirty flag
+  // resolving process;  however, we still need to remove the entity from the
+  // resolution chain
   try {
     rv = resolveValue(
       locals, ctx, langs.get(entity), args, entity.value, entity.index);
   } finally {
-    entity.dirty = false;
+    resolutionChain.delete(entity);
   }
   return rv;
 }
