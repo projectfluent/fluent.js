@@ -7,6 +7,8 @@ import { getResourceLinks } from '../../bindings/html/head';
 import { translateFragment } from '../../bindings/html/dom';
 import { getDirection } from '../../bindings/html/langs';
 import { serializeEntries } from '../../bindings/gaiabuild/serialize';
+import { addBuildMessage } from
+  '../../bindings/gaiabuild/debug';
 
 export class View {
   constructor(htmloptimizer, fetch) {
@@ -14,6 +16,24 @@ export class View {
       htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetch);
     this.doc = htmloptimizer.document;
     this.ctx = this.env.createContext(getResourceLinks(this.doc.head));
+
+    // stop the build if these errors happen for en-US
+    this.error = null;
+    this.env.addEventListener('notfounderror', stopBuild.bind(this));
+    this.env.addEventListener('duplicateerror', stopBuild.bind(this));
+
+    // if LOCALE_BASEDIR is set alert about missing strings
+    if (htmloptimizer.config.LOCALE_BASEDIR !== '') {
+      this.msgs = {};
+      var error = addBuildMessage.bind(this, 'error');
+      var warn = addBuildMessage.bind(this, 'warn');
+
+      this.env.addEventListener('fetcherror', error);
+      this.env.addEventListener('parseerror', warn);
+      this.env.addEventListener('resolveerror', warn);
+      this.env.addEventListener('notfounderror', error);
+      this.env.addEventListener('duplicateerror', error);
+    }
   }
 
   observe() {}
@@ -39,6 +59,19 @@ export class View {
     };
     return fetchContext(this.ctx, lang).then(
       () => serializeContext(this.ctx, lang));
+  }
+
+  checkError() {
+    return {
+      wait: false,
+      error: this.error
+    };
+  }
+}
+
+function stopBuild(err) {
+  if (err.code === 'en-US') {
+    this.error = err;
   }
 }
 

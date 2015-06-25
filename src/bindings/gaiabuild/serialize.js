@@ -5,8 +5,8 @@ export function serializeEntries(langEntries, sourceEntries) {
     let sourceEntry = sourceEntries[id];
     let langEntry = langEntries[id];
     return (langEntry && areEntityStructsEqual(sourceEntry, langEntry)) ?
-      serializeEntry(langEntries[id], id) :
-      serializeEntry(sourceEntries[id], id);
+      serializeEntry(langEntry, id) :
+      serializeEntry(sourceEntry, id);
   });
 }
 
@@ -52,7 +52,16 @@ function serializeAttribute(attr) {
   return node;
 }
 
+function resolvesToString(entity) {
+  return typeof entity === 'string' || entity.index !== null;
+}
+
 function areEntityStructsEqual(entity1, entity2) {
+  if ((typeof entity1 === 'string' && resolvesToString(entity2)) ||
+      (typeof entity2 === 'string' && resolvesToString(entity1))) {
+    return true;
+  }
+
   let keys1 = Object.keys(entity1);
   let keys2 = Object.keys(entity2);
 
