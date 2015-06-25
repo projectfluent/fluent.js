@@ -37,16 +37,25 @@ export class View {
       dir: getDirection(code),
       src: code in qps ? 'qps' : 'app'
     };
-    return this.ctx.fetch([lang]).then(
+    return fetchContext(this.ctx, lang).then(
       () => serializeContext(this.ctx, lang));
   }
+}
+
+function fetchContext(ctx, lang) {
+  let sourceLang = { code: 'en-US', dir: 'ltr', src: 'app' };
+  return Promise.all([
+    ctx.fetch([sourceLang]),
+    ctx.fetch([lang])]);
 }
 
 function serializeContext(ctx, lang) {
   let cache = ctx._env._resCache;
   return ctx._resIds.reduce((seq, cur) => {
-    let resource = cache[cur + lang.code + lang.src];
-    return resource instanceof L10nError ?
-      seq : seq.concat(serializeEntries(resource));
+    let sourceRes = cache[cur + 'en-USapp'];
+    let langRes = cache[cur + lang.code + lang.src];
+    return langRes instanceof L10nError ?
+      seq.concat(serializeEntries({}, sourceRes)) :
+      seq.concat(serializeEntries(langRes, sourceRes));
   }, []);
 }

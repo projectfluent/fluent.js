@@ -1,8 +1,10 @@
 'use strict';
 
-export function serializeEntries(entries) {
-  return Object.keys(entries).map(id => {
-    return serializeEntry(entries[id], id);
+export function serializeEntries(langEntries, sourceEntries) {
+  return Object.keys(sourceEntries).map(id => {
+    return id in langEntries ?
+      serializeEntry(langEntries[id], id) :
+      serializeEntry(sourceEntries[id], id);
   });
 }
 
