@@ -2,7 +2,9 @@
 
 export function serializeEntries(langEntries, sourceEntries) {
   return Object.keys(sourceEntries).map(id => {
-    return id in langEntries ?
+    let sourceEntry = sourceEntries[id];
+    let langEntry = langEntries[id];
+    return (langEntry && areEntityStructsEqual(sourceEntry, langEntry)) ?
       serializeEntry(langEntries[id], id) :
       serializeEntry(sourceEntries[id], id);
   });
@@ -48,4 +50,21 @@ function serializeAttribute(attr) {
   }
 
   return node;
+}
+
+function areEntityStructsEqual(entity1, entity2) {
+  let keys1 = Object.keys(entity1);
+  let keys2 = Object.keys(entity2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < keys1.length; i++) {
+    if (keys2.indexOf(keys1[i]) === -1) {
+      return false;
+    }
+  }
+
+  return true;
 }
