@@ -12,7 +12,7 @@ var nonLatin1 = /[^\x01-\xFF]/;
 var FSI = '\u2068';
 var PDI = '\u2069';
 
-const langs = new WeakMap();
+const meta = new WeakMap();
 const resolutionChain = new WeakSet();
 
 export function createEntry(node, lang) {
@@ -38,13 +38,12 @@ export function createEntry(node, lang) {
   }
 
   let entity = {
-    id: node.$i,
     value: node.$v !== undefined ? node.$v : null,
     index: node.$x || null,
     attrs: attrs || null,
   };
 
-  langs.set(entity, lang);
+  meta.set(entity, {id: node.$i, lang});
   return entity;
 }
 
@@ -54,13 +53,11 @@ function createAttribute(node, lang, id) {
   }
 
   let attr = {
-    id: id,
     value: node.$v || (node !== undefined ? node : null),
     index: node.$x || null,
-    lang: lang,
   };
 
-  langs.set(attr, lang);
+  meta.set(attr, {id, lang});
   return attr;
 }
 
@@ -75,7 +72,8 @@ export function format(ctx, args, entity) {
   }
 
   if (resolutionChain.has(entity)) {
-    throw new L10nError('Cyclic reference detected: ' + entity.id);
+    const m = meta.get(entity);
+    throw new L10nError('Cyclic reference detected: ' + m.id, m.id, m.lang);
   }
 
   resolutionChain.add(entity);
@@ -86,7 +84,12 @@ export function format(ctx, args, entity) {
   // resolution chain
   try {
     rv = resolveValue(
-      locals, ctx, langs.get(entity), args, entity.value, entity.index);
+      locals, ctx, meta.get(entity).lang, args, entity.value, entity.index);
+  } catch (err) {
+    const m = meta.get(entity);
+    err.id = m.id;
+    err.lang = m.lang;
+    throw err;
   } finally {
     resolutionChain.delete(entity);
   }
@@ -237,6 +240,5 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
     return resolveValue(locals, ctx, lang, args, expr.other);
   }
 
-  // XXX Specify entity id
   throw new L10nError('Unresolvable value');
 }

@@ -32,7 +32,7 @@ export class Context {
       return format(this, args, entity);
     } catch (err) {
       this._env.emit('resolveerror', err, this);
-      return [{ error: err }, entity.id];
+      return [{ error: err }, err.id];
     }
   }
 
