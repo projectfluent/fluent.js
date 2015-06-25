@@ -1,5 +1,6 @@
 <title "mozL10n example">
-<hello "Hello, <em>world</em>!">
+<world "world">
+<hello "Hello, <em>{{ world }}</em>!">
 <name 'Type <input placeholder="your name"> and <input value="send">'>
 
 <unreadEmails[@cldr.plural($emailCount)] {

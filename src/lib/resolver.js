@@ -12,6 +12,8 @@ var nonLatin1 = /[^\x01-\xFF]/;
 var FSI = '\u2068';
 var PDI = '\u2069';
 
+const langs = new WeakMap();
+
 export function createEntry(node, lang) {
   var keys = Object.keys(node);
 
@@ -34,15 +36,17 @@ export function createEntry(node, lang) {
     attrs[key] = createAttribute(node[key], lang, node.$i + '.' + key);
   }
 
-  return {
+  let entity = {
     id: node.$i,
     value: node.$v !== undefined ? node.$v : null,
     index: node.$x || null,
     attrs: attrs || null,
-    lang: lang,
     // the dirty guard prevents cyclic or recursive references
     dirty: false
   };
+
+  langs.set(entity, lang);
+  return entity;
 }
 
 function createAttribute(node, lang, id) {
@@ -50,13 +54,16 @@ function createAttribute(node, lang, id) {
     return node;
   }
 
-  return {
+  let attr = {
     id: id,
     value: node.$v || (node !== undefined ? node : null),
     index: node.$x || null,
     lang: lang,
     dirty: false
   };
+
+  langs.set(attr, lang);
+  return attr;
 }
 
 
@@ -81,7 +88,7 @@ export function format(ctx, args, entity) {
   // resolving process;  however, we still need to clean up the dirty flag
   try {
     rv = resolveValue(
-      locals, ctx, entity.lang, args, entity.value, entity.index);
+      locals, ctx, langs.get(entity), args, entity.value, entity.index);
   } finally {
     entity.dirty = false;
   }
