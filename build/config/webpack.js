@@ -56,13 +56,10 @@ module.exports = {
   },
   gaiabuild: {
     context: path('../../src'),
-    entry: {
-      l20n: ['./runtime/gaiabuild/index.js'],
-      qps: ['./lib/pseudo.js'],
-    },
+    entry: './runtime/gaiabuild/index.js',
     output: {
       path: path('../dist'),
-      filename: 'gaiabuild/[name].js',
+      filename: 'gaiabuild/l20n.js',
       libraryTarget: 'commonjs2',
     },
     module: {
