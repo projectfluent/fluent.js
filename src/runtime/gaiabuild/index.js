@@ -5,14 +5,7 @@ import { View } from '../../bindings/gaiabuild/view';
 
 export { qps, walkContent } from '../../lib/pseudo';
 
-export function translate(htmloptimizer, lang) {
+export function getView(htmloptimizer) {
   let htmlFetch = (...args) => fetch(htmloptimizer, ...args);
-  let view = new View(htmloptimizer, htmlFetch);
-  return view.translate(lang);
-}
-
-export function serializeEntries(htmloptimizer, lang) {
-  let htmlFetch = (...args) => fetch(htmloptimizer, ...args);
-  let view = new View(htmloptimizer, htmlFetch);
-  return view.serializeEntries(lang);
+  return new View(htmloptimizer, htmlFetch);
 }
