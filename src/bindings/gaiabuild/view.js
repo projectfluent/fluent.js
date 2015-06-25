@@ -12,7 +12,7 @@ export class View {
   constructor(htmloptimizer, fetch) {
     this.env = new Env(
       htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetch);
-    this.doc = htmloptimizer.win.document;
+    this.doc = htmloptimizer.document;
     this.ctx = this.env.createContext(getResourceLinks(this.doc.head));
   }
 
