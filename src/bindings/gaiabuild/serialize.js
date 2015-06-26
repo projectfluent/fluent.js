@@ -1,13 +1,28 @@
 'use strict';
 
-export function serializeEntries(langEntries, sourceEntries) {
-  return Object.keys(sourceEntries).map(id => {
+import { L10nError } from '../../lib/errors';
+
+export function serializeEntries(lang, langEntries, sourceEntries) {
+  let errors = [];
+  let entries = Object.keys(sourceEntries).map(id => {
     let sourceEntry = sourceEntries[id];
     let langEntry = langEntries[id];
-    return (langEntry && areEntityStructsEqual(sourceEntry, langEntry)) ?
-      serializeEntry(langEntry, id) :
-      serializeEntry(sourceEntry, id);
+    if (!langEntry) {
+      errors.push(new L10nError(
+        '"' + id + '"' + ' not found in ' + lang.code + '.', id, lang));
+      return serializeEntry(sourceEntry, id);
+    }
+
+    if (!areEntityStructsEqual(sourceEntry, langEntry)) {
+      errors.push(new L10nError(
+        '"' + id + '"' + ' is malformed in ' + lang.code + '.', id, lang));
+      return serializeEntry(sourceEntry, id);
+    }
+
+    return serializeEntry(langEntry, id);
   });
+
+  return [errors, entries];
 }
 
 function serializeEntry(entry, id) {
