@@ -7,6 +7,7 @@ export function serializeEntries(lang, langEntries, sourceEntries) {
   let entries = Object.keys(sourceEntries).map(id => {
     let sourceEntry = sourceEntries[id];
     let langEntry = langEntries[id];
+
     if (!langEntry) {
       errors.push(new L10nError(
         '"' + id + '"' + ' not found in ' + lang.code + '.', id, lang));
@@ -68,17 +69,18 @@ function serializeAttribute(attr) {
 }
 
 function resolvesToString(entity) {
-  return typeof entity === 'string' || entity.index !== null;
+  return typeof entity === 'string' || // a simple string
+    Array.isArray(entity.value) ||     // a complex string
+    entity.index !== null;             // a dict with an index
 }
 
 function areEntityStructsEqual(entity1, entity2) {
-  if ((typeof entity1 === 'string' && resolvesToString(entity2)) ||
-      (typeof entity2 === 'string' && resolvesToString(entity1))) {
+  if (resolvesToString(entity1) && resolvesToString(entity2)) {
     return true;
   }
 
-  let keys1 = Object.keys(entity1);
-  let keys2 = Object.keys(entity2);
+  const keys1 = Object.keys(entity1);
+  const keys2 = Object.keys(entity2);
 
   if (keys1.length !== keys2.length) {
     return false;
