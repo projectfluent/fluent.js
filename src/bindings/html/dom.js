@@ -1,5 +1,7 @@
 'use strict';
 
+const reHTMLEntity = /&.+;/;
+
 const allowed = {
   elements: [
     'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
@@ -163,7 +165,7 @@ function applyTranslation(view, element, translation) {
   }
 
   if (typeof value === 'string') {
-    if (value.indexOf('<') === -1 && value.indexOf('&') === -1) {
+    if (value.indexOf('<') === -1 && !reHTMLEntity.test(value)) {
       element.textContent = value;
     } else {
       // start with an inert template element and move its children into
