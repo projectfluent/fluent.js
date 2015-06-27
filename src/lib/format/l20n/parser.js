@@ -118,8 +118,6 @@ var L20nParser = {
   },
 
   getString: function(opchar) {
-    var overlay = false;
-
     var opcharPos = this._source.indexOf(opchar, this._index + 1);
 
     outer:
@@ -149,15 +147,11 @@ var L20nParser = {
       buf = this.unescapeString(buf, opchar);
     }
 
-    if (buf.indexOf('<') > -1 || buf.indexOf('&') > -1) {
-      overlay = true;
-    }
-
     if (!this.simpleMode && buf.indexOf('{{') !== -1) {
-      return [this.parseString(buf), overlay];
+      return this.parseString(buf);
     }
 
-    return [buf, overlay];
+    return buf;
   },
 
   getValue: function(optional, ch, index) {
@@ -167,12 +161,7 @@ var L20nParser = {
       ch = this._source.charAt(this._index);
     }
     if (ch === '\'' || ch === '"') {
-      var valAndOverlay = this.getString(ch);
-      if (valAndOverlay[1]) {
-        val = {'$o': valAndOverlay[0]};
-      } else {
-        val = valAndOverlay[0];
-      }
+      val = this.getString(ch);
     } else if (ch === '{') {
       val = this.getHash();
     }

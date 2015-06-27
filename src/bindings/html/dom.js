@@ -4,6 +4,9 @@
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
+// match the opening < in HTML tags, and HTML entities like &nbsp;
+var reOverlay = /<|&\w+;/;
+
 function translateDocument() {
   document.documentElement.lang = this.language.code;
   document.documentElement.dir = this.language.direction;
@@ -83,7 +86,7 @@ function translateElement(element) {
   }
 
   if (typeof value === 'string') {
-    if (!entity.overlay) {
+    if (!reOverlay.test(value)) {
       element.textContent = value;
     } else {
       // start with an inert template element and move its children into

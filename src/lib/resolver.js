@@ -64,12 +64,8 @@ function createAttribute(node, env, id) {
 
 
 function format(args, entity) {
-  var locals = {
-    overlay: false
-  };
-
   if (typeof entity === 'string') {
-    return [locals, entity];
+    return [{}, entity];
   }
 
   if (entity.dirty) {
@@ -83,7 +79,7 @@ function format(args, entity) {
   // if format fails, we want the exception to bubble up and stop the whole
   // resolving process;  however, we still need to clean up the dirty flag
   try {
-    rv = resolveValue(locals, args, entity.env, entity.value, entity.index);
+    rv = resolveValue({}, args, entity.env, entity.value, entity.index);
   } finally {
     entity.dirty = false;
   }
@@ -155,9 +151,6 @@ function interpolate(locals, args, env, arr) {
       return [prev[0], prev[1] + cur];
     } else if (cur.t === 'idOrVar'){
       var placeable = subPlaceable(locals, args, env, cur.v);
-      if (placeable[0].overlay) {
-        prev[0].overlay = true;
-      }
       return [prev[0], prev[1] + placeable[1]];
     }
   }, [locals, '']);
@@ -194,11 +187,6 @@ function resolveSelector(args, env, expr, index) {
 function resolveValue(locals, args, env, expr, index) {
   if (!expr) {
     return [locals, expr];
-  }
-
-  if (expr.$o) {
-    expr = expr.$o;
-    locals.overlay = true;
   }
 
   if (typeof expr === 'string' ||

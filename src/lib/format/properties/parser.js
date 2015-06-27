@@ -102,10 +102,6 @@ var PropertiesParser = {
     var value = rawValue.indexOf('{{') > -1 ?
       this.parseString(rawValue) : rawValue;
 
-    if (rawValue.indexOf('<') > -1 || rawValue.indexOf('&') > -1) {
-      value = { $o: value };
-    }
-
     if (attr) {
       pos = this.entryIds[id];
       if (pos === undefined) {

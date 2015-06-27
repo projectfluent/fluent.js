@@ -82,13 +82,11 @@ function formatValue(args, entity) {
 
 function formatEntity(args, entity) {
   var entityTuple = formatTuple.call(this, args, entity);
-  var locals = entityTuple[0];
   var value = entityTuple[1];
 
   var formatted = {
     value: value,
     attrs: null,
-    overlay: locals.overlay
   };
 
   if (entity.attrs) {
@@ -99,9 +97,6 @@ function formatEntity(args, entity) {
     /* jshint -W089 */
     var attrTuple = formatTuple.call(this, args, entity.attrs[key]);
     formatted.attrs[key] = attrTuple[1];
-    if (attrTuple[0].overlay) {
-      formatted.overlay = true;
-    }
   }
 
   return formatted;
