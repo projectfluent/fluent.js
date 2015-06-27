@@ -58,13 +58,22 @@ export class View {
       src: code in qps ? 'qps' : 'app'
     };
     return fetchContext(this.ctx, lang).then(() => {
-      let [errors, entries] = serializeContext(this.ctx, lang);
+      const [errors, entries] = serializeContext(this.ctx, lang);
 
       if (errors.length) {
+        const notFoundErrors = errors.filter(
+          err => err.message.indexOf('not found') > -1).map(
+          err => err.id);
+        const malformedErrors = errors.filter(
+          err => err.message.indexOf('malformed') > -1).map(
+          err => err.id);
+
         this.htmloptimizer.dump(
-          '[l10n] [' + lang.code + ']: ' + errors.length +
-          ' missing compared to en-US: ' + errors.map(
-            err => err.id).join(', '));
+          '[l10n] [' + lang.code + ']: ' + notFoundErrors.length +
+          ' missing compared to en-US: ' + notFoundErrors.join(', '));
+        this.htmloptimizer.dump(
+          '[l10n] [' + lang.code + ']: ' + malformedErrors.length +
+          ' malformed compared to en-US: ' + malformedErrors.join(', '));
       }
 
       return entries;
