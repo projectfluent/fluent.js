@@ -63,12 +63,8 @@ function createAttribute(node, lang, id) {
 
 
 export function format(ctx, args, entity) {
-  let locals = {
-    overlay: false
-  };
-
   if (typeof entity === 'string') {
-    return [locals, entity];
+    return [{}, entity];
   }
 
   if (resolutionChain.has(entity)) {
@@ -84,7 +80,7 @@ export function format(ctx, args, entity) {
   // resolution chain
   try {
     rv = resolveValue(
-      locals, ctx, meta.get(entity).lang, args, entity.value, entity.index);
+      {}, ctx, meta.get(entity).lang, args, entity.value, entity.index);
   } catch (err) {
     const m = meta.get(entity);
     err.id = m.id;
@@ -167,9 +163,6 @@ function interpolate(locals, ctx, lang, args, arr) {
       return [prev[0], prev[1] + cur];
     } else if (cur.t === 'idOrVar'){
       var placeable = subPlaceable(locals, ctx, lang, args, cur.v);
-      if (placeable[0].overlay) {
-        prev[0].overlay = true;
-      }
       return [prev[0], prev[1] + placeable[1]];
     }
   }, [locals, '']);
@@ -206,11 +199,6 @@ function resolveSelector(ctx, lang, args, expr, index) {
 function resolveValue(locals, ctx, lang, args, expr, index) {
   if (!expr) {
     return [locals, expr];
-  }
-
-  if (expr.$o) {
-    expr = expr.$o;
-    locals.overlay = true;
   }
 
   if (typeof expr === 'string' ||

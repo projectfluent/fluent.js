@@ -163,7 +163,7 @@ function applyTranslation(view, element, translation) {
   }
 
   if (typeof value === 'string') {
-    if (!translation.overlay) {
+    if (value.indexOf('<') === -1 && value.indexOf('&') === -1) {
       element.textContent = value;
     } else {
       // start with an inert template element and move its children into
