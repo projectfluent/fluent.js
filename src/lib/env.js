@@ -1,5 +1,6 @@
 'use strict';
 
+import { L10nError } from './errors';
 import { Context } from './context';
 import { createEntry } from './resolver';
 import PropertiesParser from './format/properties/parser';
@@ -43,7 +44,7 @@ export class Env {
 
     let saveEntries = data => {
       let ast = parser ? parser(this, data) : data;
-      cache[id] = createEntries(lang, ast);
+      cache[id] = createEntries.call(this, lang, ast);
     };
 
     let recover = err => {
@@ -66,7 +67,12 @@ function createEntries(lang, ast) {
     createPseudoEntry : createEntry;
 
   for (var i = 0, node; node = ast[i]; i++) {
-    entries[node.$i] = create(node, lang);
+    const id = node.$i;
+    if (id in entries) {
+      this.emit('duplicateerror', new L10nError(
+       'Duplicate string "' + id + '" found in ' + lang.code, id, lang));
+    }
+    entries[id] = create(node, lang);
   }
 
   return entries;

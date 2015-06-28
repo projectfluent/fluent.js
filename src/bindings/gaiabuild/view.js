@@ -2,11 +2,10 @@
 
 import { Env } from '../../lib/env';
 import { qps } from '../../lib/pseudo';
-import { L10nError } from '../../lib/errors';
 import { getResourceLinks } from '../../bindings/html/head';
 import { translateFragment } from '../../bindings/html/dom';
 import { getDirection } from '../../bindings/html/langs';
-import { serializeEntries } from '../../bindings/gaiabuild/serialize';
+import { serializeContext } from '../../bindings/gaiabuild/serialize';
 
 export class View {
   constructor(htmloptimizer, fetch) {
@@ -89,7 +88,7 @@ export class View {
 }
 
 function stopBuild(err) {
-  if (err.code === 'en-US') {
+  if (err.lang && err.lang.code === 'en-US') {
     this.stopBuildError = err;
   }
 }
@@ -99,15 +98,4 @@ function fetchContext(ctx, lang) {
   return Promise.all([
     ctx.fetch([sourceLang]),
     ctx.fetch([lang])]);
-}
-
-function serializeContext(ctx, lang) {
-  let cache = ctx._env._resCache;
-  return ctx._resIds.reduce(([errorsSeq, entriesSeq], cur) => {
-    let sourceRes = cache[cur + 'en-USapp'];
-    let langRes = cache[cur + lang.code + lang.src];
-    let [errors, entries] = serializeEntries(
-      lang, langRes instanceof L10nError ? {} : langRes, sourceRes);
-    return [errorsSeq.concat(errors), entriesSeq.concat(entries)];
-  }, [[], []]);
 }
