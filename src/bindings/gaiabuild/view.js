@@ -27,7 +27,8 @@ export class View {
 
     // if LOCALE_BASEDIR is set alert about missing strings
     if (htmloptimizer.config.LOCALE_BASEDIR !== '') {
-      let logResourceError = err => htmloptimizer.dump(err);
+      let logResourceError = err => htmloptimizer.dump(
+        '[l10n] ' + err.message);
 
       this.env.addEventListener('fetcherror', logResourceError);
       this.env.addEventListener('parseerror', logResourceError);
