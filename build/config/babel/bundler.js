@@ -15,7 +15,7 @@ var modules = [];
         //if (!modules.has(id)) {
         //  throw "Missing module: " + id;
         //}
-        moduleCache.set(id, modules.get(id)());
+        moduleCache.set(id, modules.get(id).call(global));
       }
       return moduleCache.get(id);
     }
@@ -60,13 +60,17 @@ function getPreamble(babel) {
               [
                 t.identifier('id'),
                 t.callExpression(
-                  t.callExpression(
-                    t.memberExpression(
-                      t.identifier('modules'),
-                      t.identifier('get')
+                  t.memberExpression(
+                    t.callExpression(
+                      t.memberExpression(
+                        t.identifier('modules'),
+                        t.identifier('get')
+                      ),
+                      [t.identifier('id')]
                     ),
-                    [t.identifier('id')]
-                  )
+                    t.identifier('call')
+                  ),
+                  [t.identifier('global')]
                 )
               ])
           ])
@@ -97,7 +101,9 @@ function getPathFromModuleID(id) {
 
 function anonymousClosure(t, body) {
   var closure = t.callExpression(
-    t.functionExpression(null, [], t.blockStatement(body))
+    t.functionExpression(null,
+      [t.identifier('global')], t.blockStatement(body)),
+    [t.identifier('this')]
   );
   return t.expressionStatement(closure);
 }
