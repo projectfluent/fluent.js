@@ -38,7 +38,7 @@ export class View {
   observe() {}
   disconnect() {}
 
-  translate(code) {
+  translateDocument(code) {
     let dir = getDirection(code);
     let langs = [{ code, dir, src: 'app' }];
     let setDocLang = () => {
