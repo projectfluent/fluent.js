@@ -6,7 +6,7 @@
 /* global translateFragment, translateElement */
 /* global setL10nAttributes, getL10nAttributes */
 /* global walkContent, PSEUDO, L20nParser */
-/* exported onReady, waitFor, init */
+/* exported onReady, whenInteractive, init */
 
 var rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 var nodeObserver = null;
@@ -87,20 +87,19 @@ function getDirection(lang) {
 }
 
 var readyStates = {
-  'loading': 0,
-  'interactive': 1,
-  'complete': 2
+  loading: 0,
+  interactive: 1,
+  complete: 2
 };
 
-function waitFor(state, callback) {
-  state = readyStates[state];
-  if (readyStates[document.readyState] >= state) {
+function whenInteractive(callback) {
+  if (readyStates[document.readyState] >= readyStates.interactive) {
     callback();
     return;
   }
 
   document.addEventListener('readystatechange', function l10n_onrsc() {
-    if (readyStates[document.readyState] >= state) {
+    if (readyStates[document.readyState] >= readyStates.interactive) {
       document.removeEventListener('readystatechange', l10n_onrsc);
       callback();
     }

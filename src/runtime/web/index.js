@@ -1,6 +1,6 @@
 'use strict';
 
-/* global Context, onReady, waitFor, init */
+/* global Context, onReady, whenInteractive, init */
 
 var DEBUG = false;
 
@@ -27,10 +27,6 @@ if (window.document) {
   navigator.mozL10n._config.isPretranslated =
     document.documentElement.lang === navigator.language;
 
-  // XXX always pretranslate if data-no-complete-bug is set;  this is
-  // a workaround for a netError page not firing some onreadystatechange
-  // events;  see https://bugzil.la/444165
-  var pretranslate = document.documentElement.dataset.noCompleteBug ?
-    true : !navigator.mozL10n._config.isPretranslated;
-  waitFor('interactive', init.bind(navigator.mozL10n, pretranslate));
+  var forcePretranslate = !navigator.mozL10n._config.isPretranslated;
+  whenInteractive(init.bind(navigator.mozL10n, forcePretranslate));
 }
