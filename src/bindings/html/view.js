@@ -20,14 +20,14 @@ export class View {
     this.ctx = this.service.env.createContext(getResourceLinks(doc.head));
 
     this.ready = new Promise(function(resolve) {
-      let viewReady = function(evt) {
+      const viewReady = function(evt) {
         doc.removeEventListener('DOMLocalized', viewReady);
         resolve(evt.detail.languages);
       };
       doc.addEventListener('DOMLocalized', viewReady);
     });
 
-    let observer = new MutationObserver(onMutations.bind(this));
+    const observer = new MutationObserver(onMutations.bind(this));
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
 
@@ -70,8 +70,8 @@ export function translate(langs) {
 }
 
 function translateDocument(langs) {
-  let [view, doc] = [this, this.doc];
-  let setDOMLocalized = function() {
+  const [view, doc] = [this, this.doc];
+  const setDOMLocalized = function() {
     doc.localized = true;
     dispatchEvent(doc, 'DOMLocalized', langs);
   };
@@ -89,7 +89,7 @@ function translateDocument(langs) {
 }
 
 function dispatchEvent(root, name, langs) {
-  var event = new CustomEvent(name, {
+  const event = new CustomEvent(name, {
     bubbles: false,
     cancelable: false,
     detail: {

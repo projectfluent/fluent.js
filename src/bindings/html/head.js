@@ -12,20 +12,20 @@ export function getMeta(head) {
   let appVersion = null;
 
   // XXX take last found instead of first?
-  let els = head.querySelectorAll(
+  const els = head.querySelectorAll(
     'meta[name="availableLanguages"],' +
     'meta[name="defaultLanguage"],' +
     'meta[name="appVersion"]');
   for (let el of els) {
-    let name = el.getAttribute('name');
-    let content = el.getAttribute('content').trim();
+    const name = el.getAttribute('name');
+    const content = el.getAttribute('content').trim();
     switch (name) {
       case 'availableLanguages':
         availableLangs = getLangRevisionMap(
           availableLangs, content);
         break;
       case 'defaultLanguage':
-        let [lang, rev] = getLangRevisionTuple(content);
+        const [lang, rev] = getLangRevisionTuple(content);
         defaultLang = lang;
         if (!(lang in availableLangs)) {
           availableLangs[lang] = rev;
@@ -44,7 +44,7 @@ export function getMeta(head) {
 
 function getLangRevisionMap(seq, str) {
   return str.split(',').reduce((seq, cur) => {
-    let [lang, rev] = getLangRevisionTuple(cur);
+    const [lang, rev] = getLangRevisionTuple(cur);
     seq[lang] = rev;
     return seq;
   }, seq);
@@ -52,7 +52,7 @@ function getLangRevisionMap(seq, str) {
 
 function getLangRevisionTuple(str) {
   // code:revision
-  let [lang, rev]  = str.trim().split(':');
+  const [lang, rev]  = str.trim().split(':');
   // if revision is missing, use NaN
   return [lang, parseInt(rev)];
 }

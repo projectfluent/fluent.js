@@ -49,9 +49,9 @@ export class View {
   disconnect() {}
 
   translateDocument(code) {
-    let dir = getDirection(code);
-    let langs = [{ code, dir, src: 'app' }];
-    let setDocLang = () => {
+    const dir = getDirection(code);
+    const langs = [{ code, dir, src: 'app' }];
+    const setDocLang = () => {
       this.doc.documentElement.lang = code;
       this.doc.documentElement.dir = dir;
     };
@@ -61,7 +61,7 @@ export class View {
   }
 
   serializeEntries(code) {
-    let lang = {
+    const lang = {
       code,
       dir: getDirection(code),
       src: code in qps ? 'qps' : 'app'
@@ -112,7 +112,7 @@ function stopBuild(err) {
 }
 
 function fetchContext(ctx, lang) {
-  let sourceLang = { code: 'en-US', dir: 'ltr', src: 'app' };
+  const sourceLang = { code: 'en-US', dir: 'ltr', src: 'app' };
   return Promise.all([
     ctx.fetch([sourceLang]),
     ctx.fetch([lang])]);

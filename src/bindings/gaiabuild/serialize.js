@@ -3,11 +3,11 @@
 import { L10nError } from '../../lib/errors';
 
 export function serializeContext(ctx, lang) {
-  let cache = ctx._env._resCache;
+  const cache = ctx._env._resCache;
   return ctx._resIds.reduce(([errorsSeq, entriesSeq], cur) => {
-    let sourceRes = cache[cur + 'en-USapp'];
-    let langRes = cache[cur + lang.code + lang.src];
-    let [errors, entries] = serializeEntries(
+    const sourceRes = cache[cur + 'en-USapp'];
+    const langRes = cache[cur + lang.code + lang.src];
+    const [errors, entries] = serializeEntries(
       lang,
       langRes instanceof L10nError ? {} : langRes,
       sourceRes instanceof L10nError ? {} : sourceRes);
@@ -16,10 +16,10 @@ export function serializeContext(ctx, lang) {
 }
 
 function serializeEntries(lang, langEntries, sourceEntries) {
-  let errors = [];
-  let entries = Object.keys(sourceEntries).map(id => {
-    let sourceEntry = sourceEntries[id];
-    let langEntry = langEntries[id];
+  const errors = [];
+  const entries = Object.keys(sourceEntries).map(id => {
+    const sourceEntry = sourceEntries[id];
+    const langEntry = langEntries[id];
 
     if (!langEntry) {
       errors.push(new L10nError(
@@ -44,7 +44,7 @@ function serializeEntry(entry, id) {
     return { $i: id, $v: entry };
   }
 
-  let node = {
+  const node = {
     $i: id,
   };
 
@@ -68,7 +68,7 @@ function serializeAttribute(attr) {
     return attr;
   }
 
-  let node = {};
+  const node = {};
 
   if (attr.value !== null) {
     node.$v = attr.value;

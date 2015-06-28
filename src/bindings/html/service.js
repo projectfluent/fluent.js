@@ -7,7 +7,7 @@ import { negotiateLanguages } from './langs';
 
 export class Service {
   constructor(fetch) {
-    let meta = getMeta(document.head);
+    const meta = getMeta(document.head);
     this.defaultLanguage = meta.defaultLang;
     this.availableLanguages = meta.availableLangs;
     this.appVersion = meta.appVersion;
@@ -48,7 +48,7 @@ function translateViews(langs) {
 }
 
 function changeLanguages(additionalLangs, requestedLangs) {
-  let prevLangs = this.languages || [];
+  const prevLangs = this.languages || [];
   return this.languages = Promise.all([
     additionalLangs, prevLangs]).then(
       ([additionalLangs, prevLangs]) => negotiateLanguages(

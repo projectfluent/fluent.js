@@ -4,7 +4,7 @@ import { L10nError } from '../../lib/errors';
 
 function load(type, url) {
   return new Promise(function(resolve, reject) {
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
     if (xhr.overrideMimeType) {
       xhr.overrideMimeType(type);
@@ -59,7 +59,7 @@ const io = {
 };
 
 export function fetch(ver, res, lang) {
-  let url = res.replace('{locale}', lang.code);
-  let type = res.endsWith('.json') ? 'json' : 'text';
+  const url = res.replace('{locale}', lang.code);
+  const type = res.endsWith('.json') ? 'json' : 'text';
   return io[lang.src](lang.code, ver, url, type);
 }

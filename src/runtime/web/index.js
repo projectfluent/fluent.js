@@ -33,7 +33,7 @@ function init() {
 whenInteractive(init);
 
 // XXX for easier testing with existing Gaia apps; remove later on
-let once = callback => whenInteractive(
+const once = callback => whenInteractive(
   () => document.l10n.ready.then(callback));
 
 navigator.mozL10n = {

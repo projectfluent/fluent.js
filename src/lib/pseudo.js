@@ -10,10 +10,10 @@ export function walkContent(node, fn) {
     return node;
   }
 
-  var rv = Array.isArray(node) ? [] : {};
-  var keys = Object.keys(node);
+  const rv = Array.isArray(node) ? [] : {};
+  const keys = Object.keys(node);
 
-  for (var i = 0, key; (key = keys[i]); i++) {
+  for (let i = 0, key; (key = keys[i]); i++) {
     // don't change identifier ($i) nor indices ($x)
     if (key === '$i' || key === '$x') {
       rv[key] = node[key];
@@ -57,11 +57,11 @@ export function walkContent(node, fn) {
  *
  */
 
-var reAlphas = /[a-zA-Z]/g;
-var reVowels = /[aeiouAEIOU]/g;
+const reAlphas = /[a-zA-Z]/g;
+const reVowels = /[aeiouAEIOU]/g;
 
 // ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ + [\\]^_` + ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ
-var ACCENTED_MAP = '\u0226\u0181\u0187\u1E12\u1E16\u0191\u0193\u0126\u012A' +
+const ACCENTED_MAP = '\u0226\u0181\u0187\u1E12\u1E16\u0191\u0193\u0126\u012A' +
                    '\u0134\u0136\u013F\u1E3E\u0220\u01FE\u01A4\u024A\u0158' +
                    '\u015E\u0166\u016C\u1E7C\u1E86\u1E8A\u1E8E\u1E90' +
                    '[\\]^_`' +
@@ -72,7 +72,7 @@ var ACCENTED_MAP = '\u0226\u0181\u0187\u1E12\u1E16\u0191\u0193\u0126\u012A' +
 // XXX Until https://bugzil.la/1007340 is fixed, ᗡℲ⅁⅂⅄ don't render correctly
 // on the devices.  For now, use the following replacements: pɟפ˥ʎ
 // ∀ԐↃpƎɟפHIſӼ˥WNOԀÒᴚS⊥∩ɅＭXʎZ + [\\]ᵥ_, + ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz
-var FLIPPED_MAP = '\u2200\u0510\u2183p\u018E\u025F\u05E4HI\u017F' +
+const FLIPPED_MAP = '\u2200\u0510\u2183p\u018E\u025F\u05E4HI\u017F' +
                   '\u04FC\u02E5WNO\u0500\xD2\u1D1AS\u22A5\u2229\u0245' +
                   '\uFF2DX\u028EZ' +
                   '[\\]\u1D65_,' +
@@ -92,7 +92,7 @@ function replaceChars(map, val) {
   });
 }
 
-var reWords = /[^\W0-9_]+/g;
+const reWords = /[^\W0-9_]+/g;
 
 function makeRTL(val) {
   // Surround each word with Unicode formatting codes, RLO and PDF:
@@ -106,14 +106,15 @@ function makeRTL(val) {
 
 // strftime tokens (%a, %Eb), template {vars}, HTML entities (&#x202a;)
 // and HTML tags.
-var reExcluded = /(%[EO]?\w|\{\s*.+?\s*\}|&[#\w]+;|<\s*.+?\s*>)/;
+const reExcluded = /(%[EO]?\w|\{\s*.+?\s*\}|&[#\w]+;|<\s*.+?\s*>)/;
 
 function mapContent(fn, val) {
   if (!val) {
     return val;
   }
-  var parts = val.split(reExcluded);
-  var modified = parts.map(function(part) {
+
+  const parts = val.split(reExcluded);
+  const modified = parts.map(function(part) {
     if (reExcluded.test(part)) {
       return part;
     }

@@ -16,7 +16,7 @@ function load(url) {
 }
 
 export function fetch(res, lang) {
-  let url = res.replace('{locale}', lang.code);
+  const url = res.replace('{locale}', lang.code);
   return res.endsWith('.json') ?
     load(url).then(JSON.parse) : load(url);
 }

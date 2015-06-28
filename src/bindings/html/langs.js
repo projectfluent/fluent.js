@@ -9,12 +9,12 @@ export function negotiateLanguages(
   fn, appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
   requestedLangs) {
 
-  let allAvailableLangs = Object.keys(availableLangs).concat(
+  const allAvailableLangs = Object.keys(availableLangs).concat(
     additionalLangs || []).concat(Object.keys(qps));
-  let newLangs = prioritizeLocales(
+  const newLangs = prioritizeLocales(
     defaultLang, allAvailableLangs, requestedLangs);
 
-  let langs = newLangs.map(code => ({
+  const langs = newLangs.map(code => ({
     code: code,
     src: getLangSource(appVersion, availableLangs, additionalLangs, code),
     dir: getDirection(code)
@@ -37,7 +37,7 @@ function arrEqual(arr1, arr2) {
 }
 
 function getMatchingLangpack(appVersion, langpacks) {
-  for (var i = 0, langpack; (langpack = langpacks[i]); i++) {
+  for (let i = 0, langpack; (langpack = langpacks[i]); i++) {
     if (langpack.target === appVersion) {
       return langpack;
     }
@@ -47,7 +47,7 @@ function getMatchingLangpack(appVersion, langpacks) {
 
 function getLangSource(appVersion, availableLangs, additionalLangs, code) {
   if (additionalLangs && additionalLangs[code]) {
-    let lp = getMatchingLangpack(appVersion, additionalLangs[code]);
+    const lp = getMatchingLangpack(appVersion, additionalLangs[code]);
     if (lp &&
         (!(code in availableLangs) ||
          parseInt(lp.revision) > availableLangs[code])) {
