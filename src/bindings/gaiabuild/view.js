@@ -15,8 +15,10 @@ export class View {
     this.doc = htmloptimizer.document;
     this.ctx = this.env.createContext(getResourceLinks(this.doc.head));
 
+    // add the url of the currently processed webapp to all errors
+    this.env.addEventListener('*', amendError.bind(this));
+
     this.stopBuildError = null;
-    this.entityErrors = new Map();
 
     // stop the build if these errors happen for en-US
     this.env.addEventListener('fetcherror', stopBuild.bind(this));
@@ -27,12 +29,9 @@ export class View {
 
     // if LOCALE_BASEDIR is set alert about missing strings
     if (htmloptimizer.config.LOCALE_BASEDIR !== '') {
-      let logResourceError = err => htmloptimizer.dump(
-        '[l10n] ' + err.message);
-
-      this.env.addEventListener('fetcherror', logResourceError);
-      this.env.addEventListener('parseerror', logResourceError);
-      this.env.addEventListener('duplicateerror', logResourceError);
+      this.env.addEventListener('fetcherror', logResourceError.bind(this));
+      this.env.addEventListener('parseerror', logResourceError.bind(this));
+      this.env.addEventListener('duplicateerror', logResourceError.bind(this));
     }
   }
 
@@ -86,6 +85,14 @@ export class View {
       error: this.stopBuildError
     };
   }
+}
+
+function amendError(err) {
+  err.message = err.message + ' in ' + this.htmloptimizer.webapp.url;
+}
+
+function logResourceError(err) {
+  this.htmloptimizer.dump('[l10n] ' + err);
 }
 
 function stopBuild(err) {
