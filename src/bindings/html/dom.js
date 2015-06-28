@@ -1,6 +1,7 @@
 'use strict';
 
-const reHTMLEntity = /&.+;/;
+// match the opening < in HTML tags, and HTML entities like &nbsp;
+const reOverlay = /<|&\w+;/;
 
 const allowed = {
   elements: [
@@ -165,7 +166,7 @@ function applyTranslation(view, element, translation) {
   }
 
   if (typeof value === 'string') {
-    if (value.indexOf('<') === -1 && !reHTMLEntity.test(value)) {
+    if (!reOverlay.test(value)) {
       element.textContent = value;
     } else {
       // start with an inert template element and move its children into
