@@ -46,26 +46,22 @@ export class Context {
   }
 
   _formatEntity(args, entity) {
-    var [locals, value] = this._formatTuple.call(this, args, entity);
+    const [, value] = this._formatTuple.call(this, args, entity);
 
-    var formatted = {
+    const formatted = {
       value,
       attrs: null,
-      overlay: locals.overlay
     };
 
     if (entity.attrs) {
       formatted.attrs = Object.create(null);
     }
 
-    for (var key in entity.attrs) {
+    for (let key in entity.attrs) {
       /* jshint -W089 */
-      var [attrLocals, attrValue] = this._formatTuple.call(
+      let [, attrValue] = this._formatTuple.call(
         this, args, entity.attrs[key]);
       formatted.attrs[key] = attrValue;
-      if (attrLocals.overlay) {
-        formatted.overlay = true;
-      }
     }
 
     return formatted;
