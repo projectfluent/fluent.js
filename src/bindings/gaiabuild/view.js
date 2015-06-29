@@ -25,7 +25,8 @@ export class View {
     this.env.addEventListener('parseerror', stopBuild.bind(this));
     this.env.addEventListener('duplicateerror', stopBuild.bind(this));
     this.env.addEventListener('notfounderror', stopBuild.bind(this));
-    this.env.addEventListener('resolveerror', stopBuild.bind(this));
+    // XXX readd once https://bugzil.la/1178187 lands
+    // this.env.addEventListener('resolveerror', stopBuild.bind(this));
 
     // if LOCALE_BASEDIR is set alert about missing strings
     if (htmloptimizer.config.LOCALE_BASEDIR !== '') {
