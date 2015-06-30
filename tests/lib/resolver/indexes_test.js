@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, createEntries } from './header';
+import { format, lang, createEntries } from './header';
 import { MockContext } from './header';
 
 describe('Index', function(){
@@ -23,16 +23,16 @@ describe('Index', function(){
     });
 
     it('works when the index is a regular entity', function() {
-      var value = format(ctx, {n: 1}, entries.indexEntity)[1];
+      var value = format(ctx, lang, {n: 1}, entries.indexEntity)[1];
       assert.strictEqual(value, 'One entity');
     });
     it('throws when the index is an uncalled macro', function() {
       assert.throws(function() {
-        format(ctx, {n: 1}, entries.indexUncalledMacro);
+        format(ctx, lang, {n: 1}, entries.indexUncalledMacro);
       }, 'Unresolvable value');
     });
     it('works when the index is a called macro', function() {
-      var value = format(ctx, {n: 1}, entries.indexCalledMacro)[1];
+      var value = format(ctx, lang, {n: 1}, entries.indexCalledMacro)[1];
       assert.strictEqual(value, 'One called macro');
     });
 
@@ -50,7 +50,7 @@ describe('Index', function(){
 
     it('is undefined', function() {
       assert.throws(function() {
-        format(ctx, null, entries.foo);
+        format(ctx, lang, null, entries.foo);
       }, 'Cyclic reference detected: foo');
     });
 
@@ -69,9 +69,9 @@ describe('Index', function(){
     });
 
     it('value of the attribute is undefined', function() {
-      assert.strictEqual(format(ctx, null, entries.foo)[1], 'Foo');
+      assert.strictEqual(format(ctx, lang, null, entries.foo)[1], 'Foo');
       assert.throws(function() {
-        format(ctx, null, entries.foo.attrs.attr);
+        format(ctx, lang, null, entries.foo.attrs.attr);
       }, 'Unresolvable value');
     });
 

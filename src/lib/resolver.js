@@ -12,10 +12,9 @@ var nonLatin1 = /[^\x01-\xFF]/;
 var FSI = '\u2068';
 var PDI = '\u2069';
 
-const meta = new WeakMap();
 const resolutionChain = new WeakSet();
 
-export function createEntry(node, lang) {
+export function createEntry(node) {
   var keys = Object.keys(node);
 
   // the most common scenario: a simple string with no arguments
@@ -34,42 +33,35 @@ export function createEntry(node, lang) {
     if (!attrs) {
       attrs = Object.create(null);
     }
-    attrs[key] = createAttribute(node[key], lang, node.$i + '.' + key);
+    attrs[key] = createAttribute(node[key]);
   }
 
-  let entity = {
+  return {
     value: node.$v !== undefined ? node.$v : null,
     index: node.$x || null,
     attrs: attrs || null,
   };
-
-  meta.set(entity, {id: node.$i, lang});
-  return entity;
 }
 
-function createAttribute(node, lang, id) {
+function createAttribute(node) {
   if (typeof node === 'string') {
     return node;
   }
 
-  let attr = {
+  return {
     value: node.$v || (node !== undefined ? node : null),
     index: node.$x || null,
   };
-
-  meta.set(attr, {id, lang});
-  return attr;
 }
 
 
-export function format(ctx, args, entity) {
+export function format(ctx, lang, args, entity) {
   if (typeof entity === 'string') {
     return [{}, entity];
   }
 
   if (resolutionChain.has(entity)) {
-    const m = meta.get(entity);
-    throw new L10nError('Cyclic reference detected: ' + m.id, m.id, m.lang);
+    throw new L10nError('Cyclic reference detected');
   }
 
   resolutionChain.add(entity);
@@ -80,12 +72,7 @@ export function format(ctx, args, entity) {
   // resolution chain
   try {
     rv = resolveValue(
-      {}, ctx, meta.get(entity).lang, args, entity.value, entity.index);
-  } catch (err) {
-    const m = meta.get(entity);
-    err.id = m.id;
-    err.lang = m.lang;
-    throw err;
+      {}, ctx, lang, args, entity.value, entity.index);
   } finally {
     resolutionChain.delete(entity);
   }
@@ -115,7 +102,7 @@ function resolveIdentifier(ctx, lang, args, id) {
   var entity = ctx._getEntity(lang, id);
 
   if (entity) {
-    return format(ctx, args, entity);
+    return format(ctx, lang, args, entity);
   }
 
   throw new L10nError('Unknown reference: ' + id);

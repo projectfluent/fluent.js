@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, createEntries } from './header';
+import { format, lang, createEntries } from './header';
 import { MockContext } from './header';
 
 describe('Compiler errors:', function(){
@@ -21,7 +21,7 @@ describe('Compiler errors:', function(){
 
     it('works with the default index', function(){
       assert.strictEqual(
-        format(ctx, {n: 1}, entries.prompt)[1], 'One File');
+        format(ctx, lang, {n: 1}, entries.prompt)[1], 'One File');
     });
 
   });
@@ -38,7 +38,7 @@ describe('Compiler errors:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = format(ctx, {n: 1}, entries.prompt)[1];
+      var value = format(ctx, lang, {n: 1}, entries.prompt)[1];
       assert.strictEqual(value, 'One {{ file }}');
     });
 
@@ -58,12 +58,12 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        format(ctx, {n: 1}, entries.prompt)[1], 'One File');
+        format(ctx, lang, {n: 1}, entries.prompt)[1], 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
       assert.throws(function() {
-        format(ctx, null, entries.prompt);
+        format(ctx, lang, null, entries.prompt);
       }, 'Unknown reference: n');
     });
 
@@ -82,12 +82,12 @@ describe('Compiler errors:', function(){
 
     it('is found', function(){
       assert.strictEqual(
-        format(ctx, {n: 1}, entries.prompt)[1], 'One File');
+        format(ctx, lang, {n: 1}, entries.prompt)[1], 'One File');
     });
 
     it('throws an IndexError if n is not defined', function(){
       assert.throws(function() {
-        format(ctx, null, entries.prompt);
+        format(ctx, lang, null, entries.prompt);
       }, 'Unknown reference: n');
     });
 

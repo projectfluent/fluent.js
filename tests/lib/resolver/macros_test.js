@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, createEntries } from './header';
+import { format, lang, createEntries } from './header';
 import { MockContext } from './header';
 
 describe('Macros', function(){
@@ -23,10 +23,10 @@ describe('Macros', function(){
     it('throws when resolving (not calling) a macro in a complex ' +
        'string', function() {
       assert.strictEqual(
-        format(ctx, args, entries.placeMacro)[1], '{{ plural }}');
+        format(ctx, lang, args, entries.placeMacro)[1], '{{ plural }}');
       assert.strictEqual(
         format(
-          ctx, args, entries.placeRealMacro)[1], '{{ __plural }}');
+          ctx, lang, args, entries.placeRealMacro)[1], '{{ __plural }}');
     });
 
   });
@@ -67,37 +67,37 @@ describe('Macros', function(){
 
     it('throws if an entity is passed', function() {
       assert.throws(function() {
-        format(ctx, args, entries.passFoo);
+        format(ctx, lang, args, entries.passFoo);
       }, 'Unresolvable value');
     });
 
     it('throws if a complex entity is passed', function() {
       assert.throws(function() {
-        format(ctx, args, entries.passUseFoo);
+        format(ctx, lang, args, entries.passUseFoo);
       }, 'Unresolvable value');
     });
 
     it('throws if a hash entity is passed', function() {
       assert.throws(function() {
-        format(ctx, args, entries.passBar);
+        format(ctx, lang, args, entries.passBar);
       }, 'Unresolvable value');
     });
 
     it('throws if a macro is passed', function() {
       assert.throws(function() {
-        format(ctx, args, entries.passPlural);
+        format(ctx, lang, args, entries.passPlural);
       }, 'Unresolvable value');
     });
 
     it('throws if a missing entry is passed', function() {
       assert.throws(function() {
-        format(ctx, args, entries.passMissing);
+        format(ctx, lang, args, entries.passMissing);
       }, 'Unknown reference: missing');
     });
 
     it('throws if a native function is passed', function() {
       assert.throws(function() {
-        format(ctx, args, entries.passWatch);
+        format(ctx, lang, args, entries.passWatch);
       }, 'Unknown reference: watch');
     });
 
@@ -127,28 +127,28 @@ describe('A simple plural macro', function(){
   });
 
   it('returns zero for 0', function() {
-    var value = format(ctx, {n: 0}, entries.foo)[1];
+    var value = format(ctx, lang, {n: 0}, entries.foo)[1];
     assert.strictEqual(value, 'Zero');
   });
 
   it('returns one for 1', function() {
-    var value = format(ctx, {n: 1}, entries.foo)[1];
+    var value = format(ctx, lang, {n: 1}, entries.foo)[1];
     assert.strictEqual(value, 'One');
   });
 
   it('returns two for 2', function() {
-    var value = format(ctx, {n: 2}, entries.foo)[1];
+    var value = format(ctx, lang, {n: 2}, entries.foo)[1];
     assert.strictEqual(value, 'Two');
   });
 
   it('returns other for 3', function() {
-    var value = format(ctx, {n: 3}, entries.foo)[1];
+    var value = format(ctx, lang, {n: 3}, entries.foo)[1];
     assert.strictEqual(value, 'Other');
   });
 
   it('throws for no arg', function() {
     assert.throws(function() {
-      format(ctx, null, entries.foo);
+      format(ctx, lang, null, entries.foo);
     }, 'Unknown reference: n');
   });
 
@@ -182,38 +182,38 @@ describe('A more complex plural macro', function(){
     });
 
     it('returns zero for 0', function() {
-      var value = format(ctx, {n: 0}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 0}, entries.foo)[1];
       assert.strictEqual(value, 'Zero');
     });
 
     it('returns one for 1', function() {
-      var value = format(ctx, {n: 1}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'One');
     });
 
     it('returns two for 2', function() {
-      var value = format(ctx, {n: 2}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 2}, entries.foo)[1];
       assert.strictEqual(value, 'Two');
     });
 
     it('returns many for 3', function() {
-      var value = format(ctx, {n: 3}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 3}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 5', function() {
-      var value = format(ctx, {n: 5}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 5}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns other for 0.5', function() {
-      var value = format(ctx, {n: 0.5}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 0.5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('throws for no arg', function() {
       assert.throws(function() {
-        format(ctx, null, entries.foo);
+        format(ctx, lang, null, entries.foo);
       }, 'Unknown reference: n');
     });
 
@@ -232,32 +232,32 @@ describe('A more complex plural macro', function(){
     });
 
     it('returns other for 0', function() {
-      var value = format(ctx, {n: 0}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 0}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns many for 1', function() {
-      var value = format(ctx, {n: 1}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 2', function() {
-      var value = format(ctx, {n: 2}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 2}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 3', function() {
-      var value = format(ctx, {n: 3}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 3}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns many for 5', function() {
-      var value = format(ctx, {n: 5}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 5}, entries.foo)[1];
       assert.strictEqual(value, 'Many');
     });
 
     it('returns other for 0.5', function() {
-      var value = format(ctx, {n: 0.5}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 0.5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
@@ -275,32 +275,32 @@ describe('A more complex plural macro', function(){
     });
 
     it('returns other for 0', function() {
-      var value = format(ctx, {n: 0}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 0}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 1', function() {
-      var value = format(ctx, {n: 1}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 2', function() {
-      var value = format(ctx, {n: 2}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 2}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 3', function() {
-      var value = format(ctx, {n: 3}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 3}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 5', function() {
-      var value = format(ctx, {n: 5}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
     it('returns other for 0.5', function() {
-      var value = format(ctx, {n: 0.5}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 0.5}, entries.foo)[1];
       assert.strictEqual(value, 'Other');
     });
 
@@ -320,36 +320,36 @@ describe('A more complex plural macro', function(){
 
     it('throws for 0', function() {
       assert.throws(function() {
-        format(ctx, {n: 0}, entries.foo);
+        format(ctx, lang, {n: 0}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('returns one for 1', function() {
-      var value = format(ctx, {n: 1}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, 'One');
     });
 
     it('throws for 2', function() {
       assert.throws(function() {
-        format(ctx, {n: 2}, entries.foo);
+        format(ctx, lang, {n: 2}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('throws for 3', function() {
       assert.throws(function() {
-        format(ctx, {n: 3}, entries.foo);
+        format(ctx, lang, {n: 3}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('throws for 5', function() {
       assert.throws(function() {
-        format(ctx, {n: 5}, entries.foo);
+        format(ctx, lang, {n: 5}, entries.foo);
       }, 'Unresolvable value');
     });
 
     it('throws for 0.5', function() {
       assert.throws(function() {
-        format(ctx, {n: 0.5}, entries.foo);
+        format(ctx, lang, {n: 0.5}, entries.foo);
       }, 'Unresolvable value');
     });
 
