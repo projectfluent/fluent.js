@@ -27,26 +27,28 @@ export class Context {
 
   /* private */
 
-  _formatTuple(args, entity) {
+  _formatTuple(lang, args, entity, id, key) {
     try {
-      return format(this, args, entity);
+      return format(this, lang, args, entity);
     } catch (err) {
+      err.id = key ? id + '::' + key : id;
+      err.lang = lang;
       this._env.emit('resolveerror', err, this);
       return [{ error: err }, err.id];
     }
   }
 
-  _formatValue(args, entity) {
+  _formatValue(lang, args, entity, id) {
     if (typeof entity === 'string') {
       return entity;
     }
 
-    // take the string value only
-    return this._formatTuple.call(this, args, entity)[1];
+    const [, value] = this._formatTuple.call(this, lang, args, entity, id);
+    return value;
   }
 
-  _formatEntity(args, entity) {
-    const [, value] = this._formatTuple.call(this, args, entity);
+  _formatEntity(lang, args, entity, id) {
+    const [, value] = this._formatTuple.call(this, lang, args, entity, id);
 
     const formatted = {
       value,
@@ -60,7 +62,7 @@ export class Context {
     for (let key in entity.attrs) {
       /* jshint -W089 */
       let [, attrValue] = this._formatTuple.call(
-        this, args, entity.attrs[key]);
+        this, lang, args, entity.attrs[key], id, key);
       formatted.attrs[key] = attrValue;
     }
 
@@ -91,7 +93,7 @@ export class Context {
     let entity = this._getEntity(lang, id);
 
     if (entity) {
-      return method.call(this, args, entity);
+      return method.call(this, lang, args, entity, id);
     } else {
       let err = new L10nError(
         '"' + id + '"' + ' not found in ' + lang.code + '.', id, lang.code);

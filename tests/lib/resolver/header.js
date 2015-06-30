@@ -6,16 +6,16 @@ import { getPluralRule } from '../../../src/lib/plurals';
 
 export { format } from '../../../src/lib/resolver';
 
+export const lang = {
+  code:'en-US',
+  src: 'app',
+  dir: 'ltr'
+};
+
 export function createEntries(source) {
   /* jshint -W089 */
   var entries = Object.create(null);
   var ast = PropertiesParser.parse(null, source);
-
-  var lang = {
-    code:'en-US',
-    src: 'app',
-    dir: 'ltr'
-  };
 
   for (var i = 0, len = ast.length; i < len; i++) {
     entries[ast[i].$i] = createEntry(ast[i], lang);

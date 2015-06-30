@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, createEntries } from './header';
+import { format, lang, createEntries } from './header';
 import { MockContext } from './header';
 
 describe('Primitives:', function(){
@@ -17,7 +17,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      assert.strictEqual(format(ctx, null, entries.foo)[1], 'Foo');
+      assert.strictEqual(format(ctx, lang, null, entries.foo)[1], 'Foo');
     });
 
   });
@@ -35,13 +35,13 @@ describe('Primitives:', function(){
     });
 
     it('returns the value', function(){
-      var value = format(ctx, null, entries.bar)[1];
+      var value = format(ctx, lang, null, entries.bar)[1];
       assert.strictEqual(value, 'Foo Bar');
     });
 
     it('returns the raw string if the referenced entity is ' +
        'not found', function(){
-      var value = format(ctx, null, entries.baz)[1];
+      var value = format(ctx, lang, null, entries.baz)[1];
       assert.strictEqual(value, '{{ missing }}');
     });
 
@@ -58,18 +58,18 @@ describe('Primitives:', function(){
     });
 
     it('returns the null value', function(){
-      var value = format(ctx, null, entries.foo)[1];
+      var value = format(ctx, lang, null, entries.foo)[1];
       assert.strictEqual(value, null);
     });
 
     it('returns the attribute', function(){
-      var attr = format(ctx, null, entries.foo.attrs.attr)[1];
+      var attr = format(ctx, lang, null, entries.foo.attrs.attr)[1];
       assert.strictEqual(attr, 'Foo');
     });
 
     it('returns the raw string when the referenced entity has ' +
        'null value', function(){
-      var value = format(ctx, null, entries.bar)[1];
+      var value = format(ctx, lang, null, entries.bar)[1];
       assert.strictEqual(value, '{{ foo }} Bar');
     });
 
@@ -86,7 +86,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = format(ctx, null, entries.foo)[1];
+      var value = format(ctx, lang, null, entries.foo)[1];
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -102,7 +102,7 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = format(ctx, null, entries.foo)[1];
+      var value = format(ctx, lang, null, entries.foo)[1];
       assert.strictEqual(value, '{{ foo }}');
     });
 
@@ -121,12 +121,12 @@ describe('Primitives:', function(){
     });
 
     it('returns the raw string', function(){
-      var value = format(ctx, {n: 1}, entries.foo)[1];
+      var value = format(ctx, lang, {n: 1}, entries.foo)[1];
       assert.strictEqual(value, '{{ foo }}');
     });
 
     it('returns the valid value if requested directly', function(){
-      var value = format(ctx, {n: 2}, entries.bar)[1];
+      var value = format(ctx, lang, {n: 2}, entries.bar)[1];
       assert.strictEqual(value, 'Bar');
     });
   });

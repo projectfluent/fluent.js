@@ -2,7 +2,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, createEntries } from './header';
+import { format, lang, createEntries } from './header';
 import { MockContext } from './header';
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
@@ -27,7 +27,7 @@ describe('Billion Laughs', function(){
 
   it('format() throws', function() {
     assert.throws(function() {
-      format(ctx, null, entries.lolz);
+      format(ctx, lang, null, entries.lolz);
     }, /too many characters in placeable/i);
   });
 });
