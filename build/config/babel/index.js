@@ -20,5 +20,5 @@ module.exports = {
     files: {
       'build/dist/jsshell/l20n.js': 'src/runtime/jsshell/index.js'
     }
-  }
+  },
 };

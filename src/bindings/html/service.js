@@ -17,6 +17,9 @@ export class Service {
     this.views = [
       document.l10n = new View(this, document)
     ];
+
+    this.env.addEventListener('deprecatewarning',
+      err => console.warn(err));
   }
 
   requestLanguages(requestedLangs = navigator.languages) {

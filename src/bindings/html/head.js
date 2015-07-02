@@ -3,7 +3,7 @@
 export function getResourceLinks(head) {
   return Array.prototype.map.call(
     head.querySelectorAll('link[rel="localization"]'),
-    (el) => el.getAttribute('href'));
+    el => decodeURI(el.getAttribute('href')));
 }
 
 export function getMeta(head) {

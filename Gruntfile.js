@@ -75,6 +75,7 @@ module.exports = function (grunt) {
   grunt.registerTask('gaia', [
     'lint',
     'test',
+    'webpack:gaiabuild',
     'babel:gaia',
     'copy:stage'
   ]);

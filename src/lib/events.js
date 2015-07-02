@@ -3,13 +3,13 @@
 export function emit(listeners, ...args) {
   let type = args.shift();
 
-  if (listeners[type]) {
-    listeners[type].slice().forEach(
+  if (listeners['*']) {
+    listeners['*'].slice().forEach(
       listener => listener.apply(this, args));
   }
 
-  if (listeners['*']) {
-    listeners['*'].slice().forEach(
+  if (listeners[type]) {
+    listeners[type].slice().forEach(
       listener => listener.apply(this, args));
   }
 }

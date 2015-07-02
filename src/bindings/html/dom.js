@@ -1,5 +1,7 @@
 'use strict';
 
+import { L10nError } from '../../lib/errors';
+
 // match the opening < in HTML tags, and HTML entities like &nbsp;
 const reOverlay = /<|&\w+;/;
 
@@ -52,24 +54,6 @@ function getTranslatables(element) {
     nodes, element.querySelectorAll('*[data-l10n-id]'));
 }
 
-export function translateDocument(view, langs, doc) {
-  let setDOMLocalized = function() {
-    doc.localized = true;
-    dispatchEvent(doc, 'DOMLocalized', langs);
-  };
-
-  if (langs[0].code === doc.documentElement.getAttribute('lang')) {
-    return Promise.resolve(setDOMLocalized());
-  }
-
-  return translateFragment(view, langs, doc.documentElement).then(
-    () => {
-      doc.documentElement.lang = langs[0].code;
-      doc.documentElement.dir = langs[0].dir;
-      setDOMLocalized();
-    });
-}
-
 export function translateMutations(view, langs, mutations) {
   let targets = new Set();
 
@@ -80,7 +64,7 @@ export function translateMutations(view, langs, mutations) {
         break;
       case 'childList':
         for (let addedNode of mutation.addedNodes) {
-          if (addedNode.nodeType === Node.ELEMENT_NODE) {
+          if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
             targets.add(addedNode);
           }
         }
@@ -157,10 +141,10 @@ function applyTranslation(view, element, translation) {
   if (translation.attrs && translation.attrs.innerHTML) {
     // XXX innerHTML is treated as value (https://bugzil.la/1142526)
     value = translation.attrs.innerHTML;
-    console.warn(
+    view.emit('deprecatewarning', new L10nError(
       'L10n Deprecation Warning: using innerHTML in translations is unsafe ' +
       'and will not be supported in future versions of l10n.js. ' +
-      'See https://bugzil.la/1027117');
+      'See https://bugzil.la/1027117'));
   } else {
     value = translation.value;
   }
@@ -207,7 +191,7 @@ function overlayElement(sourceElement, translationElement) {
   while ((childElement = translationElement.childNodes[0])) {
     translationElement.removeChild(childElement);
 
-    if (childElement.nodeType === Node.TEXT_NODE) {
+    if (childElement.nodeType === childElement.TEXT_NODE) {
       result.appendChild(childElement);
       continue;
     }
@@ -233,7 +217,8 @@ function overlayElement(sourceElement, translationElement) {
 
     // otherwise just take this child's textContent
     result.appendChild(
-      document.createTextNode(childElement.textContent));
+      translationElement.ownerDocument.createTextNode(
+        childElement.textContent));
   }
 
   // clear `sourceElement` and append `result` which by this time contains
@@ -293,7 +278,7 @@ function getNthElementOfType(context, element, index) {
   /* jshint boss:true */
   var nthOfType = 0;
   for (var i = 0, child; child = context.children[i]; i++) {
-    if (child.nodeType === Node.ELEMENT_NODE &&
+    if (child.nodeType === child.ELEMENT_NODE &&
         child.tagName === element.tagName) {
       if (nthOfType === index) {
         return child;
@@ -314,15 +299,4 @@ function getIndexOfType(element) {
     }
   }
   return index;
-}
-
-export function dispatchEvent(root, name, langs) {
-  var event = new CustomEvent(name, {
-    bubbles: false,
-    cancelable: false,
-    detail: {
-      languages: langs
-    }
-  });
-  root.dispatchEvent(event);
 }

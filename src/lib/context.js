@@ -85,7 +85,7 @@ export class Context {
 
     if (!lang) {
       let err = new L10nError(
-        '"' + id + '"' + ' not found in any language.', id);
+        '"' + id + '"' + ' not found in any language', id);
       this._env.emit('notfounderror', err, this);
       return id;
     }
@@ -96,7 +96,7 @@ export class Context {
       return method.call(this, lang, args, entity, id);
     } else {
       let err = new L10nError(
-        '"' + id + '"' + ' not found in ' + lang.code + '.', id, lang.code);
+        '"' + id + '"' + ' not found in ' + lang.code, id, lang);
       this._env.emit('notfounderror', err, this);
     }
 

@@ -2,8 +2,7 @@
 
 import { getResourceLinks } from '../../bindings/html/head';
 import {
-  setAttributes, getAttributes, dispatchEvent,
-  translateDocument, translateFragment, translateMutations
+  setAttributes, getAttributes, translateFragment, translateMutations
 } from './dom';
 
 const observerConfig = {
@@ -35,6 +34,10 @@ export class View {
     this.observe();
   }
 
+  emit(...args) {
+    return this.service.env.emit(...args);
+  }
+
   formatValue(id, args) {
     return this.service.languages.then(
       langs => this.ctx.formatValue(langs, id, args));
@@ -54,14 +57,44 @@ export class View {
 View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
+function onMutations(mutations) {
+  return this.service.languages.then(
+    langs => translateMutations(this, langs, mutations));
+}
+
 export function translate(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
   // fetch the resources even if the document has been pretranslated
   return this.ctx.fetch(langs).then(
-    () => translateDocument(this, langs, this.doc));
+    translateDocument.bind(this, langs));
 }
 
-function onMutations(mutations) {
-  return this.service.languages.then(
-    langs => translateMutations(this, langs, mutations));
+function translateDocument(langs) {
+  let [view, doc] = [this, this.doc];
+  let setDOMLocalized = function() {
+    doc.localized = true;
+    dispatchEvent(doc, 'DOMLocalized', langs);
+  };
+
+  if (langs[0].code === doc.documentElement.getAttribute('lang')) {
+    return Promise.resolve(setDOMLocalized());
+  }
+
+  return translateFragment(view, langs, doc.documentElement).then(
+    () => {
+      doc.documentElement.lang = langs[0].code;
+      doc.documentElement.dir = langs[0].dir;
+      setDOMLocalized();
+    });
+}
+
+function dispatchEvent(root, name, langs) {
+  var event = new CustomEvent(name, {
+    bubbles: false,
+    cancelable: false,
+    detail: {
+      languages: langs
+    }
+  });
+  root.dispatchEvent(event);
 }
