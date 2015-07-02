@@ -23,13 +23,13 @@ export class View {
     const stop = stopBuild.bind(this);
 
     // stop the build if these errors happen for en-US
-    this.env.addEventListener('fetcherror', stop);
-    // XXX parse errors don't have the lang property so we can't stop build
-    // when we catch one for now
+    // XXX tv_apps break the build https://bugzil.la/1179833
+    // this.env.addEventListener('fetcherror', stop);
+    // XXX parse errors don't have the lang property needed by stopBuild
     // this.env.addEventListener('parseerror', stop);
     this.env.addEventListener('duplicateerror', stop);
     this.env.addEventListener('notfounderror', stop);
-    // XXX readd once https://bugzil.la/1178187 lands
+    // XXX sms breaks the build https://bugzil.la/1178187
     // this.env.addEventListener('resolveerror', stop);
 
     this.env.addEventListener('deprecatewarning', log);
