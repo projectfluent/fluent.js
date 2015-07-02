@@ -19,21 +19,29 @@ export class View {
     this.env.addEventListener('*', amendError.bind(this));
 
     this.stopBuildError = null;
+    const log = logError.bind(this);
+    const stop = stopBuild.bind(this);
 
     // stop the build if these errors happen for en-US
-    this.env.addEventListener('fetcherror', stopBuild.bind(this));
-    this.env.addEventListener('parseerror', stopBuild.bind(this));
-    this.env.addEventListener('duplicateerror', stopBuild.bind(this));
-    this.env.addEventListener('notfounderror', stopBuild.bind(this));
+    this.env.addEventListener('fetcherror', stop);
+    this.env.addEventListener('parseerror', stop);
+    this.env.addEventListener('duplicateerror', stop);
+    this.env.addEventListener('notfounderror', stop);
     // XXX readd once https://bugzil.la/1178187 lands
-    // this.env.addEventListener('resolveerror', stopBuild.bind(this));
+    // this.env.addEventListener('resolveerror', stop);
+
+    this.env.addEventListener('deprecatewarning', log);
 
     // if LOCALE_BASEDIR is set alert about missing strings
     if (htmloptimizer.config.LOCALE_BASEDIR !== '') {
-      this.env.addEventListener('fetcherror', logResourceError.bind(this));
-      this.env.addEventListener('parseerror', logResourceError.bind(this));
-      this.env.addEventListener('duplicateerror', logResourceError.bind(this));
+      this.env.addEventListener('fetcherror', log);
+      this.env.addEventListener('parseerror', log);
+      this.env.addEventListener('duplicateerror', log);
     }
+  }
+
+  emit(...args) {
+    return this.env.emit(...args);
   }
 
   observe() {}
@@ -92,7 +100,7 @@ function amendError(err) {
   err.message = err.message + ' in ' + this.htmloptimizer.webapp.url;
 }
 
-function logResourceError(err) {
+function logError(err) {
   this.htmloptimizer.dump('[l10n] ' + err);
 }
 

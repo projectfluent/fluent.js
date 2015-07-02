@@ -1,5 +1,7 @@
 'use strict';
 
+import { L10nError } from '../../lib/errors';
+
 // match the opening < in HTML tags, and HTML entities like &nbsp;
 const reOverlay = /<|&\w+;/;
 
@@ -139,10 +141,10 @@ function applyTranslation(view, element, translation) {
   if (translation.attrs && translation.attrs.innerHTML) {
     // XXX innerHTML is treated as value (https://bugzil.la/1142526)
     value = translation.attrs.innerHTML;
-    console.warn(
+    view.emit('deprecatewarning', new L10nError(
       'L10n Deprecation Warning: using innerHTML in translations is unsafe ' +
       'and will not be supported in future versions of l10n.js. ' +
-      'See https://bugzil.la/1027117');
+      'See https://bugzil.la/1027117'));
   } else {
     value = translation.value;
   }

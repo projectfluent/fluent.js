@@ -34,6 +34,10 @@ export class View {
     this.observe();
   }
 
+  emit(...args) {
+    return this.service.env.emit(...args);
+  }
+
   formatValue(id, args) {
     return this.service.languages.then(
       langs => this.ctx.formatValue(langs, id, args));
