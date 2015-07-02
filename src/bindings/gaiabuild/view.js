@@ -5,7 +5,7 @@ import { qps } from '../../lib/pseudo';
 import { getResourceLinks } from '../../bindings/html/head';
 import { translateFragment } from '../../bindings/html/dom';
 import { getDirection } from '../../bindings/html/langs';
-import { serializeContext } from '../../bindings/gaiabuild/serialize';
+import { serializeContext } from './serialize';
 
 export class View {
   constructor(htmloptimizer, fetch) {
