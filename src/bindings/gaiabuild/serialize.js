@@ -8,7 +8,9 @@ export function serializeContext(ctx, lang) {
     let sourceRes = cache[cur + 'en-USapp'];
     let langRes = cache[cur + lang.code + lang.src];
     let [errors, entries] = serializeEntries(
-      lang, langRes instanceof L10nError ? {} : langRes, sourceRes);
+      lang,
+      langRes instanceof L10nError ? {} : langRes,
+      sourceRes instanceof L10nError ? {} : sourceRes);
     return [errorsSeq.concat(errors), entriesSeq.concat(entries)];
   }, [[], []]);
 }
@@ -43,7 +45,7 @@ function serializeEntry(entry, id) {
   }
 
   let node = {
-    $i: entry.id,
+    $i: id,
   };
 
   if (entry.value !== null) {

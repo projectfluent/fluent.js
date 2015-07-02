@@ -24,7 +24,9 @@ export class View {
 
     // stop the build if these errors happen for en-US
     this.env.addEventListener('fetcherror', stop);
-    this.env.addEventListener('parseerror', stop);
+    // XXX parse errors don't have the lang property so we can't stop build
+    // when we catch one for now
+    // this.env.addEventListener('parseerror', stop);
     this.env.addEventListener('duplicateerror', stop);
     this.env.addEventListener('notfounderror', stop);
     // XXX readd once https://bugzil.la/1178187 lands
@@ -105,7 +107,7 @@ function logError(err) {
 }
 
 function stopBuild(err) {
-  if (err.lang && err.lang.code === 'en-US') {
+  if (err.lang && err.lang.code === 'en-US' && !this.stopBuildError) {
     this.stopBuildError = err;
   }
 }

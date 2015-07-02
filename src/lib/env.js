@@ -48,6 +48,7 @@ export class Env {
     };
 
     let recover = err => {
+      err.lang = lang;
       this.emit('fetcherror', err);
       cache[id] = err;
     };
