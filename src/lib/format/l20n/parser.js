@@ -15,7 +15,7 @@ export default {
     };
   },
 
-  parse: function (env, string, simple) {
+  parse: function (emit, string, simple) {
     if (!this._patterns) {
       this.init();
     }
@@ -23,7 +23,7 @@ export default {
     this._index = 0;
     this._length = this._source.length;
     this.simpleMode = simple;
-    this.env = env;
+    this.emit = emit;
 
     return this.getL20n();
   },
@@ -310,8 +310,8 @@ export default {
           ast.push(entry);
         }
       } catch (e) {
-        if (this.env) {
-          this.env.emit('parseerror', e);
+        if (this.emit) {
+          this.emit('parseerror', e);
         } else {
           throw e;
         }

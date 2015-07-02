@@ -9,9 +9,8 @@ import { walkContent, qps } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 
 const parsers = {
-  properties: PropertiesParser.parse.bind(PropertiesParser),
-  l20n: L20nParser.parse.bind(L20nParser),
-  json: null
+  properties: PropertiesParser,
+  l20n: L20nParser,
 };
 
 export class Env {
@@ -31,6 +30,16 @@ export class Env {
     return new Context(this, resIds);
   }
 
+  _parse(syntax, lang, data) {
+    const parser = parsers[syntax];
+    if (!parser) {
+      return data;
+    }
+
+    const emit = (type, err) => this.emit(type, amendError(lang, err));
+    return parser.parse.call(parser, emit, data);
+  }
+
   _getResource(lang, res) {
     let cache = this._resCache;
     let id = res + lang.code + lang.src;
@@ -40,10 +49,9 @@ export class Env {
     }
 
     let syntax = res.substr(res.lastIndexOf('.') + 1);
-    let parser = parsers[syntax];
 
     let saveEntries = data => {
-      let ast = parser ? parser(this, data) : data;
+      const ast = this._parse(syntax, lang, data);
       cache[id] = createEntries.call(this, lang, ast);
     };
 
@@ -82,4 +90,9 @@ function createEntries(lang, ast) {
 function createPseudoEntry(node, lang) {
   return createEntry(
     walkContent(node, qps[lang.code].translate), lang);
+}
+
+function amendError(lang, err) {
+  err.lang = lang;
+  return err;
 }

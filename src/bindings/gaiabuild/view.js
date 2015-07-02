@@ -25,8 +25,7 @@ export class View {
     // stop the build if these errors happen for en-US
     // XXX tv_apps break the build https://bugzil.la/1179833
     // this.env.addEventListener('fetcherror', stop);
-    // XXX parse errors don't have the lang property needed by stopBuild
-    // this.env.addEventListener('parseerror', stop);
+    this.env.addEventListener('parseerror', stop);
     this.env.addEventListener('duplicateerror', stop);
     this.env.addEventListener('notfounderror', stop);
     // XXX sms breaks the build https://bugzil.la/1178187
@@ -99,7 +98,7 @@ export class View {
 }
 
 function amendError(err) {
-  err.message = err.message + ' in ' + this.htmloptimizer.webapp.url;
+  err.message = err.message + ' (' + this.htmloptimizer.webapp.url + ')';
 }
 
 function logError(err) {
