@@ -2,29 +2,29 @@
 
 import { L10nError } from './errors';
 
-var KNOWN_MACROS = ['plural'];
-var MAX_PLACEABLE_LENGTH = 2500;
+const KNOWN_MACROS = ['plural'];
+const MAX_PLACEABLE_LENGTH = 2500;
 
 // Matches characters outside of the Latin-1 character set
-var nonLatin1 = /[^\x01-\xFF]/;
+const nonLatin1 = /[^\x01-\xFF]/;
 
 // Unicode bidi isolation characters
-var FSI = '\u2068';
-var PDI = '\u2069';
+const FSI = '\u2068';
+const PDI = '\u2069';
 
 const resolutionChain = new WeakSet();
 
 export function createEntry(node) {
-  var keys = Object.keys(node);
+  const keys = Object.keys(node);
 
   // the most common scenario: a simple string with no arguments
   if (typeof node.$v === 'string' && keys.length === 2) {
     return node.$v;
   }
 
-  var attrs;
+  let attrs;
 
-  for (var i = 0, key; (key = keys[i]); i++) {
+  for (let i = 0, key; (key = keys[i]); i++) {
     // skip $i (id), $v (value), $x (index)
     if (key[0] === '$') {
       continue;
@@ -99,7 +99,7 @@ function resolveIdentifier(ctx, lang, args, id) {
     throw new L10nError('Illegal id: ' + id);
   }
 
-  var entity = ctx._getEntity(lang, id);
+  const entity = ctx._getEntity(lang, id);
 
   if (entity) {
     return format(ctx, lang, args, entity);
@@ -109,7 +109,7 @@ function resolveIdentifier(ctx, lang, args, id) {
 }
 
 function subPlaceable(locals, ctx, lang, args, id) {
-  var res;
+  let res;
 
   try {
     res = resolveIdentifier(ctx, lang, args, id);
@@ -117,7 +117,7 @@ function subPlaceable(locals, ctx, lang, args, id) {
     return [{ error: err }, '{{ ' + id + ' }}'];
   }
 
-  var value = res[1];
+  const value = res[1];
 
   if (typeof value === 'number') {
     return res;
@@ -145,26 +145,26 @@ function subPlaceable(locals, ctx, lang, args, id) {
 }
 
 function interpolate(locals, ctx, lang, args, arr) {
-  return arr.reduce(function(prev, cur) {
+  return arr.reduce(function([localsSeq, valueSeq], cur) {
     if (typeof cur === 'string') {
-      return [prev[0], prev[1] + cur];
+      return [localsSeq, valueSeq + cur];
     } else if (cur.t === 'idOrVar'){
-      var placeable = subPlaceable(locals, ctx, lang, args, cur.v);
-      return [prev[0], prev[1] + placeable[1]];
+      const [, value] = subPlaceable(locals, ctx, lang, args, cur.v);
+      return [localsSeq, valueSeq + value];
     }
   }, [locals, '']);
 }
 
 function resolveSelector(ctx, lang, args, expr, index) {
-    var selectorName = index[0].v;
-    var selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
+    const selectorName = index[0].v;
+    const selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
 
     if (typeof selector !== 'function') {
       // selector is a simple reference to an entity or args
       return selector;
     }
 
-    var argValue = index[1] ?
+    const argValue = index[1] ?
       resolveIdentifier(ctx, lang, args, index[1])[1] : undefined;
 
     if (selectorName === 'plural') {
@@ -204,7 +204,7 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
   // otherwise, it's a dict
   if (index) {
     // try to use the index in order to select the right dict member
-    var selector = resolveSelector(ctx, lang, args, expr, index);
+    const selector = resolveSelector(ctx, lang, args, expr, index);
     if (expr.hasOwnProperty(selector)) {
       return resolveValue(locals, ctx, lang, args, expr[selector]);
     }

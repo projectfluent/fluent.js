@@ -61,7 +61,7 @@ export class Context {
 
     for (let key in entity.attrs) {
       /* jshint -W089 */
-      let [, attrValue] = this._formatTuple.call(
+      const [, attrValue] = this._formatTuple.call(
         this, lang, args, entity.attrs[key], id, key);
       formatted.attrs[key] = attrValue;
     }
@@ -81,23 +81,21 @@ export class Context {
   }
 
   _fallback(method, id, args, langs) {
-    let lang = langs[0];
+    const lang = langs[0];
 
     if (!lang) {
-      let err = new L10nError(
-        '"' + id + '"' + ' not found in any language', id);
-      this._env.emit('notfounderror', err, this);
+      this._env.emit('notfounderror', new L10nError(
+        '"' + id + '"' + ' not found in any language', id), this);
       return id;
     }
 
-    let entity = this._getEntity(lang, id);
+    const entity = this._getEntity(lang, id);
 
     if (entity) {
       return method.call(this, lang, args, entity, id);
     } else {
-      let err = new L10nError(
-        '"' + id + '"' + ' not found in ' + lang.code, id, lang);
-      this._env.emit('notfounderror', err, this);
+      this._env.emit('notfounderror', new L10nError(
+        '"' + id + '"' + ' not found in ' + lang.code, id, lang), this);
     }
 
     return this._fetchResources(langs.slice(1)).then(
@@ -105,11 +103,11 @@ export class Context {
   }
 
   _getEntity(lang, id) {
-    var cache = this._env._resCache;
+    const cache = this._env._resCache;
 
     // Look for `id` in every resource in order.
-    for (var i = 0, resId; resId = this._resIds[i]; i++) {
-      var resource = cache[resId + lang.code + lang.src];
+    for (let i = 0, resId; resId = this._resIds[i]; i++) {
+      const resource = cache[resId + lang.code + lang.src];
       if (resource instanceof L10nError) {
         continue;
       }

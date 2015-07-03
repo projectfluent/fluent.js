@@ -20,7 +20,7 @@ export class Env {
 
     this._resCache = Object.create(null);
 
-    let listeners = {};
+    const listeners = {};
     this.emit = emit.bind(this, listeners);
     this.addEventListener = addEventListener.bind(this, listeners);
     this.removeEventListener = removeEventListener.bind(this, listeners);
@@ -41,27 +41,27 @@ export class Env {
   }
 
   _getResource(lang, res) {
-    let cache = this._resCache;
-    let id = res + lang.code + lang.src;
+    const cache = this._resCache;
+    const id = res + lang.code + lang.src;
 
     if (cache[id]) {
       return cache[id];
     }
 
-    let syntax = res.substr(res.lastIndexOf('.') + 1);
+    const syntax = res.substr(res.lastIndexOf('.') + 1);
 
-    let saveEntries = data => {
+    const saveEntries = data => {
       const ast = this._parse(syntax, lang, data);
       cache[id] = createEntries.call(this, lang, ast);
     };
 
-    let recover = err => {
+    const recover = err => {
       err.lang = lang;
       this.emit('fetcherror', err);
       cache[id] = err;
     };
 
-    let langToFetch = lang.src === 'qps' ?
+    const langToFetch = lang.src === 'qps' ?
       { code: this.defaultLang, src: 'app' } :
       lang;
 
@@ -71,11 +71,11 @@ export class Env {
 }
 
 function createEntries(lang, ast) {
-  let entries = Object.create(null);
-  let create = lang.src === 'qps' ?
+  const entries = Object.create(null);
+  const create = lang.src === 'qps' ?
     createPseudoEntry : createEntry;
 
-  for (var i = 0, node; node = ast[i]; i++) {
+  for (let i = 0, node; node = ast[i]; i++) {
     const id = node.$i;
     if (id in entries) {
       this.emit('duplicateerror', new L10nError(

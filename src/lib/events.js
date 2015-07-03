@@ -1,7 +1,7 @@
 'use strict';
 
 export function emit(listeners, ...args) {
-  let type = args.shift();
+  const type = args.shift();
 
   if (listeners['*']) {
     listeners['*'].slice().forEach(
@@ -22,8 +22,8 @@ export function addEventListener(listeners, type, listener) {
 }
 
 export function removeEventListener(listeners, type, listener) {
-  let typeListeners = listeners[type];
-  let pos = typeListeners.indexOf(listener);
+  const typeListeners = listeners[type];
+  const pos = typeListeners.indexOf(listener);
   if (pos === -1) {
     return;
   }
