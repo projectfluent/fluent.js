@@ -40,6 +40,23 @@ export class Env {
     return parser.parse.call(parser, emit, data);
   }
 
+  _createEntries(lang, ast) {
+    const entries = Object.create(null);
+    const create = lang.src === 'qps' ?
+      createPseudoEntry : createEntry;
+
+    for (let i = 0, node; node = ast[i]; i++) {
+      const id = node.$i;
+      if (id in entries) {
+        this.emit('duplicateerror', new L10nError(
+         'Duplicate string "' + id + '" found in ' + lang.code, id, lang));
+      }
+      entries[id] = create(node, lang);
+    }
+
+    return entries;
+  }
+
   _getResource(lang, res) {
     const cache = this._resCache;
     const id = res + lang.code + lang.src;
@@ -52,7 +69,7 @@ export class Env {
 
     const saveEntries = data => {
       const ast = this._parse(syntax, lang, data);
-      cache[id] = createEntries.call(this, lang, ast);
+      cache[id] = this._createEntries(lang, ast);
     };
 
     const recover = err => {
@@ -70,29 +87,12 @@ export class Env {
   }
 }
 
-function createEntries(lang, ast) {
-  const entries = Object.create(null);
-  const create = lang.src === 'qps' ?
-    createPseudoEntry : createEntry;
-
-  for (let i = 0, node; node = ast[i]; i++) {
-    const id = node.$i;
-    if (id in entries) {
-      this.emit('duplicateerror', new L10nError(
-       'Duplicate string "' + id + '" found in ' + lang.code, id, lang));
-    }
-    entries[id] = create(node, lang);
-  }
-
-  return entries;
-}
-
 function createPseudoEntry(node, lang) {
   return createEntry(
     walkContent(node, qps[lang.code].translate), lang);
 }
 
-function amendError(lang, err) {
+export function amendError(lang, err) {
   err.lang = lang;
   return err;
 }

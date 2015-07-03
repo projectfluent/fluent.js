@@ -1,8 +1,8 @@
 'use strict';
 
-import { L10nError } from '../../lib/errors';
+import { L10nError } from '../../../lib/errors';
 
-export function serializeEntries(lang, langEntries, sourceEntries) {
+export function serializeLegacyEntries(lang, langEntries, sourceEntries) {
   const errors = [];
   const entries = Object.keys(sourceEntries).map(id => {
     const sourceEntry = sourceEntries[id];
