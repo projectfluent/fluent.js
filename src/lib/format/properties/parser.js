@@ -21,7 +21,7 @@ export default {
     };
   },
 
-  parse: function(env, source) {
+  parse: function(emit, source) {
     if (!this.patterns) {
       this.init();
     }
@@ -49,8 +49,8 @@ export default {
         try {
           this.parseEntity(entityMatch[1], entityMatch[2], ast);
         } catch (e) {
-          if (env) {
-            env.emit('parseerror', e);
+          if (emit) {
+            emit('parseerror', e);
           } else {
             throw e;
           }
