@@ -4,8 +4,9 @@
 /* exported translateFragment, translateDocument */
 /* exported setL10nAttributes, getL10nAttributes */
 
-// match the opening < in HTML tags, and HTML entities like &nbsp;
-var reOverlay = /<|&\w+;/;
+// match the opening angle bracket (<) in HTML tags, and HTML entities like
+// &amp;, &#0038;, &#x0026;.
+var reOverlay = /<|&#?\w+;/;
 
 function translateDocument() {
   document.documentElement.lang = this.language.code;
