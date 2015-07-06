@@ -2,8 +2,9 @@
 
 import { L10nError } from '../../lib/errors';
 
-// match the opening < in HTML tags, and HTML entities like &nbsp;
-const reOverlay = /<|&\w+;/;
+// match the opening angle bracket (<) in HTML tags, and HTML entities like
+// &amp;, &#0038;, &#x0026;.
+const reOverlay = /<|&#?\w+;/;
 
 const allowed = {
   elements: [
