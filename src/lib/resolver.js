@@ -14,47 +14,6 @@ const PDI = '\u2069';
 
 const resolutionChain = new WeakSet();
 
-export function createEntry(node) {
-  const keys = Object.keys(node);
-
-  // the most common scenario: a simple string with no arguments
-  if (typeof node.$v === 'string' && keys.length === 2) {
-    return node.$v;
-  }
-
-  let attrs;
-
-  for (let i = 0, key; (key = keys[i]); i++) {
-    // skip $i (id), $v (value), $x (index)
-    if (key[0] === '$') {
-      continue;
-    }
-
-    if (!attrs) {
-      attrs = Object.create(null);
-    }
-    attrs[key] = createAttribute(node[key]);
-  }
-
-  return {
-    value: node.$v !== undefined ? node.$v : null,
-    index: node.$x || null,
-    attrs: attrs || null,
-  };
-}
-
-function createAttribute(node) {
-  if (typeof node === 'string') {
-    return node;
-  }
-
-  return {
-    value: node.$v || (node !== undefined ? node : null),
-    index: node.$x || null,
-  };
-}
-
-
 export function format(ctx, lang, args, entity) {
   if (typeof entity === 'string') {
     return [{}, entity];
@@ -148,39 +107,46 @@ function interpolate(locals, ctx, lang, args, arr) {
   return arr.reduce(function([localsSeq, valueSeq], cur) {
     if (typeof cur === 'string') {
       return [localsSeq, valueSeq + cur];
-    } else if (cur.t === 'idOrVar'){
-      const [, value] = subPlaceable(locals, ctx, lang, args, cur.v);
+    } else {
+      const [, value] = subPlaceable(locals, ctx, lang, args, cur.name);
       return [localsSeq, valueSeq + value];
     }
   }, [locals, '']);
 }
 
 function resolveSelector(ctx, lang, args, expr, index) {
-    const selectorName = index[0].v;
-    const selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
+  //XXX: Dehardcode!!!
+  let selectorName;
+  if (index[0].type === 'call' && index[0].expr.type === 'prop' &&
+      index[0].expr.expr.name === 'cldr') {
+    selectorName = 'plural';
+  } else {
+    selectorName = index[0].name;
+  }
+  const selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
 
-    if (typeof selector !== 'function') {
-      // selector is a simple reference to an entity or args
-      return selector;
+  if (typeof selector !== 'function') {
+    // selector is a simple reference to an entity or args
+    return selector;
+  }
+
+  const argValue = index[0].args ?
+    resolveIdentifier(ctx, lang, args, index[0].args[0].name)[1] : undefined;
+
+  if (selectorName === 'plural') {
+    // special cases for zero, one, two if they are defined on the hash
+    if (argValue === 0 && 'zero' in expr) {
+      return 'zero';
     }
-
-    const argValue = index[1] ?
-      resolveIdentifier(ctx, lang, args, index[1])[1] : undefined;
-
-    if (selectorName === 'plural') {
-      // special cases for zero, one, two if they are defined on the hash
-      if (argValue === 0 && 'zero' in expr) {
-        return 'zero';
-      }
-      if (argValue === 1 && 'one' in expr) {
-        return 'one';
-      }
-      if (argValue === 2 && 'two' in expr) {
-        return 'two';
-      }
+    if (argValue === 1 && 'one' in expr) {
+      return 'one';
     }
+    if (argValue === 2 && 'two' in expr) {
+      return 'two';
+    }
+  }
 
-    return selector(argValue);
+  return selector(argValue);
 }
 
 function resolveValue(locals, ctx, lang, args, expr, index) {
@@ -205,7 +171,7 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
   if (index) {
     // try to use the index in order to select the right dict member
     const selector = resolveSelector(ctx, lang, args, expr, index);
-    if (expr.hasOwnProperty(selector)) {
+    if (selector in expr) {
       return resolveValue(locals, ctx, lang, args, expr[selector]);
     }
   }

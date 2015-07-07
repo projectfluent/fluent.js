@@ -1,27 +1,45 @@
 'use strict';
 
-// Recursively walk an AST node searching for content leaves
-export function walkContent(node, fn) {
-  if (typeof node === 'string') {
-    return fn(node);
+// Walk an entry node searching for content leaves
+export function walkEntry(entry, fn) {
+  if (typeof entry === 'string') {
+    return fn(entry);
   }
 
-  if (node.t === 'idOrVar') {
-    return node;
-  }
-
-  const rv = Array.isArray(node) ? [] : {};
-  const keys = Object.keys(node);
-
-  for (let i = 0, key; (key = keys[i]); i++) {
-    // don't change identifier ($i) nor indices ($x)
-    if (key === '$i' || key === '$x') {
-      rv[key] = node[key];
-    } else {
-      rv[key] = walkContent(node[key], fn);
+  if (entry.attrs) {
+    for (let key in entry.attrs) {
+      entry.attrs[key] = walkEntry(entry.attrs[key], fn);
     }
   }
-  return rv;
+
+  if (entry.value) {
+    entry.value = walkValue(entry.value, fn);
+  }
+
+  return entry;
+}
+
+function walkValue(value, fn) {
+  if (typeof value === 'string') {
+    return fn(value);
+  }
+
+  if (Array.isArray(value)) {
+    const newValue = [];
+    for (let i in value) {
+      newValue.push(walkValue(value[i], fn));
+    }
+    return newValue;
+  }
+
+  if (value.type) {
+    return value;
+  }
+
+  for (let key in value) {
+    value[key] = walkValue(value[key], fn);
+  }
+  return value;
 }
 
 /* Pseudolocalizations

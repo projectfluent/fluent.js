@@ -6,18 +6,18 @@ import PropertiesParser from '../../../../src/lib/format/properties/parser';
 describe('L10n Parser', function() {
 
   it('string value', function() {
-    var ast = PropertiesParser.parse(null, 'id = string');
-    assert.strictEqual(ast[0].$v, 'string');
+    var entries = PropertiesParser.parse(null, 'id = string');
+    assert.strictEqual(entries.id, 'string');
   });
 
   it('empty value', function() {
-    var ast = PropertiesParser.parse(null, 'id =');
-    assert.equal(ast[0].$v, '');
+    var entries = PropertiesParser.parse(null, 'id =');
+    assert.equal(entries.id, '');
   });
 
   it('empty value with white spaces', function() {
-    var ast = PropertiesParser.parse(null, 'id =  ');
-    assert.equal(ast[0].$v, '');
+    var entries = PropertiesParser.parse(null, 'id =  ');
+    assert.equal(entries.id, '');
   });
 
   it('basic errors', function() {
@@ -31,25 +31,25 @@ describe('L10n Parser', function() {
 
     for (var i in strings) {
       if (strings.hasOwnProperty(i)) {
-        var ast = PropertiesParser.parse(null, strings[i]);
-        assert.equal(Object.keys(ast).length, 0);
+        var entries = PropertiesParser.parse(null, strings[i]);
+        assert.equal(Object.keys(entries).length, 0);
       }
     }
   });
 
   it('basic attributes', function() {
-    var ast = PropertiesParser.parse(null, 'id.attr1 = foo');
-    assert.equal(ast[0].attr1, 'foo');
+    var entries = PropertiesParser.parse(null, 'id.attr1 = foo');
+    assert.equal(entries.id.attrs.attr1, 'foo');
   });
 
   it('empty attribute', function() {
-    var ast = PropertiesParser.parse(null, 'id.attr1 =');
-    assert.equal(ast[0].attr1, '');
+    var entries = PropertiesParser.parse(null, 'id.attr1 =');
+    assert.equal(entries.id.attrs.attr1, '');
   });
 
   it('empty attribute with white spaces', function() {
-    var ast = PropertiesParser.parse(null, 'id.attr1 = ');
-    assert.equal(ast[0].attr1, '');
+    var entries = PropertiesParser.parse(null, 'id.attr1 = ');
+    assert.equal(entries.id.attrs.attr1, '');
   });
 
   it('attribute errors', function() {
@@ -70,14 +70,12 @@ describe('L10n Parser', function() {
   });
 
   it('plural macro', function() {
-    var ast = PropertiesParser.parse(null,
+    var entries = PropertiesParser.parse(null,
       'id = {[ plural(m) ]} \nid[one] = foo');
-    assert.ok(ast[0].$v instanceof Object);
-    assert.equal(ast[0].$v.one, 'foo');
-    assert.equal(ast[0].$x.length, 2);
-    assert.equal(ast[0].$x[0].t, 'idOrVar');
-    assert.equal(ast[0].$x[0].v, 'plural');
-    assert.equal(ast[0].$x[1], 'm');
+    assert.equal(entries.id.value.one, 'foo');
+    assert.equal(entries.id.index.length, 1);
+    assert.equal(entries.id.index[0].expr.prop, 'plural');
+    assert.equal(entries.id.index[0].args[0].name, 'm');
   });
 
   it('plural macro errors', function() {
@@ -105,8 +103,8 @@ describe('L10n Parser', function() {
   });
 
   it('comment', function() {
-    var ast = PropertiesParser.parse(null, '#test');
-    assert.equal(Object.keys(ast).length, 0);
+    var entries = PropertiesParser.parse(null, '#test');
+    assert.equal(Object.keys(entries).length, 0);
   });
 
   it('comment errors', function() {
@@ -117,10 +115,24 @@ describe('L10n Parser', function() {
     ];
     for (var i in strings) {
       if (strings.hasOwnProperty(i)) {
-        var ast = PropertiesParser.parse(null, strings[i]);
-        assert.equal(Object.keys(ast).length, 0);
+        var entries = PropertiesParser.parse(null, strings[i]);
+        assert.equal(Object.keys(entries).length, 0);
       }
     }
   });
 
+  it('duplicate errors', function() {
+    var strings = [
+      'foo=value1\nfoo=value2',
+      'foo=value\nfoo.attr1=value\nfoo.attr1=value2',
+    ];
+    for (var i in strings) {
+      /* jshint -W083 */
+      if (strings.hasOwnProperty(i)) {
+        assert.throws(function() {
+          PropertiesParser.parse(null, strings[i]);
+        });
+      }
+    }
+  });
 });

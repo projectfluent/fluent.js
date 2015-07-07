@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { qps, walkContent } from '../../src/lib/pseudo';
+import { qps, walkEntry } from '../../src/lib/pseudo';
 import PropertiesParser from '../../src/lib/format/properties/parser';
 
 describe('qps strategy', function() {
@@ -14,14 +14,14 @@ describe('qps strategy', function() {
 
   function pseudolocalize(arr, strategy) {
     var obj = {};
-    arr.forEach(function(val) {
-      obj[val.$i] = walkContent(val, strategy);
-    });
+    for (var id in arr) {
+      obj[id] = walkEntry(arr[id], strategy);
+    }
     return obj;
   }
 
-  var foo = {t: 'idOrVar', v: 'foo'};
-  var bar = {t: 'idOrVar', v: 'bar'};
+  var foo = {type: 'idOrVar', name: 'foo'};
+  var bar = {type: 'idOrVar', name: 'bar'};
 
   describe('accented English', function(){
 
@@ -55,35 +55,36 @@ describe('qps strategy', function() {
     });
 
     it('walks the value', function(){
-      assert.strictEqual(walked.foo.$v, 'Ƒǿǿǿǿ');
+      assert.strictEqual(walked.foo, 'Ƒǿǿǿǿ');
 
-      assert.strictEqual(walked.bar.$v.one, 'Ǿǿƞḗḗ');
-      assert.strictEqual(walked.bar.$v.two, 'Ŧẇǿǿ');
-      assert.strictEqual(walked.bar.$v.few, 'Ƒḗḗẇ');
-      assert.strictEqual(walked.bar.$v.many, 'Ḿȧȧƞẏ');
-      assert.strictEqual(walked.bar.$v.other, 'Ǿǿŧħḗḗř');
+      assert.strictEqual(walked.bar.value.one, 'Ǿǿƞḗḗ');
+      assert.strictEqual(walked.bar.value.two, 'Ŧẇǿǿ');
+      assert.strictEqual(walked.bar.value.few, 'Ƒḗḗẇ');
+      assert.strictEqual(walked.bar.value.many, 'Ḿȧȧƞẏ');
+      assert.strictEqual(walked.bar.value.other, 'Ǿǿŧħḗḗř');
 
-      assert.strictEqual(walked.baz.attr, 'Ȧȧƞ ȧȧŧŧřīīƀŭŭŧḗḗ');
+      assert.strictEqual(walked.baz.attrs.attr, 'Ȧȧƞ ȧȧŧŧřīīƀŭŭŧḗḗ');
       assert.deepEqual(
-        walked.baz.attrComplex, ['Ȧȧƞ ȧȧŧŧřīīƀŭŭŧḗḗ řḗḗƒḗḗřḗḗƞƈīīƞɠ ', foo]);
+        walked.baz.attrs.attrComplex.value,
+        ['Ȧȧƞ ȧȧŧŧřīīƀŭŭŧḗḗ řḗḗƒḗḗřḗḗƞƈīīƞɠ ', foo]);
 
-      assert.strictEqual(walked.templateVar.$v, '{name} ẇřǿǿŧḗḗ');
-      assert.strictEqual(walked.dateFormat.$v, '%A, %b %Eb');
-      assert.deepEqual(walked.twoPlaceables1.$v, [foo, ' ', bar]);
+      assert.strictEqual(walked.templateVar, '{name} ẇřǿǿŧḗḗ');
+      assert.strictEqual(walked.dateFormat, '%A, %b %Eb');
+      assert.deepEqual(walked.twoPlaceables1.value, [foo, ' ', bar]);
       assert.deepEqual(
-        walked.twoPlaceables2.$v, ['Ƒǿǿǿǿ ', foo, ' ȧȧƞḓ ƀȧȧř ', bar]);
+        walked.twoPlaceables2.value, ['Ƒǿǿǿǿ ', foo, ' ȧȧƞḓ ƀȧȧř ', bar]);
       assert.deepEqual(
-        walked.parens1.$v, ['(', foo, ') ', bar]);
+        walked.parens1.value, ['(', foo, ') ', bar]);
       assert.deepEqual(
-        walked.parens2.$v, ['Ƒǿǿǿǿ (', foo, ') [ȧȧƞḓ/ǿǿř ', bar, ']']);
-      assert.strictEqual(walked.parens3.$v, 'Ƒǿǿǿǿ (ȧȧƞḓ) ƀȧȧř');
-      assert.strictEqual(walked.unicode.$v, 'Ƒǿǿǿǿ ƒǿǿǿǿ ');
+        walked.parens2.value, ['Ƒǿǿǿǿ (', foo, ') [ȧȧƞḓ/ǿǿř ', bar, ']']);
+      assert.strictEqual(walked.parens3, 'Ƒǿǿǿǿ (ȧȧƞḓ) ƀȧȧř');
+      assert.strictEqual(walked.unicode, 'Ƒǿǿǿǿ ƒǿǿǿǿ ');
       assert.strictEqual(
-        walked.nonascii.$v,
+        walked.nonascii,
         'Ƞȧȧïṽḗḗ ƈǿǿöƥḗḗřȧȧŧīīǿǿƞ řéşŭŭḿé ḓæḿǿǿƞ ƥħœƞīīẋ');
-      assert.strictEqual(walked.html1.$v, 'ṽīīşīīŧ <a>ŭŭřŀ</a>');
+      assert.strictEqual(walked.html1, 'ṽīīşīīŧ <a>ŭŭřŀ</a>');
       assert.strictEqual(
-        walked.html2.$v, 'ŧẏƥḗḗ <input placeholder="your name"/>');
+        walked.html2, 'ŧẏƥḗḗ <input placeholder="your name"/>');
     });
 
   });
@@ -121,51 +122,51 @@ describe('qps strategy', function() {
     });
 
     it('walks the value', function(){
-      assert.strictEqual(walked.foo.$v, '‮ɟoo‬');
+      assert.strictEqual(walked.foo, '‮ɟoo‬');
 
-      assert.strictEqual(walked.bar.$v.one, '‮Ouǝ‬');
-      assert.strictEqual(walked.bar.$v.two, '‮⊥ʍo‬');
-      assert.strictEqual(walked.bar.$v.few, '‮ɟǝʍ‬');
-      assert.strictEqual(walked.bar.$v.many, '‮Wɐuʎ‬');
-      assert.strictEqual(walked.bar.$v.other, '‮Oʇɥǝɹ‬');
+      assert.strictEqual(walked.bar.value.one, '‮Ouǝ‬');
+      assert.strictEqual(walked.bar.value.two, '‮⊥ʍo‬');
+      assert.strictEqual(walked.bar.value.few, '‮ɟǝʍ‬');
+      assert.strictEqual(walked.bar.value.many, '‮Wɐuʎ‬');
+      assert.strictEqual(walked.bar.value.other, '‮Oʇɥǝɹ‬');
 
       assert.strictEqual(
-        walked.baz.attr, '‮∀u‬ ‮ɐʇʇɹıqnʇǝ‬');
+        walked.baz.attrs.attr, '‮∀u‬ ‮ɐʇʇɹıqnʇǝ‬');
       assert.deepEqual(
-        walked.baz.attrComplex,
+        walked.baz.attrs.attrComplex.value,
         ['‮∀u‬ ‮ɐʇʇɹıqnʇǝ‬ ‮ɹǝɟǝɹǝuɔıuƃ‬ ',
          foo]);
 
-      assert.strictEqual(walked.templateVar.$v, '{name} ‮ʍɹoʇǝ‬');
-      assert.strictEqual(walked.dateFormat.$v, '%A, %b %Eb');
-      assert.deepEqual(walked.twoPlaceables1.$v, [foo, ' ', bar]);
+      assert.strictEqual(walked.templateVar, '{name} ‮ʍɹoʇǝ‬');
+      assert.strictEqual(walked.dateFormat, '%A, %b %Eb');
+      assert.deepEqual(walked.twoPlaceables1.value, [foo, ' ', bar]);
       assert.deepEqual(
-        walked.twoPlaceables2.$v,
+        walked.twoPlaceables2.value,
         ['‮ɟoo‬ ', foo, ' ‮ɐup‬ ‮qɐɹ‬ ',
          bar]);
       assert.deepEqual(
-        walked.parens1.$v, ['(', foo, ') ', bar]);
+        walked.parens1.value, ['(', foo, ') ', bar]);
       assert.deepEqual(
-        walked.parens2.$v,
+        walked.parens2.value,
         ['‮ɟoo‬ (', foo, ') [‮ɐup‬/‮oɹ‬ ',
          bar, ']']);
       assert.strictEqual(
-        walked.parens3.$v,
+        walked.parens3,
         '‮ɟoo‬ (‮ɐup‬) ‮qɐɹ‬');
       assert.strictEqual(
-        walked.unicode.$v,
+        walked.unicode,
         '‮ɟoo‬ ‮ɟoo‬ ');
       assert.strictEqual(
-        walked.html1.$v, '‮ʌısıʇ‬ <a>‮nɹʅ‬</a>');
+        walked.html1, '‮ʌısıʇ‬ <a>‮nɹʅ‬</a>');
       assert.strictEqual(
-        walked.html2.$v,
+        walked.html2,
         '‮ʇʎdǝ‬ <input placeholder="your name"/>');
     });
 
     // XXX this requires Unicode support for JavaSript RegExp objects
     // https://bugzil.la/258974
     it.skip('walks the value', function(){
-      var walked = walkContent(ast, strategy);
+      var walked = walkEntry(ast, strategy);
       assert.strictEqual(
         walked.nonascii,
        '‮Nɐïʌǝ‬ ‮ɔoödǝɹɐʇıou‬ ' +
