@@ -34,6 +34,14 @@ export class View {
     this.observe();
   }
 
+  get languages() {
+    return this.service.languages;
+  }
+
+  set languages(langs) {
+    return this.service.requestLanguages(langs);
+  }
+
   emit(...args) {
     return this.service.env.emit(...args);
   }
