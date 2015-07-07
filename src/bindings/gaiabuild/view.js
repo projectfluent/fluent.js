@@ -1,18 +1,26 @@
 'use strict';
 
-import { Env } from '../../lib/env';
+import { L10nError } from '../../lib/errors';
 import { qps } from '../../lib/pseudo';
+import { Env } from '../../lib/env';
+import { LegacyEnv } from './legacy/env';
 import { getResourceLinks } from '../../bindings/html/head';
 import { translateFragment } from '../../bindings/html/dom';
 import { getDirection } from '../../bindings/html/langs';
-import { serializeContext } from './serialize';
+import { serializeEntries } from './serialize';
+import { serializeLegacyEntries } from './legacy/serialize';
 
 export class View {
   constructor(htmloptimizer, fetch) {
-    this.env = new Env(
-      htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetch);
     this.htmloptimizer = htmloptimizer;
     this.doc = htmloptimizer.document;
+
+    this.isEnabled = this.doc.querySelector('link[rel="localization"]');
+    this.isLegacy = this.doc.querySelector('script[src$="l10n.js"]');
+
+    const EnvClass = this.isLegacy ? LegacyEnv : Env;
+    this.env = new EnvClass(
+      htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetch);
     this.ctx = this.env.createContext(getResourceLinks(this.doc.head));
 
     // add the url of the currently processed webapp to all errors
@@ -60,14 +68,16 @@ export class View {
       setDocLang);
   }
 
-  serializeEntries(code) {
+  serializeResources(code) {
     const lang = {
       code,
       dir: getDirection(code),
       src: code in qps ? 'qps' : 'app'
     };
     return fetchContext(this.ctx, lang).then(() => {
-      const [errors, entries] = serializeContext(this.ctx, lang);
+      const [errors, entries] = serializeContext(
+        this.ctx, lang, this.isLegacy ?
+          serializeLegacyEntries : serializeEntries);
 
       if (errors.length) {
         const notFoundErrors = errors.filter(
@@ -113,7 +123,19 @@ function stopBuild(err) {
 
 function fetchContext(ctx, lang) {
   const sourceLang = { code: 'en-US', dir: 'ltr', src: 'app' };
-  return Promise.all([
-    ctx.fetch([sourceLang]),
-    ctx.fetch([lang])]);
+  return Promise.all(
+    [sourceLang, lang].map(lang => ctx.fetch([lang])));
+}
+
+function serializeContext(ctx, lang, fn) {
+  const cache = ctx._env._resCache;
+  return ctx._resIds.reduce(([errorsSeq, entriesSeq], cur) => {
+    const sourceRes = cache[cur + 'en-USapp'];
+    const langRes = cache[cur + lang.code + lang.src];
+    const [errors, entries] = fn(
+      lang,
+      langRes instanceof L10nError ? {} : langRes,
+      sourceRes instanceof L10nError ? {} : sourceRes);
+    return [errorsSeq.concat(errors), entriesSeq.concat(entries)];
+  }, [[], []]);
 }
