@@ -11,6 +11,9 @@ export default {
     this._index = 0;
     this._length = string.length;
     this._curEntryStart = 0;
+    this._config = {
+      pos: pos
+    };
 
     if (pos !== true) {
       AST.Node.prototype.setPosition = function() {};
@@ -456,7 +459,12 @@ export default {
     context += this._source.slice(pos, pos + 10);
 
     let msg = message + ' at pos ' + pos + ': `' + context + '`';
-    return new L10nError(msg);
+
+    const err = new L10nError(msg);
+    if (this._config.pos) {
+      err._pos = {start: this._index, end: undefined};
+    }
+    return err;
   },
 
   getJunkEntry: function() {
