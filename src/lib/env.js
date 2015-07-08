@@ -2,7 +2,7 @@
 
 import { Context } from './context';
 import PropertiesParser from './format/properties/parser';
-import L20nParser from './format/l20n/parser';
+import L20nParser from './format/l20n/entries/parser';
 import { walkEntry, qps } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 

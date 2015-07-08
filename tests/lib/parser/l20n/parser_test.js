@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import L20nParser from '../../../../src/lib/format/l20n/parser';
+import L20nParser from '../../../../src/lib/format/l20n/entries/parser';
 
 var parse = L20nParser.parse.bind(L20nParser);
 

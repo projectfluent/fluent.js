@@ -1,46 +1,51 @@
 'use strict';
 
-import { L10nError } from '../../errors';
+import AST from './ast';
+import { L10nError } from '../../../errors';
 
 const MAX_PLACEABLES = 100;
 
 export default {
-  parse: function(emit, string) {
+  parse: function(env, string, pos = false) {
     this._source = string;
     this._index = 0;
     this._length = string.length;
-    this.entries = Object.create(null);
-    this.emit = emit;
+    this._curEntryStart = 0;
 
-    return this.getResource();
+    if (pos !== true) {
+      AST.Node.prototype.setPosition = function() {};
+    }
+    return this.getResource(pos);
   },
 
   getResource: function() {
+    let resource = new AST.Resource();
+    resource.setPosition(0, this._length);
+    resource._errors = [];
+
     this.getWS();
     while (this._index < this._length) {
       try {
-        this.getEntry();
+        resource.body.push(this.getEntry());
       } catch (e) {
         if (e instanceof L10nError) {
-          // we want to recover, but we don't need it in entries
-          this.getJunkEntry();
-          if (!this.emit) {
-            throw e;
-          }
+          resource._errors.push(e);
+          resource.body.push(this.getJunkEntry());
         } else {
           throw e;
         }
       }
-
       if (this._index < this._length) {
         this.getWS();
       }
     }
 
-    return this.entries;
+    return resource;
   },
 
   getEntry: function() {
+    this._curEntryStart = this._index;
+
     if (this._source[this._index] === '<') {
       ++this._index;
       const id = this.getIdentifier();
@@ -63,11 +68,11 @@ export default {
       throw this.error('Expected white space');
     }
 
-    const ch = this._source[this._index];
+    const ch = this._source.charAt(this._index);
     const value = this.getValue(ch, index === undefined);
     let attrs;
 
-    if (value === undefined) {
+    if (value === null) {
       if (ch === '>') {
         throw this.error('Expected ">"');
       }
@@ -85,18 +90,9 @@ export default {
     // skip '>'
     ++this._index;
 
-    if (id in this.entries) {
-      throw this.error('Duplicate entry ID "' + id, 'duplicateerror');
-    }
-    if (!attrs && !index && typeof value === 'string') {
-      this.entries[id] = value;
-    } else {
-      this.entries[id] = {
-        value,
-        attrs,
-        index
-      };
-    }
+    const entity = new AST.Entity(id, value, index, attrs);
+    entity.setPosition(this._curEntryStart, this._index);
+    return entity;
   },
 
   getValue: function(ch = this._source[this._index], optional = false) {
@@ -111,8 +107,7 @@ export default {
     if (!optional) {
       throw this.error('Unknown value type');
     }
-
-    return;
+    return null;
   },
 
   getWS: function() {
@@ -152,7 +147,9 @@ export default {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    return this._source.slice(start, this._index);
+    const id = new AST.Identifier(this._source.slice(start, this._index));
+    id.setPosition(start, this._index);
+    return id;
   },
 
   getUnicodeChar: function() {
@@ -165,93 +162,90 @@ export default {
       }
       throw this.error('Illegal unicode escape sequence');
     }
-    this._index++;
-    return String.fromCharCode(
-      parseInt(this._source.slice(this._index - 4, this._index), 16));
+    return '\\u' + this._source.slice(this._index - 3, this._index + 1);
   },
 
-  stringRe: /"|'|{{|\\/g,
   getString: function(opchar, opcharLen) {
-    const body = [];
+    let body = [];
+    let buf = '';
     let placeables = 0;
 
-    this._index += opcharLen;
-    const start = this._index;
+    this._index += opcharLen - 1;
 
-    let bufStart = start;
-    let buf = '';
+    const start = this._index + 1;
 
-    while (true) {
-      this.stringRe.lastIndex = this._index;
-      const match = this.stringRe.exec(this._source);
+    let closed = false;
 
-      if (!match) {
-        throw this.error('Unclosed string literal');
-      }
+    while (!closed) {
+      let ch = this._source[++this._index];
+      
+      switch (ch) {
+        case '\\':
+          const ch2 = this._source[++this._index];
+          if (ch2 === 'u') {
+            buf += this.getUnicodeChar();
+          } else if (ch2 === opchar || ch2 === '\\') {
+            buf += ch2;
+          } else if (ch2 === '{' && this._source[this._index + 1] === '{') {
+            buf += '{';
+          } else {
+            throw this.error('Illegal escape sequence');
+          }
+          break;
+        case '{':
+          if (this._source[this._index + 1] === '{') {
+            if (placeables > MAX_PLACEABLES - 1) {
+              throw this.error('Too many placeables, maximum allowed is ' +
+                  MAX_PLACEABLES);
+            }
+            if (buf.length) {
+              body.push(buf);
+              buf = '';
+            }
+            this._index += 2;
+            this.getWS();
+            body.push(this.getExpression());
+            this.getWS();
+            if (!this._source.startsWith('}}', this._index)) {
+              throw this.error('Expected "}}"');
+            }
+            this._index += 1;
+            placeables++;
+            break;
+          }
+          /* falls through */
+        default:
+          if (ch === opchar) {
+            this._index++;
+            closed = true;
+            break;
+          }
 
-      if (match[0] === '"' || match[0] === '\'') {
-        if (match[0] !== opchar) {
-          this._index += opcharLen;
-          continue;
-        }
-        this._index = match.index + opcharLen;
-        break;
-      }
-
-      if (match[0] === '{{') {
-        if (placeables > MAX_PLACEABLES - 1) {
-          throw this.error('Too many placeables, maximum allowed is ' +
-              MAX_PLACEABLES);
-        }
-        placeables++;
-        if (match.index > bufStart || buf.length > 0) {
-          body.push(buf + this._source.slice(bufStart, match.index));
-          buf = '';
-        }
-        this._index = match.index + 2;
-        this.getWS();
-        body.push(this.getExpression());
-        this.getWS();
-        this._index += 2;
-        bufStart = this._index;
-        continue;
-      }
-
-      if (match[0] === '\\') {
-        this._index = match.index + 1;
-        const ch2 = this._source[this._index];
-        if (ch2 === 'u') {
-          buf += this._source.slice(bufStart, match.index) +
-            this.getUnicodeChar();
-        } else if (ch2 === opchar || ch2 === '\\') {
-          buf += this._source.slice(bufStart, match.index) + ch2;
-          this._index++;
-        } else if (this._source.startsWith('{{', this._index)) {
-          buf += this._source.slice(bufStart, match.index) + '{{';
-          this._index += 2;
-        } else {
-          throw this.error('Illegal escape sequence');
-        }
-        bufStart = this._index;
+          buf += ch;
+          if (this._index + 1 >= this._length) {
+            throw this.error('Unclosed string literal');
+          }
       }
     }
 
-    if (body.length === 0) {
-      return buf + this._source.slice(bufStart, this._index - opcharLen);
+    if (buf.length) {
+      body.push(buf);
     }
 
-    if (this._index - opcharLen > bufStart || buf.length > 0) {
-      body.push(buf + this._source.slice(bufStart, this._index - opcharLen));
-    }
+    const string = new AST.String(
+      this._source.slice(start, this._index - 1), body);
+    string.setPosition(start, this._index);
+    string._opchar = opchar;
 
-    return body;
+    return string;
   },
 
   getAttributes: function() {
-    const attrs = Object.create(null);
+    const attrs = [];
 
     while (true) {
-      this.getAttribute(attrs);
+      const attr = this.getAttribute();
+      attrs.push(attr);
       const ws1 = this.getRequiredWS();
       const ch = this._source.charAt(this._index);
       if (ch === '>') {
@@ -263,7 +257,8 @@ export default {
     return attrs;
   },
 
-  getAttribute: function(attrs) {
+  getAttribute: function() {
+    const start = this._index;
     const key = this.getIdentifier();
     let index;
 
@@ -278,40 +273,20 @@ export default {
     }
     ++this._index;
     this.getWS();
-    const value = this.getValue();
-
-    if (key in attrs) {
-      throw this.error('Duplicate attribute "' + key, 'duplicateerror');
-    }
-
-    if (!index && typeof value === 'string') {
-      attrs[key] = value;
-    } else {
-      attrs[key] = {
-        value,
-        index
-      };
-    }
+    const attr = new AST.Attribute(key, this.getValue(), index);
+    attr.setPosition(start, this._index);
+    return attr;
   },
 
   getHash: function() {
-    const items = Object.create(null);
+    const start = this._index;
+    let items = [];
 
     ++this._index;
     this.getWS();
 
-    let defKey;
-
     while (true) {
-      const [key, value, def] = this.getHashItem();
-      items[key] = value;
-
-      if (def) {
-        if (defKey) {
-          throw this.error('Default item redefinition forbidden');
-        }
-        defKey = key;
-      }
+      items.push(this.getHashItem());
       this.getWS();
 
       const comma = this._source[this._index] === ',';
@@ -328,14 +303,14 @@ export default {
       }
     }
 
-    if (defKey) {
-      items.__default = defKey;
-    }
-
-    return items;
+    const hash = new AST.Hash(items);
+    hash.setPosition(start, this._index);
+    return hash;
   },
 
   getHashItem: function() {
+    const start = this._index;
+
     let defItem = false;
     if (this._source[this._index] === '*') {
       ++this._index;
@@ -350,7 +325,9 @@ export default {
     ++this._index;
     this.getWS();
 
-    return [key, this.getValue(), defItem];
+    const hashItem = new AST.HashItem(key, this.getValue(), defItem);
+    hashItem.setPosition(start, this._index);
+    return hashItem;
   },
 
   getComment: function() {
@@ -363,19 +340,23 @@ export default {
     }
 
     this._index = end + 2;
+    const comment = new AST.Comment(this._source.slice(start, end));
+    comment.setPosition(start - 2, this._index);
+    return comment;
   },
 
   getExpression: function () {
+    const start = this._index;
     let exp = this.getPrimaryExpression();
 
     while (true) {
       let ch = this._source[this._index];
       if (ch === '.' || ch === '[') {
         ++this._index;
-        exp = this.getPropertyExpression(exp, ch === '[');
+        exp = this.getPropertyExpression(exp, ch === '[', start);
       } else if (ch === '(') {
         ++this._index;
-        exp = this.getCallExpression(exp);
+        exp = this.getCallExpression(exp, start);
       } else {
         break;
       }
@@ -384,7 +365,7 @@ export default {
     return exp;
   },
 
-  getPropertyExpression: function(idref, computed) {
+  getPropertyExpression: function(idref, computed, start) {
     let exp;
 
     if (computed) {
@@ -399,50 +380,42 @@ export default {
       exp = this.getIdentifier();
     }
 
-    return {
-      type: 'prop',
-      expr: idref,
-      prop: exp,
-      cmpt: computed
-    };
+    const propExpr = new AST.PropertyExpression(idref, exp, computed);
+    propExpr.setPosition(start, this._index);
+    return propExpr;
   },
 
-  getCallExpression: function(callee) {
+  getCallExpression: function(callee, start) {
     this.getWS();
 
-    return {
-      type: 'call',
-      expr: callee,
-      args: this.getItemList(this.getExpression, ')')
-    };
+    const callExpr = new AST.CallExpression(callee,
+      this.getItemList(this.getExpression, ')'));
+    callExpr.setPosition(start, this._index);
+    return callExpr;
   },
 
   getPrimaryExpression: function() {
+    const start = this._index;
     const ch = this._source[this._index];
 
     switch (ch) {
       case '$':
         ++this._index;
-        return {
-          type: 'var',
-          name: this.getIdentifier()
-        };
+        const variable = new AST.Variable(this.getIdentifier());
+        variable.setPosition(start, this._index);
+        return variable;
       case '@':
         ++this._index;
-        return {
-          type: 'glob',
-          name: this.getIdentifier()
-        };
+        const global = new AST.Global(this.getIdentifier());
+        global.setPosition(start, this._index);
+        return global;
       default:
-        return {
-          type: 'id',
-          name: this.getIdentifier()
-        };
+        return this.getIdentifier();
     }
   },
 
   getItemList: function(callback, closeChar) {
-    const items = [];
+    let items = [];
     let closed = false;
 
     this.getWS();
@@ -473,6 +446,18 @@ export default {
     return items;
   },
 
+  error: function(message) {
+    const pos = this._index;
+
+    let start = this._source.lastIndexOf('<', pos - 1);
+    let lastClose = this._source.lastIndexOf('>', pos - 1);
+    start = lastClose > start ? lastClose + 1 : start;
+    let context = '\x1b[90m' + this._source.slice(start, pos) + '\x1b[0m'; 
+    context += this._source.slice(pos, pos + 10);
+
+    let msg = message + ' at pos ' + pos + ': `' + context + '`';
+    return new L10nError(msg);
+  },
 
   getJunkEntry: function() {
     const pos = this._index;
@@ -489,21 +474,8 @@ export default {
     let nextEntry = Math.min(nextEntity, nextComment);
 
     this._index = nextEntry;
-  },
 
-  error: function(message, type = 'parsererror') {
-    const pos = this._index;
-
-    let start = this._source.lastIndexOf('<', pos - 1);
-    const lastClose = this._source.lastIndexOf('>', pos - 1);
-    start = lastClose > start ? lastClose + 1 : start;
-    const context = this._source.slice(start, pos + 10);
-
-    const msg = message + ' at pos ' + pos + ': `' + context + '`';
-    const err = new L10nError(msg);
-    if (this.emit) {
-      this.emit(type, err);
-    }
-    return err;
-  },
+    return new AST.JunkEntry(
+      this._source.slice(this._curEntryStart, nextEntry));
+  }
 };
