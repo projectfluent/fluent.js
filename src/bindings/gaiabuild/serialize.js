@@ -4,74 +4,37 @@ import { L10nError } from '../../lib/errors';
 
 export function serializeEntries(lang, langEntries, sourceEntries) {
   const errors = [];
-  const entries = Object.keys(sourceEntries).map(id => {
+  const entries = Object.create(null);
+
+  for (let id in sourceEntries) {
     const sourceEntry = sourceEntries[id];
     const langEntry = langEntries[id];
 
     if (!langEntry) {
       errors.push(new L10nError(
         '"' + id + '"' + ' not found in ' + lang.code, id, lang));
-      return serializeEntry(sourceEntry, id);
+      entries[id] = sourceEntry;
+      continue;
     }
 
     if (!areEntityStructsEqual(sourceEntry, langEntry)) {
       errors.push(new L10nError(
         '"' + id + '"' + ' is malformed in ' + lang.code, id, lang));
-      return serializeEntry(sourceEntry, id);
+      entries[id] = sourceEntry;
+      continue;
     }
 
-    return serializeEntry(langEntry, id);
-  });
+    entries[id] = langEntry;
+  }
 
   return [errors, entries];
 }
 
-function serializeEntry(entry, id) {
-  if (typeof entry === 'string') {
-    return { $i: id, $v: entry };
-  }
-
-  const node = {
-    $i: id,
-  };
-
-  if (entry.value !== null) {
-    node.$v = entry.value;
-  }
-
-  if (entry.index !== null) {
-    node.$x = entry.index;
-  }
-
-  for (let key in entry.attrs) {
-    node[key] = serializeAttribute(entry.attrs[key]);
-  }
-
-  return node;
-}
-
-function serializeAttribute(attr) {
-  if (typeof attr === 'string') {
-    return attr;
-  }
-
-  const node = {};
-
-  if (attr.value !== null) {
-    node.$v = attr.value;
-  }
-
-  if (attr.index !== null) {
-    node.$x = attr.index;
-  }
-
-  return node;
-}
-
 function resolvesToString(entity) {
-  return typeof entity === 'string' || // a simple string
-    Array.isArray(entity.value) ||     // a complex string
-    entity.index !== null;             // a dict with an index
+  return typeof entity === 'string' ||  // a simple string
+    typeof entity.value === 'string' || // a simple string, entity with attrs
+    Array.isArray(entity.value) ||      // a complex string
+    entity.index !== null;              // a dict with an index
 }
 
 function areEntityStructsEqual(entity1, entity2) {
