@@ -1,8 +1,5 @@
 load('../../build/dist/jsshell/l20n.js');
 
-//var propertiesParser = L20n.PropertiesParser;
-var l20nParser = L20n.L20nParser;
-
 var propCode = read('./example.properties');
 var l20nCode = read('./example.l20n');
 var data = {
@@ -22,7 +19,8 @@ var data = {
   "level": "LEVEL",
   "number": "NUMBER",
   "link1": "LINK1",
-  "link2": "LINK2"
+  "link2": "LINK2",
+  "count": 10,
 };
 
 var lang = {
@@ -39,17 +37,13 @@ function micro(time) {
 var times = {};
 times.start = dateNow();
 
-//var ast = propertiesParser.parse(null, propCode);
-//times.parseEnd = dateNow();
+var entries = L20n.PropertiesParser.parse(null, propCode);
+times.parseEnd = dateNow();
 
 times.l20nParseStart = dateNow();
 
-var ast = l20nParser.parse(null, l20nCode);
+var entries = L20n.L20nParser.parse(null, l20nCode);
 times.l20nParseEnd = dateNow();
-
-times.createEntries = dateNow();
-var entries = L20n.createEntriesFromAST(ast);
-times.createEntriesEnd = dateNow();
 
 var ctx = new L20n.MockContext(entries);
 
@@ -71,9 +65,8 @@ for (var id in ids) {
 times.getEntityEnd = dateNow();
 */
 var results = {
-  //parseProp: micro(times.parseEnd - times.start),
+  parseProp: micro(times.parseEnd - times.start),
   parseL20n: micro(times.l20nParseEnd - times.l20nParseStart),
-  createEntries: micro(times.createEntriesEnd - times.createEntries),
   format: micro(times.formatEnd - times.format),
   //getEntity: micro(times.getEntityEnd - times.getEntity),
 };

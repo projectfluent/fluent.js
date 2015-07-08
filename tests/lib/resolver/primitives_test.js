@@ -59,7 +59,7 @@ describe('Primitives:', function(){
 
     it('returns the null value', function(){
       var value = format(ctx, lang, null, entries.foo)[1];
-      assert.strictEqual(value, null);
+      assert.strictEqual(value, undefined);
     });
 
     it('returns the attribute', function(){

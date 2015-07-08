@@ -1,11 +1,9 @@
 'use strict';
 
-import { L10nError } from './errors';
 import { Context } from './context';
-import { createEntry } from './resolver';
 import PropertiesParser from './format/properties/parser';
 import L20nParser from './format/l20n/parser';
-import { walkContent, qps } from './pseudo';
+import { walkEntry, qps } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 
 const parsers = {
@@ -40,23 +38,6 @@ export class Env {
     return parser.parse.call(parser, emit, data);
   }
 
-  _createEntries(lang, ast) {
-    const entries = Object.create(null);
-    const create = lang.src === 'qps' ?
-      createPseudoEntry : createEntry;
-
-    for (let i = 0, node; node = ast[i]; i++) {
-      const id = node.$i;
-      if (id in entries) {
-        this.emit('duplicateerror', new L10nError(
-         'Duplicate string "' + id + '" found in ' + lang.code, id, lang));
-      }
-      entries[id] = create(node, lang);
-    }
-
-    return entries;
-  }
-
   _getResource(lang, res) {
     const cache = this._resCache;
     const id = res + lang.code + lang.src;
@@ -68,8 +49,15 @@ export class Env {
     const syntax = res.substr(res.lastIndexOf('.') + 1);
 
     const saveEntries = data => {
-      const ast = this._parse(syntax, lang, data);
-      cache[id] = this._createEntries(lang, ast);
+      const entries = this._parse(syntax, lang, data);
+      if (lang.src !== 'qps') {
+        cache[id] = entries;
+      } else {
+        cache[id] = Object.create(null);
+        for (let key in entries) {
+          cache[id][key] = walkEntry(entries[key], qps[lang.code].translate);
+        }
+      }
     };
 
     const recover = err => {
@@ -85,11 +73,6 @@ export class Env {
     return cache[id] = this.fetch(res, langToFetch).then(
       saveEntries, recover);
   }
-}
-
-function createPseudoEntry(node, lang) {
-  return createEntry(
-    walkContent(node, qps[lang.code].translate), lang);
 }
 
 export function amendError(lang, err) {

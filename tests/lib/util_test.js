@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { walkContent } from '../../src/lib/pseudo';
+import { walkEntry } from '../../src/lib/pseudo';
 import PropertiesParser from '../../src/lib/format/properties/parser';
 
 var reVowels = /[AEIOUaeiou]/;
@@ -17,11 +17,11 @@ function digest(str) {
   return cur;
 }
 
-describe('walkContent', function() {
-  var source, ast;
+describe('walkEntry', function() {
+  var source, entries;
 
   beforeEach(function() {
-    ast = PropertiesParser.parse(null, source);
+    entries = PropertiesParser.parse(null, source);
   });
 
   describe('simple strings and attributes', function(){
@@ -34,13 +34,13 @@ describe('walkContent', function() {
     });
 
     it('walks the value', function(){
-      var walked = walkContent(ast[0], digest);
-      assert.strictEqual(walked.$v, 2);
+      var walked = walkEntry(entries.foo, digest);
+      assert.strictEqual(walked.value, 2);
     });
 
     it('walks the attribute', function(){
-      var walked = walkContent(ast[0], digest);
-      assert.strictEqual(walked.attr, 5);
+      var walked = walkEntry(entries.foo, digest);
+      assert.strictEqual(walked.attrs.attr, 5);
     });
 
   });
@@ -59,17 +59,32 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = walkContent(ast[0], digest);
-      assert.strictEqual(walked.$v.one, 2);
-      assert.strictEqual(walked.$v.two, 1);
-      assert.strictEqual(walked.$v.few, 1);
-      assert.strictEqual(walked.$v.many, 1);
-      assert.strictEqual(walked.$v.other, 2);
+      var walked = walkEntry(entries.foo, digest);
+      assert.strictEqual(walked.value.one, 2);
+      assert.strictEqual(walked.value.two, 1);
+      assert.strictEqual(walked.value.few, 1);
+      assert.strictEqual(walked.value.many, 1);
+      assert.strictEqual(walked.value.other, 2);
     });
 
     it('does not modify the index', function(){
-      var walked = walkContent(ast[0], digest);
-      assert.deepEqual(walked.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
+      var walked = walkEntry(entries.foo, digest);
+      assert.deepEqual(walked.index[0], {
+        type: 'call',
+        expr: {
+          type: 'prop',
+          expr: {
+            type: 'glob',
+            name: 'cldr'
+          },
+          prop: 'plural',
+          cmpt: false
+        },
+        args: [{
+          type: 'idOrVar',
+          name: 'n'
+        }]
+      });
     });
 
   });
@@ -90,7 +105,7 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = walkContent(ast[0], digest);
+      var walked = walkEntry(entries.foo, digest);
       assert.strictEqual(walked.$v.other.one, 2);
       assert.strictEqual(walked.$v.other.two, 1);
       assert.strictEqual(walked.$v.other.few, 1);
@@ -99,7 +114,7 @@ describe('walkContent', function() {
     });
 
     it('does not modify the indexes', function(){
-      var walked = walkContent(ast[0], digest);
+      var walked = walkEntry(entries.foo, digest);
       assert.deepEqual(
         walked.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
       assert.deepEqual(
@@ -122,17 +137,32 @@ describe('walkContent', function() {
     });
 
     it('walks the values', function(){
-      var walked = walkContent(ast[0], digest);
-      assert.strictEqual(walked.attr.$v.one, 2);
-      assert.strictEqual(walked.attr.$v.two, 1);
-      assert.strictEqual(walked.attr.$v.few, 1);
-      assert.strictEqual(walked.attr.$v.many, 1);
-      assert.strictEqual(walked.attr.$v.other, 2);
+      var walked = walkEntry(entries.foo, digest);
+      assert.strictEqual(walked.attrs.attr.value.one, 2);
+      assert.strictEqual(walked.attrs.attr.value.two, 1);
+      assert.strictEqual(walked.attrs.attr.value.few, 1);
+      assert.strictEqual(walked.attrs.attr.value.many, 1);
+      assert.strictEqual(walked.attrs.attr.value.other, 2);
     });
 
     it('does not modify the indexes', function(){
-      var walked = walkContent(ast[0], digest);
-      assert.deepEqual(walked.attr.$x, [{t: 'idOrVar', v: 'plural'}, 'n']);
+      var walked = walkEntry(entries.foo, digest);
+      assert.deepEqual(walked.attrs.attr.index[0], {
+        type: 'call',
+        expr: {
+          type: 'prop',
+          expr: {
+            type: 'glob',
+            name: 'cldr'
+          },
+          prop: 'plural',
+          cmpt: false
+        },
+        args: [{
+          type: 'idOrVar',
+          name: 'n'
+        }]
+      });
     });
 
   });

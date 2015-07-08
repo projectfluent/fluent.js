@@ -1,7 +1,6 @@
 'use strict';
 
 import PropertiesParser from './format/properties/parser';
-import { createEntry } from './resolver';
 import { getPluralRule } from './plurals';
 
 export const lang = {
@@ -10,17 +9,8 @@ export const lang = {
   dir: 'ltr'
 };
 
-export function createEntriesFromAST(ast) {
-  let entries = Object.create(null);
-  for (let i = 0, node; (node = ast[i]); i++) {
-    entries[node.$i] = createEntry(node);
-  }
-  return entries;
-}
-
 export function createEntriesFromSource(source) {
-  const ast = PropertiesParser.parse(null, source);
-  return createEntriesFromAST(ast);
+  return PropertiesParser.parse(null, source);
 }
 
 export function MockContext(entries) {

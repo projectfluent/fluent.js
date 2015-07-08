@@ -504,7 +504,6 @@
 <update_channel "Update channel">
 <last_updated "Last Updated">
 <more_info "More Information">
-<gitInfo "Git commit info">
 <softwareUpdates "Software updates">
 <check_update_daily "Daily">
 <check_update_weekly "Weekly">

@@ -1,13 +1,8 @@
 var fs = require('fs');
 
-var L20n = require('../../src/bindings/node');
+require('../../node_modules/babel-core/register');
+var L20n = require('../../src/runtime/node');
 var Context = require('../../src/lib/context').Context;
-
-var propParser = L20n.PropertiesParser;
-var l20nParser = L20n.L20nParser;
-var env = {
-  __plural: L20n.getPluralRule('en-US')
-};
 
 var propCode = fs.readFileSync(__dirname + '/example.properties').toString();
 var l20nCode = fs.readFileSync(__dirname + '/example.l20n').toString();
@@ -29,8 +24,15 @@ var data = {
   "level": "LEVEL",
   "number": "NUMBER",
   "link1": "LINK1",
-  "link2": "LINK2"
-}
+  "link2": "LINK2",
+  "count": 10,
+};
+
+var lang = {
+  code:'en-US',
+  src: 'app',
+  dir: 'ltr'
+};
 
 function micro(time) {
   // time is [seconds, nanoseconds]
@@ -40,26 +42,22 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-var ast = propParser.parse(null, propCode);
+var entries = L20n.PropertiesParser.parse(null, propCode);
 cumulative.parseEnd = process.hrtime(start);
 
 cumulative.l20nParseStart = process.hrtime(start);
 
-var ast = l20nParser.parse(null, l20nCode);
+var entries = L20n.L20nParser.parse(null, l20nCode);
 cumulative.l20nParseEnd = process.hrtime(start);
 
-cumulative.createEntries = process.hrtime(start);
-L20n.extendEntries(env, ast);
-cumulative.createEntriesEnd = process.hrtime(start);
-
-var ids = Object.keys(env).filter(function(id){return id !== '__plural';});
+var ctx = new L20n.MockContext(entries);
 
 cumulative.format = process.hrtime(start);
-for (var id in ids) {
-  L20n.Resolver.format(data, env[ids[id]]);
+for (var id in entries) {
+  L20n.format(ctx, lang, data, entries[id]);
 }
 cumulative.formatEnd = process.hrtime(start);
-
+/*
 var ctx = new Context(null);
 var locale = ctx.getLocale('en-US');
 locale.addAST(ast);
@@ -70,12 +68,11 @@ for (var id in ids) {
   ctx.getEntity(ids[id], data);
 }
 cumulative.getEntityEnd = process.hrtime(start);
-
+*/
 var results = {
   propParse: micro(cumulative.parseEnd),
   l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
-  createEntries: micro(cumulative.createEntriesEnd) - micro(cumulative.createEntries),
   format: micro(cumulative.formatEnd) - micro(cumulative.format),
-  getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
+  //getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
 };
 console.log(JSON.stringify(results));
