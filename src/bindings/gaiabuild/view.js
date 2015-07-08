@@ -87,12 +87,16 @@ export class View {
           err => err.message.indexOf('malformed') > -1).map(
           err => err.id);
 
-        this.htmloptimizer.dump(
-          '[l10n] [' + lang.code + ']: ' + notFoundErrors.length +
-          ' missing compared to en-US: ' + notFoundErrors.join(', '));
-        this.htmloptimizer.dump(
-          '[l10n] [' + lang.code + ']: ' + malformedErrors.length +
-          ' malformed compared to en-US: ' + malformedErrors.join(', '));
+        if (notFoundErrors.length) {
+          this.htmloptimizer.dump(
+            '[l10n] [' + lang.code + ']: ' + notFoundErrors.length +
+            ' missing compared to en-US: ' + notFoundErrors.join(', '));
+        }
+        if (malformedErrors.length) {
+          this.htmloptimizer.dump(
+            '[l10n] [' + lang.code + ']: ' + malformedErrors.length +
+            ' malformed compared to en-US: ' + malformedErrors.join(', '));
+        }
       }
 
       return entries;
