@@ -4,7 +4,8 @@ import { L10nError } from '../../../lib/errors';
 import { Env, amendError } from '../../../lib/env';
 import { createEntry } from './resolver';
 import PropertiesParser from './parser';
-import { walkEntry, qps } from '../../../lib/pseudo';
+import { walkContent } from './pseudo';
+import { qps } from '../../../lib/pseudo';
 import {
   emit, addEventListener, removeEventListener
 } from '../../../lib/events';
@@ -59,5 +60,5 @@ export class LegacyEnv {
 }
 
 function createPseudoEntry(node, lang) {
-  return createEntry(walkEntry(node, qps[lang.code].translate));
+  return createEntry(walkContent(node, qps[lang.code].translate));
 }
