@@ -10,8 +10,8 @@ import L20nEntriesParser from '../../lib/format/l20n/entries/parser';
 import L20nEntriesSerializer from '../../lib/format/l20n/entries/serializer';
 import PropertiesParser from '../../lib/format/properties/parser';
 
-window.L20n = {
-  Service, View, Env, fetch,
-  L20nASTParser, L20nASTSerializer, L20nEntriesParser, L20nEntriesSerializer,
-  PropertiesParser,
+export const L20n = {
+    Service, View, Env, fetch,
+    L20nASTParser, L20nASTSerializer, L20nEntriesParser, L20nEntriesSerializer,
+    PropertiesParser,
 };
