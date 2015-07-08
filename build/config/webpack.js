@@ -15,6 +15,7 @@ var babel = {
       'strict',
       'es6.modules',
       'es6.classes',
+      'es6.constants',
       'es6.destructuring',
       'es6.arrowFunctions',
       'es6.properties.shorthand',
@@ -66,16 +67,14 @@ module.exports = {
       loaders: [babel]
     }
   },
-  node: {
+  tooling: {
     context: path('../../src'),
-    entry: './runtime/node/index.js',
+    entry: './runtime/tooling/index.js',
     output: {
       path: path('../dist'),
-      filename: 'node/l20n.js',
-      libraryTarget: 'commonjs2',
-    },
-    externals: {
-      'fs': true
+      filename: 'tooling/l20n.js',
+      libraryTarget: 'this',
+
     },
     module: {
       loaders: [babel]
