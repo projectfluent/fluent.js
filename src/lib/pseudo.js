@@ -19,7 +19,7 @@ export function walkEntry(entry, fn) {
   return entry;
 }
 
-function walkValue(value, fn) {
+export function walkValue(value, fn) {
   if (typeof value === 'string') {
     return fn(value);
   }

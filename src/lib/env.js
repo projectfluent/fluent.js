@@ -38,6 +38,18 @@ export class Env {
     return parser.parse.call(parser, emit, data);
   }
 
+  _create(lang, entries) {
+    if (lang.src !== 'qps') {
+      return entries;
+    }
+
+    const pseudoentries = Object.create(null);
+    for (let key in entries) {
+      pseudoentries[key] = walkEntry(entries[key], qps[lang.code].translate);
+    }
+    return pseudoentries;
+  }
+
   _getResource(lang, res) {
     const cache = this._resCache;
     const id = res + lang.code + lang.src;
@@ -50,14 +62,7 @@ export class Env {
 
     const saveEntries = data => {
       const entries = this._parse(syntax, lang, data);
-      if (lang.src !== 'qps') {
-        cache[id] = entries;
-      } else {
-        cache[id] = Object.create(null);
-        for (let key in entries) {
-          cache[id][key] = walkEntry(entries[key], qps[lang.code].translate);
-        }
-      }
+      cache[id] = this._create(lang, entries);
     };
 
     const recover = err => {

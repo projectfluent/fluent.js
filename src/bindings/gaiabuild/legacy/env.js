@@ -12,7 +12,7 @@ export class LegacyEnv extends Env {
     return PropertiesParser.parse.call(PropertiesParser, emit, data);
   }
 
-  _createEntries(lang, ast) {
+  _create(lang, ast) {
     const entries = Object.create(null);
     const create = lang.src === 'qps' ?
       createPseudoEntry : createEntry;
