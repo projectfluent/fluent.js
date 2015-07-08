@@ -6,7 +6,7 @@ module.exports = {
   gaia: {
     options: {
       plugins: bundler,
-      whitelist: 'es7.trailingFunctionCommas'
+      whitelist: ''
     },
     files: {
       'build/dist/gaia/l20n.js': 'src/runtime/web/index.js'
@@ -15,7 +15,7 @@ module.exports = {
   jsshell: {
     options: {
       plugins: bundler,
-      whitelist: 'es7.trailingFunctionCommas'
+      whitelist: ''
     },
     files: {
       'build/dist/jsshell/l20n.js': 'src/runtime/jsshell/index.js'

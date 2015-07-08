@@ -3,8 +3,8 @@
 var Path = require('path');
 var fs = require('fs');
 
-var moduleIds = new Set();
-var modules = [];
+var moduleIds;
+var modules;
 
 /*
     const modules = new Map();
@@ -12,11 +12,9 @@ var modules = [];
 
     function getModule(id) {
       if (!moduleCache.has(id)) {
-        //if (!modules.has(id)) {
-        //  throw "Missing module: " + id;
-        //}
         moduleCache.set(id, modules.get(id).call(global));
       }
+
       return moduleCache.get(id);
     }
 */
@@ -24,18 +22,22 @@ function getPreamble(babel) {
   var t = babel.types;
   var body = [];
   body.push(
-    t.expressionStatement(
-      t.literal('use strict')));
+    babel.types.expressionStatement(
+      babel.types.literal('use strict')
+    )
+  );
   body.push(
     t.variableDeclaration('const', [
       t.variableDeclarator(
-        t.identifier('modules'), t.newExpression(t.identifier('Map')))
-    ]));
+        t.identifier('modules'), t.newExpression(t.identifier('Map'), []))
+    ])
+  );
   body.push(
     t.variableDeclaration('const', [
       t.variableDeclarator(
-        t.identifier('moduleCache'), t.newExpression(t.identifier('Map')))
-    ]));
+        t.identifier('moduleCache'), t.newExpression(t.identifier('Map'), []))
+    ])
+  );
 
   body.push(
     t.functionDeclaration(
@@ -84,6 +86,7 @@ function getPreamble(babel) {
         ))
       ]))
   );
+
   return body;
 }
 
@@ -110,7 +113,7 @@ function anonymousClosure(t, body) {
 
 function getModuleClosure(babel, id, body) {
   var t = babel.types;
-  body = removeUseStrict(body);
+  body = removeUseStrict(babel, body);
   var closure = t.functionExpression(null, [], t.blockStatement(body));
   var def = t.callExpression(
     t.memberExpression(t.identifier('modules'), t.identifier('set')),
@@ -119,11 +122,11 @@ function getModuleClosure(babel, id, body) {
   return t.expressionStatement(def);
 }
 
-function removeUseStrict(body) {
+function removeUseStrict(babel, body) {
   var pos = -1;
   for (var i = 0; i < body.length; i++) {
-    if (body[i].type === 'ExpressionStatement' &&
-        body[i].expression.type === 'Literal' &&
+    if (babel.types.isExpressionStatement(body[i]) &&
+        babel.types.isLiteral(body[i].expression) &&
         body[i].expression.value === 'use strict') {
       pos = i;
       break;
@@ -144,63 +147,74 @@ function addImports(babel, imports) {
   }
 }
 
-function turnImportsIntoGetModule(babel, path, body) {
-  var imports = [];
-  for (var i = 0; i < body.length; i++) {
-    if (body[i].type === 'ImportDeclaration') {
-      imports.push(getModuleIDFromPath(path, body[i].source.value));
+function turnImportIntoGetModule(babel, source, node) {
+  var id;
 
-      var node = body[i];
-      var id;
-
-      if (node.specifiers.length === 1 &&
-          node.specifiers[0].type === 'ImportDefaultSpecifier') {
-        id = babel.types.identifier(node.specifiers[0].local.name);
-      } else {
-        var idents = [];
-        for (var j = 0; j < node.specifiers.length; j++) {
-          idents.push(babel.types.identifier(node.specifiers[j].local.name));
-        }
-        id = babel.types.objectPattern(idents);
-      }
-
-      var source = getModuleIDFromPath(path, node.source.value);
-
-      var getModule = babel.types.callExpression(
-        babel.types.identifier('getModule'),
-        [babel.types.literal(source)]
-      );
-
-      body[i] = babel.types.variableDeclaration('const', [
-        babel.types.variableDeclarator(id, getModule)
-      ]);
+  if (node.specifiers.length === 1 &&
+      babel.types.isImportDefaultSpecifier(node.specifiers[0])) {
+    id = babel.types.identifier(node.specifiers[0].local.name);
+  } else {
+    var idents = [];
+    for (var j = 0; j < node.specifiers.length; j++) {
+      idents.push(babel.types.identifier(node.specifiers[j].local.name));
     }
+    id = babel.types.objectPattern(idents);
   }
-  return imports;
+
+  var getModule = babel.types.callExpression(
+    babel.types.identifier('getModule'),
+    [babel.types.literal(source)]
+    );
+
+  return babel.types.variableDeclaration('const', [
+      babel.types.variableDeclarator(id, getModule)
+  ]);
 }
 
-function turnExportsIntoReturn(babel, body) {
-  var returns = [];
+function turnImportsIntoGetModule(babel, path, body) {
+  var imports = [];
+  var exports = [];
+  var source;
+  for (var i = 0; i < body.length; i++) {
+    if (babel.types.isImportDeclaration(body[i])) {
+      source = getModuleIDFromPath(path, body[i].source.value);
+      imports.push(source);
+
+      body[i] = turnImportIntoGetModule(babel, source, body[i]);
+    } else if (babel.types.isExportDeclaration(body[i]) &&
+        body[i].source) {
+      source = getModuleIDFromPath(path, body[i].source.value);
+      imports.push(getModuleIDFromPath(path, body[i].source.value));
+
+      for (var j = 0; j < body[i].specifiers.length; j++) {
+        exports.push(babel.types.identifier(body[i].specifiers[j].local.name));
+      }
+
+      body[i] = turnImportIntoGetModule(babel, source, body[i]);
+    }
+  }
+  return {imports: imports, exports: exports};
+}
+
+function turnExportsIntoReturn(babel, body, externalExports) {
+  var returns = externalExports;
   var defaultReturn;
 
   for (var i = 0; i < body.length; i++) {
-    switch (body[i].type) {
-      case 'ExportNamedDeclaration':
-        if (body[i].declaration.type === 'VariableDeclaration') {
-          returns.push(body[i].declaration.declarations[0].id);
-        } else {
-          returns.push(body[i].declaration.id);
-        }
+    if (babel.types.isExportNamedDeclaration(body[i])) {
+      if (body[i].declaration.type === 'VariableDeclaration') {
+        returns.push(body[i].declaration.declarations[0].id);
+      } else {
+        returns.push(body[i].declaration.id);
+      }
+      body[i] = body[i].declaration;
+    } else if (babel.types.isExportDefaultDeclaration(body[i])) {
+      if (!body[i].declaration.id) {
+        body[i] = babel.types.returnStatement(body[i].declaration);
+      } else {
+        defaultReturn = body[i].declaration.id;
         body[i] = body[i].declaration;
-        break;
-      case 'ExportDefaultDeclaration':
-        if (!body[i].declaration.id) {
-          body[i] = babel.types.returnStatement(body[i].declaration);
-        } else {
-          defaultReturn = body[i].declaration.id;
-          body[i] = body[i].declaration;
-        }
-        break;
+      }
     }
   }
 
@@ -218,30 +232,34 @@ function turnExportsIntoReturn(babel, body) {
 function addModule(babel, id) {
   var path = getPathFromModuleID(id);
   var source = fs.readFileSync(path, {encoding: 'utf8'});
-  var ast = babel.traverse.removeProperties(babel.parse(source));
+  var ast = babel.traverse.removeProperties(babel.parse(source, {
+    ecmaVersion: 6,
+    sourceType: 'module',
+    allowReserved: false
+  }));
 
-  var imports = turnImportsIntoGetModule(babel, path, ast.body);
-  turnExportsIntoReturn(babel, ast.body);
+  var importsExports = turnImportsIntoGetModule(babel, path, ast.program.body);
+  turnExportsIntoReturn(babel, ast.program.body, importsExports.exports);
 
   modules.push({
     id: id,
-    body: ast.body
+    body: ast.program.body
   });
   moduleIds.add(id);
 
-  addImports(babel, imports);
+  addImports(babel, importsExports);
 }
 
 function turnMainIntoModule(babel, node, path, id) {
-  var imports = turnImportsIntoGetModule(babel, path, node.body);
-  turnExportsIntoReturn(babel, node.body);
+  var importsExports = turnImportsIntoGetModule(babel, path, node.body);
+  turnExportsIntoReturn(babel, node.body, importsExports.exports);
 
   modules.push({
     id: id,
     body: node.body
   });
 
-  addImports(babel, imports);
+  addImports(babel, importsExports.imports);
 }
 
 function getProgram(babel, id) {
@@ -259,12 +277,17 @@ function getProgram(babel, id) {
   var call = babel.types.expressionStatement(babel.types.callExpression(
     babel.types.identifier('getModule'), [babel.types.literal(id)]));
   body.push(call);
-  return anonymousClosure(babel.types, body);
+
+  return babel.types.Program([
+    anonymousClosure(babel.types, body)
+  ]);
 }
 
 module.exports = function (babel) {
   return new babel.Transformer('l20n-bundler', {
     Program: function (node) {
+      moduleIds = new Set();
+      modules = [];
       var path = node._paths[0].parentPath.state.opts.filename;
       var id = Path.join(
         Path.relative('./src',
