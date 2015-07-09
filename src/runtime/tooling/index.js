@@ -1,17 +1,26 @@
 'use strict';
 
-import { fetch } from '../web/io';
-import { Service } from '../../bindings/html/service';
-import { View } from '../../bindings/html/view';
-import { Env } from '../../lib/env';
-import L20nASTParser from '../../lib/format/l20n/ast/parser';
-import L20nASTSerializer from '../../lib/format/l20n/ast/serializer';
-import L20nEntriesParser from '../../lib/format/l20n/entries/parser';
-import L20nEntriesSerializer from '../../lib/format/l20n/entries/serializer';
-import PropertiesParser from '../../lib/format/properties/parser';
+export { fetch } from '../web/io';
+export { Service } from '../../bindings/html/service';
+export { View } from '../../bindings/html/view';
 
-export const L20n = {
-    Service, View, Env, fetch,
-    L20nASTParser, L20nASTSerializer, L20nEntriesParser, L20nEntriesSerializer,
-    PropertiesParser,
-};
+export { default as ASTParser } from
+  '../../lib/format/l20n/ast/parser';
+export { default as ASTSerializer } from
+  '../../lib/format/l20n/ast/serializer';
+export { default as EntriesParser } from
+  '../../lib/format/l20n/entries/parser';
+export { default as EntriesSerializer } from
+  '../../lib/format/l20n/entries/serializer';
+export { default as PropertiesParser } from
+  '../../lib/format/properties/parser';
+
+export { Context } from '../../lib/context';
+export { Env } from '../../lib/env';
+export { L10nError } from '../../lib/errors';
+export { emit, addEventListener, removeEventListener } from '../../lib/events';
+export { prioritizeLocales } from '../../lib/intl';
+export { MockContext, lang } from '../../lib/mocks';
+export { getPluralRule } from '../../lib/plurals';
+export { walkEntry, walkValue, qps } from '../../lib/pseudo';
+export { format } from '../../lib/resolver';

@@ -73,8 +73,7 @@ module.exports = {
     output: {
       path: path('../dist'),
       filename: 'tooling/l20n.js',
-      libraryTarget: 'this',
-
+      library: 'L20n',
     },
     module: {
       loaders: [babel]
