@@ -13,19 +13,20 @@ var makeError = lib.makeError.bind(program);
 program
   .version('0.0.1')
   .usage('[options] [file]')
+  .option('-o, --output <type>', 'Type of output: ast or entries [ast]', 'ast')
   .option('-r, --raw', 'Print raw JSON')
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
 
 
-function print(type, err, data) {
+function print(fileformat, output, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
 
   var ast;
   try {
-    ast = lib.parse(type, data.toString());
+    ast = lib.parse(fileformat, output, data.toString());
   } catch (e) {
     console.error(makeError(e));
     process.exit(1);
@@ -42,8 +43,8 @@ function print(type, err, data) {
 }
 
 if (program.args.length) {
-  var type = program.args[0].substr(program.args[0].lastIndexOf('.') + 1);
-  fs.readFile(program.args[0], print.bind(null, type));
+  var fileformat = program.args[0].substr(program.args[0].lastIndexOf('.') + 1);
+  fs.readFile(program.args[0], print.bind(null, fileformat, program.output));
 } else {
   process.stdin.resume();
   process.stdin.on('data', print.bind(null, null));

@@ -57,7 +57,7 @@ function printEntry(ctx, id, entity) {
   }
 }
 
-function print(type, err, data) {
+function print(fileformat, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
@@ -67,7 +67,7 @@ function print(type, err, data) {
     entries = JSON.parse(data.toString());
   } else {
     try {
-      entries = lib.parse(type, data.toString());
+      entries = lib.parse(fileformat, 'entries', data.toString());
     } catch (e) {
       console.error(makeError(e));
       process.exit(1);
@@ -82,8 +82,8 @@ function print(type, err, data) {
 }
 
 if (program.args.length) {
-  var type = program.args[0].substr(program.args[0].lastIndexOf('.') + 1);
-  fs.readFile(program.args[0], print.bind(null, type));
+  var fileformat = program.args[0].substr(program.args[0].lastIndexOf('.') + 1);
+  fs.readFile(program.args[0], print.bind(null, fileformat));
 } else {
   process.stdin.resume();
   process.stdin.on('data', print.bind(null, null, null));

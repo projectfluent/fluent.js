@@ -1,18 +1,15 @@
 'use strict';
 
+/* jshint node:true */
+
 require('colors');
 require('../../node_modules/babel-core/register');
-var PropertiesParser =
-  require('../../src/lib/format/properties/parser');
-var L20nParser = require('../../src/lib/format/l20n/entries/parser');
 
-exports.parse = function(type, text) {
-  switch (type) {
-    case 'properties':
-      return PropertiesParser.parse(null, text);
-    case 'l20n':
-      return L20nParser.parse(null, text);
-  }
+exports.parse = function(fileformat, output, text) {
+  var module = fileformat === 'properties' ?
+    '../../src/lib/format/properties/parser' :
+    '../../src/lib/format/' + fileformat + '/' + output + '/parser';
+  return require(module).parse(null, text);
 };
 
 exports.color = function(str, col) {
