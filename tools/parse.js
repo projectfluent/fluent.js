@@ -32,6 +32,12 @@ function print(fileformat, output, err, data) {
     process.exit(1);
   }
 
+  var errors = null;
+  if (ast._errors) {
+    errors = ast._errors;
+    delete ast._errors;
+  }
+
   if (program.raw) {
     console.log(JSON.stringify(ast, null, 2));
   } else {
@@ -39,6 +45,25 @@ function print(fileformat, output, err, data) {
       keysColor: 'cyan',
       dashColor: 'cyan',
     }));
+  }
+
+  if (errors) {
+    printErrors(errors);
+  }
+}
+
+function printErrors(errors) {
+  console.log('Syntax errors:');
+  for (var i in errors) {
+    var error = errors[i];
+
+    var ctx = '\x1b[2m' + error.context.slice(0, error.offset) + '\x1b[22m' +
+      '\x1b[91m' + error.context.slice(error.offset) + '\x1b[0m';
+
+    var msg = '\x1b[4m' + error.description + '\x1b[0m'  +
+      ' at pos ' + error._pos.start +
+      ': `' + ctx.replace(/\s+/g, ' ') + '`';
+    console.log((parseInt(i) + 1) + ') ' + msg);
   }
 }
 

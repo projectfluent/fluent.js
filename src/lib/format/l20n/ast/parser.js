@@ -455,15 +455,15 @@ export default {
     let start = this._source.lastIndexOf('<', pos - 1);
     let lastClose = this._source.lastIndexOf('>', pos - 1);
     start = lastClose > start ? lastClose + 1 : start;
-    let context = '\x1b[90m' + this._source.slice(start, pos) + '\x1b[0m'; 
-    context += this._source.slice(pos, pos + 10);
+    let context = this._source.slice(start, pos + 10);
 
     let msg = message + ' at pos ' + pos + ': `' + context + '`';
 
     const err = new L10nError(msg);
-    if (this._config.pos) {
-      err._pos = {start: this._index, end: undefined};
-    }
+    err._pos = {start: pos, end: undefined};
+    err.offset = pos - start;
+    err.description = message;
+    err.context = context;
     return err;
   },
 
