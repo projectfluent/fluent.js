@@ -21,8 +21,7 @@ var babel = {
       'es6.properties.shorthand',
       'es6.forOf',
       'es6.spread',
-      'es6.parameters.rest',
-      'es6.parameters.default',
+      'es6.parameters',
       'es6.blockScoping'
     ],
   }
