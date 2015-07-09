@@ -60,9 +60,6 @@
     "webpack": "^1.8.4"
   },
   "engine": {
-    "node": ">=0.10 <0.12"
-  },
-  "dependencies": {
-    "promise": "^6.0.1"
+    "node": ">=0.12"
   }
 }
