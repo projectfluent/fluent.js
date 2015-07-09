@@ -6,17 +6,24 @@ export function walkEntry(entry, fn) {
     return fn(entry);
   }
 
+  const newEntry = Object.create(null);
+
+  if (entry.value) {
+    newEntry.value = walkValue(entry.value, fn);
+  }
+
+  if (entry.index) {
+    newEntry.index = entry.index;
+  }
+
   if (entry.attrs) {
+    newEntry.attrs = Object.create(null);
     for (let key in entry.attrs) {
-      entry.attrs[key] = walkEntry(entry.attrs[key], fn);
+      newEntry.attrs[key] = walkEntry(entry.attrs[key], fn);
     }
   }
 
-  if (entry.value) {
-    entry.value = walkValue(entry.value, fn);
-  }
-
-  return entry;
+  return newEntry;
 }
 
 export function walkValue(value, fn) {
@@ -24,22 +31,19 @@ export function walkValue(value, fn) {
     return fn(value);
   }
 
-  if (Array.isArray(value)) {
-    const newValue = [];
-    for (let i in value) {
-      newValue.push(walkValue(value[i], fn));
-    }
-    return newValue;
-  }
-
+  // skip expressions in placeables
   if (value.type) {
     return value;
   }
 
-  for (let key in value) {
-    value[key] = walkValue(value[key], fn);
+  const newValue = Array.isArray(value) ? [] : Object.create(null);
+  const keys = Object.keys(value);
+
+  for (let i = 0, key; (key = keys[i]); i++) {
+    newValue[key] = walkValue(value[key], fn);
   }
-  return value;
+
+  return newValue;
 }
 
 /* Pseudolocalizations
