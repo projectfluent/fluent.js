@@ -483,7 +483,11 @@ export default {
 
     this._index = nextEntry;
 
-    return new AST.JunkEntry(
+    const junk = new AST.JunkEntry(
       this._source.slice(this._curEntryStart, nextEntry));
+    if (this._config.pos) {
+      junk._pos = {start: this._curEntryStart, end: nextEntry};
+    }
+    return junk;
   }
 };
