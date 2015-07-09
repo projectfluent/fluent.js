@@ -80,4 +80,17 @@ module.exports = {
       loaders: [babel]
     }
   },
+  aisle: {
+    context: path('../../src'),
+    entry: './runtime/aisle/index.js',
+    output: {
+      path: path('../dist'),
+      filename: 'aisle/l20n.js',
+      libraryTarget: 'amd',
+
+    },
+    module: {
+      loaders: [babel]
+    }
+  },
 };
