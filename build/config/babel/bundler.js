@@ -247,7 +247,7 @@ function addModule(babel, id) {
   });
   moduleIds.add(id);
 
-  addImports(babel, importsExports);
+  addImports(babel, importsExports.imports);
 }
 
 function turnMainIntoModule(babel, node, path, id) {
