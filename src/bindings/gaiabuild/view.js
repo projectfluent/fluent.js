@@ -16,7 +16,9 @@ export class View {
     this.doc = htmloptimizer.document;
 
     this.isEnabled = this.doc.querySelector('link[rel="localization"]');
-    this.isLegacy = this.doc.querySelector('script[src$="l10n.js"]');
+    // XXX we should check if the app uses l10n.js instead, but due to lazy 
+    // loading we can't rely on querySelector.
+    this.isLegacy = !this.doc.querySelector('script[src$="l20n.js"]');
 
     const EnvClass = this.isLegacy ? LegacyEnv : Env;
     this.env = new EnvClass(
