@@ -43,12 +43,12 @@ function serializeEntries(lang, langEntries, sourceEntries) {
   return [errors, entries];
 }
 
-function extend(into, from) {
-  for (let key in from) {
+function extend(target, source) {
+  for (let key in source) {
     // overwrite existing keys for reduceRight
-    into[key] = from[key];
+    target[key] = source[key];
   }
-  return into;
+  return target;
 }
 
 function resolvesToString(entity) {
