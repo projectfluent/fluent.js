@@ -1,14 +1,13 @@
 'use strict';
 
-import { L10nError } from '../../lib/errors';
 import { qps } from '../../lib/pseudo';
 import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';
 import { getResourceLinks } from '../../bindings/html/head';
 import { translateFragment } from '../../bindings/html/dom';
 import { getDirection } from '../../bindings/html/langs';
-import { serializeEntries } from './serialize';
-import { serializeLegacyEntries } from './legacy/serialize';
+import { serializeContext } from './serialize';
+import { serializeLegacyContext } from './legacy/serialize';
 
 export class View {
   constructor(htmloptimizer, fetch) {
@@ -77,9 +76,9 @@ export class View {
       src: code in qps ? 'qps' : 'app'
     };
     return fetchContext(this.ctx, lang).then(() => {
-      const [errors, entries] = serializeContext(
-        this.ctx, lang, this.isLegacy ?
-          serializeLegacyEntries : serializeEntries);
+      const [errors, entries] = this.isLegacy ?
+        serializeLegacyContext(this.ctx, lang) :
+        serializeContext(this.ctx, lang);
 
       if (errors.length) {
         const notFoundErrors = errors.filter(
@@ -131,17 +130,4 @@ function fetchContext(ctx, lang) {
   const sourceLang = { code: 'en-US', dir: 'ltr', src: 'app' };
   return Promise.all(
     [sourceLang, lang].map(lang => ctx.fetch([lang])));
-}
-
-function serializeContext(ctx, lang, fn) {
-  const cache = ctx._env._resCache;
-  return ctx._resIds.reduce(([errorsSeq, entriesSeq], cur) => {
-    const sourceRes = cache[cur + 'en-USapp'];
-    const langRes = cache[cur + lang.code + lang.src];
-    const [errors, entries] = fn(
-      lang,
-      langRes instanceof L10nError ? {} : langRes,
-      sourceRes instanceof L10nError ? {} : sourceRes);
-    return [errorsSeq.concat(errors), entriesSeq.concat(entries)];
-  }, [[], []]);
 }
