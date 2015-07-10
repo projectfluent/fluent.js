@@ -11,7 +11,7 @@ export function serializeContext(ctx, lang) {
       lang,
       langRes instanceof L10nError ? {} : langRes,
       sourceRes instanceof L10nError ? {} : sourceRes);
-    return [errorsSeq.concat(errors), extend(entriesSeq, entries)];
+    return [errorsSeq.concat(errors), Object.assign(entriesSeq, entries)];
   }, [[], Object.create(null)]);
 }
 
@@ -41,14 +41,6 @@ function serializeEntries(lang, langEntries, sourceEntries) {
   }
 
   return [errors, entries];
-}
-
-function extend(target, source) {
-  for (let key in source) {
-    // overwrite existing keys for reduceRight
-    target[key] = source[key];
-  }
-  return target;
 }
 
 function resolvesToString(entity) {
