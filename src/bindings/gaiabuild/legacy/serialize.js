@@ -69,18 +69,16 @@ function serializeAttribute(attr) {
 }
 
 function resolvesToString(entity) {
-  return typeof entity === 'string' || // a simple string
-    Array.isArray(entity.value) ||     // a complex string
-    entity.index !== null;             // a dict with an index
+  return typeof entity === 'string' ||  // a simple string
+    typeof entity.value === 'string' || // a simple string, entity with attrs
+    Array.isArray(entity.value) ||      // a complex string
+    typeof entity.value === 'object' && // a dict with an index
+      entity.index !== null;
 }
 
-function areEntityStructsEqual(entity1, entity2) {
-  if (resolvesToString(entity1) && resolvesToString(entity2)) {
-    return true;
-  }
-
-  const keys1 = Object.keys(entity1);
-  const keys2 = Object.keys(entity2);
+function areAttrsEqual(attrs1, attrs2) {
+  const keys1 = Object.keys(attrs1 || Object.create(null));
+  const keys2 = Object.keys(attrs2 || Object.create(null));
 
   if (keys1.length !== keys2.length) {
     return false;
@@ -90,6 +88,18 @@ function areEntityStructsEqual(entity1, entity2) {
     if (keys2.indexOf(keys1[i]) === -1) {
       return false;
     }
+  }
+
+  return true;
+}
+
+function areEntityStructsEqual(source, translation) {
+  if (resolvesToString(source) && !resolvesToString(translation)) {
+    return false;
+  }
+
+  if (source.attrs || translation.attrs) {
+    return areAttrsEqual(source.attrs, translation.attrs);
   }
 
   return true;
