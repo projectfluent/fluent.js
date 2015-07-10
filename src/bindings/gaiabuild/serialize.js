@@ -4,15 +4,15 @@ import { L10nError } from '../../lib/errors';
 
 export function serializeContext(ctx, lang) {
   const cache = ctx._env._resCache;
-  return ctx._resIds.reduce(([errorsSeq, entriesSeq], cur) => {
+  return ctx._resIds.reduceRight(([errorsSeq, entriesSeq], cur) => {
     const sourceRes = cache[cur + 'en-USapp'];
     const langRes = cache[cur + lang.code + lang.src];
     const [errors, entries] = serializeEntries(
       lang,
       langRes instanceof L10nError ? {} : langRes,
       sourceRes instanceof L10nError ? {} : sourceRes);
-    return [errorsSeq.concat(errors), entriesSeq.concat(entries)];
-  }, [[], []]);
+    return [errorsSeq.concat(errors), extend(entriesSeq, entries)];
+  }, [[], Object.create(null)]);
 }
 
 function serializeEntries(lang, langEntries, sourceEntries) {
@@ -41,6 +41,14 @@ function serializeEntries(lang, langEntries, sourceEntries) {
   }
 
   return [errors, entries];
+}
+
+function extend(into, from) {
+  for (let key in from) {
+    // overwrite existing keys for reduceRight
+    into[key] = from[key];
+  }
+  return into;
 }
 
 function resolvesToString(entity) {
