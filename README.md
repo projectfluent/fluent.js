@@ -29,7 +29,7 @@ Include the following code in the `<head>` section of your HTML:
 L20n.js supports three kinds of translation resources:
 
  - L20n syntax, as documented at http://l20n.org/learn/,
- - properties syntax: https://en.wikipedia.org/wiki/.properties,
+ - properties syntax: https://en.wikipedia.org/wiki/.properties (deprecated),
  - JSON files parsed by `tools/parse.js -o entries`.
 
 
@@ -78,7 +78,7 @@ The JavaScript API and documentation
 It is also possible to use L20n programmatically, for instance in order to 
 localize dynamic content.  Refer to [docs/api][] for more details.
 
-[docs/html]: https://github.com/l20n/l20n.js/blob/master/docs/html.md
+[docs/api]: https://github.com/l20n/l20n.js/blob/master/docs/api.md
 
 
 Discuss
