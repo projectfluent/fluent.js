@@ -8,6 +8,30 @@ L20n reinvents software localization. Users should be able to benefit from the
 entire expressive power of a natural language.  L20n keeps simple things 
 simple, and at the same time makes complex things possible.
 
+L20n.js is a localization framework for websites which want to offer 
+a best-in-class translation experience for their users.  L20n takes advantage 
+of modern web technologies to offer a fast and lean localization of HTML and 
+JavaScript.
+
+
+How to use L20n
+---------------
+
+Include the following code in the `<head>` section of your HTML:
+
+```html
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="de, en-US, fr, pl">
+    <link rel="localization" href="locales/myApp.{locale}.l20n">
+    <script defer src="dist/webcompat/l20n.js"></script>
+```
+
+L20n.js supports three kinds of translation resources:
+
+ - L20n syntax, as documented at http://l20n.org/learn/,
+ - properties syntax: https://en.wikipedia.org/wiki/.properties,
+ - JSON files parsed by `tools/parse.js -o entries`.
+
 
 What L20n's syntax looks like
 -----------------------------
@@ -51,40 +75,10 @@ L20n.  See [docs/html][] for documentation and examples.
 The JavaScript API and documentation
 ------------------------------------
 
-L20n encloses localization into so-called contexts.  A context is an 
-independent object with its own set of localization resources and available 
-languages.  You can have more than one context at the same time.
+It is also possible to use L20n programmatically, for instance in order to 
+localize dynamic content.  Refer to [docs/api][] for more details.
 
-```javascript
-var ctx = L20n.getContext();
-ctx.linkResource('./locales/strings.lol');
-ctx.requestLocales();
-```
-
-When you freeze the context by calling `requestLocales`, the resource files 
-will be retrieved, parsed and compiled.  You can listen to the `ready` event 
-(emitted by the `Context` instance when all the resources have been compiled) 
-and use `ctx.get` and `ctx.getEntity` to get translations synchronously.
-
-Alternatively, you can register callbacks to execute when the context is ready 
-(or when globals change and translations need to be updated) with 
-`ctx.localize`.
-
-```javascript
-ctx.localize(['hello', 'new'], function(l10n) {
-  var node = document.querySelector('[data-l10n-id=hello]');
-  node.textContent = l10n.entities.hello.value;
-  node.classList.remove('hidden');
-});
-```
-
-You can find the complete documentation for localizers, developers and 
-contributors at the [Mozilla Developer Network][].  The original design 
-documents can be found at the [Mozilla Wiki][].  We also use the wiki for 
-release planning.
-
-[Mozilla Developer Network]: https://developer.mozilla.org/en-US/docs/L20n
-[Mozilla Wiki]: https://wiki.mozilla.org/L20n
+[docs/html]: https://github.com/l20n/l20n.js/blob/master/docs/html.md
 
 
 Discuss
