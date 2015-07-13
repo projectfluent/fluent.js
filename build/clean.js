@@ -6,7 +6,7 @@ module.exports = {
       {
         dot: true,
         src: [
-          'build/dist/**/*',
+          'dist/**/*',
         ],
       },
     ],

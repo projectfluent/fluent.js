@@ -6,7 +6,7 @@ var path = require('path').resolve.bind(null, __dirname);
 var babel = {
   test: /\.js$/,
   include: [
-    path('../../src')
+    path('../src')
   ],
   loader: 'babel',
   query: {
@@ -28,34 +28,20 @@ var babel = {
 };
 
 module.exports = {
-  web: {
-    context: path('../../src'),
+  webcompat: {
+    context: path('../src'),
     entry: './runtime/web/index.js',
     output: {
       path: path('../dist'),
-      filename: 'web/l20n.js',
+      filename: 'webcompat/l20n.js',
       libraryTarget: 'this',
-
-    },
-    module: {
-      loaders: [babel]
-    }
-  },
-  gaia: {
-    context: path('../../src'),
-    entry: './runtime/web/index.js',
-    output: {
-      path: path('../dist'),
-      filename: 'gaia/l20n.js',
-      libraryTarget: 'this',
-
     },
     module: {
       loaders: [babel]
     }
   },
   gaiabuild: {
-    context: path('../../src'),
+    context: path('../src'),
     entry: './runtime/gaiabuild/index.js',
     output: {
       path: path('../dist'),
@@ -67,7 +53,7 @@ module.exports = {
     }
   },
   tooling: {
-    context: path('../../src'),
+    context: path('../src'),
     entry: './runtime/tooling/index.js',
     output: {
       path: path('../dist'),
@@ -79,7 +65,7 @@ module.exports = {
     }
   },
   aisle: {
-    context: path('../../src'),
+    context: path('../src'),
     entry: './runtime/aisle/index.js',
     output: {
       path: path('../dist'),

@@ -5,12 +5,17 @@
 
     <meta name="defaultLanguage" content="en-US">
     <meta name="availableLanguages" content="en-US, fr">
-    <link rel="resource" type="application/l10n" href="locales/example.{{locale}}.json">
+    <link rel="localization" href="locales/example.{locale}.json">
     <script defer src="../node_modules/babel-core/browser-polyfill.min.js"></script>
-    <script defer src="../build/dist/web/l20n.js"></script>
+    <script defer src="../dist/webcompat/l20n.js"></script>
   </head>
 
   <body>
     <h1 data-l10n-id="hello"></h1>
+    <p data-l10n-id="name">
+      <input type="text">
+      <input type="submit">
+    </p>
+    <div data-l10n-id="unreadEmails" data-l10n-args='{"emailCount": 5}'/>
   </body>
 </html>

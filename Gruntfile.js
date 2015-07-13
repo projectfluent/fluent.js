@@ -29,17 +29,17 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
-    webpack: require('./build/config/webpack'),
-    babel: require('./build/config/babel'),
-    copy: require('./build/config/copy'),
-    clean: require('./build/config/clean'),
-    jshint: require('./build/config/lint/jshint'),
-    jsonlint: require('./build/config/lint/jsonlint'),
-    'merge-conflict': require('./build/config/lint/merge-conflict'),
-    mochaTest: require('./build/config/mocha-test'),
-    shell: require('./build/config/shell'),
-    uglify: require('./build/config/uglify'),
-    watch: require('./build/config/watch'),
+    webpack: require('./build/webpack'),
+    babel: require('./build/babel'),
+    copy: require('./build/copy'),
+    clean: require('./build/clean'),
+    jshint: require('./build/lint/jshint'),
+    jsonlint: require('./build/lint/jsonlint'),
+    'merge-conflict': require('./build/lint/merge-conflict'),
+    mochaTest: require('./build/mocha-test'),
+    shell: require('./build/shell'),
+    uglify: require('./build/uglify'),
+    watch: require('./build/watch'),
   });
 
   // Add copies of watched tasks with an added filter option.
@@ -69,19 +69,23 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'lint',
     'test',
-    'webpack:web',
+    'webpack:webcompat',
+    'babel:web',
   ]);
 
   grunt.registerTask('gaia', [
     'lint',
     'test',
     'webpack:gaiabuild',
-    'babel:gaia',
+    'babel:web',
     'copy:stage'
   ]);
 
   grunt.registerTask('release', [
-    'build',
+    'lint',
+    'test',
+    'webpack',
+    'babel',
     'uglify'
   ]);
 

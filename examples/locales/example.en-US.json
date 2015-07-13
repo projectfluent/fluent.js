@@ -1,39 +1,48 @@
-[
-  {
-    "$i": "title",
-    "$v": "mozL10n example"
-  },
-  {
-    "$i": "hello",
-    "$v": {
-      "$o": "Hello, <em>world</em>!"
-    }
-  },
-  {
-    "$i": "name",
-    "$v": {
-      "$o": "Type <input placeholder=\"your name\"> and <input value=\"send\">"
-    }
-  },
-  {
-    "$i": "unreadEmails",
-    "$x": [
+{
+  "title": "mozL10n example",
+  "world": "world",
+  "hello": {
+    "value": [
+      "Hello, <em>",
       {
-        "t": "idOrVar",
-        "v": "plural"
+        "type": "id",
+        "name": "world"
       },
-      "emailCount"
-    ],
-    "$v": {
+      "</em>!"
+    ]
+  },
+  "name": "Type <input placeholder=\"your name\"> and <input value=\"send\">",
+  "unreadEmails": {
+    "value": {
       "one": "You have one unread email",
       "other": [
         "You have ",
         {
-          "t": "idOrVar",
-          "v": "emailCount"
+          "type": "var",
+          "name": "emailCount"
         },
         " unread emails"
       ]
-    }
+    },
+    "index": [
+      {
+        "type": "call",
+        "expr": {
+          "type": "prop",
+          "expr": {
+            "type": "glob",
+            "name": "cldr"
+          },
+          "prop": "plural",
+          "cmpt": false
+        },
+        "args": [
+          {
+            "type": "var",
+            "name": "emailCount"
+          }
+        ]
+      }
+    ]
   }
-]
+}

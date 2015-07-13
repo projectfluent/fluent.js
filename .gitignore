@@ -1,5 +1,5 @@
 node_modules
-build/dist
+dist
 tools/*.l20n
 tools/*.properties
 tools/*.json
