@@ -20,10 +20,10 @@ How to use L20n
 Include the following code in the `<head>` section of your HTML:
 
 ```html
-    <meta name="defaultLanguage" content="en-US">
-    <meta name="availableLanguages" content="de, en-US, fr, pl">
-    <link rel="localization" href="locales/myApp.{locale}.l20n">
-    <script defer src="dist/webcompat/l20n.js"></script>
+<meta name="defaultLanguage" content="en-US">
+<meta name="availableLanguages" content="de, en-US, fr, pl">
+<link rel="localization" href="locales/myApp.{locale}.l20n">
+<script defer src="dist/webcompat/l20n.js"></script>
 ```
 
 L20n.js supports three kinds of translation resources:
@@ -83,6 +83,7 @@ localize dynamic content.  Refer to [docs/api][] for more details.
 
 Discuss
 -------
+
 We'd love to hear your thoughts on L20n!  Whether you're a localizer looking 
 for a better way to express yourself in your language, or a developer trying to 
 make your app localizable and multilingual, or a hacker looking for a project 
@@ -95,6 +96,7 @@ channel.
 
 Get Involved
 ------------
+
 L20n is open-source, licensed under the Apache License, Version 2.0.  We 
 encourage everyone to take a look at our code and we'll listen to your 
 feedback.
