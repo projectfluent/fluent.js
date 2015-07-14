@@ -10,22 +10,13 @@ export class Context {
     this._resIds = resIds;
   }
 
-  fetch(langs) {
-    // XXX add arg: count of langs to fetch
-    return this._fetchResources(langs);
-  }
-
   formatValue(langs, id, args) {
-    return this.fetch(langs).then(
-      this._fallback.bind(this, Context.prototype._formatValue, id, args));
+    return this._fallback(Context.prototype._formatValue, langs, id, args);
   }
 
   formatEntity(langs, id, args) {
-    return this.fetch(langs).then(
-      this._fallback.bind(this, Context.prototype._formatEntity, id, args));
+    return this._fallback(Context.prototype._formatEntity, langs, id, args);
   }
-
-  /* private */
 
   _formatTuple(lang, args, entity, id, key) {
     try {
@@ -69,7 +60,7 @@ export class Context {
     return formatted;
   }
 
-  _fetchResources(langs) {
+  fetch(langs) {
     if (langs.length === 0) {
       return Promise.resolve(langs);
     }
@@ -80,7 +71,7 @@ export class Context {
           () => langs);
   }
 
-  _fallback(method, id, args, langs) {
+  _fallback(method, langs, id, args) {
     const lang = langs[0];
 
     if (!lang) {
@@ -92,14 +83,15 @@ export class Context {
     const entity = this._getEntity(lang, id);
 
     if (entity) {
-      return method.call(this, lang, args, entity, id);
+      return Promise.resolve(
+        method.call(this, lang, args, entity, id));
     } else {
       this._env.emit('notfounderror', new L10nError(
         '"' + id + '"' + ' not found in ' + lang.code, id, lang), this);
     }
 
-    return this._fetchResources(langs.slice(1)).then(
-      this._fallback.bind(this, method, id, args));
+    return this.fetch(langs.slice(1)).then(
+      langs => this._fallback(method, langs, id, args));
   }
 
   _getEntity(lang, id) {
