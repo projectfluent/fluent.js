@@ -111,7 +111,7 @@ function getElementTranslation(view, langs, elem) {
   const l10n = getAttributes(elem);
 
   return l10n.id ?
-    view.ctx.formatEntity(langs, l10n.id, l10n.args) : false;
+    view.ctx.resolve(langs, l10n.id, l10n.args) : false;
 }
 
 export function translateElement(view, langs, elem) {
