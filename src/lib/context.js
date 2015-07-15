@@ -10,14 +10,6 @@ export class Context {
     this._resIds = resIds;
   }
 
-  formatValue(langs, id, args) {
-    return this._fallback(Context.prototype._formatValue, langs, id, args);
-  }
-
-  formatEntity(langs, id, args) {
-    return this._fallback(Context.prototype._formatEntity, langs, id, args);
-  }
-
   _formatTuple(lang, args, entity, id, key) {
     try {
       return format(this, lang, args, entity);
@@ -27,15 +19,6 @@ export class Context {
       this._env.emit('resolveerror', err, this);
       return [{ error: err }, err.id];
     }
-  }
-
-  _formatValue(lang, args, entity, id) {
-    if (typeof entity === 'string') {
-      return entity;
-    }
-
-    const [, value] = this._formatTuple.call(this, lang, args, entity, id);
-    return value;
   }
 
   _formatEntity(lang, args, entity, id) {
@@ -48,13 +31,12 @@ export class Context {
 
     if (entity.attrs) {
       formatted.attrs = Object.create(null);
-    }
-
-    for (let key in entity.attrs) {
-      /* jshint -W089 */
-      const [, attrValue] = this._formatTuple.call(
-        this, lang, args, entity.attrs[key], id, key);
-      formatted.attrs[key] = attrValue;
+      for (let key in entity.attrs) {
+        /* jshint -W089 */
+        const [, attrValue] = this._formatTuple.call(
+          this, lang, args, entity.attrs[key], id, key);
+        formatted.attrs[key] = attrValue;
+      }
     }
 
     return formatted;
@@ -71,27 +53,27 @@ export class Context {
           () => langs);
   }
 
-  _fallback(method, langs, id, args) {
+  resolve(langs, id, args) {
     const lang = langs[0];
 
     if (!lang) {
       this._env.emit('notfounderror', new L10nError(
         '"' + id + '"' + ' not found in any language', id), this);
-      return id;
+      return { value: id, attrs: null };
     }
 
     const entity = this._getEntity(lang, id);
 
     if (entity) {
       return Promise.resolve(
-        method.call(this, lang, args, entity, id));
+        this._formatEntity(lang, args, entity, id));
     } else {
       this._env.emit('notfounderror', new L10nError(
         '"' + id + '"' + ' not found in ' + lang.code, id, lang), this);
     }
 
     return this.fetch(langs.slice(1)).then(
-      langs => this._fallback(method, langs, id, args));
+      langs => this.resolve(langs, id, args));
   }
 
   _getEntity(lang, id) {
