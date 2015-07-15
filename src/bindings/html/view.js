@@ -48,16 +48,19 @@ export class View {
 
   formatValue(id, args) {
     return this.service.languages.then(
+      langs => this.ctx.fetch(langs)).then(
       langs => this.ctx.formatValue(langs, id, args));
   }
 
   formatEntity(id, args) {
     return this.service.languages.then(
+      langs => this.ctx.fetch(langs)).then(
       langs => this.ctx.formatEntity(langs, id, args));
   }
 
   translateFragment(frag) {
     return this.service.languages.then(
+      langs => this.ctx.fetch(langs)).then(
       langs => translateFragment(this, langs, frag));
   }
 }
