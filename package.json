@@ -1,7 +1,7 @@
 {
   "name": "l20n",
   "description": "A localization library for Firefox OS",
-  "version": "3.0.0-unstable",
+  "version": "4.0.0-pre",
   "homepage": "http://l20n.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
