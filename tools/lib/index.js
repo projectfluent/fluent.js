@@ -9,6 +9,10 @@ exports.parse = function(fileformat, output, text) {
   var module = fileformat === 'properties' ?
     '../../src/lib/format/properties/parser' :
     '../../src/lib/format/' + fileformat + '/' + output + '/parser';
+
+  if (fileformat === 'l20n' && output === 'ast') {
+    return require(module).parseResource(text);
+  }
   return require(module).parse(null, text);
 };
 

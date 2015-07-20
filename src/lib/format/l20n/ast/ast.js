@@ -4,10 +4,6 @@ class Node {
   constructor() {
     this.type = this.constructor.name;
   }
-
-  setPosition(start, end) {
-    this._pos = {start, end};
-  }
 }
 
 class Entry extends Node {

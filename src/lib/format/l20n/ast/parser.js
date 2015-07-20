@@ -5,25 +5,28 @@ import { L10nError } from '../../../errors';
 
 const MAX_PLACEABLES = 100;
 
-export default {
-  parse: function(env, string, pos = false) {
+
+class ParseContext {
+  constructor(string, pos) {
+    this._config = {
+      pos: pos
+    };
     this._source = string;
     this._index = 0;
     this._length = string.length;
     this._curEntryStart = 0;
-    this._config = {
-      pos: pos
-    };
+  } 
 
-    if (pos !== true) {
-      AST.Node.prototype.setPosition = function() {};
+  setPosition(node, start, end) {
+    if (!this._config.pos) {
+      return;
     }
-    return this.getResource(pos);
-  },
+    node._pos = {start, end};
+  }
 
-  getResource: function() {
+  getResource() {
     let resource = new AST.Resource();
-    resource.setPosition(0, this._length);
+    this.setPosition(resource, 0, this._length);
     resource._errors = [];
 
     this.getWS();
@@ -44,9 +47,9 @@ export default {
     }
 
     return resource;
-  },
+  }
 
-  getEntry: function() {
+  getEntry() {
     this._curEntryStart = this._index;
 
     if (this._source[this._index] === '<') {
@@ -64,9 +67,9 @@ export default {
     }
 
     throw this.error('Invalid entry');
-  },
+  }
 
-  getEntity: function(id, index) {
+  getEntity(id, index) {
     if (!this.getRequiredWS()) {
       throw this.error('Expected white space');
     }
@@ -94,11 +97,11 @@ export default {
     ++this._index;
 
     const entity = new AST.Entity(id, value, index, attrs);
-    entity.setPosition(this._curEntryStart, this._index);
+    this.setPosition(entity, this._curEntryStart, this._index);
     return entity;
-  },
+  }
 
-  getValue: function(ch = this._source[this._index], optional = false) {
+  getValue(ch = this._source[this._index], optional = false) {
     switch (ch) {
       case '\'':
       case '"':
@@ -111,17 +114,17 @@ export default {
       throw this.error('Unknown value type');
     }
     return null;
-  },
+  }
 
-  getWS: function() {
+  getWS() {
     let cc = this._source.charCodeAt(this._index);
     // space, \n, \t, \r
     while (cc === 32 || cc === 10 || cc === 9 || cc === 13) {
       cc = this._source.charCodeAt(++this._index);
     }
-  },
+  }
 
-  getRequiredWS: function() {
+  getRequiredWS() {
     const pos = this._index;
     let cc = this._source.charCodeAt(pos);
     // space, \n, \t, \r
@@ -129,9 +132,9 @@ export default {
       cc = this._source.charCodeAt(++this._index);
     }
     return this._index !== pos;
-  },
+  }
 
-  getIdentifier: function() {
+  getIdentifier() {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
@@ -151,11 +154,11 @@ export default {
     }
 
     const id = new AST.Identifier(this._source.slice(start, this._index));
-    id.setPosition(start, this._index);
+    this.setPosition(id, start, this._index);
     return id;
-  },
+  }
 
-  getUnicodeChar: function() {
+  getUnicodeChar() {
     for (let i = 0; i < 4; i++) {
       let cc = this._source.charCodeAt(++this._index);
       if ((cc > 96 && cc < 103) || // a-f
@@ -166,9 +169,9 @@ export default {
       throw this.error('Illegal unicode escape sequence');
     }
     return '\\u' + this._source.slice(this._index - 3, this._index + 1);
-  },
+  }
 
-  getString: function(opchar, opcharLen) {
+  getString(opchar, opcharLen) {
     let body = [];
     let buf = '';
     let placeables = 0;
@@ -237,13 +240,13 @@ export default {
 
     const string = new AST.String(
       this._source.slice(start, this._index - 1), body);
-    string.setPosition(start, this._index);
+    this.setPosition(string, start, this._index);
     string._opchar = opchar;
 
     return string;
-  },
+  }
 
-  getAttributes: function() {
+  getAttributes() {
     const attrs = [];
 
     while (true) {
@@ -258,9 +261,9 @@ export default {
       }
     }
     return attrs;
-  },
+  }
 
-  getAttribute: function() {
+  getAttribute() {
     const start = this._index;
     const key = this.getIdentifier();
     let index;
@@ -277,11 +280,11 @@ export default {
     ++this._index;
     this.getWS();
     const attr = new AST.Attribute(key, this.getValue(), index);
-    attr.setPosition(start, this._index);
+    this.setPosition(attr, start, this._index);
     return attr;
-  },
+  }
 
-  getHash: function() {
+  getHash() {
     const start = this._index;
     let items = [];
 
@@ -307,11 +310,11 @@ export default {
     }
 
     const hash = new AST.Hash(items);
-    hash.setPosition(start, this._index);
+    this.setPosition(hash, start, this._index);
     return hash;
-  },
+  }
 
-  getHashItem: function() {
+  getHashItem() {
     const start = this._index;
 
     let defItem = false;
@@ -329,11 +332,11 @@ export default {
     this.getWS();
 
     const hashItem = new AST.HashItem(key, this.getValue(), defItem);
-    hashItem.setPosition(start, this._index);
+    this.setPosition(hashItem, start, this._index);
     return hashItem;
-  },
+  }
 
-  getComment: function() {
+  getComment() {
     this._index += 2;
     const start = this._index;
     const end = this._source.indexOf('*/', start);
@@ -344,11 +347,11 @@ export default {
 
     this._index = end + 2;
     const comment = new AST.Comment(this._source.slice(start, end));
-    comment.setPosition(start - 2, this._index);
+    this.setPosition(comment, start - 2, this._index);
     return comment;
-  },
+  }
 
-  getExpression: function () {
+  getExpression() {
     const start = this._index;
     let exp = this.getPrimaryExpression();
 
@@ -366,9 +369,9 @@ export default {
     }
 
     return exp;
-  },
+  }
 
-  getPropertyExpression: function(idref, computed, start) {
+  getPropertyExpression(idref, computed, start) {
     let exp;
 
     if (computed) {
@@ -384,20 +387,20 @@ export default {
     }
 
     const propExpr = new AST.PropertyExpression(idref, exp, computed);
-    propExpr.setPosition(start, this._index);
+    this.setPosition(propExpr, start, this._index);
     return propExpr;
-  },
+  }
 
-  getCallExpression: function(callee, start) {
+  getCallExpression(callee, start) {
     this.getWS();
 
     const callExpr = new AST.CallExpression(callee,
       this.getItemList(this.getExpression, ')'));
-    callExpr.setPosition(start, this._index);
+    this.setPosition(callExpr, start, this._index);
     return callExpr;
-  },
+  }
 
-  getPrimaryExpression: function() {
+  getPrimaryExpression() {
     const start = this._index;
     const ch = this._source[this._index];
 
@@ -405,19 +408,19 @@ export default {
       case '$':
         ++this._index;
         const variable = new AST.Variable(this.getIdentifier());
-        variable.setPosition(start, this._index);
+        this.setPosition(variable, start, this._index);
         return variable;
       case '@':
         ++this._index;
         const global = new AST.Global(this.getIdentifier());
-        global.setPosition(start, this._index);
+        this.setPosition(global, start, this._index);
         return global;
       default:
         return this.getIdentifier();
     }
-  },
+  }
 
-  getItemList: function(callback, closeChar) {
+  getItemList(callback, closeChar) {
     let items = [];
     let closed = false;
 
@@ -447,9 +450,9 @@ export default {
     }
 
     return items;
-  },
+  }
 
-  error: function(message) {
+  error(message) {
     const pos = this._index;
 
     let start = this._source.lastIndexOf('<', pos - 1);
@@ -465,9 +468,9 @@ export default {
     err.description = message;
     err.context = context;
     return err;
-  },
+  }
 
-  getJunkEntry: function() {
+  getJunkEntry() {
     const pos = this._index;
     let nextEntity = this._source.indexOf('<', pos);
     let nextComment = this._source.indexOf('/*', pos);
@@ -485,9 +488,15 @@ export default {
 
     const junk = new AST.JunkEntry(
       this._source.slice(this._curEntryStart, nextEntry));
-    if (this._config.pos) {
-      junk._pos = {start: this._curEntryStart, end: nextEntry};
-    }
+
+    this.setPosition(junk, this._curEntryStart, nextEntry);
     return junk;
   }
+}
+
+export default {
+  parseResource: function(string, pos = false) {
+    const parseContext = new ParseContext(string, pos);
+    return parseContext.getResource();
+  },
 };
