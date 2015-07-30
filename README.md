@@ -76,9 +76,11 @@ The JavaScript API and documentation
 ------------------------------------
 
 It is also possible to use L20n programmatically, for instance in order to 
-localize dynamic content.  Refer to [docs/api][] for more details.
+localize dynamic content.  Refer to [docs/node][] and [docs/view][] for more 
+details.
 
-[docs/api]: https://github.com/l20n/l20n.js/blob/master/docs/api.md
+[docs/node]: https://github.com/l20n/l20n.js/blob/master/docs/node.md
+[docs/view]: https://github.com/l20n/l20n.js/blob/master/docs/view.md
 
 
 Discuss

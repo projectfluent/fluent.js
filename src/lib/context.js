@@ -73,7 +73,7 @@ export class Context {
     }
 
     return this.fetch(langs.slice(1)).then(
-      langs => this.resolve(langs, id, args));
+      nextLangs => this.resolve(nextLangs, id, args));
   }
 
   _getEntity(lang, id) {

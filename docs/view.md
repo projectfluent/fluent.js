@@ -1,4 +1,4 @@
-L20n.js API
+The View API
 ============
 
 The main abstraction used by the JavaScript API is the `View` class.  Views are 
