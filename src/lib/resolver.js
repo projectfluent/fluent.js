@@ -176,9 +176,11 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
     }
   }
 
-  // if there was no index or no selector was found, try 'other'
-  if ('other' in expr) {
-    return resolveValue(locals, ctx, lang, args, expr.other);
+  // if there was no index or no selector was found, try the default
+  // XXX 'other' is an artifact from Gaia
+  const defaultKey = expr.__default || 'other';
+  if (defaultKey in expr) {
+    return resolveValue(locals, ctx, lang, args, expr[defaultKey]);
   }
 
   throw new L10nError('Unresolvable value');
