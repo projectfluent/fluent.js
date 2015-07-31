@@ -16,7 +16,7 @@ export function getMeta(head) {
     'meta[name="availableLanguages"],' +
     'meta[name="defaultLanguage"],' +
     'meta[name="appVersion"]');
-  for (let el of els) {
+  Array.prototype.forEach.call(els, el => {
     const name = el.getAttribute('name');
     const content = el.getAttribute('content').trim();
     switch (name) {
@@ -34,7 +34,8 @@ export function getMeta(head) {
       case 'appVersion':
         appVersion = content;
     }
-  }
+  });
+
   return {
     defaultLang,
     availableLangs,

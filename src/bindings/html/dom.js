@@ -58,20 +58,20 @@ function getTranslatables(element) {
 export function translateMutations(view, langs, mutations) {
   const targets = new Set();
 
-  for (let mutation of mutations) {
+  Array.prototype.forEach.call(mutations, mutation => {
     switch (mutation.type) {
       case 'attributes':
         targets.add(mutation.target);
         break;
       case 'childList':
-        for (let addedNode of mutation.addedNodes) {
+        Array.prototype.forEach.call(mutation.addedNodes, addedNode => {
           if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
             targets.add(addedNode);
           }
-        }
+        });
         break;
     }
-  }
+  });
 
   if (targets.size === 0) {
     return;
