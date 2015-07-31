@@ -1,10 +1,9 @@
-bindings
-lib/client
-
+build
+docs
 examples
 tests
 tools
 
-dist
-build
-Makefile
+bower.json
+Gruntfile.js
+tags
