@@ -17,12 +17,15 @@
   ],
   "bugs": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox%20OS&component=Gaia::L10n",
   "scripts": {
-    "test": "grunt merge-conflict lint test"
+    "test": "grunt merge-conflict lint test",
+    "prepublish": "grunt webpack",
+    "test-node": "node ./tests/node"
   },
   "directories": {
     "lib": "./src"
   },
-  "main": "./src/runtime/node/index.js",
+  "main": "./dist/node/l20n.js",
+  "browser": "./dist/node/l20n-browser.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/l20n/l20n.js.git"
@@ -53,6 +56,7 @@
     "load-grunt-tasks": "~0.1.0",
     "prettyjson": "~0.8.0",
     "should": "~1.3.0",
+    "string.prototype.endswith": "^0.2.0",
     "webpack": "^1.8.4"
   },
   "engine": {

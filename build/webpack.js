@@ -90,4 +90,16 @@ module.exports = {
       loaders: [babel]
     }
   },
+  nodeBrowser: {
+    context: path('../src'),
+    entry: './runtime/node/browser.js',
+    output: {
+      path: path('../dist'),
+      filename: 'node/l20n-browser.js',
+      libraryTarget: 'commonjs2',
+    },
+    module: {
+      loaders: [babel]
+    }
+  },
 };
