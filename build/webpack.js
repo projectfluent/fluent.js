@@ -90,12 +90,12 @@ module.exports = {
       loaders: [babel]
     }
   },
-  nodeBrowser: {
+  webcommon: {
     context: path('../src'),
-    entry: './runtime/node/browser.js',
+    entry: './runtime/web/common.js',
     output: {
       path: path('../dist'),
-      filename: 'node/l20n-browser.js',
+      filename: 'web/l20n-common.js',
       libraryTarget: 'commonjs2',
     },
     module: {

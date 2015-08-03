@@ -1,6 +1,6 @@
 'use strict';
 
-import { fetch } from '../web/io';
+import { fetch } from './io';
 import { Env } from '../../lib/env';
 
 export default {
