@@ -1,5 +1,7 @@
 'use strict';
 
+import './polyfill';
+
 export function getResourceLinks(head) {
   return Array.prototype.map.call(
     head.querySelectorAll('link[rel="localization"]'),
@@ -16,10 +18,6 @@ export function getMeta(head) {
     'meta[name="availableLanguages"],' +
     'meta[name="defaultLanguage"],' +
     'meta[name="appVersion"]');
-
-  // Polyfill NodeList.prototype[Symbol.iterator] for Chrome.
-  // See https://code.google.com/p/chromium/issues/detail?id=401699
-  metas[Symbol.iterator] = Array.prototype[Symbol.iterator];
   for (let meta of metas) {
     const name = meta.getAttribute('name');
     const content = meta.getAttribute('content').trim();
