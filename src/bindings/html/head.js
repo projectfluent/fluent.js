@@ -1,5 +1,11 @@
 'use strict';
 
+// Polyfill NodeList.prototype[Symbol.iterator] for Chrome.
+// See https://code.google.com/p/chromium/issues/detail?id=401699
+if (!NodeList.prototype[Symbol.iterator]) {
+  NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
+}
+
 export function getResourceLinks(head) {
   return Array.prototype.map.call(
     head.querySelectorAll('link[rel="localization"]'),
@@ -12,13 +18,13 @@ export function getMeta(head) {
   let appVersion = null;
 
   // XXX take last found instead of first?
-  const els = head.querySelectorAll(
+  const metas = head.querySelectorAll(
     'meta[name="availableLanguages"],' +
     'meta[name="defaultLanguage"],' +
     'meta[name="appVersion"]');
-  for (let el of els) {
-    const name = el.getAttribute('name');
-    const content = el.getAttribute('content').trim();
+  for (let meta of metas) {
+    const name = meta.getAttribute('name');
+    const content = meta.getAttribute('content').trim();
     switch (name) {
       case 'availableLanguages':
         availableLangs = getLangRevisionMap(
@@ -35,6 +41,7 @@ export function getMeta(head) {
         appVersion = content;
     }
   }
+
   return {
     defaultLang,
     availableLangs,

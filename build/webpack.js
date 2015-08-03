@@ -10,7 +10,18 @@ var babel = {
   ],
   loader: 'babel',
   query: {
+    loose: 'all',
     comments: false,
+    optional: [
+      'es6.spec.blockScoping',
+      'runtime',
+      'minification.deadCodeElimination',
+      'minification.constantFolding',
+      'minification.memberExpressionLiterals',
+      'minification.propertyLiterals',
+      'minification.removeDebugger',
+      'validation.undeclaredVariableCheck',
+    ],
     whitelist: [
       'strict',
       'es6.modules',

@@ -150,10 +150,18 @@ function addImports(babel, imports) {
 function turnImportIntoGetModule(babel, source, node) {
   var id;
 
-  if (node.specifiers.length === 1 &&
+  if (node.specifiers.length === 0) {
+    // import 'foo';
+    return babel.types.expressionStatement(
+      babel.types.callExpression(
+        babel.types.identifier('getModule'),
+        [babel.types.literal(source)]));
+  } else if (node.specifiers.length === 1 &&
       babel.types.isImportDefaultSpecifier(node.specifiers[0])) {
+    // import bar from 'foo';
     id = babel.types.identifier(node.specifiers[0].local.name);
   } else {
+    // import {bar, baz} from 'foo';
     var idents = [];
     for (var j = 0; j < node.specifiers.length; j++) {
       idents.push(babel.types.identifier(node.specifiers[j].local.name));
@@ -164,7 +172,7 @@ function turnImportIntoGetModule(babel, source, node) {
   var getModule = babel.types.callExpression(
     babel.types.identifier('getModule'),
     [babel.types.literal(source)]
-    );
+  );
 
   return babel.types.variableDeclaration('const', [
       babel.types.variableDeclarator(id, getModule)
