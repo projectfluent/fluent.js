@@ -18,8 +18,7 @@
   "bugs": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox%20OS&component=Gaia::L10n",
   "scripts": {
     "test": "grunt merge-conflict lint test",
-    "prepublish": "grunt webpack",
-    "test-node": "node ./tests/node"
+    "prepublish": "grunt webpack"
   },
   "directories": {
     "lib": "./src"
