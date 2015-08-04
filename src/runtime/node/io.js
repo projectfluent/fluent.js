@@ -2,6 +2,7 @@
 
 import { readFile } from 'fs';
 import { L10nError } from '../../lib/errors';
+import 'string.prototype.endswith';
 
 function load(url) {
   return new Promise(function(resolve, reject) {

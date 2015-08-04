@@ -1,68 +1,57 @@
 L20n.js for node.js
 ===================
 
-The low-level L20n.js API is internal and experimental and  it might change 
+The low-level L20n.js API is internal and experimental and  it might change
 without notice.
 
 
 ## Install
 
-L20n.js is available for installation via npm.
+L20n.js is available for installation via `npm`.
 
-    npm install l20n
-
-
-## Import
-
-If your environment supports ES2015, you can import L20n like this:
-
-```javascript
-import { Env, fetch } from 'l20n';
+```bash
+$ npm install l20n
 ```
 
 
-## Transpile on-the-fly
+## Usage
 
-You can also transpile to ES5 on-the-fly with Babel.  First, install Babel:
+Example resource files:
 
-    npm install babel
+`./locales/es-ES.l20n`
 
-You can then require L20n like so:
-
-```javascript
-require('babel/register');
-var L20n = require('l20n');
+```html
+<fooEntity "Foo en español">
 ```
 
+`./locales/en-US.l20n`
 
-## Require the dist version
-
-If you're using one of the official releases from the [v3.x][] branch, you can 
-also require an already transpiled version of L20n.js with:
-
-```javascript
-var L20n = require('l20n/compat');
+```html
+<fooEntity "Foo in English">
+<barEntity "Bar only exists in English">
 ```
 
-[v3.x]: https://github.com/l20n/l20n.js/tree/v3.x/dist
-
-
-## Getting Started
+Example node script:
 
 ```javascript
 import { Env, fetch } from 'l20n';
 
-const env = new Env('en-US', fetch);
-const ctx = env.createContext(['{locale}.l20n']);
+const env = new Env('es-ES', fetch);
+const ctx = env.createContext(['locales/{locale}.l20n']);
 const langs = [
-  {code: 'de-DE'},
-  {code: 'de'},
+  {code: 'es-ES'},
+  {code: 'en-US'}
 ];
 
 ctx.fetch(langs).then(init);
 
 function init() {
-  ctx.resolve(langs, 'foo').then(
-    ({value}) => console.log(value));
+  ctx.resolve(langs, 'fooEntity').then((value) => {
+    console.log('Foo: ', value);
+  });
+
+  ctx.resolve(langs, 'barEntity').then((value) => {
+    console.log('Bar: ', value);
+  });
 }
 ```

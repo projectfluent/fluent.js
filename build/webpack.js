@@ -101,4 +101,16 @@ module.exports = {
       loaders: [babel]
     }
   },
+  webcommon: {
+    context: path('../src'),
+    entry: './runtime/web/common.js',
+    output: {
+      path: path('../dist'),
+      filename: 'web/l20n-common.js',
+      libraryTarget: 'commonjs2',
+    },
+    module: {
+      loaders: [babel]
+    }
+  },
 };
