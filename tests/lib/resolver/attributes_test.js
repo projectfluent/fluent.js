@@ -1,8 +1,8 @@
 'use strict';
 
 import assert from 'assert';
-import { format, lang, createEntries } from './header';
-import { MockContext } from './header';
+import { isolate as i } from '../util';
+import { format, lang, createEntries, MockContext } from './header';
 
 describe('Attributes', function(){
   var entries, ctx;
@@ -27,7 +27,8 @@ describe('Attributes', function(){
     it('returns the value with a placeable', function(){
       var formatted = format(
         ctx, lang, null, entries.foo.attrs.attrComplex);
-      assert.strictEqual(formatted[1], 'An attribute referencing Bar');
+      assert.strictEqual(
+        formatted[1], i('An attribute referencing Bar', 'Bar'));
     });
 
   });
@@ -78,7 +79,7 @@ describe('Attributes', function(){
     it('returns the value of the attribute', function(){
       var formatted = format(
         ctx, lang, {n: 1, k: 2}, entries.update.attrs.title);
-      assert.strictEqual(formatted[1], '2 updates title');
+      assert.strictEqual(formatted[1], i('2 updates title', '2'));
     });
 
   });
@@ -100,7 +101,7 @@ describe('Attributes', function(){
 
     it('returns the value of the attribute', function(){
       var attr = format(ctx, lang, null, entries.brandName.attrs.title)[1];
-      assert.strictEqual(attr, 'Mozilla Firefox');
+      assert.strictEqual(attr, i('Mozilla Firefox', 'Firefox'));
     });
 
   });
@@ -117,7 +118,8 @@ describe('Attributes', function(){
 
     it('returns the raw string of the attribute', function(){
       var attr = format(ctx, lang, null, entries.brandName.attrs.title)[1];
-      assert.strictEqual(attr, 'Mozilla {{ brandName.title }}');
+      assert.strictEqual(
+        attr, i('Mozilla {{ brandName.title }}', '{{ brandName.title }}'));
     });
 
   });

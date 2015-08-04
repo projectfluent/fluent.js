@@ -2,8 +2,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, lang, createEntries } from './header';
-import { MockContext } from './header';
+import { format, lang, createEntries, MockContext } from './header';
 
 // Bug 803931 - Compiler is vulnerable to the billion laughs attack
 

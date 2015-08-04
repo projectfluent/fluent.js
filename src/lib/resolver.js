@@ -5,9 +5,6 @@ import { L10nError } from './errors';
 const KNOWN_MACROS = ['plural'];
 const MAX_PLACEABLE_LENGTH = 2500;
 
-// Matches characters outside of the Latin-1 character set
-const nonLatin1 = /[^\x01-\xFF]/;
-
 // Unicode bidi isolation characters
 const FSI = '\u2068';
 const PDI = '\u2069';
@@ -89,14 +86,6 @@ function subPlaceable(locals, ctx, lang, args, id) {
                           value.length + ', max allowed is ' +
                           MAX_PLACEABLE_LENGTH + ')');
     }
-
-    if (locals.contextIsNonLatin1 || value.match(nonLatin1)) {
-      // When dealing with non-Latin-1 text
-      // we wrap substitutions in bidi isolate characters
-      // to avoid bidi issues.
-      res[1] = FSI + value + PDI;
-    }
-
     return res;
   }
 
@@ -109,7 +98,8 @@ function interpolate(locals, ctx, lang, args, arr) {
       return [localsSeq, valueSeq + cur];
     } else {
       const [, value] = subPlaceable(locals, ctx, lang, args, cur.name);
-      return [localsSeq, valueSeq + value];
+      // wrap the substitution in bidi isolate characters
+      return [localsSeq, valueSeq + FSI + value + PDI];
     }
   }, [locals, '']);
 }
@@ -161,9 +151,6 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
   }
 
   if (Array.isArray(expr)) {
-    locals.contextIsNonLatin1 = expr.some(function($_) {
-      return typeof($_) === 'string' && $_.match(nonLatin1);
-    });
     return interpolate(locals, ctx, lang, args, expr);
   }
 

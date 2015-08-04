@@ -1,8 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { format, lang, createEntries } from './header';
-import { MockContext } from './header';
+import { format, lang, createEntries, MockContext } from './header';
 
 describe('Index', function(){
   var entries, ctx;
