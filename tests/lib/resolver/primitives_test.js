@@ -1,8 +1,8 @@
 'use strict';
 
 import assert from 'assert';
-import { format, lang, createEntries } from './header';
-import { MockContext } from './header';
+import { isolate as i } from '../util';
+import { format, lang, createEntries, MockContext } from './header';
 
 describe('Primitives:', function(){
   var entries, ctx;
@@ -36,13 +36,13 @@ describe('Primitives:', function(){
 
     it('returns the value', function(){
       var value = format(ctx, lang, null, entries.bar)[1];
-      assert.strictEqual(value, 'Foo Bar');
+      assert.strictEqual(value, i('Foo Bar', 'Foo'));
     });
 
     it('returns the raw string if the referenced entity is ' +
        'not found', function(){
       var value = format(ctx, lang, null, entries.baz)[1];
-      assert.strictEqual(value, '{{ missing }}');
+      assert.strictEqual(value, i('{{ missing }}'));
     });
 
   });
@@ -70,7 +70,7 @@ describe('Primitives:', function(){
     it('returns the raw string when the referenced entity has ' +
        'null value', function(){
       var value = format(ctx, lang, null, entries.bar)[1];
-      assert.strictEqual(value, '{{ foo }} Bar');
+      assert.strictEqual(value, i('{{ foo }} Bar', '{{ foo }}'));
     });
 
   });
@@ -87,7 +87,7 @@ describe('Primitives:', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, null, entries.foo)[1];
-      assert.strictEqual(value, '{{ foo }}');
+      assert.strictEqual(value, i(i('{{ foo }}')));
     });
 
   });
@@ -103,7 +103,7 @@ describe('Primitives:', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, null, entries.foo)[1];
-      assert.strictEqual(value, '{{ foo }}');
+      assert.strictEqual(value, i('{{ foo }}'));
     });
 
   });
@@ -122,12 +122,12 @@ describe('Primitives:', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, {n: 1}, entries.foo)[1];
-      assert.strictEqual(value, '{{ foo }}');
+      assert.strictEqual(value, i('{{ foo }}'));
     });
 
     it('returns the valid value if requested directly', function(){
       var value = format(ctx, lang, {n: 2}, entries.bar)[1];
-      assert.strictEqual(value, 'Bar');
+      assert.strictEqual(value, i('Bar'));
     });
   });
 

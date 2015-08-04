@@ -1,6 +1,7 @@
 'use strict';
 
 import assert from 'assert';
+import { isolate as i } from '../util';
 import { Env } from '../../../src/lib/env';
 import { fetch } from '../../../src/runtime/node/io';
 
@@ -34,25 +35,37 @@ describe('One fallback locale', function() {
   describe('ValueError in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[ve]', function(done) {
-        assertValue(ctx.resolve(langs, 've'), 'VE {{ boo }} pl', done);
+        assertValue(
+          ctx.resolve(langs, 've'),
+          i('VE {{ boo }} pl', '{{ boo }}'),
+          done);
       });
     });
 
     describe('ValueError in second locale:', function() {
       it('[vv]', function(done) {
-        assertValue(ctx.resolve(langs, 'vv'), 'VV {{ boo }} pl', done);
+        assertValue(
+          ctx.resolve(langs, 'vv'),
+          i('VV {{ boo }} pl', '{{ boo }}'),
+          done);
       });
     });
 
     describe('IndexError in second locale:', function() {
       it('[vi]', function(done) {
-        assertValue(ctx.resolve(langs, 'vi'), 'VI {{ boo }} pl', done);
+        assertValue(
+          ctx.resolve(langs, 'vi'),
+          i('VI {{ boo }} pl', '{{ boo }}'),
+          done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[vm]', function(done) {
-        assertValue(ctx.resolve(langs, 'vm'), 'VM {{ boo }} pl', done);
+        assertValue(
+          ctx.resolve(langs, 'vm'),
+          i('VM {{ boo }} pl', '{{ boo }}'),
+          done);
       });
     });
   });
@@ -93,7 +106,9 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[mv]', function(done) {
         assertValue(
-          ctx.resolve(langs, 'mv'), 'MV {{ boo }} en-US', done);
+          ctx.resolve(langs, 'mv'),
+          i('MV {{ boo }} en-US', '{{ boo }}'),
+          done);
       });
     });
 

@@ -1,8 +1,8 @@
 'use strict';
 
 import assert from 'assert';
-import { format, lang, createEntries } from './header';
-import { MockContext } from './header';
+import { isolate as i } from '../util';
+import { format, lang, createEntries, MockContext } from './header';
 
 describe('Macros', function(){
   var entries, ctx, args;
@@ -23,10 +23,10 @@ describe('Macros', function(){
     it('throws when resolving (not calling) a macro in a complex ' +
        'string', function() {
       assert.strictEqual(
-        format(ctx, lang, args, entries.placeMacro)[1], '{{ plural }}');
+        format(ctx, lang, args, entries.placeMacro)[1], i('{{ plural }}'));
       assert.strictEqual(
         format(
-          ctx, lang, args, entries.placeRealMacro)[1], '{{ __plural }}');
+          ctx, lang, args, entries.placeRealMacro)[1], i('{{ __plural }}'));
     });
 
   });

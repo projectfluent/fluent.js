@@ -1,8 +1,8 @@
 'use strict';
 
 import assert from 'assert';
-import { format, lang, createEntries } from './header';
-import { MockContext } from './header';
+import { isolate as i } from '../util';
+import { format, lang, createEntries, MockContext } from './header';
 
 describe('Context data', function(){
   var entries, ctx, args;
@@ -27,17 +27,17 @@ describe('Context data', function(){
 
     it('can be referenced from strings', function() {
       var value = format(ctx, lang, args, entries.unread)[1];
-      assert.strictEqual(value, 'Unread notifications: 3');
+      assert.strictEqual(value, i('Unread notifications: 3', '3'));
     });
 
     it('can be passed as argument to a macro', function() {
       var value = format(ctx, lang, args, entries.unreadPlural)[1];
-      assert.strictEqual(value, '3 unread notifications');
+      assert.strictEqual(value, i('3 unread notifications', '3'));
     });
 
     it('takes priority over entities of the same name', function() {
       var value = format(ctx, lang, args, entries.useFoo)[1];
-      assert.strictEqual(value, 'Foo');
+      assert.strictEqual(value, i('Foo'));
     });
 
   });
@@ -64,39 +64,39 @@ describe('Context data', function(){
     it('returns the raw string when a missing property of args is ' +
        'referenced', function(){
       var value = format(ctx, lang, args, entries.missingReference)[1];
-      assert.strictEqual(value, '{{ missing }}');
+      assert.strictEqual(value, i('{{ missing }}'));
     });
 
     it('returns the raw string when an object is referenced', function(){
       var value = format(ctx, lang, args, entries.nestedReference)[1];
-      assert.strictEqual(value, '{{ nested }}');
+      assert.strictEqual(value, i('{{ nested }}'));
     });
 
     it('returns the raw string when watch is referenced', function(){
       var value = format(ctx, lang, args, entries.watchReference)[1];
-      assert.strictEqual(value, '{{ watch }}');
+      assert.strictEqual(value, i('{{ watch }}'));
     });
 
     it('returns the raw string when hasOwnProperty is referenced', function(){
       var value = format(
         ctx, lang, args, entries.hasOwnPropertyReference)[1];
-      assert.strictEqual(value, '{{ hasOwnProperty }}');
+      assert.strictEqual(value, i('{{ hasOwnProperty }}'));
     });
 
     it('returns the raw string when isPrototypeOf is referenced', function(){
       var value = format(
         ctx, lang, args, entries.isPrototypeOfReference)[1];
-      assert.strictEqual(value, '{{ isPrototypeOf }}');
+      assert.strictEqual(value, i('{{ isPrototypeOf }}'));
     });
 
     it('returns the raw string when toString is referenced', function(){
       var value = format(ctx, lang, args, entries.toStringReference)[1];
-      assert.strictEqual(value, '{{ toString }}');
+      assert.strictEqual(value, i('{{ toString }}'));
     });
 
     it('returns the raw string when __proto__ is referenced', function(){
       var value = format(ctx, lang, args, entries.protoReference)[1];
-      assert.strictEqual(value, '{{ __proto__ }}');
+      assert.strictEqual(value, i('{{ __proto__ }}'));
     });
 
   });
@@ -121,7 +121,7 @@ describe('Context data', function(){
 
     it('returns a string value', function(){
       assert.strictEqual(
-        format(ctx, lang, args, entries.stringProp)[1], 'string');
+        format(ctx, lang, args, entries.stringProp)[1], i('string'));
     });
 
     it('throws when used in a macro', function(){
@@ -132,7 +132,7 @@ describe('Context data', function(){
 
     it('digit returns a string value', function(){
       assert.strictEqual(
-        format(ctx, lang, args, entries.stringNumProp)[1], '1');
+        format(ctx, lang, args, entries.stringNumProp)[1], i('1'));
     });
 
     it('digit throws when used in a macro', function(){
@@ -162,7 +162,7 @@ describe('Context data', function(){
     });
 
     it('returns a number value', function(){
-      assert.strictEqual(format(ctx, lang, args, entries.numProp)[1], '1');
+      assert.strictEqual(format(ctx, lang, args, entries.numProp)[1], i('1'));
     });
 
     it('returns a value when used in macro', function(){
@@ -172,7 +172,7 @@ describe('Context data', function(){
 
     it('returns the raw string when NaN is referenced', function(){
       var value = format(ctx, lang, args, entries.nanProp)[1];
-      assert.strictEqual(value, '{{ nan }}');
+      assert.strictEqual(value, i('{{ nan }}'));
     });
 
     it('is undefined when NaN is used in macro', function(){
@@ -199,7 +199,7 @@ describe('Context data', function(){
 
     it('returns the raw string when referenced', function(){
       var value = format(ctx, lang, args, entries.boolProp)[1];
-      assert.strictEqual(value, '{{ bool }}');
+      assert.strictEqual(value, i('{{ bool }}'));
     });
 
     it('is undefined when used in a macro', function(){
@@ -226,7 +226,7 @@ describe('Context data', function(){
 
     it('returns the raw string when referenced', function(){
       var value = format(ctx, lang, args, entries.undefProp)[1];
-      assert.strictEqual(value, '{{ undef }}');
+      assert.strictEqual(value, i('{{ undef }}'));
     });
 
     it('is undefined when used in a macro', function(){
@@ -253,7 +253,7 @@ describe('Context data', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, args, entries.nullProp)[1];
-      assert.strictEqual(value, '{{ nullable }}');
+      assert.strictEqual(value, i('{{ nullable }}'));
     });
 
     it('is undefined when used in a macro', function(){
@@ -280,7 +280,7 @@ describe('Context data', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, args, entries.arrProp)[1];
-      assert.strictEqual(value, '{{ arr }}');
+      assert.strictEqual(value, i('{{ arr }}'));
     });
 
     it('is undefined when used in a macro', function(){
@@ -307,7 +307,7 @@ describe('Context data', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, args, entries.arrProp)[1];
-      assert.strictEqual(value, '{{ arr }}');
+      assert.strictEqual(value, i('{{ arr }}'));
     });
 
     it('is undefined when used in a macro', function(){
@@ -336,7 +336,7 @@ describe('Context data', function(){
 
     it('returns the raw string', function(){
       var value = format(ctx, lang, args, entries.objProp)[1];
-      assert.strictEqual(value, '{{ obj }}');
+      assert.strictEqual(value, i('{{ obj }}'));
     });
 
     it('throws used in a macro', function(){
