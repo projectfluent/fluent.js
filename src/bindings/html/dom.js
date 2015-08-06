@@ -1,7 +1,5 @@
 'use strict';
 
-import { L10nError } from '../../lib/errors';
-
 // match the opening angle bracket (<) in HTML tags, and HTML entities like
 // &amp;, &#0038;, &#x0026;.
 const reOverlay = /<|&#?\w+;/;
@@ -138,17 +136,7 @@ function applyTranslations(view, elements, translations) {
 }
 
 function applyTranslation(view, element, translation) {
-  let value;
-  if (translation.attrs && translation.attrs.innerHTML) {
-    // XXX innerHTML is treated as value (https://bugzil.la/1142526)
-    value = translation.attrs.innerHTML;
-    view.emit('deprecatewarning', new L10nError(
-      'L10n Deprecation Warning: using innerHTML in translations is unsafe ' +
-      'and will not be supported in future versions of l10n.js. ' +
-      'See https://bugzil.la/1027117'));
-  } else {
-    value = translation.value;
-  }
+  const value = translation.value;
 
   if (typeof value === 'string') {
     if (!reOverlay.test(value)) {
