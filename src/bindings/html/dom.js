@@ -3,6 +3,12 @@
 // match the opening angle bracket (<) in HTML tags, and HTML entities like
 // &amp;, &#0038;, &#x0026;.
 const reOverlay = /<|&#?\w+;/;
+const reHtml = /[&<>]/g;
+const htmlEntities = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+};
 
 const allowed = {
   elements: [
@@ -106,10 +112,21 @@ function camelCaseToDashed(string) {
 }
 
 function getElementTranslation(view, langs, elem) {
-  const l10n = getAttributes(elem);
+  const id = elem.getAttribute('data-l10n-id');
 
-  return l10n.id ?
-    view.ctx.resolve(langs, l10n.id, l10n.args) : false;
+  if (!id) {
+    return false;
+  }
+
+  const args = elem.getAttribute('data-l10n-args');
+
+  if (!args) {
+    return view.ctx.resolve(langs, id);
+  }
+
+  return view.ctx.resolve(
+    langs, id, JSON.parse(
+      args.replace(reHtml, match => htmlEntities[match])));
 }
 
 export function translateElement(view, langs, elem) {
