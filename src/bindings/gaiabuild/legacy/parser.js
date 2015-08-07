@@ -105,8 +105,8 @@ export default {
       if (pos === undefined) {
         v = {$i: id};
         if (key) {
-          v[attr] = {};
-          v[attr][key] = value;
+          v[attr] = {$v: {}};
+          v[attr].$v[key] = value;
         } else {
           v[attr] = value;
         }
