@@ -64,6 +64,7 @@ View.prototype.getAttributes = getAttributes;
 
 function onMutations(mutations) {
   return this.service.languages.then(
+    langs => this.ctx.fetch(langs)).then(
     langs => translateMutations(this, langs, mutations));
 }
 

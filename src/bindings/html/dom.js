@@ -48,15 +48,14 @@ export function getAttributes(element) {
 }
 
 function getTranslatables(element) {
-  const nodes = [];
+  const nodes = Array.from(element.querySelectorAll('[data-l10n-id]'));
 
   if (typeof element.hasAttribute === 'function' &&
       element.hasAttribute('data-l10n-id')) {
     nodes.push(element);
   }
 
-  return nodes.concat.apply(
-    nodes, element.querySelectorAll('*[data-l10n-id]'));
+  return nodes;
 }
 
 export function translateMutations(view, langs, mutations) {
@@ -70,7 +69,11 @@ export function translateMutations(view, langs, mutations) {
       case 'childList':
         for (let addedNode of mutation.addedNodes) {
           if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
-            targets.add(addedNode);
+            if (addedNode.childElementCount) {
+              getTranslatables(addedNode).forEach(targets.add.bind(targets));
+            } else {
+              targets.add(addedNode);
+            }
           }
         }
         break;
@@ -81,21 +84,11 @@ export function translateMutations(view, langs, mutations) {
     return;
   }
 
-  const elements = [];
-
-  targets.forEach(target => target.childElementCount ?
-      elements.push(...getTranslatables(target)) : elements.push(target));
-
-  Promise.all(
-    elements.map(elem => getElementTranslation(view, langs, elem))).then(
-      translations => applyTranslations(view, elements, translations));
+  translateElements(view, langs, Array.from(targets));
 }
 
 export function translateFragment(view, langs, frag) {
-  const elements = getTranslatables(frag);
-  return Promise.all(
-    elements.map(elem => getElementTranslation(view, langs, elem))).then(
-      translations => applyTranslations(view, elements, translations));
+  return translateElements(view, langs, getTranslatables(frag));
 }
 
 function camelCaseToDashed(string) {
@@ -127,6 +120,12 @@ function getElementTranslation(view, langs, elem) {
   return view.ctx.resolve(
     langs, id, JSON.parse(
       args.replace(reHtml, match => htmlEntities[match])));
+}
+
+function translateElements(view, langs, elements) {
+  return Promise.all(
+    elements.map(elem => getElementTranslation(view, langs, elem))).then(
+      translations => applyTranslations(view, elements, translations));
 }
 
 export function translateElement(view, langs, elem) {
