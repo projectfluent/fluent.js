@@ -48,13 +48,13 @@ export class View {
     return this.service.env.emit(...args);
   }
 
-  resolve(langs, id, args) {
-    return this.service.resolve(this, langs, id, args);
+  _resolveEntity(langs, id, args) {
+    return this.service.resolveEntity(this, langs, id, args);
   }
 
-  format(id, args) {
+  formatValue(id, args) {
     return this.service.initView(this).then(
-      langs => this.service.resolve(this, langs, id, args));
+      langs => this.service.resolveValue(this, langs, id, args));
   }
 
   translateFragment(frag) {

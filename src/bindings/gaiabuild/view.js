@@ -57,8 +57,8 @@ export class View {
   observe() {}
   disconnect() {}
 
-  resolve(langs, id, args) {
-    return this.ctx.resolve(langs, id, args);
+  _resolveEntity(langs, id, args) {
+    return this.ctx.resolveEntity(langs, id, args);
   }
 
   translateDocument(code) {

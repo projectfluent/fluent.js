@@ -30,8 +30,12 @@ export class Service {
       langs => this.views.get(view).fetch(langs));
   }
 
-  resolve(view, langs, id, args) {
-    return this.views.get(view).resolve(langs, id, args);
+  resolveEntity(view, langs, id, args) {
+    return this.views.get(view).resolveEntity(langs, id, args);
+  }
+
+  resolveValue(view, langs, id, args) {
+    return this.views.get(view).resolveValue(langs, id, args);
   }
 
   requestLanguages(requestedLangs = navigator.languages) {
