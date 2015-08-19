@@ -38,6 +38,7 @@
     "babel-loader": "^5.0.0",
     "colors": "~0.6.0",
     "commander": "~2.0",
+    "glob": "^5.0.14",
     "grunt": "~0.4.1",
     "grunt-babel": "^5.0.0",
     "grunt-cli": "^0.1.13",
