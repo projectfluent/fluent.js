@@ -9,7 +9,6 @@ const readyStates = {
   interactive: 1,
   complete: 2
 };
-const service = new Service(fetch);
 
 function whenInteractive(callback) {
   if (readyStates[document.readyState] >= readyStates.interactive) {
@@ -25,12 +24,14 @@ function whenInteractive(callback) {
 }
 
 function init() {
+  const service = new Service(fetch);
+  window.addEventListener('languagechange', service);
+  document.addEventListener('additionallanguageschange', service);
+
   document.l10n.init(service);
   document.l10n.languages = navigator.languages;
 }
 
-window.addEventListener('languagechange', service);
-document.addEventListener('additionallanguageschange', service);
-document.l10n = new View(document, service);
+document.l10n = new View(document);
 
 whenInteractive(init);
