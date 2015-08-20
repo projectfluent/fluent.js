@@ -77,10 +77,10 @@ function getElementTranslation(view, langs, elem) {
   const args = elem.getAttribute('data-l10n-args');
 
   if (!args) {
-    return view.ctx.resolve(langs, id);
+    return view.resolve(langs, id);
   }
 
-  return view.ctx.resolve(
+  return view.resolve(
     langs, id, JSON.parse(
       args.replace(reHtml, match => htmlEntities[match])));
 }

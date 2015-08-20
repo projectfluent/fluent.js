@@ -14,10 +14,10 @@ const observerConfig = {
 };
 
 export class View {
-  constructor(service, doc) {
-    this.service = service;
+  constructor(doc, service) {
     this.doc = doc;
-    this.ctx = this.service.env.createContext(getResourceLinks(doc.head));
+    this.service = service.register(
+      this, getResourceLinks(doc.head));
 
     this.ready = new Promise(function(resolve) {
       const viewReady = function(evt) {
@@ -46,15 +46,17 @@ export class View {
     return this.service.env.emit(...args);
   }
 
+  resolve(langs, id, args) {
+    return this.service.resolve(this, langs, id, args);
+  }
+
   format(id, args) {
-    return this.service.languages.then(
-      langs => this.ctx.fetch(langs)).then(
-      langs => this.ctx.resolve(langs, id, args));
+    return this.service.init(this).then(
+      langs => this.service.resolve(this, langs, id, args));
   }
 
   translateFragment(frag) {
-    return this.service.languages.then(
-      langs => this.ctx.fetch(langs)).then(
+    return this.service.init(this).then(
       langs => translateFragment(this, langs, frag));
   }
 }
@@ -63,16 +65,13 @@ View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
 function onMutations(mutations) {
-  return this.service.languages.then(
-    langs => this.ctx.fetch(langs)).then(
+  return this.service.init(this).then(
     langs => translateMutations(this, langs, mutations));
 }
 
 export function translate(langs) {
   dispatchEvent(this.doc, 'supportedlanguageschange', langs);
-  // fetch the resources even if the document has been pretranslated
-  return this.ctx.fetch(langs).then(
-    translateDocument.bind(this, langs));
+  return translateDocument.call(this, langs);
 }
 
 function translateDocument(langs) {
