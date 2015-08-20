@@ -27,18 +27,7 @@ const allowed = {
   }
 };
 
-export function applyTranslations(view, elements, translations) {
-  view.disconnect();
-  for (let i = 0; i < elements.length; i++) {
-    if (translations[i] === false) {
-      continue;
-    }
-    applyTranslation(view, elements[i], translations[i]);
-  }
-  view.observe();
-}
-
-export function applyTranslation(view, element, translation) {
+export function overlayElement(element, translation) {
   const value = translation.value;
 
   if (typeof value === 'string') {
@@ -50,7 +39,7 @@ export function applyTranslation(view, element, translation) {
       const tmpl = element.ownerDocument.createElement('template');
       tmpl.innerHTML = value;
       // overlay the node with the DocumentFragment
-      overlayElement(element, tmpl.content);
+      overlay(element, tmpl.content);
     }
   }
 
@@ -62,7 +51,7 @@ export function applyTranslation(view, element, translation) {
   }
 }
 
-// The goal of overlayElement is to move the children of `translationElement`
+// The goal of overlay is to move the children of `translationElement`
 // into `sourceElement` such that `sourceElement`'s own children are not
 // replaced, but onle have their text nodes and their attributes modified.
 //
@@ -72,7 +61,7 @@ export function applyTranslation(view, element, translation) {
 // attribtues out and we don't want to break the Web by replacing elements to
 // which third-party code might have created references (e.g. two-way
 // bindings in MVC frameworks).
-function overlayElement(sourceElement, translationElement) {
+function overlay(sourceElement, translationElement) {
   const result = translationElement.ownerDocument.createDocumentFragment();
   let k, attr;
 
@@ -92,7 +81,7 @@ function overlayElement(sourceElement, translationElement) {
     const sourceChild = getNthElementOfType(sourceElement, childElement, index);
     if (sourceChild) {
       // there is a corresponding element in the source, let's use it
-      overlayElement(sourceChild, childElement);
+      overlay(sourceChild, childElement);
       result.appendChild(sourceChild);
       continue;
     }
@@ -100,7 +89,7 @@ function overlayElement(sourceElement, translationElement) {
     if (isElementAllowed(childElement)) {
       const sanitizedChild = childElement.ownerDocument.createElement(
         childElement.nodeName);
-      overlayElement(sanitizedChild, childElement);
+      overlay(sanitizedChild, childElement);
       result.appendChild(sanitizedChild);
       continue;
     }
