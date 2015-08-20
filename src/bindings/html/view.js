@@ -14,10 +14,8 @@ const observerConfig = {
 };
 
 export class View {
-  constructor(doc, service) {
+  constructor(doc) {
     this.doc = doc;
-    this.service = service.register(
-      this, getResourceLinks(doc.head));
 
     this.ready = new Promise(function(resolve) {
       const viewReady = function(evt) {
@@ -31,6 +29,10 @@ export class View {
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
 
+  }
+
+  init(service) {
+    this.service = service.register(this, getResourceLinks(this.doc.head));
     this.observe();
   }
 
@@ -51,12 +53,12 @@ export class View {
   }
 
   format(id, args) {
-    return this.service.init(this).then(
+    return this.service.initView(this).then(
       langs => this.service.resolve(this, langs, id, args));
   }
 
   translateFragment(frag) {
-    return this.service.init(this).then(
+    return this.service.initView(this).then(
       langs => translateFragment(this, langs, frag));
   }
 }

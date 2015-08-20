@@ -7,25 +7,25 @@ import { negotiateLanguages } from './langs';
 
 export class Service {
   constructor(fetch) {
+    this.views = new Map();
+    this.fetch = fetch;
+  }
+
+  register(view, resources) {
     const meta = getMeta(document.head);
     this.defaultLanguage = meta.defaultLang;
     this.availableLanguages = meta.availableLangs;
     this.appVersion = meta.appVersion;
 
     this.env = new Env(
-      this.defaultLanguage, fetch.bind(null, this.appVersion));
-    this.views = new Map();
-
+      this.defaultLanguage, this.fetch.bind(null, this.appVersion));
     this.env.addEventListener('deprecatewarning',
       err => console.warn(err));
-  }
-
-  register(view, resources) {
     this.views.set(view, this.env.createContext(resources));
     return this;
   }
 
-  init(view) {
+  initView(view) {
     return this.languages.then(
       langs => this.views.get(view).fetch(langs));
   }

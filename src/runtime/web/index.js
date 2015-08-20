@@ -24,11 +24,13 @@ function whenInteractive(callback) {
 }
 
 function init() {
-  const service = new Service(fetch);
-  window.addEventListener('languagechange', service);
-  document.addEventListener('additionallanguageschange', service);
-  document.l10n = new View(document, service);
+  document.l10n.init(service);
   document.l10n.languages = navigator.languages;
 }
+
+const service = new Service(fetch);
+window.addEventListener('languagechange', service);
+document.addEventListener('additionallanguageschange', service);
+document.l10n = new View(document, service);
 
 whenInteractive(init);
