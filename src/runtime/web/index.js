@@ -9,6 +9,7 @@ const readyStates = {
   interactive: 1,
   complete: 2
 };
+const service = new Service(fetch);
 
 function whenInteractive(callback) {
   if (readyStates[document.readyState] >= readyStates.interactive) {
@@ -28,7 +29,6 @@ function init() {
   document.l10n.languages = navigator.languages;
 }
 
-const service = new Service(fetch);
 window.addEventListener('languagechange', service);
 document.addEventListener('additionallanguageschange', service);
 document.l10n = new View(document, service);
