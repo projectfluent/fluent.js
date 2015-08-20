@@ -2,6 +2,7 @@
 
 import { fetch } from './io';
 import { Service } from '../../bindings/html/service';
+import { View } from '../../bindings/html/view';
 
 const readyStates = {
   loading: 0,
@@ -26,6 +27,7 @@ function init() {
   const service = new Service(fetch);
   window.addEventListener('languagechange', service);
   document.addEventListener('additionallanguageschange', service);
+  document.l10n = new View(document, service);
   document.l10n.languages = navigator.languages;
 }
 

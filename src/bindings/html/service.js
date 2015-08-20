@@ -1,7 +1,7 @@
 'use strict';
 
 import { Env } from '../../lib/env';
-import { View, translate } from './view';
+import { translate } from './view';
 import { getMeta } from './head';
 import { negotiateLanguages } from './langs';
 
@@ -14,12 +14,24 @@ export class Service {
 
     this.env = new Env(
       this.defaultLanguage, fetch.bind(null, this.appVersion));
-    this.views = [
-      document.l10n = new View(this, document)
-    ];
+    this.views = new Map();
 
     this.env.addEventListener('deprecatewarning',
       err => console.warn(err));
+  }
+
+  register(view, resources) {
+    this.views.set(view, this.env.createContext(resources));
+    return this;
+  }
+
+  init(view) {
+    return this.languages.then(
+      langs => this.views.get(view).fetch(langs));
+  }
+
+  resolve(view, langs, id, args) {
+    return this.views.get(view).resolve(langs, id, args);
   }
 
   requestLanguages(requestedLangs = navigator.languages) {
@@ -43,8 +55,14 @@ export function getAdditionalLanguages() {
 }
 
 function translateViews(langs) {
+  const views = Array.from(this.views);
   return Promise.all(
-    this.views.map(view => translate.call(view, langs)));
+    views.map(tuple => translateView(langs, tuple)));
+}
+
+function translateView(langs, [view, ctx]) {
+  return ctx.fetch(langs).then(
+    translate.bind(view, langs));
 }
 
 function changeLanguages(additionalLangs, requestedLangs) {
