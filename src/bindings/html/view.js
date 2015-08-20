@@ -67,7 +67,7 @@ View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
 function onMutations(mutations) {
-  return this.service.init(this).then(
+  return this.service.initView(this).then(
     langs => translateMutations(this, langs, mutations));
 }
 
