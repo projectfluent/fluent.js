@@ -22,7 +22,7 @@ export class Context {
   }
 
   _formatEntity(lang, args, entity, id) {
-    const [, value] = this._formatTuple.call(this, lang, args, entity, id);
+    const [, value] = this._formatTuple(lang, args, entity, id);
 
     const formatted = {
       value,
@@ -33,13 +33,17 @@ export class Context {
       formatted.attrs = Object.create(null);
       for (let key in entity.attrs) {
         /* jshint -W089 */
-        const [, attrValue] = this._formatTuple.call(
-          this, lang, args, entity.attrs[key], id, key);
+        const [, attrValue] = this._formatTuple(
+          lang, args, entity.attrs[key], id, key);
         formatted.attrs[key] = attrValue;
       }
     }
 
     return formatted;
+  }
+
+  _formatValue(lang, args, entity, id) {
+    return this._formatTuple(lang, args, entity, id)[1];
   }
 
   fetch(langs) {
@@ -53,27 +57,39 @@ export class Context {
           () => langs);
   }
 
-  resolve(langs, id, args) {
+  _resolve(langs, id, args, formatter) {
     const lang = langs[0];
 
     if (!lang) {
       this._env.emit('notfounderror', new L10nError(
         '"' + id + '"' + ' not found in any language', id), this);
-      return { value: id, attrs: null };
+      if (formatter === this._formatEntity) {
+        return { value: id, attrs: null };
+      } else {
+        return id;
+      }
     }
 
     const entity = this._getEntity(lang, id);
 
     if (entity) {
       return Promise.resolve(
-        this._formatEntity(lang, args, entity, id));
+        formatter.call(this, lang, args, entity, id));
     } else {
       this._env.emit('notfounderror', new L10nError(
         '"' + id + '"' + ' not found in ' + lang.code, id, lang), this);
     }
 
     return this.fetch(langs.slice(1)).then(
-      nextLangs => this.resolve(nextLangs, id, args));
+      nextLangs => this._resolve(nextLangs, id, args, formatter));
+  }
+
+  resolveEntity(langs, id, args) {
+    return this._resolve(langs, id, args, this._formatEntity);
+  }
+
+  resolveValue(langs, id, args) {
+    return this._resolve(langs, id, args, this._formatValue);
   }
 
   _getEntity(lang, id) {

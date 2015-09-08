@@ -28,7 +28,7 @@ describe('One fallback locale', function() {
 
   describe('Translation in the first locale exists and is OK', function() {
     it('[e]', function(done) {
-      assertValue(ctx.resolve(langs, 'e'), 'E pl', done);
+      assertValue(ctx.resolveEntity(langs, 'e'), 'E pl', done);
     });
   });
 
@@ -36,7 +36,7 @@ describe('One fallback locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[ve]', function(done) {
         assertValue(
-          ctx.resolve(langs, 've'),
+          ctx.resolveEntity(langs, 've'),
           i('VE {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -45,7 +45,7 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[vv]', function(done) {
         assertValue(
-          ctx.resolve(langs, 'vv'),
+          ctx.resolveEntity(langs, 'vv'),
           i('VV {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -54,7 +54,7 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale:', function() {
       it('[vi]', function(done) {
         assertValue(
-          ctx.resolve(langs, 'vi'),
+          ctx.resolveEntity(langs, 'vi'),
           i('VI {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -63,7 +63,7 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[vm]', function(done) {
         assertValue(
-          ctx.resolve(langs, 'vm'),
+          ctx.resolveEntity(langs, 'vm'),
           i('VM {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -73,25 +73,25 @@ describe('One fallback locale', function() {
   describe('IndexError in first locale', function() {
     describe('Entity exists in second locale', function() {
       it('[ie]', function(done) {
-        assertValue(ctx.resolve(langs, 'ie'), 'ie', done);
+        assertValue(ctx.resolveEntity(langs, 'ie'), 'ie', done);
       });
     });
 
     describe('ValueError in second locale', function() {
       it('[iv]', function(done) {
-        assertValue(ctx.resolve(langs, 'iv'), 'iv', done);
+        assertValue(ctx.resolveEntity(langs, 'iv'), 'iv', done);
       });
     });
 
     describe('IndexError in second locale', function() {
       it('[ii]', function(done) {
-        assertValue(ctx.resolve(langs, 'ii'), 'ii', done);
+        assertValue(ctx.resolveEntity(langs, 'ii'), 'ii', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[im]', function(done) {
-        assertValue(ctx.resolve(langs, 'im'), 'im', done);
+        assertValue(ctx.resolveEntity(langs, 'im'), 'im', done);
       });
     });
   });
@@ -99,14 +99,14 @@ describe('One fallback locale', function() {
   describe('Entity not found in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[me]', function(done) {
-        assertValue(ctx.resolve(langs, 'me'), 'ME en-US', done);
+        assertValue(ctx.resolveEntity(langs, 'me'), 'ME en-US', done);
       });
     });
 
     describe('ValueError in second locale:', function() {
       it('[mv]', function(done) {
         assertValue(
-          ctx.resolve(langs, 'mv'),
+          ctx.resolveEntity(langs, 'mv'),
           i('MV {{ boo }} en-US', '{{ boo }}'),
           done);
       });
@@ -114,13 +114,13 @@ describe('One fallback locale', function() {
 
     describe('IndexError in second locale:', function() {
       it('[mi]', function(done) {
-        assertValue(ctx.resolve(langs, 'mi'), 'mi', done);
+        assertValue(ctx.resolveEntity(langs, 'mi'), 'mi', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[mm]', function(done) {
-        assertValue(ctx.resolve(langs, 'mm'), 'mm', done);
+        assertValue(ctx.resolveEntity(langs, 'mm'), 'mm', done);
       });
     });
   });
