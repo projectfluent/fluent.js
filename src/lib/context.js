@@ -57,39 +57,47 @@ export class Context {
           () => langs);
   }
 
-  _resolve(langs, id, args, formatter) {
+  _resolve(langs, keys, formatter, prevResolved) {
     const lang = langs[0];
 
     if (!lang) {
-      this._env.emit('notfounderror', new L10nError(
-        '"' + id + '"' + ' not found in any language', id), this);
-      if (formatter === this._formatEntity) {
-        return { value: id, attrs: null };
-      } else {
-        return id;
-      }
+      return reportMissing.call(this, keys, formatter, prevResolved);
     }
 
-    const entity = this._getEntity(lang, id);
+    let hasUnresolved = false;
 
-    if (entity) {
-      return Promise.resolve(
-        formatter.call(this, lang, args, entity, id));
-    } else {
-      this._env.emit('notfounderror', new L10nError(
-        '"' + id + '"' + ' not found in ' + lang.code, id, lang), this);
+    const resolved = keys.map((key, i) => {
+      if (prevResolved && prevResolved[i] !== undefined) {
+        return prevResolved[i];
+      }
+      const [id, args] = Array.isArray(key) ?
+        key : [key, undefined];
+      const entity = this._getEntity(lang, id);
+
+      if (entity) {
+        return formatter.call(this, lang, args, entity, id);
+      }
+
+      this._env.emit('notfounderror',
+        new L10nError('"' + id + '"' + ' not found in ' + lang.code,
+          id, lang), this);
+      hasUnresolved = true;
+    });
+
+    if (!hasUnresolved) {
+      return Promise.resolve(resolved);
     }
 
     return this.fetch(langs.slice(1)).then(
-      nextLangs => this._resolve(nextLangs, id, args, formatter));
+      nextLangs => this._resolve(nextLangs, keys, formatter, resolved));
   }
 
-  resolveEntity(langs, id, args) {
-    return this._resolve(langs, id, args, this._formatEntity);
+  resolveEntities(langs, keys) {
+    return this._resolve(langs, keys, this._formatEntity);
   }
 
-  resolveValue(langs, id, args) {
-    return this._resolve(langs, id, args, this._formatValue);
+  resolveValues(langs, keys) {
+    return this._resolve(langs, keys, this._formatValue);
   }
 
   _getEntity(lang, id) {
@@ -118,4 +126,25 @@ export class Context {
         return undefined;
     }
   }
+
+}
+
+function reportMissing(keys, formatter, resolved) {
+  const missingIds = new Set();
+
+  keys.forEach((key, i) => {
+    if (resolved && resolved[i] !== undefined) {
+      return;
+    }
+    const id = Array.isArray(key) ? key[0] : key;
+    missingIds.add(id);
+    resolved[i] = formatter === this._formatValue ?
+      id : {value: id, attrs: null};
+  });
+
+  this._env.emit('notfounderror', new L10nError(
+    '"' + [...missingIds].join(', ') + '"' +
+    ' not found in any language', missingIds), this);
+
+  return resolved;
 }
