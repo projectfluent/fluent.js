@@ -77,7 +77,7 @@ module.exports = function (grunt) {
     'lint',
     'test',
     'webpack:gaiabuild',
-    'babel:web',
+    'babel:gaia',
     'copy:stage'
   ]);
 
