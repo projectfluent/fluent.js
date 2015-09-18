@@ -1,6 +1,7 @@
 'use strict';
 
-import { getResourceLinks } from '../../bindings/html/head';
+import { qps } from '../../lib/pseudo';
+import { getResourceLinks } from './head';
 import {
   setAttributes, getAttributes, translateFragment, translateMutations
 } from './dom';
@@ -16,6 +17,7 @@ const observerConfig = {
 export class View {
   constructor(doc) {
     this.doc = doc;
+    this.qps = qps;
 
     this.ready = new Promise(function(resolve) {
       const viewReady = function(evt) {
