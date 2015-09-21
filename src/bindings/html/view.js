@@ -74,26 +74,22 @@ function onMutations(mutations) {
 }
 
 export function translate(langs) {
-  dispatchEvent(this.doc, 'supportedlanguageschange', langs);
   return translateDocument.call(this, langs);
 }
 
 function translateDocument(langs) {
   const [view, doc] = [this, this.doc];
-  const setDOMLocalized = function() {
-    doc.localized = true;
-    dispatchEvent(doc, 'DOMLocalized', langs);
-  };
 
   if (langs[0].code === doc.documentElement.getAttribute('lang')) {
-    return Promise.resolve(setDOMLocalized());
+    return Promise.resolve.then(
+      () => dispatchEvent(doc, 'DOMLocalized', langs));
   }
 
   return translateFragment(view, langs, doc.documentElement).then(
     () => {
       doc.documentElement.lang = langs[0].code;
       doc.documentElement.dir = langs[0].dir;
-      setDOMLocalized();
+      dispatchEvent(doc, 'DOMLocalized', langs);
     });
 }
 

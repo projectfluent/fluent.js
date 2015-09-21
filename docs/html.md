@@ -108,4 +108,4 @@ clarity):
 ```
 
 When all DOM nodes are localized, `document` will fire a `DOMLocalized` 
-event and will set its `localized` property to `true`.
+event and the `document.l10n.ready` promise will resolve.
