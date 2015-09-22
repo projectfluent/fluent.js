@@ -50,13 +50,19 @@ export class View {
     return this.service.env.emit(...args);
   }
 
-  _resolveEntity(langs, id, args) {
-    return this.service.resolveEntity(this, langs, id, args);
+  _resolveEntities(langs, keys) {
+    return this.service.resolveEntities(this, langs, keys);
   }
 
   formatValue(id, args) {
     return this.service.initView(this).then(
-      langs => this.service.resolveValue(this, langs, id, args));
+      langs => this.service.resolveValues(this, langs, [[id, args]])).then(
+        values => values[0]);
+  }
+
+  formatValues(...keys) {
+    return this.service.initView(this).then(
+      langs => this.service.resolveValues(this, langs, keys));
   }
 
   translateFragment(frag) {
