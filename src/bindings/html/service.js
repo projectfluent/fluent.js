@@ -25,11 +25,6 @@ export class Service {
     return this;
   }
 
-  initView(view) {
-    return this.languages.then(
-      langs => this.views.get(view).fetch(langs));
-  }
-
   resolveEntities(view, langs, keys) {
     return this.views.get(view).resolveEntities(langs, keys);
   }

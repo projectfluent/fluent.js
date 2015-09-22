@@ -85,7 +85,7 @@ export class Context {
     });
 
     if (!hasUnresolved) {
-      return Promise.resolve(resolved);
+      return resolved;
     }
 
     return this.fetch(langs.slice(1)).then(
@@ -93,11 +93,13 @@ export class Context {
   }
 
   resolveEntities(langs, keys) {
-    return this._resolve(langs, keys, this._formatEntity);
+    return this.fetch(langs).then(
+      langs => this._resolve(langs, keys, this._formatEntity));
   }
 
   resolveValues(langs, keys) {
-    return this._resolve(langs, keys, this._formatValue);
+    return this.fetch(langs).then(
+      langs => this._resolve(langs, keys, this._formatValue));
   }
 
   _getEntity(lang, id) {
