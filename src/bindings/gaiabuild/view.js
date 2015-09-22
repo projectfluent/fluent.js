@@ -50,10 +50,6 @@ export class View {
     }
   }
 
-  emit(...args) {
-    return this.env.emit(...args);
-  }
-
   observe() {}
   disconnect() {}
 

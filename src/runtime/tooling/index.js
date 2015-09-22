@@ -1,7 +1,7 @@
 'use strict';
 
 export { fetch } from '../web/io';
-export { Service } from '../../bindings/html/service';
+export { Service } from '../web/service';
 export { View } from '../../bindings/html/view';
 
 export { default as ASTParser } from
