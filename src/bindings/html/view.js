@@ -55,18 +55,18 @@ export class View {
   }
 
   formatValue(id, args) {
-    return this.service.initView(this).then(
+    return this.service.languages.then(
       langs => this.service.resolveValues(this, langs, [[id, args]])).then(
         values => values[0]);
   }
 
   formatValues(...keys) {
-    return this.service.initView(this).then(
+    return this.service.languages.then(
       langs => this.service.resolveValues(this, langs, keys));
   }
 
   translateFragment(frag) {
-    return this.service.initView(this).then(
+    return this.service.languages.then(
       langs => translateFragment(this, langs, frag));
   }
 }
@@ -75,7 +75,7 @@ View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
 function onMutations(mutations) {
-  return this.service.initView(this).then(
+  return this.service.languages.then(
     langs => translateMutations(this, langs, mutations));
 }
 
