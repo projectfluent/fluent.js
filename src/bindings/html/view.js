@@ -1,7 +1,7 @@
 'use strict';
 
 import { qps } from '../../lib/pseudo';
-import { getResourceLinks } from './head';
+import { getResourceLinks, documentReady } from './head';
 import {
   setAttributes, getAttributes, translateFragment, translateMutations
 } from './dom';
@@ -15,9 +15,12 @@ const observerConfig = {
 };
 
 export class View {
-  constructor(doc) {
+  constructor(client, doc) {
     this.doc = doc;
     this.qps = qps;
+
+    this.interactive = documentReady().then(
+      () => init(this, client));
 
     this.ready = new Promise(function(resolve) {
       const viewReady = function(evt) {
@@ -31,42 +34,38 @@ export class View {
     this.observe = () => observer.observe(this.doc, observerConfig);
     this.disconnect = () => observer.disconnect();
 
+    this.resolvedLanguages().then(
+      langs => translateDocument(this, langs));
   }
 
-  init(service) {
-    this.service = service.register(this, getResourceLinks(this.doc.head));
-    this.observe();
+  resolvedLanguages() {
+    return this.interactive.then(
+      client => client.languages);
   }
 
-  get languages() {
-    return this.service.languages;
-  }
-
-  set languages(langs) {
-    return this.service.requestLanguages(langs);
-  }
-
-  emit(...args) {
-    return this.service.env.emit(...args);
+  requestLanguages(langs) {
+    return this.interactive.then(
+      client => client.requestLanguages(langs));
   }
 
   _resolveEntities(langs, keys) {
-    return this.service.resolveEntities(this, langs, keys);
+    return this.interactive.then(
+      client => client.resolveEntities(this, langs, keys));
   }
 
   formatValue(id, args) {
-    return this.service.languages.then(
-      langs => this.service.resolveValues(this, langs, [[id, args]])).then(
+    return this.interactive.then(
+      client => client.formatValues(this, [[id, args]])).then(
         values => values[0]);
   }
 
   formatValues(...keys) {
-    return this.service.languages.then(
-      langs => this.service.resolveValues(this, langs, keys));
+    return this.interactive.then(
+      client => client.formatValues(this, keys));
   }
 
   translateFragment(frag) {
-    return this.service.languages.then(
+    return this.resolvedLanguages().then(
       langs => translateFragment(this, langs, frag));
   }
 }
@@ -74,20 +73,22 @@ export class View {
 View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
+function init(view, client) {
+  view.observe();
+  return client.registerView(view, getResourceLinks(view.doc.head)).then(
+    () => client);
+}
+
 function onMutations(mutations) {
-  return this.service.languages.then(
+  return this.resolvedLanguages().then(
     langs => translateMutations(this, langs, mutations));
 }
 
-export function translate(langs) {
-  return translateDocument.call(this, langs);
-}
-
-function translateDocument(langs) {
-  const [view, doc] = [this, this.doc];
+export function translateDocument(view, langs) {
+  const doc = view.doc;
 
   if (langs[0].code === doc.documentElement.getAttribute('lang')) {
-    return Promise.resolve.then(
+    return Promise.resolve().then(
       () => dispatchEvent(doc, 'DOMLocalized', langs));
   }
 
