@@ -16,10 +16,10 @@ const observerConfig = {
 
 export class View {
   constructor(client, doc) {
-    this.doc = doc;
+    this._doc = doc;
     this.qps = qps;
 
-    this.interactive = documentReady().then(
+    this._interactive = documentReady().then(
       () => init(this, client));
 
     this.ready = new Promise(function(resolve) {
@@ -31,36 +31,36 @@ export class View {
     });
 
     const observer = new MutationObserver(onMutations.bind(this));
-    this.observe = () => observer.observe(this.doc, observerConfig);
-    this.disconnect = () => observer.disconnect();
+    this._observe = () => observer.observe(doc, observerConfig);
+    this._disconnect = () => observer.disconnect();
 
     this.resolvedLanguages().then(
       langs => translateDocument(this, langs));
   }
 
   resolvedLanguages() {
-    return this.interactive.then(
+    return this._interactive.then(
       client => client.languages);
   }
 
   requestLanguages(langs) {
-    return this.interactive.then(
+    return this._interactive.then(
       client => client.requestLanguages(langs));
   }
 
   _resolveEntities(langs, keys) {
-    return this.interactive.then(
+    return this._interactive.then(
       client => client.resolveEntities(this, langs, keys));
   }
 
   formatValue(id, args) {
-    return this.interactive.then(
+    return this._interactive.then(
       client => client.formatValues(this, [[id, args]])).then(
         values => values[0]);
   }
 
   formatValues(...keys) {
-    return this.interactive.then(
+    return this._interactive.then(
       client => client.formatValues(this, keys));
   }
 
@@ -74,8 +74,8 @@ View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
 function init(view, client) {
-  view.observe();
-  return client.registerView(view, getResourceLinks(view.doc.head)).then(
+  view._observe();
+  return client.registerView(view, getResourceLinks(view._doc.head)).then(
     () => client);
 }
 
@@ -85,7 +85,7 @@ function onMutations(mutations) {
 }
 
 export function translateDocument(view, langs) {
-  const doc = view.doc;
+  const doc = view._doc;
 
   if (langs[0].code === doc.documentElement.getAttribute('lang')) {
     return Promise.resolve().then(

@@ -50,8 +50,8 @@ export class View {
     }
   }
 
-  observe() {}
-  disconnect() {}
+  _observe() {}
+  _disconnect() {}
 
   _resolveEntities(langs, keys) {
     return this.ctx.resolveEntities(langs, keys);

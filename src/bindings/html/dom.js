@@ -88,9 +88,9 @@ function translateElements(view, langs, elements) {
 }
 
 function applyTranslations(view, elems, translations) {
-  view.disconnect();
+  view._disconnect();
   for (let i = 0; i < elems.length; i++) {
     overlayElement(elems[i], translations[i]);
   }
-  view.observe();
+  view._observe();
 }
