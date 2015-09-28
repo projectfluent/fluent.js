@@ -48,7 +48,7 @@ describe('A simple context with one resource', function() {
       var args = {unread: 0};
       ctx.resolveEntities(langs, [['unreadMessages', args]]).then(
         function([{value}]) {
-          assert.strictEqual(value, i('0 unread', '0'));
+          assert.strictEqual(value, '0 unread');
         }
       ).then(done, done);
     });
@@ -66,7 +66,7 @@ describe('A simple context with one resource', function() {
       var args = {unread: 2};
       ctx.resolveEntities(langs, [['unreadMessages', args]]).then(
         function([{value}]) {
-          assert.strictEqual(value, i('2 unread', '2'));
+          assert.strictEqual(value, '2 unread');
         }
       ).then(done, done);
     });
@@ -75,7 +75,7 @@ describe('A simple context with one resource', function() {
       var args = {unread: 3};
       ctx.resolveEntities(langs, [['unreadMessages', args]]).then(
         function([{value}]) {
-          assert.strictEqual(value, i('3 unread', '3'));
+          assert.strictEqual(value, '3 unread');
         }
       ).then(done, done);
     });
@@ -129,7 +129,7 @@ describe('A simple context with one resource', function() {
         ['unreadMessages', {unread: 0}],
         ['unreadMessages', {unread: 1}]]).then(
         function([unread0, unread1]) {
-          assert.deepEqual(unread0, {value: i('0 unread', '0'), attrs: null});
+          assert.deepEqual(unread0, {value: '0 unread', attrs: null});
           assert.deepEqual(unread1, {value: 'One unread', attrs: null});
         }
       ).then(done, done);
@@ -219,7 +219,7 @@ describe('A simple context with one resource', function() {
         ['unreadMessages', {unread: 0}],
         ['unreadMessages', {unread: 1}]]).then(
         function([unread0, unread1]) {
-          assert.strictEqual(unread0, i('0 unread', '0'));
+          assert.strictEqual(unread0, '0 unread');
           assert.strictEqual(unread1, 'One unread');
         }
       ).then(done, done);

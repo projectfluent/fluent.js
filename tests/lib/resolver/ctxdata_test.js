@@ -27,12 +27,12 @@ describe('Context data', function(){
 
     it('can be referenced from strings', function() {
       var value = format(ctx, lang, args, entries.unread)[1];
-      assert.strictEqual(value, i('Unread notifications: 3', '3'));
+      assert.strictEqual(value, 'Unread notifications: 3');
     });
 
     it('can be passed as argument to a macro', function() {
       var value = format(ctx, lang, args, entries.unreadPlural)[1];
-      assert.strictEqual(value, i('3 unread notifications', '3'));
+      assert.strictEqual(value, '3 unread notifications');
     });
 
     it('takes priority over entities of the same name', function() {
@@ -162,7 +162,7 @@ describe('Context data', function(){
     });
 
     it('returns a number value', function(){
-      assert.strictEqual(format(ctx, lang, args, entries.numProp)[1], i('1'));
+      assert.strictEqual(format(ctx, lang, args, entries.numProp)[1], '1');
     });
 
     it('returns a value when used in macro', function(){

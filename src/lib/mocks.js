@@ -14,6 +14,13 @@ export function createEntriesFromSource(source) {
 }
 
 export function MockContext(entries) {
+  this._getNumberFormatter = function() {
+    return {
+      format: function(value) {
+        return value;
+      }
+    };
+  };
   this._getEntity = function(lang, id) {
     return entries[id];
   };

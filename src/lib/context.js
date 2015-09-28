@@ -8,6 +8,7 @@ export class Context {
   constructor(env, resIds) {
     this._env = env;
     this._resIds = resIds;
+    this._numberFormatters = null;
   }
 
   _formatTuple(lang, args, entity, id, key) {
@@ -116,6 +117,20 @@ export class Context {
       }
     }
     return undefined;
+  }
+
+  _getNumberFormatter(lang) {
+    if (!this._numberFormatters) {
+      this._numberFormatters = new Map();
+    }
+    if (!this._numberFormatters.has(lang)) {
+      const formatter = Intl.NumberFormat(lang, {
+        useGrouping: false,
+      });
+      this._numberFormatters.set(lang, formatter);
+      return formatter;
+    }
+    return this._numberFormatters.get(lang);
   }
 
   // XXX in the future macros will be stored in localization resources together 

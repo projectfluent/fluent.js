@@ -79,7 +79,7 @@ describe('Attributes', function(){
     it('returns the value of the attribute', function(){
       var formatted = format(
         ctx, lang, {n: 1, k: 2}, entries.update.attrs.title);
-      assert.strictEqual(formatted[1], i('2 updates title', '2'));
+      assert.strictEqual(formatted[1], '2 updates title');
     });
 
   });

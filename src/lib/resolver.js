@@ -65,18 +65,17 @@ function resolveIdentifier(ctx, lang, args, id) {
 }
 
 function subPlaceable(locals, ctx, lang, args, id) {
-  let res;
+  let newLocals, value;
 
   try {
-    res = resolveIdentifier(ctx, lang, args, id);
+    [newLocals, value] = resolveIdentifier(ctx, lang, args, id);
   } catch (err) {
-    return [{ error: err }, '{{ ' + id + ' }}'];
+    return [{ error: err }, FSI + '{{ ' + id + ' }}' + PDI];
   }
 
-  const value = res[1];
-
   if (typeof value === 'number') {
-    return res;
+    const formatter = ctx._getNumberFormatter(lang);
+    return [newLocals, formatter.format(value)];
   }
 
   if (typeof value === 'string') {
@@ -86,10 +85,10 @@ function subPlaceable(locals, ctx, lang, args, id) {
                           value.length + ', max allowed is ' +
                           MAX_PLACEABLE_LENGTH + ')');
     }
-    return res;
+    return [newLocals, FSI + value + PDI];
   }
 
-  return [{}, '{{ ' + id + ' }}'];
+  return [{}, FSI + '{{ ' + id + ' }}' + PDI];
 }
 
 function interpolate(locals, ctx, lang, args, arr) {
@@ -99,7 +98,7 @@ function interpolate(locals, ctx, lang, args, arr) {
     } else {
       const [, value] = subPlaceable(locals, ctx, lang, args, cur.name);
       // wrap the substitution in bidi isolate characters
-      return [localsSeq, valueSeq + FSI + value + PDI];
+      return [localsSeq, valueSeq + value];
     }
   }, [locals, '']);
 }
