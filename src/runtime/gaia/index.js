@@ -11,7 +11,7 @@ navigator.mozL10n = {
   translateFragment: (...args) => document.l10n.translateFragment(...args),
   once: cb => document.l10n.ready.then(cb),
   ready: cb => document.l10n.ready.then(() => {
-    document.addEventListener('DOMLocalized', cb);
+    document.addEventListener('DOMRetranslated', cb);
     cb();
   }),
 };

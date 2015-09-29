@@ -18,10 +18,7 @@ View (document.l10n)
 
 ### view.ready
 
-A Promise which resolves when the `document` fires `DOMLocalized`.  It's often 
-more convenient to use this than to listen to the event because you don't need 
-to also check if the event has already fired (via the `document.localized` 
-property).
+A Promise which resolves when the `document` is first translated.
 
 ```javascript
 view.ready.then(App.init);
