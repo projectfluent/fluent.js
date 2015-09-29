@@ -80,12 +80,14 @@ module.exports = function (grunt) {
     'lint',
     'test',
     'babel:web',
+    'babel:bridge',
   ]);
 
   grunt.registerTask('gaia', [
     'lint',
     'test',
     'babel:gaia',
+    'babel:bridge',
     'compat:gaia',
     'copy:gaia'
   ]);

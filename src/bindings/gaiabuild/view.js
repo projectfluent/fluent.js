@@ -3,8 +3,7 @@
 import { pseudo } from '../../lib/pseudo';
 import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';
-import { getResourceLinks } from '../../bindings/html/head';
-import { translateFragment } from '../../bindings/html/dom';
+import { getResourceLinks, translateFragment } from '../../bindings/html/dom';
 import { getDirection } from '../../bindings/html/langs';
 import { serializeContext } from './serialize';
 import { serializeLegacyContext } from './legacy/serialize';
@@ -17,7 +16,7 @@ export class View {
     this.isEnabled = this.doc.querySelector('link[rel="localization"]');
     // XXX we should check if the app uses l10n.js instead, but due to lazy 
     // loading we can't rely on querySelector.
-    this.isLegacy = !this.doc.querySelector('script[src$="l20n.js"]');
+    this.isLegacy = !this.doc.querySelector('script[src*="l20n"]');
 
     const EnvClass = this.isLegacy ? LegacyEnv : Env;
     this.env = new EnvClass(
