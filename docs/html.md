@@ -48,8 +48,8 @@ default language.
 <meta name="availableLanguages" content="de, en-US, fr, pl">
 ```
 
-_Optional:_ If you're also providing user-installable language packages via L20n, specify 
-the app version:
+_Optional:_ If you're also providing user-installable language packages via 
+L20n, specify the app version:
 
 ```html
 <meta name="appVersion" content="2.5">
@@ -109,4 +109,4 @@ clarity):
 
 The first time all DOM nodes are localized, the `document.l10n.ready` promise 
 will resolve.  On every following re-translation due to languages change, 
-`document` will fire a `DOMRetranslated` event.
+the `document` will fire a `DOMRetranslated` event.

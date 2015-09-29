@@ -21,14 +21,14 @@ Example resource files:
 `./locales/es-ES.l20n`
 
 ```html
-<fooEntity "Foo en español">
+<foo "Foo en español">
 ```
 
 `./locales/en-US.l20n`
 
 ```html
-<fooEntity "Foo in English">
-<barEntity "Bar only exists in English">
+<foo "Foo in English">
+<bar "Bar only exists in English">
 ```
 
 Example node script:
@@ -36,22 +36,15 @@ Example node script:
 ```javascript
 import { Env, fetch } from 'l20n';
 
-const env = new Env('es-ES', fetch);
+const env = new Env('en-US', fetch);
 const ctx = env.createContext(['locales/{locale}.l20n']);
 const langs = [
   {code: 'es-ES'},
   {code: 'en-US'}
 ];
 
-ctx.fetch(langs).then(init);
+ctx.resolveValues(langs, ['foo', 'bar']).then(
+  ([foo, bar]) => console.log(foo, bar));
 
-function init() {
-  ctx.resolve(langs, 'fooEntity').then((value) => {
-    console.log('Foo: ', value);
-  });
-
-  ctx.resolve(langs, 'barEntity').then((value) => {
-    console.log('Bar: ', value);
-  });
-}
+// -> 'Foo en español', 'Bar only exists in English'
 ```

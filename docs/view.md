@@ -3,8 +3,8 @@ The View API
 
 The main abstraction used by the JavaScript API is the `View` class.  Views are 
 responsible for localizing `document` objects in HTML.  Internally, viewes use 
-the `Service` class to store the state of the language negotiation and to cache 
-downloaded resources.
+a centralized `Service` to store the state of the language negotiation and 
+cache downloaded resources.
 
 If you're using the `web` or the `webcompat` runtime builds (see 
 [docs/html][]), each `document` will have its corresponding `View` created 
@@ -24,10 +24,11 @@ A Promise which resolves when the `document` is first translated.
 view.ready.then(App.init);
 ```
 
-### view.languages
 
-A Promise which resolves to the array of the current user-preferred languages.  
-Language objects have the following properties:
+### view.resolvedLanguages()
+
+Return a Promise which resolves to an array of the current user-preferred 
+languages.  Language objects have the following properties:
 
 ```javascript
 {
@@ -44,36 +45,59 @@ language packages and `qps` for pseudo-languages.
 [BCP 47]: http://tools.ietf.org/html/bcp47
 
 ```javascript
-view.languages.then(
+view.resolvedLanguages().then(
   langs => console.log(langs));
-// ['pl', 'en-US']
+// -> [{ code: 'pl', dir: 'ltr', src: 'extra' },
+       { code: 'en-US', dir: 'ltr', src: 'app' }]
 ```
 
-You can also trigger the language negotation by assigning an array of language 
-codes.
+
+### view.requestLanguages(langCodes)
+
+Trigger the language negotation process with an array of `langCodes`.  Returns 
+a promise with the negotiated array of language objects as above.
 
 ```javascript
-view.languages = ['de-DE', 'de', 'en-US'];
+view.requestLanguages(['de-DE', 'de', 'en-US']);
 ```
 
 
-### view.format(id, args)
+### view.formatValue(id, args)
 
 Retrieve the translation corresponding to the `id` identifier.
 
 If passed, `args` is a simple hash object with a list of variables that will be 
 interpolated in the value of the translation.
 
-Returns a Promise resolving to the Entity object.
+Returns a Promise resolving to the translation string.
 
 ```javascript
-view.format('hello', { who: 'world' }).then(
-  entity => console.log(entity));
-// -> { value: 'Hello, world!', attrs: null }
+view.formatValue('hello', { who: 'world' }).then(
+  hello => console.log(hello));
+// -> 'Hello, world!'
 ```
 
 Use this sparingly for one-off messages which don't need to be retranslated 
 when the user changes their language preferences.
+
+
+### view.formatValues(...keys)
+
+A generalized version of `view.formatValue`.  Retrieve translations 
+corresponding to the passed keys.  Keys can either be simple string identifiers 
+or `[id, args]` arrays.
+
+Returns a Promise resolving to an array of the translation strings.
+
+```javascript
+view.formatValues(
+  ['hello', { who: 'Mary' }],
+  ['hello', { who: 'John' }],
+  'welcome'
+).then(([helloMary, helloJohn, welcome]) =>
+  console.log(helloMary, helloJohn, welcome));
+// -> 'Hello, Mary!', 'Hello, John!', 'Welcome!'
+```
 
 
 ### view.setAttributes(elem, id, args)
