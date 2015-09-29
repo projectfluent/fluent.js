@@ -14,6 +14,8 @@ const observerConfig = {
   attributeFilter: ['data-l10n-id', 'data-l10n-args']
 };
 
+const readiness = new WeakMap();
+
 export class View {
   constructor(client, doc) {
     this._doc = doc;
@@ -22,19 +24,11 @@ export class View {
     this._interactive = documentReady().then(
       () => init(this, client));
 
-    this.ready = new Promise(function(resolve) {
-      const viewReady = function(evt) {
-        doc.removeEventListener('DOMLocalized', viewReady);
-        resolve(evt.detail.languages);
-      };
-      doc.addEventListener('DOMLocalized', viewReady);
-    });
-
     const observer = new MutationObserver(onMutations.bind(this));
     this._observe = () => observer.observe(doc, observerConfig);
     this._disconnect = () => observer.disconnect();
 
-    this.resolvedLanguages().then(
+    this.ready = this.resolvedLanguages().then(
       langs => translateDocument(this, langs));
   }
 
@@ -85,28 +79,42 @@ function onMutations(mutations) {
 }
 
 export function translateDocument(view, langs) {
-  const doc = view._doc;
+  const html = view._doc.documentElement;
 
-  if (langs[0].code === doc.documentElement.getAttribute('lang')) {
-    return Promise.resolve().then(
-      () => dispatchEvent(doc, 'DOMLocalized', langs));
+  if (readiness.has(html)) {
+    return translateFragment(view, langs, html).then(
+      () => setDOMAttrsAndEmit(html, langs)).then(
+        () => langs.map(takeCode));
   }
 
-  return translateFragment(view, langs, doc.documentElement).then(
-    () => {
-      doc.documentElement.lang = langs[0].code;
-      doc.documentElement.dir = langs[0].dir;
-      dispatchEvent(doc, 'DOMLocalized', langs);
-    });
+  const translated =
+    // has the document been already pre-translated?
+    langs[0].code === html.getAttribute('lang') ?
+      Promise.resolve() :
+      translateFragment(view, langs, html).then(
+        () => setDOMAttrs(html, langs));
+
+  return translated.then(
+    () => readiness.set(html, true)).then(
+      () => langs.map(takeCode));
 }
 
-function dispatchEvent(root, name, langs) {
-  const event = new CustomEvent(name, {
+function setDOMAttrsAndEmit(html, langs) {
+  setDOMAttrs(html, langs);
+  html.parentNode.dispatchEvent(new CustomEvent('DOMRetranslated', {
     bubbles: false,
     cancelable: false,
     detail: {
-      languages: langs
+      languages: langs.map(takeCode)
     }
-  });
-  root.dispatchEvent(event);
+  }));
+}
+
+function setDOMAttrs(html, langs) {
+  html.setAttribute('lang', langs[0].code);
+  html.setAttribute('dir', langs[0].dir);
+}
+
+function takeCode(lang) {
+  return lang.code;
 }
