@@ -5,7 +5,7 @@ module.exports = {
     files: [
       {
         expand: true,
-        cwd: 'dist/web',
+        cwd: 'dist/gaia',
         src: ['l20n.js'],
         dest: 'dist/stage/shared/js/'
       },
