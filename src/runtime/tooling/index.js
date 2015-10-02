@@ -22,5 +22,5 @@ export { emit, addEventListener, removeEventListener } from '../../lib/events';
 export { prioritizeLocales } from '../../lib/intl';
 export { MockContext, lang } from '../../lib/mocks';
 export { getPluralRule } from '../../lib/plurals';
-export { walkEntry, walkValue, qps } from '../../lib/pseudo';
+export { walkEntry, walkValue, pseudo } from '../../lib/pseudo';
 export { format } from '../../lib/resolver';

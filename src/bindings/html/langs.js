@@ -1,7 +1,7 @@
 'use strict';
 
 import { prioritizeLocales } from '../../lib/intl';
-import { qps } from '../../lib/pseudo';
+import { pseudo } from '../../lib/pseudo';
 
 const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
 
@@ -10,7 +10,7 @@ export function negotiateLanguages(
   requestedLangs) {
 
   const allAvailableLangs = Object.keys(availableLangs).concat(
-    additionalLangs || []).concat(Object.keys(qps));
+    additionalLangs || []).concat(Object.keys(pseudo));
   const newLangs = prioritizeLocales(
     defaultLang, allAvailableLangs, requestedLangs);
 
@@ -55,8 +55,8 @@ function getLangSource(appVersion, availableLangs, additionalLangs, code) {
     }
   }
 
-  if ((code in qps) && !(code in availableLangs)) {
-    return 'qps';
+  if ((code in pseudo) && !(code in availableLangs)) {
+    return 'pseudo';
   }
 
   return 'app';

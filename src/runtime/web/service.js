@@ -1,6 +1,7 @@
 'use strict';
 
 import { Env } from '../../lib/env';
+import { pseudo } from '../../lib/pseudo';
 import { fetch } from './io';
 import { translateDocument } from '../../bindings/html/view';
 import { getMeta, documentReady } from '../../bindings/html/head';
@@ -42,6 +43,14 @@ export class Service {
   requestLanguages(requestedLangs) {
     return changeLanguages.call(
       this, getAdditionalLanguages(), requestedLangs);
+  }
+
+  getPseudoName(code) {
+    return pseudo[code].name;
+  }
+
+  pseudotranslate(code, str) {
+    return pseudo[code].process(str);
   }
 
   handleEvent(evt) {

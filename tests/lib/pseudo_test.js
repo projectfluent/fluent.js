@@ -1,10 +1,10 @@
 'use strict';
 
 import assert from 'assert';
-import { qps, walkEntry } from '../../src/lib/pseudo';
+import { pseudo, walkEntry } from '../../src/lib/pseudo';
 import PropertiesParser from '../../src/lib/format/properties/parser';
 
-describe('qps strategy', function() {
+describe('pseudo strategy', function() {
   var strategy, source, ast, walked;
 
   beforeEach(function() {
@@ -26,7 +26,7 @@ describe('qps strategy', function() {
   describe('accented English', function(){
 
     before(function() {
-      strategy = qps['qps-ploc'].translate;
+      strategy = pseudo['qps-ploc'].process;
       source = [
         'foo=Foo',
 
@@ -93,7 +93,7 @@ describe('qps strategy', function() {
     /* jshint -W100 */
 
     before(function() {
-      strategy = qps['qps-plocm'].translate;
+      strategy = pseudo['qps-plocm'].process;
       source = [
         'foo=Foo',
 

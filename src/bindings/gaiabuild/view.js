@@ -1,6 +1,6 @@
 'use strict';
 
-import { qps } from '../../lib/pseudo';
+import { pseudo } from '../../lib/pseudo';
 import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';
 import { getResourceLinks } from '../../bindings/html/head';
@@ -73,7 +73,7 @@ export class View {
     const lang = {
       code,
       dir: getDirection(code),
-      src: code in qps ? 'qps' : 'app'
+      src: code in pseudo ? 'pseudo' : 'app'
     };
     return fetchContext(this.ctx, lang).then(() => {
       const [errors, entries] = this.isLegacy ?

@@ -48,7 +48,7 @@ export function walkValue(value, fn) {
 
 /* Pseudolocalizations
  *
- * PSEUDO is a dict of strategies to be used to modify the English
+ * pseudo is a dict of strategies to be used to modify the English
  * context in order to create pseudolocalizations.  These can be used by
  * developers to test the localizability of their code without having to
  * actually speak a foreign language.
@@ -134,7 +134,7 @@ function createGetter(id, name) {
       (map, val) => val.replace(
         reAlphas, match => map.charAt(match.charCodeAt(0) - 65));
 
-    const tranform =
+    const transform =
       val => replaceChars(charMaps[id], mods[id](val));
 
     // apply fn to translatable parts of val
@@ -154,13 +154,13 @@ function createGetter(id, name) {
     };
 
     return _pseudo = {
-      translate: val => apply(tranform, val),
-      name: tranform(name)
+      name: transform(name),
+      process: str => apply(transform, str)
     };
   };
 }
 
-export const qps = Object.defineProperties(Object.create(null), {
+export const pseudo = Object.defineProperties(Object.create(null), {
   'qps-ploc': {
     enumerable: true,
     get: createGetter('qps-ploc', 'Runtime Accented')

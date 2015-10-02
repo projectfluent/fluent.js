@@ -5,7 +5,7 @@
 require('../node_modules/babel-core/register');
 
 var program = require('commander');
-var qps = require('../src/lib/pseudo').qps;
+var pseudo = require('../src/lib/pseudo').pseudo;
 
 program
   .version('0.0.1')
@@ -16,7 +16,7 @@ program
   .parse(process.argv);
 
 function localize(str) {
-  return qps[program.locale].translate(str);
+  return pseudo[program.locale].process(str);
 }
 
 process.stdin.setEncoding('utf8');

@@ -1,6 +1,5 @@
 'use strict';
 
-import { qps } from '../../lib/pseudo';
 import { getResourceLinks, documentReady } from './head';
 import {
   setAttributes, getAttributes, translateFragment, translateMutations
@@ -19,7 +18,10 @@ const readiness = new WeakMap();
 export class View {
   constructor(client, doc) {
     this._doc = doc;
-    this.qps = qps;
+    this.pseudo = {
+      'qps-ploc': new Pseudo(this, 'qps-ploc'),
+      'qps-plocm': new Pseudo(this, 'qps-plocm')
+    };
 
     this._interactive = documentReady().then(
       () => init(this, client));
@@ -66,6 +68,21 @@ export class View {
 
 View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
+
+class Pseudo {
+  constructor(view, code) {
+    this.view = view;
+    this.code = code;
+  }
+  getName() {
+    return this.view._interactive.then(
+      client => client.getPseudoName(this.code));
+  }
+  processString(str) {
+    return this.view._interactive.then(
+      client => client.pseudotranslate(this.code, str));
+  }
+}
 
 function init(view, client) {
   view._observe();
