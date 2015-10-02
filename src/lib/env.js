@@ -3,7 +3,7 @@
 import { Context } from './context';
 import PropertiesParser from './format/properties/parser';
 import L20nParser from './format/l20n/entries/parser';
-import { walkEntry, qps } from './pseudo';
+import { walkEntry, pseudo } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 
 const parsers = {
@@ -39,13 +39,14 @@ export class Env {
   }
 
   _create(lang, entries) {
-    if (lang.src !== 'qps') {
+    if (lang.src !== 'pseudo') {
       return entries;
     }
 
     const pseudoentries = Object.create(null);
     for (let key in entries) {
-      pseudoentries[key] = walkEntry(entries[key], qps[lang.code].translate);
+      pseudoentries[key] = walkEntry(
+        entries[key], pseudo[lang.code].process);
     }
     return pseudoentries;
   }
@@ -71,7 +72,7 @@ export class Env {
       cache[id] = err;
     };
 
-    const langToFetch = lang.src === 'qps' ?
+    const langToFetch = lang.src === 'pseudo' ?
       { code: this.defaultLang, src: 'app' } :
       lang;
 

@@ -6,7 +6,7 @@ import { LegacyContext } from './context';
 import { createEntry } from './resolver';
 import PropertiesParser from './parser';
 import { walkContent } from './pseudo';
-import { qps } from '../../../lib/pseudo';
+import { pseudo } from '../../../lib/pseudo';
 
 // XXX babel's inheritance code triggers JavaScript warnings about modifying 
 // the prototype object so we use regular prototypal inheritance here
@@ -27,7 +27,7 @@ LegacyEnv.prototype._parse = function(syntax, lang, data) {
 
 LegacyEnv.prototype._create = function(lang, ast) {
   const entries = Object.create(null);
-  const create = lang.src === 'qps' ?
+  const create = lang.src === 'pseudo' ?
     createPseudoEntry : createEntry;
 
   for (let i = 0, node; node = ast[i]; i++) {
@@ -43,5 +43,5 @@ LegacyEnv.prototype._create = function(lang, ast) {
 };
 
 function createPseudoEntry(node, lang) {
-  return createEntry(walkContent(node, qps[lang.code].translate));
+  return createEntry(walkContent(node, pseudo[lang.code].process));
 }
