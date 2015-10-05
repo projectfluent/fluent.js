@@ -4,9 +4,10 @@ import { L10nError } from '../../lib/errors';
 
 export function serializeContext(ctx, lang) {
   const cache = ctx._env._resCache;
-  return ctx._resIds.reduceRight(([errorsSeq, entriesSeq], cur) => {
-    const sourceRes = cache[cur + 'en-USapp'];
-    const langRes = cache[cur + lang.code + lang.src];
+  const resIds = Array.from(ctx._env._resLists.get(ctx));
+  return resIds.reduceRight(([errorsSeq, entriesSeq], cur) => {
+    const sourceRes = cache.get(cur + 'en-USapp');
+    const langRes = cache.get(cur + lang.code + lang.src);
     const [errors, entries] = serializeEntries(
       lang,
       langRes instanceof L10nError ? {} : langRes,

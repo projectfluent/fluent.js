@@ -3,8 +3,8 @@
 import { Context } from '../../../lib/context';
 import { format } from './resolver';
 
-export function LegacyContext(env, resIds) {
-  Context.call(this, env, resIds);
+export function LegacyContext(env) {
+  Context.call(this, env);
 }
 
 LegacyContext.prototype = Object.create(Context.prototype);

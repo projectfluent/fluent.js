@@ -33,6 +33,10 @@ export class Remote {
     });
   }
 
+  unregisterView(view) {
+    return this.ctxs.delete(view);
+  }
+
   resolveEntities(view, langs, keys) {
     return this.ctxs.get(view).resolveEntities(langs, keys);
   }
