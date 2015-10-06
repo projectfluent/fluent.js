@@ -16,9 +16,10 @@ You can also use [bower][] to install L20n:
 
     bower install l20n#v3.x
 
-The `dist/` directory contains subdirectories with different variations of 
-L20n (called _runtimes_).  The `webcompat` runtime is best suited for webpages 
-and is written in ES5.  The `web` runtime is written in ES2015.
+The `dist/` directory contains subdirectories with different variations of L20n 
+(called _runtimes_).  The `compat` directory is ES5-compatible.  The `bundle` 
+variants are written in ES2015.  For best cross-browser results use 
+`dist/compat/web/l20n.js`.
 
 [v1.0.x]: https://github.com/l20n/l20n.js/tree/v1.0.x/dist
 [v2.x]: https://github.com/l20n/l20n.js/tree/v2.x/dist
@@ -31,7 +32,7 @@ file as the first deferred script in the `head` element.
 ```html
 <head>
   …
-  <script defer src="dist/webcompat/l20n.js"></script>
+  <script defer src="dist/compat/web/l20n.js"></script>
 </head>
 ```
 

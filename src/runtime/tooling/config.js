@@ -2,33 +2,19 @@
 
 /* jshint node:true */
 
-var config = require('../../../build/webpack/config');
-var path = require('path').resolve.bind(null, __dirname);
+var bundle = require('../../../build/babel/bundle');
 
 module.exports = {
   tooling: {
-    context: path('../../../src'),
-    entry: './runtime/tooling/index.js',
-    output: {
-      path: path('../../../dist'),
-      filename: 'tooling/l20n.js',
-      library: 'L20n',
-    },
-    module: {
-      loaders: [config.babel]
+    options: bundle,
+    files: {
+      'dist/bundle/tooling/l20n.js': 'src/runtime/tooling/index.js'
     }
   },
   aisle: {
-    context: path('../../../src'),
-    entry: './runtime/tooling/aisle.js',
-    output: {
-      path: path('../../../dist'),
-      filename: 'aisle/l20n.js',
-      libraryTarget: 'amd',
-
-    },
-    module: {
-      loaders: [config.babel]
+    options: bundle,
+    files: {
+      'dist/bundle/aisle/l20n.js': 'src/runtime/tooling/aisle.js'
     }
   },
 };

@@ -18,13 +18,13 @@
   "bugs": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox%20OS&component=Gaia::L10n",
   "scripts": {
     "test": "grunt merge-conflict lint test",
-    "prepublish": "grunt webpack"
+    "prepublish": "grunt release"
   },
   "directories": {
     "lib": "./src"
   },
-  "main": "./dist/node/l20n.js",
-  "browser": "./dist/web/l20n-common.js",
+  "main": "./dist/compat/node/l20n.js",
+  "browser": "./dist/compat/web/l20n-common.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/l20n/l20n.js.git"
@@ -35,29 +35,27 @@
   ],
   "devDependencies": {
     "babel-core": "~5.6.17",
-    "babel-loader": "^5.0.0",
-    "colors": "~0.6.0",
-    "commander": "~2.0",
+    "colors": "^0.6.0",
+    "commander": "^2.0",
     "glob": "^5.0.14",
-    "grunt": "~0.4.1",
+    "grunt": "^0.4.1",
     "grunt-babel": "^5.0.0",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-copy": "^0.8.1",
     "grunt-contrib-jshint": "^0.11.1",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-jsonlint": "~1.0.0",
-    "grunt-merge-conflict": "~0.0.2",
-    "grunt-mocha-test": "~0.6.3",
-    "grunt-notify": "~0.2.4",
-    "grunt-shell": "~0.4.0",
-    "grunt-webpack": "^1.0.8",
-    "load-grunt-tasks": "~0.1.0",
-    "prettyjson": "~0.8.0",
-    "should": "~1.3.0",
-    "string.prototype.endswith": "^0.2.0",
-    "webpack": "^1.8.4"
+    "grunt-contrib-uglify": "^0.2.4",
+    "grunt-contrib-watch": "^0.5.3",
+    "grunt-jsonlint": "^1.0.0",
+    "grunt-merge-conflict": "^0.0.2",
+    "grunt-mocha-test": "^0.6.3",
+    "grunt-notify": "^0.2.4",
+    "grunt-shell": "^0.4.0",
+    "load-grunt-tasks": "^0.1.0",
+    "mkdirp": "^0.5.1",
+    "prettyjson": "^0.8.0",
+    "should": "^1.3.0",
+    "string.prototype.endswith": "^0.2.0"
   },
   "engine": {
     "node": ">=4.1"
