@@ -23,7 +23,7 @@ Include the following code in the `<head>` section of your HTML:
 <meta name="defaultLanguage" content="en-US">
 <meta name="availableLanguages" content="de, en-US, fr, pl">
 <link rel="localization" href="locales/myApp.{locale}.l20n">
-<script defer src="dist/webcompat/l20n.js"></script>
+<script defer src="dist/compat/web/l20n.js"></script>
 ```
 
 L20n.js supports three kinds of translation resources:

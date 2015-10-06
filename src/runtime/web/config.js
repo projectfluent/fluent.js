@@ -2,32 +2,19 @@
 
 /* jshint node:true */
 
-var config = require('../../../build/webpack/config');
-var path = require('path').resolve.bind(null, __dirname);
+var bundle = require('../../../build/babel/bundle');
 
 module.exports = {
-  webcompat: {
-    context: path('../../../src'),
-    entry: './runtime/web/index.js',
-    output: {
-      path: path('../../../dist'),
-      filename: 'webcompat/l20n.js',
-      libraryTarget: 'this',
-    },
-    module: {
-      loaders: [config.babel]
+  web: {
+    options: bundle,
+    files: {
+      'dist/bundle/web/l20n.js': 'src/runtime/web/index.js'
     }
   },
   webcommon: {
-    context: path('../../../src'),
-    entry: './runtime/web/api.js',
-    output: {
-      path: path('../../../dist'),
-      filename: 'web/l20n-common.js',
-      libraryTarget: 'commonjs2',
-    },
-    module: {
-      loaders: [config.babel]
+    options: bundle,
+    files: {
+      'dist/bundle/web/l20n-common.js': 'src/runtime/web/api.js'
     }
-  }
+  },
 };

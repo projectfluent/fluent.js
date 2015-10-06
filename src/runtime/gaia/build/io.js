@@ -1,5 +1,5 @@
 'use strict';
-import { L10nError } from '../../lib/errors';
+import { L10nError } from '../../../lib/errors';
 
 export default {
   fetch: function(htmloptimizer, res, lang) {

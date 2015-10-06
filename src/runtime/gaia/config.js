@@ -5,10 +5,11 @@
 var bundle = require('../../../build/babel/bundle');
 
 module.exports = {
-  node: {
+  gaia: {
     options: bundle,
     files: {
-      'dist/bundle/node/l20n.js': 'src/runtime/node/index.js'
+      'dist/bundle/gaia/l20n.js': 'src/runtime/gaia/index.js',
+      'dist/bundle/gaia/build/l20n.js': 'src/runtime/gaia/build/index.js'
     }
   },
 };

@@ -1,33 +1,12 @@
 'use strict';
 
-var bundler = require('./bundler');
+var glob = require('glob');
 
-module.exports = {
-  web: {
-    options: {
-      plugins: bundler,
-      whitelist: ''
-    },
-    files: {
-      'dist/web/l20n.js': 'src/runtime/web/index.js'
-    }
-  },
-  gaia: {
-    options: {
-      plugins: bundler,
-      whitelist: ''
-    },
-    files: {
-      'dist/gaia/l20n.js': 'src/runtime/gaia/index.js'
-    }
-  },
-  jsshell: {
-    options: {
-      plugins: bundler,
-      whitelist: ''
-    },
-    files: {
-      'dist/jsshell/l20n.js': 'src/runtime/jsshell/index.js'
-    }
-  },
-};
+glob.sync('../../src/runtime/**/config.js', {
+  cwd: __dirname
+}).forEach(function(file) {
+  var tasks = require(file);
+  for (var name in tasks) {
+    module.exports[name] = tasks[name];
+  }
+});

@@ -1,8 +1,9 @@
 'use strict';
 
-import { readFile } from 'fs';
+/* jshint node:true */
+
+const { readFile } = require('fs');
 import { L10nError } from '../../lib/errors';
-import 'string.prototype.endswith';
 
 function load(url) {
   return new Promise(function(resolve, reject) {

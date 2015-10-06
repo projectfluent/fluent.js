@@ -5,10 +5,10 @@
 var bundle = require('../../../build/babel/bundle');
 
 module.exports = {
-  node: {
+  jsshell: {
     options: bundle,
     files: {
-      'dist/bundle/node/l20n.js': 'src/runtime/node/index.js'
+      'dist/bundle/jsshell/l20n.js': 'src/runtime/jsshell/index.js'
     }
   },
 };

@@ -1,5 +1,7 @@
 'use strict';
 
+/* jshint node:true */
+
 var fs = require('fs');
 
 module.exports = function (grunt) {
@@ -27,9 +29,10 @@ module.exports = function (grunt) {
 
   // Load all grunt tasks matching the `grunt-*` pattern.
   require('load-grunt-tasks')(grunt);
+  grunt.loadTasks('./build/babel/tasks');
+
 
   grunt.initConfig({
-    webpack: require('./build/webpack'),
     babel: require('./build/babel'),
     copy: require('./build/copy'),
     clean: require('./build/clean'),
@@ -69,27 +72,33 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'lint',
     'test',
-    'webpack:webcompat',
+    'babel',
+    'compat',
+  ]);
+
+  grunt.registerTask('web', [
+    'lint',
+    'test',
     'babel:web',
   ]);
 
   grunt.registerTask('gaia', [
     'lint',
     'test',
-    'webpack:gaiabuild',
     'babel:gaia',
-    'copy:stage'
+    'compat:gaia',
+    'copy:gaia'
   ]);
 
   grunt.registerTask('release', [
     'lint',
     'test',
-    'webpack',
     'babel',
+    'compat',
     'uglify'
   ]);
 
   grunt.registerTask('default', [
-    'build'
+    'web'
   ]);
 };

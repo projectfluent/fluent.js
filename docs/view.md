@@ -6,11 +6,8 @@ responsible for localizing `document` objects in HTML.  Internally, viewes use
 a centralized `Service` to store the state of the language negotiation and 
 cache downloaded resources.
 
-If you're using the `web` or the `webcompat` runtime builds (see 
-[docs/html][]), each `document` will have its corresponding `View` created 
-automatically on startup, as `document.l10n`.
-
-[docs/html]: html.md
+If you're using the `web` each `document` will have its corresponding `View` 
+created automatically on startup, as `document.l10n`.
 
 
 View (document.l10n)

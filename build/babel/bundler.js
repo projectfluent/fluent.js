@@ -161,10 +161,13 @@ function turnImportIntoGetModule(babel, source, node) {
     // import bar from 'foo';
     id = babel.types.identifier(node.specifiers[0].local.name);
   } else {
-    // import {bar, baz} from 'foo';
+    // import {bar, baz as qux} from 'foo';
     var idents = [];
     for (var j = 0; j < node.specifiers.length; j++) {
-      idents.push(babel.types.identifier(node.specifiers[j].local.name));
+      var name = node.specifiers[j].exported ?
+        node.specifiers[j].exported.name :
+        node.specifiers[j].local.name;
+      idents.push(babel.types.identifier(name));
     }
     id = babel.types.objectPattern(idents);
   }
@@ -195,7 +198,9 @@ function turnImportsIntoGetModule(babel, path, body) {
       imports.push(getModuleIDFromPath(path, body[i].source.value));
 
       for (var j = 0; j < body[i].specifiers.length; j++) {
-        exports.push(babel.types.identifier(body[i].specifiers[j].local.name));
+        exports.push(
+          babel.types.identifier(
+            body[i].specifiers[j].exported.name));
       }
 
       body[i] = turnImportIntoGetModule(babel, source, body[i]);
