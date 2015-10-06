@@ -1,4 +1,4 @@
-<title "Exemple de mozL10n">
+<title "Exemple de l20n.js">
 <world "le monde">
 <hello "Salut <em>{{ world }}</em> !">
 <name 'Ecrivez <input placeholder="votre nom"> et <input value="envoyez">.'>

@@ -1,8 +1,9 @@
 'use strict';
 
 import { fetch } from '../web/io';
-import { Service } from '../web/service';
+import { Client, broadcast } from '../web/bridge';
 import { View } from '../../bindings/html/view';
+import { Remote } from '../../bindings/html/remote';
 
 import ASTParser from '../../lib/format/l20n/ast/parser';
 import ASTSerializer from '../../lib/format/l20n/ast/serializer';
@@ -21,7 +22,7 @@ import { walkEntry, walkValue, pseudo } from '../../lib/pseudo';
 import { format } from '../../lib/resolver';
 
 window.L20n = {
-  fetch, Service, View,
+  fetch, Client, Remote, View, broadcast,
   ASTParser, ASTSerializer, EntriesParser, EntriesSerializer, PropertiesParser,
   Context, Env, L10nError, emit, addEventListener, removeEventListener,
   prioritizeLocales, MockContext, lang, getPluralRule, walkEntry, walkValue,

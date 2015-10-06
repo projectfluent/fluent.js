@@ -1,8 +1,9 @@
 'use strict';
 
-import { getResourceLinks, documentReady } from './head';
+import { documentReady } from './shims';
 import {
-  setAttributes, getAttributes, translateFragment, translateMutations
+  setAttributes, getAttributes, translateFragment, translateMutations,
+  getResourceLinks
 } from './dom';
 
 const observerConfig = {
@@ -19,8 +20,8 @@ export class View {
   constructor(client, doc) {
     this._doc = doc;
     this.pseudo = {
-      'qps-ploc': new Pseudo(this, 'qps-ploc'),
-      'qps-plocm': new Pseudo(this, 'qps-plocm')
+      'qps-ploc': createPseudo(this, 'qps-ploc'),
+      'qps-plocm': createPseudo(this, 'qps-plocm')
     };
 
     this._interactive = documentReady().then(
@@ -30,34 +31,35 @@ export class View {
     this._observe = () => observer.observe(doc, observerConfig);
     this._disconnect = () => observer.disconnect();
 
-    this.ready = this.resolvedLanguages().then(
-      langs => translateDocument(this, langs));
+    const translateView = langs => translateDocument(this, langs);
+    client.on('translateDocument', translateView);
+    this.ready = this.resolvedLanguages().then(translateView);
   }
 
   resolvedLanguages() {
     return this._interactive.then(
-      client => client.languages);
+      client => client.method('resolvedLanguages'));
   }
 
   requestLanguages(langs) {
     return this._interactive.then(
-      client => client.requestLanguages(langs));
+      client => client.method('requestLanguages', langs));
   }
 
   _resolveEntities(langs, keys) {
     return this._interactive.then(
-      client => client.resolveEntities(this, langs, keys));
+      client => client.method('resolveEntities', client.id, langs, keys));
   }
 
   formatValue(id, args) {
     return this._interactive.then(
-      client => client.formatValues(this, [[id, args]])).then(
+      client => client.method('formatValues', client.id, [[id, args]])).then(
         values => values[0]);
   }
 
   formatValues(...keys) {
     return this._interactive.then(
-      client => client.formatValues(this, keys));
+      client => client.method('formatValues', client.id, keys));
   }
 
   translateFragment(frag) {
@@ -69,25 +71,20 @@ export class View {
 View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
 
-class Pseudo {
-  constructor(view, code) {
-    this.view = view;
-    this.code = code;
-  }
-  getName() {
-    return this.view._interactive.then(
-      client => client.getPseudoName(this.code));
-  }
-  processString(str) {
-    return this.view._interactive.then(
-      client => client.pseudotranslate(this.code, str));
-  }
+function createPseudo(view, code) {
+  return {
+    getName: () => view._interactive.then(
+      client => client.method('getName', code)),
+    processString: str => view._interactive.then(
+      client => client.method('processString', code, str)),
+  };
 }
 
 function init(view, client) {
   view._observe();
-  return client.registerView(view, getResourceLinks(view._doc.head)).then(
-    () => client);
+  return client.method(
+    'registerView', client.id, getResourceLinks(view._doc.head)).then(
+      () => client);
 }
 
 function onMutations(mutations) {

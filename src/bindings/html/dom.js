@@ -9,6 +9,12 @@ const htmlEntities = {
   '>': '&gt;',
 };
 
+export function getResourceLinks(head) {
+  return Array.prototype.map.call(
+    head.querySelectorAll('link[rel="localization"]'),
+    el => decodeURI(el.getAttribute('href')));
+}
+
 export function setAttributes(element, id, args) {
   element.setAttribute('data-l10n-id', id);
   if (args) {
