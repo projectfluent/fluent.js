@@ -17,7 +17,9 @@ export function LegacyEnv(defaultLang, fetch) {
 LegacyEnv.prototype = Object.create(Env.prototype);
 
 LegacyEnv.prototype.createContext = function(resIds) {
-  return new LegacyContext(this, resIds);
+  const ctx = new LegacyContext(this);
+  this._resLists.set(ctx, new Set(resIds));
+  return ctx;
 };
 
 LegacyEnv.prototype._parse = function(syntax, lang, data) {

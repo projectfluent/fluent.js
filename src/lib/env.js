@@ -16,7 +16,8 @@ export class Env {
     this.defaultLang = defaultLang;
     this.fetch = fetch;
 
-    this._resCache = Object.create(null);
+    this._resLists = new Map();
+    this._resCache = new Map();
 
     const listeners = {};
     this.emit = emit.bind(this, listeners);
@@ -25,7 +26,18 @@ export class Env {
   }
 
   createContext(resIds) {
-    return new Context(this, resIds);
+    const ctx = new Context(this);
+    this._resLists.set(ctx, new Set(resIds));
+    return ctx;
+  }
+
+  destroyContext(ctx) {
+    const lists = this._resLists;
+    const resList = lists.get(ctx);
+
+    lists.delete(ctx);
+    resList.forEach(
+      resId => deleteIfOrphan(this._resCache, lists, resId));
   }
 
   _parse(syntax, lang, data) {
@@ -55,29 +67,43 @@ export class Env {
     const cache = this._resCache;
     const id = res + lang.code + lang.src;
 
-    if (cache[id]) {
-      return cache[id];
+    if (cache.has(id)) {
+      return cache.get(id);
     }
 
     const syntax = res.substr(res.lastIndexOf('.') + 1);
 
     const saveEntries = data => {
       const entries = this._parse(syntax, lang, data);
-      cache[id] = this._create(lang, entries);
+      cache.set(id, this._create(lang, entries));
     };
 
     const recover = err => {
       err.lang = lang;
       this.emit('fetcherror', err);
-      cache[id] = err;
+      cache.set(id, err);
     };
 
     const langToFetch = lang.src === 'pseudo' ?
       { code: this.defaultLang, src: 'app' } :
       lang;
 
-    return cache[id] = this.fetch(res, langToFetch).then(
+    const resource = this.fetch(res, langToFetch).then(
       saveEntries, recover);
+
+    cache.set(id, resource);
+
+    return resource;
+  }
+}
+
+function deleteIfOrphan(cache, lists, resId) {
+  const isNeeded = Array.from(lists).some(
+    ([ctx, resIds]) => resIds.has(resId));
+
+  if (!isNeeded) {
+    cache.forEach((val, key) =>
+      key.startsWith(resId) ? cache.delete(key) : null);
   }
 }
 

@@ -16,4 +16,5 @@ remote.service = new Service('l20n')
   .method('formatValues', (...args) => remote.formatValues(...args))
   .method('getName', (...args) => remote.getName(...args))
   .method('processString', (...args) => remote.processString(...args))
+  .on('disconnect', clientId => remote.unregisterView(clientId))
   .listen(channel);

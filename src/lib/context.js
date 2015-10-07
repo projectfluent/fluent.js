@@ -5,9 +5,8 @@ import { format } from './resolver';
 import { getPluralRule } from './plurals';
 
 export class Context {
-  constructor(env, resIds) {
+  constructor(env) {
     this._env = env;
-    this._resIds = resIds;
     this._numberFormatters = null;
   }
 
@@ -52,8 +51,10 @@ export class Context {
       return Promise.resolve(langs);
     }
 
+    const resIds = Array.from(this._env._resLists.get(this));
+
     return Promise.all(
-      this._resIds.map(
+      resIds.map(
         this._env._getResource.bind(this._env, langs[0]))).then(
           () => langs);
   }
@@ -105,10 +106,11 @@ export class Context {
 
   _getEntity(lang, id) {
     const cache = this._env._resCache;
+    const resIds = Array.from(this._env._resLists.get(this));
 
     // Look for `id` in every resource in order.
-    for (let i = 0, resId; resId = this._resIds[i]; i++) {
-      const resource = cache[resId + lang.code + lang.src];
+    for (let i = 0, resId; resId = resIds[i]; i++) {
+      const resource = cache.get(resId + lang.code + lang.src);
       if (resource instanceof L10nError) {
         continue;
       }
@@ -160,7 +162,7 @@ function reportMissing(keys, formatter, resolved) {
   });
 
   this._env.emit('notfounderror', new L10nError(
-    '"' + [...missingIds].join(', ') + '"' +
+    '"' + Array.from(missingIds).join(', ') + '"' +
     ' not found in any language', missingIds), this);
 
   return resolved;

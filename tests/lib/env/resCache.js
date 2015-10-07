@@ -22,26 +22,21 @@ describe('Caching resources', function() {
     ctx2 = env.createContext([res1, res2]);
     Promise.all([
       ctx1.fetch(langs),
-      ctx2.fetch(langs)]).then(
-        // discard resolutions
-        function() {}).then(
-          done, done);
+      ctx2.fetch(langs)
+    ]).then(() => undefined).then(done, done);
   });
 
   it('caches resources', function() {
-    assert(env._resCache[res1 + 'en-USapp']);
-    assert(env._resCache[res2 + 'en-USapp']);
-    assert(env._resCache[res3 + 'en-USapp'] instanceof L10nError);
+    assert(env._resCache.get(res1 + 'en-USapp'));
+    assert(env._resCache.get(res2 + 'en-USapp'));
+    assert(env._resCache.get(res3 + 'en-USapp') instanceof L10nError);
   });
 
-  // destroyContext has been removed in PR #39
-  it.skip('clears the cache only if no other ctx uses the resource',
-    function() {
-
+  it('clears the cache only if no other ctx uses the resource', function() {
     env.destroyContext(ctx2);
-    assert(env._resCache[res1]['en-US'].app);
-    assert(!env._resCache[res2]);
-    assert(env._resCache[res3]['en-US'].app instanceof L10nError);
+    assert(env._resCache.get(res1 + 'en-USapp'));
+    assert(!env._resCache.has(res2 + 'en-USapp'));
+    assert(env._resCache.get(res3 + 'en-USapp') instanceof L10nError);
   });
 
 });

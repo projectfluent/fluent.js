@@ -2,6 +2,7 @@
 
 /* jshint node:true */
 
+require('string.prototype.startswith');
 require('string.prototype.endswith');
 
 import { fetch } from './io';
