@@ -7,13 +7,13 @@ module.exports = {
         expand: true,
         cwd: 'dist/bundle/gaia',
         src: ['l20n.js'],
-        dest: 'dist/gaia/shared/js/l20n'
+        dest: 'dist/gaia/shared/js/l10n/'
       },
       {
         expand: true,
         cwd: 'dist/bundle/bridge',
         src: ['service.js', 'client.js'],
-        dest: 'dist/gaia/shared/js/l20n/'
+        dest: 'dist/gaia/shared/js/l10n/'
       },
       {
         expand: true,
