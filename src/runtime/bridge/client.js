@@ -8,6 +8,10 @@ const client = new Client({
   endpoint: channel,
   timeout: false
 });
+
+window.addEventListener('pageshow', () => client.connect());
+window.addEventListener('pagehide', () => client.disconnect());
+
 document.l10n = new View(client, document);
 
 //Bug 1204660 - Temporary proxy for shared code. Will be removed once
