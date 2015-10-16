@@ -12,7 +12,7 @@ const htmlEntities = {
 export function getResourceLinks(head) {
   return Array.prototype.map.call(
     head.querySelectorAll('link[rel="localization"]'),
-    el => decodeURI(el.getAttribute('href')));
+    el => el.getAttribute('href'));
 }
 
 export function setAttributes(element, id, args) {
