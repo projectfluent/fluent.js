@@ -17,4 +17,10 @@ module.exports = {
       'dist/bundle/aisle/l20n.js': 'src/runtime/tooling/aisle.js'
     }
   },
+  testing: {
+    options: bundle,
+    files: {
+      'dist/bundle/testing/l20n.js': 'src/runtime/tooling/testing.js'
+    }
+  },
 };

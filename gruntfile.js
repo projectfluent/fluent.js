@@ -38,6 +38,7 @@ module.exports = function (grunt) {
     clean: require('./build/clean'),
     jshint: require('./build/lint/jshint'),
     jsonlint: require('./build/lint/jsonlint'),
+    karma: require('./build/karma'),
     'merge-conflict': require('./build/lint/merge-conflict'),
     mochaTest: require('./build/mocha-test'),
     shell: require('./build/shell'),
