@@ -1,6 +1,6 @@
 'use strict';
 
-import { documentReady } from './shims';
+import { documentReady, getDirection } from './shims';
 import {
   setAttributes, getAttributes, translateFragment, translateMutations,
   getResourceLinks
@@ -33,17 +33,14 @@ export class View {
 
     const translateView = langs => translateDocument(this, langs);
     client.on('translateDocument', translateView);
-    this.ready = this.resolvedLanguages().then(translateView);
+    this.ready = this._interactive.then(
+      client => client.method('resolvedLanguages')).then(
+      translateView);
   }
 
-  resolvedLanguages() {
+  requestLanguages(langs, global) {
     return this._interactive.then(
-      client => client.method('resolvedLanguages'));
-  }
-
-  requestLanguages(langs) {
-    return this._interactive.then(
-      client => client.method('requestLanguages', langs));
+      client => client.method('requestLanguages', langs, global));
   }
 
   _resolveEntities(langs, keys) {
@@ -54,7 +51,7 @@ export class View {
   formatValue(id, args) {
     return this._interactive.then(
       client => client.method('formatValues', client.id, [[id, args]])).then(
-        values => values[0]);
+      values => values[0]);
   }
 
   formatValues(...keys) {
@@ -63,7 +60,8 @@ export class View {
   }
 
   translateFragment(frag) {
-    return this.resolvedLanguages().then(
+    return this._interactive.then(
+      client => client.method('resolvedLanguages')).then(
       langs => translateFragment(this, langs, frag));
   }
 }
@@ -97,8 +95,7 @@ export function translateDocument(view, langs) {
 
   if (readiness.has(html)) {
     return translateFragment(view, langs, html).then(
-      () => setDOMAttrsAndEmit(html, langs)).then(
-        () => langs.map(takeCode));
+      () => setDOMAttrsAndEmit(html, langs));
   }
 
   const translated =
@@ -109,8 +106,7 @@ export function translateDocument(view, langs) {
         () => setDOMAttrs(html, langs));
 
   return translated.then(
-    () => readiness.set(html, true)).then(
-      () => langs.map(takeCode));
+    () => readiness.set(html, true));
 }
 
 function setDOMAttrsAndEmit(html, langs) {
@@ -118,17 +114,12 @@ function setDOMAttrsAndEmit(html, langs) {
   html.parentNode.dispatchEvent(new CustomEvent('DOMRetranslated', {
     bubbles: false,
     cancelable: false,
-    detail: {
-      languages: langs.map(takeCode)
-    }
   }));
 }
 
 function setDOMAttrs(html, langs) {
-  html.setAttribute('lang', langs[0].code);
-  html.setAttribute('dir', langs[0].dir);
-}
-
-function takeCode(lang) {
-  return lang.code;
+  const codes = langs.map(lang => lang.code);
+  html.setAttribute('langs', codes.join(' '));
+  html.setAttribute('lang', codes[0]);
+  html.setAttribute('dir', getDirection(codes[0]));
 }

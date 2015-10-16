@@ -6,7 +6,6 @@ import { getPluralRule } from './plurals';
 export const lang = {
   code:'en-US',
   src: 'app',
-  dir: 'ltr'
 };
 
 export function createEntriesFromSource(source) {

@@ -7,8 +7,8 @@ import { fetch } from '../../../src/runtime/node/io';
 
 const path = __dirname + '/..';
 const langs = [
-  { code: 'pl', src: 'app', dir: 'ltr' },
-  { code: 'en-US', src: 'app', dir: 'ltr' },
+  { code: 'pl', src: 'app' },
+  { code: 'en-US', src: 'app' },
 ];
 
 function assertValue(promise, expected, done) {

@@ -21,4 +21,8 @@ export function documentReady() {
   });
 }
 
-
+// Intl.Locale
+export function getDirection(code) {
+  return ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'].indexOf(code) >= 0 ?
+    'rtl' : 'ltr';
+}

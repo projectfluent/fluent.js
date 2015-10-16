@@ -22,33 +22,6 @@ view.ready.then(App.init);
 ```
 
 
-### view.resolvedLanguages()
-
-Return a Promise which resolves to an array of the current user-preferred 
-languages.  Language objects have the following properties:
-
-```javascript
-{
-  code: 'ar',
-  dir: 'rtl',
-  src: 'app'
-}
-```
-
-Language codes follow [BCP 47][].  Direction can be `ltr` or `rtl`.  Source is 
-`app` for languages bundled with the application, `extra` for languages from 
-language packages and `qps` for pseudo-languages.
-
-[BCP 47]: http://tools.ietf.org/html/bcp47
-
-```javascript
-view.resolvedLanguages().then(
-  langs => console.log(langs));
-// -> [{ code: 'pl', dir: 'ltr', src: 'extra' },
-       { code: 'en-US', dir: 'ltr', src: 'app' }]
-```
-
-
 ### view.requestLanguages(langCodes)
 
 Trigger the language negotation process with an array of `langCodes`.  Returns 

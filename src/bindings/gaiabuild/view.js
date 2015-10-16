@@ -4,7 +4,7 @@ import { pseudo } from '../../lib/pseudo';
 import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';
 import { getResourceLinks, translateFragment } from '../../bindings/html/dom';
-import { getDirection } from '../../bindings/html/langs';
+import { getDirection } from '../../bindings/html/shims';
 import { serializeContext } from './serialize';
 import { serializeLegacyContext } from './legacy/serialize';
 
@@ -58,7 +58,7 @@ export class View {
 
   translateDocument(code) {
     const dir = getDirection(code);
-    const langs = [{ code, dir, src: 'app' }];
+    const langs = [{ code, src: 'app' }];
     const setDocLang = () => {
       this.doc.documentElement.lang = code;
       this.doc.documentElement.dir = dir;
@@ -71,7 +71,6 @@ export class View {
   serializeResources(code) {
     const lang = {
       code,
-      dir: getDirection(code),
       src: code in pseudo ? 'pseudo' : 'app'
     };
     return fetchContext(this.ctx, lang).then(() => {
@@ -126,7 +125,7 @@ function stopBuild(err) {
 }
 
 function fetchContext(ctx, lang) {
-  const sourceLang = { code: 'en-US', dir: 'ltr', src: 'app' };
+  const sourceLang = { code: 'en-US', src: 'app' };
   return Promise.all(
     [sourceLang, lang].map(lang => ctx.fetch([lang])));
 }
