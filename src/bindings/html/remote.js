@@ -86,4 +86,4 @@ function changeLanguages(additionalLangs, requestedLangs) {
         this.broadcast.bind(this, 'translateDocument'),
         this.appVersion, this.defaultLanguage, this.availableLanguages,
         additionalLangs, prevLangs, requestedLangs));
-  }
+}

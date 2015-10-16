@@ -7,7 +7,7 @@ import { L10nError } from '../../../src/lib/errors';
 
 const path = __dirname + '/..';
 const langs = [
-  { code: 'en-US', src: 'app', dir: 'ltr' },
+  { code: 'en-US', src: 'app' },
 ];
 
 describe('Caching resources', function() {

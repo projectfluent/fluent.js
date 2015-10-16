@@ -3,8 +3,6 @@
 import { prioritizeLocales } from '../../lib/intl';
 import { pseudo } from '../../lib/pseudo';
 
-const rtlList = ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'];
-
 export function getMeta(head) {
   let availableLangs = Object.create(null);
   let defaultLang = null;
@@ -68,7 +66,6 @@ export function negotiateLanguages(
   const langs = newLangs.map(code => ({
     code: code,
     src: getLangSource(appVersion, availableLangs, additionalLangs, code),
-    dir: getDirection(code)
   }));
 
   if (!arrEqual(prevLangs, newLangs)) {
@@ -76,10 +73,6 @@ export function negotiateLanguages(
   }
 
   return langs;
-}
-
-export function getDirection(code) {
-  return (rtlList.indexOf(code) >= 0) ? 'rtl' : 'ltr';
 }
 
 function arrEqual(arr1, arr2) {

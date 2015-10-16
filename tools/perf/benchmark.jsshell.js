@@ -26,7 +26,6 @@ var data = {
 var lang = {
   code:'en-US',
   src: 'app',
-  dir: 'ltr'
 };
 
 function micro(time) {

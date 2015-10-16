@@ -7,7 +7,7 @@ import { fetch } from '../../../src/runtime/node/io';
 
 const path = __dirname + '/..';
 const langs = [
-  { code: 'en-US', src: 'app', dir: 'ltr' },
+  { code: 'en-US', src: 'app' },
 ];
 
 
