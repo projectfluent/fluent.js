@@ -86,7 +86,8 @@ function init(view, client) {
 }
 
 function onMutations(mutations) {
-  return this.resolvedLanguages().then(
+  return this._interactive.then(
+    client => client.method('resolvedLanguages')).then(
     langs => translateMutations(this, langs, mutations));
 }
 
