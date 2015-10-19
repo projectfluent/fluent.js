@@ -20,8 +20,8 @@ export class View {
   constructor(client, doc) {
     this._doc = doc;
     this.pseudo = {
-      'qps-ploc': createPseudo(this, 'qps-ploc'),
-      'qps-plocm': createPseudo(this, 'qps-plocm')
+      'fr-x-psaccent': createPseudo(this, 'fr-x-psaccent'),
+      'ar-x-psbidi': createPseudo(this, 'ar-x-psbidi')
     };
 
     this._interactive = documentReady().then(

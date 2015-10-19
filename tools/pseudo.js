@@ -11,8 +11,8 @@ program
   .version('0.0.1')
   .usage('[options]')
   .option('-l, --locale <code>',
-          'Pseudolocale to use: qps-ploc (default), qps-plocm',
-          'qps-ploc')
+          'Pseudolocale to use: fr-x-psaccent (default), ar-x-psbidi',
+          'fr-x-psaccent')
   .parse(process.argv);
 
 function localize(str) {

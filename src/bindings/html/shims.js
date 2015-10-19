@@ -23,6 +23,7 @@ export function documentReady() {
 
 // Intl.Locale
 export function getDirection(code) {
-  return ['ar', 'he', 'fa', 'ps', 'qps-plocm', 'ur'].indexOf(code) >= 0 ?
+  const tag = code.split('-')[0];
+  return ['ar', 'he', 'fa', 'ps', 'ur'].indexOf(tag) >= 0 ?
     'rtl' : 'ltr';
 }
