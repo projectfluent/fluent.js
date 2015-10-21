@@ -1,11 +1,4 @@
 'use strict';
 
-/* jshint node:true */
-
-import { fetch } from './io';
-import { Env } from '../../lib/env';
-
-module.exports = {
-  fetch,
-  Env
-};
+export { fetch } from './io';
+export { Env } from '../../lib/env';

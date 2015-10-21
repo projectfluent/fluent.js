@@ -53,6 +53,7 @@
     "grunt-merge-conflict": "^0.0.2",
     "grunt-mocha-test": "^0.6.3",
     "grunt-notify": "^0.2.4",
+    "grunt-rollup": "^0.4.0",
     "grunt-shell": "^0.4.0",
     "karma": "^0.13.11",
     "karma-chai": "^0.1.0",

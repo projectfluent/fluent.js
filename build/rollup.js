@@ -2,7 +2,7 @@
 
 var glob = require('glob');
 
-glob.sync('../../src/runtime/**/config.js', {
+glob.sync('../src/runtime/**/config.js', {
   cwd: __dirname
 }).forEach(function(file) {
   var tasks = require(file);
@@ -10,3 +10,7 @@ glob.sync('../../src/runtime/**/config.js', {
     module.exports[name] = tasks[name];
   }
 });
+
+module.exports.options = {
+  format: 'iife',
+};

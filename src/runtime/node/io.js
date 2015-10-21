@@ -2,7 +2,7 @@
 
 /* jshint node:true */
 
-const { readFile } = require('fs');
+import { readFile } from 'fs';
 import { L10nError } from '../../lib/errors';
 
 function load(url) {

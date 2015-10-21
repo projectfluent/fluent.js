@@ -37,12 +37,12 @@ var options = {
 module.exports = function(grunt) {
   grunt.registerTask('compat', 'Transpile dist/bundle', function(entry) {
     var pattern = entry ?
-      '../../../dist/bundle/' + entry + '/**/*.js' :
-      '../../../dist/bundle/**/*.js';
+      '../../dist/bundle/' + entry + '/**/*.js' :
+      '../../dist/bundle/**/*.js';
     glob.sync(pattern, {
       cwd: __dirname
     }).forEach(function(foundpath) {
-      var srcpath = path.relative('../../../', foundpath);
+      var srcpath = path.relative('../../', foundpath);
       var filename = path.relative('dist/bundle', srcpath);
       var destpath = path.join('dist/compat', filename);
 
