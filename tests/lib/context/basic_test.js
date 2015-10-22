@@ -3,7 +3,7 @@
 import assert from 'assert';
 import { isolate as i } from '../util';
 import { Env } from '../../../src/lib/env';
-import { fetch } from '../../../src/runtime/node/io';
+import { fetchResource } from '../../../src/runtime/node/io';
 
 const path = __dirname + '/..';
 const langs = [
@@ -16,7 +16,7 @@ describe('A simple context with one resource', function() {
     var env, ctx;
 
     beforeEach(function(done) {
-      env = new Env('en-US', fetch);
+      env = new Env('en-US', fetchResource);
       ctx = env.createContext([path + '/fixtures/basic.properties']);
       ctx.fetch(langs).then(() => done(), done);
     });
@@ -139,7 +139,7 @@ describe('A simple context with one resource', function() {
     var env, ctx;
 
     beforeEach(function(done) {
-      env = new Env('en-US', fetch);
+      env = new Env('en-US', fetchResource);
       ctx = env.createContext([path + '/fixtures/basic.properties']);
       ctx.fetch(langs).then(() => done(), done);
     });

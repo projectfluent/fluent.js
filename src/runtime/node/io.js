@@ -2,7 +2,7 @@
 
 /* jshint node:true */
 
-const { readFile } = require('fs');
+import { readFile } from 'fs';
 import { L10nError } from '../../lib/errors';
 
 function load(url) {
@@ -17,7 +17,7 @@ function load(url) {
   });
 }
 
-export function fetch(res, lang) {
+export function fetchResource(res, lang) {
   const url = res.replace('{locale}', lang.code);
   return res.endsWith('.json') ?
     load(url).then(JSON.parse) : load(url);

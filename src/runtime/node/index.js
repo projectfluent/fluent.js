@@ -1,14 +1,7 @@
 'use strict';
 
-/* jshint node:true */
+import 'string.prototype.startswith';
+import 'string.prototype.endswith';
 
-require('string.prototype.startswith');
-require('string.prototype.endswith');
-
-import { fetch } from './io';
-import { Env } from '../../lib/env';
-
-module.exports = {
-  fetch,
-  Env
-};
+export { fetchResource } from './io';
+export { Env } from '../../lib/env';

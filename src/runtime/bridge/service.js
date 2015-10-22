@@ -1,10 +1,10 @@
 'use strict';
 
-import { fetch } from '../web/io';
+import { fetchResource } from '../web/io';
 import { Service, channel, broadcast } from './bridge';
 import { Remote } from '../../bindings/html/remote';
 
-const remote = new Remote(fetch, broadcast, navigator.languages);
+const remote = new Remote(fetchResource, broadcast, navigator.languages);
 window.addEventListener('languagechange', remote);
 document.addEventListener('additionallanguageschange', remote);
 
