@@ -2,11 +2,11 @@
 
 /* jshint node:true */
 
-import { fetch } from './io';
+import { fetchResource } from './io';
 import { View } from '../../../bindings/gaiabuild/view';
 export { pseudo, walkValue } from '../../../lib/pseudo';
 
 export function getView(htmloptimizer) {
-  const htmlFetch = (...args) => fetch(htmloptimizer, ...args);
+  const htmlFetch = (...args) => fetchResource(htmloptimizer, ...args);
   return new View(htmloptimizer, htmlFetch);
 }

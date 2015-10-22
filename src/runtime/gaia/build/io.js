@@ -1,7 +1,7 @@
 'use strict';
 import { L10nError } from '../../../lib/errors';
 
-export function fetch(htmloptimizer, res, lang) {
+export function fetchResource(htmloptimizer, res, lang) {
   // We need to decode URI because build system DOM reader
   // may replace `{locale}` with `%7Blocale%7D`. See bug 1098188
   const url = decodeURI(res).replace('{locale}', lang.code);

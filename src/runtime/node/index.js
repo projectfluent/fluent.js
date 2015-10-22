@@ -3,5 +3,5 @@
 import 'string.prototype.startswith';
 import 'string.prototype.endswith';
 
-export { fetch } from './io';
+export { fetchResource } from './io';
 export { Env } from '../../lib/env';

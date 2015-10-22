@@ -58,7 +58,7 @@ const io = {
   },
 };
 
-export function fetch(ver, res, lang) {
+export function fetchResource(ver, res, lang) {
   const url = res.replace('{locale}', lang.code);
   const type = res.endsWith('.json') ? 'json' : 'text';
   return io[lang.src](lang.code, ver, url, type);

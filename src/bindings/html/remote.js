@@ -6,8 +6,8 @@ import { documentReady } from './shims';
 import { getMeta, negotiateLanguages } from './langs';
 
 export class Remote {
-  constructor(fetch, broadcast, requestedLangs) {
-    this.fetch = fetch;
+  constructor(fetchResource, broadcast, requestedLangs) {
+    this.fetchResource = fetchResource;
     this.broadcast = broadcast;
     this.ctxs = new Map();
     this.interactive = documentReady().then(
@@ -21,7 +21,8 @@ export class Remote {
     this.appVersion = meta.appVersion;
 
     this.env = new Env(
-      this.defaultLanguage, (...args) => this.fetch(this.appVersion, ...args));
+      this.defaultLanguage,
+      (...args) => this.fetchResource(this.appVersion, ...args));
 
     return this.requestLanguages(requestedLangs);
   }

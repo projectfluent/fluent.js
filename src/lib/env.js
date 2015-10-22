@@ -12,9 +12,9 @@ const parsers = {
 };
 
 export class Env {
-  constructor(defaultLang, fetch) {
+  constructor(defaultLang, fetchResource) {
     this.defaultLang = defaultLang;
-    this.fetch = fetch;
+    this.fetchResource = fetchResource;
 
     this._resLists = new Map();
     this._resCache = new Map();
@@ -88,7 +88,7 @@ export class Env {
       { code: this.defaultLang, src: 'app' } :
       lang;
 
-    const resource = this.fetch(res, langToFetch).then(
+    const resource = this.fetchResource(res, langToFetch).then(
       saveEntries, recover);
 
     cache.set(id, resource);

@@ -9,7 +9,7 @@ import { serializeContext } from './serialize';
 import { serializeLegacyContext } from './legacy/serialize';
 
 export class View {
-  constructor(htmloptimizer, fetch) {
+  constructor(htmloptimizer, fetchResource) {
     this.htmloptimizer = htmloptimizer;
     this.doc = htmloptimizer.document;
 
@@ -20,7 +20,7 @@ export class View {
 
     const EnvClass = this.isLegacy ? LegacyEnv : Env;
     this.env = new EnvClass(
-      htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetch);
+      htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetchResource);
     this.ctx = this.env.createContext(getResourceLinks(this.doc.head));
 
     // add the url of the currently processed webapp to all errors

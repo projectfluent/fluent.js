@@ -34,9 +34,9 @@ Example resource files:
 Example node script:
 
 ```javascript
-import { Env, fetch } from 'l20n';
+import { Env, fetchResource } from 'l20n';
 
-const env = new Env('en-US', fetch);
+const env = new Env('en-US', fetchResource);
 const ctx = env.createContext(['locales/{locale}.l20n']);
 const langs = [
   {code: 'es-ES'},
