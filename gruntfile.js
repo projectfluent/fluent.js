@@ -70,6 +70,12 @@ module.exports = function (grunt) {
     'mochaTest:dot'
   ]);
 
+  grunt.registerTask('test-browser', [
+    'rollup:testing',
+    'compat:testing',
+    'karma'
+  ]);
+
   grunt.registerTask('bundle', [
     'rollup',
   ]);
