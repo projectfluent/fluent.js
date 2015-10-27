@@ -26,7 +26,7 @@ describe('pseudo strategy', function() {
   describe('accented English', function(){
 
     before(function() {
-      strategy = pseudo['qps-ploc'].process;
+      strategy = pseudo['fr-x-psaccent'].process;
       source = [
         'foo=Foo',
 
@@ -89,11 +89,11 @@ describe('pseudo strategy', function() {
 
   });
 
-  describe('mirrored English', function(){
+  describe('bidi English', function(){
     /* jshint -W100 */
 
     before(function() {
-      strategy = pseudo['qps-plocm'].process;
+      strategy = pseudo['ar-x-psbidi'].process;
       source = [
         'foo=Foo',
 

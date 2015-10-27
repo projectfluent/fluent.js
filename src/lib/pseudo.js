@@ -55,7 +55,7 @@ export function walkValue(value, fn) {
  *
  * Currently, the following pseudolocales are supported:
  *
- *   qps-ploc - Ȧȧƈƈḗḗƞŧḗḗḓ Ḗḗƞɠŀīīşħ
+ *   fr-x-psaccent - Ȧȧƈƈḗḗƞŧḗḗḓ Ḗḗƞɠŀīīşħ
  *
  *     In Accented English all English letters are replaced by accented
  *     Unicode counterparts which don't impair the readability of the content.
@@ -64,9 +64,9 @@ export function walkValue(value, fn) {
  *     heuristics are used to make certain words longer to better simulate the
  *     experience of international users.
  *
- *   qps-plocm - ɥsıʅƃuƎ pǝɹoɹɹıW
+ *   ar-x-psbidi - ɥsıʅƃuƎ ıpıԐ
  *
- *     Mirrored English is a fake RTL locale.  All words are surrounded by
+ *     Bidi English is a fake RTL locale.  All words are surrounded by
  *     Unicode formatting marks forcing the RTL directionality of characters.
  *     In addition, to make the reversed text easier to read, individual
  *     letters are flipped.
@@ -95,22 +95,22 @@ function createGetter(id, name) {
     const reExcluded = /(%[EO]?\w|\{\s*.+?\s*\}|&[#\w]+;|<\s*.+?\s*>)/;
 
     const charMaps = {
-      'qps-ploc':
+      'fr-x-psaccent':
         'ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ[\\]^_`ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ',
-      'qps-plocm':
+      'ar-x-psbidi':
         // XXX Use pɟפ˥ʎ as replacements for ᗡℲ⅁⅂⅄. https://bugzil.la/1007340
         '∀ԐↃpƎɟפHIſӼ˥WNOԀÒᴚS⊥∩ɅＭXʎZ[\\]ᵥ_,ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz',
     };
 
     const mods = {
-      'qps-ploc': val =>
+      'fr-x-psaccent': val =>
         val.replace(reVowels, match => match + match.toLowerCase()),
 
       // Surround each word with Unicode formatting codes, RLO and PDF:
       //   U+202E:   RIGHT-TO-LEFT OVERRIDE (RLO)
       //   U+202C:   POP DIRECTIONAL FORMATTING (PDF)
       // See http://www.w3.org/International/questions/qa-bidi-controls
-      'qps-plocm': val =>
+      'ar-x-psbidi': val =>
         val.replace(reWords, match => '\u202e' + match + '\u202c'),
     };
 
@@ -146,12 +146,12 @@ function createGetter(id, name) {
 }
 
 export const pseudo = Object.defineProperties(Object.create(null), {
-  'qps-ploc': {
+  'fr-x-psaccent': {
     enumerable: true,
-    get: createGetter('qps-ploc', 'Runtime Accented')
+    get: createGetter('fr-x-psaccent', 'Runtime Accented')
   },
-  'qps-plocm': {
+  'ar-x-psbidi': {
     enumerable: true,
-    get: createGetter('qps-plocm', 'Runtime Mirrored')
+    get: createGetter('ar-x-psbidi', 'Runtime Bidi')
   }
 });
