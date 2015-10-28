@@ -96,7 +96,7 @@ export function translateDocument(view, langs) {
 
   if (readiness.has(html)) {
     return translateFragment(view, langs, html).then(
-      () => setDOMAttrsAndEmit(html, langs));
+      () => setAllAndEmit(html, langs));
   }
 
   const translated =
@@ -104,23 +104,30 @@ export function translateDocument(view, langs) {
     langs[0].code === html.getAttribute('lang') ?
       Promise.resolve() :
       translateFragment(view, langs, html).then(
-        () => setDOMAttrs(html, langs));
+        () => setLangDir(html, langs));
 
-  return translated.then(
-    () => readiness.set(html, true));
+  return translated.then(() => {
+    setLangs(html, langs);
+    readiness.set(html, true);
+  });
 }
 
-function setDOMAttrsAndEmit(html, langs) {
-  setDOMAttrs(html, langs);
+function setLangs(html, langs) {
+  const codes = langs.map(lang => lang.code);
+  html.setAttribute('langs', codes.join(' '));
+}
+
+function setLangDir(html, langs) {
+  const code = langs[0].code;
+  html.setAttribute('lang', code);
+  html.setAttribute('dir', getDirection(code));
+}
+
+function setAllAndEmit(html, langs) {
+  setLangDir(html, langs);
+  setLangs(html, langs);
   html.parentNode.dispatchEvent(new CustomEvent('DOMRetranslated', {
     bubbles: false,
     cancelable: false,
   }));
-}
-
-function setDOMAttrs(html, langs) {
-  const codes = langs.map(lang => lang.code);
-  html.setAttribute('langs', codes.join(' '));
-  html.setAttribute('lang', codes[0]);
-  html.setAttribute('dir', getDirection(codes[0]));
 }
