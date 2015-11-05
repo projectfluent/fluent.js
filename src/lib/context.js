@@ -3,6 +3,7 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
 import { getPluralRule } from './plurals';
+import { Intl } from './shims';
 
 export class Context {
   constructor(env) {

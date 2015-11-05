@@ -27,3 +27,8 @@ export function getDirection(code) {
   return ['ar', 'he', 'fa', 'ps', 'ur'].indexOf(tag) >= 0 ?
     'rtl' : 'ltr';
 }
+
+// Opera and Safari don't support it yet
+if (navigator.languages === undefined) {
+  navigator.languages = [navigator.language];
+}
