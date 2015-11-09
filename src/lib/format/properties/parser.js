@@ -138,7 +138,7 @@ export default {
 
     if (isSimpleValue && (!entries[id] || isSimpleNode)) {
       if (id in root) {
-        throw this.error();
+        throw this.error('Duplicated id: ' + id);
       }
       root[id] = value;
     } else {
