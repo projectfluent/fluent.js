@@ -123,25 +123,25 @@ describe('L20n Parser', function() {
 
   describe('Hash values', function() {
     it('simple hash value', function() {
-      var entries = parse(null, '<id {one: "One", many: "Many"}>');
+      var entries = parse(null, '<id {*one: "One", many: "Many"}>');
       assert.strictEqual(entries.id.value.one, 'One');
       assert.strictEqual(entries.id.value.many, 'Many');
     });
 
     it('simple hash value with a trailing comma', function() {
-      var entries = parse(null, '<id {one: "One", many: "Many", }>');
+      var entries = parse(null, '<id {one: "One", *many: "Many", }>');
       assert.strictEqual(entries.id.value.one, 'One');
       assert.strictEqual(entries.id.value.many, 'Many');
     });
 
     it('nested hash value', function() {
-      var entries = parse(null, '<id {one: {oneone: "foo"}, many: "Many"}>');
+      var entries = parse(null, '<id {*one: {*oneone: "foo"}, many: "Many"}>');
       assert.strictEqual(entries.id.value.one.oneone, 'foo');
       assert.strictEqual(entries.id.value.many, 'Many');
     });
 
     it('hash value with a complex string', function() {
-      var entries = parse(null, '<id {one: "foo {{ $n }}", many: "Many"}>');
+      var entries = parse(null, '<id {*one: "foo {{ $n }}", many: "Many"}>');
       assert.strictEqual(entries.id.value.one[0], 'foo ');
       assert.deepEqual(entries.id.value.one[1], {type: 'var', name: 'n'});
     });
@@ -164,6 +164,7 @@ describe('L20n Parser', function() {
         '<id {a: 2, b , c: 3 } >',
         '<id {*a: "v", *b: "c"}>',
         '<id {}>',
+        '<id {one: "value", two: "value2"}>'
       ];
       for (var i in strings) {
         /* jshint -W083 */
@@ -202,7 +203,7 @@ describe('L20n Parser', function() {
     });
 
     it('attribute with hash value', function() {
-      var entries = parse(null, '<id title: {one: "One"}>');
+      var entries = parse(null, '<id title: {*one: "One"}>');
       assert.strictEqual(entries.id.attrs.title.value.one, 'One');
     });
 
