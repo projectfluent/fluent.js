@@ -9,10 +9,10 @@ export function getMeta(head) {
   let appVersion = null;
 
   // XXX take last found instead of first?
-  const metas = head.querySelectorAll(
+  const metas = Array.from(head.querySelectorAll(
     'meta[name="availableLanguages"],' +
     'meta[name="defaultLanguage"],' +
-    'meta[name="appVersion"]');
+    'meta[name="appVersion"]'));
   for (let meta of metas) {
     const name = meta.getAttribute('name');
     const content = meta.getAttribute('content').trim();

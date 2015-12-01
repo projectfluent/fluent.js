@@ -3,6 +3,7 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
 import { getPluralRule } from './plurals';
+import { L20nIntl } from './shims';
 
 export class Context {
   constructor(env) {
@@ -126,7 +127,7 @@ export class Context {
       this._numberFormatters = new Map();
     }
     if (!this._numberFormatters.has(lang)) {
-      const formatter = Intl.NumberFormat(lang, {
+      const formatter = L20nIntl.NumberFormat(lang, {
         useGrouping: false,
       });
       this._numberFormatters.set(lang, formatter);
