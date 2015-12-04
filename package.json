@@ -135,6 +135,7 @@
       "no-unneeded-ternary": 2,
       "prefer-const": 1,
       "prefer-spread": 2,
+      "strict": [1, "never"],
       "indent": [1, 2]
     }
   }
