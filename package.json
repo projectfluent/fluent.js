@@ -70,5 +70,72 @@
   },
   "engine": {
     "node": ">=4.1"
+  },
+  "eslintConfig": {
+    "ecmaFeatures": {
+      "modules": true
+    },
+    "env": {
+      "es6": true
+    },
+    "rules": {
+      "valid-typeof": 1,
+      "no-console": 1,
+      "no-dupe-args": 2,
+      "no-dupe-keys": 2,
+      "no-duplicate-case": 2,
+      "no-extra-semi": 1,
+      "no-func-assign": 2,
+      "no-unreachable": 1,
+      "no-unexpected-multiline": 2,
+      "no-sparse-arrays": 2,
+      "block-scoped-var": 1,
+      "complexity": [1, 18],
+      "dot-location": [2, "property"],
+      "no-implied-eval": 2,
+      "no-invalid-this": 1,
+      "no-loop-func": 2,
+      "no-magic-numbers": 1,
+      "no-useless-call": 1,
+      "no-useless-concat": 1,
+      "no-delete-var": 2,
+      "no-shadow": 1,
+      "no-undef-init": 1,
+      "no-unused-vars": 1,
+      "no-use-before-define": 1,
+      "consistent-return": 1,
+      "curly": [
+        2,
+        "multi-line"
+      ],
+      "eqeqeq": 2,
+      "no-extend-native": 2,
+      "no-extra-bind": 1,
+      "no-redeclare": 2,
+      "array-bracket-spacing": 1,
+      "brace-style": [
+        1,
+        "1tbs"
+      ],
+      "no-mixed-spaces-and-tabs": 2,
+      "prefer-arrow-callback": 1,
+      "prefer-const": 0,
+      "prefer-template": 1,
+      "prefer-spread": 1,
+      "quotes": [
+        2,
+        "single"
+      ],
+      "no-var": 1,
+      "prefer-template": 0,
+      "max-depth": [2, 6],
+      "max-len": [2, 80],
+      "no-mixed-spaces-and-tabs": 2,
+      "no-nested-ternary": 2,
+      "no-unneeded-ternary": 2,
+      "prefer-const": 1,
+      "prefer-spread": 2,
+      "indent": [1, 2]
+    }
   }
 }
