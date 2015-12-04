@@ -53,11 +53,10 @@ export class Context {
     }
 
     const resIds = Array.from(this._env._resLists.get(this));
-
     return Promise.all(
       resIds.map(
-        this._env._getResource.bind(this._env, langs[0]))).then(
-          () => langs);
+        resId => this._env._getResource(langs[0], resId))
+    ).then(() => langs);
   }
 
   _resolve(langs, keys, formatter, prevResolved) {

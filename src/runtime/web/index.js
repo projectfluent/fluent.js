@@ -5,9 +5,9 @@ import { Client, broadcast } from './bridge';
 import { Remote } from '../../bindings/html/remote';
 import { View } from '../../bindings/html/view';
 
-const remote = new Remote(fetchResource, broadcast, navigator.languages);
-window.addEventListener('languagechange', remote);
-document.addEventListener('additionallanguageschange', remote);
+const remote = new Remote(fetchResource, broadcast);
+const client = new Client(remote);
+document.l10n = new View(client, document);
 
-document.l10n = new View(
-  new Client(remote), document);
+window.addEventListener('languagechange', document.l10n);
+document.addEventListener('additionallanguageschange', document.l10n);

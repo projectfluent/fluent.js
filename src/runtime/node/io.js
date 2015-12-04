@@ -17,8 +17,8 @@ function load(url) {
   });
 }
 
-export function fetchResource(res, lang) {
-  const url = res.replace('{locale}', lang.code);
+export function fetchResource(res, { code }) {
+  const url = res.replace('{locale}', code);
   return res.endsWith('.json') ?
     load(url).then(JSON.parse) : load(url);
 }
