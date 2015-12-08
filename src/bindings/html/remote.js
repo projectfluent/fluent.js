@@ -72,11 +72,11 @@ export class Remote {
 
 export function getAdditionalLanguages() {
   if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    return navigator.mozApps.getAdditionalLanguages().catch(
-      () => []);
+    return navigator.mozApps.getAdditionalLanguages()
+      .catch(() => Object.create(null));
   }
 
-  return Promise.resolve([]);
+  return Promise.resolve(Object.create(null));
 }
 
 function changeLanguages(additionalLangs, requestedLangs) {
