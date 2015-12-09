@@ -93,7 +93,6 @@
       "complexity": [1, 18],
       "dot-location": [2, "property"],
       "no-implied-eval": 2,
-      "no-invalid-this": 1,
       "no-loop-func": 2,
       "no-magic-numbers": 1,
       "no-useless-call": 1,
@@ -102,7 +101,6 @@
       "no-shadow": 1,
       "no-undef-init": 1,
       "no-unused-vars": 1,
-      "no-use-before-define": 1,
       "consistent-return": 1,
       "curly": [
         2,
@@ -135,7 +133,7 @@
       "no-unneeded-ternary": 2,
       "prefer-const": 1,
       "prefer-spread": 2,
-      "strict": [1, "never"],
+      "strict": [2, "global"],
       "indent": [1, 2]
     }
   }
