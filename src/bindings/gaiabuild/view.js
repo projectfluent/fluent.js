@@ -3,7 +3,8 @@
 import { pseudo } from '../../lib/pseudo';
 import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';
-import { getResourceLinks, translateFragment } from '../../bindings/html/dom';
+import { translateFragment } from '../../bindings/html/dom';
+import { getResourceLinks } from '../../bindings/html/head';
 import { getDirection } from '../../bindings/html/shims';
 import { serializeContext } from './serialize';
 import { serializeLegacyContext } from './legacy/serialize';

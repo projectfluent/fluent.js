@@ -2,40 +2,28 @@
 
 import { Env } from '../../lib/env';
 import { pseudo } from '../../lib/pseudo';
-import { documentReady } from './shims';
-import { getMeta, negotiateLanguages } from './langs';
+import { negotiateLanguages } from './langs';
 
 export class Remote {
-  constructor(fetchResource, broadcast, requestedLangs) {
-    this.fetchResource = fetchResource;
+  constructor(fetchResource, broadcast) {
     this.broadcast = broadcast;
+    this.env = new Env(fetchResource);
     this.ctxs = new Map();
-    this.interactive = documentReady().then(
-      () => this.init(requestedLangs));
+    this.langs = new Map();
   }
 
-  init(requestedLangs) {
-    const meta = getMeta(document.head);
-    this.defaultLanguage = meta.defaultLang;
-    this.availableLanguages = meta.availableLangs;
-    this.appVersion = meta.appVersion;
-
-    this.env = new Env(
-      this.defaultLanguage,
-      (...args) => this.fetchResource(this.appVersion, ...args));
-
-    return this.requestLanguages(requestedLangs);
-  }
-
-  registerView(view, resources) {
-    return this.interactive.then(() => {
-      this.ctxs.set(view, this.env.createContext(resources));
-      return true;
-    });
+  registerView(view, resources, meta, additionalLangs, requestedLangs) {
+    this.ctxs.set(view, this.env.createContext(resources));
+    const { langs } = negotiateLanguages(
+      meta, additionalLangs, [], requestedLangs);
+    this.langs.set(view, langs);
+    return langs;
   }
 
   unregisterView(view) {
-    return this.ctxs.delete(view);
+    this.ctxs.delete(view);
+    this.langs.delete(view);
+    return true;
   }
 
   resolveEntities(view, langs, keys) {
@@ -43,17 +31,26 @@ export class Remote {
   }
 
   formatValues(view, keys) {
-    return this.languages.then(
-      langs => this.ctxs.get(view).resolveValues(langs, keys));
+    // XXX simplify by making ctx immutable
+    return this.ctxs.get(view).resolveValues(
+      this.langs.get(view), keys);
   }
 
-  resolvedLanguages() {
-    return this.languages;
+  // XXX remove when ctxs are immutable
+  resolvedLanguages(view) {
+    return this.langs.get(view);
+  }
+
+  changeLanguages(view, meta, additionalLangs, requestedLangs) {
+    const prevLangs = this.langs.get(view) || [];
+    const { langs, haveChanged } = negotiateLanguages(
+      meta, additionalLangs, prevLangs, requestedLangs);
+    this.langs.set(view, langs);
+    return { langs, haveChanged };
   }
 
   requestLanguages(requestedLangs) {
-    return changeLanguages.call(
-      this, getAdditionalLanguages(), requestedLangs);
+    this.broadcast('languageschangerequest', requestedLangs);
   }
 
   getName(code) {
@@ -63,28 +60,4 @@ export class Remote {
   processString(code, str) {
     return pseudo[code].process(str);
   }
-
-  handleEvent(evt) {
-    return changeLanguages.call(
-      this, evt.detail || getAdditionalLanguages(), navigator.languages);
-  }
-}
-
-export function getAdditionalLanguages() {
-  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    return navigator.mozApps.getAdditionalLanguages()
-      .catch(() => Object.create(null));
-  }
-
-  return Promise.resolve(Object.create(null));
-}
-
-function changeLanguages(additionalLangs, requestedLangs) {
-  const prevLangs = this.languages || [];
-  return this.languages = Promise.all([
-    additionalLangs, prevLangs]).then(
-      ([additionalLangs, prevLangs]) => negotiateLanguages(
-        this.broadcast.bind(this, 'translateDocument'),
-        this.appVersion, this.defaultLanguage, this.availableLanguages,
-        additionalLangs, prevLangs, requestedLangs));
 }

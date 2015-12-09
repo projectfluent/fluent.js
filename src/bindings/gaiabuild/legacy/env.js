@@ -10,8 +10,8 @@ import { pseudo } from '../../../lib/pseudo';
 
 // XXX babel's inheritance code triggers JavaScript warnings about modifying 
 // the prototype object so we use regular prototypal inheritance here
-export function LegacyEnv(defaultLang, fetchResource) {
-  Env.call(this, defaultLang, fetchResource);
+export function LegacyEnv(fetchResource) {
+  Env.call(this, fetchResource);
 }
 
 LegacyEnv.prototype = Object.create(Env.prototype);

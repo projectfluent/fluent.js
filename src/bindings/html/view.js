@@ -1,9 +1,9 @@
 'use strict';
 
 import { documentReady, getDirection } from './shims';
+import { getResourceLinks, getMeta } from './head';
 import {
   setAttributes, getAttributes, translateFragment, translateMutations,
-  getResourceLinks
 } from './dom';
 
 const observerConfig = {
@@ -24,23 +24,27 @@ export class View {
       'ar-x-psbidi': createPseudo(this, 'ar-x-psbidi')
     };
 
-    this._interactive = documentReady().then(
-      () => init(this, client));
+    const initialized = documentReady().then(() => init(this, client));
+    this._interactive = initialized.then(() => client);
+    this.ready = initialized.then(langs => translateDocument(this, langs));
 
     const observer = new MutationObserver(onMutations.bind(this));
     this._observe = () => observer.observe(doc, observerConfig);
     this._disconnect = () => observer.disconnect();
 
-    const translateView = langs => translateDocument(this, langs);
-    client.on('translateDocument', translateView);
-    this.ready = this._interactive.then(
-      client => client.method('resolvedLanguages')).then(
-      translateView);
+    client.on('languageschangerequest',
+      requestedLangs => this.requestLanguages(requestedLangs));
   }
 
-  requestLanguages(langs, global) {
-    return this._interactive.then(
-      client => client.method('requestLanguages', langs, global));
+  requestLanguages(requestedLangs, isGlobal) {
+    const method = isGlobal ?
+      client => client.method('requestLanguages', requestedLangs) :
+      client => changeLanguages(this, client, requestedLangs);
+    return this._interactive.then(method);
+  }
+
+  handleEvent() {
+    return this.requestLanguages(navigator.languages);
   }
 
   _resolveEntities(langs, keys) {
@@ -61,7 +65,7 @@ export class View {
 
   translateFragment(frag) {
     return this._interactive.then(
-      client => client.method('resolvedLanguages')).then(
+      client => client.method('resolvedLanguages', client.id)).then(
       langs => translateFragment(this, langs, frag));
   }
 }
@@ -80,14 +84,38 @@ function createPseudo(view, code) {
 
 function init(view, client) {
   view._observe();
-  return client.method(
-    'registerView', client.id, getResourceLinks(view._doc.head)).then(
-      () => client);
+  const resources = getResourceLinks(view._doc.head);
+  const meta = getMeta(view._doc.head);
+  // XXX move this to remote when sw land
+  return getAdditionalLanguages().then(
+    additionalLangs => client.method(
+      'registerView', client.id, resources, meta, additionalLangs,
+      navigator.languages));
+}
+
+function changeLanguages(view, client, requestedLangs) {
+  const meta = getMeta(view._doc.head);
+  return getAdditionalLanguages()
+    .then(additionalLangs => client.method(
+      'changeLanguages', client.id, meta, additionalLangs, requestedLangs
+    ))
+    .then(({langs, haveChanged}) => haveChanged ?
+      translateDocument(view, langs) : undefined
+    );
+}
+
+function getAdditionalLanguages() {
+  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
+    return navigator.mozApps.getAdditionalLanguages()
+      .catch(() => Object.create(null));
+  }
+
+  return Promise.resolve(Object.create(null));
 }
 
 function onMutations(mutations) {
   return this._interactive.then(
-    client => client.method('resolvedLanguages')).then(
+    client => client.method('resolvedLanguages', client.id)).then(
     langs => translateMutations(this, langs, mutations));
 }
 

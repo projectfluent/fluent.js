@@ -17,7 +17,7 @@ describe('Caching resources', function() {
   var res3 = path + '/fixtures/missing.properties';
 
   beforeEach(function(done) {
-    env = new Env('en-US', fetchResource);
+    env = new Env(fetchResource);
     ctx1 = env.createContext([res1, res3]);
     ctx2 = env.createContext([res1, res2]);
     Promise.all([
