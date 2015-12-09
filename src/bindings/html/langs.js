@@ -58,8 +58,9 @@ export function negotiateLanguages(
   fn, appVersion, defaultLang, availableLangs, additionalLangs, prevLangs,
   requestedLangs) {
 
-  const allAvailableLangs = Object.keys(availableLangs).concat(
-    additionalLangs || []).concat(Object.keys(pseudo));
+  const allAvailableLangs = Object.keys(availableLangs)
+    .concat(Object.keys(additionalLangs))
+    .concat(Object.keys(pseudo));
   const newLangs = prioritizeLocales(
     defaultLang, allAvailableLangs, requestedLangs);
 
