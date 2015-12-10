@@ -6,7 +6,7 @@ import {
   initMutationObserver, translateRoots, observe, disconnect
 } from './observer';
 import {
-  setAttributes, getAttributes, translateFragment, translateMutations
+  setAttributes, getAttributes, translateFragment
 } from './dom';
 
 const viewProps = new WeakMap();
@@ -21,7 +21,7 @@ export class View {
     const initialized = documentReady().then(() => init(this, client));
     this._interactive = initialized.then(() => client);
     this.ready = initialized.then(langs => translateView(this, langs));
-    initMutationObserver(this, onMutations);
+    initMutationObserver(this);
 
     viewProps.set(this, {
       doc: doc,
@@ -43,9 +43,9 @@ export class View {
     return this.requestLanguages(navigator.languages);
   }
 
-  _resolveEntities(langs, keys) {
+  formatEntities(...keys) {
     return this._interactive.then(
-      client => client.method('resolveEntities', client.id, langs, keys));
+      client => client.method('formatEntities', client.id, keys));
   }
 
   formatValue(id, args) {
@@ -60,9 +60,7 @@ export class View {
   }
 
   translateFragment(frag) {
-    return this._interactive.then(
-      client => client.method('resolvedLanguages', client.id)).then(
-      langs => translateFragment(this, langs, frag));
+    return translateFragment(this, frag);
   }
 
   observeRoot(root) {
@@ -118,18 +116,12 @@ function getAdditionalLanguages() {
   return Promise.resolve(Object.create(null));
 }
 
-function onMutations(view, mutations) {
-  return view._interactive.then(
-    client => client.method('resolvedLanguages', client.id)).then(
-    langs => translateMutations(view, langs, mutations));
-}
-
 export function translateView(view, langs) {
   const props = viewProps.get(view);
   const html = props.doc.documentElement;
 
   if (props.ready) {
-    return translateRoots(view, langs).then(
+    return translateRoots(view).then(
       () => setAllAndEmit(html, langs));
   }
 
@@ -137,7 +129,7 @@ export function translateView(view, langs) {
     // has the document been already pre-translated?
     langs[0].code === html.getAttribute('lang') ?
       Promise.resolve() :
-      translateRoots(view, langs).then(
+      translateRoots(view).then(
         () => setLangDir(html, langs));
 
   return translated.then(() => {

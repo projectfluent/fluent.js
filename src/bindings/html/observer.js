@@ -1,6 +1,6 @@
 'use strict';
 
-import { translateFragment } from './dom';
+import { translateFragment, translateMutations } from './dom';
 
 const observerConfig = {
   attributes: true,
@@ -12,18 +12,18 @@ const observerConfig = {
 
 const observers = new WeakMap();
 
-export function initMutationObserver(view, onMutations) {
+export function initMutationObserver(view) {
   observers.set(view, {
     roots: new Set(),
     observer: new MutationObserver(
-      mutations => onMutations(view, mutations)),
+      mutations => translateMutations(view, mutations)),
   });
 }
 
-export function translateRoots(view, langs) {
+export function translateRoots(view) {
   return Promise.all(
     [...observers.get(view).roots].map(
-      root => translateFragment(view, langs, root)));
+      root => translateFragment(view, root)));
 }
 
 export function observe(view, root) {

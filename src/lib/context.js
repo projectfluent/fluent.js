@@ -6,9 +6,11 @@ import { getPluralRule } from './plurals';
 import { L20nIntl } from './shims';
 
 export class Context {
-  constructor(env) {
-    this._env = env;
-    this._numberFormatters = null;
+  constructor(env, langs, resIds) {
+    this.langs = langs;
+    this.resIds = resIds;
+    this.env = env;
+    this.emit = (type, evt) => env.emit(type, evt, this);
   }
 
   _formatTuple(lang, args, entity, id, key) {
@@ -17,7 +19,7 @@ export class Context {
     } catch (err) {
       err.id = key ? id + '::' + key : id;
       err.lang = lang;
-      this._env.emit('resolveerror', err, this);
+      this.emit('resolveerror', err);
       return [{ error: err }, err.id];
     }
   }
@@ -47,15 +49,14 @@ export class Context {
     return this._formatTuple(lang, args, entity, id)[1];
   }
 
-  fetch(langs) {
+  fetch(langs = this.langs) {
     if (langs.length === 0) {
       return Promise.resolve(langs);
     }
 
-    const resIds = Array.from(this._env._resLists.get(this));
     return Promise.all(
-      resIds.map(
-        resId => this._env._getResource(langs[0], resId))
+      this.resIds.map(
+        resId => this.env._getResource(langs[0], resId))
     ).then(() => langs);
   }
 
@@ -80,9 +81,9 @@ export class Context {
         return formatter.call(this, lang, args, entity, id);
       }
 
-      this._env.emit('notfounderror',
+      this.emit('notfounderror',
         new L10nError('"' + id + '"' + ' not found in ' + lang.code,
-          id, lang), this);
+          id, lang));
       hasUnresolved = true;
     });
 
@@ -94,22 +95,21 @@ export class Context {
       nextLangs => this._resolve(nextLangs, keys, formatter, resolved));
   }
 
-  resolveEntities(langs, keys) {
-    return this.fetch(langs).then(
+  formatEntities(...keys) {
+    return this.fetch().then(
       langs => this._resolve(langs, keys, this._formatEntity));
   }
 
-  resolveValues(langs, keys) {
-    return this.fetch(langs).then(
+  formatValues(...keys) {
+    return this.fetch().then(
       langs => this._resolve(langs, keys, this._formatValue));
   }
 
   _getEntity(lang, id) {
-    const cache = this._env._resCache;
-    const resIds = Array.from(this._env._resLists.get(this));
+    const cache = this.env.resCache;
 
     // Look for `id` in every resource in order.
-    for (let i = 0, resId; resId = resIds[i]; i++) {
+    for (let i = 0, resId; resId = this.resIds[i]; i++) {
       const resource = cache.get(resId + lang.code + lang.src);
       if (resource instanceof L10nError) {
         continue;
@@ -122,15 +122,15 @@ export class Context {
   }
 
   _getNumberFormatter(lang) {
-    if (!this._numberFormatters) {
-      this._numberFormatters = new Map();
+    if (!this.env.numberFormatters) {
+      this.env.numberFormatters = new Map();
     }
-    if (!this._numberFormatters.has(lang)) {
+    if (!this.env.numberFormatters.has(lang)) {
       const formatter = L20nIntl.NumberFormat(lang);
-      this._numberFormatters.set(lang, formatter);
+      this.env.numberFormatters.set(lang, formatter);
       return formatter;
     }
-    return this._numberFormatters.get(lang);
+    return this.env.numberFormatters.get(lang);
   }
 
   // XXX in the future macros will be stored in localization resources together 
@@ -159,9 +159,9 @@ function reportMissing(keys, formatter, resolved) {
       id : {value: id, attrs: null};
   });
 
-  this._env.emit('notfounderror', new L10nError(
+  this.emit('notfounderror', new L10nError(
     '"' + Array.from(missingIds).join(', ') + '"' +
-    ' not found in any language', missingIds), this);
+    ' not found in any language', missingIds));
 
   return resolved;
 }

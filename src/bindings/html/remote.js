@@ -9,44 +9,36 @@ export class Remote {
     this.broadcast = broadcast;
     this.env = new Env(fetchResource);
     this.ctxs = new Map();
-    this.langs = new Map();
   }
 
   registerView(view, resources, meta, additionalLangs, requestedLangs) {
-    this.ctxs.set(view, this.env.createContext(resources));
     const { langs } = negotiateLanguages(
       meta, additionalLangs, [], requestedLangs);
-    this.langs.set(view, langs);
+    this.ctxs.set(view, this.env.createContext(langs, resources));
     return langs;
   }
 
   unregisterView(view) {
     this.ctxs.delete(view);
-    this.langs.delete(view);
     return true;
   }
 
-  resolveEntities(view, langs, keys) {
-    return this.ctxs.get(view).resolveEntities(langs, keys);
+  formatEntities(view, keys) {
+    return this.ctxs.get(view).formatEntities(...keys);
   }
 
   formatValues(view, keys) {
-    // XXX simplify by making ctx immutable
-    return this.ctxs.get(view).resolveValues(
-      this.langs.get(view), keys);
-  }
-
-  // XXX remove when ctxs are immutable
-  resolvedLanguages(view) {
-    return this.langs.get(view);
+    return this.ctxs.get(view).formatValues(...keys);
   }
 
   changeLanguages(view, meta, additionalLangs, requestedLangs) {
-    const prevLangs = this.langs.get(view) || [];
-    const { langs, haveChanged } = negotiateLanguages(
+    const oldCtx = this.ctxs.get(view);
+    const prevLangs = oldCtx.langs;
+    const newLangs = negotiateLanguages(
       meta, additionalLangs, prevLangs, requestedLangs);
-    this.langs.set(view, langs);
-    return { langs, haveChanged };
+    this.ctxs.set(view, this.env.createContext(
+      newLangs.langs, oldCtx.resIds));
+    return newLangs;
   }
 
   requestLanguages(requestedLangs) {

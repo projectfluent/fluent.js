@@ -35,7 +35,7 @@ function getTranslatables(element) {
   return nodes;
 }
 
-export function translateMutations(view, langs, mutations) {
+export function translateMutations(view, mutations) {
   const targets = new Set();
 
   for (let mutation of mutations) {
@@ -63,14 +63,14 @@ export function translateMutations(view, langs, mutations) {
     return;
   }
 
-  translateElements(view, langs, Array.from(targets));
+  translateElements(view, Array.from(targets));
 }
 
-export function translateFragment(view, langs, frag) {
-  return translateElements(view, langs, getTranslatables(frag));
+export function translateFragment(view, frag) {
+  return translateElements(view, getTranslatables(frag));
 }
 
-function getElementsTranslation(view, langs, elems) {
+function getElementsTranslation(view, elems) {
   const keys = elems.map(elem => {
     const id = elem.getAttribute('data-l10n-id');
     const args = elem.getAttribute('data-l10n-args');
@@ -80,11 +80,11 @@ function getElementsTranslation(view, langs, elems) {
     ] : id;
   });
 
-  return view._resolveEntities(langs, keys);
+  return view.formatEntities(...keys);
 }
 
-function translateElements(view, langs, elements) {
-  return getElementsTranslation(view, langs, elements).then(
+function translateElements(view, elements) {
+  return getElementsTranslation(view, elements).then(
     translations => applyTranslations(view, elements, translations));
 }
 

@@ -2,10 +2,10 @@
 
 import { L10nError } from '../../../lib/errors';
 
-export function serializeLegacyContext(ctx, lang) {
-  const cache = ctx._env._resCache;
-  const resIds = Array.from(ctx._env._resLists.get(ctx));
-  return resIds.reduce(([errorsSeq, entriesSeq], cur) => {
+export function serializeLegacyContext(ctx) {
+  const lang = ctx.langs[0];
+  const cache = ctx.env.resCache;
+  return ctx.resIds.reduce(([errorsSeq, entriesSeq], cur) => {
     const sourceRes = cache.get(cur + 'en-USapp');
     const langRes = cache.get(cur + lang.code + lang.src);
     const [errors, entries] = serializeEntries(
