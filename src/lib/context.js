@@ -126,9 +126,7 @@ export class Context {
       this._numberFormatters = new Map();
     }
     if (!this._numberFormatters.has(lang)) {
-      const formatter = L20nIntl.NumberFormat(lang, {
-        useGrouping: false,
-      });
+      const formatter = L20nIntl.NumberFormat(lang);
       this._numberFormatters.set(lang, formatter);
       return formatter;
     }
