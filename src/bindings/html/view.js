@@ -3,22 +3,16 @@
 import { documentReady, getDirection } from './shims';
 import { getResourceLinks, getMeta } from './head';
 import {
-  setAttributes, getAttributes, translateFragment, translateMutations,
+  initMutationObserver, translateRoots, observe, disconnect
+} from './observer';
+import {
+  setAttributes, getAttributes, translateFragment, translateMutations
 } from './dom';
 
-const observerConfig = {
-  attributes: true,
-  characterData: false,
-  childList: true,
-  subtree: true,
-  attributeFilter: ['data-l10n-id', 'data-l10n-args']
-};
-
-const readiness = new WeakMap();
+const viewProps = new WeakMap();
 
 export class View {
   constructor(client, doc) {
-    this._doc = doc;
     this.pseudo = {
       'fr-x-psaccent': createPseudo(this, 'fr-x-psaccent'),
       'ar-x-psbidi': createPseudo(this, 'ar-x-psbidi')
@@ -26,11 +20,13 @@ export class View {
 
     const initialized = documentReady().then(() => init(this, client));
     this._interactive = initialized.then(() => client);
-    this.ready = initialized.then(langs => translateDocument(this, langs));
+    this.ready = initialized.then(langs => translateView(this, langs));
+    initMutationObserver(this, onMutations);
 
-    const observer = new MutationObserver(onMutations.bind(this));
-    this._observe = () => observer.observe(doc, observerConfig);
-    this._disconnect = () => observer.disconnect();
+    viewProps.set(this, {
+      doc: doc,
+      ready: false
+    });
 
     client.on('languageschangerequest',
       requestedLangs => this.requestLanguages(requestedLangs));
@@ -68,6 +64,14 @@ export class View {
       client => client.method('resolvedLanguages', client.id)).then(
       langs => translateFragment(this, langs, frag));
   }
+
+  observeRoot(root) {
+    observe(this, root);
+  }
+
+  disconnectRoot(root) {
+    disconnect(this, root);
+  }
 }
 
 View.prototype.setAttributes = setAttributes;
@@ -83,10 +87,10 @@ function createPseudo(view, code) {
 }
 
 function init(view, client) {
-  view._observe();
-  const resources = getResourceLinks(view._doc.head);
-  const meta = getMeta(view._doc.head);
-  // XXX move this to remote when sw land
+  const doc = viewProps.get(view).doc;
+  const resources = getResourceLinks(doc.head);
+  const meta = getMeta(doc.head);
+  view.observeRoot(doc.documentElement);
   return getAdditionalLanguages().then(
     additionalLangs => client.method(
       'registerView', client.id, resources, meta, additionalLangs,
@@ -94,13 +98,14 @@ function init(view, client) {
 }
 
 function changeLanguages(view, client, requestedLangs) {
-  const meta = getMeta(view._doc.head);
+  const doc = viewProps.get(view).doc;
+  const meta = getMeta(doc.head);
   return getAdditionalLanguages()
     .then(additionalLangs => client.method(
       'changeLanguages', client.id, meta, additionalLangs, requestedLangs
     ))
     .then(({langs, haveChanged}) => haveChanged ?
-      translateDocument(view, langs) : undefined
+      translateView(view, langs) : undefined
     );
 }
 
@@ -113,17 +118,18 @@ function getAdditionalLanguages() {
   return Promise.resolve(Object.create(null));
 }
 
-function onMutations(mutations) {
-  return this._interactive.then(
+function onMutations(view, mutations) {
+  return view._interactive.then(
     client => client.method('resolvedLanguages', client.id)).then(
-    langs => translateMutations(this, langs, mutations));
+    langs => translateMutations(view, langs, mutations));
 }
 
-export function translateDocument(view, langs) {
-  const html = view._doc.documentElement;
+export function translateView(view, langs) {
+  const props = viewProps.get(view);
+  const html = props.doc.documentElement;
 
-  if (readiness.has(html)) {
-    return translateFragment(view, langs, html).then(
+  if (props.ready) {
+    return translateRoots(view, langs).then(
       () => setAllAndEmit(html, langs));
   }
 
@@ -131,12 +137,12 @@ export function translateDocument(view, langs) {
     // has the document been already pre-translated?
     langs[0].code === html.getAttribute('lang') ?
       Promise.resolve() :
-      translateFragment(view, langs, html).then(
+      translateRoots(view, langs).then(
         () => setLangDir(html, langs));
 
   return translated.then(() => {
     setLangs(html, langs);
-    readiness.set(html, true);
+    props.ready = true;
   });
 }
 

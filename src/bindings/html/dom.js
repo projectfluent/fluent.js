@@ -1,5 +1,6 @@
 'use strict';
 
+import { disconnect, reconnect } from './observer';
 import { overlayElement } from './overlay';
 
 const reHtml = /[&<>]/g;
@@ -88,9 +89,9 @@ function translateElements(view, langs, elements) {
 }
 
 function applyTranslations(view, elems, translations) {
-  view._disconnect();
+  disconnect(view, null, true);
   for (let i = 0; i < elems.length; i++) {
     overlayElement(elems[i], translations[i]);
   }
-  view._observe();
+  reconnect(view);
 }
