@@ -20,6 +20,14 @@ describe('L10n Parser', function() {
     assert.equal(entries.id, '');
   });
 
+  it('complex value', function() {
+    var entries = PropertiesParser.parse(null, 'id = pre {{ foo }} post');
+    assert.strictEqual(entries.id.value[0], 'pre ');
+    assert.strictEqual(entries.id.value[1].name, 'foo');
+    assert.strictEqual(entries.id.value[2], ' post');
+  });
+
+
   it('basic errors', function() {
     var strings = [
       '',
@@ -52,6 +60,23 @@ describe('L10n Parser', function() {
     assert.equal(entries.id.attrs.attr1, '');
   });
 
+  it('attribute with value', function() {
+    var entries = PropertiesParser.parse(null, 'id=foo\nid.attr1 = foo2');
+    assert.equal(entries.id.value, 'foo');
+    assert.equal(entries.id.attrs.attr1, 'foo2');
+  });
+
+  it('complex attribute', function() {
+    var entries = PropertiesParser.parse(null,
+      'id=pre {{ foo }} post\nid.attr1 = pre1 {{ foo }} post1');
+    assert.equal(entries.id.value[0], 'pre ');
+    assert.equal(entries.id.value[1].name, 'foo');
+    assert.equal(entries.id.value[2], ' post');
+    assert.equal(entries.id.attrs.attr1.value[0], 'pre1 ');
+    assert.equal(entries.id.attrs.attr1.value[1].name, 'foo');
+    assert.equal(entries.id.attrs.attr1.value[2], ' post1');
+  });
+
   it('attribute errors', function() {
     var strings = [
       ['key.foo.bar = foo', /Nested attributes are not supported./],
@@ -76,6 +101,33 @@ describe('L10n Parser', function() {
     assert.equal(entries.id.index.length, 1);
     assert.equal(entries.id.index[0].expr.prop, 'plural');
     assert.equal(entries.id.index[0].args[0].name, 'm');
+  });
+
+  it('plural macro with a key matching an entity name', function() {
+    var entries = PropertiesParser.parse(null,
+      'other = Other\nid = {[ plural(m) ]} \nid[other] = foo');
+    assert.equal(entries.id.value.other, 'foo');
+  });
+
+  it('plural macro on attribute', function() {
+    var entries = PropertiesParser.parse(null,
+      'id.attr1 = {[ plural(m) ]} \nid.attr1[one] = foo');
+    assert.equal(entries.id.attrs.attr1.value.one, 'foo');
+    assert.equal(entries.id.attrs.attr1.index.length, 1);
+    assert.equal(entries.id.attrs.attr1.index[0].expr.prop, 'plural');
+    assert.equal(entries.id.attrs.attr1.index[0].args[0].name, 'm');
+  });
+
+  it('plural macro on value and attribute', function() {
+    var entries = PropertiesParser.parse(null,
+      'id={[plural(n)]}\nid[one]=foo\n' +
+      'id.attr1 = {[ plural(m) ]} \nid.attr1[one] = foo');
+    assert.equal(entries.id.index.length, 1);
+    assert.equal(entries.id.value.one, 'foo');
+    assert.equal(entries.id.attrs.attr1.value.one, 'foo');
+    assert.equal(entries.id.attrs.attr1.index.length, 1);
+    assert.equal(entries.id.attrs.attr1.index[0].expr.prop, 'plural');
+    assert.equal(entries.id.attrs.attr1.index[0].args[0].name, 'm');
   });
 
   it('plural macro errors', function() {
@@ -125,13 +177,15 @@ describe('L10n Parser', function() {
     var strings = [
       'foo=value1\nfoo=value2',
       'foo=value\nfoo.attr1=value\nfoo.attr1=value2',
+      'foo={[plural(n)]}\nfoo[one]=value\nfoo[one]=value2',
+      'foo.bar={[plural(n)]}\nfoo.bar[one]=value\nfoo.bar[one]=value2',
     ];
     for (var i in strings) {
       /* jshint -W083 */
       if (strings.hasOwnProperty(i)) {
         assert.throws(function() {
           PropertiesParser.parse(null, strings[i]);
-        });
+        }, /Duplicated/);
       }
     }
   });
