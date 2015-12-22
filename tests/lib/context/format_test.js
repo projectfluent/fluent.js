@@ -22,13 +22,13 @@ describe('One fallback locale', function() {
 
   beforeEach(function(done) {
     env = new Env(fetchResource);
-    ctx = env.createContext([path + '/fixtures/{locale}.properties']);
-    ctx.fetch(langs).then(() => done(), done);
+    ctx = env.createContext(langs, [path + '/fixtures/{locale}.properties']);
+    ctx.fetch().then(() => done(), done);
   });
 
   describe('Translation in the first locale exists and is OK', function() {
     it('[e]', function(done) {
-      assertValue(ctx.resolveValues(langs, ['e']), 'E pl', done);
+      assertValue(ctx.formatValues('e'), 'E pl', done);
     });
   });
 
@@ -36,7 +36,7 @@ describe('One fallback locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[ve]', function(done) {
         assertValue(
-          ctx.resolveValues(langs, ['ve']),
+          ctx.formatValues('ve'),
           i('VE {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -45,7 +45,7 @@ describe('One fallback locale', function() {
     describe('ValueError in second locale:', function() {
       it('[vv]', function(done) {
         assertValue(
-          ctx.resolveValues(langs, ['vv']),
+          ctx.formatValues('vv'),
           i('VV {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -54,7 +54,7 @@ describe('One fallback locale', function() {
     describe('IndexError in second locale:', function() {
       it('[vi]', function(done) {
         assertValue(
-          ctx.resolveValues(langs, ['vi']),
+          ctx.formatValues('vi'),
           i('VI {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -63,7 +63,7 @@ describe('One fallback locale', function() {
     describe('Entity missing in second locale:', function() {
       it('[vm]', function(done) {
         assertValue(
-          ctx.resolveValues(langs, ['vm']),
+          ctx.formatValues('vm'),
           i('VM {{ boo }} pl', '{{ boo }}'),
           done);
       });
@@ -73,25 +73,25 @@ describe('One fallback locale', function() {
   describe('IndexError in first locale', function() {
     describe('Entity exists in second locale', function() {
       it('[ie]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['ie']), 'ie', done);
+        assertValue(ctx.formatValues('ie'), 'ie', done);
       });
     });
 
     describe('ValueError in second locale', function() {
       it('[iv]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['iv']), 'iv', done);
+        assertValue(ctx.formatValues('iv'), 'iv', done);
       });
     });
 
     describe('IndexError in second locale', function() {
       it('[ii]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['ii']), 'ii', done);
+        assertValue(ctx.formatValues('ii'), 'ii', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[im]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['im']), 'im', done);
+        assertValue(ctx.formatValues('im'), 'im', done);
       });
     });
   });
@@ -99,14 +99,14 @@ describe('One fallback locale', function() {
   describe('Entity not found in first locale', function() {
     describe('Entity exists in second locale:', function() {
       it('[me]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['me']), 'ME en-US', done);
+        assertValue(ctx.formatValues('me'), 'ME en-US', done);
       });
     });
 
     describe('ValueError in second locale:', function() {
       it('[mv]', function(done) {
         assertValue(
-          ctx.resolveValues(langs, ['mv']),
+          ctx.formatValues('mv'),
           i('MV {{ boo }} en-US', '{{ boo }}'),
           done);
       });
@@ -114,13 +114,13 @@ describe('One fallback locale', function() {
 
     describe('IndexError in second locale:', function() {
       it('[mi]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['mi']), 'mi', done);
+        assertValue(ctx.formatValues('mi'), 'mi', done);
       });
     });
 
     describe('Entity missing in second locale:', function() {
       it('[mm]', function(done) {
-        assertValue(ctx.resolveValues(langs, ['mm']), 'mm', done);
+        assertValue(ctx.formatValues('mm'), 'mm', done);
       });
     });
   });
