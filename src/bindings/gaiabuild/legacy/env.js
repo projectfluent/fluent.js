@@ -1,7 +1,7 @@
 'use strict';
 
 import { L10nError } from '../../../lib/errors';
-import { Env, amendError } from '../../../lib/env';
+import { Env } from '../../../lib/env';
 import { LegacyContext } from './context';
 import { createEntry } from './resolver';
 import PropertiesParser from './parser';
@@ -12,17 +12,15 @@ import { pseudo } from '../../../lib/pseudo';
 // the prototype object so we use regular prototypal inheritance here
 export function LegacyEnv(fetchResource) {
   Env.call(this, fetchResource);
+  this.parsers = {
+    properties: PropertiesParser
+  };
 }
 
 LegacyEnv.prototype = Object.create(Env.prototype);
 
 LegacyEnv.prototype.createContext = function(langs, resIds) {
   return new LegacyContext(this, langs, resIds);
-};
-
-LegacyEnv.prototype._parse = function(syntax, lang, data) {
-  const emit = (type, err) => this.emit(type, amendError(lang, err));
-  return PropertiesParser.parse.call(PropertiesParser, emit, data);
 };
 
 LegacyEnv.prototype._create = function(lang, ast) {

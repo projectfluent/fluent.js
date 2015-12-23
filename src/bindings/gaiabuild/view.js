@@ -5,7 +5,6 @@ import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';
 import { translateFragment } from '../../bindings/html/dom';
 import { getResourceLinks } from '../../bindings/html/head';
-import { getDirection } from '../../bindings/html/shims';
 import { serializeContext } from './serialize';
 import { serializeLegacyContext } from './legacy/serialize';
 
@@ -21,10 +20,9 @@ export class View {
     this.isLegacy = !this.doc.querySelector('script[src*="l20n"]');
 
     const EnvClass = this.isLegacy ? LegacyEnv : Env;
-    this.env = new EnvClass(
-      htmloptimizer.config.GAIA_DEFAULT_LOCALE, fetchResource);
+    this.env = new EnvClass(fetchResource);
     this.sourceCtx = this.env.createContext(
-      { code: 'en-US', src: 'app' }, this.resLinks);
+      [{ code: 'en-US', src: 'app' }], this.resLinks);
 
     // add the url of the currently processed webapp to all errors
     this.env.addEventListener('*', amendError.bind(this));
@@ -74,7 +72,7 @@ export class View {
 
   serializeResources(code) {
     const langCtx = this.env.createContext(
-      { code, src: code in pseudo ? 'pseudo' : 'app' }, this.resLinks);
+      [{ code, src: code in pseudo ? 'pseudo' : 'app' }], this.resLinks);
 
     return Promise.all(
       [this.sourceCtx, langCtx].map(ctx => ctx.fetch())
@@ -127,4 +125,10 @@ function stopBuild(err) {
   if (err.lang && err.lang.code === 'en-US' && !this.stopBuildError) {
     this.stopBuildError = err;
   }
+}
+
+function getDirection(code) {
+  const tag = code.split('-')[0];
+  return ['ar', 'he', 'fa', 'ps', 'ur'].indexOf(tag) >= 0 ?
+    'rtl' : 'ltr';
 }

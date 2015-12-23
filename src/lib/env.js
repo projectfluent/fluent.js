@@ -6,11 +6,6 @@ import L20nParser from './format/l20n/entries/parser';
 import { walkEntry, pseudo } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 
-const parsers = {
-  properties: PropertiesParser,
-  l20n: L20nParser,
-};
-
 export class Env {
   constructor(fetchResource) {
     this.fetchResource = fetchResource;
@@ -18,6 +13,10 @@ export class Env {
     this.resCache = new Map();
     this.resRefs = new Map();
     this.numberFormatters = null;
+    this.parsers = {
+      properties: PropertiesParser,
+      l20n: L20nParser,
+    };
 
     const listeners = {};
     this.emit = emit.bind(this, listeners);
@@ -50,7 +49,7 @@ export class Env {
   }
 
   _parse(syntax, lang, data) {
-    const parser = parsers[syntax];
+    const parser = this.parsers[syntax];
     if (!parser) {
       return data;
     }
@@ -106,7 +105,7 @@ export class Env {
   }
 }
 
-export function amendError(lang, err) {
+function amendError(lang, err) {
   err.lang = lang;
   return err;
 }
