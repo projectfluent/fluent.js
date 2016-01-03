@@ -1,5 +1,3 @@
-'use strict';
-
 import { documentReady, getDirection } from './shims';
 import { getResourceLinks, getMeta } from './head';
 import {

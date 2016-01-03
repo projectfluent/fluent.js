@@ -1,8 +1,6 @@
-'use strict';
-
 import { L10nError } from '../../../lib/errors';
 
-var MAX_PLACEABLES = 100;
+const MAX_PLACEABLES = 100;
 
 export default {
   patterns: null,
@@ -26,15 +24,15 @@ export default {
       this.init();
     }
 
-    var ast = [];
+    const ast = [];
     this.entryIds = Object.create(null);
 
-    var entries = source.match(this.patterns.entries);
+    const entries = source.match(this.patterns.entries);
     if (!entries) {
       return ast;
     }
-    for (var i = 0; i < entries.length; i++) {
-      var line = entries[i];
+    for (let i = 0; i < entries.length; i++) {
+      let line = entries[i];
 
       if (this.patterns.comment.test(line)) {
         continue;
@@ -44,7 +42,7 @@ export default {
         line = line.slice(0, -1) + entries[++i].trim();
       }
 
-      var entityMatch = line.match(this.patterns.entity);
+      const entityMatch = line.match(this.patterns.entity);
       if (entityMatch) {
         try {
           this.parseEntity(entityMatch[1], entityMatch[2], ast);
@@ -61,9 +59,9 @@ export default {
   },
 
   parseEntity: function(id, value, ast) {
-    var name, key;
+    let name, key;
 
-    var pos = id.indexOf('[');
+    const pos = id.indexOf('[');
     if (pos !== -1) {
       name = id.substr(0, pos);
       key = id.substring(pos + 1, id.length - 1);
@@ -72,14 +70,14 @@ export default {
       key = null;
     }
 
-    var nameElements = name.split('.');
+    const nameElements = name.split('.');
 
     if (nameElements.length > 2) {
       throw new L10nError('Error in ID: "' + name + '".' +
           ' Nested attributes are not supported.');
     }
 
-    var attr;
+    let attr;
     if (nameElements.length > 1) {
       name = nameElements[0];
       attr = nameElements[1];
@@ -95,9 +93,9 @@ export default {
   },
 
   setEntityValue: function(id, attr, key, rawValue, ast) {
-    var pos, v;
+    let pos, v;
 
-    var value = rawValue.indexOf('{{') > -1 ?
+    const value = rawValue.indexOf('{{') > -1 ?
       this.parseString(rawValue) : rawValue;
 
     if (attr) {
@@ -152,18 +150,18 @@ export default {
   },
 
   parseString: function(str) {
-    var chunks = str.split(this.patterns.placeables);
-    var complexStr = [];
+    const chunks = str.split(this.patterns.placeables);
+    const complexStr = [];
 
-    var len = chunks.length;
-    var placeablesCount = (len - 1) / 2;
+    const len = chunks.length;
+    const placeablesCount = (len - 1) / 2;
 
     if (placeablesCount >= MAX_PLACEABLES) {
       throw new L10nError('Too many placeables (' + placeablesCount +
                           ', max allowed is ' + MAX_PLACEABLES + ')');
     }
 
-    for (var i = 0; i < chunks.length; i++) {
+    for (let i = 0; i < chunks.length; i++) {
       if (chunks[i].length === 0) {
         continue;
       }
@@ -180,13 +178,13 @@ export default {
     if (str.lastIndexOf('\\') !== -1) {
       str = str.replace(this.patterns.controlChars, '$1');
     }
-    return str.replace(this.patterns.unicode, function(match, token) {
-      return String.fromCodePoint(parseInt(token, 16));
-    });
+    return str.replace(this.patterns.unicode,
+      (match, token) => String.fromCodePoint(parseInt(token, 16))
+    );
   },
 
   parseIndex: function(str) {
-    var match = str.match(this.patterns.index);
+    const match = str.match(this.patterns.index);
     if (!match) {
       throw new L10nError('Malformed index');
     }

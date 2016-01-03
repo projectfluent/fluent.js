@@ -1,5 +1,3 @@
-'use strict';
-
 import { L10nError } from '../../../lib/errors';
 
 const KNOWN_MACROS = ['plural'];
@@ -145,10 +143,10 @@ function subPlaceable(locals, ctx, lang, args, id) {
 }
 
 function interpolate(locals, ctx, lang, args, arr) {
-  return arr.reduce(function([localsSeq, valueSeq], cur) {
+  return arr.reduce(([localsSeq, valueSeq], cur) => {
     if (typeof cur === 'string') {
       return [localsSeq, valueSeq + cur];
-    } else if (cur.t === 'idOrVar'){
+    } else if (cur.t === 'idOrVar') {
       const [, value] = subPlaceable(locals, ctx, lang, args, cur.v);
       return [localsSeq, valueSeq + value];
     }
@@ -156,31 +154,31 @@ function interpolate(locals, ctx, lang, args, arr) {
 }
 
 function resolveSelector(ctx, lang, args, expr, index) {
-    const selectorName = index[0].v;
-    const selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
+  const selectorName = index[0].v;
+  const selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
 
-    if (typeof selector !== 'function') {
-      // selector is a simple reference to an entity or args
-      return selector;
+  if (typeof selector !== 'function') {
+    // selector is a simple reference to an entity or args
+    return selector;
+  }
+
+  const argValue = index[1] ?
+    resolveIdentifier(ctx, lang, args, index[1])[1] : undefined;
+
+  if (selectorName === 'plural') {
+    // special cases for zero, one, two if they are defined on the hash
+    if (argValue === 0 && 'zero' in expr) {
+      return 'zero';
     }
-
-    const argValue = index[1] ?
-      resolveIdentifier(ctx, lang, args, index[1])[1] : undefined;
-
-    if (selectorName === 'plural') {
-      // special cases for zero, one, two if they are defined on the hash
-      if (argValue === 0 && 'zero' in expr) {
-        return 'zero';
-      }
-      if (argValue === 1 && 'one' in expr) {
-        return 'one';
-      }
-      if (argValue === 2 && 'two' in expr) {
-        return 'two';
-      }
+    if (argValue === 1 && 'one' in expr) {
+      return 'one';
     }
+    if (argValue === 2 && 'two' in expr) {
+      return 'two';
+    }
+  }
 
-    return selector(argValue);
+  return selector(argValue);
 }
 
 function resolveValue(locals, ctx, lang, args, expr, index) {
@@ -195,9 +193,9 @@ function resolveValue(locals, ctx, lang, args, expr, index) {
   }
 
   if (Array.isArray(expr)) {
-    locals.contextIsNonLatin1 = expr.some(function($_) {
-      return typeof($_) === 'string' && $_.match(nonLatin1);
-    });
+    locals.contextIsNonLatin1 = expr.some(
+      $_ => typeof($_) === 'string' && $_.match(nonLatin1)
+    );
     return interpolate(locals, ctx, lang, args, expr);
   }
 

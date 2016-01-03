@@ -1,5 +1,3 @@
-'use strict';
-
 import 'string.prototype.startswith';
 import 'string.prototype.endswith';
 

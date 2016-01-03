@@ -1,5 +1,3 @@
-'use strict';
-
 export function prioritizeLocales(def, availableLangs, requested) {
   let supportedLocale;
   // Find the first locale in the requested list that is supported.

@@ -1,4 +1,3 @@
-'use strict';
 import { L10nError } from '../../../lib/errors';
 
 export function fetchResource(htmloptimizer, res, { code }) {

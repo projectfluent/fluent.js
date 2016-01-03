@@ -1,9 +1,9 @@
-'use strict';
-
 import { L10nError } from '../../lib/errors';
 
+const HTTP_STATUS_CODE_OK = 200;
+
 function load(type, url) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
     if (xhr.overrideMimeType) {
@@ -16,10 +16,10 @@ function load(type, url) {
       xhr.responseType = 'json';
     }
 
-    xhr.addEventListener('load', function io_onload(e) {
-      if (e.target.status === 200 || e.target.status === 0) {
-        // Sinon.JS's FakeXHR doesn't have the response property
-        resolve(e.target.response || e.target.responseText);
+    xhr.addEventListener('load', e => {
+      if (e.target.status === HTTP_STATUS_CODE_OK ||
+          e.target.status === 0) {
+        resolve(e.target.response);
       } else {
         reject(new L10nError('Not found: ' + url));
       }

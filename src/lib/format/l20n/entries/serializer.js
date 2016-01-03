@@ -1,12 +1,10 @@
-'use strict';
-
 /* jshint -W089 */
 /* jshint -W069 */
 
 export default function() {
   this.serialize = function (ast) {
-    var string = '';
-    for (var id in ast) {
+    let string = '';
+    for (const id in ast) {
       string += dumpEntry(ast[id]) + '\n';
     }
 
@@ -18,10 +16,11 @@ export default function() {
   }
 
   function dumpEntity(entity) {
-    var id, val = null, attrs = {};
-    var index = '';
+    let id, val = null;
+    const attrs = {};
+    let index = '';
 
-    for (var key in entity) {
+    for (const key in entity) {
       switch (key) {
         case '$v':
           val = entity.$v;
@@ -77,8 +76,8 @@ export default function() {
   }
 
   function dumpComplexString(chunks) {
-    var str = '"';
-    for (var i = 0; i < chunks.length; i++) {
+    let str = '"';
+    for (let i = 0; i < chunks.length; i++) {
       if (typeof chunks[i] === 'string') {
         str += chunks[i];
       } else {
@@ -89,21 +88,21 @@ export default function() {
   }
 
   function dumpHash(hash, depth) {
-    var items = [];
-    var str;
+    const items = [];
+    let str;
 
-    for (var key in hash) {
+    for (const key in hash) {
       str = '  ' + key + ': ' + dumpValue(hash[key]);
       items.push(str);
     }
 
-    var indent = depth ? '  ' : '';
+    const indent = depth ? '  ' : '';
     return '{\n' + indent + items.join(',\n' + indent) + '\n'+indent+'}';
   }
 
   function dumpAttributes(attrs) {
-    var str = '';
-    for (var key in attrs) {
+    let str = '';
+    for (const key in attrs) {
       if (attrs[key].$x) {
         str += '  ' + key + dumpIndex(attrs[key].$x) + ': ' +
           dumpValue(attrs[key].$v, 1) + '\n';

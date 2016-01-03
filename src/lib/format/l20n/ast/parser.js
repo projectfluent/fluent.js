@@ -1,4 +1,4 @@
-'use strict';
+/*eslint no-magic-numbers: [0]*/
 
 import AST from './ast';
 import { L10nError } from '../../../errors';
@@ -25,7 +25,7 @@ class ParseContext {
   }
 
   getResource() {
-    let resource = new AST.Resource();
+    const resource = new AST.Resource();
     this.setPosition(resource, 0, this._length);
     resource._errors = [];
 
@@ -161,7 +161,7 @@ class ParseContext {
 
   getUnicodeChar() {
     for (let i = 0; i < 4; i++) {
-      let cc = this._source.charCodeAt(++this._index);
+      const cc = this._source.charCodeAt(++this._index);
       if ((cc > 96 && cc < 103) || // a-f
           (cc > 64 && cc < 71) ||  // A-F
           (cc > 47 && cc < 58)) {  // 0-9
@@ -173,7 +173,7 @@ class ParseContext {
   }
 
   getString(opchar, opcharLen) {
-    let body = [];
+    const body = [];
     let buf = '';
     let placeables = 0;
 
@@ -184,7 +184,7 @@ class ParseContext {
     let closed = false;
 
     while (!closed) {
-      let ch = this._source[++this._index];
+      const ch = this._source[++this._index];
       
       switch (ch) {
         case '\\':
@@ -291,7 +291,7 @@ class ParseContext {
 
   getHash(index) {
     const start = this._index;
-    let items = [];
+    const items = [];
 
     ++this._index;
     this.getWS();
@@ -367,7 +367,7 @@ class ParseContext {
     let exp = this.getPrimaryExpression();
 
     while (true) {
-      let ch = this._source[this._index];
+      const ch = this._source[this._index];
       if (ch === '.' || ch === '[') {
         ++this._index;
         exp = this.getPropertyExpression(exp, ch === '[', start);
@@ -432,7 +432,7 @@ class ParseContext {
   }
 
   getItemList(callback, closeChar) {
-    let items = [];
+    const items = [];
     let closed = false;
 
     this.getWS();
@@ -445,7 +445,7 @@ class ParseContext {
     while (!closed) {
       items.push(callback.call(this));
       this.getWS();
-      let ch = this._source.charAt(this._index);
+      const ch = this._source.charAt(this._index);
       switch (ch) {
         case ',':
           ++this._index;
@@ -467,11 +467,11 @@ class ParseContext {
     const pos = this._index;
 
     let start = this._source.lastIndexOf('<', pos - 1);
-    let lastClose = this._source.lastIndexOf('>', pos - 1);
+    const lastClose = this._source.lastIndexOf('>', pos - 1);
     start = lastClose > start ? lastClose + 1 : start;
-    let context = this._source.slice(start, pos + 10);
+    const context = this._source.slice(start, pos + 10);
 
-    let msg = message + ' at pos ' + pos + ': `' + context + '`';
+    const msg = message + ' at pos ' + pos + ': `' + context + '`';
 
     const err = new L10nError(msg);
     err._pos = {start: pos, end: undefined};
@@ -493,7 +493,7 @@ class ParseContext {
       nextComment = this._length;
     }
 
-    let nextEntry = Math.min(nextEntity, nextComment);
+    const nextEntry = Math.min(nextEntity, nextComment);
 
     this._index = nextEntry;
 

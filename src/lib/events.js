@@ -1,5 +1,3 @@
-'use strict';
-
 export function emit(listeners, ...args) {
   const type = args.shift();
 

@@ -1,5 +1,3 @@
-'use strict';
-
 /* global bridge, BroadcastChannel */
 
 export const Client = bridge.client;

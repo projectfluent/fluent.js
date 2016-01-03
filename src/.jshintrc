@@ -11,7 +11,7 @@
   "noarg": true,
   "noempty": true,
   "nonew": true,
-  "strict": true,
+  "strict": false,
   "globalstrict": true,
   "trailing": true,
   "undef": true,

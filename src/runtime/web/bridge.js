@@ -1,5 +1,3 @@
-'use strict';
-
 import { emit, addEventListener } from '../../lib/events';
 
 export class Client {

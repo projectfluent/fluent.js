@@ -1,5 +1,3 @@
-'use strict';
-
 import '../web/index';
 
 //Bug 1204660 - Temporary proxy for shared code. Will be removed once

@@ -1,5 +1,3 @@
-'use strict';
-
 // Recursively walk an AST node searching for content leaves
 export function walkContent(node, fn) {
   if (typeof node === 'string') {

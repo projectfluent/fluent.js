@@ -1,4 +1,4 @@
-'use strict';
+/*eslint no-magic-numbers: [0]*/
 
 import { L10nError } from '../../../errors';
 
@@ -114,7 +114,7 @@ export default {
       throw this.error('Unknown value type');
     }
 
-    return;
+    return undefined;
   },
 
   getWS: function() {
@@ -159,7 +159,7 @@ export default {
 
   getUnicodeChar: function() {
     for (let i = 0; i < 4; i++) {
-      let cc = this._source.charCodeAt(++this._index);
+      const cc = this._source.charCodeAt(++this._index);
       if ((cc > 96 && cc < 103) || // a-f
           (cc > 64 && cc < 71) ||  // A-F
           (cc > 47 && cc < 58)) {  // 0-9
@@ -374,7 +374,7 @@ export default {
     let exp = this.getPrimaryExpression();
 
     while (true) {
-      let ch = this._source[this._index];
+      const ch = this._source[this._index];
       if (ch === '.' || ch === '[') {
         ++this._index;
         exp = this.getPropertyExpression(exp, ch === '[');
@@ -460,7 +460,7 @@ export default {
     while (!closed) {
       items.push(callback.call(this));
       this.getWS();
-      let ch = this._source.charAt(this._index);
+      const ch = this._source.charAt(this._index);
       switch (ch) {
         case ',':
           ++this._index;
@@ -491,7 +491,7 @@ export default {
       nextComment = this._length;
     }
 
-    let nextEntry = Math.min(nextEntity, nextComment);
+    const nextEntry = Math.min(nextEntity, nextComment);
 
     this._index = nextEntry;
   },
