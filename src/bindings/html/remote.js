@@ -1,5 +1,3 @@
-'use strict';
-
 import { Env } from '../../lib/env';
 import { pseudo } from '../../lib/pseudo';
 import { negotiateLanguages } from './langs';

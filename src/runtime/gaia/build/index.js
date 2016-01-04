@@ -1,5 +1,3 @@
-'use strict';
-
 /* jshint node:true */
 
 import { fetchResource } from './io';

@@ -1,5 +1,3 @@
-'use strict';
-
 import { L10nError } from './errors';
 import { format } from './resolver';
 import { getPluralRule } from './plurals';
@@ -34,7 +32,7 @@ export class Context {
 
     if (entity.attrs) {
       formatted.attrs = Object.create(null);
-      for (let key in entity.attrs) {
+      for (const key in entity.attrs) {
         /* jshint -W089 */
         const [, attrValue] = this._formatTuple(
           lang, args, entity.attrs[key], id, key);
@@ -82,8 +80,7 @@ export class Context {
       }
 
       this.emit('notfounderror',
-        new L10nError('"' + id + '"' + ' not found in ' + lang.code,
-          id, lang));
+        new L10nError('"' + id + '" not found in ' + lang.code, id, lang));
       hasUnresolved = true;
     });
 

@@ -1,5 +1,3 @@
-'use strict';
-
 export function L10nError(message, id, lang) {
   this.name = 'L10nError';
   this.message = message;

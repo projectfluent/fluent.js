@@ -1,13 +1,11 @@
-'use strict';
-
 /* jshint node:true */
 
 import { readFile } from 'fs';
 import { L10nError } from '../../lib/errors';
 
 function load(url) {
-  return new Promise(function(resolve, reject) {
-    readFile(url, function(err, data) {
+  return new Promise((resolve, reject) => {
+    readFile(url, (err, data) => {
       if (err) {
         reject(new L10nError(err.message));
       } else {

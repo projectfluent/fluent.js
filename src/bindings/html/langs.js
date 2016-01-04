@@ -1,5 +1,3 @@
-'use strict';
-
 import { prioritizeLocales } from '../../lib/intl';
 import { pseudo } from '../../lib/pseudo';
 

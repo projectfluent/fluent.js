@@ -1,5 +1,3 @@
-'use strict';
-
 import { Client, channel } from './bridge';
 import { View } from '../../bindings/html/view';
 

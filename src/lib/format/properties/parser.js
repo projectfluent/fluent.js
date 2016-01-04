@@ -1,8 +1,6 @@
-'use strict';
-
 import { L10nError } from '../../errors';
 
-var MAX_PLACEABLES = 100;
+const MAX_PLACEABLES = 100;
 
 export default {
   patterns: null,
@@ -28,14 +26,14 @@ export default {
     }
     this.emit = emit;
 
-    var entries = {};
+    const entries = {};
 
-    var lines = source.match(this.patterns.entries);
+    const lines = source.match(this.patterns.entries);
     if (!lines) {
       return entries;
     }
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i];
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
 
       if (this.patterns.comment.test(line)) {
         continue;
@@ -45,7 +43,7 @@ export default {
         line = line.slice(0, -1) + lines[++i].trim();
       }
 
-      var entityMatch = line.match(this.patterns.entity);
+      const entityMatch = line.match(this.patterns.entity);
       if (entityMatch) {
         try {
           this.parseEntity(entityMatch[1], entityMatch[2], entries);
@@ -60,9 +58,9 @@ export default {
   },
 
   parseEntity: function(id, value, entries) {
-    var name, key;
+    let name, key;
 
-    var pos = id.indexOf('[');
+    const pos = id.indexOf('[');
     if (pos !== -1) {
       name = id.substr(0, pos);
       key = id.substring(pos + 1, id.length - 1);
@@ -71,14 +69,14 @@ export default {
       key = null;
     }
 
-    var nameElements = name.split('.');
+    const nameElements = name.split('.');
 
     if (nameElements.length > 2) {
       throw this.error('Error in ID: "' + name + '".' +
           ' Nested attributes are not supported.');
     }
 
-    var attr;
+    let attr;
     if (nameElements.length > 1) {
       name = nameElements[0];
       attr = nameElements[1];
@@ -94,13 +92,13 @@ export default {
   },
 
   setEntityValue: function(id, attr, key, rawValue, entries) {
-    var value = rawValue.indexOf('{{') > -1 ?
+    const value = rawValue.indexOf('{{') > -1 ?
       this.parseString(rawValue) : rawValue;
 
-    var isSimpleValue = typeof value === 'string';
-    var root = entries;
+    let isSimpleValue = typeof value === 'string';
+    let root = entries;
 
-    var isSimpleNode = typeof entries[id] === 'string';
+    let isSimpleNode = typeof entries[id] === 'string';
 
     if (!entries[id] && (attr || key || !isSimpleValue)) {
       entries[id] = Object.create(null);
@@ -150,18 +148,18 @@ export default {
   },
 
   parseString: function(str) {
-    var chunks = str.split(this.patterns.placeables);
-    var complexStr = [];
+    const chunks = str.split(this.patterns.placeables);
+    const complexStr = [];
 
-    var len = chunks.length;
-    var placeablesCount = (len - 1) / 2;
+    const len = chunks.length;
+    const placeablesCount = (len - 1) / 2;
 
     if (placeablesCount >= MAX_PLACEABLES) {
       throw this.error('Too many placeables (' + placeablesCount +
                           ', max allowed is ' + MAX_PLACEABLES + ')');
     }
 
-    for (var i = 0; i < chunks.length; i++) {
+    for (let i = 0; i < chunks.length; i++) {
       if (chunks[i].length === 0) {
         continue;
       }
@@ -178,13 +176,13 @@ export default {
     if (str.lastIndexOf('\\') !== -1) {
       str = str.replace(this.patterns.controlChars, '$1');
     }
-    return str.replace(this.patterns.unicode, function(match, token) {
-      return String.fromCodePoint(parseInt(token, 16));
-    });
+    return str.replace(this.patterns.unicode,
+      (match, token) => String.fromCodePoint(parseInt(token, 16))
+    );
   },
 
   parseIndex: function(str) {
-    var match = str.match(this.patterns.index);
+    const match = str.match(this.patterns.index);
     if (!match) {
       throw new L10nError('Malformed index');
     }

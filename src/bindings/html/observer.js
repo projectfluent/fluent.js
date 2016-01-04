@@ -1,5 +1,3 @@
-'use strict';
-
 import { translateFragment, translateMutations } from './dom';
 
 const observerConfig = {

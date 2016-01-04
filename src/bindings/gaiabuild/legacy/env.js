@@ -1,5 +1,3 @@
-'use strict';
-
 import { L10nError } from '../../../lib/errors';
 import { Env } from '../../../lib/env';
 import { LegacyContext } from './context';

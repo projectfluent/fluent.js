@@ -1,5 +1,3 @@
-'use strict';
-
 import { L10nError } from '../../lib/errors';
 
 export function serializeContext(ctx) {
@@ -20,20 +18,20 @@ function serializeEntries(lang, langEntries, sourceEntries) {
   const errors = [];
   const entries = Object.create(null);
 
-  for (let id in sourceEntries) {
+  for (const id in sourceEntries) {
     const sourceEntry = sourceEntries[id];
     const langEntry = langEntries[id];
 
     if (!langEntry) {
       errors.push(new L10nError(
-        '"' + id + '"' + ' not found in ' + lang.code, id, lang));
+        '"' + id + '" not found in ' + lang.code, id, lang));
       entries[id] = sourceEntry;
       continue;
     }
 
     if (!areEntityStructsEqual(sourceEntry, langEntry)) {
       errors.push(new L10nError(
-        '"' + id + '"' + ' is malformed in ' + lang.code, id, lang));
+        '"' + id + '" is malformed in ' + lang.code, id, lang));
       entries[id] = sourceEntry;
       continue;
     }

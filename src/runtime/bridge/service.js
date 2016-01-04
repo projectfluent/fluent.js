@@ -1,5 +1,3 @@
-'use strict';
-
 import { fetchResource } from '../web/io';
 import { Service, channel, broadcast } from './bridge';
 import { Remote } from '../../bindings/html/remote';

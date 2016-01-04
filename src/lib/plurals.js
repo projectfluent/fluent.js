@@ -1,4 +1,4 @@
-'use strict';
+/*eslint no-magic-numbers: [0]*/
 
 const locales2rules = {
   'af': 3,
@@ -447,7 +447,7 @@ export function getPluralRule(code) {
   // return a function that gives the plural form name for a given integer
   const index = locales2rules[code.replace(/-.*$/, '')];
   if (!(index in pluralRules)) {
-    return function() { return 'other'; };
+    return () => 'other';
   }
   return pluralRules[index];
 }

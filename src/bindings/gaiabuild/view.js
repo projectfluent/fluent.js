@@ -1,5 +1,3 @@
-'use strict';
-
 import { pseudo } from '../../lib/pseudo';
 import { Env } from '../../lib/env';
 import { LegacyEnv } from './legacy/env';

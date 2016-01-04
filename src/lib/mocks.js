@@ -1,4 +1,4 @@
-'use strict';
+/*eslint no-shadow: [1, { "allow": ["lang"] }]*/
 
 import PropertiesParser from './format/properties/parser';
 import { getPluralRule } from './plurals';

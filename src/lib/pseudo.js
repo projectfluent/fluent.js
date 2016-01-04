@@ -1,5 +1,3 @@
-'use strict';
-
 // Walk an entry node searching for content leaves
 export function walkEntry(entry, fn) {
   if (typeof entry === 'string') {
@@ -18,7 +16,7 @@ export function walkEntry(entry, fn) {
 
   if (entry.attrs) {
     newEntry.attrs = Object.create(null);
-    for (let key in entry.attrs) {
+    for (const key in entry.attrs) {
       newEntry.attrs[key] = walkEntry(entry.attrs[key], fn);
     }
   }
@@ -115,9 +113,10 @@ function createGetter(id, name) {
     };
 
     // Replace each Latin letter with a Unicode character from map
+    const ASCII_LETTER_A = 65;
     const replaceChars =
       (map, val) => val.replace(
-        reAlphas, match => map.charAt(match.charCodeAt(0) - 65));
+        reAlphas, match => map.charAt(match.charCodeAt(0) - ASCII_LETTER_A));
 
     const transform =
       val => replaceChars(charMaps[id], mods[id](val));
@@ -129,7 +128,7 @@ function createGetter(id, name) {
       }
 
       const parts = val.split(reExcluded);
-      const modified = parts.map(function(part) {
+      const modified = parts.map((part) => {
         if (reExcluded.test(part)) {
           return part;
         }

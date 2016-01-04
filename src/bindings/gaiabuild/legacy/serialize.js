@@ -1,5 +1,3 @@
-'use strict';
-
 import { L10nError } from '../../../lib/errors';
 
 export function serializeLegacyContext(ctx) {
@@ -24,13 +22,13 @@ function serializeEntries(lang, langEntries, sourceEntries) {
 
     if (!langEntry) {
       errors.push(new L10nError(
-        '"' + id + '"' + ' not found in ' + lang.code, id, lang));
+        '"' + id + '" not found in ' + lang.code, id, lang));
       return serializeEntry(sourceEntry, id);
     }
 
     if (!areEntityStructsEqual(sourceEntry, langEntry)) {
       errors.push(new L10nError(
-        '"' + id + '"' + ' is malformed in ' + lang.code, id, lang));
+        '"' + id + '" is malformed in ' + lang.code, id, lang));
       return serializeEntry(sourceEntry, id);
     }
 
@@ -57,7 +55,7 @@ function serializeEntry(entry, id) {
     node.$x = entry.index;
   }
 
-  for (let key in entry.attrs) {
+  for (const key in entry.attrs) {
     node[key] = serializeAttribute(entry.attrs[key]);
   }
 

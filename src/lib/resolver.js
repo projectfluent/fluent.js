@@ -1,5 +1,3 @@
-'use strict';
-
 import { L10nError } from './errors';
 
 const KNOWN_MACROS = ['plural'];
@@ -92,7 +90,7 @@ function subPlaceable(locals, ctx, lang, args, id) {
 }
 
 function interpolate(locals, ctx, lang, args, arr) {
-  return arr.reduce(function([localsSeq, valueSeq], cur) {
+  return arr.reduce(([localsSeq, valueSeq], cur) => {
     if (typeof cur === 'string') {
       return [localsSeq, valueSeq + cur];
     } else {

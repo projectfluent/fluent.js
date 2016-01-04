@@ -94,7 +94,7 @@
       "dot-location": [2, "property"],
       "no-implied-eval": 2,
       "no-loop-func": 2,
-      "no-magic-numbers": 1,
+      "no-magic-numbers": [1, {"ignore": [-1, 0, 1, 2]}],
       "no-useless-call": 1,
       "no-useless-concat": 1,
       "no-delete-var": 2,
@@ -134,7 +134,7 @@
       "prefer-const": 1,
       "prefer-spread": 2,
       "strict": [2, "global"],
-      "indent": [1, 2]
+      "indent": [1, 2, {"SwitchCase": 1}]
     }
   }
 }

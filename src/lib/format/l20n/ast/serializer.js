@@ -1,11 +1,9 @@
-'use strict';
-
 import { L10nError } from '../../../errors';
 
 export default {
   serialize: function(ast) {
-    var string = '';
-    for (var id in ast) {
+    let string = '';
+    for (const id in ast) {
       string += this.dumpEntry(ast[id]) + '\n';
     }
     return string;
@@ -28,10 +26,11 @@ export default {
   },
 
   dumpEntity: function(entity) {
-    var id, val = null, attrs = {};
-    var index = '';
+    let id, val = null;
+    const attrs = {};
+    let index = '';
 
-    for (var key in entity) {
+    for (const key in entity) {
       switch (key) {
         case '$v':
           val = entity.$v;
@@ -90,8 +89,8 @@ export default {
   },
 
   dumpComplexString: function(chunks) {
-    var str = '"';
-    for (var i = 0; i < chunks.length; i++) {
+    let str = '"';
+    for (let i = 0; i < chunks.length; i++) {
       if (typeof chunks[i] === 'string') {
         str += chunks[i].replace(/"/g, '\\"');
       } else {
@@ -102,8 +101,8 @@ export default {
   },
 
   dumpAttributes: function(attrs) {
-    var str = '';
-    for (var key in attrs) {
+    let str = '';
+    for (const key in attrs) {
       if (attrs[key].x) {
         str += '  ' + key + this.dumpIndex(attrs[key].x) + ': ' +
           this.dumpValue(attrs[key].v, 1) + '\n';
@@ -140,15 +139,15 @@ export default {
   },
 
   dumpCallExpression: function(exp) {
-    var pexp = this.dumpExpression(exp.v);
+    let pexp = this.dumpExpression(exp.v);
 
-    var attrs = this.dumpItemList(exp.a, this.dumpExpression.bind(this));
+    const attrs = this.dumpItemList(exp.a, this.dumpExpression.bind(this));
     pexp += '(' + attrs + ')';
     return pexp;
   },
 
   dumpPrimaryExpression: function(exp) {
-    var ret = '';
+    let ret = '';
 
     if (typeof(exp) === 'string') {
       return exp;
@@ -177,15 +176,15 @@ export default {
   },
 
   dumpHash: function(hash, depth) {
-    var items = [];
-    var str;
+    const items = [];
+    let str;
 
-    var defIndex;
+    let defIndex;
     if ('__default' in hash) {
       defIndex = hash.__default;
     }
 
-    for (var key in hash) {
+    for (const key in hash) {
       let indent = '  ';
       if (key.charAt(0) === '_' && key.charAt(1) === '_') {
         continue;
@@ -198,7 +197,7 @@ export default {
       items.push(str);
     }
 
-    let indent = new Array(depth + 1).join('  '); // str.repeat
+    const indent = new Array(depth + 1).join('  '); // str.repeat
     return '{\n' + indent + items.join(',\n' + indent) + '\n'+indent+'}';
   },
 

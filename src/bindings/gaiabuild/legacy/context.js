@@ -1,5 +1,3 @@
-'use strict';
-
 import { Context } from '../../../lib/context';
 import { format } from './resolver';
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import { Context } from './context';
 import PropertiesParser from './format/properties/parser';
 import L20nParser from './format/l20n/entries/parser';
@@ -54,8 +52,8 @@ export class Env {
       return data;
     }
 
-    const emit = (type, err) => this.emit(type, amendError(lang, err));
-    return parser.parse.call(parser, emit, data);
+    const emitAndAmend = (type, err) => this.emit(type, amendError(lang, err));
+    return parser.parse(emitAndAmend, data);
   }
 
   _create(lang, entries) {
@@ -64,7 +62,7 @@ export class Env {
     }
 
     const pseudoentries = Object.create(null);
-    for (let key in entries) {
+    for (const key in entries) {
       pseudoentries[key] = walkEntry(
         entries[key], pseudo[lang.code].process);
     }
