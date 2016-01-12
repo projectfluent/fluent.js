@@ -17,7 +17,7 @@ module.exports = {
       },
       {
         expand: true,
-        cwd: 'dist/gecko/gaia/build',
+        cwd: 'dist/compat/gaia/build',
         src: ['l20n.js'],
         dest: 'dist/gaia/build/l10n/'
       },
