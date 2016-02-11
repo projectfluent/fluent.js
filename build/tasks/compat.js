@@ -36,7 +36,6 @@ var options = {
   },
   gecko: {
     whitelist: [
-      'es6.classes',
     ],
   }
 };
