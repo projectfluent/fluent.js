@@ -90,11 +90,27 @@
       "no-unexpected-multiline": 2,
       "no-sparse-arrays": 2,
       "block-scoped-var": 1,
-      "complexity": [1, 18],
-      "dot-location": [2, "property"],
+      "complexity": [
+        1,
+        18
+      ],
+      "dot-location": [
+        2,
+        "property"
+      ],
       "no-implied-eval": 2,
       "no-loop-func": 2,
-      "no-magic-numbers": [1, {"ignore": [-1, 0, 1, 2]}],
+      "no-magic-numbers": [
+        1,
+        {
+          "ignore": [
+            -1,
+            0,
+            1,
+            2
+          ]
+        }
+      ],
       "no-useless-call": 1,
       "no-useless-concat": 1,
       "no-delete-var": 2,
@@ -117,24 +133,39 @@
       ],
       "no-mixed-spaces-and-tabs": 2,
       "prefer-arrow-callback": 1,
-      "prefer-const": 0,
-      "prefer-template": 1,
-      "prefer-spread": 1,
+      "prefer-const": 1,
+      "prefer-template": 0,
+      "prefer-spread": 2,
       "quotes": [
         2,
         "single"
       ],
       "no-var": 1,
-      "prefer-template": 0,
-      "max-depth": [2, 6],
-      "max-len": [2, 80],
-      "no-mixed-spaces-and-tabs": 2,
+      "max-depth": [
+        2,
+        6
+      ],
+      "max-len": [
+        2,
+        80
+      ],
       "no-nested-ternary": 2,
       "no-unneeded-ternary": 2,
-      "prefer-const": 1,
-      "prefer-spread": 2,
-      "strict": [2, "global"],
-      "indent": [1, 2, {"SwitchCase": 1}]
+      "strict": [
+        2,
+        "global"
+      ],
+      "indent": [
+        1,
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ]
     }
+  },
+  "dependencies": {
+    "string.prototype.endswith": "^0.2.0",
+    "string.prototype.startswith": "^0.2.0"
   }
 }
