@@ -34,17 +34,26 @@ Example resource files:
 Example node script:
 
 ```javascript
-import { Env, fetchResource } from 'l20n';
-
-const env = new Env('en-US', fetchResource);
-const ctx = env.createContext(['locales/{locale}.l20n']);
+const L20n = require('l20n');
 const langs = [
   {code: 'es-ES'},
   {code: 'en-US'}
 ];
 
-ctx.resolveValues(langs, ['foo', 'bar']).then(
-  ([foo, bar]) => console.log(foo, bar));
+// fetchResource is node-specific, Env isn't
+const env = new L20n.Env(L20n.fetchResource);
 
-// -> 'Foo en español', 'Bar only exists in English'
+// helpful for debugging
+env.addEventListener('*', e => console.log(e));
+
+// contexts are immutable;  if langs change a new context must be created
+const ctx = env.createContext(langs, ['./locales/{locale}.l20n']);
+
+// pass string ids or tuples of [id, args]
+ctx.formatValues('foo', ['bar', {baz: 'Baz'}]).then(values => {
+  // values is an array of resolved translations
+  console.log(values);
+});
+
+// -> ['Foo en español', 'Bar only exists in English']
 ```
