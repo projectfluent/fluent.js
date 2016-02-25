@@ -41,7 +41,7 @@ export function overlayElement(element, translation) {
     }
   }
 
-  for (const key in translation.attrs) {
+  for (let key in translation.attrs) {
     const attrName = camelCaseToDashed(key);
     if (isAttrAllowed({ name: attrName }, element)) {
       element.setAttribute(attrName, translation.attrs[key]);

@@ -62,7 +62,7 @@ export class Env {
     }
 
     const pseudoentries = Object.create(null);
-    for (const key in entries) {
+    for (let key in entries) {
       pseudoentries[key] = walkEntry(
         entries[key], pseudo[lang.code].process);
     }

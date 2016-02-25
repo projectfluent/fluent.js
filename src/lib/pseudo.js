@@ -16,7 +16,7 @@ export function walkEntry(entry, fn) {
 
   if (entry.attrs) {
     newEntry.attrs = Object.create(null);
-    for (const key in entry.attrs) {
+    for (let key in entry.attrs) {
       newEntry.attrs[key] = walkEntry(entry.attrs[key], fn);
     }
   }

@@ -36,13 +36,13 @@ function getTranslatables(element) {
 export function translateMutations(view, mutations) {
   const targets = new Set();
 
-  for (const mutation of mutations) {
+  for (let mutation of mutations) {
     switch (mutation.type) {
       case 'attributes':
         targets.add(mutation.target);
         break;
       case 'childList':
-        for (const addedNode of mutation.addedNodes) {
+        for (let addedNode of mutation.addedNodes) {
           if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
             if (addedNode.childElementCount) {
               getTranslatables(addedNode).forEach(targets.add.bind(targets));
