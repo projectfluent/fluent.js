@@ -100,8 +100,6 @@ module.exports = function (grunt) {
     'rollup:gaiabuild',
     'rollup:bridge',
     'compat:gaia',
-    'compat:gaia:gecko',
-    'compat:bridge:gecko',
     'copy:gaia'
   ]);
 
