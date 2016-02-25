@@ -26,7 +26,7 @@ export function MockContext(entries) {
 
   this._getMacro = function(lang, id) {
     switch(id) {
-      case 'plural':
+      case 'PLURAL':
         return getPluralRule(lang.code);
       default:
         return undefined;
