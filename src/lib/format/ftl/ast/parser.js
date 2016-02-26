@@ -65,7 +65,9 @@ class ParseContext {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
-    while (cc !== 32) {
+    // we need to define ranges for identifier chars
+    while (cc !== 32 && cc !== 10 &&
+           cc !== 9 && cc !== 13 && cc !== 125 && cc !== 93) {
       cc = this._source.charCodeAt(++this._index);
     }
 
@@ -73,55 +75,105 @@ class ParseContext {
   }
 
   getValue() {
-    return this.getString();
+    this.getWS();
+    if (this._source.charAt(this._index) === '[') {
+      return this.getHash();
+    } else {
+      return this.getString();
+    }
   }
 
   getString() {
     let start = this._index;
-    let string = '';
+    let source = '';
+    let content = [];
 
-    let cc = this._source.charCodeAt(this._index);
+    let ch = this._source.charAt(this._index);
 
-    if (cc === 124) {
+    if (ch === '|') {
       start++;
-      cc = this._source.charCodeAt(++this._index);
+      ch = this._source.charAt(++this._index);
     }
 
-    if (cc === 32) {
+    if (ch === '\n') {
       start++;
-      cc = this._source.charCodeAt(++this._index);
+      ch = this._source.charAt(++this._index);
     }
-
 
     while (this._index < this._length) {
-      while (cc !== 10) {
-        cc = this._source.charCodeAt(++this._index);
+      while (ch !== '\n' && ch !== '\\' && ch !== '{') {
+        ch = this._source.charAt(++this._index);
       }
 
-      string += this._source.slice(start, this._index).trimRight();
+      let chunk = this._source.slice(start, this._index);
+      source += chunk;
+      content.push(chunk);
 
-      this.getWS();
-
-      let cc = this._source.charCodeAt(this._index);
-
-      if (cc === 124) {
-        this._index++;
+      if (ch === '{') {
         start = this._index;
-        string += '\n';
-
-        cc = this._source.charCodeAt(this._index);
-
-        if (cc === 32) {
-          start++;
-          this._index++;
-          cc = this._source.charCodeAt(this._index);
-        }
+        content.push(this.getPlaceable());
+        source += this._source.slice(start, this._index);
+        start = this._index;
+        ch = this._source.charAt(this._index);
       } else {
-        break;
+        this.getWS();
+
+        ch = this._source.charAt(this._index);
+
+        if (ch === '|') {
+          this._index++;
+          start = this._index;
+          source += '\n';
+
+          ch = this._source.charAt(this._index);
+
+          if (ch === ' ') {
+            start++;
+            this._index++;
+            ch = this._source.charAt(this._index);
+          }
+        } else {
+          break;
+        }
       }
     }
 
-    return new AST.String(string);
+    return new AST.String(source, content);
+  }
+
+  getHash() {
+    const hash = [];
+
+    while (this._index < this._length) {
+      let key = this.getKeyword();
+      let value = this.getValue();
+
+      let hashItem = new AST.HashItem(key, value);
+
+      hash.push(hashItem);
+    }
+
+    return new AST.Hash(hash);
+  }
+
+  getPlaceable() {
+    this._index++;
+    this.getWS();
+    let id = this.getIdentifier();
+    this.getWS();
+    
+    if (this._source.charAt(this._index) !== '}') {
+      throw new Error('Expected "}"');
+    }
+    this._index++;
+    return id;
+  }
+
+  getKeyword() {
+    this._index++;
+    let id = this.getIdentifier();
+    this._index++;
+    return id;
   }
 }
 

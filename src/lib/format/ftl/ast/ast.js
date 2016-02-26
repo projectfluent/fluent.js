@@ -31,8 +31,9 @@ class Value extends Node {
 }
 
 class String extends Value {
-  constructor(content) {
+  constructor(source, content) {
     super();
+    this.source = source;
     this.content = content;
   }
 }
@@ -41,6 +42,15 @@ class Hash extends Value {
   constructor(items) {
     super();
     this.items = items;
+  }
+}
+
+class HashItem extends Node {
+  constructor(id, value, defItem) {
+    super();
+    this.id = id;
+    this.value = value;
+    this.default = defItem;
   }
 }
 
@@ -58,6 +68,7 @@ export default {
   Value,
   String,
   Hash,
+  HashItem,
   Entity,
   Resource,
 };
