@@ -62,6 +62,13 @@ class Entity extends Entry {
   }
 }
 
+class Placeable extends Node {
+  constructor(content = null) {
+    super();
+    this.content = content;
+  }
+}
+
 export default {
   Node,
   Identifier,
@@ -71,4 +78,5 @@ export default {
   HashItem,
   Entity,
   Resource,
+  Placeable
 };

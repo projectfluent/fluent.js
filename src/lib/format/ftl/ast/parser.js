@@ -166,7 +166,7 @@ class ParseContext {
       throw new Error('Expected "}"');
     }
     this._index++;
-    return id;
+    return new AST.Placeable(id);
   }
 
   getKeyword() {
