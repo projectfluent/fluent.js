@@ -73,9 +73,18 @@ class ParseContext {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
-    // we need to define ranges for identifier chars
-    while (cc !== 32 && cc !== 10 &&
-           cc !== 9 && cc !== 13 && cc !== 125 && cc !== 93) {
+    if ((cc >= 97 && cc <= 122) || // a-z
+        (cc >= 65 && cc <= 90) ||  // A-Z
+        cc === 95) {               // _
+      cc = this._source.charCodeAt(++this._index);
+    } else {
+      throw new Error('Identifier has to start with [a-zA-Z_]');
+    }
+
+    while ((cc >= 97 && cc <= 122) || // a-z
+           (cc >= 65 && cc <= 90) ||  // A-Z
+           (cc >= 48 && cc <= 57) ||  // 0-9
+           cc === 95 || cc === 45) {  // _-
       cc = this._source.charCodeAt(++this._index);
     }
 
@@ -114,13 +123,15 @@ class ParseContext {
         ch = this._source.charAt(++this._index);
       }
 
-      let chunk = this._source.slice(start, this._index);
-      source += chunk;
-      if (content.length > 0 &&
-          typeof content[content.length - 1] === 'string') {
-        content[content.length - 1] += '\n' + chunk;
-      } else {
-        content.push(chunk);
+      if (start < this._index) {
+        let chunk = this._source.slice(start, this._index);
+        source += chunk;
+        if (content.length > 0 &&
+            typeof content[content.length - 1] === 'string') {
+          content[content.length - 1] += '\n' + chunk;
+        } else {
+          content.push(chunk);
+        }
       }
 
       if (ch === '{') {
@@ -173,14 +184,69 @@ class ParseContext {
   getPlaceable() {
     this._index++;
     this.getWS();
-    let id = this.getIdentifier();
+    let ch = this._source[this._index];
+
+    let exp = null;
+
+    if (ch === '[' || ch === '*') {
+      exp = new AST.SelectExpression(null, this.getVariants());
+    } else {
+      exp = this.getSelectExpression();
+    }
+
     this.getWS();
     
     if (this._source.charAt(this._index) !== '}') {
       throw new Error('Expected "}"');
     }
     this._index++;
-    return new AST.Placeable(id);
+    return new AST.Placeable(exp);
+  }
+
+  getSelectExpression() {
+    let selector = this.getSelector();
+
+    this.getWS();
+
+    if (this._source[this._index] === '}') {
+      return selector;
+    }
+
+    this._index += 2; // ->
+
+    this.getWS();
+
+    let variants = this.getVariants();
+
+    return new AST.SelectExpression(selector, variants);
+  }
+
+  getSelector() {
+    return this.getVariable();
+  }
+
+  getVariants() {
+    const variants = [];
+
+    while (this._index < this._length) {
+      if (this._source[this._index] !== '[' &&
+          this._source[this._index] !== '*') {
+        break;
+      }
+      let def = false;
+      if (this._source[this._index] === '*') { 
+        this._index++;
+        def = true;
+      }
+      let key = this.getKeyword();
+      let value = this.getValue();
+
+      let variant = new AST.Variant(key, value, def);
+
+      variants.push(variant);
+    }
+
+    return variants;
   }
 
   getKeyword() {
@@ -188,6 +254,16 @@ class ParseContext {
     let id = this.getIdentifier();
     this._index++;
     return id;
+  }
+
+  getVariable() {
+    if (this._source[this._index] === '$') {
+      this._index++;
+      const id = this.getIdentifier();
+
+      return new AST.Variable(id);
+    }
+    return this.getIdentifier();
   }
 }
 

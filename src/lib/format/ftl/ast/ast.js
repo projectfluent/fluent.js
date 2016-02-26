@@ -46,6 +46,15 @@ class Member extends Node {
   }
 }
 
+class Variant extends Node {
+  constructor(id, value, def = false) {
+    super();
+    this.id = id;
+    this.value = value;
+    this.default = def;
+  }
+}
+
 class Entity extends Entry {
   constructor(id, value = null, members = []) {
     super();
@@ -62,6 +71,21 @@ class Placeable extends Node {
   }
 }
 
+class SelectExpression extends Node {
+  constructor(selector = null, variants = null) {
+    super();
+    this.selector = selector;
+    this.variants = variants;
+  }
+}
+
+class Variable extends Node {
+  constructor(id) {
+    super();
+    this.id = id;
+  }
+}
+
 export default {
   Node,
   Identifier,
@@ -70,5 +94,8 @@ export default {
   Member,
   Entity,
   Resource,
-  Placeable
+  Variant,
+  Placeable,
+  SelectExpression,
+  Variable
 };
