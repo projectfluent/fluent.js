@@ -6,7 +6,7 @@ const MAX_PLACEABLES = 100;
 
 
 class ParseContext {
-  constructor(string, pos) {
+  constructor(string) {
     this._source = string;
     this._index = 0;
     this._length = string.length;
@@ -38,6 +38,8 @@ class ParseContext {
 
   getEntity() {
     const id = this.getIdentifier();
+    let members = [];
+    let value = null;
 
     this.getWS();
 
@@ -47,9 +49,15 @@ class ParseContext {
 
     this.getWS();
     
-    const value = this.getValue();
+    if (this._source.charAt(this._index) !== '[') {
+      value = this.getValue();
+    }
 
-    const entity = new AST.Entity(id, value);
+    if (this._source.charAt(this._index) === '[') {
+      members = this.getMembers();
+    }
+
+    const entity = new AST.Entity(id, value, members);
     return entity;
   }
 
@@ -95,19 +103,25 @@ class ParseContext {
       ch = this._source.charAt(++this._index);
     }
 
-    if (ch === '\n') {
+    if (ch === ' ') {
       start++;
       ch = this._source.charAt(++this._index);
     }
 
     while (this._index < this._length) {
-      while (ch !== '\n' && ch !== '\\' && ch !== '{') {
+      while (this._index < this._length &&
+          ch !== '\n' && ch !== '\\' && ch !== '{') {
         ch = this._source.charAt(++this._index);
       }
 
       let chunk = this._source.slice(start, this._index);
       source += chunk;
-      content.push(chunk);
+      if (content.length > 0 &&
+          typeof content[content.length - 1] === 'string') {
+        content[content.length - 1] += '\n' + chunk;
+      } else {
+        content.push(chunk);
+      }
 
       if (ch === '{') {
         start = this._index;
@@ -141,19 +155,19 @@ class ParseContext {
     return new AST.String(source, content);
   }
 
-  getHash() {
-    const hash = [];
+  getMembers() {
+    const members = [];
 
     while (this._index < this._length) {
       let key = this.getKeyword();
       let value = this.getValue();
 
-      let hashItem = new AST.HashItem(key, value);
+      let member = new AST.Member(key, value);
 
-      hash.push(hashItem);
+      members.push(member);
     }
 
-    return new AST.Hash(hash);
+    return members;
   }
 
   getPlaceable() {
@@ -178,8 +192,8 @@ class ParseContext {
 }
 
 export default {
-  parseResource: function(string, pos = false) {
-    const parseContext = new ParseContext(string, pos);
+  parseResource: function(string) {
+    const parseContext = new ParseContext(string);
     return parseContext.getResource();
   },
 };

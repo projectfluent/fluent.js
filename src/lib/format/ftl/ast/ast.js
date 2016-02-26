@@ -38,27 +38,20 @@ class String extends Value {
   }
 }
 
-class Hash extends Value {
-  constructor(items) {
-    super();
-    this.items = items;
-  }
-}
-
-class HashItem extends Node {
-  constructor(id, value, defItem) {
+class Member extends Node {
+  constructor(id, value) {
     super();
     this.id = id;
     this.value = value;
-    this.default = defItem;
   }
 }
 
 class Entity extends Entry {
-  constructor(id, value = null) {
+  constructor(id, value = null, members = []) {
     super();
     this.id = id;
     this.value = value;
+    this.members = members;
   }
 }
 
@@ -74,8 +67,7 @@ export default {
   Identifier,
   Value,
   String,
-  Hash,
-  HashItem,
+  Member,
   Entity,
   Resource,
   Placeable
