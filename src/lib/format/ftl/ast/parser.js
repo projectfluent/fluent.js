@@ -92,12 +92,7 @@ class ParseContext {
   }
 
   getValue() {
-    this.getWS();
-    if (this._source.charAt(this._index) === '[') {
-      return this.getHash();
-    } else {
-      return this.getString();
-    }
+    return this.getString();
   }
 
   getString() {
@@ -171,6 +166,9 @@ class ParseContext {
 
     while (this._index < this._length) {
       let key = this.getKeyword();
+
+      this.getWS();
+
       let value = this.getValue();
 
       let member = new AST.Member(key, value);
@@ -203,6 +201,34 @@ class ParseContext {
     return new AST.Placeable(exp);
   }
 
+  getCallExpression() {
+    let exp = this.getMemberExpression();
+
+    if (this._source[this._index] !== '(') {
+      return exp;
+    }
+
+    this._index++;
+
+    let args = this.getCallArgs();
+
+    this._index++;
+
+    return new AST.CallExpression(exp, args);
+  }
+
+  getCallArgs() {
+    let args = [];
+
+    this.getWS();
+
+    args.push(this.getVariable());
+
+    this.getWS();
+
+    return args;
+  }
+
   getSelectExpression() {
     let selector = this.getSelector();
 
@@ -232,7 +258,7 @@ class ParseContext {
   }
 
   getSelector() {
-    return this.getMemberExpression();
+    return this.getCallExpression();
   }
 
   getVariants() {

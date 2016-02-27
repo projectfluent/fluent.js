@@ -87,6 +87,14 @@ class MemberExpression extends Node {
   }
 }
 
+class CallExpression extends Node {
+  constructor(callee, args) {
+    super();
+    this.callee = callee;
+    this.args = args;
+  }
+}
+
 class Variable extends Node {
   constructor(id) {
     super();
@@ -106,5 +114,6 @@ export default {
   Placeable,
   SelectExpression,
   MemberExpression,
+  CallExpression,
   Variable
 };
