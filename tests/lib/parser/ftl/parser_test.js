@@ -155,5 +155,13 @@ describe('FTL Parser', function() {
       assert.strictEqual(resource.body[0].value.content[0].content.variants[0].value.content[1].content.variants[1].value.source, 'Female');
       assert.strictEqual(resource.body[0].value.content[0].content.variants[1].default, true);
     });
+
+    it('member expression', function() {
+      var resource = parse(`label-ok = { brand-name[locative] }`);
+      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].value.content[0].type, 'Placeable');
+      assert.strictEqual(resource.body[0].value.content[0].content.idref.name, 'brand-name');
+      assert.strictEqual(resource.body[0].value.content[0].content.keyword.name, 'locative');
+    });
   });
 });

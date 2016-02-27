@@ -119,7 +119,7 @@ class ParseContext {
 
     while (this._index < this._length) {
       while (this._index < this._length &&
-          ch !== '\n' && ch !== '\\' && ch !== '{') {
+          ch !== '\n' && ch !== '\\' && ch !== '{' && ch !== '}') {
         ch = this._source.charAt(++this._index);
       }
 
@@ -221,8 +221,18 @@ class ParseContext {
     return new AST.SelectExpression(selector, variants);
   }
 
+  getMemberExpression() {
+    const exp = this.getVariable();
+
+    if (this._source[this._index] !== '[') {
+      return exp;
+    }
+    const keyword = this.getKeyword();
+    return new AST.MemberExpression(exp, keyword);
+  }
+
   getSelector() {
-    return this.getVariable();
+    return this.getMemberExpression();
   }
 
   getVariants() {

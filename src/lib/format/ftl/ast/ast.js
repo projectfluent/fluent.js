@@ -79,6 +79,14 @@ class SelectExpression extends Node {
   }
 }
 
+class MemberExpression extends Node {
+  constructor(idref, keyword) {
+    super();
+    this.idref = idref;
+    this.keyword = keyword;
+  }
+}
+
 class Variable extends Node {
   constructor(id) {
     super();
@@ -97,5 +105,6 @@ export default {
   Variant,
   Placeable,
   SelectExpression,
+  MemberExpression,
   Variable
 };
