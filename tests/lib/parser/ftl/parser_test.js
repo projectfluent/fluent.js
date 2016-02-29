@@ -171,5 +171,32 @@ describe('FTL Parser', function() {
       assert.strictEqual(resource.body[0].value.content[0].content.callee.name, 'len');
       assert.strictEqual(resource.body[0].value.content[0].content.args[0].id.name, 'num');
     });
+
+    it('call expression with two args', function() {
+      var resource = parse(`label-ok = { len($num, $val) }`);
+      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].value.content[0].type, 'Placeable');
+      assert.strictEqual(resource.body[0].value.content[0].content.callee.name, 'len');
+      assert.strictEqual(resource.body[0].value.content[0].content.args[0].id.name, 'num');
+      assert.strictEqual(resource.body[0].value.content[0].content.args[1].id.name, 'val');
+    });
+
+    it('call expression with kwarg', function() {
+      var resource = parse(`label-ok = { len(style="short") }`);
+      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].value.content[0].type, 'Placeable');
+      assert.strictEqual(resource.body[0].value.content[0].content.callee.name, 'len');
+      assert.strictEqual(resource.body[0].value.content[0].content.args[0].key.name, 'style');
+      assert.strictEqual(resource.body[0].value.content[0].content.args[0].value.source, 'short');
+    });
+
+    it('call expression with two kwargs', function() {
+      var resource = parse(`label-ok = { len(style="short", variant="digit") }`);
+      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].value.content[0].type, 'Placeable');
+      assert.strictEqual(resource.body[0].value.content[0].content.callee.name, 'len');
+      assert.strictEqual(resource.body[0].value.content[0].content.args[0].key.name, 'style');
+      assert.strictEqual(resource.body[0].value.content[0].content.args[1].key.name, 'variant');
+    });
   });
 });

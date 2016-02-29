@@ -220,13 +220,75 @@ class ParseContext {
   getCallArgs() {
     let args = [];
 
-    this.getWS();
+    while (this._index < this._length) {
+      this.getWS();
 
-    args.push(this.getVariable());
+      let cc = this._source.charCodeAt(this._index);
 
-    this.getWS();
+      if (cc >= 48 && cc <= 57) {
+        args.push(this.getNumber());
+      } else {
+        let exp = this.getVariable();
+        
+        if (exp instanceof AST.Variable) {
+          args.push(exp);
+        } else {
+          this.getWS();
+
+          if (this._source[this._index] === '=') {
+            this._index++;
+            this.getWS();
+
+            let val = this.getArgumentValue();
+
+            args.push(new AST.KeyValueArg(exp, val));
+          } else {
+            args.push(exp);
+          }
+        }
+      }
+
+      this.getWS();
+
+      if (this._source[this._index] === ')') {
+        break;
+      } else if (this._source[this._index] === ',') {
+        this._index++;
+      } else {
+        throw new Error('Expected "," or ")"');
+      }
+    }
 
     return args;
+  }
+
+  getArgumentValue() {
+    if (this._source[this._index] === '"') {
+      let close = this._source.indexOf('"', this._index + 1);
+      var value = this._source.substring(this._index + 1, close);
+      let string = new AST.String(value, [value]);
+      this._index = close + 1;
+      return string;
+    } else if (this._source[this._index] === '$') {
+      return this.getVariable();
+    }
+
+    let cc = this._source.charCodeAt(this._index);
+
+    if (cc >= 48 && cc <= 57) {
+      return this.getNumber();
+    }
+  }
+
+  getNumber() {
+    let num = this._source[this._index++];
+    let cc = this._source.charCodeAt(this._index);
+    while (cc >= 48 && cc <= 57) {
+      num += this._source[this._index++];
+      cc = this._source.charCodeAt(this._index);
+    }
+
+    return new AST.Number(parseInt(num));
   }
 
   getSelectExpression() {

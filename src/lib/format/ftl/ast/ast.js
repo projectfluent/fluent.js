@@ -102,6 +102,21 @@ class Variable extends Node {
   }
 }
 
+class KeyValueArg extends Node {
+  constructor(key, value) {
+    super();
+    this.key = key;
+    this.value = value;
+  }
+}
+
+class Number extends Node {
+  constructor(value) {
+    super();
+    this.value = value;
+  }
+}
+
 export default {
   Node,
   Identifier,
@@ -115,5 +130,7 @@ export default {
   SelectExpression,
   MemberExpression,
   CallExpression,
-  Variable
+  Variable,
+  KeyValueArg,
+  Number
 };
