@@ -51,8 +51,8 @@ describe('FTL Parser', function() {
    [nominative] Firefox`);
       assert.strictEqual(resource.body[0].id.name, 'label-ok');
       assert.strictEqual(resource.body[0].value, null);
-      assert.strictEqual(resource.body[0].members[0].id.name, 'nominative');
-      assert.strictEqual(resource.body[0].members[0].value.source, 'Firefox');
+      assert.strictEqual(resource.body[0].traits[0].id.name, 'nominative');
+      assert.strictEqual(resource.body[0].traits[0].value.source, 'Firefox');
     });
 
     it('simple member with value', function() {
@@ -61,11 +61,11 @@ describe('FTL Parser', function() {
    [nominative] Firefox`);
       assert.strictEqual(resource.body[0].id.name, 'label-ok');
       assert.strictEqual(resource.body[0].value.source, 'This is a value');
-      assert.strictEqual(resource.body[0].members[0].id.name, 'nominative');
-      assert.strictEqual(resource.body[0].members[0].value.source, 'Firefox');
+      assert.strictEqual(resource.body[0].traits[0].id.name, 'nominative');
+      assert.strictEqual(resource.body[0].traits[0].value.source, 'Firefox');
     });
 
-    it('multi line members', function() {
+    it('multi line traits', function() {
       var resource = parse(
 `label-ok =
    [nominative]
@@ -76,10 +76,10 @@ describe('FTL Parser', function() {
       | of multiline`);
       assert.strictEqual(resource.body[0].id.name, 'label-ok');
       assert.strictEqual(resource.body[0].value, null);
-      assert.strictEqual(resource.body[0].members[0].id.name, 'nominative');
-      assert.strictEqual(resource.body[0].members[0].value.source, 'First case\nof multiline');
-      assert.strictEqual(resource.body[0].members[1].id.name, 'locative');
-      assert.strictEqual(resource.body[0].members[1].value.source, 'Second case\nof multiline');
+      assert.strictEqual(resource.body[0].traits[0].id.name, 'nominative');
+      assert.strictEqual(resource.body[0].traits[0].value.source, 'First case\nof multiline');
+      assert.strictEqual(resource.body[0].traits[1].id.name, 'locative');
+      assert.strictEqual(resource.body[0].traits[1].value.source, 'Second case\nof multiline');
     });
   });
 

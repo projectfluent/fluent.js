@@ -38,7 +38,7 @@ class ParseContext {
 
   getEntity() {
     const id = this.getIdentifier();
-    let members = [];
+    let traits = [];
     let value = null;
 
     this.getWS();
@@ -54,10 +54,10 @@ class ParseContext {
     }
 
     if (this._source.charAt(this._index) === '[') {
-      members = this.getMembers();
+      traits = this.getTraits();
     }
 
-    const entity = new AST.Entity(id, value, members);
+    const entity = new AST.Entity(id, value, traits);
     return entity;
   }
 
@@ -161,8 +161,8 @@ class ParseContext {
     return new AST.String(source, content);
   }
 
-  getMembers() {
-    const members = [];
+  getTraits() {
+    const traits = [];
 
     while (this._index < this._length) {
       let key = this.getKeyword();
@@ -171,12 +171,12 @@ class ParseContext {
 
       let value = this.getValue();
 
-      let member = new AST.Member(key, value);
+      let trait = new AST.Trait(key, value);
 
-      members.push(member);
+      traits.push(trait);
     }
 
-    return members;
+    return traits;
   }
 
   getPlaceable() {

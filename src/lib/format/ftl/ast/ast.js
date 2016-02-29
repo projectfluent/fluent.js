@@ -38,7 +38,7 @@ class String extends Value {
   }
 }
 
-class Member extends Node {
+class Trait extends Node {
   constructor(id, value) {
     super();
     this.id = id;
@@ -56,11 +56,11 @@ class Variant extends Node {
 }
 
 class Entity extends Entry {
-  constructor(id, value = null, members = []) {
+  constructor(id, value = null, traits = []) {
     super();
     this.id = id;
     this.value = value;
-    this.members = members;
+    this.traits = traits;
   }
 }
 
@@ -107,7 +107,7 @@ export default {
   Identifier,
   Value,
   String,
-  Member,
+  Trait,
   Entity,
   Resource,
   Variant,
