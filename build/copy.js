@@ -5,13 +5,13 @@ module.exports = {
     files: [
       {
         expand: true,
-        cwd: 'dist/gecko/gaia',
+        cwd: 'dist/bundle/web',
         src: ['l20n.js'],
         dest: 'dist/gaia/shared/js/intl/'
       },
       {
         expand: true,
-        cwd: 'dist/gecko/bridge',
+        cwd: 'dist/bundle/bridge',
         src: ['l20n-service.js', 'l20n-client.js'],
         dest: 'dist/gaia/shared/js/intl/'
       },
