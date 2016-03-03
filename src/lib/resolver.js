@@ -16,14 +16,18 @@ export function format(ctx, lang, args, entity) {
     dirty: new WeakSet()
   };
 
-  return formatValue(res, entity);
+  return formatValue(res, entity.value);
 }
 
-function formatValue(res, elements) {
-  return elements.reduce(([errs, seq], elem) => {
-    if (elem.type === 'textElement') {
-      return [errs, seq + elem.value];
-    } else if (elem.type === 'placeableElement') {
+function formatValue(res, value) {
+  if (value === null) {
+    return [[], null];
+  }
+
+  return value.elements.reduce(([errs, seq], elem) => {
+    if (typeof elem === 'string') {
+      return [errs, seq + elem];
+    } else if (elem.type === 'Placeable') {
       try {
         const placeable = resolvePlaceable(res, elem);
         if (placeable.length >= MAX_PLACEABLE_LENGTH) {
@@ -32,17 +36,32 @@ function formatValue(res, elements) {
             ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
           );
         }
-        return [errs, seq + FSI + placeable + PDI];
+        return [errs, seq + formatPlaceable(res, placeable)];
       } catch(e) {
-        return [[...errs, e], seq + FSI + '{ }' + PDI];
+        return [[...errs, e], seq + formatPlaceable(res, '{}')];
       }
     } else {
       return [
         [...errs, new L10nError('Unresolvable value')],
-        seq + FSI + '{ }' + PDI
+        seq + formatPlaceable(res, '{}')
       ];
     }
   }, [[], '']);
+}
+
+function formatPlaceable(res, value) {
+  if (typeof value === 'string') {
+    return FSI + value + PDI;
+  }
+
+  if (typeof value === 'number' && !isNaN(value)) {
+    const formatter = res.ctx._getNumberFormatter(res.lang);
+    return formatter.format(value);
+  }
+
+  if (typeof value === 'function') {
+    return FSI + '{function}' + PDI;
+  }
 }
 
 function resolveLiteral(res, expr) {
@@ -50,35 +69,27 @@ function resolveLiteral(res, expr) {
 }
 
 function resolveBuiltin(res, expr) {
-  if (KNOWN_MACROS.indexOf(expr) > -1) {
-    return res.ctx._getMacro(lang, expr);
+  const id = expr.name;
+  if (KNOWN_MACROS.indexOf(id) > -1) {
+    return res.ctx._getMacro(res.lang, id);
   }
 
-  throw new L10nError('Unknown reference: ' + expr);
+  throw new L10nError('Unknown reference: ' + id);
 }
 
-function resolveArgument(res, expr) {
-  const id = expr.id;
+function resolveVariable(res, expr) {
+  const id = expr.id.name;
   const args = res.args;
 
   if (args && args.hasOwnProperty(id)) {
-    if (typeof args[id] === 'string') {
-      // wrap the substitution in bidi isolate characters
-      return FSI + args[id] + PDI;
-    }
-    if (typeof args[id] === 'number' && !isNaN(args[id])) {
-      const formatter = res.ctx._getNumberFormatter(lang);
-      return formatter.format(args[id]);
-    } else {
-      throw new L10nError('Arg must be a string or a number: ' + id);
-    }
+    return args[id];
   }
 
   throw new L10nError('Unknown reference: ' + id);
 }
 
 function resolveEntity(res, expr) {
-  const id = expr.id;
+  const id = expr.name;
   const entity = res.ctx._getEntity(res.lang, id);
 
   if (!entity) {
@@ -89,13 +100,11 @@ function resolveEntity(res, expr) {
     throw new L10nError('Cyclic reference: ' + id);
   }
 
-  const [errs, value] = formatValue(res, entity);
+  const ret = entity.value !== null ?
+    entity.value :
+    chooseTrait(entity);
 
-  if (errs.length) {
-    throw new L10nError('Reference to a broken entity: ' + id);
-  }
-
-  return value;
+  return resolveValue(res, ret);
 }
 
 function resolveCall(res, expr) {
@@ -109,33 +118,47 @@ function resolveCall(res, expr) {
 }
 
 function resolveTrait(res, expr) {
-  const object = expr.object;
-  const property = expr.property;
-  const entity = res.ctx._getEntity(res.lang, object);
+  const id = expr.idref.name;
+  const key = expr.keyword;
+  const entity = res.ctx._getEntity(res.lang, id);
 
-  if (entity && entity.traits.hasOwnProperty(property)) {
-    return formatValue(res, entity.traits[property]);
+  if (!entity) {
+    throw new L10nError('Unknown entity: ' + id);
   }
 
-  throw new L10nError('Unknown trait: ' + property);
+  const trait = chooseTrait(entity, key);
+
+  if (!trait) {
+    throw new L10nError('Unknown trait: ' + property);
+  }
+
+  return resolveValue(res, trait.value);
+}
+
+function chooseTrait(entity, name) {
+  for (let trait of entity.traits) {
+    if (name && name === trait.key || trait.default) {
+      return trait;
+    }
+  }
 }
 
 function chooseVariant(placeable, expr) {
   if (typeof expr === 'function') {
     for (let variant of placeable.variants) {
-      if (expr(variant.selector)) {
+      if (expr(variant.key)) {
         return variant;
       }
     }
   } else {
     for (let variant of placeable.variants) {
-      if (expr === variant.selector) {
+      if (expr === variant.key) {
         return variant;
       }
     }
   }
 
-  for (let variant of placeable.variants) {
+  for (let variant of placeable.key) {
     if (variant.default) {
       return variant;
     }
@@ -145,7 +168,7 @@ function chooseVariant(placeable, expr) {
 }
 
 function resolvePlaceable(res, placeable) {
-  const expr = resolveExpression(res, placeable.expr);
+  const expr = resolveExpression(res, placeable.expression);
 
   if (!placeable.variants) {
     return expr;
@@ -153,28 +176,32 @@ function resolvePlaceable(res, placeable) {
 
   const variant = chooseVariant(placeable, expr);
 
-  const [errs, value] = formatValue(res, variant.value);
-
-  if (errs.length) {
-    throw new L10nError('Broken variant.');
-  }
-
-  return value;
+  return resolveValue(res, variant.value);
 }
 
-function resolveExpression(res, args, expr) {
+function resolveExpression(res, expr) {
   // XXX switch?
-  if (expr.type === 'callExpression') {
-    return resolveCall(res, expr);
-  } else if (expr.type === 'traitExpression') {
-    return resolveTrait(res, expr);
-  } else if (expr.type === 'argumentExpression') {
-    return resolveArgument(res, expr);
-  } else if (expr.type === 'messageExpression') {
+  if (expr.type === 'Identifier') {
     return resolveEntity(res, expr);
-  } else if (expr.type === 'literalExpression') {
+  } else if (expr.type === 'Variable') {
+    return resolveVariable(res, expr);
+  } else if (expr.type === 'Number') {
     return resolveLiteral(res, expr);
+  } else if (expr.type === 'CallExpression') {
+    return resolveCall(res, expr);
+  } else if (expr.type === 'MemberExpression') {
+    return resolveTrait(res, expr);
   } else {
     throw new L10nError('Unknown placeable type');
   }
+}
+
+function resolveValue(res, value) {
+  const [errs, str] = formatValue(res, value);
+
+  if (errs.length) {
+    throw new L10nError('Broken value.');
+  }
+
+  return str;
 }

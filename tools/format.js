@@ -30,19 +30,20 @@ if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
-function singleline(formatted) {
-  var str = formatted[1];
-  return str && str.replace(/\n/g, ' ')
-                   .replace(/\s{3,}/g, ' ')
-                   .trim();
+function singleline(str) {
+  return str && str
+    .replace(/^\s{3,}/g, ' ')
+    .replace(/\n/g, ' ')
+    .trim();
 }
 
 function format(ctx, entity) {
-  try {
-    return singleline(Resolver.format(ctx, lang, data, entity));
-  } catch(err) {
-    return makeError(err);
+  const formatted = Resolver.format(ctx, lang, data, entity);
+  if (formatted[0].length) {
+    return makeError(formatted[0][0]);
   }
+
+  return singleline(formatted[1]);
 }
 
 function printEntry(ctx, id, entity) {
@@ -62,21 +63,28 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  var entries;
+  var ast;
   if (program.ast) {
-    entries = JSON.parse(data.toString());
+    ast = JSON.parse(data.toString());
   } else {
     try {
-      entries = lib.parse(fileformat, 'entries', data.toString());
+      ast = lib.parse(fileformat, 'ast', data.toString());
     } catch (e) {
       console.error(makeError(e));
       process.exit(1);
     }
   }
 
+  var entries = ast.body.reduce(
+    (seq, cur) => Object.assign(seq, {
+      [cur.id.name]: cur
+    }), {}
+  );
+
   var ctx = new MockContext(entries);
 
   for (var id in entries) {
+    // console.log(JSON.stringify(entries[id], null, 4));
     printEntry(ctx, id, entries[id]);
   }
 }
