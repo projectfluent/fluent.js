@@ -38,22 +38,22 @@ function chooseTrait(entity, name) {
   }
 }
 
-function chooseVariant(placeable, expr) {
+function chooseVariant(variants, expr) {
   if (typeof expr === 'function') {
-    for (let variant of placeable.variants) {
+    for (let variant of variants) {
       if (expr(variant.key)) {
         return variant;
       }
     }
   } else {
-    for (let variant of placeable.variants) {
+    for (let variant of variants) {
       if (expr === variant.key) {
         return variant;
       }
     }
   }
 
-  for (let variant of placeable.variants) {
+  for (let variant of variants) {
     if (variant.default) {
       return variant;
     }
@@ -153,12 +153,18 @@ function resolveExpression(res, expr) {
 function resolvePlaceable(res, placeable) {
   const expr = resolveExpression(res, placeable.expression);
 
-  if (!placeable.variants) {
-    return expr;
+  const value = placeable.variants === null ?
+    expr :
+    resolveValue(res, chooseVariant(placeable.variants, expr).value);
+
+  if (value.length >= MAX_PLACEABLE_LENGTH) {
+    throw new L10nError(
+      'Too many characters in placeable (' + value.length +
+        ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
+    );
   }
 
-  const variant = chooseVariant(placeable, expr);
-  return resolveValue(res, variant.value);
+  return value;
 }
 
 function resolveValue(res, value) {
@@ -181,14 +187,7 @@ function formatValue(res, value) {
       return [errs, seq + elem];
     } else if (elem.type === 'Placeable') {
       try {
-        const placeable = resolvePlaceable(res, elem);
-        if (placeable.length >= MAX_PLACEABLE_LENGTH) {
-          throw new L10nError(
-            'Too many characters in placeable (' + placeable.length +
-            ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
-          );
-        }
-        return [errs, seq + stringify(res, placeable)];
+        return [errs, seq + stringify(res, resolvePlaceable(res, elem))];
       } catch(e) {
         return [[...errs, e], seq + stringify(res, '{}')];
       }
