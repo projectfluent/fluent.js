@@ -31,7 +31,8 @@ function stringify(res, value) {
 
 function chooseTrait(entity, name) {
   for (let trait of entity.traits) {
-    if (name && name === trait.key || trait.default) {
+
+    if (name === trait.key || (!name && trait.default)) {
       return trait;
     }
   }
@@ -52,7 +53,7 @@ function chooseVariant(placeable, expr) {
     }
   }
 
-  for (let variant of placeable.key) {
+  for (let variant of placeable.variants) {
     if (variant.default) {
       return variant;
     }
@@ -76,11 +77,11 @@ function resolveEntity(res, expr) {
     throw new L10nError('Cyclic reference: ' + id);
   }
 
-  const ret = entity.value !== null ?
+  const value = entity.value !== null ?
     entity.value :
-    chooseTrait(entity);
+    chooseTrait(entity).value;
 
-  return resolveValue(res, ret);
+  return resolveValue(res, value);
 }
 
 function resolveVariable(res, expr) {
@@ -175,10 +176,6 @@ function resolveValue(res, value) {
 // the return tuple: [errors, value]
 
 function formatValue(res, value) {
-  if (value === null) {
-    return [[], null];
-  }
-
   return value.elements.reduce(([errs, seq], elem) => {
     if (typeof elem === 'string') {
       return [errs, seq + elem];
@@ -213,5 +210,9 @@ export function format(ctx, lang, args, entity) {
     dirty: new WeakSet()
   };
 
-  return formatValue(res, entity.value);
+  const value = entity.value !== null ?
+    entity.value :
+    chooseTrait(entity).value;
+
+  return formatValue(res, value);
 }
