@@ -7,49 +7,10 @@ const MAX_PLACEABLE_LENGTH = 2500;
 const FSI = '\u2068';
 const PDI = '\u2069';
 
-export function format(ctx, lang, args, entity) {
-  const res = {
-    ctx,
-    lang,
-    args,
-    errors: [],
-    dirty: new WeakSet()
-  };
 
-  return formatValue(res, entity.value);
-}
+// Helper function for inserting a placeable value into a string
 
-function formatValue(res, value) {
-  if (value === null) {
-    return [[], null];
-  }
-
-  return value.elements.reduce(([errs, seq], elem) => {
-    if (typeof elem === 'string') {
-      return [errs, seq + elem];
-    } else if (elem.type === 'Placeable') {
-      try {
-        const placeable = resolvePlaceable(res, elem);
-        if (placeable.length >= MAX_PLACEABLE_LENGTH) {
-          throw new L10nError(
-            'Too many characters in placeable (' + placeable.length +
-            ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
-          );
-        }
-        return [errs, seq + formatPlaceable(res, placeable)];
-      } catch(e) {
-        return [[...errs, e], seq + formatPlaceable(res, '{}')];
-      }
-    } else {
-      return [
-        [...errs, new L10nError('Unresolvable value')],
-        seq + formatPlaceable(res, '{}')
-      ];
-    }
-  }, [[], '']);
-}
-
-function formatPlaceable(res, value) {
+function stringify(res, value) {
   if (typeof value === 'string') {
     return FSI + value + PDI;
   }
@@ -64,76 +25,9 @@ function formatPlaceable(res, value) {
   }
 }
 
-function resolveLiteral(res, expr) {
-  return expr.value;
-}
 
-function resolveBuiltin(res, expr) {
-  const id = expr.name;
-  if (KNOWN_MACROS.indexOf(id) > -1) {
-    return res.ctx._getMacro(res.lang, id);
-  }
-
-  throw new L10nError('Unknown reference: ' + id);
-}
-
-function resolveVariable(res, expr) {
-  const id = expr.id.name;
-  const args = res.args;
-
-  if (args && args.hasOwnProperty(id)) {
-    return args[id];
-  }
-
-  throw new L10nError('Unknown reference: ' + id);
-}
-
-function resolveEntity(res, expr) {
-  const id = expr.name;
-  const entity = res.ctx._getEntity(res.lang, id);
-
-  if (!entity) {
-    throw new L10nError('Unknown reference: ' + id);
-  }
-
-  if (res.dirty.has(entity)) {
-    throw new L10nError('Cyclic reference: ' + id);
-  }
-
-  const ret = entity.value !== null ?
-    entity.value :
-    chooseTrait(entity);
-
-  return resolveValue(res, ret);
-}
-
-function resolveCall(res, expr) {
-  const callee = resolveBuiltin(res, expr.callee);
-  return callee.apply(
-    null,
-    expr.args.map(
-      argExpr => resolveExpression(res, argExpr)
-    )
-  );
-}
-
-function resolveTrait(res, expr) {
-  const id = expr.idref.name;
-  const key = expr.keyword;
-  const entity = res.ctx._getEntity(res.lang, id);
-
-  if (!entity) {
-    throw new L10nError('Unknown entity: ' + id);
-  }
-
-  const trait = chooseTrait(entity, key);
-
-  if (!trait) {
-    throw new L10nError('Unknown trait: ' + property);
-  }
-
-  return resolveValue(res, trait.value);
-}
+// Helper functions for picking the right member from an array of traits or 
+// variants.
 
 function chooseTrait(entity, name) {
   for (let trait of entity.traits) {
@@ -167,16 +61,75 @@ function chooseVariant(placeable, expr) {
   throw new L10nError('No default variant found');
 }
 
-function resolvePlaceable(res, placeable) {
-  const expr = resolveExpression(res, placeable.expression);
 
-  if (!placeable.variants) {
-    return expr;
+// resolve* functions can throw and return a single value
+
+function resolveEntity(res, expr) {
+  const id = expr.name;
+  const entity = res.ctx._getEntity(res.lang, id);
+
+  if (!entity) {
+    throw new L10nError('Unknown reference: ' + id);
   }
 
-  const variant = chooseVariant(placeable, expr);
+  if (res.dirty.has(entity)) {
+    throw new L10nError('Cyclic reference: ' + id);
+  }
 
-  return resolveValue(res, variant.value);
+  const ret = entity.value !== null ?
+    entity.value :
+    chooseTrait(entity);
+
+  return resolveValue(res, ret);
+}
+
+function resolveVariable(res, expr) {
+  const id = expr.id.name;
+  const args = res.args;
+
+  if (args && args.hasOwnProperty(id)) {
+    return args[id];
+  }
+
+  throw new L10nError('Unknown reference: ' + id);
+}
+
+
+function resolveLiteral(res, expr) {
+  return expr.value;
+}
+
+function resolveCall(res, expr) {
+  const id = expr.callee.name;
+
+  if (KNOWN_MACROS.indexOf(id) === -1) {
+    throw new L10nError('Unknown reference: ' + id);
+  }
+
+  const callee = res.ctx._getMacro(res.lang, id);
+  return callee(
+    ...expr.args.map(
+      argExpr => resolveExpression(res, argExpr)
+    )
+  );
+}
+
+function resolveTrait(res, expr) {
+  const id = expr.idref.name;
+  const key = expr.keyword;
+  const entity = res.ctx._getEntity(res.lang, id);
+
+  if (!entity) {
+    throw new L10nError('Unknown entity: ' + id);
+  }
+
+  const trait = chooseTrait(entity, key);
+
+  if (!trait) {
+    throw new L10nError('Unknown trait: ' + property);
+  }
+
+  return resolveValue(res, trait.value);
 }
 
 function resolveExpression(res, expr) {
@@ -196,6 +149,17 @@ function resolveExpression(res, expr) {
   }
 }
 
+function resolvePlaceable(res, placeable) {
+  const expr = resolveExpression(res, placeable.expression);
+
+  if (!placeable.variants) {
+    return expr;
+  }
+
+  const variant = chooseVariant(placeable, expr);
+  return resolveValue(res, variant.value);
+}
+
 function resolveValue(res, value) {
   const [errs, str] = formatValue(res, value);
 
@@ -204,4 +168,50 @@ function resolveValue(res, value) {
   }
 
   return str;
+}
+
+
+// formatValue collects any errors and return them as the first element of 
+// the return tuple: [errors, value]
+
+function formatValue(res, value) {
+  if (value === null) {
+    return [[], null];
+  }
+
+  return value.elements.reduce(([errs, seq], elem) => {
+    if (typeof elem === 'string') {
+      return [errs, seq + elem];
+    } else if (elem.type === 'Placeable') {
+      try {
+        const placeable = resolvePlaceable(res, elem);
+        if (placeable.length >= MAX_PLACEABLE_LENGTH) {
+          throw new L10nError(
+            'Too many characters in placeable (' + placeable.length +
+            ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
+          );
+        }
+        return [errs, seq + stringify(res, placeable)];
+      } catch(e) {
+        return [[...errs, e], seq + stringify(res, '{}')];
+      }
+    } else {
+      return [
+        [...errs, new L10nError('Unresolvable value')],
+        seq + stringify(res, '{}')
+      ];
+    }
+  }, [[], '']);
+}
+
+export function format(ctx, lang, args, entity) {
+  const res = {
+    ctx,
+    lang,
+    args,
+    errors: [],
+    dirty: new WeakSet()
+  };
+
+  return formatValue(res, entity.value);
 }
