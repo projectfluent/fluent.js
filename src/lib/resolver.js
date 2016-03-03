@@ -134,19 +134,19 @@ function resolveTrait(res, expr) {
 }
 
 function resolveExpression(res, expr) {
-  // XXX switch?
-  if (expr.type === 'Identifier') {
-    return resolveEntity(res, expr);
-  } else if (expr.type === 'Variable') {
-    return resolveVariable(res, expr);
-  } else if (expr.type === 'Number') {
-    return resolveLiteral(res, expr);
-  } else if (expr.type === 'CallExpression') {
-    return resolveCall(res, expr);
-  } else if (expr.type === 'MemberExpression') {
-    return resolveTrait(res, expr);
-  } else {
-    throw new L10nError('Unknown placeable type');
+  switch (expr.type) {
+    case 'Identifier':
+      return resolveEntity(res, expr);
+    case 'Variable':
+      return resolveVariable(res, expr);
+    case 'Number':
+      return resolveLiteral(res, expr);
+    case 'CallExpression':
+      return resolveCall(res, expr);
+    case 'MemberExpression':
+      return resolveTrait(res, expr);
+    default:
+      throw new L10nError('Unknown placeable type');
   }
 }
 
