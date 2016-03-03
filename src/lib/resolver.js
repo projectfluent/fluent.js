@@ -12,8 +12,8 @@ export function format(ctx, lang, args, entity) {
     ctx,
     lang,
     args,
-    errors = [],
-    dirty = new WeakSet()
+    errors: [],
+    dirty: new WeakSet()
   };
 
   return formatValue(res, entity);
@@ -54,7 +54,7 @@ function resolveBuiltin(res, expr) {
     return res.ctx._getMacro(lang, expr);
   }
 
-  throw new L10nError('Unknown reference: ' + expr));
+  throw new L10nError('Unknown reference: ' + expr);
 }
 
 function resolveArgument(res, expr) {
