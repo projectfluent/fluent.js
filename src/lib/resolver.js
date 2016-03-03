@@ -207,7 +207,7 @@ export function format(ctx, lang, args, entity) {
     lang,
     args,
     errors: [],
-    dirty: new WeakSet()
+    dirty: new WeakSet([entity])
   };
 
   const value = entity.value !== null ?
