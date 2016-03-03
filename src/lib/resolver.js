@@ -127,7 +127,7 @@ function resolveTrait(res, expr) {
   const trait = chooseTrait(entity, key);
 
   if (!trait) {
-    throw new L10nError('Unknown trait: ' + property);
+    throw new L10nError('Unknown trait: ' + key);
   }
 
   return resolveValue(res, trait.value);
