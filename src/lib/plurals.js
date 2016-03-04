@@ -448,11 +448,11 @@ export function getPluralRule(code) {
   const index = locales2rules[code.replace(/-.*$/, '')];
   if (!(index in pluralRules)) {
     return n => {
-      return selector => selector == n || selector === 'other';
+      return selector => selector === n || selector === 'other';
     };
   }
   return n => {
     const category =  pluralRules[index](n);
-    return selector => selector == n || selector === category;
+    return selector => selector === n || selector === category;
   };
 }

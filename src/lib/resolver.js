@@ -52,41 +52,24 @@ function chooseTrait(entity, name) {
   }
 }
 
-function chooseVariant(variants, expr) {
-  if (typeof expr === 'function') {
-    for (let variant of variants) {
-      if (expr(variant.key)) {
-        return variant;
-      }
-    }
-  } else {
-    for (let variant of variants) {
-      if (expr === variant.key) {
-        return variant;
-      }
-    }
-  }
-
-  for (let variant of variants) {
-    if (variant.default) {
-      return variant;
-    }
-  }
-
-  throw new L10nError('No default variant found');
-}
-
 
 // resolve* functions can throw and return a single value
 
 function resolve(res, expr) {
+  // XXX remove
+  if (typeof expr === 'string') {
+    return expr;
+  }
+
   switch (expr.type) {
     case 'EntityReference':
       return resolveEntity(res, expr);
     case 'Variable':
       return resolveVariable(res, expr);
+    // XXX case 'Keyword':
+    //  return resolveKeyword(res, expr);
     case 'Number':
-      return resolveLiteral(res, expr);
+      return resolveNumber(res, expr);
     case 'CallExpression':
       return resolveCall(res, expr);
     case 'MemberExpression':
@@ -126,9 +109,12 @@ function resolveVariable(res, expr) {
   throw new L10nError('Unknown reference: ' + id);
 }
 
-
-function resolveLiteral(res, expr) {
+function resolveKeyword(res, expr) {
   return expr.value;
+}
+
+function resolveNumber(res, expr) {
+  return parseInt(expr.value);
 }
 
 function resolveCall(res, expr) {
@@ -164,12 +150,37 @@ function resolveTrait(res, expr) {
   return resolveValue(res, trait.value);
 }
 
+function resolveVariant(res, variants, expr) {
+  if (typeof expr === 'function') {
+    for (let variant of variants) {
+      if (expr(resolve(res, variant.key))) {
+        return resolveValue(res, variant.value);
+      }
+    }
+  } else {
+    for (let variant of variants) {
+      if (expr === resolve(res, variant.key)) {
+        return resolveValue(res, variant.value);
+      }
+    }
+  }
+
+  for (let variant of variants) {
+    if (variant.default) {
+      return resolveValue(res, variant.value);
+    }
+  }
+
+  throw new L10nError('No default variant found');
+}
+
+
 function resolvePlaceableExpression(res, expression) {
   const expr = resolve(res, expression.expression);
 
   const value = expression.variants === null ?
     expr :
-    resolveValue(res, chooseVariant(expression.variants, expr).value);
+    resolveVariant(res, expression.variants, expr);
 
   if (value.length >= MAX_PLACEABLE_LENGTH) {
     throw new L10nError(
