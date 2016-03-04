@@ -183,8 +183,8 @@ function resolveValue(res, value) {
 
 function formatValue(res, value) {
   return value.elements.reduce(([errs, seq], elem) => {
-    if (typeof elem === 'string') {
-      return [errs, seq + elem];
+    if (elem.type === 'TextElement') {
+      return [errs, seq + elem.value];
     } else if (elem.type === 'Placeable') {
       try {
         return [errs, seq + stringify(res, resolvePlaceable(res, elem))];
