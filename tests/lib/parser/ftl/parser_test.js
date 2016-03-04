@@ -10,27 +10,27 @@ describe('FTL Parser', function() {
   describe('Simple strings', function() {
     it('simple single line string', function() {
       var resource = parse('label-ok = Click me');
-      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].id, 'label-ok');
       assert.strictEqual(resource.body[0].value.source, 'Click me');
-      assert.strictEqual(resource.body[0].value.content[0], 'Click me');
+      assert.strictEqual(resource.body[0].value.elements[0].value, 'Click me');
     });
 
     it('simple multi line string', function() {
       var resource = parse(
 `label-ok = Click me
   | One more time`);
-      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].id, 'label-ok');
       assert.strictEqual(resource.body[0].value.source, 'Click me\nOne more time');
-      assert.strictEqual(resource.body[0].value.content[0], 'Click me\nOne more time');
+      assert.strictEqual(resource.body[0].value.elements[0].value, 'Click me\nOne more time');
     });
 
     it('simple multi line string with no space', function() {
       var resource = parse(
 `label-ok = Click me
   |One more time`);
-      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].id, 'label-ok');
       assert.strictEqual(resource.body[0].value.source, 'Click me\nOne more time');
-      assert.strictEqual(resource.body[0].value.content[0], 'Click me\nOne more time');
+      assert.strictEqual(resource.body[0].value.elements[0].value, 'Click me\nOne more time');
     });
 
     it('simple multi line string with empty line', function() {
@@ -38,9 +38,9 @@ describe('FTL Parser', function() {
 `label-ok =
   | Hello World
   | One more time`);
-      assert.strictEqual(resource.body[0].id.name, 'label-ok');
+      assert.strictEqual(resource.body[0].id, 'label-ok');
       assert.strictEqual(resource.body[0].value.source, 'Hello World\nOne more time');
-      assert.strictEqual(resource.body[0].value.content[0], 'Hello World\nOne more time');
+      assert.strictEqual(resource.body[0].value.elements[0].value, 'Hello World\nOne more time');
     });
   });
 
@@ -49,9 +49,9 @@ describe('FTL Parser', function() {
       var resource = parse(
 `label-ok =
    [nominative] Firefox`);
-      assert.strictEqual(resource.body[0].id.name, 'label-ok');
-      assert.strictEqual(resource.body[0].value, null);
-      assert.strictEqual(resource.body[0].traits[0].id.name, 'nominative');
+      assert.strictEqual(resource.body[0].id, 'label-ok');
+      assert.strictEqual(resource.body[0].value.source, '');
+      assert.strictEqual(resource.body[0].traits[0].key, 'nominative');
       assert.strictEqual(resource.body[0].traits[0].value.source, 'Firefox');
     });
 
