@@ -447,12 +447,7 @@ export function getPluralRule(code) {
   // return a function that gives the plural form name for a given integer
   const index = locales2rules[code.replace(/-.*$/, '')];
   if (!(index in pluralRules)) {
-    return n => {
-      return selector => selector === n || selector === 'other';
-    };
+    return n => 'other';
   }
-  return n => {
-    const category =  pluralRules[index](n);
-    return selector => selector === n || selector === category;
-  };
+  return pluralRules[index];
 }

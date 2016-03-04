@@ -10,7 +10,7 @@ export class Env {
 
     this.resCache = new Map();
     this.resRefs = new Map();
-    this.numberFormatters = null;
+    this.builtins = null;
     this.parsers = {
       properties: PropertiesParser,
       l20n: L20nParser,

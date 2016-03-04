@@ -1,6 +1,6 @@
 import { L10nError } from './errors';
 
-const KNOWN_MACROS = ['PLURAL'];
+const KNOWN_BUILTINS = ['PLURAL', 'NUMBER'];
 const MAX_PLACEABLE_LENGTH = 2500;
 
 // Unicode bidi isolation characters
@@ -8,21 +8,35 @@ const FSI = '\u2068';
 const PDI = '\u2069';
 
 
+// Helper for converting primitives into builtins
+
+function wrap(res, expr) {
+  if (typeof expr === 'object' && expr.equals) {
+    return expr;
+  }
+
+  if (typeof expr === 'number') {
+    return res.ctx._getBuiltin(res.lang, 'NUMBER')(expr);
+  }
+
+  if (typeof expr === 'string') {
+    return {
+      equals(other) {
+        return other === expr;
+      },
+      format() {
+        return expr;
+      }
+    };
+  }
+}
+
+
 // Helper functions for inserting a placeable value into a string
 
 function stringify(res, value) {
-  if (typeof value === 'string') {
-    return FSI + value + PDI;
-  }
-
-  if (typeof value === 'number' && !isNaN(value)) {
-    const formatter = res.ctx._getNumberFormatter(res.lang);
-    return formatter.format(value);
-  }
-
-  if (typeof value === 'function') {
-    return FSI + '{function}' + PDI;
-  }
+  const wrapped = wrap(res, value);
+  return FSI + wrapped.format() + PDI;
 }
 
 function stringifyList(res, list) {
@@ -35,9 +49,10 @@ function stringifyList(res, list) {
     return values[0];
   }
 
-  const formatter = res.ctx._getListFormatter(res.lang);
-  return formatter.format(values);
+  const builtin = res.ctx._getBuiltin(res.lang, 'LIST');
+  return builtin(...values).format();
 }
+
 
 // Helper for choosing entity value
 
@@ -126,11 +141,11 @@ function resolveNumber(res, expr) {
 function resolveCallExpression(res, expr) {
   const id = expr.callee.id;
 
-  if (KNOWN_MACROS.indexOf(id) === -1) {
+  if (KNOWN_BUILTINS.indexOf(id) === -1) {
     throw new L10nError('Unknown built-in: ' + id);
   }
 
-  const callee = res.ctx._getMacro(res.lang, id);
+  const callee = res.ctx._getBuiltin(res.lang, id);
   return callee(
     ...expr.args.map(
       arg => resolve(res, arg)
@@ -159,17 +174,10 @@ function resolveMemberExpression(res, expr) {
 }
 
 function resolveVariant(res, variants, expr) {
-  if (typeof expr === 'function') {
-    for (let variant of variants) {
-      if (expr(resolve(res, variant.key))) {
-        return variant;
-      }
-    }
-  } else {
-    for (let variant of variants) {
-      if (expr === resolve(res, variant.key)) {
-        return variant;
-      }
+  const wrapped = wrap(res, expr);
+  for (let variant of variants) {
+    if (wrapped.equals(resolve(res, variant.key))) {
+      return variant;
     }
   }
 
