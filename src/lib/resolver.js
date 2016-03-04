@@ -1,6 +1,6 @@
 import { L10nError } from './errors';
 
-const KNOWN_BUILTINS = ['PLURAL', 'NUMBER'];
+const KNOWN_BUILTINS = ['PLURAL', 'NUMBER', 'LIST'];
 const MAX_PLACEABLE_LENGTH = 2500;
 
 // Unicode bidi isolation characters
@@ -36,21 +36,21 @@ function wrap(res, expr) {
 
 function stringify(res, value) {
   const wrapped = wrap(res, value);
-  return FSI + wrapped.format() + PDI;
+  return FSI + wrapped.format(
+    elem => stringify(res, elem)
+  ) + PDI;
 }
 
 function stringifyList(res, list) {
-  const values = list.map(
-    elem => stringify(res, elem)
-  );
-
   // the most common scenario; avoid creating a ListFormat instance
-  if (values.length === 1) {
-    return values[0];
+  if (list.length === 1) {
+    return stringify(res, list[0]);
   }
 
   const builtin = res.ctx._getBuiltin(res.lang, 'LIST');
-  return builtin(...values).format();
+  return builtin(...list).format(
+    elem => stringify(res, elem)
+  );
 }
 
 

@@ -1,6 +1,7 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
 import { L20nIntl } from './shims';
+import * as builtins from './builtins';
 
 export class Context {
   constructor(env, langs, resIds) {
@@ -125,44 +126,7 @@ export class Context {
     const id = lang.code + name;
 
     if (!this.env.builtins.has(id)) {
-      if (name === 'PLURAL') {
-        const pr = L20nIntl.PluralRules(lang.code);
-        this.env.builtins.set(id, num => {
-          const category = pr.select(num);
-          return {
-            equals(other) {
-              return other === num || other === category;
-            },
-            format() {
-              return category;
-            }
-          };
-        });
-      } else if (name === 'NUMBER') {
-        const nf = L20nIntl.NumberFormat(lang.code);
-        const pr = L20nIntl.PluralRules(lang.code);
-        this.env.builtins.set(id, num => {
-          const category = pr.select(num);
-          return {
-            equals(other) {
-              return other === num || other === category;
-            },
-            format() {
-              return nf.format(num);
-            }
-          };
-        });
-      } else if (name === 'LIST') {
-        // XXX shim of ListFormat
-        this.env.builtins.set(id, (...args) => {
-          const values = args.join(', ');
-          return {
-            format() {
-              return values;
-            }
-          };
-        });
-      }
+      this.env.builtins.set(id, builtins[name](lang));
     }
 
     return this.env.builtins.get(id);
