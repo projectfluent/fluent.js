@@ -74,9 +74,9 @@ function resolve(res, expr) {
     case 'Number':
       return resolveNumber(res, expr);
     case 'CallExpression':
-      return resolveCall(res, expr);
+      return resolveCallExpression(res, expr);
     case 'MemberExpression':
-      return resolveMember(res, expr);
+      return resolveMemberExpression(res, expr);
     default:
       throw new L10nError('Unknown placeable type');
   }
@@ -123,7 +123,7 @@ function resolveNumber(res, expr) {
   return parseInt(expr.value);
 }
 
-function resolveCall(res, expr) {
+function resolveCallExpression(res, expr) {
   const id = expr.callee.id;
 
   if (KNOWN_MACROS.indexOf(id) === -1) {
@@ -148,7 +148,7 @@ function resolveTrait(res, traits, key) {
   throw new L10nError('Unknown trait: ' + key);
 }
 
-function resolveMember(res, expr) {
+function resolveMemberExpression(res, expr) {
   const id = expr.idref.id;
   const key = expr.keyword;
   const entity = resolveEntity(res, id);
