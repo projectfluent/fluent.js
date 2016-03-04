@@ -41,14 +41,14 @@ function stringifyList(res, list) {
 
 // Helper for choosing entity value
 
-function getEntityValue(entity) {
+function getValueNode(entity) {
   if (entity.value !== null) {
-    return entity.value;
+    return entity;
   }
 
   for (let trait of entity.traits) {
     if (trait.default) {
-      return trait.value;
+      return trait;
     }
   }
 
@@ -95,13 +95,13 @@ function resolveEntity(res, id) {
 function resolveEntityReference(res, expr) {
   const id = expr.id;
   const entity = resolveEntity(res, id);
-  const value = getEntityValue(entity);
+  const node = getValueNode(entity);
 
-  if (value === null) {
+  if (node === null) {
     throw new L10nError('No value: ' + id);
   }
 
-  return resolveValue(res, value);
+  return resolveValue(res, node);
 }
 
 function resolveVariable(res, expr) {
@@ -154,7 +154,7 @@ function resolveMemberExpression(res, expr) {
   const entity = resolveEntity(res, id);
 
   return resolveValue(
-    res, resolveTrait(res, entity.traits, key).value
+    res, resolveTrait(res, entity.traits, key)
   );
 }
 
@@ -189,7 +189,7 @@ function resolvePlaceableExpression(res, expression) {
   const value = expression.variants === null ?
     expr :
     resolveValue(
-      res, resolveVariant(res, expression.variants, expr).value
+      res, resolveVariant(res, expression.variants, expr)
     );
 
   if (value.length >= MAX_PLACEABLE_LENGTH) {
@@ -208,13 +208,14 @@ function resolvePlaceable(res, placeable) {
   );
 }
 
-function resolveValue(res, value) {
-  if (res.dirty.has(value)) {
-    throw new L10nError('Cyclic reference');
+function resolveValue(res, node) {
+  if (res.dirty.has(node)) {
+    const ref = node.id || node.key;
+    throw new L10nError('Cyclic reference: ' + ref);
   }
 
-  res.dirty.add(value);
-  const [errs, str] = formatValue(res, value);
+  res.dirty.add(node);
+  const [errs, str] = formatElements(res, node.value);
 
   if (errs.length) {
     throw new L10nError('Broken value.');
@@ -224,10 +225,10 @@ function resolveValue(res, value) {
 }
 
 
-// formatValue collects any errors and return them as the first element of 
+// formatElements collects any errors and return them as the first element of 
 // the return tuple: [errors, value]
 
-function formatValue(res, value) {
+function formatElements(res, value) {
   return value.elements.reduce(([errs, seq], elem) => {
     if (elem.type === 'TextElement') {
       return [errs, seq + elem.value];
@@ -237,11 +238,6 @@ function formatValue(res, value) {
       } catch(e) {
         return [[...errs, e], seq + stringify(res, '{}')];
       }
-    } else {
-      return [
-        [...errs, new L10nError('Unresolvable value')],
-        seq + stringify(res, '{}')
-      ];
     }
   }, [[], '']);
 }
@@ -252,15 +248,15 @@ export function format(ctx, lang, args, entity) {
     lang,
     args,
     errors: [],
-    dirty: new WeakSet([entity])
+    dirty: new WeakSet()
   };
 
-  const value = getEntityValue(entity);
-
-  if (value === null) {
+  const node = getValueNode(entity);
+  if (node === null) {
     const err = new L10nError('No value: ' + entity.id);
     return [[err], null];
   }
 
-  return formatValue(res, value);
+  res.dirty.add(node);
+  return formatElements(res, node.value);
 }
