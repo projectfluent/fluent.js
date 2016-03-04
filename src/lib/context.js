@@ -130,6 +130,15 @@ export class Context {
     return this.env.numberFormatters.get(lang);
   }
 
+  // XXX Stub ListFormat
+  _getListFormatter(lang) {
+    return {
+      format(values) {
+        return values.join(', ');
+      }
+    };
+  }
+
   // XXX in the future macros will be stored in localization resources together 
   // with regular entities and this method will not be needed anymore
   _getMacro(lang, id) {

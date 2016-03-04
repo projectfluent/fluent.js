@@ -77,7 +77,7 @@ function print(fileformat, err, data) {
 
   var entries = ast.body.reduce(
     (seq, cur) => Object.assign(seq, {
-      [cur.id.name]: cur
+      [cur.id]: cur
     }), {}
   );
 

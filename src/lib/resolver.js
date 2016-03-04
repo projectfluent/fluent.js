@@ -8,7 +8,7 @@ const FSI = '\u2068';
 const PDI = '\u2069';
 
 
-// Helper function for inserting a placeable value into a string
+// Helper functions for inserting a placeable value into a string
 
 function stringify(res, value) {
   if (typeof value === 'string') {
@@ -23,6 +23,20 @@ function stringify(res, value) {
   if (typeof value === 'function') {
     return FSI + '{function}' + PDI;
   }
+}
+
+function stringifyList(res, list) {
+  const values = list.map(
+    elem => stringify(res, elem)
+  );
+
+  // the most common scenario; avoid creating a ListFormat instance
+  if (values.length === 1) {
+    return values[0];
+  }
+
+  const formatter = res.ctx._getListFormatter(res.lang);
+  return formatter.format(values);
 }
 
 
@@ -65,8 +79,25 @@ function chooseVariant(variants, expr) {
 
 // resolve* functions can throw and return a single value
 
+function resolve(res, expr) {
+  switch (expr.type) {
+    case 'EntityReference':
+      return resolveEntity(res, expr);
+    case 'Variable':
+      return resolveVariable(res, expr);
+    case 'Number':
+      return resolveLiteral(res, expr);
+    case 'CallExpression':
+      return resolveCall(res, expr);
+    case 'MemberExpression':
+      return resolveTrait(res, expr);
+    default:
+      throw new L10nError('Unknown placeable type');
+  }
+}
+
 function resolveEntity(res, expr) {
-  const id = expr.name;
+  const id = expr.id;
   const entity = res.ctx._getEntity(res.lang, id);
 
   if (!entity) {
@@ -85,7 +116,7 @@ function resolveEntity(res, expr) {
 }
 
 function resolveVariable(res, expr) {
-  const id = expr.id.name;
+  const id = expr.id;
   const args = res.args;
 
   if (args && args.hasOwnProperty(id)) {
@@ -110,7 +141,7 @@ function resolveCall(res, expr) {
   const callee = res.ctx._getMacro(res.lang, id);
   return callee(
     ...expr.args.map(
-      argExpr => resolveExpression(res, argExpr)
+      arg => resolve(res, arg)
     )
   );
 }
@@ -133,29 +164,12 @@ function resolveTrait(res, expr) {
   return resolveValue(res, trait.value);
 }
 
-function resolveExpression(res, expr) {
-  switch (expr.type) {
-    case 'Identifier':
-      return resolveEntity(res, expr);
-    case 'Variable':
-      return resolveVariable(res, expr);
-    case 'Number':
-      return resolveLiteral(res, expr);
-    case 'CallExpression':
-      return resolveCall(res, expr);
-    case 'MemberExpression':
-      return resolveTrait(res, expr);
-    default:
-      throw new L10nError('Unknown placeable type');
-  }
-}
+function resolvePlaceableExpression(res, expression) {
+  const expr = resolve(res, expression.expression);
 
-function resolvePlaceable(res, placeable) {
-  const expr = resolveExpression(res, placeable.expression);
-
-  const value = placeable.variants === null ?
+  const value = expression.variants === null ?
     expr :
-    resolveValue(res, chooseVariant(placeable.variants, expr).value);
+    resolveValue(res, chooseVariant(expression.variants, expr).value);
 
   if (value.length >= MAX_PLACEABLE_LENGTH) {
     throw new L10nError(
@@ -165,6 +179,12 @@ function resolvePlaceable(res, placeable) {
   }
 
   return value;
+}
+
+function resolvePlaceable(res, placeable) {
+  return placeable.expressions.map(
+    expr => resolvePlaceableExpression(res, expr)
+  );
 }
 
 function resolveValue(res, value) {
@@ -187,7 +207,7 @@ function formatValue(res, value) {
       return [errs, seq + elem.value];
     } else if (elem.type === 'Placeable') {
       try {
-        return [errs, seq + stringify(res, resolvePlaceable(res, elem))];
+        return [errs, seq + stringifyList(res, resolvePlaceable(res, elem))];
       } catch(e) {
         return [[...errs, e], seq + stringify(res, '{}')];
       }

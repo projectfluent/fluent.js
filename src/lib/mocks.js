@@ -15,11 +15,20 @@ export function createEntriesFromSource(source) {
 export function MockContext(entries) {
   this._getNumberFormatter = function() {
     return {
-      format: function(value) {
+      format(value) {
         return value;
       }
     };
   };
+
+  this._getListFormatter = function() {
+    return {
+      format(values) {
+        return values.join(', ');
+      }
+    };
+  };
+
   this._getEntity = function(lang, id) {
     return entries[id];
   };
