@@ -112,7 +112,7 @@ function resolveVariable(res, expr) {
     return args[id];
   }
 
-  throw new L10nError('Unknown reference: ' + id);
+  throw new L10nError('Unknown variable: ' + id);
 }
 
 function resolveKeyword(res, expr) {
@@ -124,10 +124,10 @@ function resolveNumber(res, expr) {
 }
 
 function resolveCall(res, expr) {
-  const id = expr.callee.name;
+  const id = expr.callee.id;
 
   if (KNOWN_MACROS.indexOf(id) === -1) {
-    throw new L10nError('Unknown reference: ' + id);
+    throw new L10nError('Unknown built-in: ' + id);
   }
 
   const callee = res.ctx._getMacro(res.lang, id);
