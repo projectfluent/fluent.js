@@ -163,6 +163,7 @@ class ParseContext {
           buffer += '\n';
         }
         ch = this._source[this._index];
+        continue;
       } else if (ch === '\\') {
         let ch2 = this._source[this._index + 1];
         if ((quoteDelimited && ch2 === '"') ||
@@ -199,7 +200,7 @@ class ParseContext {
     }
 
     if (content.length === 0) {
-      content.push(source);
+      content.push(new AST.TextElement(source));
     }
 
     return new AST.String(source, content);
@@ -219,6 +220,10 @@ class ParseContext {
         break;
       }
       this._index++;
+    }
+
+    if (this._source[this._index] !== '}') {
+      throw new Error('Expected "}"');
     }
 
     this._index++;
@@ -383,7 +388,7 @@ class ParseContext {
     } else if ((cc >= 97 && cc <= 122) || // a-z
                (cc >= 65 && cc <= 90) ||  // A-Z
                 cc === 95 || cc === 45) { // _-
-      literal = this.getSimpleString();
+      literal = new AST.Keyword(this.getSimpleString());
     }
 
     this._index++;

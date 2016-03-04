@@ -107,6 +107,14 @@ class EntityReference extends Node {
   }
 }
 
+class Keyword extends Node {
+  constructor(value) {
+    super();
+    this.type = 'Keyword';
+    this.value = value;
+  }
+}
+
 class Number extends Node {
   constructor(value) {
     super();
@@ -145,6 +153,7 @@ export default {
   KeyValueArg,
   Number,
   EntityReference,
+  Keyword,
   TextElement,
   Comment
 };
