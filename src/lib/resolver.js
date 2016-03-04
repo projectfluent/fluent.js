@@ -39,17 +39,20 @@ function stringifyList(res, list) {
   return formatter.format(values);
 }
 
+// Helper for choosing entity value
 
-// Helper functions for picking the right member from an array of traits or 
-// variants.
+function getEntityValue(entity) {
+  if (entity.value !== null) {
+    return entity.value;
+  }
 
-function chooseTrait(entity, name) {
   for (let trait of entity.traits) {
-
-    if (name === trait.key || (!name && trait.default)) {
-      return trait;
+    if (trait.default) {
+      return trait.value;
     }
   }
+
+  return null;
 }
 
 
@@ -63,7 +66,7 @@ function resolve(res, expr) {
 
   switch (expr.type) {
     case 'EntityReference':
-      return resolveEntity(res, expr);
+      return resolveEntityReference(res, expr);
     case 'Variable':
       return resolveVariable(res, expr);
     // XXX case 'Keyword':
@@ -73,27 +76,36 @@ function resolve(res, expr) {
     case 'CallExpression':
       return resolveCall(res, expr);
     case 'MemberExpression':
-      return resolveTrait(res, expr);
+      return resolveMember(res, expr);
     default:
       throw new L10nError('Unknown placeable type');
   }
 }
 
-function resolveEntity(res, expr) {
-  const id = expr.id;
+function resolveEntity(res, id) {
   const entity = res.ctx._getEntity(res.lang, id);
 
   if (!entity) {
-    throw new L10nError('Unknown reference: ' + id);
+    throw new L10nError('Unknown entity: ' + id);
   }
 
   if (res.dirty.has(entity)) {
     throw new L10nError('Cyclic reference: ' + id);
   }
 
-  const value = entity.value !== null ?
-    entity.value :
-    chooseTrait(entity).value;
+  res.dirty.add(entity);
+  return entity;
+
+}
+
+function resolveEntityReference(res, expr) {
+  const id = expr.id;
+  const entity = resolveEntity(res, id);
+  const value = getEntityValue(entity);
+
+  if (value === null) {
+    throw new L10nError('No value: ' + id);
+  }
 
   return resolveValue(res, value);
 }
@@ -132,42 +144,44 @@ function resolveCall(res, expr) {
   );
 }
 
-function resolveTrait(res, expr) {
-  const id = expr.idref.name;
+function resolveTrait(res, traits, key) {
+  for (let trait of traits) {
+    if (key === resolve(res, trait.key)) {
+      return trait;
+    }
+  }
+
+  throw new L10nError('Unknown trait: ' + key);
+}
+
+function resolveMember(res, expr) {
+  const id = expr.idref.id;
   const key = expr.keyword;
-  const entity = res.ctx._getEntity(res.lang, id);
+  const entity = resolveEntity(res, id);
 
-  if (!entity) {
-    throw new L10nError('Unknown entity: ' + id);
-  }
-
-  const trait = chooseTrait(entity, key);
-
-  if (!trait) {
-    throw new L10nError('Unknown trait: ' + key);
-  }
-
-  return resolveValue(res, trait.value);
+  return resolveValue(
+    res, resolveTrait(res, entity.traits, key).value
+  );
 }
 
 function resolveVariant(res, variants, expr) {
   if (typeof expr === 'function') {
     for (let variant of variants) {
       if (expr(resolve(res, variant.key))) {
-        return resolveValue(res, variant.value);
+        return variant;
       }
     }
   } else {
     for (let variant of variants) {
       if (expr === resolve(res, variant.key)) {
-        return resolveValue(res, variant.value);
+        return variant;
       }
     }
   }
 
   for (let variant of variants) {
     if (variant.default) {
-      return resolveValue(res, variant.value);
+      return variant;
     }
   }
 
@@ -180,7 +194,9 @@ function resolvePlaceableExpression(res, expression) {
 
   const value = expression.variants === null ?
     expr :
-    resolveVariant(res, expression.variants, expr);
+    resolveValue(
+      res, resolveVariant(res, expression.variants, expr).value
+    );
 
   if (value.length >= MAX_PLACEABLE_LENGTH) {
     throw new L10nError(
@@ -240,9 +256,12 @@ export function format(ctx, lang, args, entity) {
     dirty: new WeakSet([entity])
   };
 
-  const value = entity.value !== null ?
-    entity.value :
-    chooseTrait(entity).value;
+  const value = getEntityValue(entity);
+
+  if (value === null) {
+    const err = new L10nError('No value: ' + entity.id);
+    return [[err], null];
+  }
 
   return formatValue(res, value);
 }
