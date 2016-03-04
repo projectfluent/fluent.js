@@ -174,11 +174,14 @@ class ParseContext {
         this._index++;
         break;
       } else if (ch === '{') {
-        content.push(new AST.TextElement(buffer));
+        if (buffer.length) {
+          content.push(new AST.TextElement(buffer));
+        }
         source += buffer;
         buffer = '';
         let start = this._index;
         content.push(this.getPlaceable());
+        source += this._source.substring(start, this._index);
         ch = this._source[this._index];
         continue;
       }
