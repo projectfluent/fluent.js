@@ -108,7 +108,20 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    return new AST.Identifier(this._source.slice(start, this._index));
+    return this._source.slice(start, this._index);
+  }
+
+  getSimpleString() {
+    const start = this._index;
+    let cc = this._source.charCodeAt(this._index);
+
+    while ((cc >= 97 && cc <= 122) || // a-z
+           (cc >= 65 && cc <= 90) ||  // A-Z
+           (cc >= 48 && cc <= 57) ||  // 0-9
+           cc === 95 || cc === 45 || cc === 32) {  // _-
+      cc = this._source.charCodeAt(++this._index);
+    }
+    return this._source.slice(start, this._index);
   }
 
   getString() {
@@ -143,7 +156,9 @@ class ParseContext {
           break;
         }
         this._index++;
-        this.getLineWS();
+        if (this._source[this._index] === ' ') {
+          this._index++;
+        }
         if (buffer.length) {
           buffer += '\n';
         }
@@ -159,7 +174,7 @@ class ParseContext {
         this._index++;
         break;
       } else if (ch === '{') {
-        content.push(buffer);
+        content.push(new AST.TextElement(buffer));
         source += buffer;
         buffer = '';
         let start = this._index;
@@ -177,7 +192,7 @@ class ParseContext {
 
     if (buffer.length) {
       source += buffer;
-      content.push(buffer);
+      content.push(new AST.TextElement(buffer));
     }
 
     if (content.length === 0) {
@@ -189,14 +204,33 @@ class ParseContext {
 
   getPlaceable() {
     this._index++;
-    this.getWS();
+    let start = this._index;
 
-    let selector = this.getSelector();
+    let expressions = [];
+    
+    while (this._source[this._index] !== '}') {
+      this.getWS();
+      expressions.push(this.getPlaceableExpression());
+      this.getWS();
+      if (this._source[this._index] !== ',') {
+        break;
+      }
+      this._index++;
+    }
+
+    this._index++;
+    return new AST.Placeable(expressions,
+      this._source.substring(start, this._index - 1));
+  }
+
+  getPlaceableExpression() {
+    let selector = this.getCallExpression();
     let members = null;
 
     this.getWS();
 
-    if (this._source[this._index] !== '}') {
+    if (this._source[this._index] !== '}' &&
+        this._source[this._index] !== ',') {
       this._index += 2; // ->
 
       this.getWS();
@@ -208,13 +242,7 @@ class ParseContext {
       }
     }
 
-    this.getWS();
-
-    if (this._source[this._index] !== '}') {
-      throw new Error('Expected "}"');
-    }
-    this._index++;
-    return new AST.Placeable(selector, members);
+    return new AST.PlaceableExpression(selector, members);
   }
 
   getCallExpression() {
@@ -236,34 +264,32 @@ class ParseContext {
   getCallArgs() {
     let args = [];
 
+    if (this._source[this._index] === ')') {
+      return args;
+    }
+
     while (this._index < this._length) {
       this.getWS();
 
       let cc = this._source.charCodeAt(this._index);
       let ch = this._source[this._index];
 
-      if (ch === '"') {
-        args.push(this.getArgumentString());
-      } else if (cc >= 48 && cc <= 57) {
-        args.push(this.getNumber());
+      let exp = this.getCallExpression();
+
+      if (!(exp instanceof AST.EntityReference)) {
+        args.push(exp);
       } else {
-        let exp = this.getVariable();
-        
-        if (exp instanceof AST.Variable) {
-          args.push(exp);
-        } else {
+        this.getWS();
+
+        if (this._source[this._index] === '=') {
+          this._index++;
           this.getWS();
 
-          if (this._source[this._index] === '=') {
-            this._index++;
-            this.getWS();
+          let val = this.getCallExpression();
 
-            let val = this.getArgumentValue();
-
-            args.push(new AST.KeyValueArg(exp, val));
-          } else {
-            args.push(exp);
-          }
+          args.push(new AST.KeyValueArg(exp.id, val));
+        } else {
+          args.push(exp);
         }
       }
 
@@ -281,60 +307,26 @@ class ParseContext {
     return args;
   }
 
-  getArgumentValue() {
-    if (this._source[this._index] === '"') {
-      return this.getArgumentString();
-    } else if (this._source[this._index] === '$') {
-      return this.getVariable();
-    }
-
-    let cc = this._source.charCodeAt(this._index);
-
-    if (cc >= 48 && cc <= 57) {
-      return this.getNumber();
-    }
-  }
-
-  getArgumentString() {
-    let close = this._source.indexOf('"', this._index + 1);
-    var value = this._source.substring(this._index + 1, close);
-    let string = new AST.String(value, [value]);
-    this._index = close + 1;
-    return string;
-  }
-
   getNumber() {
     let num = this._source[this._index++];
     let cc = this._source.charCodeAt(this._index);
+
+    if (cc === 45) {
+      num += '-';
+      cc = this._source[++this._index];
+    }
+
     while (cc >= 48 && cc <= 57 ||
            cc === 46) { // .
       num += this._source[this._index++];
       cc = this._source.charCodeAt(this._index);
     }
 
-    return new AST.Number(parseFloat(num));
-  }
-
-  getSelectExpression() {
-    let selector = this.getSelector();
-
-    this.getWS();
-
-    if (this._source[this._index] === '}') {
-      return new AST.Placeable(selector);
+    if (num.endsWith('.')) {
+      throw new Error('Unknown literal');
     }
 
-    this._index += 2; // ->
-
-    this.getWS();
-
-    let members = this.getMembers();
-
-    if (members.length === 0) {
-      throw new Error('Expected members');
-    }
-
-    return new AST.Placeable(selector, members);
+    return new AST.Number(num);
   }
 
   getMemberExpression() {
@@ -345,10 +337,6 @@ class ParseContext {
     }
     const keyword = this.getKeyword();
     return new AST.MemberExpression(exp, keyword);
-  }
-
-  getSelector() {
-    return this.getCallExpression();
   }
 
   getMembers() {
@@ -365,11 +353,16 @@ class ParseContext {
         def = true;
       }
       let key = this.getKeyword();
+
+      this.getLineWS();
+
       let value = this.getString();
 
       let member = new AST.Member(key, value, def);
 
       members.push(member);
+
+      this.getWS();
     }
 
     return members;
@@ -380,28 +373,31 @@ class ParseContext {
 
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
+    let literal;
 
-    while ((cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90) ||  // A-Z
-           (cc >= 48 && cc <= 57) ||  // 0-9
-           cc === 95 || cc === 45) {  // _-
-      cc = this._source.charCodeAt(++this._index);
+    if ((cc >= 48 && cc <= 57) || cc === 45) {
+      literal = this.getNumber();
+    } else if ((cc >= 97 && cc <= 122) || // a-z
+               (cc >= 65 && cc <= 90) ||  // A-Z
+                cc === 95 || cc === 45) { // _-
+      literal = this.getSimpleString();
     }
-    return this._source.slice(start, this._index++);
+
+    this._index++;
+    return literal;
   }
 
   getLiteral() {
-    let ch = this._source[this._index];
-
-    if (ch === '"') {
-      return this.getArgumentString();
-    } else if (ch === '$') {
+    let cc = this._source.charCodeAt(this._index);
+    if ((cc >= 48 && cc <= 57) || cc === 45) {
+      return this.getNumber();
+    } else if (cc === 34) { // "
+      return this.getString();
+    } else if (cc === 36) { // $
       this._index++;
-      const id = this.getIdentifier();
-
-      return new AST.Variable(id);
+      return new AST.Variable(this.getIdentifier());
     }
-    return this.getIdentifier();
+    return new AST.EntityReference(this.getIdentifier());
   }
 
   getVariable() {

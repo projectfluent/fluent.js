@@ -17,13 +17,6 @@ class Entry extends Node {
   }
 }
 
-class Identifier extends Node {
-  constructor(name) {
-    super();
-    this.name = name;
-  }
-}
-
 class String extends Node {
   constructor(source, elements) {
     super();
@@ -51,6 +44,14 @@ class Entity extends Entry {
 }
 
 class Placeable extends Node {
+  constructor(expressions, source=null) {
+    super();
+    this.expressions = expressions;
+    this.source = source;
+  }
+}
+
+class PlaceableExpression extends Node {
   constructor(expression, variants = null) {
     super();
     this.expression = expression;
@@ -89,7 +90,21 @@ class KeyValueArg extends Node {
   }
 }
 
+class EntityReference extends Node {
+  constructor(id) {
+    super();
+    this.id = id;
+  }
+}
+
 class Number extends Node {
+  constructor(value) {
+    super();
+    this.value = value;
+  }
+}
+
+class TextElement extends Node {
   constructor(value) {
     super();
     this.value = value;
@@ -105,16 +120,18 @@ class Comment extends Node {
 
 export default {
   Node,
-  Identifier,
   String,
   Member,
   Entity,
   Resource,
   Placeable,
+  PlaceableExpression,
   MemberExpression,
   CallExpression,
   Variable,
   KeyValueArg,
   Number,
+  EntityReference,
+  TextElement,
   Comment
 };
