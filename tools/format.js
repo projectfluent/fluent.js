@@ -12,7 +12,6 @@ var MockContext = require('../tests/lib/resolver/header').MockContext;
 var lang = require('../src/lib/mocks').lang;
 var lib = require('./lib');
 var color = lib.color.bind(program);
-var makeError = lib.makeError.bind(program);
 
 program
   .version('0.0.1')
@@ -30,32 +29,29 @@ if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
+function printError(err) {
+  return console.log(
+    color(err.name + ': ' + err.message, 'red')
+  );
+};
+
 function singleline(str) {
   return str && str
-    .replace(/^\s{3,}/g, ' ')
     .replace(/\n/g, ' ')
     .trim();
 }
 
-function format(ctx, entity) {
+function printEntry(ctx, id, entity) {
   const formatted = Resolver.format(ctx, lang, data, entity);
+
   if (formatted[0].length) {
-    return makeError(formatted[0][0]);
+    formatted[0].forEach(printError);
   }
 
-  return singleline(formatted[1]);
-}
-
-function printEntry(ctx, id, entity) {
   console.log(
     color(id, 'cyan'),
-    color(format(ctx, entity)));
-
-  for (var attr in entity.attrs) {
-    console.log(
-      color(' ::' + attr, 'cyan'),
-      color(format(ctx, entity.attrs[attr])));
-  }
+    color(singleline(formatted[1]))
+  );
 }
 
 function print(fileformat, err, data) {

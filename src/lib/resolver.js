@@ -236,7 +236,7 @@ function formatElements(res, value) {
       try {
         return [errs, seq + stringifyList(res, resolvePlaceable(res, elem))];
       } catch(e) {
-        return [[...errs, e], seq + stringify(res, '{}')];
+        return [[...errs, e], seq + stringify(res, '{' + elem.source + '}')];
       }
     }
   }, [[], '']);
