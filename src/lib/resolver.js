@@ -89,13 +89,7 @@ function resolveEntity(res, id) {
     throw new L10nError('Unknown entity: ' + id);
   }
 
-  if (res.dirty.has(entity)) {
-    throw new L10nError('Cyclic reference: ' + id);
-  }
-
-  res.dirty.add(entity);
   return entity;
-
 }
 
 function resolveEntityReference(res, expr) {
@@ -215,6 +209,11 @@ function resolvePlaceable(res, placeable) {
 }
 
 function resolveValue(res, value) {
+  if (res.dirty.has(value)) {
+    throw new L10nError('Cyclic reference');
+  }
+
+  res.dirty.add(value);
   const [errs, str] = formatValue(res, value);
 
   if (errs.length) {
