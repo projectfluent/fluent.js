@@ -74,18 +74,13 @@ function getValueNode(entity) {
 // resolve* functions can throw and return a single value
 
 function resolve(res, expr) {
-  // XXX remove
-  if (typeof expr === 'string') {
-    return expr;
-  }
-
   switch (expr.type) {
     case 'EntityReference':
       return resolveEntityReference(res, expr);
     case 'Variable':
       return resolveVariable(res, expr);
-    // XXX case 'Keyword':
-    //  return resolveKeyword(res, expr);
+    case 'Keyword':
+      return resolveKeyword(res, expr);
     case 'Number':
       return resolveNumber(res, expr);
     case 'CallExpression':
@@ -164,9 +159,8 @@ function resolveTrait(res, traits, key) {
 }
 
 function resolveMemberExpression(res, expr) {
-  const id = expr.idref.id;
-  const key = expr.keyword;
-  const entity = resolveEntity(res, id);
+  const entity = resolveEntity(res, expr.idref.id);
+  const key = resolve(res, expr.keyword);
 
   return resolveValue(
     res, resolveTrait(res, entity.traits, key)
