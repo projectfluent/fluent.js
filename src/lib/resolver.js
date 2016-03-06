@@ -80,47 +80,20 @@ function getValueNode(entity) {
 }
 
 
-// resolve* functions can throw and return a single value
-
-function resolveExpression(res, expr) {
+function Expression(res, expr) {
   switch (expr.type) {
-    case 'MemberExpression':
-      return resolveMemberExpression(res, expr);
     case 'EntityReference':
-      return resolveEntityReference(res, expr);
+      return EntityReference(res, expr);
+    case 'MemberExpression':
+      return MemberExpression(res, expr);
     case 'PlaceableExpression':
-      return resolvePlaceableExpression(res, expr);
+      return SelectExpression(res, expr);
     default:
       return expr;
   }
 }
 
-function resolveValue(res, expr) {
-  const node = resolveExpression(res, expr);
-  switch (node.type) {
-    case 'TextElement':
-    case 'Keyword':
-      return node.value;
-    case 'Number':
-      return parseFloat(node.value);
-    case 'Variable':
-      return resolveVariable(res, node);
-    case 'Placeable':
-      return resolvePlaceable(res, node);
-    case 'String':
-      return resolvePattern(res, node);
-    case 'Member':
-      return resolvePattern(res, node.value);
-    case 'CallExpression':
-      return resolveCallExpression(res, expr);
-    case 'Entity':
-      return resolvePattern(res, getValueNode(node).value);
-    default:
-      throw new L10nError('Unknown expression type');
-  }
-}
-
-function resolveEntityReference(res, expr) {
+function EntityReference(res, expr) {
   const entity = res.ctx._getEntity(res.lang, expr.id);
 
   if (!entity) {
@@ -130,7 +103,68 @@ function resolveEntityReference(res, expr) {
   return entity;
 }
 
-function resolveVariable(res, expr) {
+function MemberExpression(res, expr) {
+  const entity = Expression(res, expr.idref);
+  const key = Value(res, expr.keyword);
+
+  for (let trait of entity.traits) {
+    if (key === Value(res, trait.key)) {
+      return trait;
+    }
+  }
+
+  throw new L10nError('Unknown trait: ' + key);
+}
+
+function SelectExpression(res, expr) {
+  // XXX remove
+  if (expr.variants === null) {
+    return Expression(res, expr.expression);
+  }
+
+  const wrapped = wrap(res, Value(res, expr.expression));
+  for (let variant of expr.variants) {
+    if (wrapped.equals(Value(res, variant.key))) {
+      return variant;
+    }
+  }
+
+  for (let variant of expr.variants) {
+    if (variant.default) {
+      return variant;
+    }
+  }
+
+  throw new L10nError('No default variant found');
+}
+
+
+function Value(res, expr) {
+  const node = Expression(res, expr);
+  switch (node.type) {
+    case 'TextElement':
+    case 'Keyword':
+      return node.value;
+    case 'Number':
+      return parseFloat(node.value);
+    case 'Variable':
+      return Variable(res, node);
+    case 'Placeable':
+      return Placeable(res, node);
+    case 'CallExpression':
+      return CallExpression(res, expr);
+    case 'String':
+      return Pattern(res, node);
+    case 'Member':
+      return Pattern(res, node.value);
+    case 'Entity':
+      return Pattern(res, getValueNode(node).value);
+    default:
+      throw new L10nError('Unknown expression type');
+  }
+}
+
+function Variable(res, expr) {
   const id = expr.id;
   const args = res.args;
 
@@ -141,7 +175,14 @@ function resolveVariable(res, expr) {
   throw new L10nError('Unknown variable: ' + id);
 }
 
-function resolveCallExpression(res, expr) {
+function Placeable(res, placeable) {
+  return placeable.expressions.map(
+    expr => Value(res, expr)
+  );
+}
+
+
+function CallExpression(res, expr) {
   const callee = expr.callee.id;
 
   if (KNOWN_BUILTINS.indexOf(callee) === -1) {
@@ -150,65 +191,12 @@ function resolveCallExpression(res, expr) {
 
   const builtin = res.ctx._getBuiltin(res.lang, callee);
   const args = expr.args.map(
-    arg => resolveValue(res, arg)
+    arg => Value(res, arg)
   );
   return builtin(...args);
 }
 
-function resolveTrait(res, traits, key) {
-  for (let trait of traits) {
-    if (key === resolveValue(res, trait.key)) {
-      return trait;
-    }
-  }
-
-  throw new L10nError('Unknown trait: ' + key);
-}
-
-function resolveMemberExpression(res, expr) {
-  const entity = resolveExpression(res, expr.idref);
-  const key = resolveValue(res, expr.keyword);
-
-  return resolveTrait(res, entity.traits, key);
-}
-
-// XXX replace with SelectExpression
-function resolveVariant(res, variants, expr) {
-  const wrapped = wrap(res, expr);
-  for (let variant of variants) {
-    if (wrapped.equals(resolveValue(res, variant.key))) {
-      return variant;
-    }
-  }
-
-  for (let variant of variants) {
-    if (variant.default) {
-      return variant;
-    }
-  }
-
-  throw new L10nError('No default variant found');
-}
-
-
-// XXX remove
-function resolvePlaceableExpression(res, expression) {
-  return expression.variants === null ?
-    resolveExpression(res, expression.expression) :
-    resolveVariant(
-      res, expression.variants, resolveValue(
-        res, expression.expression
-      )
-    )
-}
-
-function resolvePlaceable(res, placeable) {
-  return placeable.expressions.map(
-    expr => resolveValue(res, expr)
-  );
-}
-
-function resolvePattern(res, ptn) {
+function Pattern(res, ptn) {
   if (res.dirty.has(ptn)) {
     const ref = ptn.id || ptn.key;
     throw new L10nError('Cyclic reference: ' + ref);
@@ -234,7 +222,7 @@ function formatPattern(res, ptn) {
       return [errs, seq + elem.value];
     } else if (elem.type === 'Placeable') {
       try {
-        return [errs, seq + stringifyList(res, resolveValue(res, elem))];
+        return [errs, seq + stringifyList(res, Value(res, elem))];
       } catch(e) {
         return [[...errs, e], seq + stringify(res, '{' + elem.source + '}')];
       }
