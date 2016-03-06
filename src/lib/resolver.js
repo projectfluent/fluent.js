@@ -51,6 +51,15 @@ function stringifyList(res, list) {
   return builtin(...list).format(
     elem => stringify(res, elem)
   );
+
+  // XXX add this back later
+  // if (value.length >= MAX_PLACEABLE_LENGTH) {
+  //   throw new L10nError(
+  //     'Too many characters in placeable (' + value.length +
+  //       ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
+  //   );
+  // }
+
 }
 
 
@@ -67,51 +76,58 @@ function getValueNode(entity) {
     }
   }
 
-  return null;
+  throw new L10nError('No value: ' + entity.id);
 }
 
 
 // resolve* functions can throw and return a single value
 
-function resolve(res, expr) {
+function resolveExpression(res, expr) {
   switch (expr.type) {
-    case 'EntityReference':
-      return resolveEntityReference(res, expr);
-    case 'Variable':
-      return resolveVariable(res, expr);
-    case 'Keyword':
-      return resolveKeyword(res, expr);
-    case 'Number':
-      return resolveNumber(res, expr);
-    case 'CallExpression':
-      return resolveCallExpression(res, expr);
     case 'MemberExpression':
       return resolveMemberExpression(res, expr);
+    case 'EntityReference':
+      return resolveEntityReference(res, expr);
+    case 'PlaceableExpression':
+      return resolvePlaceableExpression(res, expr);
     default:
-      throw new L10nError('Unknown placeable type');
+      return expr;
   }
 }
 
-function resolveEntity(res, id) {
-  const entity = res.ctx._getEntity(res.lang, id);
-
-  if (!entity) {
-    throw new L10nError('Unknown entity: ' + id);
+function resolveValue(res, expr) {
+  const node = resolveExpression(res, expr);
+  switch (node.type) {
+    case 'TextElement':
+    case 'Keyword':
+      return node.value;
+    case 'Number':
+      return parseFloat(node.value);
+    case 'Variable':
+      return resolveVariable(res, node);
+    case 'Placeable':
+      return resolvePlaceable(res, node);
+    case 'String':
+      return resolvePattern(res, node);
+    case 'Member':
+      return resolvePattern(res, node.value);
+    case 'CallExpression':
+      return resolveCallExpression(res, expr);
+    case 'Entity':
+      return resolvePattern(res, getValueNode(node).value);
+    default:
+      throw new L10nError('Unknown expression type');
   }
-
-  return entity;
 }
 
 function resolveEntityReference(res, expr) {
-  const id = expr.id;
-  const entity = resolveEntity(res, id);
-  const node = getValueNode(entity);
+  const entity = res.ctx._getEntity(res.lang, expr.id);
 
-  if (node === null) {
-    throw new L10nError('No value: ' + id);
+  if (!entity) {
+    throw new L10nError('Unknown entity: ' + expr.id);
   }
 
-  return resolveValue(res, node);
+  return entity;
 }
 
 function resolveVariable(res, expr) {
@@ -125,32 +141,23 @@ function resolveVariable(res, expr) {
   throw new L10nError('Unknown variable: ' + id);
 }
 
-function resolveKeyword(res, expr) {
-  return expr.value;
-}
-
-function resolveNumber(res, expr) {
-  return parseInt(expr.value);
-}
-
 function resolveCallExpression(res, expr) {
-  const id = expr.callee.id;
+  const callee = expr.callee.id;
 
-  if (KNOWN_BUILTINS.indexOf(id) === -1) {
-    throw new L10nError('Unknown built-in: ' + id);
+  if (KNOWN_BUILTINS.indexOf(callee) === -1) {
+    throw new L10nError('Unknown built-in: ' + callee);
   }
 
-  const callee = res.ctx._getBuiltin(res.lang, id);
-  return callee(
-    ...expr.args.map(
-      arg => resolve(res, arg)
-    )
+  const builtin = res.ctx._getBuiltin(res.lang, callee);
+  const args = expr.args.map(
+    arg => resolveValue(res, arg)
   );
+  return builtin(...args);
 }
 
 function resolveTrait(res, traits, key) {
   for (let trait of traits) {
-    if (key === resolve(res, trait.key)) {
+    if (key === resolveValue(res, trait.key)) {
       return trait;
     }
   }
@@ -159,18 +166,17 @@ function resolveTrait(res, traits, key) {
 }
 
 function resolveMemberExpression(res, expr) {
-  const entity = resolveEntity(res, expr.idref.id);
-  const key = resolve(res, expr.keyword);
+  const entity = resolveExpression(res, expr.idref);
+  const key = resolveValue(res, expr.keyword);
 
-  return resolveValue(
-    res, resolveTrait(res, entity.traits, key)
-  );
+  return resolveTrait(res, entity.traits, key);
 }
 
+// XXX replace with SelectExpression
 function resolveVariant(res, variants, expr) {
   const wrapped = wrap(res, expr);
   for (let variant of variants) {
-    if (wrapped.equals(resolve(res, variant.key))) {
+    if (wrapped.equals(resolveValue(res, variant.key))) {
       return variant;
     }
   }
@@ -185,39 +191,31 @@ function resolveVariant(res, variants, expr) {
 }
 
 
+// XXX remove
 function resolvePlaceableExpression(res, expression) {
-  const expr = resolve(res, expression.expression);
-
-  const value = expression.variants === null ?
-    expr :
-    resolveValue(
-      res, resolveVariant(res, expression.variants, expr)
-    );
-
-  if (value.length >= MAX_PLACEABLE_LENGTH) {
-    throw new L10nError(
-      'Too many characters in placeable (' + value.length +
-        ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
-    );
-  }
-
-  return value;
+  return expression.variants === null ?
+    resolveExpression(res, expression.expression) :
+    resolveVariant(
+      res, expression.variants, resolveValue(
+        res, expression.expression
+      )
+    )
 }
 
 function resolvePlaceable(res, placeable) {
   return placeable.expressions.map(
-    expr => resolvePlaceableExpression(res, expr)
+    expr => resolveValue(res, expr)
   );
 }
 
-function resolveValue(res, node) {
-  if (res.dirty.has(node)) {
-    const ref = node.id || node.key;
+function resolvePattern(res, ptn) {
+  if (res.dirty.has(ptn)) {
+    const ref = ptn.id || ptn.key;
     throw new L10nError('Cyclic reference: ' + ref);
   }
 
-  res.dirty.add(node);
-  const [errs, str] = formatElements(res, node.value);
+  res.dirty.add(ptn);
+  const [errs, str] = formatPattern(res, ptn);
 
   if (errs.length) {
     throw new L10nError('Broken value.');
@@ -227,16 +225,16 @@ function resolveValue(res, node) {
 }
 
 
-// formatElements collects any errors and return them as the first element of 
+// formatPattern collects errors and returns them as the first element of 
 // the return tuple: [errors, value]
 
-function formatElements(res, value) {
-  return value.elements.reduce(([errs, seq], elem) => {
+function formatPattern(res, ptn) {
+  return ptn.elements.reduce(([errs, seq], elem) => {
     if (elem.type === 'TextElement') {
       return [errs, seq + elem.value];
     } else if (elem.type === 'Placeable') {
       try {
-        return [errs, seq + stringifyList(res, resolvePlaceable(res, elem))];
+        return [errs, seq + stringifyList(res, resolveValue(res, elem))];
       } catch(e) {
         return [[...errs, e], seq + stringify(res, '{' + elem.source + '}')];
       }
@@ -260,5 +258,5 @@ export function format(ctx, lang, args, entity) {
   }
 
   res.dirty.add(node);
-  return formatElements(res, node.value);
+  return formatPattern(res, node.value);
 }
