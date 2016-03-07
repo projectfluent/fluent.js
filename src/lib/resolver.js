@@ -65,20 +65,18 @@ function stringifyList(res, list) {
 
 // Helper for choosing entity value
 
-function getValueNode(entity) {
-  if (entity.value !== null) {
-    return entity;
-  }
-
-  for (let trait of entity.traits) {
-    if (trait.default) {
-      return trait;
+function DefaultMember(members) {
+  for (let member of members) {
+    if (member.default) {
+      return member;
     }
   }
 
-  throw new L10nError('No value: ' + entity.id);
+  throw new L10nError('No default.');
 }
 
+
+// Half-resolved expressions
 
 function Expression(res, expr) {
   switch (expr.type) {
@@ -129,15 +127,11 @@ function SelectExpression(res, expr) {
     }
   }
 
-  for (let variant of expr.variants) {
-    if (variant.default) {
-      return variant;
-    }
-  }
-
-  throw new L10nError('No default variant found');
+  return DefaultMember(expr.variants);
 }
 
+
+// Fully-resolved expressions
 
 function Value(res, expr) {
   const node = Expression(res, expr);
@@ -158,7 +152,7 @@ function Value(res, expr) {
     case 'Member':
       return Pattern(res, node.value);
     case 'Entity':
-      return Pattern(res, getValueNode(node).value);
+      return Entity(res, node);
     default:
       throw new L10nError('Unknown expression type');
   }
@@ -212,6 +206,13 @@ function Pattern(res, ptn) {
   return str;
 }
 
+function Entity(res, entity) {
+  const value = entity.value !== null ?
+    entity.value : DefaultMember(entity.traits).value;
+
+  return Pattern(res, value);
+}
+
 
 // formatPattern collects errors and returns them as the first element of 
 // the return tuple: [errors, value]
@@ -239,12 +240,13 @@ export function format(ctx, lang, args, entity) {
     dirty: new WeakSet()
   };
 
-  const node = getValueNode(entity);
-  if (node === null) {
+  try {
+    const value = entity.value !== null ?
+      entity.value : DefaultMember(entity.traits).value;
+    res.dirty.add(value);
+    return formatPattern(res, value);
+  } catch (e) {
     const err = new L10nError('No value: ' + entity.id);
     return [[err], null];
   }
-
-  res.dirty.add(node);
-  return formatPattern(res, node.value);
 }
