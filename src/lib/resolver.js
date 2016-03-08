@@ -79,12 +79,12 @@ function unit(val) {
   return [[], val];
 }
 
-function fail(errs) {
-  return [errs, null];
+function fail(errs, salvage = null) {
+  return [errs, salvage];
 }
 
-function error(err) {
-  return fail([err]);
+function error(err, salvage) {
+  return fail([err], salvage);
 }
 
 // Helper for choosing entity value
@@ -121,7 +121,7 @@ function EntityReference(res, expr) {
   const entity = res.ctx._getEntity(res.lang, expr.id);
 
   if (!entity) {
-    return error(new L10nError('Unknown entity: ' + expr.id));
+    return error(new L10nError('Unknown entity: ' + expr.id), expr.id);
   }
 
   return unit(entity);
@@ -131,7 +131,7 @@ function BuiltinReference(res, expr) {
   const builtin = res.ctx._getBuiltin(res.lang, expr.id);
 
   if (!builtin) {
-    return error(new L10nError('Unknown built-in: ' + expr.id))
+    return error(new L10nError('Unknown built-in: ' + expr.id), expr.id);
   }
 
   return unit(builtin);
@@ -140,12 +140,12 @@ function BuiltinReference(res, expr) {
 function TraitExpression(res, expr) {
   const [errs1, entity] = Expression(res, expr.idref);
   if (errs1.length) {
-    return fail(errs1);
+    return fail(errs1, entity);
   }
 
   const [errs2, key] = Value(res, expr.keyword);
   if (errs2.length) {
-    return fail(errs2);
+    return fail(errs2, entity);
   }
 
   for (let trait of entity.traits) {
@@ -177,7 +177,7 @@ function SelectExpression(res, expr) {
 function Value(res, expr) {
   const [errs, node] = Expression(res, expr);
   if (errs.length) {
-    return fail(errs);
+    return fail(errs, node);
   }
 
   switch (node.type) {
@@ -215,14 +215,13 @@ function Variable(res, expr) {
 }
 
 function CallExpression(res, expr) {
-  const [errs1, callee] = Expression(res, expr);
+  const [errs1, callee] = Expression(res, expr.callee);
   if (errs1) {
-    fail(errs1);
+    fail(errs1, callee);
   }
 
   const [errs2, args] = mapValues(res, expr.args);
-
-  return [errs2, builtin(...args)];
+  return [errs2, callee(...args)];
 }
 
 function Pattern(res, ptn) {
@@ -262,7 +261,7 @@ function formatPattern(res, ptn) {
       if (errs.length) {
         return [
           [...errSeq, ...errs],
-          valSeq + stringify(res, '{' + elem.source + '}')
+          valSeq + stringify(res, '{' + value + '}')
         ];
       }
       return [errSeq, valSeq + stringifyList(res, value)];
