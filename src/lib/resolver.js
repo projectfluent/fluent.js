@@ -8,6 +8,20 @@ const FSI = '\u2068';
 const PDI = '\u2069';
 
 
+function mapValues(res, arr) {
+  return arr.reduce(
+    ([errSeq, valSeq], cur) => {
+      const [errs, value] = Value(res, cur);
+      return [
+        [...errSeq, ...errs],
+        [...valSeq, value],
+      ];
+    },
+    [[], []]
+  );
+}
+
+
 // Helper for converting primitives into builtins
 
 function wrap(res, expr) {
@@ -62,17 +76,28 @@ function stringifyList(res, list) {
 
 }
 
+function unit(val) {
+  return [[], val];
+}
+
+function fail(errs) {
+  return [errs, null];
+}
+
+function error(err) {
+  return fail([err]);
+}
 
 // Helper for choosing entity value
 
 function DefaultMember(members) {
   for (let member of members) {
     if (member.default) {
-      return member;
+      return unit(member);
     }
   }
 
-  throw new L10nError('No default.');
+  return error(new L10nError('No default.'));
 }
 
 
@@ -83,11 +108,11 @@ function Expression(res, expr) {
     case 'EntityReference':
       return EntityReference(res, expr);
     case 'MemberExpression':
-      return MemberExpression(res, expr);
+      return TraitExpression(res, expr);
     case 'PlaceableExpression':
       return SelectExpression(res, expr);
     default:
-      return expr;
+      return unit(expr);
   }
 }
 
@@ -95,23 +120,30 @@ function EntityReference(res, expr) {
   const entity = res.ctx._getEntity(res.lang, expr.id);
 
   if (!entity) {
-    throw new L10nError('Unknown entity: ' + expr.id);
+    return error(new L10nError('Unknown entity: ' + expr.id));
   }
 
-  return entity;
+  return unit(entity);
 }
 
-function MemberExpression(res, expr) {
-  const entity = Expression(res, expr.idref);
-  const key = Value(res, expr.keyword);
+function TraitExpression(res, expr) {
+  const [errs1, entity] = Expression(res, expr.idref);
+  if (errs1.length) {
+    return fail(errs1);
+  }
+
+  const [errs2, key] = Value(res, expr.keyword);
+  if (errs2.length) {
+    return fail(errs2);
+  }
 
   for (let trait of entity.traits) {
     if (key === Value(res, trait.key)) {
-      return trait;
+      return unit(trait);
     }
   }
 
-  throw new L10nError('Unknown trait: ' + key);
+  return error(new L10nError('Unknown trait: ' + key));
 }
 
 function SelectExpression(res, expr) {
@@ -120,10 +152,13 @@ function SelectExpression(res, expr) {
     return Expression(res, expr.expression);
   }
 
-  const wrapped = wrap(res, Value(res, expr.expression));
+  const [selErrs, selector] = Value(res, expr.expression);
+  const wrapped = wrap(res, selector);
+
   for (let variant of expr.variants) {
-    if (wrapped.equals(Value(res, variant.key))) {
-      return variant;
+    const [keyErrs, key] = Value(res, variant.key);
+    if (wrapped.equals(key)) {
+      return [[...selErrs, ...keyErrs], variant];
     }
   }
 
@@ -134,17 +169,21 @@ function SelectExpression(res, expr) {
 // Fully-resolved expressions
 
 function Value(res, expr) {
-  const node = Expression(res, expr);
+  const [errs, node] = Expression(res, expr);
+  if (errs.length) {
+    return fail(errs);
+  }
+
   switch (node.type) {
     case 'TextElement':
     case 'Keyword':
-      return node.value;
+      return unit(node.value);
     case 'Number':
-      return parseFloat(node.value);
+      return unit(parseFloat(node.value));
     case 'Variable':
       return Variable(res, node);
     case 'Placeable':
-      return Placeable(res, node);
+      return mapValues(res, node.expressions);
     case 'CallExpression':
       return CallExpression(res, expr);
     case 'String':
@@ -154,7 +193,7 @@ function Value(res, expr) {
     case 'Entity':
       return Entity(res, node);
     default:
-      throw new L10nError('Unknown expression type');
+      return error(new L10nError('Unknown expression type'));
   }
 }
 
@@ -163,54 +202,47 @@ function Variable(res, expr) {
   const args = res.args;
 
   if (args && args.hasOwnProperty(id)) {
-    return args[id];
+    return unit(args[id]);
   }
 
-  throw new L10nError('Unknown variable: ' + id);
+  return error(new L10nError('Unknown variable: ' + id));
 }
-
-function Placeable(res, placeable) {
-  return placeable.expressions.map(
-    expr => Value(res, expr)
-  );
-}
-
 
 function CallExpression(res, expr) {
   const callee = expr.callee.id;
 
   if (KNOWN_BUILTINS.indexOf(callee) === -1) {
-    throw new L10nError('Unknown built-in: ' + callee);
+    return error(new L10nError('Unknown built-in: ' + callee))
   }
 
   const builtin = res.ctx._getBuiltin(res.lang, callee);
-  const args = expr.args.map(
-    arg => Value(res, arg)
-  );
-  return builtin(...args);
+
+  const [errs, args] = mapValues(res, expr.args);
+  return [errs, builtin(...args)];
 }
 
 function Pattern(res, ptn) {
   if (res.dirty.has(ptn)) {
     const ref = ptn.id || ptn.key;
-    throw new L10nError('Cyclic reference: ' + ref);
+    return error(new L10nError('Cyclic reference: ' + ref));
   }
 
   res.dirty.add(ptn);
-  const [errs, str] = formatPattern(res, ptn);
-
-  if (errs.length) {
-    throw new L10nError('Broken value.');
-  }
-
-  return str;
+  return formatPattern(res, ptn);
 }
 
 function Entity(res, entity) {
-  const value = entity.value !== null ?
-    entity.value : DefaultMember(entity.traits).value;
+  if (entity.value !== null) {
+    return Pattern(res, entity.value);
+  }
 
-  return Pattern(res, value);
+  const [errs, def] = DefaultMember(entity.traits);
+
+  if (errs.length) {
+    return error(new L10nError('No value: ' + entity.id));
+  }
+
+  return Pattern(res, def.value);
 }
 
 
@@ -218,15 +250,18 @@ function Entity(res, entity) {
 // the return tuple: [errors, value]
 
 function formatPattern(res, ptn) {
-  return ptn.elements.reduce(([errs, seq], elem) => {
+  return ptn.elements.reduce(([errSeq, valSeq], elem) => {
     if (elem.type === 'TextElement') {
-      return [errs, seq + elem.value];
+      return [errSeq, valSeq + elem.value];
     } else if (elem.type === 'Placeable') {
-      try {
-        return [errs, seq + stringifyList(res, Value(res, elem))];
-      } catch(e) {
-        return [[...errs, e], seq + stringify(res, '{' + elem.source + '}')];
+      const [errs, value] = Value(res, elem);
+      if (errs.length) {
+        return [
+          [...errSeq, ...errs],
+          valSeq + stringify(res, '{' + elem.source + '}')
+        ];
       }
+      return [errSeq, valSeq + stringifyList(res, value)];
     }
   }, [[], '']);
 }
@@ -236,17 +271,8 @@ export function format(ctx, lang, args, entity) {
     ctx,
     lang,
     args,
-    errors: [],
     dirty: new WeakSet()
   };
 
-  try {
-    const value = entity.value !== null ?
-      entity.value : DefaultMember(entity.traits).value;
-    res.dirty.add(value);
-    return formatPattern(res, value);
-  } catch (e) {
-    const err = new L10nError('No value: ' + entity.id);
-    return [[err], null];
-  }
+  return Entity(res, entity);
 }
