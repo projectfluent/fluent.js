@@ -230,7 +230,7 @@ class ParseContext {
 
   getPlaceableExpression() {
     let selector = this.getCallExpression();
-    let members = [];
+    let members = null;
 
     this.getWS();
 
@@ -266,8 +266,8 @@ class ParseContext {
 
     this._index++;
 
-    if (typeof exp === 'EntityReference') {
-      exp = AST.BuiltinReference(exp.id);
+    if (exp instanceof AST.EntityReference) {
+      exp = new AST.BuiltinReference(exp.id);
     }
 
     return new AST.CallExpression(exp, args);

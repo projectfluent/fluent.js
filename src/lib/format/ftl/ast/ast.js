@@ -20,7 +20,7 @@ class Entry extends Node {
 class Pattern extends Node {
   constructor(source, elements) {
     super();
-    this.type = 'String';
+    this.type = 'Pattern';
     this.source = source;
     this.elements = elements;
   }
@@ -57,7 +57,7 @@ class Placeable extends Node {
 class SelectExpression extends Node {
   constructor(expression, variants = null) {
     super();
-    this.type = 'PlaceableExpression';
+    this.type = 'SelectExpression';
     this.expression = expression;
     this.variants = variants;
   }
