@@ -1,6 +1,5 @@
 import { L10nError } from './errors';
 
-const KNOWN_BUILTINS = ['PLURAL', 'NUMBER', 'LIST'];
 const MAX_PLACEABLE_LENGTH = 2500;
 
 // Unicode bidi isolation characters
@@ -107,9 +106,11 @@ function Expression(res, expr) {
   switch (expr.type) {
     case 'EntityReference':
       return EntityReference(res, expr);
+    case 'BuiltinReference':
+      return BuiltinReference(res, expr);
     case 'MemberExpression':
       return TraitExpression(res, expr);
-    case 'PlaceableExpression':
+    case 'SelectExpression':
       return SelectExpression(res, expr);
     default:
       return unit(expr);
@@ -124,6 +125,16 @@ function EntityReference(res, expr) {
   }
 
   return unit(entity);
+}
+
+function BuiltinReference(res, expr) {
+  const builtin = res.ctx._getBuiltin(res.lang, expr.id);
+
+  if (!builtin) {
+    return error(new L10nError('Unknown built-in: ' + expr.id))
+  }
+
+  return unit(builtin);
 }
 
 function TraitExpression(res, expr) {
@@ -147,11 +158,6 @@ function TraitExpression(res, expr) {
 }
 
 function SelectExpression(res, expr) {
-  // XXX remove
-  if (expr.variants === null) {
-    return Expression(res, expr.expression);
-  }
-
   const [selErrs, selector] = Value(res, expr.expression);
   const wrapped = wrap(res, selector);
 
@@ -186,7 +192,7 @@ function Value(res, expr) {
       return mapValues(res, node.expressions);
     case 'CallExpression':
       return CallExpression(res, expr);
-    case 'String':
+    case 'Pattern':
       return Pattern(res, node);
     case 'Member':
       return Pattern(res, node.value);
@@ -209,16 +215,14 @@ function Variable(res, expr) {
 }
 
 function CallExpression(res, expr) {
-  const callee = expr.callee.id;
-
-  if (KNOWN_BUILTINS.indexOf(callee) === -1) {
-    return error(new L10nError('Unknown built-in: ' + callee))
+  const [errs1, callee] = Expression(res, expr);
+  if (errs1) {
+    fail(errs1);
   }
 
-  const builtin = res.ctx._getBuiltin(res.lang, callee);
+  const [errs2, args] = mapValues(res, expr.args);
 
-  const [errs, args] = mapValues(res, expr.args);
-  return [errs, builtin(...args)];
+  return [errs2, builtin(...args)];
 }
 
 function Pattern(res, ptn) {
