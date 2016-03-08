@@ -52,7 +52,7 @@ class ParseContext {
     if (ch === '=') {
       this._index++;
       this.getLineWS();
-      value = this.getString();
+      value = this.getPattern();
 
       ch = this._source[this._index];
     }
@@ -113,18 +113,17 @@ class ParseContext {
 
   getSimpleString() {
     const start = this._index;
-    let cc = this._source.charCodeAt(this._index);
+    let ch = this._source[this._index];
 
-    while ((cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90) ||  // A-Z
-           (cc >= 48 && cc <= 57) ||  // 0-9
-           cc === 95 || cc === 45 || cc === 32) {  // _-
-      cc = this._source.charCodeAt(++this._index);
+    while (ch !== '=' && ch !== '$' && ch !== '[' &&
+           ch !== ']' && ch !== '{' && ch !== '}' &&
+           ch !== '(' && ch !== ')') {
+      ch = this._source[++this._index];
     }
     return this._source.slice(start, this._index);
   }
 
-  getString() {
+  getPattern() {
     let buffer = '';
     let source = '';
     let content = [];
@@ -203,12 +202,11 @@ class ParseContext {
       content.push(new AST.TextElement(source));
     }
 
-    return new AST.String(source, content);
+    return new AST.Pattern(source, content);
   }
 
   getPlaceable() {
     this._index++;
-    let start = this._index;
 
     let expressions = [];
     
@@ -227,13 +225,12 @@ class ParseContext {
     }
 
     this._index++;
-    return new AST.Placeable(expressions,
-      this._source.substring(start, this._index - 1));
+    return new AST.Placeable(expressions);
   }
 
   getPlaceableExpression() {
     let selector = this.getCallExpression();
-    let members = null;
+    let members = [];
 
     this.getWS();
 
@@ -250,7 +247,10 @@ class ParseContext {
       }
     }
 
-    return new AST.PlaceableExpression(selector, members);
+    if (members === null) {
+      return selector;
+    }
+    return new AST.SelectExpression(selector, members);
   }
 
   getCallExpression() {
@@ -265,6 +265,10 @@ class ParseContext {
     let args = this.getCallArgs();
 
     this._index++;
+
+    if (typeof exp === 'EntityReference') {
+      exp = AST.BuiltinReference(exp.id);
+    }
 
     return new AST.CallExpression(exp, args);
   }
@@ -364,7 +368,7 @@ class ParseContext {
 
       this.getLineWS();
 
-      let value = this.getString();
+      let value = this.getPattern();
 
       let member = new AST.Member(key, value, def);
 
@@ -385,9 +389,9 @@ class ParseContext {
 
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
-    } else if ((cc >= 97 && cc <= 122) || // a-z
-               (cc >= 65 && cc <= 90) ||  // A-Z
-                cc === 95 || cc === 45) { // _-
+    } else if (cc !== 61 && cc !== 36 && cc !== 91 &&    // =$[
+               cc !== 93 && cc !== 123 && cc !== 125 &&  // ]{}
+               cc !== 40 && cc !== 41) {                 // ()
       literal = new AST.Keyword(this.getSimpleString());
     }
 
@@ -400,7 +404,7 @@ class ParseContext {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       return this.getNumber();
     } else if (cc === 34) { // "
-      return this.getString();
+      return this.getPattern();
     } else if (cc === 36) { // $
       this._index++;
       return new AST.Variable(this.getIdentifier());
