@@ -143,13 +143,11 @@ function TraitExpression(res, expr) {
     return fail(errs1, entity);
   }
 
-  const [errs2, key] = Value(res, expr.keyword);
-  if (errs2.length) {
-    return fail(errs2, entity);
-  }
+  const [, key] = Value(res, expr.keyword);
 
   for (let trait of entity.traits) {
-    if (key === Value(res, trait.key)) {
+    const [, traitKey] = Value(res, trait.key);
+    if (key === traitKey) {
       return unit(trait);
     }
   }
@@ -159,12 +157,17 @@ function TraitExpression(res, expr) {
 
 function SelectExpression(res, expr) {
   const [selErrs, selector] = Value(res, expr.expression);
+  if (selErrs.length) {
+    const [defErrs, def] = DefaultMember(expr.variants);
+    return fail([...selErrs, ...defErrs], def);
+  }
+
   const wrapped = wrap(res, selector);
 
   for (let variant of expr.variants) {
-    const [keyErrs, key] = Value(res, variant.key);
+    const [, key] = Value(res, variant.key);
     if (wrapped.equals(key)) {
-      return [[...selErrs, ...keyErrs], variant];
+      return unit(variant);
     }
   }
 
@@ -211,7 +214,7 @@ function Variable(res, expr) {
     return unit(args[id]);
   }
 
-  return error(new L10nError('Unknown variable: ' + id));
+  return error(new L10nError('Unknown variable: ' + id), id);
 }
 
 function CallExpression(res, expr) {
@@ -226,8 +229,7 @@ function CallExpression(res, expr) {
 
 function Pattern(res, ptn) {
   if (res.dirty.has(ptn)) {
-    const ref = ptn.id || ptn.key;
-    return error(new L10nError('Cyclic reference: ' + ref));
+    return error(new L10nError('Cyclic reference'));
   }
 
   res.dirty.add(ptn);
@@ -242,7 +244,7 @@ function Entity(res, entity) {
   const [errs, def] = DefaultMember(entity.traits);
 
   if (errs.length) {
-    return error(new L10nError('No value: ' + entity.id));
+    return error(new L10nError('No value: ' + entity.id), entity.id);
   }
 
   return Pattern(res, def.value);
