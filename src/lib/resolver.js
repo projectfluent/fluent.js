@@ -109,7 +109,7 @@ function Expression(res, expr) {
     case 'BuiltinReference':
       return BuiltinReference(res, expr);
     case 'MemberExpression':
-      return TraitExpression(res, expr);
+      return MemberExpression(res, expr);
     case 'SelectExpression':
       return SelectExpression(res, expr);
     default:
@@ -137,7 +137,7 @@ function BuiltinReference(res, expr) {
   return unit(builtin);
 }
 
-function TraitExpression(res, expr) {
+function MemberExpression(res, expr) {
   const [errs1, entity] = Expression(res, expr.idref);
   if (errs1.length) {
     return fail(errs1, entity);
@@ -145,10 +145,10 @@ function TraitExpression(res, expr) {
 
   const [, key] = Value(res, expr.keyword);
 
-  for (let trait of entity.traits) {
-    const [, traitKey] = Value(res, trait.key);
-    if (key === traitKey) {
-      return unit(trait);
+  for (let member of entity.traits) {
+    const [, memberKey] = Value(res, member.key);
+    if (key === memberKey) {
+      return unit(member);
     }
   }
 
