@@ -33,15 +33,16 @@ export function NUMBER(lang) {
   };
 }
 
-// XXX shim of ListFormat
 export function LIST(lang) {
+  const lf = L20nIntl.ListFormat(lang.code);
+
   return (...list) => {
     return {
       equals() {
         return false;
       },
       format(stringify) {
-        return list.map(stringify).join(', ');
+        return lf.format(list.map(stringify));
       }
     };
   }
