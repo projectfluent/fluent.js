@@ -24,6 +24,17 @@ function mapValues(res, arr) {
 // Helper for converting primitives into builtins
 
 function wrap(res, expr) {
+  if (expr === null) {
+    return {
+      equals() {
+        return false;
+      },
+      format() {
+        return '???';
+      }
+    }
+  }
+
   if (typeof expr === 'object' && expr.equals) {
     return expr;
   }
@@ -79,13 +90,12 @@ function unit(val) {
   return [[], val];
 }
 
-function fail(errs, salvage = null) {
-  return [errs, salvage];
+function fail(prevErrs, [errs, value]) {
+  return [
+    [...prevErrs, ...errs], value
+  ];
 }
 
-function error(err, salvage) {
-  return fail([err], salvage);
-}
 
 // Helper for choosing entity value
 
@@ -96,7 +106,10 @@ function DefaultMember(members) {
     }
   }
 
-  return error(new L10nError('No default.'));
+  return fail(
+    [new L10nError('No default.')],
+    unit(null)
+  );
 }
 
 
@@ -121,7 +134,10 @@ function EntityReference(res, expr) {
   const entity = res.ctx._getEntity(res.lang, expr.id);
 
   if (!entity) {
-    return error(new L10nError('Unknown entity: ' + expr.id), expr.id);
+    return fail(
+      [new L10nError('Unknown entity: ' + expr.id)],
+      unit(expr.id)
+    );
   }
 
   return unit(entity);
@@ -131,7 +147,10 @@ function BuiltinReference(res, expr) {
   const builtin = res.ctx._getBuiltin(res.lang, expr.id);
 
   if (!builtin) {
-    return error(new L10nError('Unknown built-in: ' + expr.id), expr.id);
+    return fail(
+      [new L10nError('Unknown built-in: ' + expr.id)],
+      unit(expr.id)
+    );
   }
 
   return unit(builtin);
@@ -140,7 +159,7 @@ function BuiltinReference(res, expr) {
 function MemberExpression(res, expr) {
   const [errs1, entity] = Expression(res, expr.idref);
   if (errs1.length) {
-    return fail(errs1, entity);
+    return fail(errs1, Value(res, entity));
   }
 
   const [, key] = Value(res, expr.keyword);
@@ -152,14 +171,16 @@ function MemberExpression(res, expr) {
     }
   }
 
-  return error(new L10nError('Unknown trait: ' + key));
+  return fail(
+    [new L10nError('Unknown trait: ' + key)],
+    Value(res, entity)
+  );
 }
 
 function SelectExpression(res, expr) {
   const [selErrs, selector] = Value(res, expr.expression);
   if (selErrs.length) {
-    const [defErrs, def] = DefaultMember(expr.variants);
-    return fail([...selErrs, ...defErrs], def);
+    return fail(selErrs, DefaultMember(expr.variants));
   }
 
   const wrapped = wrap(res, selector);
@@ -180,7 +201,7 @@ function SelectExpression(res, expr) {
 function Value(res, expr) {
   const [errs, node] = Expression(res, expr);
   if (errs.length) {
-    return fail(errs, node);
+    return fail(errs, unit(node));
   }
 
   switch (node.type) {
@@ -214,14 +235,18 @@ function Variable(res, expr) {
     return unit(args[id]);
   }
 
-  return error(new L10nError('Unknown variable: ' + id), id);
+  return fail(
+    [new L10nError('Unknown variable: ' + id)],
+    unit(id)
+  );
 }
 
 function CallExpression(res, expr) {
   const [errs1, callee] = Expression(res, expr.callee);
-  if (errs1) {
-    fail(errs1, callee);
+  if (errs1.length) {
+    return fail(errs1, unit(callee));
   }
+
 
   const [errs2, args] = mapValues(res, expr.args);
   return [errs2, callee(...args)];
@@ -229,7 +254,10 @@ function CallExpression(res, expr) {
 
 function Pattern(res, ptn) {
   if (res.dirty.has(ptn)) {
-    return error(new L10nError('Cyclic reference'));
+    return fail(
+      [new L10nError('Cyclic reference')],
+      unit(null)
+    );
   }
 
   res.dirty.add(ptn);
@@ -244,7 +272,10 @@ function Entity(res, entity) {
   const [errs, def] = DefaultMember(entity.traits);
 
   if (errs.length) {
-    return error(new L10nError('No value: ' + entity.id), entity.id);
+    return fail(
+      [new L10nError('No value: ' + entity.id)],
+      unit(entity.id)
+    );
   }
 
   return Pattern(res, def.value);
@@ -260,13 +291,10 @@ function formatPattern(res, ptn) {
       return [errSeq, valSeq + elem.value];
     } else if (elem.type === 'Placeable') {
       const [errs, value] = Value(res, elem);
-      if (errs.length) {
-        return [
-          [...errSeq, ...errs],
-          valSeq + stringify(res, '{' + value + '}')
-        ];
-      }
-      return [errSeq, valSeq + stringifyList(res, value)];
+      return [
+        [...errSeq, ...errs],
+        valSeq + stringifyList(res, value)
+      ];
     }
   }, [[], '']);
 }
