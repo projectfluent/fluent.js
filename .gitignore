@@ -3,4 +3,5 @@ dist
 tools/*.l20n
 tools/*.properties
 tools/*.json
+tools/*.ftl
 tools/perf/*.json
