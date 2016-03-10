@@ -1,11 +1,25 @@
-// Safari 9 and iOS 9 does not support Intl
-export const L20nIntl = typeof Intl !== 'undefined' ?
-  Intl : {
-    NumberFormat: function() {
-      return {
-        format: function(v) {
-          return v;
-        }
-      };
-    }
-  };
+import { getPluralRule } from './plurals';
+
+// Safari 9 and iOS 9 do not support Intl at all
+export const L20nIntl = typeof Intl !== 'undefined' ? Intl : {};
+
+if (!L20nIntl.NumberFormat) {
+  L20nIntl.NumberFormat = function() {
+    return {
+      format(n) {
+        return n;
+      }
+    };
+  }
+}
+
+if (!L20nIntl.PluralRules) {
+  L20nIntl.PluralRules = function(code) {
+    const fn = getPluralRule(code);
+    return {
+      select(n) {
+        return fn(n);
+      }
+    };
+  }
+}

@@ -14,7 +14,6 @@ var MockContext = require('../tests/lib/resolver/header').MockContext;
 var lang = require('../src/lib/mocks').lang;
 var lib = require('./lib');
 var color = lib.color.bind(program);
-var makeError = lib.makeError.bind(program);
 
 program
   .version('0.0.1')
@@ -32,31 +31,29 @@ if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
-function singleline(formatted) {
-  var str = formatted[1];
-  return str && str.replace(/\n/g, ' ')
-                   .replace(/\s{3,}/g, ' ')
-                   .trim();
-}
+function printError(err) {
+  return console.log(
+    color(err.name + ': ' + err.message, 'red')
+  );
+};
 
-function format(ctx, entity) {
-  try {
-    return singleline(Resolver.format(ctx, lang, data, entity));
-  } catch(err) {
-    return makeError(err);
-  }
+function singleline(str) {
+  return str && str
+    .replace(/\n/g, ' ')
+    .trim();
 }
 
 function printEntry(ctx, id, entity) {
+  const formatted = Resolver.format(ctx, lang, data, entity);
+
+  if (formatted[0].length) {
+    formatted[0].forEach(printError);
+  }
+
   console.log(
     color(id, 'cyan'),
-    color(format(ctx, entity)));
-
-  for (var attr in entity.attrs) {
-    console.log(
-      color(' ::' + attr, 'cyan'),
-      color(format(ctx, entity.attrs[attr])));
-  }
+    color(singleline(formatted[1]))
+  );
 }
 
 function print(fileformat, err, data) {
@@ -64,21 +61,28 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  var entries;
+  var ast;
   if (program.ast) {
-    entries = JSON.parse(data.toString());
+    ast = JSON.parse(data.toString());
   } else {
     try {
-      entries = lib.parse(fileformat, 'entries', data.toString());
+      ast = lib.parse(fileformat, 'ast', data.toString());
     } catch (e) {
       console.error(makeError(e));
       process.exit(1);
     }
   }
 
+  var entries = ast.body.reduce(
+    (seq, cur) => Object.assign(seq, {
+      [cur.id]: cur
+    }), {}
+  );
+
   var ctx = new MockContext(entries);
 
   for (var id in entries) {
+    // console.log(JSON.stringify(entries[id], null, 4));
     printEntry(ctx, id, entries[id]);
   }
 }

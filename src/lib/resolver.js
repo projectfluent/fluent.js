@@ -1,171 +1,270 @@
 import { L10nError } from './errors';
 
-const KNOWN_MACROS = ['plural'];
+const KNOWN_BUILTINS = ['PLURAL', 'NUMBER', 'LIST'];
 const MAX_PLACEABLE_LENGTH = 2500;
 
 // Unicode bidi isolation characters
 const FSI = '\u2068';
 const PDI = '\u2069';
 
-const resolutionChain = new WeakSet();
 
-export function format(ctx, lang, args, entity) {
-  if (typeof entity === 'string') {
-    return [{}, entity];
+// Helper for converting primitives into builtins
+
+function wrap(res, expr) {
+  if (typeof expr === 'object' && expr.equals) {
+    return expr;
   }
 
-  if (resolutionChain.has(entity)) {
-    throw new L10nError('Cyclic reference detected');
+  if (typeof expr === 'number') {
+    return res.ctx._getBuiltin(res.lang, 'NUMBER')(expr);
   }
 
-  resolutionChain.add(entity);
-
-  let rv;
-  // if format fails, we want the exception to bubble up and stop the whole
-  // resolving process;  however, we still need to remove the entity from the
-  // resolution chain
-  try {
-    rv = resolveValue(
-      {}, ctx, lang, args, entity.value, entity.index);
-  } finally {
-    resolutionChain.delete(entity);
+  if (typeof expr === 'string') {
+    return {
+      equals(other) {
+        return other === expr;
+      },
+      format() {
+        return expr;
+      }
+    };
   }
-  return rv;
 }
 
-function resolveIdentifier(ctx, lang, args, id) {
-  if (KNOWN_MACROS.indexOf(id) > -1) {
-    return [{}, ctx._getMacro(lang, id)];
+
+// Helper functions for inserting a placeable value into a string
+
+function stringify(res, value) {
+  const wrapped = wrap(res, value);
+  return FSI + wrapped.format(
+    elem => stringify(res, elem)
+  ) + PDI;
+}
+
+function stringifyList(res, list) {
+  // the most common scenario; avoid creating a ListFormat instance
+  if (list.length === 1) {
+    return stringify(res, list[0]);
   }
+
+  const builtin = res.ctx._getBuiltin(res.lang, 'LIST');
+  return builtin(...list).format(
+    elem => stringify(res, elem)
+  );
+}
+
+
+// Helper for choosing entity value
+
+function getValueNode(entity) {
+  if (entity.value !== null) {
+    return entity;
+  }
+
+  for (let trait of entity.traits) {
+    if (trait.default) {
+      return trait;
+    }
+  }
+
+  return null;
+}
+
+
+// resolve* functions can throw and return a single value
+
+function resolve(res, expr) {
+  // XXX remove
+  if (typeof expr === 'string') {
+    return expr;
+  }
+
+  switch (expr.type) {
+    case 'EntityReference':
+      return resolveEntityReference(res, expr);
+    case 'Variable':
+      return resolveVariable(res, expr);
+    // XXX case 'Keyword':
+    //  return resolveKeyword(res, expr);
+    case 'Number':
+      return resolveNumber(res, expr);
+    case 'CallExpression':
+      return resolveCallExpression(res, expr);
+    case 'MemberExpression':
+      return resolveMemberExpression(res, expr);
+    default:
+      throw new L10nError('Unknown placeable type');
+  }
+}
+
+function resolveEntity(res, id) {
+  const entity = res.ctx._getEntity(res.lang, id);
+
+  if (!entity) {
+    throw new L10nError('Unknown entity: ' + id);
+  }
+
+  return entity;
+}
+
+function resolveEntityReference(res, expr) {
+  const id = expr.id;
+  const entity = resolveEntity(res, id);
+  const node = getValueNode(entity);
+
+  if (node === null) {
+    throw new L10nError('No value: ' + id);
+  }
+
+  return resolveValue(res, node);
+}
+
+function resolveVariable(res, expr) {
+  const id = expr.id;
+  const args = res.args;
 
   if (args && args.hasOwnProperty(id)) {
-    if (typeof args[id] === 'string' || (typeof args[id] === 'number' &&
-        !isNaN(args[id]))) {
-      return [{}, args[id]];
-    } else {
-      throw new L10nError('Arg must be a string or a number: ' + id);
-    }
+    return args[id];
   }
 
-  // XXX: special case for Node.js where still:
-  // '__proto__' in Object.create(null) => true
-  if (id === '__proto__') {
-    throw new L10nError('Illegal id: ' + id);
-  }
-
-  const entity = ctx._getEntity(lang, id);
-
-  if (entity) {
-    return format(ctx, lang, args, entity);
-  }
-
-  throw new L10nError('Unknown reference: ' + id);
+  throw new L10nError('Unknown variable: ' + id);
 }
 
-function subPlaceable(locals, ctx, lang, args, id) {
-  let newLocals, value;
-
-  try {
-    [newLocals, value] = resolveIdentifier(ctx, lang, args, id);
-  } catch (err) {
-    return [{ error: err }, FSI + '{{ ' + id + ' }}' + PDI];
-  }
-
-  if (typeof value === 'number') {
-    const formatter = ctx._getNumberFormatter(lang);
-    return [newLocals, formatter.format(value)];
-  }
-
-  if (typeof value === 'string') {
-    // prevent Billion Laughs attacks
-    if (value.length >= MAX_PLACEABLE_LENGTH) {
-      throw new L10nError('Too many characters in placeable (' +
-                          value.length + ', max allowed is ' +
-                          MAX_PLACEABLE_LENGTH + ')');
-    }
-    return [newLocals, FSI + value + PDI];
-  }
-
-  return [{}, FSI + '{{ ' + id + ' }}' + PDI];
+function resolveKeyword(res, expr) {
+  return expr.value;
 }
 
-function interpolate(locals, ctx, lang, args, arr) {
-  return arr.reduce(([localsSeq, valueSeq], cur) => {
-    if (typeof cur === 'string') {
-      return [localsSeq, valueSeq + cur];
-    } else {
-      const [, value] = subPlaceable(locals, ctx, lang, args, cur.name);
-      // wrap the substitution in bidi isolate characters
-      return [localsSeq, valueSeq + value];
-    }
-  }, [locals, '']);
+function resolveNumber(res, expr) {
+  return parseInt(expr.value);
 }
 
-function resolveSelector(ctx, lang, args, expr, index) {
-  //XXX: Dehardcode!!!
-  let selectorName;
-  if (index[0].type === 'call' && index[0].expr.type === 'prop' &&
-      index[0].expr.expr.name === 'cldr') {
-    selectorName = 'plural';
-  } else {
-    selectorName = index[0].name;
-  }
-  const selector = resolveIdentifier(ctx, lang, args, selectorName)[1];
+function resolveCallExpression(res, expr) {
+  const id = expr.callee.id;
 
-  if (typeof selector !== 'function') {
-    // selector is a simple reference to an entity or args
-    return selector;
+  if (KNOWN_BUILTINS.indexOf(id) === -1) {
+    throw new L10nError('Unknown built-in: ' + id);
   }
 
-  const argValue = index[0].args ?
-    resolveIdentifier(ctx, lang, args, index[0].args[0].name)[1] : undefined;
-
-  if (selectorName === 'plural') {
-    // special cases for zero, one, two if they are defined on the hash
-    if (argValue === 0 && 'zero' in expr) {
-      return 'zero';
-    }
-    if (argValue === 1 && 'one' in expr) {
-      return 'one';
-    }
-    if (argValue === 2 && 'two' in expr) {
-      return 'two';
-    }
-  }
-
-  return selector(argValue);
+  const callee = res.ctx._getBuiltin(res.lang, id);
+  return callee(
+    ...expr.args.map(
+      arg => resolve(res, arg)
+    )
+  );
 }
 
-function resolveValue(locals, ctx, lang, args, expr, index) {
-  if (!expr) {
-    return [locals, expr];
-  }
-
-  if (typeof expr === 'string' ||
-      typeof expr === 'boolean' ||
-      typeof expr === 'number') {
-    return [locals, expr];
-  }
-
-  if (Array.isArray(expr)) {
-    return interpolate(locals, ctx, lang, args, expr);
-  }
-
-  // otherwise, it's a dict
-  if (index) {
-    // try to use the index in order to select the right dict member
-    const selector = resolveSelector(ctx, lang, args, expr, index);
-    if (selector in expr) {
-      return resolveValue(locals, ctx, lang, args, expr[selector]);
+function resolveTrait(res, traits, key) {
+  for (let trait of traits) {
+    if (key === resolve(res, trait.key)) {
+      return trait;
     }
   }
 
-  // if there was no index or no selector was found, try the default
-  // XXX 'other' is an artifact from Gaia
-  const defaultKey = expr.__default || 'other';
-  if (defaultKey in expr) {
-    return resolveValue(locals, ctx, lang, args, expr[defaultKey]);
+  throw new L10nError('Unknown trait: ' + key);
+}
+
+function resolveMemberExpression(res, expr) {
+  const id = expr.idref.id;
+  const key = expr.keyword;
+  const entity = resolveEntity(res, id);
+
+  return resolveValue(
+    res, resolveTrait(res, entity.traits, key)
+  );
+}
+
+function resolveVariant(res, variants, expr) {
+  const wrapped = wrap(res, expr);
+  for (let variant of variants) {
+    if (wrapped.equals(resolve(res, variant.key))) {
+      return variant;
+    }
   }
 
-  throw new L10nError('Unresolvable value');
+  for (let variant of variants) {
+    if (variant.default) {
+      return variant;
+    }
+  }
+
+  throw new L10nError('No default variant found');
+}
+
+
+function resolvePlaceableExpression(res, expression) {
+  const expr = resolve(res, expression.expression);
+
+  const value = expression.variants === null ?
+    expr :
+    resolveValue(
+      res, resolveVariant(res, expression.variants, expr)
+    );
+
+  if (value.length >= MAX_PLACEABLE_LENGTH) {
+    throw new L10nError(
+      'Too many characters in placeable (' + value.length +
+        ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
+    );
+  }
+
+  return value;
+}
+
+function resolvePlaceable(res, placeable) {
+  return placeable.expressions.map(
+    expr => resolvePlaceableExpression(res, expr)
+  );
+}
+
+function resolveValue(res, node) {
+  if (res.dirty.has(node)) {
+    const ref = node.id || node.key;
+    throw new L10nError('Cyclic reference: ' + ref);
+  }
+
+  res.dirty.add(node);
+  const [errs, str] = formatElements(res, node.value);
+
+  if (errs.length) {
+    throw new L10nError('Broken value.');
+  }
+
+  return str;
+}
+
+
+// formatElements collects any errors and return them as the first element of 
+// the return tuple: [errors, value]
+
+function formatElements(res, value) {
+  return value.elements.reduce(([errs, seq], elem) => {
+    if (elem.type === 'TextElement') {
+      return [errs, seq + elem.value];
+    } else if (elem.type === 'Placeable') {
+      try {
+        return [errs, seq + stringifyList(res, resolvePlaceable(res, elem))];
+      } catch(e) {
+        return [[...errs, e], seq + stringify(res, '{' + elem.source + '}')];
+      }
+    }
+  }, [[], '']);
+}
+
+export function format(ctx, lang, args, entity) {
+  const res = {
+    ctx,
+    lang,
+    args,
+    errors: [],
+    dirty: new WeakSet()
+  };
+
+  const node = getValueNode(entity);
+  if (node === null) {
+    const err = new L10nError('No value: ' + entity.id);
+    return [[err], null];
+  }
+
+  res.dirty.add(node);
+  return formatElements(res, node.value);
 }

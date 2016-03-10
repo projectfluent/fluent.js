@@ -8,6 +8,7 @@ import ASTSerializer from '../../lib/format/l20n/ast/serializer';
 import EntriesParser from '../../lib/format/l20n/entries/parser';
 import EntriesSerializer from '../../lib/format/l20n/entries/serializer';
 import PropertiesParser from '../../lib/format/properties/parser';
+import FTLASTParser from '../../lib/format/ftl/ast/parser';
 
 import { Context } from '../../lib/context';
 import { Env } from '../../lib/env';
@@ -22,6 +23,7 @@ import { format } from '../../lib/resolver';
 window.L20n = {
   fetchResource, Client, Remote, View, broadcast,
   ASTParser, ASTSerializer, EntriesParser, EntriesSerializer, PropertiesParser,
+  FTLASTParser,
   Context, Env, L10nError, emit, addEventListener, removeEventListener,
   prioritizeLocales, MockContext, lang, getPluralRule, walkEntry, walkValue,
   pseudo, format

@@ -1,7 +1,7 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
-import { getPluralRule } from './plurals';
 import { L20nIntl } from './shims';
+import * as builtins from './builtins';
 
 export class Context {
   constructor(env, langs, resIds) {
@@ -118,27 +118,18 @@ export class Context {
     return undefined;
   }
 
-  _getNumberFormatter(lang) {
-    if (!this.env.numberFormatters) {
-      this.env.numberFormatters = new Map();
+  _getBuiltin(lang, name) {
+    if (!this.env.builtins) {
+      this.env.builtins = new Map();
     }
-    if (!this.env.numberFormatters.has(lang)) {
-      const formatter = L20nIntl.NumberFormat(lang);
-      this.env.numberFormatters.set(lang, formatter);
-      return formatter;
-    }
-    return this.env.numberFormatters.get(lang);
-  }
 
-  // XXX in the future macros will be stored in localization resources together 
-  // with regular entities and this method will not be needed anymore
-  _getMacro(lang, id) {
-    switch(id) {
-      case 'plural':
-        return getPluralRule(lang.code);
-      default:
-        return undefined;
+    const id = lang.code + name;
+
+    if (!this.env.builtins.has(id)) {
+      this.env.builtins.set(id, builtins[name](lang));
     }
+
+    return this.env.builtins.get(id);
   }
 
 }
