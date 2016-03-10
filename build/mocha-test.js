@@ -1,6 +1,8 @@
 'use strict';
 
-require('../node_modules/babel-core/register');
+require('babel-register')({
+  presets: ['es2015']
+});
 
 var src = [
   'tests/lib/*.js',
