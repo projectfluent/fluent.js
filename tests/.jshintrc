@@ -12,7 +12,6 @@
   "noempty": true,
   "nonew": true,
   "strict": true,
-  "globalstrict": true,
   "trailing": true,
   "undef": true,
   "unused": true,
