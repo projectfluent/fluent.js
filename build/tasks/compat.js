@@ -9,7 +9,7 @@ var babel = require('rollup-plugin-babel');
 
 var options = {
   comments: false,
-  presets: [ "es2015-rollup" ]
+  presets: [ 'es2015-rollup' ]
 };
 
 module.exports = function(grunt) {
