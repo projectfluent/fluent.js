@@ -3,35 +3,13 @@
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var babel = require('babel-core');
 var mkdirp = require('mkdirp');
+var rollup = require('rollup');
+var babel = require('rollup-plugin-babel');
 
 var options = {
-  loose: 'all',
   comments: false,
-  optional: [
-    'es6.spec.blockScoping',
-    'runtime',
-    'minification.deadCodeElimination',
-    'minification.constantFolding',
-    'minification.memberExpressionLiterals',
-    'minification.propertyLiterals',
-    'minification.removeDebugger',
-    'validation.undeclaredVariableCheck',
-  ],
-  whitelist: [
-    'strict',
-    'es6.modules',
-    'es6.classes',
-    'es6.constants',
-    'es6.destructuring',
-    'es6.arrowFunctions',
-    'es6.properties.shorthand',
-    'es6.forOf',
-    'es6.spread',
-    'es6.parameters',
-    'es6.blockScoping'
-  ],
+  presets: [ "es2015-rollup" ]
 };
 
 module.exports = function(grunt) {
@@ -47,10 +25,20 @@ module.exports = function(grunt) {
       var destpath = path.join('dist', 'compat', filename);
 
       mkdirp.sync(path.dirname(destpath));
-      fs.writeFileSync(
-        destpath,
-        babel.transformFileSync(srcpath, options).code);
-      grunt.log.writeln('>> '.green + destpath + ' transpiled.');
+
+      rollup.rollup({
+        entry: srcpath,
+        plugins: [
+          babel(options)
+        ]
+      }).then(function(bundle) {
+        var result = bundle.generate({
+          format: 'iife'
+        });
+
+        fs.writeFileSync(destpath, result.code);
+        grunt.log.writeln('>> '.green + destpath + ' transpiled.');
+      });
     });
   });
 };
