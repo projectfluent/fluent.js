@@ -201,7 +201,7 @@ function SelectExpression(res, expr) {
 function Value(res, expr) {
   const [errs, node] = Expression(res, expr);
   if (errs.length) {
-    return fail(errs, unit(node));
+    return fail(errs, Value(res, node));
   }
 
   switch (node.type) {
@@ -214,6 +214,8 @@ function Value(res, expr) {
       return Variable(res, node);
     case 'Placeable':
       return mapValues(res, node.expressions);
+    case 'KeyValueArg':
+      return KeyValueArg(res, expr);
     case 'CallExpression':
       return CallExpression(res, expr);
     case 'Pattern':
@@ -223,7 +225,7 @@ function Value(res, expr) {
     case 'Entity':
       return Entity(res, node);
     default:
-      return error(new L10nError('Unknown expression type'));
+      return unit(node);
   }
 }
 
@@ -239,6 +241,18 @@ function Variable(res, expr) {
     [new L10nError('Unknown variable: ' + id)],
     unit(id)
   );
+}
+
+function KeyValueArg(res, expr) {
+  const [errs, value] = Value(res, expr.value);
+  if (errs.length) {
+    return fail(errs, unit(value));
+  }
+
+  return unit({
+    id: expr.id,
+    value: value
+  });
 }
 
 function CallExpression(res, expr) {

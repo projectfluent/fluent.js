@@ -66,7 +66,7 @@ function print(fileformat, err, data) {
     try {
       ast = lib.parse(fileformat, 'ast', data.toString());
     } catch (e) {
-      console.error(makeError(e));
+      console.error(printError(e));
       process.exit(1);
     }
   }
