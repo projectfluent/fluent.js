@@ -19,25 +19,22 @@ class ParseContext {
     this.getWS();
     while (this._index < this._length) {
       resource.body.push(this.getEntry());
-      if (this._index < this._length) {
-        this.getWS();
-      }
+      this.getWS();
     }
 
     return resource;
   }
 
   getEntry() {
-    if (this._index === 0 ||
-        this._source[this._index - 1] === '\n') {
-
-      if (this._source[this._index] === '#') {
-        return this.getComment();
-      }
-      return this.getEntity();
+    if (this._index !== 0 &&
+        this._source[this._index - 1] !== '\n') {
+      throw new Error('Invalid entry');
     }
 
-    throw new Error('Invalid entry');
+    if (this._source[this._index] === '#') {
+      return this.getComment();
+    }
+    return this.getEntity();
   }
 
   getEntity() {
@@ -69,8 +66,7 @@ class ParseContext {
       throw new Error('Expected "[" or "*"');
     }
 
-    const entity = new AST.Entity(id, value, members);
-    return entity;
+    return new AST.Entity(id, value, members);
   }
 
   getWS() {
@@ -95,10 +91,10 @@ class ParseContext {
 
     if ((cc >= 97 && cc <= 122) || // a-z
         (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95) {               // _
+        cc === 95 || cc === 45) {  // _-
       cc = this._source.charCodeAt(++this._index);
     } else {
-      throw new Error('Identifier has to start with [a-zA-Z_]');
+      throw new Error('Identifier has to start with [a-zA-Z_-]');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
@@ -117,7 +113,7 @@ class ParseContext {
 
     while (ch !== '=' && ch !== '$' && ch !== '[' &&
            ch !== ']' && ch !== '{' && ch !== '}' &&
-           ch !== '(' && ch !== ')') {
+           ch !== '(' && ch !== ')' && ch !== ':') {
       ch = this._source[++this._index];
     }
     return this._source.slice(start, this._index);
@@ -283,9 +279,6 @@ class ParseContext {
     while (this._index < this._length) {
       this.getWS();
 
-      let cc = this._source.charCodeAt(this._index);
-      let ch = this._source[this._index];
-
       let exp = this.getCallExpression();
 
       if (!(exp instanceof AST.EntityReference)) {
@@ -328,8 +321,8 @@ class ParseContext {
       cc = this._source[++this._index];
     }
 
-    while (cc >= 48 && cc <= 57 ||
-           cc === 46) { // .
+    while (cc >= 48 && cc <= 57 || // 0-9
+           cc === 46) {            // .
       num += this._source[this._index++];
       cc = this._source.charCodeAt(this._index);
     }
@@ -383,7 +376,6 @@ class ParseContext {
   getKeyword() {
     this._index++;
 
-    const start = this._index;
     let cc = this._source.charCodeAt(this._index);
     let literal;
 
@@ -391,7 +383,7 @@ class ParseContext {
       literal = this.getNumber();
     } else if (cc !== 61 && cc !== 36 && cc !== 91 &&    // =$[
                cc !== 93 && cc !== 123 && cc !== 125 &&  // ]{}
-               cc !== 40 && cc !== 41) {                 // ()
+               cc !== 40 && cc !== 41 && cc !== 58) {    // ():
       literal = new AST.Keyword(this.getSimpleString());
     }
 
@@ -410,16 +402,6 @@ class ParseContext {
       return new AST.Variable(this.getIdentifier());
     }
     return new AST.EntityReference(this.getIdentifier());
-  }
-
-  getVariable() {
-    if (this._source[this._index] === '$') {
-      this._index++;
-      const id = this.getIdentifier();
-
-      return new AST.Variable(id);
-    }
-    return this.getIdentifier();
   }
 
   getComment() {
