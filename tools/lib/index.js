@@ -3,17 +3,18 @@
 /* jshint node:true */
 
 require('colors');
-require('../../node_modules/babel-core/register');
-
+require('babel-register')({
+  presets: ['es2015']
+});
 exports.parse = function(fileformat, output, text) {
   var module = fileformat === 'properties' ?
     '../../src/lib/format/properties/parser' :
     '../../src/lib/format/' + fileformat + '/' + output + '/parser';
 
-  if (fileformat === 'l20n' && output === 'ast') {
-    return require(module).parseResource(text);
+  if (output === 'ast') {
+    return require(module).default.parseResource(text);
   }
-  return require(module).parse(null, text);
+  return require(module).default.parse(null, text);
 };
 
 exports.color = function(str, col) {
