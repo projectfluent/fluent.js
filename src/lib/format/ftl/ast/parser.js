@@ -1,3 +1,4 @@
+/*eslint no-magic-numbers: [0]*/
 
 import AST from './ast';
 import { L10nError } from '../../../errors';
@@ -28,7 +29,7 @@ class ParseContext {
   getEntry() {
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
-      throw new Error('Invalid entry');
+      throw this.error('Expected new entity identifier');
     }
 
     if (this._source[this._index] === '#') {
@@ -38,7 +39,7 @@ class ParseContext {
   }
 
   getEntity() {
-    const id = this.getIdentifier();
+    const id = this.getIdentifier(7);
     let members = [];
     let value = null;
 
@@ -63,7 +64,8 @@ class ParseContext {
     if (ch === '[' || ch === '*') {
       members = this.getMembers();
     } else if (value === null) {
-      throw new Error('Expected "[" or "*"');
+      throw this.error(
+  `Expected a value (like: " = value") or a trait (like: "[key] value")`);
     }
 
     return new AST.Entity(id, value, members);
@@ -85,7 +87,7 @@ class ParseContext {
     }
   }
 
-  getIdentifier() {
+  getIdentifier(min = 2) {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
@@ -94,7 +96,7 @@ class ParseContext {
         cc === 95 || cc === 45) {  // _-
       cc = this._source.charCodeAt(++this._index);
     } else {
-      throw new Error('Identifier has to start with [a-zA-Z_-]');
+      throw this.error('Expected an identifier (starting with [a-zA-Z_-])');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
@@ -104,7 +106,13 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    return this._source.slice(start, this._index);
+    const id = this._source.slice(start, this._index);
+
+    if (this._index - start < min) {
+      throw this.error(`Identifier "${id}" is too short. Minimum length is ${min}`);
+    }
+
+    return id;
   }
 
   getSimpleString() {
@@ -431,7 +439,38 @@ class ParseContext {
     }
 
     return new AST.Comment(content);
+  }
 
+  error(message) {
+    const pos = this._index;
+    let start = pos;
+    while (true) {
+      start = this._source.lastIndexOf('\n', start - 1);
+      if (start === -1) {
+        start = 0;
+        break;
+      }
+      let cc = this._source.charCodeAt(start - 1);
+
+      if ((cc >= 97 && cc <= 122) || // a-z
+          (cc >= 65 && cc <= 90) ||  // A-Z
+           cc === 95 || cc === 45) {  // _-
+        start--;
+        break;
+      }
+    }
+
+    let context = this._source.slice(start, pos + 10);
+    if (context.endsWith('\n')) {
+      context = context.slice(0, -1);
+    }
+    const msg = '\n\n  ' + message + '\nat pos ' + pos + ': "' + context + '"';
+    const err = new L10nError(msg);
+    err._pos = {start: pos, end: undefined};
+    err.offset = pos - start;
+    err.description = message;
+    err.context = context;
+    return err;
   }
 }
 
