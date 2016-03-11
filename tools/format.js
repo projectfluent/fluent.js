@@ -6,7 +6,9 @@ require('colors');
 var fs = require('fs');
 var program = require('commander');
 
-require('../node_modules/babel-core/register');
+require('babel-register')({
+  presets: ['es2015']
+});
 var Resolver = require('../src/lib/resolver');
 var MockContext = require('../tests/lib/resolver/header').MockContext;
 var lang = require('../src/lib/mocks').lang;

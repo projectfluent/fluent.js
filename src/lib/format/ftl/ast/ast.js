@@ -115,10 +115,11 @@ class BuiltinReference extends Node {
 }
 
 class Keyword extends Node {
-  constructor(value) {
+  constructor(value, namespace=null) {
     super();
     this.type = 'Keyword';
     this.value = value;
+    this.namespace = namespace;
   }
 }
 
