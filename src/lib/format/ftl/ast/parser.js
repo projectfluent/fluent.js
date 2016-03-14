@@ -351,6 +351,7 @@ class ParseContext {
           let val = this.getCallExpression();
 
           if (val instanceof AST.EntityReference) {
+            this._index -= val.id.length;
             throw this.error('Expected string in quotes');
           }
 
@@ -530,7 +531,10 @@ class ParseContext {
     const msg = '\n\n  ' + message +
       '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
     const err = new L10nError(msg);
-    err._pos = {start: pos, end: undefined};
+
+    let col = this._source.slice(0, pos).split('\n').length;
+    let row = pos - this._source.lastIndexOf('\n', pos - 1);
+    err._pos = {start: pos, end: undefined, col: col, row: row};
     err.offset = pos - start;
     err.description = message;
     err.context = context;

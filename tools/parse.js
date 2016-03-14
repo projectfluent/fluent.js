@@ -64,7 +64,7 @@ function printErrors(errors) {
       '\x1b[91m' + error.context.slice(error.offset) + '\x1b[0m';
 
     var msg = '\x1b[4m' + error.description + '\x1b[0m'  +
-      ' at pos ' + error._pos.start +
+      ' at pos [' + error._pos.col + ',' + error._pos.row + ']' +
       ': `' + ctx.replace(/\s+/g, ' ') + '`';
     console.log((parseInt(i) + 1) + ') ' + msg);
   }
