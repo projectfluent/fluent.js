@@ -159,10 +159,11 @@ class ParseContext {
            ch !== '(' && ch !== ')' && ch !== ':') {
       ch = this._source[++this._index];
     }
-    if (this._index === start) {
+    value += this._source.slice(start, this._index);
+
+    if (value.length === 0) {
       throw this.error('Keyword string requires a value');
     }
-    value += this._source.slice(start, this._index);
 
     return [namespace, value];
   }
@@ -255,7 +256,7 @@ class ParseContext {
     let expressions = [];
     
     while (this._source[this._index] !== '}') {
-      this.getWS();
+      this.getLineWS();
       let start = this._index;
       try {
         expressions.push(this.getPlaceableExpression());
