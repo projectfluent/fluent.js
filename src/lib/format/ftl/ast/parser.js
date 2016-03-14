@@ -532,8 +532,8 @@ class ParseContext {
       '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
     const err = new L10nError(msg);
 
-    let col = this._source.slice(0, pos).split('\n').length;
-    let row = pos - this._source.lastIndexOf('\n', pos - 1);
+    let row = this._source.slice(0, pos).split('\n').length;
+    let col = pos - this._source.lastIndexOf('\n', pos - 1);
     err._pos = {start: pos, end: undefined, col: col, row: row};
     err.offset = pos - start;
     err.description = message;
