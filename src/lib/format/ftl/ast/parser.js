@@ -19,7 +19,16 @@ class ParseContext {
 
     this.getWS();
     while (this._index < this._length) {
-      resource.body.push(this.getEntry());
+      try {
+        resource.body.push(this.getEntry());
+      } catch (e) {
+        if (e instanceof L10nError) {
+          resource._errors.push(e);
+          resource.body.push(this.getJunkEntry());
+        } else {
+          throw e;
+        }
+      }
       this.getWS();
     }
 
@@ -295,18 +304,18 @@ class ParseContext {
     }
 
     while (this._index < this._length) {
-      this.getWS();
+      this.getLineWS();
 
       let exp = this.getCallExpression();
 
       if (!(exp instanceof AST.EntityReference)) {
         args.push(exp);
       } else {
-        this.getWS();
+        this.getLineWS();
 
         if (this._source[this._index] === '=') {
           this._index++;
-          this.getWS();
+          this.getLineWS();
 
           let val = this.getCallExpression();
 
@@ -316,7 +325,7 @@ class ParseContext {
         }
       }
 
-      this.getWS();
+      this.getLineWS();
 
       if (this._source[this._index] === ')') {
         break;
@@ -474,23 +483,11 @@ class ParseContext {
     let colors = require('colors/safe');
 
     const pos = this._index;
+
     if (start === null) {
       start = pos;
     }
-    while (true) {
-      start = this._source.lastIndexOf('\n', start - 2);
-      if (start === -1) {
-        start = 0;
-        break;
-      }
-      let cc = this._source.charCodeAt(start + 1);
-
-      if ((cc >= 97 && cc <= 122) || // a-z
-          (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95 || cc === 45) {  // _-
-        break;
-      }
-    }
+    start = this._findEntityStart(start);
 
     let pre = this._source.slice(start, pos);
     if (start === 0) {
@@ -503,7 +500,13 @@ class ParseContext {
 
     let post = '';
     if (pos < this._length) {
-      post = colors.bold(colors.red(this._source[pos]));
+      if (this._source[pos] === ' ') {
+        post = colors.bold(colors.bgRed(' '));
+      } else if (this._source[pos] === '\n') {
+        post = colors.bold(colors.bgRed(' \n'));
+      } else {
+        post = colors.bold(colors.red(this._source[pos]));
+      }
       post += colors.gray(this._source.slice(pos + 1, pos + 10));
       post += colors.gray('…');
     } else {
@@ -522,6 +525,46 @@ class ParseContext {
     err.description = message;
     err.context = context;
     return err;
+  }
+
+  getJunkEntry() {
+    const pos = this._index;
+
+    let nextEntity = this._source.indexOf('\n', pos);
+
+    if (nextEntity === -1) {
+      nextEntity = this._length;
+    }
+
+    this._index = nextEntity;
+
+    let entityStart = this._findEntityStart(pos);
+
+    const junk = new AST.JunkEntry(
+      this._source.slice(entityStart, nextEntity));
+    return junk;
+  }
+
+  _findEntityStart(pos) {
+    let start = pos;
+
+    while (true) {
+      start = this._source.lastIndexOf('\n', start - 2);
+      if (start === -1) {
+        start = 0;
+        break;
+      }
+      let cc = this._source.charCodeAt(start + 1);
+
+      if ((cc >= 97 && cc <= 122) || // a-z
+          (cc >= 65 && cc <= 90) ||  // A-Z
+           cc === 95 || cc === 45) {  // _-
+        start++;
+        break;
+      }
+    }
+
+    return start;
   }
 }
 

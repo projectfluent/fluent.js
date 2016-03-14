@@ -147,6 +147,14 @@ class Comment extends Node {
   }
 }
 
+class JunkEntry extends Entry {
+  constructor(content) {
+    super();
+    this.type = 'JunkEntry';
+    this.content = content;
+  }
+}
+
 export default {
   Node,
   Pattern,
@@ -164,5 +172,6 @@ export default {
   BuiltinReference,
   Keyword,
   TextElement,
-  Comment
+  Comment,
+  JunkEntry
 };
