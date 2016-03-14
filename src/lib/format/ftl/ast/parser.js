@@ -585,7 +585,7 @@ class ParseContext {
     let start = pos;
 
     while (true) {
-      start = this._source.indexOf('\n', start + 1);
+      start = this._source.indexOf('\n', start);
 
       if (start === -1) {
         break;
@@ -598,6 +598,7 @@ class ParseContext {
         start++;
         break;
       }
+      start++;
     }
 
     return start;
