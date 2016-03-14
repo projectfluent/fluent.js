@@ -489,36 +489,10 @@ class ParseContext {
     }
     start = this._findEntityStart(start);
 
-    let pre = this._source.slice(start, pos);
-    if (start === 0) {
-      pre = '\n' + pre;
-    }
-    if (pre.endsWith('\n')) {
-      pre = pre.slice(0, -1);
-    }
-    pre = colors.yellow(pre);
+    let context = this._source.slice(start, pos + 10);
 
-    let post = '';
-    if (pos < this._length) {
-      if (this._source[pos] === ' ') {
-        post = colors.bold(colors.bgRed(' '));
-      } else if (this._source[pos] === '\n') {
-        post = colors.bold(colors.bgRed(' \n'));
-      } else {
-        post = colors.bold(colors.red(this._source[pos]));
-      }
-      post += colors.gray(this._source.slice(pos + 1, pos + 10));
-      post += colors.gray('…');
-    } else {
-      post = colors.bold(colors.bgRed(' '));
-    }
-
-    let context = pre + post;
-    const msg = '\n\n  ' + colors.white(message) +
-      colors.red('\nat pos ' + pos + ':\n------\n') +
-      colors.gray('…') +
-      context +
-      colors.red('\n------');
+    const msg = '\n\n  ' + message +
+      '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
     const err = new L10nError(msg);
     err._pos = {start: pos, end: undefined};
     err.offset = pos - start;
@@ -530,7 +504,7 @@ class ParseContext {
   getJunkEntry() {
     const pos = this._index;
 
-    let nextEntity = this._source.indexOf('\n', pos);
+    let nextEntity = this._findNextEntityStart(pos);
 
     if (nextEntity === -1) {
       nextEntity = this._length;
@@ -552,6 +526,28 @@ class ParseContext {
       start = this._source.lastIndexOf('\n', start - 2);
       if (start === -1) {
         start = 0;
+        break;
+      }
+      let cc = this._source.charCodeAt(start + 1);
+
+      if ((cc >= 97 && cc <= 122) || // a-z
+          (cc >= 65 && cc <= 90) ||  // A-Z
+           cc === 95 || cc === 45) {  // _-
+        start++;
+        break;
+      }
+    }
+
+    return start;
+  }
+
+  _findNextEntityStart(pos) {
+    let start = pos;
+
+    while (true) {
+      start = this._source.indexOf('\n', start + 1);
+
+      if (start === -1) {
         break;
       }
       let cc = this._source.charCodeAt(start + 1);
