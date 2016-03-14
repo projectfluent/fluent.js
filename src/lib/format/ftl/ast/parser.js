@@ -29,7 +29,7 @@ class ParseContext {
   getEntry() {
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
-      throw this.error('Expected new entity identifier');
+      throw this.error('Expected new line and a new entity identifier');
     }
 
     if (this._source[this._index] === '#') {
@@ -119,7 +119,8 @@ class ParseContext {
     const start = this._index;
     let ch = this._source[this._index];
 
-    while (ch !== '=' && ch !== '$' && ch !== '[' &&
+    while (this._index < this._length &&
+           ch !== '=' && ch !== '$' && ch !== '[' &&
            ch !== ']' && ch !== '{' && ch !== '}' &&
            ch !== '(' && ch !== ')' && ch !== ':') {
       ch = this._source[++this._index];
@@ -151,7 +152,7 @@ class ParseContext {
     while (this._index < this._length) {
       if (ch === '\n') {
         if (quoteDelimited) {
-          throw new Error('Unclosed string');
+          throw this.error('Unclosed string');
         }
         this._index++;
         this.getLineWS();
@@ -182,7 +183,7 @@ class ParseContext {
           content.push(new AST.TextElement(buffer));
         }
         source += buffer;
-        buffer = '';
+        buffer = ''
         let start = this._index;
         content.push(this.getPlaceable());
         source += this._source.substring(start, this._index);
@@ -225,7 +226,7 @@ class ParseContext {
     }
 
     if (this._source[this._index] !== '}') {
-      throw new Error('Expected "}"');
+      throw this.error('Expected "}" to close the placeable');
     }
 
     this._index++;
@@ -240,6 +241,10 @@ class ParseContext {
 
     if (this._source[this._index] !== '}' &&
         this._source[this._index] !== ',') {
+      if (this._source[this._index] !== '-' ||
+          this._source[this._index + 1] !== '>') {
+        throw this.error('Expected "}", "," or "->"');
+      }
       this._index += 2; // ->
 
       this.getWS();
@@ -247,7 +252,7 @@ class ParseContext {
       members = this.getMembers();
 
       if (members.length === 0) {
-        throw new Error('Expected members');
+        throw this.error('Expected members for the select expression');
       }
     }
 
@@ -313,7 +318,7 @@ class ParseContext {
       } else if (this._source[this._index] === ',') {
         this._index++;
       } else {
-        throw new Error('Expected "," or ")"');
+        throw this.error('Expected "," or ")"');
       }
     }
 
@@ -321,22 +326,35 @@ class ParseContext {
   }
 
   getNumber() {
-    let num = this._source[this._index++];
+    let num = '';
     let cc = this._source.charCodeAt(this._index);
 
     if (cc === 45) {
       num += '-';
-      cc = this._source[++this._index];
+      cc = this._source.charCodeAt(++this._index);
     }
 
-    while (cc >= 48 && cc <= 57 || // 0-9
-           cc === 46) {            // .
+    if (cc < 48 || cc > 57) {
+      throw this.error(`Unknown literal "${num}"`);
+    }
+
+    while (cc >= 48 && cc <= 57) {
       num += this._source[this._index++];
       cc = this._source.charCodeAt(this._index);
     }
 
-    if (num.endsWith('.')) {
-      throw new Error('Unknown literal');
+    if (cc === 46) {
+      num += this._source[this._index++];
+      cc = this._source.charCodeAt(this._index);
+
+      if (cc <= 48 || cc >= 57) {
+        throw this.error(`Unknown literal "${num}"`);
+      }
+
+      while (cc >= 48 && cc <= 57) {
+        num += this._source[this._index++];
+        cc = this._source.charCodeAt(this._index);
+      }
     }
 
     return new AST.Number(num);
@@ -393,6 +411,12 @@ class ParseContext {
                cc !== 93 && cc !== 123 && cc !== 125 &&  // ]{}
                cc !== 40 && cc !== 41 && cc !== 58) {    // ():
       literal = new AST.Keyword(this.getSimpleString());
+    } else {
+      throw this.error('Expected Number or String keyword');
+    }
+
+    if (this._source[this._index] !== ']') {
+      throw this.error('Expected "]"');
     }
 
     this._index++;
@@ -445,12 +469,12 @@ class ParseContext {
     const pos = this._index;
     let start = pos;
     while (true) {
-      start = this._source.lastIndexOf('\n', start - 1);
+      start = this._source.lastIndexOf('\n', start - 2);
       if (start === -1) {
         start = 0;
         break;
       }
-      let cc = this._source.charCodeAt(start - 1);
+      let cc = this._source.charCodeAt(start + 1);
 
       if ((cc >= 97 && cc <= 122) || // a-z
           (cc >= 65 && cc <= 90) ||  // A-Z
