@@ -124,8 +124,33 @@ class ParseContext {
     return id;
   }
 
-  getSimpleString() {
-    const start = this._index;
+  getKeywordString() {
+    let namespace = null;
+    let value = '';
+
+    let start = this._index;
+    let cc = this._source.charCodeAt(this._index);
+
+    while (this._index < this._length &&
+           cc >= 97 && cc <= 122 ||
+           cc >= 65 && cc <= 90 ||
+           cc >= 48 && cc <= 57) {
+      cc = this._source.charCodeAt(++this._index);
+    }
+
+    if (this._index > start) {
+      namespace = this._source.slice(start, this._index);
+    }
+
+    if (cc === 58) { // :
+      this._index++;
+    } else {
+      value = namespace;
+      namespace = null;
+    }
+
+    start = this._index;
+
     let ch = this._source[this._index];
 
     while (this._index < this._length &&
@@ -134,7 +159,12 @@ class ParseContext {
            ch !== '(' && ch !== ')' && ch !== ':') {
       ch = this._source[++this._index];
     }
-    return this._source.slice(start, this._index);
+    if (this._index === start) {
+      throw this.error('Keyword string requires a value');
+    }
+    value += this._source.slice(start, this._index);
+
+    return [namespace, value];
   }
 
   getPattern() {
@@ -319,6 +349,10 @@ class ParseContext {
 
           let val = this.getCallExpression();
 
+          if (val instanceof AST.EntityReference) {
+            throw this.error('Expected string in quotes');
+          }
+
           args.push(new AST.KeyValueArg(exp.id, val));
         } else {
           args.push(exp);
@@ -423,8 +457,9 @@ class ParseContext {
       literal = this.getNumber();
     } else if (cc !== 61 && cc !== 36 && cc !== 91 &&    // =$[
                cc !== 93 && cc !== 123 && cc !== 125 &&  // ]{}
-               cc !== 40 && cc !== 41 && cc !== 58) {    // ():
-      literal = new AST.Keyword(this.getSimpleString());
+               cc !== 40 && cc !== 41) {    // ()
+      let [namespace, value] = this.getKeywordString();
+      literal = new AST.Keyword(value, namespace);
     } else {
       throw this.error('Expected Number or String keyword');
     }
