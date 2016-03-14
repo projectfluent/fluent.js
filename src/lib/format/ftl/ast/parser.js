@@ -504,7 +504,7 @@ class ParseContext {
   getJunkEntry() {
     const pos = this._index;
 
-    let nextEntity = this._findNextEntityStart(pos);
+    let nextEntity = this._findNextEntryStart(pos);
 
     if (nextEntity === -1) {
       nextEntity = this._length;
@@ -541,7 +541,7 @@ class ParseContext {
     return start;
   }
 
-  _findNextEntityStart(pos) {
+  _findNextEntryStart(pos) {
     let start = pos;
 
     while (true) {
@@ -554,7 +554,7 @@ class ParseContext {
 
       if ((cc >= 97 && cc <= 122) || // a-z
           (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95 || cc === 45) {  // _-
+           cc === 95 || cc === 45 || cc === 35) {  // _-#
         start++;
         break;
       }
