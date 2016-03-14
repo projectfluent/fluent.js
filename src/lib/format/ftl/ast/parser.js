@@ -542,7 +542,7 @@ class ParseContext {
   }
 
   getJunkEntry() {
-    const pos = this._index;
+    const pos = this._index - 1;
 
     let nextEntity = this._findNextEntryStart(pos);
 
