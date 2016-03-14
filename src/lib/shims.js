@@ -23,3 +23,13 @@ if (!L20nIntl.PluralRules) {
     };
   }
 }
+
+if (!L20nIntl.ListFormat) {
+  L20nIntl.ListFormat = function() {
+    return {
+      format(list) {
+        return list.join(', ');
+      }
+    };
+  }
+}

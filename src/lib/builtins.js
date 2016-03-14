@@ -17,31 +17,37 @@ export function PLURAL(lang) {
 }
 
 export function NUMBER(lang) {
-  const nf = L20nIntl.NumberFormat(lang.code);
   const pr = L20nIntl.PluralRules(lang.code);
 
-  return num => {
+  return (num, ...kwargs) => {
     const category = pr.select(num);
     return {
       equals(other) {
         return other === num || other === category;
       },
       format() {
+        const opts = kwargs.reduce((seq, cur) => Object.assign(seq, {
+          [cur.id]: cur.value
+        }), {});
+
+        // XXX how to cache opts?
+        const nf = L20nIntl.NumberFormat(lang.code, opts);
         return nf.format(num);
       }
     };
   };
 }
 
-// XXX shim of ListFormat
 export function LIST(lang) {
+  const lf = L20nIntl.ListFormat(lang.code);
+
   return (...list) => {
     return {
       equals() {
         return false;
       },
       format(stringify) {
-        return list.map(stringify).join(', ');
+        return lf.format(list.map(stringify));
       }
     };
   }
