@@ -39,7 +39,7 @@ class ParseContext {
   }
 
   getEntity() {
-    const id = this.getIdentifier(7);
+    const id = this.getIdentifier(3);
     let members = [];
     let value = null;
 
@@ -217,7 +217,12 @@ class ParseContext {
     
     while (this._source[this._index] !== '}') {
       this.getWS();
-      expressions.push(this.getPlaceableExpression());
+      let start = this._index;
+      try {
+        expressions.push(this.getPlaceableExpression());
+      } catch (e) {
+        throw this.error(e.description, start);
+      }
       this.getWS();
       if (this._source[this._index] !== ',') {
         break;
@@ -465,9 +470,13 @@ class ParseContext {
     return new AST.Comment(content);
   }
 
-  error(message) {
+  error(message, start=null) {
+    let colors = require('colors/safe');
+
     const pos = this._index;
-    let start = pos;
+    if (start === null) {
+      start = pos;
+    }
     while (true) {
       start = this._source.lastIndexOf('\n', start - 2);
       if (start === -1) {
@@ -479,16 +488,34 @@ class ParseContext {
       if ((cc >= 97 && cc <= 122) || // a-z
           (cc >= 65 && cc <= 90) ||  // A-Z
            cc === 95 || cc === 45) {  // _-
-        start--;
         break;
       }
     }
 
-    let context = this._source.slice(start, pos + 10);
-    if (context.endsWith('\n')) {
-      context = context.slice(0, -1);
+    let pre = this._source.slice(start, pos);
+    if (start === 0) {
+      pre = '\n' + pre;
     }
-    const msg = '\n\n  ' + message + '\nat pos ' + pos + ': "' + context + '"';
+    if (pre.endsWith('\n')) {
+      pre = pre.slice(0, -1);
+    }
+    pre = colors.yellow(pre);
+
+    let post = '';
+    if (pos < this._length) {
+      post = colors.bold(colors.red(this._source[pos]));
+      post += colors.gray(this._source.slice(pos + 1, pos + 10));
+      post += colors.gray('…');
+    } else {
+      post = colors.bold(colors.bgRed(' '));
+    }
+
+    let context = pre + post;
+    const msg = '\n\n  ' + colors.white(message) +
+      colors.red('\nat pos ' + pos + ':\n------\n') +
+      colors.gray('…') +
+      context +
+      colors.red('\n------');
     const err = new L10nError(msg);
     err._pos = {start: pos, end: undefined};
     err.offset = pos - start;
