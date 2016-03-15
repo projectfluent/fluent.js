@@ -136,7 +136,7 @@ function EntityReference(res, expr) {
   if (!entity) {
     return fail(
       [new L10nError('Unknown entity: ' + expr.id)],
-      unit(expr.id + '()')
+      unit(expr.id)
     );
   }
 
@@ -149,7 +149,7 @@ function BuiltinReference(res, expr) {
   if (!builtin) {
     return fail(
       [new L10nError('Unknown built-in: ' + expr.id)],
-      unit(expr.id)
+      unit(expr.id + '()')
     );
   }
 
