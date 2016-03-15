@@ -119,6 +119,10 @@ export class Context {
   }
 
   _getBuiltin(lang, name) {
+    if (!builtins[name]) {
+      return undefined;
+    }
+
     if (!this.env.builtins) {
       this.env.builtins = new Map();
     }
