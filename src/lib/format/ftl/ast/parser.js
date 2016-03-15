@@ -120,13 +120,7 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    const id = this._source.slice(start, this._index);
-
-    if (this._index - start < min) {
-      throw this.error(`Identifier "${id}" is too short. Minimum length is ${min}`);
-    }
-
-    return id;
+    return this._source.slice(start, this._index);
   }
 
   getKeywordString() {
