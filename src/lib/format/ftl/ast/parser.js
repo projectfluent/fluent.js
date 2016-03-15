@@ -48,7 +48,7 @@ class ParseContext {
   }
 
   getEntity() {
-    const id = this.getIdentifier(3);
+    const id = this.getIdentifier();
     let members = [];
     let value = null;
 
@@ -101,7 +101,7 @@ class ParseContext {
     }
   }
 
-  getIdentifier(min = 2) {
+  getIdentifier() {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
