@@ -56,13 +56,18 @@ class ParseContext {
 
     let ch = this._source[this._index];
 
-    if (ch === '=') {
-      this._index++;
-      this.getLineWS();
-      value = this.getPattern();
-
-      ch = this._source[this._index];
+    if (ch !== '=') {
+      throw this.error('Expected "=" after Entity ID');
     }
+    ch = this._source[++this._index];
+
+    if (ch === ' ') {
+      ch = this._source[++this._index];
+    }
+
+    value = this.getPattern();
+
+    ch = this._source[this._index];
 
     if (ch === '\n') {
       this._index++;
@@ -179,9 +184,9 @@ class ParseContext {
 
 
     if (ch === '\\' &&
-      this._source[this._index + 1] === '"' ||
-      this._source[this._index + 1] === '{' ||
-      this._source[this._index + 1] === '\\') {
+      (this._source[this._index + 1] === '"' ||
+       this._source[this._index + 1] === '{' ||
+       this._source[this._index + 1] === '\\')) {
       buffer += this._source[this._index + 1];
       this._index += 2;
       ch = this._source[this._index];
@@ -246,7 +251,11 @@ class ParseContext {
     }
 
     if (content.length === 0) {
-      content.push(new AST.TextElement(source));
+      if (quoteDelimited) {
+        content.push(new AST.TextElement(source));
+      } else {
+        return null;
+      }
     }
 
     return new AST.Pattern(source, content);
@@ -258,7 +267,11 @@ class ParseContext {
     let expressions = [];
     
     while (this._source[this._index] !== '}') {
-      this.getLineWS();
+      if (expressions.length === 0) {
+        this.getLineWS();
+      } else {
+        this.getWS();
+      }
       let start = this._index;
       try {
         expressions.push(this.getPlaceableExpression());
