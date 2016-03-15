@@ -275,7 +275,9 @@ function Pattern(res, ptn) {
   }
 
   res.dirty.add(ptn);
-  return formatPattern(res, ptn);
+  const rv = formatPattern(res, ptn);
+  res.dirty.delete(ptn);
+  return rv;
 }
 
 function Entity(res, entity) {
@@ -287,7 +289,7 @@ function Entity(res, entity) {
 
   if (errs.length) {
     return fail(
-      [new L10nError('No value: ' + entity.id)],
+      [...errs, new L10nError('No value: ' + entity.id)],
       unit(entity.id)
     );
   }
