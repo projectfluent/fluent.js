@@ -180,8 +180,10 @@ class ParseContext {
 
     if (ch === '\\' &&
       this._source[this._index + 1] === '"' ||
-      this._source[this._index + 1] === '{') {
-      this._index++;
+      this._source[this._index + 1] === '{' ||
+      this._source[this._index + 1] === '\\') {
+      buffer += this._source[this._index + 1];
+      this._index += 2;
       ch = this._source[this._index];
     } else if (ch === '"') {
       quoteDelimited = true;
