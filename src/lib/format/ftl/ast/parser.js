@@ -194,6 +194,8 @@ class ParseContext {
     let value = '';
     let namespace = this.getNamespace();
 
+    let cc = this._source.charCodeAt(this._index);
+
     if (cc === 58) { // :
       this._index++;
     } else {
