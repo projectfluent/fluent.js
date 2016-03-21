@@ -196,7 +196,7 @@ class ParseContext {
 
     let cc = this._source.charCodeAt(this._index);
 
-    if (cc === 58) { // :
+    if (namespace !== null && cc === 58) { // :
       this._index++;
     } else {
       value = namespace;
@@ -461,7 +461,7 @@ class ParseContext {
       num += this._source[this._index++];
       cc = this._source.charCodeAt(this._index);
 
-      if (cc <= 48 || cc >= 57) {
+      if (cc < 48 || cc > 57) {
         throw this.error(`Unknown literal "${num}"`);
       }
 

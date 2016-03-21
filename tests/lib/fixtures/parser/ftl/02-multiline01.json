@@ -1,0 +1,74 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": "key1",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "This is a new line",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This is a new line"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key2",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "This is line one\nThis is line two",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This is line one\nThis is line two"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key3",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "This is line one\nThis is line two",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This is line one\nThis is line two"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key4",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "<p>\n  So\n    Many\n  Lines\n</p>",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "<p>\n  So\n    Many\n  Lines\n</p>"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

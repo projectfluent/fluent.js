@@ -1,0 +1,193 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": "key1",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ]
+      },
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "gender",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "male",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "male"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key2",
+      "ns": null,
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "gender",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "male",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "male"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key3",
+      "ns": null,
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "masculine",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Variant for masculine",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Variant for masculine"
+              }
+            ]
+          },
+          "default": true
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "feminine",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Variant for feminine",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Variant for feminine"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key4",
+      "ns": null,
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "aria-label",
+            "namespace": "html"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Test",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Test"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key5",
+      "ns": null,
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "aria-label",
+            "namespace": "html"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Test",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Test"
+              }
+            ]
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "loop",
+            "namespace": "joomla"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Foo",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Foo"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

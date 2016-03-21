@@ -1,0 +1,458 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": "key1",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "AA { $num } BB",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "AA "
+          },
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "Variable",
+                "id": "num"
+              }
+            ]
+          },
+          {
+            "type": "TextElement",
+            "value": " BB"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key2",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ brand-name }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "EntityReference",
+                "id": "brand-name",
+                "ns": null
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key3",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ menu/open }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "EntityReference",
+                "id": "open",
+                "ns": "menu"
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key4",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ $num ->\n  [one] One\n  [two] Two\n}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "SelectExpression",
+                "expression": {
+                  "type": "Variable",
+                  "id": "num"
+                },
+                "variants": [
+                  {
+                    "type": "Member",
+                    "key": {
+                      "type": "Keyword",
+                      "value": "one",
+                      "namespace": null
+                    },
+                    "value": {
+                      "type": "Pattern",
+                      "source": "One",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "One"
+                        }
+                      ]
+                    },
+                    "default": false
+                  },
+                  {
+                    "type": "Member",
+                    "key": {
+                      "type": "Keyword",
+                      "value": "two",
+                      "namespace": null
+                    },
+                    "value": {
+                      "type": "Pattern",
+                      "source": "Two",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "Two"
+                        }
+                      ]
+                    },
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key5",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ LEN($num) ->\n  [one] One\n  [two] Two\n}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "SelectExpression",
+                "expression": {
+                  "type": "CallExpression",
+                  "callee": {
+                    "type": "BuiltinReference",
+                    "id": "LEN"
+                  },
+                  "args": [
+                    {
+                      "type": "Variable",
+                      "id": "num"
+                    }
+                  ]
+                },
+                "variants": [
+                  {
+                    "type": "Member",
+                    "key": {
+                      "type": "Keyword",
+                      "value": "one",
+                      "namespace": null
+                    },
+                    "value": {
+                      "type": "Pattern",
+                      "source": "One",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "One"
+                        }
+                      ]
+                    },
+                    "default": false
+                  },
+                  {
+                    "type": "Member",
+                    "key": {
+                      "type": "Keyword",
+                      "value": "two",
+                      "namespace": null
+                    },
+                    "value": {
+                      "type": "Pattern",
+                      "source": "Two",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "Two"
+                        }
+                      ]
+                    },
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key6",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ LEN(NEL($num)) ->\n  [one] One\n  [two] Two\n}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "SelectExpression",
+                "expression": {
+                  "type": "CallExpression",
+                  "callee": {
+                    "type": "BuiltinReference",
+                    "id": "LEN"
+                  },
+                  "args": [
+                    {
+                      "type": "CallExpression",
+                      "callee": {
+                        "type": "BuiltinReference",
+                        "id": "NEL"
+                      },
+                      "args": [
+                        {
+                          "type": "Variable",
+                          "id": "num"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "variants": [
+                  {
+                    "type": "Member",
+                    "key": {
+                      "type": "Keyword",
+                      "value": "one",
+                      "namespace": null
+                    },
+                    "value": {
+                      "type": "Pattern",
+                      "source": "One",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "One"
+                        }
+                      ]
+                    },
+                    "default": false
+                  },
+                  {
+                    "type": "Member",
+                    "key": {
+                      "type": "Keyword",
+                      "value": "two",
+                      "namespace": null
+                    },
+                    "value": {
+                      "type": "Pattern",
+                      "source": "Two",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "Two"
+                        }
+                      ]
+                    },
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key7",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ $user1, $user2 }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "Variable",
+                "id": "user1"
+              },
+              {
+                "type": "Variable",
+                "id": "user2"
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key8",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ LEN($u1, $u2, open/brand-name, type=\"short\") }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "LEN"
+                },
+                "args": [
+                  {
+                    "type": "Variable",
+                    "id": "u1"
+                  },
+                  {
+                    "type": "Variable",
+                    "id": "u2"
+                  },
+                  {
+                    "type": "EntityReference",
+                    "id": "brand-name",
+                    "ns": "open"
+                  },
+                  {
+                    "type": "KeyValueArg",
+                    "id": "type",
+                    "value": {
+                      "type": "Pattern",
+                      "source": "short",
+                      "elements": [
+                        {
+                          "type": "TextElement",
+                          "value": "short"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key9",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ LEN(2, 2.5, -3.12, -1.00) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "LEN"
+                },
+                "args": [
+                  {
+                    "type": "Number",
+                    "value": "2"
+                  },
+                  {
+                    "type": "Number",
+                    "value": "2.5"
+                  },
+                  {
+                    "type": "Number",
+                    "value": "-3.12"
+                  },
+                  {
+                    "type": "Number",
+                    "value": "-1.00"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key10",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ menu/brand-name[accusative] }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "MemberExpression",
+                "idref": {
+                  "type": "EntityReference",
+                  "id": "brand-name",
+                  "ns": "menu"
+                },
+                "keyword": {
+                  "type": "Keyword",
+                  "value": "accusative",
+                  "namespace": null
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}
