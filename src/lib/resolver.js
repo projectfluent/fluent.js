@@ -1,4 +1,7 @@
 import { L10nError } from './errors';
+import builtins, {
+  FTLNone, FTLText, FTLNumber, FTLKeyValueArg, FTLKeyword, FTLList
+} from './builtins';
 
 const MAX_PLACEABLE_LENGTH = 2500;
 
@@ -13,68 +16,12 @@ function mapValues(res, arr) {
       const [errs, value] = Value(res, cur);
       return [
         [...errSeq, ...errs],
-        [...valSeq, value],
+        new FTLList([...valSeq.value, value]),
       ];
     },
-    [[], []]
+    [[], new FTLList([])]
   );
 }
-
-
-// Helper for converting primitives into builtins
-
-function wrap(res, expr) {
-  if (expr === null) {
-    return {
-      equals() {
-        return false;
-      },
-      format() {
-        return '???';
-      }
-    }
-  }
-
-  if (typeof expr === 'object' && expr.equals) {
-    return expr;
-  }
-
-  if (typeof expr === 'number') {
-    return res.ctx._getBuiltin(res.lang, 'NUMBER')(expr);
-  }
-
-  if (typeof expr === 'string') {
-    return {
-      equals(other) {
-        return other === expr;
-      },
-      format() {
-        return expr;
-      }
-    };
-  }
-}
-
-
-// Helper functions for inserting a placeable value into a string
-
-function stringify(res, value) {
-  const wrapped = wrap(res, value);
-  return FSI + wrapped.format(
-    elem => stringify(res, elem)
-  ) + PDI;
-}
-
-function stringifyList(res, list) {
-  // the most common scenario; avoid creating a ListFormat instance
-  if (list.length === 1) {
-    return stringify(res, list[0]);
-  }
-
-  const builtin = res.ctx._getBuiltin(res.lang, 'LIST');
-  return builtin(...list).format(
-    elem => stringify(res, elem)
-  );
 
   // XXX add this back later
   // if (value.length >= MAX_PLACEABLE_LENGTH) {
@@ -83,8 +30,6 @@ function stringifyList(res, list) {
   //       ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
   //   );
   // }
-
-}
 
 function unit(val) {
   return [[], val];
@@ -144,7 +89,7 @@ function EntityReference(res, expr) {
 }
 
 function BuiltinReference(res, expr) {
-  const builtin = res.ctx._getBuiltin(res.lang, expr.id);
+  const builtin = builtins[expr.id];
 
   if (!builtin) {
     return fail(
@@ -166,13 +111,13 @@ function MemberExpression(res, expr) {
 
   for (let member of entity.traits) {
     const [, memberKey] = Value(res, member.key);
-    if (key === memberKey) {
+    if (key.match(res, memberKey)) {
       return unit(member);
     }
   }
 
   return fail(
-    [new L10nError('Unknown trait: ' + key)],
+    [new L10nError('Unknown trait: ' + key.format(res))],
     Value(res, entity)
   );
 }
@@ -183,11 +128,9 @@ function SelectExpression(res, expr) {
     return fail(selErrs, DefaultMember(expr.variants));
   }
 
-  const wrapped = wrap(res, selector);
-
   for (let variant of expr.variants) {
     const [, key] = Value(res, variant.key);
-    if (wrapped.equals(key)) {
+    if (selector.match(res, key)) {
       return unit(variant);
     }
   }
@@ -206,10 +149,11 @@ function Value(res, expr) {
 
   switch (node.type) {
     case 'TextElement':
+      return unit(new FTLText(node.value));
     case 'Keyword':
-      return unit(node.value);
+      return unit(new FTLKeyword(node.value, node.namespace));
     case 'Number':
-      return unit(parseFloat(node.value));
+      return unit(new FTLNumber(node.value));
     case 'Variable':
       return Variable(res, node);
     case 'Placeable':
@@ -233,26 +177,31 @@ function Variable(res, expr) {
   const id = expr.id;
   const args = res.args;
 
-  if (args && args.hasOwnProperty(id)) {
-    return unit(args[id]);
+  if (!args || !args.hasOwnProperty(id)) {
+    return fail(
+      [new L10nError('Unknown variable: ' + id)],
+      unit(new FTLNone(id))
+    );
   }
 
-  return fail(
-    [new L10nError('Unknown variable: ' + id)],
-    unit(id)
-  );
+  const arg = args[id];
+
+  switch (typeof arg) {
+    case 'number': return unit(new FTLNumber(arg));
+    case 'string': return unit(new FTLText(arg));
+    default: return fail(
+      [new L10nError('Unsupported variable type: ' + id + ', ' + typeof arg)],
+      unit(new FTLNone(id))
+    );
+  }
 }
 
 function KeyValueArg(res, expr) {
   const [errs, value] = Value(res, expr.value);
-  if (errs.length) {
-    return fail(errs, unit(value));
-  }
-
-  return unit({
-    id: expr.id,
-    value: value
-  });
+  return [
+    errs,
+    new FTLKeyValueArg(value, expr.id)
+  ];
 }
 
 function CallExpression(res, expr) {
@@ -263,7 +212,14 @@ function CallExpression(res, expr) {
 
 
   const [errs2, args] = mapValues(res, expr.args);
-  return [errs2, callee(...args)];
+  const [pargs, kargs] = args.value.reduce(
+    ([pargs, kargs], arg) => arg instanceof FTLKeyValueArg ?
+      [pargs, Object.assign({}, kargs, {
+        [arg.id]: arg.value
+      })] :
+      [[...pargs, arg], kargs],
+    [[], {}]);
+  return [errs2, callee(pargs, kargs)];
 }
 
 function Pattern(res, ptn) {
@@ -303,16 +259,14 @@ function Entity(res, entity) {
 
 function formatPattern(res, ptn) {
   return ptn.elements.reduce(([errSeq, valSeq], elem) => {
-    if (elem.type === 'TextElement') {
-      return [errSeq, valSeq + elem.value];
-    } else if (elem.type === 'Placeable') {
-      const [errs, value] = Value(res, elem);
-      return [
-        [...errSeq, ...errs],
-        valSeq + stringifyList(res, value)
-      ];
-    }
-  }, [[], '']);
+    const [errs, value] = Value(res, elem);
+    return [
+      [...errSeq, ...errs],
+      elem.type === 'Placeable' ?
+        new FTLText(valSeq.format(res) + FSI + value.format(res) + PDI) :
+        new FTLText(valSeq.format(res) + value.format(res))
+    ];
+  }, [[], new FTLText('')]);
 }
 
 export function format(ctx, lang, args, entity) {
@@ -323,5 +277,6 @@ export function format(ctx, lang, args, entity) {
     dirty: new WeakSet()
   };
 
-  return Entity(res, entity);
+  const [errs, value] = Entity(res, entity);
+  return [errs, value.format(res)];
 }

@@ -1,7 +1,6 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
 import { L20nIntl } from './shims';
-import * as builtins from './builtins';
 
 export class Context {
   constructor(env, langs, resIds) {
@@ -118,22 +117,8 @@ export class Context {
     return undefined;
   }
 
-  _getBuiltin(lang, name) {
-    if (!builtins[name]) {
-      return undefined;
-    }
-
-    if (!this.env.builtins) {
-      this.env.builtins = new Map();
-    }
-
-    const id = lang.code + name;
-
-    if (!this.env.builtins.has(id)) {
-      this.env.builtins.set(id, builtins[name](lang));
-    }
-
-    return this.env.builtins.get(id);
+  _memoizeIntlObject(ctor, {code}, opts) {
+    return new ctor(code, opts);
   }
 
 }

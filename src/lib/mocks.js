@@ -18,6 +18,6 @@ export function MockContext(entries) {
     _getEntity(lang, id) {
       return entries[id];
     },
-    _getBuiltin: Context.prototype._getBuiltin,
+    _memoizeIntlObject: Context.prototype._memoizeIntlObject,
   };
 }
