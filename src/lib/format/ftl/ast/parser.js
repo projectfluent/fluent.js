@@ -509,6 +509,10 @@ class ParseContext {
 
   getComment() {
     this._index++;
+    if (this._source[this._index] === ' ') {
+      this._index++;
+    }
+
     let content = '';
 
     let eol = this._source.indexOf('\n', this._index);
@@ -517,6 +521,10 @@ class ParseContext {
 
     while (eol !== -1 && this._source[eol + 1] === '#') {
       this._index = eol + 2;
+
+      if (this._source[this._index] === ' ') {
+        this._index++;
+      }
 
       eol = this._source.indexOf('\n', this._index);
 
