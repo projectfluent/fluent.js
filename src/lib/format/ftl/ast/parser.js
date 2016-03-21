@@ -11,6 +11,9 @@ class ParseContext {
     this._source = string;
     this._index = 0;
     this._length = string.length;
+
+    this._lastGoodEntryEnd = 0;
+    this._section = null;
   }
 
   getResource() {
@@ -21,6 +24,7 @@ class ParseContext {
     while (this._index < this._length) {
       try {
         resource.body.push(this.getEntry());
+        this._lastGoodEntryEnd = this._index;
       } catch (e) {
         if (e instanceof L10nError) {
           resource._errors.push(e);
@@ -38,17 +42,45 @@ class ParseContext {
   getEntry() {
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
-      throw this.error('Expected new line and a new entity identifier');
+      throw this.error('Expected new line and a new entry');
     }
+
+    let comment;
 
     if (this._source[this._index] === '#') {
-      return this.getComment();
+      comment = this.getComment();
     }
-    return this.getEntity();
+
+    this.getLineWS();
+
+    if (this._source[this._index] === '[') {
+      return this.getSection(comment);
+    }
+
+    if (this._source[this._index] !== '\n') {
+      return this.getEntity(comment);
+    }
+    return comment;
   }
 
-  getEntity() {
-    const id = this.getIdentifier();
+  getSection(comment = null) {
+    this._index += 2;
+    this.getLineWS();
+
+    const id = this.getNamespace();
+
+    this.getLineWS();
+
+    this._index += 2;
+
+    this._section = id;
+
+    return new AST.Section(id, comment);
+  }
+
+  getEntity(comment = null) {
+    let {id, namespace} = this.getIdentifier('/');
+
     let members = [];
     let value = null;
 
@@ -75,14 +107,15 @@ class ParseContext {
       ch = this._source[this._index];
     }
 
-    if (ch === '[' || ch === '*') {
+    if ((ch === '[' && this._source[this._index + 1] !== '[') ||
+        ch === '*') {
       members = this.getMembers();
     } else if (value === null) {
       throw this.error(
   `Expected a value (like: " = value") or a trait (like: "[key] value")`);
     }
 
-    return new AST.Entity(id, value, members);
+    return new AST.Entity(id, namespace, value, members, comment);
   }
 
   getWS() {
@@ -101,7 +134,20 @@ class ParseContext {
     }
   }
 
-  getIdentifier() {
+  getIdentifier(nsSep=null) {
+    let namespace = null;
+    let id = '';
+
+    if (nsSep) {
+      namespace = this.getNamespace();
+      if (this._source[this._index] === nsSep) {
+        this._index++;
+      } else {
+        id = namespace;
+        namespace = null; 
+      }
+    }
+
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
@@ -109,7 +155,7 @@ class ParseContext {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95 || cc === 45) {  // _-
       cc = this._source.charCodeAt(++this._index);
-    } else {
+    } else if (id.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_-])');
     }
 
@@ -120,15 +166,15 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    return this._source.slice(start, this._index);
+    id += this._source.slice(start, this._index);
+
+    return {id, namespace};
   }
 
-  getKeywordString() {
-    let namespace = null;
-    let value = '';
-
+  getNamespace() {
     let start = this._index;
     let cc = this._source.charCodeAt(this._index);
+    let namespace = null;
 
     while (this._index < this._length &&
            cc >= 97 && cc <= 122 ||
@@ -141,6 +187,13 @@ class ParseContext {
       namespace = this._source.slice(start, this._index);
     }
 
+    return namespace;
+  }
+
+  getKeywordString() {
+    let value = '';
+    let namespace = this.getNamespace();
+
     if (cc === 58) { // :
       this._index++;
     } else {
@@ -148,7 +201,7 @@ class ParseContext {
       namespace = null;
     }
 
-    start = this._index;
+    let start = this._index;
 
     let ch = this._source[this._index];
 
@@ -491,13 +544,20 @@ class ParseContext {
       return this.getPattern();
     } else if (cc === 36) { // $
       this._index++;
-      return new AST.Variable(this.getIdentifier());
+      let {id} = this.getIdentifier();
+      return new AST.Variable(id);
     }
-    return new AST.EntityReference(this.getIdentifier());
+
+    let {id, namespace} = this.getIdentifier('/');
+    return new AST.EntityReference(id, namespace);
   }
 
   getComment() {
     this._index++;
+    if (this._source[this._index] === ' ') {
+      this._index++;
+    }
+
     let content = '';
 
     let eol = this._source.indexOf('\n', this._index);
@@ -506,6 +566,10 @@ class ParseContext {
 
     while (eol !== -1 && this._source[eol + 1] === '#') {
       this._index = eol + 2;
+
+      if (this._source[this._index] === ' ') {
+        this._index++;
+      }
 
       eol = this._source.indexOf('\n', this._index);
 
@@ -562,6 +626,10 @@ class ParseContext {
     this._index = nextEntity;
 
     let entityStart = this._findEntityStart(pos);
+
+    if (entityStart < this._lastGoodEntryEnd) {
+      entityStart = this._lastGoodEntryEnd;
+    }
 
     const junk = new AST.JunkEntry(
       this._source.slice(entityStart, nextEntity));

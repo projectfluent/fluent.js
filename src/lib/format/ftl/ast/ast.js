@@ -17,6 +17,15 @@ class Entry extends Node {
   }
 }
 
+class Section extends Node {
+  constructor(name, comment = null) {
+    super();
+    this.type = 'Section';
+    this.name = name;
+    this.comment = comment;
+  }
+}
+
 class Pattern extends Node {
   constructor(source, elements) {
     super();
@@ -37,12 +46,14 @@ class Member extends Node {
 }
 
 class Entity extends Entry {
-  constructor(id, value = null, traits = []) {
+  constructor(id, ns = null, value = null, traits = [], comment = null) {
     super();
     this.type = 'Entity';
     this.id = id;
+    this.ns = ns;
     this.value = value;
     this.traits = traits;
+    this.comment = comment;
   }
 }
 
@@ -99,10 +110,11 @@ class KeyValueArg extends Node {
 }
 
 class EntityReference extends Node {
-  constructor(id) {
+  constructor(id, ns=null) {
     super();
     this.type = 'EntityReference';
     this.id = id;
+    this.ns = ns;
   }
 }
 
@@ -160,6 +172,7 @@ export default {
   Pattern,
   Member,
   Entity,
+  Section,
   Resource,
   Placeable,
   SelectExpression,
