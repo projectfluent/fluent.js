@@ -142,7 +142,7 @@ class ParseContext {
       namespace = this.getNamespace();
       if (this._source[this._index] === nsSep) {
         this._index++;
-      } else {
+      } else if (namespace) {
         id = namespace;
         namespace = null; 
       }

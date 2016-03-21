@@ -1,0 +1,23 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": "key1",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

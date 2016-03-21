@@ -1,0 +1,108 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": "key1",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value 1",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 1"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key2",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value 2",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 2"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key3",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value 3",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 3"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key4",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value4",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value4"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key5",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value 5",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 5"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key6",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": " Value 6",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": " Value 6"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}
