@@ -11,6 +11,8 @@ class ParseContext {
     this._source = string;
     this._index = 0;
     this._length = string.length;
+
+    this._lastGoodEntryEnd = 0;
   }
 
   getResource() {
@@ -21,6 +23,7 @@ class ParseContext {
     while (this._index < this._length) {
       try {
         resource.body.push(this.getEntry());
+        this._lastGoodEntryEnd = this._index;
       } catch (e) {
         if (e instanceof L10nError) {
           resource._errors.push(e);
@@ -562,6 +565,10 @@ class ParseContext {
     this._index = nextEntity;
 
     let entityStart = this._findEntityStart(pos);
+
+    if (entityStart < this._lastGoodEntryEnd) {
+      entityStart = this._lastGoodEntryEnd;
+    }
 
     const junk = new AST.JunkEntry(
       this._source.slice(entityStart, nextEntity));
