@@ -44,13 +44,21 @@ class ParseContext {
       throw this.error('Expected new line and a new entity identifier');
     }
 
+    let comment;
+
     if (this._source[this._index] === '#') {
-      return this.getComment();
+      comment = this.getComment();
     }
-    return this.getEntity();
+
+    this.getLineWS();
+
+    if (this._source[this._index] !== '\n') {
+      return this.getEntity(comment);
+    }
+    return comment;
   }
 
-  getEntity() {
+  getEntity(comment = null) {
     const id = this.getIdentifier();
     let members = [];
     let value = null;
@@ -85,7 +93,7 @@ class ParseContext {
   `Expected a value (like: " = value") or a trait (like: "[key] value")`);
     }
 
-    return new AST.Entity(id, value, members);
+    return new AST.Entity(id, value, members, comment);
   }
 
   getWS() {

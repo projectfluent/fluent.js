@@ -37,12 +37,13 @@ class Member extends Node {
 }
 
 class Entity extends Entry {
-  constructor(id, value = null, traits = []) {
+  constructor(id, value = null, traits = [], comment = null) {
     super();
     this.type = 'Entity';
     this.id = id;
     this.value = value;
     this.traits = traits;
+    this.comment = comment;
   }
 }
 
