@@ -488,7 +488,8 @@ class ParseContext {
     const members = [];
 
     while (this._index < this._length) {
-      if (this._source[this._index] !== '[' &&
+      if ((this._source[this._index] !== '[' ||
+           this._source[this._index + 1] === '[') &&
           this._source[this._index] !== '*') {
         break;
       }

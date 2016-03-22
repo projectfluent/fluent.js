@@ -14,3 +14,8 @@ key4=
 key5=
  [html:aria-label] Test
  [joomla:loop] Foo
+
+key5=
+ [m] Foo
+
+[[ section ]]

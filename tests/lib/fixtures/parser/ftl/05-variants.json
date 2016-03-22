@@ -187,6 +187,39 @@
         }
       ],
       "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key5",
+      "ns": null,
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "m",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Foo",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Foo"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Section",
+      "name": "section",
+      "comment": null
     }
   ],
   "_errors": []
