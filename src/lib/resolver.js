@@ -53,7 +53,7 @@ function DefaultMember(members) {
 
   return fail(
     [new L10nError('No default.')],
-    unit(null)
+    unit(new FTLNone())
   );
 }
 
@@ -81,7 +81,7 @@ function EntityReference(res, expr) {
   if (!entity) {
     return fail(
       [new L10nError('Unknown entity: ' + expr.id)],
-      unit(expr.id)
+      unit(new FTLText(expr.id))
     );
   }
 
@@ -94,7 +94,7 @@ function BuiltinReference(res, expr) {
   if (!builtin) {
     return fail(
       [new L10nError('Unknown built-in: ' + expr.id)],
-      unit(expr.id + '()')
+      unit(new FTLText(expr.id + '()'))
     );
   }
 
@@ -226,7 +226,7 @@ function Pattern(res, ptn) {
   if (res.dirty.has(ptn)) {
     return fail(
       [new L10nError('Cyclic reference')],
-      unit(null)
+      unit(new FTLNone())
     );
   }
 
@@ -246,7 +246,7 @@ function Entity(res, entity) {
   if (errs.length) {
     return fail(
       [...errs, new L10nError('No value: ' + entity.id)],
-      unit(entity.id)
+      unit(new FTLText(entity.id))
     );
   }
 
