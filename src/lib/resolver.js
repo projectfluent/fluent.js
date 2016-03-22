@@ -9,6 +9,10 @@ const MAX_PLACEABLE_LENGTH = 2500;
 const FSI = '\u2068';
 const PDI = '\u2069';
 
+function getId(entity) {
+  return entity.ns ?
+    `${entity.ns}/${entity.id}` : entity.id;
+}
 
 function mapValues(res, arr) {
   return arr.reduce(
@@ -76,11 +80,11 @@ function Expression(res, expr) {
 }
 
 function EntityReference(res, expr) {
-  const entity = res.ctx._getEntity(res.lang, expr.id);
+  const entity = res.ctx._getEntity(res.lang, getId(expr));
 
   if (!entity) {
     return fail(
-      [new L10nError('Unknown entity: ' + expr.id)],
+      [new L10nError('Unknown entity: ' + getId(expr))],
       unit(new FTLText(expr.id))
     );
   }
@@ -245,8 +249,8 @@ function Entity(res, entity) {
 
   if (errs.length) {
     return fail(
-      [...errs, new L10nError('No value: ' + entity.id)],
-      unit(new FTLText(entity.id))
+      [...errs, new L10nError('No value: ' + getId(entity))],
+      unit(new FTLText(getId(entity)))
     );
   }
 
