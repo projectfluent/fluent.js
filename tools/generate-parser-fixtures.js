@@ -30,6 +30,7 @@ fs.readdir(basePath, (err, paths) => {
       }
       
       let ast = lib.parse('ftl', 'ast', data.toString());
+      ast._errors = [];
       let jsonOutput = JSON.stringify(ast, null, 2);
 
       let outputPath = fullPath.slice(0, -4) + '.json';

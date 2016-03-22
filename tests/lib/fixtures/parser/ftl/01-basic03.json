@@ -41,11 +41,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value 3",
+        "source": " Value 3 ",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value 3"
+            "value": " Value 3 "
           }
         ]
       },
@@ -58,11 +58,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value4",
+        "source": "",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value4"
+            "value": ""
           }
         ]
       },
@@ -75,62 +75,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value 5",
+        "source": " ",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value 5"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "Entity",
-      "id": "key6",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": " Value 6",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": " Value 6"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "Entity",
-      "id": "key7",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "Value 7",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value 7"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "Entity",
-      "id": "key8",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "             Value 8",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "             Value 8"
+            "value": " "
           }
         ]
       },

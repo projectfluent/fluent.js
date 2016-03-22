@@ -23,6 +23,7 @@ function compareASTs(path1, path2) {
     readFile(path2)
   ]).then(([source1, source2]) => {
     let ftl = parse(source1);
+    ftl._errors = [];
     let json = JSON.parse(source2);
 
     assert.deepEqual(ftl, json);

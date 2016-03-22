@@ -1,0 +1,31 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "JunkEntry",
+      "content": "key1 =\n [:key] Value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": "key2",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key3 =\n [] Value\n\n"
+    }
+  ],
+  "_errors": []
+}

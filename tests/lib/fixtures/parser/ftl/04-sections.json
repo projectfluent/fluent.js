@@ -1,0 +1,70 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": "key1",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "This entity is standalone",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This entity is standalone"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "open",
+      "ns": "menu",
+      "value": {
+        "type": "Pattern",
+        "source": "This entity is in \"menu\" namespace",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This entity is in \"menu\" namespace"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Section",
+      "name": "section1",
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key2",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "This entity belonds to section 1",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This entity belonds to section 1"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Section",
+      "name": "menu",
+      "comment": {
+        "type": "Comment",
+        "content": "Section comment"
+      }
+    }
+  ],
+  "_errors": []
+}
