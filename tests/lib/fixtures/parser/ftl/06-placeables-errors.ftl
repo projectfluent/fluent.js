@@ -26,4 +26,17 @@ key9 = {$user, ,$user2}
 key10 = {$user,
 }
 
+key11 = { $user -
+
+key12 = { $user ->
+
+key13 = { $user ->
+}
+
+key14 = { $user -> $user2 }
+
+key15 = { $user ->
+  $user2
+}
+
 keyLast = {

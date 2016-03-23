@@ -74,6 +74,26 @@
     },
     {
       "type": "JunkEntry",
+      "content": "key11 = { $user -\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key12 = { $user ->\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key13 = { $user ->\n}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key14 = { $user -> $user2 }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key15 = { $user ->\n  $user2\n}\n\n"
+    },
+    {
+      "type": "JunkEntry",
       "content": "keyLast = {\n"
     }
   ],
