@@ -1,6 +1,8 @@
 var fs = require('fs');
 
-require('../../node_modules/babel-core/register');
+require('babel-register')({
+  presets: ['es2015']
+});
 var L20n = require('../../src/runtime/node');
 var Context = require('../../src/lib/context').Context;
 
@@ -32,7 +34,6 @@ var lang = {
   code:'en-US',
   src: 'app',
 };
-
 function micro(time) {
   // time is [seconds, nanoseconds]
   return Math.round((time[0] * 1e9 + time[1]) / 1000);
@@ -48,7 +49,7 @@ cumulative.l20nParseStart = process.hrtime(start);
 
 var entries = L20n.L20nParser.parse(null, l20nCode);
 cumulative.l20nParseEnd = process.hrtime(start);
-
+/*
 var ctx = new L20n.MockContext(entries);
 
 cumulative.format = process.hrtime(start);
@@ -56,7 +57,8 @@ for (var id in entries) {
   L20n.format(ctx, lang, data, entries[id]);
 }
 cumulative.formatEnd = process.hrtime(start);
-/*
+
+
 var ctx = new Context(null);
 var locale = ctx.getLocale('en-US');
 locale.addAST(ast);
@@ -71,7 +73,7 @@ cumulative.getEntityEnd = process.hrtime(start);
 var results = {
   propParse: micro(cumulative.parseEnd),
   l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
-  format: micro(cumulative.formatEnd) - micro(cumulative.format),
+  //format: micro(cumulative.formatEnd) - micro(cumulative.format),
   //getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
 };
 console.log(JSON.stringify(results));
