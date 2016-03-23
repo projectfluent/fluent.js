@@ -57,17 +57,21 @@ class ParseContext {
       return this.getSection(comment);
     }
 
-    if (this._source[this._index] !== '\n') {
+    if (this._index < this._length &&
+        this._source[this._index] !== '\n') {
       return this.getEntity(comment);
     }
     return comment;
   }
 
   getSection(comment = null) {
-    if (this._source[this._index + 1] !== '[') {
+    this._index += 1;
+    if (this._source[this._index] !== '[') {
       throw this.error('Expected "[[" to open a section');
     }
-    this._index += 2;
+
+    this._index += 1;
+
     this.getLineWS();
 
     const id = this.getIdentifier().id;
@@ -579,7 +583,7 @@ class ParseContext {
   }
 
   getJunkEntry() {
-    const pos = this._index - 1;
+    const pos = this._index;
 
     let nextEntity = this._findNextEntryStart(pos);
 
@@ -626,17 +630,20 @@ class ParseContext {
     let start = pos;
 
     while (true) {
+      if (start === 0 ||
+          this._source[start - 1] === '\n') {
+        let cc = this._source.charCodeAt(start);
+
+        if ((cc >= 97 && cc <= 122) || // a-z
+            (cc >= 65 && cc <= 90) ||  // A-Z
+             cc === 95 || cc === 35 || cc === 91) {  // _#[
+          break;
+        }
+      }
+
       start = this._source.indexOf('\n', start);
 
       if (start === -1) {
-        break;
-      }
-      let cc = this._source.charCodeAt(start + 1);
-
-      if ((cc >= 97 && cc <= 122) || // a-z
-          (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95 || cc === 35 || cc === 91) {  // _#[
-        start++;
         break;
       }
       start++;

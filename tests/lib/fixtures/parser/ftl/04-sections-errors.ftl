@@ -35,3 +35,9 @@ key8 = value
 [[]]
 
 key9 = value
+
+#doo
+[[
+
+#foo
+[
