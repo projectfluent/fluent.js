@@ -51,26 +51,8 @@
       "content": "key9 = {$user, ,$user2}\n\n"
     },
     {
-      "type": "Entity",
-      "id": "key10",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "{$user,\n}",
-        "elements": [
-          {
-            "type": "Placeable",
-            "expressions": [
-              {
-                "type": "Variable",
-                "id": "user"
-              }
-            ]
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
+      "type": "JunkEntry",
+      "content": "key10 = {$user,\n}\n\n"
     },
     {
       "type": "JunkEntry",
@@ -91,6 +73,26 @@
     {
       "type": "JunkEntry",
       "content": "key15 = { $user ->\n  $user2\n}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key11 = Foo {} Foo2\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key12 = Foo {   } Foo 2\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key13 = {$user,}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key14 = {$user,\n}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key15 = {_,}\n\n"
     },
     {
       "type": "JunkEntry",

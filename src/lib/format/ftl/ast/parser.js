@@ -274,7 +274,7 @@ class ParseContext {
 
     this.getLineWS();
 
-    while (this._source[this._index] !== '}') {
+    while (this._index < this._length) {
       let start = this._index;
       try {
         expressions.push(this.getPlaceableExpression());
@@ -282,15 +282,14 @@ class ParseContext {
         throw this.error(e.description, start);
       }
       this.getWS();
-      if (this._source[this._index] !== ',') {
+      if (this._source[this._index] === '}') {
         break;
+      } else if (this._source[this._index] === ',') {
+        this._index++;
+        this.getWS();
+      } else {
+        throw this.error('Expected "}" or ","');
       }
-      this._index++;
-      this.getWS();
-    }
-
-    if (this._source[this._index] !== '}') {
-      throw this.error('Expected "}" to close the placeable');
     }
 
     this._index++;

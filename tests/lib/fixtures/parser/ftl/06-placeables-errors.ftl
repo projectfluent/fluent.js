@@ -39,4 +39,15 @@ key15 = { $user ->
   $user2
 }
 
+key11 = Foo {} Foo2
+
+key12 = Foo {   } Foo 2
+
+key13 = {$user,}
+
+key14 = {$user,
+}
+
+key15 = {_,}
+
 keyLast = {
