@@ -220,6 +220,72 @@
       "type": "Section",
       "name": "section",
       "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key6",
+      "ns": null,
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "one",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "One",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "One"
+              }
+            ]
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "two",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Two",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Two"
+              }
+            ]
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "value": "three",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Three",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Three"
+              }
+            ]
+          },
+          "default": false
+        }
+      ],
+      "comment": null
     }
   ],
   "_errors": []

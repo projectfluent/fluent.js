@@ -136,6 +136,22 @@
     },
     {
       "type": "JunkEntry",
+      "content": "key26 = O { brand-name[ locative] }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key26 = O { brand-name[locative ] }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key27 = { $len -> [foo] Value }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key28 = { $len -> *[foo] Value }\n\n"
+    },
+    {
+      "type": "JunkEntry",
       "content": "keyLast = {\n"
     }
   ],

@@ -19,3 +19,10 @@ key5=
  [m] Foo
 
 [[ section ]]
+
+
+key6 =
+ [one] One
+ [two] Two
+
+ [three] Three

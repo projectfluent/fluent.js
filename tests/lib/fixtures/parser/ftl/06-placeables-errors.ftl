@@ -70,4 +70,12 @@ key24 = { len(bar = baz) }
 
 key25 = { len( bar = baz ) }
 
+key26 = O { brand-name[ locative] }
+
+key26 = O { brand-name[locative ] }
+
+key27 = { $len -> [foo] Value }
+
+key28 = { $len -> *[foo] Value }
+
 keyLast = {

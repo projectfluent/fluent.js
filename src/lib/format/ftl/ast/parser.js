@@ -283,6 +283,7 @@ class ParseContext {
       }
       this.getWS();
       if (this._source[this._index] === '}') {
+        this._index++;
         break;
       } else if (this._source[this._index] === ',') {
         this._index++;
@@ -292,7 +293,6 @@ class ParseContext {
       }
     }
 
-    this._index++;
     return new AST.Placeable(expressions);
   }
 
@@ -309,6 +309,10 @@ class ParseContext {
         throw this.error('Expected "}", "," or "->"');
       }
       this._index += 2; // ->
+
+      if (this._source[this._index] !== '\n') {
+        throw this.error('Members should be listed in a new line');
+      }
 
       this.getWS();
 
