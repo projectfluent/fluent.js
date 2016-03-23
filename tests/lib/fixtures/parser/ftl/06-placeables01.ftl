@@ -27,3 +27,24 @@ key9 = { LEN(2, 2.5, -3.12, -1.00) }
 
 key10 = { menu/brand-name[accusative] }
 
+key11 = { len() }
+
+key12 = { len(1) }
+
+key13 = { len(-1) }
+
+key14 = { len($foo) }
+
+key15 = { len(foo) }
+
+key16 = { len(bar/baz) }
+
+key17 = { len(bar/baz[foo]) }
+
+key18 = { len(bar/baz[foo:fab]) }
+
+key19 = { len(bar=1) }
+
+key20 = { len(bar=-1) }
+
+key21 = { len(bar=$user) }

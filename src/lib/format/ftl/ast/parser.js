@@ -357,7 +357,8 @@ class ParseContext {
 
       let exp = this.getCallExpression();
 
-      if (!(exp instanceof AST.EntityReference)) {
+      if (!(exp instanceof AST.EntityReference) ||
+         exp.ns !== null) {
         args.push(exp);
       } else {
         this.getLineWS();
@@ -368,8 +369,9 @@ class ParseContext {
 
           let val = this.getCallExpression();
 
-          if (val instanceof AST.EntityReference) {
-            this._index -= val.id.length;
+          if (val instanceof AST.EntityReference ||
+              val instanceof AST.MemberExpression) {
+            this._index = this._source.lastIndexOf('=', this._index) + 1;
             throw this.error('Expected string in quotes');
           }
 

@@ -96,6 +96,46 @@
     },
     {
       "type": "JunkEntry",
+      "content": "key16 = { foo($user1=) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key17 = { foo(1=) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key18 = { foo(len()=)}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key19 = { foo(bar/baz=1)}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key20 = { len(bar=user) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key21 = { len(bar=bar/baz) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key22 = { len(bar=foo[key]) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key23 = { len(bar=bar/baz[foo:faa]) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key24 = { len(bar = baz) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key25 = { len( bar = baz ) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
       "content": "keyLast = {\n"
     }
   ],

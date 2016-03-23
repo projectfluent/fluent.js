@@ -50,4 +50,24 @@ key14 = {$user,
 
 key15 = {_,}
 
+key16 = { foo($user1=) }
+
+key17 = { foo(1=) }
+
+key18 = { foo(len()=)}
+
+key19 = { foo(bar/baz=1)}
+
+key20 = { len(bar=user) }
+
+key21 = { len(bar=bar/baz) }
+
+key22 = { len(bar=foo[key]) }
+
+key23 = { len(bar=bar/baz[foo:faa]) }
+
+key24 = { len(bar = baz) }
+
+key25 = { len( bar = baz ) }
+
 keyLast = {

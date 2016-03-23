@@ -452,6 +452,374 @@
       },
       "traits": [],
       "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key11",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len() }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": []
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key12",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(1) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "Number",
+                    "value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key13",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(-1) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "Number",
+                    "value": "-1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key14",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len($foo) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "Variable",
+                    "id": "foo"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key15",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(foo) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "EntityReference",
+                    "id": "foo",
+                    "ns": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key16",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(bar/baz) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "EntityReference",
+                    "id": "baz",
+                    "ns": "bar"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key17",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(bar/baz[foo]) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "MemberExpression",
+                    "idref": {
+                      "type": "EntityReference",
+                      "id": "baz",
+                      "ns": "bar"
+                    },
+                    "keyword": {
+                      "type": "Keyword",
+                      "value": "foo",
+                      "namespace": null
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key18",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(bar/baz[foo:fab]) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "MemberExpression",
+                    "idref": {
+                      "type": "EntityReference",
+                      "id": "baz",
+                      "ns": "bar"
+                    },
+                    "keyword": {
+                      "type": "Keyword",
+                      "value": "fab",
+                      "namespace": "foo"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key19",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(bar=1) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "KeyValueArg",
+                    "id": "bar",
+                    "value": {
+                      "type": "Number",
+                      "value": "1"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key20",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(bar=-1) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "KeyValueArg",
+                    "id": "bar",
+                    "value": {
+                      "type": "Number",
+                      "value": "-1"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key21",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{ len(bar=$user) }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "CallExpression",
+                "callee": {
+                  "type": "BuiltinReference",
+                  "id": "len"
+                },
+                "args": [
+                  {
+                    "type": "KeyValueArg",
+                    "id": "bar",
+                    "value": {
+                      "type": "Variable",
+                      "id": "user"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
     }
   ],
   "_errors": []
