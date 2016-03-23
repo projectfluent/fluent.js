@@ -64,12 +64,20 @@ class ParseContext {
   }
 
   getSection(comment = null) {
+    if (this._source[this._index + 1] !== '[') {
+      throw this.error('Expected "[[" to open a section');
+    }
     this._index += 2;
     this.getLineWS();
 
     const id = this.getIdentifier().id;
 
     this.getLineWS();
+
+    if (this._source[this._index] !== ']' ||
+        this._source[this._index + 1] !== ']') {
+      throw this.error('Expected "]]" to close a section');
+    }
 
     this._index += 2;
 
