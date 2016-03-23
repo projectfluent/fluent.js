@@ -452,6 +452,123 @@
       },
       "traits": [],
       "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key11",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Foo {} Foo2",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Foo "
+          },
+          {
+            "type": "Placeable",
+            "expressions": []
+          },
+          {
+            "type": "TextElement",
+            "value": " Foo2"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key12",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Foo {   } Foo 2",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Foo "
+          },
+          {
+            "type": "Placeable",
+            "expressions": []
+          },
+          {
+            "type": "TextElement",
+            "value": " Foo 2"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key13",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{$user,}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "Variable",
+                "id": "user"
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key14",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{$user,\n}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "Variable",
+                "id": "user"
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": "key15",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{_,}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "EntityReference",
+                "id": "_",
+                "ns": null
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
     }
   ],
   "_errors": []

@@ -271,13 +271,10 @@ class ParseContext {
     this._index++;
 
     let expressions = [];
-    
+
+    this.getLineWS();
+
     while (this._source[this._index] !== '}') {
-      if (expressions.length === 0) {
-        this.getLineWS();
-      } else {
-        this.getWS();
-      }
       let start = this._index;
       try {
         expressions.push(this.getPlaceableExpression());
@@ -289,6 +286,7 @@ class ParseContext {
         break;
       }
       this._index++;
+      this.getWS();
     }
 
     if (this._source[this._index] !== '}') {

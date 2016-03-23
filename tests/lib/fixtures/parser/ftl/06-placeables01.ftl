@@ -26,3 +26,14 @@ key8 = { LEN($u1, $u2, open/brand-name, type="short") }
 key9 = { LEN(2, 2.5, -3.12, -1.00) }
 
 key10 = { menu/brand-name[accusative] }
+
+key11 = Foo {} Foo2
+
+key12 = Foo {   } Foo 2
+
+key13 = {$user,}
+
+key14 = {$user,
+}
+
+key15 = {_,}

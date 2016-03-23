@@ -1,0 +1,81 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "JunkEntry",
+      "content": "key1 = {\n}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key2 = {    \n}\n\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key3 = {\n  $user1\n}\n\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key4 = {\n\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": "key5",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key6 = {,}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key7 = {,$user}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key8 = {$user,,$user2}\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key9 = {$user, ,$user2}\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": "key10",
+      "ns": null,
+      "value": {
+        "type": "Pattern",
+        "source": "{$user,\n}",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "Variable",
+                "id": "user"
+              }
+            ]
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "keyLast = {\n"
+    }
+  ],
+  "_errors": []
+}
