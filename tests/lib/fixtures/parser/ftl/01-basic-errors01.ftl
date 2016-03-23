@@ -33,3 +33,17 @@ key9 = Value
 id
 = value
 
+key10 = Value2
+
+1 = 1
+
+key10 = Value
+
+-1 = Foo
+
+key11 = Value
+
+19 = Foo2
+
+key12 = Value
+

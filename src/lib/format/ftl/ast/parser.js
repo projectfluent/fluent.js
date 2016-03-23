@@ -67,7 +67,7 @@ class ParseContext {
     this._index += 2;
     this.getLineWS();
 
-    const id = this.getNamespace();
+    const id = this.getIdentifier().id;
 
     this.getLineWS();
 
@@ -139,7 +139,7 @@ class ParseContext {
     let id = '';
 
     if (nsSep) {
-      namespace = this.getNamespace();
+      namespace = this.getIdentifier().id;
       if (this._source[this._index] === nsSep) {
         this._index++;
       } else if (namespace) {
@@ -153,10 +153,10 @@ class ParseContext {
 
     if ((cc >= 97 && cc <= 122) || // a-z
         (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95 || cc === 45) {  // _-
+        cc === 95) {               // _
       cc = this._source.charCodeAt(++this._index);
     } else if (id.length === 0) {
-      throw this.error('Expected an identifier (starting with [a-zA-Z_-])');
+      throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
@@ -171,28 +171,9 @@ class ParseContext {
     return {id, namespace};
   }
 
-  getNamespace() {
-    let start = this._index;
-    let cc = this._source.charCodeAt(this._index);
-    let namespace = null;
-
-    while (this._index < this._length &&
-           cc >= 97 && cc <= 122 ||
-           cc >= 65 && cc <= 90 ||
-           cc >= 48 && cc <= 57) {
-      cc = this._source.charCodeAt(++this._index);
-    }
-
-    if (this._index > start) {
-      namespace = this._source.slice(start, this._index);
-    }
-
-    return namespace;
-  }
-
   getKeywordString() {
     let value = '';
-    let namespace = this.getNamespace();
+    let namespace = this.getIdentifier().id;
 
     let cc = this._source.charCodeAt(this._index);
 
@@ -644,7 +625,7 @@ class ParseContext {
 
     while (true) {
       start = this._source.lastIndexOf('\n', start - 2);
-      if (start === -1) {
+      if (start === -1 || start === 0) {
         start = 0;
         break;
       }
@@ -652,7 +633,7 @@ class ParseContext {
 
       if ((cc >= 97 && cc <= 122) || // a-z
           (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95 || cc === 45) {  // _-
+           cc === 95) {              // _
         start++;
         break;
       }
@@ -674,7 +655,7 @@ class ParseContext {
 
       if ((cc >= 97 && cc <= 122) || // a-z
           (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95 || cc === 45 || cc === 35) {  // _-#
+           cc === 95 || cc === 35 || cc === 91) {  // _#[
         start++;
         break;
       }
