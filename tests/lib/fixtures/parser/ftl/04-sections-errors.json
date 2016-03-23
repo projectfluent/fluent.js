@@ -2,16 +2,20 @@
   "type": "Resource",
   "body": [
     {
+      "type": "JunkEntry",
+      "content": "[section]]\n\n"
+    },
+    {
       "type": "Entity",
       "id": "key1",
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value 1",
+        "source": "value",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value 1"
+            "value": "value"
           }
         ]
       },
@@ -20,11 +24,11 @@
     },
     {
       "type": "JunkEntry",
-      "content": "key2 = Value 2\n\n"
+      "content": "section]]\n\n"
     },
     {
       "type": "Entity",
-      "id": "key3",
+      "id": "key2",
       "ns": null,
       "value": {
         "type": "Pattern",
@@ -41,7 +45,11 @@
     },
     {
       "type": "JunkEntry",
-      "content": "= Value\n\n"
+      "content": "[[section\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key3 = Value\n\n[section\n\n"
     },
     {
       "type": "Entity",
@@ -62,7 +70,7 @@
     },
     {
       "type": "JunkEntry",
-      "content": "= Value\n\n\n"
+      "content": "[[section]\n\n"
     },
     {
       "type": "Entity",
@@ -82,8 +90,13 @@
       "comment": null
     },
     {
+      "type": "Section",
+      "name": "section",
+      "comment": null
+    },
+    {
       "type": "JunkEntry",
-      "content": "=\n\n"
+      "content": "dd\n\n"
     },
     {
       "type": "Entity",
@@ -91,11 +104,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value",
+        "source": "value",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value"
+            "value": "value"
           }
         ]
       },
@@ -104,7 +117,7 @@
     },
     {
       "type": "JunkEntry",
-      "content": "= \n\n"
+      "content": "[[section\n]]\n\n"
     },
     {
       "type": "Entity",
@@ -112,11 +125,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value",
+        "source": "value",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value"
+            "value": "value"
           }
         ]
       },
@@ -125,7 +138,7 @@
     },
     {
       "type": "JunkEntry",
-      "content": "= =\n\n"
+      "content": "\n[[ ]]\n\n"
     },
     {
       "type": "Entity",
@@ -133,11 +146,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value",
+        "source": "value",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value"
+            "value": "value"
           }
         ]
       },
@@ -146,7 +159,7 @@
     },
     {
       "type": "JunkEntry",
-      "content": "id\n = value\n\n"
+      "content": "[[]]\n\n"
     },
     {
       "type": "Entity",
@@ -154,95 +167,11 @@
       "ns": null,
       "value": {
         "type": "Pattern",
-        "source": "Value",
+        "source": "value",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "JunkEntry",
-      "content": "id\n= value\n\n"
-    },
-    {
-      "type": "Entity",
-      "id": "key10",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "Value2",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value2"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "JunkEntry",
-      "content": "1 = 1\n\n"
-    },
-    {
-      "type": "Entity",
-      "id": "key10",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "Value",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "JunkEntry",
-      "content": "-1 = Foo\n\n"
-    },
-    {
-      "type": "Entity",
-      "id": "key11",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "Value",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value"
-          }
-        ]
-      },
-      "traits": [],
-      "comment": null
-    },
-    {
-      "type": "JunkEntry",
-      "content": "19 = Foo2\n\n"
-    },
-    {
-      "type": "Entity",
-      "id": "key12",
-      "ns": null,
-      "value": {
-        "type": "Pattern",
-        "source": "Value",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value"
+            "value": "value"
           }
         ]
       },

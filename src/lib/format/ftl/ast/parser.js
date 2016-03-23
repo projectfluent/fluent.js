@@ -511,13 +511,9 @@ class ParseContext {
 
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
-    } else if (cc !== 61 && cc !== 36 && cc !== 91 &&    // =$[
-               cc !== 93 && cc !== 123 && cc !== 125 &&  // ]{}
-               cc !== 40 && cc !== 41) {    // ()
-      let [namespace, value] = this.getKeywordString();
-      literal = new AST.Keyword(value, namespace);
     } else {
-      throw this.error('Expected Number or String keyword');
+      let {id, namespace} = this.getIdentifier(':');
+      literal = new AST.Keyword(id, namespace);
     }
 
     if (this._source[this._index] !== ']') {

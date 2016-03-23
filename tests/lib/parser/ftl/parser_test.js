@@ -24,9 +24,15 @@ function compareASTs(path1, path2) {
   ]).then(([source1, source2]) => {
     let ftl = parse(source1);
     ftl._errors = [];
-    let json = JSON.parse(source2);
+    let json = {};
+    try {
+      json = JSON.parse(source2);
+    } catch (e) {
+      throw new Error('JSON parsing error in ' + path2 + '\n\n' + e);
+    }
 
-    assert.deepEqual(ftl, json);
+    assert.deepEqual(ftl, json, 'Error in: ' + path1);
+
   });
 }
 
