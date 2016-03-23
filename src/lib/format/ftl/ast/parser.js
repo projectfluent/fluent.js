@@ -314,6 +314,8 @@ class ParseContext {
       }
       this._index += 2; // ->
 
+      this.getLineWS();
+
       if (this._source[this._index] !== '\n') {
         throw this.error('Members should be listed in a new line');
       }
