@@ -179,38 +179,6 @@ class ParseContext {
     return {id, namespace};
   }
 
-  getKeywordString() {
-    let value = '';
-    let namespace = this.getIdentifier().id;
-
-    let cc = this._source.charCodeAt(this._index);
-
-    if (namespace !== null && cc === 58) { // :
-      this._index++;
-    } else {
-      value = namespace;
-      namespace = null;
-    }
-
-    let start = this._index;
-
-    let ch = this._source[this._index];
-
-    while (this._index < this._length &&
-           ch !== '=' && ch !== '$' && ch !== '[' &&
-           ch !== ']' && ch !== '{' && ch !== '}' &&
-           ch !== '(' && ch !== ')' && ch !== ':') {
-      ch = this._source[++this._index];
-    }
-    value += this._source.slice(start, this._index);
-
-    if (value.length === 0) {
-      throw this.error('Keyword string requires a value');
-    }
-
-    return [namespace, value];
-  }
-
   getPattern() {
     let buffer = '';
     let source = '';
@@ -487,6 +455,11 @@ class ParseContext {
         this._index++;
         def = true;
       }
+
+      if (this._source[this._index] !== '[') {
+        throw this.error('Expected "["');
+      }
+
       let key = this.getKeyword();
 
       this.getLineWS();
