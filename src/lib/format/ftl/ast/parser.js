@@ -105,9 +105,7 @@ class ParseContext {
     }
     ch = this._source[++this._index];
 
-    if (ch === ' ') {
-      ch = this._source[++this._index];
-    }
+    this.getLineWS();
 
     value = this.getPattern();
 
@@ -253,6 +251,10 @@ class ParseContext {
         if (this._source[this._index] !== '|') {
           break;
         }
+        if (firstLine && buffer.length) {
+          throw this.error('Multiline string should have the ID line empty');
+        }
+        firstLine = false;
         this._index++;
         if (this._source[this._index] === ' ') {
           this._index++;

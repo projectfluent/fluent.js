@@ -110,11 +110,11 @@
       },
       "value": {
         "type": "Pattern",
-        "source": " Value 6",
+        "source": "Value 6",
         "elements": [
           {
             "type": "TextElement",
-            "value": " Value 6"
+            "value": "Value 6"
           }
         ]
       },
@@ -150,11 +150,11 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "             Value 8",
+        "source": "Value 8",
         "elements": [
           {
             "type": "TextElement",
-            "value": "             Value 8"
+            "value": "Value 8"
           }
         ]
       },

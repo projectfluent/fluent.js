@@ -284,6 +284,30 @@
       },
       "traits": [],
       "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key13 = Single Value\n  | Multi Value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key14",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ]
+      },
+      "traits": [],
+      "comment": null
     }
   ],
   "_errors": []
