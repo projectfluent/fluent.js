@@ -3,7 +3,7 @@
 var grunt = require('grunt');
 
 var reference = 'tools/perf/reference.json';
-var samplesize = 50;
+var samplesize = 20;
 
 var engine = grunt.option('engine') || 'node';
 var benchmark;

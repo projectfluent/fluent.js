@@ -8,6 +8,7 @@ var Context = require('../../src/lib/context').Context;
 
 var propCode = fs.readFileSync(__dirname + '/example.properties').toString();
 var l20nCode = fs.readFileSync(__dirname + '/example.l20n').toString();
+var ftlCode = fs.readFileSync(__dirname + '/example.ftl').toString();
 
 var data = {
   "brandShortName": "BRANDSHORTNAME",
@@ -49,6 +50,11 @@ cumulative.l20nParseStart = process.hrtime(start);
 
 var entries = L20n.L20nParser.parse(null, l20nCode);
 cumulative.l20nParseEnd = process.hrtime(start);
+
+cumulative.ftlParseStart = process.hrtime(start);
+
+var entries = L20n.FTLParser.parseResource(ftlCode);
+cumulative.ftlParseEnd = process.hrtime(start);
 /*
 var ctx = new L20n.MockContext(entries);
 
@@ -73,6 +79,7 @@ cumulative.getEntityEnd = process.hrtime(start);
 var results = {
   propParse: micro(cumulative.parseEnd),
   l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
+  ftlParse: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
   //format: micro(cumulative.formatEnd) - micro(cumulative.format),
   //getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
 };
