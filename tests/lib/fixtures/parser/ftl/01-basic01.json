@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",

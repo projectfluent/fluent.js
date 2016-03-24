@@ -74,7 +74,7 @@ class ParseContext {
 
     this.getLineWS();
 
-    const id = this.getIdentifier().id;
+    const id = this.getIdentifier();
 
     this.getLineWS();
 
@@ -91,7 +91,7 @@ class ParseContext {
   }
 
   getEntity(comment = null) {
-    let {id, namespace} = this.getIdentifier('/');
+    let id = this.getIdentifier(':');
 
     let members = [];
     let value = null;
@@ -127,7 +127,7 @@ class ParseContext {
   `Expected a value (like: " = value") or a trait (like: "[key] value")`);
     }
 
-    return new AST.Entity(id, namespace, value, members, comment);
+    return new AST.Entity(id, value, members, comment);
   }
 
   getWS() {
@@ -151,7 +151,7 @@ class ParseContext {
     let id = '';
 
     if (nsSep) {
-      namespace = this.getIdentifier().id;
+      namespace = this.getIdentifier().name;
       if (this._source[this._index] === nsSep) {
         this._index++;
       } else if (namespace) {
@@ -180,7 +180,44 @@ class ParseContext {
 
     id += this._source.slice(start, this._index);
 
-    return {id, namespace};
+    return new AST.Identifier(id, namespace);
+  }
+
+  getIdentifierWithSpace(nsSep=null) {
+    let namespace = null;
+    let id = '';
+
+    if (nsSep) {
+      namespace = this.getIdentifier().name;
+      if (this._source[this._index] === nsSep) {
+        this._index++;
+      } else if (namespace) {
+        id = namespace;
+        namespace = null;
+      }
+    }
+
+    const start = this._index;
+    let cc = this._source.charCodeAt(this._index);
+
+    if ((cc >= 97 && cc <= 122) || // a-z
+        (cc >= 65 && cc <= 90) ||  // A-Z
+        cc === 95 || cc === 32) {  //  _
+      cc = this._source.charCodeAt(++this._index);
+    } else if (id.length === 0) {
+      throw this.error('Expected an identifier (starting with [a-zA-Z_])');
+    }
+
+    while ((cc >= 97 && cc <= 122) || // a-z
+           (cc >= 65 && cc <= 90) ||  // A-Z
+           (cc >= 48 && cc <= 57) ||  // 0-9
+           cc === 95 || cc === 45 || cc === 32) {  //  _-
+      cc = this._source.charCodeAt(++this._index);
+    }
+
+    id += this._source.slice(start, this._index);
+
+    return new AST.Identifier(id, namespace);
   }
 
   getPattern() {
@@ -349,7 +386,7 @@ class ParseContext {
     this._index++;
 
     if (exp instanceof AST.EntityReference) {
-      exp = new AST.BuiltinReference(exp.id);
+      exp = new AST.BuiltinReference(exp.name, exp.namespace);
     }
 
     return new AST.CallExpression(exp, args);
@@ -368,7 +405,7 @@ class ParseContext {
       let exp = this.getCallExpression();
 
       if (!(exp instanceof AST.EntityReference) ||
-         exp.ns !== null) {
+         exp.namespace !== null) {
         args.push(exp);
       } else {
         this.getLineWS();
@@ -385,7 +422,7 @@ class ParseContext {
             throw this.error('Expected string in quotes');
           }
 
-          args.push(new AST.KeyValueArg(exp.id, val));
+          args.push(new AST.KeyValueArg(exp.name, val));
         } else {
           args.push(exp);
         }
@@ -494,8 +531,7 @@ class ParseContext {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      let {id, namespace} = this.getIdentifier(':');
-      literal = new AST.Keyword(id, namespace);
+      literal = this.getIdentifierWithSpace(':');
     }
 
     if (this._source[this._index] !== ']') {
@@ -514,12 +550,12 @@ class ParseContext {
       return this.getPattern();
     } else if (cc === 36) { // $
       this._index++;
-      let {id} = this.getIdentifier();
-      return new AST.ExternalArgument(id);
+      let id = this.getIdentifier();
+      return new AST.ExternalArgument(id.name);
     }
 
-    let {id, namespace} = this.getIdentifier('/');
-    return new AST.EntityReference(id, namespace);
+    let id = this.getIdentifier(':');
+    return new AST.EntityReference(id.name, id.namespace);
   }
 
   getComment() {

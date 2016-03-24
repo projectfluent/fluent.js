@@ -17,6 +17,15 @@ class Entry extends Node {
   }
 }
 
+class Identifier extends Node {
+  constructor(name, namespace = null) {
+    super();
+    this.type = 'Identifier';
+    this.name = name;
+    this.namespace = namespace;
+  }
+}
+
 class Section extends Node {
   constructor(name, comment = null) {
     super();
@@ -46,11 +55,10 @@ class Member extends Node {
 }
 
 class Entity extends Entry {
-  constructor(id, ns = null, value = null, traits = [], comment = null) {
+  constructor(id, value = null, traits = [], comment = null) {
     super();
     this.type = 'Entity';
     this.id = id;
-    this.ns = ns;
     this.value = value;
     this.traits = traits;
     this.comment = comment;
@@ -109,28 +117,29 @@ class KeyValueArg extends Node {
   }
 }
 
-class EntityReference extends Node {
-  constructor(id, ns=null) {
+class EntityReference extends Identifier {
+  constructor(name, namespace) {
     super();
     this.type = 'EntityReference';
-    this.id = id;
-    this.ns = ns;
+    this.name = name;
+    this.namespace = namespace;
   }
 }
 
-class BuiltinReference extends Node {
-  constructor(id) {
+class BuiltinReference extends Identifier {
+  constructor(name, namespace) {
     super();
     this.type = 'BuiltinReference';
-    this.id = id;
+    this.name = name;
+    this.namespace = namespace;
   }
 }
 
-class Keyword extends Node {
-  constructor(value, namespace=null) {
+class Keyword extends Identifier {
+  constructor(name, namespace=null) {
     super();
     this.type = 'Keyword';
-    this.value = value;
+    this.name = name;
     this.namespace = namespace;
   }
 }
@@ -171,6 +180,7 @@ export default {
   Node,
   Pattern,
   Member,
+  Identifier,
   Entity,
   Section,
   Resource,

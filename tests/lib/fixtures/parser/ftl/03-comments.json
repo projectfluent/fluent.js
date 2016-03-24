@@ -23,8 +23,11 @@
     },
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "New entity",
@@ -43,8 +46,11 @@
     },
     {
       "type": "Entity",
-      "id": "key2",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Multi line message",

@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value 1",
@@ -24,8 +27,11 @@
     },
     {
       "type": "Entity",
-      "id": "key3",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -45,8 +51,11 @@
     },
     {
       "type": "Entity",
-      "id": "key4",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -66,8 +75,11 @@
     },
     {
       "type": "Entity",
-      "id": "key5",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -87,8 +99,11 @@
     },
     {
       "type": "Entity",
-      "id": "key6",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key6",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -108,8 +123,11 @@
     },
     {
       "type": "Entity",
-      "id": "key7",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key7",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -129,8 +147,11 @@
     },
     {
       "type": "Entity",
-      "id": "key8",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key8",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -150,8 +171,11 @@
     },
     {
       "type": "Entity",
-      "id": "key9",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key9",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -171,8 +195,11 @@
     },
     {
       "type": "Entity",
-      "id": "key10",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key10",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value2",
@@ -192,8 +219,11 @@
     },
     {
       "type": "Entity",
-      "id": "key10",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key10",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -213,8 +243,11 @@
     },
     {
       "type": "Entity",
-      "id": "key11",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key11",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -234,8 +267,11 @@
     },
     {
       "type": "Entity",
-      "id": "key12",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key12",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",

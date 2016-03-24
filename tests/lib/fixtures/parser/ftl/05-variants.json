@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -19,8 +22,8 @@
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "gender",
+            "type": "Identifier",
+            "name": "gender",
             "namespace": null
           },
           "value": {
@@ -40,15 +43,18 @@
     },
     {
       "type": "Entity",
-      "id": "key2",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "gender",
+            "type": "Identifier",
+            "name": "gender",
             "namespace": null
           },
           "value": {
@@ -68,15 +74,18 @@
     },
     {
       "type": "Entity",
-      "id": "key3",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "masculine",
+            "type": "Identifier",
+            "name": "masculine",
             "namespace": null
           },
           "value": {
@@ -94,8 +103,8 @@
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "feminine",
+            "type": "Identifier",
+            "name": "feminine",
             "namespace": null
           },
           "value": {
@@ -115,15 +124,18 @@
     },
     {
       "type": "Entity",
-      "id": "key4",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "aria-label",
+            "type": "Identifier",
+            "name": "aria-label",
             "namespace": "html"
           },
           "value": {
@@ -143,15 +155,18 @@
     },
     {
       "type": "Entity",
-      "id": "key5",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "aria-label",
+            "type": "Identifier",
+            "name": "aria-label",
             "namespace": "html"
           },
           "value": {
@@ -169,8 +184,8 @@
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "loop",
+            "type": "Identifier",
+            "name": "loop",
             "namespace": "joomla"
           },
           "value": {
@@ -190,15 +205,18 @@
     },
     {
       "type": "Entity",
-      "id": "key5",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "m",
+            "type": "Identifier",
+            "name": "m",
             "namespace": null
           },
           "value": {
@@ -218,20 +236,27 @@
     },
     {
       "type": "Section",
-      "name": "section",
+      "name": {
+        "type": "Identifier",
+        "name": "section",
+        "namespace": null
+      },
       "comment": null
     },
     {
       "type": "Entity",
-      "id": "key6",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key6",
+        "namespace": null
+      },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "one",
+            "type": "Identifier",
+            "name": "one",
             "namespace": null
           },
           "value": {
@@ -249,8 +274,8 @@
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "two",
+            "type": "Identifier",
+            "name": "two",
             "namespace": null
           },
           "value": {
@@ -268,8 +293,8 @@
         {
           "type": "Member",
           "key": {
-            "type": "Keyword",
-            "value": "three",
+            "type": "Identifier",
+            "name": "three",
             "namespace": null
           },
           "value": {

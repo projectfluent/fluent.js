@@ -7,8 +7,11 @@
     },
     {
       "type": "Entity",
-      "id": "key2",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",

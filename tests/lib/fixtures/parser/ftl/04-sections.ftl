@@ -1,6 +1,6 @@
 key1 = This entity is standalone
 
-menu/open = This entity is in "menu" namespace
+menu:open = This entity is in "menu" namespace
 
 [[ section1 ]]
 

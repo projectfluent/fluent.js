@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "This entity is standalone",
@@ -20,8 +23,11 @@
     },
     {
       "type": "Entity",
-      "id": "open",
-      "ns": "menu",
+      "id": {
+        "type": "Identifier",
+        "name": "open",
+        "namespace": "menu"
+      },
       "value": {
         "type": "Pattern",
         "source": "This entity is in \"menu\" namespace",
@@ -37,13 +43,20 @@
     },
     {
       "type": "Section",
-      "name": "section1",
+      "name": {
+        "type": "Identifier",
+        "name": "section1",
+        "namespace": null
+      },
       "comment": null
     },
     {
       "type": "Entity",
-      "id": "key2",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "This entity belonds to section 1",
@@ -59,7 +72,11 @@
     },
     {
       "type": "Section",
-      "name": "menu",
+      "name": {
+        "type": "Identifier",
+        "name": "menu",
+        "namespace": null
+      },
       "comment": {
         "type": "Comment",
         "content": "Section comment"

@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "AA { $num } BB",
@@ -33,8 +36,11 @@
     },
     {
       "type": "Entity",
-      "id": "key2",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ brand-name }",
@@ -44,8 +50,8 @@
             "expressions": [
               {
                 "type": "EntityReference",
-                "id": "brand-name",
-                "ns": null
+                "name": "brand-name",
+                "namespace": null
               }
             ]
           }
@@ -56,19 +62,22 @@
     },
     {
       "type": "Entity",
-      "id": "key3",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
-        "source": "{ menu/open }",
+        "source": "{ menu:open }",
         "elements": [
           {
             "type": "Placeable",
             "expressions": [
               {
                 "type": "EntityReference",
-                "id": "open",
-                "ns": "menu"
+                "name": "open",
+                "namespace": "menu"
               }
             ]
           }
@@ -79,8 +88,11 @@
     },
     {
       "type": "Entity",
-      "id": "key4",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ $num ->\n  [one] One\n  [two] Two\n}",
@@ -98,8 +110,8 @@
                   {
                     "type": "Member",
                     "key": {
-                      "type": "Keyword",
-                      "value": "one",
+                      "type": "Identifier",
+                      "name": "one",
                       "namespace": null
                     },
                     "value": {
@@ -117,8 +129,8 @@
                   {
                     "type": "Member",
                     "key": {
-                      "type": "Keyword",
-                      "value": "two",
+                      "type": "Identifier",
+                      "name": "two",
                       "namespace": null
                     },
                     "value": {
@@ -144,8 +156,11 @@
     },
     {
       "type": "Entity",
-      "id": "key5",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ LEN($num) ->\n  [one] One\n  [two] Two\n}",
@@ -159,7 +174,8 @@
                   "type": "CallExpression",
                   "callee": {
                     "type": "BuiltinReference",
-                    "id": "LEN"
+                    "name": "LEN",
+                    "namespace": null
                   },
                   "args": [
                     {
@@ -172,8 +188,8 @@
                   {
                     "type": "Member",
                     "key": {
-                      "type": "Keyword",
-                      "value": "one",
+                      "type": "Identifier",
+                      "name": "one",
                       "namespace": null
                     },
                     "value": {
@@ -191,8 +207,8 @@
                   {
                     "type": "Member",
                     "key": {
-                      "type": "Keyword",
-                      "value": "two",
+                      "type": "Identifier",
+                      "name": "two",
                       "namespace": null
                     },
                     "value": {
@@ -218,8 +234,11 @@
     },
     {
       "type": "Entity",
-      "id": "key6",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key6",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ LEN(NEL($num)) ->\n  [one] One\n  [two] Two\n}",
@@ -233,14 +252,16 @@
                   "type": "CallExpression",
                   "callee": {
                     "type": "BuiltinReference",
-                    "id": "LEN"
+                    "name": "LEN",
+                    "namespace": null
                   },
                   "args": [
                     {
                       "type": "CallExpression",
                       "callee": {
                         "type": "BuiltinReference",
-                        "id": "NEL"
+                        "name": "NEL",
+                        "namespace": null
                       },
                       "args": [
                         {
@@ -255,8 +276,8 @@
                   {
                     "type": "Member",
                     "key": {
-                      "type": "Keyword",
-                      "value": "one",
+                      "type": "Identifier",
+                      "name": "one",
                       "namespace": null
                     },
                     "value": {
@@ -274,8 +295,8 @@
                   {
                     "type": "Member",
                     "key": {
-                      "type": "Keyword",
-                      "value": "two",
+                      "type": "Identifier",
+                      "name": "two",
                       "namespace": null
                     },
                     "value": {
@@ -301,8 +322,11 @@
     },
     {
       "type": "Entity",
-      "id": "key7",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key7",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ $user1, $user2 }",
@@ -327,11 +351,14 @@
     },
     {
       "type": "Entity",
-      "id": "key8",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key8",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
-        "source": "{ LEN($u1, $u2, open/brand-name, type=\"short\") }",
+        "source": "{ LEN($u1, $u2, open:brand-name, type=\"short\") }",
         "elements": [
           {
             "type": "Placeable",
@@ -340,7 +367,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "LEN"
+                  "name": "LEN",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -353,8 +381,8 @@
                   },
                   {
                     "type": "EntityReference",
-                    "id": "brand-name",
-                    "ns": "open"
+                    "name": "brand-name",
+                    "namespace": "open"
                   },
                   {
                     "type": "KeyValueArg",
@@ -381,8 +409,11 @@
     },
     {
       "type": "Entity",
-      "id": "key9",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key9",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ LEN(2, 2.5, -3.12, -1.00) }",
@@ -394,7 +425,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "LEN"
+                  "name": "LEN",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -424,11 +456,14 @@
     },
     {
       "type": "Entity",
-      "id": "key10",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key10",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
-        "source": "{ menu/brand-name[accusative] }",
+        "source": "{ menu:brand-name[accusative] }",
         "elements": [
           {
             "type": "Placeable",
@@ -437,12 +472,12 @@
                 "type": "MemberExpression",
                 "idref": {
                   "type": "EntityReference",
-                  "id": "brand-name",
-                  "ns": "menu"
+                  "name": "brand-name",
+                  "namespace": "menu"
                 },
                 "keyword": {
-                  "type": "Keyword",
-                  "value": "accusative",
+                  "type": "Identifier",
+                  "name": "accusative",
                   "namespace": null
                 }
               }
@@ -455,8 +490,11 @@
     },
     {
       "type": "Entity",
-      "id": "key11",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key11",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len() }",
@@ -468,7 +506,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": []
               }
@@ -481,8 +520,11 @@
     },
     {
       "type": "Entity",
-      "id": "key12",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key12",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len(1) }",
@@ -494,7 +536,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -512,8 +555,11 @@
     },
     {
       "type": "Entity",
-      "id": "key13",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key13",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len(-1) }",
@@ -525,7 +571,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -543,8 +590,11 @@
     },
     {
       "type": "Entity",
-      "id": "key14",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key14",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len($foo) }",
@@ -556,7 +606,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -574,8 +625,11 @@
     },
     {
       "type": "Entity",
-      "id": "key15",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key15",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len(foo) }",
@@ -587,13 +641,14 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
                     "type": "EntityReference",
-                    "id": "foo",
-                    "ns": null
+                    "name": "foo",
+                    "namespace": null
                   }
                 ]
               }
@@ -606,11 +661,14 @@
     },
     {
       "type": "Entity",
-      "id": "key16",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key16",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar/baz) }",
+        "source": "{ len(bar:baz) }",
         "elements": [
           {
             "type": "Placeable",
@@ -619,13 +677,14 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
                     "type": "EntityReference",
-                    "id": "baz",
-                    "ns": "bar"
+                    "name": "baz",
+                    "namespace": "bar"
                   }
                 ]
               }
@@ -638,11 +697,14 @@
     },
     {
       "type": "Entity",
-      "id": "key17",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key17",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar/baz[foo]) }",
+        "source": "{ len(bar:baz[foo]) }",
         "elements": [
           {
             "type": "Placeable",
@@ -651,19 +713,20 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
                     "type": "MemberExpression",
                     "idref": {
                       "type": "EntityReference",
-                      "id": "baz",
-                      "ns": "bar"
+                      "name": "baz",
+                      "namespace": "bar"
                     },
                     "keyword": {
-                      "type": "Keyword",
-                      "value": "foo",
+                      "type": "Identifier",
+                      "name": "foo",
                       "namespace": null
                     }
                   }
@@ -678,11 +741,14 @@
     },
     {
       "type": "Entity",
-      "id": "key18",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key18",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar/baz[foo:fab]) }",
+        "source": "{ len(bar:baz[foo:fab]) }",
         "elements": [
           {
             "type": "Placeable",
@@ -691,19 +757,20 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
                     "type": "MemberExpression",
                     "idref": {
                       "type": "EntityReference",
-                      "id": "baz",
-                      "ns": "bar"
+                      "name": "baz",
+                      "namespace": "bar"
                     },
                     "keyword": {
-                      "type": "Keyword",
-                      "value": "fab",
+                      "type": "Identifier",
+                      "name": "fab",
                       "namespace": "foo"
                     }
                   }
@@ -718,8 +785,11 @@
     },
     {
       "type": "Entity",
-      "id": "key19",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key19",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len(bar=1) }",
@@ -731,7 +801,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -753,8 +824,11 @@
     },
     {
       "type": "Entity",
-      "id": "key20",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key20",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len(bar=-1) }",
@@ -766,7 +840,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {
@@ -788,8 +863,11 @@
     },
     {
       "type": "Entity",
-      "id": "key21",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key21",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "{ len(bar=$user) }",
@@ -801,7 +879,8 @@
                 "type": "CallExpression",
                 "callee": {
                   "type": "BuiltinReference",
-                  "id": "len"
+                  "name": "len",
+                  "namespace": null
                 },
                 "args": [
                   {

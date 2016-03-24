@@ -19,8 +19,11 @@
     },
     {
       "type": "Entity",
-      "id": "key5",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value",
@@ -133,14 +136,6 @@
     {
       "type": "JunkEntry",
       "content": "key25 = { len( bar = baz ) }\n\n"
-    },
-    {
-      "type": "JunkEntry",
-      "content": "key26 = O { brand-name[ locative] }\n\n"
-    },
-    {
-      "type": "JunkEntry",
-      "content": "key26 = O { brand-name[locative ] }\n\n"
     },
     {
       "type": "JunkEntry",

@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "Entity",
-      "id": "key1",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value 1",
@@ -20,8 +23,11 @@
     },
     {
       "type": "Entity",
-      "id": "key2",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "Value 2",
@@ -37,8 +43,11 @@
     },
     {
       "type": "Entity",
-      "id": "key3",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": " Value 3 ",
@@ -54,8 +63,11 @@
     },
     {
       "type": "Entity",
-      "id": "key4",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": "",
@@ -71,8 +83,11 @@
     },
     {
       "type": "Entity",
-      "id": "key5",
-      "ns": null,
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
       "value": {
         "type": "Pattern",
         "source": " ",
