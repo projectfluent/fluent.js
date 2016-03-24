@@ -92,10 +92,10 @@ class CallExpression extends Node {
   }
 }
 
-class Variable extends Node {
+class ExternalArgument extends Node {
   constructor(id) {
     super();
-    this.type = 'Variable';
+    this.type = 'ExternalArgument';
     this.id = id;
   }
 }
@@ -178,7 +178,7 @@ export default {
   SelectExpression,
   MemberExpression,
   CallExpression,
-  Variable,
+  ExternalArgument,
   KeyValueArg,
   Number,
   EntityReference,

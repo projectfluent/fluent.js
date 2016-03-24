@@ -17,7 +17,7 @@
             "type": "Placeable",
             "expressions": [
               {
-                "type": "Variable",
+                "type": "ExternalArgument",
                 "id": "num"
               }
             ]
@@ -91,7 +91,7 @@
               {
                 "type": "SelectExpression",
                 "expression": {
-                  "type": "Variable",
+                  "type": "ExternalArgument",
                   "id": "num"
                 },
                 "variants": [
@@ -163,7 +163,7 @@
                   },
                   "args": [
                     {
-                      "type": "Variable",
+                      "type": "ExternalArgument",
                       "id": "num"
                     }
                   ]
@@ -244,7 +244,7 @@
                       },
                       "args": [
                         {
-                          "type": "Variable",
+                          "type": "ExternalArgument",
                           "id": "num"
                         }
                       ]
@@ -311,11 +311,11 @@
             "type": "Placeable",
             "expressions": [
               {
-                "type": "Variable",
+                "type": "ExternalArgument",
                 "id": "user1"
               },
               {
-                "type": "Variable",
+                "type": "ExternalArgument",
                 "id": "user2"
               }
             ]
@@ -344,11 +344,11 @@
                 },
                 "args": [
                   {
-                    "type": "Variable",
+                    "type": "ExternalArgument",
                     "id": "u1"
                   },
                   {
-                    "type": "Variable",
+                    "type": "ExternalArgument",
                     "id": "u2"
                   },
                   {
@@ -560,7 +560,7 @@
                 },
                 "args": [
                   {
-                    "type": "Variable",
+                    "type": "ExternalArgument",
                     "id": "foo"
                   }
                 ]
@@ -808,7 +808,7 @@
                     "type": "KeyValueArg",
                     "id": "bar",
                     "value": {
-                      "type": "Variable",
+                      "type": "ExternalArgument",
                       "id": "user"
                     }
                   }

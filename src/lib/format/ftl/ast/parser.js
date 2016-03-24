@@ -515,7 +515,7 @@ class ParseContext {
     } else if (cc === 36) { // $
       this._index++;
       let {id} = this.getIdentifier();
-      return new AST.Variable(id);
+      return new AST.ExternalArgument(id);
     }
 
     let {id, namespace} = this.getIdentifier('/');
