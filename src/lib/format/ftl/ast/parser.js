@@ -222,7 +222,7 @@ class ParseContext {
     let buffer = '';
     let source = '';
     let content = [];
-    let quoteDelimited = false;
+    let quoteDelimited = null;
     let firstLine = true;
 
     let ch = this._source[this._index];
@@ -273,6 +273,7 @@ class ParseContext {
         }
       } else if (quoteDelimited && ch === '"') {
         this._index++;
+        quoteDelimited = false;
         break;
       } else if (ch === '{') {
         if (buffer.length) {
@@ -294,13 +295,17 @@ class ParseContext {
       ch = this._source[this._index];
     }
 
+    if (quoteDelimited) {
+      throw this.error('Unclosed string');
+    }
+
     if (buffer.length) {
       source += buffer;
       content.push(new AST.TextElement(buffer));
     }
 
     if (content.length === 0) {
-      if (quoteDelimited) {
+      if (quoteDelimited !== null) {
         content.push(new AST.TextElement(source));
       } else {
         return null;
