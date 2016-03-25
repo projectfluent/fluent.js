@@ -41,34 +41,22 @@ var entries = L20n.PropertiesParser.parse(null, propCode);
 times.parseEnd = dateNow();
 
 times.l20nParseStart = dateNow();
-
 var entries = L20n.L20nParser.parse(null, l20nCode);
 times.l20nParseEnd = dateNow();
 
 times.ftlParseStart = dateNow();
-
-var entries = L20n.FTLParser.parseResource(ftlCode);
+var ast = L20n.FTLASTParser.parseResource(ftlCode);
 times.ftlParseEnd = dateNow();
-/*
-var ctx = new L20n.MockContext(entries);
+
+var entries = L20n.createEntriesFromAST(ast);
+var ctx = new L20n.MockContext();
 
 times.format = dateNow();
 for (var id in entries) {
-   L20n.format(ctx, lang, data, entries[id]);
+  L20n.format(ctx, lang, data, entries[id]);
 }
 times.formatEnd = dateNow();
 
-var ctx = new L20n.Context(null);
-var locale = ctx.getLocale('en-US');
-locale.addAST(ast);
-ctx.requestLocales(['en-US']);
-
-times.getEntity = dateNow();
-for (var id in ids) {
-  ctx.getEntity(ids[id], data);
-}
-times.getEntityEnd = dateNow();
-*/
 var results = {
   parseProp: micro(times.parseEnd - times.start),
   parseL20n: micro(times.l20nParseEnd - times.l20nParseStart),
