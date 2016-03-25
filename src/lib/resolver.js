@@ -158,8 +158,8 @@ function Value(res, expr) {
       return unit(new FTLKeyword(node.value, node.namespace));
     case 'Number':
       return unit(new FTLNumber(node.value));
-    case 'Variable':
-      return Variable(res, node);
+    case 'ExternalArgument':
+      return ExternalArgument(res, node);
     case 'Placeable':
       return mapValues(res, node.expressions);
     case 'KeyValueArg':
@@ -177,13 +177,13 @@ function Value(res, expr) {
   }
 }
 
-function Variable(res, expr) {
+function ExternalArgument(res, expr) {
   const id = expr.id;
   const args = res.args;
 
   if (!args || !args.hasOwnProperty(id)) {
     return fail(
-      [new L10nError('Unknown variable: ' + id)],
+      [new L10nError('Unknown external: ' + id)],
       unit(new FTLNone(id))
     );
   }
@@ -194,7 +194,7 @@ function Variable(res, expr) {
     case 'number': return unit(new FTLNumber(arg));
     case 'string': return unit(new FTLText(arg));
     default: return fail(
-      [new L10nError('Unsupported variable type: ' + id + ', ' + typeof arg)],
+      [new L10nError('Unsupported external type: ' + id + ', ' + typeof arg)],
       unit(new FTLNone(id))
     );
   }
