@@ -15,7 +15,9 @@ import { Env } from '../../lib/env';
 import { L10nError } from '../../lib/errors';
 import { emit, addEventListener, removeEventListener } from '../../lib/events';
 import { prioritizeLocales } from '../../lib/intl';
-import { MockContext, lang } from '../../lib/mocks';
+import {
+  createEntriesFromSource, createEntriesFromAST, MockContext, lang
+} from '../../lib/mocks';
 import { getPluralRule } from '../../lib/plurals';
 import { walkEntry, walkValue, pseudo } from '../../lib/pseudo';
 import { format } from '../../lib/resolver';
@@ -26,5 +28,5 @@ window.L20n = {
   FTLASTParser,
   Context, Env, L10nError, emit, addEventListener, removeEventListener,
   prioritizeLocales, MockContext, lang, getPluralRule, walkEntry, walkValue,
-  pseudo, format
+  createEntriesFromSource, createEntriesFromAST, pseudo, format
 };

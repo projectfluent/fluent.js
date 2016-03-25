@@ -10,7 +10,7 @@ require('babel-register')({
   presets: ['es2015']
 });
 var Resolver = require('../src/lib/resolver');
-var MockContext = require('../tests/lib/resolver/header').MockContext;
+var mocks = require('../src/lib/mocks');
 var lang = require('../src/lib/mocks').lang;
 var lib = require('./lib');
 var color = lib.color.bind(program);
@@ -73,16 +73,10 @@ function print(fileformat, err, data) {
     }
   }
 
-  var entries = ast.body.reduce(
-    (seq, cur) => Object.assign(seq, {
-      [cur.id]: cur
-    }), {}
-  );
-
-  var ctx = new MockContext(entries);
+  var entries = mocks.createEntriesFromAST(ast);
+  var ctx = new mocks.MockContext(entries);
 
   for (var id in entries) {
-    // console.log(JSON.stringify(entries[id], null, 4));
     printEntry(ctx, id, entries[id]);
   }
 }
