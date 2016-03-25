@@ -15,7 +15,8 @@ export function createEntriesFromSource(source) {
 export function MockContext(entries) {
   return {
     env: {},
-    _getEntity(lang, id) {
+    _getEntity(lang, {namespace, name}) {
+      const id = `${namespace}:${name}`;
       return entries[id];
     },
     _memoizeIntlObject: Context.prototype._memoizeIntlObject,
