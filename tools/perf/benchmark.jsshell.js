@@ -52,7 +52,7 @@ times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
 
-var entries = L20n.FTLEntriesParser.parse(ftlCode);
+var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
 /*
