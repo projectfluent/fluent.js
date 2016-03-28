@@ -1,45 +1,38 @@
+/*eslint no-magic-numbers: [0]*/
+
 import { L10nError } from '../../../errors';
 
 const MAX_PLACEABLES = 100;
 
 
-export default {
-  parse: function(emit, string) {
+class ParseContext {
+  constructor(string) {
     this._source = string;
     this._index = 0;
     this._length = string.length;
-    this.emit = emit;
 
-    return this.getResource();
-  },
+    this._lastGoodEntryEnd = 0;
+    this._section = null;
+  }
 
-  getResource: function() {
-    this.entries = Object.create(null);
+  getResource() {
+    this.entries = {};
+
     this.getWS();
     while (this._index < this._length) {
       try {
         this.getEntry();
+        this._lastGoodEntryEnd = this._index;
       } catch (e) {
-        if (e instanceof L10nError) {
-          // we want to recover, but we don't need it in entries
-          this.getJunkEntry();
-          if (!this.emit) {
-            throw e;
-          }
-        } else {
-          throw e;
-        }
+        throw e;
       }
-
-      if (this._index < this._length) {
-        this.getWS();
-      }
+      this.getWS();
     }
 
     return this.entries;
-  },
+  }
 
-  getEntry: function() {
+  getEntry() {
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
       throw this.error('Expected new line and a new entry');
@@ -62,9 +55,38 @@ export default {
       return this.getEntity(comment);
     }
     return comment;
-  },
+  }
 
-  getEntity: function() {
+  getSection(comment = null) {
+    this._index += 1;
+    if (this._source[this._index] !== '[') {
+      throw this.error('Expected "[[" to open a section');
+    }
+
+    this._index += 1;
+
+    this.getLineWS();
+
+    const id = this.getIdentifier();
+
+    this.getLineWS();
+
+    if (this._source[this._index] !== ']' ||
+        this._source[this._index + 1] !== ']') {
+      throw this.error('Expected "]]" to close a section');
+    }
+
+    this._index += 2;
+
+    this._section = id;
+
+    return {
+      type: 'section',
+      id
+    };
+  }
+
+  getEntity(comment = null) {
     let id = this.getIdentifier(':');
 
     let members = [];
@@ -103,18 +125,34 @@ export default {
       value,
       members
     };
-  },
+  }
 
-  getIdentifier: function(nsSep=null) {
+  getWS() {
+    let cc = this._source.charCodeAt(this._index);
+    // space, \n, \t, \r
+    while (cc === 32 || cc === 10 || cc === 9 || cc === 13) {
+      cc = this._source.charCodeAt(++this._index);
+    }
+  }
+
+  getLineWS() {
+    let cc = this._source.charCodeAt(this._index);
+    // space, \t
+    while (cc === 32 || cc === 9) {
+      cc = this._source.charCodeAt(++this._index);
+    }
+  }
+
+  getIdentifier(nsSep=null) {
     let namespace = null;
-    let name = '';
+    let id = '';
 
     if (nsSep) {
       namespace = this.getIdentifier().name;
       if (this._source[this._index] === nsSep) {
         this._index++;
       } else if (namespace) {
-        name = namespace;
+        id = namespace;
         namespace = null; 
       }
     }
@@ -126,7 +164,7 @@ export default {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95) {               // _
       cc = this._source.charCodeAt(++this._index);
-    } else if (name.length === 0) {
+    } else if (id.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
@@ -137,10 +175,54 @@ export default {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    name += this._source.slice(start, this._index);
+    id += this._source.slice(start, this._index);
 
-    return {name, namespace};
-  },
+    return {
+      name: id,
+      namespace
+    };
+  }
+
+  getIdentifierWithSpace(nsSep=null) {
+    let namespace = null;
+    let id = '';
+
+    if (nsSep) {
+      namespace = this.getIdentifier().name;
+      if (this._source[this._index] === nsSep) {
+        this._index++;
+      } else if (namespace) {
+        id = namespace;
+        namespace = null;
+      }
+    }
+
+    const start = this._index;
+    let cc = this._source.charCodeAt(this._index);
+
+    if ((cc >= 97 && cc <= 122) || // a-z
+        (cc >= 65 && cc <= 90) ||  // A-Z
+        cc === 95 || cc === 32) {  //  _
+      cc = this._source.charCodeAt(++this._index);
+    } else if (id.length === 0) {
+      throw this.error('Expected an identifier (starting with [a-zA-Z_])');
+    }
+
+    while ((cc >= 97 && cc <= 122) || // a-z
+           (cc >= 65 && cc <= 90) ||  // A-Z
+           (cc >= 48 && cc <= 57) ||  // 0-9
+           cc === 95 || cc === 45 || cc === 32) {  //  _-
+      cc = this._source.charCodeAt(++this._index);
+    }
+
+    id += this._source.slice(start, this._index);
+
+    return {
+      name: id,
+      namespace
+    };
+  }
+
   getPattern() {
     let buffer = '';
     let source = '';
@@ -152,12 +234,12 @@ export default {
 
 
     if (ch === '\\' &&
-        (this._source[this._index + 1] === '"' ||
-         this._source[this._index + 1] === '{' ||
-           this._source[this._index + 1] === '\\')) {
+      (this._source[this._index + 1] === '"' ||
+       this._source[this._index + 1] === '{' ||
+       this._source[this._index + 1] === '\\')) {
       buffer += this._source[this._index + 1];
-    this._index += 2;
-    ch = this._source[this._index];
+      this._index += 2;
+      ch = this._source[this._index];
     } else if (ch === '"') {
       quoteDelimited = true;
       this._index++;
@@ -192,7 +274,7 @@ export default {
         if ((quoteDelimited && ch2 === '"') ||
             ch2 === '{') {
           ch = ch2;
-        this._index++;
+          this._index++;
         }
       } else if (quoteDelimited && ch === '"') {
         this._index++;
@@ -236,7 +318,8 @@ export default {
     }
 
     return content;
-  },
+  }
+
   getPlaceable() {
     this._index++;
 
@@ -249,14 +332,8 @@ export default {
       try {
         expressions.push(this.getPlaceableExpression());
       } catch (e) {
-        if (e instanceof L10nError) {
-          let diff = start - e._pos.start;
-          e._pos.start -= diff;
-          e.offset -= diff; 
-          throw e;
-        } else {
-          throw this.error(e);
-        }
+        throw e;
+        throw this.error(e.description, start);
       }
       this.getWS();
       if (this._source[this._index] === '}') {
@@ -271,7 +348,7 @@ export default {
     }
 
     return expressions;
-  },
+  }
 
   getPlaceableExpression() {
     let selector = this.getCallExpression();
@@ -307,10 +384,11 @@ export default {
     }
     return {
       type: 'select',
-      selector: selector,
-      members: members
+      selector,
+      members
     };
-  },
+  }
+
   getCallExpression() {
     let exp = this.getMemberExpression();
 
@@ -329,7 +407,8 @@ export default {
       exp,
       args
     };
-  },
+  }
+
   getCallArgs() {
     let args = [];
 
@@ -378,7 +457,46 @@ export default {
     }
 
     return args;
-  },
+  }
+
+  getNumber() {
+    let num = '';
+    let cc = this._source.charCodeAt(this._index);
+
+    if (cc === 45) {
+      num += '-';
+      cc = this._source.charCodeAt(++this._index);
+    }
+
+    if (cc < 48 || cc > 57) {
+      throw this.error(`Unknown literal "${num}"`);
+    }
+
+    while (cc >= 48 && cc <= 57) {
+      num += this._source[this._index++];
+      cc = this._source.charCodeAt(this._index);
+    }
+
+    if (cc === 46) {
+      num += this._source[this._index++];
+      cc = this._source.charCodeAt(this._index);
+
+      if (cc < 48 || cc > 57) {
+        throw this.error(`Unknown literal "${num}"`);
+      }
+
+      while (cc >= 48 && cc <= 57) {
+        num += this._source[this._index++];
+        cc = this._source.charCodeAt(this._index);
+      }
+    }
+
+    return {
+      type: 'num',
+      value: num
+    };
+  }
+
   getMemberExpression() {
     const exp = this.getLiteral();
 
@@ -390,37 +508,10 @@ export default {
       type: 'member',
       exp,
       keyword
-    }
-  },
-  getLiteral() {
-    let cc = this._source.charCodeAt(this._index);
-    if ((cc >= 48 && cc <= 57) || cc === 45) {
-      return this.getNumber();
-    } else if (cc === 34) { // "
-      return this.getPattern();
-    } else if (cc === 36) { // $
-      this._index++;
-      let id = this.getIdentifier();
-      return {
-        type: 'external',
-        id: id.name
-      };
-    }
+    };
+  }
 
-    let id = this.getIdentifier(':');
-    return id;
-  },
-  getComment: function() {
-    let lineEnd = this._source.indexOf('\n', this._index);
-
-    if (lineEnd === -1) {
-      lineEnd = this._length;
-    }
-
-    this._index =  lineEnd;
-  },
-
-  getMembers: function() {
+  getMembers() {
     const members = {};
 
     while (this._index < this._length) {
@@ -451,9 +542,9 @@ export default {
     }
 
     return members;
-  },
+  }
 
-  getKeyword: function() {
+  getKeyword() {
     this._index++;
 
     let cc = this._source.charCodeAt(this._index);
@@ -462,7 +553,7 @@ export default {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getIdentifier(':');
+      literal = this.getIdentifierWithSpace(':');
     }
 
     if (this._source[this._index] !== ']') {
@@ -471,23 +562,61 @@ export default {
 
     this._index++;
     return literal;
-  },
+  }
 
-  getWS: function() {
+  getLiteral() {
     let cc = this._source.charCodeAt(this._index);
-    // space, \n, \t, \r
-    while (cc === 32 || cc === 10 || cc === 9 || cc === 13) {
-      cc = this._source.charCodeAt(++this._index);
+    if ((cc >= 48 && cc <= 57) || cc === 45) {
+      return this.getNumber();
+    } else if (cc === 34) { // "
+      return this.getPattern();
+    } else if (cc === 36) { // $
+      this._index++;
+      let id = this.getIdentifier();
+      return {
+        type: 'external',
+        name: id.name
+      };
     }
-  },
 
-  getLineWS() {
-    let cc = this._source.charCodeAt(this._index);
-    // space, \t
-    while (cc === 32 || cc === 9) {
-      cc = this._source.charCodeAt(++this._index);
+    let id = this.getIdentifier(':');
+    return id;
+  }
+
+  getComment() {
+    this._index++;
+    if (this._source[this._index] === ' ') {
+      this._index++;
     }
-  },
+
+    let content = '';
+
+    let eol = this._source.indexOf('\n', this._index);
+
+    content += this._source.substring(this._index, eol);
+
+    while (eol !== -1 && this._source[eol + 1] === '#') {
+      this._index = eol + 2;
+
+      if (this._source[this._index] === ' ') {
+        this._index++;
+      }
+
+      eol = this._source.indexOf('\n', this._index);
+
+      if (eol === -1) {
+        break;
+      }
+
+      content += '\n' + this._source.substring(this._index, eol);
+    }
+
+    if (eol === -1) {
+      this._index = this._length;
+    } else {
+      this._index = eol + 1;
+    }
+  }
 
   error(message, start=null) {
     let colors = require('colors/safe');
@@ -512,7 +641,8 @@ export default {
     err.description = message;
     err.context = context;
     return err;
-  },
+  }
+
   getJunkEntry() {
     const pos = this._index;
 
@@ -523,7 +653,18 @@ export default {
     }
 
     this._index = nextEntity;
-  },
+
+    let entityStart = this._findEntityStart(pos);
+
+    if (entityStart < this._lastGoodEntryEnd) {
+      entityStart = this._lastGoodEntryEnd;
+    }
+
+    const junk = new AST.JunkEntry(
+      this._source.slice(entityStart, nextEntity));
+    return junk;
+  }
+
   _findEntityStart(pos) {
     let start = pos;
 
@@ -544,7 +685,8 @@ export default {
     }
 
     return start;
-  },
+  }
+
   _findNextEntryStart(pos) {
     let start = pos;
 
@@ -570,4 +712,11 @@ export default {
 
     return start;
   }
+}
+
+export default {
+  parse: function(emit, string) {
+    const parseContext = new ParseContext(string);
+    return parseContext.getResource();
+  },
 };
