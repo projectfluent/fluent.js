@@ -5,7 +5,7 @@ import {default as FTLEntriesParser } from '../../lib/format/ftl/entries/parser'
 import { format } from '../../lib/resolver';
 import { MockContext } from '../../lib/mocks';
 
-this.L20n = {
+export default {
   MockContext,
   L20nParser,
   FTLParser,

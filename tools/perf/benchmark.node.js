@@ -55,6 +55,11 @@ cumulative.ftlParseStart = process.hrtime(start);
 
 var entries = L20n.FTLParser.parseResource(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
+
+cumulative.ftlEntriesParseStart = process.hrtime(start);
+
+var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
+cumulative.ftlEntriesParseEnd = process.hrtime(start);
 /*
 var ctx = new L20n.MockContext(entries);
 
@@ -80,6 +85,7 @@ var results = {
   propParse: micro(cumulative.parseEnd),
   l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
   ftlParse: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
+  ftlEntriesParse: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
   //format: micro(cumulative.formatEnd) - micro(cumulative.format),
   //getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
 };
