@@ -49,6 +49,12 @@ times.ftlParseStart = dateNow();
 
 var entries = L20n.FTLParser.parseResource(ftlCode);
 times.ftlParseEnd = dateNow();
+
+times.ftlEntriesParseStart = dateNow();
+
+var entries = L20n.FTLEntriesParser.parse(ftlCode);
+times.ftlEntriesParseEnd = dateNow();
+
 /*
 var ctx = new L20n.MockContext(entries);
 
@@ -73,6 +79,7 @@ var results = {
   parseProp: micro(times.parseEnd - times.start),
   parseL20n: micro(times.l20nParseEnd - times.l20nParseStart),
   parseFTL: micro(times.ftlParseEnd - times.ftlParseStart),
+  parseFTLEntries: micro(times.ftlEntriesParseEnd - times.ftlEntriesParseStart),
   //format: micro(times.formatEnd - times.format),
   //getEntity: micro(times.getEntityEnd - times.getEntity),
 };
