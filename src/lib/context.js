@@ -101,7 +101,8 @@ export class Context {
       langs => this._resolve(langs, keys, this._formatValue));
   }
 
-  _getEntity(lang, id) {
+  _getEntity(lang, {namespace, name}) {
+    const id = `${namespace || ''}:${name}`;
     const cache = this.env.resCache;
 
     // Look for `id` in every resource in order.

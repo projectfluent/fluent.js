@@ -47,20 +47,19 @@ var entries = L20n.PropertiesParser.parse(null, propCode);
 cumulative.parseEnd = process.hrtime(start);
 
 cumulative.l20nParseStart = process.hrtime(start);
-
 var entries = L20n.L20nParser.parse(null, l20nCode);
 cumulative.l20nParseEnd = process.hrtime(start);
 
 cumulative.ftlParseStart = process.hrtime(start);
-
-var entries = L20n.FTLParser.parseResource(ftlCode);
+var ast = L20n.FTLASTParser.parseResource(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
 
 cumulative.ftlEntriesParseStart = process.hrtime(start);
 
 var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
-/*
+
+var entries = L20n.createEntriesFromAST(ast);
 var ctx = new L20n.MockContext(entries);
 
 cumulative.format = process.hrtime(start);
@@ -69,24 +68,11 @@ for (var id in entries) {
 }
 cumulative.formatEnd = process.hrtime(start);
 
-
-var ctx = new Context(null);
-var locale = ctx.getLocale('en-US');
-locale.addAST(ast);
-ctx.requestLocales(['en-US']);
-
-cumulative.getEntity = process.hrtime(start);
-for (var id in ids) {
-  ctx.getEntity(ids[id], data);
-}
-cumulative.getEntityEnd = process.hrtime(start);
-*/
 var results = {
   propParse: micro(cumulative.parseEnd),
   l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
   ftlParse: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
   ftlEntriesParse: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
-  //format: micro(cumulative.formatEnd) - micro(cumulative.format),
-  //getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
+  format: micro(cumulative.formatEnd) - micro(cumulative.format),
 };
 console.log(JSON.stringify(results));

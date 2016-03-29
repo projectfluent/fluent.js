@@ -9,11 +9,6 @@ const MAX_PLACEABLE_LENGTH = 2500;
 const FSI = '\u2068';
 const PDI = '\u2069';
 
-function getId(entity) {
-  return entity.ns ?
-    `${entity.ns}/${entity.id}` : entity.id;
-}
-
 function mapValues(res, arr) {
   return arr.reduce(
     ([errSeq, valSeq], cur) => {
@@ -80,12 +75,13 @@ function Expression(res, expr) {
 }
 
 function EntityReference(res, expr) {
-  const entity = res.ctx._getEntity(res.lang, getId(expr));
+  const entity = res.ctx._getEntity(res.lang, expr);
 
   if (!entity) {
+    const id = new FTLKeyword(expr.name, expr.namespace).format(res);
     return fail(
-      [new L10nError('Unknown entity: ' + getId(expr))],
-      unit(new FTLText(expr.id))
+      [new L10nError('Unknown entity: ' + id)],
+      unit(new FTLText(id))
     );
   }
 
@@ -93,12 +89,13 @@ function EntityReference(res, expr) {
 }
 
 function BuiltinReference(res, expr) {
-  const builtin = builtins[expr.id];
+  const id = new FTLKeyword(expr.name, expr.namespace).format(res);
+  const builtin = builtins[id];
 
   if (!builtin) {
     return fail(
-      [new L10nError('Unknown built-in: ' + expr.id)],
-      unit(new FTLText(expr.id + '()'))
+      [new L10nError('Unknown built-in: ' + id + '()')],
+      unit(new FTLText(id + '()'))
     );
   }
 
@@ -154,12 +151,12 @@ function Value(res, expr) {
   switch (node.type) {
     case 'TextElement':
       return unit(new FTLText(node.value));
-    case 'Keyword':
-      return unit(new FTLKeyword(node.value, node.namespace));
+    case 'Identifier':
+      return unit(new FTLKeyword(node.name, node.namespace));
     case 'Number':
       return unit(new FTLNumber(node.value));
-    case 'Variable':
-      return Variable(res, node);
+    case 'ExternalArgument':
+      return ExternalArgument(res, node);
     case 'Placeable':
       return mapValues(res, node.expressions);
     case 'KeyValueArg':
@@ -177,13 +174,13 @@ function Value(res, expr) {
   }
 }
 
-function Variable(res, expr) {
+function ExternalArgument(res, expr) {
   const id = expr.id;
   const args = res.args;
 
   if (!args || !args.hasOwnProperty(id)) {
     return fail(
-      [new L10nError('Unknown variable: ' + id)],
+      [new L10nError('Unknown external: ' + id)],
       unit(new FTLNone(id))
     );
   }
@@ -194,7 +191,7 @@ function Variable(res, expr) {
     case 'number': return unit(new FTLNumber(arg));
     case 'string': return unit(new FTLText(arg));
     default: return fail(
-      [new L10nError('Unsupported variable type: ' + id + ', ' + typeof arg)],
+      [new L10nError('Unsupported external type: ' + id + ', ' + typeof arg)],
       unit(new FTLNone(id))
     );
   }
@@ -248,9 +245,10 @@ function Entity(res, entity) {
   const [errs, def] = DefaultMember(entity.traits);
 
   if (errs.length) {
+    const id = new FTLKeyword(entity.id.name, entity.id.namespace).format(res);
     return fail(
-      [...errs, new L10nError('No value: ' + getId(entity))],
-      unit(new FTLText(getId(entity)))
+      [...errs, new L10nError('No value: ' + id)],
+      unit(new FTLText(id))
     );
   }
 
