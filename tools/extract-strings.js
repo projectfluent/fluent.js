@@ -11,6 +11,12 @@ require('babel-register')({
 const AST = require('../src/lib/format/ftl/ast/ast').default;
 const Serializer = require('../src/lib/format/ftl/ast/serializer').default;
 
+function trimString(str) {
+  return str.split('\n').map(line => {
+    return line.trim();
+  }).join('\n');
+}
+
 function extractFromHTML(err, data) {
   const res = new AST.Resource();
 
@@ -19,7 +25,7 @@ function extractFromHTML(err, data) {
   elements.each(function(index, element) {
 
     const id = new AST.Identifier($(this).attr('data-l10n-id'));
-    const value = new AST.Pattern($(this).text());
+    const value = new AST.Pattern(trimString($(this).text().trim()));
 
     const traits = [];
 
@@ -37,6 +43,8 @@ function extractFromHTML(err, data) {
   console.log(Serializer.serialize(res));
 }
 
+function extractFromJS(err, data) {
+}
 
 
 program
@@ -44,4 +52,9 @@ program
   .usage('[options] [file]')
   .parse(process.argv);
 
-fs.readFile(program.args[0], extractFromHTML);
+if (program.args[0].endsWith('.html')) {
+  fs.readFile(program.args[0], extractFromHTML);
+}
+if (program.args[0].endsWith('.js')) {
+  fs.readFile(program.args[0], extractFromJS);
+}

@@ -35,6 +35,9 @@ export default {
   },
 
   dumpPattern: function(pattern) {
+    if (pattern.source.includes('\n')) {
+      return '\n  | ' + pattern.source.replace('\n', '\n  | ');
+    }
     return pattern.source;
   },
 
