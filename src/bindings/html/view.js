@@ -32,8 +32,8 @@ export class View {
 
   requestLanguages(requestedLangs, isGlobal) {
     const method = isGlobal ?
-      client => client.method('requestLanguages', requestedLangs) :
-      client => changeLanguages(this, client, requestedLangs);
+      (client => client.method('requestLanguages', requestedLangs)) :
+      (client => changeLanguages(this, client, requestedLangs));
     return this._interactive.then(method);
   }
 
