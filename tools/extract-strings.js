@@ -4,6 +4,8 @@
 const program = require('commander');
 const fs = require('fs');
 const cheerio = require('cheerio');
+const esprima = require('esprima');
+const esprimaWalk = require('esprima-walk');
 
 require('babel-register')({
   presets: ['es2015']
@@ -44,6 +46,31 @@ function extractFromHTML(err, data) {
 }
 
 function extractFromJS(err, data) {
+  const res = new AST.Resource();
+
+  const ast = esprima.parse(data.toString());
+
+  esprimaWalk(ast, node => {
+    if (node.type === 'CallExpression') {
+      if (node.callee.object.type === 'MemberExpression' &&
+          node.callee.object.object.type === 'Identifier' &&
+          node.callee.object.object.name === 'document' &&
+          node.callee.object.property.type === 'Identifier' &&
+          node.callee.object.property.name === 'l10n' &&
+          node.callee.property.type === 'Identifier' &&
+          node.callee.property.name === 'formatValue') {
+        const id = node.arguments[0].value;
+        const source = node.arguments[1].value;
+
+        res.body.push(new AST.Entity(
+          new AST.Identifier(id),
+          new AST.Pattern(source)
+        ));
+      };
+    }
+  });
+
+  console.log(Serializer.serialize(res));
 }
 
 
