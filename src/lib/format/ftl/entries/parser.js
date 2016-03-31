@@ -1,6 +1,5 @@
 import { default as ASTParser } from '../ast/parser';
 import { createEntriesFromAST } from './transformer';
-import { default as AST } from '../ast/ast';
 
 import { L10nError } from '../../../errors';
 

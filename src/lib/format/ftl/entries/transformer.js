@@ -1,3 +1,4 @@
+import { default as AST } from '../ast/ast';
 
 function toEntries([entries, curSection], entry) {
   if (entry.type === 'Section') {
@@ -10,21 +11,88 @@ function toEntries([entries, curSection], entry) {
 
   return [
     Object.assign(entries, {
-      [getId(entry)]: transformEntity(entry)
+      [transformIdentifier(entry.id)]: transformEntity(entry)
     }),
     curSection
   ];
 }
 
 function transformEntity(entity) {
-  return entity.value.source;
+  if (entity.value.elements.length === 1 &&
+      entity.value.elements[0] instanceof AST.TextElement) {
+    return entity.value.source;
+  }
+  return transformPattern(entity.value);
 }
 
-function getId(entry) {
-  if (entry.id.namespace) {
-    return `${entry.id.namespace}:${entry.id.name}`;
+function transformPattern(pattern) {
+  return pattern.elements.map(chunk => {
+    if (chunk instanceof AST.TextElement) {
+      return chunk.value;
+    }
+    if (chunk instanceof AST.Placeable) {
+      return chunk.expressions.map(transformExpression);
+    }
+    return chunk;
+  });
+}
+
+function transformExpression(exp) {
+  if (exp instanceof AST.EntityReference) {
+    return {
+      type: 'eref',
+      value: transformIdentifier(exp)
+    };
   }
-  return entry.id.name;
+  if (exp instanceof AST.BuiltinReference) {
+    return {
+      type: 'builtin',
+      value: transformIdentifier(exp)
+    };
+  }
+  if (exp instanceof AST.ExternalArgument) {
+    return {
+      type: 'arg',
+      value: exp.id
+    };
+  }
+  if (exp instanceof AST.SelectExpression) {
+    return {
+      type: 'select',
+      exp: transformExpression(exp.expression),
+      variants: transformVariants(exp.variants)
+    };
+  }
+  if (exp instanceof AST.CallExpression) {
+    return {
+      type: 'call',
+      id: transformExpression(exp.callee),
+      args: exp.args.map(transformExpression)
+    };
+  }
+  return exp;
+}
+
+function transformVariants(variants) {
+  const result = {};
+  let def = null;
+  variants.forEach(variant => {
+    result[transformIdentifier(variant.key)] = transformPattern(variant.value);
+    if (variant.default) {
+      def = transformIdentifier(variant.key);
+    }
+  });
+  if (def) {
+    result['[default]'] = def;
+  }
+  return result;
+}
+
+function transformIdentifier(id) {
+  if (id.namespace) {
+    return `${id.namespace}:${id.name}`;
+  }
+  return id.name;
 }
 
 export function createEntriesFromAST(ast) {
