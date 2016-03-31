@@ -56,17 +56,29 @@ function extractFromJS(err, data) {
           node.callee.object.object.type === 'Identifier' &&
           node.callee.object.object.name === 'document' &&
           node.callee.object.property.type === 'Identifier' &&
-          node.callee.object.property.name === 'l10n' &&
-          node.callee.property.type === 'Identifier' &&
-          node.callee.property.name === 'formatValue') {
-        const id = node.arguments[0].value;
-        const source = node.arguments[1].value;
+          node.callee.object.property.name === 'l10n') {
 
-        res.body.push(new AST.Entity(
-          new AST.Identifier(id),
-          new AST.Pattern(source)
-        ));
-      };
+        if(node.callee.property.type === 'Identifier' &&
+            node.callee.property.name === 'formatValue') {
+          const id = node.arguments[0].value;
+          const source = node.arguments[1].value;
+
+          res.body.push(new AST.Entity(
+            new AST.Identifier(id),
+            new AST.Pattern(source)
+          ));
+        }
+        if(node.callee.property.type === 'Identifier' &&
+            node.callee.property.name === 'setAttributes') {
+          const id = node.arguments[1].value;
+          const source = node.arguments[2].value;
+
+          res.body.push(new AST.Entity(
+            new AST.Identifier(id),
+            new AST.Pattern(source)
+          ));
+        }
+      }
     }
   });
 
