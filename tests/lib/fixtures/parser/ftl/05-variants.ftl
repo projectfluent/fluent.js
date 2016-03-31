@@ -9,11 +9,11 @@ key3 =
   [feminine] Variant for feminine
 
 key4=
- [html:aria-label] Test
+ [html/aria-label] Test
 
 key5=
- [html:aria-label] Test
- [joomla:loop] Foo
+ [html/aria-label] Test
+ [joomla/loop] Foo
 
 key5=
  [m] Foo

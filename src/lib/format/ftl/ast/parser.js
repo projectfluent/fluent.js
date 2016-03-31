@@ -91,7 +91,7 @@ class ParseContext {
   }
 
   getEntity(comment = null) {
-    let id = this.getIdentifier(':');
+    let id = this.getIdentifier('/');
 
     let members = [];
     let value = null;
@@ -417,7 +417,7 @@ class ParseContext {
       } else {
         this.getLineWS();
 
-        if (this._source[this._index] === '=') {
+        if (this._source[this._index] === ':') {
           this._index++;
           this.getLineWS();
 
@@ -538,7 +538,7 @@ class ParseContext {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getIdentifierWithSpace(':');
+      literal = this.getIdentifierWithSpace('/');
     }
 
     if (this._source[this._index] !== ']') {
@@ -561,7 +561,7 @@ class ParseContext {
       return new AST.ExternalArgument(id.name);
     }
 
-    let id = this.getIdentifier(':');
+    let id = this.getIdentifier('/');
     return new AST.EntityReference(id.name, id.namespace);
   }
 

@@ -69,7 +69,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ menu:open }",
+        "source": "{ menu/open }",
         "elements": [
           {
             "type": "Placeable",
@@ -358,7 +358,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ LEN($u1, $u2, open:brand-name, type=\"short\") }",
+        "source": "{ LEN($u1, $u2, open/brand-name, type:\"short\") }",
         "elements": [
           {
             "type": "Placeable",
@@ -463,7 +463,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ menu:brand-name[accusative] }",
+        "source": "{ menu/brand-name[accusative] }",
         "elements": [
           {
             "type": "Placeable",
@@ -668,7 +668,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar:baz) }",
+        "source": "{ len(bar/baz) }",
         "elements": [
           {
             "type": "Placeable",
@@ -704,7 +704,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar:baz[foo]) }",
+        "source": "{ len(bar/baz[foo]) }",
         "elements": [
           {
             "type": "Placeable",
@@ -748,7 +748,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar:baz[foo:fab]) }",
+        "source": "{ len(bar/baz[foo/fab]) }",
         "elements": [
           {
             "type": "Placeable",
@@ -792,7 +792,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar=1) }",
+        "source": "{ len(bar:1) }",
         "elements": [
           {
             "type": "Placeable",
@@ -831,7 +831,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar=-1) }",
+        "source": "{ len(bar:-1) }",
         "elements": [
           {
             "type": "Placeable",
@@ -870,7 +870,7 @@
       },
       "value": {
         "type": "Pattern",
-        "source": "{ len(bar=$user) }",
+        "source": "{ len(bar:$user) }",
         "elements": [
           {
             "type": "Placeable",
