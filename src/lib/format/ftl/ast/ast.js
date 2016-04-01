@@ -83,10 +83,10 @@ class SelectExpression extends Node {
 }
 
 class MemberExpression extends Node {
-  constructor(idref, keyword) {
+  constructor(obj, keyword) {
     super();
     this.type = 'MemberExpression';
-    this.idref = idref;
+    this.object = obj;
     this.keyword = keyword;
   }
 }
@@ -101,18 +101,18 @@ class CallExpression extends Node {
 }
 
 class ExternalArgument extends Node {
-  constructor(id) {
+  constructor(name) {
     super();
     this.type = 'ExternalArgument';
-    this.id = id;
+    this.name = name;
   }
 }
 
 class KeyValueArg extends Node {
-  constructor(id, value) {
+  constructor(name, value) {
     super();
     this.type = 'KeyValueArg';
-    this.id = id;
+    this.name = name;
     this.value = value;
   }
 }

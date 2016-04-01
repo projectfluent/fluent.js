@@ -2,11 +2,11 @@ import { default as AST } from '../ast/ast';
 
 function toEntries([entries, curSection], entry) {
   if (entry.type === 'Section') {
-    return [entries, entry.name];
+    return [entries, entry.name.name];
   }
 
-  if (curSection && !entry.ns) {
-    entry.ns = curSection;
+  if (curSection && !entry.id.namespace) {
+    entry.id.namespace = curSection;
   }
 
   return [
@@ -18,14 +18,89 @@ function toEntries([entries, curSection], entry) {
 }
 
 function transformEntity(entity) {
-  if (entity.value.elements.length === 1 &&
-      entity.value.elements[0] instanceof AST.TextElement) {
-    return entity.value.source;
+  if (entity.traits.length === 0) {
+    return transformPattern(entity.value);
   }
-  return transformPattern(entity.value);
+
+  return {
+    val: transformPattern(entity.value),
+    traits: entity.traits.map(transformMember),
+  };
+}
+
+function transformExpression(exp) {
+  if (exp instanceof AST.EntityReference) {
+    return {
+      type: 'eref',
+      name: transformIdentifier(exp)
+    };
+  }
+  if (exp instanceof AST.BuiltinReference) {
+    return {
+      type: 'builtin',
+      name: transformIdentifier(exp)
+    };
+  }
+  if (exp instanceof AST.ExternalArgument) {
+    return {
+      type: 'ext',
+      name: exp.name
+    };
+  }
+  if (exp instanceof AST.Pattern) {
+    return transformPattern(exp);
+  }
+  if (exp instanceof AST.Number) {
+    return {
+      type: 'num',
+      val: exp.value
+    };
+  }
+  if (exp instanceof AST.Identifier) {
+    return {
+      type: 'kw',
+      ns: exp.namespace,
+      name: exp.name
+    };
+  }
+  if (exp instanceof AST.KeyValueArg) {
+    return {
+      type: 'kv',
+      name: exp.name,
+      val: transformExpression(exp.value)
+    };
+  }
+
+  if (exp instanceof AST.SelectExpression) {
+    return {
+      type: 'select',
+      exp: transformExpression(exp.expression),
+      vars: exp.variants.map(transformMember)
+    };
+  }
+  if (exp instanceof AST.MemberExpression) {
+    return {
+      type: 'mem',
+      obj: transformExpression(exp.object),
+      key: transformExpression(exp.keyword)
+    };
+  }
+  if (exp instanceof AST.CallExpression) {
+    return {
+      type: 'call',
+      name: transformExpression(exp.callee),
+      args: exp.args.map(transformExpression)
+    };
+  }
+  return exp;
 }
 
 function transformPattern(pattern) {
+  if (pattern.elements.length === 1 &&
+      pattern.elements[0] instanceof AST.TextElement) {
+    return pattern.source;
+  }
+
   return pattern.elements.map(chunk => {
     if (chunk instanceof AST.TextElement) {
       return chunk.value;
@@ -37,60 +112,23 @@ function transformPattern(pattern) {
   });
 }
 
-function transformExpression(exp) {
-  if (exp instanceof AST.EntityReference) {
-    return {
-      type: 'eref',
-      value: transformIdentifier(exp)
-    };
-  }
-  if (exp instanceof AST.BuiltinReference) {
-    return {
-      type: 'builtin',
-      value: transformIdentifier(exp)
-    };
-  }
-  if (exp instanceof AST.ExternalArgument) {
-    return {
-      type: 'arg',
-      value: exp.id
-    };
-  }
-  if (exp instanceof AST.SelectExpression) {
-    return {
-      type: 'select',
-      exp: transformExpression(exp.expression),
-      variants: transformVariants(exp.variants)
-    };
-  }
-  if (exp instanceof AST.CallExpression) {
-    return {
-      type: 'call',
-      id: transformExpression(exp.callee),
-      args: exp.args.map(transformExpression)
-    };
-  }
-  return exp;
-}
+function transformMember(member) {
+  const type = member.key.type;
+  const mem = {
+    key: member.key,
+    val: transformPattern(member.value),
+  };
 
-function transformVariants(variants) {
-  const result = {};
-  let def = null;
-  variants.forEach(variant => {
-    result[transformIdentifier(variant.key)] = transformPattern(variant.value);
-    if (variant.default) {
-      def = transformIdentifier(variant.key);
-    }
-  });
-  if (def) {
-    result['[default]'] = def;
+  if (member.default) {
+    mem.def = true;
   }
-  return result;
+
+  return mem;
 }
 
 function transformIdentifier(id) {
   if (id.namespace) {
-    return `${id.namespace}:${id.name}`;
+    return `${id.namespace}/${id.name}`;
   }
   return id.name;
 }
