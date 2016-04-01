@@ -1,6 +1,5 @@
 import { Context } from './context';
-import PropertiesParser from './format/properties/parser';
-import L20nParser from './format/l20n/entries/parser';
+import FTLEntriesParser from './format/ftl/entries/parser';
 import { walkEntry, pseudo } from './pseudo';
 import { emit, addEventListener, removeEventListener } from './events';
 
@@ -12,8 +11,7 @@ export class Env {
     this.resRefs = new Map();
     this.builtins = null;
     this.parsers = {
-      properties: PropertiesParser,
-      l20n: L20nParser,
+      ftl: FTLEntriesParser
     };
 
     const listeners = {};

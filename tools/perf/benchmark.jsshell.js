@@ -1,7 +1,5 @@
 load('../../dist/bundle/jsshell/l20n.js');
 
-var propCode = read('./example.properties');
-var l20nCode = read('./example.l20n');
 var ftlCode = read('./example.ftl');
 var data = {
   "brandShortName": "BRANDSHORTNAME",
@@ -35,21 +33,12 @@ function micro(time) {
 }
 
 var times = {};
-times.start = dateNow();
-
-var entries = L20n.PropertiesParser.parse(null, propCode);
-times.parseEnd = dateNow();
-
-times.l20nParseStart = dateNow();
-var entries = L20n.L20nParser.parse(null, l20nCode);
-times.l20nParseEnd = dateNow();
 
 times.ftlParseStart = dateNow();
 var ast = L20n.FTLASTParser.parseResource(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-
 var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
@@ -63,12 +52,9 @@ for (var id in entries) {
 times.formatEnd = dateNow();
 
 var results = {
-  parseProp: micro(times.parseEnd - times.start),
-  parseL20n: micro(times.l20nParseEnd - times.l20nParseStart),
   parseFTL: micro(times.ftlParseEnd - times.ftlParseStart),
   parseFTLEntries: micro(times.ftlEntriesParseEnd - times.ftlEntriesParseStart),
   format: micro(times.formatEnd - times.format),
-  //getEntity: micro(times.getEntityEnd - times.getEntity),
 };
 
 print(JSON.stringify(results));

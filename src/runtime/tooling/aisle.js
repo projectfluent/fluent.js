@@ -1,1 +1,1 @@
-export { default as L20nParser } from '../../lib/format/l20n/ast/parser';
+export {default as FTLASTParser} from '../../lib/format/ftl/ast/parser';

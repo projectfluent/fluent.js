@@ -12,7 +12,6 @@ require('babel-register')({
 
 var Resolver = require('../src/lib/resolver');
 var mocks = require('../src/lib/mocks');
-var lang = require('../src/lib/mocks').lang;
 var lib = require('./lib');
 var color = lib.color.bind(program);
 
@@ -21,9 +20,10 @@ program
   .usage('[options] [file]')
   .option('-d, --data <file>', 'Context data to use (.json)')
   .option('-n, --no-color', 'Print without color')
-  .option('-p, --plural <locale>', 'Select the plural rule [en-US]', 'en-US')
+  .option('-l, --lang <code>', 'Locale to use with Intl [en-US]', 'en-US')
   .parse(process.argv);
 
+const lang = { code: program.lang, src: 'app' };
 
 var data = {};
 if (program.data) {

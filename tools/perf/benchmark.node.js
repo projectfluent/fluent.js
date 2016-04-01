@@ -6,8 +6,6 @@ require('babel-register')({
 var L20n = require('../../src/runtime/node');
 var Context = require('../../src/lib/context').Context;
 
-var propCode = fs.readFileSync(__dirname + '/example.properties').toString();
-var l20nCode = fs.readFileSync(__dirname + '/example.l20n').toString();
 var ftlCode = fs.readFileSync(__dirname + '/example.ftl').toString();
 
 var data = {
@@ -43,19 +41,11 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-var entries = L20n.PropertiesParser.parse(null, propCode);
-cumulative.parseEnd = process.hrtime(start);
-
-cumulative.l20nParseStart = process.hrtime(start);
-var entries = L20n.L20nParser.parse(null, l20nCode);
-cumulative.l20nParseEnd = process.hrtime(start);
-
 cumulative.ftlParseStart = process.hrtime(start);
 var ast = L20n.FTLASTParser.parseResource(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
 
 cumulative.ftlEntriesParseStart = process.hrtime(start);
-
 var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
@@ -69,8 +59,6 @@ for (var id in entries) {
 cumulative.formatEnd = process.hrtime(start);
 
 var results = {
-  propParse: micro(cumulative.parseEnd),
-  l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
   ftlParse: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
   ftlEntriesParse: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
   format: micro(cumulative.formatEnd) - micro(cumulative.format),

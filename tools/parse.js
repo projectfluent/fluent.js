@@ -15,7 +15,7 @@ program
   .option('-o, --output <type>',
     'Type of output: ast or entries [ast]', 'ast')
   .option('-i, --input <type>',
-    'Input syntax: ftl, l20n or properties [ftl]', 'ftl')
+    'Input syntax; only ftl is supported right now [ftl]', 'ftl')
   .option('-r, --raw', 'Print raw JSON')
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
