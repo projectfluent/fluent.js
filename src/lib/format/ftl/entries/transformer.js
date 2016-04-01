@@ -11,7 +11,7 @@ function toEntries([entries, curSection], entry) {
 
   return [
     Object.assign(entries, {
-      [transformIdentifier(entry.id)]: transformEntity(entry)
+      [stringifyIdentifier(entry.id)]: transformEntity(entry)
     }),
     curSection
   ];
@@ -32,13 +32,13 @@ function transformExpression(exp) {
   if (exp instanceof AST.EntityReference) {
     return {
       type: 'eref',
-      name: transformIdentifier(exp)
+      name: stringifyIdentifier(exp)
     };
   }
   if (exp instanceof AST.BuiltinReference) {
     return {
       type: 'builtin',
-      name: transformIdentifier(exp)
+      name: stringifyIdentifier(exp)
     };
   }
   if (exp instanceof AST.ExternalArgument) {
@@ -50,17 +50,13 @@ function transformExpression(exp) {
   if (exp instanceof AST.Pattern) {
     return transformPattern(exp);
   }
+  if (exp instanceof AST.Identifier) {
+    return transformIdentifier(exp);
+  }
   if (exp instanceof AST.Number) {
     return {
       type: 'num',
       val: exp.value
-    };
-  }
-  if (exp instanceof AST.Identifier) {
-    return {
-      type: 'kw',
-      ns: exp.namespace,
-      name: exp.name
     };
   }
   if (exp instanceof AST.KeyValueArg) {
@@ -96,6 +92,10 @@ function transformExpression(exp) {
 }
 
 function transformPattern(pattern) {
+  if (pattern === null) {
+    return null;
+  }
+
   if (pattern.elements.length === 1 &&
       pattern.elements[0] instanceof AST.TextElement) {
     return pattern.source;
@@ -114,19 +114,32 @@ function transformPattern(pattern) {
 
 function transformMember(member) {
   const type = member.key.type;
-  const mem = {
-    key: member.key,
+  const ret = {
+    key: transformExpression(member.key),
     val: transformPattern(member.value),
   };
 
   if (member.default) {
-    mem.def = true;
+    ret.def = true;
   }
 
-  return mem;
+  return ret;
 }
 
 function transformIdentifier(id) {
+  const ret = {
+    type: 'id',
+    name: id.name
+  };
+
+  if (id.namespace) {
+    ret.ns = id.namespace;
+  }
+
+  return ret;
+}
+
+function stringifyIdentifier(id) {
   if (id.namespace) {
     return `${id.namespace}/${id.name}`;
   }
