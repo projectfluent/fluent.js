@@ -9,6 +9,7 @@ var program = require('commander');
 require('babel-register')({
   presets: ['es2015']
 });
+
 var Resolver = require('../src/lib/resolver');
 var mocks = require('../src/lib/mocks');
 var lang = require('../src/lib/mocks').lang;
@@ -19,9 +20,7 @@ program
   .version('0.0.1')
   .usage('[options] [file]')
   .option('-d, --data <file>', 'Context data to use (.json)')
-  .option('-a, --ast', 'Treat input as AST, not source code')
   .option('-n, --no-color', 'Print without color')
-  .option('-l, --with-local', 'Print local entities and attributes')
   .option('-p, --plural <locale>', 'Select the plural rule [en-US]', 'en-US')
   .parse(process.argv);
 
@@ -61,23 +60,13 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  var ast;
-  if (program.ast) {
-    ast = JSON.parse(data.toString());
-  } else {
-    try {
-      ast = lib.parse(fileformat, 'ast', data.toString());
-    } catch (e) {
-      console.error(printError(e));
-      process.exit(1);
-    }
-  }
+  const parsed = lib.parse(fileformat, 'entries', data.toString());
 
-  var entries = mocks.createEntriesFromAST(ast);
-  var ctx = new mocks.MockContext(entries);
+  parsed._errors.forEach(printError);
 
-  for (var id in entries) {
-    printEntry(ctx, id, entries[id]);
+  const ctx = new mocks.MockContext(parsed.entries);
+  for (let id in parsed.entries) {
+    printEntry(ctx, id, parsed.entries[id]);
   }
 }
 

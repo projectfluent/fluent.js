@@ -11,10 +11,7 @@ exports.parse = function(fileformat, output, text) {
     '../../src/lib/format/properties/parser' :
     '../../src/lib/format/' + fileformat + '/' + output + '/parser';
 
-  if (output === 'ast') {
-    return require(module).default.parseResource(text);
-  }
-  return require(module).default.parse(null, text);
+  return require(module).default.parseResource(text);
 };
 
 exports.color = function(str, col) {
@@ -22,10 +19,4 @@ exports.color = function(str, col) {
     return str[col];
   }
   return str;
-};
-
-exports.makeError = function(err) {
-  var message  = ': ' + err.message.replace('\n', '');
-  var name = err.name + (err.entry ? ' in ' + err.entry : '');
-  return exports.color.call(this, name + message, 'red');
 };

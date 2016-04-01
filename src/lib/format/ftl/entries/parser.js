@@ -4,9 +4,8 @@ import { createEntriesFromAST } from './transformer';
 import { L10nError } from '../../../errors';
 
 export default {
-  parse: function(emit, string) {
+  parseResource: function(string) {
     const ast = ASTParser.parseResource(string);
-    const entries = createEntriesFromAST(ast);
-    return entries;
+    return createEntriesFromAST(ast);
   }
 };

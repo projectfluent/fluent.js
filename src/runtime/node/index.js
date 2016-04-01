@@ -3,7 +3,7 @@ import 'string.prototype.endswith';
 import PropertiesParser from '../../lib/format/properties/parser';
 import L20nParser from '../../lib/format/l20n/entries/parser';
 import FTLASTParser from '../../lib/format/ftl/ast/parser';
-import {default as FTLEntriesParser } from '../../lib/format/ftl/entries/parser';
+import FTLEntriesParser from '../../lib/format/ftl/entries/parser';
 
 export { fetchResource } from './io';
 export { Env } from '../../lib/env';

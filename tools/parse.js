@@ -8,7 +8,6 @@ var program = require('commander');
 var prettyjson = require('prettyjson');
 
 var lib = require('./lib');
-var makeError = lib.makeError.bind(program);
 
 program
   .version('0.0.1')
@@ -16,7 +15,7 @@ program
   .option('-o, --output <type>',
     'Type of output: ast or entries [ast]', 'ast')
   .option('-i, --input <type>',
-    'Input syntax: l20n or properties [l20n]', 'l20n')
+    'Input syntax: ftl, l20n or properties [ftl]', 'ftl')
   .option('-r, --raw', 'Print raw JSON')
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
@@ -27,31 +26,20 @@ function print(fileformat, output, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  var ast;
-  try {
-    ast = lib.parse(fileformat, output, data.toString());
-  } catch (e) {
-    console.error(makeError(e));
-    process.exit(1);
-  }
-
-  var errors = null;
-  if (ast._errors) {
-    errors = ast._errors;
-    delete ast._errors;
-  }
+  const parsed = lib.parse(fileformat, output, data.toString());
+  const result = parsed.body || parsed.entries;
 
   if (program.raw) {
-    console.log(JSON.stringify(ast, null, 2));
+    console.log(JSON.stringify(result, null, 2));
   } else {
-    console.log(prettyjson.render(ast, {
+    console.log(prettyjson.render(result, {
       keysColor: 'cyan',
       dashColor: 'cyan',
     }));
   }
 
-  if (errors) {
-    printErrors(errors);
+  if (parsed._errors) {
+    printErrors(parsed._errors);
   }
 }
 

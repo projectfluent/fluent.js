@@ -95,9 +95,9 @@ function transformIdentifier(id) {
   return id.name;
 }
 
-export function createEntriesFromAST(ast) {
-  const [entries] = ast.body
+export function createEntriesFromAST({body, _errors}) {
+  const [entries] = body
     .filter(entry => entry.type === 'Entity' || entry.type === 'Section')
     .reduce(toEntries, [{}, null]);
-  return entries;
+  return {entries, _errors};
 }
