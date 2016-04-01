@@ -5,6 +5,7 @@ import { Remote } from '../../bindings/html/remote';
 
 import FTLASTParser from '../../lib/format/ftl/ast/parser';
 import FTLEntriesParser from '../../lib/format/ftl/entries/parser';
+import {createEntriesFromAST} from '../../lib/format/ftl/entries/transformer';
 
 import { Context } from '../../lib/context';
 import { Env } from '../../lib/env';
@@ -17,7 +18,7 @@ import { format } from '../../lib/resolver';
 
 window.L20n = {
   fetchResource, Client, Remote, View, broadcast,
-  FTLASTParser, FTLEntriesParser,
+  FTLASTParser, FTLEntriesParser, createEntriesFromAST,
   Context, Env, L10nError, emit, addEventListener, removeEventListener,
   prioritizeLocales, MockContext, lang,
   walkEntry, walkValue, pseudo, format
