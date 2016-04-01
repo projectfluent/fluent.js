@@ -101,18 +101,17 @@ export class Context {
       langs => this._resolve(langs, keys, this._formatValue));
   }
 
-  _getEntity(lang, {namespace, name}) {
-    const id = `${namespace || ''}:${name}`;
+  _getEntity(lang, name) {
     const cache = this.env.resCache;
 
-    // Look for `id` in every resource in order.
+    // Look for `name` in every resource in order.
     for (let i = 0, resId; resId = this.resIds[i]; i++) {
       const resource = cache.get(resId + lang.code + lang.src);
       if (resource instanceof L10nError) {
         continue;
       }
-      if (id in resource) {
-        return resource[id];
+      if (name in resource) {
+        return resource[name];
       }
     }
     return undefined;

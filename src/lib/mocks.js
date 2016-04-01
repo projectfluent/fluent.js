@@ -10,9 +10,8 @@ export const lang = {
 export function MockContext(entries) {
   return {
     env: {},
-    _getEntity(lang, {namespace, name}) {
-      const id = `${namespace || ''}:${name}`;
-      return entries[id];
+    _getEntity(lang, name) {
+      return entries[name];
     },
     _memoizeIntlObject: Context.prototype._memoizeIntlObject,
   };

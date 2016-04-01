@@ -45,13 +45,13 @@ function fail(prevErrs, [errs, value]) {
 
 function DefaultMember(members) {
   for (let member of members) {
-    if (member.default) {
+    if (member.def) {
       return unit(member);
     }
   }
 
   return fail(
-    [new L10nError('No default.')],
+    [new L10nError('No default')],
     unit(new FTLNone())
   );
 }
@@ -61,13 +61,13 @@ function DefaultMember(members) {
 
 function Expression(res, expr) {
   switch (expr.type) {
-    case 'EntityReference':
+    case 'ref':
       return EntityReference(res, expr);
-    case 'BuiltinReference':
+    case 'blt':
       return BuiltinReference(res, expr);
-    case 'MemberExpression':
+    case 'mem':
       return MemberExpression(res, expr);
-    case 'SelectExpression':
+    case 'sel':
       return SelectExpression(res, expr);
     default:
       return unit(expr);
@@ -75,13 +75,12 @@ function Expression(res, expr) {
 }
 
 function EntityReference(res, expr) {
-  const entity = res.ctx._getEntity(res.lang, expr);
+  const entity = res.ctx._getEntity(res.lang, expr.name);
 
   if (!entity) {
-    const id = new FTLKeyword(expr.name, expr.namespace).format(res);
     return fail(
-      [new L10nError('Unknown entity: ' + id)],
-      unit(new FTLText(id))
+      [new L10nError('Unknown entity: ' + expr.name)],
+      unit(new FTLText(expr.name))
     );
   }
 
@@ -89,13 +88,12 @@ function EntityReference(res, expr) {
 }
 
 function BuiltinReference(res, expr) {
-  const id = new FTLKeyword(expr.name, expr.namespace).format(res);
-  const builtin = builtins[id];
+  const builtin = builtins[expr.name];
 
   if (!builtin) {
     return fail(
-      [new L10nError('Unknown built-in: ' + id + '()')],
-      unit(new FTLText(id + '()'))
+      [new L10nError('Unknown built-in: ' + expr.name + '()')],
+      unit(new FTLText(expr.name + '()'))
     );
   }
 
@@ -103,12 +101,12 @@ function BuiltinReference(res, expr) {
 }
 
 function MemberExpression(res, expr) {
-  const [errs1, entity] = Expression(res, expr.idref);
+  const [errs1, entity] = Expression(res, expr.obj);
   if (errs1.length) {
     return fail(errs1, Value(res, entity));
   }
 
-  const [, key] = Value(res, expr.keyword);
+  const [, key] = Value(res, expr.key);
 
   for (let member of entity.traits) {
     const [, memberKey] = Value(res, member.key);
@@ -124,89 +122,95 @@ function MemberExpression(res, expr) {
 }
 
 function SelectExpression(res, expr) {
-  const [selErrs, selector] = Value(res, expr.expression);
+  const [selErrs, selector] = Value(res, expr.exp);
   if (selErrs.length) {
-    return fail(selErrs, DefaultMember(expr.variants));
+    return fail(selErrs, DefaultMember(expr.vars));
   }
 
-  for (let variant of expr.variants) {
+  for (let variant of expr.vars) {
     const [, key] = Value(res, variant.key);
     if (selector.match(res, key)) {
       return unit(variant);
     }
   }
 
-  return DefaultMember(expr.variants);
+  return DefaultMember(expr.vars);
 }
 
 
 // Fully-resolved expressions
 
 function Value(res, expr) {
+  if (typeof expr === 'string') {
+    return unit(new FTLText(expr));
+  }
+
+  if (Array.isArray(expr)) {
+    return Pattern(res, expr);
+  }
+
+  if (expr instanceof FTLNone) {
+    return unit(expr);
+  }
+
   const [errs, node] = Expression(res, expr);
   if (errs.length) {
     return fail(errs, Value(res, node));
   }
 
   switch (node.type) {
-    case 'TextElement':
-      return unit(new FTLText(node.value));
-    case 'Identifier':
-      return unit(new FTLKeyword(node.name, node.namespace));
-    case 'Number':
-      return unit(new FTLNumber(node.value));
-    case 'ExternalArgument':
+    case 'id':
+      return unit(new FTLKeyword(node.name, node.ns));
+    case 'num':
+      return unit(new FTLNumber(node.val));
+    case 'ext':
       return ExternalArgument(res, node);
-    case 'Placeable':
-      return mapValues(res, node.expressions);
-    case 'KeyValueArg':
+    case 'kv':
       return KeyValueArg(res, expr);
-    case 'CallExpression':
+    case 'call':
       return CallExpression(res, expr);
-    case 'Pattern':
-      return Pattern(res, node);
-    case 'Member':
-      return Pattern(res, node.value);
-    case 'Entity':
-      return Entity(res, node);
     default:
-      return unit(node);
+      if (node.key) {
+        // if it's a Member
+        return Value(res, node.val);
+      }
+      return Entity(res, node);
   }
 }
 
 function ExternalArgument(res, expr) {
-  const id = expr.id;
+  const name = expr.name;
   const args = res.args;
 
-  if (!args || !args.hasOwnProperty(id)) {
+  if (!args || !args.hasOwnProperty(name)) {
     return fail(
-      [new L10nError('Unknown external: ' + id)],
-      unit(new FTLNone(id))
+      [new L10nError('Unknown external: ' + name)],
+      unit(new FTLNone(name))
     );
   }
 
-  const arg = args[id];
+  const arg = args[name];
 
   switch (typeof arg) {
     case 'number': return unit(new FTLNumber(arg));
     case 'string': return unit(new FTLText(arg));
     default: return fail(
-      [new L10nError('Unsupported external type: ' + id + ', ' + typeof arg)],
-      unit(new FTLNone(id))
+      [new L10nError('Unsupported external type: ' + name + ', ' + typeof arg)],
+      unit(new FTLNone(name))
     );
   }
 }
 
 function KeyValueArg(res, expr) {
-  const [errs, value] = Value(res, expr.value);
+  const [errs, value] = Value(res, expr.val);
   return [
     errs,
-    new FTLKeyValueArg(value, expr.id)
+    new FTLKeyValueArg(value, expr.name)
   ];
 }
 
 function CallExpression(res, expr) {
-  const [errs1, callee] = Expression(res, expr.callee);
+  const [errs1, callee] = Expression(res, expr.name);
   if (errs1.length) {
     return fail(errs1, unit(callee));
   }
@@ -238,21 +242,24 @@ function Pattern(res, ptn) {
 }
 
 function Entity(res, entity) {
-  if (entity.value !== null) {
-    return Pattern(res, entity.value);
+  if (!entity.traits) {
+    return Value(res, entity);
+  }
+
+  if (entity.val !== undefined) {
+    return Value(res, entity.val);
   }
 
   const [errs, def] = DefaultMember(entity.traits);
 
   if (errs.length) {
-    const id = new FTLKeyword(entity.id.name, entity.id.namespace).format(res);
     return fail(
-      [...errs, new L10nError('No value: ' + id)],
-      unit(new FTLText(id))
+      [...errs, new L10nError('No value')],
+      unit(new FTLNone())
     );
   }
 
-  return Pattern(res, def.value);
+  return Value(res, def.val);
 }
 
 
@@ -260,14 +267,17 @@ function Entity(res, entity) {
 // the return tuple: [errors, value]
 
 function formatPattern(res, ptn) {
-  return ptn.elements.reduce(([errSeq, valSeq], elem) => {
-    const [errs, value] = Value(res, elem);
-    return [
-      [...errSeq, ...errs],
-      elem.type === 'Placeable' ?
-        new FTLText(valSeq.format(res) + FSI + value.format(res) + PDI) :
-        new FTLText(valSeq.format(res) + value.format(res))
-    ];
+  return ptn.reduce(([errSeq, valSeq], elem) => {
+    if (typeof elem === 'string') {
+      return [errSeq, new FTLText(valSeq.format(res) + elem)];
+    } else {
+      const [errs, value] = mapValues(res, elem);
+      return [
+        [...errSeq, ...errs],
+        new FTLText(valSeq.format(res) + FSI + value.format(res) + PDI),
+      ];
+    }
+
   }, [[], new FTLText('')]);
 }
 

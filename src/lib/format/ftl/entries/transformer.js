@@ -22,22 +22,27 @@ function transformEntity(entity) {
     return transformPattern(entity.value);
   }
 
-  return {
-    val: transformPattern(entity.value),
+  const ret = {
     traits: entity.traits.map(transformMember),
   };
+
+  if (entity.value !== null) {
+    ret.val = transformPattern(entity.value);
+  }
+
+  return ret;
 }
 
 function transformExpression(exp) {
   if (exp instanceof AST.EntityReference) {
     return {
-      type: 'eref',
+      type: 'ref',
       name: stringifyIdentifier(exp)
     };
   }
   if (exp instanceof AST.BuiltinReference) {
     return {
-      type: 'builtin',
+      type: 'blt',
       name: stringifyIdentifier(exp)
     };
   }
@@ -69,7 +74,7 @@ function transformExpression(exp) {
 
   if (exp instanceof AST.SelectExpression) {
     return {
-      type: 'select',
+      type: 'sel',
       exp: transformExpression(exp.expression),
       vars: exp.variants.map(transformMember)
     };
