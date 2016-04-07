@@ -41,6 +41,21 @@ fs.readdir(basePath, (err, paths) => {
 
         console.log(`${outputPath} saved.`);
       });
+
+      let entries = lib.transform('ftl', 'entries', ast);
+      entries._errors = [];
+
+      let jsonEntriesOutput = JSON.stringify(entries, null, 2);
+
+      let entriesOutputPath = fullPath.slice(0, -4) + '.entries.json';
+      fs.writeFile(entriesOutputPath, jsonEntriesOutput, function(err) {
+        if(err) {
+          return console.log(err);
+        }
+
+        console.log(`${entriesOutputPath} saved.`);
+      });
+
     });
   });
 });

@@ -1,0 +1,434 @@
+{
+  "entries": {
+    "key1": [
+      "AA ",
+      [
+        {
+          "type": "ext",
+          "name": "num"
+        }
+      ],
+      " BB"
+    ],
+    "key2": [
+      [
+        {
+          "type": "ref",
+          "name": "brand-name"
+        }
+      ]
+    ],
+    "key3": [
+      [
+        {
+          "type": "ref",
+          "name": "menu/open"
+        }
+      ]
+    ],
+    "key4": [
+      [
+        {
+          "type": "sel",
+          "exp": {
+            "type": "ext",
+            "name": "num"
+          },
+          "vars": [
+            {
+              "key": {
+                "type": "id",
+                "name": "one"
+              },
+              "val": "One"
+            },
+            {
+              "key": {
+                "type": "id",
+                "name": "two"
+              },
+              "val": "Two"
+            }
+          ]
+        }
+      ]
+    ],
+    "key5": [
+      [
+        {
+          "type": "sel",
+          "exp": {
+            "type": "call",
+            "name": {
+              "type": "blt",
+              "name": "LEN"
+            },
+            "args": [
+              {
+                "type": "ext",
+                "name": "num"
+              }
+            ]
+          },
+          "vars": [
+            {
+              "key": {
+                "type": "id",
+                "name": "one"
+              },
+              "val": "One"
+            },
+            {
+              "key": {
+                "type": "id",
+                "name": "two"
+              },
+              "val": "Two"
+            }
+          ]
+        }
+      ]
+    ],
+    "key6": [
+      [
+        {
+          "type": "sel",
+          "exp": {
+            "type": "call",
+            "name": {
+              "type": "blt",
+              "name": "LEN"
+            },
+            "args": [
+              {
+                "type": "call",
+                "name": {
+                  "type": "blt",
+                  "name": "NEL"
+                },
+                "args": [
+                  {
+                    "type": "ext",
+                    "name": "num"
+                  }
+                ]
+              }
+            ]
+          },
+          "vars": [
+            {
+              "key": {
+                "type": "id",
+                "name": "one"
+              },
+              "val": "One"
+            },
+            {
+              "key": {
+                "type": "id",
+                "name": "two"
+              },
+              "val": "Two"
+            }
+          ]
+        }
+      ]
+    ],
+    "key7": [
+      [
+        {
+          "type": "ext",
+          "name": "user1"
+        },
+        {
+          "type": "ext",
+          "name": "user2"
+        }
+      ]
+    ],
+    "key8": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "LEN"
+          },
+          "args": [
+            {
+              "type": "ext",
+              "name": "u1"
+            },
+            {
+              "type": "ext",
+              "name": "u2"
+            },
+            {
+              "type": "ref",
+              "name": "open/brand-name"
+            },
+            {
+              "type": "kv",
+              "name": "type",
+              "val": "short"
+            }
+          ]
+        }
+      ]
+    ],
+    "key9": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "LEN"
+          },
+          "args": [
+            {
+              "type": "num",
+              "val": "2"
+            },
+            {
+              "type": "num",
+              "val": "2.5"
+            },
+            {
+              "type": "num",
+              "val": "-3.12"
+            },
+            {
+              "type": "num",
+              "val": "-1.00"
+            }
+          ]
+        }
+      ]
+    ],
+    "key10": [
+      [
+        {
+          "type": "mem",
+          "obj": {
+            "type": "ref",
+            "name": "menu/brand-name"
+          },
+          "key": {
+            "type": "id",
+            "name": "accusative"
+          }
+        }
+      ]
+    ],
+    "key11": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": []
+        }
+      ]
+    ],
+    "key12": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "num",
+              "val": "1"
+            }
+          ]
+        }
+      ]
+    ],
+    "key13": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "num",
+              "val": "-1"
+            }
+          ]
+        }
+      ]
+    ],
+    "key14": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "ext",
+              "name": "foo"
+            }
+          ]
+        }
+      ]
+    ],
+    "key15": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "ref",
+              "name": "foo"
+            }
+          ]
+        }
+      ]
+    ],
+    "key16": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "ref",
+              "name": "bar/baz"
+            }
+          ]
+        }
+      ]
+    ],
+    "key17": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "mem",
+              "obj": {
+                "type": "ref",
+                "name": "bar/baz"
+              },
+              "key": {
+                "type": "id",
+                "name": "foo"
+              }
+            }
+          ]
+        }
+      ]
+    ],
+    "key18": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "mem",
+              "obj": {
+                "type": "ref",
+                "name": "bar/baz"
+              },
+              "key": {
+                "type": "id",
+                "name": "fab",
+                "ns": "foo"
+              }
+            }
+          ]
+        }
+      ]
+    ],
+    "key19": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "kv",
+              "name": "bar",
+              "val": {
+                "type": "num",
+                "val": "1"
+              }
+            }
+          ]
+        }
+      ]
+    ],
+    "key20": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "kv",
+              "name": "bar",
+              "val": {
+                "type": "num",
+                "val": "-1"
+              }
+            }
+          ]
+        }
+      ]
+    ],
+    "key21": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "len"
+          },
+          "args": [
+            {
+              "type": "kv",
+              "name": "bar",
+              "val": {
+                "type": "ext",
+                "name": "user"
+              }
+            }
+          ]
+        }
+      ]
+    ]
+  },
+  "_errors": []
+}

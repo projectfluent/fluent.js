@@ -1,0 +1,95 @@
+{
+  "entries": {
+    "key1": {
+      "traits": [
+        {
+          "key": {
+            "type": "id",
+            "name": "gender"
+          },
+          "val": "male"
+        }
+      ],
+      "val": "Value"
+    },
+    "key2": {
+      "traits": [
+        {
+          "key": {
+            "type": "id",
+            "name": "gender"
+          },
+          "val": "male"
+        }
+      ]
+    },
+    "key3": {
+      "traits": [
+        {
+          "key": {
+            "type": "id",
+            "name": "masculine"
+          },
+          "val": "Variant for masculine",
+          "def": true
+        },
+        {
+          "key": {
+            "type": "id",
+            "name": "feminine"
+          },
+          "val": "Variant for feminine"
+        }
+      ]
+    },
+    "key4": {
+      "traits": [
+        {
+          "key": {
+            "type": "id",
+            "name": "aria-label",
+            "ns": "html"
+          },
+          "val": "Test"
+        }
+      ]
+    },
+    "key5": {
+      "traits": [
+        {
+          "key": {
+            "type": "id",
+            "name": "m"
+          },
+          "val": "Foo"
+        }
+      ]
+    },
+    "section/key6": {
+      "traits": [
+        {
+          "key": {
+            "type": "id",
+            "name": "one"
+          },
+          "val": "One"
+        },
+        {
+          "key": {
+            "type": "id",
+            "name": "two"
+          },
+          "val": "Two"
+        },
+        {
+          "key": {
+            "type": "id",
+            "name": "three"
+          },
+          "val": "Three"
+        }
+      ]
+    }
+  },
+  "_errors": []
+}

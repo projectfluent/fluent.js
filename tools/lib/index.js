@@ -11,6 +11,11 @@ exports.parse = function(fileformat, output, text) {
   return require(module).default.parseResource(text);
 };
 
+exports.transform = function(fileformat, output, ast) {
+  var module = '../../src/lib/format/' + fileformat + '/' + output + '/transformer';
+  return require(module).createEntriesFromAST(ast);
+};
+
 exports.color = function(str, col) {
   if (this.color && col && str) {
     return str[col];
