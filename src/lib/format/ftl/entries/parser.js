@@ -28,17 +28,23 @@ class ParseContext {
           continue;
         }
 
-        let id = entry.id;
+        let id = entry.id.name;
 
-        if (id.indexOf('/') === -1 &&
-            this._section !== null) {
-          id = `${this._section}/${id}`;
+        if (entry.id.namespace) {
+          id = `${entry.id.namespace}/${id}`;
+        } else if (this._section !== null) {
+          id = `${this._section.name}/${id}`;
         }
-        if (entry.members === null ||
-           entry.members.length === 0) {
-          entries[id] = entry.value;
+        entries[id] = {};
+
+        if (entry.traits !== null &&
+           entry.traits.length !== 0) {
+          entries[id].traits = entry.traits;
+          if (entry.value) {
+            entries[id].val = entry.value;
+          }
         } else {
-          entries[id] = entry;
+          entries[id] = entry.value;
         }
         this._lastGoodEntryEnd = this._index;
       } catch (e) {
@@ -147,7 +153,7 @@ class ParseContext {
     return {
       id,
       value,
-      members
+      traits: members
     };
   }
 
@@ -172,7 +178,7 @@ class ParseContext {
     let id = '';
 
     if (nsSep) {
-      namespace = this.getIdentifier();
+      namespace = this.getIdentifier().name;
       if (this._source[this._index] === nsSep) {
         this._index++;
       } else if (namespace) {
@@ -201,10 +207,10 @@ class ParseContext {
 
     id += this._source.slice(start, this._index);
 
-    if (namespace) {
-      return `${namespace}/${id}`;
-    }
-    return id;
+    return {
+      namespace,
+      name: id
+    };
   }
 
   getIdentifierWithSpace(nsSep=null) {
@@ -212,7 +218,7 @@ class ParseContext {
     let id = '';
 
     if (nsSep) {
-      namespace = this.getIdentifier();
+      namespace = this.getIdentifier().name;
       if (this._source[this._index] === nsSep) {
         this._index++;
       } else if (namespace) {
@@ -241,10 +247,10 @@ class ParseContext {
 
     id += this._source.slice(start, this._index);
 
-    if (namespace) {
-      return `${namespace}/${id}`;
-    }
-    return id;
+    return {
+      namespace,
+      name: id
+    };
   }
 
   getPattern() {
@@ -341,13 +347,12 @@ class ParseContext {
       }
     }
 
-    if (content.length === 1) {
+    if (content.length === 1 &&
+        typeof content[0] === 'string') {
       return source;
     }
 
-    return {
-      source, content
-    };
+    return content;
   }
 
   getPlaceable() {
@@ -376,7 +381,7 @@ class ParseContext {
       }
     }
 
-    return expression;
+    return expressions;
   }
 
   getPlaceableExpression() {
@@ -412,9 +417,9 @@ class ParseContext {
       return selector;
     }
     return {
-      type: 'select',
-      selector,
-      members
+      type: 'sel',
+      exp: selector,
+      vars: members
     };
   }
 
@@ -431,13 +436,13 @@ class ParseContext {
 
     this._index++;
 
-    if (exp instanceof AST.EntityReference) {
-      exp = new AST.BuiltinReference(exp.name, exp.namespace);
+    if (exp.type = 'ref') {
+      exp.type = 'blt';
     }
 
     return {
       type: 'call',
-      exp,
+      name: exp,
       args
     };
   }
@@ -454,8 +459,8 @@ class ParseContext {
 
       let exp = this.getCallExpression();
 
-      if (!(exp instanceof AST.EntityReference) ||
-         exp.namespace !== null) {
+      if (exp.type !== 'ref' ||
+         exp.namespace !== undefined) {
         args.push(exp);
       } else {
         this.getLineWS();
@@ -466,13 +471,17 @@ class ParseContext {
 
           let val = this.getCallExpression();
 
-          if (val instanceof AST.EntityReference ||
-              val instanceof AST.MemberExpression) {
+          if (val.type === 'ref' ||
+              val.type === 'member') {
             this._index = this._source.lastIndexOf('=', this._index) + 1;
             throw this.error('Expected string in quotes');
           }
 
-          args.push(new AST.KeyValueArg(exp.name, val));
+          args.push({
+            type: 'kv',
+            name: exp.name,
+            val
+          });
         } else {
           args.push(exp);
         }
@@ -524,7 +533,10 @@ class ParseContext {
       }
     }
 
-    return num;
+    return {
+      type: 'num',
+      val: num
+    };
   }
 
   getMemberExpression() {
@@ -536,8 +548,8 @@ class ParseContext {
     const keyword = this.getKeyword();
     return {
       type: 'mem',
-      exp,
-      keyword
+      key: keyword,
+      obj: exp,
     };
   }
 
@@ -566,10 +578,14 @@ class ParseContext {
 
       let value = this.getPattern();
 
-      members.push({
+      let member = {
         key,
         val: value
-      });
+      };
+      if (def) {
+        member.def = true;
+      }
+      members.push(member);
 
       this.getWS();
     }
@@ -586,10 +602,14 @@ class ParseContext {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
+      let id = this.getIdentifierWithSpace('/');
       literal = {
         type: 'id',
-        name: this.getIdentifierWithSpace('/')
+        name: id.name
       };
+      if (id.namespace) {
+        literal.ns = id.namespace;
+      }
     }
 
     if (this._source[this._index] !== ']') {
@@ -609,15 +629,23 @@ class ParseContext {
     } else if (cc === 36) { // $
       this._index++;
       let id = this.getIdentifier();
-      return new AST.ExternalArgument(id.name);
+      return {
+        type: 'ext',
+        name: id.name
+      };
     }
 
     let id = this.getIdentifier('/');
-    return {
-      type: 'entity',
-      name: id.name,
-      namespace: id.namespace
+    
+    let name = id.name;
+    if (id.namespace) {
+      name = `${id.namespace}/${name}`;
+    }
+    let ent = {
+      type: 'ref',
+      name: name
     };
+    return ent;
   }
 
   getComment() {
