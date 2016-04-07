@@ -13,7 +13,6 @@ class ParseContext {
     this._length = string.length;
 
     this._lastGoodEntryEnd = 0;
-    this._section = null;
   }
 
   getResource() {
@@ -84,8 +83,6 @@ class ParseContext {
     }
 
     this._index += 2;
-
-    this._section = id;
 
     return new AST.Section(id, comment);
   }

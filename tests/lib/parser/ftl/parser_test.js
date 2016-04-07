@@ -69,7 +69,12 @@ function compareTransformerToEntries(path) {
     let entries = createEntriesFromAST(ftl);
     entries._errors = [];
 
-    let entries2 = parseEntries(source);
+    let entries2 = {};
+    try {
+      entries2 = parseEntries(source);
+    } catch (e) {
+      throw new Error('Error parsing ' + path + '\n\n' + e);
+    }
     entries2._errors = [];
 
     assert.deepEqual(entries, entries2, 'Error in: ' + path);
