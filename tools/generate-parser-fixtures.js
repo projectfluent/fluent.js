@@ -33,7 +33,7 @@ fs.readdir(basePath, (err, paths) => {
       ast._errors = [];
       let jsonOutput = JSON.stringify(ast, null, 2);
 
-      let outputPath = fullPath.slice(0, -4) + '.json';
+      let outputPath = fullPath.slice(0, -4) + '.ast.json';
       fs.writeFile(outputPath, jsonOutput, function(err) {
         if(err) {
           return console.log(err);

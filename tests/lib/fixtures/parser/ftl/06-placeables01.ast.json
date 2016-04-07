@@ -21,7 +21,7 @@
             "expressions": [
               {
                 "type": "ExternalArgument",
-                "id": "num"
+                "name": "num"
               }
             ]
           },
@@ -104,7 +104,7 @@
                 "type": "SelectExpression",
                 "expression": {
                   "type": "ExternalArgument",
-                  "id": "num"
+                  "name": "num"
                 },
                 "variants": [
                   {
@@ -180,7 +180,7 @@
                   "args": [
                     {
                       "type": "ExternalArgument",
-                      "id": "num"
+                      "name": "num"
                     }
                   ]
                 },
@@ -266,7 +266,7 @@
                       "args": [
                         {
                           "type": "ExternalArgument",
-                          "id": "num"
+                          "name": "num"
                         }
                       ]
                     }
@@ -336,11 +336,11 @@
             "expressions": [
               {
                 "type": "ExternalArgument",
-                "id": "user1"
+                "name": "user1"
               },
               {
                 "type": "ExternalArgument",
-                "id": "user2"
+                "name": "user2"
               }
             ]
           }
@@ -373,11 +373,11 @@
                 "args": [
                   {
                     "type": "ExternalArgument",
-                    "id": "u1"
+                    "name": "u1"
                   },
                   {
                     "type": "ExternalArgument",
-                    "id": "u2"
+                    "name": "u2"
                   },
                   {
                     "type": "EntityReference",
@@ -386,7 +386,7 @@
                   },
                   {
                     "type": "KeyValueArg",
-                    "id": "type",
+                    "name": "type",
                     "value": {
                       "type": "Pattern",
                       "source": "short",
@@ -470,7 +470,7 @@
             "expressions": [
               {
                 "type": "MemberExpression",
-                "idref": {
+                "object": {
                   "type": "EntityReference",
                   "name": "brand-name",
                   "namespace": "menu"
@@ -612,7 +612,7 @@
                 "args": [
                   {
                     "type": "ExternalArgument",
-                    "id": "foo"
+                    "name": "foo"
                   }
                 ]
               }
@@ -719,7 +719,7 @@
                 "args": [
                   {
                     "type": "MemberExpression",
-                    "idref": {
+                    "object": {
                       "type": "EntityReference",
                       "name": "baz",
                       "namespace": "bar"
@@ -763,7 +763,7 @@
                 "args": [
                   {
                     "type": "MemberExpression",
-                    "idref": {
+                    "object": {
                       "type": "EntityReference",
                       "name": "baz",
                       "namespace": "bar"
@@ -807,7 +807,7 @@
                 "args": [
                   {
                     "type": "KeyValueArg",
-                    "id": "bar",
+                    "name": "bar",
                     "value": {
                       "type": "Number",
                       "value": "1"
@@ -846,7 +846,7 @@
                 "args": [
                   {
                     "type": "KeyValueArg",
-                    "id": "bar",
+                    "name": "bar",
                     "value": {
                       "type": "Number",
                       "value": "-1"
@@ -885,10 +885,10 @@
                 "args": [
                   {
                     "type": "KeyValueArg",
-                    "id": "bar",
+                    "name": "bar",
                     "value": {
                       "type": "ExternalArgument",
-                      "id": "user"
+                      "name": "user"
                     }
                   }
                 ]
