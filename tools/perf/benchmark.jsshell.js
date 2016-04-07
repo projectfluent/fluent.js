@@ -39,7 +39,7 @@ var ast = L20n.FTLASTParser.parseResource(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
+var entries = L20n.FTLEntriesParser.parseResource(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
 var entries = L20n.createEntriesFromAST(ast);
@@ -47,7 +47,7 @@ var ctx = new L20n.MockContext(entries);
 
 times.format = dateNow();
 for (var id in entries) {
-  L20n.format(ctx, lang, data, entries[id]);
+//  L20n.format(ctx, lang, data, entries[id]);
 }
 times.formatEnd = dateNow();
 
