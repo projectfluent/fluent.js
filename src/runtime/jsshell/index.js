@@ -3,7 +3,7 @@ import PropertiesParser from '../../lib/format/properties/parser';
 import { format } from '../../lib/resolver';
 import { MockContext } from '../../lib/mocks';
 
-this.L20n = {
+export default {
   MockContext,
   L20nParser,
   PropertiesParser,

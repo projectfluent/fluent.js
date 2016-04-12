@@ -12,7 +12,7 @@ var util = require('./util');
 program
   .version('0.0.1')
   .usage('[options] command')
-  .option('-s, --sample <int>', 'Sample size [150]', parseInt, 150)
+  .option('-s, --sample <int>', 'Sample size [150]', 50)
   .option('-p, --progress', 'Show progress')
   .option('-n, --no-color', 'Print without color')
   .option('-r, --raw', 'Print raw JSON')
@@ -77,7 +77,7 @@ function runAll(sample, callback) {
   }
 }
 
-runAll(program.sample, function(res) {
+runAll(parseInt(program.sample), function(res) {
 
   for (var scenario in res) {
     if (program.compare) {

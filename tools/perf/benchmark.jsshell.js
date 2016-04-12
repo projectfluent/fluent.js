@@ -1,4 +1,4 @@
-load('../../build/dist/bundle/jsshell/l20n.js');
+load('../../dist/bundle/jsshell/l20n.js');
 
 var propCode = read('./example.properties');
 var l20nCode = read('./example.l20n');
