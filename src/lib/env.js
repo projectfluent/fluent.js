@@ -51,7 +51,7 @@ export class Env {
     }
 
     const emitAndAmend = (type, err) => this.emit(type, amendError(lang, err));
-    return parser.parse(emitAndAmend, data);
+    return parser.parseResource(data);
   }
 
   _create(lang, entries) {
