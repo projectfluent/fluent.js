@@ -29,7 +29,8 @@
             "type": "TextElement",
             "value": " BB"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -55,7 +56,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -81,7 +83,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -122,7 +125,8 @@
                           "type": "TextElement",
                           "value": "One"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": false
                     },
                     "default": false
                   },
@@ -141,7 +145,8 @@
                           "type": "TextElement",
                           "value": "Two"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": false
                     },
                     "default": false
                   }
@@ -149,7 +154,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -200,7 +206,8 @@
                           "type": "TextElement",
                           "value": "One"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": false
                     },
                     "default": false
                   },
@@ -219,7 +226,8 @@
                           "type": "TextElement",
                           "value": "Two"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": false
                     },
                     "default": false
                   }
@@ -227,7 +235,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -288,7 +297,8 @@
                           "type": "TextElement",
                           "value": "One"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": false
                     },
                     "default": false
                   },
@@ -307,7 +317,8 @@
                           "type": "TextElement",
                           "value": "Two"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": false
                     },
                     "default": false
                   }
@@ -315,7 +326,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -344,7 +356,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -395,14 +408,16 @@
                           "type": "TextElement",
                           "value": "short"
                         }
-                      ]
+                      ],
+                      "_quoteDelim": true
                     }
                   }
                 ]
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -449,7 +464,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -483,7 +499,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -513,7 +530,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -548,7 +566,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -583,7 +602,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -618,7 +638,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -654,7 +675,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -690,7 +712,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -734,7 +757,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -778,7 +802,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -817,7 +842,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -856,7 +882,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -895,7 +922,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null

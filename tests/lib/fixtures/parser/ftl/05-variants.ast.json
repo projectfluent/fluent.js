@@ -16,7 +16,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [
         {
@@ -34,7 +35,8 @@
                 "type": "TextElement",
                 "value": "male"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }
@@ -65,7 +67,8 @@
                 "type": "TextElement",
                 "value": "male"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }
@@ -96,7 +99,8 @@
                 "type": "TextElement",
                 "value": "Variant for masculine"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": true
         },
@@ -115,7 +119,8 @@
                 "type": "TextElement",
                 "value": "Variant for feminine"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }
@@ -146,7 +151,8 @@
                 "type": "TextElement",
                 "value": "Test"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }
@@ -177,7 +183,8 @@
                 "type": "TextElement",
                 "value": "Test"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         },
@@ -196,7 +203,8 @@
                 "type": "TextElement",
                 "value": "Foo"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }
@@ -227,7 +235,8 @@
                 "type": "TextElement",
                 "value": "Foo"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }
@@ -267,7 +276,8 @@
                 "type": "TextElement",
                 "value": "One"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         },
@@ -286,7 +296,8 @@
                 "type": "TextElement",
                 "value": "Two"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         },
@@ -305,7 +316,8 @@
                 "type": "TextElement",
                 "value": "Three"
               }
-            ]
+            ],
+            "_quoteDelim": false
           },
           "default": false
         }

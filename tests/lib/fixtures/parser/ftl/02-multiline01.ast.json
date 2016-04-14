@@ -16,7 +16,8 @@
             "type": "TextElement",
             "value": "This is a new line"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -36,7 +37,8 @@
             "type": "TextElement",
             "value": "<p>\n  So\n    Many\n  Lines\n</p>"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -56,7 +58,8 @@
             "type": "TextElement",
             "value": "<p>\nFoo\n</p>"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null

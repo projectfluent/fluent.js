@@ -309,7 +309,9 @@ class ParseContext {
       }
     }
 
-    return new AST.Pattern(source, content);
+    let pattern = new AST.Pattern(source, content);
+    pattern._quoteDelim = quoteDelimited !== null;
+    return pattern;
   }
 
   getPlaceable() {

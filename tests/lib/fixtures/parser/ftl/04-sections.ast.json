@@ -16,7 +16,8 @@
             "type": "TextElement",
             "value": "This entity is standalone"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -36,7 +37,8 @@
             "type": "TextElement",
             "value": "This entity is in \"menu\" namespace"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -65,7 +67,8 @@
             "type": "TextElement",
             "value": "This entity belonds to section 1"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null

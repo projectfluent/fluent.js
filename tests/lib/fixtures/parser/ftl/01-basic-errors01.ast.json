@@ -16,7 +16,8 @@
             "type": "TextElement",
             "value": "Value 1"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -40,7 +41,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -64,7 +66,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -88,7 +91,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -112,7 +116,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -136,7 +141,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -160,7 +166,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -184,7 +191,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -208,7 +216,8 @@
             "type": "TextElement",
             "value": "Value2"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -232,7 +241,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -256,7 +266,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -280,7 +291,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -304,7 +316,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null

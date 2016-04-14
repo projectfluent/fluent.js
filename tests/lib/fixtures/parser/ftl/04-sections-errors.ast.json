@@ -20,7 +20,8 @@
             "type": "TextElement",
             "value": "value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -44,7 +45,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -72,7 +74,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -96,7 +99,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -129,7 +133,8 @@
             "type": "TextElement",
             "value": "value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -153,7 +158,8 @@
             "type": "TextElement",
             "value": "value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -177,7 +183,8 @@
             "type": "TextElement",
             "value": "value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
@@ -201,7 +208,8 @@
             "type": "TextElement",
             "value": "value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
