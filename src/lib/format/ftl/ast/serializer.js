@@ -93,7 +93,6 @@ export default {
   },
 
   dumpExpression: function(exp) {
-    //console.log(exp);
     if (exp instanceof AST.ExternalArgument) {
       return `$${exp.name}`;
     }
@@ -131,7 +130,6 @@ export default {
 
   dumpCallArgs: function(args) {
     return args.map(arg => {
-      console.log(arg);
       if (arg instanceof AST.KeyValueArg) {
         return `${arg.name}:${this.dumpExpression(arg.value)}`;
       }
