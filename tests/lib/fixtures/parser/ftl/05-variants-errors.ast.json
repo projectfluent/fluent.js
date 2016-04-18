@@ -20,7 +20,8 @@
             "type": "TextElement",
             "value": "Value"
           }
-        ]
+        ],
+        "_quoteDelim": false
       },
       "traits": [],
       "comment": null
