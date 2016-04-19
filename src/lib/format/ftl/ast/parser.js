@@ -484,13 +484,14 @@ class ParseContext {
   }
 
   getMemberExpression() {
-    const exp = this.getLiteral();
+    let exp = this.getLiteral();
 
-    if (this._source[this._index] !== '[') {
-      return exp;
+    while (this._source[this._index] === '[') {
+      let keyword = this.getKeyword();
+      exp = new AST.MemberExpression(exp, keyword);
     }
-    const keyword = this.getKeyword();
-    return new AST.MemberExpression(exp, keyword);
+
+    return exp;
   }
 
   getMembers() {

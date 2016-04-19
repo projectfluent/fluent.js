@@ -927,6 +927,49 @@
       },
       "traits": [],
       "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key22",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "{ brand-name[masculine][nominative] }",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expressions": [
+              {
+                "type": "MemberExpression",
+                "object": {
+                  "type": "MemberExpression",
+                  "object": {
+                    "type": "EntityReference",
+                    "name": "brand-name",
+                    "namespace": null
+                  },
+                  "keyword": {
+                    "type": "Identifier",
+                    "name": "masculine",
+                    "namespace": null
+                  }
+                },
+                "keyword": {
+                  "type": "Identifier",
+                  "name": "nominative",
+                  "namespace": null
+                }
+              }
+            ]
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
     }
   ],
   "_errors": []

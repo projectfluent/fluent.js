@@ -540,17 +540,18 @@ class ParseContext {
   }
 
   getMemberExpression() {
-    const exp = this.getLiteral();
+    let exp = this.getLiteral();
 
-    if (this._source[this._index] !== '[') {
-      return exp;
+    while (this._source[this._index] === '[') {
+      let keyword = this.getKeyword();
+      exp = {
+        type: 'mem',
+        key: keyword,
+        obj: exp
+      };
     }
-    const keyword = this.getKeyword();
-    return {
-      type: 'mem',
-      key: keyword,
-      obj: exp,
-    };
+
+    return exp;
   }
 
   getMembers() {

@@ -48,3 +48,6 @@ key19 = { len(bar:1) }
 key20 = { len(bar:-1) }
 
 key21 = { len(bar:$user) }
+
+key22 = { brand-name[masculine][nominative] }
+

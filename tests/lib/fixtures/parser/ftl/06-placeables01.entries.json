@@ -428,6 +428,28 @@
           ]
         }
       ]
+    ],
+    "key22": [
+      [
+        {
+          "type": "mem",
+          "obj": {
+            "type": "mem",
+            "obj": {
+              "type": "ref",
+              "name": "brand-name"
+            },
+            "key": {
+              "type": "id",
+              "name": "masculine"
+            }
+          },
+          "key": {
+            "type": "id",
+            "name": "nominative"
+          }
+        }
+      ]
     ]
   },
   "_errors": []
