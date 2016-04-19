@@ -254,6 +254,31 @@ class ParseContext {
   }
 
   getPattern() {
+    let start = this._index;
+    if (this._source[start] === '"') {
+      return this.getComplexPattern();
+    }
+    let eol = this._source.indexOf('\n', this._index);
+
+    let line = this._source.slice(start, eol);
+
+    if (line.indexOf('{') !== -1) {
+      return this.getComplexPattern();
+    }
+
+    this._index = eol + 1;
+
+    this.getWS();
+
+    if (this._source[this._index] === '|') {
+      this._index = start;
+      return this.getComplexPattern();
+    }
+
+    return this._source.slice(start, eol);
+  }
+
+  getComplexPattern() {
     let buffer = '';
     let source = '';
     let content = [];
