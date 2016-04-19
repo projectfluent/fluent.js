@@ -40,7 +40,7 @@ times.ftlEntriesParseStart = Date.now();
 var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
 times.ftlEntriesParseEnd = Date.now();
 
-var entries = L20n.createEntriesFromAST(ast);
+var entries = L20n.createEntriesFromAST(ast).entries;
 var ctx = new L20n.MockContext(entries);
 
 times.format = Date.now();

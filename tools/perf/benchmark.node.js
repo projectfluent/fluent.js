@@ -49,12 +49,12 @@ cumulative.ftlEntriesParseStart = process.hrtime(start);
 var entries = L20n.FTLEntriesParser.parseResource(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
-var entries = L20n.createEntriesFromAST(ast);
+var entries = L20n.createEntriesFromAST(ast).entries;
 var ctx = new L20n.MockContext(entries);
 
 cumulative.format = process.hrtime(start);
 for (var id in entries) {
-//  L20n.format(ctx, lang, data, entries[id]);
+  L20n.format(ctx, lang, data, entries[id]);
 }
 cumulative.formatEnd = process.hrtime(start);
 
