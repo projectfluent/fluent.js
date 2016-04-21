@@ -2,7 +2,7 @@
 
 /* global window, document, assert */
 
-var dom = window.L20n.dom;
+var dom = L20n.dom;
 
 describe('getResourceLinks', function() {
   it('should return an empty array if no l10n links in head', function() {

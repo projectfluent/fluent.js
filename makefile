@@ -28,3 +28,7 @@ test-lib:
 	    --reporter dot \
 	    --require ./test/compat \
 	    test/lib/parser/ftl
+
+.PHONY: test-browser
+test-browser:
+	karma start test/karma.conf.js
