@@ -1,6 +1,10 @@
 import { L20nIntl } from './shims';
 
 export class FTLNone {
+  constructor(value, opts) {
+    this.value = value;
+    this.opts = opts;
+  }
   format() {
     return this.value || '???';
   }
@@ -10,10 +14,6 @@ export class FTLNone {
 };
 
 export class FTLText extends FTLNone {
-  constructor(value) {
-    super();
-    this.value = value;
-  }
   format() {
     return this.value.toString();
   }
@@ -42,6 +42,22 @@ export class FTLNumber extends FTLText {
         );
         return pr.select(this.value) === value;
     }
+  }
+}
+
+export class FTLDateTime extends FTLText {
+  constructor(value, opts) {
+    super(new Date(value));
+    this.opts = opts;
+  }
+  format(res) {
+    const dtf = res.ctx._memoizeIntlObject(
+      L20nIntl.DateTimeFormat, res.lang, this.opts
+    );
+    return dtf.format(this.value);
+  }
+  match() {
+    return false;
   }
 }
 
@@ -99,6 +115,7 @@ export class FTLList extends FTLText {
 
 export default {
   'NUMBER': ([arg], opts) => new FTLNumber(arg.value, values(opts)),
+  'DATETIME': ([arg], opts) => new FTLDateTime(arg.value, values(opts)),
   'PLURAL': ([arg], opts) => new FTLCategory(arg.value, values(opts)),
   'LIST': (...args) => new FTLList(...args),
   'LEN': ([arg], opts) => new FTLNumber(arg.value.length, values(opts)),

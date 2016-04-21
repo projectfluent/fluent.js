@@ -1,6 +1,6 @@
 import { L10nError } from './errors';
 import builtins, {
-  FTLNone, FTLText, FTLNumber, FTLKeyValueArg, FTLKeyword, FTLList
+  FTLNone, FTLText, FTLNumber, FTLDateTime, FTLKeyValueArg, FTLKeyword, FTLList
 } from './builtins';
 
 const MAX_PLACEABLE_LENGTH = 2500;
@@ -192,13 +192,19 @@ function ExternalArgument(res, expr) {
   const arg = args[name];
 
   switch (typeof arg) {
-    case 'number': return unit(new FTLNumber(arg));
-    case 'string': return unit(new FTLText(arg));
-    default:
+    case 'number':
+      return unit(new FTLNumber(arg));
+    case 'string':
+      return unit(new FTLText(arg));
+    case 'object':
       if (Array.isArray(arg)) {
         return mapValues(res, arg);
       }
 
+      if (arg instanceof Date) {
+        return unit(new FTLDateTime(arg));
+      }
+    default:
       return [
         [new L10nError(
           'Unsupported external type: ' + name + ', ' + typeof arg
