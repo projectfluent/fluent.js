@@ -9,54 +9,50 @@ var program = require('commander');
 require('babel-register')({
   presets: ['es2015']
 });
+
 var Resolver = require('../src/lib/resolver');
-var MockContext = require('../tests/lib/resolver/header').MockContext;
-var lang = require('../src/lib/mocks').lang;
+var mocks = require('../src/lib/mocks');
 var lib = require('./lib');
 var color = lib.color.bind(program);
-var makeError = lib.makeError.bind(program);
 
 program
   .version('0.0.1')
   .usage('[options] [file]')
   .option('-d, --data <file>', 'Context data to use (.json)')
-  .option('-a, --ast', 'Treat input as AST, not source code')
   .option('-n, --no-color', 'Print without color')
-  .option('-l, --with-local', 'Print local entities and attributes')
-  .option('-p, --plural <locale>', 'Select the plural rule [en-US]', 'en-US')
+  .option('-l, --lang <code>', 'Locale to use with Intl [en-US]', 'en-US')
   .parse(process.argv);
 
+const lang = { code: program.lang, src: 'app' };
 
 var data = {};
 if (program.data) {
   data = JSON.parse(fs.readFileSync(program.data, 'utf8'));
 }
 
-function singleline(formatted) {
-  var str = formatted[1];
-  return str && str.replace(/\n/g, ' ')
-                   .replace(/\s{3,}/g, ' ')
-                   .trim();
-}
+function printError(err) {
+  return console.log(
+    color(err.name + ': ' + err.message, 'red')
+  );
+};
 
-function format(ctx, entity) {
-  try {
-    return singleline(Resolver.format(ctx, lang, data, entity));
-  } catch(err) {
-    return makeError(err);
-  }
+function singleline(str) {
+  return str && str
+    .replace(/\n/g, ' ')
+    .trim();
 }
 
 function printEntry(ctx, id, entity) {
+  const formatted = Resolver.format(ctx, lang, data, entity);
+
+  if (formatted[0].length) {
+    formatted[0].forEach(printError);
+  }
+
   console.log(
     color(id, 'cyan'),
-    color(format(ctx, entity)));
-
-  for (var attr in entity.attrs) {
-    console.log(
-      color(' ::' + attr, 'cyan'),
-      color(format(ctx, entity.attrs[attr])));
-  }
+    color(singleline(formatted[1]))
+  );
 }
 
 function print(fileformat, err, data) {
@@ -64,22 +60,13 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  var entries;
-  if (program.ast) {
-    entries = JSON.parse(data.toString());
-  } else {
-    try {
-      entries = lib.parse(fileformat, 'entries', data.toString());
-    } catch (e) {
-      console.error(makeError(e));
-      process.exit(1);
-    }
-  }
+  const parsed = lib.parse(fileformat, 'entries', data.toString());
 
-  var ctx = new MockContext(entries);
+  parsed._errors.forEach(printError);
 
-  for (var id in entries) {
-    printEntry(ctx, id, entries[id]);
+  const ctx = new mocks.MockContext(parsed.entries);
+  for (let id in parsed.entries) {
+    printEntry(ctx, id, parsed.entries[id]);
   }
 }
 

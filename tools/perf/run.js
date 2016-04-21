@@ -12,7 +12,7 @@ var util = require('./util');
 program
   .version('0.0.1')
   .usage('[options] command')
-  .option('-s, --sample <int>', 'Sample size [150]', 50)
+  .option('-s, --sample <int>', 'Sample size [50]', 50)
   .option('-p, --progress', 'Show progress')
   .option('-n, --no-color', 'Print without color')
   .option('-r, --raw', 'Print raw JSON')
@@ -45,6 +45,7 @@ function runAll(sample, callback) {
   // run is recursive and thus sequential so that node doesn't spawn all the 
   // processes at once
   run();
+
   function run() {
     exec(command, { cwd: __dirname }, function (error, stdout, stderr) {
       if (!program.raw && program.progress) {

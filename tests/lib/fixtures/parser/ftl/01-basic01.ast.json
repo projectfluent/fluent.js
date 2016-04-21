@@ -1,0 +1,27 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

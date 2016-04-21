@@ -1,0 +1,327 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value 1",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 1"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key2 = Value 2\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "= Value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "= Value\n\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "=\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key6",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "= \n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key7",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "= =\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key8",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "id\n = value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key9",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "id\n= value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key10",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value2",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value2"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "1 = 1\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key10",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "-1 = Foo\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key11",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "19 = Foo2\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key12",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key13 = Single Value\n  | Multi Value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key14",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

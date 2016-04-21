@@ -1,13 +1,6 @@
-load('../../dist/jsshell/l10n.js');
+load('../../dist/bundle/jsshell/l20n.js');
 
-var propertiesParser = L20n.PropertiesParser;
-var l20nParser = L20n.L20nParser;
-var env = {
-  __plural: L20n.getPluralRule('en-US')
-};
-
-var propCode = read('./example.properties');
-var l20nCode = read('./example.l20n');
+var ftlCode = read('./example.ftl');
 var data = {
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
@@ -27,50 +20,39 @@ var data = {
   "link2": "LINK2"
 }
 
+var lang = {
+  code:'en-US',
+  src: 'app',
+};
+
 function micro(time) {
   // time is in milliseconds
   return Math.round(time * 1000);
 }
 
 var times = {};
-times.start = Date.now();
 
-var ast = propertiesParser.parse(null, propCode);
-times.parseEnd = Date.now();
+times.ftlParseStart = Date.now();
+var ast = L20n.FTLASTParser.parseResource(ftlCode);
+times.ftlParseEnd = Date.now();
 
-times.l20nParseStart = Date.now();
-var ast = l20nParser.parse(null, l20nCode);
-times.l20nParseEnd = Date.now();
+times.ftlEntriesParseStart = Date.now();
+var entries = L20n.FTLEntriesParser.parse(null, ftlCode);
+times.ftlEntriesParseEnd = Date.now();
 
-times.createEntries = Date.now();
-L20n.extendEntries(env, ast);
-times.createEntriesEnd = Date.now();
-
-var ids = Object.keys(env).filter(function(id){return id !== '__plural';});
+var entries = L20n.createEntriesFromAST(ast).entries;
+var ctx = new L20n.MockContext(entries);
 
 times.format = Date.now();
-for (var id in ids) {
-   L20n.Resolver.format(data, env[ids[id]], data);
+for (var id in entries) {
+  L20n.format(ctx, lang, data, entries[id]);
 }
 times.formatEnd = Date.now();
 
-var ctx = new L20n.Context(null);
-var locale = ctx.getLocale('en-US');
-locale.addAST(ast);
-ctx.requestLocales(['en-US']);
-
-times.getEntity = Date.now();
-for (var id in ids) {
-  ctx.getEntity(ids[id], data);
-}
-times.getEntityEnd = Date.now();
-
 var results = {
-  propParse: micro(times.parseEnd - times.start),
-  l20nParse: micro(times.l20nParseEnd - times.l20nParseStart),
-  createEntries: micro(times.createEntriesEnd - times.createEntries),
+  parseFTL: micro(times.ftlParseEnd - times.ftlParseStart),
+  parseFTLEntries: micro(times.ftlEntriesParseEnd - times.ftlEntriesParseStart),
   format: micro(times.formatEnd - times.format),
-  getEntity: micro(times.getEntityEnd - times.getEntity),
 };
 
 print(JSON.stringify(results));

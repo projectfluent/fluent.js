@@ -1,0 +1,90 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "This entity is standalone",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This entity is standalone"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "open",
+        "namespace": "menu"
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "This entity is in \"menu\" namespace",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This entity is in \"menu\" namespace"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Section",
+      "name": {
+        "type": "Identifier",
+        "name": "section1",
+        "namespace": null
+      },
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "This entity belonds to section 1",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This entity belonds to section 1"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Section",
+      "name": {
+        "type": "Identifier",
+        "name": "menu",
+        "namespace": null
+      },
+      "comment": {
+        "type": "Comment",
+        "content": "Section comment"
+      }
+    }
+  ],
+  "_errors": []
+}

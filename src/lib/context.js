@@ -1,6 +1,5 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
-import { getPluralRule } from './plurals';
 import { L20nIntl } from './shims';
 
 export class Context {
@@ -102,43 +101,24 @@ export class Context {
       langs => this._resolve(langs, keys, this._formatValue));
   }
 
-  _getEntity(lang, id) {
+  _getEntity(lang, name) {
     const cache = this.env.resCache;
 
-    // Look for `id` in every resource in order.
+    // Look for `name` in every resource in order.
     for (let i = 0, resId; resId = this.resIds[i]; i++) {
       const resource = cache.get(resId + lang.code + lang.src);
       if (resource instanceof L10nError) {
         continue;
       }
-      if (id in resource) {
-        return resource[id];
+      if (name in resource.entries) {
+        return resource.entries[name];
       }
     }
     return undefined;
   }
 
-  _getNumberFormatter(lang) {
-    if (!this.env.numberFormatters) {
-      this.env.numberFormatters = new Map();
-    }
-    if (!this.env.numberFormatters.has(lang)) {
-      const formatter = L20nIntl.NumberFormat(lang);
-      this.env.numberFormatters.set(lang, formatter);
-      return formatter;
-    }
-    return this.env.numberFormatters.get(lang);
-  }
-
-  // XXX in the future macros will be stored in localization resources together 
-  // with regular entities and this method will not be needed anymore
-  _getMacro(lang, id) {
-    switch(id) {
-      case 'plural':
-        return getPluralRule(lang.code);
-      default:
-        return undefined;
-    }
+  _memoizeIntlObject(ctor, {code}, opts) {
+    return new ctor(code, opts);
   }
 
 }

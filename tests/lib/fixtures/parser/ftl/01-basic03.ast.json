@@ -1,0 +1,111 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value 1",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 1"
+          }
+        ],
+        "_quoteDelim": true
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value 2",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 2"
+          }
+        ],
+        "_quoteDelim": true
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": " Value 3 ",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": " Value 3 "
+          }
+        ],
+        "_quoteDelim": true
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": ""
+          }
+        ],
+        "_quoteDelim": true
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": " ",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": " "
+          }
+        ],
+        "_quoteDelim": true
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

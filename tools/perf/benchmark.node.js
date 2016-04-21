@@ -1,14 +1,12 @@
 var fs = require('fs');
 
 require('babel-register')({
-    presets: ['es2015']
+  presets: ['es2015']
 });
-
 var L20n = require('../../src/runtime/node');
 var Context = require('../../src/lib/context').Context;
 
-var propCode = fs.readFileSync(__dirname + '/example.properties').toString();
-var l20nCode = fs.readFileSync(__dirname + '/example.l20n').toString();
+var ftlCode = fs.readFileSync(__dirname + '/example.ftl').toString();
 
 var data = {
   "brandShortName": "BRANDSHORTNAME",
@@ -35,7 +33,6 @@ var lang = {
   code:'en-US',
   src: 'app',
 };
-
 function micro(time) {
   // time is [seconds, nanoseconds]
   return Math.round((time[0] * 1e9 + time[1]) / 1000);
@@ -44,14 +41,15 @@ function micro(time) {
 var cumulative = {};
 var start = process.hrtime();
 
-var entries = L20n.PropertiesParser.parse(null, propCode);
-cumulative.parseEnd = process.hrtime(start);
+cumulative.ftlParseStart = process.hrtime(start);
+var ast = L20n.FTLASTParser.parseResource(ftlCode);
+cumulative.ftlParseEnd = process.hrtime(start);
 
-cumulative.l20nParseStart = process.hrtime(start);
+cumulative.ftlEntriesParseStart = process.hrtime(start);
+var entries = L20n.FTLEntriesParser.parseResource(ftlCode);
+cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
-var entries = L20n.L20nParser.parse(null, l20nCode);
-cumulative.l20nParseEnd = process.hrtime(start);
-
+var entries = L20n.createEntriesFromAST(ast).entries;
 var ctx = new L20n.MockContext(entries);
 
 cumulative.format = process.hrtime(start);
@@ -59,22 +57,10 @@ for (var id in entries) {
   L20n.format(ctx, lang, data, entries[id]);
 }
 cumulative.formatEnd = process.hrtime(start);
-/*
-var ctx = new Context(null);
-var locale = ctx.getLocale('en-US');
-locale.addAST(ast);
-ctx.requestLocales(['en-US']);
 
-cumulative.getEntity = process.hrtime(start);
-for (var id in ids) {
-  ctx.getEntity(ids[id], data);
-}
-cumulative.getEntityEnd = process.hrtime(start);
-*/
 var results = {
-  propParse: micro(cumulative.parseEnd),
-  l20nParse: micro(cumulative.l20nParseEnd) - micro(cumulative.l20nParseStart),
+  ftlParse: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
+  ftlEntriesParse: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
   format: micro(cumulative.formatEnd) - micro(cumulative.format),
-  //getEntity: micro(cumulative.getEntityEnd) - micro(cumulative.getEntity)
 };
 console.log(JSON.stringify(results));

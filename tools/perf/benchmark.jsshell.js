@@ -1,7 +1,6 @@
 load('../../dist/bundle/jsshell/l20n.js');
 
-var propCode = read('./example.properties');
-var l20nCode = read('./example.l20n');
+var ftlCode = read('./example.ftl');
 var data = {
   "brandShortName": "BRANDSHORTNAME",
   "ssid": "SSID",
@@ -34,40 +33,28 @@ function micro(time) {
 }
 
 var times = {};
-times.start = dateNow();
 
-var entries = L20n.PropertiesParser.parse(null, propCode);
-times.parseEnd = dateNow();
+times.ftlParseStart = dateNow();
+var ast = L20n.FTLASTParser.parseResource(ftlCode);
+times.ftlParseEnd = dateNow();
 
-times.l20nParseStart = dateNow();
+times.ftlEntriesParseStart = dateNow();
+var entries = L20n.FTLEntriesParser.parseResource(ftlCode);
+times.ftlEntriesParseEnd = dateNow();
 
-var entries = L20n.L20nParser.parse(null, l20nCode);
-times.l20nParseEnd = dateNow();
-
+var entries = L20n.createEntriesFromAST(ast).entries;
 var ctx = new L20n.MockContext(entries);
 
 times.format = dateNow();
 for (var id in entries) {
-   L20n.format(ctx, lang, data, entries[id]);
+  L20n.format(ctx, lang, data, entries[id]);
 }
 times.formatEnd = dateNow();
-/*
-var ctx = new L20n.Context(null);
-var locale = ctx.getLocale('en-US');
-locale.addAST(ast);
-ctx.requestLocales(['en-US']);
 
-times.getEntity = dateNow();
-for (var id in ids) {
-  ctx.getEntity(ids[id], data);
-}
-times.getEntityEnd = dateNow();
-*/
 var results = {
-  parseProp: micro(times.parseEnd - times.start),
-  parseL20n: micro(times.l20nParseEnd - times.l20nParseStart),
+  parseFTL: micro(times.ftlParseEnd - times.ftlParseStart),
+  parseFTLEntries: micro(times.ftlEntriesParseEnd - times.ftlEntriesParseStart),
   format: micro(times.formatEnd - times.format),
-  //getEntity: micro(times.getEntityEnd - times.getEntity),
 };
 
 print(JSON.stringify(results));

@@ -1,0 +1,43 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "JunkEntry",
+      "content": "key1 =\n [:key] Value\n\n"
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key3 =\n [] Value\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key4 =\n **[f] Foo\n\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key5 =\n *fw] Foo\n"
+    }
+  ],
+  "_errors": []
+}

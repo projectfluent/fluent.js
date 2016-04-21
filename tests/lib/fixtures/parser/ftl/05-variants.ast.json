@@ -1,0 +1,329 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "Value",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "gender",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "male",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "male"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "namespace": null
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "gender",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "male",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "male"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "namespace": null
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "masculine",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Variant for masculine",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Variant for masculine"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": true
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "feminine",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Variant for feminine",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Variant for feminine"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "aria-label",
+            "namespace": "html"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Test",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Test"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "aria-label",
+            "namespace": "html"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Test",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Test"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "loop",
+            "namespace": "joomla"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Foo",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Foo"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "m",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Foo",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Foo"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Section",
+      "name": {
+        "type": "Identifier",
+        "name": "section",
+        "namespace": null
+      },
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key6",
+        "namespace": null
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "one",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "One",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "One"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "two",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Two",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Two"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Identifier",
+            "name": "three",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "Three",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Three"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}

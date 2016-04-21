@@ -1,0 +1,69 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "This is a new line",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "This is a new line"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "<p>\n  So\n    Many\n  Lines\n</p>",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "<p>\n  So\n    Many\n  Lines\n</p>"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key5",
+        "namespace": null
+      },
+      "value": {
+        "type": "Pattern",
+        "source": "<p>\nFoo\n</p>",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "<p>\nFoo\n</p>"
+          }
+        ],
+        "_quoteDelim": false
+      },
+      "traits": [],
+      "comment": null
+    }
+  ],
+  "_errors": []
+}
