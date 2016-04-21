@@ -23,8 +23,8 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./dist/compat/node/l20n.js",
-  "browser": "./dist/compat/web/l20n-common.js",
+  "main": "./dist/bundle/node/l20n.js",
+  "browser": "./dist/bundle/web/l20n-common.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/l20n/l20n.js.git"
@@ -70,9 +70,7 @@
     "prettyjson": "^1.1.3",
     "rollup": "^0.25.4",
     "rollup-plugin-babel": "^2.4.0",
-    "should": "^8.2.2",
-    "string.prototype.endswith": "^0.2.0",
-    "string.prototype.startswith": "^0.2.0"
+    "should": "^8.2.2"
   },
   "engine": {
     "node": ">=4.1"

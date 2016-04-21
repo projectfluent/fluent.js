@@ -22,15 +22,14 @@ Include the following code in the `<head>` section of your HTML:
 ```html
 <meta name="defaultLanguage" content="en-US">
 <meta name="availableLanguages" content="de, en-US, fr, pl">
-<link rel="localization" href="locales/myApp.{locale}.l20n">
-<script defer src="dist/compat/web/l20n.js"></script>
+<link rel="localization" href="locales/myApp.{locale}.ftl">
+<script defer src="dist/bundle/web/l20n.js"></script>
 ```
 
-L20n.js supports three kinds of translation resources:
+L20n.js supports two kinds of translation resources:
 
- - L20n syntax, as documented at http://l20n.org/learn/,
- - properties syntax: https://en.wikipedia.org/wiki/.properties (deprecated),
- - JSON files parsed by `tools/parse.js -o entries`.
+ - FTL syntax, as documented at http://l20n.org/learn/,
+ - JSON files parsed by `tools/parse.js -o runtime`.
 
 
 What L20n's syntax looks like
@@ -38,28 +37,27 @@ What L20n's syntax looks like
 
 A straight-forward example in English:
 
-```php
-<brandName "Firefox">
-<about "About {{ brandName }}">
-<preferences "{{ brandName }} Preferences">
+```properties
+brand-name = Firefox
+about      = About { brand-name }
+settings   = { brand-name } Settings
 ```
 
 And the same thing in Polish:
 
-```php
-<brandName {
-  nominative: "Firefox",
-  genitive: "Firefoksa",
-  dative: "Firefoksowi",
-  accusative: "Firefoksa",
-  instrumental: "Firefoksem",
-  locative: "Firefoksie"
-}>
-<about "O {{ brandName.locative }}">
-<preferences "Preferencje {{ brandName.genitive }}">
+```properties
+brand-name =
+ *[nominative]   Firefox
+  [genitive]     Firefoksa
+  [dative]       Firefoksowi
+  [accusative]   Firefoksa
+  [instrumental] Firefoksem
+  [locative]     Firefoksie
+about      = O { brand-name[locative] }
+settings   = Ustawienia { brand-name[genitive] }
 ```
 
-Visit [L20n by Example](http://l20n.org/learn) to learn more about L20n's 
+Visit [FTL by Example](http://l20n.org/learn) to learn more about FTL's 
 syntax.
 
 

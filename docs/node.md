@@ -7,10 +7,11 @@ without notice.
 
 ## Install
 
-L20n.js is available for installation via `npm`.
+The current (master) version of L20n.js hasn't been published to the `npm` 
+registry yet.  You can still add it to your project with:
 
 ```bash
-$ npm install l20n
+$ npm install git+https://git@github.com/l20n/l20n.js.git
 ```
 
 
@@ -18,17 +19,17 @@ $ npm install l20n
 
 Example resource files:
 
-`./locales/es-ES.l20n`
+`./locales/es-ES.ftl`
 
-```html
-<foo "Foo en español">
+```properties
+foo = Foo en español
 ```
 
-`./locales/en-US.l20n`
+`./locales/en-US.ftl`
 
-```html
-<foo "Foo in English">
-<bar "Bar only exists in English">
+```properties
+foo = Foo in English
+bar = Bar only exists in English
 ```
 
 Example node script:
@@ -47,7 +48,7 @@ const env = new L20n.Env(L20n.fetchResource);
 env.addEventListener('*', e => console.log(e));
 
 // contexts are immutable;  if langs change a new context must be created
-const ctx = env.createContext(langs, ['./locales/{locale}.l20n']);
+const ctx = env.createContext(langs, ['./locales/{locale}.ftl']);
 
 // pass string ids or tuples of [id, args]
 ctx.formatValues('foo', ['bar', {baz: 'Baz'}]).then(values => {
