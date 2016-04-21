@@ -11,8 +11,10 @@ var util = require('./util');
 
 program
   .version('0.0.1')
-  .usage('[options] command')
-  .option('-s, --sample <int>', 'Sample size [50]', 50)
+  .usage('[options] [command]')
+  .option('-e, --engine <string>', 'Engine to test: node, jsshell, d8 [node]',
+          'node')
+  .option('-s, --sample <int>', 'Sample size [30]', 30)
   .option('-p, --progress', 'Show progress')
   .option('-n, --no-color', 'Print without color')
   .option('-r, --raw', 'Print raw JSON')
@@ -21,11 +23,15 @@ program
           0.01)
   .parse(process.argv);
 
-if (program.args.length) {
-  var command = program.args.join(' ');
-} else {
-  var command = "node benchmark.node.js";
-}
+var commands = {
+  node: "node benchmark.node.js",
+  jsshell: "js benchmark.jsshell.js",
+  d8: "d8 benchmark.d8.js",
+};
+
+var command = program.args.length ?
+  program.args.join(' ') :
+  commands[program.engine];
 
 var GOOD = 'green';
 var BAD = 'red';

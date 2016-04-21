@@ -1,8 +1,12 @@
+require('string.prototype.startswith');
+require('string.prototype.endswith');
+
 var fs = require('fs');
 
 require('babel-register')({
   presets: ['es2015']
 });
+
 var L20n = require('../../src/runtime/node');
 var Context = require('../../src/lib/context').Context;
 

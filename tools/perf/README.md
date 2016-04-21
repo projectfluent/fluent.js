@@ -2,7 +2,6 @@ Perf testing
 ============
 
 Measure the performance impact of changes that you make to the L20n codebase.  
-Also see `make perf`.
 
 Execution time is reported in microseconds (μs).
 
@@ -14,13 +13,14 @@ entities make use of L20n's advanced features.
 
 [Settings localization file]: https://github.com/mozilla-b2g/gaia/blob/v1.0.1/apps/settings/locales/settings.en-US.properties
 
-  Usage: run.js [options] command
+  Usage: test.js [options] command
 
   Options:
 
     -h, --help                 output usage information
     -V, --version              output the version number
-    -s, --sample <int>         Sample size [150]
+    -e, --engine <string>      Engine to test: node, jsshell, d8 [node]
+    -s, --sample <int>         Sample size [30]
     -p, --progress             Show progress
     -n, --no-color             Print without color
     -r, --raw                  Print raw JSON
@@ -31,16 +31,18 @@ The `command` argument is the command that will be spawned via
 `child_process.exec`.  This allows to reliably measure the speed over a big 
 sample of runs without triggering JIT compilation of the modern JavaScript 
 engines.  The command is always executed with `tools/perf` being the current 
-directory.  If not given, `command` defaults to `node benchmark.node.js`.
+directory.  If not given, the value of `command` will be determined based on 
+the value ot the `engine` argument.
 
 
 Examples:
 
-    ./run.js
-    ./run.js --sample 1000 --progress
-    ./run.js --raw > ~/reference.js
-    ./run.js --compare ~/reference.js
-    ./run.js "~/src/jsshell/js benchmark.jsshell.js"
+    ./test.js
+    ./test.js --engine jsshell
+    ./test.js --sample 1000 --progress
+    ./test.js --raw > ~/reference.js
+    ./test.js --compare ~/reference.js
+    ./test.js "~/src/jsshell/js benchmark.jsshell.js"
 
 
 Statistical significance
