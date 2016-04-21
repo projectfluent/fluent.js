@@ -1,9 +1,0 @@
-<title "Exemple de l20n.js">
-<world "le monde">
-<hello "Salut <em>{{ world }}</em> !">
-<name 'Ecrivez <input placeholder="votre nom"> et <input value="envoyez">.'>
-
-<unreadEmails[@cldr.plural($emailCount)] {
-  one: "Vous avez un email non lu.",
-  other: "Vous avez {{ $emailCount }} emails non lus."
-}>
