@@ -98,9 +98,14 @@ export class FTLList extends FTLText {
 };
 
 export default {
-  'NUMBER': ([num], opts) => new FTLNumber(num.value, values(opts)),
-  'PLURAL': ([num], opts) => new FTLCategory(num.value, values(opts)),
+  'NUMBER': ([arg], opts) => new FTLNumber(arg.value, values(opts)),
+  'PLURAL': ([arg], opts) => new FTLCategory(arg.value, values(opts)),
   'LIST': (...args) => new FTLList(...args),
+  'LEN': ([arg], opts) => new FTLNumber(arg.value.length, values(opts)),
+  'TAKE': ([num, arg], opts) =>
+    new FTLList(arg.value.slice(0, num.value), values(opts)),
+  'DROP': ([num, arg], opts) =>
+    new FTLList(arg.value.slice(num.value), values(opts)),
 };
 
 function values(opts) {

@@ -183,10 +183,10 @@ function ExternalArgument(res, expr) {
   const args = res.args;
 
   if (!args || !args.hasOwnProperty(name)) {
-    return fail(
+    return [
       [new L10nError('Unknown external: ' + name)],
-      unit(new FTLNone(name))
-    );
+      new FTLNone(name)
+    ];
   }
 
   const arg = args[name];
@@ -194,10 +194,17 @@ function ExternalArgument(res, expr) {
   switch (typeof arg) {
     case 'number': return unit(new FTLNumber(arg));
     case 'string': return unit(new FTLText(arg));
-    default: return fail(
-      [new L10nError('Unsupported external type: ' + name + ', ' + typeof arg)],
-      unit(new FTLNone(name))
-    );
+    default:
+      if (Array.isArray(arg)) {
+        return mapValues(res, arg);
+      }
+
+      return [
+        [new L10nError(
+          'Unsupported external type: ' + name + ', ' + typeof arg
+        )],
+        new FTLNone(name)
+      ];
   }
 }
 
