@@ -17,8 +17,8 @@
   ],
   "bugs": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox%20OS&component=Gaia::L10n",
   "scripts": {
-    "test": "grunt merge-conflict lint test",
-    "prepublish": "grunt release"
+    "test": "make test-lib",
+    "prepublish": "make build"
   },
   "directories": {
     "lib": "./src"
@@ -44,27 +44,11 @@
     "commander": "^2.9",
     "eslint": "^2.3.0",
     "glob": "^7.0.3",
-    "grunt": "^0.4.5",
-    "grunt-babel": "^6.0.0",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-uglify": "^1.0.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-jsonlint": "^1.0.7",
-    "grunt-karma": "^0.12.1",
-    "grunt-merge-conflict": "^0.0.2",
-    "grunt-mocha-test": "^0.12.7",
-    "grunt-notify": "^0.4.5",
-    "grunt-rollup": "^0.6.2",
-    "grunt-shell": "^1.2.1",
     "karma": "^0.13.22",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.2",
     "karma-firefox-launcher": "^0.1.7",
     "karma-mocha": "^0.2.2",
-    "load-grunt-tasks": "^3.4.1",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",
     "prettyjson": "^1.1.3",
