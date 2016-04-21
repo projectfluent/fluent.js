@@ -27,6 +27,6 @@ export function getDirection(code) {
 }
 
 // Opera and Safari don't support it yet
-if (navigator.languages === undefined) {
+if (typeof navigator !== 'undefined' && navigator.languages === undefined) {
   navigator.languages = [navigator.language];
 }

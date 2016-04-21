@@ -16,7 +16,7 @@ import { MockContext, lang } from '../../lib/mocks';
 import { walkEntry, walkValue, pseudo } from '../../lib/pseudo';
 import { format } from '../../lib/resolver';
 
-window.L20n = {
+export default {
   fetchResource, Client, Remote, View, broadcast,
   FTLASTParser, FTLEntriesParser, createEntriesFromAST,
   Context, Env, L10nError, emit, addEventListener, removeEventListener,

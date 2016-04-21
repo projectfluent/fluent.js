@@ -1,4 +1,4 @@
-load('../../dist/bundle/jsshell/l20n.js');
+load('../../dist/bundle/tooling/l20n.js');
 
 var ftlCode = read('./example.ftl');
 var data = {
