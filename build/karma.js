@@ -5,7 +5,7 @@ module.exports = {
     basePath: '',
     frameworks: ['mocha', 'chai'],
     files: [
-      { src: 'dist/compat/testing/*.js' },
+      { src: 'dist/bundle/testing/*.js' },
       { src: 'tests/bindings/*.js' }
     ],
     browsers: ['Firefox', 'Chrome'],

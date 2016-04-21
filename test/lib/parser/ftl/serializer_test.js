@@ -1,12 +1,11 @@
 'use strict';
 
+import fs from 'fs';
+import path from 'path';
+
 import assert from 'assert';
 import FTLParser from '../../../../src/lib/format/ftl/ast/parser';
 import FTLSerializer from '../../../../src/lib/format/ftl/ast/serializer';
-
-var equal = require('deep-equal');
-var fs = require('fs');
-var path = require('path');
 
 var parse = FTLParser.parseResource;
 
@@ -30,8 +29,7 @@ function testSerialize(path1) {
   });
 }
 
-var basePath = './tests/lib/fixtures/parser/ftl';
-
+var basePath = './test/lib/fixtures/parser/ftl';
 
 describe('FTL Serializer', function() {
   it('fixtures work', function(done) {

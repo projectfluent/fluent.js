@@ -1,15 +1,14 @@
 'use strict';
 
+import fs from 'fs';
+import path from 'path';
+
 import assert from 'assert';
 import FTLParser from '../../../../src/lib/format/ftl/ast/parser';
 import { default as RuntimeParser }
   from '../../../../src/lib/format/ftl/entries/parser';
 import { createEntriesFromAST }
   from '../../../../src/lib/format/ftl/entries/transformer';
-
-var equal = require('deep-equal');
-var fs = require('fs');
-var path = require('path');
 
 var parse = FTLParser.parseResource;
 var parseEntries = RuntimeParser.parseResource;
@@ -82,8 +81,7 @@ function compareTransformerToEntries(path) {
   });
 }
 
-var basePath = './tests/lib/fixtures/parser/ftl';
-
+var basePath = './test/lib/fixtures/parser/ftl';
 
 describe('FTL Parser', function() {
   it('fixtures work', function(done) {

@@ -20,3 +20,11 @@ clean:
 .PHONY: lint
 lint:
 	eslint src/
+
+.PHONY: test-lib
+test-lib:
+	@mocha \
+	    --recursive \
+	    --reporter dot \
+	    --require ./test/compat \
+	    test/lib/parser/ftl
