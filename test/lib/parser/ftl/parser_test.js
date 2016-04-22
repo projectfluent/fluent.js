@@ -140,4 +140,9 @@ describe('Entries Parser', function() {
       Promise.all(tests).then(() => { done() }, (err) => { done(err) });
     });
   });
+
+  it('entity with no eol work', function() {
+    const ret = parseEntries('key=value');
+    assert.equal(Object.keys(ret.entries).length, 1);
+  });
 });

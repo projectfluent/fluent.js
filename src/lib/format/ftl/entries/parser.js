@@ -260,6 +260,10 @@ class ParseContext {
     }
     let eol = this._source.indexOf('\n', this._index);
 
+    if (eol === -1) {
+      eol = this._length;
+    }
+
     let line = this._source.slice(start, eol);
 
     if (line.indexOf('{') !== -1) {
