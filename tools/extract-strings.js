@@ -8,7 +8,7 @@ const esprima = require('esprima');
 const esprimaWalk = require('esprima-walk');
 
 require('babel-register')({
-  presets: ['es2015']
+  plugins: ['transform-es2015-modules-commonjs']
 });
 const AST = require('../src/lib/format/ftl/ast/ast').default;
 const Serializer = require('../src/lib/format/ftl/ast/serializer').default;

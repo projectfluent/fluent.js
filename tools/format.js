@@ -7,7 +7,7 @@ var fs = require('fs');
 var program = require('commander');
 
 require('babel-register')({
-  presets: ['es2015']
+  plugins: ['transform-es2015-modules-commonjs']
 });
 
 var Resolver = require('../src/lib/resolver');

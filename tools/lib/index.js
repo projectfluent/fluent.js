@@ -3,7 +3,7 @@
 /* jshint node:true */
 
 require('babel-register')({
-  presets: ['es2015']
+  plugins: ['transform-es2015-modules-commonjs']
 });
 
 exports.parse = function(fileformat, output, text) {

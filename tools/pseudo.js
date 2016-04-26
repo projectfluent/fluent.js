@@ -2,7 +2,9 @@
 
 'use strict';
 
-require('../node_modules/babel-core/register');
+require('babel-register')({
+  plugins: ['transform-es2015-modules-commonjs']
+});
 
 var program = require('commander');
 var pseudo = require('../src/lib/pseudo').pseudo;
