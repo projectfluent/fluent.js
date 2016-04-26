@@ -63,8 +63,8 @@ for (var id in entries) {
 cumulative.formatEnd = process.hrtime(start);
 
 var results = {
-  ftlParse: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
-  ftlEntriesParse: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
+  parseFTL: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
+  parseFTLEntries: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
   format: micro(cumulative.formatEnd) - micro(cumulative.format),
 };
 console.log(JSON.stringify(results));
