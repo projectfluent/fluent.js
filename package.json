@@ -17,8 +17,7 @@
   ],
   "bugs": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Firefox%20OS&component=Gaia::L10n",
   "scripts": {
-    "test": "make test-lib",
-    "prepublish": "make build"
+    "test": "make test-lib"
   },
   "directories": {
     "lib": "./src"
