@@ -1,6 +1,5 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
-import { L20nIntl } from './shims';
 
 export class Context {
   constructor(env, langs, resIds) {
@@ -32,7 +31,6 @@ export class Context {
     if (entity.attrs) {
       formatted.attrs = Object.create(null);
       for (let key in entity.attrs) {
-        /* jshint -W089 */
         const [, attrValue] = this._formatTuple(
           lang, args, entity.attrs[key], id, key);
         formatted.attrs[key] = attrValue;

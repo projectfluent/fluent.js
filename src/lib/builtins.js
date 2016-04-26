@@ -11,7 +11,7 @@ export class FTLNone {
   match() {
     return false;
   }
-};
+}
 
 export class FTLText extends FTLNone {
   format() {
@@ -20,7 +20,7 @@ export class FTLText extends FTLNone {
   match(res, {value}) {
     return this.value === value;
   }
-};
+}
 
 export class FTLNumber extends FTLText {
   constructor(value, opts) {
@@ -89,14 +89,14 @@ export class FTLKeyword extends FTLText {
   match(res, {namespace, value}) {
     return this.namespace === namespace && this.value === value;
   }
-};
+}
 
 export class FTLKeyValueArg extends FTLText {
   constructor(value, id) {
     super(value);
     this.id = id;
   }
-};
+}
 
 export class FTLList extends FTLText {
   format(res) {
@@ -111,7 +111,7 @@ export class FTLList extends FTLText {
   match() {
     return false;
   }
-};
+}
 
 export default {
   'NUMBER': ([arg], opts) => new FTLNumber(arg.value, values(opts)),

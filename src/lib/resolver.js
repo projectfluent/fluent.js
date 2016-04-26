@@ -3,8 +3,6 @@ import builtins, {
   FTLNone, FTLText, FTLNumber, FTLDateTime, FTLKeyValueArg, FTLKeyword, FTLList
 } from './builtins';
 
-const MAX_PLACEABLE_LENGTH = 2500;
-
 // Unicode bidi isolation characters
 const FSI = '\u2068';
 const PDI = '\u2069';
@@ -22,7 +20,9 @@ function mapValues(res, arr) {
   );
 }
 
+
   // XXX add this back later
+  // const MAX_PLACEABLE_LENGTH = 2500;
   // if (value.length >= MAX_PLACEABLE_LENGTH) {
   //   throw new L10nError(
   //     'Too many characters in placeable (' + value.length +
