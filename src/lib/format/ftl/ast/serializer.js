@@ -131,10 +131,12 @@ export default {
 
   dumpMembers: function(members, indent) {
     return members.map(member => {
-      let id = this.dumpKeyword(member.key);
+      let key = this.dumpExpression(member.key);
       let value = this.dumpPattern(member.value);
-      let def = member.default ? '*' : '';
-      return `${' '.repeat(indent)}${def}[${id}] ${value}`;
+      let prefix = member.default ?
+        `${' '.repeat(indent - 1)}*` :
+        `${' '.repeat(indent)}`;
+      return `${prefix}[${key}] ${value}`;
     }).join('\n');
   }
 }
