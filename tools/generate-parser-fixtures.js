@@ -15,7 +15,7 @@ program
   .parse(process.argv);
 
 
-var basePath = './tests/lib/fixtures/parser/ftl';
+var basePath = './test/lib/fixtures/parser/ftl';
 
 fs.readdir(basePath, (err, paths) => {
   paths.forEach(fileName => {
