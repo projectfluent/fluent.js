@@ -38,7 +38,7 @@ function print(fileformat, output, err, data) {
     }));
   }
 
-  if (parsed._errors) {
+  if (!program.raw && parsed._errors) {
     printErrors(parsed._errors);
   }
 }
