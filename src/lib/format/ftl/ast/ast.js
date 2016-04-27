@@ -18,11 +18,10 @@ class Entry extends Node {
 }
 
 class Identifier extends Node {
-  constructor(name, namespace = null) {
+  constructor(name) {
     super();
     this.type = 'Identifier';
     this.name = name;
-    this.namespace = namespace;
   }
 }
 
@@ -118,28 +117,23 @@ class KeyValueArg extends Node {
 }
 
 class EntityReference extends Identifier {
-  constructor(name, namespace) {
-    super();
+  constructor(name) {
+    super(name);
     this.type = 'EntityReference';
-    this.name = name;
-    this.namespace = namespace;
   }
 }
 
 class BuiltinReference extends Identifier {
-  constructor(name, namespace) {
-    super();
+  constructor(name) {
+    super(name);
     this.type = 'BuiltinReference';
-    this.name = name;
-    this.namespace = namespace;
   }
 }
 
 class Keyword extends Identifier {
   constructor(name, namespace=null) {
-    super();
+    super(name);
     this.type = 'Keyword';
-    this.name = name;
     this.namespace = namespace;
   }
 }

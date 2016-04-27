@@ -73,7 +73,7 @@ class ParseContext {
 
     this.getLineWS();
 
-    const id = this.getIdentifier();
+    const name = this.getIdentifier().name;
 
     this.getLineWS();
 
@@ -84,11 +84,11 @@ class ParseContext {
 
     this._index += 2;
 
-    return new AST.Section(id, comment);
+    return new AST.Section(name, comment);
   }
 
   getEntity(comment = null) {
-    let id = this.getIdentifier('/');
+    let id = this.getIdentifier();
 
     let members = [];
     let value = null;
@@ -141,19 +141,8 @@ class ParseContext {
     }
   }
 
-  getIdentifier(nsSep=null) {
-    let namespace = null;
-    let id = '';
-
-    if (nsSep) {
-      namespace = this.getIdentifier().name;
-      if (this._source[this._index] === nsSep) {
-        this._index++;
-      } else if (namespace) {
-        id = namespace;
-        namespace = null; 
-      }
-    }
+  getIdentifier() {
+    let name = '';
 
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
@@ -162,7 +151,7 @@ class ParseContext {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95) {               // _
       cc = this._source.charCodeAt(++this._index);
-    } else if (id.length === 0) {
+    } else if (name.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
@@ -173,23 +162,20 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    id += this._source.slice(start, this._index);
+    name += this._source.slice(start, this._index);
 
-    return new AST.Identifier(id, namespace);
+    return new AST.Identifier(name);
   }
 
-  getIdentifierWithSpace(nsSep=null) {
-    let namespace = null;
-    let id = '';
+  getKeyword() {
+    let name = '';
+    let namespace = this.getIdentifier().name;
 
-    if (nsSep) {
-      namespace = this.getIdentifier().name;
-      if (this._source[this._index] === nsSep) {
-        this._index++;
-      } else if (namespace) {
-        id = namespace;
-        namespace = null;
-      }
+    if (this._source[this._index] === '/') {
+      this._index++;
+    } else if (namespace) {
+      name = namespace;
+      namespace = null;
     }
 
     const start = this._index;
@@ -199,7 +185,7 @@ class ParseContext {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95 || cc === 32) {  //  _
       cc = this._source.charCodeAt(++this._index);
-    } else if (id.length === 0) {
+    } else if (name.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
@@ -210,9 +196,9 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    id += this._source.slice(start, this._index);
+    name += this._source.slice(start, this._index);
 
-    return new AST.Identifier(id, namespace);
+    return new AST.Keyword(name, namespace);
   }
 
   getPattern() {
@@ -392,7 +378,7 @@ class ParseContext {
     this._index++;
 
     if (exp instanceof AST.EntityReference) {
-      exp = new AST.BuiltinReference(exp.name, exp.namespace);
+      exp = new AST.BuiltinReference(exp.name);
     }
 
     return new AST.CallExpression(exp, args);
@@ -410,8 +396,7 @@ class ParseContext {
 
       let exp = this.getCallExpression();
 
-      if (!(exp instanceof AST.EntityReference) ||
-         exp.namespace !== null) {
+      if (!(exp instanceof AST.EntityReference)) {
         args.push(exp);
       } else {
         this.getLineWS();
@@ -487,7 +472,7 @@ class ParseContext {
     let exp = this.getLiteral();
 
     while (this._source[this._index] === '[') {
-      let keyword = this.getKeyword();
+      let keyword = this.getMemberKey();
       exp = new AST.MemberExpression(exp, keyword);
     }
 
@@ -513,7 +498,7 @@ class ParseContext {
         throw this.error('Expected "["');
       }
 
-      let key = this.getKeyword();
+      let key = this.getMemberKey();
 
       this.getLineWS();
 
@@ -529,7 +514,7 @@ class ParseContext {
     return members;
   }
 
-  getKeyword() {
+  getMemberKey() {
     this._index++;
 
     let cc = this._source.charCodeAt(this._index);
@@ -538,7 +523,7 @@ class ParseContext {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getIdentifierWithSpace('/');
+      literal = this.getKeyword();
     }
 
     if (this._source[this._index] !== ']') {
@@ -557,12 +542,12 @@ class ParseContext {
       return this.getPattern();
     } else if (cc === 36) { // $
       this._index++;
-      let id = this.getIdentifier();
-      return new AST.ExternalArgument(id.name);
+      let name = this.getIdentifier().name;
+      return new AST.ExternalArgument(name);
     }
 
-    let id = this.getIdentifier('/');
-    return new AST.EntityReference(id.name, id.namespace);
+    let name = this.getIdentifier().name;
+    return new AST.EntityReference(name);
   }
 
   getComment() {

@@ -53,10 +53,14 @@ export default {
   },
 
   dumpIdentifier: function(id) {
-    if (id.namespace) {
-      return `${id.namespace}/${id.name}`;
-    }
     return id.name;
+  },
+
+  dumpKeyword: function(kw) {
+    if (kw.namespace) {
+      return `${kw.namespace}/${kw.name}`;
+    }
+    return kw.name;
   },
 
   dumpPattern: function(pattern) {
@@ -113,6 +117,8 @@ export default {
         return this.dumpPattern(exp);
       case 'Number':
         return exp.value;
+      case 'Keyword':
+        return this.dumpKeyword(exp);
       case 'MemberExpression':
         let obj = this.dumpExpression(exp.object);
         let key = this.dumpExpression(exp.keyword);

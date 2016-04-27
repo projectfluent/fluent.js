@@ -1,22 +1,5 @@
 import { default as AST } from '../ast/ast';
 
-function toEntries([entries, curSection], entry) {
-  if (entry.type === 'Section') {
-    return [entries, entry.name.name];
-  }
-
-  if (curSection && !entry.id.namespace) {
-    entry.id.namespace = curSection;
-  }
-
-  return [
-    Object.assign(entries, {
-      [stringifyIdentifier(entry.id)]: transformEntity(entry)
-    }),
-    curSection
-  ];
-}
-
 function transformEntity(entity) {
   if (entity.traits.length === 0) {
     return transformPattern(entity.value);
@@ -26,24 +9,22 @@ function transformEntity(entity) {
     traits: entity.traits.map(transformMember),
   };
 
-  if (entity.value !== null) {
-    ret.val = transformPattern(entity.value);
-  }
-
-  return ret;
+  return entity.value !== null ?
+    Object.assign(ret, { val: transformPattern(entity.value) }) :
+    ret;
 }
 
 function transformExpression(exp) {
   if (exp instanceof AST.EntityReference) {
     return {
       type: 'ref',
-      name: stringifyIdentifier(exp)
+      name: exp.name
     };
   }
   if (exp instanceof AST.BuiltinReference) {
     return {
       type: 'blt',
-      name: stringifyIdentifier(exp)
+      name: exp.name
     };
   }
   if (exp instanceof AST.ExternalArgument) {
@@ -55,14 +36,21 @@ function transformExpression(exp) {
   if (exp instanceof AST.Pattern) {
     return transformPattern(exp);
   }
-  if (exp instanceof AST.Identifier) {
-    return transformIdentifier(exp);
-  }
   if (exp instanceof AST.Number) {
     return {
       type: 'num',
       val: exp.value
     };
+  }
+  if (exp instanceof AST.Keyword) {
+    const ret = {
+      type: 'kw',
+      name: exp.name
+    };
+
+    return exp.namespace ?
+      Object.assign(ret, { ns: exp.namespace }) :
+      ret;
   }
   if (exp instanceof AST.KeyValueArg) {
     return {
@@ -131,29 +119,15 @@ function transformMember(member) {
   return ret;
 }
 
-function transformIdentifier(id) {
-  const ret = {
-    type: 'id',
-    name: id.name
-  };
-
-  if (id.namespace) {
-    ret.ns = id.namespace;
-  }
-
-  return ret;
-}
-
-function stringifyIdentifier(id) {
-  if (id.namespace) {
-    return `${id.namespace}/${id.name}`;
-  }
-  return id.name;
+function toEntries(entries, entry) {
+  return Object.assign(entries, {
+    [entry.id.name]: transformEntity(entry)
+  });
 }
 
 export function createEntriesFromAST({body, _errors}) {
-  const [entries] = body
-    .filter(entry => entry.type === 'Entity' || entry.type === 'Section')
-    .reduce(toEntries, [{}, null]);
+  const entries = body
+    .filter(entry => entry.type === 'Entity')
+    .reduce(toEntries, {});
   return {entries, _errors};
 }
