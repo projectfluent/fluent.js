@@ -1,3 +1,5 @@
+menu/open = Namespaces in entity ids aren't allowed
+
 [section]]
 
 key1 = value

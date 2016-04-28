@@ -1,13 +1,10 @@
 {
-  "entries": {
-    "key1": "value",
-    "key2": "Value",
-    "key4": "Value",
-    "key5": "Value",
-    "section/key6": "value",
-    "section/key7": "value",
-    "section/key8": "value",
-    "section/key9": "value"
-  },
-  "_errors": []
+  "key1": "value",
+  "key2": "Value",
+  "key4": "Value",
+  "key5": "Value",
+  "key6": "value",
+  "key7": "value",
+  "key8": "value",
+  "key9": "value"
 }

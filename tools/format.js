@@ -60,13 +60,13 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const parsed = lib.parse(fileformat, 'entries', data.toString());
+  const {entries, errors} = lib.parse(fileformat, 'entries', data.toString());
 
-  parsed._errors.forEach(printError);
+  errors.forEach(printError);
 
-  const ctx = new mocks.MockContext(parsed.entries);
-  for (let id in parsed.entries) {
-    printEntry(ctx, id, parsed.entries[id]);
+  const ctx = new mocks.MockContext(entries);
+  for (let id in entries) {
+    printEntry(ctx, id, entries[id]);
   }
 }
 

@@ -5,8 +5,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key1",
-        "namespace": null
+        "name": "key1"
       },
       "value": {
         "type": "Pattern",
@@ -22,6 +21,5 @@
       "traits": [],
       "comment": null
     }
-  ],
-  "_errors": []
+  ]
 }

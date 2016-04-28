@@ -5,8 +5,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key1",
-        "namespace": null
+        "name": "key1"
       },
       "value": {
         "type": "Pattern",
@@ -26,8 +25,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key4",
-        "namespace": null
+        "name": "key4"
       },
       "value": {
         "type": "Pattern",
@@ -47,8 +45,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key5",
-        "namespace": null
+        "name": "key5"
       },
       "value": {
         "type": "Pattern",
@@ -64,6 +61,5 @@
       "traits": [],
       "comment": null
     }
-  ],
-  "_errors": []
+  ]
 }

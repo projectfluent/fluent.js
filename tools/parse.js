@@ -16,18 +16,28 @@ program
     'Type of output: ast or entries [ast]', 'ast')
   .option('-i, --input <type>',
     'Input syntax; only ftl is supported right now [ftl]', 'ftl')
+  .option('-t, --transform',
+    'Use AST transformer to produce the output', false)
   .option('-r, --raw', 'Print raw JSON')
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
 
+function parse(fileformat, str) {
+  if (program.output !== 'ast' && program.transform) {
+    const parsed = lib.parse(fileformat, 'ast', str);
+    return lib.transform(fileformat, program.output, parsed);
+  }
 
-function print(fileformat, output, err, data) {
+  return lib.parse(fileformat, program.output, str);
+}
+
+
+function print(fileformat, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
 
-  const parsed = lib.parse(fileformat, output, data.toString());
-  const result = parsed.body || parsed.entries;
+  const [result, errors] = parse(fileformat, data.toString());
 
   if (program.raw) {
     console.log(JSON.stringify(result, null, 2));
@@ -36,10 +46,9 @@ function print(fileformat, output, err, data) {
       keysColor: 'cyan',
       dashColor: 'cyan',
     }));
-  }
-
-  if (parsed._errors) {
-    printErrors(parsed._errors);
+    if (errors.length) {
+      printErrors(errors);
+    }
   }
 }
 
@@ -62,9 +71,9 @@ if (program.args.length) {
   var fileformat = program.args[0].substr(
     program.args[0].lastIndexOf('.') + 1) || program.input;
   fs.readFile(program.args[0], print.bind(
-    null, fileformat, program.output));
+    null, fileformat));
 } else {
   process.stdin.resume();
   process.stdin.on('data', print.bind(
-    null, program.input, program.output, null));
+    null, program.input, null));
 }

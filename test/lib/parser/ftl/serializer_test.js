@@ -17,15 +17,16 @@ function readFile(path) {
   });
 }
 
-function testSerialize(path1) {
-  return Promise.all([
-    readFile(path1),
-  ]).then(([source1]) => {
-    let ftl = parse(source1);
-    let out = FTLSerializer.serialize(ftl);
-    let ftl2 = parse(out);
+function testSerialize(path) {
+  return readFile(path).then(source => {
+    let [resource1] = parse(source);
+    let out = FTLSerializer.serialize(resource1);
+    let [resource2] = parse(out);
 
-    assert.deepEqual(ftl.body, ftl2.body, `Serialized output for ${path1} should be the same`);
+    assert.deepEqual(
+      resource2.body, resource1.body,
+      `Serialized output for ${path} should be the same`
+    );
   });
 }
 

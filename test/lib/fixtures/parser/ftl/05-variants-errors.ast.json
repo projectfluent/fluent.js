@@ -9,8 +9,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key2",
-        "namespace": null
+        "name": "key2"
       },
       "value": {
         "type": "Pattern",
@@ -36,8 +35,19 @@
     },
     {
       "type": "JunkEntry",
-      "content": "key5 =\n *fw] Foo\n"
+      "content": "key5 =\n *fw] Foo\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key6 =\n  [ a] A\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key7 =\n  [ x/a] XA\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key8 =\n  [x y/a] XYA\n"
     }
-  ],
-  "_errors": []
+  ]
 }

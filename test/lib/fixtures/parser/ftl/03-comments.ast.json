@@ -25,8 +25,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key1",
-        "namespace": null
+        "name": "key1"
       },
       "value": {
         "type": "Pattern",
@@ -49,8 +48,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key2",
-        "namespace": null
+        "name": "key2"
       },
       "value": {
         "type": "Pattern",
@@ -69,6 +67,5 @@
         "content": "Comment for entity key2"
       }
     }
-  ],
-  "_errors": []
+  ]
 }

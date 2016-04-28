@@ -159,7 +159,7 @@ function Value(res, expr) {
   }
 
   switch (node.type) {
-    case 'id':
+    case 'kw':
       return unit(new FTLKeyword(node.name, node.ns));
     case 'num':
       return unit(new FTLNumber(node.val));

@@ -1,6 +1,3 @@
 {
-  "entries": {
-    "key1": "Value"
-  },
-  "_errors": []
+  "key1": "Value"
 }

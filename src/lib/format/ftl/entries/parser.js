@@ -12,12 +12,11 @@ class ParseContext {
     this._length = string.length;
 
     this._lastGoodEntryEnd = 0;
-    this._section = null;
   }
 
   getResource() {
     const entries = {};
-    let errors = [];
+    const errors = [];
 
     this.getWS();
     while (this._index < this._length) {
@@ -28,13 +27,7 @@ class ParseContext {
           continue;
         }
 
-        let id = entry.id.name;
-
-        if (entry.id.namespace) {
-          id = `${entry.id.namespace}/${id}`;
-        } else if (this._section !== null) {
-          id = `${this._section.name}/${id}`;
-        }
+        const id = entry.id;
         entries[id] = {};
 
         if (entry.traits !== null &&
@@ -58,10 +51,7 @@ class ParseContext {
       this.getWS();
     }
 
-    return {
-      entries,
-      _errors: errors
-    };
+    return [entries, errors];
   }
 
   getEntry() {
@@ -95,9 +85,7 @@ class ParseContext {
     this._index += 1;
 
     this.getLineWS();
-
-    const id = this.getIdentifier();
-
+    this.getKeyword();
     this.getLineWS();
 
     if (this._source[this._index] !== ']' ||
@@ -107,16 +95,12 @@ class ParseContext {
 
     this._index += 2;
 
-    this._section = id;
-
-    return {
-      type: 'section',
-      id,
-    };
+    // sections are ignored in the runtime ast
+    return undefined;
   }
 
   getEntity(comment = null) {
-    let id = this.getIdentifier('/');
+    const id = this.getIdentifier();
 
     let members = [];
     let value = null;
@@ -147,7 +131,8 @@ class ParseContext {
       members = this.getMembers();
     } else if (value === null) {
       throw this.error(
-  `Expected a value (like: " = value") or a trait (like: "[key] value")`);
+        `Expected a value (like: " = value") or a trait (like: "[key] value")`
+      );
     }
 
     return {
@@ -173,19 +158,8 @@ class ParseContext {
     }
   }
 
-  getIdentifier(nsSep=null) {
-    let namespace = null;
-    let id = '';
-
-    if (nsSep) {
-      namespace = this.getIdentifier().name;
-      if (this._source[this._index] === nsSep) {
-        this._index++;
-      } else if (namespace) {
-        id = namespace;
-        namespace = null; 
-      }
-    }
+  getIdentifier() {
+    let name = '';
 
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
@@ -194,7 +168,7 @@ class ParseContext {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95) {               // _
       cc = this._source.charCodeAt(++this._index);
-    } else if (id.length === 0) {
+    } else if (name.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
@@ -205,26 +179,20 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    id += this._source.slice(start, this._index);
+    name += this._source.slice(start, this._index);
 
-    return {
-      namespace,
-      name: id
-    };
+    return name;
   }
 
-  getIdentifierWithSpace(nsSep=null) {
-    let namespace = null;
-    let id = '';
+  getKeyword() {
+    let name = '';
+    let namespace = this.getIdentifier();
 
-    if (nsSep) {
-      namespace = this.getIdentifier().name;
-      if (this._source[this._index] === nsSep) {
-        this._index++;
-      } else if (namespace) {
-        id = namespace;
-        namespace = null;
-      }
+    if (this._source[this._index] === '/') {
+      this._index++;
+    } else if (namespace) {
+      name = namespace;
+      namespace = null;
     }
 
     const start = this._index;
@@ -234,7 +202,7 @@ class ParseContext {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95 || cc === 32) {  //  _
       cc = this._source.charCodeAt(++this._index);
-    } else if (id.length === 0) {
+    } else if (name.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
@@ -245,12 +213,11 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    id += this._source.slice(start, this._index);
+    name += this._source.slice(start, this._index).trimRight();
 
-    return {
-      namespace,
-      name: id
-    };
+    return namespace ?
+      { type: 'kw', ns: namespace, name } :
+      { type: 'kw', name };
   }
 
   getPattern() {
@@ -572,7 +539,7 @@ class ParseContext {
     let exp = this.getLiteral();
 
     while (this._source[this._index] === '[') {
-      let keyword = this.getKeyword();
+      let keyword = this.getMemberKey();
       exp = {
         type: 'mem',
         key: keyword,
@@ -602,7 +569,7 @@ class ParseContext {
         throw this.error('Expected "["');
       }
 
-      let key = this.getKeyword();
+      let key = this.getMemberKey();
 
       this.getLineWS();
 
@@ -623,7 +590,7 @@ class ParseContext {
     return members;
   }
 
-  getKeyword() {
+  getMemberKey() {
     this._index++;
 
     let cc = this._source.charCodeAt(this._index);
@@ -632,14 +599,7 @@ class ParseContext {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      let id = this.getIdentifierWithSpace('/');
-      literal = {
-        type: 'id',
-        name: id.name
-      };
-      if (id.namespace) {
-        literal.ns = id.namespace;
-      }
+      literal = this.getKeyword();
     }
 
     if (this._source[this._index] !== ']') {
@@ -658,24 +618,16 @@ class ParseContext {
       return this.getPattern();
     } else if (cc === 36) { // $
       this._index++;
-      let id = this.getIdentifier();
       return {
         type: 'ext',
-        name: id.name
+        name: this.getIdentifier()
       };
     }
 
-    let id = this.getIdentifier('/');
-    
-    let name = id.name;
-    if (id.namespace) {
-      name = `${id.namespace}/${name}`;
-    }
-    let ent = {
+    return {
       type: 'ref',
-      name: name
+      name: this.getIdentifier()
     };
-    return ent;
   }
 
   getComment() {
