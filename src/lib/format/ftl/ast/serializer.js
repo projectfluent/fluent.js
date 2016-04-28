@@ -6,7 +6,7 @@ export default {
   serialize: function(body) {
     let string = '';
     for (const entry of body) {
-      string += this.dumpEntry(entry) + '\n';
+      string += this.dumpEntry(entry);
     }
     return string;
   },
@@ -14,11 +14,13 @@ export default {
   dumpEntry: function(entry) {
     switch (entry.type) {
       case 'Entity':
-        return this.dumpEntity(entry);
+        return this.dumpEntity(entry) + '\n';
       case 'Comment':
-        return this.dumpComment(entry) + '\n';
+        return this.dumpComment(entry) + '\n\n';
       case 'Section':
-        return this.dumpSection(entry);
+        return this.dumpSection(entry) + '\n';
+      default:
+        return '';
     }
   },
 
