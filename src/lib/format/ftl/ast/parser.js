@@ -196,7 +196,7 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    name += this._source.slice(start, this._index);
+    name += this._source.slice(start, this._index).trimRight();
 
     return new AST.Keyword(name, namespace);
   }
