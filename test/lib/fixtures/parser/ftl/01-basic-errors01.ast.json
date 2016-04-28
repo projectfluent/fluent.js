@@ -5,8 +5,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key1",
-        "namespace": null
+        "name": "key1"
       },
       "value": {
         "type": "Pattern",
@@ -30,8 +29,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key3",
-        "namespace": null
+        "name": "key3"
       },
       "value": {
         "type": "Pattern",
@@ -55,8 +53,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key4",
-        "namespace": null
+        "name": "key4"
       },
       "value": {
         "type": "Pattern",
@@ -80,8 +77,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key5",
-        "namespace": null
+        "name": "key5"
       },
       "value": {
         "type": "Pattern",
@@ -105,8 +101,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key6",
-        "namespace": null
+        "name": "key6"
       },
       "value": {
         "type": "Pattern",
@@ -130,8 +125,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key7",
-        "namespace": null
+        "name": "key7"
       },
       "value": {
         "type": "Pattern",
@@ -155,8 +149,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key8",
-        "namespace": null
+        "name": "key8"
       },
       "value": {
         "type": "Pattern",
@@ -180,8 +173,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key9",
-        "namespace": null
+        "name": "key9"
       },
       "value": {
         "type": "Pattern",
@@ -205,8 +197,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key10",
-        "namespace": null
+        "name": "key10"
       },
       "value": {
         "type": "Pattern",
@@ -230,8 +221,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key10",
-        "namespace": null
+        "name": "key10"
       },
       "value": {
         "type": "Pattern",
@@ -255,8 +245,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key11",
-        "namespace": null
+        "name": "key11"
       },
       "value": {
         "type": "Pattern",
@@ -280,8 +269,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key12",
-        "namespace": null
+        "name": "key12"
       },
       "value": {
         "type": "Pattern",
@@ -305,8 +293,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key14",
-        "namespace": null
+        "name": "key14"
       },
       "value": {
         "type": "Pattern",

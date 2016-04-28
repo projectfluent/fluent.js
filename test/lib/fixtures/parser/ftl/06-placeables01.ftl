@@ -43,11 +43,14 @@ key17 = { len(bar/baz[foo]) }
 
 key18 = { len(bar/baz[foo/fab]) }
 
-key19 = { len(bar:1) }
+key19 = { len(bar: 1) }
 
-key20 = { len(bar:-1) }
+key20 = { len(bar: -1) }
 
-key21 = { len(bar:$user) }
+key21 = { len(bar: $user) }
 
 key22 = { brand-name[masculine][nominative] }
 
+key23 = { number(style: "percent") }
+
+key24 = { number($num, style: "percent", foo: "bar") }

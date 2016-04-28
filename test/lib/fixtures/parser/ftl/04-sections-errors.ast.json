@@ -3,14 +3,17 @@
   "body": [
     {
       "type": "JunkEntry",
-      "content": "[section]]\n\n"
+      "content": "menu/open = Namespaces in entity ids aren't allowed\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "menu/open = Namespaces in entity ids aren't allowed\n\n[section]]\n\n"
     },
     {
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key1",
-        "namespace": null
+        "name": "key1"
       },
       "value": {
         "type": "Pattern",
@@ -34,8 +37,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key2",
-        "namespace": null
+        "name": "key2"
       },
       "value": {
         "type": "Pattern",
@@ -63,8 +65,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key4",
-        "namespace": null
+        "name": "key4"
       },
       "value": {
         "type": "Pattern",
@@ -88,8 +89,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key5",
-        "namespace": null
+        "name": "key5"
       },
       "value": {
         "type": "Pattern",
@@ -107,8 +107,8 @@
     },
     {
       "type": "Section",
-      "name": {
-        "type": "Identifier",
+      "key": {
+        "type": "Keyword",
         "name": "section",
         "namespace": null
       },
@@ -122,8 +122,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key6",
-        "namespace": null
+        "name": "key6"
       },
       "value": {
         "type": "Pattern",
@@ -147,8 +146,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key7",
-        "namespace": null
+        "name": "key7"
       },
       "value": {
         "type": "Pattern",
@@ -172,8 +170,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key8",
-        "namespace": null
+        "name": "key8"
       },
       "value": {
         "type": "Pattern",
@@ -197,8 +194,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key9",
-        "namespace": null
+        "name": "key9"
       },
       "value": {
         "type": "Pattern",

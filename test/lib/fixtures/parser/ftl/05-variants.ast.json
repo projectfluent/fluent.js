@@ -5,8 +5,7 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key1",
-        "namespace": null
+        "name": "key1"
       },
       "value": {
         "type": "Pattern",
@@ -23,7 +22,7 @@
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "gender",
             "namespace": null
           },
@@ -47,15 +46,14 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key2",
-        "namespace": null
+        "name": "key2"
       },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "gender",
             "namespace": null
           },
@@ -79,15 +77,14 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key3",
-        "namespace": null
+        "name": "key3"
       },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "masculine",
             "namespace": null
           },
@@ -107,7 +104,7 @@
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "feminine",
             "namespace": null
           },
@@ -131,15 +128,14 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key4",
-        "namespace": null
+        "name": "key4"
       },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "aria-label",
             "namespace": "html"
           },
@@ -163,15 +159,14 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key5",
-        "namespace": null
+        "name": "key5"
       },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "aria-label",
             "namespace": "html"
           },
@@ -191,7 +186,7 @@
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "loop",
             "namespace": "joomla"
           },
@@ -215,15 +210,14 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key5",
-        "namespace": null
+        "name": "key5"
       },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "m",
             "namespace": null
           },
@@ -245,8 +239,8 @@
     },
     {
       "type": "Section",
-      "name": {
-        "type": "Identifier",
+      "key": {
+        "type": "Keyword",
         "name": "section",
         "namespace": null
       },
@@ -256,15 +250,14 @@
       "type": "Entity",
       "id": {
         "type": "Identifier",
-        "name": "key6",
-        "namespace": null
+        "name": "key6"
       },
       "value": null,
       "traits": [
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "one",
             "namespace": null
           },
@@ -284,7 +277,7 @@
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "two",
             "namespace": null
           },
@@ -304,7 +297,7 @@
         {
           "type": "Member",
           "key": {
-            "type": "Identifier",
+            "type": "Keyword",
             "name": "three",
             "namespace": null
           },
@@ -315,6 +308,170 @@
               {
                 "type": "TextElement",
                 "value": "Three"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key7"
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "name": "a b",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "A",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "A"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key8"
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "name": "a b",
+            "namespace": "x"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "A",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "A"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key9"
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "name": "a",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "A",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "A"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "name": "a b",
+            "namespace": null
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "AB",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "AB"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        }
+      ],
+      "comment": null
+    },
+    {
+      "type": "Entity",
+      "id": {
+        "type": "Identifier",
+        "name": "key10"
+      },
+      "value": null,
+      "traits": [
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "name": "a",
+            "namespace": "x"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "XA",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "XA"
+              }
+            ],
+            "_quoteDelim": false
+          },
+          "default": false
+        },
+        {
+          "type": "Member",
+          "key": {
+            "type": "Keyword",
+            "name": "a b",
+            "namespace": "x"
+          },
+          "value": {
+            "type": "Pattern",
+            "source": "XAB",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "XAB"
               }
             ],
             "_quoteDelim": false

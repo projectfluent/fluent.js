@@ -4,7 +4,7 @@
       "traits": [
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "gender"
           },
           "val": "male"
@@ -16,7 +16,7 @@
       "traits": [
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "gender"
           },
           "val": "male"
@@ -27,7 +27,7 @@
       "traits": [
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "masculine"
           },
           "val": "Variant for masculine",
@@ -35,7 +35,7 @@
         },
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "feminine"
           },
           "val": "Variant for feminine"
@@ -46,7 +46,7 @@
       "traits": [
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "aria-label",
             "ns": "html"
           },
@@ -58,35 +58,96 @@
       "traits": [
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "m"
           },
           "val": "Foo"
         }
       ]
     },
-    "section/key6": {
+    "key6": {
       "traits": [
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "one"
           },
           "val": "One"
         },
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "two"
           },
           "val": "Two"
         },
         {
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "three"
           },
           "val": "Three"
+        }
+      ]
+    },
+    "key7": {
+      "traits": [
+        {
+          "key": {
+            "type": "kw",
+            "name": "a b"
+          },
+          "val": "A"
+        }
+      ]
+    },
+    "key8": {
+      "traits": [
+        {
+          "key": {
+            "type": "kw",
+            "name": "a b",
+            "ns": "x"
+          },
+          "val": "A"
+        }
+      ]
+    },
+    "key9": {
+      "traits": [
+        {
+          "key": {
+            "type": "kw",
+            "name": "a"
+          },
+          "val": "A"
+        },
+        {
+          "key": {
+            "type": "kw",
+            "name": "a b"
+          },
+          "val": "AB"
+        }
+      ]
+    },
+    "key10": {
+      "traits": [
+        {
+          "key": {
+            "type": "kw",
+            "name": "a",
+            "ns": "x"
+          },
+          "val": "XA"
+        },
+        {
+          "key": {
+            "type": "kw",
+            "name": "a b",
+            "ns": "x"
+          },
+          "val": "XAB"
         }
       ]
     }

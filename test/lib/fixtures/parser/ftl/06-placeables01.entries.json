@@ -18,14 +18,6 @@
         }
       ]
     ],
-    "key3": [
-      [
-        {
-          "type": "ref",
-          "name": "menu/open"
-        }
-      ]
-    ],
     "key4": [
       [
         {
@@ -37,14 +29,14 @@
           "vars": [
             {
               "key": {
-                "type": "id",
+                "type": "kw",
                 "name": "one"
               },
               "val": "One"
             },
             {
               "key": {
-                "type": "id",
+                "type": "kw",
                 "name": "two"
               },
               "val": "Two"
@@ -73,14 +65,14 @@
           "vars": [
             {
               "key": {
-                "type": "id",
+                "type": "kw",
                 "name": "one"
               },
               "val": "One"
             },
             {
               "key": {
-                "type": "id",
+                "type": "kw",
                 "name": "two"
               },
               "val": "Two"
@@ -118,14 +110,14 @@
           "vars": [
             {
               "key": {
-                "type": "id",
+                "type": "kw",
                 "name": "one"
               },
               "val": "One"
             },
             {
               "key": {
-                "type": "id",
+                "type": "kw",
                 "name": "two"
               },
               "val": "Two"
@@ -143,36 +135,6 @@
         {
           "type": "ext",
           "name": "user2"
-        }
-      ]
-    ],
-    "key8": [
-      [
-        {
-          "type": "call",
-          "name": {
-            "type": "blt",
-            "name": "LEN"
-          },
-          "args": [
-            {
-              "type": "ext",
-              "name": "u1"
-            },
-            {
-              "type": "ext",
-              "name": "u2"
-            },
-            {
-              "type": "ref",
-              "name": "open/brand-name"
-            },
-            {
-              "type": "kv",
-              "name": "type",
-              "val": "short"
-            }
-          ]
         }
       ]
     ],
@@ -202,21 +164,6 @@
               "val": "-1.00"
             }
           ]
-        }
-      ]
-    ],
-    "key10": [
-      [
-        {
-          "type": "mem",
-          "obj": {
-            "type": "ref",
-            "name": "menu/brand-name"
-          },
-          "key": {
-            "type": "id",
-            "name": "accusative"
-          }
         }
       ]
     ],
@@ -300,72 +247,6 @@
         }
       ]
     ],
-    "key16": [
-      [
-        {
-          "type": "call",
-          "name": {
-            "type": "blt",
-            "name": "len"
-          },
-          "args": [
-            {
-              "type": "ref",
-              "name": "bar/baz"
-            }
-          ]
-        }
-      ]
-    ],
-    "key17": [
-      [
-        {
-          "type": "call",
-          "name": {
-            "type": "blt",
-            "name": "len"
-          },
-          "args": [
-            {
-              "type": "mem",
-              "obj": {
-                "type": "ref",
-                "name": "bar/baz"
-              },
-              "key": {
-                "type": "id",
-                "name": "foo"
-              }
-            }
-          ]
-        }
-      ]
-    ],
-    "key18": [
-      [
-        {
-          "type": "call",
-          "name": {
-            "type": "blt",
-            "name": "len"
-          },
-          "args": [
-            {
-              "type": "mem",
-              "obj": {
-                "type": "ref",
-                "name": "bar/baz"
-              },
-              "key": {
-                "type": "id",
-                "name": "fab",
-                "ns": "foo"
-              }
-            }
-          ]
-        }
-      ]
-    ],
     "key19": [
       [
         {
@@ -440,14 +321,59 @@
               "name": "brand-name"
             },
             "key": {
-              "type": "id",
+              "type": "kw",
               "name": "masculine"
             }
           },
           "key": {
-            "type": "id",
+            "type": "kw",
             "name": "nominative"
           }
+        }
+      ]
+    ],
+    "key23": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "number"
+          },
+          "args": [
+            {
+              "type": "kv",
+              "name": "style",
+              "val": "percent"
+            }
+          ]
+        }
+      ]
+    ],
+    "key24": [
+      [
+        {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "number"
+          },
+          "args": [
+            {
+              "type": "ext",
+              "name": "num"
+            },
+            {
+              "type": "kv",
+              "name": "style",
+              "val": "percent"
+            },
+            {
+              "type": "kv",
+              "name": "foo",
+              "val": "bar"
+            }
+          ]
         }
       ]
     ]
