@@ -25,7 +25,7 @@ function testSerialize(path1) {
     let out = FTLSerializer.serialize(ftl.body);
     let ftl2 = parse(out);
 
-    assert.deepEqual(ftl.body, ftl2.body, `Serialized output for ${path1} should be the same`);
+    assert.deepEqual(ftl2.body, ftl.body, `Serialized output for ${path1} should be the same`);
   });
 }
 
