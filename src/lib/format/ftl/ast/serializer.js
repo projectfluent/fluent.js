@@ -128,8 +128,8 @@ export default {
 
   dumpCallArgs: function(args) {
     return args.map(arg => {
-      if (arg instanceof AST.KeyValueArg) {
-        return `${arg.name}:${this.dumpExpression(arg.value)}`;
+      if (arg.type === 'KeyValueArg') {
+        return `${arg.name}: ${this.dumpExpression(arg.value)}`;
       }
       return this.dumpExpression(arg);
     }).join(', ');

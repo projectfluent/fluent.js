@@ -15,73 +15,65 @@ function transformEntity(entity) {
 }
 
 function transformExpression(exp) {
-  if (exp instanceof AST.EntityReference) {
-    return {
-      type: 'ref',
-      name: exp.name
-    };
-  }
-  if (exp instanceof AST.BuiltinReference) {
-    return {
-      type: 'blt',
-      name: exp.name
-    };
-  }
-  if (exp instanceof AST.ExternalArgument) {
-    return {
-      type: 'ext',
-      name: exp.name
-    };
-  }
-  if (exp instanceof AST.Pattern) {
-    return transformPattern(exp);
-  }
-  if (exp instanceof AST.Number) {
-    return {
-      type: 'num',
-      val: exp.value
-    };
-  }
-  if (exp instanceof AST.Keyword) {
-    const ret = {
-      type: 'kw',
-      name: exp.name
-    };
+  switch (exp.type) {
+    case 'EntityReference':
+      return {
+        type: 'ref',
+        name: exp.name
+      };
+    case 'BuiltinReference':
+      return {
+        type: 'blt',
+        name: exp.name
+      };
+    case 'ExternalArgument':
+      return {
+        type: 'ext',
+        name: exp.name
+      };
+    case 'Pattern':
+      return transformPattern(exp);
+    case 'Number':
+      return {
+        type: 'num',
+        val: exp.value
+      };
+    case 'Keyword':
+      const kw = {
+        type: 'kw',
+        name: exp.name
+      };
 
-    return exp.namespace ?
-      Object.assign(ret, { ns: exp.namespace }) :
-      ret;
+      return exp.namespace ?
+        Object.assign(kw, { ns: exp.namespace }) :
+        kw;
+    case 'KeyValueArg':
+      return {
+        type: 'kv',
+        name: exp.name,
+        val: transformExpression(exp.value)
+      };
+    case 'SelectExpression':
+      return {
+        type: 'sel',
+        exp: transformExpression(exp.expression),
+        vars: exp.variants.map(transformMember)
+      };
+    case 'MemberExpression':
+      return {
+        type: 'mem',
+        obj: transformExpression(exp.object),
+        key: transformExpression(exp.keyword)
+      };
+    case 'CallExpression':
+      return {
+        type: 'call',
+        name: transformExpression(exp.callee),
+        args: exp.args.map(transformExpression)
+      };
+    default:
+      return exp;
   }
-  if (exp instanceof AST.KeyValueArg) {
-    return {
-      type: 'kv',
-      name: exp.name,
-      val: transformExpression(exp.value)
-    };
-  }
-
-  if (exp instanceof AST.SelectExpression) {
-    return {
-      type: 'sel',
-      exp: transformExpression(exp.expression),
-      vars: exp.variants.map(transformMember)
-    };
-  }
-  if (exp instanceof AST.MemberExpression) {
-    return {
-      type: 'mem',
-      obj: transformExpression(exp.object),
-      key: transformExpression(exp.keyword)
-    };
-  }
-  if (exp instanceof AST.CallExpression) {
-    return {
-      type: 'call',
-      name: transformExpression(exp.callee),
-      args: exp.args.map(transformExpression)
-    };
-  }
-  return exp;
 }
 
 function transformPattern(pattern) {
@@ -90,15 +82,15 @@ function transformPattern(pattern) {
   }
 
   if (pattern.elements.length === 1 &&
-      pattern.elements[0] instanceof AST.TextElement) {
+      pattern.elements[0].type === 'TextElement') {
     return pattern.source;
   }
 
   return pattern.elements.map(chunk => {
-    if (chunk instanceof AST.TextElement) {
+    if (chunk.type === 'TextElement') {
       return chunk.value;
     }
-    if (chunk instanceof AST.Placeable) {
+    if (chunk.type === 'Placeable') {
       return chunk.expressions.map(transformExpression);
     }
     return chunk;
