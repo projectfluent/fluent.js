@@ -24,9 +24,8 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const ast = JSON.parse(data.toString());
-
-  const out = lib.serialize(program.output, program.input, ast);
+  const resource = JSON.parse(data.toString());
+  const out = lib.serialize(program.output, program.input, resource);
   console.log(out);
 }
 

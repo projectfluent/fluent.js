@@ -5,8 +5,7 @@ import path from 'path';
 
 import assert from 'assert';
 import FTLParser from '../../../../src/lib/format/ftl/ast/parser';
-import { default as RuntimeParser }
-  from '../../../../src/lib/format/ftl/entries/parser';
+import RuntimeParser from '../../../../src/lib/format/ftl/entries/parser';
 import { createEntriesFromAST }
   from '../../../../src/lib/format/ftl/entries/transformer';
 
@@ -26,8 +25,7 @@ function compareASTs(path1, path2) {
     readFile(path1),
     readFile(path2)
   ]).then(([source1, source2]) => {
-    let ftl = parse(source1);
-    ftl._errors = [];
+    const [resource] = parse(source1);
     let json = {};
     try {
       json = JSON.parse(source2);
@@ -35,7 +33,7 @@ function compareASTs(path1, path2) {
       throw new Error('JSON parsing error in ' + path2 + '\n\n' + e);
     }
 
-    assert.deepEqual(ftl, json, 'Error in: ' + path1);
+    assert.deepEqual(resource, json, 'Error in: ' + path1);
 
   });
 }
@@ -45,9 +43,8 @@ function compareEntries(path1, path2) {
     readFile(path1),
     readFile(path2)
   ]).then(([source1, source2]) => {
-    let ftl = parse(source1);
-    let entries = createEntriesFromAST(ftl);
-    entries._errors = [];
+    const result = parse(source1);
+    const [entries] = createEntriesFromAST(result);
     let json = {};
     try {
       json = JSON.parse(source2);
@@ -64,17 +61,15 @@ function compareTransformerToEntries(path) {
   return Promise.all([
     readFile(path),
   ]).then(([source]) => {
-    let ftl = parse(source);
-    let entries = createEntriesFromAST(ftl);
-    entries._errors = [];
+    const result = parse(source);
+    const [entries] = createEntriesFromAST(result);
 
     let entries2 = {};
     try {
-      entries2 = parseEntries(source);
+      entries2 = parseEntries(source)[0];
     } catch (e) {
       throw new Error('Error parsing ' + path + '\n\n' + e);
     }
-    entries2._errors = [];
 
     assert.deepEqual(entries, entries2, 'Error in: ' + path);
 
@@ -142,7 +137,7 @@ describe('Entries Parser', function() {
   });
 
   it('entity with no eol work', function() {
-    const ret = parseEntries('key=value');
-    assert.equal(Object.keys(ret.entries).length, 1);
+    const [entries] = parseEntries('key=value');
+    assert.equal(Object.keys(entries).length, 1);
   });
 });

@@ -29,21 +29,19 @@ fs.readdir(basePath, (err, paths) => {
         return console.log(err);
       }
       
-      let ast = lib.parse('ftl', 'ast', data.toString());
-      ast._errors = [];
-      let jsonOutput = JSON.stringify(ast, null, 2);
+      let [resource, errors] = lib.parse('ftl', 'ast', data.toString());
+      let jsonOutput = JSON.stringify(resource, null, 2);
 
       let outputPath = fullPath.slice(0, -4) + '.ast.json';
       fs.writeFile(outputPath, jsonOutput, function(err) {
-        if(err) {
+        if (err) {
           return console.log(err);
         }
 
         console.log(`${outputPath} saved.`);
       });
 
-      let entries = lib.transform('ftl', 'entries', ast);
-      entries._errors = [];
+      let [entries] = lib.transform('ftl', 'entries', [resource]);
 
       let jsonEntriesOutput = JSON.stringify(entries, null, 2);
 

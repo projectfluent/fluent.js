@@ -16,7 +16,7 @@ class ParseContext {
 
   getResource() {
     const entries = {};
-    let errors = [];
+    const errors = [];
 
     this.getWS();
     while (this._index < this._length) {
@@ -51,10 +51,7 @@ class ParseContext {
       this.getWS();
     }
 
-    return {
-      entries,
-      _errors: errors
-    };
+    return [entries, errors];
   }
 
   getEntry() {

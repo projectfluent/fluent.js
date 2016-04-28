@@ -17,7 +17,7 @@ class ParseContext {
 
   getResource() {
     const resource = new AST.Resource();
-    resource._errors = [];
+    const errors = [];
 
     this.getWS();
     while (this._index < this._length) {
@@ -26,7 +26,7 @@ class ParseContext {
         this._lastGoodEntryEnd = this._index;
       } catch (e) {
         if (e instanceof L10nError) {
-          resource._errors.push(e);
+          errors.push(e);
           resource.body.push(this.getJunkEntry());
         } else {
           throw e;
@@ -35,7 +35,7 @@ class ParseContext {
       this.getWS();
     }
 
-    return resource;
+    return [resource, errors];
   }
 
   getEntry() {

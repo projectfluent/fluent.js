@@ -37,8 +37,7 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const parsed = parse(fileformat, data.toString());
-  const result = parsed.body || parsed.entries;
+  const [result, errors] = parse(fileformat, data.toString());
 
   if (program.raw) {
     console.log(JSON.stringify(result, null, 2));
@@ -47,10 +46,9 @@ function print(fileformat, err, data) {
       keysColor: 'cyan',
       dashColor: 'cyan',
     }));
-  }
-
-  if (!program.raw && parsed._errors) {
-    printErrors(parsed._errors);
+    if (errors.length) {
+      printErrors(errors);
+    }
   }
 }
 

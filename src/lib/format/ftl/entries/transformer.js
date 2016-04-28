@@ -112,14 +112,14 @@ function transformMember(member) {
 }
 
 function toEntries(entries, entry) {
-  return Object.assign(entries, {
+  return Object.assign({}, entries, {
     [entry.id.name]: transformEntity(entry)
   });
 }
 
-export function createEntriesFromAST({body, _errors}) {
-  const entries = body
+export function createEntriesFromAST([resource, errors]) {
+  const entries = resource.body
     .filter(entry => entry.type === 'Entity')
     .reduce(toEntries, {});
-  return {entries, _errors};
+  return [entries, errors];
 }

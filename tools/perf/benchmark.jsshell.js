@@ -35,14 +35,13 @@ function micro(time) {
 var times = {};
 
 times.ftlParseStart = dateNow();
-var ast = L20n.FTLASTParser.parseResource(ftlCode);
+var [resource] = L20n.FTLASTParser.parseResource(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var entries = L20n.FTLEntriesParser.parseResource(ftlCode);
+var [entries] = L20n.FTLEntriesParser.parseResource(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
-var entries = L20n.createEntriesFromAST(ast).entries;
 var ctx = new L20n.MockContext(entries);
 
 times.format = dateNow();

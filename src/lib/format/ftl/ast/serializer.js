@@ -3,7 +3,7 @@ import AST from './ast';
 import { L10nError } from '../../../errors';
 
 export default {
-  serialize: function(body) {
+  serialize: function({body}) {
     let string = '';
     for (const entry of body) {
       string += this.dumpEntry(entry);
@@ -19,8 +19,10 @@ export default {
         return this.dumpComment(entry) + '\n\n';
       case 'Section':
         return this.dumpSection(entry) + '\n';
-      default:
+      case 'JunkEntry':
         return '';
+      default:
+        throw new L10nError('Unknown entry type.');
     }
   },
 
