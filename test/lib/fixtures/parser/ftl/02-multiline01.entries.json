@@ -1,8 +1,5 @@
 {
-  "entries": {
-    "key1": "This is a new line",
-    "key4": "<p>\n  So\n    Many\n  Lines\n</p>",
-    "key5": "<p>\nFoo\n</p>"
-  },
-  "_errors": []
+  "key1": "This is a new line",
+  "key4": "<p>\n  So\n    Many\n  Lines\n</p>",
+  "key5": "<p>\nFoo\n</p>"
 }
