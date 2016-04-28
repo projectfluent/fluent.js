@@ -22,7 +22,7 @@ function testSerialize(path1) {
     readFile(path1),
   ]).then(([source1]) => {
     let ftl = parse(source1);
-    let out = FTLSerializer.serialize(ftl);
+    let out = FTLSerializer.serialize(ftl.body);
     let ftl2 = parse(out);
 
     assert.deepEqual(ftl.body, ftl2.body, `Serialized output for ${path1} should be the same`);
