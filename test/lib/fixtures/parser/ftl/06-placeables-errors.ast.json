@@ -147,6 +147,30 @@
     },
     {
       "type": "JunkEntry",
+      "content": "key29 = { menu/open }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key30 = { LEN($u1, $u2, open/brand-name, type:\"short\") }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key31 = { menu/brand-name[accusative] }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key32 = { len(bar/baz) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key33 = { len(bar/baz[foo]) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
+      "content": "key34 = { len(bar/baz[foo/fab]) }\n\n"
+    },
+    {
+      "type": "JunkEntry",
       "content": "keyLast = {\n"
     }
   ]

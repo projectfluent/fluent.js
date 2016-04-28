@@ -74,4 +74,16 @@ key27 = { $len -> [foo] Value }
 
 key28 = { $len -> *[foo] Value }
 
+key29 = { menu/open }
+
+key30 = { LEN($u1, $u2, open/brand-name, type:"short") }
+
+key31 = { menu/brand-name[accusative] }
+
+key32 = { len(bar/baz) }
+
+key33 = { len(bar/baz[foo]) }
+
+key34 = { len(bar/baz[foo/fab]) }
+
 keyLast = {

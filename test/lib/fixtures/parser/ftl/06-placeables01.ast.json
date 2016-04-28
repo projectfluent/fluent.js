@@ -60,10 +60,6 @@
       "comment": null
     },
     {
-      "type": "JunkEntry",
-      "content": "key3 = { menu/open }\n\n"
-    },
-    {
       "type": "Entity",
       "id": {
         "type": "Identifier",
@@ -330,10 +326,6 @@
       "comment": null
     },
     {
-      "type": "JunkEntry",
-      "content": "key8 = { LEN($u1, $u2, open/brand-name, type:\"short\") }\n\n"
-    },
-    {
       "type": "Entity",
       "id": {
         "type": "Identifier",
@@ -378,10 +370,6 @@
       },
       "traits": [],
       "comment": null
-    },
-    {
-      "type": "JunkEntry",
-      "content": "key10 = { menu/brand-name[accusative] }\n\n"
     },
     {
       "type": "Entity",
@@ -547,18 +535,6 @@
       },
       "traits": [],
       "comment": null
-    },
-    {
-      "type": "JunkEntry",
-      "content": "key16 = { len(bar/baz) }\n\n"
-    },
-    {
-      "type": "JunkEntry",
-      "content": "key17 = { len(bar/baz[foo]) }\n\n"
-    },
-    {
-      "type": "JunkEntry",
-      "content": "key18 = { len(bar/baz[foo/fab]) }\n\n"
     },
     {
       "type": "Entity",
