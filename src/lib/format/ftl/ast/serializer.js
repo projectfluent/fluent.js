@@ -49,7 +49,7 @@ export default {
     if (section.comment) {
       str += this.dumpComment(section.comment) + '\n';
     }
-    return str + `[[ ${this.dumpIdentifier(section.name)} ]]`;
+    return str + `[[ ${this.dumpKeyword(section.key)} ]]`;
   },
 
   dumpIdentifier: function(id) {

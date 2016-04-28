@@ -26,10 +26,10 @@ class Identifier extends Node {
 }
 
 class Section extends Node {
-  constructor(name, comment = null) {
+  constructor(key, comment = null) {
     super();
     this.type = 'Section';
-    this.name = name;
+    this.key = key;
     this.comment = comment;
   }
 }

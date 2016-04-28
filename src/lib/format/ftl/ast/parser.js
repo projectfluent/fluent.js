@@ -73,7 +73,7 @@ class ParseContext {
 
     this.getLineWS();
 
-    const name = this.getIdentifier().name;
+    const key = this.getKeyword();
 
     this.getLineWS();
 
@@ -84,7 +84,7 @@ class ParseContext {
 
     this._index += 2;
 
-    return new AST.Section(name, comment);
+    return new AST.Section(key, comment);
   }
 
   getEntity(comment = null) {

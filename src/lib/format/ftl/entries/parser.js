@@ -12,7 +12,6 @@ class ParseContext {
     this._length = string.length;
 
     this._lastGoodEntryEnd = 0;
-    this._section = null;
   }
 
   getResource() {
@@ -89,9 +88,7 @@ class ParseContext {
     this._index += 1;
 
     this.getLineWS();
-
-    const id = this.getIdentifier();
-
+    this.getKeyword();
     this.getLineWS();
 
     if (this._source[this._index] !== ']' ||
@@ -101,12 +98,8 @@ class ParseContext {
 
     this._index += 2;
 
-    this._section = id;
-
-    return {
-      type: 'section',
-      id,
-    };
+    // sections are ignored in the runtime ast
+    return undefined;
   }
 
   getEntity(comment = null) {
@@ -141,7 +134,8 @@ class ParseContext {
       members = this.getMembers();
     } else if (value === null) {
       throw this.error(
-  `Expected a value (like: " = value") or a trait (like: "[key] value")`);
+        `Expected a value (like: " = value") or a trait (like: "[key] value")`
+      );
     }
 
     return {
