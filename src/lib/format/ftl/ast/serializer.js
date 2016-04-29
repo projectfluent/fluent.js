@@ -1,5 +1,3 @@
-import AST from './ast';
-
 import { L10nError } from '../../../errors';
 
 export default {
@@ -35,11 +33,11 @@ export default {
     if (entity.comment) {
       str += this.dumpComment(entity.comment) + '\n';
     }
-    let id = this.dumpIdentifier(entity.id);
-    let value = this.dumpPattern(entity.value);
+    const id = this.dumpIdentifier(entity.id);
+    const value = this.dumpPattern(entity.value);
 
     if (entity.traits.length) {
-      let traits = this.dumpMembers(entity.traits, 2);
+      const traits = this.dumpMembers(entity.traits, 2);
       str += `${id} = ${value}\n${traits}`;
     } else {
       str += `${id} = ${value}`;
@@ -99,7 +97,7 @@ export default {
   },
 
   dumpPlaceable: function(placeable) {
-    let source = placeable.expressions.map(exp => {
+    const source = placeable.expressions.map(exp => {
       return this.dumpExpression(exp);
     }).join(', ');
 
@@ -118,12 +116,12 @@ export default {
       case 'ExternalArgument':
         return `$${this.dumpIdentifier(exp)}`;
       case 'SelectExpression':
-        let sel = this.dumpExpression(exp.expression);
-        let variants = this.dumpMembers(exp.variants, 2);
+        const sel = this.dumpExpression(exp.expression);
+        const variants = this.dumpMembers(exp.variants, 2);
         return `${sel} ->\n${variants}\n`;
       case 'CallExpression':
-        let id = this.dumpExpression(exp.callee);
-        let args = this.dumpCallArgs(exp.args);
+        const id = this.dumpExpression(exp.callee);
+        const args = this.dumpCallArgs(exp.args);
         return `${id}(${args})`;
       case 'Pattern':
         return this.dumpPattern(exp);
@@ -132,8 +130,8 @@ export default {
       case 'Keyword':
         return this.dumpKeyword(exp);
       case 'MemberExpression':
-        let obj = this.dumpExpression(exp.object);
-        let key = this.dumpExpression(exp.keyword);
+        const obj = this.dumpExpression(exp.object);
+        const key = this.dumpExpression(exp.keyword);
         return `${obj}[${key}]`;
     }
   },
@@ -149,9 +147,9 @@ export default {
 
   dumpMembers: function(members, indent) {
     return members.map(member => {
-      let key = this.dumpExpression(member.key);
-      let value = this.dumpPattern(member.value);
-      let prefix = member.default ?
+      const key = this.dumpExpression(member.key);
+      const value = this.dumpPattern(member.value);
+      const prefix = member.default ?
         `${' '.repeat(indent - 1)}*` :
         `${' '.repeat(indent)}`;
       return `${prefix}[${key}] ${value}`;

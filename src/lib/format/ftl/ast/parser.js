@@ -32,7 +32,7 @@ class ParseContext {
     if (this._source[this._index] === '#') {
       comment = this.getComment();
 
-      let cc = this._source.charCodeAt(this._index);
+      const cc = this._source.charCodeAt(this._index);
       if (!this._isIdentifierStart(cc)) {
         resource.comment = comment;
         comment = null;
@@ -109,7 +109,7 @@ class ParseContext {
   }
 
   getEntity(comment = null) {
-    let id = this.getIdentifier();
+    const id = this.getIdentifier();
 
     let members = [];
     let value = null;
@@ -221,7 +221,7 @@ class ParseContext {
   getPattern() {
     let buffer = '';
     let source = '';
-    let content = [];
+    const content = [];
     let quoteDelimited = null;
     let firstLine = true;
 
@@ -265,7 +265,7 @@ class ParseContext {
         ch = this._source[this._index];
         continue;
       } else if (ch === '\\') {
-        let ch2 = this._source[this._index + 1];
+        const ch2 = this._source[this._index + 1];
         if ((quoteDelimited && ch2 === '"') ||
             ch2 === '{') {
           ch = ch2;
@@ -281,7 +281,7 @@ class ParseContext {
         }
         source += buffer;
         buffer = ''
-        let start = this._index;
+        const start = this._index;
         content.push(this.getPlaceable());
         source += this._source.substring(start, this._index);
         ch = this._source[this._index];
@@ -312,7 +312,7 @@ class ParseContext {
       }
     }
 
-    let pattern = new AST.Pattern(source, content);
+    const pattern = new AST.Pattern(source, content);
     pattern._quoteDelim = quoteDelimited !== null;
     return pattern;
   }
@@ -320,12 +320,12 @@ class ParseContext {
   getPlaceable() {
     this._index++;
 
-    let expressions = [];
+    const expressions = [];
 
     this.getLineWS();
 
     while (this._index < this._length) {
-      let start = this._index;
+      const start = this._index;
       try {
         expressions.push(this.getPlaceableExpression());
       } catch (e) {
@@ -347,7 +347,7 @@ class ParseContext {
   }
 
   getPlaceableExpression() {
-    let selector = this.getCallExpression();
+    const selector = this.getCallExpression();
     let members = null;
 
     this.getWS();
@@ -390,7 +390,7 @@ class ParseContext {
 
     this._index++;
 
-    let args = this.getCallArgs();
+    const args = this.getCallArgs();
 
     this._index++;
 
@@ -402,7 +402,7 @@ class ParseContext {
   }
 
   getCallArgs() {
-    let args = [];
+    const args = [];
 
     if (this._source[this._index] === ')') {
       return args;
@@ -411,7 +411,7 @@ class ParseContext {
     while (this._index < this._length) {
       this.getLineWS();
 
-      let exp = this.getCallExpression();
+      const exp = this.getCallExpression();
 
       if (!(exp instanceof AST.EntityReference)) {
         args.push(exp);
@@ -422,7 +422,7 @@ class ParseContext {
           this._index++;
           this.getLineWS();
 
-          let val = this.getCallExpression();
+          const val = this.getCallExpression();
 
           if (val instanceof AST.EntityReference ||
               val instanceof AST.MemberExpression) {
@@ -489,7 +489,7 @@ class ParseContext {
     let exp = this.getLiteral();
 
     while (this._source[this._index] === '[') {
-      let keyword = this.getMemberKey();
+      const keyword = this.getMemberKey();
       exp = new AST.MemberExpression(exp, keyword);
     }
 
@@ -515,13 +515,13 @@ class ParseContext {
         throw this.error('Expected "["');
       }
 
-      let key = this.getMemberKey();
+      const key = this.getMemberKey();
 
       this.getLineWS();
 
-      let value = this.getPattern();
+      const value = this.getPattern();
 
-      let member = new AST.Member(key, value, def);
+      const member = new AST.Member(key, value, def);
 
       members.push(member);
 
@@ -534,7 +534,7 @@ class ParseContext {
   getMemberKey() {
     this._index++;
 
-    let cc = this._source.charCodeAt(this._index);
+    const cc = this._source.charCodeAt(this._index);
     let literal;
 
     if ((cc >= 48 && cc <= 57) || cc === 45) {
@@ -552,18 +552,18 @@ class ParseContext {
   }
 
   getLiteral() {
-    let cc = this._source.charCodeAt(this._index);
+    const cc = this._source.charCodeAt(this._index);
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       return this.getNumber();
     } else if (cc === 34) { // "
       return this.getPattern();
     } else if (cc === 36) { // $
       this._index++;
-      let name = this.getIdentifier().name;
+      const name = this.getIdentifier().name;
       return new AST.ExternalArgument(name);
     }
 
-    let name = this.getIdentifier().name;
+    const name = this.getIdentifier().name;
     return new AST.EntityReference(name);
   }
 
@@ -605,8 +605,6 @@ class ParseContext {
   }
 
   error(message, start=null) {
-    let colors = require('colors/safe');
-
     const pos = this._index;
 
     if (start === null) {
@@ -614,14 +612,14 @@ class ParseContext {
     }
     start = this._findEntityStart(start);
 
-    let context = this._source.slice(start, pos + 10);
+    const context = this._source.slice(start, pos + 10);
 
     const msg = '\n\n  ' + message +
       '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
     const err = new L10nError(msg);
 
-    let row = this._source.slice(0, pos).split('\n').length;
-    let col = pos - this._source.lastIndexOf('\n', pos - 1);
+    const row = this._source.slice(0, pos).split('\n').length;
+    const col = pos - this._source.lastIndexOf('\n', pos - 1);
     err._pos = {start: pos, end: undefined, col: col, row: row};
     err.offset = pos - start;
     err.description = message;
@@ -660,7 +658,7 @@ class ParseContext {
         start = 0;
         break;
       }
-      let cc = this._source.charCodeAt(start + 1);
+      const cc = this._source.charCodeAt(start + 1);
 
       if (this._isIdentifierStart(cc)) {
         start++;
@@ -677,7 +675,7 @@ class ParseContext {
     while (true) {
       if (start === 0 ||
           this._source[start - 1] === '\n') {
-        let cc = this._source.charCodeAt(start);
+        const cc = this._source.charCodeAt(start);
 
         if (this._isIdentifierStart(cc) || cc === 35 || cc === 91) {
           break;

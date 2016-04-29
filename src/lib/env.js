@@ -50,7 +50,6 @@ export class Env {
       return data;
     }
 
-    const emitAndAmend = (type, err) => this.emit(type, amendError(lang, err));
     return parser.parseResource(data);
   }
 

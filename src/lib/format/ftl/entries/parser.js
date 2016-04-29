@@ -21,7 +21,7 @@ class ParseContext {
     this.getWS();
     while (this._index < this._length) {
       try {
-        let entry = this.getEntry();
+        const entry = this.getEntry();
         if (!entry) {
           this.getWS();
           continue;
@@ -76,7 +76,7 @@ class ParseContext {
     }
   }
 
-  getSection(comment = null) {
+  getSection() {
     this._index += 1;
     if (this._source[this._index] !== '[') {
       throw this.error('Expected "[[" to open a section');
@@ -99,7 +99,7 @@ class ParseContext {
     return undefined;
   }
 
-  getEntity(comment = null) {
+  getEntity() {
     const id = this.getIdentifier();
 
     let traits = null;
@@ -221,7 +221,7 @@ class ParseContext {
   }
 
   getPattern() {
-    let start = this._index;
+    const start = this._index;
     if (this._source[start] === '"') {
       return this.getComplexPattern();
     }
@@ -231,7 +231,7 @@ class ParseContext {
       eol = this._length;
     }
 
-    let line = this._source.slice(start, eol);
+    const line = this._source.slice(start, eol);
 
     if (line.indexOf('{') !== -1) {
       return this.getComplexPattern();
@@ -251,7 +251,7 @@ class ParseContext {
 
   getComplexPattern() {
     let buffer = '';
-    let content = [];
+    const content = [];
     let quoteDelimited = null;
     let firstLine = true;
 
@@ -295,7 +295,7 @@ class ParseContext {
         ch = this._source[this._index];
         continue;
       } else if (ch === '\\') {
-        let ch2 = this._source[this._index + 1];
+        const ch2 = this._source[this._index + 1];
         if ((quoteDelimited && ch2 === '"') ||
             ch2 === '{') {
           ch = ch2;
@@ -310,7 +310,6 @@ class ParseContext {
           content.push(buffer);
         }
         buffer = ''
-        let start = this._index;
         content.push(this.getPlaceable());
         ch = this._source[this._index];
         continue;
@@ -350,12 +349,12 @@ class ParseContext {
   getPlaceable() {
     this._index++;
 
-    let expressions = [];
+    const expressions = [];
 
     this.getLineWS();
 
     while (this._index < this._length) {
-      let start = this._index;
+      const start = this._index;
       try {
         expressions.push(this.getPlaceableExpression());
       } catch (e) {
@@ -377,7 +376,7 @@ class ParseContext {
   }
 
   getPlaceableExpression() {
-    let selector = this.getCallExpression();
+    const selector = this.getCallExpression();
     let members = null;
 
     this.getWS();
@@ -416,7 +415,7 @@ class ParseContext {
   }
 
   getCallExpression() {
-    let exp = this.getMemberExpression();
+    const exp = this.getMemberExpression();
 
     if (this._source[this._index] !== '(') {
       return exp;
@@ -424,7 +423,7 @@ class ParseContext {
 
     this._index++;
 
-    let args = this.getCallArgs();
+    const args = this.getCallArgs();
 
     this._index++;
 
@@ -440,7 +439,7 @@ class ParseContext {
   }
 
   getCallArgs() {
-    let args = [];
+    const args = [];
 
     if (this._source[this._index] === ')') {
       return args;
@@ -449,7 +448,7 @@ class ParseContext {
     while (this._index < this._length) {
       this.getLineWS();
 
-      let exp = this.getCallExpression();
+      const exp = this.getCallExpression();
 
       if (exp.type !== 'ref' ||
          exp.namespace !== undefined) {
@@ -461,7 +460,7 @@ class ParseContext {
           this._index++;
           this.getLineWS();
 
-          let val = this.getCallExpression();
+          const val = this.getCallExpression();
 
           if (val.type === 'ref' ||
               val.type === 'member') {
@@ -535,7 +534,7 @@ class ParseContext {
     let exp = this.getLiteral();
 
     while (this._source[this._index] === '[') {
-      let keyword = this.getMemberKey();
+      const keyword = this.getMemberKey();
       exp = {
         type: 'mem',
         key: keyword,
@@ -565,13 +564,13 @@ class ParseContext {
         throw this.error('Expected "["');
       }
 
-      let key = this.getMemberKey();
+      const key = this.getMemberKey();
 
       this.getLineWS();
 
-      let value = this.getPattern();
+      const value = this.getPattern();
 
-      let member = {
+      const member = {
         key,
         val: value
       };
@@ -589,7 +588,7 @@ class ParseContext {
   getMemberKey() {
     this._index++;
 
-    let cc = this._source.charCodeAt(this._index);
+    const cc = this._source.charCodeAt(this._index);
     let literal;
 
     if ((cc >= 48 && cc <= 57) || cc === 45) {
@@ -607,7 +606,7 @@ class ParseContext {
   }
 
   getLiteral() {
-    let cc = this._source.charCodeAt(this._index);
+    const cc = this._source.charCodeAt(this._index);
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       return this.getNumber();
     } else if (cc === 34) { // "
@@ -647,8 +646,6 @@ class ParseContext {
   }
 
   error(message, start=null) {
-    let colors = require('colors/safe');
-
     const pos = this._index;
 
     if (start === null) {
@@ -656,14 +653,14 @@ class ParseContext {
     }
     start = this._findEntityStart(start);
 
-    let context = this._source.slice(start, pos + 10);
+    const context = this._source.slice(start, pos + 10);
 
     const msg = '\n\n  ' + message +
       '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
     const err = new L10nError(msg);
 
-    let row = this._source.slice(0, pos).split('\n').length;
-    let col = pos - this._source.lastIndexOf('\n', pos - 1);
+    const row = this._source.slice(0, pos).split('\n').length;
+    const col = pos - this._source.lastIndexOf('\n', pos - 1);
     err._pos = {start: pos, end: undefined, col: col, row: row};
     err.offset = pos - start;
     err.description = message;
@@ -698,7 +695,7 @@ class ParseContext {
         start = 0;
         break;
       }
-      let cc = this._source.charCodeAt(start + 1);
+      const cc = this._source.charCodeAt(start + 1);
 
       if ((cc >= 97 && cc <= 122) || // a-z
           (cc >= 65 && cc <= 90) ||  // A-Z
@@ -717,7 +714,7 @@ class ParseContext {
     while (true) {
       if (start === 0 ||
           this._source[start - 1] === '\n') {
-        let cc = this._source.charCodeAt(start);
+        const cc = this._source.charCodeAt(start);
 
         if ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) ||  // A-Z

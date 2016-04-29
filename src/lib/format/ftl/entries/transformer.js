@@ -1,5 +1,3 @@
-import { default as AST } from '../ast/ast';
-
 function transformEntity(entity) {
   if (entity.traits.length === 0) {
     return transformPattern(entity.value);
@@ -98,7 +96,6 @@ function transformPattern(pattern) {
 }
 
 function transformMember(member) {
-  const type = member.key.type;
   const ret = {
     key: transformExpression(member.key),
     val: transformPattern(member.value),
@@ -124,6 +121,6 @@ function getEntitiesFromBody(body) {
 }
 
 export function createEntriesFromAST([resource, errors]) {
-  const entities = getEntitiesFromBody(resource.body);;
+  const entities = getEntitiesFromBody(resource.body);
   return [entities, errors];
 }
