@@ -3,10 +3,11 @@ class Node {
 }
 
 class Resource extends Node {
-  constructor() {
+  constructor(body = [], comment = null) {
     super();
     this.type = 'Resource';
-    this.body = [];
+    this.body = body;
+    this.comment = comment;
   }
 }
 
@@ -26,10 +27,11 @@ class Identifier extends Node {
 }
 
 class Section extends Node {
-  constructor(key, comment = null) {
+  constructor(key, body = [], comment = null) {
     super();
     this.type = 'Section';
     this.key = key;
+    this.body = body;
     this.comment = comment;
   }
 }

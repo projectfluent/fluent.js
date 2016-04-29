@@ -111,15 +111,19 @@ function transformMember(member) {
   return ret;
 }
 
-function toEntries(entries, entry) {
-  return Object.assign({}, entries, {
-    [entry.id.name]: transformEntity(entry)
+function getEntitiesFromBody(body) {
+  const entities = {};
+  body.forEach(entry => {
+    if (entry.type === 'Entity') {
+      entities[entry.id.name] = transformEntity(entry);
+    } else if (entry.type === 'Section') {
+      Object.assign(entities, getEntitiesFromBody(entry.body));
+    }
   });
+  return entities;
 }
 
 export function createEntriesFromAST([resource, errors]) {
-  const entries = resource.body
-    .filter(entry => entry.type === 'Entity')
-    .reduce(toEntries, {});
-  return [entries, errors];
+  const entities = getEntitiesFromBody(resource.body);;
+  return [entities, errors];
 }

@@ -3,8 +3,11 @@ import AST from './ast';
 import { L10nError } from '../../../errors';
 
 export default {
-  serialize: function({body}) {
+  serialize: function({body, comment}) {
     let string = '';
+    if (comment !== null) {
+      string += this.dumpComment(comment) + '\n\n';
+    }
     for (const entry of body) {
       string += this.dumpEntry(entry);
     }
@@ -53,7 +56,12 @@ export default {
     if (section.comment) {
       str += this.dumpComment(section.comment) + '\n';
     }
-    return str + `[[ ${this.dumpKeyword(section.key)} ]]`;
+    str += `[[ ${this.dumpKeyword(section.key)} ]]\n\n`;
+
+    for (const entry of section.body) {
+      str += this.dumpEntry(entry);
+    }
+    return str;
   },
 
   dumpIdentifier: function(id) {

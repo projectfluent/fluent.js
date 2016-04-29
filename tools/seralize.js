@@ -19,18 +19,25 @@ program
   .parse(process.argv);
 
 
-function print(err, data) {
+function print(path, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
 
-  const resource = JSON.parse(data.toString());
-  const out = lib.serialize(program.output, program.input, resource);
+  let ast;
+
+  if (path.endsWith('.ftl')) {
+    const resource = data.toString();
+    [ast,] = lib.parse('ftl', 'ast', resource);
+  } else {
+    ast = JSON.parse(data.toString());
+  }
+  const out = lib.serialize(program.output, program.input, ast);
   console.log(out);
 }
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  fs.readFile(program.args[0], print.bind(null, program.args[0]));
 } else {
   process.stdin.resume();
   process.stdin.on('data', print);

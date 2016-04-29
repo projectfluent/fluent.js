@@ -13,21 +13,42 @@ class ParseContext {
     this._length = string.length;
 
     this._lastGoodEntryEnd = 0;
+    this._currentBlock = null;
+  }
+
+  _isIdentifierStart(cc) {
+    return ((cc >= 97 && cc <= 122) || // a-z
+            (cc >= 65 && cc <= 90) ||  // A-Z
+             cc === 95);               // _
   }
 
   getResource() {
     const resource = new AST.Resource();
     const errors = [];
+    let comment = null;
+
+    this._currentBlock = resource.body;
+
+    if (this._source[this._index] === '#') {
+      comment = this.getComment();
+
+      let cc = this._source.charCodeAt(this._index);
+      if (!this._isIdentifierStart(cc)) {
+        resource.comment = comment;
+        comment = null;
+      }
+    }
 
     this.getWS();
     while (this._index < this._length) {
       try {
-        resource.body.push(this.getEntry());
+        this._currentBlock.push(this.getEntry(comment));
         this._lastGoodEntryEnd = this._index;
+        comment = null;
       } catch (e) {
         if (e instanceof L10nError) {
           errors.push(e);
-          resource.body.push(this.getJunkEntry());
+          this._currentBlock.push(this.getJunkEntry());
         } else {
           throw e;
         }
@@ -38,15 +59,13 @@ class ParseContext {
     return [resource, errors];
   }
 
-  getEntry() {
+  getEntry(comment = null) {
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
       throw this.error('Expected new line and a new entry');
     }
 
-    let comment;
-
-    if (this._source[this._index] === '#') {
+    if (comment === null && this._source[this._index] === '#') {
       comment = this.getComment();
     }
 
@@ -84,7 +103,9 @@ class ParseContext {
 
     this._index += 2;
 
-    return new AST.Section(key, comment);
+    const section = new AST.Section(key, [], comment);
+    this._currentBlock = section.body;
+    return section;
   }
 
   getEntity(comment = null) {
@@ -147,9 +168,7 @@ class ParseContext {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
-    if ((cc >= 97 && cc <= 122) || // a-z
-        (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95) {               // _
+    if (this._isIdentifierStart(cc)) {
       cc = this._source.charCodeAt(++this._index);
     } else if (name.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
@@ -181,9 +200,7 @@ class ParseContext {
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
-    if ((cc >= 97 && cc <= 122) || // a-z
-        (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95 || cc === 32) {  //  _
+    if (this._isIdentifierStart(cc)) {
       cc = this._source.charCodeAt(++this._index);
     } else if (name.length === 0) {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
@@ -645,9 +662,7 @@ class ParseContext {
       }
       let cc = this._source.charCodeAt(start + 1);
 
-      if ((cc >= 97 && cc <= 122) || // a-z
-          (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95) {              // _
+      if (this._isIdentifierStart(cc)) {
         start++;
         break;
       }
@@ -664,9 +679,7 @@ class ParseContext {
           this._source[start - 1] === '\n') {
         let cc = this._source.charCodeAt(start);
 
-        if ((cc >= 97 && cc <= 122) || // a-z
-            (cc >= 65 && cc <= 90) ||  // A-Z
-             cc === 95 || cc === 35 || cc === 91) {  // _#[
+        if (this._isIdentifierStart(cc) || cc === 35 || cc === 91) {
           break;
         }
       }
