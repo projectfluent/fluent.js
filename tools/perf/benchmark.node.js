@@ -1,14 +1,5 @@
-require('string.prototype.startswith');
-require('string.prototype.endswith');
-
 var fs = require('fs');
-
-require('babel-register')({
-  plugins: ['transform-es2015-modules-commonjs']
-});
-
-var L20n = require('../../src/runtime/node');
-var Context = require('../../src/lib/context').Context;
+var L20n = require('../../dist/bundle/node/l20n');
 
 var ftlCode = fs.readFileSync(__dirname + '/example.ftl').toString();
 

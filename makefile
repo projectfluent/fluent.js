@@ -15,7 +15,7 @@ $(RUNTIMES):
 .PHONY: clean
 clean:
 	@rm -rf dist/*
-	@echo -e " $(OK) dist/ clean"
+	@echo -e " $(OK) dist cleaned"
 
 .PHONY: lint
 lint:
@@ -32,3 +32,5 @@ test-lib:
 .PHONY: test-browser
 test-browser:
 	karma start test/karma.conf.js
+
+include tools/perf/makefile
