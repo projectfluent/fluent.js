@@ -102,7 +102,7 @@ class ParseContext {
   getEntity(comment = null) {
     const id = this.getIdentifier();
 
-    let members = [];
+    let traits = null;
     let value = null;
 
     this.getLineWS();
@@ -128,7 +128,7 @@ class ParseContext {
 
     if ((ch === '[' && this._source[this._index + 1] !== '[') ||
         ch === '*') {
-      members = this.getMembers();
+      traits = this.getMembers();
     } else if (value === null) {
       throw this.error(
         `Expected a value (like: " = value") or a trait (like: "[key] value")`
@@ -138,7 +138,7 @@ class ParseContext {
     return {
       id,
       value,
-      traits: members
+      traits
     };
   }
 
@@ -251,7 +251,6 @@ class ParseContext {
 
   getComplexPattern() {
     let buffer = '';
-    let source = '';
     let content = [];
     let quoteDelimited = null;
     let firstLine = true;
@@ -310,11 +309,9 @@ class ParseContext {
         if (buffer.length) {
           content.push(buffer);
         }
-        source += buffer;
         buffer = ''
         let start = this._index;
         content.push(this.getPlaceable());
-        source += this._source.substring(start, this._index);
         ch = this._source[this._index];
         continue;
       }
@@ -331,13 +328,12 @@ class ParseContext {
     }
 
     if (buffer.length) {
-      source += buffer;
       content.push(buffer);
     }
 
     if (content.length === 0) {
       if (quoteDelimited !== null) {
-        content.push(source);
+        return '';
       } else {
         return null;
       }
@@ -345,7 +341,7 @@ class ParseContext {
 
     if (content.length === 1 &&
         typeof content[0] === 'string') {
-      return source;
+      return content[0];
     }
 
     return content;
@@ -631,31 +627,16 @@ class ParseContext {
   }
 
   getComment() {
-    this._index++;
-    if (this._source[this._index] === ' ') {
-      this._index++;
-    }
-
-    let content = '';
-
     let eol = this._source.indexOf('\n', this._index);
-
-    content += this._source.substring(this._index, eol);
 
     while (eol !== -1 && this._source[eol + 1] === '#') {
       this._index = eol + 2;
-
-      if (this._source[this._index] === ' ') {
-        this._index++;
-      }
 
       eol = this._source.indexOf('\n', this._index);
 
       if (eol === -1) {
         break;
       }
-
-      content += '\n' + this._source.substring(this._index, eol);
     }
 
     if (eol === -1) {
@@ -663,8 +644,6 @@ class ParseContext {
     } else {
       this._index = eol + 1;
     }
-
-    return content;
   }
 
   error(message, start=null) {
