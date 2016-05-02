@@ -108,8 +108,8 @@ export class Context {
       if (resource instanceof L10nError) {
         continue;
       }
-      if (name in resource.entries) {
-        return resource.entries[name];
+      if (name in resource) {
+        return resource[name];
       }
     }
     return undefined;
