@@ -60,7 +60,7 @@ function print(fileformat, err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const {entries, errors} = lib.parse(fileformat, 'entries', data.toString());
+  const [entries, errors] = lib.parse(fileformat, 'entries', data.toString());
 
   errors.forEach(printError);
 
