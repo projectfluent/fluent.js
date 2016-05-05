@@ -43,15 +43,11 @@ function singleline(str) {
 }
 
 function printEntry(ctx, id, entity) {
-  const formatted = Resolver.format(ctx, lang, data, entity);
-
-  if (formatted[0].length) {
-    formatted[0].forEach(printError);
-  }
-
+  const [val, errs] = Resolver.format(ctx, lang, data, entity);
+  errs.forEach(printError);
   console.log(
     color(id, 'cyan'),
-    color(singleline(formatted[1]))
+    color(singleline(val))
   );
 }
 

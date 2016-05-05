@@ -1,133 +1,102 @@
 import { L20nIntl } from './shims';
 
-export class FTLNone {
+class FTLBase {
   constructor(value, opts) {
     this.value = value;
     this.opts = opts;
   }
-  format() {
-    return this.value || '???';
-  }
-  match() {
-    return false;
+  valueOf() {
+    return this.value;
   }
 }
 
-export class FTLText extends FTLNone {
-  format() {
-    return this.value.toString();
-  }
-  match(res, {value}) {
-    return this.value === value;
-  }
-}
-
-export class FTLNumber extends FTLText {
+export class FTLNumber extends FTLBase {
   constructor(value, opts) {
-    super(parseFloat(value));
-    this.opts = opts;
+    super(parseFloat(value), opts);
   }
-  format(res) {
-    const nf = res.ctx._memoizeIntlObject(
-      L20nIntl.NumberFormat, res.lang, this.opts
+  toString(rc) {
+    const nf = rc.ctx._memoizeIntlObject(
+      L20nIntl.NumberFormat, rc.lang, this.opts
     );
     return nf.format(this.value);
   }
-  match(res, {value}) {
-    switch (typeof value) {
-      case 'number': return this.value === value;
-      case 'string':
-        const pr = res.ctx._memoizeIntlObject(
-          L20nIntl.PluralRules, res.lang, this.opts
-        );
-        return pr.select(this.value) === value;
-    }
-  }
 }
 
-export class FTLDateTime extends FTLText {
+export class FTLDateTime extends FTLBase {
   constructor(value, opts) {
-    super(new Date(value));
-    this.opts = opts;
+    super(new Date(value), opts);
   }
-  format(res) {
-    const dtf = res.ctx._memoizeIntlObject(
-      L20nIntl.DateTimeFormat, res.lang, this.opts
+  toString(rc) {
+    const dtf = rc.ctx._memoizeIntlObject(
+      L20nIntl.DateTimeFormat, rc.lang, this.opts
     );
     return dtf.format(this.value);
   }
-  match() {
-    return false;
-  }
 }
 
-export class FTLCategory extends FTLNumber {
-  format(res) {
-    const pr = res.ctx._memoizeIntlObject(
-      L20nIntl.PluralRules, res.lang
-    );
-    return pr.select(this.value);
+export class FTLKeyword extends FTLBase {
+  toString() {
+    const { name, namespace } = this.value;
+    return namespace ? `${namespace}:${name}` : name;
   }
-  match(res, {value}) {
-    switch (typeof value) {
-      case 'number': return this.value === value;
-      case 'string': return this.format(res) === value;
+  match(rc, other) {
+    const { name, namespace } = this.value;
+    if (other instanceof FTLKeyword) {
+      return name === other.value.name && namespace === other.value.namespace;
+    } else if (namespace) {
+      return false;
+    } else if (typeof other === 'string') {
+      return name === other;
+    } else if (other instanceof FTLNumber) {
+      const pr = rc.ctx._memoizeIntlObject(
+        L20nIntl.PluralRules, rc.lang, other.opts
+      );
+      return name === pr.select(other.valueOf());
     }
   }
 }
 
-export class FTLKeyword extends FTLText {
-  constructor(value, namespace) {
-    super(value);
-    this.namespace = namespace;
+export class FTLList extends Array {
+  constructor(arr = [], opts) {
+    super(arr.length);
+    this.opts = opts;
+    for (const [index, elem] of arr.entries()) {
+      this[index] = elem;
+    }
   }
-  format() {
-    return this.namespace ?
-      `${this.namespace}:${this.value}` :
-      this.value;
-  }
-  match(res, {namespace, value}) {
-    return this.namespace === namespace && this.value === value;
-  }
-}
-
-export class FTLKeyValueArg extends FTLText {
-  constructor(value, id) {
-    super(value);
-    this.id = id;
-  }
-}
-
-export class FTLList extends FTLText {
-  format(res) {
-    const lf = res.ctx._memoizeIntlObject(
-      L20nIntl.ListFormat, res.lang, this.opts
+  toString(rc) {
+    const lf = rc.ctx._memoizeIntlObject(
+      L20nIntl.ListFormat, rc.lang, this.opts
     );
-    const elems = this.value.map(
-      elem => elem.format(res)
+    const elems = this.map(
+      elem => elem.toString(rc)
     );
     return lf.format(elems);
   }
-  match() {
-    return false;
+  concat(elem) {
+    return new FTLList([...this, elem]);
   }
 }
 
+// each builtin takes two arguments:
+//  - args = an array of positional args
+//  - opts  = an object of key-value args
+
 export default {
-  'NUMBER': ([arg], opts) => new FTLNumber(arg.value, values(opts)),
-  'DATETIME': ([arg], opts) => new FTLDateTime(arg.value, values(opts)),
-  'PLURAL': ([arg], opts) => new FTLCategory(arg.value, values(opts)),
-  'LIST': (...args) => new FTLList(...args),
-  'LEN': ([arg], opts) => new FTLNumber(arg.value.length, values(opts)),
+  'NUMBER': ([arg], opts) => new FTLNumber(arg.valueOf(), valuesOf(opts)),
+  'PLURAL': ([arg], opts) => new FTLNumber(arg.valueOf(), valuesOf(opts)),
+  'DATETIME': ([arg], opts) => new FTLDateTime(arg.valueOf(), valuesOf(opts)),
+  'LIST': (args) => new FTLList(args),
+  'LEN': ([arg], opts) => new FTLNumber(arg.valueOf().length, valuesOf(opts)),
   'TAKE': ([num, arg], opts) =>
-    new FTLList(arg.value.slice(0, num.value), values(opts)),
+    new FTLList(arg.value.slice(0, num.value), valuesOf(opts)),
   'DROP': ([num, arg], opts) =>
-    new FTLList(arg.value.slice(num.value), values(opts)),
+    new FTLList(arg.value.slice(num.value), valuesOf(opts)),
 };
 
-function values(opts) {
+function valuesOf(opts) {
   return Object.keys(opts).reduce(
     (seq, cur) => Object.assign({}, seq, {
-      [cur]: opts[cur].value
+      [cur]: opts[cur].valueOf()
     }), {});
 }
