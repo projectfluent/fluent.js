@@ -90,8 +90,7 @@ function MemberExpression(rc, expr) {
 
   for (let member of entity.traits) {
     const [memberKey] = Value(rc, member.key);
-    if (key.namespace === memberKey.namespace &&
-        key.name === memberKey.name) {
+    if (key.match(rc, memberKey)) {
       return unit(member);
     }
   }
