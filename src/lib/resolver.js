@@ -26,6 +26,10 @@ function fail(val, err) {
   return [val, [err]];
 }
 
+function flat([val, errs2], errs1) {
+  return [val, [...errs1, ...errs2]];
+}
+
 
 // Helper for choosing entity value
 
@@ -80,10 +84,9 @@ function BuiltinReference(rc, expr) {
 }
 
 function MemberExpression(rc, expr) {
-  const [entity, errs1] = Expression(rc, expr.obj);
-  if (errs1.length) {
-    const [fallback, errs2] = Value(rc, entity);
-    return [fallback, [...errs1, ...errs2]]
+  const [entity, errs] = Expression(rc, expr.obj);
+  if (errs.length) {
+    return [entity, errs];
   }
 
   const [key] = Value(rc, expr.key);
@@ -95,17 +98,13 @@ function MemberExpression(rc, expr) {
     }
   }
 
-  const [fallback, errs2] = Value(rc, entity);
-  return [
-    fallback, [...errs2, new L10nError('Unknown trait: ' + key.toString(rc))]
-  ];
+  return fail(entity, new L10nError('Unknown trait: ' + key.toString(rc)));
 }
 
 function SelectExpression(rc, expr) {
-  const [selector, selErrs] = Value(rc, expr.exp);
-  if (selErrs.length) {
-    const [fallback, errs2] = Value(rc, entity);
-    return [fallback, [...selErrs, ...errs2]];
+  const [selector, errs] = Value(rc, expr.exp);
+  if (errs.length) {
+    return flat(DefaultMember(expr.vars), errs);
   }
 
   for (let variant of expr.vars) {
@@ -139,24 +138,24 @@ function Value(rc, expr) {
   }
 
   const [node, errs] = Expression(rc, expr);
-
   if (errs.length) {
-    const [fallback, fberrs] = Value(rc, node);
-    return [fallback, [...errs, ...fberrs]];
+    // Expression short-circuited into a simple string or a fallback
+    return flat(Value(rc, node), errs);
   }
 
   switch (node.type) {
     case 'kw':
-      return unit(new FTLKeyword(node));
+      return [new FTLKeyword(node), errs];;
     case 'num':
-      return unit(new FTLNumber(node.val));
+      return [new FTLNumber(node.val), errs];
     case 'ext':
-      return ExternalArgument(rc, node);
+      return flat(ExternalArgument(rc, node), errs);
     case 'call':
-      return CallExpression(rc, expr);
+      return flat(CallExpression(rc, expr), errs);
     default:
-        // is it a Member?
-        return node.key ? Value(rc, node.val) : Entity(rc, node);
+        return node.key ? // is it a Member?
+          flat(Value(rc, node.val), errs) :
+          flat(Entity(rc, node), errs);
   }
 }
 
@@ -252,10 +251,8 @@ function Entity(rc, entity) {
     return Value(rc, entity.val);
   }
 
-  const [def, errs1] = DefaultMember(entity.traits);
-  const [fb, errs2] = Value(rc, def);
-
-  return [fb, [...errs1, ...errs2]];
+  const [def, errs] = DefaultMember(entity.traits);
+  return flat(Value(rc, def), errs);
 }
 
 
