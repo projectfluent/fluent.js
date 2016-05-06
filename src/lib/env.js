@@ -77,7 +77,7 @@ export class Env {
     const syntax = res.substr(res.lastIndexOf('.') + 1);
 
     const saveEntries = data => {
-      const [entries, errors] = this._parse(syntax, lang, data);
+      const [entries] = this._parse(syntax, lang, data);
       cache.set(id, this._create(lang, entries));
     };
 
@@ -98,9 +98,4 @@ export class Env {
 
     return resource;
   }
-}
-
-function amendError(lang, err) {
-  err.lang = lang;
-  return err;
 }

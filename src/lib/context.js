@@ -9,7 +9,7 @@ export class Context {
     this.emit = (type, evt) => env.emit(type, evt, this);
   }
 
-  _formatEntity(lang, args, entity, id) {
+  _formatEntity(lang, args, entity) {
     const [value] = format(this, lang, args, entity);
 
     const formatted = {
@@ -28,7 +28,7 @@ export class Context {
     return formatted;
   }
 
-  _formatValue(lang, args, entity, id) {
+  _formatValue(lang, args, entity) {
     const [value] = format(this, lang, args, entity);
     return value;
   }
@@ -62,7 +62,7 @@ export class Context {
       const entity = this._getEntity(lang, id);
 
       if (entity) {
-        return formatter.call(this, lang, args, entity, id);
+        return formatter.call(this, lang, args, entity);
       }
 
       this.emit('notfounderror',

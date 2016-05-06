@@ -1,6 +1,6 @@
 import { L10nError } from './errors';
 import builtins, {
-  FTLText, FTLNumber, FTLDateTime, FTLKeyword, FTLList
+  FTLNumber, FTLDateTime, FTLKeyword, FTLList
 } from './builtins';
 
 // Unicode bidi isolation characters
@@ -145,7 +145,7 @@ function Value(rc, expr) {
 
   switch (node.type) {
     case 'kw':
-      return [new FTLKeyword(node), errs];;
+      return [new FTLKeyword(node), errs];
     case 'num':
       return [new FTLNumber(node.val), errs];
     case 'ext':
@@ -153,9 +153,9 @@ function Value(rc, expr) {
     case 'call':
       return flat(CallExpression(rc, expr), errs);
     default:
-        return node.key ? // is it a Member?
-          flat(Value(rc, node.val), errs) :
-          flat(Entity(rc, node), errs);
+      return node.key ? // is it a Member?
+        flat(Value(rc, node.val), errs) :
+        flat(Entity(rc, node), errs);
   }
 }
 
