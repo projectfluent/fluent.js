@@ -7,6 +7,8 @@ import builtins, {
 const FSI = '\u2068';
 const PDI = '\u2069';
 
+const MAX_PLACEABLE_LENGTH = 2500;
+
 function mapValues(rc, arr) {
   return arr.reduce(
     ([valseq, errseq], cur) => {
@@ -15,16 +17,6 @@ function mapValues(rc, arr) {
     }, [new FTLList(), []]
   );
 }
-
-
-  // XXX add this back later
-  // const MAX_PLACEABLE_LENGTH = 2500;
-  // if (value.length >= MAX_PLACEABLE_LENGTH) {
-  //   throw new L10nError(
-  //     'Too many characters in placeable (' + value.length +
-  //       ', max allowed is ' + MAX_PLACEABLE_LENGTH + ')'
-  //   );
-  // }
 
 function unit(val) {
   return [val, []];
@@ -230,9 +222,18 @@ function Pattern(rc, ptn) {
       return [valseq + elem, errseq];
     } else {
       const [value, errs] = mapValues(rc, elem);
+      const str = value.toString(rc);
+      if (str.length > MAX_PLACEABLE_LENGTH) {
+        return [
+          valseq + '???',
+          [...errseq, ...errs, new L10nError(
+            'Too many characters in placeable ' +
+            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+          )]
+        ];
+      }
       return [
-        valseq + FSI + (value).toString(rc) + PDI,
-        [...errseq, ...errs],
+        valseq + FSI + str + PDI, [...errseq, ...errs],
       ];
     }
 
