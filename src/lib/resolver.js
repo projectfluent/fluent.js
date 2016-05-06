@@ -224,7 +224,7 @@ function Pattern(rc, ptn) {
       const str = value.toString(rc);
       if (str.length > MAX_PLACEABLE_LENGTH) {
         return [
-          valseq + '???',
+          valseq + str.substr(0, MAX_PLACEABLE_LENGTH),
           [...errseq, ...errs, new L10nError(
             'Too many characters in placeable ' +
             `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
