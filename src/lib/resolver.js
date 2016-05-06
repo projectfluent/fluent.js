@@ -36,7 +36,7 @@ function DefaultMember(members) {
     }
   }
 
-  return ['???', new L10nError('No default')];
+  return fail('???', new L10nError('No default'));
 }
 
 
@@ -71,9 +71,9 @@ function BuiltinReference(rc, expr) {
   const builtin = builtins[expr.name];
 
   if (!builtin) {
-    return [
+    return fail(
       expr.name + '()', new L10nError('Unknown built-in: ' + expr.name + '()')
-    ];
+    );
   }
 
   return unit(builtin);
@@ -83,7 +83,7 @@ function MemberExpression(rc, expr) {
   const [entity, errs1] = Expression(rc, expr.obj);
   if (errs1.length) {
     const [fallback, errs2] = Value(rc, entity);
-    return [fallback, [...errs1, errs2]]
+    return [fallback, [...errs1, ...errs2]]
   }
 
   const [key] = Value(rc, expr.key);
@@ -105,7 +105,7 @@ function SelectExpression(rc, expr) {
   const [selector, selErrs] = Value(rc, expr.exp);
   if (selErrs.length) {
     const [fallback, errs2] = Value(rc, entity);
-    return [fallback, [...selErrs, errs2]];
+    return [fallback, [...selErrs, ...errs2]];
   }
 
   for (let variant of expr.vars) {
@@ -142,7 +142,7 @@ function Value(rc, expr) {
 
   if (errs.length) {
     const [fallback, fberrs] = Value(rc, node);
-    return [fallback, [...errs, fberrs]];
+    return [fallback, [...errs, ...fberrs]];
   }
 
   switch (node.type) {
@@ -252,13 +252,10 @@ function Entity(rc, entity) {
     return Value(rc, entity.val);
   }
 
-  const [def, errs] = DefaultMember(entity.traits);
+  const [def, errs1] = DefaultMember(entity.traits);
+  const [fb, errs2] = Value(rc, def);
 
-  if (errs.length) {
-    return ['???', [...errs, new L10nError('No value')]];
-  }
-
-  return Value(rc, def.val);
+  return [fb, [...errs1, ...errs2]];
 }
 
 
