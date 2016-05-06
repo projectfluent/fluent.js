@@ -1,7 +1,7 @@
 import { L10nError } from './errors';
 import { resolve, ask, tell, fail } from './readwrite';
 import builtins, {
-  FTLNumber, FTLDateTime, FTLKeyword, FTLList
+  FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
 } from './builtins';
 
 // Unicode bidi isolation characters
@@ -18,8 +18,11 @@ function* mapValues(arr) {
   return values;
 }
 
-// Helper for choosing entity value
+function err(msg, fallback) {
+  return fail(new FTLNone(fallback), new L10nError(msg));
+}
 
+// Helper for choosing entity value
 function* DefaultMember(members) {
   for (let member of members) {
     if (member.def) {
@@ -27,7 +30,7 @@ function* DefaultMember(members) {
     }
   }
 
-  return yield fail('???', new L10nError('No default'));
+  return yield err('No default');
 }
 
 
@@ -53,7 +56,7 @@ function* EntityReference(expr) {
   const entity = rc.ctx._getEntity(rc.lang, expr.name);
 
   if (!entity) {
-    return yield fail(expr.name, new L10nError('Unknown entity: ' + expr.name));
+    return yield err(`Unknown entity: ${expr.name}`, expr.name);
   }
 
   return yield entity;
@@ -63,9 +66,7 @@ function* BuiltinReference(expr) {
   const builtin = builtins[expr.name];
 
   if (!builtin) {
-    return yield fail(
-      expr.name + '()', new L10nError('Unknown built-in: ' + expr.name + '()')
-    );
+    return yield err(`Unknown built-in: ${expr.name}()`, `${expr.name}()`);
   }
 
   return yield builtin;
@@ -83,14 +84,14 @@ function* MemberExpression(expr) {
     }
   }
 
-  return yield fail(entity, new L10nError('Unknown trait: ' + key.toString(rc)));
+  return yield err(`Unknown trait: ${key.toString(rc)}`, entity);
 }
 
 function* SelectExpression(expr) {
   const selector = yield* Value(expr.exp);
-  // if (errs.length) {
-  //   return flat(DefaultMember(expr.vars), errs);
-  // }
+  if (selector instanceof FTLNone) {
+    return yield* DefaultMember(expr.vars);
+  }
 
   for (let variant of expr.vars) {
     const key = yield* Value(variant.key);
@@ -125,10 +126,10 @@ function* Value(expr) {
   }
 
   const node = yield* Expression(expr);
-  // if (errs.length) {
-  //   // Expression short-circuited into a simple string or a fallback
-  //   return flat(Value(rc, node), errs);
-  // }
+  if (node instanceof FTLNone) {
+    // Expression short-circuited into a simple string or a fallback
+    return yield* Value(node);
+  }
 
   switch (node.type) {
     case 'kw':
@@ -151,7 +152,7 @@ function* ExternalArgument(expr) {
   const { args } = yield ask();
 
   if (!args || !args.hasOwnProperty(name)) {
-    return yield fail(name, new L10nError('Unknown external: ' + name));
+    return yield err(`Unknown external: ${name}`, name);
   }
 
   const arg = args[name];
@@ -169,18 +170,18 @@ function* ExternalArgument(expr) {
         return yield new FTLDateTime(arg);
       }
     default:
-      return yield fail(name, new L10nError(
-        'Unsupported external type: ' + name + ', ' + typeof arg
-      ));
+      return yield err(
+        'Unsupported external type: ' + name + ', ' + typeof arg, name
+      );
   }
 }
 
 function* CallExpression(expr) {
   const callee = yield* Expression(expr.name);
 
-  // if (errs1.length) {
-  //   return [callee, errs1];
-  // }
+  if (callee instanceof FTLNone) {
+    return callee;
+  }
 
   let pargs = [];
   let kargs = [];
@@ -202,11 +203,10 @@ function* Pattern(ptn) {
   const rc = yield ask();
 
   if (rc.dirty.has(ptn)) {
-    return yield fail('???', new L10nError('Cyclic reference'));
+    return yield err('Cyclic reference');
   }
 
   rc.dirty.add(ptn);
-
   let result = '';
 
   for (let part of ptn) {
@@ -218,11 +218,12 @@ function* Pattern(ptn) {
 
       const str = value.toString(rc);
       if (str.length > MAX_PLACEABLE_LENGTH) {
-        yield tell(new L10nError(
+        const trimmed = yield err(
           'Too many characters in placeable ' +
-          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
-        ));
-        result += '???';
+          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`,
+          str.substr(0, MAX_PLACEABLE_LENGTH)
+        );
+        result += trimmed;
       } else {
         result += FSI + str + PDI;
       }
@@ -252,12 +253,7 @@ export function format(ctx, lang, args, entity) {
     return yield* Value(entity);
   }());
 
-  const ret = res.run({
-    ctx,
-    lang,
-    args,
-    dirty: new WeakSet()
+  return res.run({
+    ctx, lang, args, dirty: new WeakSet()
   });
-
-  return ret;
 }

@@ -10,6 +10,12 @@ class FTLBase {
   }
 }
 
+export class FTLNone extends FTLBase {
+  toString() {
+    return this.value || '???';
+  }
+}
+
 export class FTLNumber extends FTLBase {
   constructor(value, opts) {
     super(parseFloat(value), opts);
