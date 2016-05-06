@@ -1,5 +1,5 @@
 import { L10nError } from './errors';
-import { resolve, ask, tell, fail } from './readwrite';
+import { resolve, ask, fail } from './readwrite';
 import builtins, {
   FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
 } from './builtins';

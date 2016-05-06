@@ -20,10 +20,6 @@ export function ask() {
   return new ReadWrite(ctx => [ctx, []]);
 }
 
-export function tell(log) {
-  return new ReadWrite(() => [null, [log]]);
-}
-
 export function unit(val) {
   return new ReadWrite(() => [val, []]);
 }
