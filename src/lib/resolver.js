@@ -221,7 +221,8 @@ function Pattern(rc, ptn) {
     if (typeof elem === 'string') {
       return [valseq + elem, errseq];
     } else {
-      const [value, errs] = mapValues(rc, elem);
+      const [value, errs] = elem.length === 1 ?
+        Value(rc, elem[0]) : mapValues(rc, elem);
       const str = value.toString(rc);
       if (str.length > MAX_PLACEABLE_LENGTH) {
         return [
