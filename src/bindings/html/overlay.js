@@ -51,12 +51,12 @@ export function overlayElement(element, translation) {
 
 // The goal of overlay is to move the children of `translationElement`
 // into `sourceElement` such that `sourceElement`'s own children are not
-// replaced, but onle have their text nodes and their attributes modified.
+// replaced, but only have their text nodes and their attributes modified.
 //
 // We want to make it possible for localizers to apply text-level semantics to
 // the translations and make use of HTML entities. At the same time, we
 // don't trust translations so we need to filter unsafe elements and
-// attribtues out and we don't want to break the Web by replacing elements to
+// attributes out and we don't want to break the Web by replacing elements to
 // which third-party code might have created references (e.g. two-way
 // bindings in MVC frameworks).
 function overlay(sourceElement, translationElement) {
