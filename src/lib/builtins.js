@@ -60,7 +60,7 @@ export class FTLList extends Array {
   constructor(arr = [], opts) {
     super(arr.length);
     this.opts = opts;
-    for (const [index, elem] of arr.entries()) {
+    for (let [index, elem] of arr.entries()) {
       this[index] = elem;
     }
   }

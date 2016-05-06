@@ -9,31 +9,19 @@ export class Context {
     this.emit = (type, evt) => env.emit(type, evt, this);
   }
 
-  _formatTuple(lang, args, entity, id, key) {
-    try {
-      return format(this, lang, args, entity);
-    } catch (err) {
-      err.id = key ? id + '::' + key : id;
-      err.lang = lang;
-      this.emit('resolveerror', err);
-      return [{ error: err }, err.id];
-    }
-  }
-
   _formatEntity(lang, args, entity, id) {
-    const [, value] = this._formatTuple(lang, args, entity, id);
+    const [value] = format(this, lang, args, entity);
 
     const formatted = {
       value,
       attrs: null,
     };
 
-    if (entity.attrs) {
+    if (entity.traits) {
       formatted.attrs = Object.create(null);
-      for (let key in entity.attrs) {
-        const [, attrValue] = this._formatTuple(
-          lang, args, entity.attrs[key], id, key);
-        formatted.attrs[key] = attrValue;
+      for (let trait of entity.traits) {
+        const [attrValue] = format(this, lang, args, trait);
+        formatted.attrs[trait.key.name] = attrValue;
       }
     }
 
@@ -41,7 +29,8 @@ export class Context {
   }
 
   _formatValue(lang, args, entity, id) {
-    return this._formatTuple(lang, args, entity, id)[1];
+    const [value] = format(this, lang, args, entity);
+    return value;
   }
 
   fetch(langs = this.langs) {

@@ -272,5 +272,5 @@ export function format(ctx, lang, args, entity) {
     dirty: new WeakSet()
   };
 
-  return Entity(rc, entity);
+  return Value(rc, entity);
 }
