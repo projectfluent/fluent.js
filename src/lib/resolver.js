@@ -172,20 +172,19 @@ function* CallExpression(expr) {
     return callee;
   }
 
-  let pargs = [];
-  let kargs = [];
+  const posargs = [];
+  const keyargs = [];
 
   for (let arg of expr.args) {
     if (arg.type === 'kv') {
-      const val = yield* Value(arg.val);
-      kargs[arg.name] = val;
+      keyargs[arg.name] = yield* Value(arg.val);
     } else {
-      const val = yield* Value(arg);
-      pargs.push(val);
+      posargs.push(yield* Value(arg));
     }
   }
 
-  return yield callee(pargs, kargs);
+  // XXX builtins should also returns [val, errs] tuples
+  return callee(posargs, keyargs);
 }
 
 function* Pattern(ptn) {
