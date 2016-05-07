@@ -1,5 +1,5 @@
 import { L10nError } from './errors';
-import { resolve, ask, fail } from './readwrite';
+import { resolve, ask, tell } from './readwrite';
 import builtins, {
   FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
 } from './builtins';
@@ -18,47 +18,43 @@ function* mapValues(arr) {
   return values;
 }
 
-function err(msg, fallback) {
-  return fail(new FTLNone(fallback), new L10nError(msg));
+function err(msg) {
+  return tell(new L10nError(msg));
 }
 
 // Helper for choosing entity value
 function* DefaultMember(members) {
   for (let member of members) {
     if (member.def) {
-      return yield member;
+      return member;
     }
   }
 
-  return yield err('No default');
+  yield err('No default');
+  return { val: new FTLNone() };
 }
 
 
-// Half-resolved expressions
+// Half-resolved expressions evaluate to raw Runtime AST nodes
 
 function* EntityReference(expr) {
   const rc = yield ask();
   const entity = rc.ctx._getEntity(rc.lang, expr.name);
 
   if (!entity) {
-    return yield err(`Unknown entity: ${expr.name}`, expr.name);
+    yield err(`Unknown entity: ${expr.name}`);
+    return FTLNone(expr.name);
   }
 
   return entity;
 }
 
-function* BuiltinReference(expr) {
-  const builtin = builtins[expr.name];
-
-  if (!builtin) {
-    return yield err(`Unknown built-in: ${expr.name}()`, `${expr.name}()`);
-  }
-
-  return builtin;
-}
-
 function* MemberExpression(expr) {
   const entity = yield* EntityReference(expr.obj);
+  if (entity instanceof FTLNone) {
+    return { val: entity };
+  }
+
   const key = yield* Value(expr.key);
   const rc = yield ask();
 
@@ -69,7 +65,10 @@ function* MemberExpression(expr) {
     }
   }
 
-  return yield err(`Unknown trait: ${key.toString(rc)}`, entity);
+  yield err(`Unknown trait: ${key.toString(rc)}`);
+  return {
+    val: yield* Entity(entity)
+  };
 }
 
 function* SelectExpression(expr) {
@@ -99,10 +98,10 @@ function* SelectExpression(expr) {
 }
 
 
-// Fully-resolved expressions
+// Fully-resolved expressions evaluate to FTL types
 
 function* Value(expr) {
-  if (typeof expr === 'string' || expr === null) {
+  if (typeof expr === 'string' || expr instanceof FTLNone) {
     return expr;
   }
 
@@ -117,14 +116,13 @@ function* Value(expr) {
       return new FTLNumber(expr.val);
     case 'ext':
       return yield* ExternalArgument(expr);
+    case 'blt':
+      return yield* BuiltinReference(expr);
     case 'call':
       return yield* CallExpression(expr);
     case 'ref':
       const ref = yield* EntityReference(expr);
       return yield* Entity(ref);
-    case 'blt':
-      const blt = yield* BuiltinReference(expr);
-      return yield* Value(blt.val);
     case 'mem':
       const mem = yield* MemberExpression(expr);
       return yield* Value(mem.val);
@@ -141,7 +139,8 @@ function* ExternalArgument(expr) {
   const { args } = yield ask();
 
   if (!args || !args.hasOwnProperty(name)) {
-    return yield err(`Unknown external: ${name}`, name);
+    yield err(`Unknown external: ${name}`);
+    return new FTLNone(name);
   }
 
   const arg = args[name];
@@ -159,10 +158,20 @@ function* ExternalArgument(expr) {
         return new FTLDateTime(arg);
       }
     default:
-      return yield err(
-        'Unsupported external type: ' + name + ', ' + typeof arg, name
-      );
+      yield err('Unsupported external type: ' + name + ', ' + typeof arg);
+      return new FTLNone(name);
   }
+}
+
+function* BuiltinReference(expr) {
+  const builtin = builtins[expr.name];
+
+  if (!builtin) {
+    yield err(`Unknown built-in: ${expr.name}()`);
+    return new FTLNone(`${expr.name}()`);
+  }
+
+  return builtin;
 }
 
 function* CallExpression(expr) {
@@ -191,7 +200,8 @@ function* Pattern(ptn) {
   const rc = yield ask();
 
   if (rc.dirty.has(ptn)) {
-    return yield err('Cyclic reference');
+    yield err('Cyclic reference');
+    return new FTLNone();
   }
 
   rc.dirty.add(ptn);
@@ -206,12 +216,11 @@ function* Pattern(ptn) {
 
       const str = value.toString(rc);
       if (str.length > MAX_PLACEABLE_LENGTH) {
-        const trimmed = yield err(
+        yield err(
           'Too many characters in placeable ' +
-            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`,
-          str.substr(0, MAX_PLACEABLE_LENGTH)
+          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
         );
-        result += FSI + trimmed + PDI;
+        result += FSI + str.substr(0, MAX_PLACEABLE_LENGTH) + PDI;
       } else {
         result += FSI + str + PDI;
       }
@@ -235,8 +244,13 @@ function* Entity(entity) {
   return yield* Value(def);
 }
 
-function* valueOf(entity) {
-  return yield* Entity(entity);
+function* toString(entity) {
+  const value = yield* Entity(entity);
+
+  // at this point we don't need the current resolution context; value can 
+  // either be a simple string (which doesn't need it by definition) or 
+  // a pattern which has already been resolved in Pattern, or FTLNone.
+  return value.toString();
 }
 
 export function format(ctx, lang, args, entity) {
@@ -244,7 +258,7 @@ export function format(ctx, lang, args, entity) {
     return [entity, []];
   }
 
-  return resolve(valueOf(entity)).run({
+  return resolve(toString(entity)).run({
     ctx, lang, args, dirty: new WeakSet()
   });
 }

@@ -20,12 +20,12 @@ export function ask() {
   return new ReadWrite(ctx => [ctx, []]);
 }
 
-export function unit(val) {
-  return new ReadWrite(() => [val, []]);
+export function tell(log) {
+  return new ReadWrite(() => [null, [log]]);
 }
 
-export function fail(val, log) {
-  return new ReadWrite(() => [val, [log]]);
+export function unit(val) {
+  return new ReadWrite(() => [val, []]);
 }
 
 export function resolve(iter) {
