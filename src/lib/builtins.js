@@ -57,16 +57,9 @@ export class FTLKeyword extends FTLBase {
 }
 
 export class FTLList extends Array {
-  constructor(arr = [], opts) {
-    super(arr.length);
-    this.opts = opts;
-    for (let [index, elem] of arr.entries()) {
-      this[index] = elem;
-    }
-  }
   toString(rc) {
     const lf = rc.ctx._memoizeIntlObject(
-      L20nIntl.ListFormat, rc.lang, this.opts
+      L20nIntl.ListFormat, rc.lang // XXX add this.opts
     );
     const elems = this.map(
       elem => elem.toString(rc)
@@ -74,7 +67,7 @@ export class FTLList extends Array {
     return lf.format(elems);
   }
   concat(elem) {
-    return new FTLList([...this, elem]);
+    return FTLList.from([...this, elem]);
   }
 }
 
@@ -86,12 +79,10 @@ export default {
   'NUMBER': ([arg], opts) => new FTLNumber(arg.valueOf(), valuesOf(opts)),
   'PLURAL': ([arg], opts) => new FTLNumber(arg.valueOf(), valuesOf(opts)),
   'DATETIME': ([arg], opts) => new FTLDateTime(arg.valueOf(), valuesOf(opts)),
-  'LIST': (args) => new FTLList(args),
   'LEN': ([arg], opts) => new FTLNumber(arg.valueOf().length, valuesOf(opts)),
-  'TAKE': ([num, arg], opts) =>
-    new FTLList(arg.value.slice(0, num.value), valuesOf(opts)),
-  'DROP': ([num, arg], opts) =>
-    new FTLList(arg.value.slice(num.value), valuesOf(opts)),
+  'LIST': (args) => FTLList.from(args),
+  'TAKE': ([num, arg]) => FTLList.from(arg.valueOf().slice(0, num.value)),
+  'DROP': ([num, arg]) => FTLList.from(arg.valueOf().slice(num.value)),
 };
 
 function valuesOf(opts) {
