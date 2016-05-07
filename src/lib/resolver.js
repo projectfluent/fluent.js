@@ -247,13 +247,16 @@ function* Entity(entity) {
   return yield* Value(def);
 }
 
+function* valueOf(entity) {
+  return yield* Value(entity);
+}
 
 export function format(ctx, lang, args, entity) {
-  const res = resolve(function* () {
-    return yield* Value(entity);
-  }());
+  if (typeof entity === 'string') {
+    return [entity, []];
+  }
 
-  return res.run({
+  return resolve(valueOf(entity)).run({
     ctx, lang, args, dirty: new WeakSet()
   });
 }
