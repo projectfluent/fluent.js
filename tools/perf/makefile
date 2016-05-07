@@ -1,13 +1,13 @@
-PERF_ENGINE ?= jsshell
+perf: perf-jsshell
 
-.PHONY: perf
-perf:
-	@./tools/perf/test.js -e $(PERF_ENGINE) -s 30 -p
+# alias for % to match correctly
+src/runtime/jsshell: src/runtime/tooling
 
-.PHONY: perf-compare
-perf-compare:
-	@./tools/perf/test.js -e $(PERF_ENGINE) -s 30 -p -c $(PERF_REFERENCE)
+perf-%: src/runtime/%
+	@./tools/perf/test.js -e $* -s 30 -p
 
-.PHONY: perf-reference
-perf-reference:
-	@./tools/perf/test.js -e $(PERF_ENGINE) -s 30 -r
+perf-compare-%: src/runtime/%
+	@./tools/perf/test.js -e $* -s 30 -p -c $(PERF_REFERENCE)
+
+perf-reference-%: src/runtime/%
+	@./tools/perf/test.js -e $* -s 30 -r > $(PERF_REFERENCE)
