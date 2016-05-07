@@ -44,7 +44,7 @@ function* EntityReference(expr) {
     return yield err(`Unknown entity: ${expr.name}`, expr.name);
   }
 
-  return yield entity;
+  return entity;
 }
 
 function* BuiltinReference(expr) {
@@ -54,7 +54,7 @@ function* BuiltinReference(expr) {
     return yield err(`Unknown built-in: ${expr.name}()`, `${expr.name}()`);
   }
 
-  return yield builtin;
+  return builtin;
 }
 
 function* MemberExpression(expr) {
@@ -65,7 +65,7 @@ function* MemberExpression(expr) {
   for (let member of entity.traits) {
     const memberKey = yield* Value(member.key);
     if (key.match(rc, memberKey)) {
-      return yield member;
+      return member;
     }
   }
 
@@ -84,14 +84,14 @@ function* SelectExpression(expr) {
     if (key instanceof FTLNumber &&
         selector instanceof FTLNumber &&
         key.valueOf() === selector.valueOf()) {
-      return yield variant;
+      return variant;
     }
 
     const rc = yield ask();
 
     if (key instanceof FTLKeyword &&
         key.match(rc, selector)) {
-      return yield variant;
+      return variant;
     }
   }
 
@@ -103,7 +103,7 @@ function* SelectExpression(expr) {
 
 function* Value(expr) {
   if (typeof expr === 'string' || expr === null) {
-    return yield expr;
+    return expr;
   }
 
   if (Array.isArray(expr)) {
@@ -112,9 +112,9 @@ function* Value(expr) {
 
   switch (expr.type) {
     case 'kw':
-      return yield new FTLKeyword(expr);
+      return new FTLKeyword(expr);
     case 'num':
-      return yield new FTLNumber(expr.val);
+      return new FTLNumber(expr.val);
     case 'ext':
       return yield* ExternalArgument(expr);
     case 'call':
@@ -148,15 +148,15 @@ function* ExternalArgument(expr) {
 
   switch (typeof arg) {
     case 'string':
-      return yield arg;
+      return arg;
     case 'number':
-      return yield new FTLNumber(arg);
+      return new FTLNumber(arg);
     case 'object':
       if (Array.isArray(arg)) {
         return yield* mapValues(arg);
       }
       if (arg instanceof Date) {
-        return yield new FTLDateTime(arg);
+        return new FTLDateTime(arg);
       }
     default:
       return yield err(
@@ -219,7 +219,7 @@ function* Pattern(ptn) {
   }
 
   rc.dirty.delete(ptn);
-  return yield result;
+  return result;
 }
 
 function* Entity(entity) {
