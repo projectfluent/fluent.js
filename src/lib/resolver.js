@@ -209,10 +209,10 @@ function* Pattern(ptn) {
       if (str.length > MAX_PLACEABLE_LENGTH) {
         const trimmed = yield err(
           'Too many characters in placeable ' +
-          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`,
+            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`,
           str.substr(0, MAX_PLACEABLE_LENGTH)
         );
-        result += trimmed;
+        result += FSI + trimmed + PDI;
       } else {
         result += FSI + str + PDI;
       }
