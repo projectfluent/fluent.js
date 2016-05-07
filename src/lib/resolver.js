@@ -36,21 +36,6 @@ function* DefaultMember(members) {
 
 // Half-resolved expressions
 
-function* Expression(expr) {
-  switch (expr.type) {
-    case 'ref':
-      return yield* EntityReference(expr);
-    case 'blt':
-      return yield* BuiltinReference(expr);
-    case 'mem':
-      return yield* MemberExpression(expr);
-    case 'sel':
-      return yield* SelectExpression(expr);
-    default:
-      return yield expr;
-  }
-}
-
 function* EntityReference(expr) {
   const rc = yield ask();
   const entity = rc.ctx._getEntity(rc.lang, expr.name);
@@ -73,7 +58,7 @@ function* BuiltinReference(expr) {
 }
 
 function* MemberExpression(expr) {
-  const entity = yield* Expression(expr.obj);
+  const entity = yield* EntityReference(expr.obj);
   const key = yield* Value(expr.key);
   const rc = yield ask();
 
@@ -125,25 +110,29 @@ function* Value(expr) {
     return yield* Pattern(expr);
   }
 
-  const node = yield* Expression(expr);
-  if (node instanceof FTLNone) {
-    // Expression short-circuited into a simple string or a fallback
-    return yield* Value(node);
-  }
-
-  switch (node.type) {
+  switch (expr.type) {
     case 'kw':
-      return yield new FTLKeyword(node);
+      return yield new FTLKeyword(expr);
     case 'num':
-      return yield new FTLNumber(node.val);
+      return yield new FTLNumber(expr.val);
     case 'ext':
-      return yield* ExternalArgument(node);
+      return yield* ExternalArgument(expr);
     case 'call':
       return yield* CallExpression(expr);
+    case 'ref':
+      const ref = yield* EntityReference(expr);
+      return yield* Entity(ref);
+    case 'blt':
+      const blt = yield* BuiltinReference(expr);
+      return yield* Value(blt.val);
+    case 'mem':
+      const mem = yield* MemberExpression(expr);
+      return yield* Value(mem.val);
+    case 'sel':
+      const sel = yield* SelectExpression(expr);
+      return yield* Value(sel.val);
     default:
-      return node.key ? // is it a Member?
-        yield* Value(node.val) :
-        yield* Entity(node);
+      return yield* Value(expr.val);
   }
 }
 
@@ -177,7 +166,7 @@ function* ExternalArgument(expr) {
 }
 
 function* CallExpression(expr) {
-  const callee = yield* Expression(expr.name);
+  const callee = yield* BuiltinReference(expr.name);
 
   if (callee instanceof FTLNone) {
     return callee;
@@ -235,12 +224,12 @@ function* Pattern(ptn) {
 }
 
 function* Entity(entity) {
-  if (!entity.traits) {
-    return yield* Value(entity);
-  }
-
   if (entity.val !== undefined) {
     return yield* Value(entity.val);
+  }
+
+  if (!entity.traits) {
+    return yield* Value(entity);
   }
 
   const def = yield* DefaultMember(entity.traits);
@@ -248,7 +237,7 @@ function* Entity(entity) {
 }
 
 function* valueOf(entity) {
-  return yield* Value(entity);
+  return yield* Entity(entity);
 }
 
 export function format(ctx, lang, args, entity) {
