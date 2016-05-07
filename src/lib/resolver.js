@@ -43,7 +43,7 @@ function* EntityReference(expr) {
 
   if (!entity) {
     yield err(`Unknown entity: ${expr.name}`);
-    return FTLNone(expr.name);
+    return new FTLNone(expr.name);
   }
 
   return entity;
