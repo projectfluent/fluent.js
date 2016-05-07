@@ -38,8 +38,8 @@ function* DefaultMember(members) {
 // Half-resolved expressions evaluate to raw Runtime AST nodes
 
 function* EntityReference(expr) {
-  const rc = yield ask();
-  const entity = rc.ctx._getEntity(rc.lang, expr.name);
+  const { ctx, lang } = yield ask();
+  const entity = ctx._getEntity(lang, expr.name);
 
   if (!entity) {
     yield err(`Unknown entity: ${expr.name}`);
@@ -55,17 +55,17 @@ function* MemberExpression(expr) {
     return { val: entity };
   }
 
+  const { ctx, lang } = yield ask();
   const key = yield* Value(expr.key);
-  const rc = yield ask();
 
   for (let member of entity.traits) {
     const memberKey = yield* Value(member.key);
-    if (key.match(rc, memberKey)) {
+    if (key.match(ctx, lang, memberKey)) {
       return member;
     }
   }
 
-  yield err(`Unknown trait: ${key.toString(rc)}`);
+  yield err(`Unknown trait: ${key.toString(ctx, lang)}`);
   return {
     val: yield* Entity(entity)
   };
@@ -86,10 +86,10 @@ function* SelectExpression(expr) {
       return variant;
     }
 
-    const rc = yield ask();
+    const { ctx, lang } = yield ask();
 
     if (key instanceof FTLKeyword &&
-        key.match(rc, selector)) {
+        key.match(ctx, lang, selector)) {
       return variant;
     }
   }
@@ -197,14 +197,14 @@ function* CallExpression(expr) {
 }
 
 function* Pattern(ptn) {
-  const rc = yield ask();
+  const { ctx, lang, dirty } = yield ask();
 
-  if (rc.dirty.has(ptn)) {
+  if (dirty.has(ptn)) {
     yield err('Cyclic reference');
     return new FTLNone();
   }
 
-  rc.dirty.add(ptn);
+  dirty.add(ptn);
   let result = '';
 
   for (let part of ptn) {
@@ -214,7 +214,7 @@ function* Pattern(ptn) {
       const value = part.length === 1 ?
         yield* Value(part[0]) : yield* mapValues(part);
 
-      const str = value.toString(rc);
+      const str = value.toString(ctx, lang);
       if (str.length > MAX_PLACEABLE_LENGTH) {
         yield err(
           'Too many characters in placeable ' +
@@ -227,7 +227,7 @@ function* Pattern(ptn) {
     }
   }
 
-  rc.dirty.delete(ptn);
+  dirty.delete(ptn);
   return result;
 }
 
