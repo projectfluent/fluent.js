@@ -1,6 +1,8 @@
 import { L10nError } from './errors';
 import { format } from './resolver';
 
+const IntlObjects = new WeakMap();
+
 export class Context {
   constructor(env, langs, resIds) {
     this.langs = langs;
@@ -105,7 +107,15 @@ export class Context {
   }
 
   _memoizeIntlObject(ctor, {code}, opts) {
-    return new ctor(code, opts);
+    const cache = IntlObjects.get(ctor) || {};
+    const id = code + JSON.stringify(opts);
+
+    if (!cache[id]) {
+      cache[id] = new ctor(code, opts);
+      IntlObjects.set(ctor, cache);
+    }
+
+    return cache[id];
   }
 
 }
