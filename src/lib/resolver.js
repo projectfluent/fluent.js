@@ -37,30 +37,30 @@ function* DefaultMember(members) {
 
 // Half-resolved expressions evaluate to raw Runtime AST nodes
 
-function* EntityReference(expr) {
+function* EntityReference({name}) {
   const { ctx, lang } = yield ask();
-  const entity = ctx._getEntity(lang, expr.name);
+  const entity = ctx._getEntity(lang, name);
 
   if (!entity) {
-    yield err(`Unknown entity: ${expr.name}`);
-    return new FTLNone(expr.name);
+    yield err(`Unknown entity: ${name}`);
+    return new FTLNone(name);
   }
 
   return entity;
 }
 
-function* MemberExpression(expr) {
-  const entity = yield* EntityReference(expr.obj);
+function* MemberExpression({obj, key}) {
+  const entity = yield* EntityReference(obj);
   if (entity instanceof FTLNone) {
     return { val: entity };
   }
 
   const { ctx, lang } = yield ask();
-  const key = yield* Value(expr.key);
+  const keyword = yield* Value(key);
 
   for (let member of entity.traits) {
     const memberKey = yield* Value(member.key);
-    if (key.match(ctx, lang, memberKey)) {
+    if (keyword.match(ctx, lang, memberKey)) {
       return member;
     }
   }
@@ -71,13 +71,13 @@ function* MemberExpression(expr) {
   };
 }
 
-function* SelectExpression(expr) {
-  const selector = yield* Value(expr.exp);
+function* SelectExpression({exp, vars}) {
+  const selector = yield* Value(exp);
   if (selector instanceof FTLNone) {
-    return yield* DefaultMember(expr.vars);
+    return yield* DefaultMember(vars);
   }
 
-  for (let variant of expr.vars) {
+  for (let variant of vars) {
     const key = yield* Value(variant.key);
 
     if (key instanceof FTLNumber &&
@@ -94,7 +94,7 @@ function* SelectExpression(expr) {
     }
   }
 
-  return yield* DefaultMember(expr.vars);
+  return yield* DefaultMember(vars);
 }
 
 
@@ -134,8 +134,7 @@ function* Value(expr) {
   }
 }
 
-function* ExternalArgument(expr) {
-  const name = expr.name;
+function* ExternalArgument({name}) {
   const { args } = yield ask();
 
   if (!args || !args.hasOwnProperty(name)) {
@@ -163,19 +162,19 @@ function* ExternalArgument(expr) {
   }
 }
 
-function* BuiltinReference(expr) {
-  const builtin = builtins[expr.name];
+function* BuiltinReference({name}) {
+  const builtin = builtins[name];
 
   if (!builtin) {
-    yield err(`Unknown built-in: ${expr.name}()`);
-    return new FTLNone(`${expr.name}()`);
+    yield err(`Unknown built-in: ${name}()`);
+    return new FTLNone(`${name}()`);
   }
 
   return builtin;
 }
 
-function* CallExpression(expr) {
-  const callee = yield* BuiltinReference(expr.name);
+function* CallExpression({name, args}) {
+  const callee = yield* BuiltinReference(name);
 
   if (callee instanceof FTLNone) {
     return callee;
@@ -184,7 +183,7 @@ function* CallExpression(expr) {
   const posargs = [];
   const keyargs = [];
 
-  for (let arg of expr.args) {
+  for (let arg of args) {
     if (arg.type === 'kv') {
       keyargs[arg.name] = yield* Value(arg.val);
     } else {
