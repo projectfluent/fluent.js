@@ -10,13 +10,19 @@ class FTLBase {
   }
 }
 
+export class FTLNone extends FTLBase {
+  toString() {
+    return this.value || '???';
+  }
+}
+
 export class FTLNumber extends FTLBase {
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
-  toString(rc) {
-    const nf = rc.ctx._memoizeIntlObject(
-      L20nIntl.NumberFormat, rc.lang, this.opts
+  toString(ctx, lang) {
+    const nf = ctx._memoizeIntlObject(
+      L20nIntl.NumberFormat, lang, this.opts
     );
     return nf.format(this.value);
   }
@@ -26,9 +32,9 @@ export class FTLDateTime extends FTLBase {
   constructor(value, opts) {
     super(new Date(value), opts);
   }
-  toString(rc) {
-    const dtf = rc.ctx._memoizeIntlObject(
-      L20nIntl.DateTimeFormat, rc.lang, this.opts
+  toString(ctx, lang) {
+    const dtf = ctx._memoizeIntlObject(
+      L20nIntl.DateTimeFormat, lang, this.opts
     );
     return dtf.format(this.value);
   }
@@ -39,7 +45,7 @@ export class FTLKeyword extends FTLBase {
     const { name, namespace } = this.value;
     return namespace ? `${namespace}:${name}` : name;
   }
-  match(rc, other) {
+  match(ctx, lang, other) {
     const { name, namespace } = this.value;
     if (other instanceof FTLKeyword) {
       return name === other.value.name && namespace === other.value.namespace;
@@ -48,8 +54,8 @@ export class FTLKeyword extends FTLBase {
     } else if (typeof other === 'string') {
       return name === other;
     } else if (other instanceof FTLNumber) {
-      const pr = rc.ctx._memoizeIntlObject(
-        L20nIntl.PluralRules, rc.lang, other.opts
+      const pr = ctx._memoizeIntlObject(
+        L20nIntl.PluralRules, lang, other.opts
       );
       return name === pr.select(other.valueOf());
     }
@@ -57,17 +63,14 @@ export class FTLKeyword extends FTLBase {
 }
 
 export class FTLList extends Array {
-  toString(rc) {
-    const lf = rc.ctx._memoizeIntlObject(
-      L20nIntl.ListFormat, rc.lang // XXX add this.opts
+  toString(ctx, lang) {
+    const lf = ctx._memoizeIntlObject(
+      L20nIntl.ListFormat, lang // XXX add this.opts
     );
     const elems = this.map(
-      elem => elem.toString(rc)
+      elem => elem.toString(ctx, lang)
     );
     return lf.format(elems);
-  }
-  concat(elem) {
-    return FTLList.from([...this, elem]);
   }
 }
 

@@ -1,6 +1,7 @@
 import { L10nError } from './errors';
+import { resolve, ask, tell } from './readwrite';
 import builtins, {
-  FTLNumber, FTLDateTime, FTLKeyword, FTLList
+  FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
 } from './builtins';
 
 // Unicode bidi isolation characters
@@ -9,261 +10,254 @@ const PDI = '\u2069';
 
 const MAX_PLACEABLE_LENGTH = 2500;
 
-function mapValues(rc, arr) {
-  return arr.reduce(
-    ([valseq, errseq], cur) => {
-      const [value, errs] = Value(rc, cur);
-      return [valseq.concat(value), errseq.concat(errs)];
-    }, [new FTLList(), []]
-  );
+function* mapValues(arr) {
+  let values = new FTLList();
+  for (let elem of arr) {
+    values.push(yield* Value(elem));
+  }
+  return values;
 }
 
-function unit(val) {
-  return [val, []];
+function err(msg) {
+  return tell(new L10nError(msg));
 }
-
-function fail(val, err) {
-  return [val, [err]];
-}
-
-function flat([val, errs2], errs1) {
-  return [val, [...errs1, ...errs2]];
-}
-
 
 // Helper for choosing entity value
-
-function DefaultMember(members) {
+function* DefaultMember(members) {
   for (let member of members) {
     if (member.def) {
-      return unit(member);
+      return member;
     }
   }
 
-  return fail('???', new L10nError('No default'));
+  yield err('No default');
+  return { val: new FTLNone() };
 }
 
 
-// Half-resolved expressions
+// Half-resolved expressions evaluate to raw Runtime AST nodes
 
-function Expression(rc, expr) {
-  switch (expr.type) {
-    case 'ref':
-      return EntityReference(rc, expr);
-    case 'blt':
-      return BuiltinReference(rc, expr);
-    case 'mem':
-      return MemberExpression(rc, expr);
-    case 'sel':
-      return SelectExpression(rc, expr);
-    default:
-      return unit(expr);
-  }
-}
-
-function EntityReference(rc, expr) {
-  const entity = rc.ctx._getEntity(rc.lang, expr.name);
+function* EntityReference({name}) {
+  const { ctx, lang } = yield ask();
+  const entity = ctx._getEntity(lang, name);
 
   if (!entity) {
-    return fail(expr.name, new L10nError('Unknown entity: ' + expr.name));
+    yield err(`Unknown entity: ${name}`);
+    return new FTLNone(name);
   }
 
-  return unit(entity);
+  return entity;
 }
 
-function BuiltinReference(rc, expr) {
-  const builtin = builtins[expr.name];
-
-  if (!builtin) {
-    return fail(
-      expr.name + '()', new L10nError('Unknown built-in: ' + expr.name + '()')
-    );
+function* MemberExpression({obj, key}) {
+  const entity = yield* EntityReference(obj);
+  if (entity instanceof FTLNone) {
+    return { val: entity };
   }
 
-  return unit(builtin);
-}
-
-function MemberExpression(rc, expr) {
-  const [entity, errs] = Expression(rc, expr.obj);
-  if (errs.length) {
-    return [entity, errs];
-  }
-
-  const [key] = Value(rc, expr.key);
+  const { ctx, lang } = yield ask();
+  const keyword = yield* Value(key);
 
   for (let member of entity.traits) {
-    const [memberKey] = Value(rc, member.key);
-    if (key.match(rc, memberKey)) {
-      return unit(member);
+    const memberKey = yield* Value(member.key);
+    if (keyword.match(ctx, lang, memberKey)) {
+      return member;
     }
   }
 
-  return fail(entity, new L10nError('Unknown trait: ' + key.toString(rc)));
+  yield err(`Unknown trait: ${key.toString(ctx, lang)}`);
+  return {
+    val: yield* Entity(entity)
+  };
 }
 
-function SelectExpression(rc, expr) {
-  const [selector, errs] = Value(rc, expr.exp);
-  if (errs.length) {
-    return flat(DefaultMember(expr.vars), errs);
+function* SelectExpression({exp, vars}) {
+  const selector = yield* Value(exp);
+  if (selector instanceof FTLNone) {
+    return yield* DefaultMember(vars);
   }
 
-  for (let variant of expr.vars) {
-    const [key] = Value(rc, variant.key);
+  for (let variant of vars) {
+    const key = yield* Value(variant.key);
 
     if (key instanceof FTLNumber &&
         selector instanceof FTLNumber &&
         key.valueOf() === selector.valueOf()) {
-      return unit(variant);
+      return variant;
     }
 
+    const { ctx, lang } = yield ask();
+
     if (key instanceof FTLKeyword &&
-        key.match(rc, selector)) {
-      return unit(variant);
+        key.match(ctx, lang, selector)) {
+      return variant;
     }
   }
 
-  return DefaultMember(expr.vars);
+  return yield* DefaultMember(vars);
 }
 
 
-// Fully-resolved expressions
+// Fully-resolved expressions evaluate to FTL types
 
-function Value(rc, expr) {
-  if (typeof expr === 'string' || expr === null) {
-    return unit(expr);
+function* Value(expr) {
+  if (typeof expr === 'string' || expr instanceof FTLNone) {
+    return expr;
   }
 
   if (Array.isArray(expr)) {
-    return Pattern(rc, expr);
+    return yield* Pattern(expr);
   }
 
-  const [node, errs] = Expression(rc, expr);
-  if (errs.length) {
-    // Expression short-circuited into a simple string or a fallback
-    return flat(Value(rc, node), errs);
-  }
-
-  switch (node.type) {
+  switch (expr.type) {
     case 'kw':
-      return [new FTLKeyword(node), errs];
+      return new FTLKeyword(expr);
     case 'num':
-      return [new FTLNumber(node.val), errs];
+      return new FTLNumber(expr.val);
     case 'ext':
-      return flat(ExternalArgument(rc, node), errs);
+      return yield* ExternalArgument(expr);
+    case 'blt':
+      return yield* BuiltinReference(expr);
     case 'call':
-      return flat(CallExpression(rc, expr), errs);
+      return yield* CallExpression(expr);
+    case 'ref':
+      const ref = yield* EntityReference(expr);
+      return yield* Entity(ref);
+    case 'mem':
+      const mem = yield* MemberExpression(expr);
+      return yield* Value(mem.val);
+    case 'sel':
+      const sel = yield* SelectExpression(expr);
+      return yield* Value(sel.val);
     default:
-      return node.key ? // is it a Member?
-        flat(Value(rc, node.val), errs) :
-        flat(Entity(rc, node), errs);
+      return yield* Value(expr.val);
   }
 }
 
-function ExternalArgument(rc, expr) {
-  const name = expr.name;
-  const args = rc.args;
+function* ExternalArgument({name}) {
+  const { args } = yield ask();
 
   if (!args || !args.hasOwnProperty(name)) {
-    return fail(name, new L10nError('Unknown external: ' + name));
+    yield err(`Unknown external: ${name}`);
+    return new FTLNone(name);
   }
 
   const arg = args[name];
 
   switch (typeof arg) {
     case 'string':
-      return unit(arg);
+      return arg;
     case 'number':
-      return unit(new FTLNumber(arg));
+      return new FTLNumber(arg);
     case 'object':
       if (Array.isArray(arg)) {
-        return mapValues(rc, arg);
+        return yield* mapValues(arg);
       }
       if (arg instanceof Date) {
-        return unit(new FTLDateTime(arg));
+        return new FTLDateTime(arg);
       }
     default:
-      return fail(name, new L10nError(
-        'Unsupported external type: ' + name + ', ' + typeof arg
-      ));
+      yield err('Unsupported external type: ' + name + ', ' + typeof arg);
+      return new FTLNone(name);
   }
 }
 
-function CallExpression(rc, expr) {
-  const [callee, errs1] = Expression(rc, expr.name);
-  if (errs1.length) {
-    return [callee, errs1];
+function* BuiltinReference({name}) {
+  const builtin = builtins[name];
+
+  if (!builtin) {
+    yield err(`Unknown built-in: ${name}()`);
+    return new FTLNone(`${name}()`);
   }
 
-  const [pargs, kargs, errs2] = expr.args.reduce(
-    ([pargseq, kargseq, errseq], arg) => {
-      if (arg.type === 'kv') {
-        const [val, errs] = Value(rc, arg.val);
-        kargseq[arg.name] = val;
-        return [pargseq, kargseq, [...errseq, ...errs]];
-      } else {
-        const [val, errs] = Value(rc, arg);
-        return [[...pargseq, val], kargseq, [...errseq, ...errs]];
-      }
-    }, [[], {}, []]);
-  return [callee(pargs, kargs), errs2];
+  return builtin;
 }
 
-function Pattern(rc, ptn) {
-  if (rc.dirty.has(ptn)) {
-    return fail('???', new L10nError('Cyclic reference'));
+function* CallExpression({name, args}) {
+  const callee = yield* BuiltinReference(name);
+
+  if (callee instanceof FTLNone) {
+    return callee;
   }
 
-  rc.dirty.add(ptn);
+  const posargs = [];
+  const keyargs = [];
 
-  const rv = ptn.reduce(([valseq, errseq], elem) => {
-    if (typeof elem === 'string') {
-      return [valseq + elem, errseq];
+  for (let arg of args) {
+    if (arg.type === 'kv') {
+      keyargs[arg.name] = yield* Value(arg.val);
     } else {
-      const [value, errs] = elem.length === 1 ?
-        Value(rc, elem[0]) : mapValues(rc, elem);
-      const str = value.toString(rc);
-      if (str.length > MAX_PLACEABLE_LENGTH) {
-        return [
-          valseq + FSI + str.substr(0, MAX_PLACEABLE_LENGTH) + PDI,
-          [...errseq, ...errs, new L10nError(
-            'Too many characters in placeable ' +
-            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
-          )]
-        ];
-      }
-      return [
-        valseq + FSI + str + PDI, [...errseq, ...errs],
-      ];
+      posargs.push(yield* Value(arg));
     }
-
-  }, ['', []]);
-
-  rc.dirty.delete(ptn);
-  return rv;
-}
-
-function Entity(rc, entity) {
-  if (!entity.traits) {
-    return Value(rc, entity);
   }
 
+  // XXX builtins should also returns [val, errs] tuples
+  return callee(posargs, keyargs);
+}
+
+function* Pattern(ptn) {
+  const { ctx, lang, dirty } = yield ask();
+
+  if (dirty.has(ptn)) {
+    yield err('Cyclic reference');
+    return new FTLNone();
+  }
+
+  dirty.add(ptn);
+  let result = '';
+
+  for (let part of ptn) {
+    if (typeof part === 'string') {
+      result += part;
+    } else {
+      const value = part.length === 1 ?
+        yield* Value(part[0]) : yield* mapValues(part);
+
+      const str = value.toString(ctx, lang);
+      if (str.length > MAX_PLACEABLE_LENGTH) {
+        yield err(
+          'Too many characters in placeable ' +
+          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        );
+        result += FSI + str.substr(0, MAX_PLACEABLE_LENGTH) + PDI;
+      } else {
+        result += FSI + str + PDI;
+      }
+    }
+  }
+
+  dirty.delete(ptn);
+  return result;
+}
+
+function* Entity(entity) {
   if (entity.val !== undefined) {
-    return Value(rc, entity.val);
+    return yield* Value(entity.val);
   }
 
-  const [def, errs] = DefaultMember(entity.traits);
-  return flat(Value(rc, def), errs);
+  if (!entity.traits) {
+    return yield* Value(entity);
+  }
+
+  const def = yield* DefaultMember(entity.traits);
+  return yield* Value(def);
 }
 
+function* toString(entity) {
+  const value = yield* Entity(entity);
+
+  // at this point we don't need the current resolution context; value can 
+  // either be a simple string (which doesn't need it by definition) or 
+  // a pattern which has already been resolved in Pattern, or FTLNone.
+  return value.toString();
+}
 
 export function format(ctx, lang, args, entity) {
-  // rc is the current resolution context
-  const rc = {
-    ctx,
-    lang,
-    args,
-    dirty: new WeakSet()
-  };
+  if (typeof entity === 'string') {
+    return [entity, []];
+  }
 
-  return Value(rc, entity);
+  return resolve(toString(entity)).run({
+    ctx, lang, args, dirty: new WeakSet()
+  });
 }
