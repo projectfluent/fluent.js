@@ -20,8 +20,8 @@ export class FTLNumber extends FTLBase {
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
-  toString(ctx, lang) {
-    const nf = ctx._memoizeIntlObject(
+  toString(bundle, lang) {
+    const nf = bundle._memoizeIntlObject(
       L20nIntl.NumberFormat, lang, this.opts
     );
     return nf.format(this.value);
@@ -32,8 +32,8 @@ export class FTLDateTime extends FTLBase {
   constructor(value, opts) {
     super(new Date(value), opts);
   }
-  toString(ctx, lang) {
-    const dtf = ctx._memoizeIntlObject(
+  toString(bundle, lang) {
+    const dtf = bundle._memoizeIntlObject(
       L20nIntl.DateTimeFormat, lang, this.opts
     );
     return dtf.format(this.value);
@@ -45,7 +45,7 @@ export class FTLKeyword extends FTLBase {
     const { name, namespace } = this.value;
     return namespace ? `${namespace}:${name}` : name;
   }
-  match(ctx, lang, other) {
+  match(bundle, lang, other) {
     const { name, namespace } = this.value;
     if (other instanceof FTLKeyword) {
       return name === other.value.name && namespace === other.value.namespace;
@@ -54,7 +54,7 @@ export class FTLKeyword extends FTLBase {
     } else if (typeof other === 'string') {
       return name === other;
     } else if (other instanceof FTLNumber) {
-      const pr = ctx._memoizeIntlObject(
+      const pr = bundle._memoizeIntlObject(
         L20nIntl.PluralRules, lang, other.opts
       );
       return name === pr.select(other.valueOf());
@@ -63,12 +63,12 @@ export class FTLKeyword extends FTLBase {
 }
 
 export class FTLList extends Array {
-  toString(ctx, lang) {
-    const lf = ctx._memoizeIntlObject(
+  toString(bundle, lang) {
+    const lf = bundle._memoizeIntlObject(
       L20nIntl.ListFormat, lang // XXX add this.opts
     );
     const elems = this.map(
-      elem => elem.toString(ctx, lang)
+      elem => elem.toString(bundle, lang)
     );
     return lf.format(elems);
   }

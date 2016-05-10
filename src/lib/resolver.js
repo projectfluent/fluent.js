@@ -38,8 +38,8 @@ function* DefaultMember(members) {
 // Half-resolved expressions evaluate to raw Runtime AST nodes
 
 function* EntityReference({name}) {
-  const { ctx, lang } = yield ask();
-  const entity = ctx._getEntity(lang, name);
+  const { bundle } = yield ask();
+  const { entity } = bundle.get(name);
 
   if (!entity) {
     yield err(`Unknown entity: ${name}`);
@@ -55,17 +55,17 @@ function* MemberExpression({obj, key}) {
     return { val: entity };
   }
 
-  const { ctx, lang } = yield ask();
+  const { bundle, lang } = yield ask();
   const keyword = yield* Value(key);
 
   for (let member of entity.traits) {
     const memberKey = yield* Value(member.key);
-    if (keyword.match(ctx, lang, memberKey)) {
+    if (keyword.match(bundle, lang, memberKey)) {
       return member;
     }
   }
 
-  yield err(`Unknown trait: ${key.toString(ctx, lang)}`);
+  yield err(`Unknown trait: ${key.toString(bundle, lang)}`);
   return {
     val: yield* Entity(entity)
   };
@@ -86,10 +86,10 @@ function* SelectExpression({exp, vars}) {
       return variant;
     }
 
-    const { ctx, lang } = yield ask();
+    const { bundle, lang } = yield ask();
 
     if (key instanceof FTLKeyword &&
-        key.match(ctx, lang, selector)) {
+        key.match(bundle, lang, selector)) {
       return variant;
     }
   }
@@ -196,7 +196,7 @@ function* CallExpression({name, args}) {
 }
 
 function* Pattern(ptn) {
-  const { ctx, lang, dirty } = yield ask();
+  const { bundle, lang, dirty } = yield ask();
 
   if (dirty.has(ptn)) {
     yield err('Cyclic reference');
@@ -213,7 +213,7 @@ function* Pattern(ptn) {
       const value = part.length === 1 ?
         yield* Value(part[0]) : yield* mapValues(part);
 
-      const str = value.toString(ctx, lang);
+      const str = value.toString(bundle, lang);
       if (str.length > MAX_PLACEABLE_LENGTH) {
         yield err(
           'Too many characters in placeable ' +
@@ -252,12 +252,12 @@ function* toString(entity) {
   return value.toString();
 }
 
-export function format(ctx, lang, args, entity) {
+export function format(bundle, lang, args, entity) {
   if (typeof entity === 'string') {
     return [entity, []];
   }
 
   return resolve(toString(entity)).run({
-    ctx, lang, args, dirty: new WeakSet()
+    bundle, lang, args, dirty: new WeakSet()
   });
 }

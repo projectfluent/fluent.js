@@ -2,9 +2,8 @@ import 'string.prototype.startswith';
 import 'string.prototype.endswith';
 
 export { fetchResource } from './io';
-export { Env } from '../../lib/env';
+export { Context } from '../../lib/context';
 
-export { format } from '../../lib/resolver';
 export { default as FTLASTParser } from
   '../../lib/format/ftl/ast/parser';
 export { default as FTLEntriesParser } from
