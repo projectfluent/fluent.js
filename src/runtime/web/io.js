@@ -2,19 +2,15 @@ import { L10nError } from '../../lib/errors';
 
 const HTTP_STATUS_CODE_OK = 200;
 
-function load(type, url) {
+function load(url) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
     if (xhr.overrideMimeType) {
-      xhr.overrideMimeType(type);
+      xhr.overrideMimeType('text/plain');
     }
 
     xhr.open('GET', url, true);
-
-    if (type === 'application/json') {
-      xhr.responseType = 'json';
-    }
 
     xhr.addEventListener('load', e => {
       if (e.target.status === HTTP_STATUS_CODE_OK ||
@@ -41,21 +37,7 @@ function load(type, url) {
   });
 }
 
-const io = {
-  app: function(code, ver, path, type) {
-    switch (type) {
-      case 'text':
-        return load('text/plain', path);
-      case 'json':
-        return load('application/json', path);
-      default:
-        throw new L10nError('Unknown file type: ' + type);
-    }
-  },
-};
-
-export function fetchResource(res, { code, src, ver }) {
+export function fetchResource(res, { code }) {
   const url = res.replace('{locale}', code);
-  const type = res.endsWith('.json') ? 'json' : 'text';
-  return io[src](code, ver, url, type);
+  return load(url);
 }

@@ -26,10 +26,8 @@ Include the following code in the `<head>` section of your HTML:
 <script defer src="dist/bundle/web/l20n.js"></script>
 ```
 
-L20n.js supports two kinds of translation resources:
-
- - FTL syntax, as documented at http://l20n.org/learn/,
- - JSON files parsed by `tools/parse.js -o runtime`.
+L20n.js supports FTL translation resources, as documented at 
+http://l20n.org/learn/.
 
 
 What L20n's syntax looks like

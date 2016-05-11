@@ -8,9 +8,6 @@ export class Env {
     this.resCache = new Map();
     this.resRefs = new Map();
     this.builtins = null;
-    this.parsers = {
-      ftl: FTLEntriesParser
-    };
   }
 
   createContext(langs, resIds) {
@@ -37,15 +34,6 @@ export class Env {
     });
   }
 
-  _parse(syntax, lang, data) {
-    const parser = this.parsers[syntax];
-    if (!parser) {
-      return [data];
-    }
-
-    return parser.parseResource(data);
-  }
-
   _getResource(lang, res) {
     const cache = this.resCache;
     const id = res + lang.code + lang.src;
@@ -54,10 +42,8 @@ export class Env {
       return cache.get(id);
     }
 
-    const syntax = res.substr(res.lastIndexOf('.') + 1);
-
     const saveEntries = data => {
-      const [entries] = this._parse(syntax, lang, data);
+      const [entries] = FTLEntriesParser.parseResource(data);
       cache.set(id, entries);
     };
 

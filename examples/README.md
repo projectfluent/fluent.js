@@ -10,17 +10,9 @@ for more information.
 [main README]: ../README.md
 
 
-regular.html
+web.html
 ------------
 
 This is the basic example of l20n.js in action, with no I/O optimizations.  The 
 localization resources are defined in `head`.  l20n.js fetches the properties 
 files relevant to the user's preferred language.
-
-
-concat.html
------------
-
-In this example, the localization resources have been parsed and concatenated 
-into a single JSON file for each language.  This allows to avoid the I/O 
-of fetching multiple resource files and parsing them.
