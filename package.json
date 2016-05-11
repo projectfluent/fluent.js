@@ -35,7 +35,6 @@
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.7.7",
     "babel-register": "^6.7.2",
-    "bridge": "gaia-components/bridge",
     "colors": "^1.1.2",
     "commander": "^2.9",
     "eslint": "^2.8.0",

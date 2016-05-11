@@ -1,10 +1,8 @@
 import { fetchResource } from './io';
-import { Client, broadcast } from './bridge';
-import { Remote } from '../../bindings/html/remote';
+import { Env } from '../../lib/env';
 import { View } from '../../bindings/html/view';
 
-const remote = new Remote(fetchResource, broadcast);
-const client = new Client(remote);
-document.l10n = new View(client, document);
+const env = new Env(fetchResource);
+document.l10n = new View(env, document);
 
 window.addEventListener('languagechange', document.l10n);

@@ -1,3 +1,5 @@
+import { pseudo } from '../../lib/pseudo';
+import { negotiateLanguages } from './langs';
 import { documentReady, getDirection } from './shims';
 import { getResourceLinks, getMeta } from './head';
 import {
@@ -10,31 +12,29 @@ import {
 const viewProps = new WeakMap();
 
 export class View {
-  constructor(client, doc) {
+  constructor(env, doc) {
     this.pseudo = {
       'fr-x-psaccent': createPseudo(this, 'fr-x-psaccent'),
       'ar-x-psbidi': createPseudo(this, 'ar-x-psbidi')
     };
 
-    const initialized = documentReady().then(() => init(this, client));
-    this._interactive = initialized.then(() => client);
-    this.ready = initialized.then(langs => translateView(this, langs));
+    this.interactive = documentReady().then(() => init(this));
+    this.ready = this.interactive.then(
+      ({langs}) => translateView(this, langs).then(
+        () => langs
+      )
+    );
     initMutationObserver(this);
 
     viewProps.set(this, {
-      doc: doc,
-      ready: false
+      doc, env, ready: false
     });
-
-    client.on('languageschangerequest',
-      requestedLangs => this.requestLanguages(requestedLangs));
   }
 
-  requestLanguages(requestedLangs, isGlobal) {
-    const method = isGlobal ?
-      (client => client.method('requestLanguages', requestedLangs)) :
-      (client => changeLanguages(this, client, requestedLangs));
-    return this._interactive.then(method);
+  requestLanguages(requestedLangs) {
+    return this.ready = this.interactive.then(
+      ({langs, ctx}) => changeLanguages(this, ctx, langs, requestedLangs)
+    );
   }
 
   handleEvent() {
@@ -42,19 +42,21 @@ export class View {
   }
 
   formatEntities(...keys) {
-    return this._interactive.then(
-      client => client.method('formatEntities', client.id, keys));
+    return this.interactive.then(
+      ({ctx}) => ctx.formatEntities(...keys)
+    );
   }
 
   formatValue(id, args) {
-    return this._interactive.then(
-      client => client.method('formatValues', client.id, [[id, args]])).then(
-      values => values[0]);
+    return this.interactive
+      .then(({ctx}) => ctx.formatValues([id, args]))
+      .then(([val]) => val);
   }
 
   formatValues(...keys) {
-    return this._interactive.then(
-      client => client.method('formatValues', client.id, keys));
+    return this.interactive.then(
+      ({ctx}) => ctx.formatValues(...keys)
+    );
   }
 
   translateFragment(frag) {
@@ -75,30 +77,42 @@ View.prototype.getAttributes = getAttributes;
 
 function createPseudo(view, code) {
   return {
-    getName: () => view._interactive.then(
-      client => client.method('getName', code)),
-    processString: str => view._interactive.then(
-      client => client.method('processString', code, str)),
+    getName() { return pseudo[code].name; },
+    processString(code, str) {
+      return pseudo[code].process(str);
+    }
   };
 }
 
-function init(view, client) {
-  const doc = viewProps.get(view).doc;
-  const resources = getResourceLinks(doc.head);
-  const meta = getMeta(doc.head);
-  view.observeRoot(doc.documentElement);
-  return client.method(
-    'registerView', client.id, resources, meta, navigator.languages
-  );
+function init(view) {
+  const props = viewProps.get(view);
+  const resources = getResourceLinks(props.doc.head);
+  const meta = getMeta(props.doc.head);
+
+  view.observeRoot(props.doc.documentElement);
+  const { langs } = negotiateLanguages(meta, [], navigator.languages);
+  const ctx = props.env.createContext(langs, resources);
+
+  return { langs, ctx };
 }
 
-function changeLanguages(view, client, requestedLangs) {
-  const doc = viewProps.get(view).doc;
+function changeLanguages(view, oldCtx, prevLangs, requestedLangs) {
+  const { doc, env } = viewProps.get(view);
   const meta = getMeta(doc.head);
-  return client.method(
-    'changeLanguages', client.id, meta, requestedLangs
-  ).then(({langs, haveChanged}) => haveChanged ?
-    translateView(view, langs) : undefined
+
+  const { langs, haveChanged } = negotiateLanguages(
+    meta, prevLangs, requestedLangs
+  );
+
+  if (!haveChanged) {
+    return langs;
+  }
+
+  const ctx = env.createContext(langs, oldCtx.resIds);
+  view.interactive = Promise.resolve({langs, ctx});
+
+  return translateView(view, langs).then(
+    () => langs
   );
 }
 
