@@ -1,7 +1,6 @@
 import { Context } from './context';
 import FTLEntriesParser from './format/ftl/entries/parser';
 import { walkEntry, pseudo } from './pseudo';
-import { emit, addEventListener, removeEventListener } from './events';
 
 export class Env {
   constructor(fetchResource) {
@@ -13,11 +12,6 @@ export class Env {
     this.parsers = {
       ftl: FTLEntriesParser
     };
-
-    const listeners = {};
-    this.emit = emit.bind(this, listeners);
-    this.addEventListener = addEventListener.bind(this, listeners);
-    this.removeEventListener = removeEventListener.bind(this, listeners);
   }
 
   createContext(langs, resIds) {
@@ -83,7 +77,6 @@ export class Env {
 
     const recover = err => {
       err.lang = lang;
-      this.emit('fetcherror', err);
       cache.set(id, err);
     };
 
