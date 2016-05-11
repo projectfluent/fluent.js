@@ -13,7 +13,7 @@ class ParseContext {
     this._length = string.length;
 
     this._lastGoodEntryEnd = 0;
-    this._currentBlock = null;
+    this._section = null;
   }
 
   _isIdentifierStart(cc) {
@@ -27,7 +27,7 @@ class ParseContext {
     const errors = [];
     let comment = null;
 
-    this._currentBlock = resource.body;
+    let section = resource.body;
 
     if (this._source[this._index] === '#') {
       comment = this.getComment();
@@ -42,13 +42,19 @@ class ParseContext {
     this.getWS();
     while (this._index < this._length) {
       try {
-        this._currentBlock.push(this.getEntry(comment));
+        const entry = this.getEntry(comment);
+        if (entry.type === 'Section') {
+          resource.body.push(entry);
+          section = entry.body;
+        } else {
+          section.push(entry);
+        }
         this._lastGoodEntryEnd = this._index;
         comment = null;
       } catch (e) {
         if (e instanceof L10nError) {
           errors.push(e);
-          this._currentBlock.push(this.getJunkEntry());
+          section.push(this.getJunkEntry());
         } else {
           throw e;
         }
@@ -103,9 +109,7 @@ class ParseContext {
 
     this._index += 2;
 
-    const section = new AST.Section(key, [], comment);
-    this._currentBlock = section.body;
-    return section;
+    return new AST.Section(key, [], comment);
   }
 
   getEntity(comment = null) {
