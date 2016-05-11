@@ -4,7 +4,7 @@ L20n Examples
 This directory contains example HTML files which are ready to be used in the 
 browser.  It runs a built version of l20n.js which can be included in an HTML 
 page with a single `<script>` element.  In order to make it work, you'll need 
-to run `grunt build` first.  See the [main README][] in the root of the repo 
+to run `make build` first.  See the [main README][] in the root of the repo 
 for more information.
 
 [main README]: ../README.md
