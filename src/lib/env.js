@@ -40,7 +40,7 @@ export class Env {
   _parse(syntax, lang, data) {
     const parser = this.parsers[syntax];
     if (!parser) {
-      return data;
+      return [data];
     }
 
     return parser.parseResource(data);

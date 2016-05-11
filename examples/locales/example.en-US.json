@@ -1,48 +1,60 @@
 {
   "title": "l20n.js example",
   "world": "world",
-  "hello": {
-    "value": [
-      "Hello, <em>",
+  "hello": [
+    "Hello, <em>",
+    [
       {
-        "type": "id",
+        "type": "ref",
         "name": "world"
-      },
-      "</em>!"
-    ]
-  },
+      }
+    ],
+    "</em>!"
+  ],
   "name": "Type <input placeholder=\"your name\"> and <input value=\"send\">",
-  "unreadEmails": {
-    "value": {
-      "one": "You have one unread email",
-      "other": [
-        "You have ",
-        {
-          "type": "var",
-          "name": "emailCount"
-        },
-        " unread emails"
-      ]
-    },
-    "index": [
+  "unreadEmails": [
+    [
       {
-        "type": "call",
-        "expr": {
-          "type": "prop",
-          "expr": {
-            "type": "glob",
-            "name": "cldr"
+        "type": "sel",
+        "exp": {
+          "type": "call",
+          "name": {
+            "type": "blt",
+            "name": "PLURAL"
           },
-          "prop": "plural",
-          "cmpt": false
+          "args": [
+            {
+              "type": "ext",
+              "name": "emailCount"
+            }
+          ]
         },
-        "args": [
+        "vars": [
           {
-            "type": "var",
-            "name": "emailCount"
+            "key": {
+              "type": "kw",
+              "name": "one"
+            },
+            "val": "You have one unread email"
+          },
+          {
+            "key": {
+              "type": "kw",
+              "name": "other"
+            },
+            "val": [
+              "You have ",
+              [
+                {
+                  "type": "ext",
+                  "name": "emailCount"
+                }
+              ],
+              " unread emails"
+            ]
           }
         ]
       }
     ]
-  }
+  ]
 }

@@ -1,48 +1,14 @@
 {
-  "title": "Exemple de l20n.js",
+  "title": "Un exemple de l20n.js",
   "world": "le monde",
-  "hello": {
-    "value": [
-      "Salut <em>",
+  "hello": [
+    "Salut, <em>",
+    [
       {
-        "type": "id",
+        "type": "ref",
         "name": "world"
-      },
-      "</em> !"
-    ]
-  },
-  "name": "Ecrivez <input placeholder=\"votre nom\"> et <input value=\"envoyez\">.",
-  "unreadEmails": {
-    "value": {
-      "one": "Vous avez un email non lu.",
-      "other": [
-        "Vous avez ",
-        {
-          "type": "var",
-          "name": "emailCount"
-        },
-        " emails non lus."
-      ]
-    },
-    "index": [
-      {
-        "type": "call",
-        "expr": {
-          "type": "prop",
-          "expr": {
-            "type": "glob",
-            "name": "cldr"
-          },
-          "prop": "plural",
-          "cmpt": false
-        },
-        "args": [
-          {
-            "type": "var",
-            "name": "emailCount"
-          }
-        ]
       }
-    ]
-  }
+    ],
+    "</em>!"
+  ]
 }
