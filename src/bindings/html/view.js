@@ -42,9 +42,9 @@ export class View {
   }
 
   formatValue(id, args) {
-    return this.interactive.then(
-      ctx => ctx.formatValues([id, args])[0]
-    );
+    return this.interactive
+      .then(ctx => ctx.formatValues([id, args]))
+      .then(([val]) => val);
   }
 
   formatValues(...keys) {
