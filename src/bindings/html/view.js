@@ -87,31 +87,19 @@ function init(view, client) {
   const resources = getResourceLinks(doc.head);
   const meta = getMeta(doc.head);
   view.observeRoot(doc.documentElement);
-  return getAdditionalLanguages().then(
-    additionalLangs => client.method(
-      'registerView', client.id, resources, meta, additionalLangs,
-      navigator.languages));
+  return client.method(
+    'registerView', client.id, resources, meta, navigator.languages
+  );
 }
 
 function changeLanguages(view, client, requestedLangs) {
   const doc = viewProps.get(view).doc;
   const meta = getMeta(doc.head);
-  return getAdditionalLanguages()
-    .then(additionalLangs => client.method(
-      'changeLanguages', client.id, meta, additionalLangs, requestedLangs
-    ))
-    .then(({langs, haveChanged}) => haveChanged ?
-      translateView(view, langs) : undefined
-    );
-}
-
-function getAdditionalLanguages() {
-  if (navigator.mozApps && navigator.mozApps.getAdditionalLanguages) {
-    return navigator.mozApps.getAdditionalLanguages()
-      .catch(() => Object.create(null));
-  }
-
-  return Promise.resolve(Object.create(null));
+  return client.method(
+    'changeLanguages', client.id, meta, requestedLangs
+  ).then(({langs, haveChanged}) => haveChanged ?
+    translateView(view, langs) : undefined
+  );
 }
 
 export function translateView(view, langs) {

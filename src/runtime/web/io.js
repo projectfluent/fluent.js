@@ -42,10 +42,6 @@ function load(type, url) {
 }
 
 const io = {
-  extra: function(code, ver, path, type) {
-    return navigator.mozApps.getLocalizationResource(
-      code, ver, path, type);
-  },
   app: function(code, ver, path, type) {
     switch (type) {
       case 'text':

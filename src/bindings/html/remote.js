@@ -9,9 +9,8 @@ export class Remote {
     this.ctxs = new Map();
   }
 
-  registerView(view, resources, meta, additionalLangs, requestedLangs) {
-    const { langs } = negotiateLanguages(
-      meta, additionalLangs, [], requestedLangs);
+  registerView(view, resources, meta, requestedLangs) {
+    const { langs } = negotiateLanguages(meta, [], requestedLangs);
     this.ctxs.set(view, this.env.createContext(langs, resources));
     return langs;
   }
@@ -29,13 +28,11 @@ export class Remote {
     return this.ctxs.get(view).formatValues(...keys);
   }
 
-  changeLanguages(view, meta, additionalLangs, requestedLangs) {
+  changeLanguages(view, meta, requestedLangs) {
     const oldCtx = this.ctxs.get(view);
     const prevLangs = oldCtx.langs;
-    const newLangs = negotiateLanguages(
-      meta, additionalLangs, prevLangs, requestedLangs);
-    this.ctxs.set(view, this.env.createContext(
-      newLangs.langs, oldCtx.resIds));
+    const newLangs = negotiateLanguages(meta, prevLangs, requestedLangs);
+    this.ctxs.set(view, this.env.createContext(newLangs.langs, oldCtx.resIds));
     return newLangs;
   }
 

@@ -8,4 +8,3 @@ const client = new Client(remote);
 document.l10n = new View(client, document);
 
 window.addEventListener('languagechange', document.l10n);
-document.addEventListener('additionallanguageschange', document.l10n);
