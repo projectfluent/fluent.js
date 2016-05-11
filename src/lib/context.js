@@ -1,13 +1,29 @@
 import { Bundle } from './bundle';
+import { L10nError } from './errors';
 
 export class Context {
-  constructor(resources, langobjs) {
+  constructor(langs, resIds) {
+    this.langs = langs;
+    this.resIds = resIds;
+  }
+
+  formatValues() {
+    throw new L10nError('Not implemented');
+  }
+
+  formatEntities() {
+    throw new L10nError('Not implemented');
+  }
+}
+
+export class SimpleContext extends Context {
+  constructor(langs, resIds, resources) {
+    super(langs, resIds);
     const goodResources = resources.filter(
       res => !(res instanceof Error)
     );
-    this.langs = langobjs;
     // shouldn't need to pass languages here
-    this.bundle = new Bundle(resources, langobjs[0].code);
+    this.bundle = new Bundle(resources, langs[0].code);
   }
 
   _formatKeys(keys, method) {
@@ -30,15 +46,12 @@ export class Context {
   }
 }
 
-Context.create = function(fetchResource, langobjs, resIds) {
-  // XXX support more than one lang
-  const [first] = langobjs;
+SimpleContext.create = function(fetchResource, langs, resIds) {
+  const [first] = langs;
 
   return Promise.all(
     resIds.map(resId => fetchResource(resId, first))
   ).then(
-    resources => {
-      return new Context(resources, langobjs)
-    }
+    resources => new SimpleContext(langs, resIds, resources)
   );
 }

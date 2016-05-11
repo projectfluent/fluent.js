@@ -1,2 +1,2 @@
 export { fetchResource } from './io';
-export { Context } from '../../lib/context';
+export { Context, SimpleContext } from '../../lib/context';

@@ -2,7 +2,7 @@ import 'string.prototype.startswith';
 import 'string.prototype.endswith';
 
 export { fetchResource } from './io';
-export { Context } from '../../lib/context';
+export { Context, SimpleContext } from '../../lib/context';
 
 export { default as FTLASTParser } from
   '../../lib/format/ftl/ast/parser';
