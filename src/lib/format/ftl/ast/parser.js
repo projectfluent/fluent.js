@@ -13,7 +13,6 @@ class ParseContext {
     this._length = string.length;
 
     this._lastGoodEntryEnd = 0;
-    this._section = null;
   }
 
   _isIdentifierStart(cc) {
