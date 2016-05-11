@@ -1,6 +1,5 @@
 import { Context } from './context';
 import FTLEntriesParser from './format/ftl/entries/parser';
-import { walkEntry, pseudo } from './pseudo';
 
 export class Env {
   constructor(fetchResource) {
@@ -47,19 +46,6 @@ export class Env {
     return parser.parseResource(data);
   }
 
-  _create(lang, entries) {
-    if (lang.src !== 'pseudo') {
-      return entries;
-    }
-
-    const pseudoentries = Object.create(null);
-    for (let key in entries) {
-      pseudoentries[key] = walkEntry(
-        entries[key], pseudo[lang.code].process);
-    }
-    return pseudoentries;
-  }
-
   _getResource(lang, res) {
     const cache = this.resCache;
     const id = res + lang.code + lang.src;
@@ -72,7 +58,7 @@ export class Env {
 
     const saveEntries = data => {
       const [entries] = this._parse(syntax, lang, data);
-      cache.set(id, this._create(lang, entries));
+      cache.set(id, entries);
     };
 
     const recover = err => {
@@ -80,11 +66,7 @@ export class Env {
       cache.set(id, err);
     };
 
-    const langToFetch = lang.src === 'pseudo' ?
-      { code: 'en-US', src: 'app', ver: lang.ver } :
-      lang;
-
-    const resource = this.fetchResource(res, langToFetch)
+    const resource = this.fetchResource(res, lang)
       .then(saveEntries, recover);
 
     cache.set(id, resource);

@@ -1,4 +1,3 @@
-import { pseudo } from '../../lib/pseudo';
 import { negotiateLanguages } from './langs';
 import { documentReady, getDirection } from './shims';
 import { getResourceLinks, getMeta } from './head';
@@ -13,11 +12,6 @@ const viewProps = new WeakMap();
 
 export class View {
   constructor(env, doc) {
-    this.pseudo = {
-      'fr-x-psaccent': createPseudo(this, 'fr-x-psaccent'),
-      'ar-x-psbidi': createPseudo(this, 'ar-x-psbidi')
-    };
-
     this.interactive = documentReady().then(() => init(this));
     this.ready = this.interactive.then(
       ({langs}) => translateView(this, langs).then(
@@ -74,15 +68,6 @@ export class View {
 
 View.prototype.setAttributes = setAttributes;
 View.prototype.getAttributes = getAttributes;
-
-function createPseudo(view, code) {
-  return {
-    getName() { return pseudo[code].name; },
-    processString(code, str) {
-      return pseudo[code].process(str);
-    }
-  };
-}
 
 function init(view) {
   const props = viewProps.get(view);

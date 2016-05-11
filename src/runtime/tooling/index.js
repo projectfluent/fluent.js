@@ -10,7 +10,6 @@ import { Env } from '../../lib/env';
 import { L10nError } from '../../lib/errors';
 import { prioritizeLocales } from '../../lib/intl';
 import { MockContext, lang } from '../../lib/mocks';
-import { walkEntry, walkValue, pseudo } from '../../lib/pseudo';
 import { format } from '../../lib/resolver';
 
 export default {
@@ -18,5 +17,5 @@ export default {
   FTLASTParser, FTLEntriesParser, createEntriesFromAST,
   Context, Env, L10nError,
   prioritizeLocales, MockContext, lang,
-  walkEntry, walkValue, pseudo, format
+  format
 };
