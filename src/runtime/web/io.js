@@ -23,17 +23,7 @@ function load(url) {
     xhr.addEventListener('error', reject);
     xhr.addEventListener('timeout', reject);
 
-    // the app: protocol throws on 404, see https://bugzil.la/827243
-    try {
-      xhr.send(null);
-    } catch (e) {
-      if (e.name === 'NS_ERROR_FILE_NOT_FOUND') {
-        // the app: protocol throws on 404, see https://bugzil.la/827243
-        reject(new L10nError('Not found: ' + url));
-      } else {
-        throw e;
-      }
-    }
+    xhr.send(null);
   });
 }
 
