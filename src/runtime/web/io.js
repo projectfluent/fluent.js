@@ -2,19 +2,15 @@ import { L10nError } from '../../lib/errors';
 
 const HTTP_STATUS_CODE_OK = 200;
 
-function load(type, url) {
+function load(url) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
     if (xhr.overrideMimeType) {
-      xhr.overrideMimeType(type);
+      xhr.overrideMimeType('text/plain');
     }
 
     xhr.open('GET', url, true);
-
-    if (type === 'application/json') {
-      xhr.responseType = 'json';
-    }
 
     xhr.addEventListener('load', e => {
       if (e.target.status === HTTP_STATUS_CODE_OK ||
@@ -27,39 +23,11 @@ function load(type, url) {
     xhr.addEventListener('error', reject);
     xhr.addEventListener('timeout', reject);
 
-    // the app: protocol throws on 404, see https://bugzil.la/827243
-    try {
-      xhr.send(null);
-    } catch (e) {
-      if (e.name === 'NS_ERROR_FILE_NOT_FOUND') {
-        // the app: protocol throws on 404, see https://bugzil.la/827243
-        reject(new L10nError('Not found: ' + url));
-      } else {
-        throw e;
-      }
-    }
+    xhr.send(null);
   });
 }
 
-const io = {
-  extra: function(code, ver, path, type) {
-    return navigator.mozApps.getLocalizationResource(
-      code, ver, path, type);
-  },
-  app: function(code, ver, path, type) {
-    switch (type) {
-      case 'text':
-        return load('text/plain', path);
-      case 'json':
-        return load('application/json', path);
-      default:
-        throw new L10nError('Unknown file type: ' + type);
-    }
-  },
-};
-
-export function fetchResource(res, { code, src, ver }) {
+export function fetchResource(res, { code }) {
   const url = res.replace('{locale}', code);
-  const type = res.endsWith('.json') ? 'json' : 'text';
-  return io[src](code, ver, url, type);
+  return load(url);
 }

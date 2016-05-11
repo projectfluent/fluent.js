@@ -8,7 +8,6 @@ export class Context {
     this.langs = langs;
     this.resIds = resIds;
     this.env = env;
-    this.emit = (type, evt) => env.emit(type, evt, this);
   }
 
   _formatEntity(lang, args, entity) {
@@ -67,8 +66,6 @@ export class Context {
         return formatter.call(this, lang, args, entity);
       }
 
-      this.emit('notfounderror',
-        new L10nError('"' + id + '" not found in ' + lang.code, id, lang));
       hasUnresolved = true;
     });
 
@@ -132,10 +129,6 @@ function reportMissing(keys, formatter, resolved) {
     resolved[i] = formatter === this._formatValue ?
       id : {value: id, attrs: null};
   });
-
-  this.emit('notfounderror', new L10nError(
-    '"' + Array.from(missingIds).join(', ') + '"' +
-    ' not found in any language', missingIds));
 
   return resolved;
 }

@@ -1,7 +1,5 @@
 import { Context } from './context';
 import FTLEntriesParser from './format/ftl/entries/parser';
-import { walkEntry, pseudo } from './pseudo';
-import { emit, addEventListener, removeEventListener } from './events';
 
 export class Env {
   constructor(fetchResource) {
@@ -10,14 +8,6 @@ export class Env {
     this.resCache = new Map();
     this.resRefs = new Map();
     this.builtins = null;
-    this.parsers = {
-      ftl: FTLEntriesParser
-    };
-
-    const listeners = {};
-    this.emit = emit.bind(this, listeners);
-    this.addEventListener = addEventListener.bind(this, listeners);
-    this.removeEventListener = removeEventListener.bind(this, listeners);
   }
 
   createContext(langs, resIds) {
@@ -44,28 +34,6 @@ export class Env {
     });
   }
 
-  _parse(syntax, lang, data) {
-    const parser = this.parsers[syntax];
-    if (!parser) {
-      return data;
-    }
-
-    return parser.parseResource(data);
-  }
-
-  _create(lang, entries) {
-    if (lang.src !== 'pseudo') {
-      return entries;
-    }
-
-    const pseudoentries = Object.create(null);
-    for (let key in entries) {
-      pseudoentries[key] = walkEntry(
-        entries[key], pseudo[lang.code].process);
-    }
-    return pseudoentries;
-  }
-
   _getResource(lang, res) {
     const cache = this.resCache;
     const id = res + lang.code + lang.src;
@@ -74,24 +42,17 @@ export class Env {
       return cache.get(id);
     }
 
-    const syntax = res.substr(res.lastIndexOf('.') + 1);
-
     const saveEntries = data => {
-      const [entries] = this._parse(syntax, lang, data);
-      cache.set(id, this._create(lang, entries));
+      const [entries] = FTLEntriesParser.parseResource(data);
+      cache.set(id, entries);
     };
 
     const recover = err => {
       err.lang = lang;
-      this.emit('fetcherror', err);
       cache.set(id, err);
     };
 
-    const langToFetch = lang.src === 'pseudo' ?
-      { code: 'en-US', src: 'app', ver: lang.ver } :
-      lang;
-
-    const resource = this.fetchResource(res, langToFetch)
+    const resource = this.fetchResource(res, lang)
       .then(saveEntries, recover);
 
     cache.set(id, resource);

@@ -2,9 +2,7 @@ The View API
 ============
 
 The main abstraction used by the JavaScript API is the `View` class.  Views are 
-responsible for localizing `document` objects in HTML.  Internally, viewes use 
-a centralized `Service` to store the state of the language negotiation and 
-cache downloaded resources.
+responsible for localizing `document` objects in HTML.
 
 If you're using the `web` each `document` will have its corresponding `View` 
 created automatically on startup, as `document.l10n`.

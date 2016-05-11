@@ -43,16 +43,14 @@ default language.
 Add Resources
 -------------
 
-L20n.js supports two kinds of translation resources:
-
- - FTL syntax, as documented at http://l20n.org/learn/,
- - JSON files parsed by `tools/parse.js -o runtime`.
+L20n.js supports FTL translation resources, as documented at 
+http://l20n.org/learn/.
 
 Include them in the `<head>` of your HTML:
 
 ```html
-<link rel="localization" href="locales/myApp.{locale}.ftl">
-<link rel="localization" href="locales/myApp.{locale}.json">
+<link rel="localization" href="locales/base.{locale}.ftl">
+<link rel="localization" href="locales/app.{locale}.ftl">
 ```
 
 
