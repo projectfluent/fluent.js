@@ -1,4 +1,3 @@
-import { L10nError } from './errors';
 import { resolve, ask, tell } from './readwrite';
 import builtins, {
   FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
@@ -18,10 +17,6 @@ function* mapValues(arr) {
   return values;
 }
 
-function err(msg) {
-  return tell(new L10nError(msg));
-}
-
 // Helper for choosing entity value
 function* DefaultMember(members) {
   for (let member of members) {
@@ -30,7 +25,7 @@ function* DefaultMember(members) {
     }
   }
 
-  yield err('No default');
+  yield tell(new RangeError('No default'));
   return { val: new FTLNone() };
 }
 
@@ -42,7 +37,7 @@ function* EntityReference({name}) {
   const entity = bundle.messages.get(name);
 
   if (!entity) {
-    yield err(`Unknown entity: ${name}`);
+    yield tell(new ReferenceError(`Unknown entity: ${name}`));
     return new FTLNone(name);
   }
 
@@ -65,7 +60,7 @@ function* MemberExpression({obj, key}) {
     }
   }
 
-  yield err(`Unknown trait: ${key.toString(bundle)}`);
+  yield tell(new ReferenceError(`Unknown trait: ${key.toString(bundle)}`));
   return {
     val: yield* Entity(entity)
   };
@@ -138,7 +133,7 @@ function* ExternalArgument({name}) {
   const { args } = yield ask();
 
   if (!args || !args.hasOwnProperty(name)) {
-    yield err(`Unknown external: ${name}`);
+    yield tell(new ReferenceError(`Unknown external: ${name}`));
     return new FTLNone(name);
   }
 
@@ -157,7 +152,9 @@ function* ExternalArgument({name}) {
         return new FTLDateTime(arg);
       }
     default:
-      yield err('Unsupported external type: ' + name + ', ' + typeof arg);
+      yield tell(
+        new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
+      );
       return new FTLNone(name);
   }
 }
@@ -166,7 +163,7 @@ function* BuiltinReference({name}) {
   const builtin = builtins[name];
 
   if (!builtin) {
-    yield err(`Unknown built-in: ${name}()`);
+    yield tell(new ReferenceError(`Unknown built-in: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
@@ -199,7 +196,7 @@ function* Pattern(ptn) {
   const { bundle, dirty } = yield ask();
 
   if (dirty.has(ptn)) {
-    yield err('Cyclic reference');
+    yield tell(new RangeError('Cyclic reference'));
     return new FTLNone();
   }
 
@@ -215,9 +212,11 @@ function* Pattern(ptn) {
 
       const str = value.toString(bundle);
       if (str.length > MAX_PLACEABLE_LENGTH) {
-        yield err(
-          'Too many characters in placeable ' +
-          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        yield tell(
+          new RangeError(
+            'Too many characters in placeable ' +
+            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+          )
         );
         result += FSI + str.substr(0, MAX_PLACEABLE_LENGTH) + PDI;
       } else {
