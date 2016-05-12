@@ -38,7 +38,7 @@ export class SimpleContext extends Context {
   }
 
   formatValue(id, args) {
-    const entity = this.bundle.get(id);
+    const entity = this.bundle.messages.get(id);
 
     if (!entity) {
       return [id, [new L10nError(`Unknown entity: ${id}`)]];
@@ -48,7 +48,7 @@ export class SimpleContext extends Context {
   }
 
   formatEntity(id, args) {
-    const entity = this.bundle.get(id);
+    const entity = this.bundle.messages.get(id);
 
     if (!entity)  {
       return [

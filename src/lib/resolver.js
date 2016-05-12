@@ -39,7 +39,7 @@ function* DefaultMember(members) {
 
 function* EntityReference({name}) {
   const { bundle } = yield ask();
-  const entity = bundle.get(name);
+  const entity = bundle.messages.get(name);
 
   if (!entity) {
     yield err(`Unknown entity: ${name}`);

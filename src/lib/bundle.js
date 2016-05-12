@@ -10,34 +10,22 @@ export class Bundle {
   // XXX in the future we can add options to the ctor and allow definining 
   // custom builtins
   constructor(lang) {
-    this._lang = lang;
-    this._entries = new Map();
+    this.lang = lang;
+    this.messages = new Map();
     this._intls = new WeakMap();
   }
 
   addMessages(source) {
     const [entries, errors] = FTLRuntimeParser.parseResource(source);
     for (let id in entries) {
-      this._entries.set(id, entries[id]);
+      this.messages.set(id, entries[id]);
     }
 
     return errors;
   }
 
-  *[Symbol.iterator]() {
-    yield* this._entries.entries();
-  }
-
-  get(id) {
-    return this._entries.get(id);
-  }
-
-  has(id) {
-    return this._entries.has(id);
-  }
-
   format(entity, args) {
-    return format(this, this._lang, args, entity);
+    return format(this, this.lang, args, entity);
   }
 
   _memoizeIntlObject(ctor, lang, opts) {

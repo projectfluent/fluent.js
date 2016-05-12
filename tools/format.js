@@ -55,7 +55,7 @@ function print(err, data) {
 
   errors.forEach(printError);
 
-  for (const [id, entity] of bundle) {
+  for (const [id, entity] of bundle.messages) {
     printEntry(id, bundle.format(entity, ext));
   }
 }
