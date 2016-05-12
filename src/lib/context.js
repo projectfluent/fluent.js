@@ -19,30 +19,30 @@ export class Context {
 export class SimpleContext extends Context {
   constructor(langs, resIds, resources) {
     super(langs, resIds);
-    const goodResources = resources.filter(
-      res => !(res instanceof Error)
-    );
-    // shouldn't need to pass languages here
-    this.bundle = new Bundle(resources, langs[0].code);
+    this.bundle = new Bundle(langs[0].code);
+
+    const goodResources = resources
+      .filter(res => !(res instanceof Error))
+      .forEach(res => this.bundle.addMessages(res));
   }
 
   _formatKeys(keys, method) {
     return keys.map((key, i) => {
       const [id, args] = Array.isArray(key) ?
         key : [key, undefined];
-      const entity = this.bundle.get(id);
 
-      return entity ?
-        entity[method](args) : id;
+      // XXX Context should handle errors somehow; emit/return?
+      const [result] = method.call(this.bundle, id, args);
+      return result;
     });
   }
 
   formatValues(...keys) {
-    return this._formatKeys(keys, 'format');
+    return this._formatKeys(keys, Bundle.prototype.formatValue);
   }
 
   formatEntities(...keys) {
-    return this._formatKeys(keys, 'formatToObject');
+    return this._formatKeys(keys, Bundle.prototype.formatEntity);
   }
 }
 
