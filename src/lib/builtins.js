@@ -20,9 +20,9 @@ export class FTLNumber extends FTLBase {
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
-  toString(bundle, lang) {
+  toString(bundle) {
     const nf = bundle._memoizeIntlObject(
-      L20nIntl.NumberFormat, lang, this.opts
+      L20nIntl.NumberFormat, this.opts
     );
     return nf.format(this.value);
   }
@@ -32,9 +32,9 @@ export class FTLDateTime extends FTLBase {
   constructor(value, opts) {
     super(new Date(value), opts);
   }
-  toString(bundle, lang) {
+  toString(bundle) {
     const dtf = bundle._memoizeIntlObject(
-      L20nIntl.DateTimeFormat, lang, this.opts
+      L20nIntl.DateTimeFormat, this.opts
     );
     return dtf.format(this.value);
   }
@@ -45,7 +45,7 @@ export class FTLKeyword extends FTLBase {
     const { name, namespace } = this.value;
     return namespace ? `${namespace}:${name}` : name;
   }
-  match(bundle, lang, other) {
+  match(bundle, other) {
     const { name, namespace } = this.value;
     if (other instanceof FTLKeyword) {
       return name === other.value.name && namespace === other.value.namespace;
@@ -55,7 +55,7 @@ export class FTLKeyword extends FTLBase {
       return name === other;
     } else if (other instanceof FTLNumber) {
       const pr = bundle._memoizeIntlObject(
-        L20nIntl.PluralRules, lang, other.opts
+        L20nIntl.PluralRules, other.opts
       );
       return name === pr.select(other.valueOf());
     }
@@ -63,12 +63,12 @@ export class FTLKeyword extends FTLBase {
 }
 
 export class FTLList extends Array {
-  toString(bundle, lang) {
+  toString(bundle) {
     const lf = bundle._memoizeIntlObject(
-      L20nIntl.ListFormat, lang // XXX add this.opts
+      L20nIntl.ListFormat // XXX add this.opts
     );
     const elems = this.map(
-      elem => elem.toString(bundle, lang)
+      elem => elem.toString(bundle)
     );
     return lf.format(elems);
   }

@@ -19,15 +19,15 @@ export class Bundle {
   }
 
   format(entity, args) {
-    return format(this, this.lang, args, entity);
+    return format(this, args, entity);
   }
 
-  _memoizeIntlObject(ctor, lang, opts) {
+  _memoizeIntlObject(ctor, opts) {
     const cache = this._intls.get(ctor) || {};
-    const id = lang + JSON.stringify(opts);
+    const id = JSON.stringify(opts);
 
     if (!cache[id]) {
-      cache[id] = new ctor(lang, opts);
+      cache[id] = new ctor(this.lang, opts);
       this._intls.set(ctor, cache);
     }
 
