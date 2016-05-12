@@ -78,11 +78,11 @@ export class SimpleContext extends Context {
 
 
   formatValues(...keys) {
-    return this._formatKeys(keys, SimpleContext.prototype.formatValue);
+    return this._formatKeys(keys, this.constructor.prototype.formatValue);
   }
 
   formatEntities(...keys) {
-    return this._formatKeys(keys, SimpleContext.prototype.formatEntity);
+    return this._formatKeys(keys, this.constructor.prototype.formatEntity);
   }
 }
 
