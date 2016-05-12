@@ -31,7 +31,7 @@ export default {
     let str = '';
 
     if (entity.comment) {
-      str += this.dumpComment(entity.comment) + '\n';
+      str += '\n' + this.dumpComment(entity.comment) + '\n';
     }
     const id = this.dumpIdentifier(entity.id);
     const value = this.dumpPattern(entity.value);
@@ -50,7 +50,7 @@ export default {
   },
 
   dumpSection: function(section) {
-    let str = '';
+    let str = '\n\n';
     if (section.comment) {
       str += this.dumpComment(section.comment) + '\n';
     }
