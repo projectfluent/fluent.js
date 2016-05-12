@@ -44,8 +44,8 @@ var bundle = new L20n.Bundle('en-US');
 bundle.addMessages(ftlCode);
 
 cumulative.format = process.hrtime(start);
-for (let [id, entity] of bundle.messages) {
-  bundle.format(entity, args);
+for (let id of bundle.messages.keys()) {
+  bundle.format(bundle.messages.get(id), args);
 }
 cumulative.formatEnd = process.hrtime(start);
 

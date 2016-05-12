@@ -39,8 +39,8 @@ var bundle = new L20n.Bundle('en-US');
 bundle.addMessages(ftlCode);
 
 times.format = Date.now();
-for (let [id, entity] of bundle.messages) {
-  bundle.format(entity, args);
+for (let id of bundle.messages.keys()) {
+  bundle.format(bundle.messages.get(id), args);
 }
 times.formatEnd = Date.now();
 
