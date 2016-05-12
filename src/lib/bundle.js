@@ -1,16 +1,10 @@
 import FTLRuntimeParser from './format/ftl/entries/parser';
-import { L10nError } from './errors';
 import { format } from './resolver';
 
 export class Bundle {
-  // XXX do we need to pass lang? can it parsed from the resource?
-  // for now, we assume Bundles are single-language only which means that all 
-  // Intl formatters will be in one language, even if the translations has been 
-  // merged into the resource from another language
-  // XXX in the future we can add options to the ctor and allow definining 
-  // custom builtins
-  constructor(lang) {
+  constructor(lang, opts) {
     this.lang = lang;
+    this.opts = opts;
     this.messages = new Map();
     this._intls = new WeakMap();
   }
