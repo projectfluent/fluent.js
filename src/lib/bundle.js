@@ -24,6 +24,10 @@ export class Bundle {
     return errors;
   }
 
+  *[Symbol.iterator]() {
+    yield* this._entries.entries();
+  }
+
   get(id) {
     return this._entries.get(id);
   }
@@ -36,7 +40,7 @@ export class Bundle {
     const entity = this.get(id);
 
     if (!entity)  {
-      return [id, new L10nError(`Unknown entity: ${id}`)];
+      return [id, [new L10nError(`Unknown entity: ${id}`)]];
     }
 
     return format(this, this._lang, args, entity);
@@ -50,7 +54,7 @@ export class Bundle {
     if (!entity)  {
       return [
         { value: id, attrs: null }, 
-        new L10nError(`Unknown entity: ${id}`)
+        [new L10nError(`Unknown entity: ${id}`)]
       ];
     }
 
@@ -70,7 +74,7 @@ export class Bundle {
     }
 
     // XXX return errors
-    return [formatted];
+    return [formatted, []];
   }
 
   _memoizeIntlObject(ctor, lang, opts) {

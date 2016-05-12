@@ -6,13 +6,13 @@ import FTLEntriesParser from '../../lib/format/ftl/entries/parser';
 import {createEntriesFromAST} from '../../lib/format/ftl/entries/transformer';
 
 import { Context, SimpleContext } from '../../lib/context';
+import { Bundle } from '../../lib/bundle';
+
 import { L10nError } from '../../lib/errors';
 import { prioritizeLocales } from '../../lib/shims';
-import { MockContext, lang } from '../../lib/mocks';
-import { format } from '../../lib/resolver';
 
 export default {
-  fetchResource, Context, SimpleContext, View, L10nError,
+  Context, SimpleContext, Bundle, L10nError, View,
   FTLASTParser, FTLEntriesParser, createEntriesFromAST,
-  prioritizeLocales, MockContext, lang, format
+  prioritizeLocales, fetchResource
 };

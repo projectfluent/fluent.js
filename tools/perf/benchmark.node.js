@@ -24,10 +24,6 @@ var data = {
   "count": 10,
 };
 
-var lang = {
-  code:'en-US',
-  src: 'app',
-};
 function micro(time) {
   // time is [seconds, nanoseconds]
   return Math.round((time[0] * 1e9 + time[1]) / 1000);
@@ -44,11 +40,12 @@ cumulative.ftlEntriesParseStart = process.hrtime(start);
 var [entries] = L20n.FTLEntriesParser.parseResource(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
-var ctx = new L20n.MockContext(entries);
+var bundle = new L20n.Bundle('en-US');
+bundle.addMessages(ftlCode);
 
 cumulative.format = process.hrtime(start);
-for (var id in entries) {
-  L20n.format(ctx, lang, data, entries[id]);
+for (let [id] of bundle) {
+  bundle.formatValue(id, data);
 }
 cumulative.formatEnd = process.hrtime(start);
 

@@ -22,11 +22,6 @@ var data = {
   "count": 10,
 };
 
-var lang = {
-  code:'en-US',
-  src: 'app',
-};
-
 function micro(time) {
   // time is in milliseconds with decimals
   return Math.round(time * 1000);
@@ -42,11 +37,12 @@ times.ftlEntriesParseStart = dateNow();
 var [entries] = L20n.FTLEntriesParser.parseResource(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
-var ctx = new L20n.MockContext(entries);
+var bundle = new L20n.Bundle('en-US');
+bundle.addMessages(ftlCode);
 
 times.format = dateNow();
-for (var id in entries) {
-  L20n.format(ctx, lang, data, entries[id]);
+for (let [id] of bundle) {
+  bundle.formatValue(id, data);
 }
 times.formatEnd = dateNow();
 
