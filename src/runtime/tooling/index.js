@@ -11,8 +11,12 @@ import { Bundle } from '../../lib/bundle';
 import { L10nError } from '../../lib/errors';
 import { prioritizeLocales } from '../../lib/shims';
 
+function createSimpleContext(langs, resIds) {
+  return SimpleContext.create(fetchResource, langs, resIds);
+}
+
 export default {
   Context, SimpleContext, Bundle, L10nError, View,
   FTLASTParser, FTLEntriesParser, createEntriesFromAST,
-  prioritizeLocales, fetchResource
+  prioritizeLocales, fetchResource, createSimpleContext
 };
