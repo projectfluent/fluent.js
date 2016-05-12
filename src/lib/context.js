@@ -32,17 +32,57 @@ export class SimpleContext extends Context {
         key : [key, undefined];
 
       // XXX Context should handle errors somehow; emit/return?
-      const [result] = method.call(this.bundle, id, args);
+      const [result] = method.call(this, id, args);
       return result;
     });
   }
 
+  formatValue(id, args) {
+    const entity = this.bundle.get(id);
+
+    if (!entity) {
+      return [id, [new L10nError(`Unknown entity: ${id}`)]];
+    }
+
+    return this.bundle.format(entity, args);
+  }
+
+  formatEntity(id, args) {
+    const entity = this.bundle.get(id);
+
+    if (!entity)  {
+      return [
+        { value: id, attrs: null },
+        [new L10nError(`Unknown entity: ${id}`)]
+      ];
+    }
+
+    const [value] = this.bundle.format(entity, args);
+
+    const formatted = {
+      value,
+      attrs: null,
+    };
+
+    if (entity.traits) {
+      formatted.attrs = Object.create(null);
+      for (let trait of entity.traits) {
+        const [attrValue] = this.bundle.format(trait, args);
+        formatted.attrs[trait.key.name] = attrValue;
+      }
+    }
+
+    // XXX return errors
+    return [formatted, []];
+  }
+
+
   formatValues(...keys) {
-    return this._formatKeys(keys, Bundle.prototype.formatValue);
+    return this._formatKeys(keys, SimpleContext.prototype.formatValue);
   }
 
   formatEntities(...keys) {
-    return this._formatKeys(keys, Bundle.prototype.formatEntity);
+    return this._formatKeys(keys, SimpleContext.prototype.formatEntity);
   }
 }
 

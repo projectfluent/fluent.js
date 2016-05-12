@@ -3,7 +3,7 @@ var L20n = require('../../dist/bundle/node/l20n');
 
 var ftlCode = fs.readFileSync(__dirname + '/example.ftl').toString();
 
-var data = {
+var args = {
   "brandShortName": "BRANDSHORTNAME",
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
@@ -44,8 +44,8 @@ var bundle = new L20n.Bundle('en-US');
 bundle.addMessages(ftlCode);
 
 cumulative.format = process.hrtime(start);
-for (let [id] of bundle) {
-  bundle.formatValue(id, data);
+for (let [id, entity] of bundle) {
+  bundle.format(entity, args);
 }
 cumulative.formatEnd = process.hrtime(start);
 

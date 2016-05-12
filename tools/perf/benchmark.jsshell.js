@@ -1,7 +1,7 @@
 load('../../dist/bundle/tooling/l20n.js');
 
 var ftlCode = read('./example.ftl');
-var data = {
+var args = {
   "brandShortName": "BRANDSHORTNAME",
   "ssid": "SSID",
   "capabilities": "CAPABILITIES",
@@ -41,8 +41,8 @@ var bundle = new L20n.Bundle('en-US');
 bundle.addMessages(ftlCode);
 
 times.format = dateNow();
-for (let [id] of bundle) {
-  bundle.formatValue(id, data);
+for (let [id, entity] of bundle) {
+  bundle.format(entity, args);
 }
 times.formatEnd = dateNow();
 

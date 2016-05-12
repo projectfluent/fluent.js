@@ -36,45 +36,8 @@ export class Bundle {
     return this._entries.has(id);
   }
 
-  formatValue(id, args) {
-    const entity = this.get(id);
-
-    if (!entity)  {
-      return [id, [new L10nError(`Unknown entity: ${id}`)]];
-    }
-
+  format(entity, args) {
     return format(this, this._lang, args, entity);
-  }
-
-
-  // XXX move this to Context?
-  formatEntity(id, args) {
-    const entity = this.get(id);
-
-    if (!entity)  {
-      return [
-        { value: id, attrs: null }, 
-        [new L10nError(`Unknown entity: ${id}`)]
-      ];
-    }
-
-    const [value] = format(this, this._lang, args, entity);
-
-    const formatted = {
-      value,
-      attrs: null,
-    };
-
-    if (entity.traits) {
-      formatted.attrs = Object.create(null);
-      for (let trait of entity.traits) {
-        const [attrValue] = format(this, this._lang, args, trait);
-        formatted.attrs[trait.key.name] = attrValue;
-      }
-    }
-
-    // XXX return errors
-    return [formatted, []];
   }
 
   _memoizeIntlObject(ctor, lang, opts) {
