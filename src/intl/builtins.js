@@ -58,6 +58,8 @@ export class FTLKeyword extends FTLBase {
         L20nIntl.PluralRules, other.opts
       );
       return name === pr.select(other.valueOf());
+    } else {
+      return false;
     }
   }
 }

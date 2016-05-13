@@ -6,7 +6,7 @@ export { default as FTLEntriesParser } from '../../ftl/entries/parser';
 export { createEntriesFromAST } from '../../ftl/entries/transformer';
 export { Bundle } from '../../intl/bundle';
 
-import { Context, SimpleContext } from '../../lib/context';
+import { SimpleContext } from '../../lib/context';
 import { fetchResource } from './io';
 
 export function createSimpleContext(langs, resIds) {

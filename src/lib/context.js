@@ -24,7 +24,7 @@ export class SimpleContext extends Context {
   }
 
   _formatKeys(keys, method) {
-    return keys.map((key, i) => {
+    return keys.map(key => {
       const [id, args] = Array.isArray(key) ?
         key : [key, undefined];
 
