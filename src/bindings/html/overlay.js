@@ -42,9 +42,8 @@ export function overlayElement(element, translation) {
   }
 
   for (let key in translation.attrs) {
-    const attrName = camelCaseToDashed(key);
-    if (isAttrAllowed({ name: attrName }, element)) {
-      element.setAttribute(attrName, translation.attrs[key]);
+    if (isAttrAllowed({ name: key }, element)) {
+      element.setAttribute(key, translation.attrs[key]);
     }
   }
 }
@@ -177,15 +176,3 @@ function getIndexOfType(element) {
   }
   return index;
 }
-
-function camelCaseToDashed(string) {
-  // XXX workaround for https://bugzil.la/1141934
-  if (string === 'ariaValueText') {
-    return 'aria-valuetext';
-  }
-
-  return string
-    .replace(/[A-Z]/g, match => '-' + match.toLowerCase())
-    .replace(/^-/, '');
-}
-
