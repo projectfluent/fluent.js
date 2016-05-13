@@ -20,10 +20,7 @@ export class SimpleContext extends Context {
   constructor(langs, resIds, resources) {
     super(langs, resIds);
     this.bundle = new Bundle(langs[0].code);
-
-    const goodResources = resources
-      .filter(res => !(res instanceof Error))
-      .forEach(res => this.bundle.addMessages(res));
+    resources.forEach(res => this.bundle.addMessages(res));
   }
 
   _formatKeys(keys, method) {
@@ -92,6 +89,8 @@ SimpleContext.create = function(fetchResource, langs, resIds) {
   return Promise.all(
     resIds.map(resId => fetchResource(resId, first))
   ).then(
-    resources => new SimpleContext(langs, resIds, resources)
+    resources => new SimpleContext(
+      langs, resIds, resources.filter(res => !(res instanceof Error))
+    )
   );
 }
