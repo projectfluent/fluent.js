@@ -10,7 +10,7 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-var { Bundle } = require('../src/lib/bundle');
+var { Bundle } = require('../src/intl/bundle');
 var lib = require('./lib');
 var color = lib.color.bind(program);
 

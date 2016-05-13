@@ -1,4 +1,4 @@
-import { L20nIntl } from './shims';
+import { L20nIntl } from './index';
 
 class FTLBase {
   constructor(value, opts) {

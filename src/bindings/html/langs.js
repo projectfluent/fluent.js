@@ -1,4 +1,4 @@
-import { prioritizeLocales } from '../../lib/shims';
+import { prioritizeLocales } from '../../intl/index';
 
 export function negotiateLanguages(
   { defaultLang, availableLangs }, prevLangs, requestedLangs

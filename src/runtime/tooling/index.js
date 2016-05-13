@@ -6,10 +6,10 @@ import FTLEntriesParser from '../../lib/format/ftl/entries/parser';
 import {createEntriesFromAST} from '../../lib/format/ftl/entries/transformer';
 
 import { Context, SimpleContext } from '../../lib/context';
-import { Bundle } from '../../lib/bundle';
-
 import { L10nError } from '../../lib/errors';
-import { prioritizeLocales } from '../../lib/shims';
+
+import { Bundle } from '../../intl/bundle';
+import { prioritizeLocales } from '../../intl/index';
 
 function createSimpleContext(langs, resIds) {
   return SimpleContext.create(fetchResource, langs, resIds);

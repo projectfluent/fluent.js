@@ -1,4 +1,4 @@
-import { Bundle } from './bundle';
+import { Bundle } from '../intl/bundle';
 import { L10nError } from './errors';
 
 export class Context {

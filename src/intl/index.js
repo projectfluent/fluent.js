@@ -1,4 +1,5 @@
 import { getPluralRule } from './plurals';
+export { Bundle } from './bundle';
 
 // Safari 9 and iOS 9 do not support Intl at all
 export const L20nIntl = typeof Intl !== 'undefined' ? Intl : {};
