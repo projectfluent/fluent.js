@@ -7,7 +7,13 @@ var fs = require('fs');
 var program = require('commander');
 var prettyjson = require('prettyjson');
 
-var lib = require('./lib');
+require('babel-register')({
+  plugins: ['transform-es2015-modules-commonjs']
+});
+
+const FTLASTParser = require('../src/lib/format/ftl/ast/parser').default;
+const FTLRuntimeParser = require('../src/lib/format/ftl/entries/parser').default;
+const { createEntriesFromAST } = require('../src/lib/format/ftl/entries/transformer');
 
 program
   .version('0.0.1')
@@ -22,13 +28,16 @@ program
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
 
-function parse(fileformat, str) {
-  if (program.output !== 'ast' && program.transform) {
-    const parsed = lib.parse(fileformat, 'ast', str);
-    return lib.transform(fileformat, program.output, parsed);
-  }
 
-  return lib.parse(fileformat, program.output, str);
+function parse(fileformat, str) {
+  if (program.output === 'ast') {
+    return FTLASTParser.parseResource(str);
+  } else if (program.transform) {
+    const parsed = FTLASTParser.parseResource(str);
+    return createEntriesFromAST(parsed);
+  } else {
+    return FTLRuntimeParser.parseResource(str);
+  }
 }
 
 

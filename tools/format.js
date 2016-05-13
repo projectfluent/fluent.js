@@ -11,8 +11,6 @@ require('babel-register')({
 });
 
 var { Bundle } = require('../src/intl/bundle');
-var lib = require('./lib');
-var color = lib.color.bind(program);
 
 program
   .version('0.0.1')
@@ -24,6 +22,11 @@ program
 
 const ext = program.external ?
   JSON.parse(fs.readFileSync(program.external, 'utf8')) : {};
+
+function color(str, col) {
+  return (program.color && col && str) ?
+    str[col] : str;
+};
 
 function printError(err) {
   return console.log(

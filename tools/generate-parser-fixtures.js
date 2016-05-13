@@ -7,7 +7,12 @@ var path = require('path');
 var program = require('commander');
 var prettyjson = require('prettyjson');
 
-var lib = require('./lib');
+require('babel-register')({
+  plugins: ['transform-es2015-modules-commonjs']
+});
+
+const FTLASTParser = require('../src/lib/format/ftl/ast/parser').default;
+const { createEntriesFromAST } = require('../src/lib/format/ftl/entries/transformer');
 
 program
   .version('0.0.1')
@@ -29,7 +34,7 @@ fs.readdir(basePath, (err, paths) => {
         return console.log(err);
       }
       
-      let [resource, errors] = lib.parse('ftl', 'ast', data.toString());
+      let [resource, errors] = FTLASTParser.parseResource(data.toString());
       let jsonOutput = JSON.stringify(resource, null, 2);
 
       let outputPath = fullPath.slice(0, -4) + '.ast.json';
@@ -41,7 +46,7 @@ fs.readdir(basePath, (err, paths) => {
         console.log(`${outputPath} saved.`);
       });
 
-      let [entries] = lib.transform('ftl', 'entries', [resource]);
+      let [entries] = createEntriesFromAST([resource]);
 
       let jsonEntriesOutput = JSON.stringify(entries, null, 2);
 
