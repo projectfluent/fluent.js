@@ -1,21 +1,22 @@
 import { fetchResource } from '../web/io';
 import { View } from '../../bindings/html/view';
 
-import FTLASTParser from '../../lib/format/ftl/ast/parser';
-import FTLEntriesParser from '../../lib/format/ftl/entries/parser';
-import {createEntriesFromAST} from '../../lib/format/ftl/entries/transformer';
+import FTLASTParser from '../../ftl/ast/parser';
+import FTLEntriesParser from '../../ftl/entries/parser';
+import {createEntriesFromAST} from '../../ftl/entries/transformer';
 
-import { Context } from '../../lib/context';
-import { Env } from '../../lib/env';
+import { Context, SimpleContext } from '../../lib/context';
 import { L10nError } from '../../lib/errors';
-import { prioritizeLocales } from '../../lib/intl';
-import { MockContext, lang } from '../../lib/mocks';
-import { format } from '../../lib/resolver';
+
+import { Bundle } from '../../intl/bundle';
+import { prioritizeLocales } from '../../intl/index';
+
+function createSimpleContext(langs, resIds) {
+  return SimpleContext.create(fetchResource, langs, resIds);
+}
 
 export default {
-  fetchResource, View,
+  Context, SimpleContext, Bundle, L10nError, View,
   FTLASTParser, FTLEntriesParser, createEntriesFromAST,
-  Context, Env, L10nError,
-  prioritizeLocales, MockContext, lang,
-  format
+  prioritizeLocales, fetchResource, createSimpleContext
 };

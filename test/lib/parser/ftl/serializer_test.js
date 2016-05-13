@@ -4,8 +4,8 @@ import fs from 'fs';
 import path from 'path';
 
 import assert from 'assert';
-import FTLParser from '../../../../src/lib/format/ftl/ast/parser';
-import FTLSerializer from '../../../../src/lib/format/ftl/ast/serializer';
+import FTLParser from '../../../../src/ftl/ast/parser';
+import FTLSerializer from '../../../../src/ftl/ast/serializer';
 
 var parse = FTLParser.parseResource;
 

@@ -1,17 +1,60 @@
+import { Bundle } from '../intl/bundle';
 import { L10nError } from './errors';
-import { format } from './resolver';
-
-const IntlObjects = new WeakMap();
 
 export class Context {
-  constructor(env, langs, resIds) {
+  constructor(langs, resIds) {
     this.langs = langs;
     this.resIds = resIds;
-    this.env = env;
   }
 
-  _formatEntity(lang, args, entity) {
-    const [value] = format(this, lang, args, entity);
+  formatValues() {
+    throw new L10nError('Not implemented');
+  }
+
+  formatEntities() {
+    throw new L10nError('Not implemented');
+  }
+}
+
+export class SimpleContext extends Context {
+  constructor(langs, resIds, resources) {
+    super(langs, resIds);
+    this.bundle = new Bundle(langs[0].code);
+    resources.forEach(res => this.bundle.addMessages(res));
+  }
+
+  _formatKeys(keys, method) {
+    return keys.map(key => {
+      const [id, args] = Array.isArray(key) ?
+        key : [key, undefined];
+
+      // XXX Context should handle errors somehow; emit/return?
+      const [result] = method.call(this, id, args);
+      return result;
+    });
+  }
+
+  formatValue(id, args) {
+    const entity = this.bundle.messages.get(id);
+
+    if (!entity) {
+      return [id, [new L10nError(`Unknown entity: ${id}`)]];
+    }
+
+    return this.bundle.format(entity, args);
+  }
+
+  formatEntity(id, args) {
+    const entity = this.bundle.messages.get(id);
+
+    if (!entity)  {
+      return [
+        { value: id, attrs: null },
+        [new L10nError(`Unknown entity: ${id}`)]
+      ];
+    }
+
+    const [value] = this.bundle.format(entity, args);
 
     const formatted = {
       value,
@@ -21,114 +64,33 @@ export class Context {
     if (entity.traits) {
       formatted.attrs = Object.create(null);
       for (let trait of entity.traits) {
-        const [attrValue] = format(this, lang, args, trait);
+        const [attrValue] = this.bundle.format(trait, args);
         formatted.attrs[trait.key.name] = attrValue;
       }
     }
 
-    return formatted;
+    // XXX return errors
+    return [formatted, []];
   }
 
-  _formatValue(lang, args, entity) {
-    const [value] = format(this, lang, args, entity);
-    return value;
-  }
 
-  fetch(langs = this.langs) {
-    if (langs.length === 0) {
-      return Promise.resolve(langs);
-    }
-
-    return Promise.all(
-      this.resIds.map(
-        resId => this.env._getResource(langs[0], resId))
-    ).then(() => langs);
-  }
-
-  _resolve(langs, keys, formatter, prevResolved) {
-    const lang = langs[0];
-
-    if (!lang) {
-      return reportMissing.call(this, keys, formatter, prevResolved);
-    }
-
-    let hasUnresolved = false;
-
-    const resolved = keys.map((key, i) => {
-      if (prevResolved && prevResolved[i] !== undefined) {
-        return prevResolved[i];
-      }
-      const [id, args] = Array.isArray(key) ?
-        key : [key, undefined];
-      const entity = this._getEntity(lang, id);
-
-      if (entity) {
-        return formatter.call(this, lang, args, entity);
-      }
-
-      hasUnresolved = true;
-    });
-
-    if (!hasUnresolved) {
-      return resolved;
-    }
-
-    return this.fetch(langs.slice(1)).then(
-      nextLangs => this._resolve(nextLangs, keys, formatter, resolved));
+  formatValues(...keys) {
+    return this._formatKeys(keys, this.constructor.prototype.formatValue);
   }
 
   formatEntities(...keys) {
-    return this.fetch().then(
-      langs => this._resolve(langs, keys, this._formatEntity));
+    return this._formatKeys(keys, this.constructor.prototype.formatEntity);
   }
-
-  formatValues(...keys) {
-    return this.fetch().then(
-      langs => this._resolve(langs, keys, this._formatValue));
-  }
-
-  _getEntity(lang, name) {
-    const cache = this.env.resCache;
-
-    // Look for `name` in every resource in order.
-    for (let i = 0, resId; resId = this.resIds[i]; i++) {
-      const resource = cache.get(resId + lang.code + lang.src);
-      if (resource instanceof L10nError) {
-        continue;
-      }
-      if (name in resource) {
-        return resource[name];
-      }
-    }
-    return undefined;
-  }
-
-  _memoizeIntlObject(ctor, {code}, opts) {
-    const cache = IntlObjects.get(ctor) || {};
-    const id = code + JSON.stringify(opts);
-
-    if (!cache[id]) {
-      cache[id] = new ctor(code, opts);
-      IntlObjects.set(ctor, cache);
-    }
-
-    return cache[id];
-  }
-
 }
 
-function reportMissing(keys, formatter, resolved) {
-  const missingIds = new Set();
+SimpleContext.create = function(fetchResource, langs, resIds) {
+  const [first] = langs;
 
-  keys.forEach((key, i) => {
-    if (resolved && resolved[i] !== undefined) {
-      return;
-    }
-    const id = Array.isArray(key) ? key[0] : key;
-    missingIds.add(id);
-    resolved[i] = formatter === this._formatValue ?
-      id : {value: id, attrs: null};
-  });
-
-  return resolved;
+  return Promise.all(
+    resIds.map(resId => fetchResource(resId, first))
+  ).then(
+    resources => new SimpleContext(
+      langs, resIds, resources.filter(res => !(res instanceof Error))
+    )
+  );
 }

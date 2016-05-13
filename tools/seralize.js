@@ -7,7 +7,12 @@ var fs = require('fs');
 var program = require('commander');
 var prettyjson = require('prettyjson');
 
-var lib = require('./lib');
+require('babel-register')({
+  plugins: ['transform-es2015-modules-commonjs']
+});
+
+const FTLASTParser = require('../src/ftl/ast/parser').default;
+const FTLASTSerializer = require('../src/ftl/ast/serializer').default;
 
 program
   .version('0.0.1')
@@ -28,11 +33,11 @@ function print(path, err, data) {
 
   if (path.endsWith('.ftl')) {
     const resource = data.toString();
-    [ast,] = lib.parse('ftl', 'ast', resource);
+    [ast,] = FTLASTParser.parseResource(resource);
   } else {
     ast = JSON.parse(data.toString());
   }
-  const out = lib.serialize(program.output, program.input, ast);
+  const out = FTLASTSerializer.serialize(ast);
   console.log(out);
 }
 

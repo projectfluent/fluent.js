@@ -1,4 +1,4 @@
-import { prioritizeLocales } from '../../lib/intl';
+import { prioritizeLocales } from '../../intl/index';
 
 export function negotiateLanguages(
   { defaultLang, availableLangs }, prevLangs, requestedLangs

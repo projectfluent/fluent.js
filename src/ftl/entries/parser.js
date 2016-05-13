@@ -1,6 +1,6 @@
 /*eslint no-magic-numbers: [0]*/
 
-import { L10nError } from '../../../errors';
+import { L10nError } from '../../lib/errors';
 
 const MAX_PLACEABLES = 100;
 

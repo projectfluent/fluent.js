@@ -1,8 +1,6 @@
-import { fetchResource } from './io';
-import { Env } from '../../lib/env';
+import { createSimpleContext } from './api';
 import { View } from '../../bindings/html/view';
 
-const env = new Env(fetchResource);
-document.l10n = new View(env, document);
+document.l10n = new View(createSimpleContext, document);
 
 window.addEventListener('languagechange', document.l10n);

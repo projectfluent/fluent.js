@@ -1,1 +1,1 @@
-export {default as FTLASTParser} from '../../lib/format/ftl/ast/parser';
+export { default as FTLASTParser } from '../../ftl/ast/parser';

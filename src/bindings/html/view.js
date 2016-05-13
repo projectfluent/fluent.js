@@ -11,7 +11,7 @@ import {
 const viewProps = new WeakMap();
 
 export class View {
-  constructor(env, doc) {
+  constructor(createContext, doc) {
     this.interactive = documentReady().then(() => init(this));
     this.ready = this.interactive.then(
       ({langs}) => translateView(this, langs).then(
@@ -21,13 +21,13 @@ export class View {
     initMutationObserver(this);
 
     viewProps.set(this, {
-      doc, env, ready: false
+      doc, createContext, ready: false, resIds: []
     });
   }
 
   requestLanguages(requestedLangs) {
     return this.ready = this.interactive.then(
-      ({langs, ctx}) => changeLanguages(this, ctx, langs, requestedLangs)
+      ctx => changeLanguages(this, ctx, requestedLangs)
     );
   }
 
@@ -37,19 +37,19 @@ export class View {
 
   formatEntities(...keys) {
     return this.interactive.then(
-      ({ctx}) => ctx.formatEntities(...keys)
+      ctx => ctx.formatEntities(...keys)
     );
   }
 
   formatValue(id, args) {
     return this.interactive
-      .then(({ctx}) => ctx.formatValues([id, args]))
+      .then(ctx => ctx.formatValues([id, args]))
       .then(([val]) => val);
   }
 
   formatValues(...keys) {
     return this.interactive.then(
-      ({ctx}) => ctx.formatValues(...keys)
+      ctx => ctx.formatValues(...keys)
     );
   }
 
@@ -71,33 +71,32 @@ View.prototype.getAttributes = getAttributes;
 
 function init(view) {
   const props = viewProps.get(view);
-  const resources = getResourceLinks(props.doc.head);
+  props.resIds = getResourceLinks(props.doc.head);
   const meta = getMeta(props.doc.head);
 
   view.observeRoot(props.doc.documentElement);
   const { langs } = negotiateLanguages(meta, [], navigator.languages);
-  const ctx = props.env.createContext(langs, resources);
-
-  return { langs, ctx };
+  return props.createContext(langs, props.resIds);
 }
 
-function changeLanguages(view, oldCtx, prevLangs, requestedLangs) {
-  const { doc, env } = viewProps.get(view);
+function changeLanguages(view, oldCtx, requestedLangs) {
+  const { doc, resIds, createContext } = viewProps.get(view);
   const meta = getMeta(doc.head);
 
   const { langs, haveChanged } = negotiateLanguages(
-    meta, prevLangs, requestedLangs
+    meta, oldCtx.langs, requestedLangs
   );
 
   if (!haveChanged) {
     return langs;
   }
 
-  const ctx = env.createContext(langs, oldCtx.resIds);
-  view.interactive = Promise.resolve({langs, ctx});
+  view.interactive = createContext(langs, resIds);
 
-  return translateView(view, langs).then(
-    () => langs
+  return view.interactive.then(
+    ctx => translateView(view, ctx.langs).then(
+      () => ctx.langs
+    )
   );
 }
 
@@ -107,15 +106,13 @@ export function translateView(view, langs) {
 
   if (props.ready) {
     return translateRoots(view).then(
-      () => setAllAndEmit(html, langs));
+      () => setAllAndEmit(html, langs)
+    );
   }
 
-  const translated =
-    // has the document been already pre-translated?
-    langs[0].code === html.getAttribute('lang') ?
-      Promise.resolve() :
-      translateRoots(view).then(
-        () => setLangDir(html, langs));
+  const translated = translateRoots(view).then(
+    () => setLangDir(html, langs)
+  );
 
   return translated.then(() => {
     setLangs(html, langs);

@@ -1,4 +1,3 @@
-import { L10nError } from './errors';
 import { resolve, ask, tell } from './readwrite';
 import builtins, {
   FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
@@ -18,10 +17,6 @@ function* mapValues(arr) {
   return values;
 }
 
-function err(msg) {
-  return tell(new L10nError(msg));
-}
-
 // Helper for choosing entity value
 function* DefaultMember(members) {
   for (let member of members) {
@@ -30,7 +25,7 @@ function* DefaultMember(members) {
     }
   }
 
-  yield err('No default');
+  yield tell(new RangeError('No default'));
   return { val: new FTLNone() };
 }
 
@@ -38,11 +33,11 @@ function* DefaultMember(members) {
 // Half-resolved expressions evaluate to raw Runtime AST nodes
 
 function* EntityReference({name}) {
-  const { ctx, lang } = yield ask();
-  const entity = ctx._getEntity(lang, name);
+  const { bundle } = yield ask();
+  const entity = bundle.messages.get(name);
 
   if (!entity) {
-    yield err(`Unknown entity: ${name}`);
+    yield tell(new ReferenceError(`Unknown entity: ${name}`));
     return new FTLNone(name);
   }
 
@@ -55,17 +50,17 @@ function* MemberExpression({obj, key}) {
     return { val: entity };
   }
 
-  const { ctx, lang } = yield ask();
+  const { bundle } = yield ask();
   const keyword = yield* Value(key);
 
   for (let member of entity.traits) {
     const memberKey = yield* Value(member.key);
-    if (keyword.match(ctx, lang, memberKey)) {
+    if (keyword.match(bundle, memberKey)) {
       return member;
     }
   }
 
-  yield err(`Unknown trait: ${key.toString(ctx, lang)}`);
+  yield tell(new ReferenceError(`Unknown trait: ${key.toString(bundle)}`));
   return {
     val: yield* Entity(entity)
   };
@@ -86,10 +81,10 @@ function* SelectExpression({exp, vars}) {
       return variant;
     }
 
-    const { ctx, lang } = yield ask();
+    const { bundle } = yield ask();
 
     if (key instanceof FTLKeyword &&
-        key.match(ctx, lang, selector)) {
+        key.match(bundle, selector)) {
       return variant;
     }
   }
@@ -138,7 +133,7 @@ function* ExternalArgument({name}) {
   const { args } = yield ask();
 
   if (!args || !args.hasOwnProperty(name)) {
-    yield err(`Unknown external: ${name}`);
+    yield tell(new ReferenceError(`Unknown external: ${name}`));
     return new FTLNone(name);
   }
 
@@ -157,7 +152,9 @@ function* ExternalArgument({name}) {
         return new FTLDateTime(arg);
       }
     default:
-      yield err('Unsupported external type: ' + name + ', ' + typeof arg);
+      yield tell(
+        new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
+      );
       return new FTLNone(name);
   }
 }
@@ -166,7 +163,7 @@ function* BuiltinReference({name}) {
   const builtin = builtins[name];
 
   if (!builtin) {
-    yield err(`Unknown built-in: ${name}()`);
+    yield tell(new ReferenceError(`Unknown built-in: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
@@ -196,10 +193,10 @@ function* CallExpression({name, args}) {
 }
 
 function* Pattern(ptn) {
-  const { ctx, lang, dirty } = yield ask();
+  const { bundle, dirty } = yield ask();
 
   if (dirty.has(ptn)) {
-    yield err('Cyclic reference');
+    yield tell(new RangeError('Cyclic reference'));
     return new FTLNone();
   }
 
@@ -213,11 +210,13 @@ function* Pattern(ptn) {
       const value = part.length === 1 ?
         yield* Value(part[0]) : yield* mapValues(part);
 
-      const str = value.toString(ctx, lang);
+      const str = value.toString(bundle);
       if (str.length > MAX_PLACEABLE_LENGTH) {
-        yield err(
-          'Too many characters in placeable ' +
-          `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        yield tell(
+          new RangeError(
+            'Too many characters in placeable ' +
+            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+          )
         );
         result += FSI + str.substr(0, MAX_PLACEABLE_LENGTH) + PDI;
       } else {
@@ -252,12 +251,12 @@ function* toString(entity) {
   return value.toString();
 }
 
-export function format(ctx, lang, args, entity) {
+export function format(bundle, args, entity) {
   if (typeof entity === 'string') {
     return [entity, []];
   }
 
   return resolve(toString(entity)).run({
-    ctx, lang, args, dirty: new WeakSet()
+    bundle, args, dirty: new WeakSet()
   });
 }
