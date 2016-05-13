@@ -4,10 +4,9 @@ import fs from 'fs';
 import path from 'path';
 
 import assert from 'assert';
-import FTLParser from '../../../../src/lib/format/ftl/ast/parser';
-import RuntimeParser from '../../../../src/lib/format/ftl/entries/parser';
-import { createEntriesFromAST }
-  from '../../../../src/lib/format/ftl/entries/transformer';
+import FTLParser from '../../../../src/ftl/ast/parser';
+import RuntimeParser from '../../../../src/ftl/entries/parser';
+import { createEntriesFromAST } from '../../../../src/ftl/entries/transformer';
 
 var parse = FTLParser.parseResource;
 var parseEntries = RuntimeParser.parseResource;

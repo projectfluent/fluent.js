@@ -1,4 +1,4 @@
-import FTLRuntimeParser from '../lib/format/ftl/entries/parser';
+import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
 
 export class Bundle {

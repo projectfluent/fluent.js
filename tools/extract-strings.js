@@ -11,8 +11,8 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-const AST = require('../src/lib/format/ftl/ast/ast').default;
-const Serializer = require('../src/lib/format/ftl/ast/serializer').default;
+const AST = require('../src/ftl/ast/ast').default;
+const Serializer = require('../src/ftl/ast/serializer').default;
 
 function trimString(str) {
   return str.split('\n').map(line => {

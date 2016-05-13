@@ -11,8 +11,8 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-const FTLASTParser = require('../src/lib/format/ftl/ast/parser').default;
-const { createEntriesFromAST } = require('../src/lib/format/ftl/entries/transformer');
+const FTLASTParser = require('../src//ftl/ast/parser').default;
+const { createEntriesFromAST } = require('../src/ftl/entries/transformer');
 
 program
   .version('0.0.1')

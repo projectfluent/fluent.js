@@ -1,4 +1,4 @@
-import { L10nError } from '../../../errors';
+import { L10nError } from '../../lib/errors';
 
 export default {
   serialize: function({body, comment}) {

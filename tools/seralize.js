@@ -11,8 +11,8 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-const FTLASTParser = require('../src/lib/format/ftl/ast/parser').default;
-const FTLASTSerializer = require('../src/lib/format/ftl/ast/serializer').default;
+const FTLASTParser = require('../src/ftl/ast/parser').default;
+const FTLASTSerializer = require('../src/ftl/ast/serializer').default;
 
 program
   .version('0.0.1')
