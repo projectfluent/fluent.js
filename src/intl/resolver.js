@@ -60,7 +60,7 @@ function* MemberExpression({obj, key}) {
     }
   }
 
-  yield tell(new ReferenceError(`Unknown trait: ${key.toString(bundle)}`));
+  yield tell(new ReferenceError(`Unknown trait: ${keyword.toString(bundle)}`));
   return {
     val: yield* Entity(entity)
   };
