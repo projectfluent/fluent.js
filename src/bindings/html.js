@@ -95,7 +95,7 @@ function fetchFirstBundle(bundles) {
 }
 
 function changeLanguages(l10n, oldBundles, requestedLangs) {
-  const { doc, resIds, defaultLang, availableLangs, provider } =
+  const { resIds, defaultLang, availableLangs, provider } =
     properties.get(l10n);
 
   const bundles = provider(
@@ -112,7 +112,7 @@ function changeLanguages(l10n, oldBundles, requestedLangs) {
   l10n.interactive = fetchFirstBundle(bundles);
 
   return l10n.interactive.then(
-    bundles => translateDocument(l10n, bundles)
+    () => translateDocument(l10n, bundles)
   );
 }
 
