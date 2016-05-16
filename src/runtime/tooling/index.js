@@ -1,22 +1,16 @@
-import { fetchResource } from '../web/io';
-import { View } from '../../bindings/html/view';
-
 import FTLASTParser from '../../ftl/ast/parser';
 import FTLEntriesParser from '../../ftl/entries/parser';
-import {createEntriesFromAST} from '../../ftl/entries/transformer';
+import { createEntriesFromAST } from '../../ftl/entries/transformer';
+import { MessageContext } from '../../intl/context';
 
-import { Context, SimpleContext } from '../../lib/context';
 import { L10nError } from '../../lib/errors';
+import { keysFromContext, valueFromContext, entityFromContext }
+  from '../../lib/format';
 
-import { Bundle } from '../../intl/bundle';
-import { prioritizeLocales } from '../../intl/index';
-
-function createSimpleContext(langs, resIds) {
-  return SimpleContext.create(fetchResource, langs, resIds);
-}
+import { fetchResource } from '../web/io';
 
 export default {
-  Context, SimpleContext, Bundle, L10nError, View,
-  FTLASTParser, FTLEntriesParser, createEntriesFromAST,
-  prioritizeLocales, fetchResource, createSimpleContext
+  FTLASTParser, FTLEntriesParser, createEntriesFromAST, MessageContext,
+  L10nError, keysFromContext, valueFromContext, entityFromContext,
+  fetchResource
 };

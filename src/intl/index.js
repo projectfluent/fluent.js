@@ -1,5 +1,5 @@
 import { getPluralRule } from './plurals';
-export { Bundle } from './bundle';
+export { MessageContext } from './context';
 
 // Safari 9 and iOS 9 do not support Intl at all
 export const L20nIntl = typeof Intl !== 'undefined' ? Intl : {};
@@ -51,4 +51,10 @@ export function prioritizeLocales(def, availableLangs, requested) {
   }
 
   return [supportedLocale, def];
+}
+
+export function getDirection(code) {
+  const tag = code.split('-')[0];
+  return ['ar', 'he', 'fa', 'ps', 'ur'].indexOf(tag) >= 0 ?
+    'rtl' : 'ltr';
 }

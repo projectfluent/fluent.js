@@ -35,12 +35,12 @@ times.ftlEntriesParseStart = Date.now();
 var [entries] = L20n.FTLEntriesParser.parse(null, ftlCode);
 times.ftlEntriesParseEnd = Date.now();
 
-var bundle = new L20n.Bundle('en-US');
-bundle.addMessages(ftlCode);
+var ctx = new L20n.MessageContext('en-US');
+ctx.addMessages(ftlCode);
 
 times.format = Date.now();
-for (let id of bundle.messages.keys()) {
-  bundle.format(bundle.messages.get(id), args);
+for (let id of ctx.messages.keys()) {
+  ctx.format(ctx.messages.get(id), args);
 }
 times.formatEnd = Date.now();
 

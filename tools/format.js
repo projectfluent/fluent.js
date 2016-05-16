@@ -10,7 +10,7 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-var { Bundle } = require('../src/intl/bundle');
+var { MessageContext } = require('../src/intl/context');
 
 program
   .version('0.0.1')
@@ -53,13 +53,13 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const bundle = new Bundle(program.lang);
-  const errors = bundle.addMessages(data.toString());
+  const ctx = new MessageContext(program.lang);
+  const errors = ctx.addMessages(data.toString());
 
   errors.forEach(printError);
 
-  for (const [id, entity] of bundle.messages) {
-    printEntry(id, bundle.format(entity, ext));
+  for (const [id, entity] of ctx.messages) {
+    printEntry(id, ctx.format(entity, ext));
   }
 }
 
