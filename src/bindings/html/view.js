@@ -1,4 +1,6 @@
-import { negotiateLanguages } from './langs';
+import { MessageContext } from '../../intl/context';
+import { Localization } from '../../lib/localization';
+
 import { documentReady, getDirection } from './shims';
 import { getResourceLinks, getMeta } from './head';
 import {
@@ -9,25 +11,25 @@ import {
 } from './dom';
 
 const viewProps = new WeakMap();
+const contexts = new WeakMap();
 
-export class View {
-  constructor(createContext, doc) {
+export class View extends Localization {
+  constructor(doc, provider) {
+    super();
     this.interactive = documentReady().then(() => init(this));
     this.ready = this.interactive.then(
-      ({langs}) => translateView(this, langs).then(
-        () => langs
-      )
+      bundles => translateView(this, bundles)
     );
-    initMutationObserver(this);
 
+    initMutationObserver(this);
     viewProps.set(this, {
-      doc, createContext, ready: false, resIds: []
+      doc, provider, ready: false, resIds: []
     });
   }
 
   requestLanguages(requestedLangs) {
     return this.ready = this.interactive.then(
-      ctx => changeLanguages(this, ctx, requestedLangs)
+      bundles => changeLanguages(this, bundles, requestedLangs)
     );
   }
 
@@ -36,20 +38,11 @@ export class View {
   }
 
   formatEntities(...keys) {
+    // XXX add async fallback
     return this.interactive.then(
-      ctx => ctx.formatEntities(...keys)
-    );
-  }
-
-  formatValue(id, args) {
-    return this.interactive
-      .then(ctx => ctx.formatValues([id, args]))
-      .then(([val]) => val);
-  }
-
-  formatValues(...keys) {
-    return this.interactive.then(
-      ctx => ctx.formatValues(...keys)
+      ([bundle]) => this._formatKeysFromContext(
+        contexts.get(bundle), keys, this._formatEntityFromContext
+      )
     );
   }
 
@@ -71,36 +64,64 @@ View.prototype.getAttributes = getAttributes;
 
 function init(view) {
   const props = viewProps.get(view);
-  props.resIds = getResourceLinks(props.doc.head);
   const meta = getMeta(props.doc.head);
+  props.resIds = getResourceLinks(props.doc.head);
+  props.defaultLang = meta.defaultLang;
+  props.availableLangs = meta.availableLangs;
 
   view.observeRoot(props.doc.documentElement);
-  const { langs } = negotiateLanguages(meta, [], navigator.languages);
-  return props.createContext(langs, props.resIds);
-}
 
-function changeLanguages(view, oldCtx, requestedLangs) {
-  const { doc, resIds, createContext } = viewProps.get(view);
-  const meta = getMeta(doc.head);
-
-  const { langs, haveChanged } = negotiateLanguages(
-    meta, oldCtx.langs, requestedLangs
+  const bundles = props.provider(
+    props.resIds, props.defaultLang, props.availableLangs, navigator.languages
   );
 
-  if (!haveChanged) {
-    return langs;
+  return fetchFirstBundle(bundles);
+}
+
+function createContextFromBundle(bundle) {
+  return bundle.fetch().then(resources => {
+    const ctx = new MessageContext(bundle.lang);
+    resources.forEach(res => ctx.addMessages(res));
+    contexts.set(bundle, ctx);
+    return ctx;
+  });
+}
+
+function fetchFirstBundle(bundles) {
+  const [bundle] = bundles;
+  return createContextFromBundle(bundle).then(
+    () => bundles
+  );
+}
+
+function changeLanguages(view, oldBundles, requestedLangs) {
+  const { doc, resIds, defaultLang, availableLangs, provider } = viewProps.get(view);
+
+  const bundles = provider(
+    resIds, defaultLang, availableLangs, requestedLangs
+  );
+
+  const oldLangs = oldBundles.map(bundle => bundle.lang);
+  const newLangs = bundles.map(bundle => bundle.lang);
+
+  if (arrEqual(oldLangs, newLangs)) {
+    return bundles;
   }
 
-  view.interactive = createContext(langs, resIds);
+  view.interactive = fetchFirstBundle(bundles);
 
   return view.interactive.then(
-    ctx => translateView(view, ctx.langs).then(
-      () => ctx.langs
-    )
+    bundles => translateView(view, bundles)
   );
 }
 
-export function translateView(view, langs) {
+function arrEqual(arr1, arr2) {
+  return arr1.length === arr2.length &&
+    arr1.every((elem, i) => elem === arr2[i]);
+}
+
+export function translateView(view, bundles) {
+  const langs = bundles.map(bundle => bundle.lang);
   const props = viewProps.get(view);
   const html = props.doc.documentElement;
 
@@ -121,14 +142,12 @@ export function translateView(view, langs) {
 }
 
 function setLangs(html, langs) {
-  const codes = langs.map(lang => lang.code);
-  html.setAttribute('langs', codes.join(' '));
+  html.setAttribute('langs', langs.join(' '));
 }
 
-function setLangDir(html, langs) {
-  const code = langs[0].code;
-  html.setAttribute('lang', code);
-  html.setAttribute('dir', getDirection(code));
+function setLangDir(html, [lang]) {
+  html.setAttribute('lang', lang);
+  html.setAttribute('dir', getDirection(lang));
 }
 
 function setAllAndEmit(html, langs) {
