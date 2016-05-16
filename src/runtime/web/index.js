@@ -1,6 +1,6 @@
 import { fetchResource } from './io';
 import { prioritizeLocales } from '../../intl/index';
-import { View } from '../../bindings/html/view';
+import { HTMLLocalization } from '../../bindings/html';
 
 function createResourceBundle(resIds, lang) {
   return {
@@ -24,5 +24,5 @@ function provider(resIds, defaultLang, availableLangs, requestedLangs) {
   );
 }
 
-document.l10n = new View(document, provider);
+document.l10n = new HTMLLocalization(document, provider);
 window.addEventListener('languagechange', document.l10n);

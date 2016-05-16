@@ -1,4 +1,4 @@
-import * as dom from '../../bindings/html/dom';
+import * as dom from '../../bindings/dom';
 
 export default {
   dom

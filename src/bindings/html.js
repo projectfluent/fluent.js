@@ -1,5 +1,5 @@
-import { MessageContext } from '../../intl/context';
-import { Localization } from '../../lib/localization';
+import { MessageContext } from '../intl/context';
+import { Localization } from '../lib/localization';
 
 import { documentReady, getDirection } from './shims';
 import { getResourceLinks, getMeta } from './head';
@@ -10,19 +10,19 @@ import {
   setAttributes, getAttributes, translateFragment
 } from './dom';
 
-const viewProps = new WeakMap();
+const properties = new WeakMap();
 const contexts = new WeakMap();
 
-export class View extends Localization {
+export class HTMLLocalization extends Localization {
   constructor(doc, provider) {
     super();
     this.interactive = documentReady().then(() => init(this));
     this.ready = this.interactive.then(
-      bundles => translateView(this, bundles)
+      bundles => translateDocument(this, bundles)
     );
 
     initMutationObserver(this);
-    viewProps.set(this, {
+    properties.set(this, {
       doc, provider, ready: false, resIds: []
     });
   }
@@ -59,17 +59,17 @@ export class View extends Localization {
   }
 }
 
-View.prototype.setAttributes = setAttributes;
-View.prototype.getAttributes = getAttributes;
+HTMLLocalization.prototype.setAttributes = setAttributes;
+HTMLLocalization.prototype.getAttributes = getAttributes;
 
-function init(view) {
-  const props = viewProps.get(view);
+function init(l10n) {
+  const props = properties.get(l10n);
   const meta = getMeta(props.doc.head);
   props.resIds = getResourceLinks(props.doc.head);
   props.defaultLang = meta.defaultLang;
   props.availableLangs = meta.availableLangs;
 
-  view.observeRoot(props.doc.documentElement);
+  l10n.observeRoot(props.doc.documentElement);
 
   const bundles = props.provider(
     props.resIds, props.defaultLang, props.availableLangs, navigator.languages
@@ -94,8 +94,9 @@ function fetchFirstBundle(bundles) {
   );
 }
 
-function changeLanguages(view, oldBundles, requestedLangs) {
-  const { doc, resIds, defaultLang, availableLangs, provider } = viewProps.get(view);
+function changeLanguages(l10n, oldBundles, requestedLangs) {
+  const { doc, resIds, defaultLang, availableLangs, provider } =
+    properties.get(l10n);
 
   const bundles = provider(
     resIds, defaultLang, availableLangs, requestedLangs
@@ -108,10 +109,10 @@ function changeLanguages(view, oldBundles, requestedLangs) {
     return bundles;
   }
 
-  view.interactive = fetchFirstBundle(bundles);
+  l10n.interactive = fetchFirstBundle(bundles);
 
-  return view.interactive.then(
-    bundles => translateView(view, bundles)
+  return l10n.interactive.then(
+    bundles => translateDocument(l10n, bundles)
   );
 }
 
@@ -120,18 +121,18 @@ function arrEqual(arr1, arr2) {
     arr1.every((elem, i) => elem === arr2[i]);
 }
 
-export function translateView(view, bundles) {
+function translateDocument(l10n, bundles) {
   const langs = bundles.map(bundle => bundle.lang);
-  const props = viewProps.get(view);
+  const props = properties.get(l10n);
   const html = props.doc.documentElement;
 
   if (props.ready) {
-    return translateRoots(view).then(
+    return translateRoots(l10n).then(
       () => setAllAndEmit(html, langs)
     );
   }
 
-  const translated = translateRoots(view).then(
+  const translated = translateRoots(l10n).then(
     () => setLangDir(html, langs)
   );
 
