@@ -1,19 +1,7 @@
 import { prioritizeLocales } from '../../intl/index';
 import { HTMLLocalization } from '../../bindings/html';
+import { ResourceBundle } from './resourcebundle';
 import { documentReady, getResourceLinks, getMeta } from './util';
-import { fetchResource } from './io';
-
-function createResourceBundle(resIds, lang) {
-  return {
-    lang,
-    loaded: false,
-    fetch() {
-      return this.loaded || (this.loaded = Promise.all(
-        resIds.map(id => fetchResource(id, lang))
-      ));
-    }
-  };
-}
 
 function requestBundles(requestedLangs = navigator.languages) {
   return documentReady().then(() => {
@@ -25,7 +13,7 @@ function requestBundles(requestedLangs = navigator.languages) {
     );
 
     return newLangs.map(
-      lang => createResourceBundle(resIds, lang)
+      lang => new ResourceBundle(lang, resIds)
     );
   });
 }
