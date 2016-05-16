@@ -2,7 +2,6 @@ import { prioritizeLocales } from '../../intl/index';
 import { HTMLLocalization } from '../../bindings/html';
 import { documentReady, getResourceLinks, getMeta } from './util';
 import { fetchResource } from './io';
-import './polyfill';
 
 function createResourceBundle(resIds, lang) {
   return {
