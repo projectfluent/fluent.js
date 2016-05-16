@@ -113,36 +113,23 @@ function translateDocument(l10n, bundles) {
   const props = properties.get(l10n);
   const html = props.doc.documentElement;
 
-  if (props.ready) {
-    return translateRoots(l10n).then(
-      () => setAllAndEmit(html, langs)
-    );
+  function setLangs() {
+    html.setAttribute('langs', langs.join(' '));
+    html.setAttribute('lang', langs[0]);
+    html.setAttribute('dir', getDirection(langs[0]));
   }
 
-  const translated = translateRoots(l10n).then(
-    () => setLangDir(html, langs)
-  );
+  function emit() {
+    html.parentNode.dispatchEvent(new CustomEvent('DOMRetranslated', {
+      bubbles: false,
+      cancelable: false,
+    }));
+  }
 
-  return translated.then(() => {
-    setLangs(html, langs);
-    props.ready = true;
-  });
-}
+  const next = props.ready ?
+    emit : () => props.ready = true;
 
-function setLangs(html, langs) {
-  html.setAttribute('langs', langs.join(' '));
-}
-
-function setLangDir(html, [lang]) {
-  html.setAttribute('lang', lang);
-  html.setAttribute('dir', getDirection(lang));
-}
-
-function setAllAndEmit(html, langs) {
-  setLangDir(html, langs);
-  setLangs(html, langs);
-  html.parentNode.dispatchEvent(new CustomEvent('DOMRetranslated', {
-    bubbles: false,
-    cancelable: false,
-  }));
+  return translateRoots(l10n)
+    .then(setLangs)
+    .then(next);
 }
