@@ -1,8 +1,9 @@
 L20n.js for node.js
 ===================
 
-The low-level L20n.js API is internal and experimental and  it might change
-without notice.
+The low-level L20n.js API is internal and experimental and it might change
+without notice.  The high-level API (the `Localization` class) isn't exposed.  
+Patches are most welcome!
 
 
 ## Install
@@ -17,30 +18,26 @@ $ npm install git+https://git@github.com/l20n/l20n.js.git
 
 ## Usage
 
-Example resource files:
-
-`./locales/en-US.ftl`
-
-```properties
-foo = Foo in English
-```
-
-Example node script:
-
 ```javascript
 'use strict';
 
-const { createSimpleContext } = require('l20n');
+const { MessageContext } = require('./dist/bundle/node/l20n');
 
-const resIds = ['./locales/{locale}.ftl'];
-const langs = [{ code: 'en-US'}];
+const ctx = new MessageContext('en-US');
 
-// contexts are immutable; if langs change a new context must be created
-createSimpleContext(langs, resIds).then(ctx => {
-  // pass string ids or tuples of [id, args]
-  const [foo] = ctx.formatValues(['foo']);
-  console.log(foo);
-});
+const errors = ctx.addMessages(`
+brand-name = Foo 3000
+hello      = Hello, { $name }, to { brand-name }!
+`);
 
-// → 'Foo in English'
+if (errors.length) {
+  // handle syntax errors
+  // …
+}
+
+const hello = ctx.messages.get('hello');
+
+ctx.format(hello, { name: 'Anna' });
+// format() returns a tuple of [formatted string, runtime errors]
+// → [ 'Hello, Anna, to Foo 3000!', [] ]
 ```
