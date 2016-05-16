@@ -1,1 +1,0 @@
-export { fetchResource } from './io';
