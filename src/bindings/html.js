@@ -1,14 +1,13 @@
 import { MessageContext } from '../intl/context';
 import { getDirection } from '../intl/index';
 
-import * as format from '../lib/format';
+import { keysFromContext, valueFromContext, entityFromContext }
+  from '../lib/format';
 
-import {
-  initMutationObserver, translateRoots, observe, disconnect
-} from './observer';
-import {
-  setAttributes, getAttributes, translateFragment
-} from './dom';
+import { initMutationObserver, translateRoots, observe, disconnect }
+  from './observer';
+import { setAttributes, getAttributes, translateFragment }
+  from './dom';
 
 const properties = new WeakMap();
 const contexts = new WeakMap();
@@ -38,16 +37,16 @@ export class Localization {
   formatEntities(...keys) {
     // XXX add async fallback
     return this.interactive.then(
-      ([bundle]) => format.keysFromContext(
-        contexts.get(bundle), keys, format.entityFromContext
+      ([bundle]) => keysFromContext(
+        contexts.get(bundle), keys, entityFromContext
       )
     );
   }
 
   formatValues(...keys) {
     return this.interactive.then(
-      ([bundle]) => format.keysFromContext(
-        contexts.get(bundle), keys, format.valueFromContext
+      ([bundle]) => keysFromContext(
+        contexts.get(bundle), keys, valueFromContext
       )
     );
   }
