@@ -8,7 +8,7 @@ import {createEntriesFromAST} from '../../ftl/entries/transformer';
 import { Context, SimpleContext } from '../../lib/context';
 import { L10nError } from '../../lib/errors';
 
-import { Bundle } from '../../intl/bundle';
+import { MessageContext } from '../../intl/context';
 import { prioritizeLocales } from '../../intl/index';
 
 function createSimpleContext(langs, resIds) {
@@ -16,7 +16,7 @@ function createSimpleContext(langs, resIds) {
 }
 
 export default {
-  Context, SimpleContext, Bundle, L10nError, View,
+  Context, SimpleContext, MessageContext, L10nError, View,
   FTLASTParser, FTLEntriesParser, createEntriesFromAST,
   prioritizeLocales, fetchResource, createSimpleContext
 };

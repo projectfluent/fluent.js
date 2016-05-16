@@ -4,7 +4,7 @@ import 'string.prototype.endswith';
 export { default as FTLASTParser } from '../../ftl/ast/parser';
 export { default as FTLEntriesParser } from '../../ftl/entries/parser';
 export { createEntriesFromAST } from '../../ftl/entries/transformer';
-export { Bundle } from '../../intl/bundle';
+export { MessageContext } from '../../intl/context';
 
 import { SimpleContext } from '../../lib/context';
 import { fetchResource } from './io';

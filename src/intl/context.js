@@ -1,7 +1,7 @@
 import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
 
-export class Bundle {
+export class MessageContext {
   constructor(lang, opts) {
     this.lang = lang;
     this.opts = opts;

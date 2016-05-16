@@ -33,8 +33,8 @@ function* DefaultMember(members) {
 // Half-resolved expressions evaluate to raw Runtime AST nodes
 
 function* EntityReference({name}) {
-  const { bundle } = yield ask();
-  const entity = bundle.messages.get(name);
+  const { ctx } = yield ask();
+  const entity = ctx.messages.get(name);
 
   if (!entity) {
     yield tell(new ReferenceError(`Unknown entity: ${name}`));
@@ -50,17 +50,17 @@ function* MemberExpression({obj, key}) {
     return { val: entity };
   }
 
-  const { bundle } = yield ask();
+  const { ctx } = yield ask();
   const keyword = yield* Value(key);
 
   for (let member of entity.traits) {
     const memberKey = yield* Value(member.key);
-    if (keyword.match(bundle, memberKey)) {
+    if (keyword.match(ctx, memberKey)) {
       return member;
     }
   }
 
-  yield tell(new ReferenceError(`Unknown trait: ${keyword.toString(bundle)}`));
+  yield tell(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
   return {
     val: yield* Entity(entity)
   };
@@ -81,10 +81,10 @@ function* SelectExpression({exp, vars}) {
       return variant;
     }
 
-    const { bundle } = yield ask();
+    const { ctx } = yield ask();
 
     if (key instanceof FTLKeyword &&
-        key.match(bundle, selector)) {
+        key.match(ctx, selector)) {
       return variant;
     }
   }
@@ -193,7 +193,7 @@ function* CallExpression({name, args}) {
 }
 
 function* Pattern(ptn) {
-  const { bundle, dirty } = yield ask();
+  const { ctx, dirty } = yield ask();
 
   if (dirty.has(ptn)) {
     yield tell(new RangeError('Cyclic reference'));
@@ -210,7 +210,7 @@ function* Pattern(ptn) {
       const value = part.length === 1 ?
         yield* Value(part[0]) : yield* mapValues(part);
 
-      const str = value.toString(bundle);
+      const str = value.toString(ctx);
       if (str.length > MAX_PLACEABLE_LENGTH) {
         yield tell(
           new RangeError(
@@ -251,12 +251,12 @@ function* toString(entity) {
   return value.toString();
 }
 
-export function format(bundle, args, entity) {
+export function format(ctx, args, entity) {
   if (typeof entity === 'string') {
     return [entity, []];
   }
 
   return resolve(toString(entity)).run({
-    bundle, args, dirty: new WeakSet()
+    ctx, args, dirty: new WeakSet()
   });
 }

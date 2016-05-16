@@ -1,4 +1,4 @@
-import { Bundle } from '../intl/bundle';
+import { MessageContext } from '../intl/context';
 import { L10nError } from './errors';
 
 export class Context {
@@ -19,8 +19,8 @@ export class Context {
 export class SimpleContext extends Context {
   constructor(langs, resIds, resources) {
     super(langs, resIds);
-    this.bundle = new Bundle(langs[0].code);
-    resources.forEach(res => this.bundle.addMessages(res));
+    this.ctx = new MessageContext(langs[0].code);
+    resources.forEach(res => this.ctx.addMessages(res));
   }
 
   _formatKeys(keys, method) {
@@ -35,17 +35,17 @@ export class SimpleContext extends Context {
   }
 
   formatValue(id, args) {
-    const entity = this.bundle.messages.get(id);
+    const entity = this.ctx.messages.get(id);
 
     if (!entity) {
       return [id, [new L10nError(`Unknown entity: ${id}`)]];
     }
 
-    return this.bundle.format(entity, args);
+    return this.ctx.format(entity, args);
   }
 
   formatEntity(id, args) {
-    const entity = this.bundle.messages.get(id);
+    const entity = this.ctx.messages.get(id);
 
     if (!entity)  {
       return [
@@ -54,7 +54,7 @@ export class SimpleContext extends Context {
       ];
     }
 
-    const [value] = this.bundle.format(entity, args);
+    const [value] = this.ctx.format(entity, args);
 
     const formatted = {
       value,
@@ -64,7 +64,7 @@ export class SimpleContext extends Context {
     if (entity.traits) {
       formatted.attrs = Object.create(null);
       for (let trait of entity.traits) {
-        const [attrValue] = this.bundle.format(trait, args);
+        const [attrValue] = this.ctx.format(trait, args);
         formatted.attrs[trait.key.name] = attrValue;
       }
     }
