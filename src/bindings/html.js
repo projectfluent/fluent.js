@@ -1,8 +1,7 @@
 import { MessageContext } from '../intl/context';
 import { Localization } from '../lib/localization';
 
-import { documentReady, getDirection } from './shims';
-import { getResourceLinks, getMeta } from './head';
+import { getDirection } from './shims';
 import {
   initMutationObserver, translateRoots, observe, disconnect
 } from './observer';
@@ -14,17 +13,16 @@ const properties = new WeakMap();
 const contexts = new WeakMap();
 
 export class HTMLLocalization extends Localization {
-  constructor(doc, provider) {
+  constructor(doc, requestBundles) {
     super();
-    this.interactive = documentReady().then(() => init(this));
-    this.ready = this.interactive.then(
-      bundles => translateDocument(this, bundles)
-    );
+    this.interactive = requestBundles();
+    this.ready = this.interactive
+      .then(bundles => fetchFirstBundle(bundles))
+      .then(bundles => translateDocument(this, bundles));
 
+    properties.set(this, { doc, requestBundles, ready: false });
     initMutationObserver(this);
-    properties.set(this, {
-      doc, provider, ready: false, resIds: []
-    });
+    this.observeRoot(doc.documentElement);
   }
 
   requestLanguages(requestedLangs) {
@@ -34,7 +32,7 @@ export class HTMLLocalization extends Localization {
   }
 
   handleEvent() {
-    return this.requestLanguages(navigator.languages);
+    return this.requestLanguages();
   }
 
   formatEntities(...keys) {
@@ -62,22 +60,6 @@ export class HTMLLocalization extends Localization {
 HTMLLocalization.prototype.setAttributes = setAttributes;
 HTMLLocalization.prototype.getAttributes = getAttributes;
 
-function init(l10n) {
-  const props = properties.get(l10n);
-  const meta = getMeta(props.doc.head);
-  props.resIds = getResourceLinks(props.doc.head);
-  props.defaultLang = meta.defaultLang;
-  props.availableLangs = meta.availableLangs;
-
-  l10n.observeRoot(props.doc.documentElement);
-
-  const bundles = props.provider(
-    props.resIds, props.defaultLang, props.availableLangs, navigator.languages
-  );
-
-  return fetchFirstBundle(bundles);
-}
-
 function createContextFromBundle(bundle) {
   return bundle.fetch().then(resources => {
     const ctx = new MessageContext(bundle.lang);
@@ -95,30 +77,21 @@ function fetchFirstBundle(bundles) {
 }
 
 function changeLanguages(l10n, oldBundles, requestedLangs) {
-  const { resIds, defaultLang, availableLangs, provider } =
-    properties.get(l10n);
+  const { requestBundles } = properties.get(l10n);
 
-  const bundles = provider(
-    resIds, defaultLang, availableLangs, requestedLangs
+  l10n.interactive = requestBundles(requestedLangs).then(
+    newBundles => equal(oldBundles, newBundles) ?
+      oldBundles : fetchFirstBundle(newBundles)
   );
 
-  const oldLangs = oldBundles.map(bundle => bundle.lang);
-  const newLangs = bundles.map(bundle => bundle.lang);
-
-  if (arrEqual(oldLangs, newLangs)) {
-    return bundles;
-  }
-
-  l10n.interactive = fetchFirstBundle(bundles);
-
   return l10n.interactive.then(
-    () => translateDocument(l10n, bundles)
+    bundles => translateDocument(l10n, bundles)
   );
 }
 
-function arrEqual(arr1, arr2) {
-  return arr1.length === arr2.length &&
-    arr1.every((elem, i) => elem === arr2[i]);
+function equal(bundles1, bundles2) {
+  return bundles1.length === bundles2.length &&
+    bundles1.every(({lang}, i) => lang === bundles2[i].lang);
 }
 
 function translateDocument(l10n, bundles) {
