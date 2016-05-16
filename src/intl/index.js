@@ -52,3 +52,9 @@ export function prioritizeLocales(def, availableLangs, requested) {
 
   return [supportedLocale, def];
 }
+
+export function getDirection(code) {
+  const tag = code.split('-')[0];
+  return ['ar', 'he', 'fa', 'ps', 'ur'].indexOf(tag) >= 0 ?
+    'rtl' : 'ltr';
+}

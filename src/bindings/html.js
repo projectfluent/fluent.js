@@ -1,7 +1,8 @@
 import { MessageContext } from '../intl/context';
+import { getDirection } from '../intl/index';
+
 import { Localization } from '../lib/localization';
 
-import { getDirection } from './shims';
 import {
   initMutationObserver, translateRoots, observe, disconnect
 } from './observer';

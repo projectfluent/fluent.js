@@ -1,8 +1,8 @@
-import { fetchResource } from './io';
 import { prioritizeLocales } from '../../intl/index';
-import { documentReady } from '../../bindings/shims';
-import { getResourceLinks, getMeta } from '../../bindings/head';
 import { HTMLLocalization } from '../../bindings/html';
+import { documentReady, getResourceLinks, getMeta } from './util';
+import { fetchResource } from './io';
+import './polyfill';
 
 function createResourceBundle(resIds, lang) {
   return {
