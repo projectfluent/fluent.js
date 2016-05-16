@@ -44,6 +44,20 @@ export class HTMLLocalization extends Localization {
     );
   }
 
+  formatValues(...keys) {
+    return this.interactive.then(
+      ([bundle]) => this._formatKeysFromContext(
+        contexts.get(bundle), keys, this._formatValueFromContext
+      )
+    );
+  }
+
+  formatValue(id, args) {
+    return this.formatValues([id, args]).then(
+      ([val]) => val
+    );
+  }
+
   translateFragment(frag) {
     return translateFragment(this, frag);
   }
