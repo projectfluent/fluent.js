@@ -95,10 +95,10 @@ the `document` will fire a `DOMRetranslated` event.
 The document.l10n API
 ---------------------
 
-The main abstraction used by the JavaScript API is the `HTMLLocalization` 
-class.  It is responsible for localizing `document` objects in HTML.  Each 
-`document` will have its corresponding `HTMLLocalization` instance created 
-automatically on startup, as `document.l10n`.
+The main abstraction used by the JavaScript API is the `Localization` class.  
+It is responsible for localizing `document` objects in HTML.  Each `document` 
+will have its corresponding `Localization` instance created automatically on 
+startup, as `document.l10n`.
 
 
 ### document.l10n.ready

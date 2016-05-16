@@ -1,5 +1,5 @@
 import { prioritizeLocales } from '../../intl/index';
-import { HTMLLocalization } from '../../bindings/html';
+import { Localization } from '../../bindings/html';
 import { ResourceBundle } from './resourcebundle';
 import { documentReady, getResourceLinks, getMeta } from './util';
 
@@ -18,5 +18,5 @@ function requestBundles(requestedLangs = navigator.languages) {
   });
 }
 
-document.l10n = new HTMLLocalization(document, requestBundles);
+document.l10n = new Localization(document, requestBundles);
 window.addEventListener('languagechange', document.l10n);

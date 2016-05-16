@@ -1,7 +1,7 @@
 import { MessageContext } from '../intl/context';
 import { getDirection } from '../intl/index';
 
-import { Localization } from '../lib/localization';
+import * as format from '../lib/format';
 
 import {
   initMutationObserver, translateRoots, observe, disconnect
@@ -13,9 +13,8 @@ import {
 const properties = new WeakMap();
 const contexts = new WeakMap();
 
-export class HTMLLocalization extends Localization {
+export class Localization {
   constructor(doc, requestBundles) {
-    super();
     this.interactive = requestBundles();
     this.ready = this.interactive
       .then(bundles => fetchFirstBundle(bundles))
@@ -39,16 +38,16 @@ export class HTMLLocalization extends Localization {
   formatEntities(...keys) {
     // XXX add async fallback
     return this.interactive.then(
-      ([bundle]) => this._formatKeysFromContext(
-        contexts.get(bundle), keys, this._formatEntityFromContext
+      ([bundle]) => format.keysFromContext(
+        contexts.get(bundle), keys, format.entityFromContext
       )
     );
   }
 
   formatValues(...keys) {
     return this.interactive.then(
-      ([bundle]) => this._formatKeysFromContext(
-        contexts.get(bundle), keys, this._formatValueFromContext
+      ([bundle]) => format.keysFromContext(
+        contexts.get(bundle), keys, format.valueFromContext
       )
     );
   }
@@ -72,8 +71,8 @@ export class HTMLLocalization extends Localization {
   }
 }
 
-HTMLLocalization.prototype.setAttributes = setAttributes;
-HTMLLocalization.prototype.getAttributes = getAttributes;
+Localization.prototype.setAttributes = setAttributes;
+Localization.prototype.getAttributes = getAttributes;
 
 function createContextFromBundle(bundle) {
   return bundle.fetch().then(resources => {
