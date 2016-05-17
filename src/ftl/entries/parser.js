@@ -428,7 +428,7 @@ class ParseContext {
     this._index++;
 
     if (exp.type = 'ref') {
-      exp.type = 'mcr';
+      exp.type = 'fun';
     }
 
     return {

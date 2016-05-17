@@ -110,8 +110,8 @@ function* Value(expr) {
       return new FTLNumber(expr.val);
     case 'ext':
       return yield* ExternalArgument(expr);
-    case 'mcr':
-      return yield* MacroReference(expr);
+    case 'fun':
+      return yield* FunctionReference(expr);
     case 'call':
       return yield* CallExpression(expr);
     case 'ref':
@@ -158,25 +158,25 @@ function* ExternalArgument({name}) {
   }
 }
 
-function* MacroReference({name}) {
-  const { ctx: { macros } } = yield ask();
-  const macro = macros[name] || builtins[name];
+function* FunctionReference({name}) {
+  const { ctx: { functions } } = yield ask();
+  const func = functions[name] || builtins[name];
 
-  if (!macro) {
+  if (!func) {
     yield tell(new ReferenceError(`Unknown built-in: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
-  if (!(macro instanceof Function)) {
-    yield tell(new TypeError(`Macro: ${name}() is not callable`));
+  if (!(func instanceof Function)) {
+    yield tell(new TypeError(`Function ${name}() is not callable`));
     return new FTLNone(`${name}()`);
   }
 
-  return macro;
+  return func;
 }
 
 function* CallExpression({name, args}) {
-  const callee = yield* MacroReference(name);
+  const callee = yield* FunctionReference(name);
 
   if (callee instanceof FTLNone) {
     return callee;

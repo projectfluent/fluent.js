@@ -21,7 +21,7 @@ export class FTLNumber extends FTLBase {
     super(parseFloat(value), opts);
   }
   toString(ctx) {
-    const nf = ctx._memoizeFormatter(
+    const nf = ctx._memoizeIntlObject(
       L20nIntl.NumberFormat, this.opts
     );
     return nf.format(this.value);
@@ -33,7 +33,7 @@ export class FTLDateTime extends FTLBase {
     super(new Date(value), opts);
   }
   toString(ctx) {
-    const dtf = ctx._memoizeFormatter(
+    const dtf = ctx._memoizeIntlObject(
       L20nIntl.DateTimeFormat, this.opts
     );
     return dtf.format(this.value);
@@ -54,7 +54,7 @@ export class FTLKeyword extends FTLBase {
     } else if (typeof other === 'string') {
       return name === other;
     } else if (other instanceof FTLNumber) {
-      const pr = ctx._memoizeFormatter(
+      const pr = ctx._memoizeIntlObject(
         L20nIntl.PluralRules, other.opts
       );
       return name === pr.select(other.valueOf());
@@ -66,7 +66,7 @@ export class FTLKeyword extends FTLBase {
 
 export class FTLList extends Array {
   toString(ctx) {
-    const lf = ctx._memoizeFormatter(
+    const lf = ctx._memoizeIntlObject(
       L20nIntl.ListFormat // XXX add this.opts
     );
     const elems = this.map(

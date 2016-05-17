@@ -398,7 +398,7 @@ class ParseContext {
     this._index++;
 
     if (exp instanceof AST.EntityReference) {
-      exp = new AST.MacroReference(exp.name);
+      exp = new AST.FunctionReference(exp.name);
     }
 
     return new AST.CallExpression(exp, args);
