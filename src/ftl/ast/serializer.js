@@ -110,7 +110,7 @@ export default {
   dumpExpression: function(exp) {
     switch (exp.type) {
       case 'Identifier':
-      case 'BuiltinReference':
+      case 'MacroReference':
       case 'EntityReference':
         return this.dumpIdentifier(exp);
       case 'ExternalArgument':

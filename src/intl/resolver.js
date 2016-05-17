@@ -110,7 +110,7 @@ function* Value(expr) {
       return new FTLNumber(expr.val);
     case 'ext':
       return yield* ExternalArgument(expr);
-    case 'blt':
+    case 'mcr':
       return yield* MacroReference(expr);
     case 'call':
       return yield* CallExpression(expr);

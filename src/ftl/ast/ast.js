@@ -125,10 +125,10 @@ class EntityReference extends Identifier {
   }
 }
 
-class BuiltinReference extends Identifier {
+class MacroReference extends Identifier {
   constructor(name) {
     super(name);
-    this.type = 'BuiltinReference';
+    this.type = 'MacroReference';
   }
 }
 
@@ -188,7 +188,7 @@ export default {
   KeyValueArg,
   Number,
   EntityReference,
-  BuiltinReference,
+  MacroReference,
   Keyword,
   TextElement,
   Comment,
