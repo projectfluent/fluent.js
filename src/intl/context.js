@@ -2,11 +2,11 @@ import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
 
 export class MessageContext {
-  constructor(lang, opts) {
+  constructor(lang, { macros = {} }) {
     this.lang = lang;
-    this.opts = opts;
+    this.macros = macros;
     this.messages = new Map();
-    this._intls = new WeakMap();
+    this.formatters = new WeakMap();
   }
 
   addMessages(source) {
@@ -22,13 +22,13 @@ export class MessageContext {
     return format(this, args, entity);
   }
 
-  _memoizeIntlObject(ctor, opts) {
-    const cache = this._intls.get(ctor) || {};
+  _memoizeFormatter(ctor, opts) {
+    const cache = this.formatters.get(ctor) || {};
     const id = JSON.stringify(opts);
 
     if (!cache[id]) {
       cache[id] = new ctor(this.lang, opts);
-      this._intls.set(ctor, cache);
+      this.formatters.set(ctor, cache);
     }
 
     return cache[id];
