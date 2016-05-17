@@ -125,10 +125,10 @@ class EntityReference extends Identifier {
   }
 }
 
-class BuiltinReference extends Identifier {
+class FunctionReference extends Identifier {
   constructor(name) {
     super(name);
-    this.type = 'BuiltinReference';
+    this.type = 'FunctionReference';
   }
 }
 
@@ -188,7 +188,7 @@ export default {
   KeyValueArg,
   Number,
   EntityReference,
-  BuiltinReference,
+  FunctionReference,
   Keyword,
   TextElement,
   Comment,

@@ -1,7 +1,6 @@
 import { resolve, ask, tell } from './readwrite';
-import builtins, {
-  FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList
-} from './builtins';
+import { FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList } from './types';
+import builtins from './builtins';
 
 // Unicode bidi isolation characters
 const FSI = '\u2068';
@@ -111,8 +110,8 @@ function* Value(expr) {
       return new FTLNumber(expr.val);
     case 'ext':
       return yield* ExternalArgument(expr);
-    case 'blt':
-      return yield* BuiltinReference(expr);
+    case 'fun':
+      return yield* FunctionReference(expr);
     case 'call':
       return yield* CallExpression(expr);
     case 'ref':
@@ -159,19 +158,25 @@ function* ExternalArgument({name}) {
   }
 }
 
-function* BuiltinReference({name}) {
-  const builtin = builtins[name];
+function* FunctionReference({name}) {
+  const { ctx: { functions } } = yield ask();
+  const func = functions[name] || builtins[name];
 
-  if (!builtin) {
+  if (!func) {
     yield tell(new ReferenceError(`Unknown built-in: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
-  return builtin;
+  if (!(func instanceof Function)) {
+    yield tell(new TypeError(`Function ${name}() is not callable`));
+    return new FTLNone(`${name}()`);
+  }
+
+  return func;
 }
 
 function* CallExpression({name, args}) {
-  const callee = yield* BuiltinReference(name);
+  const callee = yield* FunctionReference(name);
 
   if (callee instanceof FTLNone) {
     return callee;

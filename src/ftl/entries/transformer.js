@@ -19,9 +19,9 @@ function transformExpression(exp) {
         type: 'ref',
         name: exp.name
       };
-    case 'BuiltinReference':
+    case 'FunctionReference':
       return {
-        type: 'blt',
+        type: 'fun',
         name: exp.name
       };
     case 'ExternalArgument':
