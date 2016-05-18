@@ -2,9 +2,9 @@ import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
 
 export class MessageContext {
-  constructor(lang, { functions = {} } = {}) {
+  constructor(lang, { functions } = {}) {
     this.lang = lang;
-    this.functions = functions;
+    this.functions = functions || {}
     this.messages = new Map();
     this.intls = new WeakMap();
   }
