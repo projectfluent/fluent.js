@@ -40,7 +40,7 @@ cumulative.ftlEntriesParseStart = process.hrtime(start);
 var [entries] = L20n.FTLEntriesParser.parseResource(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
-var ctx = new L20n.MessageContext('en-US');
+var ctx = new Intl.MessageContext('en-US');
 ctx.addMessages(ftlCode);
 
 cumulative.format = process.hrtime(start);

@@ -1,5 +1,3 @@
-import { L20nIntl } from './index';
-
 export class FTLBase {
   constructor(value, opts) {
     this.value = value;
@@ -22,7 +20,7 @@ export class FTLNumber extends FTLBase {
   }
   toString(ctx) {
     const nf = ctx._memoizeIntlObject(
-      L20nIntl.NumberFormat, this.opts
+      Intl.NumberFormat, this.opts
     );
     return nf.format(this.value);
   }
@@ -34,7 +32,7 @@ export class FTLDateTime extends FTLBase {
   }
   toString(ctx) {
     const dtf = ctx._memoizeIntlObject(
-      L20nIntl.DateTimeFormat, this.opts
+      Intl.DateTimeFormat, this.opts
     );
     return dtf.format(this.value);
   }
@@ -55,7 +53,7 @@ export class FTLKeyword extends FTLBase {
       return name === other;
     } else if (other instanceof FTLNumber) {
       const pr = ctx._memoizeIntlObject(
-        L20nIntl.PluralRules, other.opts
+        Intl.PluralRules, other.opts
       );
       return name === pr.select(other.valueOf());
     } else {
@@ -67,7 +65,7 @@ export class FTLKeyword extends FTLBase {
 export class FTLList extends Array {
   toString(ctx) {
     const lf = ctx._memoizeIntlObject(
-      L20nIntl.ListFormat // XXX add this.opts
+      Intl.ListFormat // XXX add this.opts
     );
     const elems = this.map(
       elem => elem.toString(ctx)
@@ -75,4 +73,3 @@ export class FTLList extends Array {
     return lf.format(elems);
   }
 }
-

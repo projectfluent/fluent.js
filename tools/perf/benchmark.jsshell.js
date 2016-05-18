@@ -37,7 +37,7 @@ times.ftlEntriesParseStart = dateNow();
 var [entries] = L20n.FTLEntriesParser.parseResource(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
-var ctx = new L20n.MessageContext('en-US');
+var ctx = new Intl.MessageContext('en-US');
 ctx.addMessages(ftlCode);
 
 times.format = dateNow();
