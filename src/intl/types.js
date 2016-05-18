@@ -1,6 +1,6 @@
 import { L20nIntl } from './index';
 
-class FTLBase {
+export class FTLBase {
   constructor(value, opts) {
     this.value = value;
     this.opts = opts;

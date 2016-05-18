@@ -1,5 +1,6 @@
 import { resolve, ask, tell } from './readwrite';
-import { FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList } from './types';
+import { FTLBase, FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList }
+  from './types';
 import builtins from './builtins';
 
 // Unicode bidi isolation characters
@@ -137,6 +138,10 @@ function* ExternalArgument({name}) {
   }
 
   const arg = args[name];
+
+  if (arg instanceof FTLBase) {
+    return arg;
+  }
 
   switch (typeof arg) {
     case 'string':
