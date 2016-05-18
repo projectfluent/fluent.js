@@ -1,10 +1,10 @@
 import 'string.prototype.startswith';
 import 'string.prototype.endswith';
 
+import '../../intl/polyfill';
+
 export { default as FTLASTParser } from '../../ftl/ast/parser';
 export { default as FTLEntriesParser } from '../../ftl/entries/parser';
 export { createEntriesFromAST } from '../../ftl/entries/transformer';
-export { MessageContext } from '../../intl/context';
-export { FTLNumber, FTLDateTime } from '../../intl/types';
 
 export { fetchResource } from './io';

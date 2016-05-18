@@ -1,5 +1,4 @@
-import { MessageContext } from '../intl/context';
-import { getDirection } from '../intl/index';
+import { getDirection } from '../intl/locale';
 
 import { keysFromContext, valueFromContext, entityFromContext }
   from '../lib/format';
@@ -75,7 +74,7 @@ Localization.prototype.getAttributes = getAttributes;
 
 function createContextFromBundle(bundle) {
   return bundle.fetch().then(resources => {
-    const ctx = new MessageContext(bundle.lang);
+    const ctx = new Intl.MessageContext(bundle.lang);
     resources.forEach(res => ctx.addMessages(res));
     contexts.set(bundle, ctx);
     return ctx;

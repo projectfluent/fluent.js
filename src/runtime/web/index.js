@@ -1,4 +1,6 @@
-import { prioritizeLocales } from '../../intl/index';
+import '../../intl/polyfill';
+
+import { prioritizeLocales } from '../../intl/locale';
 import { Localization } from '../../bindings/html';
 import { ResourceBundle } from './resourcebundle';
 import { documentReady, getResourceLinks, getMeta } from './util';

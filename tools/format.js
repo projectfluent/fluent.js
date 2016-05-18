@@ -10,7 +10,7 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-var { MessageContext } = require('../src/intl/context');
+require('../src/intl/polyfill');
 
 program
   .version('0.0.1')
@@ -53,7 +53,7 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const ctx = new MessageContext(program.lang);
+  const ctx = new Intl.MessageContext(program.lang);
   const errors = ctx.addMessages(data.toString());
 
   errors.forEach(printError);

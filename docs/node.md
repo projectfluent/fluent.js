@@ -21,9 +21,9 @@ $ npm install git+https://git@github.com/l20n/l20n.js.git
 ```javascript
 'use strict';
 
-const { MessageContext } = require('./dist/bundle/node/l20n');
+require('./dist/bundle/node/l20n');
 
-const ctx = new MessageContext('en-US');
+const ctx = new Intl.MessageContext('en-US');
 
 const errors = ctx.addMessages(`
 brand-name = Foo 3000
