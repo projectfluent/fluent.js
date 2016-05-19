@@ -1,5 +1,6 @@
 import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
+import { FTLNone } from './types';
 
 export class MessageContext {
   constructor(lang, { functions } = {}) {
@@ -18,8 +19,17 @@ export class MessageContext {
     return errors;
   }
 
+  // format `entity` to a string or null
+  formatToPrimitive(entity, args) {
+    const [value, errors] = format(this, args, entity);
+    return (value instanceof FTLNone) ?
+      [null, errors] : [value, errors];
+  }
+
+  // format `entity` to a string
   format(entity, args) {
-    return format(this, args, entity);
+    const [value, errors] = format(this, args, entity);
+    return [value.toString(), errors];
   }
 
   _memoizeIntlObject(ctor, opts) {

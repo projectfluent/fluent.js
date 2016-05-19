@@ -252,13 +252,9 @@ function* Entity(entity) {
   return yield* Value(def);
 }
 
-function* toString(entity) {
-  const value = yield* Entity(entity);
-
-  // at this point we don't need the current resolution context; value can 
-  // either be a simple string (which doesn't need it by definition) or 
-  // a pattern which has already been resolved in Pattern, or FTLNone.
-  return value.toString();
+// evaluate `entity` to an FTL Value type: string or FTLNone
+function* toFTLType(entity) {
+  return yield* Entity(entity);
 }
 
 export function format(ctx, args, entity) {
@@ -266,7 +262,7 @@ export function format(ctx, args, entity) {
     return [entity, []];
   }
 
-  return resolve(toString(entity)).run({
+  return resolve(toFTLType(entity)).run({
     ctx, args, dirty: new WeakSet()
   });
 }

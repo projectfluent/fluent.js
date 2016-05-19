@@ -31,7 +31,7 @@ export function entityFromContext(ctx, id, args) {
     ];
   }
 
-  const [value] = ctx.format(entity, args);
+  const [value] = ctx.formatToPrimitive(entity, args);
 
   const formatted = {
     value,

@@ -7,3 +7,9 @@ unreadEmails = { PLURAL($emailCount) ->
   [one] You have one unread email
   [other] You have { $emailCount } unread emails
 }
+
+input =
+  [placeholder] Hello
+
+checkbox =
+  [aria-label] Checkbox
