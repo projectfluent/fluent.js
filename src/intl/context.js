@@ -21,15 +21,15 @@ export class MessageContext {
 
   // format `entity` to a string or null
   formatToPrimitive(entity, args) {
-    const [value, errors] = format(this, args, entity);
-    return (value instanceof FTLNone) ?
-      [null, errors] : [value, errors];
+    const result = format(this, args, entity);
+    return (result[0] instanceof FTLNone) ?
+      [null, result[1]] : result;
   }
 
   // format `entity` to a string
   format(entity, args) {
-    const [value, errors] = format(this, args, entity);
-    return [value.toString(), errors];
+    const result = format(this, args, entity);
+    return [result[0].toString(), result[1]];
   }
 
   _memoizeIntlObject(ctor, opts) {
