@@ -254,11 +254,17 @@ function* Entity(entity) {
 
 // evaluate `entity` to an FTL Value type: string or FTLNone
 function* toFTLType(entity) {
+  if (entity === undefined) {
+    return new FTLNone();
+  }
+
   return yield* Entity(entity);
 }
 
 export function format(ctx, args, entity) {
-  if (entity === undefined || typeof entity === 'string') {
+  // optimization: many translations are simple strings and we can very easily 
+  // avoid the cost of a proper resolution by having this shortcut here
+  if (typeof entity === 'string') {
     return [entity, []];
   }
 
