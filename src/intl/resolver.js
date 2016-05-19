@@ -262,7 +262,7 @@ function* toString(entity) {
 }
 
 export function format(ctx, args, entity) {
-  if (typeof entity === 'string') {
+  if (entity === undefined || typeof entity === 'string') {
     return [entity, []];
   }
 
