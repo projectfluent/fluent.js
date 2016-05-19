@@ -14,7 +14,7 @@ export function keysFromContext(ctx, keys, method) {
 export function valueFromContext(ctx, id, args) {
   const entity = ctx.messages.get(id);
 
-  if (!entity) {
+  if (entity === undefined) {
     return [id, [new L10nError(`Unknown entity: ${id}`)]];
   }
 
@@ -24,7 +24,7 @@ export function valueFromContext(ctx, id, args) {
 export function entityFromContext(ctx, id, args) {
   const entity = ctx.messages.get(id);
 
-  if (!entity)  {
+  if (entity === undefined) {
     return [
       { value: id, attrs: null },
       [new L10nError(`Unknown entity: ${id}`)]
