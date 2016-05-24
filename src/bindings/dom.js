@@ -13,6 +13,7 @@ export function setAttributes(element, id, args) {
   if (args) {
     element.setAttribute('data-l10n-args', JSON.stringify(args));
   }
+  return element;
 }
 
 export function getAttributes(element) {

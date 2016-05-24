@@ -12,6 +12,7 @@ const allowed = {
     global: ['title', 'aria-label', 'aria-valuetext', 'aria-moz-hint'],
     a: ['download'],
     area: ['download', 'alt'],
+    button: ['accesskey'], // used by XUL
     // value is special-cased in isAttrAllowed
     input: ['alt', 'placeholder'],
     menuitem: ['label'],
@@ -34,7 +35,8 @@ export function overlayElement(element, translation) {
     } else {
       // start with an inert template element and move its children into
       // `element` but such that `element`'s own children are not replaced
-      const tmpl = element.ownerDocument.createElement('template');
+      const tmpl = element.ownerDocument.createElementNS(
+        'http://www.w3.org/1999/xhtml', 'template');
       tmpl.innerHTML = value;
       // overlay the node with the DocumentFragment
       overlay(element, tmpl.content);
@@ -155,7 +157,7 @@ function getNthElementOfType(context, element, index) {
   let nthOfType = 0;
   for (let i = 0, child; child = context.children[i]; i++) {
     if (child.nodeType === child.ELEMENT_NODE &&
-        child.tagName === element.tagName) {
+        child.tagName.toLowerCase() === element.tagName.toLowerCase()) {
       if (nthOfType === index) {
         return child;
       }
