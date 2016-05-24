@@ -20,5 +20,9 @@ function requestBundles(requestedLangs = navigator.languages) {
   });
 }
 
-document.l10n = new Localization(document, requestBundles);
+function createContext(lang) {
+  return new Intl.MessageContext(lang);
+}
+
+document.l10n = new Localization(document, requestBundles, createContext);
 window.addEventListener('languagechange', document.l10n);

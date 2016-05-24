@@ -9,13 +9,14 @@ import { setAttributes, getAttributes, translateFragment }
   from './dom';
 
 const properties = new WeakMap();
-const contexts = new WeakMap();
+export const contexts = new WeakMap();
 
 export class Localization {
-  constructor(doc, requestBundles) {
+  constructor(doc, requestBundles, createContext) {
     this.interactive = requestBundles();
+    this.createContext = createContext;
     this.ready = this.interactive
-      .then(bundles => fetchFirstBundle(bundles))
+      .then(bundles => fetchFirstBundle(bundles, createContext))
       .then(bundles => translateDocument(this, bundles));
 
     properties.set(this, { doc, requestBundles, ready: false });
@@ -72,18 +73,18 @@ export class Localization {
 Localization.prototype.setAttributes = setAttributes;
 Localization.prototype.getAttributes = getAttributes;
 
-function createContextFromBundle(bundle) {
+function createContextFromBundle(bundle, createContext) {
   return bundle.fetch().then(resources => {
-    const ctx = new Intl.MessageContext(bundle.lang);
+    const ctx = createContext(bundle.lang);
     resources.forEach(res => ctx.addMessages(res));
     contexts.set(bundle, ctx);
     return ctx;
   });
 }
 
-function fetchFirstBundle(bundles) {
+function fetchFirstBundle(bundles, createContext) {
   const [bundle] = bundles;
-  return createContextFromBundle(bundle).then(
+  return createContextFromBundle(bundle, createContext).then(
     () => bundles
   );
 }
@@ -93,7 +94,7 @@ function changeLanguages(l10n, oldBundles, requestedLangs) {
 
   l10n.interactive = requestBundles(requestedLangs).then(
     newBundles => equal(oldBundles, newBundles) ?
-      oldBundles : fetchFirstBundle(newBundles)
+      oldBundles : fetchFirstBundle(newBundles, l10n.createContext)
   );
 
   return l10n.interactive.then(

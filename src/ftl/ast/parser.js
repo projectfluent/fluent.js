@@ -143,7 +143,8 @@ class ParseContext {
       members = this.getMembers();
     } else if (value === null) {
       throw this.error(
-  `Expected a value (like: " = value") or a trait (like: "[key] value")`);
+        'Expected a value (like: " = value") or a trait (like: "[key] value")'
+      );
     }
 
     return new AST.Entity(id, value, members, comment);

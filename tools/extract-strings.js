@@ -23,12 +23,14 @@ function trimString(str) {
 function extractFromHTML(err, data) {
   const res = new AST.Resource();
 
-  const $ = cheerio.load(data.toString());
+  const $ = cheerio.load(data.toString(), {
+    xmlMode: true
+  });
   const elements = $('*[data-l10n-id]');
   elements.each(function(index, element) {
-
     const id = new AST.Identifier($(this).attr('data-l10n-id'));
-    const value = new AST.Pattern(trimString($(this).text().trim()));
+    const sourceValue = trimString($(this).text().trim());
+    const value = new AST.Pattern(sourceValue, [sourceValue]);
 
     const traits = [];
 
@@ -92,7 +94,8 @@ program
   .usage('[options] [file]')
   .parse(process.argv);
 
-if (program.args[0].endsWith('.html')) {
+if (program.args[0].endsWith('.html') ||
+    program.args[0].endsWith('.xhtml')) {
   fs.readFile(program.args[0], extractFromHTML);
 }
 if (program.args[0].endsWith('.js')) {

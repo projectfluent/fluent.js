@@ -56,7 +56,7 @@ export function getMeta(head) {
   };
 }
 
-function getLangRevisionMap(seq, str) {
+export function getLangRevisionMap(seq, str) {
   return str.split(',').reduce((prevSeq, cur) => {
     const [lang, rev] = getLangRevisionTuple(cur);
     prevSeq[lang] = rev;
@@ -64,7 +64,7 @@ function getLangRevisionMap(seq, str) {
   }, seq);
 }
 
-function getLangRevisionTuple(str) {
+export function getLangRevisionTuple(str) {
   const [lang, rev]  = str.trim().split(':');
   // if revision is missing, use NaN
   return [lang, parseInt(rev)];
