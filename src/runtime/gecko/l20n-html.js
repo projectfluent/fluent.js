@@ -1,7 +1,7 @@
 import { prioritizeLocales } from '../../intl/locale';
 import { contexts, Localization } from '../../bindings/html';
 import { documentReady, getResourceLinks } from './util';
-import { keysFromContext, valueFromContext } from '../../lib/format';
+import { valueFromContext } from '../../lib/format';
 import { ResourceBundle } from './resourcebundle';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
@@ -48,8 +48,9 @@ document.l10n = new Localization(document, requestBundles, createContext);
 
 document.l10n.interactive.then(bundles => {
   document.l10n.getValue = function(id, args) {
-    return keysFromContext(
-      contexts.get(bundles[0]), [[id, args]], valueFromContext)[0];
+    return valueFromContext(
+      contexts.get(bundles[0]), id, args
+    )[0];
   };
 });
 
