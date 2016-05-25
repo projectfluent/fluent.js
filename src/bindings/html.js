@@ -76,7 +76,9 @@ Localization.prototype.getAttributes = getAttributes;
 function createContextFromBundle(bundle, createContext) {
   return bundle.fetch().then(resources => {
     const ctx = createContext(bundle.lang);
-    resources.forEach(res => ctx.addMessages(res));
+    resources
+      .filter(res => !(res instanceof Error))
+      .forEach(res => ctx.addMessages(res));
     contexts.set(bundle, ctx);
     return ctx;
   });
