@@ -112,7 +112,7 @@ function equal(bundles1, bundles2) {
     bundles1.every(({lang}, i) => lang === bundles2[i].lang);
 }
 
-function translateDocument(l10n, bundles) {
+export function translateDocument(l10n, bundles) {
   const langs = bundles.map(bundle => bundle.lang);
   const props = properties.get(l10n);
   const html = props.doc.documentElement;
