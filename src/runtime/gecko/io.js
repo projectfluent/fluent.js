@@ -1,11 +1,11 @@
-import { L10nError } from '../../lib/errors';
+const { classes: Cc, interfaces: Ci } = Components;
 
 const HTTP_STATUS_CODE_OK = 200;
 
 function load(url) {
-  return new Promise((resolve) => {
-    const req = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1']
-                      .createInstance(Ci.nsIXMLHttpRequest)
+  return new Promise((resolve, reject) => {
+    const req = Cc['@mozilla.org/xmlextras/xmlhttprequest;1']
+      .createInstance(Ci.nsIXMLHttpRequest);
 
     req.mozBackgroundRequest = true;
     req.overrideMimeType('text/plain');
@@ -15,11 +15,11 @@ function load(url) {
       if (req.status === HTTP_STATUS_CODE_OK) {
         resolve(req.responseText);
       } else {
-        reject(new L10nError('Not found: ' + url));
+        reject(new Error('Not found: ' + url));
       }
     });
-    xhr.addEventListener('error', reject);
-    xhr.addEventListener('timeout', reject);
+    req.addEventListener('error', reject);
+    req.addEventListener('timeout', reject);
 
     req.send(null);
   });
