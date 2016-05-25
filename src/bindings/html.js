@@ -13,10 +13,12 @@ export const contexts = new WeakMap();
 
 export class Localization {
   constructor(doc, requestBundles, createContext) {
-    this.interactive = requestBundles();
-    this.ready = this.interactive
-      .then(bundles => fetchFirstBundle(bundles, createContext))
-      .then(bundles => translateDocument(this, bundles));
+    this.interactive = requestBundles().then(
+      bundles => fetchFirstBundle(bundles, createContext)
+    );
+    this.ready = this.interactive.then(
+      bundles => translateDocument(this, bundles)
+    );
 
     properties.set(this, {
       doc, requestBundles, createContext, ready: false
