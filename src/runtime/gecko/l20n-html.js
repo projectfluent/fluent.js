@@ -4,7 +4,6 @@ import { ResourceBundle } from './resourcebundle';
 import { GeckoLocalization } from './localization';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
-Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 
 function requestBundles(requestedLangs = navigator.languages) {
   return documentReady().then(() => {

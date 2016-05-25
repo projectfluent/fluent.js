@@ -2,7 +2,8 @@ import { Localization, contexts, translateDocument }
   from '../../bindings/html';
 import { valueFromContext } from '../../lib/format';
 
-// Services.jsm is imported in entry points: l20n-html and l20n-xul
+Components.utils.import('resource://gre/modules/Services.jsm');
+Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 
 const functions = {
   OS: function() {
