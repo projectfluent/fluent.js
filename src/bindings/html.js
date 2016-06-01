@@ -3,16 +3,17 @@ import { getDirection } from '../intl/locale';
 import { keysFromContext, valueFromContext, entityFromContext }
   from '../lib/format';
 
-import { initMutationObserver, translateRoots, observe, disconnect }
-  from './observer';
+import { LocalizationObserver } from './observer';
 import { setAttributes, getAttributes, translateFragment }
   from './dom';
 
 const properties = new WeakMap();
 export const contexts = new WeakMap();
 
-export class Localization {
+export class Localization extends LocalizationObserver {
   constructor(doc, requestBundles, createContext) {
+    super();
+
     this.interactive = requestBundles().then(
       bundles => fetchFirstBundle(bundles, createContext)
     );
@@ -23,7 +24,6 @@ export class Localization {
     properties.set(this, {
       doc, requestBundles, createContext, ready: false
     });
-    initMutationObserver(this);
     this.observeRoot(doc.documentElement);
   }
 
@@ -62,14 +62,6 @@ export class Localization {
 
   translateFragment(frag) {
     return translateFragment(this, frag);
-  }
-
-  observeRoot(root) {
-    observe(this, root);
-  }
-
-  disconnectRoot(root) {
-    disconnect(this, root);
   }
 }
 
@@ -110,6 +102,13 @@ function changeLanguages(l10n, oldBundles, requestedLangs) {
 function equal(bundles1, bundles2) {
   return bundles1.length === bundles2.length &&
     bundles1.every(({lang}, i) => lang === bundles2[i].lang);
+}
+
+function translateRoots(l10n) {
+  const roots = Array.from(l10n.roots);
+  return Promise.all(
+    roots.map(root => translateFragment(l10n, root))
+  );
 }
 
 export function translateDocument(l10n, bundles) {
