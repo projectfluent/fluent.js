@@ -79,7 +79,7 @@ function getElementsTranslation(view, elems) {
     ] : id;
   });
 
-  return view.formatEntities(...keys);
+  return view.formatEntities(keys);
 }
 
 function translateElements(view, elements) {

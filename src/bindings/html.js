@@ -37,7 +37,7 @@ export class Localization {
     return this.requestLanguages();
   }
 
-  formatEntities(...keys) {
+  formatEntities(keys) {
     // XXX add async fallback
     return this.interactive.then(
       ([bundle]) => keysFromContext(
