@@ -34,7 +34,7 @@ function getTranslatables(element) {
   return nodes;
 }
 
-export function translateMutations(view, mutations) {
+export function translateMutations(obs, mutations) {
   const targets = new Set();
 
   for (let mutation of mutations) {
@@ -62,35 +62,45 @@ export function translateMutations(view, mutations) {
     return;
   }
 
-  translateElements(view, Array.from(targets));
+  translateElements(obs, Array.from(targets));
 }
 
-export function translateFragment(view, frag) {
-  return translateElements(view, getTranslatables(frag));
+export function translateFragment(obs, frag) {
+  return translateElements(obs, getTranslatables(frag));
 }
 
-function getElementsTranslation(view, elems) {
+// XXX the following needs to be optimized, perhaps getTranslatables should 
+// sort elems by localization they refer to so that it is easy to group them, 
+// handle each group individually and finally concatenate the resulting 
+// translations into a flat array whose element correspond one-to-one to elems?
+
+function getElementsTranslation(obs, elems) {
   const keys = elems.map(elem => {
-    const id = elem.getAttribute('data-l10n-id');
     const args = elem.getAttribute('data-l10n-args');
-    return args ? [
-      id,
-      JSON.parse(args.replace(reHtml, match => htmlEntities[match]))
-    ] : id;
+    return [
+      obs.getLocalizationById(elem.getAttribute('localization')),
+      elem.getAttribute('data-l10n-id'),
+      args ? JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null
+    ];
   });
 
-  return view.formatEntities(keys);
+  return Promise.all(
+    keys.map(
+      ([l10n, id, args]) => l10n.formatEntities([[id, args]])
+    )
+  );
 }
 
-function translateElements(view, elements) {
-  return getElementsTranslation(view, elements).then(
-    translations => applyTranslations(view, elements, translations));
+function translateElements(obs, elements) {
+  return getElementsTranslation(obs, elements).then(
+    translations => applyTranslations(obs, elements, translations));
 }
 
-function applyTranslations(view, elems, translations) {
-  view.pause();
+function applyTranslations(obs, elems, translations) {
+  obs.pause();
   for (let i = 0; i < elems.length; i++) {
-    overlayElement(elems[i], translations[i]);
+    // XXX [0] is an artifact of the Promise.all above; remove it
+    overlayElement(elems[i], translations[i][0]);
   }
-  view.resume();
+  obs.resume();
 }

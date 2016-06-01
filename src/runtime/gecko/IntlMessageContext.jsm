@@ -10,5 +10,4 @@ Intl.PluralRules = PluralRules;
 Intl.ListFormat = ListFormat;
 Intl.RelativeTimeFormat = RelativeTimeFormat;
 
-
 this.MessageContext = MessageContext;

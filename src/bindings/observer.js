@@ -36,4 +36,8 @@ export class LocalizationObserver {
       root => this.observer.observe(root, observerConfig)
     );
   }
+
+  getLocalizationById() {
+    return this;
+  }
 }
