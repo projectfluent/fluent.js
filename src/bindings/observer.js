@@ -32,20 +32,25 @@ export function observe(view, root) {
   }
 }
 
-export function disconnect(view, root, allRoots) {
+export function disconnect(view, root) {
   const obs = observers.get(view);
   if (obs) {
     obs.observer.disconnect();
-    if (allRoots) {
-      return;
-    }
     obs.roots.delete(root);
     obs.roots.forEach(
-      other => obs.observer.observe(other, observerConfig));
+      other => obs.observer.observe(other, observerConfig)
+    );
   }
 }
 
-export function reconnect(view) {
+export function pause(view) {
+  const obs = observers.get(view);
+  if (obs) {
+    obs.observer.disconnect();
+  }
+}
+
+export function resume(view) {
   const obs = observers.get(view);
   if (obs) {
     obs.roots.forEach(

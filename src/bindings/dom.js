@@ -1,4 +1,4 @@
-import { disconnect, reconnect } from './observer';
+import { pause, resume } from './observer';
 import { overlayElement } from './overlay';
 
 const reHtml = /[&<>]/g;
@@ -88,9 +88,9 @@ function translateElements(view, elements) {
 }
 
 function applyTranslations(view, elems, translations) {
-  disconnect(view, null, true);
+  pause(view);
   for (let i = 0; i < elems.length; i++) {
     overlayElement(elems[i], translations[i]);
   }
-  reconnect(view);
+  resume(view);
 }
