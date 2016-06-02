@@ -1,19 +1,13 @@
 export function prioritizeLocales(def, availableLangs, requested) {
-  let supportedLocale;
-  // Find the first locale in the requested list that is supported.
-  for (let i = 0; i < requested.length; i++) {
-    const locale = requested[i];
-    if (availableLangs.indexOf(locale) !== -1) {
-      supportedLocale = locale;
-      break;
+  const supportedLocales = new Set();
+  for (let lang of requested) {
+    if (availableLangs.has(lang)) {
+      supportedLocales.add(lang);
     }
   }
-  if (!supportedLocale ||
-      supportedLocale === def) {
-    return [def];
-  }
 
-  return [supportedLocale, def];
+  supportedLocales.add(def);
+  return supportedLocales;
 }
 
 export function getDirection(code) {

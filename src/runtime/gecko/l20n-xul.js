@@ -1,23 +1,17 @@
-import { prioritizeLocales } from '../../intl/locale';
 import { documentReady, getXULResourceLinks } from './util';
-import { ResourceBundle } from './resourcebundle';
 import { GeckoLocalization } from './localization';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
+Components.utils.import('resource://gre/modules/L10nService.jsm');
 
-function requestBundles(requestedLangs = navigator.languages) {
+function requestBundles(requestedLangs = new Set(navigator.languages)) {
   return documentReady().then(() => {
-    const defaultLang = 'en-US';
-    const availableLangs = ['en-US'];
     const resIds = getXULResourceLinks(document);
+    const {
+      resBundles
+    } = L10nService.getResources(requestedLangs, resIds);
 
-    const newLangs = prioritizeLocales(
-      defaultLang, availableLangs, requestedLangs
-    );
-
-    return newLangs.map(
-      lang => new ResourceBundle(lang, resIds)
-    );
+    return resBundles;
   });
 }
 
