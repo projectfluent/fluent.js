@@ -1,5 +1,41 @@
 const { classes: Cc, interfaces: Ci } = Components;
 
+export const resIndex = {
+  '/global/aboutSupport.ftl': {
+    'en-US': [
+      'chrome://global/locale/aboutSupport.en-US.ftl',
+    ],
+    'pl': [
+      'chrome://global/locale/aboutSupport.pl.ftl',
+    ]
+  },
+  '/branding/brand.ftl': {
+    'en-US': [
+      'chrome://branding/locale/brand.en-US.ftl',
+    ],
+    'pl': [
+      'chrome://branding/locale/brand.pl.ftl',
+    ]
+  },
+  '/global/resetProfile.ftl': {
+    'en-US': [
+      'chrome://global/locale/resetProfile.en-US.ftl',
+    ],
+    'pl': [
+      'chrome://global/locale/resetProfile.pl.ftl',
+    ]
+  },
+  '/browser/aboutDialog.ftl': {
+    'en-US': [
+      'chrome://browser/locale/aboutDialog.en-US.ftl',
+    ],
+    'pl': [
+      'chrome://browser/locale/aboutDialog.pl.ftl',
+    ]
+  },
+};
+
+
 const HTTP_STATUS_CODE_OK = 200;
 
 function load(url) {
@@ -25,7 +61,7 @@ function load(url) {
   });
 }
 
-export function fetchResource(res, lang) {
-  const url = res.replace('{locale}', lang);
+export function fetchResource(resId, lang) {
+  const url = resIndex[resId][lang][0];
   return load(url).catch(e => e);
 }

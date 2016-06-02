@@ -1,21 +1,17 @@
 import { prioritizeLocales } from '../../intl/locale';
 import { ResourceBundle } from './resourcebundle';
+import { resIndex } from './io';
 
 this.EXPORTED_SYMBOLS = ['L10nService'];
 
-const resIndex = {
-  'chrome://global/locale/aboutSupport.{locale}.ftl': ['pl', 'en-US'],
-  'chrome://branding/locale/brand.{locale}.ftl': ['pl', 'en-US'],
-  'chrome://global/locale/resetProfile.{locale}.ftl': ['pl', 'en-US'],
-  'chrome://browser/locale/aboutDialog.ftl': ['pl', 'en-US']
-};
-
 function getLanguages(resIds) {
-  let locales = new Set();
+  const locales = new Set();
 
   for (let id of resIds) {
     if (resIndex[id]) {
-      resIndex[id].forEach(resid => locales.add(resid));
+      Object.keys(resIndex[id]).forEach(lang => {
+        locales.add(lang);
+      });
     }
   }
   return locales;
@@ -35,8 +31,4 @@ this.L10nService = {
       resBundles
     };
   },
-  
-  test() {
-    return new ResourceBundle('en-US', []);
-  }
 };
