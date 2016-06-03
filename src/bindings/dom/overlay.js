@@ -12,7 +12,6 @@ const allowed = {
     global: ['title', 'aria-label', 'aria-valuetext', 'aria-moz-hint'],
     a: ['download'],
     area: ['download', 'alt'],
-    button: ['accesskey'], // used by XUL
     // value is special-cased in isAttrAllowed
     input: ['alt', 'placeholder'],
     menuitem: ['label'],

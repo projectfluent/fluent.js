@@ -3,14 +3,12 @@ import { getDirection } from '../intl/locale';
 import { keysFromContext, valueFromContext, entityFromContext }
   from '../lib/format';
 
-import { LocalizationObserver } from './observer';
-import { setAttributes, getAttributes, translateFragment }
-  from './dom';
+import { translateFragment } from './dom';
 
 const properties = new WeakMap();
 export const contexts = new WeakMap();
 
-export class Localization extends LocalizationObserver {
+export class Localization {
   constructor(doc, requestBundles, createContext) {
     super();
 
@@ -63,10 +61,23 @@ export class Localization extends LocalizationObserver {
   translateFragment(frag) {
     return translateFragment(this, frag);
   }
-}
 
-Localization.prototype.setAttributes = setAttributes;
-Localization.prototype.getAttributes = getAttributes;
+  setAttributes(element, id, args) {
+    element.setAttribute('data-l10n-id', id);
+    if (args) {
+      element.setAttribute('data-l10n-args', JSON.stringify(args));
+    }
+    return element;
+  }
+
+  getAttributes(element) {
+    return {
+      id: element.getAttribute('data-l10n-id'),
+      args: JSON.parse(element.getAttribute('data-l10n-args'))
+    };
+  }
+
+}
 
 function createContextFromBundle(bundle, createContext) {
   return bundle.fetch().then(resources => {

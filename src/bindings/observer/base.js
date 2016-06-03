@@ -1,13 +1,9 @@
-import { translateMutations } from './dom';
-import { overlayElement } from './overlay';
-
 const reHtml = /[&<>]/g;
 const htmlEntities = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
 };
-
 
 const observerConfig = {
   attributes: true,
@@ -44,10 +40,6 @@ export class LocalizationObserver {
     this.roots.forEach(
       root => this.observer.observe(root, observerConfig)
     );
-  }
-
-  getLocalizationById() {
-    return this;
   }
 
   getTranslatables(element) {
@@ -94,44 +86,49 @@ export class LocalizationObserver {
     translateElements(this, Array.from(targets));
   }
 
-}
-
-export function translateFragment(obs, frag) {
-  return translateElements(obs, getTranslatables(frag));
-}
-
-// XXX the following needs to be optimized, perhaps getTranslatables should 
-// sort elems by localization they refer to so that it is easy to group them, 
-// handle each group individually and finally concatenate the resulting 
-// translations into a flat array whose element correspond one-to-one to elems?
-
-function getElementsTranslation(obs, elems) {
-  const keys = elems.map(elem => {
-    const args = elem.getAttribute('data-l10n-args');
-    return [
-      obs.getLocalizationById(elem.getAttribute('localization')),
-      elem.getAttribute('data-l10n-id'),
-      args ? JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null
-    ];
-  });
-
-  return Promise.all(
-    keys.map(
-      ([l10n, id, args]) => l10n.formatEntities([[id, args]])
-    )
-  );
-}
-
-function translateElements(obs, elements) {
-  return getElementsTranslation(obs, elements).then(
-    translations => applyTranslations(obs, elements, translations));
-}
-
-function applyTranslations(obs, elems, translations) {
-  obs.pause();
-  for (let i = 0; i < elems.length; i++) {
-    // XXX [0] is an artifact of the Promise.all above; remove it
-    overlayElement(elems[i], translations[i][0]);
+  getLocalizationForElement(elem) {
+    // check data-l10n-bundle
   }
-  obs.resume();
+
+  // XXX the following needs to be optimized, perhaps getTranslatables should 
+  // sort elems by localization they refer to so that it is easy to group them, 
+  // handle each group individually and finally concatenate the resulting 
+  // translations into a flat array whose element correspond one-to-one to elems?
+  getElementsTranslation(elems) {
+    const keys = elems.map(elem => {
+      const args = elem.getAttribute('data-l10n-args');
+      return [
+        this.getLocalizationForElement(elem),
+        elem.getAttribute('data-l10n-id'),
+        args ? JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null
+      ];
+    });
+
+    return Promise.all(
+      keys.map(
+        ([l10n, id, args]) => l10n.formatEntities([[id, args]])
+      )
+    );
+  }
+
+  translateFragment(frag) {
+    return this.translateElements(this.getTranslatables(frag));
+  }
+
+  translateElements(elements) {
+    return this.getElementsTranslation(elements).then(
+      translations => this.applyTranslations(elements, translations));
+  }
+
+  applyTranslations(elems, translations) {
+    this.pause();
+    for (let i = 0; i < elems.length; i++) {
+      // XXX translations should also pass l10n here
+      // XXX [0] is an artifact of the Promise.all above; remove it
+      l10n.overlayElement(elems[i], translations[i][0]);
+    }
+    this.resume();
+  }
+
 }
+
