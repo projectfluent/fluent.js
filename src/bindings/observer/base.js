@@ -1,3 +1,5 @@
+import { getDirection } from '../../intl/locale';
+
 const reHtml = /[&<>]/g;
 const htmlEntities = {
   '&': '&amp;',
@@ -15,14 +17,14 @@ const observerConfig = {
 
 export class LocalizationObserver {
   constructor() {
-    this.roots = new Set();
+    this.roots = new Map();
     this.observer = new MutationObserver(
       mutations => this.translateMutations(mutations)
     );
   }
 
-  observeRoot(root) {
-    this.roots.add(root);
+  observeRoot(root, l10n) {
+    this.roots.set(root, l10n);
     this.observer.observe(root, observerConfig);
   }
 
@@ -38,8 +40,21 @@ export class LocalizationObserver {
 
   resume() {
     this.roots.forEach(
-      root => this.observer.observe(root, observerConfig)
+      (_, root) => this.observer.observe(root, observerConfig)
     );
+  }
+
+  requestLanguages(requestedLangs) {
+    const localizations = Array.from(new Set(this.roots.values()));
+    return Promise.all(
+      localizations.map(l10n => l10n.requestLanguages(requestedLangs))
+    ).then(
+      () => this.translateRoots()
+    )
+  }
+
+  handleEvent() {
+    return this.requestLanguages();
   }
 
   getTranslatables(element) {
@@ -93,22 +108,60 @@ export class LocalizationObserver {
   // XXX the following needs to be optimized, perhaps getTranslatables should 
   // sort elems by localization they refer to so that it is easy to group them, 
   // handle each group individually and finally concatenate the resulting 
-  // translations into a flat array whose element correspond one-to-one to elems?
+  // translations into a flat array whose elements correspond one-to-one to 
+  // elems?
   getElementsTranslation(elems) {
     const keys = elems.map(elem => {
       const args = elem.getAttribute('data-l10n-args');
       return [
         this.getLocalizationForElement(elem),
         elem.getAttribute('data-l10n-id'),
-        args ? JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null
+        args ?
+          JSON.parse(args.replace(reHtml, match => htmlEntities[match])) :
+          null
       ];
     });
 
     return Promise.all(
       keys.map(
-        ([l10n, id, args]) => l10n.formatEntities([[id, args]])
+        ([l10n, id, args]) => l10n.formatEntities([[id, args]]).then(
+          translations => [l10n, translations]
+        )
       )
     );
+  }
+
+  translateRoots() {
+    const roots = Array.from(this.roots);
+    return Promise.all(
+      roots.map(([root, l10n]) => l10n.interactive.then(
+        bundles => this.translateRoot(root, bundles.map(bundle => bundle.lang))
+      ))
+    );
+  }
+
+  translateRoot(root) {
+    const l10n = this.roots.get(root);
+    return l10n.interactive.then(bundles => {
+      const langs = bundles.map(bundle => bundle.lang);
+
+      function setLangs() {
+        const wasLocalizedBefore = root.hasAttribute('langs');
+
+        root.setAttribute('langs', langs.join(' '));
+        root.setAttribute('lang', langs[0]);
+        root.setAttribute('dir', getDirection(langs[0]));
+
+        if (wasLocalizedBefore) {
+          root.dispatchEvent(new CustomEvent('DOMRetranslated', {
+            bubbles: false,
+            cancelable: false,
+          }));
+        }
+      }
+
+      return this.translateFragment(root).then(setLangs);
+    });
   }
 
   translateFragment(frag) {
@@ -123,9 +176,8 @@ export class LocalizationObserver {
   applyTranslations(elems, translations) {
     this.pause();
     for (let i = 0; i < elems.length; i++) {
-      // XXX translations should also pass l10n here
-      // XXX [0] is an artifact of the Promise.all above; remove it
-      l10n.overlayElement(elems[i], translations[i][0]);
+      const [l10n, [translation]] = translations[i];
+      l10n.overlayElement(elems[i], translation);
     }
     this.resume();
   }

@@ -1,7 +1,8 @@
 import '../../intl/polyfill';
 
 import { prioritizeLocales } from '../../intl/locale';
-import { Localization } from '../../bindings/html';
+import { ContentLocalizationObserver } from '../../bindings/observer/content';
+import { HTMLLocalization } from '../../bindings/dom/html';
 import { ResourceBundle } from './resourcebundle';
 import { documentReady, getResourceLinks, getMeta } from './util';
 
@@ -24,5 +25,11 @@ function createContext(lang) {
   return new Intl.MessageContext(lang);
 }
 
-document.l10n = new Localization(document, requestBundles, createContext);
+document.l10n = new ContentLocalizationObserver();
 window.addEventListener('languagechange', document.l10n);
+
+document.l10n.observeRoot(
+  document.documentElement,
+  new HTMLLocalization(requestBundles, createContext)
+);
+document.l10n.translateRoot(document.documentElement);

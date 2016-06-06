@@ -1,38 +1,24 @@
-import { getDirection } from '../intl/locale';
-
 import { keysFromContext, valueFromContext, entityFromContext }
-  from '../lib/format';
-
-import { translateFragment } from './dom';
+  from '../../lib/format';
 
 const properties = new WeakMap();
 export const contexts = new WeakMap();
 
 export class Localization {
-  constructor(doc, requestBundles, createContext) {
-    super();
-
+  constructor(requestBundles, createContext) {
     this.interactive = requestBundles().then(
       bundles => fetchFirstBundle(bundles, createContext)
     );
-    this.ready = this.interactive.then(
-      bundles => translateDocument(this, bundles)
-    );
 
     properties.set(this, {
-      doc, requestBundles, createContext, ready: false
+      requestBundles, createContext
     });
-    this.observeRoot(doc.documentElement);
   }
 
   requestLanguages(requestedLangs) {
-    return this.ready = this.interactive.then(
+    return this.interactive.then(
       bundles => changeLanguages(this, bundles, requestedLangs)
     );
-  }
-
-  handleEvent() {
-    return this.requestLanguages();
   }
 
   formatEntities(keys) {
@@ -56,10 +42,6 @@ export class Localization {
     return this.formatValues([id, args]).then(
       ([val]) => val
     );
-  }
-
-  translateFragment(frag) {
-    return translateFragment(this, frag);
   }
 
   setAttributes(element, id, args) {
@@ -100,50 +82,13 @@ function fetchFirstBundle(bundles, createContext) {
 function changeLanguages(l10n, oldBundles, requestedLangs) {
   const { requestBundles, createContext } = properties.get(l10n);
 
-  l10n.interactive = requestBundles(requestedLangs).then(
+  return l10n.interactive = requestBundles(requestedLangs).then(
     newBundles => equal(oldBundles, newBundles) ?
       oldBundles : fetchFirstBundle(newBundles, createContext)
-  );
-
-  return l10n.interactive.then(
-    bundles => translateDocument(l10n, bundles)
   );
 }
 
 function equal(bundles1, bundles2) {
   return bundles1.length === bundles2.length &&
     bundles1.every(({lang}, i) => lang === bundles2[i].lang);
-}
-
-function translateRoots(l10n) {
-  const roots = Array.from(l10n.roots);
-  return Promise.all(
-    roots.map(root => translateFragment(l10n, root))
-  );
-}
-
-export function translateDocument(l10n, bundles) {
-  const langs = bundles.map(bundle => bundle.lang);
-  const props = properties.get(l10n);
-  const html = props.doc.documentElement;
-
-  function setLangs() {
-    html.setAttribute('langs', langs.join(' '));
-    html.setAttribute('lang', langs[0]);
-    html.setAttribute('dir', getDirection(langs[0]));
-  }
-
-  function emit() {
-    html.parentNode.dispatchEvent(new CustomEvent('DOMRetranslated', {
-      bubbles: false,
-      cancelable: false,
-    }));
-  }
-
-  const next = props.ready ?
-    emit : () => props.ready = true;
-
-  return translateRoots(l10n)
-    .then(setLangs)
-    .then(next);
 }

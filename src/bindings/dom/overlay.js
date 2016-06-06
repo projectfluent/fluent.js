@@ -61,7 +61,7 @@ function overlay(l10n, sourceElement, translationElement) {
       continue;
     }
 
-    if (110n.isElementAllowed(childElement)) {
+    if (l10n.isElementAllowed(childElement)) {
       const sanitizedChild = childElement.ownerDocument.createElement(
         childElement.nodeName);
       overlay(l10n, sanitizedChild, childElement);
