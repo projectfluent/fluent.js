@@ -1,6 +1,8 @@
 import { Localization } from './base';
 import { overlayElement } from './overlay';
 
+export { contexts } from './base';
+
 const allowed = {
   elements: [
     'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',

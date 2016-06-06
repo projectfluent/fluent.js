@@ -1,6 +1,8 @@
 import { Localization } from './base';
 import { overlayElement } from './overlay';
 
+export { contexts } from './base';
+
 const allowed = {
   attributes: {
     global: ['aria-label', 'aria-valuetext', 'aria-moz-hint'],
