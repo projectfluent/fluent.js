@@ -10,17 +10,17 @@ endef
 export BANNER
 
 build:
-  rollup IntlMessageContext.jsm \
-      -f cjs \
-      --banner "$$BANNER" \
-      -o $(DIST)/IntlMessageContext.jsm
-  rollup L10nService.jsm \
-      -f cjs \
-      --banner "$$BANNER" \
-      -o $(DIST)/L10nService.jsm
-  rollup l20n-html.js \
-      -c ./rollup.config.js \
-      -o $(DIST)/l20n-html.js
-  rollup l20n-xul.js \
-      -c ./rollup.config.js \
-      -o $(DIST)/l20n-xul.js
+	rollup IntlMessageContext.jsm \
+		-f cjs \
+		--banner "$$BANNER" \
+		-o $(DIST)/IntlMessageContext.jsm
+	rollup L10nService.jsm \
+		-f cjs \
+		--banner "$$BANNER" \
+		-o $(DIST)/L10nService.jsm
+	rollup l20n-html.js \
+		-c ./rollup.config.js \
+		-o $(DIST)/l20n-html.js
+	rollup l20n-xul.js \
+		-c ./rollup.config.js \
+		-o $(DIST)/l20n-xul.js
