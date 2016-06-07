@@ -4,7 +4,7 @@ import { prioritizeLocales } from '../../intl/locale';
 import { ContentLocalizationObserver } from '../../bindings/observer/content';
 import { HTMLLocalization } from '../../bindings/dom/html';
 
-import { ResourceBundle } from './resourcebundle';
+import { ResourceBundle } from '../web/resourcebundle';
 import { documentReady, getResourceLinks, getMeta } from './util';
 
 function requestBundles(requestedLangs = new Set(navigator.languages)) {
