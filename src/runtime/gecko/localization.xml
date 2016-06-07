@@ -12,7 +12,6 @@
       <constructor>
         <![CDATA[
           const { utils: Cu } = Components;
-          Cu.import("resource://gre/modules/Console.jsm");
 
           Cu.import('resource://gre/modules/L10nService.jsm');
           Cu.import('resource://gre/modules/XULLocalization.jsm');
@@ -20,8 +19,6 @@
           const resIds = Array.from(this.children).map(
             child => child.getAttribute('src')
           );
-
-          console.log(resIds);
 
           function requestBundles(requestedLangs = new Set(navigator.languages)) {
             return Promise.resolve().then(() => {
@@ -34,36 +31,21 @@
           }
 
           this.l10n = createXULLocalization(requestBundles);
+          this.root = document.getBindingParent(this) || document.documentElement;
 
-          document.l10n.observeRoot(this, this.l10n);
-          document.l10n.translateRoot(this);
-
+          document.l10n.observeRoot(this.root, this.l10n);
+          document.l10n.translateRoot(this.root);
         ]]>
       </constructor>
 
       <destructor>
         <![CDATA[
-          document.l10n.disconnectRoot(this);
+          document.l10n.disconnectRoot(this.root);
         ]]>
       </destructor>
 
+      <field name="root">null</field>
       <field name="l10n">null</field>
-
-      <method name="formatEntities">
-        <parameter name="keys"/>
-        <body>
-          <![CDATA[
-            console.log(this, keys);
-            return [{
-              value: null,
-              attrs: {
-                label: "Nowa karta",
-                placeholder: "Wprowadź adres lub szukaj"
-              }
-            }];
-          ]]>
-        </body>
-      </method>
 
     </implementation>
   </binding>
