@@ -103,7 +103,11 @@ export class LocalizationObserver extends Map {
   }
 
   getLocalizationForElement(elem) {
-    // check data-l10n-bundle
+    if (!elem.hasAttribute('data-l10n-bundle')) {
+      return this.roots.get(document.documentElement);
+    }
+
+    return this.get(elem.getAttribute('data-l10n-bundle'));
   }
 
   // XXX the following needs to be optimized, perhaps getTranslatables should 
