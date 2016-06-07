@@ -18,9 +18,19 @@ build:
 		-f cjs \
 		--banner "$$BANNER" \
 		-o $(DIST)/L10nService.jsm
-	rollup l20n-html.js \
+	rollup XULLocalization.jsm \
+		-f cjs \
+		--banner "$$BANNER" \
+		-o $(DIST)/XULLocalization.jsm
+
+	cp localization.xml $(DIST)
+
+	rollup l20n-content-html.js \
 		-c ./rollup.config.js \
-		-o $(DIST)/l20n-html.js
-	rollup l20n-xul.js \
+		-o $(DIST)/l20n-content-html.js
+	rollup l20n-chrome-html.js \
 		-c ./rollup.config.js \
-		-o $(DIST)/l20n-xul.js
+		-o $(DIST)/l20n-chrome-html.js
+	rollup l20n-chrome-observer.js \
+		-c ./rollup.config.js \
+		-o $(DIST)/l20n-chrome-observer.js

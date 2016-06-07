@@ -98,7 +98,7 @@ export class LocalizationObserver {
       return;
     }
 
-    translateElements(this, Array.from(targets));
+    this.translateElements(Array.from(targets));
   }
 
   getLocalizationForElement(elem) {
