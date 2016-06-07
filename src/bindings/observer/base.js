@@ -15,8 +15,9 @@ const observerConfig = {
   attributeFilter: ['data-l10n-id', 'data-l10n-args']
 };
 
-export class LocalizationObserver {
+export class LocalizationObserver extends Map {
   constructor() {
+    super();
     this.roots = new Map();
     this.observer = new MutationObserver(
       mutations => this.translateMutations(mutations)

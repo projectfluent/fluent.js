@@ -30,10 +30,17 @@
             });
           }
 
-          this.l10n = createXULLocalization(requestBundles);
-          this.root = document.getBindingParent(this) || document.documentElement;
+          const name = this.getAttribute('name') || Symbol.for('anonymous l10n');
+          if (!document.l10n.has(name)) {
+            document.l10n.set(name, createXULLocalization(requestBundles));
+          }
+          const l10n = document.l10n.get(name);
 
-          document.l10n.observeRoot(this.root, this.l10n);
+          const root = this.getAttribute('for');
+          this.root = document.getElementById(root)
+            || document.getBindingParent(this)
+            || document.documentElement;
+          document.l10n.observeRoot(this.root, l10n);
           document.l10n.translateRoot(this.root);
         ]]>
       </constructor>
@@ -41,11 +48,12 @@
       <destructor>
         <![CDATA[
           document.l10n.disconnectRoot(this.root);
+          // XXX check if l10n is used by any other bindings and delete it if 
+          // it isn't
         ]]>
       </destructor>
 
       <field name="root">null</field>
-      <field name="l10n">null</field>
 
     </implementation>
   </binding>
