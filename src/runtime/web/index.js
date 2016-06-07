@@ -28,9 +28,11 @@ function createContext(lang) {
   return new Intl.MessageContext(lang);
 }
 
-const localization = new HTMLLocalization(requestBundles, createContext);
+const localization = new HTMLLocalization(requestBundles, createContext)
+const rootElem = document.documentElement;
 
 document.l10n = new ContentLocalizationObserver();
-document.l10n.observeRoot(document.documentElement, localization);
-document.l10n.translateRoot(document.documentElement);
+document.l10n.observeRoot(rootElem, localization);
+document.l10n.translateRoot(rootElem);
+
 window.addEventListener('languagechange', document.l10n);

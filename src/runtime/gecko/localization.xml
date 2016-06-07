@@ -37,7 +37,7 @@
           const l10n = document.l10n.get(name);
 
           const rootId = this.getAttribute('for');
-          const rootElem = root ? document.getElementById(rootId) : null;
+          const rootElem = rootId ? document.getElementById(rootId) : null;
           this.root = rootElem
             || document.getBindingParent(this)
             || document.documentElement;

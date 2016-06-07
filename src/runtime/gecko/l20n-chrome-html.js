@@ -1,9 +1,7 @@
-import { valueFromContext } from '../../lib/format';
-
 import { ChromeLocalizationObserver } from '../../bindings/observer/chrome';
-import { HTMLLocalization, contexts } from '../../bindings/dom/html';
+import { HTMLLocalization } from '../../bindings/dom/html';
 
-import { documentReady, getResourceLinks, observe } from './util';
+import { documentReady, getResourceLinks } from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nService.jsm');
@@ -41,17 +39,19 @@ function createContext(lang) {
   return new MessageContext(lang, { functions });
 }
 
-const localization = new HTMLLocalization(requestBundles, createContext);
-localization.observe = observe;
-localization.interactive.then(bundles => {
-  localization.getValue = function(id, args) {
-    return valueFromContext(contexts.get(bundles[0]), id, args)[0];
-  };
-});
-
-Services.obs.addObserver(localization, 'language-update', false);
-
 document.l10n = new ChromeLocalizationObserver();
-document.l10n.observeRoot(document.documentElement, localization);
-document.l10n.translateRoot(document.documentElement);
+
+const name = Symbol.for('anonymous l10n');
+if (!document.l10n.has(name)) {
+  document.l10n.set(
+    name,
+    new HTMLLocalization(requestBundles, createContext)
+  );
+}
+const localization = document.l10n.get(name);
+const rootElem = document.documentElement;
+
+document.l10n.observeRoot(rootElem, localization);
+document.l10n.translateRoot(rootElem);
+
 window.addEventListener('languagechange', document.l10n);
