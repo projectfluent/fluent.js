@@ -19,7 +19,7 @@ window.addEventListener('languagechange', document.l10n);
 documentReady().then(() => {
   const { defaultLang, availableLangs } = getMeta(document.head);
   const resByName = getResourceLinks(document.head).reduce(
-    (seq, [name, href]) => seq.set(name, (seq.get(name) || []).concat(href)),
+    (seq, [href, name]) => seq.set(name, (seq.get(name) || []).concat(href)),
     new Map()
   );
 
@@ -49,7 +49,7 @@ function createLocalization(name, resIds, defaultLang, availableLangs) {
     );
   }
 
-  if (name === Symbol.for('anonymous l10n')) {
+  if (name === 'main') {
     document.l10n.observeRoot(rootElem, document.l10n.get(name));
     document.l10n.translateRoot(rootElem);
   }

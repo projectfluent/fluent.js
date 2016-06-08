@@ -25,7 +25,7 @@ export class LocalizationObserver extends Map {
     );
   }
 
-  observeRoot(root, l10n = this.get(Symbol.for('anonymous l10n'))) {
+  observeRoot(root, l10n = this.get('main')) {
     this.localizationsByRoot.set(root, l10n);
     if (!this.rootsByLocalization.has(l10n)) {
       this.rootsByLocalization.set(l10n, new Set());
