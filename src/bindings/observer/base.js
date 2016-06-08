@@ -43,6 +43,7 @@ export class LocalizationObserver extends Map {
         roots.delete(root);
         if (roots.size === 0) {
           this.delete(name);
+          this.rootsByLocalization.delete(l10n);
         }
       }
     }

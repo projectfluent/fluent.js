@@ -46,9 +46,7 @@
 
       <destructor>
         <![CDATA[
-          if (this.root) {
-            document.l10n.disconnectRoot(this.root);
-          }
+          document.l10n.disconnectRoot(this.root);
         ]]>
       </destructor>
 
