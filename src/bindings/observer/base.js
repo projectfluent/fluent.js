@@ -26,15 +26,17 @@ export class LocalizationObserver extends Map {
   }
 
   observeRoot(root, l10n = Symbol.for('anonymous l10n')) {
-    const roots = this.rootsByLocalization.get(l10n) || new Set();
-    roots.add(root);
-    this.rootsByLocalization.set(l10n, roots);
     this.localizationsByRoot.set(root, l10n);
+    if (!this.rootsByLocalization.has(l10n)) {
+      this.rootsByLocalization.set(l10n, new Set());
+    }
+    this.rootsByLocalization.get(l10n).add(root);
     this.observer.observe(root, observerConfig);
   }
 
   disconnectRoot(root) {
     this.pause();
+    this.localizationsByRoot.delete(root);
     for (let [name, l10n] of this) {
       const roots = this.rootsByLocalization.get(l10n);
       if (roots.has(root)) {
@@ -44,7 +46,6 @@ export class LocalizationObserver extends Map {
         }
       }
     }
-    this.localizationsByRoot.delete(root);
     this.resume();
   }
 
