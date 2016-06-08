@@ -35,10 +35,13 @@ export class LocalizationObserver extends Map {
 
   disconnectRoot(root) {
     this.pause();
-    for (let l10n of this.values()) {
+    for (let [name, l10n] of this) {
       const roots = this.rootsByLocalization.get(l10n);
       if (roots.has(root)) {
         roots.delete(root);
+        if (roots.size === 0) {
+          this.delete(name);
+        }
       }
     }
     this.localizationsByRoot.delete(root);

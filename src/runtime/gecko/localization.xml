@@ -49,8 +49,6 @@
       <destructor>
         <![CDATA[
           document.l10n.disconnectRoot(this.root);
-          // XXX check if l10n is used by any other bindings and delete it if 
-          // it isn't
         ]]>
       </destructor>
 
