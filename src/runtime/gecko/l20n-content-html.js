@@ -7,11 +7,24 @@ import { HTMLLocalization } from '../../bindings/dom/html';
 import { ResourceBundle } from '../web/resourcebundle';
 import { documentReady, getResourceLinks, getMeta } from './util';
 
-function requestBundles(requestedLangs = new Set(navigator.languages)) {
-  return documentReady().then(() => {
-    const { defaultLang, availableLangs } = getMeta(document.head);
-    const resIds = getResourceLinks(document.head);
+function createContext(lang) {
+  return new Intl.MessageContext(lang);
+}
 
+document.l10n = new ContentLocalizationObserver();
+window.addEventListener('languagechange', document.l10n);
+
+documentReady().then(() => {
+  const { defaultLang, availableLangs } = getMeta(document.head);
+  for (let [name, resIds] of getResourceLinks(document.head)) {
+    if (!document.l10n.has(name)) {
+      createLocalization(name, resIds, defaultLang, availableLangs);
+    }
+  }
+});
+
+function createLocalization(name, resIds, defaultLang, availableLangs) {
+  function requestBundles(requestedLangs = new Set(navigator.languages)) {
     const newLangs = prioritizeLocales(
       defaultLang, availableLangs, requestedLangs
     );
@@ -20,24 +33,16 @@ function requestBundles(requestedLangs = new Set(navigator.languages)) {
     newLangs.forEach(lang => {
       bundles.push(new ResourceBundle(lang, resIds));
     });
-    return bundles;
-  });
+    return Promise.resolve(bundles);
+  }
+
+  document.l10n.set(
+    name, new HTMLLocalization(requestBundles, createContext)
+  );
+
+  if (name === 'main') {
+    const rootElem = document.documentElement;
+    document.l10n.observeRoot(rootElem, document.l10n.get(name));
+    document.l10n.translateRoot(rootElem);
+  }
 }
-
-function createContext(lang) {
-  return new Intl.MessageContext(lang);
-}
-
-const name = Symbol.for('anonymous l10n');
-const rootElem = document.documentElement;
-
-document.l10n = new ContentLocalizationObserver();
-
-if (!document.l10n.has(name)) {
-  document.l10n.set(name, new HTMLLocalization(requestBundles, createContext));
-}
-
-document.l10n.observeRoot(rootElem, document.l10n.get(name));
-document.l10n.translateRoot(rootElem);
-
-window.addEventListener('languagechange', document.l10n);

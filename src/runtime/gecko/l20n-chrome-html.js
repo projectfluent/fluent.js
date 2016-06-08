@@ -8,17 +8,6 @@ Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nService.jsm');
 Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 
-function requestBundles(requestedLangs = new Set(navigator.languages)) {
-  return documentReady().then(() => {
-    const resIds = getResourceLinks(document.head);
-    const {
-      resBundles
-    } = L10nService.getResources(requestedLangs, resIds);
-
-    return resBundles;
-  });
-}
-
 const functions = {
   OS: function() {
     switch (Services.appinfo.OS) {
@@ -40,12 +29,23 @@ function createContext(lang) {
   return new MessageContext(lang, { functions });
 }
 
-const name = Symbol.for('anonymous l10n');
-const rootElem = document.documentElement;
-
 document.l10n = new ChromeLocalizationObserver();
+window.addEventListener('languagechange', document.l10n);
 
-if (!document.l10n.has(name)) {
+documentReady().then(() => {
+  for (let [name, resIds] of getResourceLinks(document.head)) {
+    if (!document.l10n.has(name)) {
+      createLocalization(name, resIds);
+    }
+  }
+});
+
+function createLocalization(name, resIds) {
+  function requestBundles(requestedLangs = new Set(navigator.languages)) {
+    const { resBundles } = L10nService.getResources(requestedLangs, resIds);
+    return Promise.resolve(resBundles);
+  }
+
   const l10n = new HTMLLocalization(requestBundles, createContext);
   l10n.observe = observe;
   Services.obs.addObserver(l10n, 'language-create', false);
@@ -58,9 +58,10 @@ if (!document.l10n.has(name)) {
     bundles => document.l10n.getValue = createGetValue(bundles)
   );
   document.l10n.set(name, l10n);
+
+  if (name === 'main') {
+    const rootElem = document.documentElement;
+    document.l10n.observeRoot(rootElem, document.l10n.get(name));
+    document.l10n.translateRoot(rootElem);
+  }
 }
-
-document.l10n.observeRoot(rootElem, document.l10n.get(name));
-document.l10n.translateRoot(rootElem);
-
-window.addEventListener('languagechange', document.l10n);

@@ -120,6 +120,10 @@ export class LocalizationObserver extends Map {
     this.translateElements(Array.from(targets));
   }
 
+  getLocalizationForElement(elem) {
+    return this.get(elem.getAttribute('data-l10n-bundle') || 'main');
+  }
+
   // XXX the following needs to be optimized, perhaps getTranslatables should 
   // sort elems by localization they refer to so that it is easy to group them, 
   // handle each group individually and finally concatenate the resulting 

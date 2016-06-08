@@ -12,43 +12,43 @@
       <constructor>
         <![CDATA[
           const { utils: Cu } = Components;
-
           Cu.import('resource://gre/modules/L10nService.jsm');
           Cu.import('resource://gre/modules/XULLocalization.jsm');
 
-          const resIds = Array.from(this.children).map(
-            child => child.getAttribute('src')
-          );
+          const name = this.getAttribute('name') || 'main';
+          const host = document.getBindingParent(this);
 
-          function requestBundles(requestedLangs = new Set(navigator.languages)) {
-            return Promise.resolve().then(() => {
-              const {
-                resBundles
-              } = L10nService.getResources(requestedLangs, resIds);
-
-              return resBundles;
-            });
-          }
-
-          const name = this.getAttribute('name') || Symbol.for('anonymous l10n');
           if (!document.l10n.has(name)) {
+            const resIds = Array.from(this.children).map(
+              child => child.getAttribute('src')
+            );
+
+            function requestBundles(requestedLangs = new Set(navigator.languages)) {
+              const { resBundles } = L10nService.getResources(requestedLangs, resIds);
+              return Promise.resolve(resBundles);
+            }
+
             document.l10n.set(name, createXULLocalization(requestBundles));
           }
 
-          const rootId = this.getAttribute('for');
-          const rootElem = rootId ? document.getElementById(rootId) : null;
-          this.root = rootElem
-            || document.getBindingParent(this)
-            || document.documentElement;
+          if (host) {
+            this.root = host;
+          } else if (name === 'main') {
+            this.root = document.documentElement;
+          }
 
-          document.l10n.observeRoot(this.root, document.l10n.get(name));
-          document.l10n.translateRoot(this.root);
+          if (this.root) {
+            document.l10n.observeRoot(this.root, document.l10n.get(name));
+            document.l10n.translateRoot(this.root);
+          }
         ]]>
       </constructor>
 
       <destructor>
         <![CDATA[
-          document.l10n.disconnectRoot(this.root);
+          if (this.root) {
+            document.l10n.disconnectRoot(this.root);
+          }
         ]]>
       </destructor>
 
