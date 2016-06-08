@@ -39,7 +39,7 @@ export class LocalizationObserver extends Map {
     this.localizationsByRoot.delete(root);
     for (let [name, l10n] of this) {
       const roots = this.rootsByLocalization.get(l10n);
-      if (roots.has(root)) {
+      if (roots && roots.has(root)) {
         roots.delete(root);
         if (roots.size === 0) {
           this.delete(name);
@@ -55,9 +55,10 @@ export class LocalizationObserver extends Map {
 
   resume() {
     for (let l10n of this.values()) {
-      const roots = this.rootsByLocalization.get(l10n);
-      for (let root of this.rootsByLocalization.get(l10n)) {
-        this.observer.observe(root, observerConfig)
+      if (this.rootsByLocalization.has(l10n)) {
+        for (let root of this.rootsByLocalization.get(l10n)) {
+          this.observer.observe(root, observerConfig)
+        }
       }
     }
   }
@@ -155,6 +156,10 @@ export class LocalizationObserver extends Map {
   }
 
   translateRoots(l10n) {
+    if (!this.rootsByLocalization.has(l10n)) {
+      return Promise.resolve();
+    }
+
     const roots = Array.from(this.rootsByLocalization.get(l10n));
     return Promise.all(
       roots.map(root => l10n.interactive.then(

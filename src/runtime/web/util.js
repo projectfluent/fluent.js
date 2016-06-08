@@ -16,7 +16,10 @@ export function documentReady() {
 export function getResourceLinks(head) {
   return Array.prototype.map.call(
     head.querySelectorAll('link[rel="localization"]'),
-    el => el.getAttribute('href')
+    el => [
+      el.getAttribute('name') || Symbol.for('anonymous l10n'),
+      el.getAttribute('href')
+    ]
   );
 }
 
