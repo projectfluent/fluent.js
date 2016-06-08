@@ -39,19 +39,16 @@ function createContext(lang) {
   return new MessageContext(lang, { functions });
 }
 
-document.l10n = new ChromeLocalizationObserver();
-
 const name = Symbol.for('anonymous l10n');
-if (!document.l10n.has(name)) {
-  document.l10n.set(
-    name,
-    new HTMLLocalization(requestBundles, createContext)
-  );
-}
-const localization = document.l10n.get(name);
 const rootElem = document.documentElement;
 
-document.l10n.observeRoot(rootElem, localization);
+document.l10n = new ChromeLocalizationObserver();
+
+if (!document.l10n.has(name)) {
+  document.l10n.set(name, new HTMLLocalization(requestBundles, createContext));
+}
+
+document.l10n.observeRoot(rootElem, document.l10n.get(name));
 document.l10n.translateRoot(rootElem);
 
 window.addEventListener('languagechange', document.l10n);

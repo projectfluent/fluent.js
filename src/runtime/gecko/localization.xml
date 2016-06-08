@@ -34,14 +34,14 @@
           if (!document.l10n.has(name)) {
             document.l10n.set(name, createXULLocalization(requestBundles));
           }
-          const l10n = document.l10n.get(name);
 
           const rootId = this.getAttribute('for');
           const rootElem = rootId ? document.getElementById(rootId) : null;
           this.root = rootElem
             || document.getBindingParent(this)
             || document.documentElement;
-          document.l10n.observeRoot(this.root, l10n);
+
+          document.l10n.observeRoot(this.root, document.l10n.get(name));
           document.l10n.translateRoot(this.root);
         ]]>
       </constructor>

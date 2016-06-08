@@ -18,20 +18,30 @@ const observerConfig = {
 export class LocalizationObserver extends Map {
   constructor() {
     super();
-    this.roots = new Map();
+    this.rootsByLocalization = new WeakMap();
+    this.localizationsByRoot = new Map();
     this.observer = new MutationObserver(
       mutations => this.translateMutations(mutations)
     );
   }
 
-  observeRoot(root, l10n) {
-    this.roots.set(root, l10n);
+  observeRoot(root, l10n = Symbol.for('anonymous l10n')) {
+    const roots = this.rootsByLocalization.get(l10n) || new Set();
+    roots.add(root);
+    this.rootsByLocalization.set(l10n, roots);
+    this.localizationsByRoot.set(root, l10n);
     this.observer.observe(root, observerConfig);
   }
 
   disconnectRoot(root) {
     this.pause();
-    this.roots.delete(root);
+    for (let l10n of this.values()) {
+      const roots = this.rootsByLocalization.get(l10n);
+      if (roots.has(root)) {
+        roots.delete(root);
+      }
+    }
+    this.localizationsByRoot.delete(root);
     this.resume();
   }
 
@@ -40,17 +50,17 @@ export class LocalizationObserver extends Map {
   }
 
   resume() {
-    this.roots.forEach(
-      (_, root) => this.observer.observe(root, observerConfig)
-    );
+    for (let root of this.localizationsByRoot.keys()) {
+      this.observer.observe(root, observerConfig)
+    }
   }
 
   requestLanguages(requestedLangs) {
-    const localizations = Array.from(new Set(this.roots.values()));
+    const localizations = Array.from(this.values());
     return Promise.all(
       localizations.map(l10n => l10n.requestLanguages(requestedLangs))
     ).then(
-      () => this.translateRoots()
+      () => this.translateAllRoots()
     )
   }
 
@@ -128,17 +138,26 @@ export class LocalizationObserver extends Map {
     );
   }
 
-  translateRoots() {
-    const roots = Array.from(this.roots);
+  translateAllRoots() {
+    const localizations = Array.from(this.values());
     return Promise.all(
-      roots.map(([root, l10n]) => l10n.interactive.then(
-        bundles => this.translateRoot(root, bundles.map(bundle => bundle.lang))
+      localizations.map(
+        l10n => this.translateRoots(l10n)
+      )
+    );
+  }
+
+  translateRoots(l10n) {
+    const roots = Array.from(this.rootsByLocalization.get(l10n));
+    return Promise.all(
+      roots.map(root => l10n.interactive.then(
+        bundles => this.translateRoot(root)
       ))
     );
   }
 
   translateRoot(root) {
-    const l10n = this.roots.get(root);
+    const l10n = this.localizationsByRoot.get(root);
     return l10n.interactive.then(bundles => {
       const langs = bundles.map(bundle => bundle.lang);
 
