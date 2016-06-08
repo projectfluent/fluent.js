@@ -19,7 +19,7 @@ export class LocalizationObserver extends Map {
   constructor() {
     super();
     this.rootsByLocalization = new WeakMap();
-    this.localizationsByRoot = new Map();
+    this.localizationsByRoot = new WeakMap();
     this.observer = new MutationObserver(
       mutations => this.translateMutations(mutations)
     );
@@ -50,8 +50,11 @@ export class LocalizationObserver extends Map {
   }
 
   resume() {
-    for (let root of this.localizationsByRoot.keys()) {
-      this.observer.observe(root, observerConfig)
+    for (let l10n of this.values()) {
+      const roots = this.rootsByLocalization.get(l10n);
+      for (let root of this.rootsByLocalization.get(l10n)) {
+        this.observer.observe(root, observerConfig)
+      }
     }
   }
 
