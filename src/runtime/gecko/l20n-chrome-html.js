@@ -1,7 +1,8 @@
 import { ChromeLocalizationObserver } from '../../bindings/observer/chrome';
 import { HTMLLocalization } from '../../bindings/dom/html';
 
-import { documentReady, getResourceLinks, createGetValue } from './util';
+import { documentReady, getResourceLinks, createGetValue, observe }
+  from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nService.jsm');
@@ -46,6 +47,10 @@ document.l10n = new ChromeLocalizationObserver();
 
 if (!document.l10n.has(name)) {
   const l10n = new HTMLLocalization(requestBundles, createContext);
+  l10n.observe = observe;
+  Services.obs.addObserver(l10n, 'language-create', false);
+  Services.obs.addObserver(l10n, 'language-update', false);
+
   // XXX this is currently used by about:support; it doesn't support language 
   // changes nor live updates
   document.l10n.ready = l10n.interactive;

@@ -13,6 +13,7 @@ export function createGetValue(bundles) {
 
 export function observe(subject, topic, data) {
   switch (topic) {
+    case 'language-create':
     case 'language-update': {
       this.interactive = this.interactive.then(bundles => {
         // just overwrite any existing messages in the first bundle
