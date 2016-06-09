@@ -25,6 +25,34 @@ export class LocalizationObserver extends Map {
     );
   }
 
+  handleEvent() {
+    return this.requestLanguages();
+  }
+
+  requestLanguages(requestedLangs) {
+    const localizations = Array.from(this.values());
+    return Promise.all(
+      localizations.map(l10n => l10n.requestLanguages(requestedLangs))
+    ).then(
+      () => this.translateAllRoots()
+    )
+  }
+
+  setAttributes(element, id, args) {
+    element.setAttribute('data-l10n-id', id);
+    if (args) {
+      element.setAttribute('data-l10n-args', JSON.stringify(args));
+    }
+    return element;
+  }
+
+  getAttributes(element) {
+    return {
+      id: element.getAttribute('data-l10n-id'),
+      args: JSON.parse(element.getAttribute('data-l10n-args'))
+    };
+  }
+
   observeRoot(root, l10n = this.get('main')) {
     this.localizationsByRoot.set(root, l10n);
     if (!this.rootsByLocalization.has(l10n)) {
@@ -62,101 +90,6 @@ export class LocalizationObserver extends Map {
         }
       }
     }
-  }
-
-  requestLanguages(requestedLangs) {
-    const localizations = Array.from(this.values());
-    return Promise.all(
-      localizations.map(l10n => l10n.requestLanguages(requestedLangs))
-    ).then(
-      () => this.translateAllRoots()
-    )
-  }
-
-  handleEvent() {
-    return this.requestLanguages();
-  }
-
-  groupElementsByLocalization(elements) {
-    return Array.from(elements).reduce(
-      (seq, elem) => {
-        const l10n = this.getLocalizationForElement(elem);
-        const group = (seq.get(l10n) || []).concat(elem);
-        return seq.set(l10n, group);
-      }, new Map()
-    );
-  }
-
-  getTranslatables(element) {
-    const nodes = Array.from(element.querySelectorAll('[data-l10n-id]'));
-
-    if (typeof element.hasAttribute === 'function' &&
-        element.hasAttribute('data-l10n-id')) {
-      nodes.push(element);
-    }
-
-    return nodes;
-  }
-
-  translateMutations(mutations) {
-    const targets = new Set();
-
-    for (let mutation of mutations) {
-      switch (mutation.type) {
-        case 'attributes':
-          targets.add(mutation.target);
-          break;
-        case 'childList':
-          for (let addedNode of mutation.addedNodes) {
-            if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
-              if (addedNode.childElementCount) {
-                this.getTranslatables(addedNode).forEach(
-                  targets.add.bind(targets)
-                );
-              } else {
-                if (addedNode.hasAttribute('data-l10n-id')) {
-                  targets.add(addedNode);
-                }
-              }
-            }
-          }
-          break;
-      }
-    }
-
-    if (targets.size === 0) {
-      return;
-    }
-
-    this.translateElements(Array.from(targets));
-  }
-
-  getLocalizationForElement(elem) {
-    return this.get(elem.getAttribute('data-l10n-bundle') || 'main');
-  }
-
-  getKeysForElements(elems) {
-    return elems.map(elem => {
-      const id = elem.getAttribute('data-l10n-id');
-      const args = elem.getAttribute('data-l10n-args');
-
-      return args ?
-        [id, JSON.parse(args.replace(reHtml, match => htmlEntities[match]))] :
-        id;
-    });
-  }
-
-  getElementsTranslation(elemsByL10n) {
-    return Promise.all(
-      Array.from(elemsByL10n).map(
-        ([l10n, elems]) => l10n.formatEntities(this.getKeysForElements(elems))
-      )
-    ).then(
-      translationsList => Array.from(elemsByL10n.keys()).reduce(
-        (seq, cur, idx) => seq.set(cur, translationsList[idx]),
-        new Map()
-      )
-    );
   }
 
   translateAllRoots() {
@@ -205,6 +138,39 @@ export class LocalizationObserver extends Map {
     });
   }
 
+  translateMutations(mutations) {
+    const targets = new Set();
+
+    for (let mutation of mutations) {
+      switch (mutation.type) {
+        case 'attributes':
+          targets.add(mutation.target);
+          break;
+        case 'childList':
+          for (let addedNode of mutation.addedNodes) {
+            if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
+              if (addedNode.childElementCount) {
+                this.getTranslatables(addedNode).forEach(
+                  targets.add.bind(targets)
+                );
+              } else {
+                if (addedNode.hasAttribute('data-l10n-id')) {
+                  targets.add(addedNode);
+                }
+              }
+            }
+          }
+          break;
+      }
+    }
+
+    if (targets.size === 0) {
+      return;
+    }
+
+    this.translateElements(Array.from(targets));
+  }
+
   translateFragment(frag) {
     return this.translateElements(this.getTranslatables(frag));
   }
@@ -227,19 +193,53 @@ export class LocalizationObserver extends Map {
     this.resume();
   }
 
-  setAttributes(element, id, args) {
-    element.setAttribute('data-l10n-id', id);
-    if (args) {
-      element.setAttribute('data-l10n-args', JSON.stringify(args));
-    }
-    return element;
+  groupElementsByLocalization(elements) {
+    return Array.from(elements).reduce(
+      (seq, elem) => {
+        const l10n = this.getLocalizationForElement(elem);
+        const group = (seq.get(l10n) || []).concat(elem);
+        return seq.set(l10n, group);
+      }, new Map()
+    );
   }
 
-  getAttributes(element) {
-    return {
-      id: element.getAttribute('data-l10n-id'),
-      args: JSON.parse(element.getAttribute('data-l10n-args'))
-    };
+  getTranslatables(element) {
+    const nodes = Array.from(element.querySelectorAll('[data-l10n-id]'));
+
+    if (typeof element.hasAttribute === 'function' &&
+        element.hasAttribute('data-l10n-id')) {
+      nodes.push(element);
+    }
+
+    return nodes;
+  }
+
+  getLocalizationForElement(elem) {
+    return this.get(elem.getAttribute('data-l10n-bundle') || 'main');
+  }
+
+  getKeysForElements(elems) {
+    return elems.map(elem => {
+      const id = elem.getAttribute('data-l10n-id');
+      const args = elem.getAttribute('data-l10n-args');
+
+      return args ?
+        [id, JSON.parse(args.replace(reHtml, match => htmlEntities[match]))] :
+        id;
+    });
+  }
+
+  getElementsTranslation(elemsByL10n) {
+    return Promise.all(
+      Array.from(elemsByL10n).map(
+        ([l10n, elems]) => l10n.formatEntities(this.getKeysForElements(elems))
+      )
+    ).then(
+      translationsList => Array.from(elemsByL10n.keys()).reduce(
+        (seq, cur, idx) => seq.set(cur, translationsList[idx]),
+        new Map()
+      )
+    );
   }
 
 }
