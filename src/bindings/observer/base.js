@@ -12,7 +12,7 @@ const observerConfig = {
   characterData: false,
   childList: true,
   subtree: true,
-  attributeFilter: ['data-l10n-id', 'data-l10n-args']
+  attributeFilter: ['data-l10n-id', 'data-l10n-args', 'data-l10n-bundle']
 };
 
 export class LocalizationObserver extends Map {
