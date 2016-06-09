@@ -16,7 +16,11 @@ export function documentReady() {
 export function getResourceLinks(head) {
   return Array.prototype.map.call(
     head.querySelectorAll('link[rel="localization"]'),
-    el => el.getAttribute('href'));
+    el => [el.getAttribute('href'), el.getAttribute('name') || 'main']
+  ).reduce(
+    (seq, [href, name]) => seq.set(name, (seq.get(name) || []).concat(href)),
+    new Map()
+  );
 }
 
 export function getMeta(head) {
@@ -28,7 +32,8 @@ export function getMeta(head) {
   const metas = Array.from(head.querySelectorAll(
     'meta[name="availableLanguages"],' +
     'meta[name="defaultLanguage"],' +
-    'meta[name="appVersion"]'));
+    'meta[name="appVersion"]')
+  );
   for (let meta of metas) {
     const name = meta.getAttribute('name');
     const content = meta.getAttribute('content').trim();

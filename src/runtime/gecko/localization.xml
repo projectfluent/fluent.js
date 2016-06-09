@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<bindings id="localizationBindings"
+          xmlns="http://www.mozilla.org/xbl">
+
+  <binding id="xul">
+    <implementation implements="nsIDOMEventListener">
+      <constructor>
+        <![CDATA[
+          const { utils: Cu } = Components;
+          Cu.import('resource://gre/modules/L10nService.jsm');
+          Cu.import('resource://gre/modules/XULLocalization.jsm');
+
+          const name = this.getAttribute('name') || 'main';
+          const host = document.getBindingParent(this);
+
+          if (!document.l10n.has(name)) {
+            const resIds = Array.from(this.children).map(
+              child => child.getAttribute('src')
+            );
+
+            function requestBundles(requestedLangs = new Set(navigator.languages)) {
+              const { resBundles } = L10nService.getResources(requestedLangs, resIds);
+              return Promise.resolve(resBundles);
+            }
+
+            document.l10n.set(name, createXULLocalization(requestBundles));
+          }
+
+          if (host) {
+            this.root = host;
+          } else if (name === 'main') {
+            this.root = document.documentElement;
+          }
+
+          if (this.root) {
+            document.l10n.observeRoot(this.root, document.l10n.get(name));
+            document.l10n.translateRoot(this.root);
+          }
+        ]]>
+      </constructor>
+
+      <destructor>
+        <![CDATA[
+          document.l10n.disconnectRoot(this.root);
+        ]]>
+      </destructor>
+
+      <field name="root">null</field>
+
+    </implementation>
+  </binding>
+
+</bindings>

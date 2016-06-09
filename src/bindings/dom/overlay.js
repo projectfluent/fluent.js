@@ -2,31 +2,7 @@
 // &amp;, &#0038;, &#x0026;.
 const reOverlay = /<|&#?\w+;/;
 
-const allowed = {
-  elements: [
-    'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
-    'time', 'code', 'var', 'samp', 'kbd', 'sub', 'sup', 'i', 'b', 'u',
-    'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'br', 'wbr'
-  ],
-  attributes: {
-    global: ['title', 'aria-label', 'aria-valuetext', 'aria-moz-hint'],
-    a: ['download'],
-    area: ['download', 'alt'],
-    button: ['accesskey'], // used by XUL
-    // value is special-cased in isAttrAllowed
-    input: ['alt', 'placeholder'],
-    menuitem: ['label'],
-    menu: ['label'],
-    optgroup: ['label'],
-    option: ['label'],
-    track: ['label'],
-    img: ['alt'],
-    textarea: ['placeholder'],
-    th: ['abbr']
-  }
-};
-
-export function overlayElement(element, translation) {
+export function overlayElement(l10n, element, translation) {
   const value = translation.value;
 
   if (typeof value === 'string') {
@@ -39,12 +15,12 @@ export function overlayElement(element, translation) {
         'http://www.w3.org/1999/xhtml', 'template');
       tmpl.innerHTML = value;
       // overlay the node with the DocumentFragment
-      overlay(element, tmpl.content);
+      overlay(l10n, element, tmpl.content);
     }
   }
 
   for (let key in translation.attrs) {
-    if (isAttrAllowed({ name: key }, element)) {
+    if (l10n.isAttrAllowed({ name: key }, element)) {
       element.setAttribute(key, translation.attrs[key]);
     }
   }
@@ -60,7 +36,7 @@ export function overlayElement(element, translation) {
 // attributes out and we don't want to break the Web by replacing elements to
 // which third-party code might have created references (e.g. two-way
 // bindings in MVC frameworks).
-function overlay(sourceElement, translationElement) {
+function overlay(l10n, sourceElement, translationElement) {
   const result = translationElement.ownerDocument.createDocumentFragment();
   let k, attr;
 
@@ -80,15 +56,15 @@ function overlay(sourceElement, translationElement) {
     const sourceChild = getNthElementOfType(sourceElement, childElement, index);
     if (sourceChild) {
       // there is a corresponding element in the source, let's use it
-      overlay(sourceChild, childElement);
+      overlay(l10n, sourceChild, childElement);
       result.appendChild(sourceChild);
       continue;
     }
 
-    if (isElementAllowed(childElement)) {
+    if (l10n.isElementAllowed(childElement)) {
       const sanitizedChild = childElement.ownerDocument.createElement(
         childElement.nodeName);
-      overlay(sanitizedChild, childElement);
+      overlay(l10n, sanitizedChild, childElement);
       result.appendChild(sanitizedChild);
       continue;
     }
@@ -110,42 +86,11 @@ function overlay(sourceElement, translationElement) {
   // cleared if a new language doesn't use them; https://bugzil.la/922577
   if (translationElement.attributes) {
     for (k = 0, attr; (attr = translationElement.attributes[k]); k++) {
-      if (isAttrAllowed(attr, sourceElement)) {
+      if (l10n.isAttrAllowed(attr, sourceElement)) {
         sourceElement.setAttribute(attr.name, attr.value);
       }
     }
   }
-}
-
-// XXX the allowed list should be amendable; https://bugzil.la/922573
-function isElementAllowed(element) {
-  return allowed.elements.indexOf(element.tagName.toLowerCase()) !== -1;
-}
-
-function isAttrAllowed(attr, element) {
-  const attrName = attr.name.toLowerCase();
-  const tagName = element.tagName.toLowerCase();
-  // is it a globally safe attribute?
-  if (allowed.attributes.global.indexOf(attrName) !== -1) {
-    return true;
-  }
-  // are there no allowed attributes for this element?
-  if (!allowed.attributes[tagName]) {
-    return false;
-  }
-  // is it allowed on this element?
-  // XXX the allowed list should be amendable; https://bugzil.la/922573
-  if (allowed.attributes[tagName].indexOf(attrName) !== -1) {
-    return true;
-  }
-  // special case for value on inputs with type button, reset, submit
-  if (tagName === 'input' && attrName === 'value') {
-    const type = element.type.toLowerCase();
-    if (type === 'submit' || type === 'button' || type === 'reset') {
-      return true;
-    }
-  }
-  return false;
 }
 
 // Get n-th immediate child of context that is of the same type as element.
