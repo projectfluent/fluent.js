@@ -193,7 +193,7 @@ export class LocalizationObserver extends Map {
         }
       }
 
-      return this.translateFragment(root).then(setLangs);
+      return this.translateRootContent(root).then(setLangs);
     });
   }
 
