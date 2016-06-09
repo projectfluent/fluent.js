@@ -77,6 +77,16 @@ export class LocalizationObserver extends Map {
     return this.requestLanguages();
   }
 
+  groupElementsByLocalization(elements) {
+    return Array.from(elements).reduce(
+      (seq, elem) => {
+        const l10n = this.getLocalizationForElement(elem);
+        const group = (seq.get(l10n) || []).concat(elem);
+        return seq.set(l10n, group);
+      }, new Map()
+    );
+  }
+
   getTranslatables(element) {
     const nodes = Array.from(element.querySelectorAll('[data-l10n-id]'));
 
@@ -125,28 +135,26 @@ export class LocalizationObserver extends Map {
     return this.get(elem.getAttribute('data-l10n-bundle') || 'main');
   }
 
-  // XXX the following needs to be optimized, perhaps getTranslatables should 
-  // sort elems by localization they refer to so that it is easy to group them, 
-  // handle each group individually and finally concatenate the resulting 
-  // translations into a flat array whose elements correspond one-to-one to 
-  // elems?
-  getElementsTranslation(elems) {
-    const keys = elems.map(elem => {
+  getKeysForElements(elems) {
+    return elems.map(elem => {
+      const id = elem.getAttribute('data-l10n-id');
       const args = elem.getAttribute('data-l10n-args');
-      return [
-        this.getLocalizationForElement(elem),
-        elem.getAttribute('data-l10n-id'),
-        args ?
-          JSON.parse(args.replace(reHtml, match => htmlEntities[match])) :
-          null
-      ];
-    });
 
+      return args ?
+        [id, JSON.parse(args.replace(reHtml, match => htmlEntities[match]))] :
+        id;
+    });
+  }
+
+  getElementsTranslation(elemsByL10n) {
     return Promise.all(
-      keys.map(
-        ([l10n, id, args]) => l10n.formatEntities([[id, args]]).then(
-          translations => [l10n, translations]
-        )
+      Array.from(elemsByL10n).map(
+        ([l10n, elems]) => l10n.formatEntities(this.getKeysForElements(elems))
+      )
+    ).then(
+      translationsList => Array.from(elemsByL10n.keys()).reduce(
+        (seq, cur, idx) => seq.set(cur, translationsList[idx]),
+        new Map()
       )
     );
   }
@@ -202,15 +210,19 @@ export class LocalizationObserver extends Map {
   }
 
   translateElements(elements) {
-    return this.getElementsTranslation(elements).then(
-      translations => this.applyTranslations(elements, translations));
+    const elemsByL10n = this.groupElementsByLocalization(elements);
+    return this.getElementsTranslation(elemsByL10n).then(
+      translations => this.applyTranslations(elemsByL10n, translations)
+    );
   }
 
-  applyTranslations(elems, translations) {
+  applyTranslations(elemsByL10n, translationsByL10n) {
     this.pause();
-    for (let i = 0; i < elems.length; i++) {
-      const [l10n, [translation]] = translations[i];
-      l10n.overlayElement(elems[i], translation);
+    for (let [l10n, elems] of elemsByL10n) {
+      const translations = translationsByL10n.get(l10n);
+      for (let i = 0; i < elems.length; i++) {
+        l10n.overlayElement(elems[i], translations[i]);
+      }
     }
     this.resume();
   }
@@ -231,4 +243,3 @@ export class LocalizationObserver extends Map {
   }
 
 }
-
