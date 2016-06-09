@@ -37,20 +37,37 @@ export class Localization {
     return this.requestLanguages();
   }
 
+  formatWithFallback(bundles, keys, method, prev) {
+    const ctx = contexts.get(bundles[0]);
+
+    if (!ctx) {
+      return prev.map(tuple => tuple[0]);
+    }
+
+    const [translations, errors] = keysFromContext(ctx, keys, method, prev);
+
+    if (errors.length === 0) {
+      return translations.map(tuple => tuple[0]);
+    }
+
+    // XXX report/emit errors?
+    // errors.forEach(e => console.warn(e));
+
+    const { createContext } = properties.get(this);
+    return fetchFirstBundle(bundles.slice(1), createContext).then(
+      bundles => this.formatWithFallback(bundles, keys, method, translations)
+    );
+  }
+
   formatEntities(...keys) {
-    // XXX add async fallback
     return this.interactive.then(
-      ([bundle]) => keysFromContext(
-        contexts.get(bundle), keys, entityFromContext
-      )
+      bundles => this.formatWithFallback(bundles, keys, entityFromContext)
     );
   }
 
   formatValues(...keys) {
     return this.interactive.then(
-      ([bundle]) => keysFromContext(
-        contexts.get(bundle), keys, valueFromContext
-      )
+      bundles => this.formatWithFallback(bundles, keys, valueFromContext)
     );
   }
 
@@ -89,6 +106,11 @@ function createContextFromBundle(bundle, createContext) {
 
 function fetchFirstBundle(bundles, createContext) {
   const [bundle] = bundles;
+
+  if (!bundle) {
+    return Promise.resolve(bundles);
+  }
+
   return createContextFromBundle(bundle, createContext).then(
     () => bundles
   );
