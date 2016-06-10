@@ -1,7 +1,7 @@
 import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
 import { HTMLLocalization } from '../../lib/dom/html';
 
-import { documentReady, getResourceLinks, createGetValue, observe }
+import { documentReady, getResourceLinks, createGetValue, createObserve }
   from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
@@ -47,7 +47,7 @@ function createLocalization(name, resIds) {
   }
 
   const l10n = new HTMLLocalization(requestBundles, createContext);
-  l10n.observe = observe;
+  l10n.observe = createObserve(document.l10n);
   Services.obs.addObserver(l10n, 'language-create', false);
   Services.obs.addObserver(l10n, 'language-update', false);
 

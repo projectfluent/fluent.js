@@ -1,5 +1,5 @@
 import { XULLocalization } from '../../lib/dom/xul';
-import { observe } from './util';
+import { createObserve } from './util';
 
 this.EXPORTED_SYMBOLS = ['createXULLocalization'];
 
@@ -27,9 +27,9 @@ function createContext(lang) {
   return new MessageContext(lang, { functions });
 }
 
-this.createXULLocalization = function(requestBundles) {
+this.createXULLocalization = function(obs, requestBundles) {
   const l10n = new XULLocalization(requestBundles, createContext);
-  l10n.observe = observe;
+  l10n.observe = createObserve(obs);
   Services.obs.addObserver(l10n, 'language-create', false);
   Services.obs.addObserver(l10n, 'language-update', false);
   return l10n;

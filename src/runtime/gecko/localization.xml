@@ -28,7 +28,10 @@
               return Promise.resolve(resBundles);
             }
 
-            document.l10n.set(name, createXULLocalization(requestBundles));
+            document.l10n.set(
+              name,
+              createXULLocalization(document.l10n, requestBundles)
+            );
           }
 
           if (host) {
