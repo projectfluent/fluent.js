@@ -144,9 +144,5 @@
       "no-useless-escape": 2,
       "no-duplicate-imports": 2
     }
-  },
-  "dependencies": {
-    "string.prototype.endswith": "^0.2.0",
-    "string.prototype.startswith": "^0.2.0"
   }
 }

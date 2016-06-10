@@ -1,6 +1,3 @@
-import 'string.prototype.startswith';
-import 'string.prototype.endswith';
-
 import '../../intl/polyfill';
 
 export { default as FTLASTParser } from '../../ftl/ast/parser';
