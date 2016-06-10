@@ -2,6 +2,8 @@ import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
 import { FTLNone } from './types';
 
+const optsPrimitive = { allowNoDefault: true };
+
 export class MessageContext {
   constructor(lang, { functions } = {}) {
     this.lang = lang;
@@ -21,7 +23,7 @@ export class MessageContext {
 
   // format `entity` to a string or null
   formatToPrimitive(entity, args) {
-    const result = format(this, args, entity);
+    const result = format(this, args, entity, optsPrimitive);
     return (result[0] instanceof FTLNone) ?
       [null, result[1]] : result;
   }

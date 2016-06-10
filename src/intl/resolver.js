@@ -18,14 +18,17 @@ function* mapValues(arr) {
 }
 
 // Helper for choosing entity value
-function* DefaultMember(members) {
+function* DefaultMember(members, allowNoDefault = false) {
   for (let member of members) {
     if (member.def) {
       return member;
     }
   }
 
-  yield tell(new RangeError('No default'));
+  if (!allowNoDefault) {
+    yield tell(new RangeError('No default'));
+  }
+
   return { val: new FTLNone() };
 }
 
@@ -239,7 +242,7 @@ function* Pattern(ptn) {
   return result;
 }
 
-function* Entity(entity) {
+function* Entity(entity, allowNoDefault = false) {
   if (entity.val !== undefined) {
     return yield* Value(entity.val);
   }
@@ -248,27 +251,31 @@ function* Entity(entity) {
     return yield* Value(entity);
   }
 
-  const def = yield* DefaultMember(entity.traits);
+  const def = yield* DefaultMember(entity.traits, allowNoDefault);
   return yield* Value(def);
 }
 
 // evaluate `entity` to an FTL Value type: string or FTLNone
-function* toFTLType(entity) {
+function* toFTLType(entity, opts) {
   if (entity === undefined) {
     return new FTLNone();
   }
 
-  return yield* Entity(entity);
+  return yield* Entity(entity, opts.allowNoDefault);
 }
 
-export function format(ctx, args, entity) {
+const _opts = {
+  allowNoDefault: false
+};
+
+export function format(ctx, args, entity, opts = _opts) {
   // optimization: many translations are simple strings and we can very easily 
   // avoid the cost of a proper resolution by having this shortcut here
   if (typeof entity === 'string') {
     return [entity, []];
   }
 
-  return resolve(toFTLType(entity)).run({
+  return resolve(toFTLType(entity, opts)).run({
     ctx, args, dirty: new WeakSet()
   });
 }
