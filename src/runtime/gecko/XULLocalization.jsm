@@ -1,4 +1,4 @@
-import { XULLocalization } from '../../bindings/dom/xul';
+import { XULLocalization } from '../../lib/dom/xul';
 import { observe } from './util';
 
 this.EXPORTED_SYMBOLS = ['createXULLocalization'];

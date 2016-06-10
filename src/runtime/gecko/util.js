@@ -1,4 +1,4 @@
-import { contexts } from '../../bindings/dom/base';
+import { contexts } from '../../lib/dom/base';
 import { valueFromContext } from '../../lib/format';
 
 export { documentReady, getResourceLinks, getMeta } from '../web/util';

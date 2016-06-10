@@ -1,5 +1,5 @@
 import { keysFromContext, valueFromContext, entityFromContext }
-  from '../../lib/format';
+  from '../format';
 
 const properties = new WeakMap();
 export const contexts = new WeakMap();

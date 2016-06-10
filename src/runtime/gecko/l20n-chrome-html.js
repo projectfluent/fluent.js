@@ -1,5 +1,5 @@
-import { ChromeLocalizationObserver } from '../../bindings/observer/chrome';
-import { HTMLLocalization } from '../../bindings/dom/html';
+import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
+import { HTMLLocalization } from '../../lib/dom/html';
 
 import { documentReady, getResourceLinks, createGetValue, observe }
   from './util';
