@@ -30,7 +30,7 @@ function createContext(lang) {
 this.createXULLocalization = function(obs, requestBundles) {
   const l10n = new XULLocalization(requestBundles, createContext);
   l10n.observe = createObserve(obs);
-  Services.obs.addObserver(l10n, 'language-create', false);
-  Services.obs.addObserver(l10n, 'language-update', false);
+  Services.obs.addObserver(l10n, 'language-registry-update', false);
+  Services.obs.addObserver(l10n, 'language-registry-incremental', false);
   return l10n;
 }

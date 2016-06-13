@@ -48,8 +48,8 @@ function createLocalization(name, resIds) {
 
   const l10n = new HTMLLocalization(requestBundles, createContext);
   l10n.observe = createObserve(document.l10n);
-  Services.obs.addObserver(l10n, 'language-create', false);
-  Services.obs.addObserver(l10n, 'language-update', false);
+  Services.obs.addObserver(l10n, 'language-registry-update', false);
+  Services.obs.addObserver(l10n, 'language-registry-incremental', false);
 
   // XXX this is currently used by about:support; it doesn't support language 
   // changes nor live updates

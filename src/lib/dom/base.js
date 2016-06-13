@@ -1,7 +1,7 @@
 import { keysFromContext, valueFromContext, entityFromContext }
   from '../format';
 
-const properties = new WeakMap();
+export const properties = new WeakMap();
 export const contexts = new WeakMap();
 
 export class Localization {
