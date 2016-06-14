@@ -1,4 +1,4 @@
-import { properties, contexts } from '../../lib/dom/base';
+import { properties, contexts, fetchFirstBundle } from '../../lib/dom/base';
 import { valueFromContext } from '../../lib/format';
 
 export { documentReady, getResourceLinks, getMeta } from '../web/util';
@@ -16,18 +16,23 @@ export function createObserve(obs) {
   return function observe(subject, topic, data) {
     switch (topic) {
       case 'language-registry-update': {
-        const { requestBundles } = properties.get(this);
-        this.interactive = requestBundles();
+        const { requestBundles, createContext } = properties.get(this);
+        this.interactive = requestBundles().then(
+          bundles => fetchFirstBundle(bundles, createContext)
+        );
         return obs.translateRoots(this);
       }
       case 'language-registry-incremental': {
-        this.interactive = this.interactive.then(bundles => {
-          // just overwrite any existing messages in the first bundle
-          const ctx = contexts.get(bundles[0]);
-          ctx.addMessages(data);
-          return bundles;
+        const { resId, lang, messages } = JSON.parse(data);
+        return this.interactive.then(bundles => {
+          const bundle = bundles[0];
+          if (bundle.resIds.includes(resId) && bundle.lang === lang) {
+            // just overwrite any existing messages in the first bundle
+            const ctx = contexts.get(bundles[0]);
+            ctx.addMessages(messages);
+            return obs.translateRoots(this);
+          }
         });
-        return obs.translateRoots(this);
       }
       default: {
         throw new Error(`Unknown topic: ${topic}`);

@@ -74,7 +74,7 @@ function createContextFromBundle(bundle, createContext) {
   });
 }
 
-function fetchFirstBundle(bundles, createContext) {
+export function fetchFirstBundle(bundles, createContext) {
   const [bundle] = bundles;
 
   if (!bundle) {
