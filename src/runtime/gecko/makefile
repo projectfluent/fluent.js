@@ -14,10 +14,6 @@ build:
 		-f cjs \
 		--banner "$$BANNER" \
 		-o $(DIST)/IntlMessageContext.jsm
-	rollup L10nService.jsm \
-		-f cjs \
-		--banner "$$BANNER" \
-		-o $(DIST)/L10nService.jsm
 	rollup XULLocalization.jsm \
 		-f cjs \
 		--banner "$$BANNER" \
