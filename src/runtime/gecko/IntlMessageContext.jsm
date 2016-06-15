@@ -2,12 +2,13 @@ import { MessageContext } from '../../intl/context';
 
 this.EXPORTED_SYMBOLS = ['MessageContext'];
 
-Components.utils.import('resource://gre/modules/IntlListFormat.jsm');
-Components.utils.import('resource://gre/modules/IntlPluralRules.jsm');
-Components.utils.import('resource://gre/modules/IntlRelativeTimeFormat.jsm');
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-Intl.PluralRules = PluralRules;
-Intl.ListFormat = ListFormat;
-Intl.RelativeTimeFormat = RelativeTimeFormat;
+XPCOMUtils.defineLazyModuleGetter(Intl, "ListFormat",
+  "resource://gre/modules/IntlListFormat.jsm");
+XPCOMUtils.defineLazyModuleGetter(Intl, "PluralRules",
+  "resource://gre/modules/IntlPluralRules.jsm");
+XPCOMUtils.defineLazyModuleGetter(Intl, "RelativeTimeFormat",
+  "resource://gre/modules/IntlRelativeTimeFormat.jsm");
 
 this.MessageContext = MessageContext;
