@@ -108,14 +108,11 @@ export class LocalizationObserver extends Map {
 
     const roots = Array.from(this.rootsByLocalization.get(l10n));
     return Promise.all(
-      roots.map(root => l10n.interactive.then(
-        bundles => this.translateRoot(root)
-      ))
+      roots.map(root => this.translateRoot(root, l10n))
     );
   }
 
-  translateRoot(root) {
-    const l10n = this.localizationsByRoot.get(root);
+  translateRoot(root, l10n = this.localizationsByRoot.get(root)) {
     return l10n.interactive.then(bundles => {
       const langs = bundles.map(bundle => bundle.lang);
 
