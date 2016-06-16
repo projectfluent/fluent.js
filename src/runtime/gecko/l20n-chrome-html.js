@@ -41,7 +41,7 @@ documentReady().then(() => {
 });
 
 function createLocalization(name, resIds) {
-  function requestBundles(requestedLangs = new Set(navigator.languages)) {
+  function requestBundles(requestedLangs = navigator.languages) {
     const { resBundles } = L10nService.getResources(requestedLangs, resIds);
     return Promise.resolve(resBundles);
   }

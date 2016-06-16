@@ -1,7 +1,7 @@
 import { properties, contexts, fetchFirstBundle } from '../../lib/dom/base';
 import { valueFromContext } from '../../lib/format';
 
-export { documentReady, getResourceLinks, getMeta } from '../web/util';
+export { documentReady, getResourceLinks } from '../web/util';
 
 export function createGetValue(bundles) {
   return function (id, args) {
@@ -38,5 +38,60 @@ export function createObserve(obs) {
         throw new Error(`Unknown topic: ${topic}`);
       }
     }
+  }
+}
+
+function emit(action, requestId, data) {
+  document.dispatchEvent(
+    new CustomEvent('mozL20nDemo', {
+      bubbles: true,
+      detail: {
+        action, requestId, data: data || {},
+      }
+    })
+  );
+}
+
+export function postMessage(msg, data) {
+  const reqId = Math.random().toString(36).replace(/[^a-z]+/g, '');
+
+  return new Promise((resolve, reject) => {
+    function onResponse(evt) {
+      if (evt.detail.requestId === reqId) {
+        clearTimeout(t);
+        window.removeEventListener('mozL20nDemoResponse', onResponse);
+        resolve(evt.detail.data);
+      }
+    }
+
+    const t = setTimeout(() => {
+      window.removeEventListener('mozL20nDemoResponse', onResponse);
+      reject();
+    }, 15000);
+
+    window.addEventListener('mozL20nDemoResponse', onResponse);
+
+    emit(msg, reqId, data);
+  });
+}
+
+export class ResourceBundle {
+  constructor(resIds, lang) {
+    this.lang = lang;
+    this.resIds = resIds;
+    this.loaded = false;
+  }
+
+  fetch() {
+    if (!this.loaded) {
+      this.loaded = Promise.all(
+        this.resIds.map(resId => postMessage('fetchResource', {
+          resId: resId,
+          lang: this.lang,
+        }))
+      );
+    }
+
+    return this.loaded;
   }
 }

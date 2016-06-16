@@ -4,8 +4,8 @@ import { prioritizeLocales } from '../../intl/locale';
 import { ContentLocalizationObserver } from '../../lib/observer/content';
 import { HTMLLocalization } from '../../lib/dom/html';
 
-import { ResourceBundle } from '../web/resourcebundle';
-import { documentReady, getResourceLinks, getMeta } from './util';
+import { documentReady, getResourceLinks, postMessage, ResourceBundle }
+  from './util';
 
 function createContext(lang) {
   return new Intl.MessageContext(lang);
@@ -15,25 +15,22 @@ document.l10n = new ContentLocalizationObserver();
 window.addEventListener('languagechange', document.l10n);
 
 documentReady().then(() => {
-  const { defaultLang, availableLangs } = getMeta(document.head);
   for (let [name, resIds] of getResourceLinks(document.head)) {
     if (!document.l10n.has(name)) {
-      createLocalization(name, resIds, defaultLang, availableLangs);
+      createLocalization(name, resIds);
     }
   }
 });
 
-function createLocalization(name, resIds, defaultLang, availableLangs) {
-  function requestBundles(requestedLangs = new Set(navigator.languages)) {
-    const newLangs = prioritizeLocales(
-      defaultLang, availableLangs, requestedLangs
+function createLocalization(name, resIds) {
+  function requestBundles(requestedLangs = navigator.languages) {
+    return postMessage('getResources', {
+      requestedLangs, resIds
+    }).then(
+      ({availableLangs}) => Array.from(availableLangs).map(
+        lang => new ResourceBundle(resIds, lang)
+      )
     );
-
-    const bundles = [];
-    newLangs.forEach(lang => {
-      bundles.push(new ResourceBundle(lang, resIds));
-    });
-    return Promise.resolve(bundles);
   }
 
   document.l10n.set(
