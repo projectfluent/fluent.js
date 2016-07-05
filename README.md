@@ -26,8 +26,10 @@ Include the following code in the `<head>` section of your HTML:
 <script defer src="dist/bundle/web/l20n.js"></script>
 ```
 
-L20n.js supports FTL translation resources, as documented at 
-http://l20n.org/learn/.
+L20n is targeted at modern browsers.  See [docs/compat][] for documentation on 
+how to enable support for legacy browsers.
+
+[docs/compat]: https://github.com/l20n/l20n.js/blob/master/docs/compat.md
 
 
 What L20n's syntax looks like

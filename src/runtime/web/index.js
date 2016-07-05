@@ -1,3 +1,4 @@
+import './polyfill';
 import '../../intl/polyfill';
 import { prioritizeLocales } from '../../intl/locale';
 
