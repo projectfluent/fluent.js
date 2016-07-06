@@ -27,7 +27,8 @@ Polyfills For Legacy Browsers
 -----------------------------
 
 For compatibility with legacy browsers transpilation and a set of polyfills is 
-required.  The oldest browser that we know can be supported is IE 11.
+required.  This method can be used to enable support for IE 11, Safari 9.1 and 
+iOS Safari 9.3.
 
 You can find transpiled versions of l20n.js on the [v4.x][] branch of the 
 repository in the [dist/compat][] directory.   It's provided for convenience 
