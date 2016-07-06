@@ -86,13 +86,13 @@ transpile it yourself.  First build l20n.js as usual:
     $ npm install
     $ make
 
-Next, install Babel's ES2015 preset.  Do not use the `loose` option.
+Next, install Babel's ES2015 'loose' preset.
 
-    $ npm install babel-cli babel-preset-es2015
+    $ npm install babel-cli babel-preset-es2015 babel-preset-es2015-loose
 
 Finally transpile the files in `dist/bundle` into `dist/compat`:
 
-    $ ./node_modules/.bin/babel --presets es2015 --out-dir dist/compat/web dist/bundle/web
+    $ ./node_modules/.bin/babel --presets es2015-loose --out-dir dist/compat/web dist/bundle/web
 
 
 Better compatibility
