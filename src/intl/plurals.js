@@ -312,6 +312,7 @@ const pluralRules = {
   '13': function(n) {
     if (n % 1 !== 0) {
         return 'other';
+    }
     if ((isBetween((n % 10), 2, 4)) && !(isBetween((n % 100), 12, 14))) {
       return 'few';
     }
