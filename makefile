@@ -4,9 +4,11 @@ export OK := \033[32;01m✓\033[0m
 
 RUNTIMES := $(wildcard src/runtime/*)
 
-.PHONY: build $(RUNTIMES)
+all: lint build
+
 build: $(RUNTIMES)
 
+.PHONY: $(RUNTIMES)
 $(RUNTIMES):
 	@$(MAKE) -s -C $@
 	@echo -e " $(OK) $@ built"
@@ -16,7 +18,8 @@ clean:
 	@echo -e " $(OK) dist cleaned"
 
 lint:
-	eslint src/
+	@eslint --max-warnings 0 src/
+	@echo -e " $(OK) src/ linted"
 
 test-lib:
 	@mocha \
