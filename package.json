@@ -112,7 +112,7 @@
       ],
       "no-mixed-spaces-and-tabs": 2,
       "prefer-arrow-callback": 1,
-      "prefer-const": 1,
+      "prefer-const": 0,
       "prefer-template": 0,
       "prefer-spread": 2,
       "quotes": [
