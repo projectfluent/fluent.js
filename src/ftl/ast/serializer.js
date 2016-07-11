@@ -133,6 +133,8 @@ export default {
         const obj = this.dumpExpression(exp.object);
         const key = this.dumpExpression(exp.keyword);
         return `${obj}[${key}]`;
+      default:
+        throw new L10nError(`Unknown expression type ${exp.type}`);
     }
   },
 

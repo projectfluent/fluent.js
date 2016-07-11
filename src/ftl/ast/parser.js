@@ -222,9 +222,11 @@ class ParseContext {
     return new AST.Keyword(name, namespace);
   }
 
+  /* eslint-disable complexity */
   getPattern() {
     let buffer = '';
     let source = '';
+    let placeables = 0;
     const content = [];
     let quoteDelimited = null;
     let firstLine = true;
@@ -283,12 +285,17 @@ class ParseContext {
         if (buffer.length) {
           content.push(new AST.TextElement(buffer));
         }
+        if (placeables > MAX_PLACEABLES - 1) {
+          throw this.error(
+            `Too many placeables, maximum allowed is ${MAX_PLACEABLES}`);
+        }
         source += buffer;
         buffer = ''
         const start = this._index;
         content.push(this.getPlaceable());
         source += this._source.substring(start, this._index);
         ch = this._source[this._index];
+        placeables++;
         continue;
       }
 
@@ -320,6 +327,7 @@ class ParseContext {
     pattern._quoteDelim = quoteDelimited !== null;
     return pattern;
   }
+  /* eslint-enable complexity */
 
   getPlaceable() {
     this._index++;
