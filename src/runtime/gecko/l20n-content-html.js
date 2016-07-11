@@ -27,8 +27,8 @@ function createLocalization(name, resIds) {
     return postMessage('getResources', {
       requestedLangs, resIds
     }).then(
-      ({availableLangs}) => Array.from(availableLangs).map(
-        lang => new ResourceBundle(resIds, lang)
+      ({bundles}) => bundles.map(
+        bundle => new ResourceBundle(bundle.locale, bundle.resources)
       )
     );
   }

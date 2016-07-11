@@ -26,7 +26,7 @@ export function createObserve(obs) {
         const { resId, lang, messages } = JSON.parse(data);
         return this.interactive.then(bundles => {
           const bundle = bundles[0];
-          if (bundle.resIds.includes(resId) && bundle.lang === lang) {
+          if (resId in bundle.resources && bundle.locale === lang) {
             // just overwrite any existing messages in the first bundle
             const ctx = contexts.get(bundles[0]);
             ctx.addMessages(messages);
@@ -76,19 +76,29 @@ export function postMessage(msg, data) {
 }
 
 export class ResourceBundle {
-  constructor(resIds, lang) {
+  constructor(lang, resources) {
     this.lang = lang;
-    this.resIds = resIds;
     this.loaded = false;
+    this.resources = resources;
+
+    const data = Object.keys(resources).map(
+      resId => resources[resId].data
+    );
+
+    if (data.every(d => d !== null)) {
+      this.loaded = Promise.resolve(data);
+    }
   }
 
   fetch() {
     if (!this.loaded) {
       this.loaded = Promise.all(
-        this.resIds.map(resId => postMessage('fetchResource', {
-          resId: resId,
-          lang: this.lang,
-        }))
+        Object.keys(this.resources).map(resId => {
+          const { source, lang } = this.resources[resId];
+          return postMessage('fetchResource', {
+            source, resId, lang: this.lang
+          });
+        })
       );
     }
 

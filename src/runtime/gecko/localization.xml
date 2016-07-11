@@ -12,7 +12,7 @@
       <constructor>
         <![CDATA[
           const { utils: Cu } = Components;
-          Cu.import('resource://gre/modules/L10nService.jsm');
+          Cu.import('resource://gre/modules/L10nRegistry.jsm');
           Cu.import('resource://gre/modules/XULLocalization.jsm');
 
           const name = this.getAttribute('name') || 'main';
@@ -24,8 +24,11 @@
             );
 
             function requestBundles(requestedLangs = navigator.languages) {
-              const { resBundles } = L10nService.getResources(requestedLangs, resIds);
-              return Promise.resolve(resBundles);
+              return L10nRegistry.getResources(requestedLangs, resIds).then(
+                ({bundles}) => bundles.map(
+                  bundle => new ResourceBundle(bundle.locale, bundle.resources)
+                )
+              );
             }
 
             document.l10n.set(

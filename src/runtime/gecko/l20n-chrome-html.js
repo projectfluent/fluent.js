@@ -6,6 +6,7 @@ import { documentReady, getResourceLinks, createGetValue, createObserve }
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nService.jsm');
+Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
 Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 
 const functions = {
@@ -42,8 +43,14 @@ documentReady().then(() => {
 
 function createLocalization(name, resIds) {
   function requestBundles(requestedLangs = navigator.languages) {
-    const { resBundles } = L10nService.getResources(requestedLangs, resIds);
-    return Promise.resolve(resBundles);
+    // const { resBundles } = L10nService.getResources(requestedLangs, resIds);
+    // return Promise.resolve(resBundles);
+
+    return L10nRegistry.getResources(requestedLangs, resIds).then(
+      ({bundles}) => bundles.map(
+        bundle => new ResourceBundle(bundle.locale, bundle.resources)
+      )
+    );
   }
 
   const l10n = new HTMLLocalization(requestBundles, createContext);
