@@ -1,6 +1,7 @@
 import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
 import { HTMLLocalization } from '../../lib/dom/html';
 
+import { ChromeResourceBundle } from './io';
 import { documentReady, getResourceLinks, createGetValue, createObserve }
   from './util';
 
@@ -48,7 +49,7 @@ function createLocalization(name, resIds) {
 
     return L10nRegistry.getResources(requestedLangs, resIds).then(
       ({bundles}) => bundles.map(
-        bundle => new ResourceBundle(bundle.locale, bundle.resources)
+        bundle => new ChromeResourceBundle(bundle.locale, bundle.resources)
       )
     );
   }

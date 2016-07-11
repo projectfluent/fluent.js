@@ -31,3 +31,21 @@ export function fetchResource(res, lang) {
   const url = res.replace('{locale}', lang);
   return load(url).catch(e => e);
 }
+
+export class ResourceBundle {
+  constructor(lang, resIds) {
+    this.lang = lang;
+    this.loaded = false;
+    this.resIds = resIds;
+  }
+
+  fetch() {
+    if (!this.loaded) {
+      this.loaded = Promise.all(
+        this.resIds.map(resId => fetchResource(resId, this.lang))
+      );
+    }
+
+    return this.loaded;
+  }
+}

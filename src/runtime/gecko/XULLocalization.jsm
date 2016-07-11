@@ -1,9 +1,11 @@
 import { XULLocalization } from '../../lib/dom/xul';
+import { ChromeResourceBundle } from './io';
 import { createObserve } from './util';
 
-this.EXPORTED_SYMBOLS = ['createXULLocalization'];
+this.EXPORTED_SYMBOLS = ['createXULLocalization', 'ChromeResourceBundle'];
 
 Components.utils.import('resource://gre/modules/Services.jsm');
+Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
 Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 
 const functions = {
@@ -34,3 +36,5 @@ this.createXULLocalization = function(obs, requestBundles) {
   Services.obs.addObserver(l10n, 'language-registry-incremental', false);
   return l10n;
 }
+
+this.ChromeResourceBundle = ChromeResourceBundle;

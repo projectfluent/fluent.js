@@ -4,8 +4,8 @@ import { prioritizeLocales } from '../../intl/locale';
 import { ContentLocalizationObserver } from '../../lib/observer/content';
 import { HTMLLocalization } from '../../lib/dom/html';
 
-import { documentReady, getResourceLinks, postMessage, ResourceBundle }
-  from './util';
+import { postMessage, ContentResourceBundle } from './io';
+import { documentReady, getResourceLinks } from './util';
 
 function createContext(lang) {
   return new Intl.MessageContext(lang);
@@ -28,7 +28,7 @@ function createLocalization(name, resIds) {
       requestedLangs, resIds
     }).then(
       ({bundles}) => bundles.map(
-        bundle => new ResourceBundle(bundle.locale, bundle.resources)
+        bundle => new ContentResourceBundle(bundle.locale, bundle.resources)
       )
     );
   }
