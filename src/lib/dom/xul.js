@@ -19,7 +19,7 @@ export class XULLocalization extends Localization {
     return overlayElement(this, element, translation);
   }
 
-  isElementAllowed(element) {
+  isElementAllowed() {
     return false;
   }
 

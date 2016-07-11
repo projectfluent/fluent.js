@@ -1,5 +1,4 @@
 import '../../intl/polyfill';
-import { prioritizeLocales } from '../../intl/locale';
 
 import { ContentLocalizationObserver } from '../../lib/observer/content';
 import { HTMLLocalization } from '../../lib/dom/html';

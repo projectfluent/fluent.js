@@ -9,8 +9,11 @@ function emit(action, requestId, data) {
   );
 }
 
+const HASH_RADIX = 36;
+const MOZ_EVENT_TIMEOUT = 15000;
+
 export function postMessage(msg, data) {
-  const reqId = Math.random().toString(36).replace(/[^a-z]+/g, '');
+  const reqId = Math.random().toString(HASH_RADIX).replace(/[^a-z]+/g, '');
 
   return new Promise((resolve, reject) => {
     function onResponse(evt) {
@@ -24,7 +27,7 @@ export function postMessage(msg, data) {
     const t = setTimeout(() => {
       window.removeEventListener('mozL20nDemoResponse', onResponse);
       reject();
-    }, 15000);
+    }, MOZ_EVENT_TIMEOUT);
 
     window.addEventListener('mozL20nDemoResponse', onResponse);
 
@@ -52,9 +55,7 @@ export class ContentResourceBundle {
       this.loaded = Promise.all(
         Object.keys(this.resources).map(resId => {
           const { source, lang } = this.resources[resId];
-          return postMessage('fetchResource', {
-            source, resId, lang: this.lang
-          });
+          return postMessage('fetchResource', { source, resId, lang });
         })
       );
     }
