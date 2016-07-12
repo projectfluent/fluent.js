@@ -175,7 +175,7 @@ function* FunctionReference({name}) {
     return new FTLNone(`${name}()`);
   }
 
-  if (!(func instanceof Function)) {
+  if (typeof func !== 'function') {
     yield tell(new TypeError(`Function ${name}() is not callable`));
     return new FTLNone(`${name}()`);
   }

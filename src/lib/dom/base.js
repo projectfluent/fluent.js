@@ -34,8 +34,9 @@ export class Localization {
       return translations.map(tuple => tuple[0]);
     }
 
-    // XXX report/emit errors?
-    // errors.forEach(e => console.warn(e));
+    if (console) {
+      errors.forEach(e => console.warn(e)); // eslint-disable-line no-console
+    }
 
     const { createContext } = properties.get(this);
     return fetchFirstBundle(bundles.slice(1), createContext).then(
