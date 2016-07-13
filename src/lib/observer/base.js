@@ -79,6 +79,8 @@ export class LocalizationObserver {
   }
 
   disconnectRoot(root) {
+    let wasLast = false;
+
     this.pause();
     this.localizationsByRoot.delete(root);
     for (let [name, l10n] of this.localizations) {
@@ -86,12 +88,15 @@ export class LocalizationObserver {
       if (roots && roots.has(root)) {
         roots.delete(root);
         if (roots.size === 0) {
+          wasLast = true;
           this.localizations.delete(name);
           this.rootsByLocalization.delete(l10n);
         }
       }
     }
     this.resume();
+
+    return wasLast;
   }
 
   pause() {

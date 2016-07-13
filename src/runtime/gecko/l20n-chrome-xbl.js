@@ -2,7 +2,7 @@ import { XULLocalization } from '../../lib/dom/xul';
 import { ChromeResourceBundle } from './io';
 import { createObserve } from './util';
 
-this.EXPORTED_SYMBOLS = ['createLocalization'];
+this.EXPORTED_SYMBOLS = ['createLocalization', 'destroyLocalization'];
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
@@ -57,4 +57,15 @@ function createLocalization(name, resIds, host, obs) {
   obs.translateRoot(host);
 }
 
+function destroyLocalization(name, host, obs) {
+  const l10n = obs.get(name);
+  const wasLast = obs.disconnectRoot(host);
+
+  if (wasLast) {
+    Services.obs.removeObserver(l10n, 'language-registry-update');
+    Services.obs.removeObserver(l10n, 'language-registry-incremental');
+  }
+}
+
 this.createLocalization = createLocalization;
+this.destroyLocalization = destroyLocalization;

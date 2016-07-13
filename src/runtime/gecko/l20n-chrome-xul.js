@@ -51,8 +51,16 @@ function createLocalization(name, resIds) {
 
   const l10n = new XULLocalization(requestBundles, createContext);
   l10n.observe = createObserve(document.l10n);
-  Services.obs.addObserver(l10n, 'language-registry-update', false);
-  Services.obs.addObserver(l10n, 'language-registry-incremental', false);
+
+  window.addEventListener('load', () => {
+    Services.obs.addObserver(l10n, 'language-registry-update', false);
+    Services.obs.addObserver(l10n, 'language-registry-incremental', false);
+  });
+
+  window.addEventListener('unload', () => {
+    Services.obs.removeObserver(l10n, 'language-registry-update');
+    Services.obs.removeObserver(l10n, 'language-registry-incremental');
+  });
 
   document.l10n.set(name, l10n);
 
