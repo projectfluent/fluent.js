@@ -53,8 +53,9 @@ function createLocalization(name, resIds, host, obs) {
     obs.set(name, l10n);
   }
 
-  obs.observeRoot(host, obs.get(name));
-  obs.translateRoot(host);
+  const l10n = obs.get(name);
+  obs.observeRoot(host, l10n);
+  obs.translateRoot(host, l10n);
 }
 
 function destroyLocalization(name, host, obs) {

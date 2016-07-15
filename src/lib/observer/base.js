@@ -18,8 +18,7 @@ const observerConfig = {
 export class LocalizationObserver {
   constructor() {
     this.localizations = new Map();
-    this.rootsByLocalization = new WeakMap();
-    this.localizationsByRoot = new WeakMap();
+    this.roots = new WeakMap();
     this.observer = new MutationObserver(
       mutations => this.translateMutations(mutations)
     );
@@ -70,11 +69,10 @@ export class LocalizationObserver {
   }
 
   observeRoot(root, l10n = this.get('main')) {
-    this.localizationsByRoot.set(root, l10n);
-    if (!this.rootsByLocalization.has(l10n)) {
-      this.rootsByLocalization.set(l10n, new Set());
+    if (!this.roots.has(l10n)) {
+      this.roots.set(l10n, new Set());
     }
-    this.rootsByLocalization.get(l10n).add(root);
+    this.roots.get(l10n).add(root);
     this.observer.observe(root, observerConfig);
   }
 
@@ -82,15 +80,14 @@ export class LocalizationObserver {
     let wasLast = false;
 
     this.pause();
-    this.localizationsByRoot.delete(root);
     for (let [name, l10n] of this.localizations) {
-      const roots = this.rootsByLocalization.get(l10n);
+      const roots = this.roots.get(l10n);
       if (roots && roots.has(root)) {
         roots.delete(root);
         if (roots.size === 0) {
           wasLast = true;
           this.localizations.delete(name);
-          this.rootsByLocalization.delete(l10n);
+          this.roots.delete(l10n);
         }
       }
     }
@@ -105,8 +102,8 @@ export class LocalizationObserver {
 
   resume() {
     for (let l10n of this.localizations.values()) {
-      if (this.rootsByLocalization.has(l10n)) {
-        for (let root of this.rootsByLocalization.get(l10n)) {
+      if (this.roots.has(l10n)) {
+        for (let root of this.roots.get(l10n)) {
           this.observer.observe(root, observerConfig)
         }
       }
@@ -123,17 +120,17 @@ export class LocalizationObserver {
   }
 
   translateRoots(l10n) {
-    if (!this.rootsByLocalization.has(l10n)) {
+    if (!this.roots.has(l10n)) {
       return Promise.resolve();
     }
 
-    const roots = Array.from(this.rootsByLocalization.get(l10n));
+    const roots = Array.from(this.roots.get(l10n));
     return Promise.all(
       roots.map(root => this.translateRoot(root, l10n))
     );
   }
 
-  translateRoot(root, l10n = this.localizationsByRoot.get(root)) {
+  translateRoot(root, l10n) {
     return l10n.interactive.then(bundles => {
       const langs = bundles.map(bundle => bundle.lang);
 

@@ -32,13 +32,12 @@ function createLocalization(name, resIds) {
     );
   }
 
-  document.l10n.set(
-    name, new HTMLLocalization(requestBundles, createContext)
-  );
+  const l10n = new HTMLLocalization(requestBundles, createContext);
+  document.l10n.set(name, l10n);
 
   if (name === 'main') {
     const rootElem = document.documentElement;
-    document.l10n.observeRoot(rootElem, document.l10n.get(name));
-    document.l10n.translateRoot(rootElem);
+    document.l10n.observeRoot(rootElem, l10n);
+    document.l10n.translateRoot(rootElem, l10n);
   }
 }

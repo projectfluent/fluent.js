@@ -77,7 +77,7 @@ function createLocalization(name, resIds) {
 
   if (name === 'main') {
     const rootElem = document.documentElement;
-    document.l10n.observeRoot(rootElem, document.l10n.get(name));
-    document.l10n.translateRoot(rootElem);
+    document.l10n.observeRoot(rootElem, l10n);
+    document.l10n.translateRoot(rootElem, l10n);
   }
 }
