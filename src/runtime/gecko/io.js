@@ -70,23 +70,18 @@ export class ChromeResourceBundle {
     this.loaded = false;
     this.resources = resources;
 
-    // Uncomment to test sync resource loading
-    // Components.utils.import('resource://gre/modules/SyncPromise.jsm')
-    // this.Promise = SyncPromise;
-    this.Promise = Promise;
-
     const data = Object.keys(resources).map(
       resId => resources[resId].data
     );
 
     if (data.every(d => d !== null)) {
-      this.loaded = this.Promise.resolve(data);
+      this.loaded = Promise.resolve(data);
     }
   }
 
   fetch() {
     if (!this.loaded) {
-      this.loaded = this.Promise.all(
+      this.loaded = Promise.all(
         Object.keys(this.resources).map(resId => {
           const { source, lang } = this.resources[resId];
           return L10nRegistry.fetchResource(source, resId, lang);

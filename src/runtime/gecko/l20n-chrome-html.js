@@ -44,9 +44,6 @@ documentReady().then(() => {
 
 function createLocalization(name, resIds) {
   function requestBundles(requestedLangs = navigator.languages) {
-    // const { resBundles } = L10nService.getResources(requestedLangs, resIds);
-    // return Promise.resolve(resBundles);
-
     return L10nRegistry.getResources(requestedLangs, resIds).then(
       ({bundles}) => bundles.map(
         bundle => new ChromeResourceBundle(bundle.locale, bundle.resources)
