@@ -6,7 +6,6 @@ import { documentReady, getResourceLinks, createGetValue, createObserve }
   from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
-Components.utils.import('resource://gre/modules/L10nService.jsm');
 Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
 Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 
