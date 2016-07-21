@@ -9,7 +9,7 @@ const allowed = {
   attributes: {
     global: ['aria-label', 'aria-valuetext', 'aria-moz-hint'],
     button: ['accesskey'],
-    key: ['key'],
+    key: ['key', 'keycode'],
     menu: ['label', 'accesskey'],
     menuitem: ['label', 'accesskey'],
     tab: ['label'],
