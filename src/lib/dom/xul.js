@@ -9,8 +9,12 @@ const allowed = {
   attributes: {
     global: ['aria-label', 'aria-valuetext', 'aria-moz-hint'],
     button: ['accesskey'],
+    key: ['key'],
+    menu: ['label', 'accesskey'],
+    menuitem: ['label', 'accesskey'],
     tab: ['label'],
     textbox: ['placeholder'],
+    toolbarbutton: ['label', 'tooltiptext'],
   }
 };
 
