@@ -39,8 +39,14 @@ The transpiled versions require the following polyfills in order to work:
   - [Babel Polyfill][] which supports ES's new built-ins and ships with the 
     `regenerator` runtime,
 
-  - [Shadow DOM Polyfill][] from the [webcomponents.org][] project which 
-    provides support for the `<template>` element.
+  - the [HTMLTemplateElement polyfill][] which provides support for the 
+    `<template>` element.  It's a patched version of the [webcomponents.org][] 
+    project's polyfill; see thier pull request [#573][] for more information,
+
+    Please don't use [webcomponents.org][]'s _Shadow DOM polyfill_ which also 
+    provides the support for `<template>`.  It comes with a buggy 
+    implementation of the `MutationObserver` polyfill which breaks L20n and 
+    isn't even needed for IE 11 which supports `MutationObserver` natively.
 
 Optionally you may also want to use `Intl.js`:
 
@@ -50,8 +56,9 @@ Optionally you may also want to use `Intl.js`:
 [v4.x]: https://github.com/l20n/l20n.js/tree/v4.x
 [dist/compat]: https://github.com/l20n/l20n.js/tree/v4.x/dist/compat
 [Babel Polyfill]: https://babeljs.io/docs/usage/polyfill/
-[Shadow DOM Polyfill]: http://webcomponents.org/polyfills/shadow-dom/
+[HTMLTemplateElement polyfill]: https://gist.github.com/stasm/5a24e576a82747ddeb1d0492efeb78aa
 [webcomponents.org]: http://webcomponents.org/
+[#573]: https://github.com/webcomponents/webcomponentsjs/pull/573
 [Intl.js]: https://github.com/andyearnshaw/Intl.js
 
 
@@ -63,12 +70,12 @@ Install the required polyfills and the latest v4.x milestone of l20n.js:
     $ npm install babel-polyfill
     $ npm install webcomponents.js
     $ npm install intl
-    $ npm install git://github.com/l20n/l20n.js.git#v4.x
+    $ npm install l20n
 
 And include them in your HTML like so:
 
     <script defer src="./node_modules/babel-polyfill/browser.js"></script>
-    <script defer src="./node_modules/webcomponents.js/ShadowDOM.js"></script>
+    <script defer src="./path/to/Template.js"></script>
 
     <!-- optional but recommended -->
     <script defer src="./node_modules/intl/dist/Intl.js"></script>
