@@ -5,26 +5,26 @@ You can take advantage of HTML bindings to localize your HTML documents
 with L20n.  
 
 
-Build
------
+Install
+-------
 
-In order to use the most up-to-date version of L20n, build it manually:
+    $ npm install l20n
 
-    $ git clone https://github.com/l20n/l20n.js
-    $ cd l20n.js
-    $ npm install
-    $ make build
-
-This will build a number of variants of L20n called *runtimes*.  Use the *web* 
-runtime to localize your HTML app.  It's recommended to include the l20n.js 
-file as the first deferred script in the `head` element.
+This will install a number of variants of L20n called *runtimes*.  Use the 
+*web* runtime to localize your HTML app.  It's recommended to include the 
+l20n.js file as the first deferred script in the `head` element.
 
 ```html
 <head>
   …
-  <script defer src="dist/bundle/web/l20n.js"></script>
+  <script defer src="./node_modules/l20n/dist/bundle/web/l20n.js"></script>
 </head>
 ```
+
+L20n is targeted at modern browsers.  See [docs/compat][] for documentation on 
+how to enable support for legacy browsers.
+
+[docs/compat]: https://github.com/l20n/l20n.js/blob/master/docs/compat.md
 
 
 Configure Languages
