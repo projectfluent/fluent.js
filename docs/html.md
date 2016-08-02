@@ -53,6 +53,15 @@ Include them in the `<head>` of your HTML:
 <link rel="localization" href="locales/app.{locale}.ftl">
 ```
 
+You can group resources under a name with the `name` attribute:
+
+```html
+<link rel="localization" name="main" href="locales/app.{locale}.ftl">
+<link rel="localization" name="extra" href="locales/extra.{locale}.ftl">
+```
+
+If the `name` attribute is not defined, `main` is assumed.
+
 
 Making HTML Elements Localizable
 --------------------------------
@@ -61,6 +70,14 @@ Use the `data-l10n-id` attribute on a node to mark it as localizable.
 
 ```html
 <p data-l10n-id="about"></p>
+```
+
+By default, the translations will be looked up in the main `Localization` 
+object.  If needed you can use the `data-l10n-bundle` to specify a different 
+`Localization` object:
+
+```html
+<p data-l10n-id="warning-message" data-l10n-bundle="extra"></p>
 ```
 
 Notice that you don't have to put the text content in the HTML anymore (you 
@@ -92,116 +109,12 @@ will resolve.  On every following re-translation due to languages change,
 the `document` will fire a `DOMRetranslated` event.
 
 
-The document.l10n API
----------------------
+The JavaScript API
+------------------
 
-The main abstraction used by the JavaScript API is the `Localization` class.  
-It is responsible for localizing `document` objects in HTML.  Each `document` 
-will have its corresponding `Localization` instance created automatically on 
-startup, as `document.l10n`.
+It is also possible to use L20n programmatically, for instance in order to 
+localize dynamic content.  The API is exposed under `document.l10n`.  Refer to 
+[docs/observer][] and [docs/localization][] for more details.
 
-
-### document.l10n.ready
-
-A Promise which resolves when the `document` is first translated.
-
-```javascript
-document.l10n.ready.then(App.init);
-```
-
-
-### document.l10n.requestLanguages(langCodes)
-
-Trigger the language negotation process with an array of `langCodes`.  Returns 
-a promise with the negotiated array of language objects as above.
-
-```javascript
-document.l10n.requestLanguages(['de-DE', 'de', 'en-US']);
-```
-
-
-### document.l10n.formatValue(id, args)
-
-Retrieve the translation corresponding to the `id` identifier.
-
-If passed, `args` is a simple hash object with a list of variables that will be 
-interpolated in the value of the translation.
-
-Returns a Promise resolving to the translation string.
-
-```javascript
-document.l10n.formatValue('hello', { who: 'world' }).then(
-  hello => console.log(hello));
-// -> 'Hello, world!'
-```
-
-Use this sparingly for one-off messages which don't need to be retranslated 
-when the user changes their language preferences.
-
-
-### document.l10n.formatValues(...keys)
-
-A generalized version of `document.l10n.formatValue`.  Retrieve translations 
-corresponding to the passed keys.  Keys can either be simple string identifiers 
-or `[id, args]` arrays.
-
-Returns a Promise resolving to an array of the translation strings.
-
-```javascript
-document.l10n.formatValues(
-  ['hello', { who: 'Mary' }],
-  ['hello', { who: 'John' }],
-  'welcome'
-).then(([helloMary, helloJohn, welcome]) =>
-  console.log(helloMary, helloJohn, welcome));
-// -> 'Hello, Mary!', 'Hello, John!', 'Welcome!'
-```
-
-
-### document.l10n.setAttributes(elem, id, args)
-
-Set the `data-l10n-id` and `data-l10n-args` attributes on DOM elements.
-
-L20n makes use of mutation observers to detect changes to `data-l10n-*`
-attributes and translate elements asynchronously.  `setAttributes` is 
-a convenience method which allows to translate DOM elements declaratively.
-
-You should always prefer to use `data-l10n-id` on elements (statically in HTML 
-or dynamically via `setAttributes`) over manually retrieving translations with 
-`format`.  The use of attributes ensures that the elements can be retranslated 
-when the user changes their language preferences.
-
-```javascript
-document.l10n.setAttributes(
-  document.querySelector('#welcome'), 'hello', { who: 'world' });
-```
-
-This will set the following attributes on the `#welcome` element.  L20n's 
-MutationObserver will pick up this change and will localize the element 
-asynchronously.
-
-```html
-<p id='welcome' data-l10n-id='hello' data-l10n-args='{"who": "world"}'></p> 
-```
-
-
-### document.l10n.getAttributes(elem)
-
-Get the `data-l10n-*` attributes from DOM elements.
-
-```javascript
-document.l10n.getAttributes(
-  document.querySelector('#welcome'));
-// -> { id: 'hello', args: { who: 'world' } }
-```
-
-
-### document.l10n.translateFragment(frag)
-
-Translate a DOM node or fragment asynchronously.
-
-You can manually trigger translation (or re-translation) of a DOM fragment with 
-`translateFragment`.  Use the `data-l10n-id` and `data-l10n-args` attributes to 
-mark up the DOM with information about which translations to use.
-
-Returns a Promise.
+[docs/observer]: https://github.com/l20n/l20n.js/blob/master/docs/observer.md
+[docs/localization]: https://github.com/l20n/l20n.js/blob/master/docs/localization.md
