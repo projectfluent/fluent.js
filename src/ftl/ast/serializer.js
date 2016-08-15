@@ -4,7 +4,7 @@ export default {
   serialize: function({body, comment}) {
     let string = '';
     if (comment !== null) {
-      string += this.dumpComment(comment) + '\n\n';
+      string += `${this.dumpComment(comment)}\n\n`;
     }
     for (const entry of body) {
       string += this.dumpEntry(entry);
@@ -15,11 +15,11 @@ export default {
   dumpEntry: function(entry) {
     switch (entry.type) {
       case 'Entity':
-        return this.dumpEntity(entry) + '\n';
+        return `${this.dumpEntity(entry)}\n`;
       case 'Comment':
-        return this.dumpComment(entry) + '\n\n';
+        return `${this.dumpComment(entry)}\n\n`;
       case 'Section':
-        return this.dumpSection(entry) + '\n';
+        return `${this.dumpSection(entry)}\n`;
       case 'JunkEntry':
         return '';
       default:
@@ -31,7 +31,7 @@ export default {
     let str = '';
 
     if (entity.comment) {
-      str += '\n' + this.dumpComment(entity.comment) + '\n';
+      str += `\n${this.dumpComment(entity.comment)}\n`;
     }
     const id = this.dumpIdentifier(entity.id);
     const value = this.dumpPattern(entity.value);
@@ -46,13 +46,13 @@ export default {
   },
 
   dumpComment: function(comment) {
-    return '# ' + comment.content.replace(/\n/g, '\n# ');
+    return `# ${comment.content.replace(/\n/g, '\n# ')}`;
   },
 
   dumpSection: function(section) {
     let str = '\n\n';
     if (section.comment) {
-      str += this.dumpComment(section.comment) + '\n';
+      str += `${this.dumpComment(section.comment)}\n`;
     }
     str += `[[ ${this.dumpKeyword(section.key)} ]]\n\n`;
 
@@ -85,7 +85,7 @@ export default {
     pattern.elements.forEach(elem => {
       if (elem.type === 'TextElement') {
         if (elem.value.includes('\n')) {
-          str += '\n  | ' + elem.value.replace(/\n/g, '\n  | ');
+          str += `\n  | ${elem.value.replace(/\n/g, '\n  | ')}`;
         } else {
           str += elem.value;
         }

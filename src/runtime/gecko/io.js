@@ -16,6 +16,8 @@ export function postMessage(msg, data) {
   const reqId = Math.random().toString(HASH_RADIX).replace(/[^a-z]+/g, '');
 
   return new Promise((resolve, reject) => {
+    let t;
+
     function onResponse(evt) {
       if (evt.detail.requestId === reqId) {
         clearTimeout(t);
@@ -24,7 +26,7 @@ export function postMessage(msg, data) {
       }
     }
 
-    const t = setTimeout(() => {
+    t = setTimeout(() => {
       window.removeEventListener('mozL20nDemoResponse', onResponse);
       reject();
     }, MOZ_EVENT_TIMEOUT);

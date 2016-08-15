@@ -17,7 +17,7 @@ function load(url) {
           e.target.status === 0) {
         resolve(e.target.response);
       } else {
-        reject(new L10nError('Not found: ' + url));
+        reject(new L10nError(`Not found: ${url}`));
       }
     });
     xhr.addEventListener('error', reject);

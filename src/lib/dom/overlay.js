@@ -100,7 +100,7 @@ function overlay(l10n, sourceElement, translationElement) {
 function getNthElementOfType(context, element, index) {
   /* jshint boss:true */
   let nthOfType = 0;
-  for (let i = 0, child; child = context.children[i]; i++) {
+  for (let i = 0, child; (child = context.children[i]); i++) {
     if (child.nodeType === child.ELEMENT_NODE &&
         child.tagName.toLowerCase() === element.tagName.toLowerCase()) {
       if (nthOfType === index) {

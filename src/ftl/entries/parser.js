@@ -341,9 +341,8 @@ class ParseContext {
     if (content.length === 0) {
       if (quoteDelimited !== null) {
         return '';
-      } else {
-        return null;
       }
+      return null;
     }
 
     if (content.length === 1 &&
@@ -436,7 +435,7 @@ class ParseContext {
 
     this._index++;
 
-    if (exp.type = 'ref') {
+    if (exp.type === 'ref') {
       exp.type = 'fun';
     }
 
@@ -564,7 +563,7 @@ class ParseContext {
         break;
       }
       let def = false;
-      if (this._source[this._index] === '*') { 
+      if (this._source[this._index] === '*') {
         this._index++;
         def = true;
       }
@@ -654,7 +653,7 @@ class ParseContext {
     }
   }
 
-  error(message, start=null) {
+  error(message, start = null) {
     const pos = this._index;
 
     if (start === null) {
@@ -664,8 +663,8 @@ class ParseContext {
 
     const context = this._source.slice(start, pos + 10);
 
-    const msg = '\n\n  ' + message +
-      '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
+    const msg =
+      `\n\n  ${message}\nat pos ${pos}:\n------\n…${context}\n------`;
     const err = new L10nError(msg);
 
     const row = this._source.slice(0, pos).split('\n').length;

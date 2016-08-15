@@ -63,7 +63,7 @@ function createLocalization(name, resIds) {
     Services.obs.removeObserver(l10n, 'language-registry-incremental');
   });
 
-  // XXX this is currently used by about:support; it doesn't support language 
+  // XXX this is currently used by about:support; it doesn't support language
   // changes nor live updates
   document.l10n.ready = l10n.interactive;
   document.l10n.ready.then(

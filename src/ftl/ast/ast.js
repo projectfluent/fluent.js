@@ -133,7 +133,7 @@ class FunctionReference extends Identifier {
 }
 
 class Keyword extends Identifier {
-  constructor(name, namespace=null) {
+  constructor(name, namespace = null) {
     super(name);
     this.type = 'Keyword';
     this.namespace = namespace;

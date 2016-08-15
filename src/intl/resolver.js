@@ -269,7 +269,7 @@ const _opts = {
 };
 
 export function format(ctx, args, entity, opts = _opts) {
-  // optimization: many translations are simple strings and we can very easily 
+  // optimization: many translations are simple strings and we can very easily
   // avoid the cost of a proper resolution by having this shortcut here
   if (typeof entity === 'string') {
     return [entity, []];

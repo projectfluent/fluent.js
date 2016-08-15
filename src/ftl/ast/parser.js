@@ -518,7 +518,7 @@ class ParseContext {
         break;
       }
       let def = false;
-      if (this._source[this._index] === '*') { 
+      if (this._source[this._index] === '*') {
         this._index++;
         def = true;
       }
@@ -604,7 +604,7 @@ class ParseContext {
         break;
       }
 
-      content += '\n' + this._source.substring(this._index, eol);
+      content += `\n${this._source.substring(this._index, eol)}`;
     }
 
     if (eol === -1) {
@@ -616,7 +616,7 @@ class ParseContext {
     return new AST.Comment(content);
   }
 
-  error(message, start=null) {
+  error(message, start = null) {
     const pos = this._index;
 
     if (start === null) {
@@ -626,8 +626,8 @@ class ParseContext {
 
     const context = this._source.slice(start, pos + 10);
 
-    const msg = '\n\n  ' + message +
-      '\nat pos ' + pos + ':\n------\n…' + context + '\n------';
+    const msg =
+      `\n\n  ${message}\nat pos ${pos}:\n------\n…${context}\n------`;
     const err = new L10nError(msg);
 
     const row = this._source.slice(0, pos).split('\n').length;
