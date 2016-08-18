@@ -3,15 +3,14 @@
 /* global window, document, assert */
 
 var dom = L20n.dom;
-
 describe('getResourceLinks', function() {
   it('should return an empty array if no l10n links in head', function() {
     var head = document.createElement('head');
 
-    var result = dom.getResourceLinks(head);
+    var result = L20n.getResourceLinks(head);
 
-    assert.ok(Array.isArray(result));
-    assert.equal(result.length, 0);
+    assert.ok(result.constructor === Map);
+    assert.equal(result.size, 0);
   });
 
   it('should collect all l10n links from head', function() {
@@ -23,35 +22,17 @@ describe('getResourceLinks', function() {
       for (var i in links) {
         var link = document.createElement('link');
         link.setAttribute('rel', 'localization');
-        link.src = links[i];
+        link.setAttribute('href', links[i]);
         head.appendChild(link);
       }
 
-      var result = dom.getResourceLinks(head);
+      var result = L20n.getResourceLinks(head);
 
-      assert.equal(result.length, 2);
-      assert.equal(result[0], result[0]);
-      assert.equal(result[1], result[1]);
-  });
+      assert.equal(result.size, 1);
 
-  it('should decode URI in l10n links', function() {
-    var links = [
-      'locales/test.{locale}.l20n',
-      '/shared/date/date.{locale}.l20n'];
-      var head = document.createElement('head');
-
-      for (var i in links) {
-        var link = document.createElement('link');
-        link.setAttribute('rel', 'localization');
-        link.src = links[i];
-        head.appendChild(link);
-      }
-
-      var result = dom.getResourceLinks(head);
-
-      assert.equal(result.length, 2);
-      assert.equal(result[0], result[0]);
-      assert.equal(result[1], result[1]);
+      const main = result.get('main');
+      assert.equal(main[0], links[0]);
+      assert.equal(main[1], links[1]);
   });
 });
 

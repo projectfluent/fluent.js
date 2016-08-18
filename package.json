@@ -35,10 +35,12 @@
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.7.7",
     "babel-register": "^6.7.2",
+    "chai": "^3.5.0",
     "colors": "^1.1.2",
     "commander": "^2.9",
     "eslint": "^3.3.0",
     "karma": "^1.2.0",
+    "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^1.0.1",
     "karma-firefox-launcher": "^1.0.0",
     "karma-mocha": "^1.1.1",
@@ -183,7 +185,6 @@
       "eol-last": 2,
       "key-spacing": 2,
       "no-trailing-spaces": 2,
-      "no-unneeded-ternary": 2,
       "prefer-rest-params": 2,
       "no-cond-assign": 2
     }
