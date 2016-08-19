@@ -2,7 +2,7 @@ DIST := $(CURDIR)/../../../dist/bundle/$(shell basename $(CURDIR))
 
 build:
 	rollup IntlMessageContext.jsm \
-    -c ./xpcom.rollup.config.js \
+		-c ./xpcom.rollup.config.js \
 		-o $(DIST)/IntlMessageContext.jsm
 	rollup l20n-content-html.js \
 		-c ./rollup.config.js \
