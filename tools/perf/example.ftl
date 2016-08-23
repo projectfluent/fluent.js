@@ -1,706 +1,378 @@
-brandShortName = Firefox OS
-
-settings=Settings
-advancedSettings=Advanced settings
-default=Default
-enabled=Enabled
-disabled=Disabled
-error=Error
-ok=OK
-yes=Yes
-no=No
-cancel=Cancel
-close=Close
-back=Back
-continue=Continue
-pair=Pair
-done=Done
-set=Set
-notNow=Not now
-turnOn=Turn ON
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-# Connectivity
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+# browser/locales/en-US/browser/menubar.ftl
 
-networkAndConnectivity=Network & Connectivity
-airplaneMode=Airplane mode
-geolocation=Geolocation
+[[ File menu ]]
 
-# Connectivity :: Wi-Fi
-wifi=Wi-Fi
-wifi-disabled=Turn Wi-Fi on to view available networks.
-availableNetworks=Available networks
-knownNetworks=Known networks
-hiddenNetworks=Hidden networks
-scanning=Searching…
-scanNetworks=Search again
-fullStatus-initializing      = Initializing…
-fullStatus-connecting        = Connecting to {$ssid}…
-fullStatus-associated        = Obtaining an IP address…
-fullStatus-connected         = Connected to {$ssid}
-fullStatus-connectingfailed  = Connection failed
-fullStatus-disconnected      = Offline
-shortStatus-connecting       = Connecting…
-shortStatus-associated       = Obtaining an IP address…
-shortStatus-connected        = Connected
-shortStatus-connectingfailed = Connection failed
-shortStatus-disconnected     = Offline
-manageNetworks=Manage networks
-joinHiddenNetwork=Join hidden network
-securedBy=Secured by {$capabilities}
-security     = Security
-securityNone = None
-securityOpen = Open
-ipAddress=IP address
-linkSpeed=Link speed
-linkSpeedMbs={ $linkSpeed } Mbit/s
-signalStrength = Signal strength
-signalLevel0   = Very weak
-signalLevel1   = Weak
-signalLevel2   = Average
-signalLevel3   = Good
-signalLevel4   = Very good
-forget=Forget
-forgetNetwork=Forget network
-authentication=Authentication
-eap=EAP method
-identity=Identifier
-password=Password
-showPassword=Show password
-networkNotification=Network notification
-networkNotification-expl=Notify me when an open network is available
-macAddress=MAC address
-macUnavailable=Not available
-noNetworksFound=No networks found
-noKnownNetworks=No known networks
+file-menu =
+    [xul/label]     File
+    [xul/accesskey] F
+tab-menuitem =
+    [xul/label]      New Tab
+    [xul/accesskey]  T
+tab-key =
+    [xul/key]        t
+new-user-context-menu =
+    [xul/label]      New Container Tab
+    [xul/accesskey]  C
+new-navigator-menuitem =
+    [xul/label]      New Window
+    [xul/accesskey]  N
+new-navigator-key =
+    [xul/key]        N
+new-private-window-menuitem =
+    [xul/label]      New Private Window
+    [xul/accesskey]  W
+new-non-remote-window-menuitem =
+    [xul/label]      New Non-e10s Window
 
-# Connectivity :: Wi-Fi :: WPS (Wi-Fi Protected Setup)
-wpsMessage=Connect with WPS
-fullStatus-wps-inprogress = WPS is in progress…
-fullStatus-wps-canceled   = WPS was canceled
-fullStatus-wps-timedout   = WPS timed out
-fullStatus-wps-failed     = WPS failed
-fullStatus-wps-overlapped = Another WPS PBC AP was found
-wpsDescription2=Automatic Wi-Fi setup
-wpsMethodSelection=Select a WPS method:
-wpsPbcLabel=Button connection
-wpsMyPinLabel=My PIN connection
-wpsApPinLabel=AP PIN connection
-wpsPinDescription=PIN is 4 or 8 digits
-wpsPinInput=Input { $pin } to an opposite device
-wpsPinAps=Select an opposite device
-wpsAnyAp=Any
-wpsCancelMessage=Cancel WPS
-wpsCancelFailedMessage=Failed to cancel WPS
+# Only displayed on OS X, and only on windows that aren't main browser windows,
+# or when there are no windows but Firefox is still running.
+open-location-menuitem =
+    [xul/label]      Open Location…
+open-file-menuitem =
+    [xul/label]      Open File…
+    [xul/accesskey]  O
+open-file-key =
+    [xul/key]        o
 
-# Connectivity :: Call
-callSettings=Call Settings
-callSettingsQuery=Requesting network info…
-callSettingsQueryError=Error in query
+close-menuitem =
+    [xul/label]      Close
+    [xul/accesskey]  C
+close-key =
+    [xul/key]        W
+close-window-menuitem =
+    [xul/label]      Close Window
+    [xul/accesskey]  d
 
-voiceMail=Voicemail
-voiceMail-number=Voicemail Number
-voiceMail-number-notSet=Not set
+# [xul/accesskey2] is for content area context menu
+save-page-menuitem =
+    [xul/label]      Save Page As…
+    [xul/accesskey]  A
+    [xul/accesskey2] P
+save-page-key =
+    [xul/key]        s
 
-callWaiting=Call waiting
-confirmCallWaitingTitle=Unable to confirm call waiting preferences
-confirmCallWaitingDesc=The device is currently unable to communicate with the carrier. Try setting the preference again.
+email-page-menuitem =
+    [xul/label]      Email Link…
+    [xul/accesskey]  E
 
-callForwarding=Call forwarding
-callForwardingForward=Forward
-callForwardingUnconditional=Always forward
-callForwardingUnconditionalShort=Always
-callForwardingMobileBusy=Forward when busy
-callForwardingMobileBusyShort=When busy
-callForwardingNoReply=Forward when unanswered
-callForwardingNoReplyShort=When unanswered
-callForwardingNotReachable=Forward when unreachable
-callForwardingNotReachableShort=When unreachable
-callForwardingForwardingVoiceTo=Voice calls to
-callForwardingNotForwarding=Disabled
-callForwardingConfirmTitle=Call forwarding confirmation message
+print-setup-menuitem =
+    [xul/label]      Page Setup…
+    [xul/accesskey]  u
+print-preview-menuitem =
+    [xul/label]      Print Preview…
+    [xul/accesskey]  v
+print-menuitem =
+    [xul/label]      Print…
+    [xul/accesskey]  P
+print-key =
+    [xul/key]        p
 
-cf-alwaysUseThisNumber=Always use this number
-cf-numberWhenUnreachable=Number when unreachable
-cf-numberWhenUnanswered=Number when unanswered
-cf-numberWhenBusy=Number when busy
+go-offline-menuitem =
+    [xul/label]      Work Offline
+    [xul/accesskey]  k
 
-callForwardingInvalidNumberError=This phone number is invalid.
-callForwardingSetSuccess=Operation successfully set.
-callForwardingSetForbidden=Your operator does not support that operation.
-callForwardingSetError=Call settings error.
+quit-application-menuitem =
+    [xul/label]      Quit
+    [xul/accesskey]  Q
+quit-application-menuitem-win =
+    [xul/label]      Exit
+    [xul/accesskey]  x
+quit-application-menuitem-mac =
+    [xul/label]      Quit { brand-shorter-name }
+# Used by both Linux and OSX builds
+quit-application-key-unix =
+    [xul/key]        Q
 
-callBroadcastService=Cell broadcast service
+[[ Edit menu ]]
 
-callerId=Caller ID
-callerId-default=Network default
-callerId-hide=Hide number
-callerId-show=Show number
+edit-menu =
+    [xul/label]      Edit
+    [xul/accesskey]  E
+undo-menuitem =
+    [xul/label]      Undo
+    [xul/accesskey]  U
+undo-key =
+    [xul/key]        Z
+redo-menuitem =
+    [xul/label]      Redo
+    [xul/accesskey]  R
+redo-key =
+    [xul/key]        Y
+cut-menuitem =
+    [xul/label]      Cut
+    [xul/accesskey]  t
+cut-key =
+    [xul/key]        X
+copy-menuitem =
+    [xul/label]      Copy
+    [xul/accesskey]  C
+copy-key =
+    [xul/key]        C
+paste-menuitem =
+    [xul/label]      Paste
+    [xul/accesskey]  P
+paste-key =
+    [xul/key]        V
+delete-menuitem =
+    [xul/label]      Delete
+    [xul/accesskey]  D
+delete-key =
+    [xul/key]        D
+select-all-menuitem =
+    [xul/label]      Select All
+    [xul/accesskey]  A
+select-all-key =
+    [xul/key]        A
 
-# Connectivity :: Cellular & Data
-cellularAndData=Cellular & Data
-dataNetwork=Carrier
-dataConnectivity=Data
-dataConnection=Data connection
-dataRoaming=Data roaming
-dataRoaming-disabled=When entering a roaming area, your data connection will be turned off.
-wapPush=WAP Push
-networkOperator=Network operator
-availableOperators=Network operators in the area
-operator-networkType=Network type
-operator-networkType-auto=Automatic
-operator-networkType-2G=2G only
-operator-networkType-3G=3G only
-operator-autoSelect=Automatic selection
-operator-networkSelect-auto=Automatic
-operator-turnAutoSelectOff=Turn automatic selection off to view available network operators.
-operator-status-connecting       = Connecting…
-operator-status-connectingfailed = Connection failed
-operator-status-connected        = Connected
-operator-roamingPreference=Roaming preference
-operator-roamingPreference-home=Home
-operator-roamingPreference-any=Any
-operator-roamingPreference-affiliated=Affiliated
-apn=APN
-dataSettings    = Data settings
-suplSettings    = A-GPS settings
-messageSettings = Message settings
-apnSettings     = APN settings
-mmsTitle = Multimedia messaging (MMS)
-mmsport  = MMS port
-mmsproxy = MMS proxy
-mmsc     = MMSC
-message-confirmation = Message confirmation
-message-delivery-reports = Delivery reports
-message-delivery-reports-details = Request notification of delivery for each message sent
-auto-retrieve                 = Auto retrieve
-auto-retrieve-details         = Automatically retrieve messages
-manual-retrieve               = Off
-auto-roaming-retrieve         = On with roaming
-auto-no-roaming-retrieve      = On without roaming
-autoConfigure=Auto-configure
-httpProxyHost=HTTP proxy host
-httpProxyPort=HTTP proxy port
-custom=(custom settings)
-apn-authType=Authentication
-apn-authType-notDefined = Not defined
-apn-authType-none       = None
-apn-authType-pap        = PAP
-apn-authType-chap       = CHAP
-apn-authType-papOrChap  = PAP or CHAP
-dataConnection-warning-head=Turn ON data connection?
-dataConnection-warning-message=Applications will automatically fetch data via data connection when required. Additional data charges may apply.
-dataRoaming-warning-head=Turn ON data roaming?
-dataRoaming-warning-message=Depending on your service agreement, extra charges may apply for data when you are in a roaming area.
-state-unknown = Unknown state
-state-available = Available
-state-connected = Connected
-state-current = Connected
-state-forbidden = Forbidden
+find-on-menuitem =
+    [xul/label]      Find in This Page…
+    [xul/accesskey]  F
+find-on-key =
+    [xul/key]        f
+find-again-menuitem =
+    [xul/label]      Find Again
+    [xul/accesskey]  g
+find-again-key1 =
+    [xul/key]        g
+find-again-key2 =
+    [xul/keycode]    VK_F3
+find-selection-key =
+    [xul/key]        e
 
-# Connectivity :: Bluetooth
-bluetooth = Bluetooth
-bluetooth-enable-msg = Turn Bluetooth on to view devices in the area.
-bluetooth-paired-devices   = Paired devices
-bluetooth-devices-in-area  = Devices in the area
-bluetooth-visible-to-all = Visible to all
-bt-status-nopaired = No devices paired
-bt-status-turnoff  = Turned off
-bt-status-paired = { PLURAL($n) ->
-  [zero] {$name }
-  [one] {$name}, +{$n} more
-  [two] {$name}, +{$n} more
-  [few] {$name}, +{$n} more
-  [many] {$name}, +{$n} more
- *[other] {$name}, +{$n} more
-}
+bidi-switch-text-direction-menuitem =
+    [xul/label]      Switch Text Direction
+    [xul/accesskey]  w
+bidi-switch-text-direction-key =
+    [xul/key]        X
 
-device-status-tap-connect = Tap to connect
-device-status-pairing     = Pairing with device…
-device-status-waiting     = Waiting for other device…
-device-status-paired      = Paired
-device-status-connecting  = Connecting…
-device-status-connected   = Connected
-device-option-unpair      = Unpair
-device-option-confirm     = Confirm
-device-option-unpair-device = Unpair Device?
-device-option-connect     = Connect
-device-option-disconnect  = Disconnect
-search-for-device   = Searching for devices…
-search-device       = Search for devices
-rename-device       = Rename my device
-unnamed-device      = Unknown device
-change-phone-name   = Change phone name
-bluetooth-new-name  = New name
-active-pair              = Confirm devices to pair
-active-pair-confirmation = To pair with {$device}, make sure that both devices currently have the following PIN displayed:
-active-pair-pincode      = To pair with {$device}, enter the PIN on the device.
-active-pair-passkey      = To pair with {$device}, enter the passkey on the device.
-passive-pair              = Bluetooth pairing request
-passive-pair-confirmation = {$device} would like to pair with this phone. To accept, make sure that both devices currently have the following PIN displayed:
-passive-pair-pincode      = {$device} would like to pair with this phone. To accept, enter the PIN on the device.
-passive-pair-passkey      = {$device} would like to pair with this phone. To accept, enter the passkey on the device.
-error-pair-title      = Unable to pair devices
-error-pair-pincode    = Unable to pair with the device. Check that the PIN is correct.
-error-pair-toofast    = Unable to pair with the device. Too many requests.
-error-connect-title   = Unable to connect devices
-error-connect-msg     = Check that the device you’re trying to connect with is still in range and has Bluetooth turned on.
-unpair-title = Unpair a connected device?
-unpair-msg   = You are currently connected to this device. Unpairing will also disconnect from it.
-pair-view-title = Bluetooth Request From
-
-# Connectivity :: Internet Sharing
-SSIDCannotBeEmpty=The SSID cannot be empty
-internetSharing=Internet sharing
-internetSharing-usb=USB
-internetSharing-usb-desc=Share my phone’s Internet connection with a USB-connected device.
-internetSharing-wifi=Wi-Fi
-internetSharing-wifi-desc=Allow other devices to share my phone’s Internet connection by connecting via Wi-Fi.
-hotspot=Hotspot
-wifi-hotspot=Wi-Fi hotspot
-wifi-name=Name
-wifi-password=Password
-wifi-security=Security
-usb-tethering=USB tethering
-hotspotSettings=Hotspot settings
-ssid-name=SSID network name
-hotspot-open=open
-hotspot-wpa-psk=WPA (TKIP)
-hotspot-wpa2-psk=WPA2 (AES)
+preferences-menuitem =
+    [xul/label]      Options
+    [xul/accesskey]  O
+preferences-menuitem-unix =
+    [xul/label]      Preferences
+    [xul/accesskey]  n
 
 
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-# Personalization
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+[[ View menu ]]
 
-personalization=Personalization
+view-menu =
+    [xul/label]      View
+    [xul/accesskey]  V
+view-toolbars-menu =
+    [xul/label]      Toolbars
+    [xul/accesskey]  T
+view-sidebar-menu =
+    [xul/label]      Sidebar
+    [xul/accesskey]  e
+view-customize-toolbar-menuitem =
+    [xul/label]      Customize…
+    [xul/accesskey]  C
 
-# Personalization :: Sound
-sound=Sound
-message=Message
-volume=Volume
-tones=Tones
-select-tone=Select a tone
-ringer=Ringer
-ring-tones=Ringtones
-alert-tones=Alert tones
-volume-and-tones=Volume & Tones
-other-sounds=Other sounds
-alerts=Alerts
-unlock-screen=Unlock screen
-camera-shutter=Camera shutter
-sent-mail=Sent Mail
-sent-message=Sent Message
-alarm-sound=Alarm
-ringer-and-notification-sound=Ringer & Notifications
-voice-sound=Voice
+full-zoom-menu =
+    [xul/label]      Zoom
+    [xul/accesskey]  Z
+full-zoom-enlarge-menuitem =
+    [xul/label]      Zoom In
+    [xul/accesskey]  I
+full-zoom-enlarge-key1 =
+    [xul/key]        +
+full-zoom-enlarge-key2 =
+    [xul/key]        =
+full-zoom-enlarge-key3 =
+    [xul/key]        ""
+full-zoom-reduce-menuitem =
+    [xul/label]      Zoom Out
+    [xul/accesskey]  O
+full-zoom-reduce-key1 =
+    [xul/key]        -
+full-zoom-reduce-key2 =
+    [xul/key]        ""
+full-zoom-reset-menuitem =
+    [xul/label]      Reset
+    [xul/accesskey]  R
+full-zoom-reset-key1 =
+    [xul/key]        0
+full-zoom-reset-key2 =
+    [xul/key]        ""
+full-zoom-toggle-menuitem =
+    [xul/label]      Zoom Text Only
+    [xul/accesskey]  T
 
-# Personalization :: Display
-display=Display
-brightness=Brightness
-brightness-autoAdjust=Adjust automatically
-lockScreen=Lock Screen
-wallpaper=Wallpaper
-screen-timeout=Screen timeout
-one-minute   =  1 minute
-two-minutes  =  2 minutes
-five-minutes =  5 minutes
-ten-minutes  = 10 minutes
-never=never
-lock-orientation=Lock orientation
+page-style-menu =
+    [xul/label]      Page Style
+    [xul/accesskey]  y
+page-style-no-style-menuitem =
+    [xul/label]      No Style
+    [xul/accesskey]  n
+page-style-persistent-only-menuitem =
+    [xul/label]      Basic Page Style
+    [xul/accesskey]  b
 
-# Personalization :: Notifications
-notifications=Notifications
-lockscreen-notifications=Show on lock screen
+show-all-tabs-menuitem =
+    [xul/label]      Show All Tabs
+    [xul/accesskey]  A
+bidi-switch-page-direction-menuitem =
+    [xul/label]      Switch Page Direction
+    [xul/accesskey]  D
 
-# Personalization :: Date & Time
-dateAndTime=Date & Time
-setTimeAutomatically=Set automatically
-setTimeManually=Set manually
-timezoneMessage=Time zone
-dateMessage=Date
-timeMessage=Time
-selectTimezoneContinent=Select continent
-selectTimezone=Select time zone
+# Match what Safari and other Apple applications use on OS X Lion.
+[[ Full Screen controls ]]
 
-# Personalization :: Language & Region
-languageAndRegion=Language & Region
-language=Language
-region=Region
-sample-format=Sample Format
-# see http://www.cplusplus.com/reference/clibrary/ctime/strftime/
-longDateFormat=%A, %B %d, %Y
-
-# Personalization :: Homescreen
-homescreen=Homescreen
-changeHomescreen=Change homescreen
-changeHomescreenButton=Change
-description=Description
-
-# Personalization :: Keyboard
-installed=Installed
-keyboard=Keyboard
-keyboardLayouts=Keyboard layouts
-numberKeyboardLayouts=Number layouts
-optionKeyboardLayouts=Option layouts
-activeKeyboard=Active keyboard
-keypad=Keypad
-vibration=Vibration
-clickSound=Click sound
-autoCorrect=Auto correction
-wordSuggestion=Word suggestion
-selectKeyboard=Select keyboard
-addMoreKeyboards=Add more keyboards
-english=English
-dvorak=English (Dvorak)
-spanish=Spanish
-portuguese=Portuguese Brazilian
-catalan=Catalan
-czech=Czech
-french=French
-german=German
-hungarian=Hungarian
-norwegian=Norwegian
-slovak=Slovak
-turkish=Turkish
-romanian=Romanian
-russian=Russian
-arabic=Arabic
-greek=Greek
-hebrew=Hebrew
-jp-kanji=Japanese
-jp-kanji-desc=Kanji
-traditionalChinese=Traditional Chinese
-traditionalChinese-desc=Zhuyin
-simplifiedChinese=Simplified Chinese
-simplifiedChinese-desc=Pinyin
-polish=Polish
-serbian=Serbian
+enter-full-screen-menuitem =
+    [xul/label]      Enter Full Screen
+    [xul/accesskey]  F
+exit-full-screen-menuitem =
+    [xul/label]      Exit Full Screen
+    [xul/accesskey]  F
+full-screen-menuitem =
+    [xul/label]      Full Screen
+    [xul/accesskey]  F
+full-screen-key =
+    [xul/key]        f
 
 
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-# Accounts (N/A)
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+[[ History menu ]]
 
-accounts=Accounts
-persona=Persona
-mail=Mail
-
-
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-# Security
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-
-privacyAndSecurity=Privacy & Security
-passcode-lock=Passcode lock
-passcode-lock-desc=Passcode: {$code}
-phoneLock=Phone lock
-simSecurity=SIM security
-
-# Security :: App permissions
-appPermissions=App permissions
-author=Author
-permissions=Permissions
-revoke=Revoke
-ask=Ask
-deny=Deny
-allow=Grant
-uninstallApp=Uninstall app
-uninstallConfirm=Are you sure you want to uninstall { $app }?
-
-# Bookmarks/Everything.me app data
-clearBookmarkAppsData=Clear bookmarks data
-confirmClearBookmarkAppsDataTitle=Clear private data from bookmarks?
-confirmClearBookmarkAppsDataDesc=This clears private data from bookmarks that have been added to the home screen. This cannot be undone.
-clear=Clear
-
-# Security :: Phone Lock
-phone=Phone
-messages=Messages
-vibrate=Vibrate
-ring=Ring
-change=Change
-create=Create
-create-passcode=Create a Passcode
-enter-passcode=Enter passcode
-new-passcode=New passcode
-current-passcode=Current passcode
-incorrect-passcode=Passcode is incorrect
-passcode-doesnt-match=Passcode doesn’t match. Try again.
-passcode=Passcode
-confirm-passcode=Confirm Passcode
-immediately=Immediately
-after-five-seconds=After 5 seconds
-after-fifteen-seconds=After 15 seconds
-after-thirty-seconds=After 30 seconds
-after-one-minute=After 1 minute
-after-two-minutes=After 2 minutes
-after-five-minutes=After 5 minutes
-after-ten-minutes=After 10 minutes
-after-fifteen-minutes=After 15 minutes
-after-thirty-minutes=After 30 minutes
-after-one-hour=After 1 hour
-after-four-hours=After 4 hours
-require-passcode=Require Passcode
-change-passcode=Change Passcode
-
-# Security :: SIM PIN Lock
-noSimCard=No SIM card
-simPin=SIM PIN
-pukCode=PUK code
-whatIsSimPin=What is a SIM PIN?
-simPinIntro1=A SIM PIN prevents access to the SIM card cellular data networks. When it’s enabled, any device containing the SIM card will request the PIN upon restart.
-simPinIntro2=A SIM PIN is not the same as the passcode used to unlock the device.
-changeSimPin=Change PIN
-pinTitle=Enter SIM PIN
-pukTitle=Enter PUK code
-newpinTitle=New PIN
-pinErrorMsg=The PIN was incorrect.
-inputCodeRetriesLeft= { PLURAL($n) ->
-  [one] last try
-  [two] {$n} tries left.
-  [few] {$n} tries left.
-  [many] {$n} tries left.
- *[other] {$n} tries left.
-}
-pinAttemptMsg3= { PLURAL($n) ->
-  [one] You have one try left to enter the correct code before locking the SIM card.
-  [two] You have {$n} tries left to enter the correct code before locking the SIM card.
-  [few] You have {$n} tries left to enter the correct code before locking the SIM card.
-  [many] You have {$n} tries left to enter the correct code before locking the SIM card.
- *[other] You have {$n} tries left to enter the correct code before locking the SIM card.
-}
-pinLastChanceMsg=This is your last chance to enter the correct PIN. Otherwise, you must enter the PUK code to use this SIM card.
-simCardLockedMsg=The SIM card is locked.
-enterPukMsg=You must enter the Personal Unlocking Key (PUK) code for the SIM card. Refer to your SIM card documentation or contact your carrier for more information.
-pukErrorMsg=The PUK code is incorrect.
-pukAttemptMsg3= { PLURAL($n) ->
-  [one] You have one try left to enter the correct code before this SIM card will be permanently unusable. Refer to your SIM card documentation or contact your carrier for more information.
-  [two] You have {$n} tries left to enter the correct code before this SIM card will be permanently unusable. Refer to your SIM card documentation or contact your carrier for more information.
-  [few] You have {$n} tries left to enter the correct code before this SIM card will be permanently unusable. Refer to your SIM card documentation or contact your carrier for more information.
-  [many] You have {$n} tries left to enter the correct code before this SIM card will be permanently unusable. Refer to your SIM card documentation or contact your carrier for more information.
- *[other] You have {$n} tries left to enter the correct code before this SIM card will be permanently unusable. Refer to your SIM card documentation or contact your carrier for more information.
-}
-pukLastChanceMsg=Last chance to enter the correct PUK code. Your SIM card will be permanently unusable if you enter in the wrong PUK code. Refer to your SIM card documentation or contact your carrier for more information.
-newSimPinMsg=Create PIN (must contain 4 to 8 digits)
-confirmNewSimPinMsg=Confirm new PIN
-newPinErrorMsg=PINs don’t match
-simLockedPhone=SIM-locked phone
-unknownSimCardState=Unknown SIM card state
-simCardNotReady= SIM card not ready
-
-# Security :: Do Not Track
-doNotTrack=Do Not Track
-doNotTrack-dt=How does Do Not Track work?
-doNotTrack-dd1=When you turn on Do Not Track, your device tells every website and app (as well as advertisers and other content providers) that you don’t want your behavior tracked.
-doNotTrack-dd2=Turning on Do Not Track won’t affect your ability to sign in to websites nor cause your device to forget your private information, such as the contents of shopping carts, location information or sign-in information.
+history-menu =
+    [xul/label]        History
+    [xul/accesskey]    s
+show-all-history-menuitem =
+    [xul/label]        Show All History
+show-all-history-key =
+    [xul/key]          H
+clear-recent-history-menuitem =
+    [xul/label]        Clean Recent History…
+history-synced-tabs-menuitem =
+    [xul/label]        Synced Tabs
+history-restore-last-session-menuitem =
+    [xul/label]        Restore Previous Session
+history-undo-menu =
+    [xul/label]        Recently Closed Tabs
+history-undo-window-menu =
+    [xul/label]        Recently Closed Windows
 
 
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-# Storage
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+[[ Bookmarks menu ]]
 
-storage=Storage
-enableUSBStorage=Enable USB storage
+bookmarks-menu =
+    [xul/label]      Bookmarks
+    [xul/accesskey]  B
+show-all-bookmarks-menuitem =
+    [xul/label]      Show All Bookmarks
+show-all-bookmarks-key =
+    [xul/key]        b
+# [xul/key] should not contain the letters A-F since the are reserved shortcut
+# keys on Linux.
+show-all-bookmarks-key-gtk =
+    [xul/key]        o
+bookmark-this-page-broadcaster =
+    [xul/label]      Bookmark This Page
+edit-this-page-broadcaster =
+    [xul/label]      Edit This Page
+bookmark-this-page-key =
+    [xul/key]        d
+subscribe-to-page-menuitem =
+    [xul/label]      Subscribe to This Page…
+subscribe-to-page-menupopup =
+    [xul/label]      Subscribe to This Page…
+add-cur-pages-menuitem =
+    [xul/label]      Bookmark All Tabs…
+recent-bookmarks-menuitem =
+    [xul/label]      Recently Bookmarked
 
-# Storage :: Application storage
-deviceStorage=Device storage
-usbMassStorage=USB mass storage
-umsUnplugToDisable=Unplug USB cable to disable
-appStorage=Application storage
-byteUnit-B  = B
-byteUnit-KB = KB
-byteUnit-MB = MB
-byteUnit-GB = GB
-byteUnit-TB = TB
-storageSize = {$size} {$unit}
-availableSize = { PLURAL($size) ->
-  [zero]  = {$size} {$unit} available
-  [one]  = {$size} {$unit} available
-  [two]  = {$size} {$unit} available
-  [few]  = {$size} {$unit} available
-  [many]  = {$size} {$unit} available
-  [other]  = {$size} {$unit} available
-}
-apps-total-space=Total space
-apps-used-space=Used
-apps-free-space=Left
-media-storage-details=Photos, videos and music are stored on the SD card. See media storage for details.
-ums-shared-volumes = {$list} shared
-
-# Storage :: Media storage
-mediaStorage=Media storage
-internalStorage=Internal Storage
-storage-name-internal  = Internal Storage
-storage-name-external-0  = SD Card Storage
-storage-name-external-1  = SD Card Storage 2
-short-storage-name-internal  = Internal
-short-storage-name-external-0  = SD Card
-short-storage-name-external-1  = SD Card 2
-music-space=Music
-pictures-space=Pictures
-videos-space=Movies
-left-space=Space left
-free-space=Space left
-size-not-available=Not available
-no-storage=No storage found
-advanced=Advanced
-turn-on-ums-confirm=Turning on Enable USB storage allows another computer or device connected using USB to access files on this phone.
-default-media-location=Default media location
-default-media-location-msg=Choose where photos, videos, music and downloads are stored by default.
-change-default-location-confirm=Changing the default media storage volume will effect where photos, videos, downloads and other media will be saved to by default. Existing data will remain in its current location.
-share-using-usb=Share using USB
+other-bookmarks-menu =
+    [xul/label]      Other Bookmarks
+personalbar-menu =
+    [xul/label]      Bookmarks Toolbar
+    [xul/accesskey]  B
 
 
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-# Device
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+[[ Tools menu ]]
 
-device=Device
-help=Help
+tools-menu =
+    [xul/label]      Tools
+    [xul/accesskey]  T
+downloads-menuitem =
+    [xul/label]      Downloads
+    [xul/accesskey]  D
+downloads-key =
+    [xul/key]        j
+downloads-key-unix =
+    [xul/key]        y
+addons-menuitem =
+    [xul/label]      Add-ons
+    [xul/accesskey]  A
+addons-key =
+    [xul/key]        A
 
-# Device :: Information
-deviceInfo=Device information
-deviceInfo-IMEI=IMEI
-deviceInfo-ICCID=ICCID
-deviceInfo-MSISDN=Phone number
-unknown-phoneNumber=Unknown
-gitInfo=Git commit info
-developer=Developer
-software=Software
-devSettings=Developer settings
-debug=Debug
-grid=Grid
-fps-monitor=Show frames per second
-layers-draw-borders=Draw layers borders
-paint-flashing=Flash repainted area
-log-animations=Log slow animations
-remote-debugging=Remote debugging
-wifi-debugging=Wi-Fi output in adb
-bluetooth-debugging=Bluetooth output in adb
-contacts-debugging=Contacts debugging output in adb
-ttl-monitor=Show time to load
-console-enabled=Console enabled
-model-name=Model
-os-version=OS version
-firmware_revision=Firmware revision
-hardware_revision=Hardware revision
-platform_version=Platform version
-build-id=Build Identifier
-update-channel=Update channel
-last-updated=Last Updated
-more-info=More Information
-softwareUpdates=Software updates
-check-update-daily     = Daily
-check-update-weekly    = Weekly
-check-update-monthly   = Monthly
-check-for-updates      = Check for updates
-check-update-now       = Check now
-update-status          = Update status
-checking-for-update    = Checking for updates…
-no-updates             = No updates were found
-retry-when-online      = Network is offline. Will check again when the network is online.
-already-latest-version = This is already the latest version of { brandShortName }
-check-error            = There was an error when checking for updates.
-aboutBrowserOS  = About { brandShortName }
-browser-os-desc = { brandShortName } is the free and open source operating system from Mozilla. Our mission is to promote openness, innovation and opportunity by keeping the power of the Web in your hands.
-learn-more=Learn More
-reset-phone=Reset Phone
-reset-warning-1= CAUTION: Resetting will erase all your data, including any apps you’ve purchased.
-reset-warning-2= The phone will be restored to its factory condition. None of your settings or data will be saved.
-# LOCALIZATION NOTE: the licensing* strings below aren’t ready for translation yet.
-your-rights = Your Rights
-about-your-rights-0 = { brandShortName } is built on free and open source software by a community of thousands from all over the world. There are a few things you should know:
-about-your-rights-1 = { brandShortName } is made available to you under the terms of several open source licenses including the Mozilla Public License. A device running {brandShortName} may also contain proprietary software from third parties. Any code provided under open licenses give you the right to modify the source code and distribute your modified versions as long as you comply with their terms.
-about-your-rights-2 = You are not granted any trademark rights or licenses to the trademarks of the Mozilla Foundation or any party, including without limitation the {brandShortName} name or logo.
-about-your-rights-3 = Some features in {brandShortName}, such as the Crash Reporter, give you the option to provide feedback to Mozilla. By choosing to submit feedback, you give Mozilla permission to use the feedback to improve its products, to publish the feedback on its websites, and to distribute the feedback.
-about-legal-info    = Legal Information
-open-source-notices = Open Source Notices
-obtaining-source-code = Obtaining Source Code
-about-mozilla = Mozilla
-about-other   = Other
-your-privacy = Your Privacy
-licensing-1      = Binaries of this product have been made available to you by the Mozilla Project, under the Mozilla Public License 2.0 (MPL). Know your rights.
-licensing-2      = All of the source code to this product is available under licenses that are both free and open source. Most of it is available under the Mozilla Public License 2.0 (MPL).
-licensing-3      = The remainder of the software that is not under the Mozilla Public License 2.0 MPL is available under one of a variety of other licenses. Those that require reproduction of the license text in the distribution are given below. (Note: Your copy of this product may not contain code covered by one or more of the licenses listed here, depending on the exact product and version you choose.)
-licensing-MPL    = Mozilla Public License 2.0
-licensing-Apache = Apache License 2.0
-launch-ftu=Launch first time use
-no-ftu=No first time use app found
-software-button-enabled=Enable software home button
+sync-sign-in-menuitem =
+    [xul/label]      Sign In To { sync-brand-short-name }…
+    [xul/accesskey]  Y
+sync-sync-now-menuitem =
+    [xul/label]      Sync Now
+    [xul/accesskey]  S
+sync-re-auth-menuitem =
+    [xul/label]      Reconnect to { sync-brand-short-name }…
+    [xul/accesskey]  R
+sync-toolbar-button =
+    [xul/label]      Sync
 
-# Device :: Battery
-battery=Battery
-batteryLevel=Current level
-batteryLevel-percent-unplugged = {$level}%
-batteryLevel-percent-charging  = {$level}% (charging)
-batteryLevel-percent-charged   = {$level}% (charged)
-powerSaveMode=Power save mode
-powerSave-threshold={$level}% battery left
-powerSave-explanation=Turning on power save mode turns off the phone’s data, Bluetooth and Geolocation connections to extend battery life. You can still turn these services back on manually.
-turnOnAuto=Turn on automatically
+web-developer-menu =
+    [xul/label]      Web Developer
+    [xul/accesskey]  W
 
-# Device :: Accessibility
-accessibility=Accessibility
-invertColors=Invert colors
-screenReader=Screen reader
+page-source-broadcaster =
+    [xul/label]      Page Source
+    [xul/accesskey]  o
+page-source-key =
+    [xul/key]        u
+page-info-menuitem =
+    [xul/label]      Page Info
+    [xul/accesskey]  I
+page-info-key =
+    [xul/key]        i
+mirror-tab-menu =
+    [xul/label]      Mirror Tab
+    [xul/accesskey]  m
 
-# Device :: Improve Browser OS
-improveBrowserOS=Improve {brandShortName}
-sendMozillaFeedback=Send Mozilla Feedback
-performanceData=Performance data
-performanceDataInfo=Help us improve {brandShortName} by sharing data about your phone.
-sharePerformanceData=Submit performance data
-crashReports=Crash reports
-crashReportInfo=Sending Mozilla a report when a crash occurs helps us fix the problem for everyone. Reports are sent over Wi-Fi only.
-alwaysSendReport=Always send a report
-neverSendReport=Never send a report
-askToSendReport2=Ask each time
 
-# Device :: Improve Browser OS :: Crash Reports
-# LOCALIZATION NOTE (crash-reports-description-*): these strings are also included in system.properties
-crash-reports-description-1=A crash report contains some details about the crash and your device, as well as a snapshot of the state of your device when it crashed.
-crash-reports-description-2=This may include things like open pages and apps, text typed into forms and the content of open messages, recent browsing history, or geolocation used by an open app.
-# LOCALIZATION NOTE (crash-reports-description-3-*): these strings are a paragraph, with a "privacy policy"
-# link in the middle. Include trailing spaces as needed.
-crash-reports-description-3-start=We use crash reports to try to fix problems and improve our products. We handle your information as we describe in our
-crash-reports-description-3-privacy=privacy policy
-crash-reports-description-3-end=.
+# browser/locales/en-US/browser/toolbar.ftl
 
-# Device :: Help
-online-support=Online support:
-call-support=Call support:
-call-support-numbers={$link1} or {$link2}
-user-guide=User guide
-default-support=Please contact your local provider for support.
+urlbar-textbox =
+    [xul/placeholder] Search or enter address
+    [xul/accesskey]   d
 
-# Device :: SIM toolkit
-operatorServices=Operator Services
-operatorServices-help=Help
-operatorServices-helpmenu=Help menu
-stkAppsNotAvailable=SIM card applications not available.
-simToolkit=SIM toolkit
 
-# Device :: SIM toolkit - NAI (Next Action Indicator)
-stkItemsNaiSetUpCall=Set Up Call
-stkItemsNaiSendSs=Send SS
-stkItemsNaiSendUssd=Send USSD
-stkItemsNaiSendSms=Send SMS
-stkItemsNaiSendDtmf=Send DTMF
-stkItemsNaiLaunchBrowser=Launch Browser
-stkItemsNaiPlayTone=Play Tone
-stkItemsNaiDisplayText=Display Text
-stkItemsNaiGetInkey=Get Inkey
-stkItemsNaiGetInput=Get Input
-stkItemsNaiSelectItem=Select Item
-stkItemsNaiSetUpMenu=Set Up Menu
-stkItemsNaiProvideLocalInfo=Provide Local Info
-stkItemsNaiSetIdleModeText=Set Idle Mode Text
-stkItemsNaiOpenChannel=Open Channel
-stkItemsNaiCloseChannel=Close Channel
-stkItemsNaiReceiveData=Receive Data
-stkItemsNaiSendData=Send Data
-stkItemsNaiGetChannelStatus=Get Channel Status
+[[ Toolbar items ]]
 
+view-bookmarks-broadcaster =
+    [xul/label]      Bookmarks
+view-bookmarks-key =
+    [xul/key]        b
+view-bookmarks-key-win =
+    [xul/key]        i
+
+view-history-broadcaster =
+    [xul/label]      History
+view-history-key =
+    [xul/key]        h
+view-tabs-broadcaster =
+    [xul/label]      Synced Tabs
+
+
+# browser/branding/official/locales/en-US/brand.ftl
+
+brand-shorter-name    = Firefox
+brand-short-name      = Firefox
+brand-full-name       = Mozilla Firefox
+vendor-short-name     = Mozilla
+
+trademark-info        = 
+  | Firefox and the Firefox logos are trademarks of the Mozilla Foundation.
+
+sync-brand-short-name = Sync

@@ -1,26 +1,7 @@
 load('../../dist/bundle/tooling/l20n.js');
 
 var ftlCode = read('./example.ftl');
-var args = {
-  "brandShortName": "BRANDSHORTNAME",
-  "ssid": "SSID",
-  "capabilities": "CAPABILITIES",
-  "linkSpeed": "LINKSPEED",
-  "pin": "PIN",
-  "n": 3,
-  "name": "NAME",
-  "device": "DEVICE",
-  "code": "CODE",
-  "app": "APP",
-  "size": 100,
-  "unit": "UNIT",
-  "list": "LIST",
-  "level": "LEVEL",
-  "number": "NUMBER",
-  "link1": "LINK1",
-  "link2": "LINK2",
-  "count": 10,
-};
+var args = {};
 
 function micro(time) {
   // time is in milliseconds with decimals
@@ -42,7 +23,14 @@ ctx.addMessages(ftlCode);
 
 times.format = dateNow();
 for (let id of ctx.messages.keys()) {
-  ctx.format(ctx.messages.get(id), args);
+  const message = ctx.messages.get(id);
+
+  ctx.format(message, args);
+  if (message.traits) {
+    for (let trait of message.traits) {
+      ctx.format(trait, args)
+    }
+  }
 }
 times.formatEnd = dateNow();
 
