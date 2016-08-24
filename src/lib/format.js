@@ -38,19 +38,20 @@ export function entityFromContext(ctx, id, args) {
     ];
   }
 
-  const [value, errors] = ctx.formatToPrimitive(entity, args);
+  const formattedValue = ctx.formatToPrimitive(entity, args);
+  const errors = formattedValue[1];
 
   const formatted = {
-    value,
+    value: formattedValue[0],
     attrs: null,
   };
 
   if (entity.traits) {
     formatted.attrs = Object.create(null);
     for (let trait of entity.traits) {
-      const [attrValue, attrErrors] = ctx.format(trait.val, args);
-      errors.push(...attrErrors);
-      formatted.attrs[trait.key.name] = attrValue;
+      const formattedTrait = ctx.format(trait.val, args);
+      errors.push(...formattedTrait[1]);
+      formatted.attrs[trait.key.name] = formattedTrait[0];
     }
   }
 

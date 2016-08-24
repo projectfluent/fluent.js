@@ -28,7 +28,9 @@ export class Localization {
       return prev.map(tuple => tuple[0]);
     }
 
-    const [translations, errors] = keysFromContext(ctx, keys, method, prev);
+    const formattedTuples = keysFromContext(ctx, keys, method, prev);
+    const translations = formattedTuples[0];
+    const errors = formattedTuples[1];
 
     if (errors.length === 0) {
       return translations.map(tuple => tuple[0]);
