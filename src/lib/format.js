@@ -8,10 +8,7 @@ export function keysFromContext(ctx, keys, method, prev) {
       return prev[i];
     }
 
-    const [id, args] = Array.isArray(key) ?
-      key : [key, undefined];
-
-    const result = method(ctx, id, args);
+    const result = method(ctx, key[0], key[1]);
     errors.push(...result[1]);
     // XXX Depending on the kind of errors it might be better to return prev[i]
     // here;  for instance, when the current translation is completely missing

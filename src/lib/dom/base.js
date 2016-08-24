@@ -53,8 +53,11 @@ export class Localization {
   }
 
   formatValues(...keys) {
+    const keyTuples = keys.map(
+      key => Array.isArray(key) ? key : [key, null]
+    );
     return this.interactive.then(
-      bundles => this.formatWithFallback(bundles, keys, valueFromContext)
+      bundles => this.formatWithFallback(bundles, keyTuples, valueFromContext)
     );
   }
 
