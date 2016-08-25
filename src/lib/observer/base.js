@@ -168,10 +168,8 @@ export class LocalizationObserver {
                 this.getTranslatables(addedNode).forEach(
                   targets.add.bind(targets)
                 );
-              } else {
-                if (addedNode.hasAttribute('data-l10n-id')) {
-                  targets.add(addedNode);
-                }
+              } else if (addedNode.hasAttribute('data-l10n-id')) {
+                targets.add(addedNode);
               }
             }
           }
