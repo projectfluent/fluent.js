@@ -31,7 +31,7 @@ for (let id of ctx.messages.keys()) {
   ctx.format(message, args);
   if (message.traits) {
     for (let trait of message.traits) {
-      ctx.format(trait, args)
+      ctx.format(trait.val, args)
     }
   }
 }

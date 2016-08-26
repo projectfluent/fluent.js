@@ -23,6 +23,16 @@ export class MessageContext {
 
   // format `entity` to a string or null
   formatToPrimitive(entity, args) {
+    // optimize entities which are simple strings by skipping resultion
+    if (typeof entity === 'string') {
+      return [entity, []];
+    }
+
+    // optimize entities with null values and no default traits
+    if (!entity.val && entity.traits && !(entity.traits.some(t => t.def))) {
+      return [null, []];
+    }
+
     const result = format(this, args, entity, optsPrimitive);
     return (result[0] instanceof FTLNone) ?
       [null, result[1]] : result;
@@ -30,6 +40,16 @@ export class MessageContext {
 
   // format `entity` to a string
   format(entity, args) {
+    // optimize entities which are simple strings by skipping resultion
+    if (typeof entity === 'string') {
+      return [entity, []];
+    }
+
+    // optimize entities with null values and no default traits
+    if (!entity.val && entity.traits && !(entity.traits.some(t => t.def))) {
+      return [null, []];
+    }
+
     const result = format(this, args, entity);
     return [result[0].toString(), result[1]];
   }

@@ -235,10 +235,9 @@ export class LocalizationObserver {
     return elems.map(elem => {
       const id = elem.getAttribute('data-l10n-id');
       const args = elem.getAttribute('data-l10n-args');
-
-      return args ?
-        [id, JSON.parse(args.replace(reHtml, match => htmlEntities[match]))] :
-        id;
+      const escapedArgs = args ?
+        JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null;
+      return [id, escapedArgs];
     });
   }
 
