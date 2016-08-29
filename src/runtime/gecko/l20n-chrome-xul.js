@@ -2,7 +2,7 @@ import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
 import { XULLocalization } from '../../lib/dom/xul';
 
 import { ChromeResourceBundle } from './io';
-import { documentReady, getResourceLinks, createObserve } from './util';
+import { XULDocumentReady, getResourceLinks, createObserve } from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
@@ -32,13 +32,11 @@ function createContext(lang) {
 document.l10n = new ChromeLocalizationObserver();
 window.addEventListener('languagechange', document.l10n);
 
-documentReady().then(() => {
-  for (let [name, resIds] of getResourceLinks(document)) {
-    if (!document.l10n.has(name)) {
-      createLocalization(name, resIds);
-    }
+for (let [name, resIds] of getResourceLinks(document)) {
+  if (!document.l10n.has(name)) {
+    createLocalization(name, resIds);
   }
-});
+}
 
 function createLocalization(name, resIds) {
   function requestBundles(requestedLangs = navigator.languages) {
@@ -65,8 +63,10 @@ function createLocalization(name, resIds) {
   document.l10n.set(name, l10n);
 
   if (name === 'main') {
-    const rootElem = document.documentElement;
-    document.l10n.observeRoot(rootElem, l10n);
-    document.l10n.translateRoot(rootElem, l10n);
+    XULDocumentReady().then(() => {
+      const rootElem = document.documentElement;
+      document.l10n.observeRoot(rootElem, l10n);
+      document.l10n.translateRoot(rootElem, l10n);
+    });
   }
 }

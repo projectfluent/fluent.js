@@ -131,10 +131,9 @@ export class LocalizationObserver {
   }
 
   translateRoot(root, l10n) {
-    return l10n.interactive.then(bundles => {
-      const langs = bundles.map(bundle => bundle.lang);
-
-      function setLangs() {
+    function setLangs() {
+      return l10n.interactive.then(bundles => {
+        const langs = bundles.map(bundle => bundle.lang);
         const wasLocalizedBefore = root.hasAttribute('langs');
 
         root.setAttribute('langs', langs.join(' '));
@@ -147,10 +146,10 @@ export class LocalizationObserver {
             cancelable: false,
           }));
         }
-      }
+      });
+    }
 
-      return this.translateRootContent(root).then(setLangs);
-    });
+    return this.translateRootContent(root).then(setLangs);
   }
 
   translateMutations(mutations) {
