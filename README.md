@@ -57,8 +57,11 @@ about      = O { brand-name[locative] }
 settings   = Ustawienia { brand-name[genitive] }
 ```
 
-Visit [FTL by Example](http://l20n.org/learn) to learn more about FTL's 
-syntax.
+Visit [FTL by Example](http://l20n.org/learn) to learn more about the FTL 
+syntax.  If you're a tool author you may be interested in the formal 
+[EBNF grammar][].
+
+[EBNF grammar]: https://github.com/l20n/spec/blob/master/grammar.ebnf
 
 
 Localizing Web content with HTML Bindings
