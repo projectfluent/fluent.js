@@ -63,7 +63,7 @@ function createLocalization(name, resIds) {
   document.l10n.set(name, l10n);
 
   if (name === 'main') {
-    document.addEventListener('MozBeforeLayout', function() {
+    document.addEventListener('MozBeforeLayout', () => {
       const rootElem = document.documentElement;
       document.l10n.observeRoot(rootElem, l10n);
       document.l10n.translateRoot(rootElem, l10n);
