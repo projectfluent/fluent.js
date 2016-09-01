@@ -2,7 +2,7 @@ import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
 import { XULLocalization } from '../../lib/dom/xul';
 
 import { ChromeResourceBundle } from './io';
-import { XULDocumentReady, getResourceLinks, createObserve } from './util';
+import { getResourceLinks, createObserve } from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
@@ -63,10 +63,13 @@ function createLocalization(name, resIds) {
   document.l10n.set(name, l10n);
 
   if (name === 'main') {
-    XULDocumentReady().then(() => {
+    document.addEventListener('MozBeforeLayout', function() {
       const rootElem = document.documentElement;
       document.l10n.observeRoot(rootElem, l10n);
       document.l10n.translateRoot(rootElem, l10n);
+    }, {
+      once: true,
+      passive: true
     });
   }
 }
