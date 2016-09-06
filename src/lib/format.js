@@ -48,9 +48,11 @@ export function entityFromContext(ctx, id, args) {
 
   if (entity.traits) {
     formatted.attrs = Object.create(null);
-    for (let trait of entity.traits) {
+    for (let i = 0, trait; (trait = entity.traits[i]); i++) {
       const formattedTrait = ctx.format(trait.val, args);
-      errors.push(...formattedTrait[1]);
+      if (formattedTrait[1].length) {
+        errors.push(...formattedTrait[1]);
+      }
       formatted.attrs[trait.key.name] = formattedTrait[0];
     }
   }
