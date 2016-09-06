@@ -35,6 +35,8 @@ class ParseContext {
           entries[id].traits = entry.traits;
           if (entry.value) {
             entries[id].val = entry.value;
+          } else if (!entry.traits.some(t => t.def)) {
+            entries[id].val = null;
           }
         } else {
           entries[id] = entry.value;

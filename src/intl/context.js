@@ -29,7 +29,7 @@ export class MessageContext {
     }
 
     // optimize entities with null values and no default traits
-    if (!entity.val && entity.traits && !(entity.traits.some(t => t.def))) {
+    if (entity.val === null) {
       return [null, []];
     }
 
@@ -43,11 +43,6 @@ export class MessageContext {
     // optimize entities which are simple strings by skipping resultion
     if (typeof entity === 'string') {
       return [entity, []];
-    }
-
-    // optimize entities with null values and no default traits
-    if (!entity.val && entity.traits && !(entity.traits.some(t => t.def))) {
-      return [null, []];
     }
 
     const result = format(this, args, entity);
