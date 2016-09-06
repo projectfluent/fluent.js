@@ -5,6 +5,19 @@ export {
   documentReady as HTMLDocumentReady, getResourceLinks
 } from '../web/util';
 
+export function XULDocumentReady() {
+  if (document.readyState !== 'uninitialized') {
+    return Promise.resolve();
+  }
+
+  return new Promise(resolve => {
+    document.addEventListener('readystatechange', function onrsc() {
+      document.removeEventListener('readystatechange', onrsc);
+      resolve();
+    });
+  });
+}
+
 export function createGetValue(bundles) {
   return function (id, args) {
     const ctx = contexts.get(bundles[0]);
