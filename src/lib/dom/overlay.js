@@ -81,7 +81,7 @@ function overlay(l10n, sourceElement, translationElement) {
   sourceElement.appendChild(result);
 
   // if we're overlaying a nested element, translate the allowed
-  // attributes; top-level attributes are handled in `translateElement`
+  // attributes; top-level attributes are handled in `overlayElement`
   // XXX attributes previously set here for another language should be
   // cleared if a new language doesn't use them; https://bugzil.la/922577
   if (translationElement.attributes) {

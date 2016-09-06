@@ -153,104 +153,90 @@ export class LocalizationObserver {
   }
 
   translateMutations(mutations) {
-    const targets = new Set();
-
     for (let mutation of mutations) {
       switch (mutation.type) {
         case 'attributes':
-          targets.add(mutation.target);
+          this.translateElement(mutation.target);
           break;
         case 'childList':
           for (let addedNode of mutation.addedNodes) {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
-                this.getTranslatables(addedNode).forEach(
-                  targets.add.bind(targets)
-                );
+                this.translateFragment(addedNode);
               } else if (addedNode.hasAttribute('data-l10n-id')) {
-                targets.add(addedNode);
+                this.translateElement(addedNode);
               }
             }
           }
           break;
       }
     }
-
-    if (targets.size === 0) {
-      return;
-    }
-
-    this.translateElements(Array.from(targets));
   }
 
   translateFragment(frag) {
-    return this.translateElements(this.getTranslatables(frag));
-  }
-
-  translateElements(elements) {
-    const elemsByL10n = this.groupElementsByLocalization(elements);
-    return this.getElementsTranslation(elemsByL10n).then(
-      translations => this.applyTranslations(elemsByL10n, translations)
+    return Promise.all(
+      this.groupTranslatablesByLocalization(frag).map(
+        elemsWithL10n => this.translateElements(
+          elemsWithL10n[0], elemsWithL10n[1]
+        )
+      )
     );
   }
 
-  applyTranslations(elemsByL10n, translationsByL10n) {
+  translateElements(l10n, elements) {
+    const keys = elements.map(this.getKeysForElement);
+    return l10n.formatEntities(keys).then(
+      translations => this.applyTranslations(l10n, elements, translations)
+    );
+  }
+
+  translateElement(element) {
+    const l10n = this.get(element.getAttribute('data-l10n-bundle') || 'main');
+    return l10n.formatEntities([this.getKeysForElement(element)]).then(
+      translations => this.applyTranslations(l10n, [element], translations)
+    );
+  }
+
+  applyTranslations(l10n, elements, translations) {
     this.pause();
-    for (let [l10n, elems] of elemsByL10n) {
-      const translations = translationsByL10n.get(l10n);
-      for (let i = 0; i < elems.length; i++) {
-        l10n.overlayElement(elems[i], translations[i]);
-      }
+    for (let i = 0; i < elements.length; i++) {
+      l10n.overlayElement(elements[i], translations[i]);
     }
     this.resume();
   }
 
-  groupElementsByLocalization(elements) {
-    return Array.from(elements).reduce(
-      (seq, elem) => {
-        const l10n = this.getLocalizationForElement(elem);
-        const group = (seq.get(l10n) || []).concat(elem);
-        return seq.set(l10n, group);
-      }, new Map()
-    );
+  groupTranslatablesByLocalization(frag) {
+    const elemsWithL10n = [];
+    for (let loc of this.localizations) {
+      elemsWithL10n.push(
+        [loc[1], this.getTranslatables(frag, loc[0])]
+      );
+    }
+    return elemsWithL10n;
   }
 
-  getTranslatables(element) {
-    const nodes = Array.from(element.querySelectorAll('[data-l10n-id]'));
+  getTranslatables(element, bundleName) {
+    const query = bundleName === 'main' ?
+      '[data-l10n-bundle="main"], [data-l10n-id]:not([data-l10n-bundle])' :
+      `[data-l10n-bundle=${bundleName}]`;
+    const nodes = Array.from(element.querySelectorAll(query));
 
     if (typeof element.hasAttribute === 'function' &&
         element.hasAttribute('data-l10n-id')) {
-      nodes.push(element);
+      const elemBundleName = element.getAttribute('data-l10n-bundle');
+      if (elemBundleName === null || elemBundleName === bundleName) {
+        nodes.push(element);
+      }
     }
 
     return nodes;
   }
 
-  getLocalizationForElement(elem) {
-    return this.get(elem.getAttribute('data-l10n-bundle') || 'main');
+  getKeysForElement(element) {
+    const id = element.getAttribute('data-l10n-id');
+    const args = element.getAttribute('data-l10n-args');
+    const escapedArgs = args ?
+      JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null;
+    return [id, escapedArgs];
   }
-
-  getKeysForElements(elems) {
-    return elems.map(elem => {
-      const id = elem.getAttribute('data-l10n-id');
-      const args = elem.getAttribute('data-l10n-args');
-      const escapedArgs = args ?
-        JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null;
-      return [id, escapedArgs];
-    });
-  }
-
-  getElementsTranslation(elemsByL10n) {
-    return Promise.all(
-      Array.from(elemsByL10n).map(
-        ([l10n, elems]) => l10n.formatEntities(this.getKeysForElements(elems))
-      )
-    ).then(
-      translationsList => Array.from(elemsByL10n.keys()).reduce(
-        (seq, cur, idx) => seq.set(cur, translationsList[idx]),
-        new Map()
-      )
-    );
-  }
-
 }
