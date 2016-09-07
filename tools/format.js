@@ -40,8 +40,7 @@ function singleline(str) {
     .trim();
 }
 
-function printEntry(id, [val, errs]) {
-  errs.forEach(printError);
+function printEntry(id, val) {
   console.log(
     color(id, 'cyan'),
     color(singleline(val))
@@ -54,12 +53,14 @@ function print(err, data) {
   }
 
   const ctx = new Intl.MessageContext(program.lang);
-  const errors = ctx.addMessages(data.toString());
+  const parseErrors = ctx.addMessages(data.toString());
 
-  errors.forEach(printError);
+  parseErrors.forEach(printError);
 
   for (const [id, entity] of ctx.messages) {
-    printEntry(id, ctx.format(entity, ext));
+    const formatErrors = [];
+    printEntry(id, ctx.format(entity, ext, formatErrors));
+    formatErrors.forEach(printError);
   }
 }
 

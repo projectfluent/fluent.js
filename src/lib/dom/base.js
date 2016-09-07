@@ -24,26 +24,28 @@ export class Localization {
   formatWithFallback(bundles, keys, method, prev) {
     const ctx = contexts.get(bundles[0]);
 
-    if (!ctx) {
-      return prev.map(tuple => tuple[0]);
+    if (!ctx && prev) {
+      return prev.translations;
     }
 
-    const formattedTuples = keysFromContext(ctx, keys, method, prev);
-    const translations = formattedTuples[0];
-    const errors = formattedTuples[1];
+    const current = keysFromContext(ctx, keys, method, prev);
 
-    if (errors.length === 0) {
-      return translations.map(tuple => tuple[0]);
+    if (!current.hasErrors) {
+      return current.translations;
     }
 
     if (typeof console !== 'undefined') {
-      errors.forEach(e => console.warn(e)); // eslint-disable-line no-console
+      current.errors.forEach(
+        errs => errs.forEach(
+          e => console.warn(e) // eslint-disable-line no-console
+        )
+      );
     }
 
     const { createContext } = properties.get(this);
     return fetchFirstBundle(bundles.slice(1), createContext).then(
       tailBundles => this.formatWithFallback(
-        tailBundles, keys, method, translations
+        tailBundles, keys, method, current
       )
     );
   }
@@ -75,7 +77,7 @@ function createContextFromBundle(bundle, createContext) {
   return bundle.fetch().then(resources => {
     const ctx = createContext(bundle.lang);
     resources
-      .filter(res => !(res instanceof Error))
+      .filter(res => res !== null)
       .forEach(res => ctx.addMessages(res));
     contexts.set(bundle, ctx);
     return ctx;

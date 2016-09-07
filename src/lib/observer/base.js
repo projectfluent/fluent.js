@@ -184,6 +184,10 @@ export class LocalizationObserver {
   }
 
   translateElements(l10n, elements) {
+    if (!elements.length) {
+      return [];
+    }
+
     const keys = elements.map(this.getKeysForElement);
     return l10n.formatEntities(keys).then(
       translations => this.applyTranslations(l10n, elements, translations)

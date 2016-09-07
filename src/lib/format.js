@@ -1,61 +1,63 @@
 import { L10nError } from './errors';
 
 export function keysFromContext(ctx, keys, method, prev) {
-  const errors = [];
-  const translations = keys.map((key, i) => {
-    if (prev && prev[i] && prev[i][1].length === 0) {
+  const entityErrors = [];
+  const current = {
+    errors: new Array(keys.length),
+    hasErrors: false
+  };
+
+  current.translations = keys.map((key, i) => {
+    if (prev && !prev.errors[i]) {
       // Use a previously formatted good value if there were no errors
-      return prev[i];
+      return prev.translations[i];
     }
 
-    const result = method(ctx, key[0], key[1]);
-    errors.push(...result[1]);
-    // XXX Depending on the kind of errors it might be better to return prev[i]
-    // here;  for instance, when the current translation is completely missing
-    return result;
+    const translation = method(ctx, entityErrors, key[0], key[1]);
+    if (entityErrors.length) {
+      current.errors[i] = entityErrors.slice();
+      entityErrors.length = 0;
+      if (!current.hasErrors) {
+        current.hasErrors = true;
+      }
+    }
+
+    return translation;
   });
 
-  return [translations, errors];
+  return current;
 }
 
-export function valueFromContext(ctx, id, args) {
+export function valueFromContext(ctx, errors, id, args) {
   const entity = ctx.messages.get(id);
 
   if (entity === undefined) {
-    return [id, [new L10nError(`Unknown entity: ${id}`)]];
+    errors.push(new L10nError(`Unknown entity: ${id}`));
+    return id;
   }
 
-  return ctx.format(entity, args);
+  return ctx.format(entity, args, errors);
 }
 
-export function entityFromContext(ctx, id, args) {
+export function entityFromContext(ctx, errors, id, args) {
   const entity = ctx.messages.get(id);
 
   if (entity === undefined) {
-    return [
-      { value: id, attrs: null },
-      [new L10nError(`Unknown entity: ${id}`)]
-    ];
+    errors.push(new L10nError(`Unknown entity: ${id}`));
+    return { value: id, attrs: null };
   }
-
-  const formattedValue = ctx.formatToPrimitive(entity, args);
-  const errors = formattedValue[1];
 
   const formatted = {
-    value: formattedValue[0],
+    value: ctx.formatToPrimitive(entity, args, errors),
     attrs: null,
   };
 
   if (entity.traits) {
     formatted.attrs = Object.create(null);
     for (let i = 0, trait; (trait = entity.traits[i]); i++) {
-      const formattedTrait = ctx.format(trait.val, args);
-      if (formattedTrait[1].length) {
-        errors.push(...formattedTrait[1]);
-      }
-      formatted.attrs[trait.key.name] = formattedTrait[0];
+      formatted.attrs[trait.key.name] = ctx.format(trait.val, args, errors);
     }
   }
 
-  return [formatted, errors];
+  return formatted;
 }

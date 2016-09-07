@@ -257,10 +257,6 @@ function* Entity(entity, allowNoDefault = false) {
 
 // evaluate `entity` to an FTL Value type: string or FTLNone
 function* toFTLType(entity, opts) {
-  if (entity === undefined) {
-    return new FTLNone();
-  }
-
   return yield* Entity(entity, opts.allowNoDefault);
 }
 
@@ -268,8 +264,8 @@ const _opts = {
   allowNoDefault: false
 };
 
-export function format(ctx, args, entity, opts = _opts) {
+export function format(ctx, args, entity, errors = [], opts = _opts) {
   return resolve(toFTLType(entity, opts)).run({
-    ctx, args, dirty: new WeakSet()
+    ctx, args, errors, dirty: new WeakSet()
   });
 }

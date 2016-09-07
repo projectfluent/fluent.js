@@ -19,16 +19,16 @@ var [entries] = L20n.FTLEntriesParser.parse(null, ftlCode);
 times.ftlEntriesParseEnd = Date.now();
 
 var ctx = new Intl.MessageContext('en-US');
-ctx.addMessages(ftlCode);
+var errors = ctx.addMessages(ftlCode);
 
 times.format = Date.now();
 for (let id of ctx.messages.keys()) {
   const message = ctx.messages.get(id);
 
-  ctx.format(message, args);
+  ctx.formatToPrimitive(message, args, errors);
   if (message.traits) {
     for (let trait of message.traits) {
-      ctx.format(trait.val, args)
+      ctx.format(trait.val, args, errors)
     }
   }
 }

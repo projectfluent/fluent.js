@@ -22,31 +22,42 @@ export class MessageContext {
   }
 
   // format `entity` to a string or null
-  formatToPrimitive(entity, args) {
+  formatToPrimitive(entity, args, errors) {
     // optimize entities which are simple strings by skipping resultion
     if (typeof entity === 'string') {
-      return [entity, []];
+      return entity;
+    }
+
+    if (!entity) {
+      return null;
     }
 
     // optimize entities with null values and no default traits
     if (entity.val === null) {
-      return [null, []];
+      return null;
     }
 
-    const result = format(this, args, entity, optsPrimitive);
-    return (result[0] instanceof FTLNone) ?
-      [null, result[1]] : result;
+    const result = format(this, args, entity, errors, optsPrimitive);
+    return result instanceof FTLNone ? null : result;
   }
 
   // format `entity` to a string
-  format(entity, args) {
+  format(entity, args, errors) {
     // optimize entities which are simple strings by skipping resultion
     if (typeof entity === 'string') {
-      return [entity, []];
+      return entity;
     }
 
-    const result = format(this, args, entity);
-    return [result[0].toString(), result[1]];
+    if (!entity) {
+      return (new FTLNone).toString();
+    }
+
+    // optimize entities with null values and no default traits
+    if (entity.val === null) {
+      return (new FTLNone).toString();
+    }
+
+    return format(this, args, entity, errors).toString();
   }
 
   _memoizeIntlObject(ctor, opts) {
@@ -60,5 +71,4 @@ export class MessageContext {
 
     return cache[id];
   }
-
 }

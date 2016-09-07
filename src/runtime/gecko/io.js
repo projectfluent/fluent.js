@@ -56,8 +56,8 @@ export class ContentResourceBundle {
     if (!this.loaded) {
       this.loaded = Promise.all(
         Object.keys(this.resources).map(resId => {
-          const { source, lang } = this.resources[resId];
-          return postMessage('fetchResource', { source, resId, lang });
+          const { source, locale } = this.resources[resId];
+          return postMessage('fetchResource', { source, resId, locale });
         })
       );
     }
@@ -85,8 +85,8 @@ export class ChromeResourceBundle {
     if (!this.loaded) {
       this.loaded = Promise.all(
         Object.keys(this.resources).map(resId => {
-          const { source, lang } = this.resources[resId];
-          return L10nRegistry.fetchResource(source, resId, lang);
+          const { source, locale } = this.resources[resId];
+          return L10nRegistry.fetchResource(source, resId, locale);
         })
       );
     }

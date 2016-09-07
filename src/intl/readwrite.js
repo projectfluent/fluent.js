@@ -9,30 +9,32 @@ class ReadWrite {
 
   flatMap(fn) {
     return new ReadWrite(ctx => {
-      const [cur, curErrs] = this.run(ctx);
-      const [val, valErrs] = fn(cur).run(ctx);
-      return [val, [...curErrs, ...valErrs]];
+      const cur = this.run(ctx);
+      return fn(cur).run(ctx);
     });
   }
 }
 
 export function ask() {
-  return new ReadWrite(ctx => [ctx, []]);
+  return new ReadWrite(ctx => ctx);
 }
 
 export function tell(log) {
-  return new ReadWrite(() => [null, [log]]);
+  return new ReadWrite(ctx => {
+    ctx.errors.push(log);
+    return null;
+  });
 }
 
 export function unit(val) {
-  return new ReadWrite(() => [val, []]);
+  return new ReadWrite(() => val);
 }
 
 export function resolve(iter) {
   return function step(resume) {
-    const {value, done} = iter.next(resume);
-    const rw = (value instanceof ReadWrite) ?
-      value : unit(value);
-    return done ? rw : rw.flatMap(step);
+    const i = iter.next(resume);
+    const rw = (i.value instanceof ReadWrite) ?
+      i.value : unit(i.value);
+    return i.done ? rw : rw.flatMap(step);
   }();
 }
