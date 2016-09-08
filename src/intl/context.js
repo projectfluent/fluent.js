@@ -26,10 +26,12 @@ export class MessageContext {
       return entity;
     }
 
+    if (typeof entity.val === 'string') {
+      return entity.val;
+    }
+
     // optimize entities with null values and no default traits
-    if (!Array.isArray(entity) &&
-        entity.val === undefined &&
-        entity.def === undefined) {
+    if (entity.val === undefined && entity.def === undefined) {
       return null;
     }
 

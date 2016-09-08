@@ -116,12 +116,17 @@ class ParseContext {
         def: members[1],
         val
       };
+
+    } else if (typeof val === 'string') {
+      entries[id] = val;
     } else if (val === undefined) {
       throw this.error(
         'Expected a value (like: " = value") or a trait (like: "[key] value")'
       );
     } else {
-      entries[id] = val;
+      entries[id] = {
+        val
+      }
     }
   }
 
