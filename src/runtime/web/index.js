@@ -17,7 +17,7 @@ window.addEventListener('languagechange', document.l10n);
 
 documentReady().then(() => {
   const { defaultLang, availableLangs } = getMeta(document.head);
-  for (let [name, resIds] of getResourceLinks(document.head)) {
+  for (const [name, resIds] of getResourceLinks(document.head)) {
     if (!document.l10n.has(name)) {
       createLocalization(name, resIds, defaultLang, availableLangs);
     }

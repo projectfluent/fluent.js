@@ -32,7 +32,7 @@ function createContext(lang) {
 document.l10n = new ChromeLocalizationObserver();
 window.addEventListener('languagechange', document.l10n);
 
-for (let [name, resIds] of getResourceLinks(document)) {
+for (const [name, resIds] of getResourceLinks(document)) {
   if (!document.l10n.has(name)) {
     createLocalization(name, resIds);
   }

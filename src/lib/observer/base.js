@@ -80,7 +80,7 @@ export class LocalizationObserver {
     let wasLast = false;
 
     this.pause();
-    for (let [name, l10n] of this.localizations) {
+    for (const [name, l10n] of this.localizations) {
       const roots = this.roots.get(l10n);
       if (roots && roots.has(root)) {
         roots.delete(root);
@@ -101,9 +101,9 @@ export class LocalizationObserver {
   }
 
   resume() {
-    for (let l10n of this.localizations.values()) {
+    for (const l10n of this.localizations.values()) {
       if (this.roots.has(l10n)) {
-        for (let root of this.roots.get(l10n)) {
+        for (const root of this.roots.get(l10n)) {
           this.observer.observe(root, observerConfig)
         }
       }
@@ -153,13 +153,13 @@ export class LocalizationObserver {
   }
 
   translateMutations(mutations) {
-    for (let mutation of mutations) {
+    for (const mutation of mutations) {
       switch (mutation.type) {
         case 'attributes':
           this.translateElement(mutation.target);
           break;
         case 'childList':
-          for (let addedNode of mutation.addedNodes) {
+          for (const addedNode of mutation.addedNodes) {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
                 this.translateFragment(addedNode);
@@ -211,7 +211,7 @@ export class LocalizationObserver {
 
   groupTranslatablesByLocalization(frag) {
     const elemsWithL10n = [];
-    for (let loc of this.localizations) {
+    for (const loc of this.localizations) {
       elemsWithL10n.push(
         [loc[1], this.getTranslatables(frag, loc[0])]
       );

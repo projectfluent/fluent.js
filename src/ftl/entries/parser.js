@@ -97,7 +97,7 @@ class ParseContext {
 
     this.getLineWS();
 
-    let val = this.getPattern();
+    const val = this.getPattern();
 
     ch = this._source[this._index];
 

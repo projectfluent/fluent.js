@@ -10,8 +10,8 @@ const PDI = '\u2069';
 const MAX_PLACEABLE_LENGTH = 2500;
 
 function* mapValues(arr) {
-  let values = new FTLList();
-  for (let elem of arr) {
+  const values = new FTLList();
+  for (const elem of arr) {
     values.push(yield* Value(elem));
   }
   return values;
@@ -51,7 +51,7 @@ function* MemberExpression({obj, key}) {
   const { ctx } = yield ask();
   const keyword = yield* Value(key);
 
-  for (let member of entity.traits) {
+  for (const member of entity.traits) {
     const memberKey = yield* Value(member.key);
     if (keyword.match(ctx, memberKey)) {
       return member;
@@ -70,7 +70,7 @@ function* SelectExpression({exp, vars, def}) {
     return yield* DefaultMember(vars, def);
   }
 
-  for (let variant of vars) {
+  for (const variant of vars) {
     const key = yield* Value(variant.key);
 
     if (key instanceof FTLNumber &&
@@ -188,7 +188,7 @@ function* CallExpression({name, args}) {
   const posargs = [];
   const keyargs = [];
 
-  for (let arg of args) {
+  for (const arg of args) {
     if (arg.type === 'kv') {
       keyargs[arg.name] = yield* Value(arg.val);
     } else {
@@ -211,7 +211,7 @@ function* Pattern(ptn) {
   dirty.add(ptn);
   let result = '';
 
-  for (let part of ptn) {
+  for (const part of ptn) {
     if (typeof part === 'string') {
       result += part;
     } else {

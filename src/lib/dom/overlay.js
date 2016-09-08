@@ -19,7 +19,7 @@ export function overlayElement(l10n, element, translation) {
     }
   }
 
-  for (let key in translation.attrs) {
+  for (const key in translation.attrs) {
     if (l10n.isAttrAllowed({ name: key }, element)) {
       element.setAttribute(key, translation.attrs[key]);
     }

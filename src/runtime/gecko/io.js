@@ -16,7 +16,14 @@ export function postMessage(msg, data) {
   const reqId = Math.random().toString(HASH_RADIX).replace(/[^a-z]+/g, '');
 
   return new Promise((resolve, reject) => {
-    let t;
+    const t = setTimeout(() => {
+      window.removeEventListener('mozL20nDemoResponse', onResponse);
+      reject();
+    }, MOZ_EVENT_TIMEOUT);
+
+    window.addEventListener('mozL20nDemoResponse', onResponse);
+
+    emit(msg, reqId, data);
 
     function onResponse(evt) {
       if (evt.detail.requestId === reqId) {
@@ -25,15 +32,6 @@ export function postMessage(msg, data) {
         resolve(evt.detail.data);
       }
     }
-
-    t = setTimeout(() => {
-      window.removeEventListener('mozL20nDemoResponse', onResponse);
-      reject();
-    }, MOZ_EVENT_TIMEOUT);
-
-    window.addEventListener('mozL20nDemoResponse', onResponse);
-
-    emit(msg, reqId, data);
   });
 }
 

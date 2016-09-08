@@ -12,7 +12,7 @@ export class MessageContext {
 
   addMessages(source) {
     const [entries, errors] = FTLRuntimeParser.parseResource(source);
-    for (let id in entries) {
+    for (const id in entries) {
       this.messages.set(id, entries[id]);
     }
 

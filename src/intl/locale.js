@@ -1,6 +1,6 @@
 export function prioritizeLocales(def, availableLangs, requested) {
   const supportedLocales = new Set();
-  for (let lang of requested) {
+  for (const lang of requested) {
     if (availableLangs.has(lang)) {
       supportedLocales.add(lang);
     }
