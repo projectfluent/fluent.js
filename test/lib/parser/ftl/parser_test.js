@@ -51,7 +51,9 @@ function compareEntries(path1, path2) {
       throw new Error('JSON parsing error in ' + path2 + '\n\n' + e);
     }
 
-    assert.deepEqual(entries, json, 'Error in: ' + path1);
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(entries)),
+      json, 'Error in: ' + path1);
 
   });
 }
@@ -70,7 +72,9 @@ function compareTransformerToEntries(path) {
       throw new Error('Error parsing ' + path + '\n\n' + e);
     }
 
-    assert.deepEqual(entries, entries2, 'Error in: ' + path);
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(entries)),
+      JSON.parse(JSON.stringify(entries2)), 'Error in: ' + path);
 
   });
 }

@@ -113,7 +113,8 @@ class ParseContext {
       const members = this.getMembers();
       entries[id] = {
         traits: members[0],
-        def: members[1]
+        def: members[1],
+        val
       };
     } else if (val === undefined) {
       throw this.error(
