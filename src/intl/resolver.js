@@ -18,17 +18,12 @@ function* mapValues(arr) {
 }
 
 // Helper for choosing entity value
-function* DefaultMember(members, allowNoDefault = false) {
-  for (let member of members) {
-    if (member.def) {
-      return member;
-    }
+function* DefaultMember(members, def) {
+  if (members[def]) {
+    return members[def];
   }
 
-  if (!allowNoDefault) {
-    yield tell(new RangeError('No default'));
-  }
-
+  yield tell(new RangeError('No default'));
   return { val: new FTLNone() };
 }
 
@@ -69,10 +64,10 @@ function* MemberExpression({obj, key}) {
   };
 }
 
-function* SelectExpression({exp, vars}) {
+function* SelectExpression({exp, vars, def}) {
   const selector = yield* Value(exp);
   if (selector instanceof FTLNone) {
-    return yield* DefaultMember(vars);
+    return yield* DefaultMember(vars, def);
   }
 
   for (let variant of vars) {
@@ -92,7 +87,7 @@ function* SelectExpression({exp, vars}) {
     }
   }
 
-  return yield* DefaultMember(vars);
+  return yield* DefaultMember(vars, def);
 }
 
 
@@ -242,7 +237,7 @@ function* Pattern(ptn) {
   return result;
 }
 
-function* Entity(entity, allowNoDefault = false) {
+function* Entity(entity) {
   if (entity.val !== undefined) {
     return yield* Value(entity.val);
   }
@@ -251,21 +246,17 @@ function* Entity(entity, allowNoDefault = false) {
     return yield* Value(entity);
   }
 
-  const def = yield* DefaultMember(entity.traits, allowNoDefault);
+  const def = yield* DefaultMember(entity.traits, entity.def);
   return yield* Value(def);
 }
 
 // evaluate `entity` to an FTL Value type: string or FTLNone
-function* toFTLType(entity, opts) {
-  return yield* Entity(entity, opts.allowNoDefault);
+function* toFTLType(entity) {
+  return yield* Entity(entity);
 }
 
-const _opts = {
-  allowNoDefault: false
-};
-
-export function format(ctx, args, entity, errors = [], opts = _opts) {
-  return resolve(toFTLType(entity, opts)).run({
+export function format(ctx, args, entity, errors = []) {
+  return resolve(toFTLType(entity)).run({
     ctx, args, errors, dirty: new WeakSet()
   });
 }

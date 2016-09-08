@@ -48,14 +48,17 @@ export function entityFromContext(ctx, errors, id, args) {
   }
 
   const formatted = {
-    value: ctx.formatToPrimitive(entity, args, errors),
+    value: ctx.format(entity, args, errors),
     attrs: null,
   };
 
   if (entity.traits) {
     formatted.attrs = Object.create(null);
     for (let i = 0, trait; (trait = entity.traits[i]); i++) {
-      formatted.attrs[trait.key.name] = ctx.format(trait.val, args, errors);
+      const attr = ctx.format(trait.val, args, errors);
+      if (attr !== null) {
+        formatted.attrs[trait.key.name] = attr;
+      }
     }
   }
 

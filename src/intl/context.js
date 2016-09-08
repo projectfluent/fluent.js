@@ -2,8 +2,6 @@ import FTLRuntimeParser from '../ftl/entries/parser';
 import { format } from './resolver';
 import { FTLNone } from './types';
 
-const optsPrimitive = { allowNoDefault: true };
-
 export class MessageContext {
   constructor(lang, { functions } = {}) {
     this.lang = lang;
@@ -22,42 +20,21 @@ export class MessageContext {
   }
 
   // format `entity` to a string or null
-  formatToPrimitive(entity, args, errors) {
-    // optimize entities which are simple strings by skipping resultion
-    if (typeof entity === 'string') {
-      return entity;
-    }
-
-    if (!entity) {
-      return null;
-    }
-
-    // optimize entities with null values and no default traits
-    if (entity.val === null) {
-      return null;
-    }
-
-    const result = format(this, args, entity, errors, optsPrimitive);
-    return result instanceof FTLNone ? null : result;
-  }
-
-  // format `entity` to a string
   format(entity, args, errors) {
     // optimize entities which are simple strings by skipping resultion
     if (typeof entity === 'string') {
       return entity;
     }
 
-    if (!entity) {
-      return (new FTLNone).toString();
-    }
-
     // optimize entities with null values and no default traits
-    if (entity.val === null) {
-      return (new FTLNone).toString();
+    if (!Array.isArray(entity) &&
+        entity.val === undefined &&
+        entity.def === undefined) {
+      return null;
     }
 
-    return format(this, args, entity, errors).toString();
+    const result = format(this, args, entity, errors);
+    return result instanceof FTLNone ? null : result;
   }
 
   _memoizeIntlObject(ctor, opts) {

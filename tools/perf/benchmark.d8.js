@@ -25,7 +25,7 @@ times.format = Date.now();
 for (let id of ctx.messages.keys()) {
   const message = ctx.messages.get(id);
 
-  ctx.formatToPrimitive(message, args, errors);
+  ctx.format(message, args, errors);
   if (message.traits) {
     for (let trait of message.traits) {
       ctx.format(trait.val, args, errors)

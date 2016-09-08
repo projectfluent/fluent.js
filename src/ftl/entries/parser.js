@@ -21,27 +21,7 @@ class ParseContext {
     this.getWS();
     while (this._index < this._length) {
       try {
-        const entry = this.getEntry();
-        if (!entry) {
-          this.getWS();
-          continue;
-        }
-
-        const id = entry.id;
-        entries[id] = {};
-
-        if (entry.traits !== null &&
-           entry.traits.length !== 0) {
-          entries[id].traits = entry.traits;
-          if (entry.value) {
-            entries[id].val = entry.value;
-          } else if (!entry.traits.some(t => t.def)) {
-            entries[id].val = null;
-          }
-        } else {
-          entries[id] = entry.value;
-        }
-        this._lastGoodEntryEnd = this._index;
+        this.getEntry(entries);
       } catch (e) {
         if (e instanceof L10nError) {
           errors.push(e);
@@ -56,27 +36,28 @@ class ParseContext {
     return [entries, errors];
   }
 
-  getEntry() {
+  getEntry(entries) {
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
       throw this.error('Expected new line and a new entry');
     }
 
-    if (this._source[this._index] === '#') {
+    const ch = this._source[this._index];
+
+    if (ch === '#') {
       this.getComment();
-      return null;
+      return;
     }
 
-    if (this._source[this._index] === '[') {
+    if (ch === '[') {
       this.getSection();
-      return null;
+      return;
     }
 
-    if (this._index < this._length &&
-        this._source[this._index] !== '\n') {
-      return this.getEntity();
+    if (ch !== '\n') {
+      this.getEntity(entries);
     }
-    return null;
+    return;
   }
 
   getSection() {
@@ -102,11 +83,8 @@ class ParseContext {
     return undefined;
   }
 
-  getEntity() {
+  getEntity(entries) {
     const id = this.getIdentifier();
-
-    let traits = null;
-    let value = null;
 
     this.getLineWS();
 
@@ -119,7 +97,7 @@ class ParseContext {
 
     this.getLineWS();
 
-    value = this.getPattern();
+    let val = this.getPattern();
 
     ch = this._source[this._index];
 
@@ -131,18 +109,19 @@ class ParseContext {
 
     if ((ch === '[' && this._source[this._index + 1] !== '[') ||
         ch === '*') {
-      traits = this.getMembers();
-    } else if (value === null) {
+
+      const members = this.getMembers();
+      entries[id] = {
+        traits: members[0],
+        def: members[1]
+      };
+    } else if (val === undefined) {
       throw this.error(
         'Expected a value (like: " = value") or a trait (like: "[key] value")'
       );
+    } else {
+      entries[id] = val;
     }
-
-    return {
-      id,
-      value,
-      traits
-    };
   }
 
   getWS() {
@@ -162,8 +141,6 @@ class ParseContext {
   }
 
   getIdentifier() {
-    let name = '';
-
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
@@ -171,7 +148,7 @@ class ParseContext {
         (cc >= 65 && cc <= 90) ||  // A-Z
         cc === 95) {               // _
       cc = this._source.charCodeAt(++this._index);
-    } else if (name.length === 0) {
+    } else {
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
@@ -182,9 +159,7 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    name += this._source.slice(start, this._index);
-
-    return name;
+    return this._source.slice(start, this._index);
   }
 
   getKeyword() {
@@ -234,22 +209,24 @@ class ParseContext {
       eol = this._length;
     }
 
-    const line = this._source.slice(start, eol);
+    const line = start !== eol ?
+      this._source.slice(start, eol) : undefined;
 
-    if (line.indexOf('{') !== -1) {
+    if (line !== undefined && line.includes('{')) {
       return this.getComplexPattern();
     }
 
     this._index = eol + 1;
 
-    this.getWS();
+    // ADD TO TESTS
+    this.getLineWS();
 
     if (this._source[this._index] === '|') {
       this._index = start;
       return this.getComplexPattern();
     }
 
-    return this._source.slice(start, eol);
+    return line;
   }
 
   /* eslint-disable complexity */
@@ -336,20 +313,15 @@ class ParseContext {
       throw this.error('Unclosed string');
     }
 
-    if (buffer.length) {
-      content.push(buffer);
-    }
-
     if (content.length === 0) {
       if (quoteDelimited !== null) {
-        return '';
+        return buffer.length ? buffer : '';
       }
-      return null;
+      return buffer.length ? buffer : undefined;
     }
 
-    if (content.length === 1 &&
-        typeof content[0] === 'string') {
-      return content[0];
+    if (buffer.length) {
+      content.push(buffer);
     }
 
     return content;
@@ -370,11 +342,11 @@ class ParseContext {
       } catch (e) {
         throw this.error(e.description, start);
       }
-      this.getWS();
-      if (this._source[this._index] === '}') {
+      const ch = this._source[this._index];
+      if (ch === '}') {
         this._index++;
         break;
-      } else if (this._source[this._index] === ',') {
+      } else if (ch === ',') {
         this._index++;
         this.getWS();
       } else {
@@ -387,14 +359,14 @@ class ParseContext {
 
   getPlaceableExpression() {
     const selector = this.getCallExpression();
-    let members = null;
+    let members;
 
     this.getWS();
 
-    if (this._source[this._index] !== '}' &&
-        this._source[this._index] !== ',') {
-      if (this._source[this._index] !== '-' ||
-          this._source[this._index + 1] !== '>') {
+    const ch = this._source[this._index];
+
+    if (ch !== '}' && ch !== ',') {
+      if (ch !== '-' || this._source[this._index + 1] !== '>') {
         throw this.error('Expected "}", "," or "->"');
       }
       this._index += 2; // ->
@@ -409,18 +381,19 @@ class ParseContext {
 
       members = this.getMembers();
 
-      if (members.length === 0) {
+      if (members[0].length === 0) {
         throw this.error('Expected members for the select expression');
       }
     }
 
-    if (members === null) {
+    if (members === undefined) {
       return selector;
     }
     return {
       type: 'sel',
       exp: selector,
-      vars: members
+      vars: members[0],
+      def: members[1]
     };
   }
 
@@ -557,17 +530,19 @@ class ParseContext {
 
   getMembers() {
     const members = [];
+    let index = 0;
+    let defaultIndex;
 
     while (this._index < this._length) {
-      if ((this._source[this._index] !== '[' ||
-           this._source[this._index + 1] === '[') &&
-          this._source[this._index] !== '*') {
+      const ch = this._source[this._index];
+
+      if ((ch !== '[' || this._source[this._index + 1] === '[') &&
+          ch !== '*') {
         break;
       }
-      let def = false;
-      if (this._source[this._index] === '*') {
+      if (ch === '*') {
         this._index++;
-        def = true;
+        defaultIndex = index;
       }
 
       if (this._source[this._index] !== '[') {
@@ -578,21 +553,16 @@ class ParseContext {
 
       this.getLineWS();
 
-      const value = this.getPattern();
-
       const member = {
         key,
-        val: value
+        val: this.getPattern()
       };
-      if (def) {
-        member.def = true;
-      }
-      members.push(member);
+      members[index++] = member;
 
       this.getWS();
     }
 
-    return members;
+    return [members, defaultIndex];
   }
 
   getMemberKey() {
