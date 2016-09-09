@@ -1,6 +1,7 @@
 function transformEntity(entity) {
   if (entity.traits.length === 0) {
-    return transformPattern(entity.value);
+    const val = transformPattern(entity.value);
+    return Array.isArray(val) ? { val } : val;
   }
 
   const [traits, def] = transformMembers(entity.traits);
