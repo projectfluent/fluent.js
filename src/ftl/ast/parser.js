@@ -217,7 +217,11 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
-    name += this._source.slice(start, this._index).trimRight();
+    while (this._source.charCodeAt(this._index - 1) === 32) {
+      this._index--;
+    }
+
+    name += this._source.slice(start, this._index);
 
     return new AST.Keyword(name, namespace);
   }
