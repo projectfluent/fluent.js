@@ -16,11 +16,11 @@ const observerConfig = {
 };
 
 /**
- * The `LocalizationObserver` class is responsible for localizing DOM trees.  
- * It also implements the iterable protocol which allows iterating over and 
+ * The `LocalizationObserver` class is responsible for localizing DOM trees.
+ * It also implements the iterable protocol which allows iterating over and
  * retrieving available `Localization` objects.
  *
- * Each `document` will have its corresponding `LocalizationObserver` instance 
+ * Each `document` will have its corresponding `LocalizationObserver` instance
  * created automatically on startup, as `document.l10n`.
  */
 export class LocalizationObserver {
@@ -40,7 +40,7 @@ export class LocalizationObserver {
   }
 
   /**
-   * Retrieve a reference to the `Localization` object associated with the name 
+   * Retrieve a reference to the `Localization` object associated with the name
    * `name`.  See [docs/localization] for `Localization`'s API reference.
 
    * ```javascript
@@ -67,7 +67,7 @@ export class LocalizationObserver {
   }
 
   /**
-   * Trigger the language negotation process with an array of `langCodes`.  
+   * Trigger the language negotation process with an array of `langCodes`.
    * Returns a promise with the negotiated array of language objects as above.
    *
    * ```javascript
@@ -88,13 +88,13 @@ export class LocalizationObserver {
   /**
    * Set the `data-l10n-id` and `data-l10n-args` attributes on DOM elements.
    * L20n makes use of mutation observers to detect changes to `data-l10n-*`
-   * attributes and translate elements asynchronously.  `setAttributes` is 
+   * attributes and translate elements asynchronously.  `setAttributes` is
    * a convenience method which allows to translate DOM elements declaratively.
    *
-   * You should always prefer to use `data-l10n-id` on elements (statically in 
-   * HTML or dynamically via `setAttributes`) over manually retrieving 
-   * translations with `format`.  The use of attributes ensures that the 
-   * elements can be retranslated when the user changes their language 
+   * You should always prefer to use `data-l10n-id` on elements (statically in
+   * HTML or dynamically via `setAttributes`) over manually retrieving
+   * translations with `format`.  The use of attributes ensures that the
+   * elements can be retranslated when the user changes their language
    * preferences.
    *
    * ```javascript
@@ -103,8 +103,8 @@ export class LocalizationObserver {
    * );
    * ```
    *
-   * This will set the following attributes on the `#welcome` element.  L20n's 
-   * MutationObserver will pick up this change and will localize the element 
+   * This will set the following attributes on the `#welcome` element.  L20n's
+   * MutationObserver will pick up this change and will localize the element
    * asynchronously.
    *
    * ```html
@@ -249,9 +249,9 @@ export class LocalizationObserver {
   /**
    * Translate a DOM node or fragment asynchronously.
    *
-   * You can manually trigger translation (or re-translation) of a DOM fragment 
-   * with `translateFragment`.  Use the `data-l10n-id` and `data-l10n-args` 
-   * attributes to mark up the DOM with information about which translations to 
+   * You can manually trigger translation (or re-translation) of a DOM fragment
+   * with `translateFragment`.  Use the `data-l10n-id` and `data-l10n-args`
+   * attributes to mark up the DOM with information about which translations to
    * use.
    *
    * @return {Promise}

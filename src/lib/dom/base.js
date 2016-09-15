@@ -5,16 +5,16 @@ export const properties = new WeakMap();
 export const contexts = new WeakMap();
 
 /**
- * The `Localization` class is responsible for fetching resources and 
+ * The `Localization` class is responsible for fetching resources and
  * formatting translations.
  *
- * l20n.js for HTML will create an instance of `Localization` for the default 
- * set of `<link rel="localization">` elements.  You can get a reference to it 
+ * l20n.js for HTML will create an instance of `Localization` for the default
+ * set of `<link rel="localization">` elements.  You can get a reference to it
  * via:
  *
  *     const localization = document.l10n.get('main');
  *
- * Different names can be specified via the `name` attribute on the `<link>` 
+ * Different names can be specified via the `name` attribute on the `<link>`
  * elements.
  */
 export class Localization {
@@ -26,8 +26,8 @@ export class Localization {
   constructor(requestBundles, createContext) {
 
     /**
-     * A Promise which resolves when the `Localization` instance has fetched 
-     * and parsed all localization resources in the user's first preferred 
+     * A Promise which resolves when the `Localization` instance has fetched
+     * and parsed all localization resources in the user's first preferred
      * language (if available).
      *
      * ```javascript
@@ -85,8 +85,8 @@ export class Localization {
   }
 
   /**
-   * A generalized version of `Localization.formatValue`.  Retrieve 
-   * translations corresponding to the passed keys.  Keys can either be simple 
+   * A generalized version of `Localization.formatValue`.  Retrieve
+   * translations corresponding to the passed keys.  Keys can either be simple
    * string identifiers or `[id, args]` arrays.
    *
    * Returns a Promise resolving to an array of the translation strings.
@@ -116,7 +116,7 @@ export class Localization {
   /**
    * Retrieve the translation corresponding to the `id` identifier.
    *
-   * If passed, `args` is a simple hash object with a list of variables that 
+   * If passed, `args` is a simple hash object with a list of variables that
    * will be interpolated in the value of the translation.
    *
    * Returns a Promise resolving to the translation string.
@@ -127,7 +127,7 @@ export class Localization {
    * // -> 'Hello, world!'
    * ```
    *
-   * Use this sparingly for one-off messages which don't need to be 
+   * Use this sparingly for one-off messages which don't need to be
    * retranslated when the user changes their language preferences.
    *
    * @returns {Promise}
