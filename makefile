@@ -8,7 +8,6 @@ all: lint build
 
 build: $(RUNTIMES)
 
-.PHONY: $(RUNTIMES)
 $(RUNTIMES):
 	@$(MAKE) -s -C $@
 	@echo -e " $(OK) $@ built"
@@ -30,5 +29,11 @@ test-lib:
 
 test-browser:
 	karma start test/karma.conf.js
+
+docs:
+	documentation build --shallow -f md \
+	    src/lib/**/*.js > docs/localization.md
+
+.PHONY: $(RUNTIMES) docs
 
 include tools/perf/makefile
