@@ -188,5 +188,8 @@
       "prefer-rest-params": 2,
       "no-cond-assign": 2
     }
+  },
+  "dependencies": {
+    "documentation": "^4.0.0-beta10"
   }
 }

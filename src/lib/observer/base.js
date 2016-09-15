@@ -15,7 +15,18 @@ const observerConfig = {
   attributeFilter: ['data-l10n-id', 'data-l10n-args', 'data-l10n-bundle']
 };
 
+/**
+ * The `LocalizationObserver` class is responsible for localizing DOM trees.  
+ * It also implements the iterable protocol which allows iterating over and 
+ * retrieving available `Localization` objects.
+ *
+ * Each `document` will have its corresponding `LocalizationObserver` instance 
+ * created automatically on startup, as `document.l10n`.
+ */
 export class LocalizationObserver {
+  /**
+   * @returns {LocalizationObserver}
+   */
   constructor() {
     this.localizations = new Map();
     this.roots = new WeakMap();
@@ -28,6 +39,17 @@ export class LocalizationObserver {
     return this.localizations.has(name);
   }
 
+  /**
+   * Retrieve a reference to the `Localization` object associated with the name 
+   * `name`.  See [docs/localization] for `Localization`'s API reference.
+
+   * ```javascript
+   * const mainLocalization = document.l10n.get('main');
+   * const extraLocalization = document.l10n.get('extra');
+   * ```
+   *
+   * @returns {Localization}
+   */
   get(name) {
     return this.localizations.get(name);
   }
@@ -44,6 +66,16 @@ export class LocalizationObserver {
     return this.requestLanguages();
   }
 
+  /**
+   * Trigger the language negotation process with an array of `langCodes`.  
+   * Returns a promise with the negotiated array of language objects as above.
+   *
+   * ```javascript
+   * document.l10n.requestLanguages(['de-DE', 'de', 'en-US']);
+   * ```
+   *
+   * @returns {Promise}
+   */
   requestLanguages(requestedLangs) {
     const localizations = Array.from(this.localizations.values());
     return Promise.all(
@@ -53,6 +85,35 @@ export class LocalizationObserver {
     )
   }
 
+  /**
+   * Set the `data-l10n-id` and `data-l10n-args` attributes on DOM elements.
+   * L20n makes use of mutation observers to detect changes to `data-l10n-*`
+   * attributes and translate elements asynchronously.  `setAttributes` is 
+   * a convenience method which allows to translate DOM elements declaratively.
+   *
+   * You should always prefer to use `data-l10n-id` on elements (statically in 
+   * HTML or dynamically via `setAttributes`) over manually retrieving 
+   * translations with `format`.  The use of attributes ensures that the 
+   * elements can be retranslated when the user changes their language 
+   * preferences.
+   *
+   * ```javascript
+   * document.l10n.setAttributes(
+   *   document.querySelector('#welcome'), 'hello', { who: 'world' }
+   * );
+   * ```
+   *
+   * This will set the following attributes on the `#welcome` element.  L20n's 
+   * MutationObserver will pick up this change and will localize the element 
+   * asynchronously.
+   *
+   * ```html
+   * <p id='welcome'
+   *   data-l10n-id='hello'
+   *   data-l10n-args='{"who": "world"}'>
+   * </p>
+   * ```
+   */
   setAttributes(element, id, args) {
     element.setAttribute('data-l10n-id', id);
     if (args) {
@@ -61,6 +122,18 @@ export class LocalizationObserver {
     return element;
   }
 
+  /**
+   * Get the `data-l10n-*` attributes from DOM elements.
+   *
+   * ```javascript
+   * document.l10n.getAttributes(
+   *   document.querySelector('#welcome')
+   * );
+   * // -> { id: 'hello', args: { who: 'world' } }
+   * ```
+   *
+   * @returns {{id: string, args: Object}}
+   */
   getAttributes(element) {
     return {
       id: element.getAttribute('data-l10n-id'),
@@ -173,6 +246,16 @@ export class LocalizationObserver {
     }
   }
 
+  /**
+   * Translate a DOM node or fragment asynchronously.
+   *
+   * You can manually trigger translation (or re-translation) of a DOM fragment 
+   * with `translateFragment`.  Use the `data-l10n-id` and `data-l10n-args` 
+   * attributes to mark up the DOM with information about which translations to 
+   * use.
+   *
+   * @return {Promise}
+   */
   translateFragment(frag) {
     return Promise.all(
       this.groupTranslatablesByLocalization(frag).map(
