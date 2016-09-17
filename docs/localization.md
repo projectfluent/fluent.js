@@ -2,16 +2,16 @@
 
 # Localization
 
-The `Localization` class is responsible for fetching resources and 
+The `Localization` class is responsible for fetching resources and
 formatting translations.
 
-l20n.js for HTML will create an instance of `Localization` for the default 
-set of `<link rel="localization">` elements.  You can get a reference to it 
+l20n.js for HTML will create an instance of `Localization` for the default
+set of `<link rel="localization">` elements.  You can get a reference to it
 via:
 
     const localization = document.l10n.get('main');
 
-Different names can be specified via the `name` attribute on the `<link>` 
+Different names can be specified via the `name` attribute on the `<link>`
 elements.
 
 ## constructor
@@ -25,8 +25,8 @@ Returns **[Localization](#localization)**
 
 ## formatValues
 
-A generalized version of `Localization.formatValue`.  Retrieve 
-translations corresponding to the passed keys.  Keys can either be simple 
+A generalized version of `Localization.formatValue`.  Retrieve
+translations corresponding to the passed keys.  Keys can either be simple
 string identifiers or `[id, args]` arrays.
 
 Returns a Promise resolving to an array of the translation strings.
@@ -52,7 +52,7 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 Retrieve the translation corresponding to the `id` identifier.
 
-If passed, `args` is a simple hash object with a list of variables that 
+If passed, `args` is a simple hash object with a list of variables that
 will be interpolated in the value of the translation.
 
 Returns a Promise resolving to the translation string.
@@ -63,7 +63,7 @@ localization.formatValue('hello', { who: 'world' }).then(
 // -> 'Hello, world!'
 ```
 
-Use this sparingly for one-off messages which don't need to be 
+Use this sparingly for one-off messages which don't need to be
 retranslated when the user changes their language preferences.
 
 **Parameters**
@@ -75,11 +75,11 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # LocalizationObserver
 
-The `LocalizationObserver` class is responsible for localizing DOM trees.  
-It also implements the iterable protocol which allows iterating over and 
+The `LocalizationObserver` class is responsible for localizing DOM trees.
+It also implements the iterable protocol which allows iterating over and
 retrieving available `Localization` objects.
 
-Each `document` will have its corresponding `LocalizationObserver` instance 
+Each `document` will have its corresponding `LocalizationObserver` instance
 created automatically on startup, as `document.l10n`.
 
 ## constructor
@@ -88,7 +88,7 @@ Returns **[LocalizationObserver](#localizationobserver)**
 
 ## get
 
-Retrieve a reference to the `Localization` object associated with the name 
+Retrieve a reference to the `Localization` object associated with the name
 `name`.  See [docs/localization] for `Localization`'s API reference.
 
 ```javascript
@@ -104,7 +104,7 @@ Returns **[Localization](#localization)**
 
 ## requestLanguages
 
-Trigger the language negotation process with an array of `langCodes`.  
+Trigger the language negotation process with an array of `langCodes`.
 Returns a promise with the negotiated array of language objects as above.
 
 ```javascript
@@ -121,13 +121,13 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 Set the `data-l10n-id` and `data-l10n-args` attributes on DOM elements.
 L20n makes use of mutation observers to detect changes to `data-l10n-*`
-attributes and translate elements asynchronously.  `setAttributes` is 
+attributes and translate elements asynchronously.  `setAttributes` is
 a convenience method which allows to translate DOM elements declaratively.
 
-You should always prefer to use `data-l10n-id` on elements (statically in 
-HTML or dynamically via `setAttributes`) over manually retrieving 
-translations with `format`.  The use of attributes ensures that the 
-elements can be retranslated when the user changes their language 
+You should always prefer to use `data-l10n-id` on elements (statically in
+HTML or dynamically via `setAttributes`) over manually retrieving
+translations with `format`.  The use of attributes ensures that the
+elements can be retranslated when the user changes their language
 preferences.
 
 ```javascript
@@ -136,8 +136,8 @@ document.l10n.setAttributes(
 );
 ```
 
-This will set the following attributes on the `#welcome` element.  L20n's 
-MutationObserver will pick up this change and will localize the element 
+This will set the following attributes on the `#welcome` element.  L20n's
+MutationObserver will pick up this change and will localize the element
 asynchronously.
 
 ```html
@@ -174,9 +174,9 @@ Returns **{id: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/
 
 Translate a DOM node or fragment asynchronously.
 
-You can manually trigger translation (or re-translation) of a DOM fragment 
-with `translateFragment`.  Use the `data-l10n-id` and `data-l10n-args` 
-attributes to mark up the DOM with information about which translations to 
+You can manually trigger translation (or re-translation) of a DOM fragment
+with `translateFragment`.  Use the `data-l10n-id` and `data-l10n-args`
+attributes to mark up the DOM with information about which translations to
 use.
 
 **Parameters**
@@ -187,8 +187,8 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # interactive
 
-A Promise which resolves when the `Localization` instance has fetched 
-and parsed all localization resources in the user's first preferred 
+A Promise which resolves when the `Localization` instance has fetched
+and parsed all localization resources in the user's first preferred
 language (if available).
 
 ```javascript

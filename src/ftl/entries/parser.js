@@ -4,17 +4,32 @@ import { L10nError } from '../../lib/errors';
 
 const MAX_PLACEABLES = 100;
 
-
-class ParseContext {
-  constructor(string) {
+/**
+ * The `Parser` class is responsible for parsing FTL resources.
+ *
+ * It's only public method is `getResource(source)` which takes an FTL
+ * string and returns a two element Array with an Object of entries
+ * generated from the source as the first element and an array of L10nError
+ * objects as the second.
+ *
+ * This parser is optimized for runtime performance.
+ *
+ * There is an equivalent of this parser in ftl/ast/parser which is
+ * generating full AST which is useful for FTL tools.
+ */
+class EntriesParser {
+  /**
+   * @param {string} string
+   * @returns {{}, []]}
+   */
+  getResource(string) {
     this._source = string;
     this._index = 0;
     this._length = string.length;
 
+    // This variable is used for error recovery and reporting.
     this._lastGoodEntryEnd = 0;
-  }
 
-  getResource() {
     const entries = {};
     const errors = [];
 
@@ -37,6 +52,8 @@ class ParseContext {
   }
 
   getEntry(entries) {
+    // The pointer here should either be at the beginning of the file
+    // or right after new line.
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
       throw this.error('Expected new line and a new entry');
@@ -44,6 +61,7 @@ class ParseContext {
 
     const ch = this._source[this._index];
 
+    // We don't care about comments or sections at runtime
     if (ch === '#') {
       this.getComment();
       return;
@@ -93,7 +111,8 @@ class ParseContext {
     if (ch !== '=') {
       throw this.error('Expected "=" after Entity ID');
     }
-    ch = this._source[++this._index];
+
+    this._index++;
 
     this.getLineWS();
 
@@ -101,6 +120,8 @@ class ParseContext {
 
     ch = this._source[this._index];
 
+    // In the scenario when the pattern is quote-delimited
+    // the pattern ends with the closing quote.
     if (ch === '\n') {
       this._index++;
       this.getLineWS();
@@ -172,6 +193,23 @@ class ParseContext {
     let name = '';
     let namespace = this.getIdentifier();
 
+    // If the first character after identifier string is '/', it means
+    // that what we collected so far is actually a namespace.
+    //
+    // But if it is not '/', that means that what we collected so far
+    // is just the beginning of the keyword and we should continue collecting
+    // it.
+    // In that scenario, we're going to move charcters collected so far
+    // from namespace variable to name variable and set namespace to null.
+    //
+    // For example, if the keyword is "Foo bar", at this point we only
+    // collected "Foo", the index character is not "/", so we're going
+    // to move on and see if the next character is allowed in the name.
+    //
+    // Because it's a space, it is and we'll continue collecting the name.
+    //
+    // In case the keyword is "Foo/bar", we're going to keep what we collected
+    // so far as `namespace`, bump the index and start collecting the name.
     if (this._source[this._index] === '/') {
       this._index++;
     } else if (namespace) {
@@ -197,6 +235,10 @@ class ParseContext {
       cc = this._source.charCodeAt(++this._index);
     }
 
+    // If we encountered the end of name, we want to test is the last
+    // collected character is a space.
+    // If it is, we will backtrack to the last non-space character because
+    // the keyword cannot end with a space character.
     while (this._source.charCodeAt(this._index - 1) === 32) {
       this._index--;
     }
@@ -208,6 +250,12 @@ class ParseContext {
       { type: 'kw', name };
   }
 
+  // We're going to first try to see if the pattern is simple.
+  // If it is a simple, not quote-delimited string,
+  // we can just look for the end of the line and read the string.
+  //
+  // Then, if either the line contains a placeable opening `{` or the
+  // next line starts with a pipe `|`, we switch to complex pattern.
   getPattern() {
     const start = this._index;
     if (this._source[start] === '"') {
@@ -228,7 +276,6 @@ class ParseContext {
 
     this._index = eol + 1;
 
-    // ADD TO TESTS
     this.getLineWS();
 
     if (this._source[this._index] === '|') {
@@ -244,12 +291,17 @@ class ParseContext {
     let buffer = '';
     const content = [];
     let placeables = 0;
+
+    // We actually use all three possible states of this variable:
+    // true and false indicate if we're within a quote-delimited string
+    // null indicates that the string is not quote-delimited
     let quoteDelimited = null;
     let firstLine = true;
 
     let ch = this._source[this._index];
 
-
+    // If the string starts with \", \{ or \\ skip the first `\` and add the
+    // following character to the buffer without interpreting it.
     if (ch === '\\' &&
       (this._source[this._index + 1] === '"' ||
        this._source[this._index + 1] === '{' ||
@@ -258,12 +310,16 @@ class ParseContext {
       this._index += 2;
       ch = this._source[this._index];
     } else if (ch === '"') {
+      // If the first character of the string is `"`, mark the string
+      // as quote delimited.
       quoteDelimited = true;
       this._index++;
       ch = this._source[this._index];
     }
 
     while (this._index < this._length) {
+      // This block handles multi-line strings combining strings seaprated
+      // by new line and `|` character at the beginning of the next one.
       if (ch === '\n') {
         if (quoteDelimited) {
           throw this.error('Unclosed string');
@@ -287,6 +343,8 @@ class ParseContext {
         ch = this._source[this._index];
         continue;
       } else if (ch === '\\') {
+        // We only handle `{` as a character that can be escaped in a string
+        // and `"` if the string is quote delimited.
         const ch2 = this._source[this._index + 1];
         if ((quoteDelimited && ch2 === '"') ||
             ch2 === '{') {
@@ -298,6 +356,7 @@ class ParseContext {
         quoteDelimited = false;
         break;
       } else if (ch === '{') {
+        // Push the buffer to content array right before placeable
         if (buffer.length) {
           content.push(buffer);
         }
@@ -375,6 +434,8 @@ class ParseContext {
 
     const ch = this._source[this._index];
 
+    // If the expression is followed by `->` we're going to collect
+    // its members and return it as a select expression.
     if (ch !== '}' && ch !== ',') {
       if (ch !== '-' || this._source[this._index + 1] !== '>') {
         throw this.error('Expected "}", "," or "->"');
@@ -443,6 +504,8 @@ class ParseContext {
 
       const exp = this.getCallExpression();
 
+      // EntityReference in this place may be an entity reference, like:
+      // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
       if (exp.type !== 'ref' ||
          exp.namespace !== undefined) {
         args.push(exp);
@@ -455,17 +518,27 @@ class ParseContext {
 
           const val = this.getCallExpression();
 
-          if (val.type === 'ref' ||
-              val.type === 'member') {
-            this._index = this._source.lastIndexOf('=', this._index) + 1;
-            throw this.error('Expected string in quotes');
+          // If the expression returned as a value of the argument
+          // is not a quote delimited string, number or
+          // external argument, throw an error.
+          //
+          // We don't have to check here if the pattern is quote delimited
+          // because that's the only type of string allowed in expressions.
+          if (typeof val === 'string' ||
+              Array.isArray(val) ||
+              val.type === 'num' ||
+              val.type === 'ext') {
+            args.push({
+              type: 'kv',
+              name: exp.name,
+              val
+            });
+          } else {
+            this._index = this._source.lastIndexOf(':', this._index) + 1;
+            throw this.error(
+              'Expected string in quotes, number or external argument');
           }
 
-          args.push({
-            type: 'kv',
-            name: exp.name,
-            val
-          });
         } else {
           args.push(exp);
         }
@@ -489,28 +562,34 @@ class ParseContext {
     let num = '';
     let cc = this._source.charCodeAt(this._index);
 
+    // The number literal may start with negative sign `-`.
     if (cc === 45) {
       num += '-';
       cc = this._source.charCodeAt(++this._index);
     }
 
+    // next, we expect at least one digit
     if (cc < 48 || cc > 57) {
       throw this.error(`Unknown literal "${num}"`);
     }
 
+    // followed by potentially more digits
     while (cc >= 48 && cc <= 57) {
       num += this._source[this._index++];
       cc = this._source.charCodeAt(this._index);
     }
 
+    // followed by an optional decimal separator `.`
     if (cc === 46) {
       num += this._source[this._index++];
       cc = this._source.charCodeAt(this._index);
 
+      // followed by at least one digit
       if (cc < 48 || cc > 57) {
         throw this.error(`Unknown literal "${num}"`);
       }
 
+      // and optionally more digits
       while (cc >= 48 && cc <= 57) {
         num += this._source[this._index++];
         cc = this._source.charCodeAt(this._index);
@@ -526,7 +605,10 @@ class ParseContext {
   getMemberExpression() {
     let exp = this.getLiteral();
 
-    while (this._source[this._index] === '[') {
+    // the obj element of the member expression
+    // must be either an entity reference or another member expression.
+    while (['ref', 'mem'].includes(exp.type) &&
+      this._source[this._index] === '[') {
       const keyword = this.getMemberKey();
       exp = {
         type: 'mem',
@@ -575,6 +657,7 @@ class ParseContext {
     return [members, defaultIndex];
   }
 
+  // MemberKey may be a Keyword or Number
   getMemberKey() {
     this._index++;
 
@@ -615,6 +698,8 @@ class ParseContext {
     };
   }
 
+  // At runtime, we don't care about comments so we just have
+  // to parse them properly and skip their content.
   getComment() {
     let eol = this._source.indexOf('\n', this._index);
 
@@ -727,7 +812,7 @@ class ParseContext {
 
 export default {
   parseResource: function(string) {
-    const parseContext = new ParseContext(string);
-    return parseContext.getResource();
+    const parser = new EntriesParser();
+    return parser.getResource(string);
   },
 };
