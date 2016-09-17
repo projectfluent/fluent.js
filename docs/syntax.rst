@@ -48,9 +48,9 @@ Working With Text: Multiline, Quote Delimited Strings
 FTL entities mostly store string values. A string is a sequence of characters 
 that you can assign to an entity, store, and retrieve.
 
-By default, a string begins after a code character like = and ends with the end 
-of line.  You can also define easy-to-read, multiline strings with a pipe 
-operator, as can be seen in the ``description`` entity.
+By default, a string begins after a ``=`` and ends with the end of line.  You 
+can also define easy-to-read, multiline strings with a pipe operator, as can be 
+seen in the ``description`` entity.
 
 In almost all cases, leading and trailing spaces are not meaningful and will be 
 ignored allowing you to align the string id and values in a resource file for 
@@ -76,10 +76,8 @@ Interpolation and External Arguments
 
 In FTL strings may use special syntax to incorporate small pieces of 
 programmable interface. Those pieces are denoted with curly braces ``{`` and 
-``}`` and are called placeables.
-
-The most common use case for a placeable is to put an external argument, 
-provided by the developer, into the string.
+``}`` and are called placeables.  The most common use case for a placeable is 
+to put an external argument, provided by the developer, into the string.
 
 There are all kinds of external data that might be useful in providing a good 
 localization: user names, number of unread messages, battery level, current 
@@ -109,20 +107,20 @@ Builtins
     }
 
 In some rare cases the data provided by the developer will require some 
-additional formatting before it can be placed into the string.
-
-FTL provides a list of built-in functions that can help with common operations 
-on the external arguments.
+additional formatting before it can be placed into the string.  FTL provides 
+a list of built-in functions that can help with common operations on the 
+external arguments.
 
 By default, FTL can guess which formatter to run on each kind of argument: 
 ``DATE``, ``NUMBER``, ``LIST`` etc., but you can also call the builtin 
 explicitly.
 
-Explicit calls are useful because they allow you to pass additional formatting 
-options that may help make the formatted string look better in the given 
-language. Examples may be defining month as ``short`` or ``long`` in the 
-``DATE`` formatter (using arguments defined in ``Intl.DateTimeFormat``) or 
-whether to use grouping separator when displaying a large number.
+Explicit calls are useful because they allow you to pass 
+additional formatting options that may help make the formatted string look 
+better in the given language. Examples may be defining month as ``short`` or 
+``long`` in the ``DATE`` formatter (using arguments defined in 
+``Intl.DateTimeFormat``) or whether to use grouping separator when displaying 
+a large number.
 
 
 Entity References
@@ -138,11 +136,9 @@ Entity References
 
 Sometimes it may be useful to reference one entity from another. This generally 
 helps to keep certain translations consistent across the interface and makes 
-maintenance easier.
-
-It is also particularly handy for keeping branding separated from the rest of 
-the translations, so that it can be changed easily when needed, e.g. during the 
-build process of the application.
+maintenance easier.  It is also particularly handy for keeping branding 
+separated from the rest of the translations, so that it can be changed easily 
+when needed, e.g. during the build process of the application.
 
 In l20n you can use the same ``{`` and ``}`` syntax to interpolate other 
 entities by their identifier.
@@ -239,14 +235,12 @@ a way to easily refer to a particular variant of the value from another entity.
 Instead, FTL lets you define traits, which are variants of the whole value that 
 can be externally referred to using the ``key[trait]`` syntax.
 
-For instance in many inflected languages (e.g. German, Finnish, Hungarian, all 
-Slavic languages), the about preposition governs the grammatical case of the 
+For instance, in many inflected languages (e.g. German, Finnish, Hungarian, all 
+Slavic languages), the *about* preposition governs the grammatical case of the 
 complement. It might be the accusative (German), ablative (Latin) or locative 
-(Slavic languages).
-
-In Slovenian, the ideal string would inflect the noun, like so: *O Aurori*.  
-However, since we want the name of the browser to be stored in the 
-``brand-name`` entity, we can't modify it.
+(Slavic languages).  In Slovenian, the ideal string would inflect the noun, 
+like so: *O Aurori*.  However, since we want the name of the browser to be 
+stored in the ``brand-name`` entity, we can't modify it.
 
 The work-around is to inflect an auxiliary noun complement, e.g. browser, to 
 give *About the Aurora browser*. Needless to say, this ends up being long and 
