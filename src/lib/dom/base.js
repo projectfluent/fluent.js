@@ -52,6 +52,13 @@ export class Localization {
    * @returns {Localization}
    */
   constructor(requestBundles, createContext) {
+    const createHeadContext =
+      bundles => createHeadContextWith(createContext, bundles)
+
+    // Keep `requestBundles` and `createHeadContext` private.
+    properties.set(this, {
+      requestBundles, createHeadContext
+    });
 
     /**
      * A Promise which resolves when the `Localization` instance has fetched
@@ -62,16 +69,11 @@ export class Localization {
      */
     this.interactive = requestBundles().then(
       // Create a `MessageContext` for the first bundle right away.
-      bundles => createHeadContext(bundles, createContext).then(
+      bundles => createHeadContext(bundles).then(
         // Force `this.interactive` to resolve to the list of bundles.
         () => bundles
       )
     );
-
-    // Keep `requestBundles` and `createContext` private.
-    properties.set(this, {
-      requestBundles, createContext
-    });
   }
 
   /**
@@ -84,7 +86,7 @@ export class Localization {
    * @returns {Promise}
    */
   requestLanguages(requestedLangs) {
-    const { requestBundles, createContext } = properties.get(this);
+    const { requestBundles, createHeadContext } = properties.get(this);
 
     // Assign to `this.interactive` to make all translations requested after
     // the language change request come from the new fallback chain.
@@ -97,7 +99,7 @@ export class Localization {
         return oldBundles;
       }
 
-      return createHeadContext(newBundles, createContext).then(
+      return createHeadContext(newBundles).then(
         () => newBundles
       )
     });
@@ -153,9 +155,9 @@ export class Localization {
     // At this point we need to fetch the next bundle in the fallback chain and
     // create a `MessageContext` instance for it.
     const tailBundles = bundles.slice(1);
-    const { createContext } = properties.get(this);
+    const { createHeadContext } = properties.get(this);
 
-    return createHeadContext(tailBundles, createContext).then(
+    return createHeadContext(tailBundles).then(
       next => this.formatWithFallback(
         tailBundles, next, keys, method, current
       )
@@ -265,7 +267,7 @@ export class Localization {
  * @returns {Promise}
  * @api     private
  */
-function createHeadContext(bundles, createContext) {
+function createHeadContextWith(createContext, bundles) {
   const [bundle] = bundles;
 
   if (!bundle) {
