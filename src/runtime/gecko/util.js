@@ -1,4 +1,4 @@
-import { properties, contexts, fetchFirstBundle } from '../../lib/dom/base';
+import { contexts } from '../../lib/dom/base';
 import { valueFromContext } from '../../lib/format';
 
 export {
@@ -31,10 +31,7 @@ export function createObserve(obs) {
   return function observe(subject, topic, data) {
     switch (topic) {
       case 'language-registry-update': {
-        const { requestBundles, createContext } = properties.get(this);
-        this.interactive = requestBundles().then(
-          bundles => fetchFirstBundle(bundles, createContext)
-        );
+        this.requestLanguages();
         return obs.translateRoots(this);
       }
       case 'language-registry-incremental': {

@@ -61,7 +61,11 @@ export class Localization {
      *     localization.interactive.then(callback);
      */
     this.interactive = requestBundles().then(
-      bundles => fetchFirstBundle(bundles, createContext)
+      // Create a `MessageContext` for the first bundle right away.
+      bundles => createHeadContext(bundles, createContext).then(
+        // Force `this.interactive` to resolve to the list of bundles.
+        () => bundles
+      )
     );
 
     // Keep `requestBundles` and `createContext` private.
@@ -82,13 +86,20 @@ export class Localization {
   requestLanguages(requestedLangs) {
     const { requestBundles, createContext } = properties.get(this);
 
-    // Get the current bundles to be able to compare them to the new result of
-    // the language negotiation.
-    return this.interactive = this.interactive.then(oldBundles => {
-      return requestBundles(requestedLangs).then(
-        newBundles => equal(oldBundles, newBundles) ?
-          oldBundles : fetchFirstBundle(newBundles, createContext)
-      );
+    // Assign to `this.interactive` to make all translations requested after
+    // the language change request come from the new fallback chain.
+    return this.interactive = Promise.all(
+      // Get the current bundles to be able to compare them to the new result
+      // of the language negotiation.
+      [this.interactive, requestBundles(requestedLangs)]
+    ).then(([oldBundles, newBundles]) => {
+      if (equal(oldBundles, newBundles)) {
+        return oldBundles;
+      }
+
+      return createHeadContext(newBundles, createContext).then(
+        () => newBundles
+      )
     });
   }
 
@@ -107,9 +118,7 @@ export class Localization {
    * @returns {string[] | Promise}
    * @api     private
    */
-  formatWithFallback(bundles, keys, method, prev) {
-    const ctx = contexts.get(bundles[0]);
-
+  formatWithFallback(bundles, ctx, keys, method, prev) {
     // If a context for the head bundle doesn't exist we've reached the last
     // bundle in the fallback chain.  This is the end condition which returns
     // the translations formatted during the previous (recursive) calls to
@@ -141,13 +150,14 @@ export class Localization {
       );
     }
 
-    const { createContext } = properties.get(this);
-
     // At this point we need to fetch the next bundle in the fallback chain and
     // create a `MessageContext` instance for it.
-    return fetchFirstBundle(bundles.slice(1), createContext).then(
-      tailBundles => this.formatWithFallback(
-        tailBundles, keys, method, current
+    const tailBundles = bundles.slice(1);
+    const { createContext } = properties.get(this);
+
+    return createHeadContext(tailBundles, createContext).then(
+      next => this.formatWithFallback(
+        tailBundles, next, keys, method, current
       )
     );
   }
@@ -178,7 +188,9 @@ export class Localization {
    */
   formatEntities(keys) {
     return this.interactive.then(
-      bundles => this.formatWithFallback(bundles, keys, entityFromContext)
+      bundles => this.formatWithFallback(
+        bundles, contexts.get(bundles[0]), keys, entityFromContext
+      )
     );
   }
 
@@ -207,7 +219,9 @@ export class Localization {
       key => Array.isArray(key) ? key : [key, null]
     );
     return this.interactive.then(
-      bundles => this.formatWithFallback(bundles, keyTuples, valueFromContext)
+      bundles => this.formatWithFallback(
+        bundles, contexts.get(bundles[0]), keyTuples, valueFromContext
+      )
     );
   }
 
@@ -242,16 +256,22 @@ export class Localization {
 }
 
 /**
- * Given a `ResourceBundle`, create an instance of `MessageContext`.
+ * Create a `MessageContext` for the first bundle in the fallback chain.
  *
  * Fetches the bundle's resources and creates a context from them.
  *
- * @param   {ResourceBundle}  bundle
- * @param   {function}        createContext
+ * @param   {ResourceBundle[]}  bundle
+ * @param   {function}          createContext
  * @returns {Promise}
  * @api     private
  */
-function createContextFromBundle(bundle, createContext) {
+function createHeadContext(bundles, createContext) {
+  const [bundle] = bundles;
+
+  if (!bundle) {
+    return Promise.resolve(null);
+  }
+
   return bundle.fetch().then(resources => {
     const ctx = createContext(bundle.lang);
     resources
@@ -262,26 +282,6 @@ function createContextFromBundle(bundle, createContext) {
     contexts.set(bundle, ctx);
     return ctx;
   });
-}
-
-/**
- * Create a `MessageContext` for the first bundle in the fallback chain.
- *
- * @param   {ResourceBundle[]}  bundle
- * @param   {function}          createContext
- * @returns {Promise}
- * @api     private
- */
-export function fetchFirstBundle(bundles, createContext) {
-  const [bundle] = bundles;
-
-  if (!bundle) {
-    return Promise.resolve(bundles);
-  }
-
-  return createContextFromBundle(bundle, createContext).then(
-    () => bundles
-  );
 }
 
 /**
