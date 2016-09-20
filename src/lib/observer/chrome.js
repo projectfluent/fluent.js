@@ -9,6 +9,12 @@ function markEnd() {
   );
 }
 
+/**
+ * The `ChromeLocalizationObserver` is an extension of a `LocalizationObserver`
+ * class which additionally collects all XBL binding nodes for translation.
+ *
+ * This API is useful for chrome-privileged HTML and XUL in Gecko.
+ */
 export class ChromeLocalizationObserver extends LocalizationObserver {
   translateRootContent(root) {
     performance.mark('l20n: start translateRootContent');

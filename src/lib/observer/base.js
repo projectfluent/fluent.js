@@ -35,6 +35,18 @@ export class LocalizationObserver {
     );
   }
 
+  /**
+   * Test if the `Localization` object with a given name is already bind.
+   * See [docs/localization] for `Localization`'s API reference.'
+   *
+   * ```javascript
+   * if (document.l10n.has('extra')) {
+   *   const extraLocalization = document.l10n.get('extra');
+   * }
+   * ```
+   * @param   {String} name - key for the object
+   * @returns {Bool}
+   */
   has(name) {
     return this.localizations.has(name);
   }
@@ -48,14 +60,29 @@ export class LocalizationObserver {
    * const extraLocalization = document.l10n.get('extra');
    * ```
    *
+   * @param   {String}        name - key for the object
    * @returns {Localization}
    */
   get(name) {
     return this.localizations.get(name);
   }
 
+  /**
+   * Sets a reference to the `Localization` object associated with the name
+   * `name`.  See [docs/localization] for `Localization`'s API reference.
+
+   * ```javascript
+   * const loc = new Localization();
+   * document.l10n.set('extra', loc);
+   * ```
+   *
+   * @param   {String}       name - key for the object
+   * @param   {Localization} value - `Localization` object
+   * @returns {LocalizationObserver}
+   */
   set(name, value) {
-    return this.localizations.set(name, value);
+    this.localizations.set(name, value);
+    return this;
   }
 
   *[Symbol.iterator]() {
@@ -74,7 +101,8 @@ export class LocalizationObserver {
    * document.l10n.requestLanguages(['de-DE', 'de', 'en-US']);
    * ```
    *
-   * @returns {Promise}
+   * @param   {String[]}          requestedLangs - array of requested languages
+   * @returns {Promise<String[]>}
    */
   requestLanguages(requestedLangs) {
     const localizations = Array.from(this.localizations.values());
@@ -112,6 +140,10 @@ export class LocalizationObserver {
    *   data-l10n-id='hello'
    *   data-l10n-args='{"who": "world"}'>
    * </p>
+   *
+   * @param {HTMLElement}             element - Element to set attributes on
+   * @param {String}                  id      - l10n-id string
+   * @param {Object<String,  String>} args    - KVP list of l10n arguments
    * ```
    */
   setAttributes(element, id, args) {
@@ -132,6 +164,7 @@ export class LocalizationObserver {
    * // -> { id: 'hello', args: { who: 'world' } }
    * ```
    *
+   * @param {HTMLElement}  element - HTML element
    * @returns {{id: string, args: Object}}
    */
   getAttributes(element) {
@@ -141,6 +174,12 @@ export class LocalizationObserver {
     };
   }
 
+  /**
+   * Add a new root to the list of observed ones.
+   *
+   * @param {HTMLElement}  root - Root element
+   * @param {Localization} l10n - `Localization` object
+   */
   observeRoot(root, l10n = this.get('main')) {
     if (!this.roots.has(l10n)) {
       this.roots.set(l10n, new Set());
@@ -149,6 +188,16 @@ export class LocalizationObserver {
     this.observer.observe(root, observerConfig);
   }
 
+  /**
+   * Remove a root from the list of observed ones.
+   * If the root is the last to be associated with a given `Localization` object
+   * the `Localization` object association will also be removed.
+   *
+   * Returns `true` if the root was the last one associated with at least
+   * one `Localization` object.
+   *
+   * @param {HTMLElement} root - Root element
+   * @returns {Bool}
   disconnectRoot(root) {
     let wasLast = false;
 
@@ -169,10 +218,16 @@ export class LocalizationObserver {
     return wasLast;
   }
 
+  /**
+   * Pauses the `MutationObserver`
+   */
   pause() {
     this.observer.disconnect();
   }
 
+  /**
+   * Resumes the `MutationObserver`
+   */
   resume() {
     for (const l10n of this.localizations.values()) {
       if (this.roots.has(l10n)) {
@@ -183,6 +238,15 @@ export class LocalizationObserver {
     }
   }
 
+  /**
+   * Triggers translation of all roots associated with the
+   * `LocalizationObserver`.
+   *
+   * Returns a `Promise` which is resolved once all translations are
+   * completed.
+   *
+   * @returns {Promise}
+   */
   translateAllRoots() {
     const localizations = Array.from(this.localizations.values());
     return Promise.all(
@@ -254,7 +318,10 @@ export class LocalizationObserver {
    * attributes to mark up the DOM with information about which translations to
    * use.
    *
-   * @return {Promise}
+   * Returns a `Promise` that gets resolved once the translation is complete.
+   *
+   * @param  {DOMFragment} frag - DOMFragment to be translated
+   * @returns {Promise}
    */
   translateFragment(frag) {
     return Promise.all(
@@ -277,6 +344,14 @@ export class LocalizationObserver {
     );
   }
 
+  /**
+   * Translates a single DOM node asynchronously.
+   *
+   * Returns a `Promise` that gets resolved once the translation is complete.
+   *
+   * @param  {HTMLElement} element - HTML element to be translated
+   * @returns {Promise}
+   */
   translateElement(element) {
     const l10n = this.get(element.getAttribute('data-l10n-bundle') || 'main');
     return l10n.formatEntities([this.getKeysForElement(element)]).then(
