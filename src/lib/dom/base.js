@@ -80,11 +80,16 @@ export class Localization {
    * @returns {Promise}
    */
   requestLanguages(requestedLangs) {
+    const { requestBundles, createContext } = properties.get(this);
+
     // Get the current bundles to be able to compare them to the new result of
     // the language negotiation.
-    return this.interactive.then(
-      bundles => changeLanguages(this, bundles, requestedLangs)
-    );
+    return this.interactive = this.interactive.then(oldBundles => {
+      return requestBundles(requestedLangs).then(
+        newBundles => equal(oldBundles, newBundles) ?
+          oldBundles : fetchFirstBundle(newBundles, createContext)
+      );
+    });
   }
 
   /**
@@ -280,23 +285,8 @@ export function fetchFirstBundle(bundles, createContext) {
 }
 
 /**
- * Perform language negotiation.
  *
- * @returns {Promise}
- * @api     private
- */
-function changeLanguages(l10n, oldBundles, requestedLangs) {
-  const { requestBundles, createContext } = properties.get(l10n);
-
-  return l10n.interactive = requestBundles(requestedLangs).then(
-    newBundles => equal(oldBundles, newBundles) ?
-      oldBundles : fetchFirstBundle(newBundles, createContext)
-  );
-}
-
-/**
- *
- * Test of two fallback chains are functionally the same.
+ * Test if two fallback chains are functionally the same.
  *
  * @param   {ResourceBundle[]}  bundles1
  * @param   {ResourceBundle[]}  bundles2
