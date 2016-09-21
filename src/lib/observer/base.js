@@ -43,8 +43,8 @@ export class LocalizationObserver {
    *   const extraLocalization = document.l10n.get('extra');
    * }
    * ```
-   * @param   {String} name - key for the object
-   * @returns {Boolean}
+   * @param   {string} name - key for the object
+   * @returns {boolean}
    */
   has(name) {
     return this.localizations.has(name);
@@ -58,7 +58,7 @@ export class LocalizationObserver {
    * const extraLocalization = document.l10n.get('extra');
    * ```
    *
-   * @param   {String}        name - key for the object
+   * @param   {string}        name - key for the object
    * @returns {Localization}
    */
   get(name) {
@@ -73,7 +73,7 @@ export class LocalizationObserver {
    * document.l10n.set('extra', loc);
    * ```
    *
-   * @param   {String}       name - key for the object
+   * @param   {string}       name - key for the object
    * @param   {Localization} value - `Localization` object
    * @returns {LocalizationObserver}
    */
@@ -98,8 +98,8 @@ export class LocalizationObserver {
    * document.l10n.requestLanguages(['de-DE', 'de', 'en-US']);
    * ```
    *
-   * @param   {String[]}          requestedLangs - array of requested languages
-   * @returns {Promise<String[]>}
+   * @param   {Array<string>} requestedLangs - array of requested languages
+   * @returns {Promise<Array<string>>}
    */
   requestLanguages(requestedLangs) {
     const localizations = Array.from(this.localizations.values());
@@ -138,9 +138,9 @@ export class LocalizationObserver {
    *   data-l10n-args='{"who": "world"}'>
    * </p>
    *
-   * @param {HTMLElement}             element - Element to set attributes on
-   * @param {String}                  id      - l10n-id string
-   * @param {Object<String,  String>} args    - KVP list of l10n arguments
+   * @param {Element}             element - Element to set attributes on
+   * @param {string}                  id      - l10n-id string
+   * @param {Object<string, string>} args    - KVP list of l10n arguments
    * ```
    */
   setAttributes(element, id, args) {
@@ -161,7 +161,7 @@ export class LocalizationObserver {
    * // -> { id: 'hello', args: { who: 'world' } }
    * ```
    *
-   * @param {HTMLElement}  element - HTML element
+   * @param   {Element}  element - HTML element
    * @returns {{id: string, args: Object}}
    */
   getAttributes(element) {
@@ -174,7 +174,7 @@ export class LocalizationObserver {
   /**
    * Add a new root to the list of observed ones.
    *
-   * @param {HTMLElement}  root - Root element
+   * @param {Element}      root - Root to observe.
    * @param {Localization} l10n - `Localization` object
    */
   observeRoot(root, l10n = this.get('main')) {
@@ -193,8 +193,8 @@ export class LocalizationObserver {
    * Returns `true` if the root was the last one associated with at least
    * one `Localization` object.
    *
-   * @param {HTMLElement} root - Root element
-   * @returns {Boolean}
+   * @param   {Element} root - Root to disconnect.
+   * @returns {boolean}
    */
   disconnectRoot(root) {
     let wasLast = false;
@@ -318,7 +318,7 @@ export class LocalizationObserver {
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
-   * @param  {DOMFragment} frag - DOMFragment to be translated
+   * @param   {DOMFragment} frag - DOMFragment to be translated
    * @returns {Promise}
    */
   translateFragment(frag) {
@@ -347,7 +347,7 @@ export class LocalizationObserver {
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
-   * @param  {HTMLElement} element - HTML element to be translated
+   * @param   {Element} element - HTML element to be translated
    * @returns {Promise}
    */
   translateElement(element) {

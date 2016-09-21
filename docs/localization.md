@@ -49,9 +49,9 @@ if (document.l10n.has('extra')) {
 
 **Parameters**
 
--   `name` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
+-   `name` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
 
-Returns **[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
 
 ## get
 
@@ -64,7 +64,7 @@ const extraLocalization = document.l10n.get('extra');
 
 **Parameters**
 
--   `name` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
+-   `name` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
 
 Returns **[Localization](#localization)** 
 
@@ -79,7 +79,7 @@ document.l10n.set('extra', loc);
 
 **Parameters**
 
--   `name` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
+-   `name` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
 -   `value` **[Localization](#localization)** `Localization` object
 
 Returns **[LocalizationObserver](#localizationobserver)** 
@@ -95,9 +95,9 @@ document.l10n.requestLanguages(['de-DE', 'de', 'en-US']);
 
 **Parameters**
 
--   `requestedLangs` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** array of requested languages
+-   `requestedLangs` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** array of requested languages
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>>** 
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>>** 
 
 ## setAttributes
 
@@ -131,9 +131,9 @@ asynchronously.
 
 **Parameters**
 
--   `element` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** Element to set attributes on
--   `id` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** l10n-id string
--   `args` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** KVP list of l10n arguments```
+-   `element` **[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)** Element to set attributes on
+-   `id` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** l10n-id string
+-   `args` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)>** KVP list of l10n arguments```
 
     ```
 
@@ -150,7 +150,7 @@ document.l10n.getAttributes(
 
 **Parameters**
 
--   `element` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** HTML element
+-   `element` **[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)** HTML element
 
 Returns **{id: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), args: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)}** 
 
@@ -160,7 +160,7 @@ Add a new root to the list of observed ones.
 
 **Parameters**
 
--   `root` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** Root element
+-   `root` **[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)** Root to observe.
 -   `l10n` **\[[Localization](#localization)](default this.get('main'))** `Localization` object
 
 ## disconnectRoot
@@ -174,9 +174,9 @@ one `Localization` object.
 
 **Parameters**
 
--   `root` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** Root element
+-   `root` **[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)** Root to disconnect.
 
-Returns **[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
 
 ## pause
 
@@ -221,7 +221,7 @@ Returns a `Promise` that gets resolved once the translation is complete.
 
 **Parameters**
 
--   `element` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** HTML element to be translated
+-   `element` **[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)** HTML element to be translated
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
 
