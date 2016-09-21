@@ -53,7 +53,7 @@ export class Localization {
    */
   constructor(requestBundles, createContext) {
     const createHeadContext =
-      bundles => createHeadContextWith(createContext, bundles)
+      bundles => createHeadContextWith(createContext, bundles);
 
     // Keep `requestBundles` and `createHeadContext` private.
     properties.set(this, {
