@@ -28,6 +28,7 @@ export class XULLocalization extends Localization {
    *
    * @param {Element} element
    * @param {string}  translation
+   * @private
    */
   overlayElement(element, translation) {
     return overlayElement(this, element, translation);
@@ -39,6 +40,7 @@ export class XULLocalization extends Localization {
    * Always returns `false` for XUL elements.
    *
    * @returns {boolean}
+   * @private
    */
   isElementAllowed() {
     return false;
@@ -54,6 +56,7 @@ export class XULLocalization extends Localization {
    * @param   {{name: string}} attr
    * @param   {Element}        element
    * @returns {boolean}
+   * @private
    */
   isAttrAllowed(attr, element) {
     // Bail if it isn't even a XUL element.

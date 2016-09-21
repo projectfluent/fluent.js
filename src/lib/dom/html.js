@@ -40,6 +40,7 @@ export class HTMLLocalization extends Localization {
    *
    * @param {Element} element
    * @param {string}  translation
+   * @private
    */
   overlayElement(element, translation) {
     return overlayElement(this, element, translation);
@@ -53,6 +54,7 @@ export class HTMLLocalization extends Localization {
    *
    * @param   {Element} element
    * @returns {boolean}
+   * @private
    */
   isElementAllowed(element) {
     // XXX The allowed list should be amendable; https://bugzil.la/922573.
@@ -69,6 +71,7 @@ export class HTMLLocalization extends Localization {
    * @param   {{name: string}} attr
    * @param   {Element}        element
    * @returns {boolean}
+   * @private
    */
   isAttrAllowed(attr, element) {
     // Bail if it isn't even an HTML element.

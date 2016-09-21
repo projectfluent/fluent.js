@@ -8,6 +8,7 @@ const reOverlay = /<|&#?\w+;/;
  * @param   {Localization} l10n
  * @param   {Element}      element
  * @param   {string}       translation
+ * @private
  */
 export function overlayElement(l10n, element, translation) {
   const value = translation.value;

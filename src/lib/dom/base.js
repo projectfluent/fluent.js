@@ -118,7 +118,7 @@ export class Localization {
    * @param   {Function}              method  - Formatting function.
    * @param   {Array<string>}         prev    - Previous translations.
    * @returns {Array<string> | Promise<Array<string>>}
-   * @api     private
+   * @private
    */
   formatWithFallback(bundles, ctx, keys, method, prev) {
     // If a context for the head bundle doesn't exist we've reached the last
@@ -186,7 +186,7 @@ export class Localization {
    *
    * @param   {Array<Array>} keys
    * @returns {Promise<Array<{value: string, attrs: Object}>>}
-   * @api     private
+   * @private
    */
   formatEntities(keys) {
     return this.interactive.then(
@@ -265,7 +265,7 @@ export class Localization {
  * @param   {Array<ResourceBundle>} bundle
  * @param   {Function}              createContext
  * @returns {Promise<MessageContext>}
- * @api     private
+ * @private
  */
 function createHeadContextWith(createContext, bundles) {
   const [bundle] = bundles;
@@ -293,7 +293,7 @@ function createHeadContextWith(createContext, bundles) {
  * @param   {Array<ResourceBundle>} bundles1
  * @param   {Array<ResourceBundle>} bundles2
  * @returns {boolean}
- * @api     private
+ * @private
  */
 function equal(bundles1, bundles2) {
   return bundles1.length === bundles2.length &&
