@@ -47,8 +47,8 @@ export class Localization {
    * the runtime it may pass runtime-specific `functions` to the
    * `MessageContext` instances it creates.
    *
-   * @param   {function}     requestBundles
-   * @param   {function}     createContext
+   * @param   {Function}     requestBundles
+   * @param   {Function}     createContext
    * @returns {Localization}
    */
   constructor(requestBundles, createContext) {
@@ -82,8 +82,8 @@ export class Localization {
    * `requestLanguages` takes an array of language codes representing user's
    * updated language preferences.
    *
-   * @param   {string[]}     requestedLangs
-   * @returns {Promise}
+   * @param   {Array<string>}     requestedLangs
+   * @returns {Promise<Array<ResourceBundle>>}
    */
   requestLanguages(requestedLangs) {
     const { requestBundles, createHeadContext } = properties.get(this);
@@ -113,11 +113,11 @@ export class Localization {
    * bundle in the fallback chain, create a context for it, and recursively
    * call `formatWithFallback` again.
    *
-   * @param   {ResourceBundle[]}   bundles - Current bundles.
-   * @param   {Array[]}            keys    - Translation keys to format.
-   * @param   {function}           method  - Formatting function.
-   * @param   {string[]}           prev    - Previously formatted translations.
-   * @returns {string[] | Promise}
+   * @param   {Array<ResourceBundle>} bundles - Current bundles.
+   * @param   {Array<Array>}          keys    - Translation keys to format.
+   * @param   {Function}              method  - Formatting function.
+   * @param   {Array<string>}         prev    - Previous translations.
+   * @returns {Array<string> | Promise<Array<string>>}
    * @api     private
    */
   formatWithFallback(bundles, ctx, keys, method, prev) {
@@ -184,8 +184,8 @@ export class Localization {
    *
    * Returns a Promise resolving to an array of the translation strings.
    *
-   * @param   {Array[]}   keys
-   * @returns {Promise}
+   * @param   {Array<Array>} keys
+   * @returns {Promise<Array<{value: string, attrs: Object}>>}
    * @api     private
    */
   formatEntities(keys) {
@@ -212,8 +212,8 @@ export class Localization {
    *
    * Returns a Promise resolving to an array of the translation strings.
    *
-   * @param   {...(Array | string)}   keys
-   * @returns {Promise}
+   * @param   {...(Array | string)} keys
+   * @returns {Promise<Array<string>>}
    */
   formatValues(...keys) {
     // Convert string keys into arrays that `formatWithFallback` expects.
@@ -247,7 +247,7 @@ export class Localization {
    *
    * @param   {string}  id   - Identifier of the translation to format
    * @param   {Object}  args - Optional external arguments
-   * @returns {Promise}
+   * @returns {Promise<string>}
    */
   formatValue(id, args) {
     return this.formatValues([id, args]).then(
@@ -262,9 +262,9 @@ export class Localization {
  *
  * Fetches the bundle's resources and creates a context from them.
  *
- * @param   {ResourceBundle[]}  bundle
- * @param   {function}          createContext
- * @returns {Promise}
+ * @param   {Array<ResourceBundle>} bundle
+ * @param   {Function}              createContext
+ * @returns {Promise<MessageContext>}
  * @api     private
  */
 function createHeadContextWith(createContext, bundles) {
@@ -290,8 +290,8 @@ function createHeadContextWith(createContext, bundles) {
  *
  * Test if two fallback chains are functionally the same.
  *
- * @param   {ResourceBundle[]}  bundles1
- * @param   {ResourceBundle[]}  bundles2
+ * @param   {Array<ResourceBundle>} bundles1
+ * @param   {Array<ResourceBundle>} bundles2
  * @returns {boolean}
  * @api     private
  */
