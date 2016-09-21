@@ -116,7 +116,7 @@ export class Localization {
    * @param   {Array<ResourceBundle>} bundles - Current bundles.
    * @param   {Array<Array>}          keys    - Translation keys to format.
    * @param   {Function}              method  - Formatting function.
-   * @param   {Array<string>}         prev    - Previous translations.
+   * @param   {Array<string>}         [prev]  - Previous translations.
    * @returns {Array<string> | Promise<Array<string>>}
    * @private
    */
@@ -245,8 +245,8 @@ export class Localization {
    * retranslated when the user changes their language preferences, e.g. in
    * notifications.
    *
-   * @param   {string}  id   - Identifier of the translation to format
-   * @param   {Object}  args - Optional external arguments
+   * @param   {string}  id     - Identifier of the translation to format
+   * @param   {Object}  [args] - Optional external arguments
    * @returns {Promise<string>}
    */
   formatValue(id, args) {
