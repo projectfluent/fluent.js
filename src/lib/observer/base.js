@@ -36,8 +36,7 @@ export class LocalizationObserver {
   }
 
   /**
-   * Test if the `Localization` object with a given name is already bind.
-   * See [docs/localization] for `Localization`'s API reference.'
+   * Test if the `Localization` object with a given name already exists.
    *
    * ```javascript
    * if (document.l10n.has('extra')) {
@@ -45,16 +44,15 @@ export class LocalizationObserver {
    * }
    * ```
    * @param   {String} name - key for the object
-   * @returns {Bool}
+   * @returns {Boolean}
    */
   has(name) {
     return this.localizations.has(name);
   }
 
   /**
-   * Retrieve a reference to the `Localization` object associated with the name
-   * `name`.  See [docs/localization] for `Localization`'s API reference.
-
+   * Retrieve a reference to the `Localization` object by name.
+   *
    * ```javascript
    * const mainLocalization = document.l10n.get('main');
    * const extraLocalization = document.l10n.get('extra');
@@ -68,9 +66,8 @@ export class LocalizationObserver {
   }
 
   /**
-   * Sets a reference to the `Localization` object associated with the name
-   * `name`.  See [docs/localization] for `Localization`'s API reference.
-
+   * Sets a reference to the `Localization` object by name.
+   *
    * ```javascript
    * const loc = new Localization();
    * document.l10n.set('extra', loc);
@@ -94,7 +91,7 @@ export class LocalizationObserver {
   }
 
   /**
-   * Trigger the language negotation process with an array of `langCodes`.
+   * Trigger the language negotation process with an array of language codes.
    * Returns a promise with the negotiated array of language objects as above.
    *
    * ```javascript
@@ -197,7 +194,8 @@ export class LocalizationObserver {
    * one `Localization` object.
    *
    * @param {HTMLElement} root - Root element
-   * @returns {Bool}
+   * @returns {Boolean}
+   */
   disconnectRoot(root) {
     let wasLast = false;
 

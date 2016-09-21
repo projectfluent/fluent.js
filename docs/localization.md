@@ -39,8 +39,7 @@ Returns **[LocalizationObserver](#localizationobserver)**
 
 ## has
 
-Test if the `Localization` object with a given name is already bind.
-See [docs/localization] for `Localization`'s API reference.'
+Test if the `Localization` object with a given name already exists.
 
 ```javascript
 if (document.l10n.has('extra')) {
@@ -52,12 +51,11 @@ if (document.l10n.has('extra')) {
 
 -   `name` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** key for the object
 
-Returns **Bool** 
+Returns **[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
 
 ## get
 
-Retrieve a reference to the `Localization` object associated with the name
-`name`.  See [docs/localization] for `Localization`'s API reference.
+Retrieve a reference to the `Localization` object by name.
 
 ```javascript
 const mainLocalization = document.l10n.get('main');
@@ -72,8 +70,7 @@ Returns **[Localization](#localization)**
 
 ## set
 
-Sets a reference to the `Localization` object associated with the name
-`name`.  See [docs/localization] for `Localization`'s API reference.
+Sets a reference to the `Localization` object by name.
 
 ```javascript
 const loc = new Localization();
@@ -89,7 +86,7 @@ Returns **[LocalizationObserver](#localizationobserver)**
 
 ## requestLanguages
 
-Trigger the language negotation process with an array of `langCodes`.
+Trigger the language negotation process with an array of language codes.
 Returns a promise with the negotiated array of language objects as above.
 
 ```javascript
@@ -166,7 +163,7 @@ Add a new root to the list of observed ones.
 -   `root` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** Root element
 -   `l10n` **\[[Localization](#localization)](default this.get('main'))** `Localization` object
 
-## pause
+## disconnectRoot
 
 Remove a root from the list of observed ones.
 If the root is the last to be associated with a given `Localization` object
@@ -179,21 +176,10 @@ one `Localization` object.
 
 -   `root` **[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)** Root element
 
-Returns **Bool** disconnectRoot(root) {
-let wasLast = false;this.pause();
-for (const [name, l10n] of this.localizations) {
-const roots = this.roots.get(l10n);
-if (roots && roots.has(root)) {
-roots.delete(root);
-if (roots.size === 0) {
-wasLast = true;
-this.localizations.delete(name);
-this.roots.delete(l10n);
-}
-}
-}
-this.resume();return wasLast;
-}/\*\*
+Returns **[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+
+## pause
+
 Pauses the `MutationObserver`
 
 ## resume
