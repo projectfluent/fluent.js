@@ -1,7 +1,7 @@
 var fs = require('fs');
 var L20n = require('../../dist/bundle/node/l20n');
 
-var ftlCode = fs.readFileSync(__dirname + '/example.ftl').toString();
+var ftlCode = fs.readFileSync(__dirname + '/workload-low.ftl').toString();
 
 var args = {};
 

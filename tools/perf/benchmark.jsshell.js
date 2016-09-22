@@ -1,6 +1,6 @@
 load('../../dist/bundle/tooling/l20n.js');
 
-var ftlCode = read('./example.ftl');
+var ftlCode = read('./workload-low.ftl');
 var args = {};
 
 function micro(time) {
