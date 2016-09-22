@@ -24,7 +24,7 @@ function* DefaultMember(members, def) {
   }
 
   yield tell(new RangeError('No default'));
-  return { val: new FTLNone() };
+  return new FTLNone();
 }
 
 
@@ -45,7 +45,7 @@ function* EntityReference({name}) {
 function* MemberExpression({obj, key}) {
   const entity = yield* EntityReference(obj);
   if (entity instanceof FTLNone) {
-    return { val: entity };
+    return entity;
   }
 
   const { ctx } = yield ask();
@@ -59,9 +59,7 @@ function* MemberExpression({obj, key}) {
   }
 
   yield tell(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
-  return {
-    val: yield* Entity(entity)
-  };
+  return yield* Entity(entity);
 }
 
 function* SelectExpression({exp, vars, def}) {
