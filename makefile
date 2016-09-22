@@ -35,6 +35,8 @@ docs:
 	    src/lib/**/*.js > docs/localization.md
 	documentation build --shallow -f md \
 	    src/ftl/**/*.js > docs/parser.md
+	documentation build --shallow -f md \
+	    src/intl/*.js > docs/messagecontext.md
 
 .PHONY: $(RUNTIMES) docs
 
