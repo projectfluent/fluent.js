@@ -248,13 +248,8 @@ function* Entity(entity) {
   return yield* Value(def);
 }
 
-// evaluate `entity` to an FTL Value type: string or FTLNone
-function* toFTLType(entity) {
-  return yield* Entity(entity);
-}
-
 export function format(ctx, args, entity, errors = []) {
-  return resolve(toFTLType(entity)).run({
+  return resolve(Entity(entity)).run({
     ctx, args, errors, dirty: new WeakSet()
   });
 }
