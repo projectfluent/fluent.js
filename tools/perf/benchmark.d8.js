@@ -1,6 +1,6 @@
 load('../../dist/bundle/jsshell/l20n.js');
 
-var ftlCode = read('./example.ftl');
+var ftlCode = read('./workload-low.ftl');
 var args = {}
 
 function micro(time) {
