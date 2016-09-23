@@ -54,10 +54,23 @@ class Environment {
   }
 }
 
+/**
+ * Create a pass-through Environment which returns the value it wraps.
+ *
+ * @returns {Environment}
+ * @private
+ */
 export function ask() {
   return new Environment(env => env);
 }
 
+/**
+ * Push a message into the log wrapped in an Environment.
+ *
+ * @param   {Any} msg
+ * @returns {Environment}
+ * @private
+ */
 export function tell(msg) {
   return new Environment(env => {
     env.log.push(msg);
@@ -65,10 +78,29 @@ export function tell(msg) {
   });
 }
 
+/**
+ * Wrap value in a new Environment instance.
+ *
+ * @param   {Any} val
+ * @returns {Environment}
+ * @private
+ */
 export function unit(val) {
   return new Environment(() => val);
 }
 
+/**
+ * Run an iterator to completion.
+ *
+ * The iterator can yield a normal value or an instance of Environment.  The
+ * final value returned by `resolve` is also an Environment instance which is
+ * ready to accept external configuration via its `run` method and finish the
+ * computation it represents.
+ *
+ * @param   {Iterator} iter
+ * @returns {Environment}
+ * @private
+ */
 export function resolve(iter) {
   return function step(resume) {
     const i = iter.next(resume);

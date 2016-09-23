@@ -1,20 +1,52 @@
-export class FTLBase {
+/**
+ * The `FTLType` class is the base of FTL's type system.
+ *
+ * FTL types wrap JavaScript values and store additional configuration for
+ * them, which can then be used in the `toString` method together with a proper
+ * `Intl` formatter.
+ */
+export class FTLType {
+
+  /**
+   * Create an `FTLType` instance.
+   *
+   * @returns {FTLType}
+   */
   constructor(value, opts) {
     this.value = value;
     this.opts = opts;
   }
+
+  /**
+   * Get the JavaScript value wrapped by this `FTLType` instance.
+   *
+   * @returns {Any}
+   */
   valueOf() {
     return this.value;
   }
+
+  /**
+   * Stringify an instance of `FTLType`.
+   *
+   * This method can use `Intl` formatters memoized by the `MessageContext`
+   * instance passed as an argument.
+   *
+   * @param   {MessageContext} ctx
+   * @returns {string}
+   */
+  toString(ctx) {
+    return this.value.toString(ctx);
+  }
 }
 
-export class FTLNone extends FTLBase {
+export class FTLNone extends FTLType {
   toString() {
     return this.value || '???';
   }
 }
 
-export class FTLNumber extends FTLBase {
+export class FTLNumber extends FTLType {
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
@@ -26,7 +58,7 @@ export class FTLNumber extends FTLBase {
   }
 }
 
-export class FTLDateTime extends FTLBase {
+export class FTLDateTime extends FTLType {
   constructor(value, opts) {
     super(new Date(value), opts);
   }
@@ -38,7 +70,7 @@ export class FTLDateTime extends FTLBase {
   }
 }
 
-export class FTLKeyword extends FTLBase {
+export class FTLKeyword extends FTLType {
   toString() {
     const { name, namespace } = this.value;
     return namespace ? `${namespace}:${name}` : name;

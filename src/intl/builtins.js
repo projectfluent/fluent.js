@@ -1,8 +1,19 @@
+/**
+ * @module
+ *
+ * The FTL resolver ships with a number of functions built-in.
+ *
+ * Each function take two arguments:
+ *   - args - an array of positional args
+ *   - opts - an object of key-value args
+ *
+ * Arguments to functions are guaranteed to already be instances of `FTLType`.
+ * Functions must return `FTLType` objects as well.  For this reason it may be
+ * necessary to unwrap the JavaScript value behind the FTL Value and to merge
+ * the configuration of the argument with the configuration of the return
+ * value.
+ */
 import { FTLNumber, FTLDateTime, FTLList } from './types';
-
-// each builtin takes two arguments:
-//  - args = an array of positional args
-//  - opts  = an object of key-value args
 
 export default {
   'NUMBER': ([arg], opts) =>
