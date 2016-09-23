@@ -1,5 +1,5 @@
 import FTLRuntimeParser from '../ftl/entries/parser';
-import { format } from './resolver';
+import resolve from './resolver';
 import { FTLNone } from './types';
 
 /**
@@ -112,7 +112,7 @@ export class MessageContext {
       return null;
     }
 
-    const result = format(this, args, entity, errors);
+    const result = resolve(this, args, entity, errors);
     return result instanceof FTLNone ? null : result;
   }
 
