@@ -31,7 +31,6 @@
  * sringified with its `toString` method by the caller.
  */
 
-import { resolve, ask, tell } from './environment';
 import { FTLType, FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList }
   from './types';
 import builtins from './builtins';
@@ -51,10 +50,10 @@ const MAX_PLACEABLE_LENGTH = 2500;
  *
  * @private
  */
-function* mapValues(arr) {
+function mapValues(env, arr) {
   const values = new FTLList();
   for (const elem of arr) {
-    values.push(yield* Value(elem));
+    values.push(Value(env, elem));
   }
   return values;
 }
@@ -66,12 +65,13 @@ function* mapValues(arr) {
  *
  * @private
  */
-function* DefaultMember(members, def) {
+function DefaultMember(env, members, def) {
   if (members[def]) {
     return members[def];
   }
 
-  yield tell(new RangeError('No default'));
+  const { errors } = env;
+  errors.push(new RangeError('No default'));
   return new FTLNone();
 }
 
@@ -81,12 +81,12 @@ function* DefaultMember(members, def) {
  *
  * @private
  */
-function* EntityReference({name}) {
-  const { ctx } = yield ask();
+function EntityReference(env, {name}) {
+  const { ctx, errors } = env;
   const entity = ctx.messages.get(name);
 
   if (!entity) {
-    yield tell(new ReferenceError(`Unknown entity: ${name}`));
+    errors.push(new ReferenceError(`Unknown entity: ${name}`));
     return new FTLNone(name);
   }
 
@@ -98,25 +98,25 @@ function* EntityReference({name}) {
  *
  * @private
  */
-function* MemberExpression({obj, key}) {
-  const entity = yield* EntityReference(obj);
+function MemberExpression(env, {obj, key}) {
+  const entity = EntityReference(env, obj);
   if (entity instanceof FTLNone) {
     return entity;
   }
 
-  const { ctx } = yield ask();
-  const keyword = yield* Value(key);
+  const { ctx, errors } = env;
+  const keyword = Value(env, key);
 
   // Match the specified key against keys of each trait, in order.
   for (const member of entity.traits) {
-    const memberKey = yield* Value(member.key);
+    const memberKey = Value(env, member.key);
     if (keyword.match(ctx, memberKey)) {
       return member;
     }
   }
 
-  yield tell(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
-  return yield* Entity(entity);
+  errors.push(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
+  return Entity(env, entity);
 }
 
 /**
@@ -124,15 +124,15 @@ function* MemberExpression({obj, key}) {
  *
  * @private
  */
-function* SelectExpression({exp, vars, def}) {
-  const selector = yield* Value(exp);
+function SelectExpression(env, {exp, vars, def}) {
+  const selector = Value(env, exp);
   if (selector instanceof FTLNone) {
-    return yield* DefaultMember(vars, def);
+    return DefaultMember(env, vars, def);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of vars) {
-    const key = yield* Value(variant.key);
+    const key = Value(env, variant.key);
 
     // XXX A special case of numbers to avoid code repetition in types.js.
     if (key instanceof FTLNumber &&
@@ -141,14 +141,14 @@ function* SelectExpression({exp, vars, def}) {
       return variant;
     }
 
-    const { ctx } = yield ask();
+    const { ctx } = env;
 
     if (key instanceof FTLKeyword && key.match(ctx, selector)) {
       return variant;
     }
   }
 
-  return yield* DefaultMember(vars, def);
+  return DefaultMember(env, vars, def);
 }
 
 
@@ -163,7 +163,7 @@ function* SelectExpression({exp, vars, def}) {
  * @returns {FTLType}
  * @private
  */
-function* Value(expr) {
+function Value(env, expr) {
   // A fast-path for strings which are the most common case, and for `FTLNone`
   // which doesn't require any additional logic.
   if (typeof expr === 'string' || expr instanceof FTLNone) {
@@ -173,7 +173,7 @@ function* Value(expr) {
   // The Runtime AST (Entries) encodes patterns (complex strings with
   // placeables) as Arrays.
   if (Array.isArray(expr)) {
-    return yield* Pattern(expr);
+    return Pattern(env, expr);
   }
 
   switch (expr.type) {
@@ -182,25 +182,25 @@ function* Value(expr) {
     case 'num':
       return new FTLNumber(expr.val);
     case 'ext':
-      return yield* ExternalArgument(expr);
+      return ExternalArgument(env, expr);
     case 'fun':
-      return yield* FunctionReference(expr);
+      return FunctionReference(env, expr);
     case 'call':
-      return yield* CallExpression(expr);
+      return CallExpression(env, expr);
     case 'ref': {
-      const entity = yield* EntityReference(expr);
-      return yield* Value(entity);
+      const entity = EntityReference(env, expr);
+      return Value(env, entity);
     }
     case 'mem': {
-      const member = yield* MemberExpression(expr);
-      return yield* Value(member.val);
+      const member = MemberExpression(env, expr);
+      return Value(env, member.val);
     }
     case 'sel': {
-      const member = yield* SelectExpression(expr);
-      return yield* Value(member.val);
+      const member = SelectExpression(env, expr);
+      return Value(env, member.val);
     }
     default:
-      return yield* Entity(expr);
+      return Entity(env, expr);
   }
 }
 
@@ -209,11 +209,11 @@ function* Value(expr) {
  *
  * @private
  */
-function* ExternalArgument({name}) {
-  const { args } = yield ask();
+function ExternalArgument(env, {name}) {
+  const { args, errors } = env;
 
   if (!args || !args.hasOwnProperty(name)) {
-    yield tell(new ReferenceError(`Unknown external: ${name}`));
+    errors.push(new ReferenceError(`Unknown external: ${name}`));
     return new FTLNone(name);
   }
 
@@ -231,13 +231,13 @@ function* ExternalArgument({name}) {
       return new FTLNumber(arg);
     case 'object':
       if (Array.isArray(arg)) {
-        return yield* mapValues(arg);
+        return mapValues(env, arg);
       }
       if (arg instanceof Date) {
         return new FTLDateTime(arg);
       }
     default:
-      yield tell(
+      errors.push(
         new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
       );
       return new FTLNone(name);
@@ -249,19 +249,19 @@ function* ExternalArgument({name}) {
  *
  * @private
  */
-function* FunctionReference({name}) {
+function FunctionReference(env, {name}) {
   // Some functions are built-in.  Others may be provided by the runtime via
   // the `MessageContext` constructor.
-  const { ctx: { functions } } = yield ask();
+  const { ctx: { functions }, errors } = env;
   const func = functions[name] || builtins[name];
 
   if (!func) {
-    yield tell(new ReferenceError(`Unknown built-in: ${name}()`));
+    errors.push(new ReferenceError(`Unknown built-in: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
   if (typeof func !== 'function') {
-    yield tell(new TypeError(`Function ${name}() is not callable`));
+    errors.push(new TypeError(`Function ${name}() is not callable`));
     return new FTLNone(`${name}()`);
   }
 
@@ -273,8 +273,8 @@ function* FunctionReference({name}) {
  *
  * @private
  */
-function* CallExpression({name, args}) {
-  const callee = yield* FunctionReference(name);
+function CallExpression(env, {name, args}) {
+  const callee = FunctionReference(env, name);
 
   if (callee instanceof FTLNone) {
     return callee;
@@ -285,9 +285,9 @@ function* CallExpression({name, args}) {
 
   for (const arg of args) {
     if (arg.type === 'kv') {
-      keyargs[arg.name] = yield* Value(arg.val);
+      keyargs[arg.name] = Value(env, arg.val);
     } else {
-      posargs.push(yield* Value(arg));
+      posargs.push(Value(env, arg));
     }
   }
 
@@ -300,11 +300,11 @@ function* CallExpression({name, args}) {
  *
  * @private
  */
-function* Pattern(ptn) {
-  const { ctx, dirty } = yield ask();
+function Pattern(env, ptn) {
+  const { ctx, dirty, errors } = env;
 
   if (dirty.has(ptn)) {
-    yield tell(new RangeError('Cyclic reference'));
+    errors.push(new RangeError('Cyclic reference'));
     return new FTLNone();
   }
 
@@ -319,11 +319,11 @@ function* Pattern(ptn) {
       // Optimize the most common case: the placeable only has one expression.
       // Otherwise map its expressions to Values.
       const value = part.length === 1 ?
-        yield* Value(part[0]) : yield* mapValues(part);
+        Value(env, part[0]) : mapValues(env, part);
 
       const str = value.toString(ctx);
       if (str.length > MAX_PLACEABLE_LENGTH) {
-        yield tell(
+        errors.push(
           new RangeError(
             'Too many characters in placeable ' +
             `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
@@ -345,13 +345,13 @@ function* Pattern(ptn) {
  *
  * @private
  */
-function* Entity(entity) {
+function Entity(env, entity) {
   if (entity.val !== undefined) {
-    return yield* Value(entity.val);
+    return Value(env, entity.val);
   }
 
-  const def = yield* DefaultMember(entity.traits, entity.def);
-  return yield* Value(def);
+  const def = DefaultMember(env, entity.traits, entity.def);
+  return Value(env, def);
 }
 
 /**
@@ -366,8 +366,9 @@ function* Entity(entity) {
  * @param   {Array}          errors
  * @returns {FTLType}
  */
-export function format(ctx, args, entity, errors = []) {
-  return resolve(Entity(entity)).run({
-    ctx, args, log: errors, dirty: new WeakSet()
-  });
+export default function resolve(ctx, args, entity, errors = []) {
+  const env = {
+    ctx, args, errors, dirty: new WeakSet()
+  };
+  return Entity(env, entity);
 }
