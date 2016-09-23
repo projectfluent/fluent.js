@@ -1,4 +1,4 @@
-import { resolve, ask, tell } from './readwrite';
+import { resolve, ask, tell } from './environment';
 import { FTLBase, FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList }
   from './types';
 import builtins from './builtins';
@@ -250,6 +250,6 @@ function* Entity(entity) {
 
 export function format(ctx, args, entity, errors = []) {
   return resolve(Entity(entity)).run({
-    ctx, args, errors, dirty: new WeakSet()
+    ctx, args, log: errors, dirty: new WeakSet()
   });
 }
