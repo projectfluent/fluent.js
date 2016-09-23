@@ -187,17 +187,20 @@ function* Value(expr) {
       return yield* FunctionReference(expr);
     case 'call':
       return yield* CallExpression(expr);
-    case 'ref':
-      const ref = yield* EntityReference(expr);
-      return yield* Entity(ref);
-    case 'mem':
-      const mem = yield* MemberExpression(expr);
-      return yield* Value(mem.val);
-    case 'sel':
-      const sel = yield* SelectExpression(expr);
-      return yield* Value(sel.val);
+    case 'ref': {
+      const entity = yield* EntityReference(expr);
+      return yield* Value(entity);
+    }
+    case 'mem': {
+      const member = yield* MemberExpression(expr);
+      return yield* Value(member.val);
+    }
+    case 'sel': {
+      const member = yield* SelectExpression(expr);
+      return yield* Value(member.val);
+    }
     default:
-      return yield* Value(expr.val);
+      return yield* Entity(expr);
   }
 }
 
