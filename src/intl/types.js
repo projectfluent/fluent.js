@@ -10,6 +10,8 @@ export class FTLType {
   /**
    * Create an `FTLType` instance.
    *
+   * @param   {Any}    value - JavaScript value to wrap.
+   * @param   {Object} opts  - Configuration.
    * @returns {FTLType}
    */
   constructor(value, opts) {
