@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
 
-describe('Formatting messages:', function(){
+describe('Formatting values', function(){
   let ctx, args, errs;
 
   before(function() {
@@ -62,6 +62,15 @@ describe('Formatting messages:', function(){
     const msg = ctx.messages.get('key5');
     const val = ctx.format(msg, args, errs);
     assert.strictEqual(val, null);
+    assert.deepEqual(errs, []);
+  });
+
+  it('allows to pass traits directly to ctx.format', function(){
+    const msg = ctx.messages.get('key2');
+    const vals = msg.traits.map(
+      trait => ctx.format(trait, args, errs)
+    );
+    assert.deepEqual(vals, ['A2', 'B2']);
     assert.deepEqual(errs, []);
   });
 
