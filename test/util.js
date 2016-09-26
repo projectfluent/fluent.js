@@ -9,3 +9,8 @@ export const PDI = '\u2069';
 export function isolate(str) {
   return str.replace('[', FSI).replace(']', PDI);
 }
+
+export function ftl(strings) {
+  const [code] = strings;
+  return code.replace(/^\s*/mg, '');
+}

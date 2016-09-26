@@ -3,27 +3,28 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
+import { ftl } from '../util';
 
 describe('Formatting values', function(){
   let ctx, args, errs;
 
   before(function() {
     ctx = new MessageContext('en-US');
-    ctx.addMessages([
-      'key1 = Value 1',
-      'key2 = Value 2',
-      '  [a] A2',
-      '  [b] B2',
-      'key3 = Value 3',
-      '  [a] A3',
-      ' *[b] B3',
-      'key4 =',
-      '  [a] A4',
-      ' *[b] B4',
-      'key5 =',
-      '  [a] A5',
-      '  [b] B5',
-    ].join('\n'));
+    ctx.addMessages(ftl`
+      key1 = Value 1
+      key2 = Value 2
+          [a] A2
+          [b] B2
+      key3 = Value 3
+          [a] A3
+         *[b] B3
+      key4 =
+          [a] A4
+         *[b] B4
+      key5 =
+          [a] A5
+          [b] B5
+    `);
   });
 
   beforeEach(function() {
