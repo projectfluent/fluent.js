@@ -4,9 +4,10 @@
 export const FSI = '\u2068';
 export const PDI = '\u2069';
 
-// > isolate('Hello, [world].')
+// > bdi`Hello, [world].`
 // 'Hello, \u2068world\u2069.'
-export function isolate(str) {
+export function bdi(strings) {
+  const [str] = strings;
   return str.replace('[', FSI).replace(']', PDI);
 }
 

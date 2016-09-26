@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl } from '../util';
+import { ftl, bdi } from '../util';
 
 describe('Formatting values', function(){
   let ctx, args, errs;
@@ -24,6 +24,10 @@ describe('Formatting values', function(){
       key5 =
           [a] A5
           [b] B5
+      key6 = Value { 6 }
+      key7 = Value { 7 }
+          [a] A{ 7 }
+          [b] B{ 7 }
     `);
   });
 
@@ -72,6 +76,22 @@ describe('Formatting values', function(){
       trait => ctx.format(trait, args, errs)
     );
     assert.deepEqual(vals, ['A2', 'B2']);
+    assert.deepEqual(errs, []);
+  });
+
+  it('returns the value if it is a pattern', function(){
+    const msg = ctx.messages.get('key6');
+    const val = ctx.format(msg, args, errs)
+    assert.strictEqual(val, bdi`Value [6]`);
+    assert.deepEqual(errs, []);
+  });
+
+  it('returns trait values if they are patterns', function(){
+    const msg = ctx.messages.get('key7');
+    const vals = msg.traits.map(
+      trait => ctx.format(trait, args, errs)
+    );
+    assert.deepEqual(vals, [bdi`A[7]`, bdi`B[7]`]);
     assert.deepEqual(errs, []);
   });
 
