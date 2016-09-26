@@ -8,7 +8,7 @@ export const PDI = '\u2069';
 // 'Hello, \u2068world\u2069.'
 export function bdi(strings) {
   const [str] = strings;
-  return str.replace('[', FSI).replace(']', PDI);
+  return str.replace(/\[/g, FSI).replace(/\]/g, PDI);
 }
 
 export function ftl(strings) {
