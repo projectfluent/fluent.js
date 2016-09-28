@@ -172,6 +172,11 @@ function Value(env, expr) {
     return Pattern(env, expr);
   }
 
+  // If it's a node with a value, resolve the value.
+  if (expr.val !== undefined) {
+    return Value(env, expr.val);
+  }
+
   switch (expr.type) {
     case 'kw':
       return new FTLKeyword(expr);
@@ -189,11 +194,11 @@ function Value(env, expr) {
     }
     case 'mem': {
       const member = MemberExpression(env, expr);
-      return Value(env, member.val);
+      return Value(env, member);
     }
     case 'sel': {
       const member = SelectExpression(env, expr);
-      return Value(env, member.val);
+      return Value(env, member);
     }
     default:
       return Entity(env, expr);
