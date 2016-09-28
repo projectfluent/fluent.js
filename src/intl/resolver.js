@@ -57,7 +57,7 @@ function mapValues(env, arr) {
 /**
  * Helper for choosing the default value from a set of members.
  *
- * Used in SelectExpressions and Entity.
+ * Used in SelectExpressions and Value.
  *
  * @private
  */
@@ -112,7 +112,7 @@ function MemberExpression(env, {obj, key}) {
   }
 
   errors.push(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
-  return Entity(env, entity);
+  return Value(env, entity);
 }
 
 /**
@@ -172,10 +172,6 @@ function Value(env, expr) {
     return Pattern(env, expr);
   }
 
-  // If it's a node with a value, resolve the value.
-  if (expr.val !== undefined) {
-    return Value(env, expr.val);
-  }
 
   switch (expr.type) {
     case 'kw':
@@ -200,8 +196,17 @@ function Value(env, expr) {
       const member = SelectExpression(env, expr);
       return Value(env, member);
     }
+    case undefined: {
+      // If it's a node with a value, resolve the value.
+      if (expr.val !== undefined) {
+        return Value(env, expr.val);
+      }
+
+      const def = DefaultMember(env, expr.traits, expr.def);
+      return Value(env, def);
+    }
     default:
-      return Entity(env, expr);
+      return new FTLNone();
   }
 }
 
@@ -342,20 +347,6 @@ function Pattern(env, ptn) {
 }
 
 /**
- * Resolve an Entity.
- *
- * @private
- */
-function Entity(env, entity) {
-  if (entity.val !== undefined) {
-    return Value(env, entity.val);
-  }
-
-  const def = DefaultMember(env, entity.traits, entity.def);
-  return Value(env, def);
-}
-
-/**
  * Format a translation into an `FTLType`.
  *
  * The return value must be sringified with its `toString` method by the
@@ -371,5 +362,5 @@ export default function resolve(ctx, args, entity, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Entity(env, entity);
+  return Value(env, entity);
 }
