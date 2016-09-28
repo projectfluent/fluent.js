@@ -27,14 +27,14 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('one');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[1]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be used as a selector', function(){
       const msg = ctx.messages.get('select');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[One]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
   });
 
@@ -69,7 +69,7 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('is detected to be non-complex', function(){
@@ -81,49 +81,49 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('placeable-literal');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Foo] Bar`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a value of an entity referenced in a placeable', function(){
       const msg = ctx.messages.get('placeable-entity');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Foo] Bar`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a selector', function(){
       const msg = ctx.messages.get('selector-literal');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Member 1]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a value of an entity used as a selector', function(){
       const msg = ctx.messages.get('selector-entity');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Member 2]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be used as a trait value', function(){
       const msg = ctx.messages.get('bar').traits[0];
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Bar Trait');
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a value of a trait used in a placeable', function(){
       const msg = ctx.messages.get('placeable-trait');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Bar Trait]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a value of a trait used as a selector', function(){
       const msg = ctx.messages.get('selector-trait');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Member 3]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
   });
 
@@ -159,7 +159,7 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Foo] Bar`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('is detected to be complex', function(){
@@ -172,14 +172,14 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('placeable-literal');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[[Foo] Bar] Baz`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a value of an entity referenced in a placeable', function(){
       const msg = ctx.messages.get('placeable-entity');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[[Foo] Bar] Baz`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     // XXX FSI/PDI break the key matching
@@ -187,7 +187,7 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('selector-literal');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Member 1]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     // XXX FSI/PDI break the key matching
@@ -195,21 +195,21 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('selector-entity');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Member 2]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be used as a trait value', function(){
       const msg = ctx.messages.get('baz').traits[0];
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[[Foo] Bar] Baz Trait`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('can be a value of a trait used in a placeable', function(){
       const msg = ctx.messages.get('placeable-trait');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[[[Foo] Bar] Baz Trait]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     // XXX FSI/PDI break the key matching
@@ -217,7 +217,7 @@ describe('Primitives', function() {
       const msg = ctx.messages.get('selector-trait');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, bdi`[Member 3]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
   });

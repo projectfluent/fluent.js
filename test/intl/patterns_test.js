@@ -24,7 +24,7 @@ describe('Patterns', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
   });
 
@@ -43,7 +43,7 @@ describe('Patterns', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, bdi`[Foo] Bar`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('returns the raw string if the referenced entity is ' +
@@ -69,14 +69,14 @@ describe('Patterns', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, null);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('formats the trait', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg.traits[0], args, errs);
       assert.strictEqual(val, 'Foo Attr');
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
 
     it('formats ??? when the referenced entity has no value and no default',
@@ -144,7 +144,7 @@ describe('Patterns', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {sel: 'b'}, errs);
       assert.strictEqual(val, bdi`[Bar]`);
-      assert.deepEqual(errs, []);
+      assert.equal(errs.length, 0);
     });
   });
 

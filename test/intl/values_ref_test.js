@@ -56,28 +56,28 @@ describe('Referencing values', function(){
     const msg = ctx.messages.get('ref1');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, bdi`[Value 1]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the value even if traits are defined', function(){
     const msg = ctx.messages.get('ref2');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, bdi`[Value 2]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the value even if one trait is marked as default', function(){
     const msg = ctx.messages.get('ref3');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, bdi`[Value 3]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the default trait if there is no value', function(){
     const msg = ctx.messages.get('ref4');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, bdi`[B4]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('uses ??? if there is no value and no default', function(){
@@ -91,14 +91,14 @@ describe('Referencing values', function(){
     const msg = ctx.messages.get('ref6');
     const val = ctx.format(msg, args, errs)
     assert.strictEqual(val, bdi`[Value [6]]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the value if it is a pattern and there are traits', function(){
     const msg = ctx.messages.get('ref7');
     const val = ctx.format(msg, args, errs)
     assert.strictEqual(val, bdi`[Value [7]]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the traits if none is the default', function(){
@@ -108,7 +108,7 @@ describe('Referencing values', function(){
     const val_b = ctx.format(msg_b, args, errs)
     assert.strictEqual(val_a, bdi`[A2]`);
     assert.strictEqual(val_b, bdi`[B2]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the traits if one of them is the default', function(){
@@ -118,7 +118,7 @@ describe('Referencing values', function(){
     const val_b = ctx.format(msg_b, args, errs)
     assert.strictEqual(val_a, bdi`[A3]`);
     assert.strictEqual(val_b, bdi`[B3]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
   it('references the traits if they are patterns', function(){
@@ -128,7 +128,7 @@ describe('Referencing values', function(){
     const val_b = ctx.format(msg_b, args, errs)
     assert.strictEqual(val_a, bdi`[A[7]]`);
     assert.strictEqual(val_b, bdi`[B[7]]`);
-    assert.deepEqual(errs, []);
+    assert.equal(errs.length, 0);
   });
 
 });
