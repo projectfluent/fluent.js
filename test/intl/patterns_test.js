@@ -8,17 +8,13 @@ import { ftl, bdi } from '../util';
 describe('Patterns', function(){
   let ctx, args, errs;
 
-  before(function() {
-    ctx = new MessageContext('en-US');
-  });
-
   beforeEach(function() {
     errs = [];
   });
 
-
   describe('Simple string value', function(){
     before(function() {
+      ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = Foo
       `);
@@ -34,6 +30,7 @@ describe('Patterns', function(){
 
   describe('Complex string value', function(){
     before(function() {
+      ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = Foo
         bar = { foo } Bar
@@ -60,6 +57,7 @@ describe('Patterns', function(){
 
   describe('Complex string referencing an entity with null value', function(){
     before(function() {
+      ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo =
             [attr] Foo Attr
@@ -92,6 +90,7 @@ describe('Patterns', function(){
 
   describe('Cyclic reference', function(){
     before(function() {
+      ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = { bar }
         bar = { foo }
@@ -108,6 +107,7 @@ describe('Patterns', function(){
 
   describe('Cyclic self-reference', function(){
     before(function() {
+      ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = { foo }
       `);
@@ -123,6 +123,7 @@ describe('Patterns', function(){
 
   describe('Cyclic self-reference in a member', function(){
     before(function() {
+      ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = { $sel ->
             [a] { foo }
