@@ -103,11 +103,13 @@ function MemberExpression(env, {obj, key}) {
   const { ctx, errors } = env;
   const keyword = Value(env, key);
 
-  // Match the specified key against keys of each trait, in order.
-  for (const member of entity.traits) {
-    const memberKey = Value(env, member.key);
-    if (keyword.match(ctx, memberKey)) {
-      return member;
+  if (entity.traits) {
+    // Match the specified key against keys of each trait, in order.
+    for (const member of entity.traits) {
+      const memberKey = Value(env, member.key);
+      if (keyword.match(ctx, memberKey)) {
+        return member;
+      }
     }
   }
 
