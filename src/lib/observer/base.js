@@ -1,12 +1,5 @@
 import { getDirection } from '../../intl/locale';
 
-const reHtml = /[&<>]/g;
-const htmlEntities = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-};
-
 const observerConfig = {
   attributes: true,
   characterData: false,
@@ -393,10 +386,9 @@ export class LocalizationObserver {
   }
 
   getKeysForElement(element) {
-    const id = element.getAttribute('data-l10n-id');
-    const args = element.getAttribute('data-l10n-args');
-    const escapedArgs = args ?
-      JSON.parse(args.replace(reHtml, match => htmlEntities[match])) : null;
-    return [id, escapedArgs];
+    return [
+      element.getAttribute('data-l10n-id'),
+      JSON.parse(element.getAttribute('data-l10n-args'))
+    ];
   }
 }

@@ -18,8 +18,8 @@ import { L10nError } from './errors';
  * passed and if it has an error entry for the position we're in.
  *
  * If it doesn't, it means that we have a good translation for this key and
- * we return it.
- * If it does, we'll try to resolve the key using the passed `MessageContext`.
+ * we return it. If it does, we'll try to resolve the key using the passed
+ * `MessageContext`.
  *
  * In the end, we return an Object with resolved translations, errors and
  * a boolean indicating if there were any errors found.
@@ -30,19 +30,19 @@ import { L10nError } from './errors';
  * See `Localization.formatWithFallback` for more info on how this is used.
  *
  * @param {MessageContext} ctx
- * @param {String[]}       keys
+ * @param {Array<string>}  keys
  * @param {Function}       method
  * @param {{
- *   errors: L10nError[],
- *   hasErrors: Bool,
- *   translations: String[]|{value: String, attrs: Object}[]}} prev
+ *   errors: Array<Error>,
+ *   hasErrors: boolean,
+ *   translations: Array<string>|Array<{value: string, attrs: Object}>}} prev
  *
  * @returns {{
- *   errors: L10nError[],
- *   hasErrors: Bool,
- *   translations: String[]|{value: String, attrs: Object}[]}}
+ *   errors: Array<Error>,
+ *   hasErrors: boolean,
+ *   translations: Array<string>|Array<{value: string, attrs: Object}>}}
  */
-export function keysFromContext(ctx, keys, method, prev) {
+export function keysFromContext(method, sanitizeArgs, ctx, keys, prev) {
   const entityErrors = [];
   const current = {
     errors: new Array(keys.length),
@@ -55,7 +55,8 @@ export function keysFromContext(ctx, keys, method, prev) {
       return prev.translations[i];
     }
 
-    const translation = method(ctx, entityErrors, key[0], key[1]);
+    const args = sanitizeArgs(key[1]);
+    const translation = method(ctx, entityErrors, key[0], args);
     if (entityErrors.length) {
       current.errors[i] = entityErrors.slice();
       entityErrors.length = 0;
@@ -81,12 +82,11 @@ export function keysFromContext(ctx, keys, method, prev) {
  *
  * In both cases, an error is being added to the errors array.
  *
- * resolved entity or, as
- * @param {MessageContext} ctx
- * @param {Error[]}        errors
- * @param {String}         id
- * @param {Object}         args
- * @returns {String}
+ * @param   {MessageContext} ctx
+ * @param   {Array<Error>}   errors
+ * @param   {string}         id
+ * @param   {Object}         args
+ * @returns {string}
  */
 export function valueFromContext(ctx, errors, id, args) {
   const entity = ctx.messages.get(id);
@@ -105,21 +105,20 @@ export function valueFromContext(ctx, errors, id, args) {
  * This function is passed as a method to `keysFromContext` and resolve
  * a single L10n Entity using provided `MessageContext`.
  *
- * The function will return an object with a value and attributes of the entity.
+ * The function will return an object with a value and attributes of the
+ * entity.
  *
- * If the function fails to retrieve the entity,
- * the value is set to the ID of an entity, and attrs to `null`.
- * If formatting fails,
- * it will return a partially resolved value and attributes.
+ * If the function fails to retrieve the entity, the value is set to the ID of
+ * an entity, and attrs to `null`. If formatting fails, it will return
+ * a partially resolved value and attributes.
  *
  * In both cases, an error is being added to the errors array.
  *
- * resolved entity or, as
- * @param {MessageContext} ctx
- * @param {Error[]}        errors
- * @param {String}         id
- * @param {Object}         args
- * @returns {String}
+ * @param   {MessageContext} ctx
+ * @param   {Array<Error>}   errors
+ * @param   {String}         id
+ * @param   {Object}         args
+ * @returns {Object}
  */
 export function entityFromContext(ctx, errors, id, args) {
   const entity = ctx.messages.get(id);
