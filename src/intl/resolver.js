@@ -264,7 +264,7 @@ function FunctionReference(env, {name}) {
   const func = functions[name] || builtins[name];
 
   if (!func) {
-    errors.push(new ReferenceError(`Unknown built-in: ${name}()`));
+    errors.push(new ReferenceError(`Unknown function: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
