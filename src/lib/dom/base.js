@@ -129,7 +129,7 @@ export class Localization {
       return prev.translations;
     }
 
-    const current = keysFromContext(ctx, keys, method, prev);
+    const current = method(ctx, keys, prev);
 
     // `hasErrors` is a flag set by `keysFromContext` to notify about errors
     // during the formatting.  We can't just check the `length` of the `errors`
@@ -191,7 +191,7 @@ export class Localization {
   formatEntities(keys) {
     return this.interactive.then(
       bundles => this.formatWithFallback(
-        bundles, contexts.get(bundles[0]), keys, entityFromContext
+        bundles, contexts.get(bundles[0]), keys, entitiesFromContext
       )
     );
   }
@@ -222,7 +222,7 @@ export class Localization {
     );
     return this.interactive.then(
       bundles => this.formatWithFallback(
-        bundles, contexts.get(bundles[0]), keyTuples, valueFromContext
+        bundles, contexts.get(bundles[0]), keyTuples, valuesFromContext
       )
     );
   }
@@ -298,4 +298,77 @@ function createHeadContextWith(createContext, bundles) {
 function equal(bundles1, bundles2) {
   return bundles1.length === bundles2.length &&
     bundles1.every(({lang}, i) => lang === bundles2[i].lang);
+}
+
+// A regexp to sanitize HTML tags and entities.
+const reHtml = /[&<>]/g;
+const htmlEntities = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+};
+
+// Unicode bidi isolation characters.
+const FSI = '\u2068';
+const PDI = '\u2069';
+
+/**
+ * Sanitize string-typed arguments.
+ *
+ * Escape HTML tags and entities and wrap values in the Unicode Isolation Marks
+ * (FSI and PDI) to ensure the proper directionality of the interpolated text.
+ *
+ * @param   {Object} args
+ * @returns {Object}
+ * @private
+ */
+function sanitizeArgs(args) {
+  for (const name in args) {
+    const arg = args[name];
+    if (typeof arg === 'string') {
+      const value = arg.replace(reHtml, match => htmlEntities[match]);
+      args[name] = `${FSI}${value}${PDI}`;
+    }
+  }
+  return args;
+}
+
+/**
+ * A bound version of `keysFromContext` using `entityFromContext`.
+ *
+ * @param {MessageContext} ctx
+ * @param {Array<Array>}   keys
+ * @param {{
+ *   errors: Array<Error>,
+ *   hasErrors: boolean,
+ *   translations: Array<{value: string, attrs: Object}>
+ * }} prev
+ * @returns {{
+ *   errors: Array<Error>,
+ *   hasErrors: boolean,
+ *   translations: Array<{value: string, attrs: Object}>
+ * }}
+ * @private
+ */
+function entitiesFromContext(ctx, keys, prev) {
+  return keysFromContext(entityFromContext, sanitizeArgs, ctx, keys, prev);
+}
+
+/**
+ * A bound version of `keysFromContext` using `valueFromContext`.
+ *
+ * @param {MessageContext} ctx
+ * @param {Array<Array>}   keys
+ * @param {{
+ *   errors: Array<Error>,
+ *   hasErrors: boolean,
+ *   translations: Array<string>}} prev
+ * @returns {{
+ *   errors: Array<Error>,
+ *   hasErrors: boolean,
+ *   translations: Array<string>}}
+ * @private
+ */
+function valuesFromContext(ctx, keys, prev) {
+  return keysFromContext(valueFromContext, sanitizeArgs, ctx, keys, prev);
 }

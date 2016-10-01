@@ -35,10 +35,6 @@ import { FTLType, FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList }
   from './types';
 import builtins from './builtins';
 
-// Unicode bidi isolation characters.
-const FSI = '\u2068';
-const PDI = '\u2069';
-
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
 
@@ -329,9 +325,9 @@ function Pattern(env, ptn) {
             `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
           )
         );
-        result += FSI + str.substr(0, MAX_PLACEABLE_LENGTH) + PDI;
+        result += str.substr(0, MAX_PLACEABLE_LENGTH);
       } else {
-        result += FSI + str + PDI;
+        result += str;
       }
     }
   }
