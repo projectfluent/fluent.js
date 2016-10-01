@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Select expressions', function() {
   let ctx, args, errs;
@@ -26,7 +26,7 @@ describe('Select expressions', function() {
     it('selects the variant matching the selector', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[A]`);
+      assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
   });
@@ -45,7 +45,7 @@ describe('Select expressions', function() {
     it('selects the variant matching the selector', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[A]`);
+      assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
   });
@@ -64,7 +64,7 @@ describe('Select expressions', function() {
     it('formats to ???', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[???]`);
+      assert.equal(val, '???');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof RangeError); // no default
     });
@@ -84,7 +84,7 @@ describe('Select expressions', function() {
     it('selects the default variant', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[A]`);
+      assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
   });
@@ -103,7 +103,7 @@ describe('Select expressions', function() {
     it('formats ???', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[???]`);
+      assert.equal(val, '???');
       assert.equal(errs.length, 2);
       assert(errs[0] instanceof ReferenceError); // unknown entity
       assert(errs[1] instanceof RangeError); // no default
@@ -124,7 +124,7 @@ describe('Select expressions', function() {
     it('selects the default variant', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[A]`);
+      assert.equal(val, 'A');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown entity
     });

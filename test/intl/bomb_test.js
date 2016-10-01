@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe.skip('Reference bombs', function() {
   let ctx, args, errs;
@@ -33,7 +33,7 @@ describe.skip('Reference bombs', function() {
     it('does not expand all placeables', function() {
       const msg = ctx.messages.get('lolz');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`???`);
+      assert.equal(val, '???');
       assert.equal(errs.length, 1);
     });
   });

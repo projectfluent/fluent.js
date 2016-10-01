@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Primitives', function() {
   let ctx, args, errs;
@@ -26,14 +26,14 @@ describe('Primitives', function() {
     it('can be used in a placeable', function(){
       const msg = ctx.messages.get('one');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[1]`);
+      assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
 
     it('can be used as a selector', function(){
       const msg = ctx.messages.get('select');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[One]`);
+      assert.equal(val, 'One');
       assert.equal(errs.length, 0);
     });
   });
@@ -80,28 +80,28 @@ describe('Primitives', function() {
     it('can be used in a placeable', function(){
       const msg = ctx.messages.get('placeable-literal');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Foo] Bar`);
+      assert.equal(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
     it('can be a value of an entity referenced in a placeable', function(){
       const msg = ctx.messages.get('placeable-entity');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Foo] Bar`);
+      assert.equal(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
     it('can be a selector', function(){
       const msg = ctx.messages.get('selector-literal');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Member 1]`);
+      assert.equal(val, 'Member 1');
       assert.equal(errs.length, 0);
     });
 
     it('can be a value of an entity used as a selector', function(){
       const msg = ctx.messages.get('selector-entity');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Member 2]`);
+      assert.equal(val, 'Member 2');
       assert.equal(errs.length, 0);
     });
 
@@ -115,14 +115,14 @@ describe('Primitives', function() {
     it('can be a value of a trait used in a placeable', function(){
       const msg = ctx.messages.get('placeable-trait');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Bar Trait]`);
+      assert.equal(val, 'Bar Trait');
       assert.equal(errs.length, 0);
     });
 
     it('can be a value of a trait used as a selector', function(){
       const msg = ctx.messages.get('selector-trait');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Member 3]`);
+      assert.equal(val, 'Member 3');
       assert.equal(errs.length, 0);
     });
   });
@@ -158,7 +158,7 @@ describe('Primitives', function() {
     it('can be used as a value', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Foo] Bar`);
+      assert.equal(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
@@ -171,52 +171,49 @@ describe('Primitives', function() {
     it('can be used in a placeable', function(){
       const msg = ctx.messages.get('placeable-literal');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[[Foo] Bar] Baz`);
+      assert.equal(val, 'Foo Bar Baz');
       assert.equal(errs.length, 0);
     });
 
     it('can be a value of an entity referenced in a placeable', function(){
       const msg = ctx.messages.get('placeable-entity');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[[Foo] Bar] Baz`);
+      assert.equal(val, 'Foo Bar Baz');
       assert.equal(errs.length, 0);
     });
 
-    // XXX FSI/PDI break the key matching
-    it.skip('can be a selector', function(){
+    it('can be a selector', function(){
       const msg = ctx.messages.get('selector-literal');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Member 1]`);
+      assert.equal(val, 'Member 1');
       assert.equal(errs.length, 0);
     });
 
-    // XXX FSI/PDI break the key matching
-    it.skip('can be a value of an entity used as a selector', function(){
+    it('can be a value of an entity used as a selector', function(){
       const msg = ctx.messages.get('selector-entity');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Member 2]`);
+      assert.equal(val, 'Member 2');
       assert.equal(errs.length, 0);
     });
 
     it('can be used as a trait value', function(){
       const msg = ctx.messages.get('baz').traits[0];
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[[Foo] Bar] Baz Trait`);
+      assert.equal(val, 'Foo Bar Baz Trait');
       assert.equal(errs.length, 0);
     });
 
     it('can be a value of a trait used in a placeable', function(){
       const msg = ctx.messages.get('placeable-trait');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[[[Foo] Bar] Baz Trait]`);
+      assert.equal(val, 'Foo Bar Baz Trait');
       assert.equal(errs.length, 0);
     });
 
-    // XXX FSI/PDI break the key matching
-    it.skip('can be a value of a trait used as a selector', function(){
+    it('can be a value of a trait used as a selector', function(){
       const msg = ctx.messages.get('selector-trait');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Member 3]`);
+      assert.equal(val, 'Member 3');
       assert.equal(errs.length, 0);
     });
 

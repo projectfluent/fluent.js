@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import '../../src/intl/polyfill';
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('External arguments', function() {
   let ctx, errs;
@@ -30,28 +30,28 @@ describe('External arguments', function() {
     it('can be used in the entity value', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`Foo [3]`);
+      assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     it('can be used in the entity value which is referenced', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`[Foo [3]]`);
+      assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     it('can be used in a trait', function() {
       const msg = ctx.messages.get('baz').traits[0];
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`Baz Trait [3]`);
+      assert.equal(val, 'Baz Trait 3');
       assert.equal(errs.length, 0);
     });
 
     it('can be used in a variant', function() {
       const msg = ctx.messages.get('qux');
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`[Baz Variant A [3]]`);
+      assert.equal(val, 'Baz Variant A 3');
       assert.equal(errs.length, 0);
     });
   });
@@ -69,7 +69,7 @@ describe('External arguments', function() {
     it('can be used as a selector', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`[Foo]`);
+      assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
   });
@@ -86,14 +86,14 @@ describe('External arguments', function() {
     it('can be a positional argument', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`[3]`);
+      assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });
 
     it('can be a keyed argument', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, bdi`[1.000]`);
+      assert.equal(val, '1.000');
       assert.equal(errs.length, 0);
     });
   });
@@ -109,42 +109,42 @@ describe('External arguments', function() {
     it('falls back to argument\'s name if it\'s missing', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {}, errs);
-      assert.equal(val, bdi`[arg]`);
+      assert.equal(val, 'arg');
       assert(errs[0] instanceof ReferenceError); // unknown external
     });
 
     it('cannot be an dict-like object', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: { prop: 1 } }, errs);
-      assert.equal(val, bdi`[arg]`);
+      assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     it('cannot be a boolean', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: true }, errs);
-      assert.equal(val, bdi`[arg]`);
+      assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     it('cannot be undefined', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: undefined }, errs);
-      assert.equal(val, bdi`[arg]`);
+      assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     it('cannot be null', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: null }, errs);
-      assert.equal(val, bdi`[arg]`);
+      assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     it('cannot be a function', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: () => null }, errs);
-      assert.equal(val, bdi`[arg]`);
+      assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
   });
@@ -165,7 +165,7 @@ describe('External arguments', function() {
     it('can be a string', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Argument]`);
+      assert.equal(val, 'Argument');
       assert.equal(errs.length, 0);
     });
   });
@@ -186,7 +186,7 @@ describe('External arguments', function() {
     it('can be a number', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[1]`);
+      assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
   });
@@ -209,14 +209,14 @@ describe('External arguments', function() {
     it('can be an array of strings', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[a, b]`);
+      assert.equal(val, 'a, b');
       assert.equal(errs.length, 0);
     });
 
     it.skip('can be an array of strings and numbers', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[a, 1]`);
+      assert.equal(val, 'a, 1');
       assert.equal(errs.length, 0);
     });
   });
@@ -237,7 +237,7 @@ describe('External arguments', function() {
     it('can be an array', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[9/29/2016]`);
+      assert.equal(val, '9/29/2016');
       assert.equal(errs.length, 0);
     });
   });

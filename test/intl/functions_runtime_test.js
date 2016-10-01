@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import '../../src/intl/polyfill';
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Runtime-specific functions', function() {
   let ctx, args, errs;
@@ -30,14 +30,14 @@ describe('Runtime-specific functions', function() {
     it('works for strings', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[FooBar]`);
+      assert.equal(val, 'FooBar');
       assert.equal(errs.length, 0);
     });
 
     it.skip('works for numbers', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[3]`);
+      assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });
   });

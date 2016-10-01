@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Context', function() {
   let ctx, args, errs;

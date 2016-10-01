@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import '../../src/intl/polyfill';
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Built-in functions', function() {
   let ctx, args, errs;
@@ -24,7 +24,7 @@ describe('Built-in functions', function() {
     it('formats the number', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[1]`);
+      assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
   });
@@ -46,21 +46,21 @@ describe('Built-in functions', function() {
     it('formats the number', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[1]`);
+      assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
 
     it('matches the number', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Bar]`);
+      assert.equal(val, 'Bar');
       assert.equal(errs.length, 0);
     });
 
     it('matches the plural category', function() {
       const msg = ctx.messages.get('baz');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Baz]`);
+      assert.equal(val, 'Baz');
       assert.equal(errs.length, 0);
     });
   });
@@ -76,7 +76,7 @@ describe('Built-in functions', function() {
     it('formats the plural category', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { date: new Date('2016-09-29') }, errs);
-      assert.equal(val, bdi`[9/29/2016]`);
+      assert.equal(val, '9/29/2016');
       assert.equal(errs.length, 0);
     });
   });
@@ -92,7 +92,7 @@ describe('Built-in functions', function() {
     it('formats the list', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[a, b]`);
+      assert.equal(val, 'a, b');
       assert.equal(errs.length, 0);
     });
   });
@@ -109,14 +109,14 @@ describe('Built-in functions', function() {
     it('returns the length of an array argument', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: ['a', 'b'] }, errs);
-      assert.equal(val, bdi`[2]`);
+      assert.equal(val, '2');
       assert.equal(errs.length, 0);
     });
 
     it('returns the length of a constructed LIST', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[2]`);
+      assert.equal(val, '2');
       assert.equal(errs.length, 0);
     });
   });
@@ -133,14 +133,14 @@ describe('Built-in functions', function() {
     it('returns first elements of an array argument', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: ['a', 'b', 'c'] }, errs);
-      assert.equal(val, bdi`[a, b]`);
+      assert.equal(val, 'a, b');
       assert.equal(errs.length, 0);
     });
 
     it('returns first elements of a constructed LIST', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[a, b]`);
+      assert.equal(val, 'a, b');
       assert.equal(errs.length, 0);
     });
   });
@@ -157,14 +157,14 @@ describe('Built-in functions', function() {
     it('drops first elements of an array argument', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: ['a', 'b', 'c'] }, errs);
-      assert.equal(val, bdi`[c]`);
+      assert.equal(val, 'c');
       assert.equal(errs.length, 0);
     });
 
     it('drops first elements of a constructed LIST', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[c]`);
+      assert.equal(val, 'c');
       assert.equal(errs.length, 0);
     });
   });

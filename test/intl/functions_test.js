@@ -4,7 +4,7 @@ import assert from 'assert';
 
 import '../../src/intl/polyfill';
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Functions', function() {
   let ctx, args, errs;
@@ -24,7 +24,7 @@ describe('Functions', function() {
     it('falls back to the name of the function', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[MISSING()]`);
+      assert.equal(val, 'MISSING()');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown function
     });
@@ -53,7 +53,7 @@ describe('Functions', function() {
     it.skip('falls back when arguments don\'t match the arity', function() {
       const msg = ctx.messages.get('pass-nothing');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[IDENTITY()]`);
+      assert.equal(val, 'IDENTITY()');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof RangeError); // wrong argument type
     });
@@ -61,42 +61,42 @@ describe('Functions', function() {
     it('accepts strings', function() {
       const msg = ctx.messages.get('pass-string');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[a]`);
+      assert.equal(val, 'a');
       assert.equal(errs.length, 0);
     });
 
     it('accepts numbers', function() {
       const msg = ctx.messages.get('pass-number');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[1]`);
+      assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
 
     it('accepts entities', function() {
       const msg = ctx.messages.get('pass-entity');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Foo]`);
+      assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
 
     it.skip('accepts traits', function() {
       const msg = ctx.messages.get('pass-trait');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[Trait]`);
+      assert.equal(val, 'Trait');
       assert.equal(errs.length, 0);
     });
 
     it('accepts externals', function() {
       const msg = ctx.messages.get('pass-external');
       const val = ctx.format(msg, { ext: "Ext" }, errs);
-      assert.equal(val, bdi`[Ext]`);
+      assert.equal(val, 'Ext');
       assert.equal(errs.length, 0);
     });
 
     it('accepts function calls', function() {
       const msg = ctx.messages.get('pass-function-call');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, bdi`[1]`);
+      assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
   });

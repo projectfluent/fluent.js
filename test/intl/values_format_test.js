@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Formatting values', function(){
   let ctx, args, errs;
@@ -82,7 +82,7 @@ describe('Formatting values', function(){
   it('returns the value if it is a pattern', function(){
     const msg = ctx.messages.get('key6');
     const val = ctx.format(msg, args, errs)
-    assert.strictEqual(val, bdi`Value [6]`);
+    assert.strictEqual(val, 'Value 6');
     assert.equal(errs.length, 0);
   });
 
@@ -91,7 +91,7 @@ describe('Formatting values', function(){
     const vals = msg.traits.map(
       trait => ctx.format(trait, args, errs)
     );
-    assert.deepEqual(vals, [bdi`A[7]`, bdi`B[7]`]);
+    assert.deepEqual(vals, ['A7', 'B7']);
     assert.equal(errs.length, 0);
   });
 

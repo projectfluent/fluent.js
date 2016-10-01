@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Patterns', function(){
   let ctx, args, errs;
@@ -42,7 +42,7 @@ describe('Patterns', function(){
     it('returns the value', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[Foo] Bar`);
+      assert.strictEqual(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
@@ -50,7 +50,7 @@ describe('Patterns', function(){
        'not found', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[missing]`);
+      assert.strictEqual(val, 'missing');
       assert.ok(errs[0] instanceof ReferenceError); // unknown entity
     });
   });
@@ -83,7 +83,7 @@ describe('Patterns', function(){
        function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[???] Bar`);
+      assert.strictEqual(val, '??? Bar');
       assert.ok(errs[0] instanceof RangeError); // no default
     });
   });
@@ -100,7 +100,7 @@ describe('Patterns', function(){
     it('returns ???', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[[???]]`);
+      assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -116,7 +116,7 @@ describe('Patterns', function(){
     it('returns the raw string', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[???]`);
+      assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -136,14 +136,14 @@ describe('Patterns', function(){
     it('returns ???', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {sel: 'a'}, errs);
-      assert.strictEqual(val, bdi`[[???]]`);
+      assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     it('returns the other member if requested', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {sel: 'b'}, errs);
-      assert.strictEqual(val, bdi`[Bar]`);
+      assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
     });
   });
@@ -169,14 +169,14 @@ describe('Patterns', function(){
     it('returns ???', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[???]`);
+      assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     it('returns the default variant', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[Bar B]`);
+      assert.strictEqual(val, 'Bar B');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -204,21 +204,21 @@ describe('Patterns', function(){
     it('returns ???', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[???]`);
+      assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     it('returns the default variant', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[Bar B]`);
+      assert.strictEqual(val, 'Bar B');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     it('can reference a trait', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, bdi`[Baz]`);
+      assert.strictEqual(val, 'Baz');
       assert.equal(errs.length, 0);
     });
   });

@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../../src/intl/context';
-import { ftl, bdi } from '../util';
+import { ftl } from '../util';
 
 describe('Referencing values', function(){
   let ctx, args, errs;
@@ -55,49 +55,49 @@ describe('Referencing values', function(){
   it('references the value when no traits are defined', function(){
     const msg = ctx.messages.get('ref1');
     const val = ctx.format(msg, args, errs);
-    assert.equal(val, bdi`[Value 1]`);
+    assert.equal(val, 'Value 1');
     assert.equal(errs.length, 0);
   });
 
   it('references the value even if traits are defined', function(){
     const msg = ctx.messages.get('ref2');
     const val = ctx.format(msg, args, errs);
-    assert.equal(val, bdi`[Value 2]`);
+    assert.equal(val, 'Value 2');
     assert.equal(errs.length, 0);
   });
 
   it('references the value even if one trait is marked as default', function(){
     const msg = ctx.messages.get('ref3');
     const val = ctx.format(msg, args, errs);
-    assert.equal(val, bdi`[Value 3]`);
+    assert.equal(val, 'Value 3');
     assert.equal(errs.length, 0);
   });
 
   it('references the default trait if there is no value', function(){
     const msg = ctx.messages.get('ref4');
     const val = ctx.format(msg, args, errs);
-    assert.equal(val, bdi`[B4]`);
+    assert.equal(val, 'B4');
     assert.equal(errs.length, 0);
   });
 
   it('uses ??? if there is no value and no default', function(){
     const msg = ctx.messages.get('ref5');
     const val = ctx.format(msg, args, errs);
-    assert.strictEqual(val, bdi`[???]`);
+    assert.strictEqual(val, '???');
     assert.ok(errs[0] instanceof RangeError); // no default
   });
 
   it('references the value if it is a pattern', function(){
     const msg = ctx.messages.get('ref6');
     const val = ctx.format(msg, args, errs)
-    assert.strictEqual(val, bdi`[Value [6]]`);
+    assert.strictEqual(val, 'Value 6');
     assert.equal(errs.length, 0);
   });
 
   it('references the value if it is a pattern and there are traits', function(){
     const msg = ctx.messages.get('ref7');
     const val = ctx.format(msg, args, errs)
-    assert.strictEqual(val, bdi`[Value [7]]`);
+    assert.strictEqual(val, 'Value 7');
     assert.equal(errs.length, 0);
   });
 
@@ -106,8 +106,8 @@ describe('Referencing values', function(){
     const msg_b = ctx.messages.get('ref9');
     const val_a = ctx.format(msg_a, args, errs)
     const val_b = ctx.format(msg_b, args, errs)
-    assert.strictEqual(val_a, bdi`[A2]`);
-    assert.strictEqual(val_b, bdi`[B2]`);
+    assert.strictEqual(val_a, 'A2');
+    assert.strictEqual(val_b, 'B2');
     assert.equal(errs.length, 0);
   });
 
@@ -116,8 +116,8 @@ describe('Referencing values', function(){
     const msg_b = ctx.messages.get('ref11');
     const val_a = ctx.format(msg_a, args, errs)
     const val_b = ctx.format(msg_b, args, errs)
-    assert.strictEqual(val_a, bdi`[A3]`);
-    assert.strictEqual(val_b, bdi`[B3]`);
+    assert.strictEqual(val_a, 'A3');
+    assert.strictEqual(val_b, 'B3');
     assert.equal(errs.length, 0);
   });
 
@@ -126,8 +126,8 @@ describe('Referencing values', function(){
     const msg_b = ctx.messages.get('ref13');
     const val_a = ctx.format(msg_a, args, errs)
     const val_b = ctx.format(msg_b, args, errs)
-    assert.strictEqual(val_a, bdi`[A[7]]`);
-    assert.strictEqual(val_b, bdi`[B[7]]`);
+    assert.strictEqual(val_a, 'A7');
+    assert.strictEqual(val_b, 'B7');
     assert.equal(errs.length, 0);
   });
 
