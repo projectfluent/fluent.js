@@ -388,7 +388,9 @@ export class LocalizationObserver {
   getKeysForElement(element) {
     return [
       element.getAttribute('data-l10n-id'),
-      JSON.parse(element.getAttribute('data-l10n-args'))
+      // In XUL documents missing attributes return `''` here which breaks
+      // JSON.parse.  HTML documents return `null`.
+      JSON.parse(element.getAttribute('data-l10n-args') || null)
     ];
   }
 }
