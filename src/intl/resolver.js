@@ -57,7 +57,7 @@ function mapValues(env, arr) {
 /**
  * Helper for choosing the default value from a set of members.
  *
- * Used in SelectExpressions and Entity.
+ * Used in SelectExpressions and Value.
  *
  * @private
  */
@@ -103,16 +103,18 @@ function MemberExpression(env, {obj, key}) {
   const { ctx, errors } = env;
   const keyword = Value(env, key);
 
-  // Match the specified key against keys of each trait, in order.
-  for (const member of entity.traits) {
-    const memberKey = Value(env, member.key);
-    if (keyword.match(ctx, memberKey)) {
-      return member;
+  if (entity.traits) {
+    // Match the specified key against keys of each trait, in order.
+    for (const member of entity.traits) {
+      const memberKey = Value(env, member.key);
+      if (keyword.match(ctx, memberKey)) {
+        return member;
+      }
     }
   }
 
   errors.push(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
-  return Entity(env, entity);
+  return Value(env, entity);
 }
 
 /**
@@ -172,6 +174,7 @@ function Value(env, expr) {
     return Pattern(env, expr);
   }
 
+
   switch (expr.type) {
     case 'kw':
       return new FTLKeyword(expr);
@@ -189,14 +192,23 @@ function Value(env, expr) {
     }
     case 'mem': {
       const member = MemberExpression(env, expr);
-      return Value(env, member.val);
+      return Value(env, member);
     }
     case 'sel': {
       const member = SelectExpression(env, expr);
-      return Value(env, member.val);
+      return Value(env, member);
+    }
+    case undefined: {
+      // If it's a node with a value, resolve the value.
+      if (expr.val !== undefined) {
+        return Value(env, expr.val);
+      }
+
+      const def = DefaultMember(env, expr.traits, expr.def);
+      return Value(env, def);
     }
     default:
-      return Entity(env, expr);
+      return new FTLNone();
   }
 }
 
@@ -252,7 +264,7 @@ function FunctionReference(env, {name}) {
   const func = functions[name] || builtins[name];
 
   if (!func) {
-    errors.push(new ReferenceError(`Unknown built-in: ${name}()`));
+    errors.push(new ReferenceError(`Unknown function: ${name}()`));
     return new FTLNone(`${name}()`);
   }
 
@@ -337,20 +349,6 @@ function Pattern(env, ptn) {
 }
 
 /**
- * Resolve an Entity.
- *
- * @private
- */
-function Entity(env, entity) {
-  if (entity.val !== undefined) {
-    return Value(env, entity.val);
-  }
-
-  const def = DefaultMember(env, entity.traits, entity.def);
-  return Value(env, def);
-}
-
-/**
  * Format a translation into an `FTLType`.
  *
  * The return value must be sringified with its `toString` method by the
@@ -366,5 +364,5 @@ export default function resolve(ctx, args, entity, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Entity(env, entity);
+  return Value(env, entity);
 }

@@ -25,7 +25,8 @@ test-lib:
 	    --recursive \
 	    --reporter dot \
 	    --require ./test/compat \
-	    test/lib/parser/ftl
+	    test/lib/parser/ftl \
+	    test/intl/**/*_test.js
 
 test-browser:
 	karma start test/karma.conf.js
