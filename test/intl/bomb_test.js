@@ -5,7 +5,7 @@ import assert from 'assert';
 import { MessageContext } from '../../src/intl/context';
 import { ftl } from '../util';
 
-describe.skip('Reference bombs', function() {
+describe('Reference bombs', function() {
   let ctx, args, errs;
 
   beforeEach(function() {
@@ -30,7 +30,9 @@ describe.skip('Reference bombs', function() {
       `);
     });
 
-    it('does not expand all placeables', function() {
+    // XXX Protect the FTL Resolver against the billion laughs attack
+    // https://bugzil.la/1307126
+    it.skip('does not expand all placeables', function() {
       const msg = ctx.messages.get('lolz');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '???');

@@ -13,7 +13,7 @@ describe('Runtime-specific functions', function() {
     errs = [];
   });
 
-  describe('constructor', function(){
+  describe('passing into the constructor', function(){
     before(function() {
       ctx = new MessageContext('en-US', {
         functions: {
@@ -34,6 +34,8 @@ describe('Runtime-specific functions', function() {
       assert.equal(errs.length, 0);
     });
 
+    // XXX When passed as external args, convert JS types to FTL types
+    // https://bugzil.la/1307116
     it.skip('works for numbers', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);

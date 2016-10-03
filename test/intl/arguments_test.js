@@ -213,6 +213,8 @@ describe('External arguments', function() {
       assert.equal(errs.length, 0);
     });
 
+    // XXX When passed as external args, convert JS types to FTL types
+    // https://bugzil.la/1307116
     it.skip('can be an array of strings and numbers', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);

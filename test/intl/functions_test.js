@@ -50,6 +50,8 @@ describe('Functions', function() {
       `);
     });
 
+    // XXX Gracefully handle wrong argument types passed into FTL Functions
+    // https://bugzil.la/1307124
     it.skip('falls back when arguments don\'t match the arity', function() {
       const msg = ctx.messages.get('pass-nothing');
       const val = ctx.format(msg, args, errs);
@@ -79,6 +81,8 @@ describe('Functions', function() {
       assert.equal(errs.length, 0);
     });
 
+    // XXX Accept complex types (e.g. members) as arguments to FTL Functions
+    // https://bugzil.la/1307120
     it.skip('accepts traits', function() {
       const msg = ctx.messages.get('pass-trait');
       const val = ctx.format(msg, args, errs);
