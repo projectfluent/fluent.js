@@ -224,9 +224,10 @@ describe('External arguments', function() {
   });
 
   describe('and dates', function(){
-    let args;
+    let args, dtf;
 
     before(function() {
+      dtf = new Intl.DateTimeFormat('en-US');
       ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = { $arg }
@@ -236,10 +237,11 @@ describe('External arguments', function() {
       };
     });
 
-    it('can be an array', function(){
+    it('can be a date', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, '9/29/2016');
+      // format the date argument to account for the testrunner's timezone
+      assert.equal(val, dtf.format(args.arg));
       assert.equal(errs.length, 0);
     });
   });

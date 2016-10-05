@@ -66,17 +66,22 @@ describe('Built-in functions', function() {
   });
 
   describe('DATETIME', function(){
+    let dtf;
+
     before(function() {
+      dtf = new Intl.DateTimeFormat('en-US');
       ctx = new MessageContext('en-US');
       ctx.addMessages(ftl`
         foo = { DATETIME($date) }
       `);
     });
 
-    it('formats the plural category', function() {
+    it('formats the date', function() {
+      const date = new Date('2016-09-29');
       const msg = ctx.messages.get('foo');
-      const val = ctx.format(msg, { date: new Date('2016-09-29') }, errs);
-      assert.equal(val, '9/29/2016');
+      const val = ctx.format(msg, { date }, errs);
+      // format the date argument to account for the testrunner's timezone
+      assert.equal(val, dtf.format(date));
       assert.equal(errs.length, 0);
     });
   });
