@@ -1,5 +1,4 @@
 import { contexts } from '../../lib/dom/base';
-import { valueFromContext } from '../../lib/format';
 
 export {
   documentReady as HTMLDocumentReady, getResourceLinks
@@ -16,14 +15,6 @@ export function XULDocumentReady() {
       resolve();
     });
   });
-}
-
-export function createGetValue(bundles) {
-  return function (id, args) {
-    const ctx = contexts.get(bundles[0]);
-    const [value] = valueFromContext(ctx, id, args);
-    return value;
-  };
 }
 
 // create nsIObserver's observe method bound to a LocalizationObserver obs
