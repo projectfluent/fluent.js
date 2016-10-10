@@ -1,6 +1,5 @@
 import { XULLocalization } from '../../lib/dom/xul';
 import { ChromeResourceBundle } from './io';
-import { createObserve } from './util';
 
 this.EXPORTED_SYMBOLS = ['createLocalization', 'destroyLocalization'];
 
@@ -46,10 +45,6 @@ function createLocalization(name, resIds, host, obs) {
     }
 
     const l10n = new XULLocalization(requestBundles, createContext);
-    l10n.observe = createObserve(obs);
-    Services.obs.addObserver(l10n, 'language-registry-update', false);
-    Services.obs.addObserver(l10n, 'language-registry-incremental', false);
-
     obs.set(name, l10n);
   }
 
@@ -59,13 +54,7 @@ function createLocalization(name, resIds, host, obs) {
 }
 
 function destroyLocalization(name, host, obs) {
-  const l10n = obs.get(name);
-  const wasLast = obs.disconnectRoot(host);
-
-  if (wasLast) {
-    Services.obs.removeObserver(l10n, 'language-registry-update');
-    Services.obs.removeObserver(l10n, 'language-registry-incremental');
-  }
+  obs.disconnectRoot(host);
 }
 
 this.createLocalization = createLocalization;
