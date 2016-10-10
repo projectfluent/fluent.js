@@ -2,7 +2,7 @@ import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
 import { HTMLLocalization } from '../../lib/dom/html';
 
 import { ChromeResourceBundle } from './io';
-import { HTMLDocumentReady, getResourceLinks, createObserve } from './util';
+import { HTMLDocumentReady, getResourceLinks } from './util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
@@ -69,22 +69,6 @@ function createLocalization(name, resIds) {
   }
 
   const l10n = new HTMLLocalization(requestBundles, createContext);
-
-  // This creates nsIObserver's observe method bound to `LocalizationObserver`
-  l10n.observe = createObserve(document.l10n);
-
-  // This adds observer handlers on our custom events that will be triggered
-  // when L10nRegistry notifies on resource updates.
-  window.addEventListener('pageshow', () => {
-    Services.obs.addObserver(l10n, 'language-registry-update', false);
-    Services.obs.addObserver(l10n, 'language-registry-incremental', false);
-  });
-
-  window.addEventListener('pagehide', () => {
-    Services.obs.removeObserver(l10n, 'language-registry-update');
-    Services.obs.removeObserver(l10n, 'language-registry-incremental');
-  });
-
   document.l10n.set(name, l10n);
 
   if (name === 'main') {
