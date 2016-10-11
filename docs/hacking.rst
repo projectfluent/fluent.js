@@ -2,273 +2,263 @@
 Hacking
 =======
 
-L20n library is a combination of three layers of APIs built on top of each other.
-The intention is for the user to be able to use just the first or first and the second
-layer separately.
+This document is intended as a guide for people interested in contributing to 
+l20n.js or curious about its inner workings.  It presents an overview of the 
+architecture of l20n.js.
 
-Each layer has different external dependencies and is intended to tie better into the
-host and client environments.
+The l20n.js library is built as a combination of three layers of APIs stacked on 
+top of each other.  This modularization allows l20n.js to support many 
+different environments and platforms.
 
-Intl API
-========
+Intl
+    The low-level API providing single-purpose building blocks for l20n.js.
 
-The bottom layer is completely dependency-free and environment independent.
-It's shaped similarly to `ICU MessageFormat`_ API.
+Localization
+    The main l20n.js class responsible for language negotiation, resource 
+    loading and the fallback strategy.
+
+LocalizationObserver
+    The manager class used to bind to the host environment.
+
+Each layer has different external dependencies and is intended to tie better 
+into the host and client environments.  In addition to the above three layers 
+there's also the so-called runtime code which is responsible for instantiating 
+the proper classes, attaching event listeners and triggering the initial 
+translation of the UI.
+
+
+The Intl API
+============
+
+L20n.js builds on top of the JavaScript Intl API (ECMA 402).  L20n.js uses 
+``Intl.NumberFormat`` to format numbers in a locale-aware manner and 
+``Intl.DateTimeFormat`` to format dates.  Other features are implemented as 
+extensions to the Intl API modeled after the existing ECMA specifications.  We
+work with ECMA to enhance the APIs which address the needs of L20n and other 
+libraries needing access to internationalized data.
+
+``ListFormat``
+    Provides a way to format lists and enumerations in a locale-aware manner.  
+    Proposed to ECMA 402 as `Intl.ListFormat`_.
+
+``PluralRules``
+    Returns CLDR plural categories (zero, one, two, few, many, other) using the
+    given locale's plural rule. Proposed to ECMA 402 as `Intl.PluralRules`_.
+
+``MessageContext``
+    Formats translations to strings allowing for interpolating external 
+    arguments passed in by the developer and some more logic if needed.
+
 
 Entity
 ------
 
-A single localization unit in L20n vocabulary is called an entity.
-An entity is an ``Object`` with three fields:
+A single localization unit in ``MessageContext`` is called an entity.  An entity 
+has an identifier, a value and traits.
 
-:id:
-    An identifier
+id
+    The unique identifier of the entity.
 
-:value:
-    A value that may be a simple or more complex computable string.
+value
+    The entity's value. It may be null.
 
-:traits:
+traits
     A list of key-value pairs that can be providing additional data for the entity like
-    attributes or variants.
+    attributes or variants. It may be empty.
 
-Entities are encoded in a source format named FTL. L20n provides two parsers for the
-format. The full AST parser is available for tools and external users who need
-access to the full AST of the file.
-For runtime purposes, L20n uses a smaller and faster Entries parser, which
-has many optimizations that target performance and smaller memory footprint.
+Entities are encoded in a source format named FTL. l20n.js has two FTL parsers.
+The full AST parser is available for tools and external consumers who need
+access to the full AST.  For runtime purposes, l20n.js uses a smaller and 
+faster Runtime parser, which has many optimizations that target performance and 
+smaller memory footprint.
+
 
 MessageContext
 --------------
 
-``MessageContext`` is a synchronous single-locale Map and doesn't provide any fallback.
+``MessageContext`` is a synchronous single-locale map of translations.  It can 
+format translations to strings.
 
-It parses source string into a list of messages, and allows the user to retrieve
-``Entity`` objects formatted using environmental variables, user provided arguments,
-other messages in the context and any syntax that the format allows for.
+Translations must be defined in the `FTL syntax`_ and can be added with the 
+``addMessages`` method.  They are internally parsed into a lazy intermittent 
+form and then formatted only on retrieval.  The ``format`` method allows the 
+user to format them using environmental variables, user-provided arguments, 
+other messages in the current context and any other syntax that the format 
+allows.
 
-The entities are parsed into a lazy intermittent form and then formatted
-and cached only on retrieval.
+Translation resources may come from a third party and need not go through 
+a review.  Translations are thus considered untrusted.  ``MessageContext`` has been 
+designed to be resilient to formatting errors.  If a translation contains 
+errors, ``MessageContext`` will try to salvage as much of the translation as 
+possible and will still return a string.
 
-
-``MessageContext`` has two methods:
-
-:constructor(lang, options):
-    lang
-        a language tag string
-    options 
-        functions
-            an object with environmental function that are going to be available
-            from within the entities.
-    
-:addMessages(source):
-    takes a localization file source (at the moment FTL file format is supported),
-    parses the source into localization messages and stores them.
-
-:format(entity, args, errors):
-    fromats a message and returns it as an Object.
+The ``format`` method of ``MessageContext`` takes an additional parameter, 
+``errors``, which if provided must be an Array to which errors will be pushed.
 
 Example::
 
-  const brandStrings = `brandName = Loki`;
+  // Remove indentation from FTL samples below.
+  const ftl = ([text]) => text.replace(/^\s*/mg, '');
 
-  const strings = `
-
-  hello-world = Hello { $userName }! Welcome to { brandName } 
-  open-pref = { OS() ->
-    [mac] Open Preferences
-   *[other] Open Settings 
-  }
-
+  // Define two translation resources.
+  const brandTranslations = ftl`
+      brand-name = Loki
+  `;
+  const mainTranslations = ftl`
+      hello-world = Hello { $username }! Welcome to { brand-name } 
+      open-pref = { OS() ->
+          [darwin] Open Preferences
+         *[other]  Open Settings 
+      }
   `;
 
+  // Create the MessageContext instance with a custom OS function.
   const mc = new MessageContext('en-US', {
     functions: {
       'OS': function() {
-        return env.platform;
+        return process.platform;
       }
     }
   });
 
-  mc.addMessages(brandStrings);
-  mc.addMessages(strings);
+  // Add and parse the FTL translations.
+  mc.addMessages(brandTranslations);
+  mc.addMessages(mainTranslations);
+
+  // An array for collection formatting errors.
+  const errors = [];
 
   const str1 = mc.format('hello-world', {
-    userName: 'John'
-  });
+    username: 'John'
+  }, errors);
 
-  // str1 === "Hello John! welcome to Loki"
+  // str1 === "Hello John! Welcome to Loki"
+  // errors.length == 0
 
-Localization API
-===================
+  const str2 = mc.format('hello-world', null, errors);
 
-Second layer has two fundamental features over the first one.
-It interacts with environment by using I/O to load resources and it is multi-lignual
-with language fallbacking.
+  // str1 === "Hello username! Welcome to Loki"
+  // errors.length == 1
+  // errors[0] is a <ReferenceError: Unknown external: username>
 
-Due to those two differences, it's fully asynchronous.
 
-ResourceBundle
---------------
+The Localization API
+====================
 
-A bundle is a single-locale object that holds collection of resource sources
-necessary for a given ``Localization`` object and corresponding ``MessageContext`` object.
+The ``Localization`` class represents the main functionality of l20n.js.  It 
+can retrieve formatted translations in accordance to the user's language 
+preferences, resorting to fallback languages in case of errors.  It also 
+interacts with the environment via I/O in order to load resources.  It is the 
+work-horse of l20n.js.  
 
-``ResourceBundle`` API:
+In Web-like runtimes the ``Localization`` API is fully asynchronous.  This 
+allows for loading fallback resources lazily in case of errors in the first 
+language.
 
-:lang:
-    Language tag associated with the bundle
+The ``Localization`` class can be thought of as a multi-lingual, asynchronous 
+wrapper on top of multiple ``MessageContext`` instances which handles lazy-IO 
+and the language fallback strategy.
 
-:loaded:
-    Either ``false`` or a promise that returns a list of resources for the bundle.
+Internally, ``Localization`` instances use an array of runtime-specific 
+``ResourceBundle`` objects which represent information about localization 
+resources: in particular, how to load them when they're needed, and where from.  
+This array is the *de facto* fallback chain that will be used in case of 
+fallback.  For each fetched ``ResourceBundle`` the ``Localization`` creates 
+a corresponding ``MessageContext`` instance which it will use to format 
+translations to the bundle's language.
 
-:resIds:
-    List of resources for the bundle.
+The ``Localization`` constructor takes two runtime-specific functions as 
+arguments, ``requestBundles`` and ``createContext``. This allows the user to 
+provide different ways to build bundles, use different IO and language 
+negotiation methods, as well as pass custom functions to the ``MessageContext``
+constructor.  The ``Localization`` class itself is generic and 
+environment-agnostic.
 
-:fetch():
-    Returns a Promise that resolves to a list of resources for the bundle
 
 Example::
 
-  const bundle = new ResourceBundle('en-US', [
-    '/locales/en-US/brand.ftl',
-    '/locales/en-US/menu.ftl'
-  ]);
-
-  bundle.lang; // 'en-US'
-  bundle.resIds; // ['/locales/en-US/brand.ftl', '/locales/en-US/menu.ftl']
-  bundle.loaded; // false
-  bundle.fetch().then(sources => {
-    const mc = new MessageContext(bundle.lang);
-    sources.forEach(source => {
-      mc.addMessages(source);
-    });
-  });
-
-
-Localization
-------------
-
-The main class on this level is ``Localization``. One can think of it as a
-multi-lingual, asynchronous wrapper on top of ``MessageContext`` which handles lazy-IO
-and fallbacks.
-
-:constructor(requestBundles, createContext):
-    requestBundles
-        An asynchronous function that returns a list of `ResourceBundle` objects.
-    createContext
-        A synchronous function which returns a new ``MessageContext`` object.
-
-:requestLanguages(requestedLangs):
-    An asynchronous function which allows user to change the fallback languages
-    chain for ``Localization``.
-
-:formatValue(id, args):
-    An asynchronous function that given entity ``id`` and user provided ``args``
-    returns a formatted value for the requested entity performing optional fallback.
-
-:formatValues(...keys):
-    A multi-kvp version of ``formatValue`` which allows for retrieving many
-    entities in one async call.
-
-:formatEntities(keys):
-    A multi-kvp function that returns full ``Entity`` objects, not just their values.
-    Useful for cases where the user wants to retrieve traits as well.
-
-The reason ``createContext`` and ``requestBundles`` are callbacks is to allow
-the user to provide different ways to build bundles and create contexts with different
-environment functions without having to modify the observer.
-
-Example::
-
-  const resIds = [
-    '/locales/{locale}/brand.ftl',
-    '/locales/{locale}/menu.ftl'
+  // The list of unique resource identifiers that the Localization object will 
+  // know about and use to retrieve formatted translations.
+  const resourceIds = [
+    '/brand.ftl',
+    '/menu.ftl'
   ];
-  const defaultLang = 'en-US';
-  const availableLangs = ['en-US', 'pl', 'fr'];
 
-  function requestBundles(requestedLangs = new Set(navigator.languages)) {
-    return prioritizeLocales(defaultLang, availableLangs, requestedLangs).then(langs => {
-      return langs.map(lang => new ResourceBundle(lang, resIds));
-    });
+  // Used by Localization to request an array of ResourceBundle objects 
+  // representing the information about language resources.
+  function requestBundles(requestedLangs) {
+    // Use the runtime-specific way of nagotiating languaes and loading resources.
+    return L10nRegistry.getResources(requestedLangs, resourceIds);
   }
 
+  // Used by Localization to create new MessageContext instances.  Can include 
+  // runtime-specific FTL Functions.
   function createContext(lang) {
     return new MessageContext(lang, {
       functions: {
-        OS: function() { return navigator.platform; },
-        UserName: function() { Settings.user.name; }
+        PLATFORM: () => process.platform,
+        USER: () => process.env.USER
       }
     });
   }
 
-  const localization = new HTMLLocalization(requestBundles, createContext);
+  const localization = new Localization(requestBundles, createContext);
 
-  localization.formatValue('menu-ok').then(str => {
-    console.log(str);
-  });
-
-Localization Observer object
-============================
-
-Third layer is a class that binds Localization object to the host environment.
-
-An example of it is when L20n is used for HTML/JS localization, in which case the
-observer hooks via ``MutationObserver`` into DOM and exposes itself on ``document.l10n``
-with methods for L10n DOM manipulation.
-This is also the class where HTML Element translation functions will be exposed.
-
-This layer will be competly different for Node.js environment, for Python environment etc.
-
-HTMLLocalizationObserver
-------------------------
-
-``HTML Localization Observer`` exposes the following API:
-
-:setAttributes(element, id, args):
-    Sets the DOM attributes `data-l10n-id` and `data-l10n-args` for the element. 
-:getAttributes(element):
-    Returns an Object with ``id`` and ``args`` for the given element.
-:has(name):
-    Tests if the ``LocalizationObserver`` has a ``Localization`` object for a given name.
-:get(name):
-    Returns a ``Localization`` object for a given name.
-:set(name, value):
-    Adds a new ``Localization`` instance with a given name.
-:observeRoot(root, l10n):
-    Adds a new root that is going to be translated and observed by this observer.
-    If ``l10n`` is omitted, it'll use the default ``main`` ``Localization`` object.
-:disconnectRoot:
-    Removes a root from the list of observed roots.
-:translateElement(element):
-    Translates a single element using a ``Localization`` object from its collection.
-:translateFragment(frag):
-    Translates a DOMFragment using ``Localization`` objects from its collection.
-:translateAllRoots():
-    Translates all roots which the ``LocalizationObserver`` is observing
-:requestLanguages(requestedLangs):
-    Updates the requested languages list, recreates the fallback chain and
-    potentially retranslates into the new negotiated locale.
-:pause():
-    Pause ``MutationObserver``.
-:resume:
-    Resumes ``MutationObserver``.
+  localization.formatValue('hello-world').then(alert);
 
 
-``LocalizationObserver`` may hold references to multiple ``Localization`` objects and
-user may bind multiple DOM element roots to it, but in the example below we'll just use one of each::
+The Localization Observer API
+=============================
 
-  const l10n = new HTMLLocalization(requestBundles, createContext);
+The ``LocalizationObserver`` class binds ``Localization`` objects to the host 
+environment and provides environment-specific methods to localize content.  
+Each environment will have its own ``LocalizationObserver`` class.
 
-  document.l10n = new HTMLLocalizationObserver();
+For instance, in Web-like runtimes the ``LocalizationObserver`` class has 
+methods to localize DOM elements and fragments and uses the 
+``MutationObserver`` API to monitor the DOM for changes to localizable nodes.  
+It is exposed as ``document.l10n``.
 
-  document.l10n.set('main', l10n);
-  document.l10n.observeRoot(document.documentElement, l10n);
+The ``LocalizationObserver`` class implements the iteration protocol to serve 
+as a collection of ``Localization`` instances which registered with it.
+
+By default the runtime code will create a default ``Localization`` instance 
+called ``main``.  XBL buildings and Web Components can create and register more 
+``Localization`` instances and ask the ``LocalizationObserver`` to observe
+their anonymous and shadow DOM trees respectively.
+
+Example::
+
+  // The LocalizationObserver is created early on.
+  document.l10n = new LocalizationObserver();
+
+  // Create a special-purpose Localization instance.
+  const extra = new Localization(requestBundles, createContext);
+
+  document.l10n.set('extra', extra);
+  document.l10n.observeRoot(document.querySelector('#extra-content', extra);
   document.l10n.translateAllRoots();
+
+In Web-like runtimes the ``LocalizationObserver`` provides the methods to 
+localize DOM fragments and elements::
+
+  document.l10n.translateFragment(node).then(…);
+
+It also provides helper methods for working with ``data-l10n-*`` attributes::
+
+  document.l10n.setAttributes(node, 'hello-user', { user: 'Jane' });
+  document.l10n.getAttributes(node);
+
+  // -> { id: 'hello-user', args: { user: 'Jane' } }
+
 
 Conclusion
 ==========
-With this in place, you should now understand the structure and flow of code
-in L20n library and can start hacking on it!
 
-.. _ICU MessageFormat: http://userguide.icu-project.org/formatparse/messages
+This was quite a lot of information to take in — and you did it!  You should 
+now understand the structure and the flow of code in l20n.js. Go start hacking 
+on it! :)
+
+.. _Intl.ListFormat: https://github.com/zbraniecki/proposal-intl-list-format
+.. _Intl.PluralRules: https://github.com/tc39/proposal-intl-plural-rules
+.. _FTL syntax: syntax.rst
