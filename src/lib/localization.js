@@ -1,5 +1,5 @@
 import { keysFromContext, valueFromContext, entityFromContext }
-  from '../format';
+  from './format';
 
 export const properties = new WeakMap();
 export const contexts = new WeakMap();
@@ -20,12 +20,8 @@ export const contexts = new WeakMap();
  * Different names can be specified via the `name` attribute on the `<link>`
  * elements.  One `document` can have more than one `Localization` instance,
  * but one `Localization` instance can only be assigned to a single `document`.
- *
- * `HTMLLocalization` and `XULLocalization` extend `Localization` and provide
- * `document`-specific methods for sanitizing translations containing markup
- * before they're inserted into the DOM.
  */
-export class Localization {
+export default class Localization {
 
   /**
    * Create an instance of the `Localization` class.

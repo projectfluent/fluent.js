@@ -1,4 +1,4 @@
-import { LocalizationObserver } from './base';
+import LocalizationObserver from './base';
 
 /**
  * The `ContentLocalizationObserver` is an extension of a `LocalizationObserver`
@@ -6,7 +6,7 @@ import { LocalizationObserver } from './base';
  *
  * This class is used for all HTML content translations.
  */
-export class ContentLocalizationObserver extends LocalizationObserver {
+export default class ContentLocalizationObserver extends LocalizationObserver {
   translateRootContent(root) {
     return this.translateFragment(root);
   }

@@ -1,5 +1,5 @@
-import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
-import { HTMLLocalization } from '../../lib/dom/html';
+import ChromeLocalizationObserver from '../../bindings/chrome';
+import Localization from '../../lib/localization';
 
 import { ChromeResourceBundle } from './io';
 import { HTMLDocumentReady, getResourceLinks } from './util';
@@ -68,7 +68,7 @@ function createLocalization(name, resIds) {
     );
   }
 
-  const l10n = new HTMLLocalization(requestBundles, createContext);
+  const l10n = new Localization(requestBundles, createContext);
   document.l10n.set(name, l10n);
 
   if (name === 'main') {

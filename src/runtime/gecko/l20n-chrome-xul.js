@@ -1,5 +1,5 @@
-import { ChromeLocalizationObserver } from '../../lib/observer/chrome';
-import { XULLocalization } from '../../lib/dom/xul';
+import ChromeLocalizationObserver from '../../bindings/chrome';
+import Localization from '../../lib/localization';
 
 import { ChromeResourceBundle } from './io';
 import { XULDocumentReady, getResourceLinks } from './util';
@@ -68,7 +68,7 @@ function createLocalization(name, resIds) {
     );
   }
 
-  const l10n = new XULLocalization(requestBundles, createContext);
+  const l10n = new Localization(requestBundles, createContext);
   document.l10n.set(name, l10n);
 
   if (name === 'main') {

@@ -40,6 +40,8 @@ Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # FTLList
 
+# FTLList
+
 # MessageContext
 
 Message contexts are single-language stores of translations.  They are
@@ -129,9 +131,7 @@ encountered errors are not returned but instead are appended to the
 
 Returns **?[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
-# tell
-
-# format
+# resolve
 
 Format a translation into an `FTLType`.
 

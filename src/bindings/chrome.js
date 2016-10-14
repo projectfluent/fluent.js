@@ -1,4 +1,4 @@
-import { LocalizationObserver } from './base';
+import LocalizationObserver from './base';
 
 function markEnd() {
   performance.mark('l20n: end translateRootContent');
@@ -15,7 +15,7 @@ function markEnd() {
  *
  * This API is useful for chrome-privileged HTML and XUL in Gecko.
  */
-export class ChromeLocalizationObserver extends LocalizationObserver {
+export default class ChromeLocalizationObserver extends LocalizationObserver {
   translateRootContent(root) {
     performance.mark('l20n: start translateRootContent');
     const anonChildren = document.getAnonymousNodes(root);

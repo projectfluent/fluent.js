@@ -1,4 +1,4 @@
-import { XULLocalization } from '../../lib/dom/xul';
+import Localization from '../../lib/localization';
 import { ChromeResourceBundle } from './io';
 
 this.EXPORTED_SYMBOLS = ['createLocalization', 'destroyLocalization'];
@@ -44,7 +44,7 @@ function createLocalization(name, resIds, host, obs) {
       );
     }
 
-    const l10n = new XULLocalization(requestBundles, createContext);
+    const l10n = new Localization(requestBundles, createContext);
     obs.set(name, l10n);
   }
 

@@ -33,7 +33,9 @@ test-browser:
 
 docs:
 	documentation build --shallow -f md \
-	    src/lib/**/*.js > docs/localization.md
+	    src/bindings/*.js > docs/bindings.md
+	documentation build --shallow -f md \
+	    src/lib/*.js > docs/localization.md
 	documentation build --shallow -f md \
 	    src/ftl/**/*.js > docs/parser.md
 	documentation build --shallow -f md \
