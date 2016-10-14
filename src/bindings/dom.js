@@ -281,6 +281,20 @@ export default class LocalizationObserver {
     return this.translateRootContent(root).then(setLangs);
   }
 
+  translateRootContent(root) {
+    markStart();
+
+    const anonChildren = document.getAnonymousNodes ?
+      document.getAnonymousNodes(root) : null;
+    if (!anonChildren) {
+      return this.translateFragment(root).then(markEnd);
+    }
+
+    return Promise.all(
+      [root, ...anonChildren].map(node => this.translateFragment(node))
+    ).then(markEnd);
+  }
+
   translateMutations(mutations) {
     for (const mutation of mutations) {
       switch (mutation.type) {
@@ -394,4 +408,17 @@ export default class LocalizationObserver {
       JSON.parse(element.getAttribute('data-l10n-args') || null)
     ];
   }
+}
+
+function markStart() {
+  performance.mark('l20n: start translateRootContent');
+}
+
+function markEnd() {
+  performance.mark('l20n: end translateRootContent');
+  performance.measure(
+    'l20n: translateRootContent',
+    'l20n: start translateRootContent',
+    'l20n: end translateRootContent'
+  );
 }

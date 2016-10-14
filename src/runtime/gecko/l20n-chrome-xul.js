@@ -1,5 +1,5 @@
-import ChromeLocalizationObserver from '../../bindings/chrome';
 import Localization from '../../lib/localization';
+import LocalizationObserver from '../../bindings/dom';
 
 import { ChromeResourceBundle } from './io';
 import { XULDocumentReady, getResourceLinks } from './util';
@@ -43,9 +43,9 @@ function createContext(lang) {
 
 // Following is the initial running code of l20n.js
 
-// We create a new  `ChromeLocalizationObserver` and define an event listener
+// We create a new  `LocalizationObserver` and define an event listener
 // for `languagechange` on it.
-document.l10n = new ChromeLocalizationObserver();
+document.l10n = new LocalizationObserver();
 window.addEventListener('languagechange', document.l10n);
 
 // Next, we collect all l10n resource links, create new `Localization` objects

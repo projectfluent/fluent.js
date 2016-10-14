@@ -1,5 +1,5 @@
 import '../../intl/polyfill';
-import LocalizationObserver from '../../bindings/base';
+import LocalizationObserver from '../../bindings/dom';
 import Localization from '../../lib/localization';
 import { getResourceLinks } from '../web/util';
 import { ResourceBundle } from './io';
