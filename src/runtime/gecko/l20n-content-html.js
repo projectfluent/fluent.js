@@ -1,7 +1,7 @@
 import '../../intl/polyfill';
 
-import { ContentLocalizationObserver } from '../../lib/observer/content';
-import { HTMLLocalization } from '../../lib/dom/html';
+import ContentLocalizationObserver from '../../bindings/content';
+import Localization from '../../lib/localization';
 
 import { postMessage, ContentResourceBundle } from './io';
 import { HTMLDocumentReady, getResourceLinks } from './util';
@@ -30,7 +30,7 @@ function createLocalization(name, resIds) {
     );
   }
 
-  const l10n = new HTMLLocalization(requestBundles, createContext);
+  const l10n = new Localization(requestBundles, createContext);
   document.l10n.set(name, l10n);
 
   if (name === 'main') {

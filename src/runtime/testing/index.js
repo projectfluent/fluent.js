@@ -1,4 +1,4 @@
-import { LocalizationObserver } from '../../lib/observer/base';
+import LocalizationObserver from '../../bindings/base';
 import { getResourceLinks } from '../web/util';
 
 const obs = new LocalizationObserver();

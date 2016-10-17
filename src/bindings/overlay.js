@@ -2,15 +2,50 @@
 // &amp;, &#0038;, &#x0026;.
 const reOverlay = /<|&#?\w+;/;
 
+// XXX The allowed list should be amendable; https://bugzil.la/922573.
+const ALLOWED_ELEMENTS = {
+  'http://www.w3.org/1999/xhtml': [
+    'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
+    'time', 'code', 'var', 'samp', 'kbd', 'sub', 'sup', 'i', 'b', 'u',
+    'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'br', 'wbr'
+  ],
+};
+
+const ALLOWED_ATTRIBUTES = {
+  'http://www.w3.org/1999/xhtml': {
+    global: ['title', 'aria-label', 'aria-valuetext', 'aria-moz-hint'],
+    a: ['download'],
+    area: ['download', 'alt'],
+    // value is special-cased in isAttrAllowed
+    input: ['alt', 'placeholder'],
+    menuitem: ['label'],
+    menu: ['label'],
+    optgroup: ['label'],
+    option: ['label'],
+    track: ['label'],
+    img: ['alt'],
+    textarea: ['placeholder'],
+    th: ['abbr']
+  },
+  'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul': {
+    global: [
+      'accesskey', 'aria-label', 'aria-valuetext', 'aria-moz-hint', 'label'
+    ],
+    key: ['key', 'keycode'],
+    textbox: ['placeholder'],
+    toolbarbutton: ['tooltiptext'],
+  }
+};
+
+
 /**
  * Overlay translation onto a DOM element.
  *
- * @param   {Localization} l10n
  * @param   {Element}      element
  * @param   {string}       translation
  * @private
  */
-export function overlayElement(l10n, element, translation) {
+export default function overlayElement(element, translation) {
   const value = translation.value;
 
   if (typeof value === 'string') {
@@ -24,12 +59,12 @@ export function overlayElement(l10n, element, translation) {
         'http://www.w3.org/1999/xhtml', 'template');
       tmpl.innerHTML = value;
       // Overlay the node with the DocumentFragment.
-      overlay(l10n, element, tmpl.content);
+      overlay(element, tmpl.content);
     }
   }
 
   for (const key in translation.attrs) {
-    if (l10n.isAttrAllowed({ name: key }, element)) {
+    if (isAttrAllowed({ name: key }, element)) {
       element.setAttribute(key, translation.attrs[key]);
     }
   }
@@ -45,7 +80,7 @@ export function overlayElement(l10n, element, translation) {
 // attributes out and we don't want to break the Web by replacing elements to
 // which third-party code might have created references (e.g. two-way
 // bindings in MVC frameworks).
-function overlay(l10n, sourceElement, translationElement) {
+function overlay(sourceElement, translationElement) {
   const result = translationElement.ownerDocument.createDocumentFragment();
   let k, attr;
 
@@ -65,15 +100,15 @@ function overlay(l10n, sourceElement, translationElement) {
     const sourceChild = getNthElementOfType(sourceElement, childElement, index);
     if (sourceChild) {
       // There is a corresponding element in the source, let's use it.
-      overlay(l10n, sourceChild, childElement);
+      overlay(sourceChild, childElement);
       result.appendChild(sourceChild);
       continue;
     }
 
-    if (l10n.isElementAllowed(childElement)) {
+    if (isElementAllowed(childElement)) {
       const sanitizedChild = childElement.ownerDocument.createElement(
         childElement.nodeName);
-      overlay(l10n, sanitizedChild, childElement);
+      overlay(sanitizedChild, childElement);
       result.appendChild(sanitizedChild);
       continue;
     }
@@ -95,11 +130,78 @@ function overlay(l10n, sourceElement, translationElement) {
   // cleared if a new language doesn't use them; https://bugzil.la/922577
   if (translationElement.attributes) {
     for (k = 0, attr; (attr = translationElement.attributes[k]); k++) {
-      if (l10n.isAttrAllowed(attr, sourceElement)) {
+      if (isAttrAllowed(attr, sourceElement)) {
         sourceElement.setAttribute(attr.name, attr.value);
       }
     }
   }
+}
+
+/**
+ * Check if element is allowed in the translation.
+ *
+ * This method is used by the sanitizer when the translation markup contains
+ * an element which is not present in the source code.
+ *
+ * @param   {Element} element
+ * @returns {boolean}
+ * @private
+ */
+function isElementAllowed(element) {
+  const allowed = ALLOWED_ELEMENTS[element.namespaceURI];
+  if (!allowed) {
+    return false;
+  }
+
+  return allowed.indexOf(element.tagName.toLowerCase()) !== -1;
+}
+
+/**
+ * Check if attribute is allowed for the given element.
+ *
+ * This method is used by the sanitizer when the translation markup contains
+ * DOM attributes, or when the translation has traits which map to DOM
+ * attributes.
+ *
+ * @param   {{name: string}} attr
+ * @param   {Element}        element
+ * @returns {boolean}
+ * @private
+ */
+function isAttrAllowed(attr, element) {
+  const allowed = ALLOWED_ATTRIBUTES[element.namespaceURI];
+  if (!allowed) {
+    return false;
+  }
+
+  const attrName = attr.name.toLowerCase();
+  const elemName = element.tagName.toLowerCase();
+
+  // Is it a globally safe attribute?
+  if (allowed.global.indexOf(attrName) !== -1) {
+    return true;
+  }
+
+  // Are there no allowed attributes for this element?
+  if (!allowed[elemName]) {
+    return false;
+  }
+
+  // Is it allowed on this element?
+  if (allowed[elemName].indexOf(attrName) !== -1) {
+    return true;
+  }
+
+  // Special case for value on HTML inputs with type button, reset, submit
+  if (element.namespaceURI === 'http://www.w3.org/1999/xhtml' &&
+      elemName === 'input' && attrName === 'value') {
+    const type = element.type.toLowerCase();
+    if (type === 'submit' || type === 'button' || type === 'reset') {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // Get n-th immediate child of context that is of the same type as element.
