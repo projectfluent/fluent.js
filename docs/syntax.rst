@@ -385,3 +385,12 @@ users, it may be worth spending more time to get a better quality of the
 string, if not, you can leave the simple version.
 
 But with FTL, you have a choice.
+
+Dive deeper
+===========
+
+You can experiment with the syntax using an interactive editor
+at http://l20n.github.io/tinker.
+If you are a tool author, you may be interested in the formal `EBNF grammar`_.
+
+.. _EBNF grammar: https://github.com/l20n/spec/blob/master/grammar.ebnf
