@@ -1,9 +1,13 @@
+import '../../intl/polyfill';
 import LocalizationObserver from '../../bindings/base';
+import Localization from '../../lib/localization';
 import { getResourceLinks } from '../web/util';
-
-const obs = new LocalizationObserver();
+import { ResourceBundle } from './io';
 
 window.L20n = {
-  dom: obs,
-  getResourceLinks
+  LocalizationObserver,
+  getResourceLinks,
+  ResourceBundle,
+  Localization,
+  MessageContext: Intl.MessageContext
 }
