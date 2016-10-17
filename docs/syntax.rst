@@ -2,9 +2,13 @@
 The Guide To The FTL Syntax
 ===========================
 
-FTL is an open source, localization-specific scripting language used to process 
-gender, plurals, conjugations, and most of the other quirky elements of natural 
-language.
+FTL is a localization file format used for describing translation resources.
+
+Software refers to the messages in a given language through unique identifiers.
+
+FTL is designed to be simple to read, but at the same time allows to represent
+complex concepts from natural languages like gender, plurals, conjugations,
+and others.
 
 The following chapters will demonstrate how to use FTL to solve localization 
 challenges. Each chapter contains a hands-on example of simple FTL concepts.
@@ -21,16 +25,10 @@ This is an entity called ``hello``. Entities are containers for information.
 You use entities to identify, store, and recall information to be used in the 
 software's UI.
 
-In its simplest form, an entity stores a value; here it's a string, *Hello, 
+In its simplest form, an entity has just a single string value; here *Hello,
 World!*. Most of the entities you will work with in FTL will look similar to 
 this. Some will be more complex, have more than one value variant, or use 
 expressions to select the right variant depending on the circumstances.
-
-How does the information stored in an entity end up on the user's screen and in 
-the UI? FTL operates in self-contained instances called "contexts". Each 
-context stores information about languages available to it, downloaded resource 
-files and all entities in these resource files. Software developers can create 
-contexts and query them for values of specific entities.
 
 
 Working With Text: Multiline, Quote Delimited Strings
@@ -45,18 +43,42 @@ Working With Text: Multiline, Quote Delimited Strings
         | It uses FTL to implement localization.
     more-info     =   "  Read more about us! "
 
-FTL entities mostly store string values. A string is a sequence of characters 
-that you can assign to an entity, store, and retrieve.
+The value of an FTL entity is usually a simple string.
 
 By default, a string begins after a ``=`` and ends with the end of line.  You 
-can also define easy-to-read, multiline strings with a pipe operator, as can be 
+can also define easy-to-read, multiline strings with a pipe mark-up, as can be
 seen in the ``description`` entity.
 
-In almost all cases, leading and trailing spaces are not meaningful and will be 
-ignored allowing you to align the string id and values in a resource file for 
-better readability.  In a rare cases where leading and/or trailing spaces are 
-meaningful, FTL allows for special quote delimited strings as can be seen in 
+FTL ignores leading whitespaces in front of the value allowing localizers to
+align their messages for readability.
+For multiline strings, whitespaces both before and after the pipe are ignored.
+In rare cases where leading whitespaces should be part of the value, FTL allows
+for special quote delimited strings as can be seen in
 the ``more-info`` entity.
+
+
+Entity References
+=================
+
+::
+
+    brandName = Loki
+    installing = Installing { brandName }.
+
+    menu-save = Save
+    help-menu-save = Click "{ menu-save }" to save the file.
+
+Strings in FTL may use special syntax to incorporate small pieces of
+programmable interface. Those pieces are denoted with curly braces ``{`` and
+``}`` and are called placeables.
+
+One example of a placeable is a reference to another entity.
+
+Referencing other entities generally helps to keep certain translations
+consistent across the interface and makes maintenance easier.  It is also
+particularly handy for keeping branding separated from the rest of the
+translations, so that it can be changed easily when needed, e.g. during the
+build process of the application.
 
 
 Interpolation and External Arguments
@@ -74,10 +96,9 @@ Interpolation and External Arguments
         "emailCount": 5
     }
 
-In FTL strings may use special syntax to incorporate small pieces of 
-programmable interface. Those pieces are denoted with curly braces ``{`` and 
-``}`` and are called placeables.  The most common use case for a placeable is 
-to put an external argument, provided by the developer, into the string.
+
+Another common common use case for a placeable is to put an external argument,
+provided by the developer, into the string.
 
 There are all kinds of external data that might be useful in providing a good 
 localization: user names, number of unread messages, battery level, current 
@@ -121,27 +142,6 @@ better in the given language. Examples may be defining month as ``short`` or
 ``long`` in the ``DATE`` formatter (using arguments defined in 
 ``Intl.DateTimeFormat``) or whether to use grouping separator when displaying 
 a large number.
-
-
-Entity References
-=================
-
-::
-
-    brandName = Loki
-    installing = Installing { brandName }.
-
-    menu-save = Save
-    help-menu-save = Click "{ menu-save }" to save the file.
-
-Sometimes it may be useful to reference one entity from another. This generally 
-helps to keep certain translations consistent across the interface and makes 
-maintenance easier.  It is also particularly handy for keeping branding 
-separated from the rest of the translations, so that it can be changed easily 
-when needed, e.g. during the build process of the application.
-
-In l20n you can use the same ``{`` and ``}`` syntax to interpolate other 
-entities by their identifier.
 
 
 Selectors
