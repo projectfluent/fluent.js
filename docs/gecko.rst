@@ -81,7 +81,7 @@ Finally include the l20n.js script right below the links to resources::
     <link rel="localization" href="/browser/about-dialog.ftl">
     <link rel="localization" href="/browser/new-tab.ftl">
     <script type="application/javascript"
-      src="chrome://global/content/l20n-chrome-xul.js"></script>
+      src="chrome://global/content/l20n.js"></script>
 
 
 Make DOM Elements Localizable

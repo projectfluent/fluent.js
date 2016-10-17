@@ -4,7 +4,7 @@ import Localization from '../../lib/localization';
 import LocalizationObserver from '../../bindings/dom';
 
 import { postMessage, ContentResourceBundle } from './io';
-import { HTMLDocumentReady, getResourceLinks } from './util';
+import { documentReady, getResourceLinks } from '../web/util';
 
 function createContext(lang) {
   return new Intl.MessageContext(lang);
@@ -34,7 +34,7 @@ function createLocalization(name, resIds) {
   document.l10n.set(name, l10n);
 
   if (name === 'main') {
-    HTMLDocumentReady().then(() => {
+    documentReady().then(() => {
       const rootElem = document.documentElement;
       document.l10n.observeRoot(rootElem, l10n);
       document.l10n.translateRoot(rootElem, l10n);
