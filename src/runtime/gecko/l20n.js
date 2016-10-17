@@ -2,7 +2,7 @@ import Localization from '../../lib/localization';
 import LocalizationObserver from '../../bindings/dom';
 
 import { ChromeResourceBundle } from './io';
-import { HTMLDocumentReady, getResourceLinks } from './util';
+import { documentReady, getResourceLinks } from '../web/util';
 
 Components.utils.import('resource://gre/modules/Services.jsm');
 Components.utils.import('resource://gre/modules/L10nRegistry.jsm');
@@ -50,7 +50,7 @@ window.addEventListener('languagechange', document.l10n);
 
 // Next, we collect all l10n resource links, create new `Localization` objects
 // and bind them to the `LocalizationObserver` instance.
-for (const [name, resIds] of getResourceLinks(document.head)) {
+for (const [name, resIds] of getResourceLinks(document.head || document)) {
   if (!document.l10n.has(name)) {
     createLocalization(name, resIds);
   }
@@ -74,7 +74,7 @@ function createLocalization(name, resIds) {
   if (name === 'main') {
     // When document is ready, we trigger it's localization and initialize
     // `MutationObserver` on the root.
-    HTMLDocumentReady().then(() => {
+    documentReady().then(() => {
       const rootElem = document.documentElement;
       document.l10n.observeRoot(rootElem, l10n);
       document.l10n.translateRoot(rootElem, l10n);
