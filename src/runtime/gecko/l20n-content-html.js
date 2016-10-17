@@ -1,7 +1,7 @@
 import '../../intl/polyfill';
 
-import ContentLocalizationObserver from '../../bindings/content';
 import Localization from '../../lib/localization';
+import LocalizationObserver from '../../bindings/dom';
 
 import { postMessage, ContentResourceBundle } from './io';
 import { HTMLDocumentReady, getResourceLinks } from './util';
@@ -10,7 +10,7 @@ function createContext(lang) {
   return new Intl.MessageContext(lang);
 }
 
-document.l10n = new ContentLocalizationObserver();
+document.l10n = new LocalizationObserver();
 window.addEventListener('languagechange', document.l10n);
 
 for (const [name, resIds] of getResourceLinks(document.head)) {
