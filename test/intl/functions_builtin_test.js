@@ -29,42 +29,6 @@ describe('Built-in functions', function() {
     });
   });
 
-  describe('PLURAL', function(){
-    before(function() {
-      ctx = new MessageContext('en-US');
-      ctx.addMessages(ftl`
-        foo = { PLURAL(1) }
-        bar = { PLURAL(1) ->
-            [1]   Bar
-        }
-        baz = { PLURAL(1) ->
-            [one] Baz
-        }
-      `);
-    });
-
-    it('formats the number', function() {
-      const msg = ctx.messages.get('foo');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, '1');
-      assert.equal(errs.length, 0);
-    });
-
-    it('matches the number', function() {
-      const msg = ctx.messages.get('bar');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Bar');
-      assert.equal(errs.length, 0);
-    });
-
-    it('matches the plural category', function() {
-      const msg = ctx.messages.get('baz');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Baz');
-      assert.equal(errs.length, 0);
-    });
-  });
-
   describe('DATETIME', function(){
     let dtf;
 

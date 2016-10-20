@@ -18,8 +18,6 @@ import { FTLNumber, FTLDateTime, FTLList } from './types';
 export default {
   'NUMBER': ([arg], opts) =>
     new FTLNumber(arg.valueOf(), merge(arg.opts, opts)),
-  'PLURAL': ([arg], opts) =>
-    new FTLNumber(arg.valueOf(), merge(arg.opts, opts)),
   'DATETIME': ([arg], opts) =>
     new FTLDateTime(arg.valueOf(), merge(arg.opts, opts)),
   'LIST': (args) => FTLList.from(args),

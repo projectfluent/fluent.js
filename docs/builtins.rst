@@ -95,30 +95,6 @@ environment.
 
     See the `Intl.DateTimeFormat`_ for the description of the parameters.
 
-``PLURAL``
-    Returns a plural form that matches the number for a given locale.
-
-    Example::
-  
-      liked-count = { PLURAL($num) ->
-        [one]   One person liked your message
-       *[other] { $num } people liked your message
-      }
-      
-    Parameters::
-
-      ''minimumIntegerDigits''
-      ''minimumFractionDigits''
-      ''maximumFractionDigits''
-      ''minimumSignificantDigits''
-      ''maximumSignificantDigits''
-
-    Developer parameters::
-
-      ''type''
-
-    See the `Intl.PluralRules`_ for the description of the parameters.
-
 ``LIST``
     Formats a list to a string in a given locale.
 
@@ -190,6 +166,27 @@ result as the explicit one.
 
       emails2 = Number of unread emails { NUMBER($undeadEmails) }
 
+    Numbers used as selectors in select expressions will match the number
+    exactly of they will match the current language's `CLDR plural category`_
+    for the number.
+
+    The following examples are equivalent and will both work.  The second
+    example may be used to pass additional formatting options to the ``NUMBER``
+    formatter for the purpose of choosing the correct plural category::
+
+      liked-count = { $num ->
+        [0]     No likes yet.
+        [one]   One person liked your message
+       *[other] { $num } people liked your message
+      }
+
+      liked-count2 = { NUMBER($num) ->
+        [0]     No likes yet.
+        [one]   One person liked your message
+       *[other] { $num } people liked your message
+      }
+
+
 ``DATETIME``
     If the variable passed from the developer is a date and is used in
     a placeable, L20n will implicitly call a `DATE` function on it.
@@ -199,22 +196,6 @@ result as the explicit one.
       log-time = Entry time: { $date }
 
       log-time2 = Entry time: { DATETIME($date) }
-
-``PLURAL``
-    If the variable passed from the developer is a number and is used in
-    a selector expression, L20n will implicitly call a `PLURAL` function on it.
-
-    Example::
-
-      liked-count = { PLURAL($num) ->
-        [one]   One person liked your message
-       *[other] { $num } people liked your message
-      }
-
-      liked-count2 = { $num ->
-        [one]   One person liked your message
-       *[other] { $num } people liked your message
-      }
 
 ``LIST``
     If the variable passed from the developer is a number and is used in
@@ -298,7 +279,7 @@ At the moment Gecko runtime adds the following functions:
 
 .. _Intl.NumberFormat: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 .. _Intl.DateTimeFormat: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
-.. _Intl.PluralRules: https://rawgit.com/caridy/intl-plural-rules-spec/master/index.html
 .. _Intl.ListFormat: https://rawgit.com/zbraniecki/proposal-intl-list-format/master/index.html
 .. _array.length: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
 .. _Array.prototype.slice: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+.. _CLDR plural category: http://www.unicode.org/cldr/charts/30/supplemental/language_plural_rules.html
