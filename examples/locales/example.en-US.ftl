@@ -3,7 +3,7 @@ world = world
 hello = Hello, <em>{ world }</em>!
 name = Type <input placeholder="your name"> and <input value="send">
 
-unreadEmails = { PLURAL($emailCount) ->
+unreadEmails = { $emailCount ->
   [one] You have one unread email
   [other] You have { $emailCount } unread emails
 }

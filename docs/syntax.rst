@@ -127,21 +127,20 @@ Builtins
         "unreadEmails": 5
     }
 
-In some rare cases the data provided by the developer will require some 
-additional formatting before it can be placed into the string.  FTL provides 
-a list of built-in functions that can help with common operations on the 
+In some rare cases the data provided by the developer will require some
+additional formatting before it can be placed into the string.  FTL provides
+a list of built-in functions that can help with common operations on the
 external arguments.
 
-By default, FTL can guess which formatter to run on each kind of argument: 
-``DATE``, ``NUMBER``, ``LIST`` etc., but you can also call the builtin 
+By default, FTL can guess which formatter to run on each kind of argument:
+``DATE``, ``NUMBER``, ``LIST`` etc., but you can also call the builtin
 explicitly.
 
-Explicit calls are useful because they allow you to pass 
-additional formatting options that may help make the formatted string look 
-better in the given language. Examples may be defining month as ``short`` or 
-``long`` in the ``DATE`` formatter (using arguments defined in 
-``Intl.DateTimeFormat``) or whether to use grouping separator when displaying 
-a large number.
+Explicit calls are useful because they allow you to pass additional formatting
+options that may help make the formatted string look better in the given
+language. Examples include: defining month as ``short`` or ``long`` in the
+``DATE`` formatter (using arguments defined in ``Intl.DateTimeFormat``) or
+whether to use grouping separator when displaying a large number.
 
 
 Selectors
@@ -160,16 +159,30 @@ Selectors
         "unreadEmails": 5
     }
 
-One of the most common cases when a localizer needs to use a placeable is when 
-there are multiple variants of the string that depend on some external 
-argument.
+One of the most common cases when a localizer needs to use a placeable is when
+there are multiple variants of the string that depend on some external
+argument.  FTL provides the select expression syntax, which chooses one of the
+provided variants based on the given selector.
 
-FTL provides a select expression that chooses one of the provided variants 
-based on the given selector.
+The selector may be a string in which case it will be compared directly to the
+keys of variants defined in the select expression.  For number selectors, the
+variant keys either match the number exactly or they match the `CLDR plural
+category`_ for the number.  The possible categories are: ``zero``, ``one``,
+``two``, ``few``, ``many`` and ``other``.  For instance, English has two plural
+categories: ``one`` and ``other``.
 
-By default, when a number is used as a selector, FTL implicitly uses ``PLURAL`` 
-formatter that selects the proper plural case for a given language. In English 
-it will be either ``one`` or ``other``.
+.. _CLDR plural category: http://www.unicode.org/cldr/charts/30/supplemental/language_plural_rules.html
+
+If the translation requires a number to be formatted in a particular
+non-default manner, the selector should use the same formatting options.  The
+formatted number will then be used to choose the correct CLDR plural category
+which for some languages might be different than the category of the
+unformatted number::
+
+    your-score = { NUMBER($score, minimumFractionDigits: 1) ->
+        [0.0]   You scored zero points. What happened?
+       *[other] You scored { NUMBER($score, minimumFractionDigits: 1) } points.
+    }
 
 
 Advanced Selectors
@@ -202,10 +215,10 @@ select a string variant depending on its output. In case of the
 ``available-users`` entity, we used the ``LEN`` builtin and select the variant 
 of the string depending on its output.
 
-Explicit values can be used in the ``PLURAL`` selector example to specify 
-a special case for when there are no unread emails.
+In the ``unread-emails`` example ``0`` is used explicitly as a member key to
+specify a special case for when there are no unread emails.
 
-Additionally, the code specifies the default variant to be used if none of the 
+Additionally, the code specifies the default variant to be used if none of the
 others match. It's denoted with a ``*`` operator in front of the variant name.
 
 
