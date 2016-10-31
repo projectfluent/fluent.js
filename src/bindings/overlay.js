@@ -37,6 +37,11 @@ const ALLOWED_ATTRIBUTES = {
   }
 };
 
+const DOM_NAMESPACES = {
+  'html': 'http://www.w3.org/1999/xhtml',
+  'xul': 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
+};
+
 
 /**
  * Overlay translation onto a DOM element.
@@ -63,9 +68,14 @@ export default function overlayElement(element, translation) {
     }
   }
 
-  for (const key in translation.attrs) {
-    if (isAttrAllowed({ name: key }, element)) {
-      element.setAttribute(key, translation.attrs[key]);
+  if (translation.attrs === null) {
+    return;
+  }
+
+  for (const [ns, name, value] of translation.attrs) {
+    if (DOM_NAMESPACES[ns] === element.namespaceURI &&
+        isAttrAllowed({ name }, element)) {
+      element.setAttribute(name, value);
     }
   }
 }

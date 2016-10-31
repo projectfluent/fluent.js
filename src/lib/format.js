@@ -134,11 +134,18 @@ export function entityFromContext(ctx, errors, id, args) {
   };
 
   if (entity.traits) {
-    formatted.attrs = Object.create(null);
+    formatted.attrs = [];
     for (let i = 0, trait; (trait = entity.traits[i]); i++) {
+      if (!trait.key.hasOwnProperty('ns')) {
+        continue;
+      }
       const attr = ctx.format(trait, args, errors);
       if (attr !== null) {
-        formatted.attrs[trait.key.name] = attr;
+        formatted.attrs.push([
+          trait.key.ns,
+          trait.key.name,
+          attr
+        ]);
       }
     }
   }

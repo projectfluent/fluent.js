@@ -9,7 +9,7 @@ unreadEmails = { $emailCount ->
 }
 
 input =
-  [placeholder] Hello
+  [html/placeholder] Hello
 
 checkbox =
-  [aria-label] Checkbox
+  [html/aria-label] Checkbox
