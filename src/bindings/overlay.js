@@ -72,10 +72,10 @@ export default function overlayElement(element, translation) {
     return;
   }
 
-  for (const [ns, name, value] of translation.attrs) {
+  for (const [ns, name, val] of translation.attrs) {
     if (DOM_NAMESPACES[ns] === element.namespaceURI &&
         isAttrAllowed({ name }, element)) {
-      element.setAttribute(name, value);
+      element.setAttribute(name, val);
     }
   }
 }
