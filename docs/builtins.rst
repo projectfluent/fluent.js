@@ -49,7 +49,7 @@ environment.
 
     Example::
 
-      dpi-ratio = Your DPI ratio is { NUMBER($ratio, minimumFractionDigits=2) } 
+      dpi-ratio = Your DPI ratio is { NUMBER($ratio, minimumFractionDigits: 2) }
 
     Parameters::
 
@@ -74,7 +74,7 @@ environment.
 
     Example::
 
-      today-is = Today is { DATETIME($date, month=long, year=numeric, day=numeric) } 
+      today-is = Today is { DATETIME($date, month: "long", year: "numeric", day: "numeric") }
 
     Parameters::
 
