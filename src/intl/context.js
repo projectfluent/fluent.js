@@ -34,7 +34,7 @@ export class MessageContext {
    */
   constructor(lang, options = {}) {
     this.lang = lang;
-    this.functions = options.functions || {}
+    this.functions = options.functions || {};
     this.messages = new Map();
     this.intls = new WeakMap();
   }

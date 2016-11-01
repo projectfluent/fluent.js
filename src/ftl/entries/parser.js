@@ -75,7 +75,6 @@ class EntriesParser {
     if (ch !== '\n') {
       this.getEntity(entries);
     }
-    return;
   }
 
   getSection() {
@@ -147,7 +146,7 @@ class EntriesParser {
     } else {
       entries[id] = {
         val
-      }
+      };
     }
   }
 
@@ -364,7 +363,7 @@ class EntriesParser {
           throw this.error(
             `Too many placeables, maximum allowed is ${MAX_PLACEABLES}`);
         }
-        buffer = ''
+        buffer = '';
         content.push(this.getPlaceable());
         ch = this._source[this._index];
         placeables++;

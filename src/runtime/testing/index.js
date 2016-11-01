@@ -10,4 +10,4 @@ window.L20n = {
   ResourceBundle,
   Localization,
   MessageContext: Intl.MessageContext
-}
+};

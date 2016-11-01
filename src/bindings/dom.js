@@ -101,7 +101,7 @@ export default class LocalizationObserver {
       localizations.map(l10n => l10n.requestLanguages(requestedLangs))
     ).then(
       () => this.translateAllRoots()
-    )
+    );
   }
 
   /**
@@ -224,7 +224,7 @@ export default class LocalizationObserver {
     for (const l10n of this.localizations.values()) {
       if (this.roots.has(l10n)) {
         for (const root of this.roots.get(l10n)) {
-          this.observer.observe(root, observerConfig)
+          this.observer.observe(root, observerConfig);
         }
       }
     }

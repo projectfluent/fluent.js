@@ -7,4 +7,4 @@ module.exports = {
   footer: '\n',
   format: 'es',
   context: 'this'
-}
+};

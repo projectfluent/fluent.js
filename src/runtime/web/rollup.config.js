@@ -3,4 +3,4 @@ module.exports = {
   outro: '\n}',
   preferConst: true,
   format: 'es'
-}
+};

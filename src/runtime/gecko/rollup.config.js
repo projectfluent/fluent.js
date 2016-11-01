@@ -4,4 +4,4 @@ module.exports = {
   preferConst: true,
   format: 'es',
   context: 'this'
-}
+};

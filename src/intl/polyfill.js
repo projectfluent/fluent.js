@@ -13,7 +13,7 @@ if (!Intl.NumberFormat) {
         return n;
       }
     };
-  }
+  };
 }
 
 if (!Intl.PluralRules) {
@@ -24,7 +24,7 @@ if (!Intl.PluralRules) {
         return fn(n);
       }
     };
-  }
+  };
 }
 
 if (!Intl.ListFormat) {
@@ -34,5 +34,5 @@ if (!Intl.ListFormat) {
         return list.join(', ');
       }
     };
-  }
+  };
 }

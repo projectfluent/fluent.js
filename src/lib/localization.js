@@ -97,7 +97,7 @@ export default class Localization {
 
       return createHeadContext(newBundles).then(
         () => newBundles
-      )
+      );
     });
   }
 

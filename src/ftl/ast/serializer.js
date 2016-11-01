@@ -157,4 +157,4 @@ export default {
       return `${prefix}[${key}] ${value}`;
     }).join('\n');
   }
-}
+};
