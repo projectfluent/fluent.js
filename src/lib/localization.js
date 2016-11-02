@@ -121,18 +121,11 @@ export default class Localization {
     // bundle in the fallback chain.  This is the end condition which returns
     // the translations formatted during the previous (recursive) calls to
     // `formatWithFallback`.
-    if (!ctx && prev) {
+    if (!ctx) {
       return prev.translations;
     }
 
     const current = method(ctx, keys, prev);
-
-    // `hasErrors` is a flag set by `keysFromContext` to notify about errors
-    // during the formatting.  We can't just check the `length` of the `errors`
-    // property because it is fixed and equal to the length of `keys`.
-    if (!current.hasErrors) {
-      return current.translations;
-    }
 
     // In Gecko `console` needs to imported explicitly.
     if (typeof console !== 'undefined') {
@@ -146,6 +139,13 @@ export default class Localization {
           e => console.warn(e) // eslint-disable-line no-console
         ) : null
       );
+    }
+
+    // `hasFatalErrors` is a flag set by `keysFromContext` to notify about
+    // errors during the formatting.  We can't just check the `length` of the
+    // `errors` property because it is fixed and equal to the length of `keys`.
+    if (!current.hasFatalErrors) {
+      return current.translations;
     }
 
     // At this point we need to fetch the next bundle in the fallback chain and
