@@ -26,6 +26,7 @@ test-lib:
 	    --reporter dot \
 	    --require ./test/compat \
 	    test/lib/parser/ftl \
+	    test/lib/*_test.js \
 	    test/intl/**/*_test.js
 
 test-browser:
