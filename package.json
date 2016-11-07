@@ -190,7 +190,8 @@
       "keyword-spacing": 2,
       "arrow-parens": [2, "as-needed"],
       "no-useless-return": 2,
-      "semi": 2
+      "semi": 2,
+      "spaced-comment": [2, "always"]
     }
   },
   "dependencies": {
