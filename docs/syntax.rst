@@ -1,10 +1,8 @@
 ===========================
-The Guide To The FTL Syntax
+The Guide to the FTL Syntax
 ===========================
 
 FTL is a localization file format used for describing translation resources.
-
-Software refers to the messages in a given language through unique identifiers.
 
 FTL is designed to be simple to read, but at the same time allows to represent
 complex concepts from natural languages like gender, plurals, conjugations,
@@ -16,6 +14,9 @@ challenges. Each chapter contains a hands-on example of simple FTL concepts.
 
 Hello World
 ===========
+
+In FTL, software refers to messages in a given language through unique
+identifiers.
 
 ::
 
