@@ -1,4 +1,4 @@
-/*eslint no-magic-numbers: [0]*/
+/*  eslint no-magic-numbers: [0]  */
 
 const locales2rules = {
   'af': 3,

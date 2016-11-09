@@ -1,4 +1,4 @@
-/*eslint no-magic-numbers: [0]*/
+/*  eslint no-magic-numbers: [0]  */
 
 import { L10nError } from '../../lib/errors';
 
