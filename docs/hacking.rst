@@ -106,16 +106,16 @@ Example::
   `;
   const mainTranslations = ftl`
       hello-world = Hello { $username }! Welcome to { brand-name } 
-      open-pref = { OS() ->
-          [darwin] Open Preferences
+      open-pref = { PLATFORM() ->
+          [mac]    Open Preferences
          *[other]  Open Settings 
       }
   `;
 
-  // Create the MessageContext instance with a custom OS function.
+  // Create the MessageContext instance with a custom PLATFORM function.
   const mc = new MessageContext('en-US', {
     functions: {
-      'OS': function() {
+      PLATFORM: function() {
         return process.platform;
       }
     }
