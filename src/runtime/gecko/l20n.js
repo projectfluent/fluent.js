@@ -14,7 +14,7 @@ Components.utils.import('resource://gre/modules/IntlMessageContext.jsm');
 // Example use (in FTL):
 //
 // open-settings = { PLATFORM() ->
-//   [mac] Open Preferences
+//   [macos] Open Preferences
 //  *[other] Open Settings
 // }
 const functions = {

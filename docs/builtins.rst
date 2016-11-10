@@ -266,7 +266,7 @@ At the moment Gecko runtime adds the following functions:
     Example::
 
       settings-menu = { PLATFORM() ->
-        [mac] Preferences
+        [macos] Preferences
        *[other] Settings
       }
 

@@ -107,7 +107,7 @@ Example::
   const mainTranslations = ftl`
       hello-world = Hello { $username }! Welcome to { brand-name } 
       open-pref = { PLATFORM() ->
-          [mac]    Open Preferences
+          [macos]    Open Preferences
          *[other]  Open Settings 
       }
   `;
