@@ -7,9 +7,3 @@ build:
 	rollup l20n.js \
 		-c ./rollup.config.js \
 		-o $(DIST)/l20n.js
-	rollup l20n-chrome-xbl.js \
-		-c ./rollup.config.js \
-		-o $(DIST)/l20n-chrome-xbl.js
-	rollup l20n-content-html.js \
-		-c ./rollup.config.js \
-		-o $(DIST)/l20n-content-html.js

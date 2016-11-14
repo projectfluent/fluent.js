@@ -1,5 +1,5 @@
-import Localization from '../../lib/localization';
-import LocalizationObserver from '../../bindings/dom';
+import DOMLocalization from '../../bindings/dom_localization';
+import DocumentLocalization from '../../bindings/document_localization';
 
 import { ChromeResourceBundle } from './io';
 import { documentReady, getResourceLinks } from '../web/util';
@@ -41,22 +41,8 @@ function createContext(lang) {
   return new MessageContext(lang, { functions });
 }
 
-// Following is the initial running code of l20n.js
-
-// We create a new  `LocalizationObserver` and define an event listener
-// for `languagechange` on it.
-document.l10n = new LocalizationObserver();
-window.addEventListener('languagechange', document.l10n);
-
-// Next, we collect all l10n resource links, create new `Localization` objects
-// and bind them to the `LocalizationObserver` instance.
-for (const [name, resIds] of getResourceLinks(document.head || document)) {
-  if (!document.l10n.has(name)) {
-    createLocalization(name, resIds);
-  }
-}
-
-function createLocalization(name, resIds) {
+// Called for every named Localization declared via <link name=…> elements.
+function createLocalization(resIds, name) {
   // This function is called by `Localization` class to retrieve an array of
   // `ResourceBundle`s. In chrome-privileged setup we use the `L10nRegistry` to
   // get this array.
@@ -68,16 +54,23 @@ function createLocalization(name, resIds) {
     );
   }
 
-  const l10n = new Localization(requestBundles, createContext);
-  document.l10n.set(name, l10n);
-
   if (name === 'main') {
-    // When document is ready, we trigger it's localization and initialize
-    // `MutationObserver` on the root.
+    document.l10n = new DocumentLocalization(requestBundles, createContext);
     documentReady().then(() => {
-      const rootElem = document.documentElement;
-      document.l10n.observeRoot(rootElem, l10n);
-      document.l10n.translateRoot(rootElem, l10n);
+      document.l10n.connectRoot(document.documentElement);
+      document.l10n.translateDocument();
+      window.addEventListener('languagechange', document.l10n);
     });
+  } else {
+    // Pass the main Localization, `document.l10n`, as the observer.
+    const l10n = new DOMLocalization(
+      requestBundles, createContext, name, document.l10n
+    );
+    // Add this Localization as a delegate of the main one.
+    document.l10n.delegates.set(name, l10n);
   }
 }
+
+// Collect all l10n resource links and create `Localization` objects. The
+// 'main' Localization must be declared as the first one.
+getResourceLinks(document.head || document).forEach(createLocalization);
