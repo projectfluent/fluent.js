@@ -1,5 +1,4 @@
-import { keysFromContext, valueFromContext, entityFromContext }
-  from './format';
+import { L10nError } from './errors';
 
 export const properties = new WeakMap();
 export const contexts = new WeakMap();
@@ -125,7 +124,9 @@ export default class Localization {
       return prev.translations;
     }
 
-    const current = method(ctx, keys, prev);
+    const current = keysFromContext(
+      method, this.sanitizeArgs, ctx, keys, prev
+    );
 
     // In Gecko `console` needs to imported explicitly.
     if (typeof console !== 'undefined') {
@@ -187,7 +188,7 @@ export default class Localization {
   formatEntities(keys) {
     return this.interactive.then(
       bundles => this.formatWithFallback(
-        bundles, contexts.get(bundles[0]), keys, entitiesFromContext
+        bundles, contexts.get(bundles[0]), keys, this.entityFromContext
       )
     );
   }
@@ -218,7 +219,7 @@ export default class Localization {
     );
     return this.interactive.then(
       bundles => this.formatWithFallback(
-        bundles, contexts.get(bundles[0]), keyTuples, valuesFromContext
+        bundles, contexts.get(bundles[0]), keyTuples, this.valueFromContext
       )
     );
   }
@@ -251,6 +252,109 @@ export default class Localization {
     );
   }
 
+  /**
+   * Sanitize external arguments.
+   *
+   * Subclasses of `Localization` can override this method to provide
+   * environment-specific sanitization of arguments passed into translations.
+   *
+   * @param   {Object} args
+   * @returns {Object}
+   * @private
+   */
+  sanitizeArgs(args) {
+    return args;
+  }
+
+  /**
+   * Format all public values of a message into a { value, attrs } object.
+   *
+   * This function is passed as a method to `keysFromContext` and resolve
+   * a single L10n Entity using provided `MessageContext`.
+   *
+   * The function will return an object with a value and attributes of the
+   * entity.
+   *
+   * If the function fails to retrieve the entity, the value is set to the ID of
+   * an entity, and attrs to `null`. If formatting fails, it will return
+   * a partially resolved value and attributes.
+   *
+   * In both cases, an error is being added to the errors array.
+   *
+   * Subclasses of `Localization` can override this method to provide
+   * environment-specific formatting behavior.
+   *
+   * @param   {MessageContext} ctx
+   * @param   {Array<Error>}   errors
+   * @param   {String}         id
+   * @param   {Object}         args
+   * @returns {Object}
+   * @private
+   */
+  entityFromContext(ctx, errors, id, args) {
+    const entity = ctx.messages.get(id);
+
+    if (entity === undefined) {
+      errors.push(new L10nError(`Unknown entity: ${id}`));
+      return { value: id, attrs: null };
+    }
+
+    const formatted = {
+      value: ctx.format(entity, args, errors),
+      attrs: null,
+    };
+
+    if (entity.traits) {
+      formatted.attrs = [];
+      for (let i = 0, trait; (trait = entity.traits[i]); i++) {
+        if (!trait.key.hasOwnProperty('ns')) {
+          continue;
+        }
+        const attr = ctx.format(trait, args, errors);
+        if (attr !== null) {
+          formatted.attrs.push([
+            trait.key.ns,
+            trait.key.name,
+            attr
+          ]);
+        }
+      }
+    }
+
+    return formatted;
+  }
+
+  /**
+   * Format the value of a message into a string.
+   *
+   * This function is passed as a method to `keysFromContext` and resolve
+   * a value of a single L10n Entity using provided `MessageContext`.
+   *
+   * If the function fails to retrieve the entity, it will return an ID of it.
+   * If formatting fails, it will return a partially resolved entity.
+   *
+   * In both cases, an error is being added to the errors array.
+   *
+   * Subclasses of `Localization` can override this method to provide
+   * environment-specific formatting behavior.
+   *
+   * @param   {MessageContext} ctx
+   * @param   {Array<Error>}   errors
+   * @param   {string}         id
+   * @param   {Object}         args
+   * @returns {string}
+   * @private
+   */
+  valueFromContext(ctx, errors, id, args) {
+    const entity = ctx.messages.get(id);
+
+    if (entity === undefined) {
+      errors.push(new L10nError(`Unknown entity: ${id}`));
+      return id;
+    }
+
+    return ctx.format(entity, args, errors);
+  }
 }
 
 /**
@@ -296,70 +400,116 @@ function equal(bundles1, bundles2) {
     bundles1.every(({lang}, i) => lang === bundles2[i].lang);
 }
 
-// A regexp to sanitize HTML tags and entities.
-const reHtml = /[&<>]/g;
-const htmlEntities = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-};
-
 /**
- * Sanitize string-typed arguments.
- *
- * Escape HTML tags and entities and wrap values in the Unicode Isolation Marks
- * (FSI and PDI) to ensure the proper directionality of the interpolated text.
- *
- * @param   {Object} args
- * @returns {Object}
  * @private
+ *
+ * This function is an inner function for `Localization.formatWithFallback`.
+ *
+ * It takes a `MessageContext`, list of l10n-ids and a method to be used for
+ * key resolution (either `valueFromContext` or `entityFromContext`) and
+ * optionally a value returned from `keysFromContext` executed against
+ * another `MessageContext`.
+ *
+ * The idea here is that if the previous `MessageContext` did not resolve
+ * all keys, we're calling this function with the next context to resolve
+ * the remaining ones.
+ *
+ * In the function, we loop oer `keys` and check if we have the `prev`
+ * passed and if it has an error entry for the position we're in.
+ *
+ * If it doesn't, it means that we have a good translation for this key and
+ * we return it. If it does, we'll try to resolve the key using the passed
+ * `MessageContext`.
+ *
+ * In the end, we return an Object with resolved translations, errors and
+ * a boolean indicating if there were any errors found.
+ *
+ * The translations are either strings, if the method is `valueFromContext`
+ * or objects with value and attributes if the method is `entityFromContext`.
+ *
+ * See `Localization.formatWithFallback` for more info on how this is used.
+ *
+ * @param {MessageContext} ctx
+ * @param {Array<string>}  keys
+ * @param {Function}       method
+ * @param {{
+ *   errors: Array<Error>,
+ *   withoutFatal: Array<boolean>,
+ *   hasFatalErrors: boolean,
+ *   translations: Array<string>|Array<{value: string, attrs: Object}>}} prev
+ *
+ * @returns {{
+ *   errors: Array<Error>,
+ *   withoutFatal: Array<boolean>,
+ *   hasFatalErrors: boolean,
+ *   translations: Array<string>|Array<{value: string, attrs: Object}>}}
  */
-function sanitizeArgs(args) {
-  for (const name in args) {
-    const arg = args[name];
-    if (typeof arg === 'string') {
-      args[name] = arg.replace(reHtml, match => htmlEntities[match]);
+export function keysFromContext(method, sanitizeArgs, ctx, keys, prev) {
+  const entityErrors = [];
+  const result = {
+    errors: new Array(keys.length),
+    withoutFatal: new Array(keys.length),
+    hasFatalErrors: false,
+  };
+
+  result.translations = keys.map((key, i) => {
+    // Use a previously formatted good value if it had no errors.
+    if (prev && !prev.errors[i] ) {
+      return prev.translations[i];
     }
-  }
-  return args;
+
+    // Clear last entity's errors.
+    entityErrors.length = 0;
+    const args = sanitizeArgs(key[1]);
+    const translation = method(ctx, entityErrors, key[0], args);
+
+    // No errors still? Use this translation as fallback to the previous one
+    // which had errors.
+    if (entityErrors.length === 0) {
+      return translation;
+    }
+
+    // The rest of this function handles the scenario in which the translation
+    // was formatted with errors.  Copy the errors to the result object so that
+    // the Localization can handle them (e.g. console.warn about them).
+    result.errors[i] = entityErrors.slice();
+
+    // Formatting errors are not fatal and the translations are usually still
+    // usable and can be good fallback values.  Fatal errors should signal to
+    // the Localization that another fallback should be loaded.
+    if (!entityErrors.some(isL10nError)) {
+      result.withoutFatal[i] = true;
+    } else if (!result.hasFatalErrors) {
+      result.hasFatalErrors = true;
+    }
+
+    // Use the previous translation for this `key` even if it had formatting
+    // errors.  This is usually closer the user's preferred language anyways.
+    if (prev && prev.withoutFatal[i]) {
+      // Mark this previous translation as a good potential fallback value in
+      // case of further fallbacks.
+      result.withoutFatal[i] = true;
+      return prev.translations[i];
+    }
+
+    // If no good or almost good previous translation is available, return the
+    // current translation.  In case of minor errors it's a partially
+    // formatted translation.  In the worst-case scenario it an identifier of
+    // the requested entity.
+    return translation;
+  });
+
+  return result;
 }
 
 /**
- * A bound version of `keysFromContext` using `entityFromContext`.
- *
- * @param {MessageContext} ctx
- * @param {Array<Array>}   keys
- * @param {{
- *   errors: Array<Error>,
- *   hasErrors: boolean,
- *   translations: Array<{value: string, attrs: Object}>
- * }} prev
- * @returns {{
- *   errors: Array<Error>,
- *   hasErrors: boolean,
- *   translations: Array<{value: string, attrs: Object}>
- * }}
  * @private
- */
-function entitiesFromContext(ctx, keys, prev) {
-  return keysFromContext(entityFromContext, sanitizeArgs, ctx, keys, prev);
-}
-
-/**
- * A bound version of `keysFromContext` using `valueFromContext`.
  *
- * @param {MessageContext} ctx
- * @param {Array<Array>}   keys
- * @param {{
- *   errors: Array<Error>,
- *   hasErrors: boolean,
- *   translations: Array<string>}} prev
- * @returns {{
- *   errors: Array<Error>,
- *   hasErrors: boolean,
- *   translations: Array<string>}}
- * @private
+ * Test if an error is an instance of L10nError.
+ *
+ * @param   {Error}   error
+ * @returns {boolean}
  */
-function valuesFromContext(ctx, keys, prev) {
-  return keysFromContext(valueFromContext, sanitizeArgs, ctx, keys, prev);
+function isL10nError(error) {
+  return error instanceof L10nError;
 }
