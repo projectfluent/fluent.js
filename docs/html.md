@@ -73,11 +73,11 @@ Use the `data-l10n-id` attribute on a node to mark it as localizable.
 ```
 
 By default, the translations will be looked up in the main `Localization` 
-object.  If needed you can use the `data-l10n-bundle` to specify a different 
+object.  If needed you can use the `data-l10n-with` to specify a different 
 `Localization` object:
 
 ```html
-<p data-l10n-id="warning-message" data-l10n-bundle="extra"></p>
+<p data-l10n-id="warning-message" data-l10n-with="extra"></p>
 ```
 
 Notice that you don't have to put the text content in the HTML anymore (you 
@@ -114,7 +114,6 @@ The JavaScript API
 
 It is also possible to use L20n programmatically, for instance in order to 
 localize dynamic content.  The API is exposed under `document.l10n`.  Refer to 
-[docs/observer][] and [docs/localization][] for more details.
+[docs/bindings][] for more details.
 
-[docs/observer]: https://github.com/l20n/l20n.js/blob/master/docs/observer.md
-[docs/localization]: https://github.com/l20n/l20n.js/blob/master/docs/localization.md
+[docs/bindings]: https://github.com/l20n/l20n.js/blob/master/docs/bindings.md

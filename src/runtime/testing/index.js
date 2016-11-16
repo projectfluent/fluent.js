@@ -1,13 +1,13 @@
 import '../../intl/polyfill';
-import LocalizationObserver from '../../bindings/dom';
-import Localization from '../../lib/localization';
+import DocumentLocalization from '../../bindings/document_localization';
+import DOMLocalization from '../../bindings/dom_localization';
 import { getResourceLinks } from '../web/util';
 import { ResourceBundle } from './io';
 
 window.L20n = {
-  LocalizationObserver,
+  DocumentLocalization,
+  DOMLocalization,
   getResourceLinks,
   ResourceBundle,
-  Localization,
   MessageContext: Intl.MessageContext
 };
