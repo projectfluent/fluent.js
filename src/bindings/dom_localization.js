@@ -2,6 +2,14 @@ import { getDirection } from '../intl/locale';
 import Localization from '../lib/localization';
 import overlayElement from './overlay';
 
+// A regexp to sanitize HTML tags and entities.
+const reHtml = /[&<>]/g;
+const htmlEntities = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+};
+
 /**
  * The `DOMLocalization` class localizes DOM trees.
  */
@@ -275,5 +283,24 @@ export default class DOMLocalization extends Localization {
       // JSON.parse.  HTML documents return `null`.
       JSON.parse(element.getAttribute('data-l10n-args') || null)
     ];
+  }
+
+  /**
+   * Sanitize arguments.
+   *
+   * Escape HTML tags and entities in string-typed arguments.
+   *
+   * @param   {Object} args
+   * @returns {Object}
+   * @private
+   */
+  sanitizeArgs(args) {
+    for (const name in args) {
+      const arg = args[name];
+      if (typeof arg === 'string') {
+        args[name] = arg.replace(reHtml, match => htmlEntities[match]);
+      }
+    }
+    return args;
   }
 }
