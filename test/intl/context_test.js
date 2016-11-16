@@ -14,7 +14,7 @@ describe('Context', function() {
 
   describe('Billion Laughs', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
         bar = Bar

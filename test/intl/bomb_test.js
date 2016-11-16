@@ -14,7 +14,7 @@ describe('Reference bombs', function() {
 
   describe('Billion Laughs', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         lol0 = LOL
         lol1 = {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0}

@@ -16,6 +16,7 @@ describe('Runtime-specific functions', function() {
   describe('passing into the constructor', function(){
     before(function() {
       ctx = new MessageContext('en-US', {
+        useIsolating: false,
         functions: {
           CONCAT: (args, kwargs) => args.reduce((a, b) => `${a}${b}`, ''),
           SUM: (args, kwargs) => args.reduce((a, b) => a + b, 0)

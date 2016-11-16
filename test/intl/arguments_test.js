@@ -15,7 +15,7 @@ describe('External arguments', function() {
 
   describe('in values', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo { $num }
         bar = { foo }
@@ -58,7 +58,7 @@ describe('External arguments', function() {
 
   describe('in selectors', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $num -> 
             [3] Foo
@@ -76,7 +76,7 @@ describe('External arguments', function() {
 
   describe('in function calls', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { NUMBER($num) }
         bar = { NUMBER(1, minimumFractionDigits: $num) }
@@ -100,7 +100,7 @@ describe('External arguments', function() {
 
   describe('simple errors', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
       `);
@@ -153,7 +153,7 @@ describe('External arguments', function() {
     let args;
 
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
       `);
@@ -174,7 +174,7 @@ describe('External arguments', function() {
     let args;
 
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
       `);
@@ -195,7 +195,7 @@ describe('External arguments', function() {
     let args;
 
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg1 }
         bar = { $arg2 }
@@ -228,7 +228,7 @@ describe('External arguments', function() {
 
     before(function() {
       dtf = new Intl.DateTimeFormat('en-US');
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
       `);

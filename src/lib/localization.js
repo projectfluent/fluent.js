@@ -304,10 +304,6 @@ const htmlEntities = {
   '>': '&gt;',
 };
 
-// Unicode bidi isolation characters.
-const FSI = '\u2068';
-const PDI = '\u2069';
-
 /**
  * Sanitize string-typed arguments.
  *
@@ -322,8 +318,7 @@ function sanitizeArgs(args) {
   for (const name in args) {
     const arg = args[name];
     if (typeof arg === 'string') {
-      const value = arg.replace(reHtml, match => htmlEntities[match]);
-      args[name] = `${FSI}${value}${PDI}`;
+      args[name] = arg.replace(reHtml, match => htmlEntities[match]);
     }
   }
   return args;

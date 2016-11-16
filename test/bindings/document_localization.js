@@ -35,7 +35,7 @@ describe('translateFragment', function() {
     }
 
     function createContext(lang) {
-      return new L20n.MessageContext(lang);
+      return new L20n.MessageContext(lang, { useIsolating: false });
     }
 
     const dom = new L20n.DocumentLocalization(requestBundles, createContext);
@@ -64,7 +64,7 @@ describe('MutationObserver', function() {
     }
 
     function createContext(lang) {
-      return new L20n.MessageContext(lang);
+      return new L20n.MessageContext(lang, { useIsolating: false });
     }
 
     const dom = new L20n.DocumentLocalization(requestBundles, createContext);

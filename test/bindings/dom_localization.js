@@ -21,7 +21,7 @@ function requestBundles() {
 }
 
 function createContext(lang) {
-  return new L20n.MessageContext(lang);
+  return new L20n.MessageContext(lang, { useIsolating: false });
 }
 
 

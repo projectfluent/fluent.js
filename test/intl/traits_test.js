@@ -14,7 +14,7 @@ describe('Traits', function() {
 
   describe('missing', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
         bar = Bar
@@ -65,7 +65,7 @@ describe('Traits', function() {
 
   describe('with string values', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
             [trait] Foo Trait
@@ -108,7 +108,7 @@ describe('Traits', function() {
 
   describe('with simple pattern values', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
         bar = Bar
@@ -169,7 +169,7 @@ describe('Traits', function() {
 
   describe('with values with select expressions', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
             [trait] { "a" ->

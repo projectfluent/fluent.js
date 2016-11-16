@@ -38,6 +38,11 @@ import builtins from './builtins';
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
 
+// Unicode bidi isolation characters.
+const FSI = '\u2068';
+const PDI = '\u2069';
+
+
 /**
  * Map an array of JavaScript values into FTL Values.
  *
@@ -329,7 +334,8 @@ function Pattern(env, ptn) {
       const value = part.length === 1 ?
         Value(env, part[0]) : mapValues(env, part);
 
-      const str = value.toString(ctx);
+      let str = value.toString(ctx);
+
       if (str.length > MAX_PLACEABLE_LENGTH) {
         errors.push(
           new RangeError(
@@ -337,7 +343,11 @@ function Pattern(env, ptn) {
             `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
           )
         );
-        result += str.substr(0, MAX_PLACEABLE_LENGTH);
+        str = str.substr(0, MAX_PLACEABLE_LENGTH);
+      }
+
+      if (ctx.useIsolating) {
+        result += `${FSI}${str}${PDI}`;
       } else {
         result += str;
       }

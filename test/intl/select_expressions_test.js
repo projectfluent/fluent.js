@@ -14,7 +14,7 @@ describe('Select expressions', function() {
 
   describe('with a matching selector and no default variant', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { "a" ->
             [a] A
@@ -33,7 +33,7 @@ describe('Select expressions', function() {
 
   describe('with a matching selector and a default variant', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { "a" ->
             [a] A
@@ -52,7 +52,7 @@ describe('Select expressions', function() {
 
   describe('with a valid non-matching selector and no default variant', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { "c" ->
             [a] A
@@ -72,7 +72,7 @@ describe('Select expressions', function() {
 
   describe('with a valid non-matching selector and a default variant', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { "c" ->
            *[a] A
@@ -91,7 +91,7 @@ describe('Select expressions', function() {
 
   describe('with an invalid selector and no default variant', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { bar ->
             [a] A
@@ -112,7 +112,7 @@ describe('Select expressions', function() {
 
   describe('with an invalid selector and a default variant', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { bar ->
            *[a] A

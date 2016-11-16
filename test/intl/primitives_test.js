@@ -14,7 +14,7 @@ describe('Primitives', function() {
 
   describe('Numbers', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         one     = { 1 }
         select  = { 1 ->
@@ -40,7 +40,7 @@ describe('Primitives', function() {
 
   describe('Simple string value', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo               = Foo
 
@@ -129,7 +129,7 @@ describe('Primitives', function() {
 
   describe('Complex string value', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo               = Foo
         bar               = { foo } Bar
