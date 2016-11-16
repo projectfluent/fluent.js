@@ -9,7 +9,7 @@ describe('Formatting values', function(){
   let ctx, args, errs;
 
   before(function() {
-    ctx = new MessageContext('en-US');
+    ctx = new MessageContext('en-US', { useIsolating: false });
     ctx.addMessages(ftl`
       key1 = Value 1
       key2 = Value 2

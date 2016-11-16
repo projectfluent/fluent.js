@@ -23,18 +23,35 @@ export class MessageContext {
    * The `lang` argument is used to instantiate `Intl` formatters used by
    * translations.  The `options` object can be used to configure the context.
    *
+   * Examples:
+   *
+   *     const ctx = new MessageContext(lang);
+   *
+   *     const ctx = new MessageContext(lang, { useIsolating: false });
+   *
+   *     const ctx = new MessageContext(lang, {
+   *       useIsolating: true,
+   *       functions: {
+   *         NODE_ENV: () => process.env.NODE_ENV
+   *       }
+   *     });
+   *
    * Available options:
    *
-   *   - functions - an object of additional functions available to
-   *                 translations as builtins.
+   *   - `functions` - an object of additional functions available to
+   *                   translations as builtins.
+   *
+   *   - `useIsolating` - boolean specifying whether to use Unicode isolation
+   *                    marks (FSI, PDI) for bidi interpolations.
    *
    * @param   {string} lang      - Language of the context.
    * @param   {Object} [options]
    * @returns {MessageContext}
    */
-  constructor(lang, options = {}) {
+  constructor(lang, { functions = {}, useIsolating = true } = {}) {
     this.lang = lang;
-    this.functions = options.functions || {};
+    this.functions = functions;
+    this.useIsolating = useIsolating;
     this.messages = new Map();
     this.intls = new WeakMap();
   }

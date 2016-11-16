@@ -63,15 +63,34 @@ Create an instance of `MessageContext`.
 The `lang` argument is used to instantiate `Intl` formatters used by
 translations.  The `options` object can be used to configure the context.
 
+Examples:
+
+    const ctx = new MessageContext(lang);
+
+    const ctx = new MessageContext(lang, { useIsolating: false });
+
+    const ctx = new MessageContext(lang, {
+      useIsolating: true,
+      functions: {
+        NODE_ENV: () => process.env.NODE_ENV
+      }
+    });
+
 Available options:
 
--   functions - an object of additional functions available to
-                translations as builtins.
+-   `functions` - an object of additional functions available to
+                  translations as builtins.
+
+-   `useIsolating` - boolean specifying whether to use Unicode isolation
+                   marks (FSI, PDI) for bidi interpolations.
 
 **Parameters**
 
 -   `lang` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Language of the context.
 -   `options` **\[[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)]** 
+-   `$1` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+    -   `$1.functions`   (optional, default `{}`)
+    -   `$1.useIsolating`   (optional, default `true`)
 
 Returns **[MessageContext](#messagecontext)** 
 

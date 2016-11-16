@@ -15,7 +15,7 @@ describe('Functions', function() {
 
   describe('missing', function(){
     before(function() {
-      ctx = new MessageContext('en-US');
+      ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { MISSING("Foo") }
       `);
@@ -33,6 +33,7 @@ describe('Functions', function() {
   describe('arguments', function(){
     before(function() {
       ctx = new MessageContext('en-US', {
+        useIsolating: false,
         functions: {
           IDENTITY: args => args[0]
         }

@@ -20,7 +20,7 @@ function createLocalization(data) {
   }
 
   function createContext(lang) {
-    return new Intl.MessageContext(lang);
+    return new Intl.MessageContext(lang, { useIsolating: false });
   }
 
   return new Localization(requestBundles, createContext);
