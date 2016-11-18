@@ -25,6 +25,10 @@ function isIdentifierStart(cc) {
  * for runtime performance and generates an optimized entries object.
  */
 class Parser {
+  constructor(withSource = true) {
+    this.withSource = withSource;
+  }
+
   /**
    * @param {string} string
    * @returns {[AST.Resource, []]}
@@ -390,7 +394,7 @@ class Parser {
     }
 
     return new AST.Pattern(
-      source, content, quoteDelimited !== null
+      this.withSource ? source : null, content, quoteDelimited !== null
     );
   }
   /* eslint-enable complexity */
@@ -798,8 +802,8 @@ class Parser {
 }
 
 export default {
-  parseResource: function(string) {
-    const parser = new Parser();
+  parseResource: function(string, { withSource = true } = {}) {
+    const parser = new Parser(withSource);
     return parser.getResource(string);
   },
 };
