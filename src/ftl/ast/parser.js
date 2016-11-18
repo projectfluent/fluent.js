@@ -64,7 +64,7 @@ class Parser {
         const entry = this.getEntry(comment);
 
         // If retrieved entry is a Section, switch the section pointer to it.
-        if (entry.type === 'Section') {
+        if (entry instanceof AST.Section) {
           resource.body.push(entry);
           section = entry.body;
         } else {
