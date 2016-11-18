@@ -77,9 +77,7 @@ export default {
     if (pattern === null) {
       return '';
     }
-    if (pattern._quoteDelim) {
-      return `"${pattern.source}"`;
-    }
+
     let str = '';
 
     pattern.elements.forEach(elem => {
@@ -93,6 +91,11 @@ export default {
         str += this.dumpPlaceable(elem);
       }
     });
+
+    if (pattern.quoted) {
+      return `"${str}"`;
+    }
+
     return str;
   },
 

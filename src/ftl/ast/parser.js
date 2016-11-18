@@ -389,9 +389,9 @@ class Parser {
       }
     }
 
-    const pattern = new AST.Pattern(source, content);
-    pattern._quoteDelim = quoteDelimited !== null;
-    return pattern;
+    return new AST.Pattern(
+      source, content, quoteDelimited !== null
+    );
   }
   /* eslint-enable complexity */
 
