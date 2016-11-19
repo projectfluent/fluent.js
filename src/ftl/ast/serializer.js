@@ -33,15 +33,20 @@ export default {
     if (entity.comment) {
       str += `\n${this.dumpComment(entity.comment)}\n`;
     }
+
     const id = this.dumpIdentifier(entity.id);
-    const value = this.dumpPattern(entity.value);
+    str += `${id} =`;
+
+    if (entity.value) {
+      const value = this.dumpPattern(entity.value);
+      str += ` ${value}`;
+    }
 
     if (entity.traits.length) {
       const traits = this.dumpMembers(entity.traits, 2);
-      str += `${id} = ${value}\n${traits}`;
-    } else {
-      str += `${id} = ${value}`;
+      str += `\n${traits}`;
     }
+
     return str;
   },
 
@@ -77,9 +82,7 @@ export default {
     if (pattern === null) {
       return '';
     }
-    if (pattern._quoteDelim) {
-      return `"${pattern.source}"`;
-    }
+
     let str = '';
 
     pattern.elements.forEach(elem => {
@@ -93,6 +96,11 @@ export default {
         str += this.dumpPlaceable(elem);
       }
     });
+
+    if (pattern.quoted) {
+      return `"${str}"`;
+    }
+
     return str;
   },
 

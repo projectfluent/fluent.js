@@ -25,6 +25,10 @@ function isIdentifierStart(cc) {
  * for runtime performance and generates an optimized entries object.
  */
 class Parser {
+  constructor(withSource = true) {
+    this.withSource = withSource;
+  }
+
   /**
    * @param {string} string
    * @returns {[AST.Resource, []]}
@@ -64,7 +68,7 @@ class Parser {
         const entry = this.getEntry(comment);
 
         // If retrieved entry is a Section, switch the section pointer to it.
-        if (entry.type === 'Section') {
+        if (entry instanceof AST.Section) {
           resource.body.push(entry);
           section = entry.body;
         } else {
@@ -389,9 +393,9 @@ class Parser {
       }
     }
 
-    const pattern = new AST.Pattern(source, content);
-    pattern._quoteDelim = quoteDelimited !== null;
-    return pattern;
+    return new AST.Pattern(
+      this.withSource ? source : null, content, quoteDelimited !== null
+    );
   }
   /* eslint-enable complexity */
 
@@ -798,8 +802,8 @@ class Parser {
 }
 
 export default {
-  parseResource: function(string) {
-    const parser = new Parser();
+  parseResource: function(string, { withSource = true } = {}) {
+    const parser = new Parser(withSource);
     return parser.getResource(string);
   },
 };

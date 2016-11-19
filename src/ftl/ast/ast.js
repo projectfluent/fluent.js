@@ -2,12 +2,27 @@ class Node {
   constructor() {}
 }
 
-class Resource extends Node {
+class NodeList extends Node {
   constructor(body = [], comment = null) {
     super();
-    this.type = 'Resource';
+    this.type = 'NodeList';
     this.body = body;
     this.comment = comment;
+  }
+}
+
+class Resource extends NodeList {
+  constructor(body = [], comment = null) {
+    super(body, comment);
+    this.type = 'Resource';
+  }
+}
+
+class Section extends NodeList {
+  constructor(key, body = [], comment = null) {
+    super(body, comment);
+    this.type = 'Section';
+    this.key = key;
   }
 }
 
@@ -26,22 +41,13 @@ class Identifier extends Node {
   }
 }
 
-class Section extends Node {
-  constructor(key, body = [], comment = null) {
-    super();
-    this.type = 'Section';
-    this.key = key;
-    this.body = body;
-    this.comment = comment;
-  }
-}
-
 class Pattern extends Node {
-  constructor(source, elements) {
+  constructor(source, elements, quoted = false) {
     super();
     this.type = 'Pattern';
     this.source = source;
     this.elements = elements;
+    this.quoted = quoted;
   }
 }
 
