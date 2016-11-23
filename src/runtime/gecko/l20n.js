@@ -56,9 +56,10 @@ function createLocalization(resIds, name) {
 
   if (name === 'main') {
     document.l10n = new DocumentLocalization(requestBundles, createContext);
-    documentReady().then(() => {
+    document.l10n.ready = documentReady().then(() => {
       document.l10n.connectRoot(document.documentElement);
-      document.l10n.translateDocument();
+      return document.l10n.translateDocument();
+    }).then(() => {
       window.addEventListener('languagechange', document.l10n);
     });
   } else {
