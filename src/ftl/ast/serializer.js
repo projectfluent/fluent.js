@@ -98,7 +98,7 @@ export default {
     });
 
     if (pattern.quoted) {
-      return `"${str}"`;
+      return `"${str.replace('"', '\\"')}"`;
     }
 
     return str;
