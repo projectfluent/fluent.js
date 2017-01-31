@@ -68,7 +68,6 @@ Example
 Install the required polyfills and the latest v4.x milestone of l20n.js:
 
     $ npm install babel-polyfill
-    $ npm install webcomponents.js
     $ npm install intl
     $ npm install l20n
 
