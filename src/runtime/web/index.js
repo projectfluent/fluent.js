@@ -19,13 +19,13 @@ function createContext(lang) {
 function createLocalization(defaultLang, availableLangs, resIds, name) {
   // This function is called by `Localization` class to retrieve an array of
   // `ResourceBundle`s.
-  function requestBundles(requestedLangs = new Set(navigator.languages)) {
+  function requestBundles(requestedLangs = navigator.languages) {
     const newLangs = prioritizeLocales(
-      defaultLang, availableLangs, requestedLangs
+      availableLangs, requestedLangs, defaultLang
     );
 
-    const bundles = Array.from(
-      newLangs, lang => new ResourceBundle(lang, resIds)
+    const bundles = newLangs.map(
+      lang => new ResourceBundle(lang, resIds)
     );
 
     return Promise.resolve(bundles);

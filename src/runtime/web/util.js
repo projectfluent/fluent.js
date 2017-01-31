@@ -24,7 +24,7 @@ export function getResourceLinks(elem) {
 }
 
 export function getMeta(head) {
-  let availableLangs = new Set();
+  let availableLangs = [];
   let defaultLang = null;
   let appVersion = null;
 
@@ -39,9 +39,7 @@ export function getMeta(head) {
     const content = meta.getAttribute('content').trim();
     switch (name) {
       case 'availableLanguages':
-        availableLangs = new Set(content.split(',').map(lang => {
-          return lang.trim();
-        }));
+        availableLangs = content.split(',').map(lang => lang.trim());
         break;
       case 'defaultLanguage':
         defaultLang = content;
