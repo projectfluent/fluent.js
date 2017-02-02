@@ -22,11 +22,7 @@ lint:
 	@echo -e " $(OK) src/ linted"
 
 test:
-	@mocha \
-	    --recursive \
-	    --reporter dot \
-	    --require ./test/compat \
-	    test/**/*_test.js
+	@mocha --recursive --require ./test/compat
 
 docs:
 	documentation build --shallow -f md \
