@@ -1,4 +1,4 @@
-load('../../dist/bundle/tooling/l20n.js');
+load('../../dist/fluent.js');
 
 var ftlCode = read('./workload-low.ftl');
 var args = {};
@@ -11,11 +11,11 @@ function micro(time) {
 var times = {};
 
 times.ftlParseStart = dateNow();
-var [resource] = L20n.FTLASTParser.parseResource(ftlCode);
+var [resource] = Fluent.FTLASTParser.parseResource(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var [entries] = L20n.FTLEntriesParser.parseResource(ftlCode);
+var [entries] = Fluent.FTLEntriesParser.parseResource(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
 var ctx = new Intl.MessageContext('en-US');
