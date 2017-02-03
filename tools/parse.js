@@ -26,8 +26,8 @@ program
 
 function parse(fileformat, str) {
   return program.output === 'ast'
-    ? FTLASTParser.parseResource(str)
-    : FTLRuntimeParser.parseResource(str);
+    ? FTLASTParser.parse(str)
+    : FTLRuntimeParser.parse(str);
 }
 
 

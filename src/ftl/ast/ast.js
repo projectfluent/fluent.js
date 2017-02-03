@@ -37,7 +37,7 @@ class Message extends Entry {
 }
 
 class Pattern extends Node {
-  constructor(source, elements, quoted = false) {
+  constructor(elements, quoted = false) {
     super();
     this.type = 'Pattern';
     this.elements = elements
