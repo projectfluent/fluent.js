@@ -73,7 +73,7 @@ class EntriesParser {
     }
 
     if (ch !== '\n') {
-      this.getEntity(entries);
+      this.getMessage(entries);
     }
   }
 
@@ -100,22 +100,23 @@ class EntriesParser {
     return undefined;
   }
 
-  getEntity(entries) {
+  getMessage(entries) {
     const id = this.getIdentifier();
 
     this.getLineWS();
 
     let ch = this._source[this._index];
 
-    if (ch !== '=') {
-      throw this.error('Expected "=" after Entity ID');
+    let val;
+
+    if (ch === '=') {
+      this._index++;
+
+      this.getLineWS();
+
+      val = this.getPattern();
     }
 
-    this._index++;
-
-    this.getLineWS();
-
-    const val = this.getPattern();
 
     ch = this._source[this._index];
 
@@ -127,13 +128,11 @@ class EntriesParser {
       ch = this._source[this._index];
     }
 
-    if ((ch === '[' && this._source[this._index + 1] !== '[') ||
-        ch === '*') {
+    if (ch === '.') {
 
-      const members = this.getMembers();
+      const attrs = this.getAttributes();
       entries[id] = {
-        traits: members[0],
-        def: members[1],
+        attrs: attrs,
         val
       };
 
@@ -141,7 +140,7 @@ class EntriesParser {
       entries[id] = val;
     } else if (val === undefined) {
       throw this.error(
-        'Expected a value (like: " = value") or a trait (like: "[key] value")'
+        'Expected a value (like: " = value") or an attribute (like: ".key = value")'
       );
     } else {
       entries[id] = {
@@ -190,31 +189,6 @@ class EntriesParser {
 
   getKeyword() {
     let name = '';
-    let namespace = this.getIdentifier();
-
-    // If the first character after identifier string is '/', it means
-    // that what we collected so far is actually a namespace.
-    //
-    // But if it is not '/', that means that what we collected so far
-    // is just the beginning of the keyword and we should continue collecting
-    // it.
-    // In that scenario, we're going to move charcters collected so far
-    // from namespace variable to name variable and set namespace to null.
-    //
-    // For example, if the keyword is "Foo bar", at this point we only
-    // collected "Foo", the index character is not "/", so we're going
-    // to move on and see if the next character is allowed in the name.
-    //
-    // Because it's a space, it is and we'll continue collecting the name.
-    //
-    // In case the keyword is "Foo/bar", we're going to keep what we collected
-    // so far as `namespace`, bump the index and start collecting the name.
-    if (this._source[this._index] === '/') {
-      this._index++;
-    } else if (namespace) {
-      name = namespace;
-      namespace = null;
-    }
 
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
@@ -224,7 +198,7 @@ class EntriesParser {
         cc === 95 || cc === 32) {  //  _
       cc = this._source.charCodeAt(++this._index);
     } else if (name.length === 0) {
-      throw this.error('Expected an identifier (starting with [a-zA-Z_])');
+      throw this.error('Expected a keyword (starting with [a-zA-Z_])');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
@@ -244,9 +218,7 @@ class EntriesParser {
 
     name += this._source.slice(start, this._index);
 
-    return namespace ?
-      { type: 'kw', ns: namespace, name } :
-      { type: 'kw', name };
+    return { type: 'kw', name };
   }
 
   // We're going to first try to see if the pattern is simple.
@@ -399,30 +371,24 @@ class EntriesParser {
   getPlaceable() {
     this._index++;
 
-    const expressions = [];
+    const expression = [];
 
     this.getLineWS();
 
-    while (this._index < this._length) {
-      const start = this._index;
-      try {
-        expressions.push(this.getPlaceableExpression());
-      } catch (e) {
-        throw this.error(e.description, start);
-      }
-      const ch = this._source[this._index];
-      if (ch === '}') {
-        this._index++;
-        break;
-      } else if (ch === ',') {
-        this._index++;
-        this.getWS();
-      } else {
-        throw this.error('Expected "}" or ","');
-      }
+    const start = this._index;
+    try {
+      expression = this.getPlaceableExpression();
+    } catch (e) {
+      throw this.error(e.description, start);
+    }
+    const ch = this._source[this._index];
+    if (ch === '}') {
+      this._index++;
+    } else {
+      throw this.error('Expected "}" or ","');
     }
 
-    return expressions;
+    return expression;
   }
 
   getPlaceableExpression() {
@@ -619,62 +585,32 @@ class EntriesParser {
     return exp;
   }
 
-  getMembers() {
-    const members = [];
+  getAttributes() {
+    const attrs = {};
     let index = 0;
-    let defaultIndex;
 
     while (this._index < this._length) {
       const ch = this._source[this._index];
 
-      if ((ch !== '[' || this._source[this._index + 1] === '[') &&
-          ch !== '*') {
+      if (ch !== '.') {
         break;
       }
-      if (ch === '*') {
-        this._index++;
-        defaultIndex = index;
-      }
+      this._index++;
 
-      if (this._source[this._index] !== '[') {
-        throw this.error('Expected "["');
-      }
-
-      const key = this.getMemberKey();
+      const key = this.getIdentifier();
 
       this.getLineWS();
 
-      const member = {
-        key,
-        val: this.getPattern()
-      };
-      members[index++] = member;
+      this._index++;
+
+      this.getLineWS();
+
+      attrs[key] = this.getPattern();
 
       this.getWS();
     }
 
-    return [members, defaultIndex];
-  }
-
-  // MemberKey may be a Keyword or Number
-  getMemberKey() {
-    this._index++;
-
-    const cc = this._source.charCodeAt(this._index);
-    let literal;
-
-    if ((cc >= 48 && cc <= 57) || cc === 45) {
-      literal = this.getNumber();
-    } else {
-      literal = this.getKeyword();
-    }
-
-    if (this._source[this._index] !== ']') {
-      throw this.error('Expected "]"');
-    }
-
-    this._index++;
-    return literal;
+    return attrs;
   }
 
   getLiteral() {
