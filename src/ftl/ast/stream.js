@@ -12,7 +12,17 @@ export class FTLParserStream extends ParserStream {
   }
 
   skipWSLines() {
-    
+    while (true) {
+      this.peekLineWS();
+
+      if (this.currentPeek() == '\n') {
+        this.skipToPeek();
+        this.next();
+      } else {
+        this.resetPeek();
+        break;
+      }
+    }
   }
 
   skipLineWS() {
@@ -26,6 +36,7 @@ export class FTLParserStream extends ParserStream {
 
   expectChar(ch) {
     if (this.ch === ch) {
+      this.next();
       return true;
     }
 
@@ -56,6 +67,27 @@ export class FTLParserStream extends ParserStream {
              cc === 95);               // _
   }
 
+  isPeekNextLineVariantStart() {
+    if (!this.currentPeekIs('\n')) {
+      return false;
+    }
+
+    this.peek();
+
+    this.peekLineWS();
+
+    if (this.currentPeekIs('*')) {
+      this.peek();
+    }
+
+    if (this.currentPeekIs('[') && !this.peekCharIs('[')) {
+      this.resetPeek();
+      return true;
+    }
+    this.resetPeek();
+    return false;
+  }
+
   takeIDStart() {
     if (this.isIDStart()) {
       let ret = this.ch;
@@ -69,8 +101,21 @@ export class FTLParserStream extends ParserStream {
     let closure = ch => {
       let cc = this.ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z
-              (cc >= 65 && cc <= 90) ||  // A-Z
-               cc === 95);               // _
+              (cc >= 65 && cc <= 90)  || // A-Z
+              (cc >= 48 && cc <= 57)  || // 0-9
+               cc === 95 || cc === 45);  // _-
+    };
+
+    return this.takeChar(closure);
+  }
+
+  takeKWChar() {
+    let closure = ch => {
+      let cc = this.ch.charCodeAt(0);
+      return ((cc >= 97 && cc <= 122) || // a-z
+              (cc >= 65 && cc <= 90)  || // A-Z
+              (cc >= 48 && cc <= 57)  || // 0-9
+               cc === 95 || cc === 45 || cc === 32);  // _-
     };
 
     return this.takeChar(closure);
