@@ -35,9 +35,60 @@ function getEntry(ps) {
     comment = getComment(ps);
   }
 
+  if (ps.currentIs('[')) {
+    return getSection(ps, comment);
+  }
+
   if (ps.isIDStart()) {
     return getMessage(ps, comment);
   }
+
+  return comment;
+}
+
+function getComment(ps) {
+  ps.expectChar('#');
+  ps.takeCharIf(' ');
+
+  let content = '';
+
+  while(true) {
+    let ch;
+    while (ch = ps.takeChar(x => x !== '\n')) {
+      content += ch;
+    }
+
+    ps.next();
+
+    if (ps.current() == '#') {
+      content += '\n';
+      ps.next();
+      ps.takeCharIf(' ');
+    } else {
+      break;
+    }
+  }
+  return new AST.Comment(content);
+}
+
+function getSection(ps, comment) {
+  ps.expectChar('[');
+  ps.expectChar('[');
+
+  ps.skipLineWS();
+
+  let key = getKeyword(ps);
+
+  ps.skipLineWS();
+
+  ps.expectChar(']');
+  ps.expectChar(']');
+
+  ps.skipLineWS();
+
+  ps.expectChar('\n');
+
+  return new AST.Section(key, comment);
 }
 
 function getMessage(ps, comment) {
@@ -46,14 +97,56 @@ function getMessage(ps, comment) {
   ps.skipLineWS();
 
   let pattern;
+  let attrs;
+
   if (ps.currentIs('=')) {
     ps.next();
     ps.skipLineWS();
 
     pattern = getPattern(ps);
-
-    return new AST.Message(id, pattern);
   }
+
+  if (ps.isPeekNextLineAttributeStart()) {
+    attrs = getAttributes(ps);
+  }
+
+  if (pattern === undefined && attrs === undefined) {
+    throw new Error('MissingField');
+  }
+
+  return new AST.Message(id, pattern, attrs, comment);
+}
+
+function getAttributes(ps) {
+  let attrs = [];
+
+  while(true) {
+    ps.expectChar('\n');
+    ps.skipLineWS();
+
+    ps.expectChar('.');
+
+    let key = getIdentifier(ps);
+
+    ps.skipLineWS();
+
+    ps.expectChar('=');
+
+    ps.skipLineWS();
+
+    let value = getPattern(ps);
+
+    if (value === undefined) {
+      throw new Error('ExpectedField');
+    }
+
+    attrs.push(new AST.Attribute(key, value));
+
+    if (!ps.isPeekNextLineAttributeStart()) {
+      break;
+    }
+  }
+  return attrs;
 }
 
 function getIdentifier(ps) {
@@ -175,7 +268,7 @@ function getPattern(ps) {
 
       ps.peekLineWS();
 
-      if (ps.currentPeekIs('|')) {
+      if (!ps.currentPeekIs('|')) {
         ps.resetPeek();
         break;
       } else {
@@ -188,7 +281,7 @@ function getPattern(ps) {
           isIndented = true;
         }
       } else {
-        if (isIndented && ps.takeCharIf(' ')) {
+        if (isIndented && !ps.takeCharIf(' ')) {
           throw new Error('Generic');
         }
       }
@@ -315,6 +408,37 @@ function getSelectorExpression(ps) {
   }
 
   return literal;
+}
+
+function getCallAtrs(ps) {
+  let args = [];
+
+  ps.skipLineWS();
+
+  while(true) {
+    if (ps.current() == ')') {
+      break;
+    }
+
+    let exp = getSelectorExpression(ps);
+
+    ps.skipLineWS();
+
+    if (ps.current() == ':') {
+      if (exp.type !== 'MessageReference') {
+        throw new Error('ForbiddenKey');
+      }
+
+      ps.next();
+      ps.skipLineWS();
+
+      let val = getArgVal(ps);
+
+      args.push(new AST.NamedArgument(exp.id, val));
+    } else {
+      args.push(exp);
+    }
+  }
 }
 
 function getLiteral(ps) {

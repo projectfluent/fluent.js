@@ -88,6 +88,24 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
+  isPeekNextLineAttributeStart() {
+    if (!this.currentPeekIs('\n')) {
+      return false;
+    }
+
+    this.peek();
+
+    this.peekLineWS();
+
+    if (this.currentPeekIs('.')) {
+      this.resetPeek();
+      return true;
+    }
+
+    this.resetPeek();
+    return false;
+  }
+
   takeIDStart() {
     if (this.isIDStart()) {
       let ret = this.ch;
