@@ -138,4 +138,13 @@ export class FTLParserStream extends ParserStream {
 
     return this.takeChar(closure);
   }
+
+  takeDigit() {
+    let closure = ch => {
+      let cc = this.ch.charCodeAt(0);
+      return (cc >= 48 && cc <= 57); // 0-9
+    };
+
+    return this.takeChar(closure);
+  }
 }

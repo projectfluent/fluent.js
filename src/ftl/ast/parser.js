@@ -240,6 +240,40 @@ function getKeyword(ps) {
   name.trimRight();
 }
 
+function getDigits(ps) {
+  let num = '';
+
+  let ch;
+  while (ch = ps.takeDigit()) {
+    num += ch;
+  }
+
+  if (num.length === 0) {
+    throw new Error('ExpectedCharRange');
+  }
+
+  return num;
+}
+
+function getNumber(ps) {
+  let num = '';
+
+  if (ps.currentIs('-')) {
+    num += '-';
+    ps.next();
+  }
+
+  num = `${num}${getDigits(ps)}`;
+
+  if (ps.currentIs('.')) {
+    num += '.';
+    ps.next();
+    num = `${num}${getDigits(ps)}`;
+  }
+
+  return new AST.Number(num);
+}
+
 function getPattern(ps) {
   let buffer = '';
   let elements = [];
@@ -410,7 +444,7 @@ function getSelectorExpression(ps) {
   return literal;
 }
 
-function getCallAtrs(ps) {
+function getCallArgs(ps) {
   let args = [];
 
   ps.skipLineWS();
@@ -438,7 +472,18 @@ function getCallAtrs(ps) {
     } else {
       args.push(exp);
     }
+
+    ps.skipLineWS();
+
+    if (ps.current() == ',') {
+      ps.next();
+      ps.skipLineWS();
+      continue;
+    } else {
+      break;
+    }
   }
+  return args;
 }
 
 function getLiteral(ps) {
