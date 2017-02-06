@@ -67,6 +67,11 @@ export class FTLParserStream extends ParserStream {
              cc === 95);               // _
   }
 
+  isNumberStart() {
+    let cc = this.ch.charCodeAt(0);
+    return ((cc >= 48 && cc <= 57) || cc === 45); // 0-9
+  }
+
   isPeekNextLineVariantStart() {
     if (!this.currentPeekIs('\n')) {
       return false;

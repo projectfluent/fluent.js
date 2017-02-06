@@ -486,6 +486,31 @@ function getCallArgs(ps) {
   return args;
 }
 
+function getArgVal(ps) {
+  if (ps.isNumberStart()) {
+    return getNumber(ps);
+  } else if (ps.currentIs('"')) {
+    return getString(ps);
+  }
+  throw new Error('ExpectedField');
+}
+
+function getString(ps) {
+  let val = '';
+
+  ps.expectChar('"');
+
+  let ch;
+  while (ch = ps.takeChar(x => x !== '"')) {
+    val += ch;
+  }
+
+  ps.next();
+
+  return new AST.StringExpression(val);
+
+}
+
 function getLiteral(ps) {
   let ch = ps.current();
 
@@ -493,13 +518,11 @@ function getLiteral(ps) {
     throw new Error('Expected literal');
   }
 
-  let cc = ch.charCodeAt(0);
-
-  if ((cc >= 48 && cc <= 57) || cc === 45) { // 0-9, -
+  if (ps.isNumberStart()) {
     return getNumber(ps);
-  } else if (cc === 34) { // "
+  } else if (ch === '"') {
     return getPattern(ps);
-  } else if (cc === 36) { // $
+  } else if (ch === '$') {
     ps.next();
     let name = getIdentifier(ps);
     return new AST.ExternalArgument(name);

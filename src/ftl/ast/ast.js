@@ -237,6 +237,7 @@ export default {
   ExpressionExpression,
   Attribute,
   Variant,
+  NamedArgument,
   Identifier,
   Keyword,
   Comment,
