@@ -40,7 +40,7 @@ class Pattern extends Node {
   constructor(elements, quoted = false) {
     super();
     this.type = 'Pattern';
-    this.elements = elements
+    this.elements = elements;
     this.quoted = quoted;
   }
 }

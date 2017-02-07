@@ -5,19 +5,18 @@ import { L10nError } from '../../lib/errors';
 import { FTLParserStream } from './stream';
 
 function parse(source) {
-  let errors = [];
-  let comment = null;
+  const errors = [];
 
-  let ps = new FTLParserStream(source);
+  const ps = new FTLParserStream(source);
 
   ps.skipWSLines();
 
-  let entries = [];
+  const entries = [];
 
   while (ps.current()) {
-    let entryStartPos = ps.getIndex();
+    const entryStartPos = ps.getIndex();
 
-    let entry = getEntry(ps);
+    const entry = getEntry(ps);
 
     if (entry) {
       entries.push(entry);

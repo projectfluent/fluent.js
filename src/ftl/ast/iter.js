@@ -49,7 +49,7 @@ export class ParserStream {
       return undefined;
     }
 
-    let diff = this.peekIndex - this.index;
+    const diff = this.peekIndex - this.index;
 
     if (diff === 0) {
       return this.ch;
@@ -68,10 +68,10 @@ export class ParserStream {
 
     this.peekIndex += 1;
 
-    let diff = this.peekIndex - this.index;
+    const diff = this.peekIndex - this.index;
 
     if (diff > this.buf.length) {
-      let ch = this.iter.next().value;
+      const ch = this.iter.next().value;
       if (ch !== undefined) {
         this.buf.push(ch);
       } else {
@@ -96,7 +96,7 @@ export class ParserStream {
       return false;
     }
 
-    let ret = this.peek();
+    const ret = this.peek();
 
     this.peekIndex -= 1;
 
@@ -109,7 +109,7 @@ export class ParserStream {
   }
 
   skipToPeek() {
-    let diff = this.peekIndex - this.index;
+    const diff = this.peekIndex - this.index;
 
     for (let i = 0; i < diff; i++) {
       this.ch = this.buf.shift();
