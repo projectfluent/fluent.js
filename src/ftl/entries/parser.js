@@ -336,6 +336,9 @@ class EntriesParser {
         }
         buffer = '';
         content.push(this.getPlaceable());
+
+        this._index++;
+
         ch = this._source[this._index];
         placeables++;
         continue;
@@ -392,8 +395,6 @@ class EntriesParser {
 
   getPlaceableExpression() {
 
-    this.getWS();
-
     if (this._source[this._index] === '*' ||
        (this._source[this._index] === '[' &&
         this._source[this._index + 1] !== ']')) {
@@ -407,7 +408,7 @@ class EntriesParser {
       };
     }
 
-    const selector = this.getCallExpression();
+    const selector = this.getSelectorExpression();
     let variants;
 
     this.getWS();
@@ -425,7 +426,7 @@ class EntriesParser {
       this.getLineWS();
 
       if (this._source[this._index] !== '\n') {
-        throw this.error('Members should be listed in a new line');
+        throw this.error('Variants should be listed in a new line');
       }
 
       this.getWS();
@@ -448,28 +449,51 @@ class EntriesParser {
     };
   }
 
-  getCallExpression() {
-    const exp = this.getMemberExpression();
+  getSelectorExpression() {
+    const literal = this.getLiteral();
 
-    if (this._source[this._index] !== '(') {
-      return exp;
+    if (literal.type !== 'ref') {
+      return literal;
     }
 
-    this._index++;
+    if (this._source[this._index] === '.') {
+      this._index++;
 
-    const args = this.getCallArgs();
+      const name = this.getIdentifier();
+      return {
+        type: 'attr',
+        id: literal,
+        name
+      };
+    }
 
-    this._index++;
+    if (this._source[this._index] === '[') {
+      this._index++;
 
-    if (exp.type === 'ref') {
+      const key = this.getVariantKey();
+      return {
+        type: 'var',
+        obj: literal,
+        key
+      };
+    }
+
+    if (this._source[this._index] === '(') {
+      this._index++;
+      const args = this.getCallArgs();
+
+      this._index++;
+
       exp.type = 'fun';
+
+      return {
+        type: 'call',
+        name: exp,
+        args
+      };
     }
 
-    return {
-      type: 'call',
-      name: exp,
-      args
-    };
+    return literal;
   }
 
   getCallArgs() {
@@ -482,7 +506,7 @@ class EntriesParser {
     while (this._index < this._length) {
       this.getLineWS();
 
-      const exp = this.getCallExpression();
+      const exp = this.getSelectorExpression();
 
       // EntityReference in this place may be an entity reference, like:
       // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
@@ -496,7 +520,7 @@ class EntriesParser {
           this._index++;
           this.getLineWS();
 
-          const val = this.getCallExpression();
+          const val = this.getSelectorExpression();
 
           // If the expression returned as a value of the argument
           // is not a quote delimited string, number or
@@ -509,7 +533,7 @@ class EntriesParser {
               val.type === 'num' ||
               val.type === 'ext') {
             args.push({
-              type: 'kv',
+              type: 'narg',
               name: exp.name,
               val
             });
@@ -580,24 +604,6 @@ class EntriesParser {
       type: 'num',
       val: num
     };
-  }
-
-  getMemberExpression() {
-    let exp = this.getLiteral();
-
-    // the obj element of the member expression
-    // must be either an entity reference or another member expression.
-    while (['ref', 'mem'].includes(exp.type) &&
-      this._source[this._index] === '[') {
-      const keyword = this.getVariantKey();
-      exp = {
-        type: 'mem',
-        key: keyword,
-        obj: exp
-      };
-    }
-
-    return exp;
   }
 
   getAttributes() {
