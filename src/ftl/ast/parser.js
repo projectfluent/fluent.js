@@ -271,7 +271,7 @@ function getNumber(ps) {
     num = `${num}${getDigits(ps)}`;
   }
 
-  return new AST.Number(num);
+  return new AST.NumberExpression(num);
 }
 
 function getPattern(ps) {

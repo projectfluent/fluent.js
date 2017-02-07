@@ -52,27 +52,19 @@ class Expression extends Node {
   }
 }
 
-class PatternExpression extends Expression {
-  constructor(pattern) {
-    super();
-    this.type = 'PatternExpression';
-    this.pattern = pattern;
-  }
-}
-
 class StringExpression extends Expression {
-  constructor(string) {
+  constructor(value) {
     super();
     this.type = 'StringExpression';
-    this.string = string;
+    this.value = value;
   }
 }
 
 class NumberExpression extends Expression {
-  constructor(number) {
+  constructor(value) {
     super();
     this.type = 'NumberExpression';
-    this.number = number;
+    this.value = value;
   }
 }
 
@@ -93,7 +85,7 @@ class ExternalArgument extends Expression {
 }
 
 class SelectExpression extends Expression {
-  constructor(exp, variants = null) {
+  constructor(exp, variants) {
     super();
     this.type = 'SelectExpression';
     this.exp = exp;
@@ -113,7 +105,7 @@ class AttributeExpression extends Expression {
 class VariantExpression extends Expression {
   constructor(id, key) {
     super();
-    this.type = 'VariantkExpression';
+    this.type = 'VariantExpression';
     this.id = id;
     this.key = key;
   }
@@ -125,14 +117,6 @@ class CallExpression extends Expression {
     this.type = 'CallExpression';
     this.callee = callee;
     this.args = args;
-  }
-}
-
-class ExpressionExpression extends Expression {
-  constructor(callee, exp) {
-    super();
-    this.type = 'ExpressionExpression';
-    this.exp = exp;
   }
 }
 
@@ -196,14 +180,6 @@ class Section extends Node {
   }
 }
 
-class Number extends Node {
-  constructor(value) {
-    super();
-    this.type = 'Number';
-    this.value = value;
-  }
-}
-
 class Function extends Identifier {
   constructor(name) {
     super(name);
@@ -225,7 +201,6 @@ export default {
   Entry,
   Pattern,
   Expression,
-  PatternExpression,
   StringExpression,
   NumberExpression,
   MessageReference,
@@ -234,7 +209,6 @@ export default {
   AttributeExpression,
   VariantExpression,
   CallExpression,
-  ExpressionExpression,
   Attribute,
   Variant,
   NamedArgument,
@@ -242,7 +216,6 @@ export default {
   Keyword,
   Comment,
   Section,
-  Number,
   Function,
   JunkEntry,
 };
