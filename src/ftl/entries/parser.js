@@ -375,7 +375,7 @@ class EntriesParser {
 
     let expression;
 
-    this.getLineWS();
+    this.getWS();
 
     const start = this._index;
     try {
@@ -460,6 +460,7 @@ class EntriesParser {
       this._index++;
 
       const name = this.getIdentifier();
+      this._index++;
       return {
         type: 'attr',
         id: literal,
@@ -471,6 +472,7 @@ class EntriesParser {
       this._index++;
 
       const key = this.getVariantKey();
+      this._index++;
       return {
         type: 'var',
         obj: literal,
@@ -654,6 +656,8 @@ class EntriesParser {
         throw this.error('Expected "["');
       }
 
+      this._index++;
+
       const key = this.getVariantKey();
 
       this.getLineWS();
@@ -672,8 +676,6 @@ class EntriesParser {
 
   // VariantKey may be a Keyword or Number
   getVariantKey() {
-    this._index++;
-
     const cc = this._source.charCodeAt(this._index);
     let literal;
 
