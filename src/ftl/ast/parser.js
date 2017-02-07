@@ -1,7 +1,6 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import AST from './ast';
-import { L10nError } from '../../lib/errors';
 import { FTLParserStream } from './stream';
 
 function parse(source) {
@@ -14,8 +13,6 @@ function parse(source) {
   const entries = [];
 
   while (ps.current()) {
-    const entryStartPos = ps.getIndex();
-
     const entry = getEntry(ps);
 
     if (entry) {
@@ -51,15 +48,15 @@ function getComment(ps) {
 
   let content = '';
 
-  while(true) {
+  while (true) {
     let ch;
-    while (ch = ps.takeChar(x => x !== '\n')) {
+    while ((ch = ps.takeChar(x => x !== '\n'))) {
       content += ch;
     }
 
     ps.next();
 
-    if (ps.current() == '#') {
+    if (ps.current() === '#') {
       content += '\n';
       ps.next();
       ps.takeCharIf(' ');
@@ -76,7 +73,7 @@ function getSection(ps, comment) {
 
   ps.skipLineWS();
 
-  let key = getKeyword(ps);
+  const key = getKeyword(ps);
 
   ps.skipLineWS();
 
@@ -91,7 +88,7 @@ function getSection(ps, comment) {
 }
 
 function getMessage(ps, comment) {
-  let id = getIdentifier(ps);
+  const id = getIdentifier(ps);
 
   ps.skipLineWS();
 
@@ -117,15 +114,15 @@ function getMessage(ps, comment) {
 }
 
 function getAttributes(ps) {
-  let attrs = [];
+  const attrs = [];
 
-  while(true) {
+  while (true) {
     ps.expectChar('\n');
     ps.skipLineWS();
 
     ps.expectChar('.');
 
-    let key = getIdentifier(ps);
+    const key = getIdentifier(ps);
 
     ps.skipLineWS();
 
@@ -133,7 +130,7 @@ function getAttributes(ps) {
 
     ps.skipLineWS();
 
-    let value = getPattern(ps);
+    const value = getPattern(ps);
 
     if (value === undefined) {
       throw new Error('ExpectedField');
@@ -154,8 +151,7 @@ function getIdentifier(ps) {
   name += ps.takeIDStart();
 
   let ch;
-
-  while (ch = ps.takeIDChar()) {
+  while ((ch = ps.takeIDChar())) {
     name += ch;
   }
 
@@ -163,23 +159,23 @@ function getIdentifier(ps) {
 }
 
 function getVariantKey(ps) {
-  let ch = ps.current();
+  const ch = ps.current();
 
   if (!ch) {
     throw new Error('Expected VariantKey');
   }
 
-  let cc = ch.charCodeAt(0);
+  const cc = ch.charCodeAt(0);
 
   if ((cc >= 48 && cc <= 57) || cc === 45) { // 0-9, -
     return getNumber(ps);
-  } else {
-    return getKeyword(ps);
   }
+
+  return getKeyword(ps);
 }
 
 function getVariants(ps) {
-  let variants = [];
+  const variants = [];
   let hasDefault = false;
 
   while (true) {
@@ -196,13 +192,13 @@ function getVariants(ps) {
 
     ps.expectChar('[');
 
-    let key = getVariantKey(ps);
+    const key = getVariantKey(ps);
 
     ps.expectChar(']');
 
     ps.skipLineWS();
 
-    let value = getPattern(ps);
+    const value = getPattern(ps);
 
     if (!value) {
       throw new Error('ExpectedField');
@@ -228,7 +224,7 @@ function getKeyword(ps) {
   name += ps.takeIDStart();
 
   while (true) {
-    let ch = ps.takeKWChar();
+    const ch = ps.takeKWChar();
     if (ch) {
       name += ch;
     } else {
@@ -243,7 +239,7 @@ function getDigits(ps) {
   let num = '';
 
   let ch;
-  while (ch = ps.takeDigit()) {
+  while ((ch = ps.takeDigit())) {
     num += ch;
   }
 
@@ -275,7 +271,7 @@ function getNumber(ps) {
 
 function getPattern(ps) {
   let buffer = '';
-  let elements = [];
+  const elements = [];
   let quoteDelimited = false;
   let quoteOpen = false;
   let firstLine = true;
@@ -287,8 +283,8 @@ function getPattern(ps) {
   }
 
   let ch;
-  while (ch = ps.current()) {
-    if (ch == '\n') {
+  while ((ch = ps.current())) {
+    if (ch === '\n') {
       if (quoteDelimited) {
         throw new Error('ExpectedToken');
       }
@@ -296,7 +292,7 @@ function getPattern(ps) {
       if (firstLine && buffer.length !== 0) {
         break;
       }
-      
+
       ps.peek();
 
       ps.peekLineWS();
@@ -326,7 +322,7 @@ function getPattern(ps) {
       }
       continue;
     } else if (ch === '\\') {
-      let ch2 = ps.peek();
+      const ch2 = ps.peek();
       if (ch2 === '{' || ch2 === '"') {
         buffer += ch2;
       } else {
@@ -368,14 +364,14 @@ function getPattern(ps) {
 
 function getExpression(ps) {
   if (ps.isPeekNextLineVariantStart()) {
-    let variants = getVariants(ps);
+    const variants = getVariants(ps);
 
     ps.expectChar('\n');
 
     return new AST.SelectExpression(null, variants);
   }
 
-  let selector = getSelectorExpression(ps);
+  const selector = getSelectorExpression(ps);
 
   ps.skipLineWS();
 
@@ -389,7 +385,7 @@ function getExpression(ps) {
 
       ps.skipLineWS();
 
-      let variants = getVariants(ps);
+      const variants = getVariants(ps);
 
       if (variants.length === 0) {
         throw new Error('MissingVariants');
@@ -405,25 +401,25 @@ function getExpression(ps) {
 }
 
 function getSelectorExpression(ps) {
-  let literal = getLiteral(ps);
+  const literal = getLiteral(ps);
 
   if (literal.type !== 'MessageReference') {
     return literal;
   }
 
-  let ch = ps.current();
+  const ch = ps.current();
 
   if (ch === '.') {
     ps.next();
 
-    let attr = getIdentifier(ps);
+    const attr = getIdentifier(ps);
     return new AST.AttributeExpression(literal.id, attr);
   }
 
   if (ch === '[') {
     ps.next();
 
-    let key  = getVariantKey(ps);
+    const key = getVariantKey(ps);
 
     ps.expectChar(']');
 
@@ -433,7 +429,7 @@ function getSelectorExpression(ps) {
   if (ch === '(') {
     ps.next();
 
-    let args = getCallArgs(ps);
+    const args = getCallArgs(ps);
 
     ps.expectChar(')');
 
@@ -444,20 +440,20 @@ function getSelectorExpression(ps) {
 }
 
 function getCallArgs(ps) {
-  let args = [];
+  const args = [];
 
   ps.skipLineWS();
 
-  while(true) {
-    if (ps.current() == ')') {
+  while (true) {
+    if (ps.current() === ')') {
       break;
     }
 
-    let exp = getSelectorExpression(ps);
+    const exp = getSelectorExpression(ps);
 
     ps.skipLineWS();
 
-    if (ps.current() == ':') {
+    if (ps.current() === ':') {
       if (exp.type !== 'MessageReference') {
         throw new Error('ForbiddenKey');
       }
@@ -465,7 +461,7 @@ function getCallArgs(ps) {
       ps.next();
       ps.skipLineWS();
 
-      let val = getArgVal(ps);
+      const val = getArgVal(ps);
 
       args.push(new AST.NamedArgument(exp.id, val));
     } else {
@@ -474,7 +470,7 @@ function getCallArgs(ps) {
 
     ps.skipLineWS();
 
-    if (ps.current() == ',') {
+    if (ps.current() === ',') {
       ps.next();
       ps.skipLineWS();
       continue;
@@ -500,7 +496,7 @@ function getString(ps) {
   ps.expectChar('"');
 
   let ch;
-  while (ch = ps.takeChar(x => x !== '"')) {
+  while ((ch = ps.takeChar(x => x !== '"'))) {
     val += ch;
   }
 
@@ -511,7 +507,7 @@ function getString(ps) {
 }
 
 function getLiteral(ps) {
-  let ch = ps.current();
+  const ch = ps.current();
 
   if (!ch) {
     throw new Error('Expected literal');
@@ -523,11 +519,11 @@ function getLiteral(ps) {
     return getPattern(ps);
   } else if (ch === '$') {
     ps.next();
-    let name = getIdentifier(ps);
+    const name = getIdentifier(ps);
     return new AST.ExternalArgument(name);
   }
 
-  let name = getIdentifier(ps);
+  const name = getIdentifier(ps);
   return new AST.MessageReference(name);
 
 }
