@@ -139,9 +139,8 @@ class EntriesParser {
     } else if (typeof val === 'string') {
       entries[id] = val;
     } else if (val === undefined) {
-      throw this.error(
-        'Expected a value (like: " = value") or an attribute (like: ".key = value")'
-      );
+      throw this.error(`Expected a value (like: " = value") or
+        an attribute (like: ".key = value")`);
     } else {
       entries[id] = {
         val
@@ -379,7 +378,6 @@ class EntriesParser {
     try {
       expression = this.getPlaceableExpression();
     } catch (e) {
-      console.log(e);
       throw this.error(e.description, start);
     }
     const ch = this._source[this._index];
@@ -397,15 +395,16 @@ class EntriesParser {
     this.getWS();
 
     if (this._source[this._index] === '*' ||
-      (this._source[this._index] === '[' && this._source[this._index + 1] !== ']')) {
-      let variants = this.getVariants();
+       (this._source[this._index] === '[' &&
+        this._source[this._index + 1] !== ']')) {
+      const variants = this.getVariants();
 
       return {
         type: 'sel',
         exp: null,
         vars: variants[0],
         default: variants[1]
-      }
+      };
     }
 
     const selector = this.getCallExpression();
@@ -603,7 +602,6 @@ class EntriesParser {
 
   getAttributes() {
     const attrs = {};
-    let index = 0;
 
     while (this._index < this._length) {
       const ch = this._source[this._index];
