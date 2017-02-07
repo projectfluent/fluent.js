@@ -1,15 +1,16 @@
 Perf testing
 ============
 
-Measure the performance impact of changes that you make to the L20n codebase.  
+Measure the performance impact of changes that you make to the fluent.js
+codebase.
 
 Execution time is reported in microseconds (μs).
 
-The script measures the speed of parsing, compilation and getting all entities 
-from a resource file based on Firefox OS's [Settings localization file][].  The 
-file consists of ca. 500 entities, majority of which are simple key-value 
-pairs.  This aims to immitate a real-life scenario in which only a handful of 
-entities make use of L20n's advanced features.
+The script measures the speed of parsing, compilation and getting all entities
+from a resource file based on Firefox OS's [Settings localization file][].  The
+file consists of ca. 500 entities, majority of which are simple key-value
+pairs.  This aims to immitate a real-life scenario in which only a handful of
+entities make use of Project Fluent's advanced features.
 
 [Settings localization file]: https://github.com/mozilla-b2g/gaia/blob/v1.0.1/apps/settings/locales/settings.en-US.properties
 

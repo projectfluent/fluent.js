@@ -13,31 +13,21 @@ require('babel-register')({
 
 const FTLASTParser = require('../src/ftl/ast/parser').default;
 const FTLRuntimeParser = require('../src/ftl/entries/parser').default;
-const { createEntriesFromAST } = require('../src/ftl/entries/transformer');
 
 program
   .version('0.0.1')
   .usage('[options] [file]')
   .option('-o, --output <type>',
     'Type of output: ast or entries [ast]', 'ast')
-  .option('-i, --input <type>',
-    'Input syntax; only ftl is supported right now [ftl]', 'ftl')
-  .option('-t, --transform',
-    'Use AST transformer to produce the output', false)
   .option('-r, --raw', 'Print raw JSON')
   .option('-n, --no-color', 'Print errors to stderr without color')
   .parse(process.argv);
 
 
 function parse(fileformat, str) {
-  if (program.output === 'ast') {
-    return FTLASTParser.parseResource(str);
-  } else if (program.transform) {
-    const parsed = FTLASTParser.parseResource(str);
-    return createEntriesFromAST(parsed);
-  } else {
-    return FTLRuntimeParser.parseResource(str);
-  }
+  return program.output === 'ast'
+    ? FTLASTParser.parseResource(str)
+    : FTLRuntimeParser.parseResource(str);
 }
 
 
