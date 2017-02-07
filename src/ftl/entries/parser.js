@@ -371,7 +371,7 @@ class EntriesParser {
   getPlaceable() {
     this._index++;
 
-    const expression = [];
+    let expression;
 
     this.getLineWS();
 
@@ -379,6 +379,7 @@ class EntriesParser {
     try {
       expression = this.getPlaceableExpression();
     } catch (e) {
+      console.log(e);
       throw this.error(e.description, start);
     }
     const ch = this._source[this._index];
@@ -392,8 +393,23 @@ class EntriesParser {
   }
 
   getPlaceableExpression() {
+
+    this.getWS();
+
+    if (this._source[this._index] === '*' ||
+      (this._source[this._index] === '[' && this._source[this._index + 1] !== ']')) {
+      let variants = this.getVariants();
+
+      return {
+        type: 'sel',
+        exp: null,
+        vars: variants[0],
+        default: variants[1]
+      }
+    }
+
     const selector = this.getCallExpression();
-    let members;
+    let variants;
 
     this.getWS();
 
@@ -415,21 +431,21 @@ class EntriesParser {
 
       this.getWS();
 
-      members = this.getMembers();
+      variants = this.getVariants();
 
-      if (members[0].length === 0) {
+      if (variants[0].length === 0) {
         throw this.error('Expected members for the select expression');
       }
     }
 
-    if (members === undefined) {
+    if (variants === undefined) {
       return selector;
     }
     return {
       type: 'sel',
       exp: selector,
-      vars: members[0],
-      def: members[1]
+      vars: variants[0],
+      def: variants[1]
     };
   }
 
@@ -574,7 +590,7 @@ class EntriesParser {
     // must be either an entity reference or another member expression.
     while (['ref', 'mem'].includes(exp.type) &&
       this._source[this._index] === '[') {
-      const keyword = this.getMemberKey();
+      const keyword = this.getVariantKey();
       exp = {
         type: 'mem',
         key: keyword,
@@ -611,6 +627,64 @@ class EntriesParser {
     }
 
     return attrs;
+  }
+
+  getVariants() {
+    const variants = [];
+    let index = 0;
+    let defaultIndex;
+
+    while (this._index < this._length) {
+      const ch = this._source[this._index];
+
+      if ((ch !== '[' || this._source[this._index + 1] === '[') &&
+          ch !== '*') {
+        break;
+      }
+      if (ch === '*') {
+        this._index++;
+        defaultIndex = index;
+      }
+
+      if (this._source[this._index] !== '[') {
+        throw this.error('Expected "["');
+      }
+
+      const key = this.getVariantKey();
+
+      this.getLineWS();
+
+      const variant = {
+        key,
+        val: this.getPattern()
+      };
+      variants[index++] = variant;
+
+      this.getWS();
+    }
+
+    return [variants, defaultIndex];
+  }
+
+  // VariantKey may be a Keyword or Number
+  getVariantKey() {
+    this._index++;
+
+    const cc = this._source.charCodeAt(this._index);
+    let literal;
+
+    if ((cc >= 48 && cc <= 57) || cc === 45) {
+      literal = this.getNumber();
+    } else {
+      literal = this.getKeyword();
+    }
+
+    if (this._source[this._index] !== ']') {
+      throw this.error('Expected "]"');
+    }
+
+    this._index++;
+    return literal;
   }
 
   getLiteral() {
