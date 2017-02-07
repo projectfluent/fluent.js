@@ -2,7 +2,7 @@ import { ParserStream } from './iter';
 
 export class FTLParserStream extends ParserStream {
   peekLineWS() {
-    let ch = this.currentPeak();;
+    let ch = this.currentPeek();
     while (ch) {
       if (ch !== ' ' && ch !== '\t') {
         break;
