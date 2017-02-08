@@ -26,13 +26,3 @@ if (!Intl.PluralRules) {
     };
   };
 }
-
-if (!Intl.ListFormat) {
-  Intl.ListFormat = function() {
-    return {
-      format(list) {
-        return list.join(', ');
-      }
-    };
-  };
-}

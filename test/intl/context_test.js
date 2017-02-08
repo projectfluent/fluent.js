@@ -12,7 +12,7 @@ describe('Context', function() {
     errs = [];
   });
 
-  describe('Billion Laughs', function(){
+  describe('addMessages', function(){
     before(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
@@ -45,6 +45,5 @@ describe('Context', function() {
       assert.equal(errs.length, 0);
     });
   });
-
 
 });

@@ -13,17 +13,13 @@
  * the configuration of the argument with the configuration of the return
  * value.
  */
-import { FTLNumber, FTLDateTime, FTLList } from './types';
+import { FTLNumber, FTLDateTime } from './types';
 
 export default {
   'NUMBER': ([arg], opts) =>
     new FTLNumber(arg.valueOf(), merge(arg.opts, opts)),
   'DATETIME': ([arg], opts) =>
     new FTLDateTime(arg.valueOf(), merge(arg.opts, opts)),
-  'LIST': args => FTLList.from(args),
-  'LEN': ([arg]) => new FTLNumber(arg.valueOf().length),
-  'TAKE': ([num, arg]) => FTLList.from(arg.valueOf().slice(0, num.value)),
-  'DROP': ([num, arg]) => FTLList.from(arg.valueOf().slice(num.value)),
 };
 
 function merge(argopts, opts) {

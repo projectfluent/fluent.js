@@ -113,7 +113,14 @@ describe('External arguments', function() {
       assert(errs[0] instanceof ReferenceError); // unknown external
     });
 
-    it('cannot be an dict-like object', function() {
+    it('cannot be arrays', function() {
+      const msg = ctx.messages.get('foo');
+      const val = ctx.format(msg, { arg: [1, 2, 3] }, errs);
+      assert.equal(val, 'arg');
+      assert(errs[0] instanceof TypeError); // unsupported external type
+    });
+
+    it('cannot be a dict-like object', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: { prop: 1 } }, errs);
       assert.equal(val, 'arg');
@@ -187,38 +194,6 @@ describe('External arguments', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '1');
-      assert.equal(errs.length, 0);
-    });
-  });
-
-  describe('and arrays', function(){
-    let args;
-
-    before(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
-        foo = { $arg1 }
-        bar = { $arg2 }
-      `);
-      args = {
-        arg1: ["a", "b"],
-        arg2: ["a", 1]
-      };
-    });
-
-    it('can be an array of strings', function(){
-      const msg = ctx.messages.get('foo');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'a, b');
-      assert.equal(errs.length, 0);
-    });
-
-    // XXX When passed as external args, convert JS types to FTL types
-    // https://bugzil.la/1307116
-    it.skip('can be an array of strings and numbers', function(){
-      const msg = ctx.messages.get('bar');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'a, 1');
       assert.equal(errs.length, 0);
     });
   });

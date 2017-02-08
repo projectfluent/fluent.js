@@ -94,15 +94,3 @@ export class FTLKeyword extends FTLType {
     return false;
   }
 }
-
-export class FTLList extends Array {
-  toString(ctx) {
-    const lf = ctx._memoizeIntlObject(
-      Intl.ListFormat // XXX add this.opts
-    );
-    const elems = this.map(
-      elem => elem.toString(ctx)
-    );
-    return lf.format(elems);
-  }
-}

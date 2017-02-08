@@ -47,15 +47,6 @@ describe('Isolating interpolations', function(){
     assert.equal(errs.length, 0);
   });
 
-  // XXX When Intl.ListFormat lands, this should check if every elment of the
-  // array is isolated.
-  it('isolates interpolated array-typed external arguments', function(){
-    const msg = ctx.messages.get('baz');
-    const val = ctx.format(msg, {arg: ['arg1', 'arg2']}, errs);
-    assert.equal(val, `${FSI}arg1, arg2${PDI} Baz`);
-    assert.equal(errs.length, 0);
-  });
-
   it('isolates interpolated date-typed external arguments', function(){
     const dtf = new Intl.DateTimeFormat('en-US');
     const arg = new Date('2016-09-29');

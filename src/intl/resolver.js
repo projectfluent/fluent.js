@@ -31,8 +31,7 @@
  * sringified with its `toString` method by the caller.
  */
 
-import { FTLType, FTLNone, FTLNumber, FTLDateTime, FTLKeyword, FTLList }
-  from './types';
+import { FTLType, FTLNone, FTLNumber, FTLDateTime, FTLKeyword } from './types';
 import builtins from './builtins';
 
 // Prevent expansion of too long placeables.
@@ -42,22 +41,6 @@ const MAX_PLACEABLE_LENGTH = 2500;
 const FSI = '\u2068';
 const PDI = '\u2069';
 
-
-/**
- * Map an array of JavaScript values into FTL Values.
- *
- * Used for external arguments of Array type and for implicit Lists in
- * placeables.
- *
- * @private
- */
-function mapValues(env, arr) {
-  const values = new FTLList();
-  for (const elem of arr) {
-    values.push(Value(env, elem));
-  }
-  return values;
-}
 
 /**
  * Helper for choosing the default value from a set of members.
@@ -285,9 +268,6 @@ function ExternalArgument(env, {name}) {
     case 'number':
       return new FTLNumber(arg);
     case 'object':
-      if (Array.isArray(arg)) {
-        return mapValues(env, arg);
-      }
       if (arg instanceof Date) {
         return new FTLDateTime(arg);
       }
