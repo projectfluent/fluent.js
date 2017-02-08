@@ -85,10 +85,10 @@ class ExternalArgument extends Expression {
 }
 
 class SelectExpression extends Expression {
-  constructor(exp, variants) {
+  constructor(expression, variants) {
     super();
     this.type = 'SelectExpression';
-    this.exp = exp;
+    this.expression = expression;
     this.variants = variants;
   }
 }
