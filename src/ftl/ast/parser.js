@@ -1,7 +1,7 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import AST from './ast';
-import { FTLParserStream } from './stream';
+import { FTLParserStream } from './ftlstream';
 
 export function parse(source) {
   const errors = [];
