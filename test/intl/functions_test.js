@@ -40,12 +40,12 @@ describe('Functions', function() {
       });
       ctx.addMessages(ftl`
         foo = Foo
-            [trait] Trait
+            .attr = Attribute
         pass-nothing       = { IDENTITY() }
         pass-string        = { IDENTITY("a") }
         pass-number        = { IDENTITY(1) }
         pass-entity        = { IDENTITY(foo) }
-        pass-member        = { IDENTITY(foo[trait]) }
+        pass-attr          = { IDENTITY(foo.attr) }
         pass-external      = { IDENTITY($ext) }
         pass-function-call = { IDENTITY(IDENTITY(1)) }
       `);
@@ -82,12 +82,12 @@ describe('Functions', function() {
       assert.equal(errs.length, 0);
     });
 
-    // XXX Accept complex types (e.g. members) as arguments to FTL Functions
+    // XXX Accept complex types (e.g. attributes) as arguments to FTL Functions
     // https://bugzil.la/1307120
-    it.skip('accepts traits', function() {
-      const msg = ctx.messages.get('pass-trait');
+    it.skip('accepts attributes', function() {
+      const msg = ctx.messages.get('pass-attr');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Trait');
+      assert.equal(val, 'Attribute');
       assert.equal(errs.length, 0);
     });
 

@@ -19,10 +19,10 @@ describe('External arguments', function() {
       ctx.addMessages(ftl`
         foo = Foo { $num }
         bar = { foo }
-        baz =
-            [trait] Baz Trait { $num }
+        baz
+            .attr = Baz Attribute { $num }
         qux = { "a" ->
-            [a]     Baz Variant A { $num }
+           *[a]     Baz Variant A { $num }
         }
       `);
     });
@@ -41,10 +41,10 @@ describe('External arguments', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be used in a trait', function() {
-      const msg = ctx.messages.get('baz').traits[0];
+    it('can be used in an attribute', function() {
+      const msg = ctx.messages.get('baz').attrs.attr;
       const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, 'Baz Trait 3');
+      assert.equal(val, 'Baz Attribute 3');
       assert.equal(errs.length, 0);
     });
 
@@ -61,7 +61,7 @@ describe('External arguments', function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $num -> 
-            [3] Foo
+           *[3] Foo
         }
       `);
     });
@@ -90,7 +90,7 @@ describe('External arguments', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be a keyed argument', function() {
+    it('can be a named argument', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, '1.000');

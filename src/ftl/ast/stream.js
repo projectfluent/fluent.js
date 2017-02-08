@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import { ParserStream } from './iter';
 
 export class FTLParserStream extends ParserStream {

@@ -59,8 +59,8 @@ describe('Patterns', function(){
     before(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
-        foo =
-            [attr] Foo Attr
+        foo
+            .attr = Foo Attr
         bar = { foo } Bar
       `);
     });
@@ -72,9 +72,9 @@ describe('Patterns', function(){
       assert.equal(errs.length, 0);
     });
 
-    it('formats the trait', function(){
+    it('formats the attribute', function(){
       const msg = ctx.messages.get('foo');
-      const val = ctx.format(msg.traits[0], args, errs);
+      const val = ctx.format(msg.attrs.attr, args, errs);
       assert.strictEqual(val, 'Foo Attr');
       assert.equal(errs.length, 0);
     });
@@ -194,10 +194,10 @@ describe('Patterns', function(){
            *[b] Bar B
         }
 
-        baz = { baz[trait] ->
+        baz = { baz.attr ->
             [a] Baz
         }
-            [trait] a
+            .attr = a
       `);
     });
 
@@ -215,7 +215,7 @@ describe('Patterns', function(){
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
-    it('can reference a trait', function(){
+    it('can reference an attribute', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Baz');

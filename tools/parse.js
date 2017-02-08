@@ -11,8 +11,8 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-const FTLASTParser = require('../src/ftl/ast/parser').default;
-const FTLRuntimeParser = require('../src/ftl/entries/parser').default;
+const parse_ast = require('../src/ftl/ast/parser').parse;
+const parse_rt = require('../src/ftl/entries/parser').parse;
 
 program
   .version('0.0.1')
@@ -26,8 +26,8 @@ program
 
 function parse(fileformat, str) {
   return program.output === 'ast'
-    ? FTLASTParser.parse(str)
-    : FTLRuntimeParser.parse(str);
+    ? parse_ast(str)
+    : parse_rt(str);
 }
 
 

@@ -94,13 +94,14 @@ function EntityReference(env, {name}) {
   return entity;
 }
 
+
 /**
- * Resolve a member expression to the member object.
+ * Resolve a variant expression to the variant object.
  *
  * @private
  */
-function MemberExpression(env, {obj, key}) {
-  const entity = EntityReference(env, obj);
+function VariantExpression(env, {id, key}) {
+  const entity = EntityReference(env, id);
   if (entity instanceof FTLNone) {
     return entity;
   }
@@ -108,17 +109,49 @@ function MemberExpression(env, {obj, key}) {
   const { ctx, errors } = env;
   const keyword = Value(env, key);
 
-  if (entity.traits) {
-    // Match the specified key against keys of each trait, in order.
-    for (const member of entity.traits) {
-      const memberKey = Value(env, member.key);
-      if (keyword.match(ctx, memberKey)) {
-        return member;
+  function isVariantList(node) {
+    return Array.isArray(node) &&
+      node[0].type === 'sel' &&
+      node[0].exp === null;
+  }
+
+  if (isVariantList(entity.val)) {
+    // Match the specified key against keys of each variant, in order.
+    for (const variant of entity.val[0].vars) {
+      const variantKey = Value(env, variant.key);
+      if (keyword.match(ctx, variantKey)) {
+        return variant;
       }
     }
   }
 
-  errors.push(new ReferenceError(`Unknown trait: ${keyword.toString(ctx)}`));
+  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
+  return Value(env, entity);
+}
+
+
+/**
+ * Resolve an attribute expression to the attribute object.
+ *
+ * @private
+ */
+function AttributeExpression(env, {id, name}) {
+  const entity = EntityReference(env, id);
+  if (entity instanceof FTLNone) {
+    return entity;
+  }
+
+  if (entity.attrs) {
+    // Match the specified name against keys of each attribute.
+    for (const attrName in entity.attrs) {
+      if (name === attrName) {
+        return entity.attrs[name];
+      }
+    }
+  }
+
+  const { errors } = env;
+  errors.push(new ReferenceError(`Unknown attribute: ${name}`));
   return Value(env, entity);
 }
 
@@ -128,6 +161,10 @@ function MemberExpression(env, {obj, key}) {
  * @private
  */
 function SelectExpression(env, {exp, vars, def}) {
+  if (exp === null) {
+    return DefaultMember(env, vars, def);
+  }
+
   const selector = Value(env, exp);
   if (selector instanceof FTLNone) {
     return DefaultMember(env, vars, def);
@@ -195,9 +232,13 @@ function Value(env, expr) {
       const entity = EntityReference(env, expr);
       return Value(env, entity);
     }
-    case 'mem': {
-      const member = MemberExpression(env, expr);
-      return Value(env, member);
+    case 'attr': {
+      const attr = AttributeExpression(env, expr);
+      return Value(env, attr);
+    }
+    case 'var': {
+      const variant = VariantExpression(env, expr);
+      return Value(env, variant);
     }
     case 'sel': {
       const member = SelectExpression(env, expr);
@@ -209,8 +250,9 @@ function Value(env, expr) {
         return Value(env, expr.val);
       }
 
-      const def = DefaultMember(env, expr.traits, expr.def);
-      return Value(env, def);
+      const { errors } = env;
+      errors.push(new RangeError('No value'));
+      return new FTLNone();
     }
     default:
       return new FTLNone();
@@ -286,8 +328,8 @@ function FunctionReference(env, {name}) {
  *
  * @private
  */
-function CallExpression(env, {name, args}) {
-  const callee = FunctionReference(env, name);
+function CallExpression(env, {fun, args}) {
+  const callee = FunctionReference(env, fun);
 
   if (callee instanceof FTLNone) {
     return callee;
@@ -297,7 +339,7 @@ function CallExpression(env, {name, args}) {
   const keyargs = [];
 
   for (const arg of args) {
-    if (arg.type === 'kv') {
+    if (arg.type === 'narg') {
       keyargs[arg.name] = Value(env, arg.val);
     } else {
       posargs.push(Value(env, arg));
@@ -329,12 +371,7 @@ function Pattern(env, ptn) {
     if (typeof part === 'string') {
       result += part;
     } else {
-      // Optimize the most common case: the placeable only has one expression.
-      // Otherwise map its expressions to Values.
-      const value = part.length === 1 ?
-        Value(env, part[0]) : mapValues(env, part);
-
-      let str = value.toString(ctx);
+      let str = Value(env, part).toString(ctx);
 
       if (str.length > MAX_PLACEABLE_LENGTH) {
         errors.push(

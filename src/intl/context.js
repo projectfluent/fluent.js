@@ -1,5 +1,5 @@
-import FTLRuntimeParser from '../ftl/entries/parser';
 import resolve from './resolver';
+import { parse } from '../ftl/entries/parser';
 import { FTLNone } from './types';
 
 /**
@@ -75,7 +75,7 @@ export class MessageContext {
    * @returns {Array<Error>}
    */
   addMessages(source) {
-    const [entries, errors] = FTLRuntimeParser.parseResource(source);
+    const [entries, errors] = parse(source);
     for (const id in entries) {
       this.messages.set(id, entries[id]);
     }
@@ -114,18 +114,18 @@ export class MessageContext {
    * @returns {?string}
    */
   format(entity, args, errors) {
-    // optimize entities which are simple strings with no traits
+    // optimize entities which are simple strings with no attributes
     if (typeof entity === 'string') {
       return entity;
     }
 
-    // optimize entities whose value is a simple string, and traits
+    // optimize simple-string entities with attributes
     if (typeof entity.val === 'string') {
       return entity.val;
     }
 
-    // optimize entities with null values and no default traits
-    if (entity.val === undefined && entity.def === undefined) {
+    // optimize entities with null values
+    if (entity.val === undefined) {
       return null;
     }
 

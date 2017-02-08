@@ -373,24 +373,14 @@ class EntriesParser {
   getPlaceable() {
     this._index++;
 
-    let expression;
-
     this.getWS();
 
     const start = this._index;
     try {
-      expression = this.getPlaceableExpression();
+      return this.getPlaceableExpression();
     } catch (e) {
       throw this.error(e.description, start);
     }
-    const ch = this._source[this._index];
-    if (ch === '}') {
-      this._index++;
-    } else {
-      throw this.error('Expected "}" or ","');
-    }
-
-    return expression;
   }
 
   getPlaceableExpression() {
@@ -404,7 +394,7 @@ class EntriesParser {
         type: 'sel',
         exp: null,
         vars: variants[0],
-        default: variants[1]
+        def: variants[1]
       };
     }
 
@@ -417,7 +407,7 @@ class EntriesParser {
 
     // If the expression is followed by `->` we're going to collect
     // its members and return it as a select expression.
-    if (ch !== '}' && ch !== ',') {
+    if (ch !== '}') {
       if (ch !== '-' || this._source[this._index + 1] !== '>') {
         throw this.error('Expected "}", "," or "->"');
       }
@@ -475,7 +465,7 @@ class EntriesParser {
       this._index++;
       return {
         type: 'var',
-        obj: literal,
+        id: literal,
         key
       };
     }
@@ -486,11 +476,11 @@ class EntriesParser {
 
       this._index++;
 
-      exp.type = 'fun';
+      literal.type = 'fun';
 
       return {
         type: 'call',
-        name: exp,
+        fun: literal,
         args
       };
     }
@@ -627,7 +617,15 @@ class EntriesParser {
 
       this.getLineWS();
 
-      attrs[key] = this.getPattern();
+      const val = this.getPattern();
+
+      if (typeof val === 'string') {
+        attrs[key] = val;
+      } else {
+        attrs[key] = {
+          val
+        };
+      }
 
       this.getWS();
     }
@@ -825,9 +823,7 @@ class EntriesParser {
   }
 }
 
-export default {
-  parseResource: function(string) {
-    const parser = new EntriesParser();
-    return parser.getResource(string);
-  },
-};
+export function parse(string) {
+  const parser = new EntriesParser();
+  return parser.getResource(string);
+}

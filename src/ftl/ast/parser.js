@@ -3,7 +3,7 @@
 import AST from './ast';
 import { FTLParserStream } from './stream';
 
-function parse(source) {
+export function parse(source) {
   const errors = [];
 
   const ps = new FTLParserStream(source);
@@ -527,7 +527,3 @@ function getLiteral(ps) {
   return new AST.MessageReference(name);
 
 }
-
-export default {
-  parse
-};

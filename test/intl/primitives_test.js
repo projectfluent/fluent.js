@@ -54,13 +54,13 @@ describe('Primitives', function() {
             [Foo] Member 2
         }
 
-        bar               =
-            [trait] Bar Trait
+        bar
+            .attr = Bar Attribute
 
-        placeable-trait   = { bar[trait] }
+        placeable-attr   = { bar.attr }
 
-        selector-trait    = { bar[trait] ->
-            [Bar Trait] Member 3
+        selector-attr    = { bar.attr ->
+            [Bar Attribute] Member 3
         }
       `);
     });
@@ -105,22 +105,22 @@ describe('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be used as a trait value', function(){
-      const msg = ctx.messages.get('bar').traits[0];
+    it('can be used as an attribute value', function(){
+      const msg = ctx.messages.get('bar').attrs.attr;
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Bar Trait');
+      assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of a trait used in a placeable', function(){
-      const msg = ctx.messages.get('placeable-trait');
+    it('can be a value of an attribute used in a placeable', function(){
+      const msg = ctx.messages.get('placeable-attr');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Bar Trait');
+      assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of a trait used as a selector', function(){
-      const msg = ctx.messages.get('selector-trait');
+    it('can be a value of an attribute used as a selector', function(){
+      const msg = ctx.messages.get('selector-attr');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Member 3');
       assert.equal(errs.length, 0);
@@ -144,13 +144,13 @@ describe('Primitives', function() {
             [Foo Bar] Member 2
         }
 
-        baz               =
-            [trait] { bar } Baz Trait
+        baz
+            .attr = { bar } Baz Attribute
 
-        placeable-trait   = { baz[trait] }
+        placeable-attr = { baz.attr }
 
-        selector-trait    = { baz[trait] ->
-            [Foo Bar Baz Trait] Member 3
+        selector-attr = { baz.attr ->
+            [Foo Bar Baz Attribute] Member 3
         }
       `);
     });
@@ -196,22 +196,22 @@ describe('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be used as a trait value', function(){
-      const msg = ctx.messages.get('baz').traits[0];
+    it('can be used as an attribute value', function(){
+      const msg = ctx.messages.get('baz').attrs.attr
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar Baz Trait');
+      assert.equal(val, 'Foo Bar Baz Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of a trait used in a placeable', function(){
-      const msg = ctx.messages.get('placeable-trait');
+    it('can be a value of an attribute used in a placeable', function(){
+      const msg = ctx.messages.get('placeable-attr');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar Baz Trait');
+      assert.equal(val, 'Foo Bar Baz Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of a trait used as a selector', function(){
-      const msg = ctx.messages.get('selector-trait');
+    it('can be a value of an attribute used as a selector', function(){
+      const msg = ctx.messages.get('selector-attr');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Member 3');
       assert.equal(errs.length, 0);

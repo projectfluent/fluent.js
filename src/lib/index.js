@@ -8,5 +8,4 @@ export {
   FTLDateTime as MessageDateTimeArgument,
 } from '../intl/types';
 
-export { default as FTLASTParser } from '../ftl/ast/parser';
-export { default as FTLEntriesParser } from '../ftl/entries/parser';
+export { parse as FTLParse } from '../ftl/ast/parser';
