@@ -232,7 +232,7 @@ function getKeyword(ps) {
     }
   }
 
-  name.trimRight();
+  return new AST.Keyword(name.trimRight());
 }
 
 function getDigits(ps) {

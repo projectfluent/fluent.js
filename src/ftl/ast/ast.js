@@ -156,10 +156,9 @@ class Identifier extends Node {
 }
 
 class Keyword extends Identifier {
-  constructor(name, namespace = null) {
+  constructor(name) {
     super(name);
     this.type = 'Keyword';
-    this.namespace = namespace;
   }
 }
 
