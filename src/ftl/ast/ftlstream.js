@@ -113,6 +113,19 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
+  skipToNextEntryStart() {
+    while (this.next()) {
+      if (this.currentIs('\n') && !this.peekCharIs('\n')) {
+        this.next();
+        if (this.ch === undefined || this.isIDStart() ||
+            this.currentIs('#') ||
+            (this.currentIs('[') && this.peekCharIs('['))) {
+          break;
+        }
+      }
+    }
+  }
+
   takeIDStart() {
     if (this.isIDStart()) {
       const ret = this.ch;

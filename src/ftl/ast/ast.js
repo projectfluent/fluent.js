@@ -2,19 +2,12 @@ class Node {
   constructor() {}
 }
 
-class NodeList extends Node {
-  constructor(body = [], comment = null) {
-    super();
-    this.type = 'NodeList';
-    this.body = body;
-    this.comment = comment;
-  }
-}
-
-class Resource extends NodeList {
+class Resource extends Node {
   constructor(body = [], comment = null) {
     super(body, comment);
     this.type = 'Resource';
+    this.body = body;
+    this.comment = comment;
   }
 }
 
@@ -162,7 +155,7 @@ class Keyword extends Identifier {
   }
 }
 
-class Comment extends Node {
+class Comment extends Entry {
   constructor(content) {
     super();
     this.type = 'Comment';
@@ -170,7 +163,7 @@ class Comment extends Node {
   }
 }
 
-class Section extends Node {
+class Section extends Entry {
   constructor(key, comment = null) {
     super();
     this.type = 'Section';

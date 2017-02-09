@@ -5,8 +5,6 @@ export class ParserStream {
     this.peekIndex = 0;
     this.index = 0;
 
-    this.ch = null;
-
     this.iterEnd = false;
     this.peekEnd = false;
 

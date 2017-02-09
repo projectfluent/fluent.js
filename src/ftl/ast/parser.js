@@ -2,9 +2,11 @@
 
 import AST from './ast';
 import { FTLParserStream } from './ftlstream';
+import { getErrorSlice } from './errors';
 
 export function parse(source) {
   const errors = [];
+  let comment = null;
 
   const ps = new FTLParserStream(source);
 
@@ -13,15 +15,26 @@ export function parse(source) {
   const entries = [];
 
   while (ps.current()) {
-    const entry = getEntry(ps);
+    const entryStartPos = ps.getIndex();
 
-    if (entry) {
-      entries.push(entry);
+    try {
+      const entry = getEntry(ps);
+      if (entryStartPos === 0 && entry.type === 'Comment') {
+        comment = entry;
+      } else {
+        entries.push(entry);
+      }
+    } catch (e) {
+      let errorPos = ps.getIndex();
+
+      entries.push(getJunkEntry(ps, source, entryStartPos));
+      errors.push(e);
     }
+
     ps.skipWSLines();
   }
 
-  return [new AST.Resource(entries), errors];
+  return [new AST.Resource(entries, comment), errors];
 }
 
 function getEntry(ps) {
@@ -39,7 +52,10 @@ function getEntry(ps) {
     return getMessage(ps, comment);
   }
 
-  return comment;
+  if (comment) {
+    return comment;
+  }
+  throw Error('ExpectedEntry');
 }
 
 function getComment(ps) {
@@ -526,4 +542,12 @@ function getLiteral(ps) {
   const name = getIdentifier(ps);
   return new AST.MessageReference(name);
 
+}
+
+function getJunkEntry(ps, source, entryStart) {
+  ps.skipToNextEntryStart();
+
+  const slice = getErrorSlice(source, entryStart, ps.getIndex());
+
+  return new AST.JunkEntry(slice);
 }

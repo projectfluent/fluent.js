@@ -56,13 +56,7 @@ function printErrors(errors) {
   for (var i in errors) {
     var error = errors[i];
 
-    var ctx = '\x1b[2m' + error.context.slice(0, error.offset) + '\x1b[22m' +
-      '\x1b[91m' + error.context.slice(error.offset) + '\x1b[0m';
-
-    var msg = '\x1b[4m' + error.description + '\x1b[0m'  +
-      ' at pos [' + error._pos.row + ',' + error._pos.col + ']' +
-      ': `' + ctx.replace(/\s+/g, ' ') + '`';
-    console.log((parseInt(i) + 1) + ') ' + msg);
+    console.error(error);
   }
 }
 
