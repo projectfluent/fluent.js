@@ -15,11 +15,10 @@ into an AST and output the result.
 
     Options:
 
-      -h, --help           output usage information
-      -V, --version        output the version number
-      -o, --output <type>  Type of output: ast or entries [ast]
-      -r, --raw            Print raw JSON
-      -n, --no-color       Print errors to stderr without color
+      -h, --help     output usage information
+      -V, --version  output the version number
+      -r, --runtime  Use the runtime parser
+      -s, --silent   Silence syntax errors
 
 Examples:
 
