@@ -11,11 +11,11 @@ function micro(time) {
 var times = {};
 
 times.ftlParseStart = dateNow();
-var [resource] = Fluent.FTLASTParser.parseResource(ftlCode);
+var [resource] = Fluent.syntax.parser.parse(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var [entries] = Fluent.FTLEntriesParser.parseResource(ftlCode);
+var [entries] = Fluent.debug._parse(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
 var ctx = new Intl.MessageContext('en-US');

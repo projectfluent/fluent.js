@@ -11,8 +11,8 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-const parse_ast = require('../src/ftl/ast/parser').parse;
-const parse_rt = require('../src/ftl/entries/parser').parse;
+const parse_ast = require('../src/syntax/parser').parse;
+const parse_rt = require('../src/intl/parser').default;
 
 program
   .version('0.0.1')

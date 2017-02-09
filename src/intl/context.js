@@ -1,5 +1,5 @@
 import resolve from './resolver';
-import { parse } from '../ftl/entries/parser';
+import parse from './parser';
 import { FTLNone } from './types';
 
 /**

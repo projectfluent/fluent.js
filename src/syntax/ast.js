@@ -2,7 +2,7 @@ class Node {
   constructor() {}
 }
 
-class Resource extends Node {
+export class Resource extends Node {
   constructor(body = [], comment = null) {
     super(body, comment);
     this.type = 'Resource';
@@ -11,14 +11,14 @@ class Resource extends Node {
   }
 }
 
-class Entry extends Node {
+export class Entry extends Node {
   constructor() {
     super();
     this.type = 'Entry';
   }
 }
 
-class Message extends Entry {
+export class Message extends Entry {
   constructor(id, value = null, attributes = null, comment = null) {
     super();
     this.type = 'Entity';
@@ -29,7 +29,7 @@ class Message extends Entry {
   }
 }
 
-class Pattern extends Node {
+export class Pattern extends Node {
   constructor(elements, quoted = false) {
     super();
     this.type = 'Pattern';
@@ -38,14 +38,14 @@ class Pattern extends Node {
   }
 }
 
-class Expression extends Node {
+export class Expression extends Node {
   constructor() {
     super();
     this.type = 'Expression';
   }
 }
 
-class StringExpression extends Expression {
+export class StringExpression extends Expression {
   constructor(value) {
     super();
     this.type = 'StringExpression';
@@ -53,7 +53,7 @@ class StringExpression extends Expression {
   }
 }
 
-class NumberExpression extends Expression {
+export class NumberExpression extends Expression {
   constructor(value) {
     super();
     this.type = 'NumberExpression';
@@ -61,7 +61,7 @@ class NumberExpression extends Expression {
   }
 }
 
-class MessageReference extends Expression {
+export class MessageReference extends Expression {
   constructor(id) {
     super();
     this.type = 'MessageReference';
@@ -69,7 +69,7 @@ class MessageReference extends Expression {
   }
 }
 
-class ExternalArgument extends Expression {
+export class ExternalArgument extends Expression {
   constructor(id) {
     super();
     this.type = 'ExternalArgument';
@@ -77,7 +77,7 @@ class ExternalArgument extends Expression {
   }
 }
 
-class SelectExpression extends Expression {
+export class SelectExpression extends Expression {
   constructor(expression, variants) {
     super();
     this.type = 'SelectExpression';
@@ -86,7 +86,7 @@ class SelectExpression extends Expression {
   }
 }
 
-class AttributeExpression extends Expression {
+export class AttributeExpression extends Expression {
   constructor(id, name) {
     super();
     this.type = 'AttributeExpression';
@@ -95,7 +95,7 @@ class AttributeExpression extends Expression {
   }
 }
 
-class VariantExpression extends Expression {
+export class VariantExpression extends Expression {
   constructor(id, key) {
     super();
     this.type = 'VariantExpression';
@@ -104,7 +104,7 @@ class VariantExpression extends Expression {
   }
 }
 
-class CallExpression extends Expression {
+export class CallExpression extends Expression {
   constructor(callee, args) {
     super();
     this.type = 'CallExpression';
@@ -113,7 +113,7 @@ class CallExpression extends Expression {
   }
 }
 
-class Attribute extends Node {
+export class Attribute extends Node {
   constructor(id, value) {
     super();
     this.type = 'Attribute';
@@ -122,7 +122,7 @@ class Attribute extends Node {
   }
 }
 
-class Variant extends Node {
+export class Variant extends Node {
   constructor(key, value, def = false) {
     super();
     this.type = 'Variant';
@@ -132,7 +132,7 @@ class Variant extends Node {
   }
 }
 
-class NamedArgument extends Node {
+export class NamedArgument extends Node {
   constructor(name, val) {
     super();
     this.name = name;
@@ -140,7 +140,7 @@ class NamedArgument extends Node {
   }
 }
 
-class Identifier extends Node {
+export class Identifier extends Node {
   constructor(name) {
     super();
     this.type = 'Identifier';
@@ -148,14 +148,14 @@ class Identifier extends Node {
   }
 }
 
-class Keyword extends Identifier {
+export class Keyword extends Identifier {
   constructor(name) {
     super(name);
     this.type = 'Keyword';
   }
 }
 
-class Comment extends Entry {
+export class Comment extends Entry {
   constructor(content) {
     super();
     this.type = 'Comment';
@@ -163,7 +163,7 @@ class Comment extends Entry {
   }
 }
 
-class Section extends Entry {
+export class Section extends Entry {
   constructor(key, comment = null) {
     super();
     this.type = 'Section';
@@ -172,42 +172,17 @@ class Section extends Entry {
   }
 }
 
-class Function extends Identifier {
+export class Function extends Identifier {
   constructor(name) {
     super(name);
     this.type = 'Function';
   }
 }
 
-class JunkEntry extends Entry {
+export class JunkEntry extends Entry {
   constructor(content) {
     super();
     this.type = 'JunkEntry';
     this.content = content;
   }
 }
-
-export default {
-  Resource,
-  Message,
-  Entry,
-  Pattern,
-  Expression,
-  StringExpression,
-  NumberExpression,
-  MessageReference,
-  ExternalArgument,
-  SelectExpression,
-  AttributeExpression,
-  VariantExpression,
-  CallExpression,
-  Attribute,
-  Variant,
-  NamedArgument,
-  Identifier,
-  Keyword,
-  Comment,
-  Section,
-  Function,
-  JunkEntry,
-};

@@ -1,6 +1,6 @@
 /*  eslint no-magic-numbers: [0]  */
 
-import AST from './ast';
+import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
 import { getErrorSlice } from './errors';
 

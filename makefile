@@ -7,7 +7,7 @@ OK := \033[32;01m✓\033[0m
 all: lint test build
 
 build:
-	@rollup $(CURDIR)/src/lib/index.js \
+	@rollup $(CURDIR)/src/index.js \
 	    -f umd \
 	    -n Fluent \
 	    -o $(DIST)/fluent.js
@@ -26,7 +26,7 @@ test:
 
 docs:
 	documentation build --shallow -f md \
-	    src/ftl/**/*.js > docs/parser.md
+	    src/syntax/**/*.js > docs/parser.md
 	documentation build --shallow -f md \
 	    src/intl/*.js > docs/messagecontext.md
 

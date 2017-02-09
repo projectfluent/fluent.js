@@ -1,6 +1,6 @@
 /*  eslint no-magic-numbers: [0]  */
 
-import { L10nError } from '../../lib/errors';
+import { L10nError } from '../errors';
 
 const MAX_PLACEABLES = 100;
 
@@ -823,7 +823,7 @@ class EntriesParser {
   }
 }
 
-export function parse(string) {
+export default function parse(string) {
   const parser = new EntriesParser();
   return parser.getResource(string);
 }

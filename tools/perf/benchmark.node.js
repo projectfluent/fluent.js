@@ -14,11 +14,11 @@ var cumulative = {};
 var start = process.hrtime();
 
 cumulative.ftlParseStart = process.hrtime(start);
-var [resource] = Fluent.FTLASTParser.parseResource(ftlCode);
+var [resource] = Fluent.syntax.parser.parse(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
 
 cumulative.ftlEntriesParseStart = process.hrtime(start);
-var [entries] = Fluent.FTLEntriesParser.parseResource(ftlCode);
+var [entries] = Fluent.debug._parse(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
 var ctx = new Intl.MessageContext('en-US');
