@@ -16,7 +16,7 @@
     }
   ],
   "scripts": {
-    "test": "make test"
+    "test": "make"
   },
   "directories": {
     "lib": "./src"

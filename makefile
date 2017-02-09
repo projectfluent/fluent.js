@@ -4,7 +4,7 @@ export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
 DIST := $(CURDIR)/dist
 OK := \033[32;01m✓\033[0m
 
-all: lint build
+all: lint test build
 
 build:
 	@rollup $(CURDIR)/src/lib/index.js \
