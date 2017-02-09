@@ -13,7 +13,7 @@ export function getErrorSlice(source, start, end) {
     startPos = start;
   }
 
-  let slice = startPos > 0 ? source.substr(startPos - 1, sliceLen) : source.substr(0, sliceLen);
-
-  return slice;
+  return startPos > 0 ?
+    source.substr(startPos - 1, sliceLen) :
+    source.substr(0, sliceLen);
 }

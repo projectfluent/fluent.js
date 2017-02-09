@@ -25,8 +25,6 @@ export function parse(source) {
         entries.push(entry);
       }
     } catch (e) {
-      let errorPos = ps.getIndex();
-
       entries.push(getJunkEntry(ps, source, entryStartPos));
       errors.push(e);
     }
