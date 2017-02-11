@@ -2,7 +2,7 @@
 
 import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
-import { getErrorSlice } from './errors';
+import { error, getErrorSlice } from './errors';
 
 export function parse(source) {
   const errors = [];
@@ -53,7 +53,7 @@ function getEntry(ps) {
   if (comment) {
     return comment;
   }
-  throw Error('ExpectedEntry');
+  throw error(ps, 'Expected entry');
 }
 
 function getComment(ps) {
@@ -121,7 +121,7 @@ function getMessage(ps, comment) {
   }
 
   if (pattern === undefined && attrs === undefined) {
-    throw new Error('MissingField');
+    throw error(ps, 'Missing field');
   }
 
   return new AST.Message(id, pattern, attrs, comment);
@@ -147,7 +147,7 @@ function getAttributes(ps) {
     const value = getPattern(ps);
 
     if (value === undefined) {
-      throw new Error('ExpectedField');
+      throw error(ps, 'Expected field');
     }
 
     attrs.push(new AST.Attribute(key, value));
@@ -176,7 +176,7 @@ function getVariantKey(ps) {
   const ch = ps.current();
 
   if (!ch) {
-    throw new Error('Expected VariantKey');
+    throw error(ps, 'Expected VariantKey');
   }
 
   const cc = ch.charCodeAt(0);
@@ -215,7 +215,7 @@ function getVariants(ps) {
     const value = getPattern(ps);
 
     if (!value) {
-      throw new Error('ExpectedField');
+      throw error(ps, 'Expected field');
     }
 
     variants.push(new AST.Variant(key, value, defaultIndex));
@@ -226,7 +226,7 @@ function getVariants(ps) {
   }
 
   if (!hasDefault) {
-    throw new Error('MissingDefaultVariant');
+    throw error(ps, 'Missing default variant');
   }
 
   return variants;
@@ -258,7 +258,7 @@ function getDigits(ps) {
   }
 
   if (num.length === 0) {
-    throw new Error('ExpectedCharRange');
+    throw error(ps, 'Expected char range');
   }
 
   return num;
@@ -300,7 +300,7 @@ function getPattern(ps) {
   while ((ch = ps.current())) {
     if (ch === '\n') {
       if (quoteDelimited) {
-        throw new Error('ExpectedToken');
+        throw error(ps, 'Expected roken');
       }
 
       if (firstLine && buffer.length !== 0) {
@@ -325,7 +325,7 @@ function getPattern(ps) {
         }
       } else {
         if (isIndented && !ps.takeCharIf(' ')) {
-          throw new Error('Generic');
+          throw error(ps, 'Generic');
         }
       }
 
@@ -402,7 +402,7 @@ function getExpression(ps) {
       const variants = getVariants(ps);
 
       if (variants.length === 0) {
-        throw new Error('MissingVariants');
+        throw error(ps, 'Missing variants');
       }
 
       ps.expectChar('\n');
@@ -469,7 +469,7 @@ function getCallArgs(ps) {
 
     if (ps.current() === ':') {
       if (exp.type !== 'MessageReference') {
-        throw new Error('ForbiddenKey');
+        throw error(ps, 'Forbidden key');
       }
 
       ps.next();
@@ -501,7 +501,7 @@ function getArgVal(ps) {
   } else if (ps.currentIs('"')) {
     return getString(ps);
   }
-  throw new Error('ExpectedField');
+  throw error(ps, 'Expected field');
 }
 
 function getString(ps) {
@@ -524,7 +524,7 @@ function getLiteral(ps) {
   const ch = ps.current();
 
   if (!ch) {
-    throw new Error('Expected literal');
+    throw error(ps, 'Expected literal');
   }
 
   if (ps.isNumberStart()) {
