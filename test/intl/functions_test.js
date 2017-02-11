@@ -44,7 +44,7 @@ describe('Functions', function() {
         pass-nothing       = { IDENTITY() }
         pass-string        = { IDENTITY("a") }
         pass-number        = { IDENTITY(1) }
-        pass-entity        = { IDENTITY(foo) }
+        pass-message       = { IDENTITY(foo) }
         pass-attr          = { IDENTITY(foo.attr) }
         pass-external      = { IDENTITY($ext) }
         pass-function-call = { IDENTITY(IDENTITY(1)) }
@@ -76,7 +76,7 @@ describe('Functions', function() {
     });
 
     it('accepts entities', function() {
-      const msg = ctx.messages.get('pass-entity');
+      const msg = ctx.messages.get('pass-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);

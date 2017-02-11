@@ -57,9 +57,9 @@ function print(err, data) {
 
   parseErrors.forEach(printError);
 
-  for (const [id, entity] of ctx.messages) {
+  for (const [id, message] of ctx.messages) {
     const formatErrors = [];
-    printEntry(id, ctx.format(entity, ext, formatErrors));
+    printEntry(id, ctx.format(message, ext, formatErrors));
     formatErrors.forEach(printError);
   }
 }

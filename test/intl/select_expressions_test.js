@@ -105,7 +105,7 @@ describe('Select expressions', function() {
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '???');
       assert.equal(errs.length, 2);
-      assert(errs[0] instanceof ReferenceError); // unknown entity
+      assert(errs[0] instanceof ReferenceError); // unknown message
       assert(errs[1] instanceof RangeError); // no default
     });
   });
@@ -126,7 +126,7 @@ describe('Select expressions', function() {
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown entity
+      assert(errs[0] instanceof ReferenceError); // unknown message
     });
   });
 });

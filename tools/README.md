@@ -30,7 +30,7 @@ format.js
 ---------
 
 `format.js` is a utility script that uses fluent.js Resolver to parse and
-transform a source string into Entity objects and output the formatted result.
+transform a source string into Message objects and output the formatted result.
 
     Usage: format [options] [file]
 

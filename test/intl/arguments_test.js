@@ -27,14 +27,14 @@ describe('External arguments', function() {
       `);
     });
 
-    it('can be used in the entity value', function() {
+    it('can be used in the message value', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
-    it('can be used in the entity value which is referenced', function() {
+    it('can be used in the message value which is referenced', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');

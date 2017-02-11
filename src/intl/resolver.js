@@ -4,7 +4,7 @@
  * The role of the FTL resolver is to format a translation object to an
  * instance of `FTLType`.
  *
- * Translations can contain references to other entities or external arguments,
+ * Translations can contain references to other messages or external arguments,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use FTL builtins which make use of the `Intl`
  * formatters to format numbers, dates, lists and more into the context's
@@ -14,17 +14,17 @@
  * translation as possible.  In rare situations where the resolver didn't know
  * how to recover from an error it will return an instance of `FTLNone`.
  *
- * `EntityReference`, `MemberExpression` and `SelectExpression` resolve to raw
- * Runtime Entries objects and the result of the resolution needs to be passed
- * into `Value` to get their real value.  This is useful for composing
- * expressions.  Consider:
+ * `MessageReference`, `VariantExpression`, `AttributeExpression` and
+ * `SelectExpression` resolve to raw Runtime Entries objects and the result of
+ * the resolution needs to be passed into `Value` to get their real value.
+ * This is useful for composing expressions.  Consider:
  *
  *     brand-name[nominative]
  *
- * which is a `MemberExpression` with properties `obj: EntityReference` and
- * `key: Keyword`.  If `EntityReference` was resolved eagerly, it would
- * instantly resolve to the value of the `brand-name` entity.  Instead, we want
- * to get the entity object and look for its `nominative` trait.
+ * which is a `VariantExpression` with properties `id: MessageReference` and
+ * `key: Keyword`.  If `MessageReference` was resolved eagerly, it would
+ * instantly resolve to the value of the `brand-name` message.  Instead, we
+ * want to get the message object and look for its `nominative` variant.
  *
  * All other expressions (except for `FunctionReference` which is only used in
  * `CallExpression`) resolve to an instance of `FTLType`, which must then be
@@ -61,20 +61,20 @@ function DefaultMember(env, members, def) {
 
 
 /**
- * Resolve a reference to an entity to the entity object.
+ * Resolve a reference to a message to the message object.
  *
  * @private
  */
-function EntityReference(env, {name}) {
+function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const entity = ctx.messages.get(name);
+  const message = ctx.messages.get(name);
 
-  if (!entity) {
-    errors.push(new ReferenceError(`Unknown entity: ${name}`));
+  if (!message) {
+    errors.push(new ReferenceError(`Unknown message: ${name}`));
     return new FTLNone(name);
   }
 
-  return entity;
+  return message;
 }
 
 
@@ -84,9 +84,9 @@ function EntityReference(env, {name}) {
  * @private
  */
 function VariantExpression(env, {id, key}) {
-  const entity = EntityReference(env, id);
-  if (entity instanceof FTLNone) {
-    return entity;
+  const message = MessageReference(env, id);
+  if (message instanceof FTLNone) {
+    return message;
   }
 
   const { ctx, errors } = env;
@@ -98,9 +98,9 @@ function VariantExpression(env, {id, key}) {
       node[0].exp === null;
   }
 
-  if (isVariantList(entity.val)) {
+  if (isVariantList(message.val)) {
     // Match the specified key against keys of each variant, in order.
-    for (const variant of entity.val[0].vars) {
+    for (const variant of message.val[0].vars) {
       const variantKey = Value(env, variant.key);
       if (keyword.match(ctx, variantKey)) {
         return variant;
@@ -109,7 +109,7 @@ function VariantExpression(env, {id, key}) {
   }
 
   errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
-  return Value(env, entity);
+  return Value(env, message);
 }
 
 
@@ -119,23 +119,23 @@ function VariantExpression(env, {id, key}) {
  * @private
  */
 function AttributeExpression(env, {id, name}) {
-  const entity = EntityReference(env, id);
-  if (entity instanceof FTLNone) {
-    return entity;
+  const message = MessageReference(env, id);
+  if (message instanceof FTLNone) {
+    return message;
   }
 
-  if (entity.attrs) {
+  if (message.attrs) {
     // Match the specified name against keys of each attribute.
-    for (const attrName in entity.attrs) {
+    for (const attrName in message.attrs) {
       if (name === attrName) {
-        return entity.attrs[name];
+        return message.attrs[name];
       }
     }
   }
 
   const { errors } = env;
   errors.push(new ReferenceError(`Unknown attribute: ${name}`));
-  return Value(env, entity);
+  return Value(env, message);
 }
 
 /**
@@ -212,8 +212,8 @@ function Value(env, expr) {
     case 'call':
       return CallExpression(env, expr);
     case 'ref': {
-      const entity = EntityReference(env, expr);
-      return Value(env, entity);
+      const message = MessageReference(env, expr);
+      return Value(env, message);
     }
     case 'attr': {
       const attr = AttributeExpression(env, expr);
@@ -383,13 +383,13 @@ function Pattern(env, ptn) {
  *
  * @param   {MessageContext} ctx
  * @param   {Object}         args
- * @param   {Object}         entity
+ * @param   {Object}         message
  * @param   {Array}          errors
  * @returns {FTLType}
  */
-export default function resolve(ctx, args, entity, errors = []) {
+export default function resolve(ctx, args, message, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Value(env, entity);
+  return Value(env, message);
 }

@@ -60,13 +60,13 @@ export class MessageContext {
    * Add a translation resource to the context.
    *
    * The translation resource must use the FTL syntax.  It will be parsed by
-   * the context and each translation unit (entity) will be available in the
+   * the context and each translation unit (message) will be available in the
    * `messages` map by its identifier.
    *
    *     ctx.addMessages('foo = Foo');
    *     ctx.messages.get('foo');
    *
-   *     // Returns a raw representation of the 'foo' entity.
+   *     // Returns a raw representation of the 'foo' message.
    *
    * Parsed entities should be formatted with the `format` method in case they
    * contain logic (references, select expressions etc.).
@@ -84,9 +84,9 @@ export class MessageContext {
   }
 
   /**
-   * Format an entity to a string or null.
+   * Format a message to a string or null.
    *
-   * Format a raw `entity` from the context's `messages` map into a string (or
+   * Format a raw `message` from the context's `messages` map into a string (or
    * a null if it has a null value).  `args` will be used to resolve references
    * to external arguments inside of the translation.
    *
@@ -108,28 +108,28 @@ export class MessageContext {
    *
    *     [<ReferenceError: Unknown external: name>]
    *
-   * @param   {Object | string}    entity
+   * @param   {Object | string}    message
    * @param   {Object | undefined} args
    * @param   {Array}              errors
    * @returns {?string}
    */
-  format(entity, args, errors) {
+  format(message, args, errors) {
     // optimize entities which are simple strings with no attributes
-    if (typeof entity === 'string') {
-      return entity;
+    if (typeof message === 'string') {
+      return message;
     }
 
     // optimize simple-string entities with attributes
-    if (typeof entity.val === 'string') {
-      return entity.val;
+    if (typeof message.val === 'string') {
+      return message.val;
     }
 
     // optimize entities with null values
-    if (entity.val === undefined) {
+    if (message.val === undefined) {
       return null;
     }
 
-    const result = resolve(this, args, entity, errors);
+    const result = resolve(this, args, message, errors);
     return result instanceof FTLNone ? null : result;
   }
 

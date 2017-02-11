@@ -500,7 +500,7 @@ class EntriesParser {
 
       const exp = this.getSelectorExpression();
 
-      // EntityReference in this place may be an entity reference, like:
+      // MessageReference in this place may be an entity reference, like:
       // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
       if (exp.type !== 'ref' ||
          exp.namespace !== undefined) {

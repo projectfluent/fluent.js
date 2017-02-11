@@ -45,12 +45,12 @@ describe('Primitives', function() {
         foo               = Foo
 
         placeable-literal = { "Foo" } Bar
-        placeable-entity  = { foo } Bar
+        placeable-message = { foo } Bar
 
-        selector-literal  = { "Foo" ->
+        selector-literal = { "Foo" ->
             [Foo] Member 1
         }
-        selector-entity   = { foo ->
+        selector-message = { foo ->
             [Foo] Member 2
         }
 
@@ -84,8 +84,8 @@ describe('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of an entity referenced in a placeable', function(){
-      const msg = ctx.messages.get('placeable-entity');
+    it('can be a value of a message referenced in a placeable', function(){
+      const msg = ctx.messages.get('placeable-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Bar');
       assert.equal(errs.length, 0);
@@ -98,8 +98,8 @@ describe('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of an entity used as a selector', function(){
-      const msg = ctx.messages.get('selector-entity');
+    it('can be a value of a message used as a selector', function(){
+      const msg = ctx.messages.get('selector-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Member 2');
       assert.equal(errs.length, 0);
@@ -135,12 +135,12 @@ describe('Primitives', function() {
         bar               = { foo } Bar
 
         placeable-literal = { "{ foo } Bar" } Baz
-        placeable-entity  = { bar } Baz
+        placeable-message = { bar } Baz
 
-        selector-literal  = { "{ foo } Bar" ->
+        selector-literal = { "{ foo } Bar" ->
             [Foo Bar] Member 1
         }
-        selector-entity   = { bar ->
+        selector-message = { bar ->
             [Foo Bar] Member 2
         }
 
@@ -175,8 +175,8 @@ describe('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of an entity referenced in a placeable', function(){
-      const msg = ctx.messages.get('placeable-entity');
+    it('can be a value of a message referenced in a placeable', function(){
+      const msg = ctx.messages.get('placeable-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Bar Baz');
       assert.equal(errs.length, 0);
@@ -189,8 +189,8 @@ describe('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('can be a value of an entity used as a selector', function(){
-      const msg = ctx.messages.get('selector-entity');
+    it('can be a value of a message used as a selector', function(){
+      const msg = ctx.messages.get('selector-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Member 2');
       assert.equal(errs.length, 0);

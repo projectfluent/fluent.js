@@ -21,7 +21,7 @@ export class Entry extends Node {
 export class Message extends Entry {
   constructor(id, value = null, attributes = null, comment = null) {
     super();
-    this.type = 'Entity';
+    this.type = 'Message';
     this.id = id;
     this.value = value;
     this.attributes = attributes;

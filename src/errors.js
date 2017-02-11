@@ -1,5 +1,5 @@
 /**
- * An `L10nError` with information about language and entity ID in which
+ * An `L10nError` with information about language and message ID in which
  * the error happened.
  */
 export class L10nError extends Error {

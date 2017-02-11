@@ -46,16 +46,16 @@ describe('Patterns', function(){
       assert.equal(errs.length, 0);
     });
 
-    it('returns the raw string if the referenced entity is ' +
+    it('returns the raw string if the referenced message is ' +
        'not found', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'missing');
-      assert.ok(errs[0] instanceof ReferenceError); // unknown entity
+      assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
   });
 
-  describe('Complex string referencing an entity with null value', function(){
+  describe('Complex string referencing a message with null value', function(){
     before(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
@@ -79,7 +79,7 @@ describe('Patterns', function(){
       assert.equal(errs.length, 0);
     });
 
-    it('formats ??? when the referenced entity has no value and no default',
+    it('formats ??? when the referenced message has no value and no default',
        function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
