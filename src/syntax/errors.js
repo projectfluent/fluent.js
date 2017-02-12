@@ -1,3 +1,10 @@
+export function error(ps, message) {
+  const err = new SyntaxError(message);
+  err.lineNumber = ps.getLineNumber();
+  err.columnNumber = ps.getColumnNumber();
+  return err;
+}
+
 export function getErrorSlice(source, start, end) {
   const len = source.length;
 

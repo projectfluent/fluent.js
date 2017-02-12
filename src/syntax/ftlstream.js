@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: "off" */
 
 import { ParserStream } from './stream';
+import { error } from './errors.js';
 
 export class FTLParserStream extends ParserStream {
   peekLineWS() {
@@ -42,7 +43,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    throw new Error(`ExpectedToken ${ch}`);
+    throw error(this, `Expected token ${ch}`);
   }
 
   takeCharIf(ch) {
@@ -132,7 +133,7 @@ export class FTLParserStream extends ParserStream {
       this.next();
       return ret;
     }
-    throw new Error('ExpectedCharRange');
+    throw error(this, 'Expected char range');
   }
 
   takeIDChar() {

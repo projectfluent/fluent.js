@@ -1,5 +1,6 @@
 export class ParserStream {
   constructor(string) {
+    this.string = string;
     this.iter = string[Symbol.iterator]();
     this.buf = [];
     this.peekIndex = 0;
@@ -83,6 +84,14 @@ export class ParserStream {
 
   getIndex() {
     return this.index;
+  }
+
+  getLineNumber() {
+    return this.string.slice(1, this.index).split('\n').length;
+  }
+
+  getColumnNumber() {
+    return this.index - this.string.lastIndexOf('\n', this.index - 1);
   }
 
   getPeekIndex() {
