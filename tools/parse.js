@@ -20,7 +20,9 @@ const parse = program.runtime
   ? require('../src/intl/parser').default
   : require('../src/syntax/parser').parse;
 
-function print(err, data) {
+const formatSlice = require('./error_display').formatSlice;
+
+function print(path, err, data) {
   if (err) {
     return console.error('File not found: ' + err.path);
   }
@@ -29,13 +31,30 @@ function print(err, data) {
   console.log(JSON.stringify(result, null, 2));
 
   if (errors.length && !program.silent) {
-    errors.map(e => console.error(e.message));
+    for (let e of errors) {
+      let slice = formatSlice({
+        source: path,
+        content: e.info.slice,
+        lineNum: e.info.line,
+        type: 'error',
+        desc: e.message,
+        pos: e.info.pos,
+        labels: [{
+          type: 'primary',
+          mark: [e.info.pos, e.info.pos + 1],
+          desc: ''
+        }],
+        blocks: [],
+      });
+      console.error(slice);
+    }
   }
+
 }
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  fs.readFile(program.args[0], print.bind(null, program.args[0]));
 } else {
   process.stdin.resume();
-  process.stdin.on('data', print);
+  process.stdin.on('data', print.bind(null, 'stdin'));
 }
