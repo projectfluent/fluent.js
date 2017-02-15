@@ -11,7 +11,6 @@ export const debug = {
   _parse
 };
 
-export { L10nError } from './errors';
 export { MessageContext } from './intl/context';
 export {
   FTLNumber as MessageNumberArgument,

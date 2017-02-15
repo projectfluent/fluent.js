@@ -38,6 +38,26 @@ Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # FTLDateTime
 
+# RuntimeParser
+
+The `Parser` class is responsible for parsing FTL resources.
+
+It's only public method is `getResource(source)` which takes an FTL string
+and returns a two element Array with an Object of entries generated from the
+source as the first element and an array of SyntaxError objects as the
+second.
+
+This parser is optimized for runtime performance.
+
+There is an equivalent of this parser in syntax/parser which is
+generating full AST which is useful for FTL tools.
+
+## getResource
+
+**Parameters**
+
+-   `string` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
 # MessageContext
 
 Message contexts are single-language stores of translations.  They are
@@ -145,26 +165,6 @@ encountered errors are not returned but instead are appended to the
 -   `errors` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
 
 Returns **?[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
-
-# EntriesParser
-
-The `Parser` class is responsible for parsing FTL resources.
-
-It's only public method is `getResource(source)` which takes an FTL
-string and returns a two element Array with an Object of entries
-generated from the source as the first element and an array of L10nError
-objects as the second.
-
-This parser is optimized for runtime performance.
-
-There is an equivalent of this parser in ftl/ast/parser which is
-generating full AST which is useful for FTL tools.
-
-## getResource
-
-**Parameters**
-
--   `string` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
 # FTLKeyword
 

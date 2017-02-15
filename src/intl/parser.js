@@ -1,23 +1,21 @@
 /*  eslint no-magic-numbers: [0]  */
 
-import { L10nError } from '../errors';
-
 const MAX_PLACEABLES = 100;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
  *
- * It's only public method is `getResource(source)` which takes an FTL
- * string and returns a two element Array with an Object of entries
- * generated from the source as the first element and an array of L10nError
- * objects as the second.
+ * It's only public method is `getResource(source)` which takes an FTL string
+ * and returns a two element Array with an Object of entries generated from the
+ * source as the first element and an array of SyntaxError objects as the
+ * second.
  *
  * This parser is optimized for runtime performance.
  *
- * There is an equivalent of this parser in ftl/ast/parser which is
+ * There is an equivalent of this parser in syntax/parser which is
  * generating full AST which is useful for FTL tools.
  */
-class EntriesParser {
+class RuntimeParser {
   /**
    * @param {string} string
    * @returns {{}, []]}
@@ -27,9 +25,6 @@ class EntriesParser {
     this._index = 0;
     this._length = string.length;
 
-    // This variable is used for error recovery and reporting.
-    this._lastGoodEntryEnd = 0;
-
     const entries = {};
     const errors = [];
 
@@ -38,9 +33,13 @@ class EntriesParser {
       try {
         this.getEntry(entries);
       } catch (e) {
-        if (e instanceof L10nError) {
+        if (e instanceof SyntaxError) {
           errors.push(e);
-          this.getJunkEntry();
+
+          const nextEntity = this._findNextEntryStart();
+          this._index = nextEntity === -1
+            ? this._length
+            : nextEntity;
         } else {
           throw e;
         }
@@ -371,19 +370,9 @@ class EntriesParser {
   /* eslint-enable complexity */
 
   getPlaceable() {
-    this._index++;
+    const start = ++this._index;
 
     this.getWS();
-
-    const start = this._index;
-    try {
-      return this.getPlaceableExpression();
-    } catch (e) {
-      throw this.error(e.description, start);
-    }
-  }
-
-  getPlaceableExpression() {
 
     if (this._source[this._index] === '*' ||
        (this._source[this._index] === '[' &&
@@ -398,10 +387,14 @@ class EntriesParser {
       };
     }
 
+    // Rewind the index and only support in-line white-space now.
+    this._index = start;
+    this.getLineWS();
+
     const selector = this.getSelectorExpression();
     let variants;
 
-    this.getWS();
+    this.getLineWS();
 
     const ch = this._source[this._index];
 
@@ -411,6 +404,7 @@ class EntriesParser {
       if (ch !== '-' || this._source[this._index + 1] !== '>') {
         throw this.error('Expected "}", "," or "->"');
       }
+
       this._index += 2; // ->
 
       this.getLineWS();
@@ -733,75 +727,15 @@ class EntriesParser {
     }
   }
 
-  error(message, start = null) {
-    const pos = this._index;
-
-    if (start === null) {
-      start = pos;
-    }
-    start = this._findEntityStart(start);
-
-    const context = this._source.slice(start, pos + 10);
-
-    const msg =
-      `\n\n  ${message}\nat pos ${pos}:\n------\n…${context}\n------`;
-    const err = new L10nError(msg);
-
-    const row = this._source.slice(0, pos).split('\n').length;
-    const col = pos - this._source.lastIndexOf('\n', pos - 1);
-    err._pos = {start: pos, end: undefined, col: col, row: row};
-    err.offset = pos - start;
-    err.description = message;
-    err.context = context;
-    return err;
+  error(message) {
+    return new SyntaxError(message);
   }
 
-  getJunkEntry() {
-    const pos = this._index;
-
-    let nextEntity = this._findNextEntryStart(pos);
-
-    if (nextEntity === -1) {
-      nextEntity = this._length;
-    }
-
-    this._index = nextEntity;
-
-    let entityStart = this._findEntityStart(pos);
-
-    if (entityStart < this._lastGoodEntryEnd) {
-      entityStart = this._lastGoodEntryEnd;
-    }
-  }
-
-  _findEntityStart(pos) {
-    let start = pos;
+  _findNextEntryStart() {
+    let start = this._index;
 
     while (true) {
-      start = this._source.lastIndexOf('\n', start - 2);
-      if (start === -1 || start === 0) {
-        start = 0;
-        break;
-      }
-      const cc = this._source.charCodeAt(start + 1);
-
-      if ((cc >= 97 && cc <= 122) || // a-z
-          (cc >= 65 && cc <= 90) ||  // A-Z
-           cc === 95) {              // _
-        start++;
-        break;
-      }
-    }
-
-    return start;
-  }
-
-  _findNextEntryStart(pos) {
-    let start = pos;
-
-    while (true) {
-      if (start === 0 ||
-          this._source[start - 1] === '\n') {
+      if (start === 0 || this._source[start - 1] === '\n') {
         const cc = this._source.charCodeAt(start);
 
         if ((cc >= 97 && cc <= 122) || // a-z
@@ -824,6 +758,6 @@ class EntriesParser {
 }
 
 export default function parse(string) {
-  const parser = new EntriesParser();
+  const parser = new RuntimeParser();
   return parser.getResource(string);
 }
