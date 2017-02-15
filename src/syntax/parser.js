@@ -2,7 +2,7 @@
 
 import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
-import { error, getErrorSlice } from './errors';
+import { error, getErrorSlice, getErrorInfo } from './errors';
 
 export function parse(source) {
   const errors = [];
@@ -25,7 +25,10 @@ export function parse(source) {
         entries.push(entry);
       }
     } catch (e) {
+      const errorPos = ps.getIndex();
       entries.push(getJunkEntry(ps, source, entryStartPos));
+
+      e.info = getErrorInfo(source, errorPos, entryStartPos, ps.getIndex());
       errors.push(e);
     }
 
