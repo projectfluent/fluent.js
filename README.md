@@ -47,10 +47,10 @@ ctx.format(welcome, { name: 'Anna' });
 ```
 
 You can access other API methods by requiring the `fluent-l10n` module.  The
-currently exposed functions can be found in [src/lib/index.js][].  Keep in mind
+currently exposed functions can be found in [src/index.js][].  Keep in mind
 that `fluent-l10n` is in its 0.x days and that the exposed API may change.
 
-[src/lib/index.js]: https://github.com/projectfluent/fluent.js/blob/master/src/lib/index.js
+[src/index.js]: https://github.com/projectfluent/fluent.js/blob/master/src/index.js
 
 
 Learn the FTL syntax
@@ -65,14 +65,11 @@ and others.
 
     hello-user = Hello, { $username }!
 
-Visit [projectfluent/syntax][] to [read the guide on FTL][] and learn the syntax.
-If you're a tool author you may be interested in the formal [EBNF grammar][]
-and the [ASDL description of the AST][].
+[Read the Fluent Syntax Guide][] in order to learn more about the syntax.  If
+you're a tool author you may be interested in the formal [EBNF grammar][].
 
-[projectfluent/syntax]: https://github.com/projectfluent/syntax/
-[read the guide on FTL]: https://github.com/projectfluent/syntax/blob/master/guide.rst
-[EBNF grammar]: https://github.com/projectfluent/syntax/blob/master/fluent.ebnf
-[ASDL description of the AST]: https://github.com/projectfluent/syntax/blob/master/fluent.asdl
+[Read the Fluent Syntax Guide]: http://projectfluent.io/fluent/guide/
+[EBNF grammar]: https://github.com/projectfluent/fluent/tree/master/syntax
 
 
 Discuss
