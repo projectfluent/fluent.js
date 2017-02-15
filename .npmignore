@@ -1,9 +1,4 @@
-build
 docs
-examples
-tests
+test
 tools
-
-bower.json
-Gruntfile.js
-tags
+makefile

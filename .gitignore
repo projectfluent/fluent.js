@@ -1,7 +1,6 @@
 node_modules
 dist
-tools/*.l20n
-tools/*.properties
-tools/*.json
+
 tools/*.ftl
+tools/*.json
 tools/perf/*.json
