@@ -14,15 +14,27 @@ the same time it allows, when necessary, to represent complex concepts from
 natural languages like gender, plurals, conjugations, and others.
 
 
+Installation
+------------
+
+Fluent.js can be used both on the client-side and the server-side.  Install the
+`fluent` package from the npm registry:
+
+    npm install fluent
+
+Fluent.js also works as a standalone script (as the `Fluent` global) and with
+`RequireJS`.
+
+
 How to use Fluent.js
 --------------------
 
-When you require the `fluent` module it will add the `Intl.MessageContext`
+When you import the `fluent` module it will add the `Intl.MessageContext`
 constructor to the global `Intl` object, together with a few other polyfills.
 You can consult the complete list of the polyfills in [src/intl/polyfill.js]. 
 
-`Intl.MessageContext` provides the core functionality of parsing FTL files and
-formatting translations from them.
+`Intl.MessageContext` provides the core functionality of formatting
+translations from FTL files.
 
 [src/intl/polyfill.js]: https://github.com/projectfluent/fluent.js/blob/master/src/intl/polyfill.js
 
