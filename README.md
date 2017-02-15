@@ -4,8 +4,8 @@ Project Fluent [![Build Status][travisimage]][travislink]
 [travisimage]: https://travis-ci.org/projectfluent/fluent.js.svg?branch=master
 [travislink]: https://travis-ci.org/projectfluent/fluent.js
 
-Fluent.js is a JavaScript implementation of Project Fluent, a localization framework
-designed to unleash the entire expressive power of natural language
+Fluent.js is a JavaScript implementation of Project Fluent, a localization
+framework designed to unleash the entire expressive power of natural language
 translations.
 
 Project Fluent keeps simple things simple and makes complex things possible.
@@ -17,7 +17,7 @@ natural languages like gender, plurals, conjugations, and others.
 How to use Fluent.js
 --------------------
 
-When you require the `fluent-l10n` module it will add the `Intl.MessageContext`
+When you require the `fluent` module it will add the `Intl.MessageContext`
 constructor to the global `Intl` object, together with a few other polyfills.
 You can consult the complete list of the polyfills in [src/intl/polyfill.js]. 
 
@@ -27,7 +27,7 @@ formatting translations from them.
 [src/intl/polyfill.js]: https://github.com/projectfluent/fluent.js/blob/master/src/intl/polyfill.js
 
 ```javascript
-require('fluent-l10n');
+require('fluent');
 
 const ctx = new Intl.MessageContext('en-US');
 
@@ -46,9 +46,9 @@ ctx.format(welcome, { name: 'Anna' });
 // → 'Welcome, Anna, to Foo 3000!'
 ```
 
-You can access other API methods by requiring the `fluent-l10n` module.  The
+You can access other API methods by requiring the `fluent` module.  The
 currently exposed functions can be found in [src/index.js][].  Keep in mind
-that `fluent-l10n` is in its 0.x days and that the exposed API may change.
+that `fluent` is in its 0.x days and that the exposed API may change.
 
 [src/index.js]: https://github.com/projectfluent/fluent.js/blob/master/src/index.js
 
