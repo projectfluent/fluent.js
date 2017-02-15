@@ -36,9 +36,7 @@ instance passed as an argument.
 
 Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
 
-# FTLList
-
-# FTLList
+# FTLDateTime
 
 # MessageContext
 
@@ -97,13 +95,13 @@ Returns **[MessageContext](#messagecontext)**
 Add a translation resource to the context.
 
 The translation resource must use the FTL syntax.  It will be parsed by
-the context and each translation unit (entity) will be available in the
+the context and each translation unit (message) will be available in the
 `messages` map by its identifier.
 
     ctx.addMessages('foo = Foo');
     ctx.messages.get('foo');
 
-    // Returns a raw representation of the 'foo' entity.
+    // Returns a raw representation of the 'foo' message.
 
 Parsed entities should be formatted with the `format` method in case they
 contain logic (references, select expressions etc.).
@@ -116,9 +114,9 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 ## format
 
-Format an entity to a string or null.
+Format a message to a string or null.
 
-Format a raw `entity` from the context's `messages` map into a string (or
+Format a raw `message` from the context's `messages` map into a string (or
 a null if it has a null value).  `args` will be used to resolve references
 to external arguments inside of the translation.
 
@@ -142,11 +140,33 @@ encountered errors are not returned but instead are appended to the
 
 **Parameters**
 
--   `entity` **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** 
+-   `message` **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** 
 -   `args` **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined))** 
 -   `errors` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
 
 Returns **?[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+# EntriesParser
+
+The `Parser` class is responsible for parsing FTL resources.
+
+It's only public method is `getResource(source)` which takes an FTL
+string and returns a two element Array with an Object of entries
+generated from the source as the first element and an array of L10nError
+objects as the second.
+
+This parser is optimized for runtime performance.
+
+There is an equivalent of this parser in ftl/ast/parser which is
+generating full AST which is useful for FTL tools.
+
+## getResource
+
+**Parameters**
+
+-   `string` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+# FTLKeyword
 
 # resolver
 
@@ -159,7 +179,7 @@ caller.
 
 -   `ctx` **[MessageContext](#messagecontext)** 
 -   `args` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `entity` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `message` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 -   `errors` **\[[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)](default \[])** 
 
 Returns **[FTLType](#ftltype)** 

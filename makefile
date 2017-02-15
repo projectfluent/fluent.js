@@ -26,7 +26,7 @@ test:
 
 docs:
 	documentation build --shallow -f md \
-	    src/syntax/**/*.js > docs/parser.md
+	    src/syntax/*.js > docs/parser.md
 	documentation build --shallow -f md \
 	    src/intl/*.js > docs/messagecontext.md
 
