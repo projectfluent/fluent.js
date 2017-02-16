@@ -17,8 +17,8 @@ program
   .parse(process.argv);
 
 const parse = program.runtime
-  ? require('../src/intl/parser').default
-  : require('../src/syntax/parser').parse;
+  ? require('../fluent/src/parser').default
+  : require('../fluent-syntax/src/parser').parse;
 
 function print(err, data) {
   if (err) {

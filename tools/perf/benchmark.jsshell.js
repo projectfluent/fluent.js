@@ -1,4 +1,5 @@
-load('../../dist/fluent.js');
+load('../../fluent/fluent.js');
+load('../../fluent-syntax/fluent-syntax.js');
 
 var ftlCode = read('./workload-low.ftl');
 var args = {};
@@ -11,11 +12,11 @@ function micro(time) {
 var times = {};
 
 times.ftlParseStart = dateNow();
-var [resource] = Fluent.syntax.parser.parse(ftlCode);
+var [resource] = FluentSyntax.parse(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var [entries] = Fluent.debug._parse(ftlCode);
+var [entries] = Fluent._parse(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
 var ctx = new Intl.MessageContext('en-US');

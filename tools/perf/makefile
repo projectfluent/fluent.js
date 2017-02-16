@@ -1,10 +1,13 @@
 perf: perf-jsshell
 
-perf-%: build
+perf-%:
+	@$(MAKE) -s build
 	@./tools/perf/test.js -e $* -s 30 -p
 
-perf-compare-%: build
+perf-compare-%:
+	@$(MAKE) -s build
 	@./tools/perf/test.js -e $* -s 30 -p -c $(PERF_REFERENCE)
 
-perf-reference-%: build
+perf-reference-%:
+	@$(MAKE) -s build
 	@./tools/perf/test.js -e $* -s 30 -r > $(PERF_REFERENCE)

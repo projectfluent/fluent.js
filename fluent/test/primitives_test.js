@@ -2,8 +2,8 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../../src/intl/context';
-import { ftl } from '../util';
+import { MessageContext } from '../src/context';
+import { ftl } from './util';
 
 describe('Primitives', function() {
   let ctx, args, errs;

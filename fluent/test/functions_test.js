@@ -2,9 +2,9 @@
 
 import assert from 'assert';
 
-import '../../src/intl/polyfill';
-import { MessageContext } from '../../src/intl/context';
-import { ftl } from '../util';
+import '../src/polyfill';
+import { MessageContext } from '../src/context';
+import { ftl } from './util';
 
 describe('Functions', function() {
   let ctx, args, errs;

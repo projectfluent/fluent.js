@@ -1,0 +1,3 @@
+*.ftl
+*.json
+perf/*.json
