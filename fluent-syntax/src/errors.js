@@ -1,26 +1,18 @@
-export function error(ps, message) {
-  const err = new SyntaxError(message);
-  err.lineNumber = ps.getLineNumber();
-  err.columnNumber = ps.getColumnNumber();
-  return err;
+class Annotation {
+  constructor(message) {
+    this.message = message;
+  }
 }
 
-export function getErrorSlice(source, start, end) {
-  const len = source.length;
-
-  let startPos;
-  let sliceLen = end - start;
-
-  if (len < sliceLen) {
-    startPos = 0;
-    sliceLen = len;
-  } else if (start + sliceLen >= len) {
-    startPos = len - sliceLen - 1;
-  } else {
-    startPos = start;
+export class ParseError extends Annotation {
+  constructor(message) {
+    super(message);
+    this.name = 'ParseError';
   }
+}
 
-  return startPos > 0 ?
-    source.substr(startPos - 1, sliceLen) :
-    source.substr(0, sliceLen);
+export function error(ps, message) {
+  const err = new ParseError(message);
+  err.pos = ps.getIndex();
+  return err;
 }

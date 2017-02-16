@@ -19,7 +19,7 @@ can install it from the npm registry or use it as a standalone script (as the
 ```javascript
 import { parse, Resource } from 'fluent-syntax';
 
-const [res, errors] = parse(`
+const res = parse(`
 brand-name = Foo 3000
 welcome    = Welcome, { $name }, to { brand-name }!
 `);

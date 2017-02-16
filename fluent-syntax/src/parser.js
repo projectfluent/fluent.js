@@ -2,10 +2,9 @@
 
 import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
-import { error, getErrorSlice } from './errors';
+import { ParseError, error } from './errors';
 
 export function parse(source) {
-  const errors = [];
   let comment = null;
 
   const ps = new FTLParserStream(source);
@@ -22,17 +21,29 @@ export function parse(source) {
       if (entryStartPos === 0 && entry.type === 'Comment') {
         comment = entry;
       } else {
+        entry.addSpan(entryStartPos, ps.getIndex());
         entries.push(entry);
       }
-    } catch (e) {
-      entries.push(getJunkEntry(ps, source, entryStartPos));
-      errors.push(e);
+    } catch (err) {
+      if (!(err instanceof ParseError)) {
+        throw err;
+      }
+
+      ps.skipToNextEntryStart();
+      const nextEntryStart = ps.getIndex();
+
+      // Create a Junk instance
+      const slice = source.substring(entryStartPos, nextEntryStart);
+      const junk = new AST.Junk(slice);
+      junk.addSpan(entryStartPos, nextEntryStart);
+      junk.addAnnotation(err);
+      entries.push(junk);
     }
 
     ps.skipWSLines();
   }
 
-  return [new AST.Resource(entries, comment), errors];
+  return new AST.Resource(entries, comment, source);
 }
 
 function getEntry(ps) {
@@ -540,12 +551,4 @@ function getLiteral(ps) {
   const name = getIdentifier(ps);
   return new AST.MessageReference(name);
 
-}
-
-function getJunkEntry(ps, source, entryStart) {
-  ps.skipToNextEntryStart();
-
-  const slice = getErrorSlice(source, entryStart, ps.getIndex());
-
-  return new AST.JunkEntry(slice);
 }

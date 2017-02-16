@@ -86,14 +86,6 @@ export class ParserStream {
     return this.index;
   }
 
-  getLineNumber() {
-    return this.string.slice(1, this.index).split('\n').length;
-  }
-
-  getColumnNumber() {
-    return this.index - this.string.lastIndexOf('\n', this.index - 1);
-  }
-
   getPeekIndex() {
     return this.peekIndex;
   }

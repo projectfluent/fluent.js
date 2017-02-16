@@ -3,11 +3,12 @@ class Node {
 }
 
 export class Resource extends Node {
-  constructor(body = [], comment = null) {
-    super(body, comment);
+  constructor(body = [], comment = null, source = '') {
+    super();
     this.type = 'Resource';
     this.body = body;
     this.comment = comment;
+    this.source = source;
   }
 }
 
@@ -15,6 +16,15 @@ export class Entry extends Node {
   constructor() {
     super();
     this.type = 'Entry';
+    this.annotations = [];
+  }
+
+  addSpan(from, to) {
+    this.span = { from, to };
+  }
+
+  addAnnotation(annot) {
+    this.annotations.push(annot);
   }
 }
 
@@ -179,10 +189,10 @@ export class Function extends Identifier {
   }
 }
 
-export class JunkEntry extends Entry {
+export class Junk extends Entry {
   constructor(content) {
     super();
-    this.type = 'JunkEntry';
+    this.type = 'Junk';
     this.content = content;
   }
 }
