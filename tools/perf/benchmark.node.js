@@ -1,5 +1,6 @@
 var fs = require('fs');
-var Fluent = require('../../dist/fluent');
+var Fluent = require('../../fluent');
+var FluentSyntax = require('../../fluent-syntax');
 
 var ftlCode = fs.readFileSync(__dirname + '/workload-low.ftl').toString();
 
@@ -14,11 +15,11 @@ var cumulative = {};
 var start = process.hrtime();
 
 cumulative.ftlParseStart = process.hrtime(start);
-var [resource] = Fluent.syntax.parser.parse(ftlCode);
+var [resource] = FluentSyntax.parse(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
 
 cumulative.ftlEntriesParseStart = process.hrtime(start);
-var [entries] = Fluent.debug._parse(ftlCode);
+var [entries] = Fluent._parse(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
 var ctx = new Intl.MessageContext('en-US');

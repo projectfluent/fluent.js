@@ -1,7 +1,7 @@
 'use strict';
 
 import assert from 'assert';
-import { ParserStream } from '../../src/syntax/stream';
+import { ParserStream } from '../src/stream';
 
 describe('ParserStream', function() {
   it('next', function() {

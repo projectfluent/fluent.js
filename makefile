@@ -1,35 +1,20 @@
 export SHELL := /bin/bash
 export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
 
-DIST := $(CURDIR)/dist
-OK := \033[32;01m✓\033[0m
+TARGETS  := all lint test build clean
+PACKAGES := $(wildcard fluent*)
 
-all: lint test build
+$(TARGETS): $(PACKAGES)
 
-build:
-	@rollup $(CURDIR)/src/index.js \
-	    -f umd \
-	    -n Fluent \
-	    -o $(DIST)/fluent.js
-	@echo -e " $(OK) dist/fluent.js built"
-
-clean:
-	@rm -rf dist/*
-	@echo -e " $(OK) dist cleaned"
-
-lint:
-	@eslint --max-warnings 0 src/
-	@echo -e " $(OK) src/ linted"
-
-test:
-	@mocha --recursive --require ./test/compat
+$(PACKAGES):
+	@$(MAKE) -sC $@ $(MAKECMDGOALS)
 
 docs:
 	documentation build --shallow -f md \
-	    src/syntax/*.js > docs/parser.md
+	    fluent/src/*.js > docs/fluent.md
 	documentation build --shallow -f md \
-	    src/intl/*.js > docs/messagecontext.md
+	    fluent-syntax/src/*.js > docs/fluent-syntax.md
 
-.PHONY: test docs
+.PHONY: $(TARGETS) $(PACKAGES) docs
 
 include tools/perf/makefile

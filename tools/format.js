@@ -10,7 +10,7 @@ require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-require('../src/intl/polyfill');
+require('../fluent/src/polyfill');
 
 program
   .version('0.0.1')

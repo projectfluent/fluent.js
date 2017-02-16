@@ -1,6 +1,1 @@
 node_modules
-dist
-
-tools/*.ftl
-tools/*.json
-tools/perf/*.json
