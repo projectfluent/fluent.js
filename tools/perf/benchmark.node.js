@@ -1,4 +1,6 @@
 var fs = require('fs');
+
+require('../../fluent-intl-polyfill');
 var Fluent = require('../../fluent');
 var FluentSyntax = require('../../fluent-syntax');
 
@@ -15,14 +17,14 @@ var cumulative = {};
 var start = process.hrtime();
 
 cumulative.ftlParseStart = process.hrtime(start);
-var [resource] = FluentSyntax.parse(ftlCode);
+var resource = FluentSyntax.parse(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
 
 cumulative.ftlEntriesParseStart = process.hrtime(start);
 var [entries] = Fluent._parse(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
-var ctx = new Intl.MessageContext('en-US');
+var ctx = new Fluent.MessageContext('en-US');
 var errors = ctx.addMessages(ftlCode);
 
 cumulative.format = process.hrtime(start);

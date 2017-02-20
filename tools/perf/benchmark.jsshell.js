@@ -1,3 +1,4 @@
+load('../../fluent-intl-polyfill/node_modules/intl-pluralrules/polyfill.js');
 load('../../fluent/fluent.js');
 load('../../fluent-syntax/fluent-syntax.js');
 
@@ -12,14 +13,14 @@ function micro(time) {
 var times = {};
 
 times.ftlParseStart = dateNow();
-var [resource] = FluentSyntax.parse(ftlCode);
+var resource = FluentSyntax.parse(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
 var [entries] = Fluent._parse(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
-var ctx = new Intl.MessageContext('en-US');
+var ctx = new Fluent.MessageContext('en-US');
 var errors = ctx.addMessages(ftlCode);
 
 times.format = dateNow();

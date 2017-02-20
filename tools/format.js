@@ -3,14 +3,15 @@
 'use strict';
 
 require('colors');
-var fs = require('fs');
-var program = require('commander');
+const fs = require('fs');
+const program = require('commander');
 
 require('babel-register')({
   plugins: ['transform-es2015-modules-commonjs']
 });
 
-require('../fluent/src/polyfill');
+require('../fluent-intl-polyfill/src');
+const Fluent = require('../fluent/src');
 
 program
   .version('0.0.1')
@@ -52,7 +53,7 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const ctx = new Intl.MessageContext(program.lang);
+  const ctx = new Fluent.MessageContext(program.lang);
   const parseErrors = ctx.addMessages(data.toString());
 
   parseErrors.forEach(printError);
