@@ -1,39 +1,45 @@
 export SHELL := /bin/bash
 export PATH  := $(CURDIR)/../node_modules/.bin:$(PATH)
 
-OK := \033[32;01m✓\033[0m
-
 PACKAGE := fluent
 GLOBAL  := Fluent
 
 all: lint test build
 
-build:
-	@rollup $(CURDIR)/src/index.js \
-	    --format umd \
-	    --id $(PACKAGE) \
-	    --name $(GLOBAL) \
-	    --output $(PACKAGE).js
-	@echo -e " $(OK) $(PACKAGE) built"
-
-compat: build
-	@babel --presets latest ${PACKAGE}.js > compat.js
-	@echo -e " $(OK) ${PACKAGE}/compat built"
-
-clean:
-	@rm -f $(PACKAGE).js compat.js
-	@echo -e " $(OK) $(PACKAGE) cleaned"
-
 lint:
 	@eslint --max-warnings 0 src/
-	@echo -e " $(OK) $(PACKAGE) linted"
+	@echo -e " $(OK) $@"
 
 test:
 	@mocha --recursive --require ./test/setup
 
-docs:
-	documentation build --shallow -f md \
-	    src/*.js > docs/api.md
-	@echo -e " $(OK) $(PACKAGE) docs built"
+build: $(PACKAGE).js compat.js
 
-.PHONY: test docs
+clean:
+	@rm -f $(PACKAGE).js compat.js
+	@echo -e " $(OK) clean"
+
+docs: docs/api.md
+
+.PHONY: all lint test build clean docs
+
+SOURCES := $(wildcard src/*)
+
+$(PACKAGE).js: $(SOURCES)
+	@rollup $(CURDIR)/src/index.js \
+	    --format umd \
+	    --id $(PACKAGE) \
+	    --name $(GLOBAL) \
+	    --output $@
+	@echo -e " $(OK) $@ built"
+
+compat.js: $(PACKAGE).js
+	@babel --presets latest $< > $@
+	@echo -e " $(OK) $@ built"
+
+
+docs/api.md: $(SOURCES)
+	@documentation build --shallow -f md $(SOURCES) > docs/api.md
+	@echo -e " $(OK) $@ built"
+
+OK := \033[32;01m✓\033[0m
