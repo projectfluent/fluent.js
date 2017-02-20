@@ -30,4 +30,9 @@ lint:
 test:
 	@mocha --recursive --require ./test/compat
 
-.PHONY: test
+docs:
+	documentation build --shallow -f md \
+	    src/*.js > docs/api.md
+	@echo -e " $(OK) $(PACKAGE) docs built"
+
+.PHONY: test docs
