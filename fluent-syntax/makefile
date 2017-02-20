@@ -15,8 +15,12 @@ build:
 	    -o $(PACKAGE).js
 	@echo -e " $(OK) $(PACKAGE) built"
 
+compat: build
+	@babel --presets latest ${PACKAGE}.js > compat.js
+	@echo -e " $(OK) ${PACKAGE}/compat built"
+
 clean:
-	@rm $(PACKAGE).js
+	@rm $(PACKAGE).js compat.js
 	@echo -e " $(OK) $(PACKAGE) cleaned"
 
 lint:

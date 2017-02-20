@@ -28,11 +28,23 @@ assert(res instanceof Resource);
 ```
 
 
+## Compatibility
+
+For legacy browsers, the `compat` build has been transpiled using the current
+version of Babel's [latest preset][]:
+
+```javascript
+import 'fluent-syntax/compat';
+```
+
+
 ## Learn more
 
 Find out more about Project Fluent at [projectfluent.io][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
+
+[latest preset]: https://babeljs.io/docs/plugins/preset-latest/
 [projectfluent.io]: http://projectfluent.io
 [FTL]: http://projectfluent.io/fluent/guide/

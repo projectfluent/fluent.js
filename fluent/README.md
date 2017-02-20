@@ -23,7 +23,7 @@ You can consult the complete list of the polyfills in `src/intl/polyfill.js`.
 translations from FTL files.
 
 ```javascript
-require('fluent');
+import 'fluent';
 
 const ctx = new Intl.MessageContext('en-US');
 
@@ -47,11 +47,23 @@ currently exposed functions can be found in `src/index.js`.  Keep in mind
 that `fluent` is in its 0.x days and that the exposed API may change.
 
 
+## Compatibility
+
+For legacy browsers, the `compat` build has been transpiled using the current
+version of Babel's [latest preset][]:
+
+```javascript
+import 'fluent/compat';
+```
+
+
 ## Learn more
 
 Find out more about Project Fluent at [projectfluent.io][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
+
+[latest preset]: https://babeljs.io/docs/plugins/preset-latest/
 [projectfluent.io]: http://projectfluent.io
 [FTL]: http://projectfluent.io/fluent/guide/

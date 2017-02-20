@@ -1,7 +1,7 @@
 export SHELL := /bin/bash
 export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
 
-TARGETS  := all lint test build clean
+TARGETS  := all lint test build compat clean
 PACKAGES := $(wildcard fluent*)
 
 $(TARGETS): $(PACKAGES)
