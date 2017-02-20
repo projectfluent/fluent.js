@@ -28,7 +28,7 @@ lint:
 	@echo -e " $(OK) $(PACKAGE) linted"
 
 test:
-	@mocha --recursive --require ./test/compat
+	@mocha --recursive --require ./test/setup
 
 docs:
 	documentation build --shallow -f md \
