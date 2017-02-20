@@ -20,7 +20,7 @@ compat: build
 	@echo -e " $(OK) ${PACKAGE}/compat built"
 
 clean:
-	@rm $(PACKAGE).js compat.js
+	@rm -f $(PACKAGE).js compat.js
 	@echo -e " $(OK) $(PACKAGE) cleaned"
 
 lint:
