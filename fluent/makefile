@@ -10,9 +10,10 @@ all: lint test build
 
 build:
 	@rollup $(CURDIR)/src/index.js \
-	    -f umd \
-	    -n $(GLOBAL) \
-	    -o $(PACKAGE).js
+	    --format umd \
+	    --id $(PACKAGE) \
+	    --name $(GLOBAL) \
+	    --output $(PACKAGE).js
 	@echo -e " $(OK) $(PACKAGE) built"
 
 compat: build
