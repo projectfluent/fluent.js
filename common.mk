@@ -19,12 +19,20 @@ test:
 
 docs: docs/api.md
 
-.PHONY: all dist lint test build compat clean docs
+deps:
+	@npm install
+	@echo -e " $(OK) $@ installed"
+
+depsclean:
+	@rm -rf node_modules
+	@echo -e " $(OK) $@"
+
+.PHONY: test docs
 
 SOURCES := $(wildcard src/*)
 
 docs/api.md: $(SOURCES)
-	@documentation build --shallow -f md $(SOURCES) > docs/api.md
+	@documentation build --shallow -f md $(SOURCES) > $@
 	@echo -e " $(OK) $@ built"
 
 OK := \033[32;01m✓\033[0m

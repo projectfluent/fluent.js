@@ -1,5 +1,3 @@
-import './polyfill';
-
 export { default as _parse } from './parser';
 
 export { MessageContext } from './context';

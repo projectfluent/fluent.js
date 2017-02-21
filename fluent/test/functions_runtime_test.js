@@ -2,7 +2,6 @@
 
 import assert from 'assert';
 
-import '../src/polyfill';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 

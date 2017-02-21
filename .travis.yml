@@ -1,6 +1,6 @@
 sudo: false
 language: node_js
-script: make all
+script: make deps && make dist
 node_js:
   - "6.0.0"
 notifications:
