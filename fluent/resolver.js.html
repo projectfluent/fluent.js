@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: resolver.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: resolver.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @overview
+ *
+ * The role of the FTL resolver is to format a translation object to an
+ * instance of `FTLType`.
+ *
+ * Translations can contain references to other messages or external arguments,
+ * conditional logic in form of select expressions, traits which describe their
+ * grammatical features, and can use FTL builtins which make use of the `Intl`
+ * formatters to format numbers, dates, lists and more into the context's
+ * language.  See the documentation of the FTL syntax for more information.
+ *
+ * In case of errors the resolver will try to salvage as much of the
+ * translation as possible.  In rare situations where the resolver didn't know
+ * how to recover from an error it will return an instance of `FTLNone`.
+ *
+ * `MessageReference`, `VariantExpression`, `AttributeExpression` and
+ * `SelectExpression` resolve to raw Runtime Entries objects and the result of
+ * the resolution needs to be passed into `Value` to get their real value.
+ * This is useful for composing expressions.  Consider:
+ *
+ *     brand-name[nominative]
+ *
+ * which is a `VariantExpression` with properties `id: MessageReference` and
+ * `key: Keyword`.  If `MessageReference` was resolved eagerly, it would
+ * instantly resolve to the value of the `brand-name` message.  Instead, we
+ * want to get the message object and look for its `nominative` variant.
+ *
+ * All other expressions (except for `FunctionReference` which is only used in
+ * `CallExpression`) resolve to an instance of `FTLType`, which must then be
+ * sringified with its `toString` method by the caller.
+ */
+
+import { FTLType, FTLNone, FTLNumber, FTLDateTime, FTLKeyword } from './types';
+import builtins from './builtins';
+
+// Prevent expansion of too long placeables.
+const MAX_PLACEABLE_LENGTH = 2500;
+
+// Unicode bidi isolation characters.
+const FSI = '\u2068';
+const PDI = '\u2069';
+
+
+/**
+ * Helper for choosing the default value from a set of members.
+ *
+ * Used in SelectExpressions and Value.
+ *
+ * @private
+ */
+function DefaultMember(env, members, def) {
+  if (members[def]) {
+    return members[def];
+  }
+
+  const { errors } = env;
+  errors.push(new RangeError('No default'));
+  return new FTLNone();
+}
+
+
+/**
+ * Resolve a reference to a message to the message object.
+ *
+ * @private
+ */
+function MessageReference(env, {name}) {
+  const { ctx, errors } = env;
+  const message = ctx.messages.get(name);
+
+  if (!message) {
+    errors.push(new ReferenceError(`Unknown message: ${name}`));
+    return new FTLNone(name);
+  }
+
+  return message;
+}
+
+
+/**
+ * Resolve a variant expression to the variant object.
+ *
+ * @private
+ */
+function VariantExpression(env, {id, key}) {
+  const message = MessageReference(env, id);
+  if (message instanceof FTLNone) {
+    return message;
+  }
+
+  const { ctx, errors } = env;
+  const keyword = Value(env, key);
+
+  function isVariantList(node) {
+    return Array.isArray(node) &amp;&amp;
+      node[0].type === 'sel' &amp;&amp;
+      node[0].exp === null;
+  }
+
+  if (isVariantList(message.val)) {
+    // Match the specified key against keys of each variant, in order.
+    for (const variant of message.val[0].vars) {
+      const variantKey = Value(env, variant.key);
+      if (keyword.match(ctx, variantKey)) {
+        return variant;
+      }
+    }
+  }
+
+  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
+  return Value(env, message);
+}
+
+
+/**
+ * Resolve an attribute expression to the attribute object.
+ *
+ * @private
+ */
+function AttributeExpression(env, {id, name}) {
+  const message = MessageReference(env, id);
+  if (message instanceof FTLNone) {
+    return message;
+  }
+
+  if (message.attrs) {
+    // Match the specified name against keys of each attribute.
+    for (const attrName in message.attrs) {
+      if (name === attrName) {
+        return message.attrs[name];
+      }
+    }
+  }
+
+  const { errors } = env;
+  errors.push(new ReferenceError(`Unknown attribute: ${name}`));
+  return Value(env, message);
+}
+
+/**
+ * Resolve a select expression to the member object.
+ *
+ * @private
+ */
+function SelectExpression(env, {exp, vars, def}) {
+  if (exp === null) {
+    return DefaultMember(env, vars, def);
+  }
+
+  const selector = Value(env, exp);
+  if (selector instanceof FTLNone) {
+    return DefaultMember(env, vars, def);
+  }
+
+  // Match the selector against keys of each variant, in order.
+  for (const variant of vars) {
+    const key = Value(env, variant.key);
+
+    // XXX A special case of numbers to avoid code repetition in types.js.
+    if (key instanceof FTLNumber &amp;&amp;
+        selector instanceof FTLNumber &amp;&amp;
+        key.valueOf() === selector.valueOf()) {
+      return variant;
+    }
+
+    const { ctx } = env;
+
+    if (key instanceof FTLKeyword &amp;&amp; key.match(ctx, selector)) {
+      return variant;
+    }
+  }
+
+  return DefaultMember(env, vars, def);
+}
+
+
+/**
+ * Resolve expression to an FTL type.
+ *
+ * JavaScript strings are a special case.  Since they natively have the
+ * `toString` method they can be used as if they were an FTL type without
+ * paying the cost of creating a instance of one.
+ *
+ * @param   {Object} expr
+ * @returns {FTLType}
+ * @private
+ */
+function Value(env, expr) {
+  // A fast-path for strings which are the most common case, and for `FTLNone`
+  // which doesn't require any additional logic.
+  if (typeof expr === 'string' || expr instanceof FTLNone) {
+    return expr;
+  }
+
+  // The Runtime AST (Entries) encodes patterns (complex strings with
+  // placeables) as Arrays.
+  if (Array.isArray(expr)) {
+    return Pattern(env, expr);
+  }
+
+
+  switch (expr.type) {
+    case 'kw':
+      return new FTLKeyword(expr);
+    case 'num':
+      return new FTLNumber(expr.val);
+    case 'ext':
+      return ExternalArgument(env, expr);
+    case 'fun':
+      return FunctionReference(env, expr);
+    case 'call':
+      return CallExpression(env, expr);
+    case 'ref': {
+      const message = MessageReference(env, expr);
+      return Value(env, message);
+    }
+    case 'attr': {
+      const attr = AttributeExpression(env, expr);
+      return Value(env, attr);
+    }
+    case 'var': {
+      const variant = VariantExpression(env, expr);
+      return Value(env, variant);
+    }
+    case 'sel': {
+      const member = SelectExpression(env, expr);
+      return Value(env, member);
+    }
+    case undefined: {
+      // If it's a node with a value, resolve the value.
+      if (expr.val !== undefined) {
+        return Value(env, expr.val);
+      }
+
+      const { errors } = env;
+      errors.push(new RangeError('No value'));
+      return new FTLNone();
+    }
+    default:
+      return new FTLNone();
+  }
+}
+
+/**
+ * Resolve a reference to an external argument.
+ *
+ * @private
+ */
+function ExternalArgument(env, {name}) {
+  const { args, errors } = env;
+
+  if (!args || !args.hasOwnProperty(name)) {
+    errors.push(new ReferenceError(`Unknown external: ${name}`));
+    return new FTLNone(name);
+  }
+
+  const arg = args[name];
+
+  if (arg instanceof FTLType) {
+    return arg;
+  }
+
+  // Convert the argument to an FTL type.
+  switch (typeof arg) {
+    case 'string':
+      return arg;
+    case 'number':
+      return new FTLNumber(arg);
+    case 'object':
+      if (arg instanceof Date) {
+        return new FTLDateTime(arg);
+      }
+    default:
+      errors.push(
+        new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
+      );
+      return new FTLNone(name);
+  }
+}
+
+/**
+ * Resolve a reference to a function.
+ *
+ * @private
+ */
+function FunctionReference(env, {name}) {
+  // Some functions are built-in.  Others may be provided by the runtime via
+  // the `MessageContext` constructor.
+  const { ctx: { functions }, errors } = env;
+  const func = functions[name] || builtins[name];
+
+  if (!func) {
+    errors.push(new ReferenceError(`Unknown function: ${name}()`));
+    return new FTLNone(`${name}()`);
+  }
+
+  if (typeof func !== 'function') {
+    errors.push(new TypeError(`Function ${name}() is not callable`));
+    return new FTLNone(`${name}()`);
+  }
+
+  return func;
+}
+
+/**
+ * Resolve a call to a Function with positional and key-value arguments.
+ *
+ * @private
+ */
+function CallExpression(env, {fun, args}) {
+  const callee = FunctionReference(env, fun);
+
+  if (callee instanceof FTLNone) {
+    return callee;
+  }
+
+  const posargs = [];
+  const keyargs = [];
+
+  for (const arg of args) {
+    if (arg.type === 'narg') {
+      keyargs[arg.name] = Value(env, arg.val);
+    } else {
+      posargs.push(Value(env, arg));
+    }
+  }
+
+  // XXX functions should also report errors
+  return callee(posargs, keyargs);
+}
+
+/**
+ * Resolve a pattern (a complex string with placeables).
+ *
+ * @private
+ */
+function Pattern(env, ptn) {
+  const { ctx, dirty, errors } = env;
+
+  if (dirty.has(ptn)) {
+    errors.push(new RangeError('Cyclic reference'));
+    return new FTLNone();
+  }
+
+  // Tag the pattern as dirty for the purpose of the current resolution.
+  dirty.add(ptn);
+  let result = '';
+
+  for (const part of ptn) {
+    if (typeof part === 'string') {
+      result += part;
+    } else {
+      let str = Value(env, part).toString(ctx);
+
+      if (str.length > MAX_PLACEABLE_LENGTH) {
+        errors.push(
+          new RangeError(
+            'Too many characters in placeable ' +
+            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+          )
+        );
+        str = str.substr(0, MAX_PLACEABLE_LENGTH);
+      }
+
+      if (ctx.useIsolating) {
+        result += `${FSI}${str}${PDI}`;
+      } else {
+        result += str;
+      }
+    }
+  }
+
+  dirty.delete(ptn);
+  return result;
+}
+
+/**
+ * Format a translation into an `FTLType`.
+ *
+ * The return value must be sringified with its `toString` method by the
+ * caller.
+ *
+ * @param   {MessageContext} ctx
+ * @param   {Object}         args
+ * @param   {Object}         message
+ * @param   {Array}          errors
+ * @returns {FTLType}
+ */
+export default function resolve(ctx, args, message, errors = []) {
+  const env = {
+    ctx, args, errors, dirty: new WeakSet()
+  };
+  return Value(env, message);
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FTLType.html">FTLType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Feb 22 2017 02:33:51 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>fluent</h1><p><code>fluent</code> is a JavaScript implementation of Project Fluent, a localization
+framework designed to unleash the expressive power of the natural language.</p>
+<h2>Installation</h2><p><code>fluent</code> can be used both on the client-side and the server-side.  You can
+install it from the npm registry or use it as a standalone script (as the
+<code>Fluent</code> global).</p>
+<pre class="prettyprint source"><code>npm install fluent</code></pre><h2>How to use</h2><p>The <code>MessageContext</code> constructor provides the core functionality of formatting
+translations from FTL files.</p>
+<pre class="prettyprint source lang-javascript"><code>import { MessageContext } from 'fluent';
+
+const ctx = new MessageContext('en-US');
+
+const errors = ctx.addMessages(`
+brand-name = Foo 3000
+welcome    = Welcome, { $name }, to { brand-name }!
+`);
+
+if (errors.length) {
+  // syntax errors are per-message and don't break the whole resource
+}
+
+const welcome = ctx.messages.get('welcome');
+
+ctx.format(welcome, { name: 'Anna' });
+// → 'Welcome, Anna, to Foo 3000!'</code></pre><p>The API reference is available at http://projectfluent.io/fluent.js/fluent.</p>
+<h2>Compatibility</h2><p><code>fluent</code> requires the following <code>Intl</code> formatters:</p>
+<ul>
+<li><code>Intl.DateTimeFormat</code> (standard, well-supported)</li>
+<li><code>Intl.NumberFormat</code> (standard, well-supported)</li>
+<li><code>Intl.PluralRules</code> (<a href="https://github.com/tc39/proposal-intl-plural-rules">Stage 3 proposal</a>)</li>
+</ul>
+<p><code>Intl.PluralRules</code> may already be available in some engines.  In most cases,
+however, a polyfill will be required.  We recommend <a href="https://www.npmjs.com/package/fluent-intl-polyfill">fluent-intl-polyfill</a>
+which uses <a href="https://www.npmjs.com/package/intl-pluralrules">intl-pluralrules</a>.</p>
+<pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
+import { MessageContext } from 'fluent';</code></pre><p>For legacy browsers, the <code>compat</code> build has been transpiled using the current
+version of Babel's <a href="https://babeljs.io/docs/plugins/preset-latest/">latest preset</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>import { MessageContext } from 'fluent/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.io">projectfluent.io</a>, including
+documentation of the Fluent file format (<a href="http://projectfluent.io/fluent/guide/">FTL</a>), links to other packages and
+implementations, and information about how to get involved.</p></article>
+    </section>
+
+
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>builtins.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>The FTL resolver ships with a number of functions built-in.</p>
+<p>Each function take two arguments:</p>
+<ul>
+<li>args - an array of positional args</li>
+<li>opts - an object of key-value args</li>
+</ul>
+<p>Arguments to functions are guaranteed to already be instances of <code>FTLType</code>.
+Functions must return <code>FTLType</code> objects as well.  For this reason it may be
+necessary to unwrap the JavaScript value behind the FTL Value and to merge
+the configuration of the argument with the configuration of the return
+value.</p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builtins.js.html">builtins.js</a>, <a href="builtins.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>resolver.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>The role of the FTL resolver is to format a translation object to an
+instance of <code>FTLType</code>.</p>
+<p>Translations can contain references to other messages or external arguments,
+conditional logic in form of select expressions, traits which describe their
+grammatical features, and can use FTL builtins which make use of the <code>Intl</code>
+formatters to format numbers, dates, lists and more into the context's
+language.  See the documentation of the FTL syntax for more information.</p>
+<p>In case of errors the resolver will try to salvage as much of the
+translation as possible.  In rare situations where the resolver didn't know
+how to recover from an error it will return an instance of <code>FTLNone</code>.</p>
+<p><code>MessageReference</code>, <code>VariantExpression</code>, <code>AttributeExpression</code> and
+<code>SelectExpression</code> resolve to raw Runtime Entries objects and the result of
+the resolution needs to be passed into <code>Value</code> to get their real value.
+This is useful for composing expressions.  Consider:</p>
+<pre class="prettyprint source"><code>brand-name[nominative]</code></pre><p>which is a <code>VariantExpression</code> with properties <code>id: MessageReference</code> and
+<code>key: Keyword</code>.  If <code>MessageReference</code> was resolved eagerly, it would
+instantly resolve to the value of the <code>brand-name</code> message.  Instead, we
+want to get the message object and look for its <code>nominative</code> variant.</p>
+<p>All other expressions (except for <code>FunctionReference</code> which is only used in
+<code>CallExpression</code>) resolve to an instance of <code>FTLType</code>, which must then be
+sringified with its <code>toString</code> method by the caller.</p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="resolver.js.html">resolver.js</a>, <a href="resolver.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FTLType.html">FTLType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Feb 22 2017 02:33:51 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
