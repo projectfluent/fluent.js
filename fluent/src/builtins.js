@@ -7,29 +7,27 @@
  *   - args - an array of positional args
  *   - opts - an object of key-value args
  *
- * Arguments to functions are guaranteed to already be instances of `FTLType`.
- * Functions must return `FTLType` objects as well.  For this reason it may be
- * necessary to unwrap the JavaScript value behind the FTL Value and to merge
- * the configuration of the argument with the configuration of the return
- * value.
+ * Arguments to functions are guaranteed to already be instances of
+ * `FluentType`.  Functions must return `FluentType` objects as well.
  */
 
-import { FTLNumber, FTLDateTime } from './types';
+import { FluentNumber, FluentDateTime } from './types';
 
 export default {
   'NUMBER': ([arg], opts) =>
-    new FTLNumber(arg.valueOf(), merge(arg.opts, opts)),
+    new FluentNumber(arg.value, merge(arg.opts, opts)),
   'DATETIME': ([arg], opts) =>
-    new FTLDateTime(arg.valueOf(), merge(arg.opts, opts)),
+    new FluentDateTime(arg.value, merge(arg.opts, opts)),
 };
 
 function merge(argopts, opts) {
-  return Object.assign({}, argopts, valuesOf(opts));
+  return Object.assign({}, argopts, values(opts));
 }
 
-function valuesOf(opts) {
-  return Object.keys(opts).reduce(
-    (seq, cur) => Object.assign({}, seq, {
-      [cur]: opts[cur].valueOf()
-    }), {});
+function values(opts) {
+  const unwrapped = {};
+  for (const name of Object.keys(opts)) {
+    unwrapped[name] = opts[name].value;
+  }
+  return unwrapped;
 }

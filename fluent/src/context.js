@@ -1,18 +1,18 @@
 import resolve from './resolver';
 import parse from './parser';
-import { FTLNone } from './types';
+import { FluentNone } from './types';
 
 /**
  * Message contexts are single-language stores of translations.  They are
- * responsible for parsing translation resources in the FTL syntax and can
+ * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
  * Always use `MessageContext.format` to retrieve translation units from
  * a context.  Translations can contain references to other entities or
  * external arguments, conditional logic in form of select expressions, traits
- * which describe their grammatical features, and can use FTL builtins which
+ * which describe their grammatical features, and can use Fluent builtins which
  * make use of the `Intl` formatters to format numbers, dates, lists and more
- * into the context's language.  See the documentation of the FTL syntax for
+ * into the context's language.  See the documentation of the Fluent syntax for
  * more information.
  */
 export class MessageContext {
@@ -59,7 +59,7 @@ export class MessageContext {
   /**
    * Add a translation resource to the context.
    *
-   * The translation resource must use the FTL syntax.  It will be parsed by
+   * The translation resource must use the Fluent syntax.  It will be parsed by
    * the context and each translation unit (message) will be available in the
    * `messages` map by its identifier.
    *
@@ -130,7 +130,7 @@ export class MessageContext {
     }
 
     const result = resolve(this, args, message, errors);
-    return result instanceof FTLNone ? null : result;
+    return result instanceof FluentNone ? null : result.valueOf(this);
   }
 
   _memoizeIntlObject(ctor, opts) {

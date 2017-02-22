@@ -1,18 +1,18 @@
 /**
- * The `FTLType` class is the base of FTL's type system.
+ * The `FluentType` class is the base of Fluent's type system.
  *
- * FTL types wrap JavaScript values and store additional configuration for
- * them, which can then be used in the `toString` method together with a proper
+ * Fluent types wrap JavaScript values and store additional configuration for
+ * them, which can then be used in the `valueOf` method together with a proper
  * `Intl` formatter.
  */
-export class FTLType {
+export class FluentType {
 
   /**
-   * Create an `FTLType` instance.
+   * Create an `FluentType` instance.
    *
    * @param   {Any}    value - JavaScript value to wrap.
    * @param   {Object} opts  - Configuration.
-   * @returns {FTLType}
+   * @returns {FluentType}
    */
   constructor(value, opts) {
     this.value = value;
@@ -20,39 +20,31 @@ export class FTLType {
   }
 
   /**
-   * Get the JavaScript value wrapped by this `FTLType` instance.
+   * Unwrap the instance of `FluentType`.
    *
-   * @returns {Any}
-   */
-  valueOf() {
-    return this.value;
-  }
-
-  /**
-   * Stringify an instance of `FTLType`.
-   *
+   * Unwrapped values are suitable for use outside of the `MessageContext`.
    * This method can use `Intl` formatters memoized by the `MessageContext`
    * instance passed as an argument.
    *
-   * @param   {MessageContext} ctx
+   * @param   {MessageContext} [ctx]
    * @returns {string}
    */
-  toString(ctx) {
-    return this.value.toString(ctx);
+  valueOf() {
+    throw new Error('Subclasses of FluentType must implement valueOf.');
   }
 }
 
-export class FTLNone extends FTLType {
-  toString() {
+export class FluentNone extends FluentType {
+  valueOf() {
     return this.value || '???';
   }
 }
 
-export class FTLNumber extends FTLType {
+export class FluentNumber extends FluentType {
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
-  toString(ctx) {
+  valueOf(ctx) {
     const nf = ctx._memoizeIntlObject(
       Intl.NumberFormat, this.opts
     );
@@ -60,11 +52,11 @@ export class FTLNumber extends FTLType {
   }
 }
 
-export class FTLDateTime extends FTLType {
+export class FluentDateTime extends FluentType {
   constructor(value, opts) {
     super(new Date(value), opts);
   }
-  toString(ctx) {
+  valueOf(ctx) {
     const dtf = ctx._memoizeIntlObject(
       Intl.DateTimeFormat, this.opts
     );
@@ -72,20 +64,20 @@ export class FTLDateTime extends FTLType {
   }
 }
 
-export class FTLKeyword extends FTLType {
-  toString() {
+export class FluentKeyword extends FluentType {
+  valueOf() {
     const { name, namespace } = this.value;
     return namespace ? `${namespace}:${name}` : name;
   }
   match(ctx, other) {
     const { name, namespace } = this.value;
-    if (other instanceof FTLKeyword) {
+    if (other instanceof FluentKeyword) {
       return name === other.value.name && namespace === other.value.namespace;
     } else if (namespace) {
       return false;
     } else if (typeof other === 'string') {
       return name === other;
-    } else if (other instanceof FTLNumber) {
+    } else if (other instanceof FluentNumber) {
       const pr = ctx._memoizeIntlObject(
         Intl.PluralRules, other.opts
       );
