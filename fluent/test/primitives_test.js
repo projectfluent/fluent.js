@@ -18,6 +18,7 @@ describe('Primitives', function() {
       ctx.addMessages(ftl`
         one     = { 1 }
         select  = { 1 ->
+           *[0] Zero
             [1] One
         }
       `);
@@ -48,10 +49,10 @@ describe('Primitives', function() {
         placeable-message = { foo } Bar
 
         selector-literal = { "Foo" ->
-            [Foo] Member 1
+           *[Foo] Member 1
         }
         selector-message = { foo ->
-            [Foo] Member 2
+           *[Foo] Member 2
         }
 
         bar
@@ -60,7 +61,7 @@ describe('Primitives', function() {
         placeable-attr   = { bar.attr }
 
         selector-attr    = { bar.attr ->
-            [Bar Attribute] Member 3
+           *[Bar Attribute] Member 3
         }
       `);
     });
@@ -138,10 +139,10 @@ describe('Primitives', function() {
         placeable-message = { bar } Baz
 
         selector-literal = { "{ foo } Bar" ->
-            [Foo Bar] Member 1
+           *[Foo Bar] Member 1
         }
         selector-message = { bar ->
-            [Foo Bar] Member 2
+           *[Foo Bar] Member 2
         }
 
         baz
@@ -150,7 +151,7 @@ describe('Primitives', function() {
         placeable-attr = { baz.attr }
 
         selector-attr = { baz.attr ->
-            [Foo Bar Baz Attribute] Member 3
+           *[Foo Bar Baz Attribute] Member 3
         }
       `);
     });

@@ -126,7 +126,7 @@ describe('Patterns', function(){
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $sel ->
-            [a] { foo }
+           *[a] { foo }
             [b] Bar
         }
         bar = { foo }
@@ -153,30 +153,17 @@ describe('Patterns', function(){
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { ref-foo ->
-            [a] Foo A
-            [b] Foo B
-        }
-        bar = { ref-bar ->
-            [a] Bar A
-           *[b] Bar B
+           *[a] Foo
         }
 
         ref-foo = { foo }
-        ref-bar = { bar }
       `);
     });
 
-    it('returns ???', function(){
+    it('returns the default variant', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, '???');
-      assert.ok(errs[0] instanceof RangeError); // cyclic reference
-    });
-
-    it('returns the default variant', function(){
-      const msg = ctx.messages.get('bar');
-      const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, 'Bar B');
+      assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -186,39 +173,27 @@ describe('Patterns', function(){
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { foo ->
-            [a] Foo
+           *[a] Foo
         }
 
-        bar = { bar ->
-            [a] Bar A
-           *[b] Bar B
-        }
-
-        baz = { baz.attr ->
-            [a] Baz
+        bar = { bar.attr ->
+           *[a] Bar
         }
             .attr = a
       `);
     });
 
-    it('returns ???', function(){
+    it('returns the default variant', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, '???');
-      assert.ok(errs[0] instanceof RangeError); // cyclic reference
-    });
-
-    it('returns the default variant', function(){
-      const msg = ctx.messages.get('bar');
-      const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, 'Bar B');
+      assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     it('can reference an attribute', function(){
-      const msg = ctx.messages.get('baz');
+      const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, 'Baz');
+      assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
     });
   });

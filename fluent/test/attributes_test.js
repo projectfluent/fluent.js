@@ -174,7 +174,7 @@ describe('Attributes', function() {
         foo = Foo
             .attr = { "a" ->
                         [a] A
-                        [b] B
+                       *[b] B
                     }
 
         ref-foo = { foo.attr }
