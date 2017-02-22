@@ -29,22 +29,23 @@
             <pre class="prettyprint source linenums"><code>/**
  * @overview
  *
- * The role of the FTL resolver is to format a translation object to an
- * instance of `FTLType`.
+ * The role of the Fluent resolver is to format a translation object to an
+ * instance of `FluentType` or an array of instances.
  *
  * Translations can contain references to other messages or external arguments,
  * conditional logic in form of select expressions, traits which describe their
- * grammatical features, and can use FTL builtins which make use of the `Intl`
- * formatters to format numbers, dates, lists and more into the context's
- * language.  See the documentation of the FTL syntax for more information.
+ * grammatical features, and can use Fluent builtins which make use of the
+ * `Intl` formatters to format numbers, dates, lists and more into the
+ * context's language.  See the documentation of the Fluent syntax for more
+ * information.
  *
  * In case of errors the resolver will try to salvage as much of the
  * translation as possible.  In rare situations where the resolver didn't know
- * how to recover from an error it will return an instance of `FTLNone`.
+ * how to recover from an error it will return an instance of `FluentNone`.
  *
  * `MessageReference`, `VariantExpression`, `AttributeExpression` and
  * `SelectExpression` resolve to raw Runtime Entries objects and the result of
- * the resolution needs to be passed into `Value` to get their real value.
+ * the resolution needs to be passed into `Type` to get their real value.
  * This is useful for composing expressions.  Consider:
  *
  *     brand-name[nominative]
@@ -55,11 +56,12 @@
  * want to get the message object and look for its `nominative` variant.
  *
  * All other expressions (except for `FunctionReference` which is only used in
- * `CallExpression`) resolve to an instance of `FTLType`, which must then be
- * sringified with its `toString` method by the caller.
+ * `CallExpression`) resolve to an instance of `FluentType`.  The caller should
+ * use the `valueOf` method to convert the instance to a native value.
  */
 
-import { FTLType, FTLNone, FTLNumber, FTLDateTime, FTLKeyword } from './types';
+import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentKeyword }
+  from './types';
 import builtins from './builtins';
 
 // Prevent expansion of too long placeables.
@@ -73,7 +75,7 @@ const PDI = '\u2069';
 /**
  * Helper for choosing the default value from a set of members.
  *
- * Used in SelectExpressions and Value.
+ * Used in SelectExpressions and Type.
  *
  * @private
  */
@@ -84,7 +86,7 @@ function DefaultMember(env, members, def) {
 
   const { errors } = env;
   errors.push(new RangeError('No default'));
-  return new FTLNone();
+  return new FluentNone();
 }
 
 
@@ -99,7 +101,7 @@ function MessageReference(env, {name}) {
 
   if (!message) {
     errors.push(new ReferenceError(`Unknown message: ${name}`));
-    return new FTLNone(name);
+    return new FluentNone(name);
   }
 
   return message;
@@ -113,12 +115,12 @@ function MessageReference(env, {name}) {
  */
 function VariantExpression(env, {id, key}) {
   const message = MessageReference(env, id);
-  if (message instanceof FTLNone) {
+  if (message instanceof FluentNone) {
     return message;
   }
 
   const { ctx, errors } = env;
-  const keyword = Value(env, key);
+  const keyword = Type(env, key);
 
   function isVariantList(node) {
     return Array.isArray(node) &amp;&amp;
@@ -129,15 +131,15 @@ function VariantExpression(env, {id, key}) {
   if (isVariantList(message.val)) {
     // Match the specified key against keys of each variant, in order.
     for (const variant of message.val[0].vars) {
-      const variantKey = Value(env, variant.key);
+      const variantKey = Type(env, variant.key);
       if (keyword.match(ctx, variantKey)) {
         return variant;
       }
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
-  return Value(env, message);
+  errors.push(new ReferenceError(`Unknown variant: ${keyword.valueOf(ctx)}`));
+  return Type(env, message);
 }
 
 
@@ -148,7 +150,7 @@ function VariantExpression(env, {id, key}) {
  */
 function AttributeExpression(env, {id, name}) {
   const message = MessageReference(env, id);
-  if (message instanceof FTLNone) {
+  if (message instanceof FluentNone) {
     return message;
   }
 
@@ -163,7 +165,7 @@ function AttributeExpression(env, {id, name}) {
 
   const { errors } = env;
   errors.push(new ReferenceError(`Unknown attribute: ${name}`));
-  return Value(env, message);
+  return Type(env, message);
 }
 
 /**
@@ -176,25 +178,25 @@ function SelectExpression(env, {exp, vars, def}) {
     return DefaultMember(env, vars, def);
   }
 
-  const selector = Value(env, exp);
-  if (selector instanceof FTLNone) {
+  const selector = Type(env, exp);
+  if (selector instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of vars) {
-    const key = Value(env, variant.key);
+    const key = Type(env, variant.key);
 
     // XXX A special case of numbers to avoid code repetition in types.js.
-    if (key instanceof FTLNumber &amp;&amp;
-        selector instanceof FTLNumber &amp;&amp;
-        key.valueOf() === selector.valueOf()) {
+    if (key instanceof FluentNumber &amp;&amp;
+        selector instanceof FluentNumber &amp;&amp;
+        key.value === selector.value) {
       return variant;
     }
 
     const { ctx } = env;
 
-    if (key instanceof FTLKeyword &amp;&amp; key.match(ctx, selector)) {
+    if (key instanceof FluentKeyword &amp;&amp; key.match(ctx, selector)) {
       return variant;
     }
   }
@@ -204,20 +206,20 @@ function SelectExpression(env, {exp, vars, def}) {
 
 
 /**
- * Resolve expression to an FTL type.
+ * Resolve expression to a Fluent type.
  *
  * JavaScript strings are a special case.  Since they natively have the
- * `toString` method they can be used as if they were an FTL type without
+ * `valueOf` method they can be used as if they were a Fluent type without
  * paying the cost of creating a instance of one.
  *
  * @param   {Object} expr
- * @returns {FTLType}
+ * @returns {FluentType}
  * @private
  */
-function Value(env, expr) {
-  // A fast-path for strings which are the most common case, and for `FTLNone`
-  // which doesn't require any additional logic.
-  if (typeof expr === 'string' || expr instanceof FTLNone) {
+function Type(env, expr) {
+  // A fast-path for strings which are the most common case, and for
+  // `FluentNone` which doesn't require any additional logic.
+  if (typeof expr === 'string' || expr instanceof FluentNone) {
     return expr;
   }
 
@@ -230,9 +232,9 @@ function Value(env, expr) {
 
   switch (expr.type) {
     case 'kw':
-      return new FTLKeyword(expr);
+      return new FluentKeyword(expr.name);
     case 'num':
-      return new FTLNumber(expr.val);
+      return new FluentNumber(expr.val);
     case 'ext':
       return ExternalArgument(env, expr);
     case 'fun':
@@ -241,32 +243,32 @@ function Value(env, expr) {
       return CallExpression(env, expr);
     case 'ref': {
       const message = MessageReference(env, expr);
-      return Value(env, message);
+      return Type(env, message);
     }
     case 'attr': {
       const attr = AttributeExpression(env, expr);
-      return Value(env, attr);
+      return Type(env, attr);
     }
     case 'var': {
       const variant = VariantExpression(env, expr);
-      return Value(env, variant);
+      return Type(env, variant);
     }
     case 'sel': {
       const member = SelectExpression(env, expr);
-      return Value(env, member);
+      return Type(env, member);
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
       if (expr.val !== undefined) {
-        return Value(env, expr.val);
+        return Type(env, expr.val);
       }
 
       const { errors } = env;
       errors.push(new RangeError('No value'));
-      return new FTLNone();
+      return new FluentNone();
     }
     default:
-      return new FTLNone();
+      return new FluentNone();
   }
 }
 
@@ -280,30 +282,30 @@ function ExternalArgument(env, {name}) {
 
   if (!args || !args.hasOwnProperty(name)) {
     errors.push(new ReferenceError(`Unknown external: ${name}`));
-    return new FTLNone(name);
+    return new FluentNone(name);
   }
 
   const arg = args[name];
 
-  if (arg instanceof FTLType) {
+  if (arg instanceof FluentType) {
     return arg;
   }
 
-  // Convert the argument to an FTL type.
+  // Convert the argument to a Fluent type.
   switch (typeof arg) {
     case 'string':
       return arg;
     case 'number':
-      return new FTLNumber(arg);
+      return new FluentNumber(arg);
     case 'object':
       if (arg instanceof Date) {
-        return new FTLDateTime(arg);
+        return new FluentDateTime(arg);
       }
     default:
       errors.push(
         new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
       );
-      return new FTLNone(name);
+      return new FluentNone(name);
   }
 }
 
@@ -320,12 +322,12 @@ function FunctionReference(env, {name}) {
 
   if (!func) {
     errors.push(new ReferenceError(`Unknown function: ${name}()`));
-    return new FTLNone(`${name}()`);
+    return new FluentNone(`${name}()`);
   }
 
   if (typeof func !== 'function') {
     errors.push(new TypeError(`Function ${name}() is not callable`));
-    return new FTLNone(`${name}()`);
+    return new FluentNone(`${name}()`);
   }
 
   return func;
@@ -339,7 +341,7 @@ function FunctionReference(env, {name}) {
 function CallExpression(env, {fun, args}) {
   const callee = FunctionReference(env, fun);
 
-  if (callee instanceof FTLNone) {
+  if (callee instanceof FluentNone) {
     return callee;
   }
 
@@ -348,9 +350,9 @@ function CallExpression(env, {fun, args}) {
 
   for (const arg of args) {
     if (arg.type === 'narg') {
-      keyargs[arg.name] = Value(env, arg.val);
+      keyargs[arg.name] = Type(env, arg.val);
     } else {
-      posargs.push(Value(env, arg));
+      posargs.push(Type(env, arg));
     }
   }
 
@@ -368,7 +370,7 @@ function Pattern(env, ptn) {
 
   if (dirty.has(ptn)) {
     errors.push(new RangeError('Cyclic reference'));
-    return new FTLNone();
+    return new FluentNone();
   }
 
   // Tag the pattern as dirty for the purpose of the current resolution.
@@ -379,22 +381,22 @@ function Pattern(env, ptn) {
     if (typeof part === 'string') {
       result += part;
     } else {
-      let str = Value(env, part).toString(ctx);
+      let val = Type(env, part).valueOf(ctx);
 
-      if (str.length > MAX_PLACEABLE_LENGTH) {
+      if (val.length > MAX_PLACEABLE_LENGTH) {
         errors.push(
           new RangeError(
             'Too many characters in placeable ' +
-            `(${str.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+            `(${val.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
           )
         );
-        str = str.substr(0, MAX_PLACEABLE_LENGTH);
+        val = val.substr(0, MAX_PLACEABLE_LENGTH);
       }
 
       if (ctx.useIsolating) {
-        result += `${FSI}${str}${PDI}`;
+        result += `${FSI}${val}${PDI}`;
       } else {
-        result += str;
+        result += val;
       }
     }
   }
@@ -404,22 +406,21 @@ function Pattern(env, ptn) {
 }
 
 /**
- * Format a translation into an `FTLType`.
+ * Format a translation into an `FluentType`.
  *
- * The return value must be sringified with its `toString` method by the
- * caller.
+ * The return value must be unwrapped via `valueOf` by the caller.
  *
  * @param   {MessageContext} ctx
  * @param   {Object}         args
  * @param   {Object}         message
  * @param   {Array}          errors
- * @returns {FTLType}
+ * @returns {FluentType}
  */
 export default function resolve(ctx, args, message, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Value(env, message);
+  return Type(env, message);
 }
 </code></pre>
         </article>
@@ -431,13 +432,13 @@ export default function resolve(ctx, args, message, errors = []) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FTLType.html">FTLType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Feb 22 2017 02:33:51 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 00:22:52 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
