@@ -1,10 +1,8 @@
 export SHELL := /bin/bash
 export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
 
-TARGETS  := all dist lint test build compat clean docs deps depsclean
+TARGETS  := all dist lint test build compat html md deps depsclean
 PACKAGES := $(wildcard fluent*)
-
-ARR := \033[34;01m→\033[0m
 
 $(TARGETS): $(PACKAGES)
 
@@ -15,4 +13,15 @@ $(PACKAGES):
 
 .PHONY: $(TARGETS) $(PACKAGES)
 
+deploy:
+	gh-pages -d html
+
+clean: $(PACKAGES)
+	@echo
+	@rm -rf html
+	@echo -e "$(OK) html $@"
+
 include tools/perf/makefile
+
+ARR := \033[34;01m→\033[0m
+OK := \033[32;01m✓\033[0m

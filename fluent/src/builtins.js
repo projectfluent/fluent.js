@@ -1,5 +1,5 @@
 /**
- * @module
+ * @overview
  *
  * The FTL resolver ships with a number of functions built-in.
  *
@@ -13,6 +13,7 @@
  * the configuration of the argument with the configuration of the return
  * value.
  */
+
 import { FTLNumber, FTLDateTime } from './types';
 
 export default {

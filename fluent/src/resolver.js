@@ -1,5 +1,5 @@
 /**
- * @module
+ * @overview
  *
  * The role of the FTL resolver is to format a translation object to an
  * instance of `FTLType`.

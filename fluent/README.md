@@ -38,6 +38,8 @@ ctx.format(welcome, { name: 'Anna' });
 // → 'Welcome, Anna, to Foo 3000!'
 ```
 
+The API reference is available at http://projectfluent.io/fluent.js/fluent.
+
 
 ## Compatibility
 

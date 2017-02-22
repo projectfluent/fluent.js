@@ -1,8 +1,10 @@
 # This makefile is intended to be included by each package's makefile.  The
 # paths are relative to the package directory.
 
+ROOT := $(CURDIR)/..
+
 export SHELL := /bin/bash
-export PATH  := $(CURDIR)/../node_modules/.bin:$(PATH)
+export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
 
 # The default target.
 all: lint test build
@@ -17,7 +19,12 @@ lint:
 test:
 	@mocha --recursive --require ./test/setup
 
-docs: docs/api.md
+html:
+	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md -r \
+	    -d $(ROOT)/html/$(PACKAGE) src
+	@echo -e " $(OK) $@ built"
+
+md: docs/api.md
 
 deps:
 	@npm install
@@ -32,7 +39,7 @@ depsclean:
 SOURCES := $(wildcard src/*)
 
 docs/api.md: $(SOURCES)
-	@documentation build --shallow -f md $(SOURCES) > $@
+	@jsdoc2md --files $(SOURCES) --separators > $@
 	@echo -e " $(OK) $@ built"
 
 OK := \033[32;01m✓\033[0m

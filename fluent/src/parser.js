@@ -18,7 +18,7 @@ const MAX_PLACEABLES = 100;
 class RuntimeParser {
   /**
    * @param {string} string
-   * @returns {{}, []]}
+   * @returns {Array<Object, Array>}
    */
   getResource(string) {
     this._source = string;
