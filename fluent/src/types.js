@@ -66,22 +66,18 @@ export class FluentDateTime extends FluentType {
 
 export class FluentKeyword extends FluentType {
   valueOf() {
-    const { name, namespace } = this.value;
-    return namespace ? `${namespace}:${name}` : name;
+    return this.value;
   }
   match(ctx, other) {
-    const { name, namespace } = this.value;
     if (other instanceof FluentKeyword) {
-      return name === other.value.name && namespace === other.value.namespace;
-    } else if (namespace) {
-      return false;
+      return this.value === other.value;
     } else if (typeof other === 'string') {
-      return name === other;
+      return this.value === other;
     } else if (other instanceof FluentNumber) {
       const pr = ctx._memoizeIntlObject(
         Intl.PluralRules, other.opts
       );
-      return name === pr.select(other.value);
+      return this.value === pr.select(other.value);
     }
     return false;
   }

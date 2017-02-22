@@ -204,7 +204,7 @@ function Type(env, expr) {
 
   switch (expr.type) {
     case 'kw':
-      return new FluentKeyword(expr);
+      return new FluentKeyword(expr.name);
     case 'num':
       return new FluentNumber(expr.val);
     case 'ext':
