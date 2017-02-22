@@ -13,7 +13,7 @@ $(PACKAGES):
 
 .PHONY: $(TARGETS) $(PACKAGES)
 
-deploy:
+deploy-html:
 	gh-pages -d html
 
 clean: $(PACKAGES)
