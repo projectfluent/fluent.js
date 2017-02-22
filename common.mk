@@ -24,8 +24,6 @@ html:
 	    -d $(ROOT)/html/$(PACKAGE) src
 	@echo -e " $(OK) $@ built"
 
-md: docs/api.md
-
 deps:
 	@npm install
 	@echo -e " $(OK) $@ installed"
@@ -37,9 +35,5 @@ depsclean:
 .PHONY: test docs
 
 SOURCES := $(wildcard src/*)
-
-docs/api.md: $(SOURCES)
-	@jsdoc2md --files $(SOURCES) --separators > $@
-	@echo -e " $(OK) $@ built"
 
 OK := \033[32;01m✓\033[0m
