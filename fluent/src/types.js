@@ -81,7 +81,7 @@ export class FluentKeyword extends FluentType {
       const pr = ctx._memoizeIntlObject(
         Intl.PluralRules, other.opts
       );
-      return name === pr.select(other.valueOf());
+      return name === pr.select(other.value);
     }
     return false;
   }

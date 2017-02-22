@@ -69,4 +69,62 @@ describe('Select expressions', function() {
       assert(errs[0] instanceof ReferenceError); // unknown message
     });
   });
+
+  describe('with a number selector', function(){
+    before(function() {
+      ctx = new MessageContext('en-US', { useIsolating: false });
+      ctx.addMessages(ftl`
+        foo = { 1 ->
+           *[0] A
+            [1] B
+        }
+
+        bar = { 2 ->
+           *[0] A
+            [1] B
+        }
+      `);
+    });
+
+    it('selects the right variant', function() {
+      const msg = ctx.messages.get('foo');
+      const val = ctx.format(msg, args, errs);
+      assert.equal(val, 'B');
+    });
+
+    it('selects the default variant', function() {
+      const msg = ctx.messages.get('bar');
+      const val = ctx.format(msg, args, errs);
+      assert.equal(val, 'A');
+    });
+  });
+
+  describe('with a number selector and plural categories', function(){
+    before(function() {
+      ctx = new MessageContext('en-US', { useIsolating: false });
+      ctx.addMessages(ftl`
+        foo = { 1 ->
+           *[one] A
+            [other] B
+        }
+
+        bar = { 1 ->
+           *[1] A
+            [other] B
+        }
+      `);
+    });
+
+    it('selects the right category', function() {
+      const msg = ctx.messages.get('foo');
+      const val = ctx.format(msg, args, errs);
+      assert.equal(val, 'A');
+    });
+
+    it('selects the exact match', function() {
+      const msg = ctx.messages.get('bar');
+      const val = ctx.format(msg, args, errs);
+      assert.equal(val, 'A');
+    });
+  });
 });
