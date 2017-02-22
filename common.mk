@@ -2,6 +2,7 @@
 # paths are relative to the package directory.
 
 ROOT := $(CURDIR)/..
+SOURCES := $(wildcard src/*)
 
 export SHELL := /bin/bash
 export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
@@ -19,9 +20,9 @@ lint:
 test:
 	@mocha --recursive --require ./test/setup
 
-html:
-	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md -r \
-	    -d $(ROOT)/html/$(PACKAGE) src
+html: $(SOURCES)
+	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md \
+	    -d $(ROOT)/html/$(PACKAGE) $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 deps:
@@ -33,7 +34,5 @@ depsclean:
 	@echo -e " $(OK) $@"
 
 .PHONY: test docs
-
-SOURCES := $(wildcard src/*)
 
 OK := \033[32;01m✓\033[0m
