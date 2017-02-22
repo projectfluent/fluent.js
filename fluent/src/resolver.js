@@ -45,6 +45,22 @@ const PDI = '\u2069';
 
 
 /**
+ * Helper for computing the total character length of a placeable.
+ *
+ * Used in Pattern.
+ *
+ * @private
+ */
+function PlaceableLength(env, parts) {
+  const { ctx } = env;
+  return parts.reduce(
+    (sum, part) => sum + part.valueOf(ctx).length,
+    0
+  );
+}
+
+
+/**
  * Helper for choosing the default value from a set of members.
  *
  * Used in SelectExpressions and Type.
@@ -347,29 +363,40 @@ function Pattern(env, ptn) {
 
   // Tag the pattern as dirty for the purpose of the current resolution.
   dirty.add(ptn);
-  let result = '';
+  const result = [];
 
-  for (const part of ptn) {
-    if (typeof part === 'string') {
-      result += part;
-    } else {
-      let val = Type(env, part).valueOf(ctx);
+  for (const elem of ptn) {
+    if (typeof elem === 'string') {
+      result.push(elem);
+      continue;
+    }
 
-      if (val.length > MAX_PLACEABLE_LENGTH) {
+    const part = Type(env, elem);
+
+    if (ctx.useIsolating) {
+      result.push(FSI);
+    }
+
+    if (Array.isArray(part)) {
+      const len = PlaceableLength(env, part);
+
+      if (len > MAX_PLACEABLE_LENGTH) {
         errors.push(
           new RangeError(
             'Too many characters in placeable ' +
-            `(${val.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+            `(${len}, max allowed is ${MAX_PLACEABLE_LENGTH})`
           )
         );
-        val = val.substr(0, MAX_PLACEABLE_LENGTH);
-      }
-
-      if (ctx.useIsolating) {
-        result += `${FSI}${val}${PDI}`;
+        result.push(new FluentNone());
       } else {
-        result += val;
+        result.push(...part);
       }
+    } else {
+      result.push(part);
+    }
+
+    if (ctx.useIsolating) {
+      result.push(PDI);
     }
   }
 
