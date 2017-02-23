@@ -477,7 +477,7 @@ ctx.format(hello, undefined, errors);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line116">line 116</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -512,6 +512,232 @@ ctx.format(hello, undefined, errors);
     <dd>
         
 <span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="formatToParts"><span class="type-signature"></span>formatToParts<span class="signature">(message, args, errors)</span><span class="type-signature"> &rarr; (nullable) {Array.&lt;<a href="FluentType.html">FluentType</a>>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Format a message to an array of <code>FluentTypes</code> or null.</p>
+<p>Format a raw <code>message</code> from the context's <code>messages</code> map into an array of
+<code>FluentType</code> instances which may be used to build the final result.  It
+may also return <code>null</code> if it has a null value.  <code>args</code> will be used to
+resolve references to external arguments inside of the translation.</p>
+<p>See the documentation of <a href="MessageContext.html#format"><code>MessageContext#format</code></a> for more
+information about error handling.</p>
+<p>In case of errors <code>format</code> will try to salvage as much of the translation
+as possible and will still return a string.  For performance reasons, the
+encountered errors are not returned but instead are appended to the
+<code>errors</code> array passed as the third argument.</p>
+<pre class="prettyprint source"><code>ctx.addMessages('hello = Hello, { $name }!');
+const hello = ctx.messages.get('hello');
+ctx.formatToParts(hello, { name: 'Jane' }, []);
+// → ['Hello, ', '\u2068', 'Jane', '\u2069']</code></pre><p>The returned parts need to be formatted via <code>valueOf</code> before they can be
+used further.  This will ensure all values are correctly formatted
+according to the <code>MessageContext</code>'s locale.</p>
+<pre class="prettyprint source"><code>const parts = ctx.formatToParts(hello, { name: 'Jane' }, []);
+const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errors</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line120">line 120</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="MessageContext.html#format">MessageContext#format</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="FluentType.html">FluentType</a>></span>
 
 
     </dd>
@@ -1110,7 +1336,7 @@ ctx.format(hello, undefined, errors);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line116">line 116</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -1155,6 +1381,232 @@ ctx.format(hello, undefined, errors);
 
 
         
+            
+
+    
+
+    <h4 class="name" id="formatToParts"><span class="type-signature"></span>formatToParts<span class="signature">(message, args, errors)</span><span class="type-signature"> &rarr; (nullable) {Array.&lt;<a href="FluentType.html">FluentType</a>>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Format a message to an array of <code>FluentTypes</code> or null.</p>
+<p>Format a raw <code>message</code> from the context's <code>messages</code> map into an array of
+<code>FluentType</code> instances which may be used to build the final result.  It
+may also return <code>null</code> if it has a null value.  <code>args</code> will be used to
+resolve references to external arguments inside of the translation.</p>
+<p>See the documentation of <a href="MessageContext.html#format"><code>MessageContext#format</code></a> for more
+information about error handling.</p>
+<p>In case of errors <code>format</code> will try to salvage as much of the translation
+as possible and will still return a string.  For performance reasons, the
+encountered errors are not returned but instead are appended to the
+<code>errors</code> array passed as the third argument.</p>
+<pre class="prettyprint source"><code>ctx.addMessages('hello = Hello, { $name }!');
+const hello = ctx.messages.get('hello');
+ctx.formatToParts(hello, { name: 'Jane' }, []);
+// → ['Hello, ', '\u2068', 'Jane', '\u2069']</code></pre><p>The returned parts need to be formatted via <code>valueOf</code> before they can be
+used further.  This will ensure all values are correctly formatted
+according to the <code>MessageContext</code>'s locale.</p>
+<pre class="prettyprint source"><code>const parts = ctx.formatToParts(hello, { name: 'Jane' }, []);
+const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errors</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line120">line 120</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="MessageContext.html#format">MessageContext#format</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="FluentType.html">FluentType</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -1176,7 +1628,7 @@ ctx.format(hello, undefined, errors);
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 00:22:52 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 21:38:08 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

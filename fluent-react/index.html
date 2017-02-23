@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>fluent-react</h1><p><code>fluent-react</code> provides React bindings for Project Fluent, a localization
+framework designed to unleash the expressive power of the natural language.</p>
+<h2>Installation</h2><p><code>fluent-react</code> can be used both on the client-side and the server-side.  You
+can install it from the npm registry or use it as a standalone script (as the
+<code>FluentReact</code> global).</p>
+<pre class="prettyprint source"><code>npm install fluent-react</code></pre><h2>How to use</h2><p><code>fluent-react</code> takes advantage of React's Components system and the virtual
+DOM.  Translations are stored using the Fluent syntax (<a href="http://projectfluent.io/fluent/guide/">FTL</a>) and exposed to
+components via the <em>provider</em> pattern.</p>
+<p>An example FTL file might look like the following:</p>
+<pre class="prettyprint source"><code>hello-world = Hello, world!
+welcome = Welcome, { $username }.</code></pre><p>Wrap your localizable elements in <code>LocalizedElement</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>import { LocalizedElement } from 'fluent-react';
+
+&lt;LocalizedElement id=&quot;hello-world&quot;>
+    &lt;p>Hello, world!&lt;/p>
+&lt;/LocalizedElement></code></pre><p>The <code>id</code> prop should be the unique identifier of the translation.  Any
+attributes found in the translation will be applied to the wrapped element.
+You can also pass arguments to the translation as <code>$</code>-prefixed props on
+<code>LocalizedElement</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;LocalizedElement id=&quot;welcome&quot; $username={name}>
+    &lt;p>{'Welcome, {$username}'}&lt;/p>
+&lt;/LocalizedElement></code></pre><p>It's recommended that the contents of the wrapped component be a string
+expression.  It serves no other purpose than to help the developer.  In the
+future, it may be used for automatic extraction of source copy.</p>
+<p>It's also possible to pass React elements as arguments to translations:</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;LocalizedElement
+    id=&quot;welcome&quot;
+    $linkA={
+        &lt;a href=&quot;http://example.com/A&quot;>A&lt;/a>
+    }
+    $linkB={
+        &lt;LocalizedElement id=&quot;link-to-b&quot;>
+            &lt;a href=&quot;http://example.com/B&quot;>B&lt;/a>
+        &lt;/LocalizedElement>
+    }>
+    &lt;p>{'Click { $linkA } or { $linkB}.'}&lt;/p>
+&lt;/LocalizedElement></code></pre><p>All <code>&lt;LocalizedElement&gt; components need access to the central localization
+store so they can subscribe to it.  The</code><LocalizationProvider>` component
+implements the <em>provider</em> pattern known from Redux.  Taking advantage of
+React's [context][] feature, it makes the translation store available to all
+localized elements in the app without passing it explicitly.</p>
+<pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
+import negotiateLanguages from 'fluent-langneg';
+import { LocalizationProvide } from 'fluent-react';
+
+ReactDOM.render(
+  &lt;LocalizationProvider
+    locale={negotiateLanguages(navigator.language, ['en-US', 'de'])}
+    requestMessages={requestMessages}
+  >
+    &lt;App />
+  &lt;/LocalizationProvider>,
+  document.getElementById('root')
+);</code></pre><p><code>requestMessages</code> is a function that you have to provide.  It takes a <code>locale</code>
+code and should return a string with FTL messages. It may be async.</p>
+<p>Consult the <code>examples/</code> directory for examples of how to change languages or
+integrate with Redux.</p>
+<p>All of this is very 0.x and is likely to change. See the <a href="https://github.com/projectfluent/fluent.js/wiki/React-bindings-for-Fluent">wiki</a> for more
+discussion.</p>
+<h2>Compatibility</h2><p>For legacy browsers, the <code>compat</code> build has been transpiled using the current
+version of Babel's <a href="https://babeljs.io/docs/plugins/preset-latest/">latest preset</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>import 'fluent-react/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.io">projectfluent.io</a>, including
+documentation of the Fluent file format (<a href="http://projectfluent.io/fluent/guide/">FTL</a>), links to other packages and
+implementations, and information about how to get involved.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 21:38:08 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
