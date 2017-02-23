@@ -174,17 +174,11 @@ function SelectExpression(env, {exp, vars, def}) {
   // Match the selector against keys of each variant, in order.
   for (const variant of vars) {
     const key = Type(env, variant.key);
-
-    // XXX A special case of numbers to avoid code repetition in types.js.
-    if (key instanceof FluentNumber &&
-        selector instanceof FluentNumber &&
-        key.value === selector.value) {
-      return variant;
-    }
-
+    const keyCanMatch =
+      key instanceof FluentNumber || key instanceof FluentKeyword;
     const { ctx } = env;
 
-    if (key instanceof FluentKeyword && key.match(ctx, selector)) {
+    if (keyCanMatch && key.match(ctx, selector)) {
       return variant;
     }
   }

@@ -50,6 +50,12 @@ export class FluentNumber extends FluentType {
     );
     return nf.format(this.value);
   }
+  match(ctx, other) {
+    if (other instanceof FluentNumber) {
+      return this.value === other.value;
+    }
+    return false;
+  }
 }
 
 export class FluentDateTime extends FluentType {
