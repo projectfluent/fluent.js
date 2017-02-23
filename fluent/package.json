@@ -1,7 +1,7 @@
 {
   "name": "fluent",
   "description": "Localization library for expressive translations.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "homepage": "http://projectfluent.io",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
