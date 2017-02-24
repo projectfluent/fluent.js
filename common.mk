@@ -33,6 +33,15 @@ depsclean:
 	@rm -rf node_modules
 	@echo -e " $(OK) $@"
 
-.PHONY: test docs
+CHANGELOG.md:
+	@if [ -z "$(SINCE)" ]; \
+	    then echo 'Specify last version with SINCE=x.y.z' && exit 1; \
+	fi
+	@git log $(PACKAGE)@$(SINCE) HEAD --pretty=format:'  - (%h) %s' $(CURDIR) \
+	    | cat - <(echo -e "\n\n") CHANGELOG.md \
+	    | sponge CHANGELOG.md
+	@echo -e " $(OK) $@ updated; make sure to edit it"
+
+.PHONY: test docs CHANGELOG.md
 
 OK := \033[32;01m✓\033[0m
