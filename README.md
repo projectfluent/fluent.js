@@ -41,7 +41,7 @@ and others.
 you're a tool author you may be interested in the formal [EBNF grammar][].
 
 [Read the Fluent Syntax Guide]: http://projectfluent.io/fluent/guide/
-[EBNF grammar]: https://github.com/projectfluent/fluent/tree/master/syntax
+[EBNF grammar]: https://github.com/projectfluent/fluent/tree/master/spec
 
 
 Discuss
