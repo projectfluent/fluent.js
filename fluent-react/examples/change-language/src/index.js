@@ -1,14 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { LocalizationProvider, requestMessages } from './l10n';
+import { AppLocalizationProvider } from './l10n';
 import App from './App';
 
 ReactDOM.render(
-  <LocalizationProvider
-    requestMessages={requestMessages}
-  >
+  <AppLocalizationProvider requested={navigator.language}>
     <App />
-  </LocalizationProvider>,
+  </AppLocalizationProvider>,
   document.getElementById('root')
 );

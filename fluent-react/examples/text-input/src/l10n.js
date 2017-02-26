@@ -1,25 +1,20 @@
 import 'fluent-intl-polyfill';
 export { LocalizationProvider } from 'fluent-react';
 
-export function requestMessages(locale) {
-  switch(locale) {
-    case 'pl':
-      return `
+export const MESSAGES_ALL = {
+  'pl': `
 hello = Cześć { $username }!
 hello-no-name = Witaj nieznajomy!
 type-name
     .placeholder = Twoje imię
-      `;
-
-    default:
-      return `
+  `,
+  'en-US': `
 hello = Hello, { $username }!
 hello-no-name = Hello, stranger!
 type-name
     .placeholder = Your name
-      `;
-  }
-}
+  `,
+};
 
 // Don't do this at home.
 export function negotiateLanguages(locale) {

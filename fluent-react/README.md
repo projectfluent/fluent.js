@@ -80,22 +80,26 @@ import 'fluent-intl-polyfill';
 import negotiateLanguages from 'fluent-langneg';
 import { LocalizationProvide } from 'fluent-react';
 
+// Build an array of available locales that are best for the user.
+const locales = negotiateLanguages(navigator.language, ['en-US', 'de']);
+
+// For the sake of the example, translations are bundled into main.js and thus
+// available synchronously.  This may be useful in some cases (e.g. for the
+// initial _Please wait…_ UI), but in general you'll probably want to fetch
+// them asynchronously. See examples/async-messages.
+import messageStore = from './messages';
+const messages = messageStore.get(locales);
+
 ReactDOM.render(
-  <LocalizationProvider
-    locale={negotiateLanguages(navigator.language, ['en-US', 'de'])}
-    requestMessages={requestMessages}
-  >
+  <LocalizationProvider locales={locales} messages={messages}>
     <App />
   </LocalizationProvider>,
   document.getElementById('root')
 );
 ```
 
-`requestMessages` is a function that you have to provide.  It takes a `locale`
-code and should return a string with FTL messages. It may be async.
-
-Consult the `examples/` directory for examples of how to change languages or
-integrate with Redux.
+Consult the `examples/` directory for examples of how to fetch translations
+asynchronously, change languages or integrate with Redux.
 
 All of this is very 0.x and is likely to change. See the [wiki][] for more
 discussion.

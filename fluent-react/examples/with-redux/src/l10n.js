@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import 'fluent-intl-polyfill';
-import { LocalizationProvider as StaticProvider } from 'fluent-react';
+import { LocalizationProvider } from 'fluent-react';
 
 
 // Don't do this at home.
@@ -14,28 +14,26 @@ export function negotiateLanguages(locale) {
   }
 }
 
-export function requestMessages(locale) {
-  switch(locale) {
-    case 'pl':
-      return `
+export const MESSAGES_ALL = {
+  'pl': `
 title = Witaj świecie!
 current = Bieżący język: { $locale }
 change = Zmień na { $locale }
-      `;
-
-    default:
-      return `
+  `,
+  'en-US': `
 title = Hello, world!
 current = Current locale: { $locale }
 change = Change to { $locale }
-      `;
-  }
-}
+  `,
+};
 
 function mapStateToProps(state) {
   return {
-    locales: state.locales
+    locales: state.locales,
+    messages: state.messages
   };
 }
 
-export const LocalizationProvider = connect(mapStateToProps)(StaticProvider);
+export const AppLocalizationProvider = connect(mapStateToProps)(
+  LocalizationProvider
+);

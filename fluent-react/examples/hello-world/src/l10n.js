@@ -1,19 +1,13 @@
 import 'fluent-intl-polyfill';
-export { LocalizationProvider } from 'fluent-react';
 
-export function requestMessages(locale) {
-  switch(locale) {
-    case 'pl':
-      return `
+export const MESSAGES_ALL = {
+  'pl': `
 title = Witaj świecie!
-      `;
-
-    default:
-      return `
+  `,
+  'en-US': `
 title = Hello, world!
-      `;
-  }
-}
+  `,
+};
 
 // Don't do this at home.
 export function negotiateLanguages(locale) {

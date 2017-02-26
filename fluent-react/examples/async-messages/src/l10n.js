@@ -1,5 +1,7 @@
+import React, { Component } from 'react';
+
 import 'fluent-intl-polyfill';
-export { LocalizationProvider } from 'fluent-react';
+import { LocalizationProvider } from 'fluent-react';
 
 function delay(value) {
   return new Promise(
@@ -7,8 +9,8 @@ function delay(value) {
   );
 }
 
-export async function requestMessages(locale) {
-  switch(locale) {
+async function fetchMessages(locales) {
+  switch(locales[0]) {
     case 'pl':
       return delay(`
 title = Witaj świecie!
@@ -29,5 +31,38 @@ export function negotiateLanguages(locale) {
       return ['pl', 'en-US'];
     default:
       return ['en-US'];
+  }
+}
+
+export class AppLocalizationProvider extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      locales: negotiateLanguages(props.requested),
+      messages: ''
+    };
+  }
+
+  componentWillMount() {
+    fetchMessages(this.state.locales).then(
+      messages => this.setState({ messages })
+    );
+  }
+
+  render() {
+    const { children } = this.props;
+    const { locales, messages } = this.state;
+
+    if (!messages) {
+      // Show a loader?
+      return <div>…</div>;
+    }
+
+    return (
+      <LocalizationProvider locales={locales} messages={messages}>
+        {children}
+      </LocalizationProvider>
+    );
   }
 }

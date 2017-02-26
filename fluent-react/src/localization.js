@@ -1,10 +1,9 @@
 import { MessageContext } from 'fluent';
 
 export default class Localization {
-  constructor(locales, requestMessages) {
+  constructor(locales, messages) {
     this.subs = new Set();
-    this.requestMessages = requestMessages;
-    this.setLocales(locales);
+    this.createContext(locales, messages);
   }
 
   subscribe(comp) {
@@ -15,21 +14,15 @@ export default class Localization {
     this.subs.delete(comp);
   }
 
-  setLocales(locales) {
-    // take the first locale for now
-    const [locale] = locales;
-    // requestMessages may be sync or async
-    const request = this.requestMessages(locale);
-    return Promise.resolve(request).then(
-      messages => this.createContext(locale, messages)
-    );
-  }
+  createContext(locales, messages) {
+    this.locales = locales;
+    this.messages = messages;
 
-  createContext(locale, messages) {
-    this.locale = locale;
+    const locale = locales;
     this.cx = new MessageContext(locale);
     this.cx.addMessages(messages);
 
+    // Update all subscribed LocalizedElements.
     this.subs.forEach(comp => comp.forceUpdate());
   }
 }

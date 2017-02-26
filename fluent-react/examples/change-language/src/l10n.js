@@ -1,24 +1,20 @@
 import React, { cloneElement, Children, Component } from 'react';
-import 'fluent-intl-polyfill';
-import { LocalizationProvider as StaticProvider } from 'fluent-react';
 
-export function requestMessages(locale) {
-  switch(locale) {
-    case 'pl':
-      return `
+import 'fluent-intl-polyfill';
+import { LocalizationProvider } from 'fluent-react';
+
+const MESSAGES_ALL = {
+  'pl': `
 title = Witaj świecie!
 current = Bieżący język: { $locale }
 change = Zmień na { $locale }
-      `;
-
-    default:
-      return `
+  `,
+  'en-US': `
 title = Hello, world!
 current = Current locale: { $locale }
 change = Change to { $locale }
-      `;
-  }
-}
+  `,
+};
 
 // Don't do this at home.
 function negotiateLanguages(locale) {
@@ -31,26 +27,38 @@ function negotiateLanguages(locale) {
   }
 }
 
-export class LocalizationProvider extends Component {
-  state = {
-    locales: negotiateLanguages(navigator.language)
+export class AppLocalizationProvider extends Component {
+  constructor(props) {
+    super(props);
+
+    const locales = negotiateLanguages(props.requested);
+    this.state = {
+      locales,
+      messages: MESSAGES_ALL[locales[0]]
+    };
   }
 
   handleLocaleChange(locale) {
-    this.setState({ locales: negotiateLanguages(locale) });
+    const locales = negotiateLanguages(locale);
+    this.setState({
+      locales,
+      messages: MESSAGES_ALL[locales[0]]
+    });
   }
 
   render() {
-    const { locales } = this.state;
+    const { locales, messages } = this.state;
     const child = Children.only(this.props.children);
+
     const l10nProps = {
       locales,
       handleLocaleChange: locale => this.handleLocaleChange(locale)
     };
+
     return (
-      <StaticProvider {...this.props} locales={locales}>
+      <LocalizationProvider locales={locales} messages={messages}>
         { cloneElement(child, l10nProps) }
-      </StaticProvider>
+      </LocalizationProvider>
     );
   }
 }

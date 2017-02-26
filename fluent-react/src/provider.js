@@ -6,8 +6,8 @@ export default class LocalizationProvider extends Component {
   constructor(props) {
     super(props);
 
-    const { locales, requestMessages } = props;
-    this.l10n = new Localization(locales, requestMessages);
+    const { locales, messages } = props;
+    this.l10n = new Localization(locales, messages);
   }
 
   getChildContext() {
@@ -17,10 +17,10 @@ export default class LocalizationProvider extends Component {
   }
 
   componentWillReceiveProps(next) {
-    const { locales } = next;
+    const { locales, messages } = next;
 
     if (locales !== this.props.locales) {
-      this.l10n.setLocales(locales);
+      this.l10n.createContext(locales, messages);
     }
   }
 
