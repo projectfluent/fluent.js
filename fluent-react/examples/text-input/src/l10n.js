@@ -6,7 +6,7 @@ export function requestMessages(locale) {
     case 'pl':
       return `
 hello = Cześć { $username }!
-hello-no-name = Cześć!
+hello-no-name = Witaj nieznajomy!
 type-name
     .placeholder = Twoje imię
       `;
@@ -14,7 +14,7 @@ type-name
     default:
       return `
 hello = Hello, { $username }!
-hello-no-name = Hello!
+hello-no-name = Hello, stranger!
 type-name
     .placeholder = Your name
       `;

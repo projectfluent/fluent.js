@@ -28,7 +28,7 @@ export default class App extends Component {
             </LocalizedElement>
           :
             <LocalizedElement id="hello-no-name">
-              <Header>Hello!</Header>
+              <Header>Hello, stranger!</Header>
             </LocalizedElement>
         }
 
