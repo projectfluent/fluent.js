@@ -1,26 +1,18 @@
 import React, { Component } from 'react';
+import delay from 'delay';
 
 import 'fluent-intl-polyfill';
 import { LocalizationProvider } from 'fluent-react';
 
-function delay(value) {
-  return new Promise(
-    resolve => setTimeout(() => resolve(value), 1000)
-  );
-}
-
 async function fetchMessages(locales) {
-  switch(locales[0]) {
-    case 'pl':
-      return delay(`
-title = Witaj świecie!
-      `);
+  const { PUBLIC_URL } = process.env;
+  // For the sake of the example take only the first locale.
+  const locale = locales[0];
+  const response = await fetch(`${PUBLIC_URL}/${locale}.ftl`);
+  const messages = await response.text();
 
-    default:
-      return delay(`
-title = Hello, world!
-      `);
-  }
+  await delay(1000);
+  return messages;
 }
 
 // Don't do this at home.
