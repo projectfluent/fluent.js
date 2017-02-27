@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { AppLocalizationProvider, requestMessages } from './l10n';
 import store from './store';
+import AppLocalizationProvider from './l10n';
 import App from './App';
 
 ReactDOM.render(

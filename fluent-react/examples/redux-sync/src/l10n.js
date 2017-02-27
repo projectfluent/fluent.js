@@ -34,6 +34,6 @@ function mapStateToProps(state) {
   };
 }
 
-export const AppLocalizationProvider = connect(mapStateToProps)(
+export default connect(mapStateToProps)(
   LocalizationProvider
 );

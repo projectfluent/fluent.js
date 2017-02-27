@@ -19,7 +19,7 @@ export default class LocalizationProvider extends Component {
   componentWillReceiveProps(next) {
     const { locales, messages } = next;
 
-    if (locales !== this.props.locales) {
+    if (messages !== this.props.messages) {
       this.l10n.createContext(locales, messages);
     }
   }

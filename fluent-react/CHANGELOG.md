@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+  - Re-render localizable elements only when the `messages` change.
+
   - Remove `requestMessages`.
 
     Instead of taking an async function for fetching translations,

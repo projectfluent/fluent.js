@@ -1,10 +1,10 @@
 import { negotiateLanguages, MESSAGES_ALL } from './l10n';
 
-const defaultLocale = negotiateLanguages(navigator.language)[0];
+const defaultLocales = negotiateLanguages(navigator.language);
 
 export default function reducer(state = {
-  locales: [defaultLocale],
-  messages: MESSAGES_ALL[defaultLocale]
+  locales: defaultLocales,
+  messages: MESSAGES_ALL[defaultLocales[0]]
 }, action) {
   switch (action.type) {
     case 'CHANGE_LOCALE':

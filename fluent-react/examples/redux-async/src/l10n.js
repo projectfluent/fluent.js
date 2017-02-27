@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import delay from 'delay';
 
 import 'fluent-intl-polyfill';
@@ -26,24 +27,42 @@ export function negotiateLanguages(locale) {
   }
 }
 
-export class AppLocalizationProvider extends Component {
+class AppLocalizationProvider extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      locales: negotiateLanguages(props.requested),
       messages: ''
     };
   }
 
-  async componentWillMount() {
-    const messages  = await fetchMessages(this.state.locales);
+  componentWillMount() {
+    const { locales } = this.props;
+    this.fetchMessages(locales);
+  }
+
+  componentWillReceiveProps(next) {
+    const { locales } = next;
+
+    // When the language changes Redux passes a new locale as a prop; start
+    // fetching the translations.
+    if (locales[0] !== this.props.locales[0]) {
+      this.fetchMessages(locales);
+    }
+  }
+
+  shouldComponentUpdate(_, nextState) {
+    // Only re-render if the messages are different.
+    return nextState.messages !== this.state.messages;
+  }
+
+  async fetchMessages(locales) {
+    const messages = await fetchMessages(locales);
     this.setState({ messages });
   }
 
   render() {
-    const { children } = this.props;
-    const { locales, messages } = this.state;
+    const { locales, children } = this.props;
+    const { messages } = this.state;
 
     if (!messages) {
       // Show a loader.
@@ -57,3 +76,13 @@ export class AppLocalizationProvider extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    locales: state.locales,
+  };
+}
+
+export default connect(mapStateToProps)(
+  AppLocalizationProvider
+);
