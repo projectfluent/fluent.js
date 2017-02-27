@@ -1,17 +1,12 @@
 import { connect } from 'react-redux';
 import 'fluent-intl-polyfill';
 import { LocalizationProvider } from 'fluent-react';
+import negotiateLanguages from 'fluent-langneg';
 
-
-// Don't do this at home.
-export function negotiateLanguages(locale) {
-  const [langtag] = locale.split('-');
-  switch(langtag) {
-    case 'pl':
-      return ['pl', 'en-US'];
-    default:
-      return ['en-US'];
-  }
+export function negotiateAvailable(requested) {
+  return negotiateLanguages(
+    requested, ['en-US', 'pl'], { defaultLocale: 'en-US' }
+  )
 }
 
 export const MESSAGES_ALL = {

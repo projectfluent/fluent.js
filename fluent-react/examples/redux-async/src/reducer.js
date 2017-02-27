@@ -1,13 +1,13 @@
-import { negotiateLanguages } from './l10n';
+import { negotiateAvailable } from './l10n';
 
 export default function reducer(state = {
-  locales: negotiateLanguages(navigator.language)
+  locales: negotiateAvailable(navigator.languages)
 }, action) {
   switch (action.type) {
     case 'CHANGE_LOCALE':
       return {
         ...state,
-        locales: negotiateLanguages(action.value)
+        locales: negotiateAvailable([action.value])
       };
     default:
       return state;

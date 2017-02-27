@@ -2,13 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { LocalizationProvider } from 'fluent-react';
-import { negotiateLanguages, MESSAGES_ALL } from './l10n';
+import { negotiateAvailable, MESSAGES_ALL } from './l10n';
 
 import App from './App';
 
 // Choose an array of available locales that are best for the user, in order of
 // their preference.
-const locales = negotiateLanguages(navigator.language);
+const locales = negotiateAvailable(navigator.languages);
 
 // Choose the right translations for the user's first preferred locales.  In
 // this example, this happens synchronously and only for the first locale, but

@@ -4,6 +4,13 @@ import delay from 'delay';
 
 import 'fluent-intl-polyfill';
 import { LocalizationProvider } from 'fluent-react';
+import negotiateLanguages from 'fluent-langneg';
+
+export function negotiateAvailable(requested) {
+  return negotiateLanguages(
+    requested, ['en-US', 'pl'], { defaultLocale: 'en-US' }
+  )
+}
 
 async function fetchMessages(locales) {
   const { PUBLIC_URL } = process.env;
@@ -14,17 +21,6 @@ async function fetchMessages(locales) {
 
   await delay(1000);
   return messages;
-}
-
-// Don't do this at home.
-export function negotiateLanguages(locale) {
-  const [langtag] = locale.split('-');
-  switch(langtag) {
-    case 'pl':
-      return ['pl', 'en-US'];
-    default:
-      return ['en-US'];
-  }
 }
 
 class AppLocalizationProvider extends Component {
