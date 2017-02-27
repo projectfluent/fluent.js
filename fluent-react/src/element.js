@@ -4,7 +4,7 @@ import {
 import { MessageArgument } from 'fluent';
 
 class ElementArgument extends MessageArgument {
-  toString() {
+  valueOf() {
     return this.value;
   }
 }
@@ -42,23 +42,20 @@ export default class LocalizedElement extends Component {
   }
 
   render() {
-    const child = Children.only(this.props.children);
+    const elem = Children.only(this.props.children);
 
     const { l10n: { cx } } = this.context;
-
-    if (!cx) {
-      return null;
-    }
 
     const { id } = this.props;
     const msg = cx.messages.get(id);
 
     if (!msg) {
-      return child;
+      return elem;
     }
 
     const args = withElements(this.props);
     const parts = cx.formatToParts(msg, args) || [];
+    const children = parts.map(part => part.valueOf(cx));
     let attrs;
 
     if (msg.attrs) {
@@ -68,7 +65,7 @@ export default class LocalizedElement extends Component {
       }
     }
 
-    return cloneElement(child, attrs, ...parts);
+    return cloneElement(elem, attrs, ...children);
   }
 }
 
