@@ -1,0 +1,110 @@
+/*
+ * @module fluent-langneg
+ * @overview
+ *
+ * `fluent-langneg` provides language negotiation API that fits into
+ * Project Fluent localization composition and fallbacking strategy.
+ *
+ */
+
+import filterMatches from './matches';
+
+function GetOption(options, property, type, values, fallback) {
+  let value = options[property];
+
+  if (value !== undefined) {
+    if (type === 'boolean') {
+      value = new Boolean(value);
+    } else if (type === 'string') {
+      value = value.toString();
+    }
+
+    if (values !== undefined && values.indexOf(value) === -1) {
+      throw new Error('Invalid option value');
+    }
+
+    return value;
+  }
+
+  return fallback;
+}
+
+/**
+ * Negotiates the languages between the list of requested locales against
+ * a list of available locales.
+ *
+ * It accepts three arguments:
+ *
+ *   requestedLocales:
+ *     an Array of strings with BCP47 locale IDs sorted
+ *     according to user preferences.
+ *
+ *   availableLocales:
+ *     an Array of strings with BCP47 locale IDs of locale for which
+ *     resources are available. Unsorted.
+ *
+ *   options:
+ *     An object with the following, optional keys:
+ *
+ *       strategy: 'filtering' (default) | 'matching' | 'lookup'
+ *
+ *       defaultLocale:
+ *         a string with BCP47 locale ID to be used
+ *         as a last resort locale.
+ *
+ *       likelySubtags:
+ *         a key-value map of locale keys to their most expanded variants.
+ *         For example:
+ *           'en' -> 'en-Latn-US',
+ *           'ru' -> 'ru-Cyrl-RU',
+ *
+ *
+ * It returns an Array of strings with BCP47 locale IDs sorted according to the
+ * user preferences.
+ *
+ * The exact list will be selected differently depending on the strategy:
+ *
+ *   'filtering':
+ *     In the filtering strategy, the algorithm will attempt to find the
+ *     best possible match for each element of the requestedLocales list.
+ *
+ *   'matching':
+ *     In the matching strategy, the algorithm will attempt to match
+ *     as many keys in the available locales in order of the requested locales.
+ *
+ *   'lookup':
+ *     In the lookup strategy, the algorithm will attempt to find a single
+ *     best available locale based on the requested locales list.
+ */
+export default function negotiateLanguages(
+  requestedLocales,
+  availableLocales,
+  options = {}
+) {
+
+  const defaultLocale = GetOption(options, 'defaultLocale', 'string');
+  const likelySubtags = GetOption(
+    options, 'likelySubtags', 'object', undefined);
+  const strategy = GetOption(options, 'strategy', 'string',
+    ['filtering', 'matching', 'lookup'], 'filtering');
+
+  if (strategy === 'lookup' && defaultLocale === undefined) {
+    throw new Error('defaultLocale cannot be undefined for strategy `lookup`');
+  }
+
+  const supportedLocales = filterMatches(
+    requestedLocales, availableLocales, strategy, likelySubtags
+  );
+
+  if (strategy === 'lookup') {
+    if (supportedLocales.length === 0) {
+      supportedLocales.push(defaultLocale);
+    }
+    return supportedLocales;
+  }
+
+  if (defaultLocale && !supportedLocales.includes(defaultLocale)) {
+    supportedLocales.push(defaultLocale);
+  }
+  return supportedLocales;
+}
