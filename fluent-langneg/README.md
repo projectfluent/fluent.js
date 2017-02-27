@@ -18,7 +18,9 @@ You can install it from the npm registry or use it as a standalone script.
 import negotiateLanguages from 'fluent-langneg';
 
 const supportedLocales = negotiateLanguages(
-  requestedLocales, availableLocales, defaultLocale
+  navigator.languages,       // requested locales
+  ['de', 'en-US', 'pl'],     // available locales
+  { defaultLocale: 'en-US' }
 );
 ```
 

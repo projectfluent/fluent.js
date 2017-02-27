@@ -22,6 +22,7 @@ be installed independently of each other.
   - [fluent](https://github.com/projectfluent/fluent.js/tree/master/fluent)
   - [fluent-syntax](https://github.com/projectfluent/fluent.js/tree/master/fluent-syntax)
   - [fluent-intl-polyfill](https://github.com/projectfluent/fluent.js/tree/master/fluent-intl-polyfill)
+  - [fluent-langneg](https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg)
   - [fluent-react](https://github.com/projectfluent/fluent.js/tree/master/fluent-react)
 
 
