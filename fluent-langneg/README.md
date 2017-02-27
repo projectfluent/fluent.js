@@ -29,7 +29,7 @@ http://projectfluent.io/fluent.js/fluent-langneg.
 
 The API supports three negotiation strategies:
 
-* filtering (defualt)
+### filtering (default)
 
 In this strategy the algorithm will look for the best matching available
 locale for each requested locale.
@@ -41,7 +41,7 @@ available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
 
 supported: ['de-DE', 'fr']
 
-* matching
+### matching
 
 In this strategy the algorithm will try to match as many available locales
 as possible for each of the requested locale.
@@ -53,7 +53,7 @@ available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
 
 supported: ['de-DE', 'de', 'fr', 'fr-CA']
 
-* lookup
+### lookup
 
 In this strategy the algorithm will try to find the single best locale
 for the requested locale list among the available locales.
@@ -65,7 +65,7 @@ available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
 
 supported: ['de-DE']
 
-API use:
+### API use:
 
 ```javascript
 let supported = negotiateLanguages(requested, available, {
@@ -86,7 +86,7 @@ Unicode CLDR maintains a complete list of likely subtags that the
 user can load into `fluent-langneg` to replace the minimal version.
 
 ```javascript
-let data = require('./data/likelySubtags.json');
+let data = require('cldr-core/supplemental/likelySubtags.json');
 
 let supported = negotiateLanguages(requested, available, {
   likelySubtags: data.supplemental.likelySubtags

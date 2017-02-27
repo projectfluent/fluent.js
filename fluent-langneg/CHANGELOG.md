@@ -6,6 +6,6 @@
 
 ## fluent-langneg 0.0.1
 
-  - (05d2487c) fluent-langneg 0.0.1
+  - Introduce Language Negotiation module for Fluent
 
     The initial release.
