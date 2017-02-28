@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-  - Re-render localizable elements only when the `messages` change.
+  - …
+
+## fluent-react 0.1.0
+
+  - Re-render localizable elements only when `messages` change.
 
   - Remove `requestMessages`.
 
