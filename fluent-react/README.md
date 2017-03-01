@@ -69,7 +69,7 @@ It's also possible to pass React elements as arguments to translations:
 </LocalizedElement>
 ```
 
-All `<LocalizedElement> components need access to the central localization
+All `<LocalizedElement>` components need access to the central localization
 store so they can subscribe to it.  The `<LocalizationProvider>` component
 implements the _provider_ pattern known from Redux.  Taking advantage of
 React's [context][] feature, it makes the translation store available to all
@@ -109,7 +109,7 @@ All of this is very 0.x and is likely to change. See the [wiki][] for more
 discussion.
 
 [wiki]: https://github.com/projectfluent/fluent.js/wiki/React-bindings-for-Fluent
-[contex]: https://facebook.github.io/react/docs/context.html
+[context]: https://facebook.github.io/react/docs/context.html
 
 
 ## Compatibility
