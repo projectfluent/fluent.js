@@ -29,12 +29,13 @@ export class Entry extends Node {
 }
 
 export class Message extends Entry {
-  constructor(id, value = null, attributes = null, comment = null) {
+  constructor(id, value = null, attrs = null, tags = null, comment = null) {
     super();
     this.type = 'Message';
     this.id = id;
     this.value = value;
-    this.attributes = attributes;
+    this.attributes = attrs;
+    this.tags = tags;
     this.comment = comment;
   }
 }
@@ -132,6 +133,14 @@ export class Attribute extends Node {
   }
 }
 
+export class Tag extends Node {
+  constructor(name) {
+    super();
+    this.type = 'Tag';
+    this.name = name;
+  }
+}
+
 export class Variant extends Node {
   constructor(key, value, def = false) {
     super();
@@ -158,10 +167,10 @@ export class Identifier extends Node {
   }
 }
 
-export class Keyword extends Identifier {
+export class Symbol extends Identifier {
   constructor(name) {
     super(name);
-    this.type = 'Keyword';
+    this.type = 'Symbol';
   }
 }
 
@@ -174,10 +183,10 @@ export class Comment extends Entry {
 }
 
 export class Section extends Entry {
-  constructor(key, comment = null) {
+  constructor(name, comment = null) {
     super();
     this.type = 'Section';
-    this.key = key;
+    this.name = name;
     this.comment = comment;
   }
 }
