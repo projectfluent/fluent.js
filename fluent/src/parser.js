@@ -61,7 +61,7 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     // We don't care about comments or sections at runtime
-    if (ch === '#') {
+    if (ch === '/') {
       this.getComment();
       return;
     }
@@ -85,7 +85,7 @@ class RuntimeParser {
     this._index += 1;
 
     this.getLineWS();
-    this.getKeyword();
+    this.getSymbol();
     this.getLineWS();
 
     if (this._source[this._index] !== ']' ||
@@ -101,6 +101,8 @@ class RuntimeParser {
 
   getMessage(entries) {
     const id = this.getIdentifier();
+    let attrs = null;
+    let tags = null;
 
     this.getLineWS();
 
@@ -114,8 +116,9 @@ class RuntimeParser {
       this.getLineWS();
 
       val = this.getPattern();
+    } else {
+      this.getWS();
     }
-
 
     ch = this._source[this._index];
 
@@ -128,22 +131,30 @@ class RuntimeParser {
     }
 
     if (ch === '.') {
+      attrs = this.getAttributes();
+    }
 
-      const attrs = this.getAttributes();
-      entries[id] = {
-        attrs: attrs,
-        val
-      };
+    if (ch === '#') {
+      tags = this.getTags();
+    }
 
-    } else if (typeof val === 'string') {
+    if (tags === null && attrs === null && typeof val === 'string') {
       entries[id] = val;
-    } else if (val === undefined) {
-      throw this.error(`Expected a value (like: " = value") or
-        an attribute (like: ".key = value")`);
     } else {
-      entries[id] = {
-        val
-      };
+      if (val === undefined) {
+        if (tags === null && attrs === null) {
+          throw this.error(`Expected a value (like: " = value") or
+            an attribute (like: ".key = value")`);
+        }
+      }
+
+      entries[id] = { val };
+      if (attrs) {
+        entries[id].attrs = attrs;
+      }
+      if (tags) {
+        entries[id].tags = tags;
+      }
     }
   }
 
@@ -185,7 +196,7 @@ class RuntimeParser {
     return this._source.slice(start, this._index);
   }
 
-  getKeyword() {
+  getSymbol() {
     let name = '';
 
     const start = this._index;
@@ -245,9 +256,7 @@ class RuntimeParser {
 
     this._index = eol + 1;
 
-    this.getLineWS();
-
-    if (this._source[this._index] === '|') {
+    if (this._source[this._index] === ' ') {
       this._index = start;
       return this.getComplexPattern();
     }
@@ -294,18 +303,15 @@ class RuntimeParser {
           throw this.error('Unclosed string');
         }
         this._index++;
-        this.getLineWS();
-        if (this._source[this._index] !== '|') {
+        if (this._source[this._index] !== ' ') {
           break;
         }
         if (firstLine && buffer.length) {
           throw this.error('Multiline string should have the ID line empty');
         }
+        this.getLineWS();
+
         firstLine = false;
-        this._index++;
-        if (this._source[this._index] === ' ') {
-          this._index++;
-        }
         if (buffer.length) {
           buffer += '\n';
         }
@@ -627,6 +633,27 @@ class RuntimeParser {
     return attrs;
   }
 
+  getTags() {
+    const tags = [];
+
+    while (this._index < this._length) {
+      const ch = this._source[this._index];
+
+      if (ch !== '#') {
+        break;
+      }
+      this._index++;
+
+      const symbol = this.getSymbol();
+
+      tags.push(symbol.name);
+
+      this.getWS();
+    }
+
+    return tags;
+  }
+
   getVariants() {
     const variants = [];
     let index = 0;
@@ -674,7 +701,7 @@ class RuntimeParser {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getKeyword();
+      literal = this.getSymbol();
     }
 
     if (this._source[this._index] !== ']') {
@@ -710,8 +737,9 @@ class RuntimeParser {
   getComment() {
     let eol = this._source.indexOf('\n', this._index);
 
-    while (eol !== -1 && this._source[eol + 1] === '#') {
-      this._index = eol + 2;
+    while (eol !== -1 &&
+      this._source[eol + 1] === '/' && this._source[eol + 2] === '/') {
+      this._index = eol + 3;
 
       eol = this._source.indexOf('\n', this._index);
 
@@ -740,7 +768,7 @@ class RuntimeParser {
 
         if ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) ||  // A-Z
-             cc === 95 || cc === 35 || cc === 91) {  // _#[
+             cc === 95 || cc === 47 || cc === 91) {  // _/[
           break;
         }
       }
