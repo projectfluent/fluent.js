@@ -75,6 +75,8 @@ function GetOption(options, property, type, values, fallback) {
  *   'lookup':
  *     In the lookup strategy, the algorithm will attempt to find a single
  *     best available locale based on the requested locales list.
+ *
+ *     This strategy requires defaultLocale option to be set.
  */
 export default function negotiateLanguages(
   requestedLocales,
