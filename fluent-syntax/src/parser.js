@@ -85,7 +85,7 @@ function getComment(ps) {
     if (ps.current() === '/') {
       content += '\n';
       ps.next();
-      ps.expect_char('/');
+      ps.expectChar('/');
       ps.takeCharIf(' ');
     } else {
       break;
