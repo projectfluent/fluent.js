@@ -49,7 +49,7 @@ export function parse(source) {
 function getEntry(ps) {
   let comment;
 
-  if (ps.currentIs('#')) {
+  if (ps.currentIs('/')) {
     comment = getComment(ps);
   }
 
@@ -68,7 +68,8 @@ function getEntry(ps) {
 }
 
 function getComment(ps) {
-  ps.expectChar('#');
+  ps.expectChar('/');
+  ps.expectChar('/');
   ps.takeCharIf(' ');
 
   let content = '';
@@ -81,9 +82,10 @@ function getComment(ps) {
 
     ps.next();
 
-    if (ps.current() === '#') {
+    if (ps.current() === '/') {
       content += '\n';
       ps.next();
+      ps.expectChar('/');
       ps.takeCharIf(' ');
     } else {
       break;
@@ -98,7 +100,7 @@ function getSection(ps, comment) {
 
   ps.skipLineWS();
 
-  const key = getKeyword(ps);
+  const symb = getSymbol(ps);
 
   ps.skipLineWS();
 
@@ -109,7 +111,7 @@ function getSection(ps, comment) {
 
   ps.expectChar('\n');
 
-  return new AST.Section(key, comment);
+  return new AST.Section(symb, comment);
 }
 
 function getMessage(ps, comment) {
@@ -119,6 +121,7 @@ function getMessage(ps, comment) {
 
   let pattern;
   let attrs;
+  let tags;
 
   if (ps.currentIs('=')) {
     ps.next();
@@ -131,11 +134,18 @@ function getMessage(ps, comment) {
     attrs = getAttributes(ps);
   }
 
-  if (pattern === undefined && attrs === undefined) {
+  if (ps.isPeekNextLineTagStart()) {
+    if (attrs !== undefined) {
+      throw error(ps, 'Tags cannot be added to a message with attributes.');
+    }
+    tags = getTags(ps);
+  }
+
+  if (pattern === undefined && attrs === undefined && tags === undefined) {
     throw error(ps, 'Missing field');
   }
 
-  return new AST.Message(id, pattern, attrs, comment);
+  return new AST.Message(id, pattern, attrs, tags, comment);
 }
 
 function getAttributes(ps) {
@@ -170,6 +180,26 @@ function getAttributes(ps) {
   return attrs;
 }
 
+function getTags(ps) {
+  const tags = [];
+
+  while (true) {
+    ps.expectChar('\n');
+    ps.skipLineWS();
+
+    ps.expectChar('#');
+
+    const symbol = getSymbol(ps);
+
+    tags.push(new AST.Tag(symbol));
+
+    if (!ps.isPeekNextLineTagStart()) {
+      break;
+    }
+  }
+  return tags;
+}
+
 function getIdentifier(ps) {
   let name = '';
 
@@ -196,7 +226,7 @@ function getVariantKey(ps) {
     return getNumber(ps);
   }
 
-  return getKeyword(ps);
+  return getSymbol(ps);
 }
 
 function getVariants(ps) {
@@ -243,7 +273,7 @@ function getVariants(ps) {
   return variants;
 }
 
-function getKeyword(ps) {
+function getSymbol(ps) {
   let name = '';
 
   name += ps.takeIDStart();
@@ -257,7 +287,7 @@ function getKeyword(ps) {
     }
   }
 
-  return new AST.Keyword(name.trimRight());
+  return new AST.Symbol(name.trimRight());
 }
 
 function getDigits(ps) {
@@ -300,7 +330,6 @@ function getPattern(ps) {
   let quoteDelimited = false;
   let quoteOpen = false;
   let firstLine = true;
-  let isIndented = false;
 
   if (ps.takeCharIf('"')) {
     quoteDelimited = true;
@@ -320,25 +349,13 @@ function getPattern(ps) {
 
       ps.peek();
 
-      ps.peekLineWS();
-
-      if (!ps.currentPeekIs('|')) {
+      if (!ps.currentPeekIs(' ')) {
         ps.resetPeek();
         break;
-      } else {
-        ps.skipToPeek();
-        ps.next();
       }
 
-      if (firstLine) {
-        if (ps.takeCharIf(' ')) {
-          isIndented = true;
-        }
-      } else {
-        if (isIndented && !ps.takeCharIf(' ')) {
-          throw error(ps, 'Generic');
-        }
-      }
+      ps.peekLineWS();
+      ps.skipToPeek();
 
       firstLine = false;
 
@@ -541,7 +558,7 @@ function getLiteral(ps) {
   if (ps.isNumberStart()) {
     return getNumber(ps);
   } else if (ch === '"') {
-    return getPattern(ps);
+    return getString(ps);
   } else if (ch === '$') {
     ps.next();
     const name = getIdentifier(ps);
