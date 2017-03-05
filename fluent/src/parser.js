@@ -135,6 +135,9 @@ class RuntimeParser {
     }
 
     if (ch === '#') {
+      if (attrs !== null) {
+        throw this.error('Tags cannot be added to a message with attributes.');
+      }
       tags = this.getTags();
     }
 
