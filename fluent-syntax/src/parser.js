@@ -135,6 +135,9 @@ function getMessage(ps, comment) {
   }
 
   if (ps.isPeekNextLineTagStart()) {
+    if (attrs !== undefined) {
+      throw error(ps, 'Tags cannot be added to a message with attributes.');
+    }
     tags = getTags(ps);
   }
 
