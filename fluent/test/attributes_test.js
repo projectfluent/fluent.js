@@ -5,15 +5,15 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Attributes', function() {
+suite('Attributes', function() {
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('missing', function(){
-    before(function() {
+  suite('missing', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -30,7 +30,7 @@ describe('Attributes', function() {
       `);
     });
 
-    it('falls back gracefully for entities with string values and no attributes', function() {
+    test('falls back gracefully for entities with string values and no attributes', function() {
       const msg = ctx.messages.get('ref-foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
@@ -38,7 +38,7 @@ describe('Attributes', function() {
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    it('falls back gracefully for entities with string values and other attributes', function() {
+    test('falls back gracefully for entities with string values and other attributes', function() {
       const msg = ctx.messages.get('ref-bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Bar');
@@ -46,7 +46,7 @@ describe('Attributes', function() {
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    it('falls back gracefully for entities with pattern values and no attributes', function() {
+    test('falls back gracefully for entities with pattern values and no attributes', function() {
       const msg = ctx.messages.get('ref-baz');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Baz');
@@ -54,7 +54,7 @@ describe('Attributes', function() {
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    it('falls back gracefully for entities with pattern values and other attributes', function() {
+    test('falls back gracefully for entities with pattern values and other attributes', function() {
       const msg = ctx.messages.get('ref-qux');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Qux');
@@ -63,8 +63,8 @@ describe('Attributes', function() {
     });
   });
 
-  describe('with string values', function(){
-    before(function() {
+  suite('with string values', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -77,28 +77,28 @@ describe('Attributes', function() {
       `);
     });
 
-    it('can be referenced for entities with string values', function() {
+    test('can be referenced for entities with string values', function() {
       const msg = ctx.messages.get('ref-foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be formatted directly for entities with string values', function() {
+    test('can be formatted directly for entities with string values', function() {
       const msg = ctx.messages.get('foo').attrs.attr;
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be referenced for entities with pattern values', function() {
+    test('can be referenced for entities with pattern values', function() {
       const msg = ctx.messages.get('ref-bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be formatted directly for entities with pattern values', function() {
+    test('can be formatted directly for entities with pattern values', function() {
       const msg = ctx.messages.get('bar').attrs.attr;
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Bar Attribute');
@@ -106,8 +106,8 @@ describe('Attributes', function() {
     });
   });
 
-  describe('with simple pattern values', function(){
-    before(function() {
+  suite('with simple pattern values', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -124,42 +124,42 @@ describe('Attributes', function() {
       `);
     });
 
-    it('can be referenced for entities with string values', function() {
+    test('can be referenced for entities with string values', function() {
       const msg = ctx.messages.get('ref-bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be formatted directly for entities with string values', function() {
+    test('can be formatted directly for entities with string values', function() {
       const msg = ctx.messages.get('bar').attrs.attr;
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be referenced for entities with simple pattern values', function() {
+    test('can be referenced for entities with simple pattern values', function() {
       const msg = ctx.messages.get('ref-baz');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be formatted directly for entities with simple pattern values', function() {
+    test('can be formatted directly for entities with simple pattern values', function() {
       const msg = ctx.messages.get('baz').attrs.attr;
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('works with self-references', function() {
+    test('works with self-references', function() {
       const msg = ctx.messages.get('ref-qux');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Qux Attribute');
       assert.equal(errs.length, 0);
     });
 
-    it('can be formatted directly when it uses a self-reference', function() {
+    test('can be formatted directly when it uses a self-reference', function() {
       const msg = ctx.messages.get('qux').attrs.attr;
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Qux Attribute');
@@ -167,8 +167,8 @@ describe('Attributes', function() {
     });
   });
 
-  describe('with values with select expressions', function(){
-    before(function() {
+  suite('with values with select expressions', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -181,14 +181,14 @@ describe('Attributes', function() {
       `);
     });
 
-    it('can be referenced', function() {
+    test('can be referenced', function() {
       const msg = ctx.messages.get('ref-foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
 
-    it('can be formatted directly', function() {
+    test('can be formatted directly', function() {
       const msg = ctx.messages.get('foo').attrs.attr;
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');

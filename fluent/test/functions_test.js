@@ -5,22 +5,22 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Functions', function() {
+suite('Functions', function() {
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('missing', function(){
-    before(function() {
+  suite('missing', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { MISSING("Foo") }
       `);
     });
 
-    it('falls back to the name of the function', function() {
+    test('falls back to the name of the function', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'MISSING()');
@@ -29,8 +29,8 @@ describe('Functions', function() {
     });
   });
 
-  describe('arguments', function(){
-    before(function() {
+  suite('arguments', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', {
         useIsolating: false,
         functions: {
@@ -60,21 +60,21 @@ describe('Functions', function() {
       assert(errs[0] instanceof RangeError); // wrong argument type
     });
 
-    it('accepts strings', function() {
+    test('accepts strings', function() {
       const msg = ctx.messages.get('pass-string');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'a');
       assert.equal(errs.length, 0);
     });
 
-    it('accepts numbers', function() {
+    test('accepts numbers', function() {
       const msg = ctx.messages.get('pass-number');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
 
-    it('accepts entities', function() {
+    test('accepts entities', function() {
       const msg = ctx.messages.get('pass-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
@@ -90,14 +90,14 @@ describe('Functions', function() {
       assert.equal(errs.length, 0);
     });
 
-    it('accepts externals', function() {
+    test('accepts externals', function() {
       const msg = ctx.messages.get('pass-external');
       const val = ctx.format(msg, { ext: "Ext" }, errs);
       assert.equal(val, 'Ext');
       assert.equal(errs.length, 0);
     });
 
-    it('accepts function calls', function() {
+    test('accepts function calls', function() {
       const msg = ctx.messages.get('pass-function-call');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '1');

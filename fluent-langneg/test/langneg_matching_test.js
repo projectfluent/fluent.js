@@ -1,9 +1,9 @@
 import assert from 'assert';
 import negotiateLanguages from '../src/index';
 
-describe('Basic Language Negotiation without likelySubtags', () => {
+suite('Basic Language Negotiation without likelySubtags', () => {
   let nl;
-  before(() => {
+  suiteSetup(() => {
     nl = function(requested, available, options = {}) {
       const resolvedOptions = Object.assign(options, {
         strategy: 'matching'
@@ -13,7 +13,7 @@ describe('Basic Language Negotiation without likelySubtags', () => {
   });
 
 
-  it('exact match', () => {
+  test('exact match', () => {
     assert.deepEqual(nl(['en-US'], ['en-US', 'en']), ['en-US', 'en']);
 
     assert.deepEqual(

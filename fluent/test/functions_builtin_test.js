@@ -5,22 +5,22 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Built-in functions', function() {
+suite('Built-in functions', function() {
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('NUMBER', function(){
-    before(function() {
+  suite('NUMBER', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { NUMBER(1) }
       `);
     });
 
-    it('formats the number', function() {
+    test('formats the number', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '1');
@@ -28,10 +28,10 @@ describe('Built-in functions', function() {
     });
   });
 
-  describe('DATETIME', function(){
+  suite('DATETIME', function(){
     let dtf;
 
-    before(function() {
+    suiteSetup(function() {
       dtf = new Intl.DateTimeFormat('en-US');
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
@@ -39,7 +39,7 @@ describe('Built-in functions', function() {
       `);
     });
 
-    it('formats the date', function() {
+    test('formats the date', function() {
       const date = new Date('2016-09-29');
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { date }, errs);

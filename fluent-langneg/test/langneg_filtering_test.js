@@ -1,10 +1,10 @@
 import assert from 'assert';
 import negotiateLanguages from '../src/index';
 
-describe('Basic Language Negotiation', () => {
+suite('Basic Language Negotiation', () => {
   const nl = negotiateLanguages;
 
-  it('should match on an exact match', () => {
+  test('exact match', () => {
     assert.deepEqual(nl(['en'], ['en']), ['en']);
 
     assert.deepEqual(nl(['en-US'], ['en-US']), ['en-US']);
@@ -22,7 +22,7 @@ describe('Basic Language Negotiation', () => {
       ['pl', 'de-DE']);
   });
 
-  it('should match on available locale treated as a range', () => {
+  test('available locale is treated as a range', () => {
     assert.deepEqual(nl(['en-US'], ['en']), ['en']);
 
     assert.deepEqual(nl(['en-Latn-US'], ['en-US']), ['en-US']);
@@ -40,7 +40,7 @@ describe('Basic Language Negotiation', () => {
       ['en-GB', 'en-IN']);
   });
 
-  it('should match on a likely subtag', () => {
+  test('likely subtag', () => {
     assert.deepEqual(
       nl(['en'], ['en-GB', 'de', 'en-US']),
       ['en-US']);
@@ -74,7 +74,7 @@ describe('Basic Language Negotiation', () => {
       ['sr-Latn-RO']);
   });
 
-  it('should match on a requested locale as a range', () => {
+  test('requested locale as a range', () => {
     assert.deepEqual(nl(['en-*-US'], ['en-US']), ['en-US']);
 
     assert.deepEqual(nl(['en-Latn-US-*'], ['en-Latn-US']), ['en-Latn-US']);
@@ -82,7 +82,7 @@ describe('Basic Language Negotiation', () => {
     assert.deepEqual(nl(['en-*-US-*'], ['en-US']), ['en-US']);
   });
 
-  it('should match cross-region', () => {
+  test('match cross-region', () => {
     assert.deepEqual(nl(['en'], ['en-US']), ['en-US']);
 
     assert.deepEqual(nl(['en-US'], ['en-GB']), ['en-GB']);
@@ -96,11 +96,11 @@ describe('Basic Language Negotiation', () => {
     assert.deepEqual(nl(['en-*'], ['en-US']), ['en-US']);
   });
 
-  it('should match cross-variant', () => {
+  test('match cross-variant', () => {
     assert.deepEqual(nl(['en-US-mac'], ['en-US-win']), ['en-US-win']);
   });
 
-  it('should prioritize properly', () => {
+  test('prioritize properly', () => {
     // exact match first
     assert.deepEqual(nl(['en-US'], ['en-US-mac', 'en', 'en-US']), ['en-US']);
 
@@ -121,12 +121,12 @@ describe('Basic Language Negotiation', () => {
 
   });
 
-  it('should prioritiz properly (extra tests)', () => {
+  test('prioritize properly (extra tests)', () => {
     // we pick generic range locale over other region first
     assert.deepEqual(nl(['en-US'], ['en-GB', 'en']), ['en']);
   });
 
-  it('should handle default locale properly', () => {
+  test('default locale', () => {
     assert.deepEqual(nl(['fr'], ['de', 'it']), []);
 
     assert.deepEqual(nl(['fr'], ['de', 'it'], {
@@ -144,7 +144,7 @@ describe('Basic Language Negotiation', () => {
       ['fr-CA', 'de-DE', 'en-US']);
   });
 
-  it('should handle all matches on the 1st higher than any on the 2nd', () => {
+  test('all attempts on the first are higher than any on the second', () => {
     assert.deepEqual(
       nl(['fr-CA-mac', 'de-DE'], ['de-DE', 'fr-FR-win']),
       ['fr-FR-win', 'de-DE']);
