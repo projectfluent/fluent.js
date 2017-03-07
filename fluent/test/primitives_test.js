@@ -51,9 +51,6 @@ suite('Primitives', function() {
         selector-literal = { "Foo" ->
            *[Foo] Member 1
         }
-        selector-message = { foo ->
-           *[Foo] Member 2
-        }
 
         bar
             .attr = Bar Attribute
@@ -99,13 +96,6 @@ suite('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    test('can be a value of a message used as a selector', function(){
-      const msg = ctx.messages.get('selector-message');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Member 2');
-      assert.equal(errs.length, 0);
-    });
-
     test('can be used as an attribute value', function(){
       const msg = ctx.messages.get('bar').attrs.attr;
       const val = ctx.format(msg, args, errs);
@@ -135,15 +125,7 @@ suite('Primitives', function() {
         foo               = Foo
         bar               = { foo } Bar
 
-        placeable-literal = { "{ foo } Bar" } Baz
         placeable-message = { bar } Baz
-
-        selector-literal = { "{ foo } Bar" ->
-           *[Foo Bar] Member 1
-        }
-        selector-message = { bar ->
-           *[Foo Bar] Member 2
-        }
 
         baz
             .attr = { bar } Baz Attribute
@@ -151,7 +133,8 @@ suite('Primitives', function() {
         placeable-attr = { baz.attr }
 
         selector-attr = { baz.attr ->
-           *[Foo Bar Baz Attribute] Member 3
+            [Foo Bar Baz Attribute] Variant
+           *[ok] Valid
         }
       `);
     });
@@ -169,31 +152,10 @@ suite('Primitives', function() {
       assert(Array.isArray(msg.val));
     });
 
-    test('can be used in a placeable', function(){
-      const msg = ctx.messages.get('placeable-literal');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar Baz');
-      assert.equal(errs.length, 0);
-    });
-
     test('can be a value of a message referenced in a placeable', function(){
       const msg = ctx.messages.get('placeable-message');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo Bar Baz');
-      assert.equal(errs.length, 0);
-    });
-
-    test('can be a selector', function(){
-      const msg = ctx.messages.get('selector-literal');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Member 1');
-      assert.equal(errs.length, 0);
-    });
-
-    test('can be a value of a message used as a selector', function(){
-      const msg = ctx.messages.get('selector-message');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Member 2');
       assert.equal(errs.length, 0);
     });
 
@@ -211,10 +173,10 @@ suite('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    test('can be a value of an attribute used as a selector', function(){
+    test.skip('can be a value of an attribute used as a selector', function(){
       const msg = ctx.messages.get('selector-attr');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Member 3');
+      assert.equal(val, 'Variant 2');
       assert.equal(errs.length, 0);
     });
 

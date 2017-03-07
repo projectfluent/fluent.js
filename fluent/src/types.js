@@ -70,12 +70,12 @@ export class FluentDateTime extends FluentType {
   }
 }
 
-export class FluentKeyword extends FluentType {
+export class FluentSymbol extends FluentType {
   valueOf() {
     return this.value;
   }
   match(ctx, other) {
-    if (other instanceof FluentKeyword) {
+    if (other instanceof FluentSymbol) {
       return this.value === other.value;
     } else if (typeof other === 'string') {
       return this.value === other;
@@ -84,6 +84,9 @@ export class FluentKeyword extends FluentType {
         Intl.PluralRules, other.opts
       );
       return this.value === pr.select(other.value);
+    } else if (Array.isArray(other)) {
+      const values = other.map(symbol => symbol.value);
+      return values.includes(this.value);
     }
     return false;
   }
