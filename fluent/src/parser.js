@@ -122,8 +122,6 @@ class RuntimeParser {
 
     ch = this._source[this._index];
 
-    // In the scenario when the pattern is quote-delimited
-    // the pattern ends with the closing quote.
     if (ch === '\n') {
       this._index++;
       this.getLineWS();
@@ -230,20 +228,37 @@ class RuntimeParser {
 
     name += this._source.slice(start, this._index);
 
-    return { type: 'kw', name };
+    return { type: 'sym', name };
+  }
+
+  getString() {
+    let value = '';
+
+    while (++this._index < this._length) {
+      const ch = this._source[this._index];
+
+      if (ch === '"') {
+        break;
+      }
+
+      if (ch === '\n') {
+        break;
+      }
+
+      value += ch;
+    }
+
+    this._index++;
+    return value;
   }
 
   // We're going to first try to see if the pattern is simple.
-  // If it is a simple, not quote-delimited string,
-  // we can just look for the end of the line and read the string.
+  // If it is we can just look for the end of the line and read the string.
   //
   // Then, if either the line contains a placeable opening `{` or the
   // next line starts with a pipe `|`, we switch to complex pattern.
   getPattern() {
     const start = this._index;
-    if (this._source[start] === '"') {
-      return this.getComplexPattern();
-    }
     let eol = this._source.indexOf('\n', this._index);
 
     if (eol === -1) {
@@ -273,12 +288,6 @@ class RuntimeParser {
     const content = [];
     let placeables = 0;
 
-    // We actually use all three possible states of this variable:
-    // true and false indicate if we're within a quote-delimited string
-    // null indicates that the string is not quote-delimited
-    let quoteDelimited = null;
-    let firstLine = true;
-
     let ch = this._source[this._index];
 
     // If the string starts with \", \{ or \\ skip the first `\` and add the
@@ -290,49 +299,39 @@ class RuntimeParser {
       buffer += this._source[this._index + 1];
       this._index += 2;
       ch = this._source[this._index];
-    } else if (ch === '"') {
-      // If the first character of the string is `"`, mark the string
-      // as quote delimited.
-      quoteDelimited = true;
-      this._index++;
-      ch = this._source[this._index];
     }
 
     while (this._index < this._length) {
       // This block handles multi-line strings combining strings seaprated
       // by new line and `|` character at the beginning of the next one.
       if (ch === '\n') {
-        if (quoteDelimited) {
-          throw this.error('Unclosed string');
-        }
         this._index++;
         if (this._source[this._index] !== ' ') {
           break;
         }
-        if (firstLine && buffer.length) {
-          throw this.error('Multiline string should have the ID line empty');
-        }
         this.getLineWS();
 
-        firstLine = false;
+        if (
+            this._source[this._index] === '}' ||
+            this._source[this._index] === '[' ||
+            this._source[this._index] === '*' ||
+            this._source[this._index] === '#' ||
+            this._source[this._index] === '.'
+        ) {
+          break;
+        }
+
         if (buffer.length) {
           buffer += '\n';
         }
         ch = this._source[this._index];
         continue;
       } else if (ch === '\\') {
-        // We only handle `{` as a character that can be escaped in a string
-        // and `"` if the string is quote delimited.
         const ch2 = this._source[this._index + 1];
-        if ((quoteDelimited && ch2 === '"') ||
-            ch2 === '{') {
+        if (ch2 === '"' || ch2 === '{') {
           ch = ch2;
           this._index++;
         }
-      } else if (quoteDelimited && ch === '"') {
-        this._index++;
-        quoteDelimited = false;
-        break;
       } else if (ch === '{') {
         // Push the buffer to content array right before placeable
         if (buffer.length) {
@@ -359,14 +358,7 @@ class RuntimeParser {
       ch = this._source[this._index];
     }
 
-    if (quoteDelimited) {
-      throw this.error('Unclosed string');
-    }
-
     if (content.length === 0) {
-      if (quoteDelimited !== null) {
-        return buffer.length ? buffer : '';
-      }
       return buffer.length ? buffer : undefined;
     }
 
@@ -403,7 +395,7 @@ class RuntimeParser {
     const selector = this.getSelectorExpression();
     let variants;
 
-    this.getLineWS();
+    this.getWS();
 
     const ch = this._source[this._index];
 
@@ -518,15 +510,13 @@ class RuntimeParser {
           const val = this.getSelectorExpression();
 
           // If the expression returned as a value of the argument
-          // is not a quote delimited string, number or
-          // external argument, throw an error.
+          // is not a quote delimited string or number, throw.
           //
           // We don't have to check here if the pattern is quote delimited
           // because that's the only type of string allowed in expressions.
           if (typeof val === 'string' ||
               Array.isArray(val) ||
-              val.type === 'num' ||
-              val.type === 'ext') {
+              val.type === 'num') {
             args.push({
               type: 'narg',
               name: exp.name,
@@ -535,7 +525,7 @@ class RuntimeParser {
           } else {
             this._index = this._source.lastIndexOf(':', this._index) + 1;
             throw this.error(
-              'Expected string in quotes, number or external argument');
+              'Expected string in quotes, number.');
           }
 
         } else {
@@ -720,7 +710,7 @@ class RuntimeParser {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       return this.getNumber();
     } else if (cc === 34) { // "
-      return this.getPattern();
+      return this.getString();
     } else if (cc === 36) { // $
       this._index++;
       return {
