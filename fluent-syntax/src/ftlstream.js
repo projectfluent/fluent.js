@@ -43,7 +43,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    throw error(this, `Expected token ${ch}`);
+    throw error(this, `Expected token "${ch}"`);
   }
 
   takeCharIf(ch) {
@@ -153,7 +153,7 @@ export class FTLParserStream extends ParserStream {
       if (this.currentIs('\n') && !this.peekCharIs('\n')) {
         this.next();
         if (this.ch === undefined || this.isIDStart() ||
-            this.currentIs('#') ||
+            (this.currentIs('/') && this.peekCharIs('/')) ||
             (this.currentIs('[') && this.peekCharIs('['))) {
           break;
         }
@@ -182,7 +182,7 @@ export class FTLParserStream extends ParserStream {
     return this.takeChar(closure);
   }
 
-  takeKWChar() {
+  takeSymbChar() {
     const closure = ch => {
       const cc = ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z

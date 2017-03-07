@@ -279,7 +279,7 @@ function getSymbol(ps) {
   name += ps.takeIDStart();
 
   while (true) {
-    const ch = ps.takeKWChar();
+    const ch = ps.takeSymbChar();
     if (ch) {
       name += ch;
     } else {
@@ -327,22 +327,11 @@ function getNumber(ps) {
 function getPattern(ps) {
   let buffer = '';
   const elements = [];
-  let quoteDelimited = false;
-  let quoteOpen = false;
   let firstLine = true;
-
-  if (ps.takeCharIf('"')) {
-    quoteDelimited = true;
-    quoteOpen = true;
-  }
 
   let ch;
   while ((ch = ps.current())) {
     if (ch === '\n') {
-      if (quoteDelimited) {
-        throw error(ps, 'Expected roken');
-      }
-
       if (firstLine && buffer.length !== 0) {
         break;
       }
@@ -377,7 +366,7 @@ function getPattern(ps) {
       ps.skipLineWS();
 
       if (buffer.length !== 0) {
-        elements.push(new AST.StringExpression(buffer));
+        elements.push(new AST.TextElement(buffer));
       }
 
       buffer = '';
@@ -387,10 +376,6 @@ function getPattern(ps) {
       ps.expectChar('}');
 
       continue;
-    } else if (ch === '"' && quoteOpen) {
-      ps.next();
-      quoteOpen = false;
-      break;
     } else {
       buffer += ps.ch;
     }
@@ -398,10 +383,10 @@ function getPattern(ps) {
   }
 
   if (buffer.length !== 0) {
-    elements.push(new AST.StringExpression(buffer));
+    elements.push(new AST.TextElement(buffer));
   }
 
-  return new AST.Pattern(elements, false);
+  return new AST.Pattern(elements);
 }
 
 function getExpression(ps) {
@@ -409,6 +394,8 @@ function getExpression(ps) {
     const variants = getVariants(ps);
 
     ps.expectChar('\n');
+    ps.expectChar(' ');
+    ps.skipLineWS();
 
     return new AST.SelectExpression(null, variants);
   }
@@ -434,6 +421,8 @@ function getExpression(ps) {
       }
 
       ps.expectChar('\n');
+      ps.expectChar(' ');
+      ps.skipLineWS();
 
       return new AST.SelectExpression(selector, variants);
     }
