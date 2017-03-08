@@ -32,7 +32,7 @@
  * use the `valueOf` method to convert the instance to a native value.
  */
 
-import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentKeyword }
+import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
   from './types';
 import builtins from './builtins';
 
@@ -93,6 +93,30 @@ function MessageReference(env, {name}) {
   }
 
   return message;
+}
+
+/**
+ * Resolve an array of tags.
+ *
+ * @private
+ */
+function Tags(env, {name}) {
+  const { ctx, errors } = env;
+  const message = ctx.messages.get(name);
+
+  if (!message) {
+    errors.push(new ReferenceError(`Unknown message: ${name}`));
+    return new FluentNone(name);
+  }
+
+  if (!message.tags) {
+    errors.push(new RangeError(`No tags in message "${name}"`));
+    return new FluentNone(name);
+  }
+
+  return message.tags.map(
+    tag => new FluentSymbol(tag)
+  );
 }
 
 
@@ -166,7 +190,9 @@ function SelectExpression(env, {exp, vars, def}) {
     return DefaultMember(env, vars, def);
   }
 
-  const selector = Type(env, exp);
+  const selector = exp.type === 'ref'
+    ? Tags(env, exp)
+    : Type(env, exp);
   if (selector instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }
@@ -175,10 +201,15 @@ function SelectExpression(env, {exp, vars, def}) {
   for (const variant of vars) {
     const key = Type(env, variant.key);
     const keyCanMatch =
-      key instanceof FluentNumber || key instanceof FluentKeyword;
+      key instanceof FluentNumber || key instanceof FluentSymbol;
+
+    if (!keyCanMatch) {
+      continue;
+    }
+
     const { ctx } = env;
 
-    if (keyCanMatch && key.match(ctx, selector)) {
+    if (key.match(ctx, selector)) {
       return variant;
     }
   }
@@ -213,8 +244,8 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case 'kw':
-      return new FluentKeyword(expr.name);
+    case 'sym':
+      return new FluentSymbol(expr.name);
     case 'num':
       return new FluentNumber(expr.val);
     case 'ext':

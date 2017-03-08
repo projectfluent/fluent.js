@@ -41,11 +41,18 @@ export class Message extends Entry {
 }
 
 export class Pattern extends Node {
-  constructor(elements, quoted = false) {
+  constructor(elements) {
     super();
     this.type = 'Pattern';
     this.elements = elements;
-    this.quoted = quoted;
+  }
+}
+
+export class TextElement extends Node {
+  constructor(value) {
+    super();
+    this.type = 'TextElement';
+    this.value = value;
   }
 }
 

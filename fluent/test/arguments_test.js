@@ -78,7 +78,6 @@ suite('External arguments', function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { NUMBER($num) }
-        bar = { NUMBER(1, minimumFractionDigits: $num) }
       `);
     });
 
@@ -86,13 +85,6 @@ suite('External arguments', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, '3');
-      assert.equal(errs.length, 0);
-    });
-
-    test('can be a named argument', function() {
-      const msg = ctx.messages.get('bar');
-      const val = ctx.format(msg, { num: 3 }, errs);
-      assert.equal(val, '1.000');
       assert.equal(errs.length, 0);
     });
   });
