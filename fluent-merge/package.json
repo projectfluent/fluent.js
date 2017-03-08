@@ -1,0 +1,41 @@
+{
+  "name": "fluent-merge",
+  "description": "Merge Fluent localization resources",
+  "version": "0.0.1",
+  "homepage": "http://projectfluent.io",
+  "author": "Mozilla <l10n-drivers@mozilla.org>",
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Zibi Braniecki",
+      "email": "zbraniecki@mozilla.com"
+    },
+    {
+      "name": "Staś Małolepszy",
+      "email": "stas@mozilla.com"
+    }
+  ],
+  "directories": {
+    "lib": "./src"
+  },
+  "main": "./fluent-merge.js",
+  "bin": {
+    "fluent-merge": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/projectfluent/fluent.js.git"
+  },
+  "keywords": [
+    "localization",
+    "l10n"
+  ],
+  "engine": {
+    "node": ">=6"
+  },
+  "dependencies": {
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-register": "^6.23.0",
+    "fluent-syntax": "^0.2.0"
+  }
+}
