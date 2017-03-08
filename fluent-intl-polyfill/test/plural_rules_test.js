@@ -3,22 +3,22 @@
 import assert from 'assert';
 import '../src/index';
 
-describe('Polyfill', function() {
+suite('Polyfill', function() {
 
-  it('Intl.PluralRules exists', function() {
+  test('Intl.PluralRules exists', function() {
     assert.strictEqual(typeof Intl.PluralRules, 'function');
   });
 
-  it('select method exists', function() {
+  test('select method exists', function() {
     const pr = new Intl.PluralRules('fr');
     assert.strictEqual(typeof pr.select, 'function');
   });
 
 });
 
-describe('Plural rules', function() {
+suite('Plural rules', function() {
 
-  it('known language: en', function() {
+  test('known language: en', function() {
     const pr = new Intl.PluralRules('en');
     assert.strictEqual(pr.select(0), 'other');
     assert.strictEqual(pr.select(1), 'one');
@@ -28,7 +28,7 @@ describe('Plural rules', function() {
     assert.strictEqual(pr.select(22), 'other');
   });
 
-  it('known language: pl', function() {
+  test('known language: pl', function() {
     const pr = new Intl.PluralRules('pl');
     assert.strictEqual(pr.select(0), 'many');
     assert.strictEqual(pr.select(1), 'one');
@@ -38,7 +38,7 @@ describe('Plural rules', function() {
     assert.strictEqual(pr.select(22), 'few');
   });
 
-  it('unknown languages uses en-US', function() {
+  test('unknown languages uses en-US', function() {
     const pr = new Intl.PluralRules('xxx');
     assert.strictEqual(pr.select(0), 'other');
     assert.strictEqual(pr.select(1), 'one');

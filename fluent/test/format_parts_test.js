@@ -31,22 +31,22 @@ function assert_partsEqual(actual, expected) {
   }
 }
 
-describe('formatToParts', function(){
+suite('formatToParts', function(){
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('Simple value', function(){
-    before(function() {
+  suite('Simple value', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
       `);
     });
 
-    it('returns the parts', function(){
+    test('returns the parts', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo']);
@@ -54,8 +54,8 @@ describe('formatToParts', function(){
     });
   });
 
-  describe('Complex value', function(){
-    before(function() {
+  suite('Complex value', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -65,21 +65,21 @@ describe('formatToParts', function(){
       `);
     });
 
-    it('returns the parts', function(){
+    test('returns the parts', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', ' Bar']);
       assert.equal(errs.length, 0);
     });
 
-    it('returns FluentNone', function(){
+    test('returns FluentNone', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, [new FluentNone('missing')]);
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
-    it('returns FluentNumber', function(){
+    test('returns FluentNumber', function(){
       const msg = ctx.messages.get('qux');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, [new FluentNumber(1)]);
@@ -87,8 +87,8 @@ describe('formatToParts', function(){
     });
   });
 
-  describe('Complex value referencing a null message', function(){
-    before(function() {
+  suite('Complex value referencing a null message', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo
@@ -97,21 +97,21 @@ describe('formatToParts', function(){
       `);
     });
 
-    it('returns null', function(){
+    test('returns null', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, null);
       assert.equal(errs.length, 0);
     });
 
-    it('returns the parts of the attribute', function(){
+    test('returns the parts of the attribute', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.formatToParts(msg.attrs.attr, args, errs);
       assert_partsEqual(val, ['Foo Attr']);
       assert.equal(errs.length, 0);
     });
 
-    it('returns FluentNone', function(){
+    test('returns FluentNone', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, [new FluentNone(), ' Bar']);
@@ -119,8 +119,8 @@ describe('formatToParts', function(){
     });
   });
 
-  describe('Nested complex values', function(){
-    before(function() {
+  suite('Nested complex values', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo { 1 }
@@ -129,21 +129,21 @@ describe('formatToParts', function(){
       `);
     });
 
-    it('returns parts of foo', function(){
+    test('returns parts of foo', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', new FluentNumber(1)]);
       assert.equal(errs.length, 0);
     });
 
-    it('returns flattened parts of bar', function(){
+    test('returns flattened parts of bar', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', new FluentNumber(1), 'Bar']);
       assert.equal(errs.length, 0);
     });
 
-    it('returns flattened parts of baz', function(){
+    test('returns flattened parts of baz', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', new FluentNumber(1), ' Bar', ' Baz']);

@@ -5,10 +5,10 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Referencing values', function(){
+suite('Referencing values', function(){
   let ctx, args, errs;
 
-  before(function() {
+  suiteSetup(function() {
     ctx = new MessageContext('en-US', { useIsolating: false });
     ctx.addMessages(ftl`
       key1 = Value 1
@@ -42,46 +42,46 @@ describe('Referencing values', function(){
     `);
   });
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  it('references the value', function(){
+  test('references the value', function(){
     const msg = ctx.messages.get('ref1');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'Value 1');
     assert.equal(errs.length, 0);
   });
 
-  it('references the default variant', function(){
+  test('references the default variant', function(){
     const msg = ctx.messages.get('ref2');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'B2');
     assert.equal(errs.length, 0);
   });
 
-  it('references the value if it is a pattern', function(){
+  test('references the value if it is a pattern', function(){
     const msg = ctx.messages.get('ref3');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'Value 3');
     assert.equal(errs.length, 0);
   });
 
-  it('references the default variant if it is a pattern', function(){
+  test('references the default variant if it is a pattern', function(){
     const msg = ctx.messages.get('ref4');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'B4');
     assert.equal(errs.length, 0);
   });
 
-  it('uses ??? if there is no value', function(){
+  test('uses ??? if there is no value', function(){
     const msg = ctx.messages.get('ref5');
     const val = ctx.format(msg, args, errs);
     assert.strictEqual(val, '???');
     assert.ok(errs[0] instanceof RangeError); // no default
   });
 
-  it('references the variants', function(){
+  test('references the variants', function(){
     const msg_a = ctx.messages.get('ref6');
     const msg_b = ctx.messages.get('ref7');
     const val_a = ctx.format(msg_a, args, errs)
@@ -91,7 +91,7 @@ describe('Referencing values', function(){
     assert.equal(errs.length, 0);
   });
 
-  it('references the variants which are patterns', function(){
+  test('references the variants which are patterns', function(){
     const msg_a = ctx.messages.get('ref8');
     const msg_b = ctx.messages.get('ref9');
     const val_a = ctx.format(msg_a, args, errs)
@@ -101,7 +101,7 @@ describe('Referencing values', function(){
     assert.equal(errs.length, 0);
   });
 
-  it('references the attributes', function(){
+  test('references the attributes', function(){
     const msg_a = ctx.messages.get('ref10');
     const msg_b = ctx.messages.get('ref11');
     const val_a = ctx.format(msg_a, args, errs)

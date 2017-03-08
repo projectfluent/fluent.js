@@ -5,15 +5,15 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Context', function() {
+suite('Context', function() {
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('addMessages', function(){
-    before(function() {
+  suite('addMessages', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -21,7 +21,7 @@ describe('Context', function() {
       `);
     });
 
-    it('preserves existing messages when new are added', function() {
+    test('preserves existing messages when new are added', function() {
       ctx.addMessages(ftl`
         baz = Baz
       `);
@@ -30,7 +30,7 @@ describe('Context', function() {
       assert(ctx.messages.has('baz'));
     });
 
-    it('overwrites existing messages if the ids are the same', function() {
+    test('overwrites existing messages if the ids are the same', function() {
       ctx.addMessages(ftl`
         foo = New Foo
       `);

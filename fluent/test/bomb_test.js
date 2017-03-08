@@ -5,15 +5,15 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Reference bombs', function() {
+suite('Reference bombs', function() {
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('Billion Laughs', function(){
-    before(function() {
+  suite('Billion Laughs', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         lol0 = LOL

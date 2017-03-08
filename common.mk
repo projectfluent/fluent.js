@@ -18,7 +18,7 @@ lint:
 	@echo -e " $(OK) $@"
 
 test:
-	@mocha --recursive --require ./test/setup
+	@mocha --ui tdd --recursive --require ./test/setup
 
 html: $(SOURCES)
 	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md \

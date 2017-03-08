@@ -9,10 +9,10 @@ import { ftl } from './util';
 const FSI = '\u2068';
 const PDI = '\u2069';
 
-describe('Isolating interpolations', function(){
+suite('Isolating interpolations', function(){
   let ctx, args, errs;
 
-  before(function() {
+  suiteSetup(function() {
     ctx = new MessageContext('en-US');
     ctx.addMessages(ftl`
       foo = Foo
@@ -22,32 +22,32 @@ describe('Isolating interpolations', function(){
     `);
   });
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  it('isolates interpolated message references', function(){
+  test('isolates interpolated message references', function(){
     const msg = ctx.messages.get('bar');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, `${FSI}Foo${PDI} Bar`);
     assert.equal(errs.length, 0);
   });
 
-  it('isolates interpolated string-typed external arguments', function(){
+  test('isolates interpolated string-typed external arguments', function(){
     const msg = ctx.messages.get('baz');
     const val = ctx.format(msg, {arg: 'Arg'}, errs);
     assert.equal(val, `${FSI}Arg${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
 
-  it('isolates interpolated number-typed external arguments', function(){
+  test('isolates interpolated number-typed external arguments', function(){
     const msg = ctx.messages.get('baz');
     const val = ctx.format(msg, {arg: 1}, errs);
     assert.equal(val, `${FSI}1${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
 
-  it('isolates interpolated date-typed external arguments', function(){
+  test('isolates interpolated date-typed external arguments', function(){
     const dtf = new Intl.DateTimeFormat('en-US');
     const arg = new Date('2016-09-29');
 
@@ -58,7 +58,7 @@ describe('Isolating interpolations', function(){
     assert.equal(errs.length, 0);
   });
 
-  it('isolates complex interpolations', function(){
+  test('isolates complex interpolations', function(){
     const msg = ctx.messages.get('qux');
     const val = ctx.format(msg, {arg: 'Arg'}, errs);
 

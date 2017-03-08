@@ -6,8 +6,8 @@ function isLocaleEqual(str, ref) {
   return locale.isEqual(ref);
 }
 
-describe('Parses simple locales', () => {
-  it('language part', () => {
+suite('Parses simple locales', () => {
+  test('language part', () => {
     assert.ok(isLocaleEqual('en', {
       language: 'en',
     }));
@@ -17,7 +17,7 @@ describe('Parses simple locales', () => {
     }));
   });
 
-  it('script part', () => {
+  test('script part', () => {
     assert.ok(isLocaleEqual('en-Latn', {
       language: 'en',
       script: 'Latn'
@@ -29,7 +29,7 @@ describe('Parses simple locales', () => {
     }));
   });
 
-  it('region part', () => {
+  test('region part', () => {
     assert.ok(isLocaleEqual('en-Latn-US', {
       language: 'en',
       script: 'Latn',
@@ -43,7 +43,7 @@ describe('Parses simple locales', () => {
     }));
   });
 
-  it('variant part', () => {
+  test('variant part', () => {
     assert.ok(isLocaleEqual('en-Latn-US-mac', {
       language: 'en',
       script: 'Latn',
@@ -59,7 +59,7 @@ describe('Parses simple locales', () => {
     }));
   });
 
-  it('skipping script part', () => {
+  test('skipping script part', () => {
     assert.ok(isLocaleEqual('en-US', {
       language: 'en',
       region: 'US',
@@ -72,7 +72,7 @@ describe('Parses simple locales', () => {
     }));
   });
 
-  it('skipping variant part', () => {
+  test('skipping variant part', () => {
     assert.ok(isLocaleEqual('en-US', {
       language: 'en',
       region: 'US',
@@ -86,8 +86,8 @@ describe('Parses simple locales', () => {
   });
 });
 
-describe('Parses locale ranges', () => {
-  it('language part', () => {
+suite('Parses locale ranges', () => {
+  test('language part', () => {
     assert.ok(isLocaleEqual('*', {
       language: '*',
     }));
@@ -103,7 +103,7 @@ describe('Parses locale ranges', () => {
     }));
   });
 
-  it('script part', () => {
+  test('script part', () => {
     assert.ok(isLocaleEqual('en-*', {
       language: 'en',
       script: '*'
@@ -116,7 +116,7 @@ describe('Parses locale ranges', () => {
     }));
   });
 
-  it('region part', () => {
+  test('region part', () => {
     assert.ok(isLocaleEqual('en-Latn-*', {
       language: 'en',
       script: 'Latn',
@@ -124,7 +124,7 @@ describe('Parses locale ranges', () => {
     }));
   });
 
-  it('variant part', () => {
+  test('variant part', () => {
     assert.ok(isLocaleEqual('en-Latn-US-*', {
       language: 'en',
       script: 'Latn',

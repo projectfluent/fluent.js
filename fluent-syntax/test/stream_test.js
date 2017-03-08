@@ -3,8 +3,8 @@
 import assert from 'assert';
 import { ParserStream } from '../src/stream';
 
-describe('ParserStream', function() {
-  it('next', function() {
+suite('ParserStream', function() {
+  test('next', function() {
     let ps = new ParserStream("abcd");
 
     assert.strictEqual('a', ps.current());
@@ -27,7 +27,7 @@ describe('ParserStream', function() {
     assert.strictEqual(4, ps.getIndex());
   });
 
-  it('peek', function() {
+  test('peek', function() {
     let ps = new ParserStream("abcd");
 
     assert.strictEqual('a', ps.currentPeek());
@@ -50,7 +50,7 @@ describe('ParserStream', function() {
     assert.strictEqual(4, ps.getPeekIndex());
   });
 
-  it('peek_and_next', function() {
+  test('peek_and_next', function() {
     let ps = new ParserStream("abcd");
 
     assert.strictEqual('b', ps.peek());
@@ -96,7 +96,7 @@ describe('ParserStream', function() {
     assert.strictEqual(4, ps.getIndex());
   });
 
-  it('skip_to_peek', function() {
+  test('skip_to_peek', function() {
     let ps = new ParserStream("abcd");
 
     ps.peek();
@@ -124,7 +124,7 @@ describe('ParserStream', function() {
     assert.strictEqual(3, ps.getIndex());
   });
 
-  it('reset_peek', function() {
+  test('reset_peek', function() {
     let ps = new ParserStream("abcd");
 
     ps.next();
@@ -164,7 +164,7 @@ describe('ParserStream', function() {
     assert.strictEqual(undefined, ps.peek());
   });
 
-  it('peek_char_is', function() {
+  test('peek_char_is', function() {
     let ps = new ParserStream("abcd");
 
     ps.next();

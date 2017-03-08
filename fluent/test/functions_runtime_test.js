@@ -5,15 +5,15 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Runtime-specific functions', function() {
+suite('Runtime-specific functions', function() {
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('passing into the constructor', function(){
-    before(function() {
+  suite('passing into the constructor', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', {
         useIsolating: false,
         functions: {
@@ -27,7 +27,7 @@ describe('Runtime-specific functions', function() {
       `);
     });
 
-    it('works for strings', function() {
+    test('works for strings', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'FooBar');

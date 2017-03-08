@@ -5,15 +5,15 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('External arguments', function() {
+suite('External arguments', function() {
   let ctx, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('in values', function(){
-    before(function() {
+  suite('in values', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo { $num }
@@ -26,28 +26,28 @@ describe('External arguments', function() {
       `);
     });
 
-    it('can be used in the message value', function() {
+    test('can be used in the message value', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
-    it('can be used in the message value which is referenced', function() {
+    test('can be used in the message value which is referenced', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
-    it('can be used in an attribute', function() {
+    test('can be used in an attribute', function() {
       const msg = ctx.messages.get('baz').attrs.attr;
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Baz Attribute 3');
       assert.equal(errs.length, 0);
     });
 
-    it('can be used in a variant', function() {
+    test('can be used in a variant', function() {
       const msg = ctx.messages.get('qux');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Baz Variant A 3');
@@ -55,8 +55,8 @@ describe('External arguments', function() {
     });
   });
 
-  describe('in selectors', function(){
-    before(function() {
+  suite('in selectors', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $num -> 
@@ -65,7 +65,7 @@ describe('External arguments', function() {
       `);
     });
 
-    it('can be used as a selector', function() {
+    test('can be used as a selector', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo');
@@ -73,8 +73,8 @@ describe('External arguments', function() {
     });
   });
 
-  describe('in function calls', function(){
-    before(function() {
+  suite('in function calls', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { NUMBER($num) }
@@ -82,14 +82,14 @@ describe('External arguments', function() {
       `);
     });
 
-    it('can be a positional argument', function() {
+    test('can be a positional argument', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });
 
-    it('can be a named argument', function() {
+    test('can be a named argument', function() {
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, '1.000');
@@ -97,57 +97,57 @@ describe('External arguments', function() {
     });
   });
 
-  describe('simple errors', function(){
-    before(function() {
+  suite('simple errors', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
       `);
     });
 
-    it('falls back to argument\'s name if it\'s missing', function() {
+    test('falls back to argument\'s name if it\'s missing', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {}, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof ReferenceError); // unknown external
     });
 
-    it('cannot be arrays', function() {
+    test('cannot be arrays', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: [1, 2, 3] }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
-    it('cannot be a dict-like object', function() {
+    test('cannot be a dict-like object', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: { prop: 1 } }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
-    it('cannot be a boolean', function() {
+    test('cannot be a boolean', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: true }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
-    it('cannot be undefined', function() {
+    test('cannot be undefined', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: undefined }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
-    it('cannot be null', function() {
+    test('cannot be null', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
-    it('cannot be a function', function() {
+    test('cannot be a function', function() {
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, { arg: () => null }, errs);
       assert.equal(val, 'arg');
@@ -155,10 +155,10 @@ describe('External arguments', function() {
     });
   });
 
-  describe('and strings', function(){
+  suite('and strings', function(){
     let args;
 
-    before(function() {
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
@@ -168,7 +168,7 @@ describe('External arguments', function() {
       };
     });
 
-    it('can be a string', function(){
+    test('can be a string', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Argument');
@@ -176,10 +176,10 @@ describe('External arguments', function() {
     });
   });
 
-  describe('and numbers', function(){
+  suite('and numbers', function(){
     let args;
 
-    before(function() {
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $arg }
@@ -189,7 +189,7 @@ describe('External arguments', function() {
       };
     });
 
-    it('can be a number', function(){
+    test('can be a number', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '1');
@@ -197,10 +197,10 @@ describe('External arguments', function() {
     });
   });
 
-  describe('and dates', function(){
+  suite('and dates', function(){
     let args, dtf;
 
-    before(function() {
+    suiteSetup(function() {
       dtf = new Intl.DateTimeFormat('en-US');
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
@@ -211,7 +211,7 @@ describe('External arguments', function() {
       };
     });
 
-    it('can be a date', function(){
+    test('can be a date', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       // format the date argument to account for the testrunner's timezone

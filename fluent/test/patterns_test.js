@@ -5,22 +5,22 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-describe('Patterns', function(){
+suite('Patterns', function(){
   let ctx, args, errs;
 
-  beforeEach(function() {
+  setup(function() {
     errs = [];
   });
 
-  describe('Simple string value', function(){
-    before(function() {
+  suite('Simple string value', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
       `);
     });
 
-    it('returns the value', function(){
+    test('returns the value', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
@@ -28,8 +28,8 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Complex string value', function(){
-    before(function() {
+  suite('Complex string value', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
@@ -39,14 +39,14 @@ describe('Patterns', function(){
       `);
     });
 
-    it('returns the value', function(){
+    test('returns the value', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
-    it('returns the raw string if the referenced message is ' +
+    test('returns the raw string if the referenced message is ' +
        'not found', function(){
       const msg = ctx.messages.get('baz');
       const val = ctx.format(msg, args, errs);
@@ -55,8 +55,8 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Complex string referencing a message with null value', function(){
-    before(function() {
+  suite('Complex string referencing a message with null value', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo
@@ -65,21 +65,21 @@ describe('Patterns', function(){
       `);
     });
 
-    it('returns the null value', function(){
+    test('returns the null value', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, null);
       assert.equal(errs.length, 0);
     });
 
-    it('formats the attribute', function(){
+    test('formats the attribute', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg.attrs.attr, args, errs);
       assert.strictEqual(val, 'Foo Attr');
       assert.equal(errs.length, 0);
     });
 
-    it('formats ??? when the referenced message has no value and no default',
+    test('formats ??? when the referenced message has no value and no default',
        function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
@@ -88,8 +88,8 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Cyclic reference', function(){
-    before(function() {
+  suite('Cyclic reference', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { bar }
@@ -97,7 +97,7 @@ describe('Patterns', function(){
       `);
     });
 
-    it('returns ???', function(){
+    test('returns ???', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, '???');
@@ -105,15 +105,15 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Cyclic self-reference', function(){
-    before(function() {
+  suite('Cyclic self-reference', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { foo }
       `);
     });
 
-    it('returns the raw string', function(){
+    test('returns the raw string', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, '???');
@@ -121,8 +121,8 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Cyclic self-reference in a member', function(){
-    before(function() {
+  suite('Cyclic self-reference in a member', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { $sel ->
@@ -133,14 +133,14 @@ describe('Patterns', function(){
       `);
     });
 
-    it('returns ???', function(){
+    test('returns ???', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {sel: 'a'}, errs);
       assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
-    it('returns the other member if requested', function(){
+    test('returns the other member if requested', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, {sel: 'b'}, errs);
       assert.strictEqual(val, 'Bar');
@@ -148,8 +148,8 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Cyclic reference in a selector', function(){
-    before(function() {
+  suite('Cyclic reference in a selector', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { ref-foo ->
@@ -160,7 +160,7 @@ describe('Patterns', function(){
       `);
     });
 
-    it('returns the default variant', function(){
+    test('returns the default variant', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo');
@@ -168,8 +168,8 @@ describe('Patterns', function(){
     });
   });
 
-  describe('Cyclic self-reference in a selector', function(){
-    before(function() {
+  suite('Cyclic self-reference in a selector', function(){
+    suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = { foo ->
@@ -183,14 +183,14 @@ describe('Patterns', function(){
       `);
     });
 
-    it('returns the default variant', function(){
+    test('returns the default variant', function(){
       const msg = ctx.messages.get('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
-    it('can reference an attribute', function(){
+    test('can reference an attribute', function(){
       const msg = ctx.messages.get('bar');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Bar');
