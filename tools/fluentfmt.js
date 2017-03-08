@@ -14,7 +14,6 @@ const FluentSyntax = require('../fluent-syntax/src');
 program
   .version('0.0.1')
   .usage('[options] [file]')
-  .option('-r, --runtime', 'Use the runtime parser')
   .option('-s, --silent', 'Silence syntax errors')
   .parse(process.argv);
 
@@ -30,30 +29,12 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  (program.runtime
-    ? printRuntime
-    : printResource
-  )(data);
-}
-
-function printRuntime(data) {
-  const parse = require('../fluent/src/parser').default;
-  const [res, errors] = parse(data.toString());
-  console.log(JSON.stringify(res, null, 2));
-
-  if (!program.silent) {
-    errors.map(e => console.error(e.message));
-  }
-}
-
-function printResource(data) {
   const res = FluentSyntax.parse(data.toString());
-  const source = res.source;
-  delete res.source;
-  console.log(JSON.stringify(res, null, 2));
+  const pretty = FluentSyntax.serialize(res);
+  console.log(pretty);
 
   if (!program.silent) {
-    res.body.map(entry => printAnnotations(source, entry));
+    res.body.map(entry => printAnnotations(res.source, entry));
   }
 }
 

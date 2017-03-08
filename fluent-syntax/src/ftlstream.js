@@ -184,6 +184,10 @@ export class FTLParserStream extends ParserStream {
 
   takeSymbChar() {
     const closure = ch => {
+      if (ch === undefined) {
+        return false;
+      }
+
       const cc = ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z
               (cc >= 65 && cc <= 90) || // A-Z

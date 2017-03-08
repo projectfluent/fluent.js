@@ -1,5 +1,6 @@
 export * from './ast';
 export * from './parser';
+export * from './serializer';
 
 export function lineOffset(source, pos) {
   // Substract 1 to get the offset.

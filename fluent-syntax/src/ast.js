@@ -161,6 +161,7 @@ export class Variant extends Node {
 export class NamedArgument extends Node {
   constructor(name, val) {
     super();
+    this.type = 'NamedArgument';
     this.name = name;
     this.val = val;
   }

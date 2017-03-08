@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+  - Updated parser to Fluent Syntax 0.3
+  - Added the Serializer module
+
+    ```javascript
+      import { parse } from '../src/parser';
+      import { serialize } from '../src/serializer';
+
+      function pretty(text) {
+        const ast = parse(text);
+        return serialize(ast);
+      }
+    ```
+
+
 ## fluent-syntax 0.1.1
 
   - (fbfa521) Add spans and annotations to Entries
