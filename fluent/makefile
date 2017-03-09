@@ -8,6 +8,7 @@ compat: compat.js
 
 $(PACKAGE).js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
+	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --format umd \
 	    --id $(PACKAGE) \
 	    --name $(GLOBAL) \
