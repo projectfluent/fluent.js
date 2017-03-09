@@ -4,6 +4,12 @@
 
   - …
 
+## fluent 0.3.0
+
+  - Support Fluent Syntax 0.3
+
+    Added support for tags and indented multiline text. Removed quoted values.
+
 ## fluent 0.2.2
 
 ### Breaking changes
