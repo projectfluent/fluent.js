@@ -2,7 +2,14 @@
 
 ## Unreleased
 
+  - …
+
+## fluent-syntax 0.2.0
+
   - Updated parser to Fluent Syntax 0.3
+
+    Added support for tags and indented multiline text. Removed quoted values.
+
   - Added the Serializer module
 
     ```javascript
