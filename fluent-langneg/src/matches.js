@@ -1,48 +1,8 @@
 /* eslint no-magic-numbers: 0 */
-/* eslint complexity: ["error", { "max": 22 }] */
+/* eslint complexity: ["error", { "max": 27 }] */
 
 import Locale from './locale';
-import { getLikelySubtagsMin } from './subtags';
 
-/**
- * Attempts to build a most likely maximum version of the locale id based
- * on it's minimal version.
- *
- * If possible it uses the lookup table above. If this one is missing,
- * it only attempts to place the language code in the region position.
- */
-function getLikelySubtagsLocale(loc, likelySubtags) {
-  if (likelySubtags) {
-    for (const key of Object.keys(likelySubtags)) {
-      if (key.toLowerCase() === loc.toLowerCase()) {
-        return new Locale(likelySubtags[key]);
-      }
-    }
-    return null;
-  }
-  return getLikelySubtagsMin(loc);
-}
-
-/**
- * Replaces the region position with a range to allow for matches
- * with the same language/script but from different region.
- */
-function regionRangeFor(locale) {
-  locale.region = '*';
-  return locale;
-}
-
-function variantRangeFor(locale) {
-  locale.variant = '*';
-  return locale;
-}
-
-function getOrParseLocaleRange(localeStr, cache) {
-  if (!cache.has(localeStr)) {
-    cache.set(localeStr, new Locale(localeStr, true));
-  }
-  return cache.get(localeStr);
-}
 /**
  * Negotiates the languages between the list of requested locales against
  * a list of available locales.
@@ -114,43 +74,57 @@ function getOrParseLocaleRange(localeStr, cache) {
  *    against `sr-Latn`.
  */
 export default function filterMatches(
-  requestedLocales, availableLocales, strategy, likelySubtags
+  requestedLocales, availableLocales, strategy
 ) {
   const supportedLocales = new Set();
 
-  const availableLocalesCache = new Map();
+  const availLocales =
+    new Set(availableLocales.map(locale => new Locale(locale, true)));
 
   outer:
   for (const reqLocStr of requestedLocales) {
-    if (strategy === 'lookup' && supportedLocales.size > 0) {
-      return Array.from(supportedLocales);
-    }
-
     const reqLocStrLC = reqLocStr.toLowerCase();
+    const requestedLocale = new Locale(reqLocStrLC);
+
+    if (requestedLocale.language === undefined) {
+      continue;
+    }
 
     // Attempt to make an exact match
     // Example: `en-US` === `en-US`
     for (const availableLocale of availableLocales) {
       if (reqLocStrLC === availableLocale.toLowerCase()) {
         supportedLocales.add(availableLocale);
-        if (strategy !== 'matching') {
+        for (const loc of availLocales) {
+          if (loc.isEqual(requestedLocale)) {
+            availLocales.delete(loc);
+            break;
+          }
+        }
+        if (strategy === 'lookup') {
+          return Array.from(supportedLocales);
+        } else if (strategy === 'matching') {
           continue outer;
+        } else {
+          break;
         }
       }
     }
 
-    const requestedLocale = new Locale(reqLocStrLC);
 
     // Attempt to match against the available range
     // This turns `en` into `en-*-*-*` and `en-US` into `en-*-US-*`
     // Example: ['en-US'] * ['en'] = ['en']
-    for (const availableLocale of availableLocales) {
-      if (requestedLocale.matches(
-        getOrParseLocaleRange(availableLocale, availableLocalesCache)
-      )) {
-        supportedLocales.add(availableLocale);
-        if (strategy !== 'matching') {
+    for (const availableLocale of availLocales) {
+      if (requestedLocale.matches(availableLocale)) {
+        supportedLocales.add(availableLocale.string);
+        availLocales.delete(availableLocale);
+        if (strategy === 'lookup') {
+          return Array.from(supportedLocales);
+        } else if (strategy === 'matching') {
           continue outer;
+        } else {
+          break;
         }
       }
     }
@@ -159,17 +133,17 @@ export default function filterMatches(
     // If data is available, it'll expand `en` into `en-Latn-US` and
     // `zh` into `zh-Hans-CN`.
     // Example: ['en'] * ['en-GB', 'en-US'] = ['en-US']
-    const maxRequestedLocale =
-      getLikelySubtagsLocale(reqLocStrLC, likelySubtags);
-
-    if (maxRequestedLocale) {
-      for (const availableLocale of availableLocales) {
-        if (maxRequestedLocale.matches(
-          getOrParseLocaleRange(availableLocale, availableLocalesCache)
-        )) {
-          supportedLocales.add(availableLocale);
-          if (strategy !== 'matching') {
+    if (requestedLocale.addLikelySubtags()) {
+      for (const availableLocale of availLocales) {
+        if (requestedLocale.matches(availableLocale)) {
+          supportedLocales.add(availableLocale.string);
+          availLocales.delete(availableLocale);
+          if (strategy === 'lookup') {
+            return Array.from(supportedLocales);
+          } else if (strategy === 'matching') {
             continue outer;
+          } else {
+            break;
           }
         }
       }
@@ -177,30 +151,36 @@ export default function filterMatches(
 
     // Attempt to look up for a different variant for the same locale ID
     // Example: ['en-US-mac'] * ['en-US-win'] = ['en-US-win']
-    const variantRange = variantRangeFor(maxRequestedLocale || requestedLocale);
+    requestedLocale.setVariantRange();
 
-    for (const availableLocale of availableLocales) {
-      if (variantRange.matches(
-        getOrParseLocaleRange(availableLocale, availableLocalesCache)
-      )) {
-        supportedLocales.add(availableLocale);
-        if (strategy !== 'matching') {
+    for (const availableLocale of availLocales) {
+      if (requestedLocale.matches(availableLocale)) {
+        supportedLocales.add(availableLocale.string);
+        availLocales.delete(availableLocale);
+        if (strategy === 'lookup') {
+          return Array.from(supportedLocales);
+        } else if (strategy === 'matching') {
           continue outer;
+        } else {
+          break;
         }
       }
     }
 
     // Attempt to look up for a different region for the same locale ID
     // Example: ['en-US'] * ['en-AU'] = ['en-AU']
-    const regionRange = regionRangeFor(variantRange);
+    requestedLocale.setRegionRange();
 
-    for (const availableLocale of availableLocales) {
-      if (regionRange.matches(
-        getOrParseLocaleRange(availableLocale, availableLocalesCache)
-      )) {
-        supportedLocales.add(availableLocale);
-        if (strategy !== 'matching') {
+    for (const availableLocale of availLocales) {
+      if (requestedLocale.matches(availableLocale)) {
+        supportedLocales.add(availableLocale.string);
+        availLocales.delete(availableLocale);
+        if (strategy === 'lookup') {
+          return Array.from(supportedLocales);
+        } else if (strategy === 'matching') {
           continue outer;
+        } else {
+          break;
         }
       }
     }

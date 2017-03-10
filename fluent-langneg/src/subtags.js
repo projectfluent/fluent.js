@@ -56,6 +56,7 @@ export function getLikelySubtagsMin(loc) {
   const locale = new Locale(loc);
   if (regionMatchingLangs.includes(locale.language)) {
     locale.region = locale.language;
+    locale.string = `${locale.language}-${locale.region}`;
     return locale;
   }
   return null;

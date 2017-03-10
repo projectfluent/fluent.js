@@ -1,9 +1,11 @@
 /* eslint no-magic-numbers: 0 */
 
+import { getLikelySubtagsMin } from './subtags';
+
 const languageCodeRe = '([a-z]{2,3}|\\*)';
 const scriptCodeRe = '(?:-([a-z]{4}|\\*))';
 const regionCodeRe = '(?:-([a-z]{2}|\\*))';
-const variantCodeRe = '(?:-([a-z]+|\\*))';
+const variantCodeRe = '(?:-([a-z]{3}|\\*))';
 
 /**
  * Regular expression splitting locale id into four pieces:
@@ -33,7 +35,7 @@ export default class Locale {
    * properly parsed as `en-*-US-*`.
    */
   constructor(locale, range = false) {
-    const result = localeRe.exec(locale);
+    const result = localeRe.exec(locale.replace(/_/g, '-'));
     if (!result) {
       return;
     }
@@ -49,6 +51,7 @@ export default class Locale {
     this.script = script;
     this.region = region;
     this.variant = variant;
+    this.string = locale;
   }
 
   isEqual(locale) {
@@ -62,5 +65,24 @@ export default class Locale {
         (this[part] !== undefined && locale[part] !== undefined &&
         this[part].toLowerCase() === locale[part].toLowerCase());
     });
+  }
+
+  setVariantRange() {
+    this.variant = '*';
+  }
+
+  setRegionRange() {
+    this.region = '*';
+  }
+
+  addLikelySubtags() {
+    const newLocale = getLikelySubtagsMin(this.string.toLowerCase());
+
+    if (newLocale) {
+      localeParts.forEach(part => this[part] = newLocale[part]);
+      this.string = newLocale.string;
+      return true;
+    }
+    return false;
   }
 }
