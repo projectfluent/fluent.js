@@ -16,7 +16,7 @@ function GetOption(options, property, type, values, fallback) {
     if (type === 'boolean') {
       value = new Boolean(value);
     } else if (type === 'string') {
-      value = value.toString();
+      value = String(value);
     }
 
     if (values !== undefined && values.indexOf(value) === -1) {
@@ -90,22 +90,27 @@ export default function negotiateLanguages(
   const strategy = GetOption(options, 'strategy', 'string',
     ['filtering', 'matching', 'lookup'], 'filtering');
 
-  if (strategy === 'lookup' && defaultLocale === undefined) {
+  if (strategy === 'lookup' && !defaultLocale) {
     throw new Error('defaultLocale cannot be undefined for strategy `lookup`');
   }
 
+  const resolvedReqLoc = Array.from(Object(requestedLocales)).map(loc => {
+    return String(loc);
+  });
+  const resolvedAvailLoc = Array.from(Object(availableLocales)).map(loc => {
+    return String(loc);
+  });
+
   const supportedLocales = filterMatches(
-    requestedLocales, availableLocales, strategy, likelySubtags
+    resolvedReqLoc,
+    resolvedAvailLoc, strategy, likelySubtags
   );
 
   if (strategy === 'lookup') {
     if (supportedLocales.length === 0) {
       supportedLocales.push(defaultLocale);
     }
-    return supportedLocales;
-  }
-
-  if (defaultLocale && !supportedLocales.includes(defaultLocale)) {
+  } else if (defaultLocale && !supportedLocales.includes(defaultLocale)) {
     supportedLocales.push(defaultLocale);
   }
   return supportedLocales;
