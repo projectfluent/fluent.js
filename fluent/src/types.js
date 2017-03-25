@@ -1,3 +1,5 @@
+/* global Intl */
+
 /**
  * The `FluentType` class is the base of Fluent's type system.
  *
