@@ -2,7 +2,7 @@
 
 import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
-import { ParseError, error } from './errors';
+import { ParseError } from './errors';
 
 export function parse(source) {
   let comment = null;
@@ -29,6 +29,10 @@ export function parse(source) {
         throw err;
       }
 
+      const annot = new AST.Annotation(
+        'ParseError', err.message, ps.getIndex()
+      );
+
       ps.skipToNextEntryStart();
       const nextEntryStart = ps.getIndex();
 
@@ -36,14 +40,14 @@ export function parse(source) {
       const slice = source.substring(entryStartPos, nextEntryStart);
       const junk = new AST.Junk(slice);
       junk.addSpan(entryStartPos, nextEntryStart);
-      junk.addAnnotation(err);
+      junk.addAnnotation(annot);
       entries.push(junk);
     }
 
     ps.skipWSLines();
   }
 
-  return new AST.Resource(entries, comment, source);
+  return new AST.Resource(entries, comment);
 }
 
 function getEntry(ps) {
@@ -64,7 +68,7 @@ function getEntry(ps) {
   if (comment) {
     return comment;
   }
-  throw error(ps, 'Expected entry');
+  throw new ParseError('Expected entry');
 }
 
 function getComment(ps) {
@@ -136,13 +140,13 @@ function getMessage(ps, comment) {
 
   if (ps.isPeekNextLineTagStart()) {
     if (attrs !== undefined) {
-      throw error(ps, 'Tags cannot be added to a message with attributes.');
+      throw new ParseError('Tags cannot be added to messages with attributes');
     }
     tags = getTags(ps);
   }
 
   if (pattern === undefined && attrs === undefined && tags === undefined) {
-    throw error(ps, 'Missing field');
+    throw new ParseError('Missing field');
   }
 
   return new AST.Message(id, pattern, attrs, tags, comment);
@@ -168,7 +172,7 @@ function getAttributes(ps) {
     const value = getPattern(ps);
 
     if (value === undefined) {
-      throw error(ps, 'Expected field');
+      throw new ParseError('Expected field');
     }
 
     attrs.push(new AST.Attribute(key, value));
@@ -217,7 +221,7 @@ function getVariantKey(ps) {
   const ch = ps.current();
 
   if (!ch) {
-    throw error(ps, 'Expected VariantKey');
+    throw new ParseError('Expected VariantKey');
   }
 
   const cc = ch.charCodeAt(0);
@@ -256,7 +260,7 @@ function getVariants(ps) {
     const value = getPattern(ps);
 
     if (!value) {
-      throw error(ps, 'Expected field');
+      throw new ParseError('Expected field');
     }
 
     variants.push(new AST.Variant(key, value, defaultIndex));
@@ -267,7 +271,7 @@ function getVariants(ps) {
   }
 
   if (!hasDefault) {
-    throw error(ps, 'Missing default variant');
+    throw new ParseError('Missing default variant');
   }
 
   return variants;
@@ -299,7 +303,7 @@ function getDigits(ps) {
   }
 
   if (num.length === 0) {
-    throw error(ps, 'Expected char range');
+    throw new ParseError('Expected char range');
   }
 
   return num;
@@ -417,7 +421,7 @@ function getExpression(ps) {
       const variants = getVariants(ps);
 
       if (variants.length === 0) {
-        throw error(ps, 'Missing variants');
+        throw new ParseError('Missing variants');
       }
 
       ps.expectChar('\n');
@@ -486,7 +490,7 @@ function getCallArgs(ps) {
 
     if (ps.current() === ':') {
       if (exp.type !== 'MessageReference') {
-        throw error(ps, 'Forbidden key');
+        throw new ParseError('Forbidden key');
       }
 
       ps.next();
@@ -518,7 +522,7 @@ function getArgVal(ps) {
   } else if (ps.currentIs('"')) {
     return getString(ps);
   }
-  throw error(ps, 'Expected field');
+  throw new ParseError('Expected field');
 }
 
 function getString(ps) {
@@ -541,7 +545,7 @@ function getLiteral(ps) {
   const ch = ps.current();
 
   if (!ch) {
-    throw error(ps, 'Expected literal');
+    throw new ParseError('Expected literal');
   }
 
   if (ps.isNumberStart()) {
@@ -556,5 +560,4 @@ function getLiteral(ps) {
 
   const name = getIdentifier(ps);
   return new AST.MessageReference(name);
-
 }

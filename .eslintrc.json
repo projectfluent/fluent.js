@@ -106,7 +106,8 @@
         "no-use-before-define": [
             2,
             {
-                "functions": false
+                "functions": false,
+                "classes": false
             }
         ],
         "space-infix-ops": 2,

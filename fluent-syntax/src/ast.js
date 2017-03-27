@@ -3,24 +3,24 @@ class Node {
 }
 
 export class Resource extends Node {
-  constructor(body = [], comment = null, source = '') {
+  constructor(body = [], comment = null) {
     super();
     this.type = 'Resource';
     this.body = body;
     this.comment = comment;
-    this.source = source;
   }
 }
 
 export class Entry extends Node {
-  constructor() {
+  constructor(span = null, annotations = []) {
     super();
     this.type = 'Entry';
-    this.annotations = [];
+    this.span = span;
+    this.annotations = annotations;
   }
 
-  addSpan(from, to) {
-    this.span = { from, to };
+  addSpan(start, end) {
+    this.span = new Span(start, end);
   }
 
   addAnnotation(annot) {
@@ -29,12 +29,15 @@ export class Entry extends Node {
 }
 
 export class Message extends Entry {
-  constructor(id, value = null, attrs = null, tags = null, comment = null) {
-    super();
+  constructor(
+    id, value = null, attributes = null, tags = null, comment = null,
+    span, annotations
+  ) {
+    super(span, annotations);
     this.type = 'Message';
     this.id = id;
     this.value = value;
-    this.attributes = attrs;
+    this.attributes = attributes;
     this.tags = tags;
     this.comment = comment;
   }
@@ -183,16 +186,16 @@ export class Symbol extends Identifier {
 }
 
 export class Comment extends Entry {
-  constructor(content) {
-    super();
+  constructor(content, span, annotations) {
+    super(span, annotations);
     this.type = 'Comment';
     this.content = content;
   }
 }
 
 export class Section extends Entry {
-  constructor(name, comment = null) {
-    super();
+  constructor(name, comment = null, span, annotations) {
+    super(span, annotations);
     this.type = 'Section';
     this.name = name;
     this.comment = comment;
@@ -207,9 +210,28 @@ export class Function extends Identifier {
 }
 
 export class Junk extends Entry {
-  constructor(content) {
-    super();
+  constructor(content, span, annotations) {
+    super(span, annotations);
     this.type = 'Junk';
     this.content = content;
+  }
+}
+
+export class Span extends Node {
+  constructor(start, end) {
+    super();
+    this.type = 'Span';
+    this.start = start;
+    this.end = end;
+  }
+}
+
+export class Annotation extends Node {
+  constructor(name, message, pos) {
+    super();
+    this.type = 'Annotation';
+    this.name = name;
+    this.message = message;
+    this.pos = pos;
   }
 }
