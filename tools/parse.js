@@ -47,9 +47,8 @@ function printRuntime(data) {
 }
 
 function printResource(data) {
-  const res = FluentSyntax.parse(data.toString());
-  const source = res.source;
-  delete res.source;
+  const source = data.toString();
+  const res = FluentSyntax.parse(source);
   console.log(JSON.stringify(res, null, 2));
 
   if (!program.silent) {
@@ -66,10 +65,10 @@ function printAnnotations(source, entry) {
 
 function printAnnotation(source, span, annot) {
   const { name, message, pos } = annot;
-  const slice = source.substring(span.from, span.to).trimRight();
+  const slice = source.substring(span.start, span.end).trimRight();
   const lineNumber = FluentSyntax.lineOffset(source, pos) + 1;
   const columnOffset = FluentSyntax.columnOffset(source, pos);
-  const showLines = lineNumber - FluentSyntax.lineOffset(source, span.from);
+  const showLines = lineNumber - FluentSyntax.lineOffset(source, span.start);
   const lines = slice.split('\n');
   const head = lines.slice(0, showLines);
   const tail = lines.slice(showLines);
