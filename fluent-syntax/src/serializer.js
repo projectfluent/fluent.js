@@ -21,24 +21,28 @@ export function serialize(resource, withJunk = false) {
   }
 
   for (const entry of resource.body) {
-    switch (entry.type) {
-      case 'Junk':
-        if (withJunk) {
-          parts.push(serializeJunk(entry));
-        }
-        break;
-      case 'Section':
-        parts.push(serializeSection(entry));
-        break;
-      case 'Message':
-        parts.push(serializeMessage(entry));
-        break;
-      default :
-        throw new Error(`Unknown entry type: ${entry.type}`);
+    if (entry.types !== 'Junk' || withJunk) {
+      parts.push(serializeEntry(entry));
     }
   }
 
-  return parts.join('').trim();
+  return parts.join('');
+}
+
+
+export function serializeEntry(entry) {
+  switch (entry.type) {
+    case 'Message':
+      return serializeMessage(entry);
+    case 'Section':
+      return serializeSection(entry);
+    case 'Comment':
+      return serializeComment(entry);
+    case 'Junk':
+      return serializeJunk(entry);
+    default :
+      throw new Error(`Unknown entry type: ${entry.type}`);
+  }
 }
 
 

@@ -5,6 +5,7 @@
   - JSON is now supported as a transport format for the AST.
   - Annotations are now properly serialized and deserialized.
   - Spans are now proper AST nodes with { start, end } fields.
+  - Added parseEntry and serializeEntry functions.
 
 ## fluent-syntax 0.2.0
 
