@@ -116,4 +116,8 @@ export class ParserStream {
 
     this.index = this.peekIndex;
   }
+
+  getSlice(start, end) {
+    return this.string.substring(start, end);
+  }
 }

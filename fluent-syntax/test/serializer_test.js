@@ -86,7 +86,6 @@ suite('Serializer', function() {
 
       bar = Bar
     `;
-    console.log(pretty(input))
     assert.equal(pretty(input), input);
   });
 

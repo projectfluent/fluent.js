@@ -15,8 +15,6 @@ export function ftl(strings) {
   const indents = lines.filter(nonBlank).map(countIndent);
   const common = Math.min(...indents);
   const indent = new RegExp(`^\\s{${common}}`);
-
-  return lines.map(
-    line => line.replace(indent, '')
-  ).join('\n');
+  const dedented = lines.map(line => line.replace(indent, ''));
+  return `${dedented.join('\n')}\n`;
 }

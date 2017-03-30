@@ -8,46 +8,57 @@ export function parse(source) {
   let comment = null;
 
   const ps = new FTLParserStream(source);
-
   ps.skipWSLines();
 
   const entries = [];
 
   while (ps.current()) {
-    const entryStartPos = ps.getIndex();
+    const entry = getEntryOrJunk(ps);
 
-    try {
-      const entry = getEntry(ps);
-      if (entryStartPos === 0 && entry.type === 'Comment') {
-        comment = entry;
-      } else {
-        entry.addSpan(entryStartPos, ps.getIndex());
-        entries.push(entry);
-      }
-    } catch (err) {
-      if (!(err instanceof ParseError)) {
-        throw err;
-      }
-
-      const annot = new AST.Annotation(
-        'ParseError', err.message, ps.getIndex()
-      );
-
-      ps.skipToNextEntryStart();
-      const nextEntryStart = ps.getIndex();
-
-      // Create a Junk instance
-      const slice = source.substring(entryStartPos, nextEntryStart);
-      const junk = new AST.Junk(slice);
-      junk.addSpan(entryStartPos, nextEntryStart);
-      junk.addAnnotation(annot);
-      entries.push(junk);
+    if (entry.type === 'Comment' && entries.length === 0) {
+      comment = entry;
+    } else {
+      entries.push(entry);
     }
 
     ps.skipWSLines();
   }
 
   return new AST.Resource(entries, comment);
+}
+
+export function parseEntry(source) {
+  const ps = new FTLParserStream(source);
+  ps.skipWSLines();
+  return getEntryOrJunk(ps);
+}
+
+function getEntryOrJunk(ps) {
+  const entryStartPos = ps.getIndex();
+
+  try {
+    const entry = getEntry(ps);
+    entry.addSpan(entryStartPos, ps.getIndex());
+    return entry;
+  } catch (err) {
+    if (!(err instanceof ParseError)) {
+      throw err;
+    }
+
+    const annot = new AST.Annotation(
+      'ParseError', err.message, ps.getIndex()
+    );
+
+    ps.skipToNextEntryStart();
+    const nextEntryStart = ps.getIndex();
+
+    // Create a Junk instance
+    const slice = ps.getSlice(entryStartPos, nextEntryStart);
+    const junk = new AST.Junk(slice);
+    junk.addSpan(entryStartPos, nextEntryStart);
+    junk.addAnnotation(annot);
+    return junk;
+  }
 }
 
 function getEntry(ps) {
