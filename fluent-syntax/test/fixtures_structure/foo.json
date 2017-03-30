@@ -1,0 +1,31 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 9
+      },
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "foo"
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Foo"
+          }
+        ]
+      },
+      "attributes": null,
+      "tags": null,
+      "comment": null
+    }
+  ],
+  "comment": null
+}

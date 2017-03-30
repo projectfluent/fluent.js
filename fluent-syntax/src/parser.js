@@ -45,9 +45,8 @@ function getEntryOrJunk(ps) {
       throw err;
     }
 
-    const annot = new AST.Annotation(
-      'ParseError', err.message, ps.getIndex()
-    );
+    const annot = new AST.Annotation(err.code, err.message);
+    annot.addSpan(ps.getIndex(), ps.getIndex());
 
     ps.skipToNextEntryStart();
     const nextEntryStart = ps.getIndex();
@@ -79,7 +78,7 @@ function getEntry(ps) {
   if (comment) {
     return comment;
   }
-  throw new ParseError('Expected entry');
+  throw new ParseError('E0002');
 }
 
 function getComment(ps) {
@@ -151,13 +150,13 @@ function getMessage(ps, comment) {
 
   if (ps.isPeekNextLineTagStart()) {
     if (attrs !== undefined) {
-      throw new ParseError('Tags cannot be added to messages with attributes');
+      throw new ParseError('E0012');
     }
     tags = getTags(ps);
   }
 
   if (pattern === undefined && attrs === undefined && tags === undefined) {
-    throw new ParseError('Missing field');
+    throw new ParseError('E0005', id, ['value', 'attributes', 'tags']);
   }
 
   return new AST.Message(id, pattern, attrs, tags, comment);
@@ -183,7 +182,7 @@ function getAttributes(ps) {
     const value = getPattern(ps);
 
     if (value === undefined) {
-      throw new ParseError('Expected field');
+      throw new ParseError('E0006', 'value');
     }
 
     attrs.push(new AST.Attribute(key, value));
@@ -232,7 +231,7 @@ function getVariantKey(ps) {
   const ch = ps.current();
 
   if (!ch) {
-    throw new ParseError('Expected VariantKey');
+    throw new ParseError('E0013');
   }
 
   const cc = ch.charCodeAt(0);
@@ -271,7 +270,7 @@ function getVariants(ps) {
     const value = getPattern(ps);
 
     if (!value) {
-      throw new ParseError('Expected field');
+      throw new ParseError('E0006', 'value');
     }
 
     variants.push(new AST.Variant(key, value, defaultIndex));
@@ -282,7 +281,7 @@ function getVariants(ps) {
   }
 
   if (!hasDefault) {
-    throw new ParseError('Missing default variant');
+    throw new ParseError('E0010');
   }
 
   return variants;
@@ -314,7 +313,7 @@ function getDigits(ps) {
   }
 
   if (num.length === 0) {
-    throw new ParseError('Expected char range');
+    throw new ParseError('E0004', '0-9');
   }
 
   return num;
@@ -432,7 +431,7 @@ function getExpression(ps) {
       const variants = getVariants(ps);
 
       if (variants.length === 0) {
-        throw new ParseError('Missing variants');
+        throw new ParseError('E0011');
       }
 
       ps.expectChar('\n');
@@ -501,7 +500,7 @@ function getCallArgs(ps) {
 
     if (ps.current() === ':') {
       if (exp.type !== 'MessageReference') {
-        throw new ParseError('Forbidden key');
+        throw new ParseError('E0009');
       }
 
       ps.next();
@@ -533,7 +532,7 @@ function getArgVal(ps) {
   } else if (ps.currentIs('"')) {
     return getString(ps);
   }
-  throw new ParseError('Expected field');
+  throw new ParseError('E0006', 'value');
 }
 
 function getString(ps) {
@@ -556,7 +555,7 @@ function getLiteral(ps) {
   const ch = ps.current();
 
   if (!ch) {
-    throw new ParseError('Expected literal');
+    throw new ParseError('E0014');
   }
 
   if (ps.isNumberStart()) {

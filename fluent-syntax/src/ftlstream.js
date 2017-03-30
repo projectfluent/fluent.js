@@ -43,7 +43,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    throw new ParseError(`Expected token "${ch}"`);
+    throw new ParseError('E0003', ch);
   }
 
   takeCharIf(ch) {
@@ -167,7 +167,7 @@ export class FTLParserStream extends ParserStream {
       this.next();
       return ret;
     }
-    throw new ParseError('Expected char range');
+    throw new ParseError('E0004', 'a-zA-Z');
   }
 
   takeIDChar() {
