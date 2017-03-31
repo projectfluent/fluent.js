@@ -227,10 +227,11 @@ export class Span extends Node {
 }
 
 export class Annotation extends Node {
-  constructor(code, message) {
+  constructor(code, args = [], message) {
     super();
     this.type = 'Annotation';
     this.code = code;
+    this.args = args;
     this.message = message;
   }
 

@@ -45,7 +45,7 @@ function getEntryOrJunk(ps) {
       throw err;
     }
 
-    const annot = new AST.Annotation(err.code, err.message);
+    const annot = new AST.Annotation(err.code, err.args, err.message);
     annot.addSpan(ps.getIndex(), ps.getIndex());
 
     ps.skipToNextEntryStart();
@@ -156,7 +156,7 @@ function getMessage(ps, comment) {
   }
 
   if (pattern === undefined && attrs === undefined && tags === undefined) {
-    throw new ParseError('E0005', id, ['value', 'attributes', 'tags']);
+    throw new ParseError('E0005', id);
   }
 
   return new AST.Message(id, pattern, attrs, tags, comment);

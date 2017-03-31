@@ -2,6 +2,7 @@ export class ParseError extends Error {
   constructor(code, ...args) {
     super();
     this.code = code;
+    this.args = args;
     this.message = getErrorMessage(code, args);
   }
 }
@@ -21,9 +22,8 @@ function getErrorMessage(code, args) {
       return `Expected a character from range: "${range}"`;
     }
     case 'E0005': {
-      const [id, list] = args;
-      const fields = list.join(', ');
-      return `Expected entry "${id}" to have one of the fields: ${fields}`;
+      const [id] = args;
+      return `Expected entry "${id}" to have a value, attributes or tags`;
     }
     case 'E0006': {
       const [field] = args;
