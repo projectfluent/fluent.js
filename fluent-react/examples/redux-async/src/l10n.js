@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import delay from 'delay';
 
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react/compat';
+import { MessagesProvider } from 'fluent-react/compat';
 import negotiateLanguages from 'fluent-langneg/compat';
 
 export function negotiateAvailable(requested) {
@@ -23,7 +23,7 @@ async function fetchMessages(locales) {
   return messages;
 }
 
-class AppLocalizationProvider extends Component {
+class AppMessagesProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,9 +66,9 @@ class AppLocalizationProvider extends Component {
     }
 
     return (
-      <LocalizationProvider locales={locales} messages={messages}>
+      <MessagesProvider locales={locales} messages={messages}>
         {children}
-      </LocalizationProvider>
+      </MessagesProvider>
     );
   }
 }
@@ -80,5 +80,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(
-  AppLocalizationProvider
+  AppMessagesProvider
 );

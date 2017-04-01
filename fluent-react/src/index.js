@@ -1,4 +1,4 @@
-export { default as LocalizationProvider } from './provider';
+export { default as MessagesProvider } from './provider';
 export { default as LocalizedElement } from './element';
 
 export function negotiate(lang = 'en') {

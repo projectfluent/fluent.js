@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import delay from 'delay';
 
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react/compat';
+import { MessagesProvider } from 'fluent-react/compat';
 import negotiateLanguages from 'fluent-langneg/compat';
 
 function negotiateAvailable(requested) {
@@ -22,7 +22,7 @@ async function fetchMessages(locales) {
   return messages;
 }
 
-export class AppLocalizationProvider extends Component {
+export class AppMessagesProvider extends Component {
   constructor(props) {
     super(props);
 
@@ -47,9 +47,9 @@ export class AppLocalizationProvider extends Component {
     }
 
     return (
-      <LocalizationProvider locales={locales} messages={messages}>
+      <MessagesProvider locales={locales} messages={messages}>
         {children}
-      </LocalizationProvider>
+      </MessagesProvider>
     );
   }
 }

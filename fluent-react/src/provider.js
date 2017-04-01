@@ -1,13 +1,13 @@
 import { Component, Children, PropTypes } from 'react';
 
-import Localization from './localization';
+import Messages from './messages';
 
-export default class LocalizationProvider extends Component {
+export default class MessagesProvider extends Component {
   constructor(props) {
     super(props);
 
     const { locales, messages } = props;
-    this.l10n = new Localization(locales, messages);
+    this.l10n = new Messages(locales, messages);
   }
 
   getChildContext() {
@@ -29,10 +29,10 @@ export default class LocalizationProvider extends Component {
   }
 }
 
-LocalizationProvider.childContextTypes = {
+MessagesProvider.childContextTypes = {
   l10n: PropTypes.object
 };
 
-LocalizationProvider.propTypes = {
+MessagesProvider.propTypes = {
   children: PropTypes.element.isRequired
 };

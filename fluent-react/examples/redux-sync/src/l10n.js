@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react/compat';
+import { MessagesProvider } from 'fluent-react/compat';
 import negotiateLanguages from 'fluent-langneg/compat';
 
 export function negotiateAvailable(requested) {
@@ -30,5 +30,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(
-  LocalizationProvider
+  MessagesProvider
 );

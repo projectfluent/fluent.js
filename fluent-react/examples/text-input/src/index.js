@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { LocalizationProvider } from 'fluent-react/compat';
+import { MessagesProvider } from 'fluent-react/compat';
 import { negotiateAvailable, MESSAGES_ALL } from './l10n';
 
 import App from './App';
@@ -16,8 +16,8 @@ const locales = negotiateAvailable(navigator.languages);
 const messages = MESSAGES_ALL[locales[0]];
 
 ReactDOM.render(
-  <LocalizationProvider locales={locales} messages={messages}>
+  <MessagesProvider locales={locales} messages={messages}>
     <App />
-  </LocalizationProvider>,
+  </MessagesProvider>,
   document.getElementById('root')
 );

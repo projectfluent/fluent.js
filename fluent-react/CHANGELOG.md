@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-  - …
+  - `LocalizationProvider` is now called `MessagesProvider`.
+
+    `Localization` is now reserved for an abstraction which capable of falling
+    back to translations in other negotiated languages in case of fatal errors.
 
 ## fluent-react 0.1.0
 

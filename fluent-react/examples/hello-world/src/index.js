@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react/compat';
+import { MessagesProvider } from 'fluent-react/compat';
 import negotiateLanguages from 'fluent-langneg/compat';
 
 import { MESSAGES_ALL } from './l10n';
@@ -22,8 +22,8 @@ const locales = negotiateLanguages(
 const messages = MESSAGES_ALL[locales[0]];
 
 ReactDOM.render(
-  <LocalizationProvider locales={locales} messages={messages}>
+  <MessagesProvider locales={locales} messages={messages}>
     <App />
-  </LocalizationProvider>,
+  </MessagesProvider>,
   document.getElementById('root')
 );
