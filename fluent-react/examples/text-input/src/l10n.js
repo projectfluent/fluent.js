@@ -1,6 +1,6 @@
 import 'fluent-intl-polyfill';
-export { LocalizationProvider } from 'fluent-react';
-import negotiateLanguages from 'fluent-langneg';
+export { LocalizationProvider } from 'fluent-react/compat';
+import negotiateLanguages from 'fluent-langneg/compat';
 
 export function negotiateAvailable(requested) {
   return negotiateLanguages(

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import delay from 'delay';
 
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react';
-import negotiateLanguages from 'fluent-langneg';
+import { LocalizationProvider } from 'fluent-react/compat';
+import negotiateLanguages from 'fluent-langneg/compat';
 
 function negotiateAvailable(requested) {
   return negotiateLanguages(

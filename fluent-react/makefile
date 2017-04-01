@@ -1,6 +1,6 @@
 PACKAGE := fluent-react
 GLOBAL  := FluentReact
-DEPS    := fluent:Fluent,react:React
+DEPS    := fluent/compat:Fluent,react:React
 
 include ../common.mk
 

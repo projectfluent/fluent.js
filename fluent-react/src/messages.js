@@ -1,6 +1,6 @@
 import { MessageContext } from 'fluent/compat';
 
-export default class Localization {
+export default class Messages {
   constructor(locales, messages) {
     this.subs = new Set();
     this.createContext(locales, messages);

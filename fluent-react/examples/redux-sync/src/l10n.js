@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react';
-import negotiateLanguages from 'fluent-langneg';
+import { LocalizationProvider } from 'fluent-react/compat';
+import negotiateLanguages from 'fluent-langneg/compat';
 
 export function negotiateAvailable(requested) {
   return negotiateLanguages(

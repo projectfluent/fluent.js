@@ -1,7 +1,7 @@
 import {
   isValidElement, cloneElement, Component, Children, PropTypes
 } from 'react';
-import { MessageArgument } from 'fluent';
+import { MessageArgument } from 'fluent/compat';
 
 class ElementArgument extends MessageArgument {
   valueOf() {

@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import 'fluent-intl-polyfill';
-import { LocalizationProvider } from 'fluent-react';
-import negotiateLanguages from 'fluent-langneg';
+import { LocalizationProvider } from 'fluent-react/compat';
+import negotiateLanguages from 'fluent-langneg/compat';
 
 import { MESSAGES_ALL } from './l10n';
 import App from './App';

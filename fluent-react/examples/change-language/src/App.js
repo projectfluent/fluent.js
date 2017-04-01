@@ -1,5 +1,5 @@
 import React from 'react';
-import { LocalizedElement } from 'fluent-react';
+import { LocalizedElement } from 'fluent-react/compat';
 
 export default function App(props) {
   const { locales, handleLocaleChange } = props;
