@@ -254,6 +254,9 @@ function getVariants(ps) {
     ps.skipLineWS();
 
     if (ps.currentIs('*')) {
+      if (hasDefault) {
+        throw new ParseError('E0015');
+      }
       ps.next();
       defaultIndex = true;
       hasDefault = true;
@@ -350,15 +353,12 @@ function getPattern(ps) {
         break;
       }
 
-      ps.peek();
-
-      if (!ps.currentPeekIs(' ')) {
-        ps.resetPeek();
+      if (!ps.isPeekNextLinePattern()) {
         break;
       }
 
-      ps.peekLineWS();
-      ps.skipToPeek();
+      ps.next();
+      ps.skipLineWS();
 
       firstLine = false;
 
