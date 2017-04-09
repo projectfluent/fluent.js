@@ -45,7 +45,7 @@ function serialize(annot) {
   }
 
   if (args.length) {
-    const prettyArgs = args.map(arg => `"${arg}"`).join(' ');
+    const prettyArgs = args.map(arg => `"${typeof arg === "string" ? arg : JSON.stringify(arg)}"`).join(' ');
     parts.push(`args ${prettyArgs}`);
   }
 

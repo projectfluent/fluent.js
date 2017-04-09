@@ -1,0 +1,14 @@
+{
+  "type": "Resource",
+  "body": [],
+  "comment": {
+    "type": "Comment",
+    "span": {
+      "type": "Span",
+      "start": 0,
+      "end": 53
+    },
+    "annotations": [],
+    "content": "This is a resource wide comment\nIt's multiline"
+  }
+}
