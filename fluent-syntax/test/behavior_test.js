@@ -14,7 +14,7 @@ function* directives(source) {
   }
 }
 
-function preprocess(source) {
+export function preprocess(source) {
   return {
     directives: [...directives(source)],
     source: source.replace(reDirective, ''),
@@ -34,7 +34,7 @@ function getCodeName(code) {
   }
 }
 
-function serialize(annot) {
+export function serializeAnnotation(annot) {
   const { code, args, span: { start, end } } = annot;
   const parts = [getCodeName(code)];
 
@@ -53,7 +53,7 @@ function serialize(annot) {
 }
 
 function toDirectives(annots, cur) {
-  return annots.concat(cur.annotations.map(serialize));
+  return annots.concat(cur.annotations.map(serializeAnnotation));
 }
 
 const fixtures = join(__dirname, 'fixtures_behavior');
