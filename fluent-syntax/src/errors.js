@@ -45,6 +45,8 @@ function getErrorMessage(code, args) {
       return 'Expected variant key';
     case 'E0014':
       return 'Expected literal';
+    case 'E0015':
+      return 'Only one variant can be marked as default (*)';
     default:
       return code;
   }

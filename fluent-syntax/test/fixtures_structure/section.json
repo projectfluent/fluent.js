@@ -1,0 +1,20 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Section",
+      "span": {
+        "type": "Span",
+        "start": 1,
+        "end": 25
+      },
+      "annotations": [],
+      "name": {
+        "type": "Symbol",
+        "name": "This is a section"
+      },
+      "comment": null
+    }
+  ],
+  "comment": null
+}
