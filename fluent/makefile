@@ -22,3 +22,13 @@ compat.js: $(PACKAGE).js
 clean:
 	@rm -f $(PACKAGE).js compat.js
 	@echo -e " $(OK) clean"
+
+STRUCTURE_FTL := $(wildcard ../fluent-syntax/test/fixtures_structure/*.ftl)
+STRUCTURE_JSON := $(STRUCTURE_FTL:../fluent-syntax/test/fixtures_structure/%.ftl=test/fixtures_structure/%.json)
+
+fixtures: $(STRUCTURE_JSON)
+
+.PHONY: $(STRUCTURE_JSON)
+$(STRUCTURE_JSON): test/fixtures_structure/%.json: ../fluent-syntax/test/fixtures_structure/%.ftl
+	@../tools/parse.js -rs $< > $@
+	@echo -e " $(OK) $@"
