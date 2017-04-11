@@ -49,6 +49,26 @@ Examples:
     ./format.js -e data.json file.ftl
 
 
+fuzz.js
+--------
+
+`fuzz.js` is a fuzzer for fluent.js's parsers.
+
+    Usage: fuzz [options] [file]
+
+    Options:
+
+      -h, --help                output usage information
+      -V, --version             output the version number
+      -r, --runtime             Use the runtime parser
+      -i, --repetitions <int>   Number of repetitions [100000]
+
+Examples:
+
+    echo "foo = Foo" | ./fuzz.js
+    ./fuzz.js -i 1000 file.ftl
+
+
 perf
 ----
 

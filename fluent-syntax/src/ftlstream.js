@@ -43,6 +43,11 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
+    if (ch === '\n') {
+      // Unicode Character 'SYMBOL FOR NEWLINE' (U+2424)
+      throw new ParseError('E0003', '\u2424');
+    }
+
     throw new ParseError('E0003', ch);
   }
 
@@ -56,7 +61,7 @@ export class FTLParserStream extends ParserStream {
 
   takeChar(f) {
     const ch = this.ch;
-    if (f(ch)) {
+    if (ch !== undefined && f(ch)) {
       this.next();
       return ch;
     }
@@ -64,6 +69,10 @@ export class FTLParserStream extends ParserStream {
   }
 
   isIDStart() {
+    if (this.ch === undefined) {
+      return false;
+    }
+
     const cc = this.ch.charCodeAt(0);
     return ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) ||  // A-Z
@@ -98,7 +107,14 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    const ptr = this.getPeekIndex();
+
     this.peekLineWS();
+
+    if (this.getPeekIndex() - ptr === 0) {
+      this.resetPeek();
+      return false;
+    }
 
     if (this.currentPeekIs('*')) {
       this.peek();
@@ -119,7 +135,14 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    const ptr = this.getPeekIndex();
+
     this.peekLineWS();
+
+    if (this.getPeekIndex() - ptr === 0) {
+      this.resetPeek();
+      return false;
+    }
 
     if (this.currentPeekIs('.')) {
       this.resetPeek();
@@ -130,6 +153,36 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
+  isPeekNextLinePattern() {
+    if (!this.currentPeekIs('\n')) {
+      return false;
+    }
+
+    this.peek();
+
+    const ptr = this.getPeekIndex();
+
+    this.peekLineWS();
+
+    if (this.getPeekIndex() - ptr === 0) {
+      this.resetPeek();
+      return false;
+    }
+
+    if (this.currentPeekIs('}') ||
+        this.currentPeekIs('.') ||
+        this.currentPeekIs('#') ||
+        this.currentPeekIs('[') ||
+        this.currentPeekIs('*') ||
+        this.currentPeekIs('{')) {
+      this.resetPeek();
+      return false;
+    }
+
+    this.resetPeek();
+    return true;
+  }
+
   isPeekNextLineTagStart() {
     if (!this.currentPeekIs('\n')) {
       return false;
@@ -137,7 +190,14 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    const ptr = this.getPeekIndex();
+
     this.peekLineWS();
+
+    if (this.getPeekIndex() - ptr === 0) {
+      this.resetPeek();
+      return false;
+    }
 
     if (this.currentPeekIs('#')) {
       this.resetPeek();

@@ -1,0 +1,3 @@
+key = { BUILTIN(key: "
+ text
+    ") }
