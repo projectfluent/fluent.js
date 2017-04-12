@@ -7,10 +7,10 @@ natural language.
 
 ## How to use
 
-`fluent-gecko` build system produces `*.jsm` files which are ready to be used
-as Gecko modules.
+The `fluent-gecko` build system produces `*.jsm` files which are ready to be
+used as Gecko modules.
 
-`Fluent.jsm` exports the the `MessageContext` constructor which provides the
+`Fluent.jsm` exports the `MessageContext` constructor which provides the
 core functionality of formatting translations from FTL files.  See the
 [README][] of the main `fluent` package for more information.
 

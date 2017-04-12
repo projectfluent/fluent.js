@@ -7,7 +7,7 @@ compat: ;
 
 Fluent.jsm: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
-		--config xpcom_config.js \
+	    --config xpcom_config.js \
 	    --output $@
 	@echo -e " $(OK) $@ built"
 
