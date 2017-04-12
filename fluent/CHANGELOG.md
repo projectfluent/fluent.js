@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-  - …
+  - MessageContext takes one locale (a string) or an array of locales.
+
 
 ## fluent 0.3.0
 

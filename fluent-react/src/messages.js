@@ -18,8 +18,7 @@ export default class Messages {
     this.locales = locales;
     this.messages = messages;
 
-    const locale = locales;
-    this.cx = new MessageContext(locale);
+    this.cx = new MessageContext(this.locales);
     this.cx.addMessages(messages);
 
     // Update all subscribed LocalizedElements.

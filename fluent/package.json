@@ -30,5 +30,8 @@
   ],
   "engine": {
     "node": ">=6"
+  },
+  "devDependencies": {
+    "sinon": "^2.1.0"
   }
 }

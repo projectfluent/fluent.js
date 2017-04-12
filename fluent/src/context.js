@@ -20,16 +20,16 @@ export class MessageContext {
   /**
    * Create an instance of `MessageContext`.
    *
-   * The `lang` argument is used to instantiate `Intl` formatters used by
+   * The `locales` argument is used to instantiate `Intl` formatters used by
    * translations.  The `options` object can be used to configure the context.
    *
    * Examples:
    *
-   *     const ctx = new MessageContext(lang);
+   *     const ctx = new MessageContext(locales);
    *
-   *     const ctx = new MessageContext(lang, { useIsolating: false });
+   *     const ctx = new MessageContext(locales, { useIsolating: false });
    *
-   *     const ctx = new MessageContext(lang, {
+   *     const ctx = new MessageContext(locales, {
    *       useIsolating: true,
    *       functions: {
    *         NODE_ENV: () => process.env.NODE_ENV
@@ -44,12 +44,13 @@ export class MessageContext {
    *   - `useIsolating` - boolean specifying whether to use Unicode isolation
    *                    marks (FSI, PDI) for bidi interpolations.
    *
-   * @param   {string} lang      - Language of the context.
+   * @param   {string|Array<string>} locales - Locale or locales of the context
    * @param   {Object} [options]
    * @returns {MessageContext}
    */
-  constructor(lang, { functions = {}, useIsolating = true } = {}) {
-    this.lang = lang;
+  constructor(locales, { functions = {}, useIsolating = true } = {}) {
+    this.locales = Array.isArray(locales)
+      ? locales : [locales];
     this.functions = functions;
     this.useIsolating = useIsolating;
     this.messages = new Map();
@@ -198,7 +199,7 @@ export class MessageContext {
     const id = JSON.stringify(opts);
 
     if (!cache[id]) {
-      cache[id] = new ctor(this.lang, opts);
+      cache[id] = new ctor(this.locales, opts);
       this.intls.set(ctor, cache);
     }
 
