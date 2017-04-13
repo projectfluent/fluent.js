@@ -27,78 +27,171 @@ welcome = Welcome, { $username }.
 ```
 
 
-Wrap your localizable elements in `LocalizedElement`:
+Wrap your localizable elements in the `Localized` component:
 
 ```javascript
-import { LocalizedElement } from 'fluent-react';
+import { Localized } from 'fluent-react';
 
-<LocalizedElement id="hello-world">
+<Localized id="hello-world">
     <p>Hello, world!</p>
-</LocalizedElement>
+</Localized>
 ```
 
 The `id` prop should be the unique identifier of the translation.  Any
 attributes found in the translation will be applied to the wrapped element.
 You can also pass arguments to the translation as `$`-prefixed props on
-`LocalizedElement`:
+`Localized`:
 
 ```javascript
-<LocalizedElement id="welcome" $username={name}>
+<Localized id="welcome" $username={name}>
     <p>{'Welcome, {$username}'}</p>
-</LocalizedElement>
+</Localized>
 ```
 
 It's recommended that the contents of the wrapped component be a string
-expression.  It serves no other purpose than to help the developer.  In the
-future, it may be used for automatic extraction of source copy.
+expression.  The string will be used as the ultimate fallback if no translation
+is available.  It also makes it easy to grep for strings in the source code.
+In the future, it may be used for automatic extraction of source copy.
 
 It's also possible to pass React elements as arguments to translations:
 
 ```javascript
-<LocalizedElement
+<Localized
     id="welcome"
     $linkA={
         <a href="http://example.com/A">A</a>
     }
     $linkB={
-        <LocalizedElement id="link-to-b">
+        <Localized id="link-to-b">
             <a href="http://example.com/B">B</a>
-        </LocalizedElement>
+        </Localized>
     }>
     <p>{'Click { $linkA } or { $linkB}.'}</p>
-</LocalizedElement>
+</Localized>
 ```
 
-All `<LocalizedElement>` components need access to the central localization
-store so they can subscribe to it.  The `<LocalizationProvider>` component
-implements the _provider_ pattern known from Redux.  Taking advantage of
-React's [context][] feature, it makes the translation store available to all
-localized elements in the app without passing it explicitly.
+All `<Localized>` components need access to an instance of the `Localization`
+class, the central localization store to which they subscribe.  The
+`<LocalizationProvider>` component implements the _provider_ pattern known from
+Redux.  Taking advantage of React's [context][] feature, it makes translations
+available to all localized elements in the app without passing them explicitly.
+
+```javascript
+ReactDOM.render(
+    <LocalizationProvider messages={…}>
+        …
+    </LocalizationProvider>,
+    document.getElementById('root')
+);
+```
+
+The `LocalizationProvider` component takes one prop: `messages`.  It should be
+an iterable of `MessageContext` instances in order of the user's preferred
+languages.  The `MessageContext` instances will be used by `Localization` to
+format translations.  If a translation is missing in one instance,
+`Localization` will fall back to the next one.
+
+In its simplest form, `messages` can be an array:
+
+```javascript
+function generateMessages(currentLocales) {
+    return currentLocales.map(locale => {
+        const cx = new MessageContext(locale);
+        cx.addMessages(MESSAGES_ALL[locale]);
+        return cx;
+    });
+}
+
+<LocalizationProvider messages={generateMessages(['en-US'])}>
+    …
+</LocalizationProvider>,
+```
+
+In order to avoid having to create all `MessageContext` instances for all
+locales up front, it's a good idea to make `messages` an iterator.  The
+`Localization` class will iterate over it (memoizing the items it yields) in
+case fallback is required.
+
+```javascript
+export function* generateMessages(currentLocales) {
+    for (const locale of currentLocales) {
+        const cx = new MessageContext(locale);
+        cx.addMessages(MESSAGES_ALL[locale]);
+        yield cx;
+    }
+}
+
+<LocalizationProvider messages={generateMessages(['en-US'])}>
+    …
+</LocalizationProvider>,
+```
+
+[context]: https://facebook.github.io/react/docs/context.html
+
+
+## The messages iterable
+
+The design of the `LocalizationProvider` requires a little bit of work from the
+developer.  The `messages` iterable needs to be created manually.  This is
+intentional: it gives the most control to the developer with regards to the
+following three areas:
+
+ - translations - the developer decides where translations are stored and
+   how they're fetched,
+ - language negotiation - the developer decides whhich factors are taken into
+   account for the purpose of the language negotiation, as well as how exactly
+   it's being done (we recommend [fluent-langneg][]),
+ - custom extensions - the developer can pass options to the `MessageContext`
+   constructor to configure its bahavior or to define functions available to
+   translations.
+
+In the future we might end up providing ready-made generators of the `messages`
+iterable for the most common scenarios.
+
+One limitation of the current design is that in asynchronous scenarios, all
+translations (including any fallback) must be fetched at once before
+`<LocalizationProvider>` is rendered.  See the `*-async` examples in the
+`examples/` directory for more information.
+
+In the future we might be able to allow async fetching of fallback locales.
+
+[fluent-langneg]: https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg
+
+
+## A complete example
 
 ```javascript
 import 'fluent-intl-polyfill';
 import negotiateLanguages from 'fluent-langneg';
-import { LocalizationProvide } from 'fluent-react';
+import { MessageContext } from 'fluent';
+import { LocalizationProvider } from 'fluent-react';
 
-// Build an array of available locales that are best for the user.
-const locales = negotiateLanguages(
-  navigator.languages,
-  ['de', 'en-US', 'pl'],
-  { defaultLocale: 'en-US' }
-)
+const MESSAGES_ALL = {
+    'fr': 'title = Salut le monde !',
+    'en-US': 'title = Hello, world!',
+    'pl': 'title = Witaj świecie!'
+};
 
-// For the sake of the example, translations are bundled into main.js and thus
-// available synchronously.  This may be useful in some cases (e.g. for the
-// initial "Please wait…" UI), but in general you'll probably want to fetch
-// them asynchronously. See examples/async-messages.
-import messageStore = from './messages';
-const messages = messageStore.get(locales);
+export function* generateMessages(userLocales) {
+    // Choose locales that are best for the user.
+    const currentLocales = negotiateLanguages(
+        userLocales,
+        ['fr', 'en-US', 'pl'],
+        { defaultLocale: 'en-US' }
+    );
+
+    for (const locale of currentLocales) {
+        const cx = new MessageContext(locale);
+        cx.addMessages(MESSAGES_ALL[locale]);
+        yield cx;
+    }
+}
 
 ReactDOM.render(
-  <LocalizationProvider locales={locales} messages={messages}>
-    <App />
-  </LocalizationProvider>,
-  document.getElementById('root')
+    <LocalizationProvider messages={generateMessages(navigator.languages)}>
+        <App />
+    </LocalizationProvider>,
+    document.getElementById('root')
 );
 ```
 
@@ -109,7 +202,6 @@ All of this is very 0.x and is likely to change. See the [wiki][] for more
 discussion.
 
 [wiki]: https://github.com/projectfluent/fluent.js/wiki/React-bindings-for-Fluent
-[context]: https://facebook.github.io/react/docs/context.html
 
 
 ## Compatibility
@@ -120,6 +212,12 @@ version of Babel's [latest preset][]:
 ```javascript
 import 'fluent-react/compat';
 ```
+
+In some cases, using the `compat` build may be needed even if you target modern
+browsers.  For instance, the `create-react-app` boilerplate uses UglifyJS to
+minify its files.  As of April 2017, UglifyJS doesn't support some of the new
+JavaScript syntax features.  By using the `compat` build of all `fluent`
+packages you can ensure that the minifiction works properly.
 
 
 ## Learn more

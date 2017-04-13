@@ -1,6 +1,6 @@
 PACKAGE := fluent-react
 GLOBAL  := FluentReact
-DEPS    := fluent/compat:Fluent,react:React
+DEPS    := fluent/compat:Fluent,react:React,prop-types:PropTypes
 
 include ../common.mk
 

@@ -1,13 +1,21 @@
-export { default as MessagesProvider } from './provider';
-export { default as LocalizedElement } from './element';
+/*
+ * @module fluent-react
+ * @overview
+ *
 
-export function negotiate(lang = 'en') {
-  const first = lang.split('-')[0];
+ * `fluent-react` provides React bindings for Fluent.  It takes advantage of
+ * React's Components system and the virtual DOM.  Translations are exposed to
+ * components via the provider pattern.
+ *
+ *     <LocalizationProvider messages={…}>
+ *         <Localized id="hello-world">
+ *             <p>{'Hello, world!'}</p>
+ *         </Localized>
+ *     </LocalizationProvider>
+ *
+ * Consult the documentation of the `LocalizationProvider` and the `Localized`
+ * components for more information.
+ */
 
-  switch (first.toLowerCase()) {
-    case 'pl':
-      return 'pl';
-    default:
-      return 'en';
-  }
-}
+export { default as LocalizationProvider } from './provider';
+export { default as Localized } from './localized';

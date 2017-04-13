@@ -1,36 +1,36 @@
 import React from 'react';
 import { connect} from 'react-redux';
-import { LocalizedElement } from 'fluent-react/compat';
+import { Localized } from 'fluent-react/compat';
 
-import { changeLocale } from './actions';
+import { changeLocales } from './actions';
 
 function App(props) {
-  const { locales, changeLocale } = props;
+  const { currentLocales, changeLocales } = props;
 
-  const [current] = locales;
+  const [current] = currentLocales;
   const available = ['en-US', 'pl'];
   const next = available[(available.indexOf(current ) + 1) % available.length];
 
   return (
     <div>
-      <LocalizedElement id="title">
+      <Localized id="title">
         <h1>Hello, world!</h1>
-      </LocalizedElement>
+      </Localized>
 
-      <LocalizedElement id="current" $locale={current}>
+      <Localized id="current" $locale={current}>
         <p>{'Current locale: { $locale }'}</p>
-      </LocalizedElement>
+      </Localized>
 
-      <LocalizedElement id="change" $locale={next}>
-        <button onClick={evt => changeLocale(next)}>
+      <Localized id="change" $locale={next}>
+        <button onClick={evt => changeLocales([next])}>
           {'Change to { $locale }'}
         </button>
-      </LocalizedElement>
+      </Localized>
     </div>
   );
 }
 
-const mapStateToProps = state => ({ locales: state.locales });
-const mapDispatchToProps = { changeLocale };
+const mapStateToProps = state => ({ currentLocales: state.currentLocales });
+const mapDispatchToProps = { changeLocales };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

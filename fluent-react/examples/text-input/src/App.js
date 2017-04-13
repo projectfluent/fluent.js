@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { LocalizedElement } from 'fluent-react/compat';
+import { Localized } from 'fluent-react/compat';
 
 function Header(props) {
   const { children } = props;
@@ -23,23 +23,23 @@ export default class App extends Component {
     return (
       <div>
         { name ?
-            <LocalizedElement id="hello" $username={name}>
+            <Localized id="hello" $username={name}>
               <Header>{'Hello, { $username }!'}</Header>
-            </LocalizedElement>
+            </Localized>
           :
-            <LocalizedElement id="hello-no-name">
+            <Localized id="hello-no-name">
               <Header>Hello, stranger!</Header>
-            </LocalizedElement>
+            </Localized>
         }
 
-        <LocalizedElement id="type-name">
+        <Localized id="type-name">
           <input
             type="text"
             placeholder="Your name"
             onChange={evt => this.handleNameChange(evt.target.value)}
             value={name}
           />
-        </LocalizedElement>
+        </Localized>
       </div>
     );
   }

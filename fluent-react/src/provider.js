@@ -1,13 +1,39 @@
-import { Component, Children, PropTypes } from 'react';
+import { Component, Children } from 'react';
+import PropTypes from 'prop-types';
 
-import Messages from './messages';
+import Localization from './localization';
 
-export default class MessagesProvider extends Component {
+/*
+ * The Provider component for the `Localization` class.
+ *
+ * Exposes a `Localization` instance to all descendants via React's context
+ * feature.  It makes translations available to all localizable elements in the
+ * descendant's render tree without the need to pass them explicitly.
+ *
+ *     <LocalizationProvider messages={…}>
+ *         …
+ *     </LocalizationProvider>
+ *
+ * The `LocalizationProvider` component takes one prop: `messages`.  It should
+ * be an iterable of `MessageContext` instances in order of the user's
+ * preferred languages.  The `MessageContext` instances will be used by
+ * `Localization` to format translations.  If a translation is missing in one
+ * instance, `Localization` will fall back to the next one.
+ */
+export default class LocalizationProvider extends Component {
   constructor(props) {
     super(props);
+    const { messages } = props;
 
-    const { locales, messages } = props;
-    this.l10n = new Messages(locales, messages);
+    if (messages === undefined) {
+      throw new Error('LocalizationProvider must receive the messages prop.');
+    }
+
+    if (!messages[Symbol.iterator]) {
+      throw new Error('The messages prop must be an iterable.');
+    }
+
+    this.l10n = new Localization(messages);
   }
 
   getChildContext() {
@@ -17,10 +43,10 @@ export default class MessagesProvider extends Component {
   }
 
   componentWillReceiveProps(next) {
-    const { locales, messages } = next;
+    const { messages } = next;
 
     if (messages !== this.props.messages) {
-      this.l10n.createContext(locales, messages);
+      this.l10n.setMessages(messages);
     }
   }
 
@@ -29,10 +55,23 @@ export default class MessagesProvider extends Component {
   }
 }
 
-MessagesProvider.childContextTypes = {
+LocalizationProvider.childContextTypes = {
   l10n: PropTypes.object
 };
 
-MessagesProvider.propTypes = {
-  children: PropTypes.element.isRequired
+LocalizationProvider.propTypes = {
+  children: PropTypes.element.isRequired,
+  messages: isIterable
 };
+
+function isIterable(props, propName, componentName) {
+  const prop = props[propName];
+
+  if (Symbol.iterator in Object(prop)) {
+    return null;
+  }
+
+  return new Error(
+    `The ${propName} prop supplied to ${componentName} must be an iterable.`
+  );
+}

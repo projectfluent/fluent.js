@@ -2,44 +2,62 @@ import React, { Component } from 'react';
 import delay from 'delay';
 
 import 'fluent-intl-polyfill';
-import { MessagesProvider } from 'fluent-react/compat';
+import { MessageContext } from 'fluent/compat';
+import { LocalizationProvider } from 'fluent-react/compat';
 import negotiateLanguages from 'fluent-langneg/compat';
 
-function negotiateAvailable(requested) {
-  return negotiateLanguages(
-    requested, ['en-US', 'pl'], { defaultLocale: 'en-US' }
-  )
-}
-
-async function fetchMessages(locales) {
+async function fetchMessages(locale) {
   const { PUBLIC_URL } = process.env;
-  // For the sake of the example take only the first locale.
-  const locale = locales[0];
   const response = await fetch(`${PUBLIC_URL}/${locale}.ftl`);
   const messages = await response.text();
 
   await delay(1000);
-  return messages;
+  return { [locale]: messages };
 }
 
-export class AppMessagesProvider extends Component {
+async function createMessagesGenerator(currentLocales) {
+  const fetched = await Promise.all(
+    currentLocales.map(fetchMessages)
+  );
+  const bundle = fetched.reduce(
+    (obj, cur) => Object.assign(obj, cur)
+  );
+
+  return function* generateMessages() {
+    for (const locale of currentLocales) {
+      const cx = new MessageContext(locale);
+      cx.addMessages(bundle[locale]);
+      yield cx;
+    }
+  }
+}
+
+export class AppLocalizationProvider extends Component {
   constructor(props) {
     super(props);
 
+    const { userLocales } = props;
+
+    const currentLocales = negotiateLanguages(
+      userLocales,
+      ['en-US', 'pl'],
+      { defaultLocale: 'en-US' }
+    );
+
     this.state = {
-      locales: negotiateAvailable(props.requested),
-      messages: ''
+      currentLocales,
     };
   }
 
   async componentWillMount() {
-    const messages  = await fetchMessages(this.state.locales);
-    this.setState({ messages });
+    const { currentLocales } = this.state;
+    const generateMessages  = await createMessagesGenerator(currentLocales);
+    this.setState({ messages: generateMessages() });
   }
 
   render() {
     const { children } = this.props;
-    const { locales, messages } = this.state;
+    const { messages } = this.state;
 
     if (!messages) {
       // Show a loader.
@@ -47,9 +65,9 @@ export class AppMessagesProvider extends Component {
     }
 
     return (
-      <MessagesProvider locales={locales} messages={messages}>
+      <LocalizationProvider messages={messages}>
         {children}
-      </MessagesProvider>
+      </LocalizationProvider>
     );
   }
 }

@@ -32,9 +32,20 @@
     "node": ">=6"
   },
   "dependencies": {
-    "fluent": "^0.3.0"
+    "fluent": "^0.3.0",
+    "prop-types": "^15.5.0"
   },
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.0.0-0"
+    "react": "^0.14.9 || ^15.3.0"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^2.8.2",
+    "jsdom": "^9.12.0",
+    "react": "^15.5.4",
+    "react-addons-test-utils": "^15.5.1",
+    "react-dom": "^15.5.4",
+    "react-test-renderer": "^15.5.4",
+    "sinon": "^2.1.0"
   }
 }

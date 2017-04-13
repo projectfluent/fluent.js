@@ -1,14 +1,26 @@
-import { negotiateAvailable } from './l10n';
-
 export default function reducer(state = {
-  locales: negotiateAvailable(navigator.languages)
+  isFetching: false,
+  userLocales: ['en-US'],
+  currentLocales: ['en-US'],
+  messages: null
 }, action) {
   switch (action.type) {
-    case 'CHANGE_LOCALE':
+    case 'CHANGE_LOCALES_REQUEST': {
       return {
         ...state,
-        locales: negotiateAvailable([action.value])
+        isFetching: true
       };
+    }
+    case 'CHANGE_LOCALES_RESPONSE': {
+      const { userLocales, currentLocales, messages } = action;
+      return {
+        ...state,
+        isFetching: false,
+        userLocales,
+        currentLocales,
+        messages
+      };
+    }
     default:
       return state;
   }

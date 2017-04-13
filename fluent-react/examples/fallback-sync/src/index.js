@@ -6,7 +6,7 @@ import { generateMessages } from './l10n';
 import App from './App';
 
 ReactDOM.render(
-  <LocalizationProvider messages={generateMessages(navigator.languages)}>
+  <LocalizationProvider messages={generateMessages()}>
     <App />
   </LocalizationProvider>,
   document.getElementById('root')

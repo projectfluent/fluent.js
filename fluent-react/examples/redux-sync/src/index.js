@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import store from './store';
-import AppMessagesProvider from './l10n';
+import AppLocalizationProvider from './l10n';
 import App from './App';
 
 ReactDOM.render(
   <Provider store={store}>
-    <AppMessagesProvider>
+    <AppLocalizationProvider>
       <App />
-    </AppMessagesProvider>
+    </AppLocalizationProvider>
   </Provider>,
   document.getElementById('root')
 );

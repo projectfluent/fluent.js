@@ -1,12 +1,12 @@
 import React from 'react';
-import { LocalizedElement } from 'fluent-react/compat';
+import { Localized } from 'fluent-react/compat';
 
 export default function App() {
   return (
     <div>
-      <LocalizedElement id="title">
+      <Localized id="title">
         <h1>Hello, world!</h1>
-      </LocalizedElement>
+      </Localized>
     </div>
   );
 }

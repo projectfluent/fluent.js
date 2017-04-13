@@ -1,19 +1,18 @@
-import { negotiateAvailable, MESSAGES_ALL } from './l10n';
-
-const defaultLocales = negotiateAvailable(navigator.languages);
-
 export default function reducer(state = {
-  locales: defaultLocales,
-  messages: MESSAGES_ALL[defaultLocales[0]]
+  userLocales: ['en-US'],
+  currentLocales: ['en-US'],
+  messages: null
 }, action) {
   switch (action.type) {
-    case 'CHANGE_LOCALE':
-      const locales = negotiateAvailable([action.value]);
+    case 'CHANGE_LOCALES': {
+      const { userLocales, currentLocales, messages } = action;
       return {
         ...state,
-        locales,
-        messages: MESSAGES_ALL[locales[0]]
+        userLocales,
+        currentLocales,
+        messages
       };
+    }
     default:
       return state;
   }
