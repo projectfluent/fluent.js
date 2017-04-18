@@ -13,4 +13,5 @@ Fluent.jsm: $(SOURCES)
 
 clean:
 	@rm -f Fluent.jsm
+	@rm -rf coverage
 	@echo -e " $(OK) clean"
