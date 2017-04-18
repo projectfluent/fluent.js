@@ -21,7 +21,6 @@
         "no-unreachable": 1,
         "no-unexpected-multiline": 2,
         "no-sparse-arrays": 2,
-        "block-scoped-var": 2,
         "complexity": [
             1,
             18
@@ -78,7 +77,6 @@
                 "avoidEscape": true
             }
         ],
-        "no-var": 2,
         "max-depth": [
             2,
             6

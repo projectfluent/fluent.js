@@ -1,28 +1,28 @@
 import React from 'react';
-import { LocalizedElement } from 'fluent-react/compat';
+import { Localized } from 'fluent-react/compat';
 
 export default function App(props) {
-  const { locales, handleLocaleChange } = props;
+  const { currentLocales, handleLocaleChange } = props;
 
-  const [current] = locales;
+  const [current] = currentLocales;
   const available = ['en-US', 'pl'];
   const next = available[(available.indexOf(current) + 1) % available.length];
 
   return (
     <div>
-      <LocalizedElement id="title">
+      <Localized id="title">
         <h1>Hello, world!</h1>
-      </LocalizedElement>
+      </Localized>
 
-      <LocalizedElement id="current" $locale={current}>
+      <Localized id="current" $locale={current}>
         <p>{'Current locale: { $locale }'}</p>
-      </LocalizedElement>
+      </Localized>
 
-      <LocalizedElement id="change" $locale={next}>
+      <Localized id="change" $locale={next}>
         <button onClick={evt => handleLocaleChange(next)}>
           {'Change to { $locale }'}
         </button>
-      </LocalizedElement>
+      </Localized>
     </div>
   );
 }

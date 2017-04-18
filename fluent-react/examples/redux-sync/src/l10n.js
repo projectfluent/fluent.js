@@ -1,34 +1,35 @@
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import 'fluent-intl-polyfill';
-import { MessagesProvider } from 'fluent-react/compat';
-import negotiateLanguages from 'fluent-langneg/compat';
+import { LocalizationProvider } from 'fluent-react/compat';
 
-export function negotiateAvailable(requested) {
-  return negotiateLanguages(
-    requested, ['en-US', 'pl'], { defaultLocale: 'en-US' }
-  )
+import { changeLocales } from './actions';
+
+class AppLocalizationProvider extends Component {
+  componentWillMount() {
+    this.props.changeLocales(navigator.languages);
+  }
+
+  render() {
+    const { messages, children } = this.props;
+
+    if (!messages) {
+      // Show a loader
+      return <div>…</div>;
+    }
+
+    return (
+      <LocalizationProvider messages={messages}>
+        {children}
+      </LocalizationProvider>
+    );
+  }
 }
 
-export const MESSAGES_ALL = {
-  'pl': `
-title = Witaj świecie!
-current = Bieżący język: { $locale }
-change = Zmień na { $locale }
-  `,
-  'en-US': `
-title = Hello, world!
-current = Current locale: { $locale }
-change = Change to { $locale }
-  `,
-};
+const mapStateToProps = state => ({ messages: state.messages });
+const mapDispatchToProps = { changeLocales };
 
-function mapStateToProps(state) {
-  return {
-    locales: state.locales,
-    messages: state.messages
-  };
-}
-
-export default connect(mapStateToProps)(
-  MessagesProvider
+export default connect(mapStateToProps, mapDispatchToProps)(
+  AppLocalizationProvider
 );

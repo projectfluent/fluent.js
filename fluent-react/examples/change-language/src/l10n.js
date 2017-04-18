@@ -1,14 +1,9 @@
 import React, { cloneElement, Children, Component } from 'react';
 
 import 'fluent-intl-polyfill';
-import { MessagesProvider } from 'fluent-react/compat';
+import { MessageContext } from 'fluent/compat';
+import { LocalizationProvider } from 'fluent-react/compat';
 import negotiateLanguages from 'fluent-langneg/compat';
-
-function negotiateAvailable(requested) {
-  return negotiateLanguages(
-    requested, ['en-US', 'pl'], { defaultLocale: 'en-US' }
-  )
-}
 
 const MESSAGES_ALL = {
   'pl': `
@@ -23,38 +18,50 @@ change = Change to { $locale }
   `,
 };
 
-export class AppMessagesProvider extends Component {
+function* generateMessages(currentLocales) {
+  for (const locale of currentLocales) {
+    const cx = new MessageContext(locale);
+    cx.addMessages(MESSAGES_ALL[locale]);
+    yield cx;
+  }
+}
+
+export class AppLocalizationProvider extends Component {
   constructor(props) {
     super(props);
 
-    const locales = negotiateAvailable(props.requested);
+    const { userLocales } = props;
+
+    const currentLocales = negotiateLanguages(
+      userLocales,
+      ['en-US', 'pl'],
+      { defaultLocale: 'en-US' }
+    );
+
     this.state = {
-      locales,
-      messages: MESSAGES_ALL[locales[0]]
+      currentLocales
     };
   }
 
   handleLocaleChange(locale) {
-    const locales = negotiateAvailable([locale]);
     this.setState({
-      locales,
-      messages: MESSAGES_ALL[locales[0]]
+      currentLocales: [locale]
     });
   }
 
   render() {
-    const { locales, messages } = this.state;
+    const { currentLocales } = this.state;
     const child = Children.only(this.props.children);
 
     const l10nProps = {
-      locales,
+      currentLocales,
       handleLocaleChange: locale => this.handleLocaleChange(locale)
     };
 
     return (
-      <MessagesProvider locales={locales} messages={messages}>
+      <LocalizationProvider messages={generateMessages(currentLocales)}>
         { cloneElement(child, l10nProps) }
-      </MessagesProvider>
+      </LocalizationProvider>
     );
   }
 }
