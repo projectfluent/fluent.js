@@ -21,7 +21,7 @@ suite('Patterns', function(){
     });
 
     test('returns the value', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
@@ -40,7 +40,7 @@ suite('Patterns', function(){
     });
 
     test('returns the value', function(){
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo Bar');
       assert.equal(errs.length, 0);
@@ -48,7 +48,7 @@ suite('Patterns', function(){
 
     test('returns the raw string if the referenced message is ' +
        'not found', function(){
-      const msg = ctx.messages.get('baz');
+      const msg = ctx.getMessage('baz');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'missing');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
@@ -66,14 +66,14 @@ suite('Patterns', function(){
     });
 
     test('returns the null value', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, null);
       assert.equal(errs.length, 0);
     });
 
     test('formats the attribute', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg.attrs.attr, args, errs);
       assert.strictEqual(val, 'Foo Attr');
       assert.equal(errs.length, 0);
@@ -81,7 +81,7 @@ suite('Patterns', function(){
 
     test('formats ??? when the referenced message has no value and no default',
        function(){
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, '??? Bar');
       assert.ok(errs[0] instanceof RangeError); // no default
@@ -98,7 +98,7 @@ suite('Patterns', function(){
     });
 
     test('returns ???', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
@@ -114,7 +114,7 @@ suite('Patterns', function(){
     });
 
     test('returns the raw string', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
@@ -134,14 +134,14 @@ suite('Patterns', function(){
     });
 
     test('returns ???', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, {sel: 'a'}, errs);
       assert.strictEqual(val, '???');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     test('returns the other member if requested', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, {sel: 'b'}, errs);
       assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
@@ -161,7 +161,7 @@ suite('Patterns', function(){
     });
 
     test('returns the default variant', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
@@ -184,14 +184,14 @@ suite('Patterns', function(){
     });
 
     test('returns the default variant', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     test('can reference an attribute', function(){
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);

@@ -26,7 +26,7 @@ suite('Localized - fallback', function() {
 
   test('message id in the second context', function() {
     const mcx1 = new MessageContext();
-    sinon.stub(mcx1.messages, 'has').returns(false);
+    sinon.stub(mcx1, 'hasMessage').returns(false);
     const mcx2 = new MessageContext();
     const l10n = new Localization([mcx1, mcx2]);
 
@@ -45,7 +45,7 @@ suite('Localized - fallback', function() {
 
   test('missing message', function() {
     const mcx1 = new MessageContext();
-    sinon.stub(mcx1.messages, 'has').returns(false);
+    sinon.stub(mcx1, 'hasMessage').returns(false);
     const l10n = new Localization([mcx1]);
 
     const wrapper = shallow(

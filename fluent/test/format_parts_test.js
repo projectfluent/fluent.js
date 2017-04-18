@@ -47,7 +47,7 @@ suite('formatToParts', function(){
     });
 
     test('returns the parts', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo']);
       assert.equal(errs.length, 0);
@@ -66,21 +66,21 @@ suite('formatToParts', function(){
     });
 
     test('returns the parts', function(){
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', ' Bar']);
       assert.equal(errs.length, 0);
     });
 
     test('returns FluentNone', function(){
-      const msg = ctx.messages.get('baz');
+      const msg = ctx.getMessage('baz');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, [new FluentNone('missing')]);
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
     test('returns FluentNumber', function(){
-      const msg = ctx.messages.get('qux');
+      const msg = ctx.getMessage('qux');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, [new FluentNumber(1)]);
       assert.equal(errs.length, 0);
@@ -98,21 +98,21 @@ suite('formatToParts', function(){
     });
 
     test('returns null', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, null);
       assert.equal(errs.length, 0);
     });
 
     test('returns the parts of the attribute', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.formatToParts(msg.attrs.attr, args, errs);
       assert_partsEqual(val, ['Foo Attr']);
       assert.equal(errs.length, 0);
     });
 
     test('returns FluentNone', function(){
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, [new FluentNone(), ' Bar']);
       assert.ok(errs[0] instanceof RangeError); // no default
@@ -130,21 +130,21 @@ suite('formatToParts', function(){
     });
 
     test('returns parts of foo', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', new FluentNumber(1)]);
       assert.equal(errs.length, 0);
     });
 
     test('returns flattened parts of bar', function(){
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', new FluentNumber(1), 'Bar']);
       assert.equal(errs.length, 0);
     });
 
     test('returns flattened parts of baz', function(){
-      const msg = ctx.messages.get('baz');
+      const msg = ctx.getMessage('baz');
       const val = ctx.formatToParts(msg, args, errs);
       assert_partsEqual(val, ['Foo', new FluentNumber(1), ' Bar', ' Baz']);
       assert.equal(errs.length, 0);

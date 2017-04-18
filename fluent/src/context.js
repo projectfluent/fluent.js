@@ -49,12 +49,44 @@ export class MessageContext {
    * @returns {MessageContext}
    */
   constructor(locales, { functions = {}, useIsolating = true } = {}) {
-    this.locales = Array.isArray(locales)
-      ? locales : [locales];
-    this.functions = functions;
-    this.useIsolating = useIsolating;
-    this.messages = new Map();
-    this.intls = new WeakMap();
+    this.locales = Array.isArray(locales) ? locales : [locales];
+
+    this._messages = new Map();
+    this._functions = functions;
+    this._useIsolating = useIsolating;
+    this._intls = new WeakMap();
+  }
+
+  /*
+   * Return an iterator over `[id, message]` pairs.
+   *
+   * @returns {Iterator}
+   */
+  get messages() {
+    return this._messages[Symbol.iterator]();
+  }
+
+  /*
+   * Check if a message is present in the context.
+   *
+   * @param {string} id - The identifier of the message to check.
+   * @returns {bool}
+   */
+  hasMessage(id) {
+    return this._messages.has(id);
+  }
+
+  /*
+   * Return the internal representation of a message.
+   *
+   * The internal representation should only be used as an argument to
+   * `MessageContext.format` and `MessageContext.formatToParts`.
+   *
+   * @param {string} id - The identifier of the message to check.
+   * @returns {Any}
+   */
+  getMessage(id) {
+    return this._messages.get(id);
   }
 
   /**
@@ -62,10 +94,10 @@ export class MessageContext {
    *
    * The translation resource must use the Fluent syntax.  It will be parsed by
    * the context and each translation unit (message) will be available in the
-   * `messages` map by its identifier.
+   * context by its identifier.
    *
    *     ctx.addMessages('foo = Foo');
-   *     ctx.messages.get('foo');
+   *     ctx.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
@@ -78,7 +110,7 @@ export class MessageContext {
   addMessages(source) {
     const [entries, errors] = parse(source);
     for (const id in entries) {
-      this.messages.set(id, entries[id]);
+      this._messages.set(id, entries[id]);
     }
 
     return errors;
@@ -87,10 +119,10 @@ export class MessageContext {
   /**
    * Format a message to an array of `FluentTypes` or null.
    *
-   * Format a raw `message` from the context's `messages` map into an array of
-   * `FluentType` instances which may be used to build the final result.  It
-   * may also return `null` if it has a null value.  `args` will be used to
-   * resolve references to external arguments inside of the translation.
+   * Format a raw `message` from the context into an array of `FluentType`
+   * instances which may be used to build the final result.  It may also return
+   * `null` if it has a null value.  `args` will be used to resolve references
+   * to external arguments inside of the translation.
    *
    * See the documentation of {@link MessageContext#format} for more
    * information about error handling.
@@ -101,7 +133,7 @@ export class MessageContext {
    * `errors` array passed as the third argument.
    *
    *     ctx.addMessages('hello = Hello, { $name }!');
-   *     const hello = ctx.messages.get('hello');
+   *     const hello = ctx.getMessage('hello');
    *     ctx.formatToParts(hello, { name: 'Jane' }, []);
    *     // → ['Hello, ', '\u2068', 'Jane', '\u2069']
    *
@@ -142,9 +174,9 @@ export class MessageContext {
   /**
    * Format a message to a string or null.
    *
-   * Format a raw `message` from the context's `messages` map into a string (or
-   * a null if it has a null value).  `args` will be used to resolve references
-   * to external arguments inside of the translation.
+   * Format a raw `message` from the context into a string (or a null if it has
+   * a null value).  `args` will be used to resolve references to external
+   * arguments inside of the translation.
    *
    * In case of errors `format` will try to salvage as much of the translation
    * as possible and will still return a string.  For performance reasons, the
@@ -153,7 +185,7 @@ export class MessageContext {
    *
    *     const errors = [];
    *     ctx.addMessages('hello = Hello, { $name }!');
-   *     const hello = ctx.messages.get('hello');
+   *     const hello = ctx.getMessage('hello');
    *     ctx.format(hello, { name: 'Jane' }, errors);
    *
    *     // Returns 'Hello, Jane!' and `errors` is empty.
@@ -195,12 +227,12 @@ export class MessageContext {
   }
 
   _memoizeIntlObject(ctor, opts) {
-    const cache = this.intls.get(ctor) || {};
+    const cache = this._intls.get(ctor) || {};
     const id = JSON.stringify(opts);
 
     if (!cache[id]) {
       cache[id] = new ctor(this.locales, opts);
-      this.intls.set(ctor, cache);
+      this._intls.set(ctor, cache);
     }
 
     return cache[id];

@@ -24,7 +24,7 @@ suite('Select expressions', function() {
     });
 
     test('selects the variant matching the selector', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
@@ -43,7 +43,7 @@ suite('Select expressions', function() {
     });
 
     test('selects the default variant', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
@@ -62,7 +62,7 @@ suite('Select expressions', function() {
     });
 
     test('selects the default variant', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 1);
@@ -87,13 +87,13 @@ suite('Select expressions', function() {
     });
 
     test('selects the right variant', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'B');
     });
 
     test('selects the default variant', function() {
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
     });
@@ -116,13 +116,13 @@ suite('Select expressions', function() {
     });
 
     test('selects the right category', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
     });
 
     test('selects the exact match', function() {
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
     });

@@ -22,7 +22,7 @@ suite('MessageContext constructor', function() {
       foo = Foo { 1 }
     `);
 
-    const msg = ctx.messages.get('foo');
+    const msg = ctx.getMessage('foo');
     const val = ctx.format(msg, null, errs);
 
     assert.equal(val, 'Foo 1');
@@ -39,7 +39,7 @@ suite('MessageContext constructor', function() {
       foo = Foo { 1 }
     `);
 
-    const msg = ctx.messages.get('foo');
+    const msg = ctx.getMessage('foo');
     const val = ctx.format(msg, null, errs);
 
     assert.equal(val, 'Foo 1');

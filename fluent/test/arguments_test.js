@@ -27,28 +27,28 @@ suite('External arguments', function() {
     });
 
     test('can be used in the message value', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in the message value which is referenced', function() {
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in an attribute', function() {
-      const msg = ctx.messages.get('baz').attrs.attr;
+      const msg = ctx.getMessage('baz').attrs.attr;
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Baz Attribute 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in a variant', function() {
-      const msg = ctx.messages.get('qux');
+      const msg = ctx.getMessage('qux');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Baz Variant A 3');
       assert.equal(errs.length, 0);
@@ -66,7 +66,7 @@ suite('External arguments', function() {
     });
 
     test('can be used as a selector', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
@@ -82,7 +82,7 @@ suite('External arguments', function() {
     });
 
     test('can be a positional argument', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { num: 3 }, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);
@@ -98,49 +98,49 @@ suite('External arguments', function() {
     });
 
     test('falls back to argument\'s name if it\'s missing', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, {}, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof ReferenceError); // unknown external
     });
 
     test('cannot be arrays', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: [1, 2, 3] }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     test('cannot be a dict-like object', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: { prop: 1 } }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     test('cannot be a boolean', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: true }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     test('cannot be undefined', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: undefined }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     test('cannot be null', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
     });
 
     test('cannot be a function', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: () => null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported external type
@@ -161,7 +161,7 @@ suite('External arguments', function() {
     });
 
     test('can be a string', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'Argument');
       assert.equal(errs.length, 0);
@@ -182,7 +182,7 @@ suite('External arguments', function() {
     });
 
     test('can be a number', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '1');
       assert.equal(errs.length, 0);
@@ -204,7 +204,7 @@ suite('External arguments', function() {
     });
 
     test('can be a date', function(){
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       // format the date argument to account for the testrunner's timezone
       assert.equal(val, dtf.format(args.arg));

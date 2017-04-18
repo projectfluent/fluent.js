@@ -139,7 +139,7 @@ export default class Localized extends Component {
       return elem;
     }
 
-    const msg = mcx.messages.get(id);
+    const msg = mcx.getMessage(id);
     const args = withElements(this.props);
     const parts = mcx.formatToParts(msg, args) || [];
 

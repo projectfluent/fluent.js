@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+  - Added MessageContext.hasMessage and MessageContext.getMessage methods.
+
+    Using the MessageContext.messages map for getting raw messages is
+    deprecated now.  Instead, use the two dedicated methods: hasMessage and
+    getMessage.
+
+    Before:
+
+        const msg = ctx.messages.get(id);
+        const txt = ctx.format(msg);
+
+    Now:
+
+        const msg = ctx.getMessage(id);
+        const txt = ctx.format(msg);
+
   - The compat build is now transpiled using rollup-plugin-babel.
 
     This ensures that the "use strict" pragma is scoped to the UMD wrapper.  It

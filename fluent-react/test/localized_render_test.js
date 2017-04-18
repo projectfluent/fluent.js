@@ -25,7 +25,7 @@ suite('Localized - rendering', function() {
 
   test('rendering the attributes', function() {
     const mcx = new MessageContext();
-    sinon.stub(mcx.messages, 'get').returns({
+    sinon.stub(mcx, 'getMessage').returns({
       value: null,
       attrs: { attr: 'ATTR' }
     });
@@ -46,7 +46,7 @@ suite('Localized - rendering', function() {
 
   test('preserves existing attributes', function() {
     const mcx = new MessageContext();
-    sinon.stub(mcx.messages, 'get').returns({
+    sinon.stub(mcx, 'getMessage').returns({
       value: null,
       attrs: { attr: 'ATTR' }
     });
@@ -83,7 +83,7 @@ suite('Localized - rendering', function() {
 
   test('$arg is passed to format the attributes', function() {
     const mcx = new MessageContext();
-    sinon.stub(mcx.messages, 'get').returns({
+    sinon.stub(mcx, 'getMessage').returns({
       value: null,
       attrs: { attr: 'ATTR' }
     });

@@ -28,7 +28,7 @@ suite('Runtime-specific functions', function() {
     });
 
     test('works for strings', function() {
-      const msg = ctx.messages.get('foo');
+      const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'FooBar');
       assert.equal(errs.length, 0);
@@ -37,7 +37,7 @@ suite('Runtime-specific functions', function() {
     // XXX When passed as external args, convert JS types to FTL types
     // https://bugzil.la/1307116
     it.skip('works for numbers', function() {
-      const msg = ctx.messages.get('bar');
+      const msg = ctx.getMessage('bar');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);

@@ -85,7 +85,7 @@ function DefaultMember(env, members, def) {
  */
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const message = ctx.messages.get(name);
+  const message = ctx.getMessage(name);
 
   if (!message) {
     errors.push(new ReferenceError(`Unknown message: ${name}`));
@@ -102,7 +102,7 @@ function MessageReference(env, {name}) {
  */
 function Tags(env, {name}) {
   const { ctx, errors } = env;
-  const message = ctx.messages.get(name);
+  const message = ctx.getMessage(name);
 
   if (!message) {
     errors.push(new ReferenceError(`Unknown message: ${name}`));
@@ -330,8 +330,8 @@ function ExternalArgument(env, {name}) {
 function FunctionReference(env, {name}) {
   // Some functions are built-in.  Others may be provided by the runtime via
   // the `MessageContext` constructor.
-  const { ctx: { functions }, errors } = env;
-  const func = functions[name] || builtins[name];
+  const { ctx: { _functions }, errors } = env;
+  const func = _functions[name] || builtins[name];
 
   if (!func) {
     errors.push(new ReferenceError(`Unknown function: ${name}()`));
@@ -398,7 +398,7 @@ function Pattern(env, ptn) {
 
     const part = Type(env, elem);
 
-    if (ctx.useIsolating) {
+    if (ctx._useIsolating) {
       result.push(FSI);
     }
 
@@ -420,7 +420,7 @@ function Pattern(env, ptn) {
       result.push(part);
     }
 
-    if (ctx.useIsolating) {
+    if (ctx._useIsolating) {
       result.push(PDI);
     }
   }
