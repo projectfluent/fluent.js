@@ -8,7 +8,7 @@
   "dependencies": {
     "fluent": "^0.3.1",
     "fluent-intl-polyfill": "^0.0.1",
-    "fluent-react": "^0.0.1",
+    "fluent-react": "^0.3.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
