@@ -2,8 +2,12 @@
 
 ## Unreleased
 
-  - MessageContext takes one locale (a string) or an array of locales.
+  - …
 
+## fluent 0.3.1
+
+  - MessageContext takes one locale (a string) or an array of locales.
+  - Add the "module" field to package.json for ES modules-compatible bundlers.
 
 ## fluent 0.3.0
 
