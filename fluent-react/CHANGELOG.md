@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+  - …
+
+## fluent-react 0.3.0
+
   - Removed `MessagesProvider` and replaced it with a new
     `LocalizationProvider` component.
 
