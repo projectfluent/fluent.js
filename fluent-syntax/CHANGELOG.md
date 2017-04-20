@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-  - …
+  - Build compat.js using babel-plugin-transform-builtin-extend.
+
+    This ensures the correct behavior of `err instanceof ParseError`.
 
 ## fluent-syntax 0.3.0
 

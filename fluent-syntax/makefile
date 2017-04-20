@@ -16,7 +16,7 @@ $(PACKAGE).js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 compat.js: $(PACKAGE).js
-	@babel --presets latest $< > $@
+	@babel $< > $@
 	@echo -e " $(OK) $@ built"
 
 clean:
