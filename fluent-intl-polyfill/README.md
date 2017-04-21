@@ -17,9 +17,6 @@ You can install it from the npm registry or use it as a standalone script.
 
     npm install fluent-intl-polyfill
 
-If you use it as a standalone script, make sure to also include the
-[intl-pluralrules][] dependency.
-
 
 ## How to use
 

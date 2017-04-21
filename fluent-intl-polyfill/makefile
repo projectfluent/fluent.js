@@ -1,6 +1,5 @@
 PACKAGE := fluent-intl-polyfill
 GLOBAL  := FluentIntlPolyfill
-DEPS    := intl-pluralrules:PluralRulesPolyfill
 
 include ../common.mk
 
@@ -13,7 +12,7 @@ $(PACKAGE).js: $(SOURCES)
 	    --format umd \
 	    --id $(PACKAGE) \
 	    --name $(GLOBAL) \
-	    --globals $(DEPS) \
+	    --config $(CURDIR)/bundle_config.js \
 	    --output $@
 	@echo -e " $(OK) $@ built"
 

@@ -32,6 +32,6 @@
     "node": ">=6"
   },
   "dependencies": {
-    "intl-pluralrules": "^0.1.0"
+    "intl-pluralrules": "projectfluent/IntlPluralRules#module"
   }
 }

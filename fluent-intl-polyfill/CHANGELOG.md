@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-  - …
+  - intl-pluralrules is now bundled with fluent-intl-polyfill
 
 ## fluent-intl-polyfill 0.0.1
 
