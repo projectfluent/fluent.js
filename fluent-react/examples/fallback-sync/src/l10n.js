@@ -1,4 +1,4 @@
-import 'fluent-intl-polyfill';
+import 'fluent-intl-polyfill/compat';
 import { MessageContext } from 'fluent/compat';
 
 const MESSAGES_ALL = {
