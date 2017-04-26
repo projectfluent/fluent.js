@@ -6,6 +6,13 @@
 
     This ensures the correct behavior of `err instanceof ParseError`.
 
+  - The compat build is now transpiled using rollup-plugin-babel and
+    babel-plugin-transform-builtin-extend.
+
+    This ensures that the "use strict" pragma is scoped to the UMD wrapper.  It
+    also correctly parses the top-level "this" keyword (which the previous
+    setup turned into "undefined").
+
 ## fluent-syntax 0.3.0
 
   - JSON is now supported as a transport format for the AST.

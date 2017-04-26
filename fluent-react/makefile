@@ -9,16 +9,23 @@ compat: compat.js
 
 $(PACKAGE).js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
-	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --format umd \
+	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --id $(PACKAGE) \
 	    --name $(GLOBAL) \
 	    --globals $(DEPS) \
 	    --output $@
 	@echo -e " $(OK) $@ built"
 
-compat.js: $(PACKAGE).js
-	@babel --presets latest $< > $@
+compat.js: $(SOURCES)
+	@rollup $(CURDIR)/src/index.js \
+	    --config $(ROOT)/compat_config.js \
+	    --format umd \
+	    --banner "/* $(PACKAGE)@$(VERSION) */" \
+	    --id $(PACKAGE) \
+	    --name $(GLOBAL) \
+	    --globals $(DEPS) \
+	    --output $@
 	@echo -e " $(OK) $@ built"
 
 clean:
