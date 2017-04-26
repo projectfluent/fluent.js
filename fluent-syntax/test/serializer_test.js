@@ -122,7 +122,6 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  // XXX The Parser ignores the new line after the closing brace
   test.skip('multiline with placeable', function() {
     const input = ftl`
       foo =
@@ -130,18 +129,6 @@ suite('Serializer', function() {
           Baz
     `;
     assert.equal(pretty(input), input);
-  });
-
-  test('multiline with placeable (current)', function() {
-    const input = ftl`
-      foo =
-          Foo { bar }
-          Baz
-    `;
-    const output = ftl`
-      foo = Foo { bar }Baz
-    `;
-    assert.equal(pretty(input), output);
   });
 
   test('tag', function() {

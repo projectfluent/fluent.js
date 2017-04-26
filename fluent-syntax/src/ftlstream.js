@@ -173,8 +173,7 @@ export class FTLParserStream extends ParserStream {
         this.currentPeekIs('.') ||
         this.currentPeekIs('#') ||
         this.currentPeekIs('[') ||
-        this.currentPeekIs('*') ||
-        this.currentPeekIs('{')) {
+        this.currentPeekIs('*')) {
       this.resetPeek();
       return false;
     }

@@ -360,11 +360,10 @@ function getPattern(ps) {
       ps.next();
       ps.skipLineWS();
 
-      firstLine = false;
-
-      if (buffer.length !== 0) {
+      if (!firstLine) {
         buffer += ch;
       }
+      firstLine = false;
       continue;
     } else if (ch === '\\') {
       const ch2 = ps.peek();

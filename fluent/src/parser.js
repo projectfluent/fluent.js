@@ -321,7 +321,7 @@ class RuntimeParser {
           break;
         }
 
-        if (buffer.length) {
+        if (buffer.length || content.length) {
           buffer += '\n';
         }
         ch = this._source[this._index];
