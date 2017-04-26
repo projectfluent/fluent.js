@@ -1,0 +1,42 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 130
+      },
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key"
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "A multiline message with a "
+          },
+          {
+            "type": "MessageReference",
+            "id": {
+              "type": "Identifier",
+              "name": "placeable"
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "\nat the end of line.  The message should\nconsist of three lines of text."
+          }
+        ]
+      },
+      "attributes": null,
+      "tags": null,
+      "comment": null
+    }
+  ],
+  "comment": null
+}

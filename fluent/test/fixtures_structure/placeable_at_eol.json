@@ -1,0 +1,12 @@
+{
+  "key": {
+    "val": [
+      "A multiline message with a ",
+      {
+        "type": "ref",
+        "name": "placeable"
+      },
+      "\nat the end of line.  The message should\nconsist of three lines of text."
+    ]
+  }
+}
