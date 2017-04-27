@@ -23,4 +23,5 @@ compat.js: $(PACKAGE).js
 
 clean:
 	@rm -f $(PACKAGE).js compat.js
+	@rm -rf coverage
 	@echo -e " $(OK) clean"

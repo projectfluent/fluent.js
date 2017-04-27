@@ -21,6 +21,10 @@ lint:
 test:
 	@mocha --ui tdd --recursive --require ./test/setup
 
+coverage:
+	@istanbul cover --default-excludes _mocha -- \
+	    --ui tdd --recursive  --require ./test/setup.js
+
 html: $(SOURCES)
 	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md \
 	    -d $(ROOT)/html/$(PACKAGE) $(SOURCES)
@@ -43,6 +47,6 @@ CHANGELOG.md:
 	    | sponge CHANGELOG.md
 	@echo -e " $(OK) $@ updated; make sure to edit it"
 
-.PHONY: test docs CHANGELOG.md
+.PHONY: test coverage docs CHANGELOG.md
 
 OK := \033[32;01m✓\033[0m
