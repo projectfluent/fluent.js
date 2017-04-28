@@ -3,8 +3,7 @@ GLOBAL  := Fluent
 
 include ../common.mk
 
-build: $(PACKAGE).js
-compat: compat.js
+build: $(PACKAGE).js compat.js
 
 $(PACKAGE).js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \

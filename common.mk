@@ -12,7 +12,7 @@ export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
 all: lint test build
 
 # Used for pre-publishing.
-dist: lint test build compat docs
+dist: lint test build html
 
 lint:
 	@eslint --max-warnings 0 src/
@@ -43,6 +43,6 @@ CHANGELOG.md:
 	    | sponge CHANGELOG.md
 	@echo -e " $(OK) $@ updated; make sure to edit it"
 
-.PHONY: test docs CHANGELOG.md
+.PHONY: test html CHANGELOG.md
 
 OK := \033[32;01m✓\033[0m

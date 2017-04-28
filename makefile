@@ -1,7 +1,7 @@
 export SHELL := /bin/bash
 export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
 
-TARGETS  := all dist lint test build compat html deps depsclean
+TARGETS  := all dist lint test build html deps depsclean
 PACKAGES := $(wildcard fluent*)
 
 $(TARGETS): $(PACKAGES)

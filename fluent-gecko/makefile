@@ -3,7 +3,6 @@ PACKAGE := fluent-gecko
 include ../common.mk
 
 build: Fluent.jsm
-compat: ;
 
 Fluent.jsm: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
