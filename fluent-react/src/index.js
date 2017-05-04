@@ -18,4 +18,5 @@
  */
 
 export { default as LocalizationProvider } from './provider';
+export { default as withLocalization } from './with_localization';
 export { default as Localized } from './localized';
