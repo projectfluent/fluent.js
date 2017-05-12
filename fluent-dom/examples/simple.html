@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="pl, en-US">
+    <link rel="localization" href="./localization/{locale}/main.ftl" />
+    <script src="../dist/fluent-dom.js"></script>
+    <script type="text/javascript">
+      document.l10n.formatValue('js-msg').then(v => {
+        console.log(v);
+      });
+    </script>
+  </head>
+  <body>
+    <h1 data-l10n-id="hello-world"></h1>
+    <h2 data-l10n-id="sub-title"></h2>
+  </body>
+</html>

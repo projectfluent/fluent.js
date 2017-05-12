@@ -1,0 +1,20 @@
+{
+  "name": "FluentDOM",
+  "version": "0.0.1",
+  "description": "DOM bindings for Fluent",
+  "main": "index.js",
+  "repository": "https://github.com/zbraniecki/fluent-dom",
+  "author": "Zibi Braniecki <zbraniecki@mozilla.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint ./src ./tools",
+    "build": "rollup src/index.js --output dist/fluent-dom.js --format es"
+  },
+  "dependencies": {
+    "fluent": "^0.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.18.0",
+    "rollup": "^0.41.6"
+  }
+}
