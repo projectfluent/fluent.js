@@ -1,3 +1,5 @@
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 class L10nError extends Error {
   constructor(message, id, lang) {
     super();
@@ -108,7 +110,7 @@ function keysFromContext(method, ctx, keys, translations) {
       translations[i] = translation;
     } else {
       hasErrors = true;
-      if (typeof console !== "undefined") {
+      if (typeof console !== 'undefined') {
         messageErrors.forEach(error => console.warn(error));
       }
     }
