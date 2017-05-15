@@ -13,36 +13,18 @@ class L10nError extends Error {
  * them lazily, but then cache them and reuse if we have to retrieve
  * more entries from that fallback context.
  */
-function cachedIterable(iterable) {
-  const cache = [];
-  return {
-    [Symbol.iterator]() {
-      return {
-        ptr: 0,
-        next() {
-          if (cache.length <= this.ptr) {
-            cache.push(iterable.next());
-          }
-          return cache[this.ptr++];
-        }
-      };
-    },
-  }
-}
 
 export class Localization {
   constructor(id, resIds, generateContexts) {
     this.id = id;
     this.resIds = resIds;
-    this.ctxs = cachedIterable(
-      generateContexts(['pl', 'en-US'], resIds)
-    );
+    this.ctxs = generateContexts(resIds);
   }
 
   async formatWithFallback(keys, method) {
     let translations = [];
-    for (let i in this.ctxs) {
-      let ctx = await this.ctxs[i].ready();
+    for (let o of this.ctxs) {
+      let ctx = await o.ready();
       const errors = keysFromContext(method, ctx, keys, translations);
       if (!errors) {
         break;

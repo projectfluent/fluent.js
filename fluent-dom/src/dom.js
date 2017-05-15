@@ -1,8 +1,8 @@
 import { Localization } from './localization';
 
 export class DocumentLocalization extends Localization {
-  constructor(doc, resIds) {
-    super(doc.location.href, resIds);
+  constructor(doc, resIds, generateContexts) {
+    super(doc.location.href, resIds, generateContexts);
     this.document = doc;
     this.query = '[data-l10n-id]';
     this.roots = new Set();
@@ -106,7 +106,7 @@ export class DocumentLocalization extends Localization {
   }
 
   translateDocument() {
-    this.translateRoots();
+    return this.translateRoots();
   }
 
   translateFragment(frag) {
