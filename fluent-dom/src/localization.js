@@ -1,5 +1,3 @@
-import { L10nRegistry } from './registry';
-
 class L10nError extends Error {
   constructor(message, id, lang) {
     super();
@@ -10,11 +8,35 @@ class L10nError extends Error {
   }
 }
 
+/**
+ * This allows us to cache generated contexts, so that we can generate
+ * them lazily, but then cache them and reuse if we have to retrieve
+ * more entries from that fallback context.
+ */
+function cachedIterable(iterable) {
+  const cache = [];
+  return {
+    [Symbol.iterator]() {
+      return {
+        ptr: 0,
+        next() {
+          if (cache.length <= this.ptr) {
+            cache.push(iterable.next());
+          }
+          return cache[this.ptr++];
+        }
+      };
+    },
+  }
+}
+
 export class Localization {
-  constructor(id, resIds) {
+  constructor(id, resIds, generateContexts) {
     this.id = id;
     this.resIds = resIds;
-    this.ctxs = L10nRegistry.generateContexts(['pl', 'en-US'], resIds);
+    this.ctxs = cachedIterable(
+      generateContexts(['pl', 'en-US'], resIds)
+    );
   }
 
   async formatWithFallback(keys, method) {

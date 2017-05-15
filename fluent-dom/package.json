@@ -1,14 +1,34 @@
 {
-  "name": "FluentDOM",
+  "name": "fluent-dom",
   "version": "0.0.1",
-  "description": "DOM bindings for Fluent",
-  "main": "index.js",
-  "repository": "https://github.com/zbraniecki/fluent-dom",
-  "author": "Zibi Braniecki <zbraniecki@mozilla.com>",
+  "description": "Fluent bindings for DOM",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/projectfluent/fluent.js.git"
+  },
+  "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
-  "scripts": {
-    "lint": "eslint ./src ./tools",
-    "build": "rollup src/index.js --output dist/fluent-dom.js --format es"
+  "contributors": [
+    {
+      "name": "Zibi Braniecki",
+      "email": "zbraniecki@mozilla.com"
+    },
+    {
+      "name": "Staś Małolepszy",
+      "email": "stas@mozilla.com"
+    }
+  ],
+  "directories": {
+    "lib": "./src"
+  },
+  "main": "./fluent-dom.js",
+  "module": "./src/index.js",
+  "keywords": [
+    "localization",
+    "l10n"
+  ],
+  "engine": {
+    "node": ">=6"
   },
   "dependencies": {
     "fluent": "^0.3.1"
