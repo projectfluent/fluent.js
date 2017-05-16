@@ -1,8 +1,7 @@
 import assert from 'assert';
 import { ftl } from './util';
 
-import { parse } from '../src/parser';
-import { serialize } from '../src/serializer';
+import { parse, serialize } from '../src';
 
 
 function pretty(text) {
@@ -122,7 +121,7 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  test.skip('multiline with placeable', function() {
+  test('multiline with placeable', function() {
     const input = ftl`
       foo =
           Foo { bar }

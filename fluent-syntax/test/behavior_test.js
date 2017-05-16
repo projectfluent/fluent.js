@@ -2,7 +2,7 @@ import assert from 'assert';
 import { join } from 'path';
 import { readdir } from 'fs';
 import { readfile } from './util';
-import { parse } from '../src/parser';
+import { parse } from '../src';
 
 const sigil = '^\/\/~ ';
 const reDirective = new RegExp(`${sigil}(.*)[\n$]`, 'gm');
