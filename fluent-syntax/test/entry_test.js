@@ -1,11 +1,13 @@
 import assert from 'assert';
 import { ftl } from './util';
 
-import { parseEntry } from '../src/parser';
-import { serializeEntry } from '../src/serializer';
-
+import { FluentParser, FluentSerializer } from '../src';
 
 suite('Parse entry', function() {
+  setup(function() {
+    this.parser = new FluentParser();
+  });
+
   test('simple message', function() {
     const input = ftl`
       foo = Foo
@@ -36,13 +38,17 @@ suite('Parse entry', function() {
       }
     };
 
-    const message = parseEntry(input)
+    const message = this.parser.parseEntry(input)
     assert.deepEqual(message, output)
   });
 });
 
 
 suite('Serialize entry', function() {
+  setup(function() {
+    this.serializer = new FluentSerializer();
+  });
+
   test('simple message', function() {
     const input = {
       "comment": null,
@@ -73,7 +79,7 @@ suite('Serialize entry', function() {
       foo = Foo
     `;
 
-    const message = serializeEntry(input)
+    const message = this.serializer.serializeEntry(input)
     assert.deepEqual(message, output)
   });
 });

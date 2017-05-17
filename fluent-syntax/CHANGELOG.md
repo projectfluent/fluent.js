@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+  - Introduce the FluentParser and the FluentSerializer classes.
+
+    Instances can be used to store config for multiple parse/serialize
+    operations.
+
+    The fluent-syntax package still exports the `parse` and `serialize`
+    helpers.  For more fine-grained control, `FluentParser` and
+    `FluentSerializer` may be used for instantiation.
+
   - Build compat.js using babel-plugin-transform-builtin-extend.
 
     This ensures the correct behavior of `err instanceof ParseError`.

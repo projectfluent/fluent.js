@@ -2,7 +2,6 @@ function indent(content) {
   return content.split('\n').join('\n    ');
 }
 
-
 function containNewLine(elems) {
   const withNewLine = elems.filter(
     elem => (elem.type === 'TextElement' && elem.value.includes('\n'))
@@ -10,38 +9,42 @@ function containNewLine(elems) {
   return !!withNewLine.length;
 }
 
-
-export function serialize(resource, withJunk = false) {
-  const parts = [];
-
-  if (resource.comment) {
-    parts.push(
-      `${serializeComment(resource.comment)}\n\n`
-    );
+export default class FluentSerializer {
+  constructor({ withJunk = false } = {}) {
+    this.withJunk = withJunk;
   }
 
-  for (const entry of resource.body) {
-    if (entry.types !== 'Junk' || withJunk) {
-      parts.push(serializeEntry(entry));
+  serialize(resource) {
+    const parts = [];
+
+    if (resource.comment) {
+      parts.push(
+        `${serializeComment(resource.comment)}\n\n`
+      );
     }
+
+    for (const entry of resource.body) {
+      if (entry.types !== 'Junk' || this.withJunk) {
+        parts.push(this.serializeEntry(entry));
+      }
+    }
+
+    return parts.join('');
   }
 
-  return parts.join('');
-}
-
-
-export function serializeEntry(entry) {
-  switch (entry.type) {
-    case 'Message':
-      return serializeMessage(entry);
-    case 'Section':
-      return serializeSection(entry);
-    case 'Comment':
-      return serializeComment(entry);
-    case 'Junk':
-      return serializeJunk(entry);
-    default :
-      throw new Error(`Unknown entry type: ${entry.type}`);
+  serializeEntry(entry) {
+    switch (entry.type) {
+      case 'Message':
+        return serializeMessage(entry);
+      case 'Section':
+        return serializeSection(entry);
+      case 'Comment':
+        return serializeComment(entry);
+      case 'Junk':
+        return serializeJunk(entry);
+      default :
+        throw new Error(`Unknown entry type: ${entry.type}`);
+    }
   }
 }
 

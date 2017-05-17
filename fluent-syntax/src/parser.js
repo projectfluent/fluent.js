@@ -4,58 +4,74 @@ import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
 import { ParseError } from './errors';
 
-export function parse(source) {
-  let comment = null;
-
-  const ps = new FTLParserStream(source);
-  ps.skipWSLines();
-
-  const entries = [];
-
-  while (ps.current()) {
-    const entry = getEntryOrJunk(ps);
-
-    if (entry.type === 'Comment' && entries.length === 0) {
-      comment = entry;
-    } else {
-      entries.push(entry);
-    }
-
-    ps.skipWSLines();
+export default class FluentParser {
+  constructor({
+    withSpans = true,
+    withAnnotations = true,
+  } = {}) {
+    this.withSpans = withSpans;
+    this.withAnnotations = withAnnotations;
   }
 
-  return new AST.Resource(entries, comment);
+  parse(source) {
+    let comment = null;
+
+    const ps = new FTLParserStream(source);
+    ps.skipWSLines();
+
+    const entries = [];
+
+    while (ps.current()) {
+      const entry = getEntryOrJunk(this, ps);
+
+      if (entry.type === 'Comment' && entries.length === 0) {
+        comment = entry;
+      } else {
+        entries.push(entry);
+      }
+
+      ps.skipWSLines();
+    }
+
+    return new AST.Resource(entries, comment);
+  }
+
+  parseEntry(source) {
+    const ps = new FTLParserStream(source);
+    ps.skipWSLines();
+    return getEntryOrJunk(this, ps);
+  }
 }
 
-export function parseEntry(source) {
-  const ps = new FTLParserStream(source);
-  ps.skipWSLines();
-  return getEntryOrJunk(ps);
-}
-
-function getEntryOrJunk(ps) {
+function getEntryOrJunk(parser, ps) {
   const entryStartPos = ps.getIndex();
 
   try {
     const entry = getEntry(ps);
-    entry.addSpan(entryStartPos, ps.getIndex());
+    if (parser.withSpans) {
+      entry.addSpan(entryStartPos, ps.getIndex());
+    }
     return entry;
   } catch (err) {
     if (!(err instanceof ParseError)) {
       throw err;
     }
 
-    const annot = new AST.Annotation(err.code, err.args, err.message);
-    annot.addSpan(ps.getIndex(), ps.getIndex());
-
+    const errorIndex = ps.getIndex();
     ps.skipToNextEntryStart();
     const nextEntryStart = ps.getIndex();
 
     // Create a Junk instance
     const slice = ps.getSlice(entryStartPos, nextEntryStart);
     const junk = new AST.Junk(slice);
-    junk.addSpan(entryStartPos, nextEntryStart);
-    junk.addAnnotation(annot);
+    if (parser.withSpans) {
+      junk.addSpan(entryStartPos, nextEntryStart);
+    }
+    if (parser.withAnnotations) {
+      const annot = new AST.Annotation(err.code, err.args, err.message);
+      annot.addSpan(errorIndex, errorIndex);
+      junk.addAnnotation(annot);
+    }
     return junk;
   }
 }

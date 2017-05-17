@@ -3,7 +3,7 @@ import { join } from 'path';
 import { readdir } from 'fs';
 import { readfile } from './util';
 
-import { parse } from '../src/parser';
+import { parse } from '../src';
 
 const fixtures = join(__dirname, 'fixtures_structure');
 
