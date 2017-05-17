@@ -53,58 +53,137 @@ DOM.  Translations are stored using the Fluent syntax (<a href="http://projectfl
 components via the <em>provider</em> pattern.</p>
 <p>An example FTL file might look like the following:</p>
 <pre class="prettyprint source"><code>hello-world = Hello, world!
-welcome = Welcome, { $username }.</code></pre><p>Wrap your localizable elements in <code>LocalizedElement</code>:</p>
-<pre class="prettyprint source lang-javascript"><code>import { LocalizedElement } from 'fluent-react';
+welcome = Welcome, { $username }.</code></pre><p>Wrap your localizable elements in the <code>Localized</code> component:</p>
+<pre class="prettyprint source lang-javascript"><code>import { Localized } from 'fluent-react';
 
-&lt;LocalizedElement id=&quot;hello-world&quot;>
+&lt;Localized id=&quot;hello-world&quot;>
     &lt;p>Hello, world!&lt;/p>
-&lt;/LocalizedElement></code></pre><p>The <code>id</code> prop should be the unique identifier of the translation.  Any
+&lt;/Localized></code></pre><p>The <code>id</code> prop should be the unique identifier of the translation.  Any
 attributes found in the translation will be applied to the wrapped element.
 You can also pass arguments to the translation as <code>$</code>-prefixed props on
-<code>LocalizedElement</code>:</p>
-<pre class="prettyprint source lang-javascript"><code>&lt;LocalizedElement id=&quot;welcome&quot; $username={name}>
+<code>Localized</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>&lt;Localized id=&quot;welcome&quot; $username={name}>
     &lt;p>{'Welcome, {$username}'}&lt;/p>
-&lt;/LocalizedElement></code></pre><p>It's recommended that the contents of the wrapped component be a string
-expression.  It serves no other purpose than to help the developer.  In the
-future, it may be used for automatic extraction of source copy.</p>
+&lt;/Localized></code></pre><p>It's recommended that the contents of the wrapped component be a string
+expression.  The string will be used as the ultimate fallback if no translation
+is available.  It also makes it easy to grep for strings in the source code.
+In the future, it may be used for automatic extraction of source copy.</p>
 <p>It's also possible to pass React elements as arguments to translations:</p>
-<pre class="prettyprint source lang-javascript"><code>&lt;LocalizedElement
+<pre class="prettyprint source lang-javascript"><code>&lt;Localized
     id=&quot;welcome&quot;
     $linkA={
         &lt;a href=&quot;http://example.com/A&quot;>A&lt;/a>
     }
     $linkB={
-        &lt;LocalizedElement id=&quot;link-to-b&quot;>
+        &lt;Localized id=&quot;link-to-b&quot;>
             &lt;a href=&quot;http://example.com/B&quot;>B&lt;/a>
-        &lt;/LocalizedElement>
+        &lt;/Localized>
     }>
     &lt;p>{'Click { $linkA } or { $linkB}.'}&lt;/p>
-&lt;/LocalizedElement></code></pre><p>All <code>&lt;LocalizedElement&gt; components need access to the central localization
-store so they can subscribe to it.  The</code><LocalizationProvider>` component
-implements the <em>provider</em> pattern known from Redux.  Taking advantage of
-React's [context][] feature, it makes the translation store available to all
-localized elements in the app without passing it explicitly.</p>
-<pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
+&lt;/Localized></code></pre><p>All <code>&lt;Localized&gt;</code> components need access to an instance of the <code>Localization</code>
+class, the central localization store to which they subscribe.  The
+<code>&lt;LocalizationProvider&gt;</code> component implements the <em>provider</em> pattern known from
+Redux.  Taking advantage of React's <a href="https://facebook.github.io/react/docs/context.html">context</a> feature, it makes translations
+available to all localized elements in the app without passing them explicitly.</p>
+<pre class="prettyprint source lang-javascript"><code>ReactDOM.render(
+    &lt;LocalizationProvider messages={…}>
+        …
+    &lt;/LocalizationProvider>,
+    document.getElementById('root')
+);</code></pre><p>The <code>LocalizationProvider</code> component takes one prop: <code>messages</code>.  It should be
+an iterable of <code>MessageContext</code> instances in order of the user's preferred
+languages.  The <code>MessageContext</code> instances will be used by <code>Localization</code> to
+format translations.  If a translation is missing in one instance,
+<code>Localization</code> will fall back to the next one.</p>
+<p>In its simplest form, <code>messages</code> can be an array:</p>
+<pre class="prettyprint source lang-javascript"><code>function generateMessages(currentLocales) {
+    return currentLocales.map(locale => {
+        const cx = new MessageContext(locale);
+        cx.addMessages(MESSAGES_ALL[locale]);
+        return cx;
+    });
+}
+
+&lt;LocalizationProvider messages={generateMessages(['en-US'])}>
+    …
+&lt;/LocalizationProvider>,</code></pre><p>In order to avoid having to create all <code>MessageContext</code> instances for all
+locales up front, it's a good idea to make <code>messages</code> an iterator.  The
+<code>Localization</code> class will iterate over it (memoizing the items it yields) in
+case fallback is required.</p>
+<pre class="prettyprint source lang-javascript"><code>export function* generateMessages(currentLocales) {
+    for (const locale of currentLocales) {
+        const cx = new MessageContext(locale);
+        cx.addMessages(MESSAGES_ALL[locale]);
+        yield cx;
+    }
+}
+
+&lt;LocalizationProvider messages={generateMessages(['en-US'])}>
+    …
+&lt;/LocalizationProvider>,</code></pre><h2>The messages iterable</h2><p>The design of the <code>LocalizationProvider</code> requires a little bit of work from the
+developer.  The <code>messages</code> iterable needs to be created manually.  This is
+intentional: it gives the most control to the developer with regards to the
+following three areas:</p>
+<ul>
+<li>translations - the developer decides where translations are stored and
+how they're fetched,</li>
+<li>language negotiation - the developer decides whhich factors are taken into
+account for the purpose of the language negotiation, as well as how exactly
+it's being done (we recommend <a href="https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg">fluent-langneg</a>),</li>
+<li>custom extensions - the developer can pass options to the <code>MessageContext</code>
+constructor to configure its bahavior or to define functions available to
+translations.</li>
+</ul>
+<p>In the future we might end up providing ready-made generators of the <code>messages</code>
+iterable for the most common scenarios.</p>
+<p>One limitation of the current design is that in asynchronous scenarios, all
+translations (including any fallback) must be fetched at once before
+<code>&lt;LocalizationProvider&gt;</code> is rendered.  See the <code>*-async</code> examples in the
+<code>examples/</code> directory for more information.</p>
+<p>In the future we might be able to allow async fetching of fallback locales.</p>
+<h2>A complete example</h2><pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
 import negotiateLanguages from 'fluent-langneg';
-import { LocalizationProvide } from 'fluent-react';
+import { MessageContext } from 'fluent';
+import { LocalizationProvider } from 'fluent-react';
+
+const MESSAGES_ALL = {
+    'fr': 'title = Salut le monde !',
+    'en-US': 'title = Hello, world!',
+    'pl': 'title = Witaj świecie!'
+};
+
+export function* generateMessages(userLocales) {
+    // Choose locales that are best for the user.
+    const currentLocales = negotiateLanguages(
+        userLocales,
+        ['fr', 'en-US', 'pl'],
+        { defaultLocale: 'en-US' }
+    );
+
+    for (const locale of currentLocales) {
+        const cx = new MessageContext(locale);
+        cx.addMessages(MESSAGES_ALL[locale]);
+        yield cx;
+    }
+}
 
 ReactDOM.render(
-  &lt;LocalizationProvider
-    locale={negotiateLanguages(navigator.language, ['en-US', 'de'])}
-    requestMessages={requestMessages}
-  >
-    &lt;App />
-  &lt;/LocalizationProvider>,
-  document.getElementById('root')
-);</code></pre><p><code>requestMessages</code> is a function that you have to provide.  It takes a <code>locale</code>
-code and should return a string with FTL messages. It may be async.</p>
-<p>Consult the <code>examples/</code> directory for examples of how to change languages or
-integrate with Redux.</p>
+    &lt;LocalizationProvider messages={generateMessages(navigator.languages)}>
+        &lt;App />
+    &lt;/LocalizationProvider>,
+    document.getElementById('root')
+);</code></pre><p>Consult the <code>examples/</code> directory for examples of how to fetch translations
+asynchronously, change languages or integrate with Redux.</p>
 <p>All of this is very 0.x and is likely to change. See the <a href="https://github.com/projectfluent/fluent.js/wiki/React-bindings-for-Fluent">wiki</a> for more
 discussion.</p>
 <h2>Compatibility</h2><p>For legacy browsers, the <code>compat</code> build has been transpiled using the current
 version of Babel's <a href="https://babeljs.io/docs/plugins/preset-latest/">latest preset</a>:</p>
-<pre class="prettyprint source lang-javascript"><code>import 'fluent-react/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.io">projectfluent.io</a>, including
+<pre class="prettyprint source lang-javascript"><code>import 'fluent-react/compat';</code></pre><p>In some cases, using the <code>compat</code> build may be needed even if you target modern
+browsers.  For instance, the <code>create-react-app</code> boilerplate uses UglifyJS to
+minify its files.  As of April 2017, UglifyJS doesn't support some of the new
+JavaScript syntax features.  By using the <code>compat</code> build of all <code>fluent</code>
+packages you can ensure that the minifiction works properly.</p>
+<h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.io">projectfluent.io</a>, including
 documentation of the Fluent file format (<a href="http://projectfluent.io/fluent/guide/">FTL</a>), links to other packages and
 implementations, and information about how to get involved.</p></article>
     </section>
@@ -123,7 +202,7 @@ implementations, and information about how to get involved.</p></article>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 21:38:08 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 17 2017 17:51:01 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

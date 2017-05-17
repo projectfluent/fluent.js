@@ -89,7 +89,7 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     // We don't care about comments or sections at runtime
-    if (ch === '#') {
+    if (ch === '/') {
       this.getComment();
       return;
     }
@@ -113,7 +113,7 @@ class RuntimeParser {
     this._index += 1;
 
     this.getLineWS();
-    this.getKeyword();
+    this.getSymbol();
     this.getLineWS();
 
     if (this._source[this._index] !== ']' ||
@@ -129,6 +129,8 @@ class RuntimeParser {
 
   getMessage(entries) {
     const id = this.getIdentifier();
+    let attrs = null;
+    let tags = null;
 
     this.getLineWS();
 
@@ -142,13 +144,12 @@ class RuntimeParser {
       this.getLineWS();
 
       val = this.getPattern();
+    } else {
+      this.getWS();
     }
-
 
     ch = this._source[this._index];
 
-    // In the scenario when the pattern is quote-delimited
-    // the pattern ends with the closing quote.
     if (ch === '\n') {
       this._index++;
       this.getLineWS();
@@ -156,22 +157,33 @@ class RuntimeParser {
     }
 
     if (ch === '.') {
+      attrs = this.getAttributes();
+    }
 
-      const attrs = this.getAttributes();
-      entries[id] = {
-        attrs: attrs,
-        val
-      };
+    if (ch === '#') {
+      if (attrs !== null) {
+        throw this.error('Tags cannot be added to a message with attributes.');
+      }
+      tags = this.getTags();
+    }
 
-    } else if (typeof val === 'string') {
+    if (tags === null &amp;&amp; attrs === null &amp;&amp; typeof val === 'string') {
       entries[id] = val;
-    } else if (val === undefined) {
-      throw this.error(`Expected a value (like: " = value") or
-        an attribute (like: ".key = value")`);
     } else {
-      entries[id] = {
-        val
-      };
+      if (val === undefined) {
+        if (tags === null &amp;&amp; attrs === null) {
+          throw this.error(`Expected a value (like: " = value") or
+            an attribute (like: ".key = value")`);
+        }
+      }
+
+      entries[id] = { val };
+      if (attrs) {
+        entries[id].attrs = attrs;
+      }
+      if (tags) {
+        entries[id].tags = tags;
+      }
     }
   }
 
@@ -213,7 +225,7 @@ class RuntimeParser {
     return this._source.slice(start, this._index);
   }
 
-  getKeyword() {
+  getSymbol() {
     let name = '';
 
     const start = this._index;
@@ -244,20 +256,37 @@ class RuntimeParser {
 
     name += this._source.slice(start, this._index);
 
-    return { type: 'kw', name };
+    return { type: 'sym', name };
+  }
+
+  getString() {
+    let value = '';
+
+    while (++this._index &lt; this._length) {
+      const ch = this._source[this._index];
+
+      if (ch === '"') {
+        break;
+      }
+
+      if (ch === '\n') {
+        break;
+      }
+
+      value += ch;
+    }
+
+    this._index++;
+    return value;
   }
 
   // We're going to first try to see if the pattern is simple.
-  // If it is a simple, not quote-delimited string,
-  // we can just look for the end of the line and read the string.
+  // If it is we can just look for the end of the line and read the string.
   //
   // Then, if either the line contains a placeable opening `{` or the
   // next line starts with a pipe `|`, we switch to complex pattern.
   getPattern() {
     const start = this._index;
-    if (this._source[start] === '"') {
-      return this.getComplexPattern();
-    }
     let eol = this._source.indexOf('\n', this._index);
 
     if (eol === -1) {
@@ -273,9 +302,7 @@ class RuntimeParser {
 
     this._index = eol + 1;
 
-    this.getLineWS();
-
-    if (this._source[this._index] === '|') {
+    if (this._source[this._index] === ' ') {
       this._index = start;
       return this.getComplexPattern();
     }
@@ -289,12 +316,6 @@ class RuntimeParser {
     const content = [];
     let placeables = 0;
 
-    // We actually use all three possible states of this variable:
-    // true and false indicate if we're within a quote-delimited string
-    // null indicates that the string is not quote-delimited
-    let quoteDelimited = null;
-    let firstLine = true;
-
     let ch = this._source[this._index];
 
     // If the string starts with \", \{ or \\ skip the first `\` and add the
@@ -306,52 +327,39 @@ class RuntimeParser {
       buffer += this._source[this._index + 1];
       this._index += 2;
       ch = this._source[this._index];
-    } else if (ch === '"') {
-      // If the first character of the string is `"`, mark the string
-      // as quote delimited.
-      quoteDelimited = true;
-      this._index++;
-      ch = this._source[this._index];
     }
 
     while (this._index &lt; this._length) {
       // This block handles multi-line strings combining strings seaprated
       // by new line and `|` character at the beginning of the next one.
       if (ch === '\n') {
-        if (quoteDelimited) {
-          throw this.error('Unclosed string');
-        }
         this._index++;
-        this.getLineWS();
-        if (this._source[this._index] !== '|') {
+        if (this._source[this._index] !== ' ') {
           break;
         }
-        if (firstLine &amp;&amp; buffer.length) {
-          throw this.error('Multiline string should have the ID line empty');
+        this.getLineWS();
+
+        if (
+            this._source[this._index] === '}' ||
+            this._source[this._index] === '[' ||
+            this._source[this._index] === '*' ||
+            this._source[this._index] === '#' ||
+            this._source[this._index] === '.'
+        ) {
+          break;
         }
-        firstLine = false;
-        this._index++;
-        if (this._source[this._index] === ' ') {
-          this._index++;
-        }
-        if (buffer.length) {
+
+        if (buffer.length || content.length) {
           buffer += '\n';
         }
         ch = this._source[this._index];
         continue;
       } else if (ch === '\\') {
-        // We only handle `{` as a character that can be escaped in a string
-        // and `"` if the string is quote delimited.
         const ch2 = this._source[this._index + 1];
-        if ((quoteDelimited &amp;&amp; ch2 === '"') ||
-            ch2 === '{') {
+        if (ch2 === '"' || ch2 === '{') {
           ch = ch2;
           this._index++;
         }
-      } else if (quoteDelimited &amp;&amp; ch === '"') {
-        this._index++;
-        quoteDelimited = false;
-        break;
       } else if (ch === '{') {
         // Push the buffer to content array right before placeable
         if (buffer.length) {
@@ -378,14 +386,7 @@ class RuntimeParser {
       ch = this._source[this._index];
     }
 
-    if (quoteDelimited) {
-      throw this.error('Unclosed string');
-    }
-
     if (content.length === 0) {
-      if (quoteDelimited !== null) {
-        return buffer.length ? buffer : '';
-      }
       return buffer.length ? buffer : undefined;
     }
 
@@ -422,7 +423,7 @@ class RuntimeParser {
     const selector = this.getSelectorExpression();
     let variants;
 
-    this.getLineWS();
+    this.getWS();
 
     const ch = this._source[this._index];
 
@@ -537,15 +538,13 @@ class RuntimeParser {
           const val = this.getSelectorExpression();
 
           // If the expression returned as a value of the argument
-          // is not a quote delimited string, number or
-          // external argument, throw an error.
+          // is not a quote delimited string or number, throw.
           //
           // We don't have to check here if the pattern is quote delimited
           // because that's the only type of string allowed in expressions.
           if (typeof val === 'string' ||
               Array.isArray(val) ||
-              val.type === 'num' ||
-              val.type === 'ext') {
+              val.type === 'num') {
             args.push({
               type: 'narg',
               name: exp.name,
@@ -554,7 +553,7 @@ class RuntimeParser {
           } else {
             this._index = this._source.lastIndexOf(':', this._index) + 1;
             throw this.error(
-              'Expected string in quotes, number or external argument');
+              'Expected string in quotes, number.');
           }
 
         } else {
@@ -655,6 +654,27 @@ class RuntimeParser {
     return attrs;
   }
 
+  getTags() {
+    const tags = [];
+
+    while (this._index &lt; this._length) {
+      const ch = this._source[this._index];
+
+      if (ch !== '#') {
+        break;
+      }
+      this._index++;
+
+      const symbol = this.getSymbol();
+
+      tags.push(symbol.name);
+
+      this.getWS();
+    }
+
+    return tags;
+  }
+
   getVariants() {
     const variants = [];
     let index = 0;
@@ -702,7 +722,7 @@ class RuntimeParser {
     if ((cc >= 48 &amp;&amp; cc &lt;= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getKeyword();
+      literal = this.getSymbol();
     }
 
     if (this._source[this._index] !== ']') {
@@ -718,7 +738,7 @@ class RuntimeParser {
     if ((cc >= 48 &amp;&amp; cc &lt;= 57) || cc === 45) {
       return this.getNumber();
     } else if (cc === 34) { // "
-      return this.getPattern();
+      return this.getString();
     } else if (cc === 36) { // $
       this._index++;
       return {
@@ -738,8 +758,9 @@ class RuntimeParser {
   getComment() {
     let eol = this._source.indexOf('\n', this._index);
 
-    while (eol !== -1 &amp;&amp; this._source[eol + 1] === '#') {
-      this._index = eol + 2;
+    while (eol !== -1 &amp;&amp;
+      this._source[eol + 1] === '/' &amp;&amp; this._source[eol + 2] === '/') {
+      this._index = eol + 3;
 
       eol = this._source.indexOf('\n', this._index);
 
@@ -768,7 +789,7 @@ class RuntimeParser {
 
         if ((cc >= 97 &amp;&amp; cc &lt;= 122) || // a-z
             (cc >= 65 &amp;&amp; cc &lt;= 90) ||  // A-Z
-             cc === 95 || cc === 35 || cc === 91) {  // _#[
+             cc === 95 || cc === 47 || cc === 91) {  // _/[
           break;
         }
       }
@@ -805,7 +826,7 @@ export default function parse(string) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 21:38:08 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 17 2017 17:50:58 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -159,9 +159,9 @@ more information.</p></div>
     <p>Add a translation resource to the context.</p>
 <p>The translation resource must use the Fluent syntax.  It will be parsed by
 the context and each translation unit (message) will be available in the
-<code>messages</code> map by its identifier.</p>
+context by its identifier.</p>
 <pre class="prettyprint source"><code>ctx.addMessages('foo = Foo');
-ctx.messages.get('foo');
+ctx.getMessage('foo');
 
 // Returns a raw representation of the 'foo' message.</code></pre><p>Parsed entities should be formatted with the <code>format</code> method in case they
 contain logic (references, select expressions etc.).</p>
@@ -257,7 +257,7 @@ contain logic (references, select expressions etc.).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line77">line 77</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -314,16 +314,16 @@ contain logic (references, select expressions etc.).</p>
 
 <div class="description">
     <p>Format a message to a string or null.</p>
-<p>Format a raw <code>message</code> from the context's <code>messages</code> map into a string (or
-a null if it has a null value).  <code>args</code> will be used to resolve references
-to external arguments inside of the translation.</p>
+<p>Format a raw <code>message</code> from the context into a string (or a null if it has
+a null value).  <code>args</code> will be used to resolve references to external
+arguments inside of the translation.</p>
 <p>In case of errors <code>format</code> will try to salvage as much of the translation
 as possible and will still return a string.  For performance reasons, the
 encountered errors are not returned but instead are appended to the
 <code>errors</code> array passed as the third argument.</p>
 <pre class="prettyprint source"><code>const errors = [];
 ctx.addMessages('hello = Hello, { $name }!');
-const hello = ctx.messages.get('hello');
+const hello = ctx.getMessage('hello');
 ctx.format(hello, { name: 'Jane' }, errors);
 
 // Returns 'Hello, Jane!' and `errors` is empty.
@@ -477,7 +477,7 @@ ctx.format(hello, undefined, errors);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line171">line 171</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line204">line 204</a>
     </li></ul></dd>
     
 
@@ -534,10 +534,10 @@ ctx.format(hello, undefined, errors);
 
 <div class="description">
     <p>Format a message to an array of <code>FluentTypes</code> or null.</p>
-<p>Format a raw <code>message</code> from the context's <code>messages</code> map into an array of
-<code>FluentType</code> instances which may be used to build the final result.  It
-may also return <code>null</code> if it has a null value.  <code>args</code> will be used to
-resolve references to external arguments inside of the translation.</p>
+<p>Format a raw <code>message</code> from the context into an array of <code>FluentType</code>
+instances which may be used to build the final result.  It may also return
+<code>null</code> if it has a null value.  <code>args</code> will be used to resolve references
+to external arguments inside of the translation.</p>
 <p>See the documentation of <a href="MessageContext.html#format"><code>MessageContext#format</code></a> for more
 information about error handling.</p>
 <p>In case of errors <code>format</code> will try to salvage as much of the translation
@@ -545,7 +545,7 @@ as possible and will still return a string.  For performance reasons, the
 encountered errors are not returned but instead are appended to the
 <code>errors</code> array passed as the third argument.</p>
 <pre class="prettyprint source"><code>ctx.addMessages('hello = Hello, { $name }!');
-const hello = ctx.messages.get('hello');
+const hello = ctx.getMessage('hello');
 ctx.formatToParts(hello, { name: 'Jane' }, []);
 // → ['Hello, ', '\u2068', 'Jane', '\u2069']</code></pre><p>The returned parts need to be formatted via <code>valueOf</code> before they can be
 used further.  This will ensure all values are correctly formatted
@@ -696,7 +696,7 @@ const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line120">line 120</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line153">line 153</a>
     </li></ul></dd>
     
 
@@ -779,7 +779,7 @@ const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
 
     
 
-    <h4 class="name" id="MessageContext"><span class="type-signature"></span>new MessageContext<span class="signature">(lang, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="MessageContext.html">MessageContext</a>}</span></h4>
+    <h4 class="name" id="MessageContext"><span class="type-signature"></span>new MessageContext<span class="signature">(locales, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="MessageContext.html">MessageContext</a>}</span></h4>
 
     
 
@@ -787,14 +787,14 @@ const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
 
 <div class="description">
     <p>Create an instance of <code>MessageContext</code>.</p>
-<p>The <code>lang</code> argument is used to instantiate <code>Intl</code> formatters used by
+<p>The <code>locales</code> argument is used to instantiate <code>Intl</code> formatters used by
 translations.  The <code>options</code> object can be used to configure the context.</p>
 <p>Examples:</p>
-<pre class="prettyprint source"><code>const ctx = new MessageContext(lang);
+<pre class="prettyprint source"><code>const ctx = new MessageContext(locales);
 
-const ctx = new MessageContext(lang, { useIsolating: false });
+const ctx = new MessageContext(locales, { useIsolating: false });
 
-const ctx = new MessageContext(lang, {
+const ctx = new MessageContext(locales, {
   useIsolating: true,
   functions: {
     NODE_ENV: () => process.env.NODE_ENV
@@ -843,13 +843,16 @@ const ctx = new MessageContext(lang, {
 
         <tr>
             
-                <td class="name"><code>lang</code></td>
+                <td class="name"><code>locales</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -867,7 +870,7 @@ const ctx = new MessageContext(lang, {
 
             
 
-            <td class="description last"><p>Language of the context.</p></td>
+            <td class="description last"><p>Locale or locales of the context</p></td>
         </tr>
 
     
@@ -1018,9 +1021,9 @@ const ctx = new MessageContext(lang, {
     <p>Add a translation resource to the context.</p>
 <p>The translation resource must use the Fluent syntax.  It will be parsed by
 the context and each translation unit (message) will be available in the
-<code>messages</code> map by its identifier.</p>
+context by its identifier.</p>
 <pre class="prettyprint source"><code>ctx.addMessages('foo = Foo');
-ctx.messages.get('foo');
+ctx.getMessage('foo');
 
 // Returns a raw representation of the 'foo' message.</code></pre><p>Parsed entities should be formatted with the <code>format</code> method in case they
 contain logic (references, select expressions etc.).</p>
@@ -1116,7 +1119,7 @@ contain logic (references, select expressions etc.).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line77">line 77</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -1173,16 +1176,16 @@ contain logic (references, select expressions etc.).</p>
 
 <div class="description">
     <p>Format a message to a string or null.</p>
-<p>Format a raw <code>message</code> from the context's <code>messages</code> map into a string (or
-a null if it has a null value).  <code>args</code> will be used to resolve references
-to external arguments inside of the translation.</p>
+<p>Format a raw <code>message</code> from the context into a string (or a null if it has
+a null value).  <code>args</code> will be used to resolve references to external
+arguments inside of the translation.</p>
 <p>In case of errors <code>format</code> will try to salvage as much of the translation
 as possible and will still return a string.  For performance reasons, the
 encountered errors are not returned but instead are appended to the
 <code>errors</code> array passed as the third argument.</p>
 <pre class="prettyprint source"><code>const errors = [];
 ctx.addMessages('hello = Hello, { $name }!');
-const hello = ctx.messages.get('hello');
+const hello = ctx.getMessage('hello');
 ctx.format(hello, { name: 'Jane' }, errors);
 
 // Returns 'Hello, Jane!' and `errors` is empty.
@@ -1336,7 +1339,7 @@ ctx.format(hello, undefined, errors);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line171">line 171</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line204">line 204</a>
     </li></ul></dd>
     
 
@@ -1393,10 +1396,10 @@ ctx.format(hello, undefined, errors);
 
 <div class="description">
     <p>Format a message to an array of <code>FluentTypes</code> or null.</p>
-<p>Format a raw <code>message</code> from the context's <code>messages</code> map into an array of
-<code>FluentType</code> instances which may be used to build the final result.  It
-may also return <code>null</code> if it has a null value.  <code>args</code> will be used to
-resolve references to external arguments inside of the translation.</p>
+<p>Format a raw <code>message</code> from the context into an array of <code>FluentType</code>
+instances which may be used to build the final result.  It may also return
+<code>null</code> if it has a null value.  <code>args</code> will be used to resolve references
+to external arguments inside of the translation.</p>
 <p>See the documentation of <a href="MessageContext.html#format"><code>MessageContext#format</code></a> for more
 information about error handling.</p>
 <p>In case of errors <code>format</code> will try to salvage as much of the translation
@@ -1404,7 +1407,7 @@ as possible and will still return a string.  For performance reasons, the
 encountered errors are not returned but instead are appended to the
 <code>errors</code> array passed as the third argument.</p>
 <pre class="prettyprint source"><code>ctx.addMessages('hello = Hello, { $name }!');
-const hello = ctx.messages.get('hello');
+const hello = ctx.getMessage('hello');
 ctx.formatToParts(hello, { name: 'Jane' }, []);
 // → ['Hello, ', '\u2068', 'Jane', '\u2069']</code></pre><p>The returned parts need to be formatted via <code>valueOf</code> before they can be
 used further.  This will ensure all values are correctly formatted
@@ -1555,7 +1558,7 @@ const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line120">line 120</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line153">line 153</a>
     </li></ul></dd>
     
 
@@ -1628,7 +1631,7 @@ const str = parts.map(part => part.valueOf(ctx)).join('');</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 23 2017 21:38:08 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 17 2017 17:50:58 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
