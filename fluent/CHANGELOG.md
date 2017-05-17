@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+  - …
+
+## fluent 0.4.0 (May 17th, 2017)
+
   - Added MessageContext.hasMessage and MessageContext.getMessage methods.
 
     Using the MessageContext.messages map for getting raw messages is
