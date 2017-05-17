@@ -47,43 +47,43 @@ suite('Referencing values', function(){
   });
 
   test('references the value', function(){
-    const msg = ctx.messages.get('ref1');
+    const msg = ctx.getMessage('ref1');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'Value 1');
     assert.equal(errs.length, 0);
   });
 
   test('references the default variant', function(){
-    const msg = ctx.messages.get('ref2');
+    const msg = ctx.getMessage('ref2');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'B2');
     assert.equal(errs.length, 0);
   });
 
   test('references the value if it is a pattern', function(){
-    const msg = ctx.messages.get('ref3');
+    const msg = ctx.getMessage('ref3');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'Value 3');
     assert.equal(errs.length, 0);
   });
 
   test('references the default variant if it is a pattern', function(){
-    const msg = ctx.messages.get('ref4');
+    const msg = ctx.getMessage('ref4');
     const val = ctx.format(msg, args, errs);
     assert.equal(val, 'B4');
     assert.equal(errs.length, 0);
   });
 
   test('uses ??? if there is no value', function(){
-    const msg = ctx.messages.get('ref5');
+    const msg = ctx.getMessage('ref5');
     const val = ctx.format(msg, args, errs);
     assert.strictEqual(val, '???');
     assert.ok(errs[0] instanceof RangeError); // no default
   });
 
   test('references the variants', function(){
-    const msg_a = ctx.messages.get('ref6');
-    const msg_b = ctx.messages.get('ref7');
+    const msg_a = ctx.getMessage('ref6');
+    const msg_b = ctx.getMessage('ref7');
     const val_a = ctx.format(msg_a, args, errs)
     const val_b = ctx.format(msg_b, args, errs)
     assert.strictEqual(val_a, 'A2');
@@ -92,8 +92,8 @@ suite('Referencing values', function(){
   });
 
   test('references the variants which are patterns', function(){
-    const msg_a = ctx.messages.get('ref8');
-    const msg_b = ctx.messages.get('ref9');
+    const msg_a = ctx.getMessage('ref8');
+    const msg_b = ctx.getMessage('ref9');
     const val_a = ctx.format(msg_a, args, errs)
     const val_b = ctx.format(msg_b, args, errs)
     assert.strictEqual(val_a, 'A4');
@@ -102,8 +102,8 @@ suite('Referencing values', function(){
   });
 
   test('references the attributes', function(){
-    const msg_a = ctx.messages.get('ref10');
-    const msg_b = ctx.messages.get('ref11');
+    const msg_a = ctx.getMessage('ref10');
+    const msg_b = ctx.getMessage('ref11');
     const val_a = ctx.format(msg_a, args, errs)
     const val_b = ctx.format(msg_b, args, errs)
     assert.strictEqual(val_a, 'A5');

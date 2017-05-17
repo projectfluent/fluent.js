@@ -33,7 +33,7 @@ suite('Reference bombs', function() {
     // XXX Protect the FTL Resolver against the billion laughs attack
     // https://bugzil.la/1307126
     it.skip('does not expand all placeables', function() {
-      const msg = ctx.messages.get('lolz');
+      const msg = ctx.getMessage('lolz');
       const val = ctx.format(msg, args, errs);
       assert.equal(val, '???');
       assert.equal(errs.length, 1);

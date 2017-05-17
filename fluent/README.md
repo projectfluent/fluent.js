@@ -32,7 +32,7 @@ if (errors.length) {
   // syntax errors are per-message and don't break the whole resource
 }
 
-const welcome = ctx.messages.get('welcome');
+const welcome = ctx.getMessage('welcome');
 
 ctx.format(welcome, { name: 'Anna' });
 // → 'Welcome, Anna, to Foo 3000!'

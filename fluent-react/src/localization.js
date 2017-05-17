@@ -48,7 +48,7 @@ export default class Localization {
    */
   getMessageContext(id) {
     for (const context of this.contexts) {
-      if (context.messages.has(id)) {
+      if (context.hasMessage(id)) {
         return context;
       }
     }

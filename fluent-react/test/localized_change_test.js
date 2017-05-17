@@ -24,7 +24,7 @@ suite('Localized - change messages', function() {
     ));
 
     const mcx2 = new MessageContext();
-    sinon.stub(mcx2.messages, 'get').returns('BAR');
+    sinon.stub(mcx2, 'getMessage').returns('BAR');
     l10n.setMessages([mcx2]);
 
     assert.equal(wrapper.state('mcx'), mcx2);

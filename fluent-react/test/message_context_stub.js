@@ -1,13 +1,10 @@
 export default class MessageContext {
-  constructor() {
-    this.messages = {
-      has(id) {
-        return true;
-      },
-      get(id) {
-        return id.toUpperCase();
-      },
-    };
+  hasMessage(id) {
+    return true;
+  }
+
+  getMessage(id) {
+    return id.toUpperCase();
   }
 
   format(msg) {

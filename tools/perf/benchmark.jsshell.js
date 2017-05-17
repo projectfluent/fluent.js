@@ -24,13 +24,11 @@ var ctx = new Fluent.MessageContext('en-US');
 var errors = ctx.addMessages(ftlCode);
 
 times.format = dateNow();
-for (let id of ctx.messages.keys()) {
-  const message = ctx.messages.get(id);
-
+for (const [id, message] of ctx.messages) {
   ctx.format(message, args, errors);
-  if (message.traits) {
-    for (let trait of message.traits) {
-      ctx.format(trait.val, args, errors)
+  if (message.attrs) {
+    for (const name in message.attrs) {
+      ctx.format(message.attrs[name], args, errors)
     }
   }
 }
