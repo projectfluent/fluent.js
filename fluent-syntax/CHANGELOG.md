@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+  - …
+
+## fluent-syntax 0.4.0 (May 17th, 2017)
+
   - Introduce the FluentParser and the FluentSerializer classes.
 
     Instances can be used to store config for multiple parse/serialize
