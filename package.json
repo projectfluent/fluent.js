@@ -12,7 +12,7 @@
     "colors": "^1.1.2",
     "commander": "^2.9",
     "documentation": "^4.0.0-beta10",
-    "eslint": "^3.9.1",
+    "eslint": "^3.19.0",
     "fuzzer": "^0.2.1",
     "gh-pages": "^0.12.0",
     "jsdoc": "^3.4.3",
