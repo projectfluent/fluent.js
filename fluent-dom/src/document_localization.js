@@ -1,8 +1,8 @@
-import { Localization } from './localization';
+import Localization from './localization';
 
-export class DocumentLocalization extends Localization {
-  constructor(doc, resIds, generateContexts) {
-    super(doc.location.href, resIds, generateContexts);
+export default class DocumentLocalization extends Localization {
+  constructor(doc, resIds, generateMessage) {
+    super(doc.location.href, resIds, generateMessage);
     this.document = doc;
     this.query = '[data-l10n-id]';
     this.roots = new Set();

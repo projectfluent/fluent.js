@@ -1,4 +1,5 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* global console */
 
 class L10nError extends Error {
   constructor(message, id, lang) {
@@ -16,17 +17,17 @@ class L10nError extends Error {
  * more entries from that fallback context.
  */
 
-export class Localization {
-  constructor(id, resIds, generateContexts) {
+export default class Localization {
+  constructor(id, resIds, generateMessage) {
     this.id = id;
     this.resIds = resIds;
-    this.ctxs = generateContexts(resIds);
+    this.ctxs = generateMessage(resIds);
   }
 
   async formatWithFallback(keys, method) {
-    let translations = [];
-    for (let o of this.ctxs) {
-      let ctx = await o.ready();
+    const translations = [];
+    for (const o of this.ctxs) {
+      const ctx = await o.ready();
       const errors = keysFromContext(method, ctx, keys, translations);
       if (!errors) {
         break;
@@ -35,34 +36,14 @@ export class Localization {
     return translations;
   }
 
-  formatEntities(keys) {
+  formatMessages(keys) {
     return this.formatWithFallback(keys, messageFromContext);
   }
 
-
-  formatValues(...keys) {
-    const keyTuples = keys.map(
-      key => Array.isArray(key) ? key : [key, null]
-    );
-    return this.formatWithFallback(keyTuples, valueFromContext);
+  async formatValue(id, args) {
+    const [val] = await this.formatValues([id, args]);
+    return val;
   }
-
-  formatValue(id, args) {
-    return this.formatValues([id, args]).then(
-      ([val]) => val
-    );
-  }
-}
-
-function valueFromContext(ctx, errors, id, args) {
-  const message = ctx.messages.get(id);
-
-  if (message === undefined) {
-    errors.push(new L10nError(`Unknown entity: ${id}`));
-    return id;
-  }
-
-  return ctx.format(message, args, errors);
 }
 
 function messageFromContext(ctx, errors, id, args) {
@@ -80,7 +61,7 @@ function messageFromContext(ctx, errors, id, args) {
 
   if (msg.attrs) {
     formatted.attrs = [];
-    for (let attrName in msg.attrs) {
+    for (const attrName in msg.attrs) {
       const formattedAttr = ctx.format(msg.attrs[attrName], args, errors);
       if (formattedAttr !== null) {
         formatted.attrs.push([
@@ -97,7 +78,7 @@ function messageFromContext(ctx, errors, id, args) {
 function keysFromContext(method, ctx, keys, translations) {
   const messageErrors = [];
   let hasErrors = false;
-  
+
   keys.forEach((key, i) => {
     if (translations[i] !== undefined) {
       return;
