@@ -1,17 +1,17 @@
 import assert from 'assert';
-import parseHeaderIntoArray from '../src/headers';
+import acceptedLanguages from '../src/accepted_languages';
 
 suite('parse headers', () => {
   test('without quality values', () => {
     assert.deepStrictEqual(
-      parseHeaderIntoArray('en-US, fr, pl'), [
+      acceptedLanguages('en-US, fr, pl'), [
         'en-US',
         'fr',
         'pl'
       ]
     );
     assert.deepStrictEqual(
-      parseHeaderIntoArray('sr-Latn'), [
+      acceptedLanguages('sr-Latn'), [
         'sr-Latn'
       ]
     );
@@ -19,7 +19,7 @@ suite('parse headers', () => {
 
   test('with quality values', () => {
     assert.deepStrictEqual(
-      parseHeaderIntoArray('fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5'), [
+      acceptedLanguages('fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5'), [
         'fr-CH',
         'fr',
         'en',
@@ -39,7 +39,7 @@ suite('parse headers', () => {
     ];
 
     args.forEach(arg => {
-      assert.throws(parseHeaderIntoArray.bind(null, arg), TypeError);
+      assert.throws(acceptedLanguages.bind(null, arg), TypeError);
     });
   });
 });

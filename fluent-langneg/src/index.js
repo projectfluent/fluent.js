@@ -7,6 +7,7 @@
  *
  */
 
+export { default as acceptedLanguages } from './accepted_languages';
 import filterMatches from './matches';
 
 function GetOption(options, property, type, values, fallback) {
