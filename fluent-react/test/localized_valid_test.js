@@ -1,6 +1,6 @@
 import React from 'react';
 import assert from 'assert';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { LocalizationProvider, Localized } from '../src/index';
 import Localization from '../src/localization';
 
@@ -15,7 +15,7 @@ suite('Localized - validation', function() {
   });
 
   test('inside of a LocalizationProvider', function() {
-    const wrapper = mount(
+    const wrapper = shallow(
       <LocalizationProvider messages={[]}>
         <Localized>
           <div />

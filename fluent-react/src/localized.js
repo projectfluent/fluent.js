@@ -2,7 +2,7 @@ import { isValidElement, cloneElement, Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import { MessageArgument } from 'fluent/compat';
 
-import Localization from './localization';
+import { isLocalization } from './localization';
 
 /*
  * A Fluent argument type for React elements.
@@ -166,15 +166,3 @@ Localized.contextTypes = {
 Localized.propTypes = {
   children: PropTypes.element.isRequired,
 };
-
-function isLocalization(props, propName) {
-  const prop = props[propName];
-
-  if (prop instanceof Localization) {
-    return null;
-  }
-
-  return new Error(
-    `The ${propName} context field must be an instance of Localization.`
-  );
-}

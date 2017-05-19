@@ -27,6 +27,8 @@ welcome = Welcome, { $username }.
 ```
 
 
+### The Localized Component
+
 Wrap your localizable elements in the `Localized` component:
 
 ```javascript
@@ -37,8 +39,27 @@ import { Localized } from 'fluent-react';
 </Localized>
 ```
 
-The `id` prop should be the unique identifier of the translation.  Any
-attributes found in the translation will be applied to the wrapped element.
+The `id` prop should be the unique identifier of the translation.  [Attributes
+defined in the translation][attrs] will be applied to the wrapped element.
+
+[attrs]: http://projectfluent.io/fluent/guide/attributes.html
+
+```
+type-name
+    .placeholder = Your name
+```
+
+```javascript
+<Localized id="type-name">
+    <input
+        type="text"
+        placeholder="Your name"
+        onChange={…}
+        value={…}
+    />
+</Localized>
+```
+
 You can also pass arguments to the translation as `$`-prefixed props on
 `Localized`:
 
@@ -69,6 +90,9 @@ It's also possible to pass React elements as arguments to translations:
     <p>{'Click { $linkA } or { $linkB}.'}</p>
 </Localized>
 ```
+
+
+### The Localization Provider
 
 All `<Localized>` components need access to an instance of the `Localization`
 class, the central localization store to which they subscribe.  The
@@ -129,7 +153,7 @@ export function* generateMessages(currentLocales) {
 [context]: https://facebook.github.io/react/docs/context.html
 
 
-## The messages iterable
+### The messages iterable
 
 The design of the `LocalizationProvider` requires a little bit of work from the
 developer.  The `messages` iterable needs to be created manually.  This is
@@ -156,6 +180,35 @@ translations (including any fallback) must be fetched at once before
 In the future we might be able to allow async fetching of fallback locales.
 
 [fluent-langneg]: https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg
+
+
+### The withLocalization decorator
+
+Sometimes it's useful to imperatively format a translation rather than rely on
+the declarative `<Localized />` API.  Good examples of this are the
+`window.alert` and `window.confirm` functions.
+
+It's possible to connect any component to its enclosing `LocalizationProvider`
+using the `withLocalization` higher-order component (HOC).
+
+```javascript
+import { withLocalization } from 'fluent-react/compat';
+
+function HelloButton(props) {
+    const { formatString } = props;
+
+    return (
+        <button onClick={() => alert(formatString('hello'))}>
+            👋
+        </button>
+    );
+}
+
+export default withLocalization(HelloButton);
+```
+
+The connected component must be a descendant of a `LocalizationProvider` to
+have access to the translations stored there.
 
 
 ## A complete example

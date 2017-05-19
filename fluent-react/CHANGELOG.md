@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+  - Added the `withLocalization` HOC.
+
+    It may be used to connect a component with a Localization. It injects the
+    `formatString` prop.
+
   - The compat build is now transpiled using rollup-plugin-babel.
 
     This ensures that the "use strict" pragma is scoped to the UMD wrapper.  It

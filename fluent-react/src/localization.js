@@ -81,3 +81,15 @@ function memoize(iterable) {
     }
   };
 }
+
+export function isLocalization(props, propName) {
+  const prop = props[propName];
+
+  if (prop instanceof Localization) {
+    return null;
+  }
+
+  return new Error(
+    `The ${propName} context field must be an instance of Localization.`
+  );
+}
