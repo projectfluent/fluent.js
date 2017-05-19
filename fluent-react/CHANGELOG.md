@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+  - Upgrade to fluent 0.4.0.
+
   - Added the `withLocalization` HOC.
 
     It may be used to connect a component with a Localization. It injects the
