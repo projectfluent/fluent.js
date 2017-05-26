@@ -195,10 +195,10 @@ using the `withLocalization` higher-order component (HOC).
 import { withLocalization } from 'fluent-react/compat';
 
 function HelloButton(props) {
-    const { formatString } = props;
+    const { getString } = props;
 
     return (
-        <button onClick={() => alert(formatString('hello'))}>
+        <button onClick={() => alert(getString('hello'))}>
             👋
         </button>
     );

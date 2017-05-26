@@ -3,8 +3,8 @@ import { Localized, withLocalization } from 'fluent-react/compat';
 
 function App(props) {
   function showAlert() {
-    const { formatString } = props;
-    alert(formatString('hello'));
+    const { getString } = props;
+    alert(getString('hello'));
   }
 
   return (

@@ -1,14 +1,15 @@
 import { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 
-import Localization from './localization';
+import ReactLocalization from './localization';
 
 /*
- * The Provider component for the `Localization` class.
+ * The Provider component for the `ReactLocalization` class.
  *
- * Exposes a `Localization` instance to all descendants via React's context
- * feature.  It makes translations available to all localizable elements in the
- * descendant's render tree without the need to pass them explicitly.
+ * Exposes a `ReactLocalization` instance to all descendants via React's
+ * context feature.  It makes translations available to all localizable
+ * elements in the descendant's render tree without the need to pass them
+ * explicitly.
  *
  *     <LocalizationProvider messages={…}>
  *         …
@@ -17,8 +18,8 @@ import Localization from './localization';
  * The `LocalizationProvider` component takes one prop: `messages`.  It should
  * be an iterable of `MessageContext` instances in order of the user's
  * preferred languages.  The `MessageContext` instances will be used by
- * `Localization` to format translations.  If a translation is missing in one
- * instance, `Localization` will fall back to the next one.
+ * `ReactLocalization` to format translations.  If a translation is missing in
+ * one instance, `ReactLocalization` will fall back to the next one.
  */
 export default class LocalizationProvider extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ export default class LocalizationProvider extends Component {
       throw new Error('The messages prop must be an iterable.');
     }
 
-    this.l10n = new Localization(messages);
+    this.l10n = new ReactLocalization(messages);
   }
 
   getChildContext() {

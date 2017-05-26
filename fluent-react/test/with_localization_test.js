@@ -3,7 +3,7 @@ import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import MessageContext from './message_context_stub';
-import Localization from '../src/localization';
+import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 
 function DummyComponent() {
@@ -31,9 +31,9 @@ suite('withLocalization', function() {
     assert.equal(wrapper.length, 1);
   });
 
-  test('formatString with access to the l10n context', function() {
+  test('getString with access to the l10n context', function() {
     const mcx = new MessageContext();
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
     const wrapper = shallow(
@@ -41,20 +41,20 @@ suite('withLocalization', function() {
       { context: { l10n } }
     );
 
-    const formatString = wrapper.prop('formatString');
-    assert.equal(formatString('foo'), 'FOO');
+    const getString = wrapper.prop('getString');
+    assert.equal(getString('foo'), 'FOO');
   });
 
-  test('formatString without access to the l10n context', function() {
+  test('getString without access to the l10n context', function() {
     const mcx = new MessageContext();
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
     const wrapper = shallow(
       <EnhancedComponent />
     );
 
-    const formatString = wrapper.prop('formatString');
-    assert.throws(formatString, /descendant of a LocalizationProvider/);
+    const getString = wrapper.prop('getString');
+    assert.throws(getString, /descendant of a LocalizationProvider/);
   });
 });
