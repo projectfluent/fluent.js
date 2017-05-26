@@ -3,13 +3,13 @@ import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import MessageContext from './message_context_stub';
-import Localization from '../src/localization';
+import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - rendering', function() {
   test('rendering the value', function() {
     const mcx = new MessageContext();
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -30,7 +30,7 @@ suite('Localized - rendering', function() {
       attrs: { attr: 'ATTR' }
     });
     sinon.stub(mcx, 'formatToParts').returns(null);
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -51,7 +51,7 @@ suite('Localized - rendering', function() {
       attrs: { attr: 'ATTR' }
     });
     sinon.stub(mcx, 'formatToParts').returns(null);
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -68,7 +68,7 @@ suite('Localized - rendering', function() {
   test('$arg is passed to formatToParts the value', function() {
     const mcx = new MessageContext();
     const formatToParts = sinon.stub(mcx, 'formatToParts').returns(null);
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">
@@ -89,7 +89,7 @@ suite('Localized - rendering', function() {
     });
     sinon.stub(mcx, 'formatToParts').returns(null);
     const format = sinon.spy(mcx, 'format');
-    const l10n = new Localization([mcx]);
+    const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">

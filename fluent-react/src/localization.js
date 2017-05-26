@@ -1,22 +1,24 @@
+import { CachedIterable, mapContextSync } from 'fluent/compat';
+
 /*
- * The `Localization` class handles formatting of translations and fallback.
+ * `ReactLocalization` handles translation formatting and fallback.
  *
  * The current negotiated fallback chain of languages is stored in the
- * `Localization` instance in form of an iterable of `MessageContext`
+ * `ReactLocalization` instance in form of an iterable of `MessageContext`
  * instances.  This iterable is used to find the best existing translation for
  * a given identifier.
  *
- * `Localized` components must subscribe to the changes of the `Localization`'s
- * fallback chain.  When the fallback chain changes (the `messages` iterable is
- * set anew), all subscribed compontent must relocalize.
+ * `Localized` components must subscribe to the changes of the
+ * `ReactLocalization`'s fallback chain.  When the fallback chain changes (the
+ * `messages` iterable is set anew), all subscribed compontent must relocalize.
  *
- * The `Localization` class instances are exposed to `Localized` elements via
- * the `LocalizationProvider` component.
+ * The `ReactLocalization` class instances are exposed to `Localized` elements
+ * via the `LocalizationProvider` component.
  */
-export default class Localization {
+export default class ReactLocalization {
   constructor(messages) {
+    this.contexts = new CachedIterable(messages);
     this.subs = new Set();
-    this.contexts = memoize(messages);
   }
 
   /*
@@ -37,59 +39,55 @@ export default class Localization {
    * Set a new `messages` iterable and trigger the retranslation.
    */
   setMessages(messages) {
-    this.contexts = memoize(messages);
+    this.contexts = new CachedIterable(messages);
 
     // Update all subscribed Localized components.
     this.subs.forEach(comp => comp.relocalize());
   }
 
-  /*
-   * Find the best `MessageContext` with the translation for `id`.
-   */
   getMessageContext(id) {
-    for (const context of this.contexts) {
-      if (context.hasMessage(id)) {
-        return context;
+    return mapContextSync(this.contexts, id);
+  }
+
+  formatCompound(mcx, msg, args) {
+    const rawParts = mcx.formatToParts(msg, args) || [];
+
+    // Format the parts using the current `MessageContext` instance.
+    const parts = rawParts.map(part => part.valueOf(mcx));
+
+    if (msg.attrs) {
+      var attrs = {};
+      for (const name of Object.keys(msg.attrs)) {
+        attrs[name] = mcx.format(msg.attrs[name], args);
       }
     }
 
-    return null;
+    return { parts, attrs };
+  }
+
+  /*
+   * Find a translation by `id` and format it to a string using `args`.
+   */
+  getString(id, args) {
+    const mcx = this.getMessageContext(id);
+
+    if (mcx === null) {
+      return id;
+    }
+
+    const msg = mcx.getMessage(id);
+    return mcx.format(msg, args);
   }
 }
 
-/*
- * Create a new iterable which caches the elements yielded by `iterable`.
- *
- * This allows multiple `Localized` components to call `getMessageContext`
- * without advancing and eventually depleting the iterator unless fallback is
- * required.
- */
-function memoize(iterable) {
-  const iterator = iterable[Symbol.iterator]();
-  const seen = [];
-  return {
-    [Symbol.iterator]() {
-      let ptr = 0;
-      return {
-        next() {
-          if (seen.length <= ptr) {
-            seen.push(iterator.next());
-          }
-          return seen[ptr++];
-        }
-      };
-    }
-  };
-}
-
-export function isLocalization(props, propName) {
+export function isReactLocalization(props, propName) {
   const prop = props[propName];
 
-  if (prop instanceof Localization) {
+  if (prop instanceof ReactLocalization) {
     return null;
   }
 
   return new Error(
-    `The ${propName} context field must be an instance of Localization.`
+    `The ${propName} context field must be an instance of ReactLocalization.`
   );
 }

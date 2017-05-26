@@ -2,7 +2,7 @@ import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
 import { LocalizationProvider, Localized } from '../src/index';
-import Localization from '../src/localization';
+import ReactLocalization from '../src/localization';
 
 suite('Localized - validation', function() {
   suiteSetup(function() {
@@ -39,7 +39,7 @@ suite('Localized - validation', function() {
       <Localized>
         <div />
       </Localized>,
-      { context: { l10n: new Localization([]) } }
+      { context: { l10n: new ReactLocalization([]) } }
     );
     assert.equal(wrapper.length, 1);
   });
@@ -48,7 +48,7 @@ suite('Localized - validation', function() {
     function render() {
       shallow(
         <Localized />,
-        { context: { l10n: new Localization([]) } }
+        { context: { l10n: new ReactLocalization([]) } }
       );
     }
     assert.throws(render, /a single React element child/);
@@ -61,7 +61,7 @@ suite('Localized - validation', function() {
           <div />
           <div />
         </Localized>,
-        { context: { l10n: new Localization([]) } }
+        { context: { l10n: new ReactLocalization([]) } }
       );
     }
     assert.throws(render, /a single React element child/);
@@ -72,8 +72,10 @@ suite('Localized - validation', function() {
       <Localized>
         <div />
       </Localized>,
-      { context: { l10n: new Localization([]) } }
+      { context: { l10n: new ReactLocalization([]) } }
     );
-    assert.equal(wrapper.state('mcx'), null);
+    assert.ok(wrapper.contains(
+      <div />
+    ));
   });
 });

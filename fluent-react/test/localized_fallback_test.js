@@ -3,13 +3,13 @@ import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import MessageContext from './message_context_stub';
-import Localization from '../src/localization';
+import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - fallback', function() {
   test('message id in the first context', function() {
     const mcx1 = new MessageContext();
-    const l10n = new Localization([mcx1]);
+    const l10n = new ReactLocalization([mcx1]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -18,7 +18,6 @@ suite('Localized - fallback', function() {
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.state('mcx'), mcx1);
     assert.ok(wrapper.contains(
       <div>FOO</div>
     ));
@@ -28,7 +27,7 @@ suite('Localized - fallback', function() {
     const mcx1 = new MessageContext();
     sinon.stub(mcx1, 'hasMessage').returns(false);
     const mcx2 = new MessageContext();
-    const l10n = new Localization([mcx1, mcx2]);
+    const l10n = new ReactLocalization([mcx1, mcx2]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -37,7 +36,6 @@ suite('Localized - fallback', function() {
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.state('mcx'), mcx2);
     assert.ok(wrapper.contains(
       <div>FOO</div>
     ));
@@ -46,7 +44,7 @@ suite('Localized - fallback', function() {
   test('missing message', function() {
     const mcx1 = new MessageContext();
     sinon.stub(mcx1, 'hasMessage').returns(false);
-    const l10n = new Localization([mcx1]);
+    const l10n = new ReactLocalization([mcx1]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -55,7 +53,6 @@ suite('Localized - fallback', function() {
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.state('mcx'), null);
     assert.ok(wrapper.contains(
       <div>Bar</div>
     ));

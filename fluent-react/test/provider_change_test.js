@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import { LocalizationProvider } from '../src/index';
 
 suite('LocalizationProvider - changing props', function() {
-  test('does not change the Localization', function() {
+  test('does not change the ReactLocalization', function() {
     const wrapper = shallow(
       <LocalizationProvider messages={[]}>
         <div />
@@ -19,7 +19,7 @@ suite('LocalizationProvider - changing props', function() {
     assert.equal(oldL10n, newL10n);
   });
 
-  test('calls the Localization\'s setMessages method', function() {
+  test('calls the ReactLocalization\'s setMessages method', function() {
     const wrapper = shallow(
       <LocalizationProvider messages={[]}>
         <div />
@@ -33,7 +33,7 @@ suite('LocalizationProvider - changing props', function() {
     assert.deepEqual(args, [newMessages]);
   });
 
-  test('changes the Localization\'s messages contexts', function() {
+  test('changes the ReactLocalization\'s messages contexts', function() {
     const wrapper = shallow(
       <LocalizationProvider messages={[]}>
         <div />

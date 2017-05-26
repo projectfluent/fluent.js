@@ -2,12 +2,15 @@
 
 ## Unreleased
 
-  - Upgrade to fluent 0.4.0.
+  - Upgrade to fluent 0.4.1.
+
+  - Removed caching in `Localized`'s state until we know more about performance
+    bottlenecks.
 
   - Added the `withLocalization` HOC.
 
     It may be used to connect a component with a Localization. It injects the
-    `formatString` prop.
+    `getString` prop.
 
   - The compat build is now transpiled using rollup-plugin-babel.
 
