@@ -16,7 +16,6 @@
     "fuzzer": "^0.2.1",
     "gh-pages": "^0.12.0",
     "jsdoc": "git+https://github.com/jvanveen/jsdoc.git#a789c902c56e7852ecff1825dc4f5d8fcd36a5ed",
-    "jsdoc-babel": "^0.3.0",
     "mocha": "^3.0.2",
     "prettyjson": "^1.1.3",
     "rollup": "^0.41.4",

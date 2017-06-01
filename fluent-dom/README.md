@@ -1,6 +1,6 @@
 # fluent-dom
 
-`fluent-dom` provides DOM bindings for Project Fluent,a localization
+`fluent-dom` provides DOM bindings for Project Fluent, a localization
 framework designed to unleash the expressive power of the natural language.
 
 ## Installation
@@ -14,27 +14,34 @@ can install it from the npm registry or use it as a standalone script (as the
 
 ## How to use
 
-The `Localization` constructor provides the core functionality of 
-full-fallback ready message formatting. It uses a lazy-resolved 
+The `DocumentLocalization` constructor provides the core functionality of
+full-fallback ready message formatting. It uses a lazy-resolved
 `MessageContext` objects from the `fluent` package to format messages.
 
-```javascript
-import { Localization } from 'fluent-dom'
+On top of that, DocumentLocalization provides a set of functions needed
+for DOM localization.
 
-const l10n = new Localization('Main', [
+```javascript
+import { DocumentLocalization } from 'fluent-dom'
+
+function *generateMessages() {
+  // Some lazy logic for yielding MessageContexts.
+  yield *[ctx1, ctx2];
+}
+
+const l10n = new DocumentLocalization(document, [
   '/browser/main.ftl',
   '/toolkit/menu.ftl'
-], generatemessage);
+], generateMessages);
 
-const msg = await l10n.formatValue('welcome', { name: 'Anna' });
-// → 'Welcome, Anna!'
+async function main() {
+  const msg = await l10n.formatValue('welcome', { name: 'Anna' });
+  // → 'Welcome, Anna!'
+}
 ```
 
-The `DocumentLocalization` constructor builds on top of the `Localization`
-class with functionality related to DOM manipulation. It allows
-user to translate the DOM tree using a `Localization` object and set
-a `MutationObserver` that will react to changes in l10n-id assignments on
-DOM elements.
+On top of that, DocumentLocalization can localize any DOMFragment by
+identifying localizable elements with `l10n-id` and translating them.
 
 ```javascript
 
