@@ -70,6 +70,5 @@ documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
 
-[README]: ../fluent/README.md
 [projectfluent.io]: http://projectfluent.io
 [FTL]: http://projectfluent.io/fluent/guide/
