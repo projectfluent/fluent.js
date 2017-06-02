@@ -1,1 +1,1 @@
-export { default as DocumentLocalization } from './document_localization';
+export { default as DOMLocalization } from './dom_localization';
