@@ -18,7 +18,7 @@ Localization.jsm: $(SOURCES)
 
 DOMLocalization.jsm: $(SOURCES)
 	@rollup $(CURDIR)/src/dom_localization.js \
-	    --config ./xpcom_config.js \
+	    --config ./xpcom_dom_config.js \
 	    --output ./dist/$@
 	@echo -e " $(OK) $@ built"
 
