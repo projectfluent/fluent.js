@@ -3,24 +3,39 @@
   "body": [
     {
       "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "foo",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 3
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [],
+        "span": {
+          "type": "Span",
+          "start": 6,
+          "end": 6
+        }
+      },
+      "attributes": [],
+      "tags": [],
+      "comment": null,
       "span": {
         "type": "Span",
         "start": 0,
         "end": 6
-      },
-      "annotations": [],
-      "id": {
-        "type": "Identifier",
-        "name": "foo"
-      },
-      "value": {
-        "type": "Pattern",
-        "elements": []
-      },
-      "attributes": null,
-      "tags": null,
-      "comment": null
+      }
     }
   ],
-  "comment": null
+  "comment": null,
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 7
+  }
 }

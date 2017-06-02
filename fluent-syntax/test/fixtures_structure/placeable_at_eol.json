@@ -3,40 +3,75 @@
   "body": [
     {
       "type": "Message",
-      "span": {
-        "type": "Span",
-        "start": 0,
-        "end": 130
-      },
       "annotations": [],
       "id": {
         "type": "Identifier",
-        "name": "key"
+        "name": "key",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 3
+        }
       },
       "value": {
         "type": "Pattern",
         "elements": [
           {
             "type": "TextElement",
-            "value": "A multiline message with a "
+            "value": "A multiline message with a ",
+            "span": {
+              "type": "Span",
+              "start": 5,
+              "end": 39
+            }
           },
           {
             "type": "MessageReference",
             "id": {
               "type": "Identifier",
-              "name": "placeable"
+              "name": "placeable",
+              "span": {
+                "type": "Span",
+                "start": 39,
+                "end": 48
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 39,
+              "end": 48
             }
           },
           {
             "type": "TextElement",
-            "value": "\nat the end of line.  The message should\nconsist of three lines of text."
+            "value": "\nat the end of line.  The message should\nconsist of three lines of text.",
+            "span": {
+              "type": "Span",
+              "start": 50,
+              "end": 130
+            }
           }
-        ]
+        ],
+        "span": {
+          "type": "Span",
+          "start": 5,
+          "end": 130
+        }
       },
-      "attributes": null,
-      "tags": null,
-      "comment": null
+      "attributes": [],
+      "tags": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 130
+      }
     }
   ],
-  "comment": null
+  "comment": null,
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 131
+  }
 }

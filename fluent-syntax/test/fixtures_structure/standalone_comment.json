@@ -3,39 +3,59 @@
   "body": [
     {
       "type": "Message",
-      "span": {
-        "type": "Span",
-        "start": 0,
-        "end": 11
-      },
       "annotations": [],
       "id": {
         "type": "Identifier",
-        "name": "foo"
+        "name": "foo",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 3
+        }
       },
       "value": {
         "type": "Pattern",
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value"
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 6,
+              "end": 11
+            }
           }
-        ]
+        ],
+        "span": {
+          "type": "Span",
+          "start": 6,
+          "end": 11
+        }
       },
-      "attributes": null,
-      "tags": null,
-      "comment": null
+      "attributes": [],
+      "tags": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 11
+      }
     },
     {
       "type": "Comment",
+      "annotations": [],
+      "content": "This is a standalone comment",
       "span": {
         "type": "Span",
         "start": 13,
         "end": 45
-      },
-      "annotations": [],
-      "content": "This is a standalone comment"
+      }
     }
   ],
-  "comment": null
+  "comment": null,
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 45
+  }
 }

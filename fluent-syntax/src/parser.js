@@ -4,13 +4,51 @@ import * as AST from './ast';
 import { FTLParserStream } from './ftlstream';
 import { ParseError } from './errors';
 
+
+function withSpan(fn) {
+  return function(ps, ...args) {
+    if (!this.withSpans) {
+      return fn.call(this, ps, ...args);
+    }
+
+    let start = ps.getIndex();
+    const node = fn.call(this, ps, ...args);
+
+    // Don't re-add the span if the node already has it.  This may happen when
+    // one decorated function calls another decorated function.
+    if (node.span) {
+      return node;
+    }
+
+    // Spans of Messages and Sections should include the attached Comment.
+    if (node.type === 'Message' || node.type === 'Section') {
+      if (node.comment !== null) {
+        start = node.comment.span.start;
+      }
+    }
+
+    const end = ps.getIndex();
+    node.addSpan(start, end);
+    return node;
+  };
+}
+
+
 export default class FluentParser {
   constructor({
     withSpans = true,
-    withAnnotations = true,
   } = {}) {
     this.withSpans = withSpans;
-    this.withAnnotations = withAnnotations;
+
+    // Poor man's decorators.
+    [
+      'getComment', 'getSection', 'getMessage', 'getAttribute', 'getTag',
+      'getIdentifier', 'getVariant', 'getSymbol', 'getNumber', 'getPattern',
+      'getExpression', 'getSelectorExpression', 'getCallArg', 'getString',
+      'getLiteral',
+    ].forEach(
+      name => this[name] = withSpan(this[name])
+    );
   }
 
   parse(source) {
@@ -33,7 +71,13 @@ export default class FluentParser {
       ps.skipWSLines();
     }
 
-    return new AST.Resource(entries, comment);
+    const res = new AST.Resource(entries, comment);
+
+    if (this.withSpans) {
+      res.addSpan(0, ps.getIndex());
+    }
+
+    return res;
   }
 
   parseEntry(source) {
@@ -66,11 +110,9 @@ export default class FluentParser {
       if (this.withSpans) {
         junk.addSpan(entryStartPos, nextEntryStart);
       }
-      if (this.withAnnotations) {
-        const annot = new AST.Annotation(err.code, err.args, err.message);
-        annot.addSpan(errorIndex, errorIndex);
-        junk.addAnnotation(annot);
-      }
+      const annot = new AST.Annotation(err.code, err.args, err.message);
+      annot.addSpan(errorIndex, errorIndex);
+      junk.addAnnotation(annot);
       return junk;
     }
   }
@@ -177,6 +219,24 @@ export default class FluentParser {
     return new AST.Message(id, pattern, attrs, tags, comment);
   }
 
+  getAttribute(ps) {
+    ps.expectChar('.');
+
+    const key = this.getIdentifier(ps);
+
+    ps.skipLineWS();
+    ps.expectChar('=');
+    ps.skipLineWS();
+
+    const value = this.getPattern(ps);
+
+    if (value === undefined) {
+      throw new ParseError('E0006', 'value');
+    }
+
+    return new AST.Attribute(key, value);
+  }
+
   getAttributes(ps) {
     const attrs = [];
 
@@ -184,29 +244,20 @@ export default class FluentParser {
       ps.expectChar('\n');
       ps.skipLineWS();
 
-      ps.expectChar('.');
-
-      const key = this.getIdentifier(ps);
-
-      ps.skipLineWS();
-
-      ps.expectChar('=');
-
-      ps.skipLineWS();
-
-      const value = this.getPattern(ps);
-
-      if (value === undefined) {
-        throw new ParseError('E0006', 'value');
-      }
-
-      attrs.push(new AST.Attribute(key, value));
+      const attr = this.getAttribute(ps);
+      attrs.push(attr);
 
       if (!ps.isPeekNextLineAttributeStart()) {
         break;
       }
     }
     return attrs;
+  }
+
+  getTag(ps) {
+    ps.expectChar('#');
+    const symb = this.getSymbol(ps);
+    return new AST.Tag(symb);
   }
 
   getTags(ps) {
@@ -216,11 +267,8 @@ export default class FluentParser {
       ps.expectChar('\n');
       ps.skipLineWS();
 
-      ps.expectChar('#');
-
-      const symbol = this.getSymbol(ps);
-
-      tags.push(new AST.Tag(symbol));
+      const tag = this.getTag(ps);
+      tags.push(tag);
 
       if (!ps.isPeekNextLineTagStart()) {
         break;
@@ -258,40 +306,50 @@ export default class FluentParser {
     return this.getSymbol(ps);
   }
 
+  getVariant(ps, hasDefault) {
+    let defaultIndex = false;
+
+    if (ps.currentIs('*')) {
+      if (hasDefault) {
+        throw new ParseError('E0015');
+      }
+      ps.next();
+      defaultIndex = true;
+      hasDefault = true;
+    }
+
+    ps.expectChar('[');
+
+    const key = this.getVariantKey(ps);
+
+    ps.expectChar(']');
+
+    ps.skipLineWS();
+
+    const value = this.getPattern(ps);
+
+    if (!value) {
+      throw new ParseError('E0006', 'value');
+    }
+
+    return new AST.Variant(key, value, defaultIndex);
+  }
+
   getVariants(ps) {
     const variants = [];
     let hasDefault = false;
 
     while (true) {
-      let defaultIndex = false;
-
       ps.expectChar('\n');
       ps.skipLineWS();
 
-      if (ps.currentIs('*')) {
-        if (hasDefault) {
-          throw new ParseError('E0015');
-        }
-        ps.next();
-        defaultIndex = true;
+      const variant = this.getVariant(ps, hasDefault);
+
+      if (variant.default) {
         hasDefault = true;
       }
 
-      ps.expectChar('[');
-
-      const key = this.getVariantKey(ps);
-
-      ps.expectChar(']');
-
-      ps.skipLineWS();
-
-      const value = this.getPattern(ps);
-
-      if (!value) {
-        throw new ParseError('E0006', 'value');
-      }
-
-      variants.push(new AST.Variant(key, value, defaultIndex));
+      variants.push(variant);
 
       if (!ps.isPeekNextLineVariantStart()) {
         break;
@@ -361,6 +419,10 @@ export default class FluentParser {
     const elements = [];
     let firstLine = true;
 
+    if (this.withSpans) {
+      var spanStart = ps.getIndex();
+    }
+
     let ch;
     while ((ch = ps.current())) {
       if (ch === '\n') {
@@ -394,7 +456,11 @@ export default class FluentParser {
         ps.skipLineWS();
 
         if (buffer.length !== 0) {
-          elements.push(new AST.TextElement(buffer));
+          const text = new AST.TextElement(buffer);
+          if (this.withSpans) {
+            text.addSpan(spanStart, ps.getIndex());
+          }
+          elements.push(text);
         }
 
         buffer = '';
@@ -402,6 +468,10 @@ export default class FluentParser {
         elements.push(this.getExpression(ps));
 
         ps.expectChar('}');
+
+        if (this.withSpans) {
+          spanStart = ps.getIndex();
+        }
 
         continue;
       } else {
@@ -411,7 +481,11 @@ export default class FluentParser {
     }
 
     if (buffer.length !== 0) {
-      elements.push(new AST.TextElement(buffer));
+      const text = new AST.TextElement(buffer);
+      if (this.withSpans) {
+        text.addSpan(spanStart, ps.getIndex());
+      }
+      elements.push(text);
     }
 
     return new AST.Pattern(elements);
@@ -498,6 +572,27 @@ export default class FluentParser {
     return literal;
   }
 
+  getCallArg(ps) {
+    const exp = this.getSelectorExpression(ps);
+
+    ps.skipLineWS();
+
+    if (ps.current() !== ':') {
+      return exp;
+    }
+
+    if (exp.type !== 'MessageReference') {
+      throw new ParseError('E0009');
+    }
+
+    ps.next();
+    ps.skipLineWS();
+
+    const val = this.getArgVal(ps);
+
+    return new AST.NamedArgument(exp.id, val);
+  }
+
   getCallArgs(ps) {
     const args = [];
 
@@ -508,24 +603,8 @@ export default class FluentParser {
         break;
       }
 
-      const exp = this.getSelectorExpression(ps);
-
-      ps.skipLineWS();
-
-      if (ps.current() === ':') {
-        if (exp.type !== 'MessageReference') {
-          throw new ParseError('E0009');
-        }
-
-        ps.next();
-        ps.skipLineWS();
-
-        const val = this.getArgVal(ps);
-
-        args.push(new AST.NamedArgument(exp.id, val));
-      } else {
-        args.push(exp);
-      }
+      const arg = this.getCallArg(ps);
+      args.push(arg);
 
       ps.skipLineWS();
 

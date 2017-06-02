@@ -88,16 +88,12 @@ function serializeMessage(message) {
     parts.push(serializeValue(message.value));
   }
 
-  if (message.tags) {
-    for (const tag of message.tags) {
-      parts.push(serializeTag(tag));
-    }
+  for (const tag of message.tags) {
+    parts.push(serializeTag(tag));
   }
 
-  if (message.attributes) {
-    for (const attribute of message.attributes) {
-      parts.push(serializeAttribute(attribute));
-    }
+  for (const attribute of message.attributes) {
+    parts.push(serializeAttribute(attribute));
   }
 
   parts.push('\n');

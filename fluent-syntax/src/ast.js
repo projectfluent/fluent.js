@@ -1,8 +1,24 @@
-class Node {
+/*
+ * Base class for all Fluent AST nodes.
+ *
+ * All productions described in the ASDL subclass BaseNode, including Span and
+ * Annotation.
+ *
+ */
+class BaseNode {
   constructor() {}
 }
 
-export class Resource extends Node {
+/*
+ * Base class for AST nodes which can have Spans.
+ */
+class SyntaxNode extends BaseNode {
+  addSpan(start, end) {
+    this.span = new Span(start, end);
+  }
+}
+
+export class Resource extends SyntaxNode {
   constructor(body = [], comment = null) {
     super();
     this.type = 'Resource';
@@ -11,16 +27,11 @@ export class Resource extends Node {
   }
 }
 
-export class Entry extends Node {
-  constructor(span = null, annotations = []) {
+export class Entry extends SyntaxNode {
+  constructor() {
     super();
     this.type = 'Entry';
-    this.span = span;
-    this.annotations = annotations;
-  }
-
-  addSpan(start, end) {
-    this.span = new Span(start, end);
+    this.annotations = [];
   }
 
   addAnnotation(annot) {
@@ -29,11 +40,8 @@ export class Entry extends Node {
 }
 
 export class Message extends Entry {
-  constructor(
-    id, value = null, attributes = null, tags = null, comment = null,
-    span, annotations
-  ) {
-    super(span, annotations);
+  constructor(id, value = null, attributes = [], tags = [], comment = null) {
+    super();
     this.type = 'Message';
     this.id = id;
     this.value = value;
@@ -43,7 +51,7 @@ export class Message extends Entry {
   }
 }
 
-export class Pattern extends Node {
+export class Pattern extends SyntaxNode {
   constructor(elements) {
     super();
     this.type = 'Pattern';
@@ -51,7 +59,7 @@ export class Pattern extends Node {
   }
 }
 
-export class TextElement extends Node {
+export class TextElement extends SyntaxNode {
   constructor(value) {
     super();
     this.type = 'TextElement';
@@ -59,7 +67,7 @@ export class TextElement extends Node {
   }
 }
 
-export class Expression extends Node {
+export class Expression extends SyntaxNode {
   constructor() {
     super();
     this.type = 'Expression';
@@ -134,7 +142,7 @@ export class CallExpression extends Expression {
   }
 }
 
-export class Attribute extends Node {
+export class Attribute extends SyntaxNode {
   constructor(id, value) {
     super();
     this.type = 'Attribute';
@@ -143,7 +151,7 @@ export class Attribute extends Node {
   }
 }
 
-export class Tag extends Node {
+export class Tag extends SyntaxNode {
   constructor(name) {
     super();
     this.type = 'Tag';
@@ -151,7 +159,7 @@ export class Tag extends Node {
   }
 }
 
-export class Variant extends Node {
+export class Variant extends SyntaxNode {
   constructor(key, value, def = false) {
     super();
     this.type = 'Variant';
@@ -161,7 +169,7 @@ export class Variant extends Node {
   }
 }
 
-export class NamedArgument extends Node {
+export class NamedArgument extends SyntaxNode {
   constructor(name, val) {
     super();
     this.type = 'NamedArgument';
@@ -170,7 +178,7 @@ export class NamedArgument extends Node {
   }
 }
 
-export class Identifier extends Node {
+export class Identifier extends SyntaxNode {
   constructor(name) {
     super();
     this.type = 'Identifier';
@@ -186,16 +194,16 @@ export class Symbol extends Identifier {
 }
 
 export class Comment extends Entry {
-  constructor(content, span, annotations) {
-    super(span, annotations);
+  constructor(content) {
+    super();
     this.type = 'Comment';
     this.content = content;
   }
 }
 
 export class Section extends Entry {
-  constructor(name, comment = null, span, annotations) {
-    super(span, annotations);
+  constructor(name, comment = null) {
+    super();
     this.type = 'Section';
     this.name = name;
     this.comment = comment;
@@ -210,14 +218,14 @@ export class Function extends Identifier {
 }
 
 export class Junk extends Entry {
-  constructor(content, span, annotations) {
-    super(span, annotations);
+  constructor(content) {
+    super();
     this.type = 'Junk';
     this.content = content;
   }
 }
 
-export class Span extends Node {
+export class Span extends BaseNode {
   constructor(start, end) {
     super();
     this.type = 'Span';
@@ -226,16 +234,12 @@ export class Span extends Node {
   }
 }
 
-export class Annotation extends Node {
+export class Annotation extends SyntaxNode {
   constructor(code, args = [], message) {
     super();
     this.type = 'Annotation';
     this.code = code;
     this.args = args;
     this.message = message;
-  }
-
-  addSpan(start, end) {
-    this.span = new Span(start, end);
   }
 }

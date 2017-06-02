@@ -2,7 +2,14 @@
 
 ## Unreleased
 
-  - …
+  - Most AST nodes can now have a Span.
+
+    Use `new FluentParser({ withSpans: true })` to enable this behavior.
+
+  - The `withAnnotations` config option to `FluentParser` has been removed.
+
+    The parser always produces Annotations if necessary now.
+
 
 ## fluent-syntax 0.4.0 (May 17th, 2017)
 
