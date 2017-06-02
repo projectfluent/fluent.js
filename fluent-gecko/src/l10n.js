@@ -1,5 +1,6 @@
+/* global Components, document, window */
 const { DocumentLocalization } =
-  Components.utils.import("resource://gre/modules/DOMLocalization.jsm");
+  Components.utils.import('resource://gre/modules/DOMLocalization.jsm');
 
 function documentReady() {
   const rs = document.readyState;
