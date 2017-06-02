@@ -19,8 +19,8 @@ export default class Localization {
   /**
    * @returns {Localization}
    */
-  constructor(doc, resIds, generateMessages) {
-    this.id = doc.location.href;
+  constructor(id, resIds, generateMessages) {
+    this.id = id;
     this.resIds = resIds;
     this.generateMessages = generateMessages;
     this.ctxs = this.generateMessages(this.id, this.resIds);
