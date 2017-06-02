@@ -38,7 +38,7 @@ export default class DOMLocalization extends Localization {
   }
 
   onLanguageChange() {
-    super.onLangageChange();
+    super.onLanguageChange();
     this.translateDocument();
   }
 
