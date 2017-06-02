@@ -67,9 +67,9 @@ export default function overlayElement(element, translation) {
     return;
   }
 
-  for (const name in translation.attrs) {
+  for (const [name, val] of translation.attrs) {
     if (isAttrAllowed({ name }, element)) {
-      element.setAttribute(name, translation.attrs[name]);
+      element.setAttribute(name, val);
     }
   }
 }

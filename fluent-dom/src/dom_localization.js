@@ -209,7 +209,7 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Triggers translation of all roots associated with this
-   * `DOMLocalization`.
+   * `DOMLocalization` object.
    *
    * Returns a `Promise` which is resolved once all translations are
    * completed.
@@ -222,18 +222,13 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Translate a DOM element or fragment asynchronously using this
-   * `DOMLocalization`.
+   * `DOMLocalization` object.
    *
    * Manually trigger the translation (or re-translation) of a DOM fragment.
    * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
    * with information about which translations to use.  Only elements with
    * `data-l10n-with` attribute matching this `DOMLocalization`'s name will be
    * translated.
-   *
-   * If `frag` or its descendants use `data-l10n-with`, the specific named
-   * `DOMLocalization` will be used to translate it.  As a special case,
-   * elements without `data-l10n-with` will be localized using this
-   * `DOMLocalization` (as if they had `data-l10n-with="main"`).
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
