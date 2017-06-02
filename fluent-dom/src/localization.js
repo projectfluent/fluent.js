@@ -22,7 +22,7 @@ export default class Localization {
   constructor(doc, resIds, generateMessages) {
     this.id = doc.location.href;
     this.resIds = resIds;
-    this.generageMessages = generateMessages;
+    this.generateMessages = generateMessages;
     this.ctxs = this.generateMessages(this.id, this.resIds);
   }
 
@@ -40,8 +40,7 @@ export default class Localization {
    */
   async formatWithFallback(keys, method) {
     const translations = [];
-    for (const o of this.ctxs) {
-      const ctx = await o.ready();
+    for (const ctx of this.ctxs) {
       const errors = keysFromContext(method, ctx, keys, translations);
       if (!errors) {
         break;
@@ -155,14 +154,14 @@ export default class Localization {
  * @private
  */
 function valueFromContext(ctx, errors, id, args) {
-  const entity = ctx.messages.get(id);
+  const msg = ctx.getMessages(id);
 
-  if (entity === undefined) {
+  if (msg === undefined) {
     errors.push(new L10nError(`Unknown entity: ${id}`));
     return id;
   }
 
-  return ctx.format(entity, args, errors);
+  return ctx.format(msg, args, errors);
 }
 
 /**
@@ -188,7 +187,7 @@ function valueFromContext(ctx, errors, id, args) {
  * @private
  */
 function messageFromContext(ctx, errors, id, args) {
-  const msg = ctx.messages.get(id);
+  const msg = ctx.getMessage(id);
 
   if (msg === undefined) {
     errors.push(new L10nError(`Unknown message: ${id}`));
