@@ -19,8 +19,7 @@ export default class Localization {
   /**
    * @returns {Localization}
    */
-  constructor(id, resIds, generateMessages) {
-    this.id = id;
+  constructor(resIds, generateMessages) {
     this.resIds = resIds;
     this.generateMessages = generateMessages;
     this.ctxs = this.generateMessages(this.id, this.resIds);
@@ -30,7 +29,7 @@ export default class Localization {
    * Format translations and handle fallback if needed.
    *
    * Format translations for `keys` from `MessageContext` instances on this
-   * DocumentLocalization. In case of errors, fetch the next context in the
+   * DOMLocalization. In case of errors, fetch the next context in the
    * fallback chain, and recursively call `formatWithFallback` again.
    *
    * @param   {Array<Array>}          keys    - Translation keys to format.
@@ -79,7 +78,7 @@ export default class Localization {
   /**
    * Retrieve translations corresponding to the passed keys.
    *
-   * A generalized version of `DocumentLocalization.formatValue`. Keys can
+   * A generalized version of `DOMLocalization.formatValue`. Keys can
    * either be simple string identifiers or `[id, args]` arrays.
    *
    *     docL10n.formatValues(
@@ -131,7 +130,7 @@ export default class Localization {
   }
 
   onLanguageChange() {
-    this.ctxs = this.generateContexts(this.id, this.resIds);
+    this.ctxs = this.generateMessages(this.id, this.resIds);
   }
 }
 
@@ -218,8 +217,7 @@ function messageFromContext(ctx, errors, id, args) {
 /**
  * @private
  *
- * This function is an inner function for
- * `DocumentLocalization.formatWithFallback`.
+ * This function is an inner function for `Localization.formatWithFallback`.
  *
  * It takes a `MessageContext`, list of l10n-ids and a method to be used for
  * key resolution (either `valueFromContext` or `entityFromContext`) and
@@ -237,28 +235,17 @@ function messageFromContext(ctx, errors, id, args) {
  * we return it. If it does, we'll try to resolve the key using the passed
  * `MessageContext`.
  *
- * In the end, we return an Object with resolved translations, errors and
- * a boolean indicating if there were any errors found.
- *
- * The translations are either strings, if the method is `valueFromContext`
- * or objects with value and attributes if the method is `entityFromContext`.
+ * In the end, we fill the translations array, and return if we
+ * encountered at least one error.
  *
  * See `Localization.formatWithFallback` for more info on how this is used.
  *
+ * @param {Function}       method
  * @param {MessageContext} ctx
  * @param {Array<string>}  keys
- * @param {Function}       method
- * @param {{
- *   errors: Array<Error>,
- *   withoutFatal: Array<boolean>,
- *   hasFatalErrors: boolean,
- *   translations: Array<string>|Array<{value: string, attrs: Object}>}} prev
+ * @param {{Array<{value: string, attrs: Object}>}} translations
  *
- * @returns {{
- *   errors: Array<Error>,
- *   withoutFatal: Array<boolean>,
- *   hasFatalErrors: boolean,
- *   translations: Array<string>|Array<{value: string, attrs: Object}>}}
+ * @returns {Boolean}
  */
 function keysFromContext(method, ctx, keys, translations) {
   const messageErrors = [];
@@ -272,13 +259,15 @@ function keysFromContext(method, ctx, keys, translations) {
     messageErrors.length = 0;
     const translation = method(ctx, messageErrors, key[0], key[1]);
 
-    if (messageErrors.length === 0) {
+    if (messageErrors.length === 0 ||
+        !messageErrors.some(e => e instanceof L10nError)) {
       translations[i] = translation;
     } else {
       hasErrors = true;
-      if (typeof console !== 'undefined') {
-        messageErrors.forEach(error => console.warn(error));
-      }
+    }
+
+    if (messageErrors.length && typeof console !== 'undefined') {
+      messageErrors.forEach(error => console.warn(error));
     }
   });
 

@@ -14,22 +14,45 @@ can install it from the npm registry or use it as a standalone script (as the
 
 ## How to use
 
-The `DocumentLocalization` constructor provides the core functionality of
+The `DOMLocalization` constructor provides the core functionality of
 full-fallback ready message formatting. It uses a lazy-resolved
 `MessageContext` objects from the `fluent` package to format messages.
 
-On top of that, DocumentLocalization provides a set of functions needed
-for DOM localization.
+On top of that, DOMLocalization can localize any DOMFragment by
+identifying localizable elements with `data-l10n-id` and translating them.
 
 ```javascript
-import { DocumentLocalization } from 'fluent-dom'
+import { DOMLocalization } from 'fluent-dom'
+
+const l10n = new DOMLocalization([
+  '/browser/main.ftl',
+  '/toolkit/menu.ftl'
+], generateMessages);
+
+l10n.connectRoot(document.documentElement);
+
+l10n.translateDocument();
+
+const h1 = document.querySelector('h1');
+
+// Sets `data-l10n-id` and `data-l10n-args` which triggers
+// the `MutationObserver` from `DOMLocalization` and translates the
+// element.
+l10n.setAttributes(h1, 'welcome', { user: 'Anna' });
+```
+
+For imperative uses straight from the JS code, there's also a `Localization`
+class that provides just the API needed to format messages in the running code.
+
+```javascript
+import { Localization } from 'fluent-dom'
 
 function *generateMessages() {
   // Some lazy logic for yielding MessageContexts.
   yield *[ctx1, ctx2];
 }
 
-const l10n = new DocumentLocalization(document, [
+const l10n = new Localization(document, [
   '/browser/main.ftl',
   '/toolkit/menu.ftl'
 ], generateMessages);
@@ -39,30 +62,6 @@ async function main() {
   // → 'Welcome, Anna!'
 }
 ```
-
-On top of that, DocumentLocalization can localize any DOMFragment by
-identifying localizable elements with `l10n-id` and translating them.
-
-```javascript
-
-const l10n = new DocumentLocalization(document, [
-  '/browser/main.ftl',
-  '/toolkit/menu.ftl'
-], generatemessage);
-
-l10n.translateDocument();
-
-// Turns on MutationObserver on `document.body`
-l10n.connectRoot(document.body);
-
-const h1 = document.querySelector('h1');
-
-// Sets `data-l10n-id` and `data-l10n-args` which triggers
-// the `MutationObserver` from `DocumentLocalization` and translates the
-// element.
-l10n.setAttributes(h1, 'welcome', { user: 'Anna' });
-```
-
 
 ## Learn more
 

@@ -11,16 +11,15 @@ import Localization from './localization';
  */
 export default class DOMLocalization extends Localization {
   /**
-   * @returns {DocumentLocalization}
+   * @returns {DOMLocalization}
    */
-  constructor(doc, resIds, generateMessages) {
-    super(doc.location.href, resIds, generateMessages);
-    this.document = doc;
+  constructor(MutationObserver, resIds, generateMessages) {
+    super(resIds, generateMessages);
     this.query = '[data-l10n-id]';
 
     // A Set of DOM trees observed by the `MutationObserver`.
     this.roots = new Set();
-    this.mutationObserver = new doc.defaultView.MutationObserver(
+    this.mutationObserver = new MutationObserver(
       mutations => this.translateMutations(mutations)
     );
 
@@ -44,9 +43,10 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Set the `data-l10n-id` and `data-l10n-args` attributes on DOM elements.
-   * L20n makes use of mutation observers to detect changes to `data-l10n-*`
-   * attributes and translate elements asynchronously.  `setAttributes` is
-   * a convenience method which allows to translate DOM elements declaratively.
+   * FluentDOM makes use of mutation observers to detect changes
+   * to `data-l10n-*` attributes and translate elements asynchronously.
+   * `setAttributes` is a convenience method which allows to translate
+   * DOM elements declaratively.
    *
    * You should always prefer to use `data-l10n-id` on elements (statically in
    * HTML or dynamically via `setAttributes`) over manually retrieving
@@ -60,8 +60,8 @@ export default class DOMLocalization extends Localization {
    * );
    * ```
    *
-   * This will set the following attributes on the `#welcome` element.  L20n's
-   * MutationObserver will pick up this change and will localize the element
+   * This will set the following attributes on the `#welcome` element.
+   * The MutationObserver will pick up this change and will localize the element
    * asynchronously.
    *
    * ```html
@@ -209,8 +209,7 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Triggers translation of all roots associated with this
-   * `DocumentLocalization` and any `DOMLocalization` objects which it can
-   * delegate to.
+   * `DOMLocalization`.
    *
    * Returns a `Promise` which is resolved once all translations are
    * completed.
@@ -223,8 +222,7 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Translate a DOM element or fragment asynchronously using this
-   * `DocumentLocalization` and any `DOMLocalization` objects which it can
-   * delegate to.
+   * `DOMLocalization`.
    *
    * Manually trigger the translation (or re-translation) of a DOM fragment.
    * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
@@ -235,7 +233,7 @@ export default class DOMLocalization extends Localization {
    * If `frag` or its descendants use `data-l10n-with`, the specific named
    * `DOMLocalization` will be used to translate it.  As a special case,
    * elements without `data-l10n-with` will be localized using this
-   * `DocumentLocalization` (as if they had `data-l10n-with="main"`).
+   * `DOMLocalization` (as if they had `data-l10n-with="main"`).
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
