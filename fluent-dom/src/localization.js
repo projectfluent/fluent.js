@@ -30,11 +30,11 @@ export default class Localization {
    *
    * Format translations for `keys` from `MessageContext` instances on this
    * DOMLocalization. In case of errors, fetch the next context in the
-   * fallback chain, and recursively call `formatWithFallback` again.
+   * fallback chain.
    *
    * @param   {Array<Array>}          keys    - Translation keys to format.
    * @param   {Function}              method  - Formatting function.
-   * @returns {Promise<Array<string>>}
+   * @returns {Promise<Array<string|Object>>}
    * @private
    */
   async formatWithFallback(keys, method) {
@@ -55,7 +55,7 @@ export default class Localization {
    * is stricter (an array of arrays) and it returns {value, attrs} objects
    * which are suitable for the translation of DOM elements.
    *
-   *     docL10n.formatMessages([j
+   *     docL10n.formatMessages([
    *       ['hello', { who: 'Mary' }],
    *       ['welcome', undefined]
    *     ]).then(console.log);
@@ -81,17 +81,16 @@ export default class Localization {
    * A generalized version of `DOMLocalization.formatValue`. Keys can
    * either be simple string identifiers or `[id, args]` arrays.
    *
-   *     docL10n.formatValues(
+   *     docL10n.formatValues([
    *       ['hello', { who: 'Mary' }],
-   *       ['hello', { who: 'John' }],
-   *       'welcome'
-   *     ).then(console.log);
+   *       ['hello', { who: 'John' }]
+   *     ]).then(console.log);
    *
    *     // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
    *
    * Returns a Promise resolving to an array of the translation strings.
    *
-   * @param   {...(Array | string)} keys
+   * @param   {Array<Array>} keys
    * @returns {Promise<Array<string>>}
    */
   formatValues(keys) {

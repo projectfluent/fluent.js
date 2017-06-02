@@ -18,13 +18,13 @@ The `DOMLocalization` constructor provides the core functionality of
 full-fallback ready message formatting. It uses a lazy-resolved
 `MessageContext` objects from the `fluent` package to format messages.
 
-On top of that, DOMLocalization can localize any DOMFragment by
+On top of that, `DOMLocalization` can localize any DOMFragment by
 identifying localizable elements with `data-l10n-id` and translating them.
 
 ```javascript
 import { DOMLocalization } from 'fluent-dom'
 
-const l10n = new DOMLocalization([
+const l10n = new DOMLocalization(MutationObserver, [
   '/browser/main.ftl',
   '/toolkit/menu.ftl'
 ], generateMessages);

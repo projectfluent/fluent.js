@@ -38,7 +38,7 @@ export default class DOMLocalization extends Localization {
 
   onLanguageChange() {
     super.onLanguageChange();
-    this.translateDocument();
+    this.translateRoots();
   }
 
   /**
@@ -181,9 +181,6 @@ export default class DOMLocalization extends Localization {
   /**
    * Translate mutations detected by the `MutationObserver`.
    *
-   * The elements in the mutations can use `data-l10n-with` to specify which
-   * `DOMLocalization` should be used for translating them.
-   *
    * @private
    */
   translateMutations(mutations) {
@@ -208,27 +205,12 @@ export default class DOMLocalization extends Localization {
   }
 
   /**
-   * Triggers translation of all roots associated with this
-   * `DOMLocalization` object.
-   *
-   * Returns a `Promise` which is resolved once all translations are
-   * completed.
-   *
-   * @returns {Promise}
-   */
-  translateDocument() {
-    return this.translateRoots();
-  }
-
-  /**
    * Translate a DOM element or fragment asynchronously using this
    * `DOMLocalization` object.
    *
    * Manually trigger the translation (or re-translation) of a DOM fragment.
    * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
-   * with information about which translations to use.  Only elements with
-   * `data-l10n-with` attribute matching this `DOMLocalization`'s name will be
-   * translated.
+   * with information about which translations to use.
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
@@ -236,10 +218,7 @@ export default class DOMLocalization extends Localization {
    * @returns {Promise}
    */
   translateFragment(frag) {
-    return this.translateElements(this.getTranslatables(frag));
-  }
-
-  translateElements(elements) {
+    const elements = this.getTranslatables(frag);
     if (!elements.length) {
       return Promise.resolve([]);
     }
@@ -252,8 +231,6 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Translate a single DOM element asynchronously.
-   *
-   * The element's `data-l10n-with` must match this `DOMLocalization`'s name.
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
@@ -281,10 +258,7 @@ export default class DOMLocalization extends Localization {
 
     if (typeof element.hasAttribute === 'function' &&
         element.hasAttribute('data-l10n-id')) {
-      const elemBundleName = element.getAttribute('data-l10n-with');
-      if (elemBundleName === this.name) {
-        nodes.push(element);
-      }
+      nodes.push(element);
     }
 
     return nodes;
