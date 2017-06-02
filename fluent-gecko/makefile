@@ -5,7 +5,7 @@ include ../common.mk
 build: MessageContext.jsm Localization.jsm DOMLocalization.jsm l10n.js
 
 MessageContext.jsm: $(SOURCES)
-	@rollup $(CURDIR)/src/messagecontext.js \
+	@rollup $(CURDIR)/src/message_context.js \
 	    --config ./xpcom_config.js \
 	    --output ./dist/$@
 	@echo -e " $(OK) $@ built"
@@ -17,7 +17,7 @@ Localization.jsm: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 DOMLocalization.jsm: $(SOURCES)
-	@rollup $(CURDIR)/src/domlocalization.js \
+	@rollup $(CURDIR)/src/dom_localization.js \
 	    --config ./xpcom_config.js \
 	    --output ./dist/$@
 	@echo -e " $(OK) $@ built"
