@@ -1,4 +1,4 @@
 hello-world = Witaj Świecie!
 click-me
-    .value = Click me!
+    .value = Naciśnij mnie!
 alert-msg = Ta wiadomość idzie prosto do JS.
