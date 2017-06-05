@@ -1,2 +1,2 @@
-hello-world = Witaj Swiecie
-js-msg = Ta wiadomosc idzie prosto do JS
+hello-world = Witaj Świecie
+js-msg = Ta wiadomość idzie prosto do JS
