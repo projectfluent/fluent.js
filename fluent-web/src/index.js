@@ -1,3 +1,5 @@
+/* global document, fetch, navigator, MutationObserver */
+
 import { DOMLocalization } from 'fluent-dom';
 import { negotiateLanguages } from 'fluent-langneg';
 import { MessageContext } from 'fluent';
@@ -32,23 +34,6 @@ function getResourceLinks(elem) {
   );
 }
 
-function cachedIterable(iterable) {
-  const cache = [];
-  return {
-    [Symbol.iterator]() {
-      return {
-        ptr: 0,
-        next() {
-          if (cache.length <= this.ptr) {
-            cache.push(iterable.next());
-          }
-          return cache[this.ptr++];
-        }
-      };
-    },
-  }
-}
-
 function generateContexts(locales, resIds) {
   return locales.map(locale => {
     return {
@@ -61,8 +46,8 @@ function generateContexts(locales, resIds) {
       },
       async load() {
         const ctx = new MessageContext([locale]);
-        for (let resId of resIds) {
-          let source =
+        for (const resId of resIds) {
+          const source =
             await fetch(resId.replace('{locale}', locale)).then(d => d.text());
           ctx.addMessages(source);
         }
@@ -72,6 +57,8 @@ function generateContexts(locales, resIds) {
   });
 }
 
+const meta = getMeta(document.head);
+
 function generateMessages(id, resIds) {
   const locales = negotiateLanguages(
     navigator.languages,
@@ -79,12 +66,13 @@ function generateMessages(id, resIds) {
     {
       defaultLocale: meta.default
     }
-  ); 
+  );
   return generateContexts(locales, resIds);
 }
 
 function createLocalization(resIds) {
-  document.l10n = new DOMLocalization(MutationObserver, resIds, generateMessages);
+  document.l10n =
+    new DOMLocalization(MutationObserver, resIds, generateMessages);
 
   document.l10n.ready = documentReady().then(() => {
     document.l10n.connectRoot(document.documentElement);
@@ -94,6 +82,4 @@ function createLocalization(resIds) {
   });
 }
 
-const resIds = getResourceLinks(document.head || document);
-const meta = getMeta(document.head);
-createLocalization(resIds);
+createLocalization(getResourceLinks(document.head));
