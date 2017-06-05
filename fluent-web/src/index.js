@@ -21,7 +21,7 @@ function getMeta(elem) {
   return {
     available: elem.querySelector('meta[name="availableLanguages"]')
       .getAttribute('content')
-      .split(','),
+      .split(',').map(s => s.trim()),
     default: elem.querySelector('meta[name="defaultLanguage"]')
       .getAttribute('content'),
   };
