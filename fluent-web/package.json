@@ -1,7 +1,7 @@
 {
-  "name": "fluent-dom",
+  "name": "fluent-web",
   "version": "0.0.1",
-  "description": "Fluent runtime package for in-browser localization",
+  "description": "Drop-in localization framework for HTML documents",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
