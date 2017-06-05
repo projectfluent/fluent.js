@@ -1,5 +1,6 @@
 PACKAGE := fluent-web
-GLOBAL := FluentWeb
+GLOBAL  := FluentWeb
+DEPS    := fluent-dom:FluentDOM,fluent-langneg:FluentLangNeg,fluent:Fluent
 
 include ../common.mk
 
@@ -11,6 +12,7 @@ $(PACKAGE).js: $(SOURCES)
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--id $(PACKAGE) \
 		--name $(GLOBAL) \
+		--globals $(DEPS) \
 		--output $@
 	@echo -e " $(OK) $@ built"
 
@@ -21,6 +23,7 @@ compat.js: $(SOURCES)
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--id $(PACKAGE) \
 		--name $(GLOBAL) \
+		--globals $(DEPS) \
 		--output $@
 	@echo -e " $(OK) $@ built"
 

@@ -1,6 +1,6 @@
-import DOMLocalization from '../../fluent-dom/src/dom_localization';
-import negotiateLanguages from '../../fluent-langneg/src/index';
-import { MessageContext } from '../../fluent/src/context';
+import { DOMLocalization } from 'fluent-dom';
+import { negotiateLanguages } from 'fluent-langneg';
+import { MessageContext } from 'fluent';
 
 function documentReady() {
   const rs = document.readyState;
