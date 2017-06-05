@@ -1,3 +1,5 @@
-hello-world = Hello World
-sub-title = Fluent is awesome
-js-msg = This is a message that goes straight to JS
+hello-world = Hello, world!
+sub-title = Fluent is awesome.
+click-me
+    .value = Click me!
+alert-msg = This is a message that goes straight to JS.

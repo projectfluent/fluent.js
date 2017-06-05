@@ -1,2 +1,4 @@
-hello-world = Witaj Świecie
-js-msg = Ta wiadomość idzie prosto do JS
+hello-world = Witaj Świecie!
+click-me
+    .value = Click me!
+alert-msg = Ta wiadomość idzie prosto do JS.
