@@ -39,7 +39,10 @@ export default class Localization {
    */
   async formatWithFallback(keys, method) {
     const translations = [];
-    for (const ctx of this.ctxs) {
+    for (let ctx of this.ctxs) {
+      if (ctx.ready !== undefined) {
+        ctx = await ctx.ready();
+      }
       const errors = keysFromContext(method, ctx, keys, translations);
       if (!errors) {
         break;
@@ -152,7 +155,7 @@ export default class Localization {
  * @private
  */
 function valueFromContext(ctx, errors, id, args) {
-  const msg = ctx.getMessages(id);
+  const msg = ctx.getMessage(id);
 
   if (msg === undefined) {
     errors.push(new L10nError(`Unknown entity: ${id}`));
