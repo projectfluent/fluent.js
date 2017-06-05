@@ -1,6 +1,5 @@
 PACKAGE := fluent-web
 GLOBAL  := FluentWeb
-DEPS    := fluent-dom:FluentDOM,fluent-langneg:FluentLangNeg,fluent:Fluent
 
 include ../common.mk
 
@@ -12,18 +11,17 @@ $(PACKAGE).js: $(SOURCES)
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--id $(PACKAGE) \
 		--name $(GLOBAL) \
-		--globals $(DEPS) \
+		--config $(CURDIR)/bundle_config.js \
 		--output $@
 	@echo -e " $(OK) $@ built"
 
 compat.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
-		--config $(ROOT)/compat_config.js \
+		--config $(CURDIR)/compat_config.js \
 		--format umd \
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--id $(PACKAGE) \
 		--name $(GLOBAL) \
-		--globals $(DEPS) \
 		--output $@
 	@echo -e " $(OK) $@ built"
 

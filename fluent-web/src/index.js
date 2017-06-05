@@ -1,7 +1,7 @@
 /* global document, fetch, navigator, MutationObserver */
 
 import { DOMLocalization } from 'fluent-dom';
-import { negotiateLanguages } from 'fluent-langneg';
+import negotiateLanguages from 'fluent-langneg';
 import { MessageContext } from 'fluent';
 
 function documentReady() {
