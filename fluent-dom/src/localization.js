@@ -40,7 +40,7 @@ export default class Localization {
   async formatWithFallback(keys, method) {
     const translations = [];
     for (let ctx of this.ctxs) {
-      if (ctx.then !== undefined) {
+      if (typeof ctx.then === 'function') {
         ctx = await ctx;
       }
       const errors = keysFromContext(method, ctx, keys, translations);

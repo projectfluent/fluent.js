@@ -220,13 +220,12 @@ export default class DOMLocalization extends Localization {
   async translateFragment(frag) {
     const elements = this.getTranslatables(frag);
     if (!elements.length) {
-      return;
+      return undefined;
     }
 
     const keys = elements.map(this.getKeysForElement);
-    return this.formatMessages(keys).then(
-      translations => this.applyTranslations(elements, translations)
-    );
+    const translations = this.formatMessages(keys);
+    return this.applyTranslations(elements, translations);
   }
 
   /**
