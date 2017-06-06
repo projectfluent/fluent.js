@@ -2,7 +2,7 @@
 
 import { DOMLocalization } from 'fluent-dom';
 import negotiateLanguages from 'fluent-langneg';
-import { MessageContext } from 'fluent';
+import { MessageContext, CachedIterable } from 'fluent';
 
 function documentReady() {
   const rs = document.readyState;
@@ -34,32 +34,19 @@ function getResourceLinks(elem) {
   );
 }
 
-function generateContexts(locales, resIds) {
-  return locales.map(locale => {
-    return {
-      _ctx: null,
-      async ready() {
-        if (!this._ctx) {
-          this._ctx = this.load();
-        }
-        return this._ctx;
-      },
-      async load() {
-        const ctx = new MessageContext([locale]);
-        for (const resId of resIds) {
-          const source =
-            await fetch(resId.replace('{locale}', locale)).then(d => d.text());
-          ctx.addMessages(source);
-        }
-        return ctx;
-      }
-    };
-  });
+async function generateContext(locale, resIds) {
+  const ctx = new MessageContext([locale]);
+  for (const resId of resIds) {
+    const source =
+      await fetch(resId.replace('{locale}', locale)).then(d => d.text());
+    ctx.addMessages(source);
+  }
+  return ctx;
 }
 
 const meta = getMeta(document.head);
 
-function generateMessages(id, resIds) {
+function * generateMessages(resIds) {
   const locales = negotiateLanguages(
     navigator.languages,
     meta.available,
@@ -67,12 +54,16 @@ function generateMessages(id, resIds) {
       defaultLocale: meta.default
     }
   );
-  return generateContexts(locales, resIds);
+  for (const locale of locales) {
+    yield generateContext(locale, resIds);
+  }
 }
 
 function createLocalization(resIds) {
   document.l10n =
-    new DOMLocalization(MutationObserver, resIds, generateMessages);
+    new DOMLocalization(MutationObserver, resIds, (resIds) => {
+      return new CachedIterable(generateMessages(resIds));
+    });
 
   document.l10n.ready = documentReady().then(() => {
     document.l10n.connectRoot(document.documentElement);
