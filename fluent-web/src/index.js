@@ -61,8 +61,8 @@ function * generateMessages(resIds) {
 
 function createLocalization(resIds) {
   document.l10n =
-    new DOMLocalization(MutationObserver, resIds, (resIds) => {
-      return new CachedIterable(generateMessages(resIds));
+    new DOMLocalization(MutationObserver, resIds, ids => {
+      return new CachedIterable(generateMessages(ids));
     });
 
   document.l10n.ready = documentReady().then(() => {
