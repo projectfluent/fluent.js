@@ -41,7 +41,7 @@ export default class Localization {
     const translations = [];
     for (let ctx of this.ctxs) {
       if (typeof ctx.then === 'function') {
-        //XXX: Remove once jsdoc supports `await ctx`
+        // XXX: Remove once jsdoc supports `await ctx`
         ctx = await ctx.then();
       }
       const errors = keysFromContext(method, ctx, keys, translations);
