@@ -2,7 +2,8 @@
 
 import { DOMLocalization } from 'fluent-dom';
 import negotiateLanguages from 'fluent-langneg';
-import { MessageContext, CachedIterable } from 'fluent';
+import { MessageContext } from 'fluent';
+import CachedIterable from '../../fluent/src/cached_iterable';
 
 function documentReady() {
   const rs = document.readyState;
