@@ -22,7 +22,7 @@ export default class Localization {
   constructor(resIds, generateMessages) {
     this.resIds = resIds;
     this.generateMessages = generateMessages;
-    this.ctxs = this.generateMessages(this.id, this.resIds);
+    this.ctxs = this.generateMessages(this.resIds);
   }
 
   /**
@@ -40,8 +40,9 @@ export default class Localization {
   async formatWithFallback(keys, method) {
     const translations = [];
     for (let ctx of this.ctxs) {
-      if (ctx.ready !== undefined) {
-        ctx = await ctx.ready();
+      if (typeof ctx.then === 'function') {
+        // XXX: Remove once jsdoc supports `await ctx`
+        ctx = await ctx.then();
       }
       const errors = keysFromContext(method, ctx, keys, translations);
       if (!errors) {
@@ -132,7 +133,7 @@ export default class Localization {
   }
 
   onLanguageChange() {
-    this.ctxs = this.generateMessages(this.id, this.resIds);
+    this.ctxs = this.generateMessages(this.resIds);
   }
 }
 

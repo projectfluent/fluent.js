@@ -217,16 +217,15 @@ export default class DOMLocalization extends Localization {
    * @param   {DOMFragment} frag - Element or DocumentFragment to be translated
    * @returns {Promise}
    */
-  translateFragment(frag) {
+  async translateFragment(frag) {
     const elements = this.getTranslatables(frag);
     if (!elements.length) {
-      return Promise.resolve([]);
+      return undefined;
     }
 
     const keys = elements.map(this.getKeysForElement);
-    return this.formatMessages(keys).then(
-      translations => this.applyTranslations(elements, translations)
-    );
+    const translations = await this.formatMessages(keys);
+    return this.applyTranslations(elements, translations);
   }
 
   /**
