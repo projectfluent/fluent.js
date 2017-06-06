@@ -224,7 +224,7 @@ export default class DOMLocalization extends Localization {
     }
 
     const keys = elements.map(this.getKeysForElement);
-    const translations = this.formatMessages(keys);
+    const translations = await this.formatMessages(keys);
     return this.applyTranslations(elements, translations);
   }
 
