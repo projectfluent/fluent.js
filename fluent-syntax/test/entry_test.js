@@ -19,22 +19,37 @@ suite('Parse entry', function() {
         "end": 9,
         "type": "Span"
       },
-      "tags": null,
+      "tags": [],
       "value": {
         "elements": [
           {
             "type": "TextElement",
-            "value": "Foo"
+            "value": "Foo",
+            "span": {
+              "start": 6,
+              "end": 9,
+              "type": "Span"
+            }
           }
         ],
-        "type": "Pattern"
+        "type": "Pattern",
+        "span": {
+          "start": 6,
+          "end": 9,
+          "type": "Span"
+        }
       },
       "annotations": [],
-      "attributes": null,
+      "attributes": [],
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "foo"
+        "name": "foo",
+        "span": {
+          "start": 0,
+          "end": 3,
+          "type": "Span"
+        }
       }
     };
 
@@ -57,7 +72,7 @@ suite('Serialize entry', function() {
         "end": 9,
         "type": "Span"
       },
-      "tags": null,
+      "tags": [],
       "value": {
         "elements": [
           {
@@ -65,14 +80,24 @@ suite('Serialize entry', function() {
             "value": "Foo"
           }
         ],
-        "type": "Pattern"
+        "type": "Pattern",
+        "span": {
+          "start": 6,
+          "end": 9,
+          "type": "Span"
+        }
       },
       "annotations": [],
-      "attributes": null,
+      "attributes": [],
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "foo"
+        "name": "foo",
+        "span": {
+          "start": 0,
+          "end": 3,
+          "type": "Span"
+        }
       }
     };
     const output = ftl`

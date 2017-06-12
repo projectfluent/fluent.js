@@ -3,12 +3,17 @@
   "body": [],
   "comment": {
     "type": "Comment",
+    "annotations": [],
+    "content": "This is a comment\nThis comment is multiline\n",
     "span": {
       "type": "Span",
       "start": 0,
       "end": 53
-    },
-    "annotations": [],
-    "content": "This is a comment\nThis comment is multiline\n"
+    }
+  },
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 53
   }
 }
