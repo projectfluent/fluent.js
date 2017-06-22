@@ -53,14 +53,22 @@ DOM.  Translations are stored using the Fluent syntax (<a href="http://projectfl
 components via the <em>provider</em> pattern.</p>
 <p>An example FTL file might look like the following:</p>
 <pre class="prettyprint source"><code>hello-world = Hello, world!
-welcome = Welcome, { $username }.</code></pre><p>Wrap your localizable elements in the <code>Localized</code> component:</p>
+welcome = Welcome, { $username }.</code></pre><h3>The Localized Component</h3><p>Wrap your localizable elements in the <code>Localized</code> component:</p>
 <pre class="prettyprint source lang-javascript"><code>import { Localized } from 'fluent-react';
 
 &lt;Localized id=&quot;hello-world&quot;>
     &lt;p>Hello, world!&lt;/p>
-&lt;/Localized></code></pre><p>The <code>id</code> prop should be the unique identifier of the translation.  Any
-attributes found in the translation will be applied to the wrapped element.
-You can also pass arguments to the translation as <code>$</code>-prefixed props on
+&lt;/Localized></code></pre><p>The <code>id</code> prop should be the unique identifier of the translation.  <a href="http://projectfluent.io/fluent/guide/attributes.html">Attributes
+defined in the translation</a> will be applied to the wrapped element.</p>
+<pre class="prettyprint source"><code>type-name
+    .placeholder = Your name</code></pre><pre class="prettyprint source lang-javascript"><code>&lt;Localized id=&quot;type-name&quot;>
+    &lt;input
+        type=&quot;text&quot;
+        placeholder=&quot;Your name&quot;
+        onChange={…}
+        value={…}
+    />
+&lt;/Localized></code></pre><p>You can also pass arguments to the translation as <code>$</code>-prefixed props on
 <code>Localized</code>:</p>
 <pre class="prettyprint source lang-javascript"><code>&lt;Localized id=&quot;welcome&quot; $username={name}>
     &lt;p>{'Welcome, {$username}'}&lt;/p>
@@ -80,7 +88,7 @@ In the future, it may be used for automatic extraction of source copy.</p>
         &lt;/Localized>
     }>
     &lt;p>{'Click { $linkA } or { $linkB}.'}&lt;/p>
-&lt;/Localized></code></pre><p>All <code>&lt;Localized&gt;</code> components need access to an instance of the <code>Localization</code>
+&lt;/Localized></code></pre><h3>The Localization Provider</h3><p>All <code>&lt;Localized&gt;</code> components need access to an instance of the <code>Localization</code>
 class, the central localization store to which they subscribe.  The
 <code>&lt;LocalizationProvider&gt;</code> component implements the <em>provider</em> pattern known from
 Redux.  Taking advantage of React's <a href="https://facebook.github.io/react/docs/context.html">context</a> feature, it makes translations
@@ -120,7 +128,7 @@ case fallback is required.</p>
 
 &lt;LocalizationProvider messages={generateMessages(['en-US'])}>
     …
-&lt;/LocalizationProvider>,</code></pre><h2>The messages iterable</h2><p>The design of the <code>LocalizationProvider</code> requires a little bit of work from the
+&lt;/LocalizationProvider>,</code></pre><h3>The messages iterable</h3><p>The design of the <code>LocalizationProvider</code> requires a little bit of work from the
 developer.  The <code>messages</code> iterable needs to be created manually.  This is
 intentional: it gives the most control to the developer with regards to the
 following three areas:</p>
@@ -141,6 +149,25 @@ translations (including any fallback) must be fetched at once before
 <code>&lt;LocalizationProvider&gt;</code> is rendered.  See the <code>*-async</code> examples in the
 <code>examples/</code> directory for more information.</p>
 <p>In the future we might be able to allow async fetching of fallback locales.</p>
+<h3>The withLocalization decorator</h3><p>Sometimes it's useful to imperatively format a translation rather than rely on
+the declarative <code>&lt;Localized /&gt;</code> API.  Good examples of this are the
+<code>window.alert</code> and <code>window.confirm</code> functions.</p>
+<p>It's possible to connect any component to its enclosing <code>LocalizationProvider</code>
+using the <code>withLocalization</code> higher-order component (HOC).</p>
+<pre class="prettyprint source lang-javascript"><code>import { withLocalization } from 'fluent-react/compat';
+
+function HelloButton(props) {
+    const { getString } = props;
+
+    return (
+        &lt;button onClick={() => alert(getString('hello'))}>
+            👋
+        &lt;/button>
+    );
+}
+
+export default withLocalization(HelloButton);</code></pre><p>The connected component must be a descendant of a <code>LocalizationProvider</code> to
+have access to the translations stored there.</p>
 <h2>A complete example</h2><pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
 import negotiateLanguages from 'fluent-langneg';
 import { MessageContext } from 'fluent';
@@ -202,7 +229,7 @@ implementations, and information about how to get involved.</p></article>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 17 2017 17:51:01 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 19:47:42 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
