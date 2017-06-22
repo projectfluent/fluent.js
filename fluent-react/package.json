@@ -1,7 +1,7 @@
 {
   "name": "fluent-react",
   "description": "Fluent bindings for React",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "http://projectfluent.io",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -36,7 +36,7 @@
     "prop-types": "^15.5.0"
   },
   "peerDependencies": {
-    "react": "^0.14.9 || ^15.3.0"
+    "react": "^0.14.9 || ^15.5.0"
   },
   "devDependencies": {
     "babel-preset-react": "^6.24.1",
