@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+  - …
+
+## fluent 0.4.1 (June 22, 2017)
+
   - Introduce mapContextSync and CachedIterable.
 
     An ordered iterable of MessageContext instances can represent the
@@ -17,7 +21,7 @@
     A simple function which formats translations based on the identifier
     might be implemented as follows:
 
-        formatString(id, args) {
+        getString(id, args) {
             const ctx = mapContextSync(contexts, id);
 
             if (ctx === null) {
