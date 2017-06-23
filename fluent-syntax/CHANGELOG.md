@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+  - …
+
+## fluent-syntax 0.5.0 (June 23rd, 2017)
+
   - Most AST nodes can now have a Span.
 
     Use `new FluentParser({ withSpans: true })` to enable this behavior.
