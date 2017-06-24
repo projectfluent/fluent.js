@@ -23,7 +23,7 @@ function getErrorMessage(code, args) {
     }
     case 'E0005': {
       const [id] = args;
-      return `Expected entry "${id}" to have a value, attributes or tags`;
+      return `Expected entry "${id}" to have a value or attributes`;
     }
     case 'E0006': {
       const [field] = args;

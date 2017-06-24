@@ -153,7 +153,7 @@ export default class FluentParser {
 
       ps.next();
 
-      if (ps.current() === '/') {
+      if (ps.currentIs('/')) {
         content += '\n';
         ps.next();
         ps.expectChar('/');
@@ -212,7 +212,7 @@ export default class FluentParser {
       tags = this.getTags(ps);
     }
 
-    if (pattern === undefined && attrs === undefined && tags === undefined) {
+    if (pattern === undefined && attrs === undefined) {
       throw new ParseError('E0005', id.name);
     }
 
@@ -566,7 +566,14 @@ export default class FluentParser {
 
       ps.expectChar(')');
 
-      return new AST.CallExpression(literal.id, args);
+      if (!/^[A-Z_-]+$/.test(literal.id.name)) {
+        throw new ParseError('E0008');
+      }
+
+      return new AST.CallExpression(
+        new AST.Function(literal.id.name),
+        args
+      );
     }
 
     return literal;
