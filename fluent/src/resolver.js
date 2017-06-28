@@ -30,7 +30,22 @@
  * All other expressions (except for `FunctionReference` which is only used in
  * `CallExpression`) resolve to an instance of `FluentType`.  The caller should
  * use the `valueOf` method to convert the instance to a native value.
+ *
+ *
+ * All functions in this file pass around a special object called `env`.
+ * This object stores a set of elements used by all resolve functions:
+ *
+ *  * {MessageContext} ctx
+ *      context for which the given resolution is happening
+ *  * {Object} args
+ *      list of developer provided arguments that can be used
+ *  * {Array} errors
+ *      list of errors collected while resolving
+ *  * {WeakSet} dirty
+ *      Set of patterns already encountered during this resolution.
+ *      This is used to prevent cyclic resolutions.
  */
+
 
 import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
   from './types';
@@ -49,6 +64,11 @@ const PDI = '\u2069';
  *
  * Used in Pattern.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Array} parts
+ *    List of parts of a placeable.
+ * @returns {Number}
  * @private
  */
 function PlaceableLength(env, parts) {
@@ -65,6 +85,13 @@ function PlaceableLength(env, parts) {
  *
  * Used in SelectExpressions and Type.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} members
+ *    Hash map of variants from which the default value is to be selected.
+ * @param   {Number} def
+ *    The index of the default variant.
+ * @returns {FluentType}
  * @private
  */
 function DefaultMember(env, members, def) {
@@ -79,8 +106,15 @@ function DefaultMember(env, members, def) {
 
 
 /**
- * Resolve a reference to a message to the message object.
+ * Resolve a reference to another message.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param {Object} id
+ *    The identifier of the message to be resolved.
+ * @param {String} id.name
+ *    The name of the identifier.
+ * @returns {Message}
  * @private
  */
 function MessageReference(env, {name}) {
@@ -98,6 +132,11 @@ function MessageReference(env, {name}) {
 /**
  * Resolve an array of tags.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {String} name
+ *    ID of a message for which the tags are resolved.
+ * @returns {Array}
  * @private
  */
 function Tags(env, {name}) {
@@ -123,6 +162,13 @@ function Tags(env, {name}) {
 /**
  * Resolve a variant expression to the variant object.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {String} id
+ *    An ID of a message for which the attribute is resolved.
+ * @param   {String}  key
+ *    Variant key to be resolved.
+ * @returns {FluentType}
  * @private
  */
 function VariantExpression(env, {id, key}) {
@@ -158,6 +204,13 @@ function VariantExpression(env, {id, key}) {
 /**
  * Resolve an attribute expression to the attribute object.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {String} id
+ *    An ID of a message for which the attribute is resolved.
+ * @param   {String}  name
+ *    Name of the attribute to be resolved.
+ * @returns {FluentType}
  * @private
  */
 function AttributeExpression(env, {id, name}) {
@@ -183,6 +236,15 @@ function AttributeExpression(env, {id, name}) {
 /**
  * Resolve a select expression to the member object.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} exp
+ *    Selector expression
+ * @param   {Array}  vars
+ *    List of variants for the select expression.
+ * @param   {String} def
+ *    Index of the default variant.
+ * @returns {Object}
  * @private
  */
 function SelectExpression(env, {exp, vars, def}) {
@@ -225,7 +287,10 @@ function SelectExpression(env, {exp, vars, def}) {
  * `valueOf` method they can be used as if they were a Fluent type without
  * paying the cost of creating a instance of one.
  *
+ * @param   {Object}  env
+ *    Resolver environment object.
  * @param   {Object} expr
+ *    An expression object to be resolved into a Fluent type.
  * @returns {FluentType}
  * @private
  */
@@ -288,6 +353,11 @@ function Type(env, expr) {
 /**
  * Resolve a reference to an external argument.
  *
+ * @param   {Object}  env
+ *    Resolver environment object.
+ * @param   {Object}  name
+ *    Name of an argument to be returned.
+ * @returns {T}
  * @private
  */
 function ExternalArgument(env, {name}) {
@@ -325,6 +395,11 @@ function ExternalArgument(env, {name}) {
 /**
  * Resolve a reference to a function.
  *
+ * @param   {Object}  env
+ *    Resolver environment object.
+ * @param   {Object}  name
+ *    Name of the function to be returned.
+ * @returns {Function}
  * @private
  */
 function FunctionReference(env, {name}) {
@@ -349,6 +424,13 @@ function FunctionReference(env, {name}) {
 /**
  * Resolve a call to a Function with positional and key-value arguments.
  *
+ * @param   {Object}  env
+ *    Resolver environment object.
+ * @param   {Object}  fun
+ *    FTL Function object.
+ * @param   {Object}  args
+ *    FTL Function argument list.
+ * @returns {T}
  * @private
  */
 function CallExpression(env, {fun, args}) {
@@ -376,6 +458,11 @@ function CallExpression(env, {fun, args}) {
 /**
  * Resolve a pattern (a complex string with placeables).
  *
+ * @param   {Object}  env
+ *    Resolver environment object.
+ * @param   {Object}  ptn
+ *    Pattern object.
+ * @returns {Array}
  * @private
  */
 function Pattern(env, ptn) {
@@ -435,9 +522,15 @@ function Pattern(env, ptn) {
  * The return value must be unwrapped via `valueOf` by the caller.
  *
  * @param   {MessageContext} ctx
+ *    A MessageContext instance which will be used to resolve the
+ *    contextual information of the message.
  * @param   {Object}         args
+ *    List of arguments provided by the developer which can be accessed
+ *    from the message.
  * @param   {Object}         message
+ *    An object with the Message to be resolved.
  * @param   {Array}          errors
+ *    An error array that any encountered errors will be appended to.
  * @returns {FluentType}
  */
 export default function resolve(ctx, args, message, errors = []) {

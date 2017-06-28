@@ -28,6 +28,12 @@ export class FluentType {
    * This method can use `Intl` formatters memoized by the `MessageContext`
    * instance passed as an argument.
    *
+   * In most cases, valueOf returns a string, but it can be overriden
+   * and there are use cases, where the return type is not a string.
+   *
+   * An example is fluent-react which implements a custom `FluentType`
+   * to represent React elements passed as arguments to format().
+   *
    * @param   {MessageContext} [ctx]
    * @returns {string}
    */
@@ -46,12 +52,21 @@ export class FluentNumber extends FluentType {
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
+
   valueOf(ctx) {
     const nf = ctx._memoizeIntlObject(
       Intl.NumberFormat, this.opts
     );
     return nf.format(this.value);
   }
+
+  /**
+   * Compare the object with another instance of a FluentType.
+   *
+   * @param   {MessageContext} [ctx]
+   * @param   {FluentType}     [other]
+   * @returns {bool}
+   */
   match(ctx, other) {
     if (other instanceof FluentNumber) {
       return this.value === other.value;
@@ -64,6 +79,7 @@ export class FluentDateTime extends FluentType {
   constructor(value, opts) {
     super(new Date(value), opts);
   }
+
   valueOf(ctx) {
     const dtf = ctx._memoizeIntlObject(
       Intl.DateTimeFormat, this.opts
@@ -76,6 +92,14 @@ export class FluentSymbol extends FluentType {
   valueOf() {
     return this.value;
   }
+
+  /**
+   * Compare the object with another instance of a FluentType.
+   *
+   * @param   {MessageContext} [ctx]
+   * @param   {FluentType}     [other]
+   * @returns {bool}
+   */
   match(ctx, other) {
     if (other instanceof FluentSymbol) {
       return this.value === other.value;
