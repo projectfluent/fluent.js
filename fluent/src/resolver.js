@@ -114,7 +114,7 @@ function DefaultMember(env, members, def) {
  *    The identifier of the message to be resolved.
  * @param   {String} id.name
  *    The name of the identifier.
- * @returns {Message}
+ * @returns {FluentType}
  * @private
  */
 function MessageReference(env, {name}) {
@@ -248,11 +248,11 @@ function AttributeExpression(env, {id, name}) {
  *    An expression to be resolved.
  * @param   {String} expr.exp
  *    Selector expression
- * @param   {String} expr.vars
+ * @param   {Array} expr.vars
  *    List of variants for the select expression.
- * @param   {String} expr.def
+ * @param   {Number} expr.def
  *    Index of the default variant.
- * @returns {Object}
+ * @returns {FluentType}
  * @private
  */
 function SelectExpression(env, {exp, vars, def}) {
@@ -365,9 +365,9 @@ function Type(env, expr) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.name
+ * @param   {String} expr.name
  *    Name of an argument to be returned.
- * @returns {T}
+ * @returns {FluentType}
  * @private
  */
 function ExternalArgument(env, {name}) {
@@ -409,7 +409,7 @@ function ExternalArgument(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.name
+ * @param   {String} expr.name
  *    Name of the function to be returned.
  * @returns {Function}
  * @private
@@ -442,9 +442,9 @@ function FunctionReference(env, {name}) {
  *    An expression to be resolved.
  * @param   {Object} expr.fun
  *    FTL Function object.
- * @param   {Object} expr.args
+ * @param   {Array} expr.args
  *    FTL Function argument list.
- * @returns {T}
+ * @returns {FluentType}
  * @private
  */
 function CallExpression(env, {fun, args}) {
