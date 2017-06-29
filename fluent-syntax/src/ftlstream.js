@@ -226,7 +226,7 @@ export class FTLParserStream extends ParserStream {
       this.next();
       return ret;
     }
-    throw new ParseError('E0004', 'a-zA-Z');
+    throw new ParseError('E0004', 'a-zA-Z_');
   }
 
   takeIDChar() {
@@ -243,15 +243,11 @@ export class FTLParserStream extends ParserStream {
 
   takeSymbChar() {
     const closure = ch => {
-      if (ch === undefined) {
-        return false;
-      }
-
       const cc = ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z
               (cc >= 65 && cc <= 90) || // A-Z
               (cc >= 48 && cc <= 57) || // 0-9
-               cc === 95 || cc === 45 || cc === 32);  // _-
+               cc === 95 || cc === 45 || cc === 32);  // _-<space>
     };
 
     return this.takeChar(closure);
