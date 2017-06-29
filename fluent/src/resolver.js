@@ -172,7 +172,7 @@ function Tags(env, {name}) {
  *    An Identifier of a message for which the variant is resolved.
  * @param   {Object} expr.id.name
  *    Name a message for which the variant is resolved.
- * @param   {FluentNumber|FluentSymbol} expr.key
+ * @param   {Object} expr.key
  *    Variant key to be resolved.
  * @returns {FluentType}
  * @private
