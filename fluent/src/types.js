@@ -63,8 +63,8 @@ export class FluentNumber extends FluentType {
   /**
    * Compare the object with another instance of a FluentType.
    *
-   * @param   {MessageContext} [ctx]
-   * @param   {FluentType}     [other]
+   * @param   {MessageContext} ctx
+   * @param   {FluentType}     other
    * @returns {bool}
    */
   match(ctx, other) {
@@ -96,8 +96,8 @@ export class FluentSymbol extends FluentType {
   /**
    * Compare the object with another instance of a FluentType.
    *
-   * @param   {MessageContext} [ctx]
-   * @param   {FluentType}     [other]
+   * @param   {MessageContext} ctx
+   * @param   {FluentType}     other
    * @returns {bool}
    */
   match(ctx, other) {

@@ -135,7 +135,7 @@ function MessageReference(env, {name}) {
  * @param   {Object} env
  *    Resolver environment object.
  * @param   {Object} id
- *    The identifier of the message to be resolved.
+ *    The identifier of the message with tags.
  * @param   {String} id.name
  *    The name of the identifier.
  * @returns {Array}
@@ -168,9 +168,11 @@ function Tags(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {String} expr.id
- *    An ID of a message for which the variant is resolved.
- * @param   {String} expr.key
+ * @param   {Object} expr.id
+ *    An Identifier of a message for which the variant is resolved.
+ * @param   {Object} expr.id.name
+ *    Name a message for which the variant is resolved.
+ * @param   {FluentNumber|FluentSymbol} expr.key
  *    Variant key to be resolved.
  * @returns {FluentType}
  * @private
