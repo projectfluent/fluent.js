@@ -66,7 +66,7 @@ const PDI = '\u2069';
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param   {Array} parts
+ * @param   {Array}  parts
  *    List of parts of a placeable.
  * @returns {Number}
  * @private
@@ -110,9 +110,9 @@ function DefaultMember(env, members, def) {
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param {Object} id
+ * @param   {Object} id
  *    The identifier of the message to be resolved.
- * @param {String} id.name
+ * @param   {String} id.name
  *    The name of the identifier.
  * @returns {Message}
  * @private
@@ -134,8 +134,10 @@ function MessageReference(env, {name}) {
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param   {String} name
- *    ID of a message for which the tags are resolved.
+ * @param   {Object} id
+ *    The identifier of the message to be resolved.
+ * @param   {String} id.name
+ *    The name of the identifier.
  * @returns {Array}
  * @private
  */
@@ -164,9 +166,11 @@ function Tags(env, {name}) {
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param   {String} id
- *    An ID of a message for which the attribute is resolved.
- * @param   {String}  key
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.id
+ *    An ID of a message for which the variant is resolved.
+ * @param   {String} expr.key
  *    Variant key to be resolved.
  * @returns {FluentType}
  * @private
@@ -206,9 +210,11 @@ function VariantExpression(env, {id, key}) {
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param   {String} id
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.id
  *    An ID of a message for which the attribute is resolved.
- * @param   {String}  name
+ * @param   {String} expr.name
  *    Name of the attribute to be resolved.
  * @returns {FluentType}
  * @private
@@ -238,11 +244,13 @@ function AttributeExpression(env, {id, name}) {
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param   {Object} exp
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.exp
  *    Selector expression
- * @param   {Array}  vars
+ * @param   {String} expr.vars
  *    List of variants for the select expression.
- * @param   {String} def
+ * @param   {String} expr.def
  *    Index of the default variant.
  * @returns {Object}
  * @private
@@ -287,7 +295,7 @@ function SelectExpression(env, {exp, vars, def}) {
  * `valueOf` method they can be used as if they were a Fluent type without
  * paying the cost of creating a instance of one.
  *
- * @param   {Object}  env
+ * @param   {Object} env
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression object to be resolved into a Fluent type.
@@ -353,9 +361,11 @@ function Type(env, expr) {
 /**
  * Resolve a reference to an external argument.
  *
- * @param   {Object}  env
+ * @param   {Object} env
  *    Resolver environment object.
- * @param   {Object}  name
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {Object} expr.name
  *    Name of an argument to be returned.
  * @returns {T}
  * @private
@@ -397,7 +407,9 @@ function ExternalArgument(env, {name}) {
  *
  * @param   {Object}  env
  *    Resolver environment object.
- * @param   {Object}  name
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {Object} expr.name
  *    Name of the function to be returned.
  * @returns {Function}
  * @private
@@ -424,11 +436,13 @@ function FunctionReference(env, {name}) {
 /**
  * Resolve a call to a Function with positional and key-value arguments.
  *
- * @param   {Object}  env
+ * @param   {Object} env
  *    Resolver environment object.
- * @param   {Object}  fun
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {Object} expr.fun
  *    FTL Function object.
- * @param   {Object}  args
+ * @param   {Object} expr.args
  *    FTL Function argument list.
  * @returns {T}
  * @private
@@ -458,9 +472,9 @@ function CallExpression(env, {fun, args}) {
 /**
  * Resolve a pattern (a complex string with placeables).
  *
- * @param   {Object}  env
+ * @param   {Object} env
  *    Resolver environment object.
- * @param   {Object}  ptn
+ * @param   {Object} ptn
  *    Pattern object.
  * @returns {Array}
  * @private
