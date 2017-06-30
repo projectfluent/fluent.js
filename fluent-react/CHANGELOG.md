@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-  - …
+  - Relax the constraint on Localized only being valid as descendants of
+    LocalizationProvider.
 
 ## fluent-react 0.4.0 (June 22, 2017)
 

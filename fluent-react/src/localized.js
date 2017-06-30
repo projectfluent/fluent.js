@@ -75,12 +75,18 @@ function toArguments(props) {
 export default class Localized extends Component {
   componentDidMount() {
     const { l10n } = this.context;
-    l10n.subscribe(this);
+
+    if (l10n) {
+      l10n.subscribe(this);
+    }
   }
 
   componentWillUnmount() {
     const { l10n } = this.context;
-    l10n.unsubscribe(this);
+
+    if (l10n) {
+      l10n.unsubscribe(this);
+    }
   }
 
   /*
@@ -94,20 +100,18 @@ export default class Localized extends Component {
 
   render() {
     const { l10n } = this.context;
-
-    if (!l10n) {
-      throw new Error(
-        'Localized must be a descendant of a LocalizationProvider.'
-      );
-    }
-
     const { id, children } = this.props;
     const elem = Children.only(children);
+
+    if (!l10n) {
+      // Use the wrapped component as fallback.
+      return elem;
+    }
 
     const mcx = l10n.getMessageContext(id);
 
     if (mcx === null) {
-      // Use the wrapped component as the ultimate fallback.
+      // Use the wrapped component as fallback.
       return elem;
     }
 

@@ -16,9 +16,7 @@ export default function withLocalization(Inner) {
       const { l10n } = this.context;
 
       if (!l10n) {
-        throw new Error(
-          `${this.displayName} must be a descendant of a LocalizationProvider.`
-        );
+        return id;
       }
 
       return l10n.getString(id, args);

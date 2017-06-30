@@ -1,7 +1,7 @@
 import { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 
-import ReactLocalization from './localization';
+import ReactLocalization, { isReactLocalization} from './localization';
 
 /*
  * The Provider component for the `ReactLocalization` class.
@@ -57,7 +57,7 @@ export default class LocalizationProvider extends Component {
 }
 
 LocalizationProvider.childContextTypes = {
-  l10n: PropTypes.object
+  l10n: isReactLocalization
 };
 
 LocalizationProvider.propTypes = {

@@ -42,6 +42,7 @@ suite('withLocalization', function() {
     );
 
     const getString = wrapper.prop('getString');
+    // Returns the translation.
     assert.equal(getString('foo'), 'FOO');
   });
 
@@ -55,6 +56,7 @@ suite('withLocalization', function() {
     );
 
     const getString = wrapper.prop('getString');
-    assert.throws(getString, /descendant of a LocalizationProvider/);
+    // Returns the id.
+    assert.equal(getString('foo', {arg: 1}), 'foo');
   });
 });

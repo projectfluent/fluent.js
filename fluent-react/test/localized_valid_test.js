@@ -26,12 +26,12 @@ suite('Localized - validation', function() {
   });
 
   test('outside of a LocalizationProvider', function() {
-    function render() {
-      shallow(
-        <Localized />
-      );
-    }
-    assert.throws(render, /descendant of a LocalizationProvider/);
+    const wrapper = shallow(
+      <Localized>
+        <div />
+      </Localized>
+    );
+    assert.equal(wrapper.find('div').length, 1);
   });
 
   test('with a manually set context', function() {
