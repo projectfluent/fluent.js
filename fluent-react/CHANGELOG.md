@@ -5,6 +5,8 @@
   - Relax the constraint on Localized only being valid as descendants of
     LocalizationProvider.
 
+  - Export ReactLocalization and isReactLocalization prop-type checker.
+
 ## fluent-react 0.4.0 (June 22, 2017)
 
   - Upgrade to fluent 0.4.1.
