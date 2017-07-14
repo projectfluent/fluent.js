@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { MessageArgument } from 'fluent/compat';
 
 import { isReactLocalization } from './localization';
+import Placeholder from './placeholder';
 
 /*
  * A Fluent argument type for React elements.
@@ -101,12 +102,19 @@ export default class Localized extends Component {
   render() {
     const { l10n } = this.context;
     const { id, children } = this.props;
+    // The wrapped component.
     const elem = Children.only(children);
 
     if (!l10n) {
       // Use the wrapped component as fallback.
       return elem;
     }
+
+    // Find any child elements of the wrapped element, like links.  We'll try
+    // to match Placeholders found in the translation with them.
+    const origs = Children.toArray(elem.props.children).filter(
+      child => isValidElement(child)
+    );
 
     const mcx = l10n.getMessageContext(id);
 
@@ -119,9 +127,23 @@ export default class Localized extends Component {
     const args = toArguments(this.props);
     const { parts, attrs } = l10n.formatCompound(mcx, msg, args);
 
+    // Find Placeholders in the translation and try to match them in order with
+    // original children of the wrapped component.
+    const partsWithOrigs = parts.map(part => {
+      if (isValidElement(part) && part.type === Placeholder) {
+        const orig = origs.shift();
+        if (orig) {
+          // Clone the original child merging the Placeholder's props into it.
+          return cloneElement(orig, part.props);
+        }
+      }
+
+      return part;
+    });
+
     // The formatted parts can be passed to `cloneElements` as arguments.  They
     // will be used as children of the cloned element.
-    return cloneElement(elem, attrs, ...parts);
+    return cloneElement(elem, attrs, ...partsWithOrigs);
   }
 }
 
