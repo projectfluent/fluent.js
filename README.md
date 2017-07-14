@@ -25,6 +25,10 @@ be installed independently of each other.
   - [fluent-langneg](https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg)
   - [fluent-react](https://github.com/projectfluent/fluent.js/tree/master/fluent-react)
 
+You can install each of the above packages via `npm`, e.g. `npm install
+fluent-react`.  See the end of this `README` for instructions on how to build
+`fluent.js` locally.
+
 
 Learn the FTL syntax
 --------------------
@@ -64,3 +68,34 @@ Get Involved
 Fluent.js is open-source, licensed under the Apache License, Version 2.0.  We 
 encourage everyone to take a look at our code and we'll listen to your 
 feedback.
+
+
+Local Development
+-----------------
+
+Hacking on `fluent.js` is easy!  To quickly get started clone the repo:
+
+    $ git clone https://github.com/projectfluent/fluent.js.git
+    $ cd fluent.js
+
+Install the build tools used by all packages (Babel, Rollup, Mocha etc.):
+
+    $ npm install
+
+Install dependencies of individual `fluent.js` packages which are required for
+passing tests:
+
+    $ make deps
+
+Build all packages at once:
+
+    $ make
+
+…which is equivalent to:
+
+    $ make lint
+    $ make test
+    $ make build
+
+You can also `cd` into a package's directory and issue the above `make`
+commands from there.  Only this one package will be affected.
