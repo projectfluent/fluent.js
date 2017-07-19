@@ -2,6 +2,8 @@
 
 const MAX_PLACEABLES = 100;
 
+const identifierRe = new RegExp('[a-zA-Z_][a-zA-Z0-9_-]*', 'y');
+
 /**
  * The `Parser` class is responsible for parsing FTL resources.
  *
@@ -41,10 +43,7 @@ class RuntimeParser {
         if (e instanceof SyntaxError) {
           errors.push(e);
 
-          const nextEntity = this.findNextEntryStart();
-          this._index = nextEntity === -1
-            ? this._length
-            : nextEntity;
+          this.skipToNextEntryStart();
         } else {
           throw e;
         }
@@ -66,7 +65,8 @@ class RuntimeParser {
     // or right after new line.
     if (this._index !== 0 &&
         this._source[this._index - 1] !== '\n') {
-      throw this.error('Expected new line and a new entry');
+      throw this.error(`Expected an entry to start
+        at the beginning of the file or on a new line.`);
     }
 
     const ch = this._source[this._index];
@@ -82,9 +82,7 @@ class RuntimeParser {
       return;
     }
 
-    if (ch !== '\n') {
-      this.getMessage();
-    }
+    this.getMessage();
   }
 
   /**
@@ -110,9 +108,6 @@ class RuntimeParser {
     }
 
     this._index += 2;
-
-    // sections are ignored in the runtime ast
-    return undefined;
   }
 
   /**
@@ -187,23 +182,21 @@ class RuntimeParser {
    * @private
    */
   skipWS() {
-    let cc = this._source.charCodeAt(this._index);
-    // space, \n, \t, \r
-    while (cc === 32 || cc === 10 || cc === 9 || cc === 13) {
-      cc = this._source.charCodeAt(++this._index);
+    let ch = this._source[this._index];
+    while (ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r') {
+      ch = this._source[++this._index];
     }
   }
 
   /**
-   * Skip whitespace except for \n.
+   * Skip inline whitespace (space and \t).
    *
    * @private
    */
   skipInlineWS() {
-    let cc = this._source.charCodeAt(this._index);
-    // space, \t
-    while (cc === 32 || cc === 9) {
-      cc = this._source.charCodeAt(++this._index);
+    let ch = this._source[this._index];
+    while (ch === ' ' || ch === '\t') {
+      ch = this._source[++this._index];
     }
   }
 
@@ -214,25 +207,17 @@ class RuntimeParser {
    * @private
    */
   getIdentifier() {
-    const start = this._index;
-    let cc = this._source.charCodeAt(this._index);
+    identifierRe.lastIndex = this._index;
 
-    if ((cc >= 97 && cc <= 122) || // a-z
-        (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95) {               // _
-      cc = this._source.charCodeAt(++this._index);
-    } else {
+    const result = identifierRe.exec(this._source);
+
+    if (result === null) {
+      this._index += 1;
       throw this.error('Expected an identifier (starting with [a-zA-Z_])');
     }
 
-    while ((cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90) ||  // A-Z
-           (cc >= 48 && cc <= 57) ||  // 0-9
-           cc === 95 || cc === 45) {  // _-
-      cc = this._source.charCodeAt(++this._index);
-    }
-
-    return this._source.slice(start, this._index);
+    this._index = identifierRe.lastIndex;
+    return result[0];
   }
 
   /**
@@ -249,20 +234,20 @@ class RuntimeParser {
 
     if ((cc >= 97 && cc <= 122) || // a-z
         (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95 || cc === 32) {  //  _
+        cc === 95 || cc === 32) {  // _ <space>
       cc = this._source.charCodeAt(++this._index);
-    } else if (name.length === 0) {
+    } else {
       throw this.error('Expected a keyword (starting with [a-zA-Z_])');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
            (cc >= 65 && cc <= 90) ||  // A-Z
            (cc >= 48 && cc <= 57) ||  // 0-9
-           cc === 95 || cc === 45 || cc === 32) {  //  _-
+           cc === 95 || cc === 45 || cc === 32) {  // _- <space>
       cc = this._source.charCodeAt(++this._index);
     }
 
-    // If we encountered the end of name, we want to test is the last
+    // If we encountered the end of name, we want to test if the last
     // collected character is a space.
     // If it is, we will backtrack to the last non-space character because
     // the keyword cannot end with a space character.
@@ -282,7 +267,7 @@ class RuntimeParser {
    * @private
    */
   getString() {
-    let value = '';
+    const start = this._index + 1;
 
     while (++this._index < this._length) {
       const ch = this._source[this._index];
@@ -294,12 +279,9 @@ class RuntimeParser {
       if (ch === '\n') {
         break;
       }
-
-      value += ch;
     }
 
-    this._index++;
-    return value;
+    return this._source.substring(start, this._index++);
   }
 
   /**
@@ -357,19 +339,8 @@ class RuntimeParser {
 
     let ch = this._source[this._index];
 
-    // If the string starts with \", \{ or \\ skip the first `\` and add the
-    // following character to the buffer without interpreting it.
-    if (ch === '\\' &&
-      (this._source[this._index + 1] === '"' ||
-       this._source[this._index + 1] === '{' ||
-       this._source[this._index + 1] === '\\')) {
-      buffer += this._source[this._index + 1];
-      this._index += 2;
-      ch = this._source[this._index];
-    }
-
     while (this._index < this._length) {
-      // This block handles multi-line strings combining strings seaprated
+      // This block handles multi-line strings combining strings separated
       // by new line and `|` character at the beginning of the next one.
       if (ch === '\n') {
         this._index++;
@@ -378,13 +349,11 @@ class RuntimeParser {
         }
         this.skipInlineWS();
 
-        if (
-            this._source[this._index] === '}' ||
+        if (this._source[this._index] === '}' ||
             this._source[this._index] === '[' ||
             this._source[this._index] === '*' ||
             this._source[this._index] === '#' ||
-            this._source[this._index] === '.'
-        ) {
+            this._source[this._index] === '.') {
           break;
         }
 
@@ -395,7 +364,7 @@ class RuntimeParser {
         continue;
       } else if (ch === '\\') {
         const ch2 = this._source[this._index + 1];
-        if (ch2 === '"' || ch2 === '{') {
+        if (ch2 === '"' || ch2 === '{' || ch2 === '\\') {
           ch = ch2;
           this._index++;
         }
@@ -467,39 +436,35 @@ class RuntimeParser {
     this.skipInlineWS();
 
     const selector = this.getSelectorExpression();
-    let variants;
 
     this.skipWS();
 
     const ch = this._source[this._index];
 
-    // If the expression is followed by `->` we're going to collect
-    // its members and return it as a select expression.
-    if (ch !== '}') {
-      if (ch !== '-' || this._source[this._index + 1] !== '>') {
-        throw this.error('Expected "}", "," or "->"');
-      }
-
-      this._index += 2; // ->
-
-      this.skipInlineWS();
-
-      if (this._source[this._index] !== '\n') {
-        throw this.error('Variants should be listed in a new line');
-      }
-
-      this.skipWS();
-
-      variants = this.getVariants();
-
-      if (variants[0].length === 0) {
-        throw this.error('Expected members for the select expression');
-      }
-    }
-
-    if (variants === undefined) {
+    if (ch === '}') {
       return selector;
     }
+
+    if (ch !== '-' || this._source[this._index + 1] !== '>') {
+      throw this.error('Expected "}" or "->"');
+    }
+
+    this._index += 2; // ->
+
+    this.skipInlineWS();
+
+    if (this._source[this._index] !== '\n') {
+      throw this.error('Variants should be listed in a new line');
+    }
+
+    this.skipWS();
+
+    const variants = this.getVariants();
+
+    if (variants[0].length === 0) {
+      throw this.error('Expected members for the select expression');
+    }
+
     return {
       type: 'sel',
       exp: selector,
@@ -888,14 +853,13 @@ class RuntimeParser {
   }
 
   /**
-   * Finds the beginning of a next entry after the current position.
+   * Skips to the beginning of a next entry after the current position.
    * This is used to mark the boundary of junk entry in case of error,
    * and recover from the returned position.
    *
-   * @returns {Number}
    * @private
    */
-  findNextEntryStart() {
+  skipToNextEntryStart() {
     let start = this._index;
 
     while (true) {
@@ -905,19 +869,19 @@ class RuntimeParser {
         if ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) ||  // A-Z
              cc === 95 || cc === 47 || cc === 91) {  // _/[
-          break;
+          this._index = start;
+          return;
         }
       }
 
       start = this._source.indexOf('\n', start);
 
       if (start === -1) {
-        break;
+        this._index = this._length;
+        return;
       }
       start++;
     }
-
-    return start;
   }
 }
 

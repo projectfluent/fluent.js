@@ -476,8 +476,8 @@ function CallExpression(env, {fun, args}) {
  *
  * @param   {Object} env
  *    Resolver environment object.
- * @param   {Object} ptn
- *    Pattern object.
+ * @param   {Array} ptn
+ *    Array of pattern elements.
  * @returns {Array}
  * @private
  */
