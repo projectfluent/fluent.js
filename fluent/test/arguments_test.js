@@ -3,6 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../src/context';
+import { FluentType } from '../src/types';
 import { ftl } from './util';
 
 suite('External arguments', function() {
@@ -209,6 +210,54 @@ suite('External arguments', function() {
       // format the date argument to account for the testrunner's timezone
       assert.equal(val, dtf.format(args.arg));
       assert.equal(errs.length, 0);
+    });
+  });
+
+  suite('custom argument types', function(){
+    let argval, args;
+
+    class CustomType extends FluentType {
+      // This Type doesn't valueOf to a string.
+      valueOf() {
+        return this.value;
+      }
+    }
+
+    suiteSetup(function() {
+      ctx = new MessageContext('en-US', { useIsolating: false });
+      ctx.addMessages(ftl`
+        foo = { $arg }
+        bar = { foo }
+      `);
+      // The argument value is an arbitrary object.
+      argval = new Object();
+
+      args = {
+        // CustomType is a wrapper around the value
+        arg: new CustomType(argval)
+      };
+    });
+
+    test('interpolation', function(){
+      const msg = ctx.getMessage('foo');
+
+      const parts = ctx.formatToParts(msg, args, errs);
+      assert.equal(errs.length, 0);
+      assert.deepEqual(parts, [args.arg]);
+
+      const vals = parts.map(part => part.valueOf(ctx));
+      assert.deepEqual(vals, [argval]);
+    });
+
+    test('nested interpolation', function(){
+      const msg = ctx.getMessage('bar');
+
+      const parts = ctx.formatToParts(msg, args, errs);
+      assert.equal(errs.length, 0);
+      assert.deepEqual(parts, [args.arg]);
+
+      const vals = parts.map(part => part.valueOf(ctx));
+      assert.deepEqual(vals, [argval]);
     });
   });
 
