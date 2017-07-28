@@ -34,6 +34,7 @@ const data = {
       [["en-*-US"], ["en-US"], ["en-US"]],
       [["en-Latn-US-*"], ["en-Latn-US"], ["en-Latn-US"]],
       [["en-*-US-*"], ["en-US"], ["en-US"]],
+      [["*"], ["de", "pl", "it", "fr", "ru"], ["de", "pl", "it", "fr", "ru"]]
     ],
     "should match cross-region": [
       [["en"], ["en-US"], ["en-US"]],
@@ -100,7 +101,12 @@ const data = {
         ["en-US", "fr-FR", "en", "fr"], undefined,
         "matching", ["fr", "en"]
       ],
-    ]
+      [
+        ["*"],
+        ["fr", "de", "it", "ru", "pl"], undefined,
+        "matching", ["fr"]
+      ],
+    ],
   },
   "lookup": {
     "should match only one": [
