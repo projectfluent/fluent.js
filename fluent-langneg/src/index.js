@@ -65,13 +65,13 @@ function GetOption(options, property, type, values, fallback) {
  *
  * The exact list will be selected differently depending on the strategy:
  *
- *   'filtering':
- *     In the filtering strategy, the algorithm will attempt to find the
- *     best possible match for each element of the requestedLocales list.
+ *   'filtering': (default)
+ *     In the filtering strategy, the algorithm will attempt to match
+ *     as many keys in the available locales in order of the requested locales.
  *
  *   'matching':
- *     In the matching strategy, the algorithm will attempt to match
- *     as many keys in the available locales in order of the requested locales.
+ *     In the matching strategy, the algorithm will attempt to find the
+ *     best possible match for each element of the requestedLocales list.
  *
  *   'lookup':
  *     In the lookup strategy, the algorithm will attempt to find a single

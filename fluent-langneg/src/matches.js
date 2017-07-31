@@ -103,10 +103,10 @@ export default function filterMatches(
         }
         if (strategy === 'lookup') {
           return Array.from(supportedLocales);
-        } else if (strategy === 'matching') {
-          continue outer;
+        } else if (strategy === 'filtering') {
+          continue;
         } else {
-          break;
+          continue outer;
         }
       }
     }
@@ -121,10 +121,10 @@ export default function filterMatches(
         availLocales.delete(availableLocale);
         if (strategy === 'lookup') {
           return Array.from(supportedLocales);
-        } else if (strategy === 'matching') {
-          continue outer;
+        } else if (strategy === 'filtering') {
+          continue;
         } else {
-          break;
+          continue outer;
         }
       }
     }
@@ -140,10 +140,10 @@ export default function filterMatches(
           availLocales.delete(availableLocale);
           if (strategy === 'lookup') {
             return Array.from(supportedLocales);
-          } else if (strategy === 'matching') {
-            continue outer;
+          } else if (strategy === 'filtering') {
+            continue;
           } else {
-            break;
+            continue outer;
           }
         }
       }
@@ -159,10 +159,10 @@ export default function filterMatches(
         availLocales.delete(availableLocale);
         if (strategy === 'lookup') {
           return Array.from(supportedLocales);
-        } else if (strategy === 'matching') {
-          continue outer;
+        } else if (strategy === 'filtering') {
+          continue;
         } else {
-          break;
+          continue outer;
         }
       }
     }
@@ -177,10 +177,10 @@ export default function filterMatches(
         availLocales.delete(availableLocale);
         if (strategy === 'lookup') {
           return Array.from(supportedLocales);
-        } else if (strategy === 'matching') {
-          continue outer;
+        } else if (strategy === 'filtering') {
+          continue;
         } else {
-          break;
+          continue outer;
         }
       }
     }
