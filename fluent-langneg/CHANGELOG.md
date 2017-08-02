@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+  - …
+
+## fluent-langneg 0.0.3
+
+  - Added `acceptedLanguages` function for parsing the Accept-Language header.
+
+  - Added `*` as a valid value for the `requestedLocales` argument.
+
   - The compat build is now transpiled using rollup-plugin-babel.
 
     This ensures that the "use strict" pragma is scoped to the UMD wrapper.  It
