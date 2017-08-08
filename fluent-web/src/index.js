@@ -35,11 +35,22 @@ function getResourceLinks(elem) {
   );
 }
 
+function fetchSync(url) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.send(null);
+  return xhr.responseText;
+}
+
+const sync = true;
+
 async function generateContext(locale, resIds) {
   const ctx = new MessageContext([locale]);
   for (const resId of resIds) {
-    const source =
-      await fetch(resId.replace('{locale}', locale)).then(d => d.text());
+    const url = resId.replace('{locale}', locale);
+    const source = sync ?
+      fetchSync(url) :
+      await fetch(url).then(d => d.text());
     ctx.addMessages(source);
   }
   return ctx;
