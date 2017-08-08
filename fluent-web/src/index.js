@@ -1,4 +1,4 @@
-/* global document, fetch, navigator, MutationObserver */
+/* eslint-env browser */
 
 import { DOMLocalization } from 'fluent-dom';
 import negotiateLanguages from 'fluent-langneg';
