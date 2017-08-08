@@ -1,28 +1,44 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global console */
 
+import CachedIterable from '../../fluent/src/cached_iterable';
+
+/**
+ * Specialized version of an Error used to indicate errors that are result
+ * of a problem during the localization process.
+ *
+ * We use them to identify the class of errors the require a fallback
+ * mechanism to be triggered vs errors that should be reported, but
+ * do not prevent the message from being used.
+ *
+ * An example of an L10nError is a missing entry.
+ */
 class L10nError extends Error {
-  constructor(message, id, lang) {
+  constructor(message) {
     super();
     this.name = 'L10nError';
     this.message = message;
-    this.id = id;
-    this.lang = lang;
   }
 }
 
 /**
- * The `Localization` class is responsible for fetching resources and
- * formatting translations.
+ * The `Localization` class is a central high-level API for vanilla
+ * JavaScript use of Fluent.
+ * It combines language negotiation, MessageContext and I/O to
+ * provide a scriptable API to format translations.
  */
 export default class Localization {
   /**
+   * @param {Array<String>} resourceIds      - List of resource IDs
+   * @param {Function}      generateMessages - Function that returns a
+   *                                           generator over MessageContexts
+   *
    * @returns {Localization}
    */
-  constructor(resIds, generateMessages) {
-    this.resIds = resIds;
+  constructor(resourceIds, generateMessages) {
+    this.resourceIds = resourceIds;
     this.generateMessages = generateMessages;
-    this.ctxs = this.generateMessages(this.resIds);
+    this.ctxs = new CachedIterable(this.generateMessages(this.resourceIds));
   }
 
   /**
@@ -40,9 +56,10 @@ export default class Localization {
   async formatWithFallback(keys, method) {
     const translations = [];
     for (let ctx of this.ctxs) {
+      // This can operate on synchronous and asynchronous
+      // contexts coming from the iterator.
       if (typeof ctx.then === 'function') {
-        // XXX: Remove once jsdoc supports `await ctx`
-        ctx = await ctx.then();
+        ctx = await ctx;
       }
       const errors = keysFromContext(method, ctx, keys, translations);
       if (!errors) {
@@ -87,7 +104,8 @@ export default class Localization {
    *
    *     docL10n.formatValues([
    *       ['hello', { who: 'Mary' }],
-   *       ['hello', { who: 'John' }]
+   *       ['hello', { who: 'John' }],
+   *       ['welcome']
    *     ]).then(console.log);
    *
    *     // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
@@ -133,7 +151,7 @@ export default class Localization {
   }
 
   onLanguageChange() {
-    this.ctxs = this.generateMessages(this.resIds);
+    this.ctxs = new CachedIterable(this.generateMessages(this.resourceIds));
   }
 }
 
@@ -218,8 +236,6 @@ function messageFromContext(ctx, errors, id, args) {
 }
 
 /**
- * @private
- *
  * This function is an inner function for `Localization.formatWithFallback`.
  *
  * It takes a `MessageContext`, list of l10n-ids and a method to be used for
@@ -231,7 +247,7 @@ function messageFromContext(ctx, errors, id, args) {
  * all keys, we're calling this function with the next context to resolve
  * the remaining ones.
  *
- * In the function, we loop oer `keys` and check if we have the `prev`
+ * In the function, we loop over `keys` and check if we have the `prev`
  * passed and if it has an error entry for the position we're in.
  *
  * If it doesn't, it means that we have a good translation for this key and
@@ -249,6 +265,7 @@ function messageFromContext(ctx, errors, id, args) {
  * @param {{Array<{value: string, attrs: Object}>}} translations
  *
  * @returns {Boolean}
+ * @private
  */
 function keysFromContext(method, ctx, keys, translations) {
   const messageErrors = [];
