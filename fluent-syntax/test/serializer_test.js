@@ -121,6 +121,17 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
+  test('standalone comment', function() {
+    const input = ftl`
+      foo = Foo
+
+      // A Standalone Comment
+
+      bar = Bar
+    `;
+    assert.equal(pretty(input), input);
+  });
+
   test('multiline with placeable', function() {
     const input = ftl`
       foo =

@@ -38,8 +38,10 @@ export default class FluentSerializer {
         return serializeMessage(entry);
       case 'Section':
         return serializeSection(entry);
-      case 'Comment':
-        return serializeComment(entry);
+      case 'Comment': {
+        const comment = serializeComment(entry);
+        return `\n${comment}\n\n`;
+      }
       case 'Junk':
         return serializeJunk(entry);
       default :
