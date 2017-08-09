@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-  - …
+  - Add touchNext to CachedIterable
+
+    This allows the user of CachedIterable to trigger construction of an
+    element yielded from the generator early.
 
 ## fluent 0.4.1 (June 22, 2017)
 

@@ -83,4 +83,54 @@ suite('CachedIterable', function() {
       assert.deepEqual([...iter], first);
     });
   });
+
+  suite('touchNext', function(){
+    let o1, o2;
+
+    suiteSetup(function() {
+      o1 = Object();
+      o2 = Object();
+    });
+
+    test('consumes an element into the cache', function() {
+      const iter = new CachedIterable([o1, o2]);
+      assert.equal(iter.seen.length, 0);
+      iter.touchNext();
+      assert.equal(iter.seen.length, 1);
+    });
+
+    test('allows to consume multiple elements into the cache', function() {
+      const iter = new CachedIterable([o1, o2]);
+      iter.touchNext();
+      iter.touchNext();
+      assert.equal(iter.seen.length, 2);
+    });
+
+    test('stops at the last element', function() {
+      const iter = new CachedIterable([o1, o2]);
+      iter.touchNext();
+      iter.touchNext();
+      iter.touchNext();
+      assert.equal(iter.seen.length, 3);
+
+      iter.touchNext();
+      assert.equal(iter.seen.length, 3);
+    });
+
+    test('works on an empty iterable', function() {
+      const iter = new CachedIterable([]);
+      iter.touchNext();
+      iter.touchNext();
+      iter.touchNext();
+      assert.equal(iter.seen.length, 1);
+    });
+
+    test('iteration for such cache works', function() {
+      const iter = new CachedIterable([o1, o2]);
+      iter.touchNext();
+      iter.touchNext();
+      iter.touchNext();
+      assert.deepEqual([...iter], [o1, o2]);
+    });
+  });
 });
