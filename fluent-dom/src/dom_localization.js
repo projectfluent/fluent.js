@@ -11,10 +11,14 @@ import Localization from './localization';
  */
 export default class DOMLocalization extends Localization {
   /**
+   * @param {MutationObserver} MutationObserver
+   * @param {Array<String>}    resourceIds      - List of resource IDs
+   * @param {Function}         generateMessages - Function that returns a
+   *                                              generator over MessageContexts
    * @returns {DOMLocalization}
    */
-  constructor(MutationObserver, resIds, generateMessages) {
-    super(resIds, generateMessages);
+  constructor(MutationObserver, resourceIds, generateMessages) {
+    super(resourceIds, generateMessages);
     this.query = '[data-l10n-id]';
 
     // A Set of DOM trees observed by the `MutationObserver`.
@@ -30,10 +34,6 @@ export default class DOMLocalization extends Localization {
       subtree: true,
       attributeFilter: ['data-l10n-id', 'data-l10n-args']
     };
-  }
-
-  handleEvent() {
-    this.onLanguageChange();
   }
 
   onLanguageChange() {
@@ -69,11 +69,12 @@ export default class DOMLocalization extends Localization {
    *   data-l10n-id='hello'
    *   data-l10n-args='{"who": "world"}'>
    * </p>
-   *
-   * @param {Element}             element - Element to set attributes on
-   * @param {string}                  id      - l10n-id string
-   * @param {Object<string, string>} args    - KVP list of l10n arguments
    * ```
+   *
+   * @param {Element}                element - Element to set attributes on
+   * @param {string}                 id      - l10n-id string
+   * @param {Object<string, string>} args    - KVP list of l10n arguments
+   * @returns {Element}
    */
   setAttributes(element, id, args) {
     element.setAttribute('data-l10n-id', id);
@@ -242,6 +243,13 @@ export default class DOMLocalization extends Localization {
     );
   }
 
+  /**
+   * Applies translations onto elements.
+   *
+   * @param {Array<Element>} elements
+   * @param {Array<Object>}  translations
+   * @private
+   */
   applyTranslations(elements, translations) {
     this.pauseObserving();
 
@@ -252,6 +260,13 @@ export default class DOMLocalization extends Localization {
     this.resumeObserving();
   }
 
+  /**
+   * Collects all translatable child elements of the element.
+   *
+   * @param {Element} element
+   * @returns {Array<Element>}
+   * @private
+   */
   getTranslatables(element) {
     const nodes = Array.from(element.querySelectorAll(this.query));
 
@@ -263,10 +278,18 @@ export default class DOMLocalization extends Localization {
     return nodes;
   }
 
+  /**
+   * Get the `data-l10n-*` attributes from DOM elements as a two-element
+   * array.
+   *
+   * @param {Element} element
+   * @returns {Array<string, Object>}
+   * @private
+   */
   getKeysForElement(element) {
     return [
       element.getAttribute('data-l10n-id'),
-      JSON.parse(element.getAttribute('data-l10n-args') || null)
+      JSON.parse(element.getAttribute('data-l10n-args'))
     ];
   }
 }

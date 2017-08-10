@@ -2,7 +2,11 @@
 // &amp;, &#0038;, &#x0026;.
 const reOverlay = /<|&#?\w+;/;
 
-// XXX The allowed list should be amendable; https://bugzil.la/922573.
+/**
+ * The list of elements that are allowed to be inserted into a localization.
+ *
+ * Source: https://www.w3.org/TR/html5/text-level-semantics.html
+ */
 const ALLOWED_ELEMENTS = {
   'http://www.w3.org/1999/xhtml': [
     'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
@@ -74,16 +78,22 @@ export default function overlayElement(element, translation) {
   }
 }
 
-// The goal of overlay is to move the children of `translationElement`
-// into `sourceElement` such that `sourceElement`'s own children are not
-// replaced, but only have their text nodes and their attributes modified.
-//
-// We want to make it possible for localizers to apply text-level semantics to
-// the translations and make use of HTML entities. At the same time, we
-// don't trust translations so we need to filter unsafe elements and
-// attributes out and we don't want to break the Web by replacing elements to
-// which third-party code might have created references (e.g. two-way
-// bindings in MVC frameworks).
+/**
+ * The goal of overlay is to move the children of `translationElement`
+ * into `sourceElement` such that `sourceElement`'s own children are not
+ * replaced, but only have their text nodes and their attributes modified.
+ *
+ * We want to make it possible for localizers to apply text-level semantics to
+ * the translations and make use of HTML entities. At the same time, we
+ * don't trust translations so we need to filter unsafe elements and
+ * attributes out and we don't want to break the Web by replacing elements to
+ * which third-party code might have created references (e.g. two-way
+ * bindings in MVC frameworks).
+ *
+ * @param {Element} sourceElement
+ * @param {Element} translationElement
+ * @private
+ */
 function overlay(sourceElement, translationElement) {
   const result = translationElement.ownerDocument.createDocumentFragment();
   let k, attr;
@@ -157,7 +167,7 @@ function isElementAllowed(element) {
     return false;
   }
 
-  return allowed.indexOf(element.tagName.toLowerCase()) !== -1;
+  return allowed.includes(element.tagName.toLowerCase());
 }
 
 /**
@@ -182,7 +192,7 @@ function isAttrAllowed(attr, element) {
   const elemName = element.tagName.toLowerCase();
 
   // Is it a globally safe attribute?
-  if (allowed.global.indexOf(attrName) !== -1) {
+  if (allowed.global.includes(attrName)) {
     return true;
   }
 
@@ -192,7 +202,7 @@ function isAttrAllowed(attr, element) {
   }
 
   // Is it allowed on this element?
-  if (allowed[elemName].indexOf(attrName) !== -1) {
+  if (allowed[elemName].includes(attrName)) {
     return true;
   }
 
@@ -208,10 +218,18 @@ function isAttrAllowed(attr, element) {
   return false;
 }
 
-// Get n-th immediate child of context that is of the same type as element.
-// XXX Use querySelector(':scope > ELEMENT:nth-of-type(index)'), when:
-// 1) :scope is widely supported in more browsers and 2) it works with
-// DocumentFragments.
+/**
+ * Get n-th immediate child of context that is of the same type as element.
+ * XXX Use querySelector(':scope > ELEMENT:nth-of-type(index)'), when:
+ * 1) :scope is widely supported in more browsers and 2) it works with
+ * DocumentFragments.
+ *
+ * @param {DOMFragment} context
+ * @param {Element}     element
+ * @param {Number}      index
+ * @returns {Element | null}
+ * @private
+ */
 function getNthElementOfType(context, element, index) {
   let nthOfType = 0;
   for (let i = 0, child; (child = context.children[i]); i++) {
@@ -226,7 +244,13 @@ function getNthElementOfType(context, element, index) {
   return null;
 }
 
-// Get the index of the element among siblings of the same type.
+/**
+ * Get the index of the element among siblings of the same type.
+ *
+ * @param {Element} element
+ * @returns {Number}
+ * @private
+ */
 function getIndexOfType(element) {
   let index = 0;
   let child;
