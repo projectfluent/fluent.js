@@ -100,7 +100,7 @@ export default class DOMLocalization extends Localization {
   getAttributes(element) {
     return {
       id: element.getAttribute('data-l10n-id'),
-      args: JSON.parse(element.getAttribute('data-l10n-args'))
+      args: JSON.parse(element.getAttribute('data-l10n-args') || null)
     };
   }
 
@@ -146,17 +146,8 @@ export default class DOMLocalization extends Localization {
   translateRoots() {
     const roots = Array.from(this.roots);
     return Promise.all(
-      roots.map(root => this.translateRoot(root))
+      roots.map(root => this.translateFragment(root))
     );
-  }
-
-  /**
-   * Translate `root`.
-   *
-   * @returns {Promise}
-   */
-  translateRoot(root) {
-    return this.translateFragment(root);
   }
 
   /**
@@ -289,7 +280,7 @@ export default class DOMLocalization extends Localization {
   getKeysForElement(element) {
     return [
       element.getAttribute('data-l10n-id'),
-      JSON.parse(element.getAttribute('data-l10n-args'))
+      JSON.parse(element.getAttribute('data-l10n-args') || null)
     ];
   }
 }
