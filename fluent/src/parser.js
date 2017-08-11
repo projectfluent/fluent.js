@@ -669,6 +669,9 @@ class RuntimeParser {
 
       this.skipInlineWS();
 
+      if (this._source[this._index] !== '=') {
+        throw this.error('Expected "="');
+      }
       this._index++;
 
       this.skipInlineWS();
