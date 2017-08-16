@@ -1,9 +1,8 @@
 /* eslint-env browser */
 
-import { DOMLocalization } from 'fluent-dom';
 import negotiateLanguages from 'fluent-langneg';
 import { MessageContext } from 'fluent';
-import CachedIterable from '../../fluent/src/cached_iterable';
+import { DOMLocalization } from '../../fluent-dom/src/index';
 
 function documentReady() {
   const rs = document.readyState;
@@ -44,10 +43,10 @@ function fetchSync(url) {
 
 const sync = true;
 
-async function generateContext(locale, resIds) {
+async function generateContext(locale, resourceIds) {
   const ctx = new MessageContext([locale]);
-  for (const resId of resIds) {
-    const url = resId.replace('{locale}', locale);
+  for (const resourceId of resourceIds) {
+    const url = resourceId.replace('{locale}', locale);
     const source = sync ?
       fetchSync(url) :
       await fetch(url).then(d => d.text());
@@ -58,7 +57,7 @@ async function generateContext(locale, resIds) {
 
 const meta = getMeta(document.head);
 
-function * generateMessages(resIds) {
+function * generateMessages(resourceIds) {
   const locales = negotiateLanguages(
     navigator.languages,
     meta.available,
@@ -67,15 +66,15 @@ function * generateMessages(resIds) {
     }
   );
   for (const locale of locales) {
-    yield generateContext(locale, resIds);
+    // This yields a promise. In the future we'd like to use async iteration.
+    yield generateContext(locale, resourceIds);
   }
 }
 
-function createLocalization(resIds) {
-  document.l10n =
-    new DOMLocalization(MutationObserver, resIds, ids => {
-      return new CachedIterable(generateMessages(ids));
-    });
+function createLocalization(resourceIds) {
+  document.l10n = new DOMLocalization(
+    MutationObserver, resourceIds, generateMessages
+  );
 
   document.l10n.ready = documentReady().then(() => {
     document.l10n.connectRoot(document.documentElement);

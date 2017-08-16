@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "fluent": "^0.4.0",
-    "fluent-langneg": "^0.0.2",
-    "fluent-dom": "0.0.1"
+    "fluent-langneg": "^0.0.2"
   }
 }

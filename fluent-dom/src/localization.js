@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global console */
 
-import CachedIterable from '../../fluent/src/cached_iterable';
+import { CachedIterable } from '../../fluent/src/index';
 
 /**
  * Specialized version of an Error used to indicate errors that are result
