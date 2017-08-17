@@ -3,7 +3,7 @@ import React, { cloneElement, Children, Component } from 'react';
 import 'fluent-intl-polyfill/compat';
 import { MessageContext } from 'fluent/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
-import negotiateLanguages from 'fluent-langneg/compat';
+import { negotiateLanguages } from 'fluent-langneg/compat';
 
 const MESSAGES_ALL = {
   'pl': `

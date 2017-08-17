@@ -4,7 +4,7 @@ import delay from 'delay';
 import 'fluent-intl-polyfill/compat';
 import { MessageContext } from 'fluent/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
-import negotiateLanguages from 'fluent-langneg/compat';
+import { negotiateLanguages } from 'fluent-langneg/compat';
 
 async function fetchMessages(locale) {
   const { PUBLIC_URL } = process.env;

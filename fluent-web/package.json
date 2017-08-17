@@ -31,7 +31,7 @@
     "node": ">=6"
   },
   "dependencies": {
-    "fluent": "^0.4.0",
-    "fluent-langneg": "^0.0.2"
+    "fluent": "~0.4.0",
+    "fluent-langneg": "~0.1.0"
   }
 }

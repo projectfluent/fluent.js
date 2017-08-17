@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-import negotiateLanguages from 'fluent-langneg';
+import { negotiateLanguages } from 'fluent-langneg';
 import { MessageContext } from 'fluent';
 import { DOMLocalization } from '../../fluent-dom/src/index';
 
