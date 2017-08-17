@@ -29,5 +29,8 @@
   ],
   "engine": {
     "node": ">=6"
+  },
+  "devDependencies": {
+    "jsdom": "^9.12.0"
   }
 }

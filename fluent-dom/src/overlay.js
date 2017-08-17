@@ -110,10 +110,10 @@ function overlay(sourceElement, translationElement) {
       continue;
     }
 
-    const index = getIndexOfType(childElement);
-    const sourceChild = getNthElementOfType(sourceElement, childElement, index);
+    const sourceChild = getElementOfType(sourceElement, childElement.tagName);
     if (sourceChild) {
       // There is a corresponding element in the source, let's use it.
+      sourceElement.removeChild(sourceChild);
       overlay(sourceChild, childElement);
       result.appendChild(sourceChild);
       continue;
@@ -163,11 +163,7 @@ function overlay(sourceElement, translationElement) {
  */
 function isElementAllowed(element) {
   const allowed = ALLOWED_ELEMENTS[element.namespaceURI];
-  if (!allowed) {
-    return false;
-  }
-
-  return allowed.includes(element.tagName.toLowerCase());
+  return allowed && allowed.includes(element.tagName.toLowerCase());
 }
 
 /**
@@ -219,45 +215,19 @@ function isAttrAllowed(attr, element) {
 }
 
 /**
- * Get n-th immediate child of context that is of the same type as element.
- * XXX Use querySelector(':scope > ELEMENT:nth-of-type(index)'), when:
- * 1) :scope is widely supported in more browsers and 2) it works with
- * DocumentFragments.
+ * Get the first child of context of the given type.
  *
  * @param {DOMFragment} context
- * @param {Element}     element
- * @param {Number}      index
+ * @param {String}      tagName
  * @returns {Element | null}
  * @private
  */
-function getNthElementOfType(context, element, index) {
-  let nthOfType = 0;
-  for (let i = 0, child; (child = context.children[i]); i++) {
+function getElementOfType(context, tagName) {
+  for (const child of context.children) {
     if (child.nodeType === child.ELEMENT_NODE &&
-        child.tagName.toLowerCase() === element.tagName.toLowerCase()) {
-      if (nthOfType === index) {
-        return child;
-      }
-      nthOfType++;
+        child.tagName.toLowerCase() === tagName.toLowerCase()) {
+      return child;
     }
   }
   return null;
-}
-
-/**
- * Get the index of the element among siblings of the same type.
- *
- * @param {Element} element
- * @returns {Number}
- * @private
- */
-function getIndexOfType(element) {
-  let index = 0;
-  let child;
-  while ((child = element.previousElementSibling)) {
-    if (child.tagName === element.tagName) {
-      index++;
-    }
-  }
-  return index;
 }
