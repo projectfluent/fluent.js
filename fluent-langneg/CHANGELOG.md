@@ -2,9 +2,13 @@
 
 ## Unreleased
 
+  - …
+
+## fluent-langneg 0.1.0 (August 17, 2017)
+
   - `negotiateLanguages` is now a named export.
 
-    Please change
+    In code using `fluent-langneg` please change:
 
         import negotiateLanguages from 'fluent-langneg';
 

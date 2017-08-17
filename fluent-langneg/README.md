@@ -15,7 +15,7 @@ You can install it from the npm registry or use it as a standalone script.
 ## How to use
 
 ```javascript
-import negotiateLanguages from 'fluent-langneg';
+import { negotiateLanguages } from 'fluent-langneg';
 
 const supportedLocales = negotiateLanguages(
   navigator.languages,       // requested locales
