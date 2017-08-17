@@ -1,5 +1,5 @@
 import assert from 'assert';
-import negotiateLanguages from '../src/index';
+import negotiateLanguages from '../src/negotiate_languages';
 
 const data = {
   "filtering": {

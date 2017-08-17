@@ -2,7 +2,15 @@
 
 ## Unreleased
 
-  - …
+  - `negotiateLanguages` is now a named export.
+
+    Please change
+
+        import negotiateLanguages from 'fluent-langneg';
+
+    to:
+
+        import { negotiateLanguages } from 'fluent-langneg';
 
 ## fluent-langneg 0.0.3
 
