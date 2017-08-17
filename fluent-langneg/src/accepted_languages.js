@@ -1,4 +1,3 @@
-
 export default function acceptedLanguages(string = '') {
   if (typeof string !== 'string') {
     throw new TypeError('Argument must be a string');
