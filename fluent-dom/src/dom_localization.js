@@ -1,6 +1,11 @@
 import overlayElement from './overlay';
 import Localization from './localization';
 
+const l10nIdAttrName = 'data-l10n-id';
+const l10nArgsAttrName = 'data-l10n-args';
+
+const l10nElementQuery = `[${l10nIdAttrName}]`;
+
 /**
  * The `DOMLocalization` class is responsible for fetching resources and
  * formatting translations.
@@ -11,19 +16,18 @@ import Localization from './localization';
  */
 export default class DOMLocalization extends Localization {
   /**
-   * @param {MutationObserver} MutationObserver
+   * @param {Window}           windowElement
    * @param {Array<String>}    resourceIds      - List of resource IDs
    * @param {Function}         generateMessages - Function that returns a
    *                                              generator over MessageContexts
    * @returns {DOMLocalization}
    */
-  constructor(MutationObserver, resourceIds, generateMessages) {
+  constructor(windowElement, resourceIds, generateMessages) {
     super(resourceIds, generateMessages);
-    this.query = '[data-l10n-id]';
 
     // A Set of DOM trees observed by the `MutationObserver`.
     this.roots = new Set();
-    this.mutationObserver = new MutationObserver(
+    this.mutationObserver = new windowElement.MutationObserver(
       mutations => this.translateMutations(mutations)
     );
 
@@ -32,7 +36,7 @@ export default class DOMLocalization extends Localization {
       characterData: false,
       childList: true,
       subtree: true,
-      attributeFilter: ['data-l10n-id', 'data-l10n-args']
+      attributeFilter: [l10nIdAttrName, l10nArgsAttrName]
     };
   }
 
@@ -77,9 +81,11 @@ export default class DOMLocalization extends Localization {
    * @returns {Element}
    */
   setAttributes(element, id, args) {
-    element.setAttribute('data-l10n-id', id);
+    element.setAttribute(l10nIdAttrName, id);
     if (args) {
-      element.setAttribute('data-l10n-args', JSON.stringify(args));
+      element.setAttribute(l10nArgsAttrName, JSON.stringify(args));
+    } else {
+      element.removeAttribute(l10nArgsAttrName);
     }
     return element;
   }
@@ -99,8 +105,8 @@ export default class DOMLocalization extends Localization {
    */
   getAttributes(element) {
     return {
-      id: element.getAttribute('data-l10n-id'),
-      args: JSON.parse(element.getAttribute('data-l10n-args') || null)
+      id: element.getAttribute(l10nIdAttrName),
+      args: JSON.parse(element.getAttribute(l10nArgsAttrName) || null)
     };
   }
 
@@ -156,6 +162,7 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   pauseObserving() {
+    this.translateMutations(this.mutationObserver.takeRecords());
     this.mutationObserver.disconnect();
   }
 
@@ -186,7 +193,7 @@ export default class DOMLocalization extends Localization {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
                 this.translateFragment(addedNode);
-              } else if (addedNode.hasAttribute('data-l10n-id')) {
+              } else if (addedNode.hasAttribute(l10nIdAttrName)) {
                 this.translateElement(addedNode);
               }
             }
@@ -228,10 +235,10 @@ export default class DOMLocalization extends Localization {
    * @param   {Element} element - HTML element to be translated
    * @returns {Promise}
    */
-  translateElement(element) {
-    return this.formatMessages([this.getKeysForElement(element)]).then(
-      translations => this.applyTranslations([element], translations)
-    );
+  async translateElement(element) {
+    const translations =
+      await this.formatMessages([this.getKeysForElement(element)]);
+    return this.applyTranslations([element], translations);
   }
 
   /**
@@ -259,10 +266,10 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   getTranslatables(element) {
-    const nodes = Array.from(element.querySelectorAll(this.query));
+    const nodes = Array.from(element.querySelectorAll(l10nElementQuery));
 
     if (typeof element.hasAttribute === 'function' &&
-        element.hasAttribute('data-l10n-id')) {
+        element.hasAttribute(l10nIdAttrName)) {
       nodes.push(element);
     }
 
@@ -279,8 +286,8 @@ export default class DOMLocalization extends Localization {
    */
   getKeysForElement(element) {
     return [
-      element.getAttribute('data-l10n-id'),
-      JSON.parse(element.getAttribute('data-l10n-args') || null)
+      element.getAttribute(l10nIdAttrName),
+      JSON.parse(element.getAttribute(l10nArgsAttrName) || null)
     ];
   }
 }
