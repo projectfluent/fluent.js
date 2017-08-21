@@ -77,8 +77,7 @@ readdir(fixtures, function(err, filenames) {
           const ast = parse(source);
           const actual = ast.body.reduce(toDirectives, []).join('\n') + '\n';
           assert.deepEqual(
-            actual, expected,
-            'Actual Annotations don\'t match the expected ones'
+            actual, expected, 'Annotations mismatch'
           );
         });
       });

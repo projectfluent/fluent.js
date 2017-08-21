@@ -15,14 +15,22 @@ export function serialize(resource, opts) {
 }
 
 export function lineOffset(source, pos) {
-  // Substract 1 to get the offset.
+  // Subtract 1 to get the offset.
   return source.substring(0, pos).split('\n').length - 1;
 }
 
 export function columnOffset(source, pos) {
-  const lastLineBreak = source.lastIndexOf('\n', pos);
-  return lastLineBreak === -1
-    ? pos
-    // Substracting two offsets gives length; substract 1 to get the offset.
-    : pos - lastLineBreak - 1;
+  // Find the last line break starting backwards from the index just before
+  // pos.  This allows us to correctly handle ths case where the character at
+  // pos  is a line break as well.
+  const fromIndex = pos - 1;
+  const prevLineBreak = source.lastIndexOf('\n', fromIndex);
+
+  // pos is a position in the first line of source.
+  if (prevLineBreak === -1) {
+    return pos;
+  }
+
+  // Subtracting two offsets gives length; subtract 1 to get the offset.
+  return pos - prevLineBreak - 1;
 }

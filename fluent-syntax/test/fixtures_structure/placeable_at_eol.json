@@ -6,11 +6,11 @@
       "annotations": [],
       "id": {
         "type": "Identifier",
-        "name": "key",
+        "name": "key1",
         "span": {
           "type": "Span",
           "start": 0,
-          "end": 3
+          "end": 4
         }
       },
       "value": {
@@ -21,25 +21,33 @@
             "value": "A multiline message with a ",
             "span": {
               "type": "Span",
-              "start": 5,
-              "end": 39
+              "start": 11,
+              "end": 38
             }
           },
           {
-            "type": "MessageReference",
-            "id": {
-              "type": "Identifier",
-              "name": "placeable",
+            "type": "Placeable",
+            "expression": {
+              "type": "MessageReference",
+              "id": {
+                "type": "Identifier",
+                "name": "placeable",
+                "span": {
+                  "type": "Span",
+                  "start": 40,
+                  "end": 49
+                }
+              },
               "span": {
                 "type": "Span",
-                "start": 39,
-                "end": 48
+                "start": 40,
+                "end": 49
               }
             },
             "span": {
               "type": "Span",
-              "start": 39,
-              "end": 48
+              "start": 38,
+              "end": 51
             }
           },
           {
@@ -47,15 +55,15 @@
             "value": "\nat the end of line.  The message should\nconsist of three lines of text.",
             "span": {
               "type": "Span",
-              "start": 50,
-              "end": 130
+              "start": 51,
+              "end": 131
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 5,
-          "end": 130
+          "start": 6,
+          "end": 131
         }
       },
       "attributes": [],
@@ -64,7 +72,137 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 130
+        "end": 131
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "span": {
+          "type": "Span",
+          "start": 133,
+          "end": 137
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "A multiline message with a ",
+            "span": {
+              "type": "Span",
+              "start": 144,
+              "end": 171
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "MessageReference",
+              "id": {
+                "type": "Identifier",
+                "name": "placeable",
+                "span": {
+                  "type": "Span",
+                  "start": 173,
+                  "end": 182
+                }
+              },
+              "span": {
+                "type": "Span",
+                "start": 173,
+                "end": 182
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 171,
+              "end": 184
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 139,
+          "end": 184
+        }
+      },
+      "attributes": [],
+      "tags": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 133,
+        "end": 184
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "span": {
+          "type": "Span",
+          "start": 186,
+          "end": 190
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "A singleline message with a ",
+            "span": {
+              "type": "Span",
+              "start": 193,
+              "end": 221
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "MessageReference",
+              "id": {
+                "type": "Identifier",
+                "name": "placeable",
+                "span": {
+                  "type": "Span",
+                  "start": 223,
+                  "end": 232
+                }
+              },
+              "span": {
+                "type": "Span",
+                "start": 223,
+                "end": 232
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 221,
+              "end": 234
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 193,
+          "end": 234
+        }
+      },
+      "attributes": [],
+      "tags": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 186,
+        "end": 234
       }
     }
   ],
@@ -72,6 +210,6 @@
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 131
+    "end": 235
   }
 }

@@ -67,6 +67,14 @@ export class TextElement extends SyntaxNode {
   }
 }
 
+export class Placeable extends SyntaxNode {
+  constructor(expression) {
+    super();
+    this.type = 'Placeable';
+    this.expression = expression;
+  }
+}
+
 export class Expression extends SyntaxNode {
   constructor() {
     super();

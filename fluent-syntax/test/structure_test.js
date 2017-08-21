@@ -27,7 +27,7 @@ readdir(fixtures, function(err, filenames) {
           const ast = parse(ftl);
           assert.deepEqual(
             ast, JSON.parse(expected),
-            'Actual Annotations don\'t match the expected ones'
+            'Parsed AST doesn\'t match the expected one'
           );
         });
       });

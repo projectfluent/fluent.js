@@ -1,5 +1,5 @@
 {
-  "key": {
+  "key1": {
     "val": [
       "A multiline message with a ",
       {
@@ -7,6 +7,24 @@
         "name": "placeable"
       },
       "\nat the end of line.  The message should\nconsist of three lines of text."
+    ]
+  },
+  "key2": {
+    "val": [
+      "A multiline message with a ",
+      {
+        "type": "ref",
+        "name": "placeable"
+      }
+    ]
+  },
+  "key3": {
+    "val": [
+      "A singleline message with a ",
+      {
+        "type": "ref",
+        "name": "placeable"
+      }
     ]
   }
 }

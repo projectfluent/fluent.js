@@ -44,8 +44,8 @@ export default class FluentParser {
     [
       'getComment', 'getSection', 'getMessage', 'getAttribute', 'getTag',
       'getIdentifier', 'getVariant', 'getSymbol', 'getNumber', 'getPattern',
-      'getExpression', 'getSelectorExpression', 'getCallArg', 'getString',
-      'getLiteral',
+      'getTextElement', 'getPlaceable', 'getExpression',
+      'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
     ].forEach(
       name => this[name] = withSpan(this[name])
     );
@@ -55,7 +55,7 @@ export default class FluentParser {
     let comment = null;
 
     const ps = new FTLParserStream(source);
-    ps.skipWSLines();
+    ps.skipBlankLines();
 
     const entries = [];
 
@@ -68,7 +68,7 @@ export default class FluentParser {
         entries.push(entry);
       }
 
-      ps.skipWSLines();
+      ps.skipBlankLines();
     }
 
     const res = new AST.Resource(entries, comment);
@@ -82,7 +82,7 @@ export default class FluentParser {
 
   parseEntry(source) {
     const ps = new FTLParserStream(source);
-    ps.skipWSLines();
+    ps.skipBlankLines();
     return this.getEntryOrJunk(ps);
   }
 
@@ -169,16 +169,16 @@ export default class FluentParser {
     ps.expectChar('[');
     ps.expectChar('[');
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     const symb = this.getSymbol(ps);
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     ps.expectChar(']');
     ps.expectChar(']');
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     ps.expectChar('\n');
 
@@ -188,7 +188,7 @@ export default class FluentParser {
   getMessage(ps, comment) {
     const id = this.getIdentifier(ps);
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     let pattern;
     let attrs;
@@ -196,7 +196,7 @@ export default class FluentParser {
 
     if (ps.currentIs('=')) {
       ps.next();
-      ps.skipLineWS();
+      ps.skipInlineWS();
 
       pattern = this.getPattern(ps);
     }
@@ -224,9 +224,9 @@ export default class FluentParser {
 
     const key = this.getIdentifier(ps);
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
     ps.expectChar('=');
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     const value = this.getPattern(ps);
 
@@ -242,7 +242,7 @@ export default class FluentParser {
 
     while (true) {
       ps.expectChar('\n');
-      ps.skipLineWS();
+      ps.skipInlineWS();
 
       const attr = this.getAttribute(ps);
       attrs.push(attr);
@@ -265,7 +265,7 @@ export default class FluentParser {
 
     while (true) {
       ps.expectChar('\n');
-      ps.skipLineWS();
+      ps.skipInlineWS();
 
       const tag = this.getTag(ps);
       tags.push(tag);
@@ -324,7 +324,7 @@ export default class FluentParser {
 
     ps.expectChar(']');
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     const value = this.getPattern(ps);
 
@@ -341,7 +341,7 @@ export default class FluentParser {
 
     while (true) {
       ps.expectChar('\n');
-      ps.skipLineWS();
+      ps.skipInlineWS();
 
       const variant = this.getVariant(ps, hasDefault);
 
@@ -415,80 +415,83 @@ export default class FluentParser {
   }
 
   getPattern(ps) {
-    let buffer = '';
     const elements = [];
-    let firstLine = true;
+    ps.skipInlineWS();
 
-    if (this.withSpans) {
-      var spanStart = ps.getIndex();
+    // Special-case: trim leading whitespace and newlines.
+    if (ps.isPeekNextLinePattern()) {
+      ps.skipBlankLines();
+      ps.skipInlineWS();
     }
 
     let ch;
     while ((ch = ps.current())) {
-      if (ch === '\n') {
-        if (firstLine && buffer.length !== 0) {
-          break;
-        }
 
+      // The end condition for getPattern's while loop is a newline
+      // which is not followed by a valid pattern continuation.
+      if (ch === '\n' && !ps.isPeekNextLinePattern()) {
+        break;
+      }
+
+      if (ch === '{') {
+        const element = this.getPlaceable(ps);
+        elements.push(element);
+      } else {
+        const element = this.getTextElement(ps);
+        elements.push(element);
+      }
+    }
+
+    return new AST.Pattern(elements);
+  }
+
+  getTextElement(ps) {
+    let buffer = '';
+
+    let ch;
+    while ((ch = ps.current())) {
+
+      if (ch === '{') {
+        return new AST.TextElement(buffer);
+      }
+
+      if (ch === '\n') {
         if (!ps.isPeekNextLinePattern()) {
-          break;
+          return new AST.TextElement(buffer);
         }
 
         ps.next();
-        ps.skipLineWS();
+        ps.skipInlineWS();
 
-        if (!firstLine) {
-          buffer += ch;
-        }
-        firstLine = false;
+        // Add the new line to the buffer
+        buffer += ch;
         continue;
-      } else if (ch === '\\') {
-        const ch2 = ps.peek();
+      }
+
+      if (ch === '\\') {
+        const ch2 = ps.next();
+
         if (ch2 === '{' || ch2 === '"') {
           buffer += ch2;
         } else {
           buffer += ch + ch2;
         }
-        ps.next();
-      } else if (ch === '{') {
-        ps.next();
 
-        ps.skipLineWS();
-
-        if (buffer.length !== 0) {
-          const text = new AST.TextElement(buffer);
-          if (this.withSpans) {
-            text.addSpan(spanStart, ps.getIndex());
-          }
-          elements.push(text);
-        }
-
-        buffer = '';
-
-        elements.push(this.getExpression(ps));
-
-        ps.expectChar('}');
-
-        if (this.withSpans) {
-          spanStart = ps.getIndex();
-        }
-
-        continue;
       } else {
         buffer += ps.ch;
       }
+
       ps.next();
     }
 
-    if (buffer.length !== 0) {
-      const text = new AST.TextElement(buffer);
-      if (this.withSpans) {
-        text.addSpan(spanStart, ps.getIndex());
-      }
-      elements.push(text);
-    }
+    return new AST.TextElement(buffer);
+  }
 
-    return new AST.Pattern(elements);
+  getPlaceable(ps) {
+    ps.expectChar('{');
+    const expression = this.getExpression(ps);
+    ps.expectChar('}');
+    return new AST.Placeable(expression);
   }
 
   getExpression(ps) {
@@ -497,14 +500,16 @@ export default class FluentParser {
 
       ps.expectChar('\n');
       ps.expectChar(' ');
-      ps.skipLineWS();
+      ps.skipInlineWS();
 
       return new AST.SelectExpression(null, variants);
     }
 
+    ps.skipInlineWS();
+
     const selector = this.getSelectorExpression(ps);
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     if (ps.currentIs('-')) {
       ps.peek();
@@ -514,7 +519,7 @@ export default class FluentParser {
         ps.next();
         ps.next();
 
-        ps.skipLineWS();
+        ps.skipInlineWS();
 
         const variants = this.getVariants(ps);
 
@@ -524,7 +529,7 @@ export default class FluentParser {
 
         ps.expectChar('\n');
         ps.expectChar(' ');
-        ps.skipLineWS();
+        ps.skipInlineWS();
 
         return new AST.SelectExpression(selector, variants);
       }
@@ -582,7 +587,7 @@ export default class FluentParser {
   getCallArg(ps) {
     const exp = this.getSelectorExpression(ps);
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     if (ps.current() !== ':') {
       return exp;
@@ -593,7 +598,7 @@ export default class FluentParser {
     }
 
     ps.next();
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     const val = this.getArgVal(ps);
 
@@ -603,7 +608,7 @@ export default class FluentParser {
   getCallArgs(ps) {
     const args = [];
 
-    ps.skipLineWS();
+    ps.skipInlineWS();
 
     while (true) {
       if (ps.current() === ')') {
@@ -613,11 +618,11 @@ export default class FluentParser {
       const arg = this.getCallArg(ps);
       args.push(arg);
 
-      ps.skipLineWS();
+      ps.skipInlineWS();
 
       if (ps.current() === ',') {
         ps.next();
-        ps.skipLineWS();
+        ps.skipInlineWS();
         continue;
       } else {
         break;

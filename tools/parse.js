@@ -64,7 +64,7 @@ function printAnnotations(source, entry) {
 }
 
 function printAnnotation(source, span, annot) {
-  const { name, message, span: { start } } = annot;
+  const { code, message, span: { start } } = annot;
   const slice = source.substring(span.start, span.end).trimRight();
   const lineNumber = FluentSyntax.lineOffset(source, start) + 1;
   const columnOffset = FluentSyntax.columnOffset(source, start);
@@ -74,7 +74,7 @@ function printAnnotation(source, span, annot) {
   const tail = lines.slice(showLines);
 
   console.log();
-  console.log(`! ${name} on line ${lineNumber}:`);
+  console.log(`! ${code} on line ${lineNumber}:`);
   console.log(head.map(line => `  | ${line}`).join('\n'));
   console.log(`  … ${indent(columnOffset)}^----- ${message}`);
   console.log(tail.map(line => `  | ${line}`).join('\n'));
