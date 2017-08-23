@@ -1,0 +1,3 @@
+key =
+    Foo { bar }
+    Baz

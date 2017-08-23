@@ -1,10 +1,12 @@
+import { includes } from './util';
+
 function indent(content) {
   return content.split('\n').join('\n    ');
 }
 
 function containNewLine(elems) {
   const withNewLine = elems.filter(
-    elem => (elem.type === 'TextElement' && elem.value.includes('\n'))
+    elem => (elem.type === 'TextElement' && includes(elem.value, '\n'))
   );
   return !!withNewLine.length;
 }
@@ -137,16 +139,30 @@ function serializeElement(element) {
   switch (element.type) {
     case 'TextElement':
       return serializeTextElement(element);
-    case 'SelectExpression':
-      return `{${serializeSelectExpression(element)}}`;
+    case 'Placeable':
+      return serializePlaceable(element);
     default:
-      return `{ ${serializeExpression(element)} }`;
+      throw new Error(`Unknown element type: ${element.type}`);
   }
 }
 
 
 function serializeTextElement(text) {
   return text.value;
+}
+
+
+function serializePlaceable(placeable) {
+  const expr = placeable.expression;
+
+  switch (expr.type) {
+    case 'Placeable':
+      return `{${serializePlaceable(expr)}}`;
+    case 'SelectExpression':
+      return `{${serializeSelectExpression(expr)}}`;
+    default:
+      return `{ ${serializeExpression(expr)} }`;
+  }
 }
 
 
