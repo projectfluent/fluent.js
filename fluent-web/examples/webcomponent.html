@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="pl, en-US">
+    <link rel="localization" href="./localization/{locale}/fluent-widget.ftl" />
+    <script src="../fluent-web.js"></script>
+
+    <script type="text/javascript">
+      class FluentWidget extends HTMLElement {
+        constructor() {
+          super();
+
+          var shadowRoot = this.attachShadow({mode: 'open'});
+          const t = document.querySelector('#fluent-widget-template');
+          const instance = t.content.cloneNode(true);
+          shadowRoot.appendChild(instance);
+        }
+
+        connectedCallback() {
+          //console.log(this.getAttribute('label'));
+        }
+        // Monitor the 'name' attribute for changes.
+        static get observedAttributes() {return ['label', 'action-ok', 'action-cancel']; }
+
+        // Respond to attribute changes.
+        attributeChangedCallback(attr, oldValue, newValue) {
+          switch (attr) {
+            case 'label':
+              let p = this.shadowRoot.querySelector('p.label');
+              p.textContent = newValue;
+              break;
+            case 'action-ok':
+              let okButton = this.shadowRoot.querySelector('button.ok');
+              okButton.textContent = newValue;
+              break;
+            case 'action-cancel':
+              let cancelButton = this.shadowRoot.querySelector('button.cancel');
+              cancelButton.textContent = newValue;
+              break;
+          }
+        }
+      }
+      customElements.define('fluent-widget', FluentWidget);
+    </script>
+    <style>
+      fluent-widget {
+        width: 30em;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <template id="fluent-widget-template">
+      <style>
+        div {
+          border: 1px solid black;
+          border-radius: 10px;
+        }
+        p {
+          color: black;
+          text-align: center;
+        }
+
+        button {
+          margin-left: 5%;
+          width: 40%;
+          margin-bottom: 3%;
+          display: inline-block;
+        }
+      </style>
+      <div>
+        <p class="label"></p>
+        <button class="ok"></button>
+        <button class="cancel"></button>
+      </div>
+    </template>
+
+    <fluent-widget data-l10n-id="proceed-button"></fluent-widget>
+  </body>
+</html>
