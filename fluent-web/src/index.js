@@ -71,17 +71,15 @@ function * generateMessages(resourceIds) {
   }
 }
 
-function createLocalization(resourceIds) {
-  document.l10n = new DOMLocalization(
-    MutationObserver, resourceIds, generateMessages
-  );
+const resourceIds = getResourceLinks(document.head);
+document.l10n = new DOMLocalization(
+  MutationObserver, resourceIds, generateMessages
+);
+window.addEventListener('languagechange', document.l10n);
 
-  document.l10n.ready = documentReady().then(() => {
-    document.l10n.connectRoot(document.documentElement);
-    return document.l10n.translateRoots().then(() => {
-      document.body.style.display = 'block';
-    });
+document.l10n.ready = documentReady().then(() => {
+  document.l10n.connectRoot(document.documentElement);
+  return document.l10n.translateRoots().then(() => {
+    document.body.style.display = 'block';
   });
-}
-
-createLocalization(getResourceLinks(document.head));
+});
