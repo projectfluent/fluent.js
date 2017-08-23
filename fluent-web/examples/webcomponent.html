@@ -11,31 +11,26 @@
         constructor() {
           super();
 
-          var shadowRoot = this.attachShadow({mode: 'open'});
+          const shadowRoot = this.attachShadow({mode: 'open'});
           const t = document.querySelector('#fluent-widget-template');
           const instance = t.content.cloneNode(true);
           shadowRoot.appendChild(instance);
         }
 
-        connectedCallback() {
-          //console.log(this.getAttribute('label'));
-        }
-        // Monitor the 'name' attribute for changes.
         static get observedAttributes() {return ['label', 'action-ok', 'action-cancel']; }
 
-        // Respond to attribute changes.
         attributeChangedCallback(attr, oldValue, newValue) {
           switch (attr) {
             case 'label':
-              let p = this.shadowRoot.querySelector('p.label');
+              const p = this.shadowRoot.querySelector('p.label');
               p.textContent = newValue;
               break;
             case 'action-ok':
-              let okButton = this.shadowRoot.querySelector('button.ok');
+              const okButton = this.shadowRoot.querySelector('button.ok');
               okButton.textContent = newValue;
               break;
             case 'action-cancel':
-              let cancelButton = this.shadowRoot.querySelector('button.cancel');
+              const cancelButton = this.shadowRoot.querySelector('button.cancel');
               cancelButton.textContent = newValue;
               break;
           }
