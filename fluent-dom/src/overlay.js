@@ -71,8 +71,14 @@ export default function overlayElement(element, translation) {
     return;
   }
 
+  const whitelistedAttrs = element.hasAttribute('data-l10n-attrs') ?
+    element.getAttribute('data-l10n-attrs')
+      .split(',').map(attr => attr.trim()) :
+    null;
+
   for (const [name, val] of translation.attrs) {
-    if (isAttrAllowed({ name }, element)) {
+    if (isAttrAllowed({ name }, element) ||
+        (whitelistedAttrs && whitelistedAttrs.includes(name))) {
       element.setAttribute(name, val);
     }
   }
