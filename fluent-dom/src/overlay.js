@@ -96,33 +96,32 @@ export default function overlayElement(element, translation) {
  */
 function overlay(sourceElement, translationElement) {
   const result = translationElement.ownerDocument.createDocumentFragment();
-  let k, attr;
 
   // Take one node from translationElement at a time and check it against
   // the allowed list or try to match it with a corresponding element
   // in the source.
-  let childElement;
-  while ((childElement = translationElement.childNodes[0])) {
-    translationElement.removeChild(childElement);
+  let childNode;
+  while ((childNode = translationElement.childNodes[0])) {
+    translationElement.removeChild(childNode);
 
-    if (childElement.nodeType === childElement.TEXT_NODE) {
-      result.appendChild(childElement);
+    if (childNode.nodeType === childNode.TEXT_NODE) {
+      result.appendChild(childNode);
       continue;
     }
 
-    const sourceChild = getElementOfType(sourceElement, childElement.tagName);
+    const sourceChild = getElementOfType(sourceElement, childNode.tagName);
     if (sourceChild) {
       // There is a corresponding element in the source, let's use it.
       sourceElement.removeChild(sourceChild);
-      overlay(sourceChild, childElement);
+      overlay(sourceChild, childNode);
       result.appendChild(sourceChild);
       continue;
     }
 
-    if (isElementAllowed(childElement)) {
-      const sanitizedChild = childElement.ownerDocument.createElement(
-        childElement.nodeName);
-      overlay(sanitizedChild, childElement);
+    if (isElementAllowed(childNode)) {
+      const sanitizedChild = childNode.ownerDocument.createElement(
+        childNode.nodeName);
+      overlay(sanitizedChild, childNode);
       result.appendChild(sanitizedChild);
       continue;
     }
@@ -130,7 +129,7 @@ function overlay(sourceElement, translationElement) {
     // Otherwise just take this child's textContent.
     result.appendChild(
       translationElement.ownerDocument.createTextNode(
-        childElement.textContent));
+        childNode.textContent));
   }
 
   // Clear `sourceElement` and append `result` which by this time contains
@@ -143,7 +142,7 @@ function overlay(sourceElement, translationElement) {
   // XXX Attributes previously set here for another language should be
   // cleared if a new language doesn't use them; https://bugzil.la/922577
   if (translationElement.attributes) {
-    for (k = 0, attr; (attr = translationElement.attributes[k]); k++) {
+    for (const attr of Array.from(translationElement.attributes)) {
       if (isAttrAllowed(attr, sourceElement)) {
         sourceElement.setAttribute(attr.name, attr.value);
       }
