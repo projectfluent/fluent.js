@@ -1,10 +1,10 @@
 import overlayElement from './overlay';
 import Localization from './localization';
 
-const l10nIdAttrName = 'data-l10n-id';
-const l10nArgsAttrName = 'data-l10n-args';
+const L10NID_ATTR_NAME = 'data-l10n-id';
+const L10NARGS_ATTR_NAME = 'data-l10n-args';
 
-const l10nElementQuery = `[${l10nIdAttrName}]`;
+const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
 
 /**
  * The `DOMLocalization` class is responsible for fetching resources and
@@ -36,7 +36,7 @@ export default class DOMLocalization extends Localization {
       characterData: false,
       childList: true,
       subtree: true,
-      attributeFilter: [l10nIdAttrName, l10nArgsAttrName]
+      attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME]
     };
   }
 
@@ -81,11 +81,11 @@ export default class DOMLocalization extends Localization {
    * @returns {Element}
    */
   setAttributes(element, id, args) {
-    element.setAttribute(l10nIdAttrName, id);
+    element.setAttribute(L10NID_ATTR_NAME, id);
     if (args) {
-      element.setAttribute(l10nArgsAttrName, JSON.stringify(args));
+      element.setAttribute(L10NARGS_ATTR_NAME, JSON.stringify(args));
     } else {
-      element.removeAttribute(l10nArgsAttrName);
+      element.removeAttribute(L10NARGS_ATTR_NAME);
     }
     return element;
   }
@@ -105,8 +105,8 @@ export default class DOMLocalization extends Localization {
    */
   getAttributes(element) {
     return {
-      id: element.getAttribute(l10nIdAttrName),
-      args: JSON.parse(element.getAttribute(l10nArgsAttrName) || null)
+      id: element.getAttribute(L10NID_ATTR_NAME),
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
     };
   }
 
@@ -193,7 +193,7 @@ export default class DOMLocalization extends Localization {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
                 this.translateFragment(addedNode);
-              } else if (addedNode.hasAttribute(l10nIdAttrName)) {
+              } else if (addedNode.hasAttribute(L10NID_ATTR_NAME)) {
                 this.translateElement(addedNode);
               }
             }
@@ -266,10 +266,10 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   getTranslatables(element) {
-    const nodes = Array.from(element.querySelectorAll(l10nElementQuery));
+    const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
 
     if (typeof element.hasAttribute === 'function' &&
-        element.hasAttribute(l10nIdAttrName)) {
+        element.hasAttribute(L10NID_ATTR_NAME)) {
       nodes.push(element);
     }
 
@@ -286,8 +286,8 @@ export default class DOMLocalization extends Localization {
    */
   getKeysForElement(element) {
     return [
-      element.getAttribute(l10nIdAttrName),
-      JSON.parse(element.getAttribute(l10nArgsAttrName) || null)
+      element.getAttribute(L10NID_ATTR_NAME),
+      JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
     ];
   }
 }
