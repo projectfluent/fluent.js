@@ -71,8 +71,12 @@ export default function overlayElement(element, translation) {
     return;
   }
 
+  const explicitlyAllowed = element.hasAttribute('data-l10n-attrs')
+    ? element.getAttribute('data-l10n-attrs').split(',').map(i => i.trim())
+    : null;
+
   for (const [name, val] of translation.attrs) {
-    if (isAttrAllowed({ name }, element)) {
+    if (isAttrAllowed({ name }, element, explicitlyAllowed)) {
       element.setAttribute(name, val);
     }
   }
@@ -172,12 +176,20 @@ function isElementAllowed(element) {
  * DOM attributes, or when the translation has traits which map to DOM
  * attributes.
  *
+ * `explicitlyAllowed` can be passed as a list of attributes explicitly
+ * allowed on this element.
+ *
  * @param   {{name: string}} attr
  * @param   {Element}        element
+ * @param   {Array}          explicitlyAllowed
  * @returns {boolean}
  * @private
  */
-function isAttrAllowed(attr, element) {
+function isAttrAllowed(attr, element, explicitlyAllowed = null) {
+  if (explicitlyAllowed && explicitlyAllowed.includes(attr)) {
+    return true;
+  }
+
   const allowed = ALLOWED_ATTRIBUTES[element.namespaceURI];
   if (!allowed) {
     return false;
