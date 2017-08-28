@@ -45,25 +45,27 @@ const ALLOWED_ATTRIBUTES = {
 /**
  * Overlay translation onto a DOM element.
  *
- * @param   {Element}      element
- * @param   {string}       translation
+ * @param   {Element} targetElement
+ * @param   {string|Object} translation
  * @private
  */
-export default function overlayElement(element, translation) {
+export default function overlayElement(targetElement, translation) {
   const value = translation.value;
 
   if (typeof value === 'string') {
     if (!reOverlay.test(value)) {
       // If the translation doesn't contain any markup skip the overlay logic.
-      element.textContent = value;
+      targetElement.textContent = value;
     } else {
-      // Else start with an inert template element and move its children into
-      // `element` but such that `element`'s own children are not replaced.
-      const tmpl = element.ownerDocument.createElementNS(
+      // Else parse the translation's HTML using an inert template element,
+      // sanitize it and replace the targetElement's content.
+      const templateElement = targetElement.ownerDocument.createElementNS(
         'http://www.w3.org/1999/xhtml', 'template');
-      tmpl.innerHTML = value;
-      // Overlay the node with the DocumentFragment.
-      overlay(element, tmpl.content);
+      templateElement.innerHTML = value;
+      targetElement.appendChild(
+        // The targetElement will be cleared at the end of sanitization.
+        sanitizeUsing(templateElement.content, targetElement)
+      );
     }
   }
 
@@ -71,87 +73,90 @@ export default function overlayElement(element, translation) {
     return;
   }
 
-  const explicitlyAllowed = element.hasAttribute('data-l10n-attrs')
-    ? element.getAttribute('data-l10n-attrs').split(',').map(i => i.trim())
+  const explicitlyAllowed = targetElement.hasAttribute('data-l10n-attrs')
+    ? targetElement.getAttribute('data-l10n-attrs')
+      .split(',').map(i => i.trim())
     : null;
 
   for (const [name, val] of translation.attrs) {
-    if (isAttrNameAllowed(name, element, explicitlyAllowed)) {
-      element.setAttribute(name, val);
+    if (isAttrNameAllowed(name, targetElement, explicitlyAllowed)) {
+      targetElement.setAttribute(name, val);
     }
   }
 }
 
 /**
- * The goal of overlay is to move the children of `translationElement`
- * into `sourceElement` such that `sourceElement`'s own children are not
- * replaced, but only have their text nodes and their attributes modified.
+ * Sanitize `translationFragment` using `sourceElement` to add functional
+ * HTML attributes to children.  `sourceElement` will have all its child nodes
+ * removed.
  *
- * We want to make it possible for localizers to apply text-level semantics to
- * the translations and make use of HTML entities. At the same time, we
- * don't trust translations so we need to filter unsafe elements and
- * attributes out and we don't want to break the Web by replacing elements to
- * which third-party code might have created references (e.g. two-way
- * bindings in MVC frameworks).
+ * The sanitization is conducted according to the following rules:
  *
+ *   - Allow text nodes.
+ *   - Replace forbidden children with their textContent.
+ *   - Remove forbidden attributes from allowed children.
+ *
+ * Additionally when a child of the same type is present in `sourceElement` its
+ * attributes will be merged into the translated child.  Whitelisted attributes
+ * of the translated child will then overwrite the ones present in the source.
+ *
+ * The overlay logic is subject to the following limitations:
+ *
+ *   - Children are always cloned.  Event handlers attached to them are lost.
+ *   - Nested HTML in source and in translations is not supported.
+ *   - Multiple children of the same type will be matched in order.
+ *
+ * @param {DocumentFragment} translationFragment
  * @param {Element} sourceElement
- * @param {Element} translationElement
  * @private
  */
-function overlay(sourceElement, translationElement) {
-  const result = translationElement.ownerDocument.createDocumentFragment();
-
-  // Take one node from translationElement at a time and check it against
+function sanitizeUsing(translationFragment, sourceElement) {
+  // Take one node from translationFragment at a time and check it against
   // the allowed list or try to match it with a corresponding element
   // in the source.
-  let childNode;
-  while ((childNode = translationElement.childNodes[0])) {
-    translationElement.removeChild(childNode);
+  for (const childNode of translationFragment.childNodes) {
 
     if (childNode.nodeType === childNode.TEXT_NODE) {
-      result.appendChild(childNode);
       continue;
     }
 
-    const sourceChild = getElementOfType(sourceElement, childNode.localName);
-    if (sourceChild) {
-      // There is a corresponding element in the source, let's use it.
-      sourceElement.removeChild(sourceChild);
-      overlay(sourceChild, childNode);
-      result.appendChild(sourceChild);
+    // If the child is forbidden just take its textContent.
+    if (!isElementAllowed(childNode)) {
+      const text = translationFragment.ownerDocument.createTextNode(
+        childNode.textContent
+      );
+      translationFragment.replaceChild(text, childNode);
       continue;
     }
 
-    if (isElementAllowed(childNode)) {
-      const sanitizedChild = childNode.ownerDocument.createElement(
-        childNode.localName);
-      overlay(sanitizedChild, childNode);
-      result.appendChild(sanitizedChild);
-      continue;
-    }
 
-    // Otherwise just take this child's textContent.
-    result.appendChild(
-      translationElement.ownerDocument.createTextNode(
-        childNode.textContent));
-  }
+    // If a child of the same type exists in sourceElement, use it as the base
+    // for the resultChild.  This also removes the child from sourceElement.
+    const sourceChild = shiftNamedElement(sourceElement, childNode.localName);
 
-  // Clear `sourceElement` and append `result` which by this time contains
-  // `sourceElement`'s original children, overlayed with translation.
-  sourceElement.textContent = '';
-  sourceElement.appendChild(result);
+    const mergedChild = sourceChild
+      // Shallow-clone the sourceChild to remove all childNodes.
+      ? sourceChild.cloneNode(false)
+      // Create a fresh element as a way to remove all forbidden attributes.
+      : childNode.ownerDocument.createElement(childNode.localName);
 
-  // If we're overlaying a nested element, translate the allowed
-  // attributes; top-level attributes are handled in `overlayElement`.
-  // XXX Attributes previously set here for another language should be
-  // cleared if a new language doesn't use them; https://bugzil.la/922577
-  if (translationElement.attributes) {
-    for (const attr of Array.from(translationElement.attributes)) {
-      if (isAttrNameAllowed(attr.name, sourceElement)) {
-        sourceElement.setAttribute(attr.name, attr.value);
+    // Explicitly discard nested HTML by serializing childNode to a TextNode.
+    mergedChild.textContent = childNode.textContent;
+
+    for (const attr of Array.from(childNode.attributes)) {
+      if (isAttrNameAllowed(attr.name, childNode)) {
+        mergedChild.setAttribute(attr.name, attr.value);
       }
     }
+
+    translationFragment.replaceChild(mergedChild, childNode);
   }
+
+  // SourceElement might have been already modified by shiftNamedElement.
+  // Let's clear it to make sure other code doesn't rely on random leftovers.
+  sourceElement.textContent = '';
+
+  return translationFragment;
 }
 
 /**
@@ -226,17 +231,17 @@ function isAttrNameAllowed(name, element, explicitlyAllowed = null) {
 }
 
 /**
- * Get the first child of context of the given type.
+ * Remove and return the first child of the given type.
  *
- * @param {DOMFragment} context
+ * @param {DOMFragment} element
  * @param {string}      localName
  * @returns {Element | null}
  * @private
  */
-function getElementOfType(context, localName) {
-  for (const child of context.children) {
-    if (child.nodeType === child.ELEMENT_NODE &&
-        child.localName === localName) {
+function shiftNamedElement(element, localName) {
+  for (const child of element.children) {
+    if (child.localName === localName) {
+      element.removeChild(child);
       return child;
     }
   }
