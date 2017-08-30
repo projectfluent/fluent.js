@@ -20,7 +20,7 @@ const ALLOWED_ATTRIBUTES = {
     global: ['title', 'aria-label', 'aria-valuetext', 'aria-moz-hint'],
     a: ['download'],
     area: ['download', 'alt'],
-    // value is special-cased in isAttrAllowed
+    // value is special-cased in isAttrNameAllowed
     input: ['alt', 'placeholder'],
     menuitem: ['label'],
     menu: ['label'],
@@ -76,7 +76,7 @@ export default function overlayElement(element, translation) {
     : null;
 
   for (const [name, val] of translation.attrs) {
-    if (isAttrAllowed({ name }, element, explicitlyAllowed)) {
+    if (isAttrNameAllowed(name, element, explicitlyAllowed)) {
       element.setAttribute(name, val);
     }
   }
@@ -113,7 +113,7 @@ function overlay(sourceElement, translationElement) {
       continue;
     }
 
-    const sourceChild = getElementOfType(sourceElement, childNode.tagName);
+    const sourceChild = getElementOfType(sourceElement, childNode.localName);
     if (sourceChild) {
       // There is a corresponding element in the source, let's use it.
       sourceElement.removeChild(sourceChild);
@@ -124,7 +124,7 @@ function overlay(sourceElement, translationElement) {
 
     if (isElementAllowed(childNode)) {
       const sanitizedChild = childNode.ownerDocument.createElement(
-        childNode.nodeName);
+        childNode.localName);
       overlay(sanitizedChild, childNode);
       result.appendChild(sanitizedChild);
       continue;
@@ -147,7 +147,7 @@ function overlay(sourceElement, translationElement) {
   // cleared if a new language doesn't use them; https://bugzil.la/922577
   if (translationElement.attributes) {
     for (const attr of Array.from(translationElement.attributes)) {
-      if (isAttrAllowed(attr, sourceElement)) {
+      if (isAttrNameAllowed(attr.name, sourceElement)) {
         sourceElement.setAttribute(attr.name, attr.value);
       }
     }
@@ -166,7 +166,7 @@ function overlay(sourceElement, translationElement) {
  */
 function isElementAllowed(element) {
   const allowed = ALLOWED_ELEMENTS[element.namespaceURI];
-  return allowed && allowed.includes(element.tagName.toLowerCase());
+  return allowed && allowed.includes(element.localName);
 }
 
 /**
@@ -179,14 +179,14 @@ function isElementAllowed(element) {
  * `explicitlyAllowed` can be passed as a list of attributes explicitly
  * allowed on this element.
  *
- * @param   {{name: string}} attr
+ * @param   {string}         name
  * @param   {Element}        element
  * @param   {Array}          explicitlyAllowed
  * @returns {boolean}
  * @private
  */
-function isAttrAllowed(attr, element, explicitlyAllowed = null) {
-  if (explicitlyAllowed && explicitlyAllowed.includes(attr)) {
+function isAttrNameAllowed(name, element, explicitlyAllowed = null) {
+  if (explicitlyAllowed && explicitlyAllowed.includes(name)) {
     return true;
   }
 
@@ -195,8 +195,8 @@ function isAttrAllowed(attr, element, explicitlyAllowed = null) {
     return false;
   }
 
-  const attrName = attr.name.toLowerCase();
-  const elemName = element.tagName.toLowerCase();
+  const attrName = name.toLowerCase();
+  const elemName = element.localName;
 
   // Is it a globally safe attribute?
   if (allowed.global.includes(attrName)) {
@@ -229,14 +229,14 @@ function isAttrAllowed(attr, element, explicitlyAllowed = null) {
  * Get the first child of context of the given type.
  *
  * @param {DOMFragment} context
- * @param {String}      tagName
+ * @param {string}      localName
  * @returns {Element | null}
  * @private
  */
-function getElementOfType(context, tagName) {
+function getElementOfType(context, localName) {
   for (const child of context.children) {
     if (child.nodeType === child.ELEMENT_NODE &&
-        child.tagName.toLowerCase() === tagName.toLowerCase()) {
+        child.localName === localName) {
       return child;
     }
   }
