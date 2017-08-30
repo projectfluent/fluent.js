@@ -111,16 +111,24 @@ export default class DOMLocalization extends Localization {
   }
 
   /**
-   * Add `root` to the list of roots managed by this `DOMLocalization`.
+   * Add `newRoot` to the list of roots managed by this `DOMLocalization`.
    *
    * Additionally, if this `DOMLocalization` has an observer, start observing
-   * `root` in order to translate mutations in it.
+   * `newRoot` in order to translate mutations in it.
    *
-   * @param {Element}      root - Root to observe.
+   * @param {Element}      newRoot - Root to observe.
    */
-  connectRoot(root) {
-    this.roots.add(root);
-    this.mutationObserver.observe(root, this.observerConfig);
+  connectRoot(newRoot) {
+    for (const root of this.roots) {
+      if (root === newRoot ||
+          root.contains(newRoot) ||
+          newRoot.contains(root)) {
+        throw new Error('Cannot add a root that overlaps with existing root.');
+      }
+    }
+
+    this.roots.add(newRoot);
+    this.mutationObserver.observe(newRoot, this.observerConfig);
   }
 
   /**
