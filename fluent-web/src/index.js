@@ -73,7 +73,7 @@ function * generateMessages(resourceIds) {
 
 const resourceIds = getResourceLinks(document.head);
 document.l10n = new DOMLocalization(
-  MutationObserver, resourceIds, generateMessages
+  window, resourceIds, generateMessages
 );
 window.addEventListener('languagechange', document.l10n);
 
