@@ -240,3 +240,40 @@ suite('Overlay DOM elements', function() {
       'FOO <a href="bar" title="BAZ">BAZ</a>');
   });
 });
+
+suite('Retranslation', function() {
+  // XXX https://bugzilla.mozilla.org/show_bug.cgi?id=922577
+  test('leaking attribute', function() {
+    const element = elem('div')`Foo`;
+    const translationA = {
+      value: 'FOO A',
+      attrs: [
+        ['title', 'TITLE A']
+      ]
+    };
+    const translationB = {
+      value: 'FOO B',
+      attrs: null
+    };
+
+    overlayElement(element, translationA);
+    assert.equal(element.outerHTML,
+      '<div title="TITLE A">FOO A</div>');
+    overlayElement(element, translationB);
+    assert.equal(element.outerHTML,
+      '<div title="TITLE A">FOO B</div>');
+  });
+
+  test('forbidden attribute', function() {
+    const element = elem('input')``;
+    const translation = {
+      value: null,
+      attrs: [
+        ['disabled', 'DISABLED']
+      ]
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.outerHTML, '<input>');
+  });
+});
