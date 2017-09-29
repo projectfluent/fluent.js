@@ -79,9 +79,22 @@ suite('Filtering attributes in translation', function() {
     assert.equal(element.innerHTML,
       'FOO <a title="BAR">BAR</a>');
   });
+
+  test('attributes of source children do not leak', function() {
+    const element = elem('div')`
+      <a href="foo" title="Foo">Foo</a>`;
+    const translation = {
+      value: '<a>FOO</a>',
+      attrs: null
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.innerHTML,
+      '<a href="foo">FOO</a>');
+  });
 });
 
-suite('Filtering attributes on the main elment', function() {
+suite('Filtering top-level attributes', function() {
   test('allowed attribute', function() {
     const element = elem('div')``;
     const translation = {
@@ -108,10 +121,23 @@ suite('Filtering attributes on the main elment', function() {
     overlayElement(element, translation);
     assert.equal(element.outerHTML, '<input>');
   });
+
+  test('attributes of the source element do not leak', function() {
+    const element = elem('div')`Foo`;
+    element.setAttribute('title', 'Title');
+
+    const translation = {
+      value: 'FOO',
+      attrs: null
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.outerHTML,
+      '<div>FOO</div>');
+  });
 });
 
 suite('Overlay DOM elements', function() {
-
   test('string value', function() {
     const element = elem('div')`Foo`;
     const translation = {
@@ -133,7 +159,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      'FOO <a href="bar" title="BAZ">BAZ</a>');
+      'FOO <a title="BAZ" href="bar">BAZ</a>');
   });
 
   test('one child with own attributes', function() {
@@ -146,7 +172,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      'FOO <a href="bar" title="BAZ">BAZ</a>');
+      'FOO <a title="BAZ" href="bar">BAZ</a>');
   });
 
   test('two children of the same type', function() {
@@ -159,7 +185,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      '<a href="foo" title="FOO">FOO</a> <a href="bar" title="BAR">BAR</a>');
+      '<a title="FOO" href="foo">FOO</a> <a title="BAR" href="bar">BAR</a>');
   });
 
   test('two children of different types in order', function() {
@@ -172,7 +198,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      '<a href="foo" title="FOO">FOO</a> <em class="bar">BAR</em>');
+      '<a title="FOO" href="foo">FOO</a> <em class="bar">BAR</em>');
   });
 
   test('two children of different types not in order', function() {
@@ -185,7 +211,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      '<em class="bar">BAR</em> <a href="foo" title="FOO">FOO</a>');
+      '<em class="bar">BAR</em> <a title="FOO" href="foo">FOO</a>');
   });
 
   test('HTML missing in translation', function() {
@@ -211,7 +237,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      'FOO <a href="bar" title="BAZ">BAZ</a>');
+      'FOO <a title="BAZ" href="bar">BAZ</a>');
   });
 
   test('nested HTML in translation', function() {
@@ -224,7 +250,7 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      'FOO <a href="bar" title="BAZ">BAZ</a>');
+      'FOO <a title="BAZ" href="bar">BAZ</a>');
   });
 
   test('nested HTML in both', function() {
@@ -237,13 +263,13 @@ suite('Overlay DOM elements', function() {
 
     overlayElement(element, translation);
     assert.equal(element.innerHTML,
-      'FOO <a href="bar" title="BAZ">BAZ</a>');
+      'FOO <a title="BAZ" href="bar">BAZ</a>');
   });
 });
 
 suite('Retranslation', function() {
   // XXX https://bugzilla.mozilla.org/show_bug.cgi?id=922577
-  test('leaking attribute', function() {
+  test('top-level attributes do not leak', function() {
     const element = elem('div')`Foo`;
     const translationA = {
       value: 'FOO A',
@@ -261,19 +287,45 @@ suite('Retranslation', function() {
       '<div title="TITLE A">FOO A</div>');
     overlayElement(element, translationB);
     assert.equal(element.outerHTML,
-      '<div title="TITLE A">FOO B</div>');
+      '<div>FOO B</div>');
   });
 
-  test('forbidden attribute', function() {
-    const element = elem('input')``;
-    const translation = {
-      value: null,
-      attrs: [
-        ['disabled', 'DISABLED']
-      ]
+  test('attributes of children do not leak', function() {
+    const element = elem('div')`
+      <a href="foo">Foo</a>`;
+    const translationA = {
+      value: '<a title="FOO A">FOO A</em>',
+      attrs: null
+    };
+    const translationB = {
+      value: '<a>FOO B</em>',
+      attrs: null
     };
 
-    overlayElement(element, translation);
-    assert.equal(element.outerHTML, '<input>');
+    overlayElement(element, translationA);
+    assert.equal(element.innerHTML,
+      '<a title="FOO A" href="foo">FOO A</a>');
+    overlayElement(element, translationB);
+    assert.equal(element.innerHTML,
+      '<a href="foo">FOO B</a>');
+  });
+
+  test('attributes of inserted children do not leak', function() {
+    const element = elem('div')`Foo`;
+    const translationA = {
+      value: 'FOO <em title="A">A</em>',
+      attrs: null
+    };
+    const translationB = {
+      value: 'FOO <em>B</em>',
+      attrs: null
+    };
+
+    overlayElement(element, translationA);
+    assert.equal(element.innerHTML,
+      'FOO <em title="A">A</em>');
+    overlayElement(element, translationB);
+    assert.equal(element.innerHTML,
+      'FOO <em>B</em>');
   });
 });
