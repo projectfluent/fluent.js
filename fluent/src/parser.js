@@ -210,7 +210,7 @@ class RuntimeParser {
    */
   skipBlankLines() {
     while (true) {
-      let ptr = this._index;
+      const ptr = this._index;
 
       this.skipInlineWS();
 
@@ -372,9 +372,9 @@ class RuntimeParser {
         // around blank lines and add them to the buffer
         // but only if the blank lines are in the middle
         // of the string.
-        let ptr = this._index;
+        const blankLinesStart = this._index;
         this.skipBlankLines();
-        let ptr2 = this._index;
+        const blankLinesEnd = this._index;
 
 
         if (this._source[this._index] !== ' ') {
@@ -390,7 +390,7 @@ class RuntimeParser {
           break;
         }
 
-        buffer += this._source.substring(ptr, ptr2);
+        buffer += this._source.substring(blankLinesStart, blankLinesEnd);
 
         if (buffer.length || content.length) {
           buffer += '\n';

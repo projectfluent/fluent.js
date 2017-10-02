@@ -33,7 +33,7 @@ export class FTLParserStream extends ParserStream {
 
   peekSkipBlankLines() {
     while (true) {
-      let lineStart = this.getPeekIndex();
+      const lineStart = this.getPeekIndex();
 
       this.peekInlineWS();
 
