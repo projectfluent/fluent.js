@@ -197,6 +197,7 @@ export default class FluentParser {
     if (ps.currentIs('=')) {
       ps.next();
       ps.skipInlineWS();
+      ps.skipBlankLines();
 
       pattern = this.getPattern(ps);
     }
@@ -242,6 +243,7 @@ export default class FluentParser {
 
     while (true) {
       ps.expectChar('\n');
+      ps.skipBlankLines();
       ps.skipInlineWS();
 
       const attr = this.getAttribute(ps);
@@ -265,6 +267,7 @@ export default class FluentParser {
 
     while (true) {
       ps.expectChar('\n');
+      ps.skipBlankLines();
       ps.skipInlineWS();
 
       const tag = this.getTag(ps);
@@ -341,6 +344,7 @@ export default class FluentParser {
 
     while (true) {
       ps.expectChar('\n');
+      ps.skipBlankLines();
       ps.skipInlineWS();
 
       const variant = this.getVariant(ps, hasDefault);
@@ -419,7 +423,7 @@ export default class FluentParser {
     ps.skipInlineWS();
 
     // Special-case: trim leading whitespace and newlines.
-    if (ps.isPeekNextLinePattern()) {
+    if (ps.isPeekNextNonBlankLinePattern()) {
       ps.skipBlankLines();
       ps.skipInlineWS();
     }
@@ -429,7 +433,7 @@ export default class FluentParser {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === '\n' && !ps.isPeekNextLinePattern()) {
+      if (ch === '\n' && !ps.isPeekNextNonBlankLinePattern()) {
         break;
       }
 
@@ -456,7 +460,7 @@ export default class FluentParser {
       }
 
       if (ch === '\n') {
-        if (!ps.isPeekNextLinePattern()) {
+        if (!ps.isPeekNextNonBlankLinePattern()) {
           return new AST.TextElement(buffer);
         }
 
@@ -499,6 +503,7 @@ export default class FluentParser {
       const variants = this.getVariants(ps);
 
       ps.expectChar('\n');
+      ps.skipBlankLines();
       ps.expectChar(' ');
       ps.skipInlineWS();
 
@@ -523,11 +528,13 @@ export default class FluentParser {
 
         const variants = this.getVariants(ps);
 
+
         if (variants.length === 0) {
           throw new ParseError('E0011');
         }
 
         ps.expectChar('\n');
+        ps.skipBlankLines();
         ps.expectChar(' ');
         ps.skipInlineWS();
 

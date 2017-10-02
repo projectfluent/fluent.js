@@ -31,6 +31,21 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
+  peekSkipBlankLines() {
+    while (true) {
+      let lineStart = this.getPeekIndex();
+
+      this.peekInlineWS();
+
+      if (this.currentPeekIs('\n')) {
+        this.peek();
+      } else {
+        this.resetPeek(lineStart);
+        break;
+      }
+    }
+  }
+
   skipInlineWS() {
     while (this.ch) {
       if (!includes(INLINE_WS, this.ch)) {
@@ -94,6 +109,8 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    this.peekSkipBlankLines();
+
     const ptr = this.getPeekIndex();
 
     this.peekInlineWS();
@@ -122,6 +139,8 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    this.peekSkipBlankLines();
+
     const ptr = this.getPeekIndex();
 
     this.peekInlineWS();
@@ -140,12 +159,14 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLinePattern() {
+  isPeekNextNonBlankLinePattern() {
     if (!this.currentPeekIs('\n')) {
       return false;
     }
 
     this.peek();
+
+    this.peekSkipBlankLines();
 
     const ptr = this.getPeekIndex();
 
@@ -175,6 +196,8 @@ export class FTLParserStream extends ParserStream {
     }
 
     this.peek();
+
+    this.peekSkipBlankLines();
 
     const ptr = this.getPeekIndex();
 

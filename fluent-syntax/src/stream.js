@@ -102,9 +102,16 @@ export class ParserStream {
     return ret === ch;
   }
 
-  resetPeek() {
-    this.peekIndex = this.index;
-    this.peekEnd = this.iterEnd;
+  resetPeek(pos = false) {
+    if (pos === false) {
+      this.peekIndex = this.index;
+      this.peekEnd = this.iterEnd;
+    } else {
+      if (pos < this.peekIndex) {
+        this.peekEnd = false;
+      }
+      this.peekIndex = pos;
+    }
   }
 
   skipToPeek() {
