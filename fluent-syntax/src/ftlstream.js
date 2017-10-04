@@ -109,6 +109,25 @@ export class FTLParserStream extends ParserStream {
     return ((cc >= 48 && cc <= 57) || cc === 45); // 0-9
   }
 
+  isPeekNextLineComment() {
+    if (!this.currentPeekIs('\n')) {
+      return false;
+    }
+
+    this.peek();
+
+    if (this.currentPeekIs('/')) {
+      this.peek();
+      if (this.currentPeekIs('/')) {
+        this.resetPeek();
+        return true;
+      }
+    }
+
+    this.resetPeek();
+    return false;
+  }
+
   isPeekNextLineVariantStart() {
     if (!this.currentPeekIs('\n')) {
       return false;
