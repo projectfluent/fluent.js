@@ -242,9 +242,7 @@ export default class FluentParser {
     const attrs = [];
 
     while (true) {
-      ps.expectChar('\n');
-      ps.skipBlankLines();
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       const attr = this.getAttribute(ps);
       attrs.push(attr);
