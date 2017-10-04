@@ -90,11 +90,7 @@ export default class FluentParser {
     const entryStartPos = ps.getIndex();
 
     try {
-      const entry = this.getEntry(ps);
-      if (this.withSpans) {
-        entry.addSpan(entryStartPos, ps.getIndex());
-      }
-      return entry;
+      return this.getEntry(ps);
     } catch (err) {
       if (!(err instanceof ParseError)) {
         throw err;
@@ -122,6 +118,11 @@ export default class FluentParser {
 
     if (ps.currentIs('/')) {
       comment = this.getComment(ps);
+
+      // The Comment content doesn't include the trailing newline. Consume
+      // this newline here to be ready for the next entry.  undefined stands
+      // for EOF.
+      ps.expectChar(ps.current() ? '\n' : undefined);
     }
 
     if (ps.currentIs('[')) {
@@ -151,11 +152,10 @@ export default class FluentParser {
         content += ch;
       }
 
-      ps.next();
-
-      if (ps.currentIs('/')) {
+      if (ps.isPeekNextLineComment()) {
         content += '\n';
         ps.next();
+        ps.expectChar('/');
         ps.expectChar('/');
         ps.takeCharIf(' ');
       } else {
