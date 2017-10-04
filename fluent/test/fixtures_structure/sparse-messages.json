@@ -1,0 +1,48 @@
+{
+  "key": "Value",
+  "key2": {
+    "attrs": {
+      "attr": "Attribute"
+    },
+    "val": null
+  },
+  "key3": {
+    "val": "Value\nValue2\n\n\nValue 4\nValue3",
+    "attrs": {
+      "attr2": "Attr 2"
+    }
+  },
+  "key4": {
+    "val": "Value",
+    "tags": [
+      "tag1",
+      "tag2"
+    ]
+  },
+  "key5": "Value 5",
+  "key6": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": null,
+        "vars": [
+          {
+            "key": {
+              "type": "sym",
+              "name": "one"
+            },
+            "val": "One"
+          },
+          {
+            "key": {
+              "type": "sym",
+              "name": "two"
+            },
+            "val": "Two"
+          }
+        ],
+        "def": 1
+      }
+    ]
+  }
+}

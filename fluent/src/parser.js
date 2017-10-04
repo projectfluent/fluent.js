@@ -131,6 +131,8 @@ class RuntimeParser {
       this._index++;
 
       this.skipInlineWS();
+      this.skipBlankLines();
+      this.skipInlineWS();
 
       val = this.getPattern();
     } else {
@@ -141,6 +143,7 @@ class RuntimeParser {
 
     if (ch === '\n') {
       this._index++;
+      this.skipBlankLines();
       this.skipInlineWS();
       ch = this._source[this._index];
     }
@@ -197,6 +200,26 @@ class RuntimeParser {
     let ch = this._source[this._index];
     while (ch === ' ' || ch === '\t') {
       ch = this._source[++this._index];
+    }
+  }
+
+  /**
+   * Skip blank lines.
+   *
+   * @private
+   */
+  skipBlankLines() {
+    while (true) {
+      const ptr = this._index;
+
+      this.skipInlineWS();
+
+      if (this._source[ptr] === '\n') {
+        this._index += 1;
+      } else {
+        this._index = ptr;
+        break;
+      }
     }
   }
 
@@ -341,9 +364,19 @@ class RuntimeParser {
 
     while (this._index < this._length) {
       // This block handles multi-line strings combining strings separated
-      // by new line and `|` character at the beginning of the next one.
+      // by new line.
       if (ch === '\n') {
         this._index++;
+
+        // We want to capture the start and end pointers
+        // around blank lines and add them to the buffer
+        // but only if the blank lines are in the middle
+        // of the string.
+        const blankLinesStart = this._index;
+        this.skipBlankLines();
+        const blankLinesEnd = this._index;
+
+
         if (this._source[this._index] !== ' ') {
           break;
         }
@@ -356,6 +389,8 @@ class RuntimeParser {
             this._source[this._index] === '.') {
           break;
         }
+
+        buffer += this._source.substring(blankLinesStart, blankLinesEnd);
 
         if (buffer.length || content.length) {
           buffer += '\n';

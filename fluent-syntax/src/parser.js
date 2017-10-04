@@ -197,6 +197,7 @@ export default class FluentParser {
     if (ps.currentIs('=')) {
       ps.next();
       ps.skipInlineWS();
+      ps.skipBlankLines();
 
       pattern = this.getPattern(ps);
     }
@@ -241,8 +242,7 @@ export default class FluentParser {
     const attrs = [];
 
     while (true) {
-      ps.expectChar('\n');
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       const attr = this.getAttribute(ps);
       attrs.push(attr);
@@ -264,8 +264,7 @@ export default class FluentParser {
     const tags = [];
 
     while (true) {
-      ps.expectChar('\n');
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       const tag = this.getTag(ps);
       tags.push(tag);
@@ -340,8 +339,7 @@ export default class FluentParser {
     let hasDefault = false;
 
     while (true) {
-      ps.expectChar('\n');
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       const variant = this.getVariant(ps, hasDefault);
 
@@ -419,7 +417,7 @@ export default class FluentParser {
     ps.skipInlineWS();
 
     // Special-case: trim leading whitespace and newlines.
-    if (ps.isPeekNextLinePattern()) {
+    if (ps.isPeekNextNonBlankLinePattern()) {
       ps.skipBlankLines();
       ps.skipInlineWS();
     }
@@ -429,7 +427,7 @@ export default class FluentParser {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === '\n' && !ps.isPeekNextLinePattern()) {
+      if (ch === '\n' && !ps.isPeekNextNonBlankLinePattern()) {
         break;
       }
 
@@ -456,7 +454,7 @@ export default class FluentParser {
       }
 
       if (ch === '\n') {
-        if (!ps.isPeekNextLinePattern()) {
+        if (!ps.isPeekNextNonBlankLinePattern()) {
           return new AST.TextElement(buffer);
         }
 
@@ -498,9 +496,7 @@ export default class FluentParser {
     if (ps.isPeekNextLineVariantStart()) {
       const variants = this.getVariants(ps);
 
-      ps.expectChar('\n');
-      ps.expectChar(' ');
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       return new AST.SelectExpression(null, variants);
     }
@@ -523,13 +519,12 @@ export default class FluentParser {
 
         const variants = this.getVariants(ps);
 
+
         if (variants.length === 0) {
           throw new ParseError('E0011');
         }
 
-        ps.expectChar('\n');
-        ps.expectChar(' ');
-        ps.skipInlineWS();
+        ps.expectIndent();
 
         return new AST.SelectExpression(selector, variants);
       }

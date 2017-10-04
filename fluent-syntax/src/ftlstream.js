@@ -31,6 +31,21 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
+  peekBlankLines() {
+    while (true) {
+      const lineStart = this.getPeekIndex();
+
+      this.peekInlineWS();
+
+      if (this.currentPeekIs('\n')) {
+        this.peek();
+      } else {
+        this.resetPeek(lineStart);
+        break;
+      }
+    }
+  }
+
   skipInlineWS() {
     while (this.ch) {
       if (!includes(INLINE_WS, this.ch)) {
@@ -52,6 +67,13 @@ export class FTLParserStream extends ParserStream {
     }
 
     throw new ParseError('E0003', ch);
+  }
+
+  expectIndent() {
+    this.expectChar('\n');
+    this.skipBlankLines();
+    this.expectChar(' ');
+    this.skipInlineWS();
   }
 
   takeCharIf(ch) {
@@ -94,6 +116,8 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    this.peekBlankLines();
+
     const ptr = this.getPeekIndex();
 
     this.peekInlineWS();
@@ -122,6 +146,8 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
+    this.peekBlankLines();
+
     const ptr = this.getPeekIndex();
 
     this.peekInlineWS();
@@ -140,12 +166,14 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLinePattern() {
+  isPeekNextNonBlankLinePattern() {
     if (!this.currentPeekIs('\n')) {
       return false;
     }
 
     this.peek();
+
+    this.peekBlankLines();
 
     const ptr = this.getPeekIndex();
 
@@ -175,6 +203,8 @@ export class FTLParserStream extends ParserStream {
     }
 
     this.peek();
+
+    this.peekBlankLines();
 
     const ptr = this.getPeekIndex();
 
