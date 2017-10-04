@@ -364,7 +364,7 @@ class RuntimeParser {
 
     while (this._index < this._length) {
       // This block handles multi-line strings combining strings separated
-      // by new line and `|` character at the beginning of the next one.
+      // by new line.
       if (ch === '\n') {
         this._index++;
 

@@ -266,9 +266,7 @@ export default class FluentParser {
     const tags = [];
 
     while (true) {
-      ps.expectChar('\n');
-      ps.skipBlankLines();
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       const tag = this.getTag(ps);
       tags.push(tag);
@@ -343,9 +341,7 @@ export default class FluentParser {
     let hasDefault = false;
 
     while (true) {
-      ps.expectChar('\n');
-      ps.skipBlankLines();
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       const variant = this.getVariant(ps, hasDefault);
 
@@ -502,10 +498,7 @@ export default class FluentParser {
     if (ps.isPeekNextLineVariantStart()) {
       const variants = this.getVariants(ps);
 
-      ps.expectChar('\n');
-      ps.skipBlankLines();
-      ps.expectChar(' ');
-      ps.skipInlineWS();
+      ps.expectIndent();
 
       return new AST.SelectExpression(null, variants);
     }
@@ -533,10 +526,7 @@ export default class FluentParser {
           throw new ParseError('E0011');
         }
 
-        ps.expectChar('\n');
-        ps.skipBlankLines();
-        ps.expectChar(' ');
-        ps.skipInlineWS();
+        ps.expectIndent();
 
         return new AST.SelectExpression(selector, variants);
       }
