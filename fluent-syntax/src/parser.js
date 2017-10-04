@@ -68,6 +68,7 @@ export default class FluentParser {
         entries.push(entry);
       }
 
+      ps.skipInlineWS();
       ps.skipBlankLines();
     }
 
@@ -177,10 +178,6 @@ export default class FluentParser {
 
     ps.expectChar(']');
     ps.expectChar(']');
-
-    ps.skipInlineWS();
-
-    ps.expectChar('\n');
 
     return new AST.Section(symb, comment);
   }
