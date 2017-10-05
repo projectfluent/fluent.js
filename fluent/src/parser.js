@@ -131,32 +131,36 @@ class RuntimeParser {
       this._index++;
 
       this.skipInlineWS();
-      this.skipBlankLines();
-      this.skipInlineWS();
 
-      val = this.getPattern();
+      if (this._source[this._index] === '\n') {
+        this.skipBlankLines();
+        if (this._source[this._index] === ' ') {
+          this.skipInlineWS();
+          val = this.getPattern();
+        }
+      } else {
+        val = this.getPattern();
+      }
     } else {
-      this.skipWS();
+      this.skipInlineWS();
+      this.skipBlankLines();
     }
 
     ch = this._source[this._index];
 
-    if (ch === '\n') {
-      this._index++;
-      this.skipBlankLines();
+    if (ch === ' ') {
+      const lineStart = this._index;
       this.skipInlineWS();
+
       ch = this._source[this._index];
-    }
 
-    if (ch === '.') {
-      attrs = this.getAttributes();
-    }
+      this._index = lineStart;
 
-    if (ch === '#') {
-      if (attrs !== null) {
-        throw this.error('Tags cannot be added to a message with attributes.');
+      if (ch === '.') {
+        attrs = this.getAttributes();
+      } else if (ch === '#') {
+        tags = this.getTags();
       }
-      tags = this.getTags();
     }
 
     if (tags === null && attrs === null && typeof val === 'string') {
@@ -214,7 +218,7 @@ class RuntimeParser {
 
       this.skipInlineWS();
 
-      if (this._source[ptr] === '\n') {
+      if (this._source[this._index] === '\n') {
         this._index += 1;
       } else {
         this._index = ptr;
@@ -337,6 +341,8 @@ class RuntimeParser {
 
     this._index = eol + 1;
 
+    this.skipBlankLines();
+
     if (this._source[this._index] === ' ') {
       this._index = start;
       return this.getComplexPattern();
@@ -387,6 +393,7 @@ class RuntimeParser {
             this._source[this._index] === '*' ||
             this._source[this._index] === '#' ||
             this._source[this._index] === '.') {
+          this._index = blankLinesEnd;
           break;
         }
 
@@ -693,9 +700,12 @@ class RuntimeParser {
     const attrs = {};
 
     while (this._index < this._length) {
-      const ch = this._source[this._index];
+      if (this._source[this._index] !== ' ') {
+        break;
+      }
+      this.skipInlineWS();
 
-      if (ch !== '.') {
+      if (this._source[this._index] !== '.') {
         break;
       }
       this._index++;
@@ -721,7 +731,7 @@ class RuntimeParser {
         };
       }
 
-      this.skipWS();
+      this.skipBlankLines();
     }
 
     return attrs;
@@ -737,9 +747,12 @@ class RuntimeParser {
     const tags = [];
 
     while (this._index < this._length) {
-      const ch = this._source[this._index];
+      if (this._source[this._index] !== ' ') {
+        break;
+      }
+      this.skipInlineWS();
 
-      if (ch !== '#') {
+      if (this._source[this._index] !== '#') {
         break;
       }
       this._index++;
@@ -748,7 +761,7 @@ class RuntimeParser {
 
       tags.push(symbol.name);
 
-      this.skipWS();
+      this.skipBlankLines();
     }
 
     return tags;
