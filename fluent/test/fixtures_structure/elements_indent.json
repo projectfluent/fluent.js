@@ -1,0 +1,16 @@
+{
+  "foo": "Foo",
+  "bar": {
+    "val": "Bar",
+    "attrs": {
+      "attr1": "Bar Attr 1"
+    }
+  },
+  "baz": "Baz",
+  "qux": {
+    "val": "Qux",
+    "tags": [
+      "tag1"
+    ]
+  }
+}
