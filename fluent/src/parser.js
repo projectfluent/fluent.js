@@ -139,6 +139,9 @@ class RuntimeParser {
           val = this.getPattern();
         }
       } else {
+        // This is a fast-path for the most common
+        // case of `key = Value` where the value
+        // is in the same line as the key.
         val = this.getPattern();
       }
     } else {
