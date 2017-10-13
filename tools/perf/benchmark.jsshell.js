@@ -1,4 +1,3 @@
-load('../../fluent-intl-polyfill/node_modules/intl-pluralrules/polyfill.js');
 load('../../fluent/fluent.js');
 load('../../fluent-syntax/fluent-syntax.js');
 
