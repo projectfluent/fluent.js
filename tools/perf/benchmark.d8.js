@@ -4,9 +4,9 @@ load('../../fluent-syntax/fluent-syntax.js');
 var ftlCode = read('./workload-low.ftl');
 var args = {}
 
-function micro(time) {
-  // time is in milliseconds
-  return Math.round(time * 1000);
+function ms(time) {
+  // time is in milliseconds with decimals
+  return Math.round(time * 1e3) / 1e3;
 }
 
 var times = {};
@@ -34,9 +34,9 @@ for (const [id, message] of ctx.messages) {
 times.formatEnd = Date.now();
 
 var results = {
-  parseFTL: micro(times.ftlParseEnd - times.ftlParseStart),
-  parseFTLEntries: micro(times.ftlEntriesParseEnd - times.ftlEntriesParseStart),
-  format: micro(times.formatEnd - times.format),
+  "parse full AST (ms)": ms(times.ftlParseEnd - times.ftlParseStart),
+  "parse runtime AST (ms)": ms(times.ftlEntriesParseEnd - times.ftlEntriesParseStart),
+  "format (ms)": ms(times.formatEnd - times.format),
 };
 
 print(JSON.stringify(results));

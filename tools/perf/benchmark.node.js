@@ -8,9 +8,8 @@ var ftlCode = fs.readFileSync(__dirname + '/workload-low.ftl').toString();
 
 var args = {};
 
-function micro(time) {
-  // time is [seconds, nanoseconds]
-  return Math.round((time[0] * 1e9 + time[1]) / 1000);
+function ms([seconds, nanoseconds]) {
+  return Math.round((seconds * 1e9 + nanoseconds) / 1e3) / 1e3;
 }
 
 var cumulative = {};
@@ -39,8 +38,8 @@ for (const [id, message] of ctx.messages) {
 cumulative.formatEnd = process.hrtime(start);
 
 var results = {
-  parseFTL: micro(cumulative.ftlParseEnd) - micro(cumulative.ftlParseStart),
-  parseFTLEntries: micro(cumulative.ftlEntriesParseEnd) - micro(cumulative.ftlEntriesParseStart),
-  format: micro(cumulative.formatEnd) - micro(cumulative.format),
+  "parse full AST (ms)": ms(cumulative.ftlParseEnd) - ms(cumulative.ftlParseStart),
+  "parse runtime AST (ms)": ms(cumulative.ftlEntriesParseEnd) - ms(cumulative.ftlEntriesParseStart),
+  "format (ms)": ms(cumulative.formatEnd) - ms(cumulative.format),
 };
 console.log(JSON.stringify(results));

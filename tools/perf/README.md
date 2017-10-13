@@ -4,7 +4,7 @@ Perf testing
 Measure the performance impact of changes that you make to the fluent.js
 codebase.
 
-Execution time is reported in microseconds (μs).
+Execution time is reported in milliseconds (ms).
 
 The script measures the speed of parsing, compilation and getting all entities
 from a resource file based on Firefox OS's [Settings localization file][].  The
@@ -65,7 +65,7 @@ significant, it will be show in green (faster) or red (slower).
 High Resolution Timer (HRT)
 ---------------------------
 
-All numbers are reported in microseconds (μs) via node's 
+All numbers are reported in millisecods (ms) via node's 
 [process.hrtime][] or SpiderMonkey shell's [dateNow][].  This allows to 
 measure the time of a single operation.  
 
