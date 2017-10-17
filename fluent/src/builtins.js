@@ -15,9 +15,9 @@ import { FluentNumber, FluentDateTime } from './types';
 
 export default {
   'NUMBER': ([arg], opts) =>
-    new FluentNumber(arg.value, merge(arg.opts, opts)),
+    new FluentNumber(value(arg), merge(arg.opts, opts)),
   'DATETIME': ([arg], opts) =>
-    new FluentDateTime(arg.value, merge(arg.opts, opts)),
+    new FluentDateTime(value(arg), merge(arg.opts, opts)),
 };
 
 function merge(argopts, opts) {
@@ -26,8 +26,15 @@ function merge(argopts, opts) {
 
 function values(opts) {
   const unwrapped = {};
-  for (const name of Object.keys(opts)) {
-    unwrapped[name] = opts[name].value;
+  for (const [name, opt] of Object.entries(opts)) {
+    unwrapped[name] = value(opt);
   }
   return unwrapped;
+}
+
+function value(arg) {
+  // StringExpression-typed options are parsed as regular strings by the
+  // runtime parser and are not converted to a FluentType by the resolver.
+  // They don't have the "value" property; they are the value.
+  return typeof arg === 'string' ? arg : arg.value;
 }
