@@ -54,10 +54,15 @@ export class FluentNumber extends FluentType {
   }
 
   valueOf(ctx) {
-    const nf = ctx._memoizeIntlObject(
-      Intl.NumberFormat, this.opts
-    );
-    return nf.format(this.value);
+    try {
+      const nf = ctx._memoizeIntlObject(
+        Intl.NumberFormat, this.opts
+      );
+      return nf.format(this.value);
+    } catch (e) {
+      // XXX Report the error.
+      return this.value;
+    }
   }
 
   /**
@@ -81,10 +86,15 @@ export class FluentDateTime extends FluentType {
   }
 
   valueOf(ctx) {
-    const dtf = ctx._memoizeIntlObject(
-      Intl.DateTimeFormat, this.opts
-    );
-    return dtf.format(this.value);
+    try {
+      const dtf = ctx._memoizeIntlObject(
+        Intl.DateTimeFormat, this.opts
+      );
+      return dtf.format(this.value);
+    } catch (e) {
+      // XXX Report the error.
+      return this.value;
+    }
   }
 }
 
