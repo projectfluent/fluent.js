@@ -457,7 +457,7 @@ function CallExpression(env, {fun, args}) {
   }
 
   const posargs = [];
-  const keyargs = [];
+  const keyargs = {};
 
   for (const arg of args) {
     if (arg.type === 'narg') {
@@ -467,8 +467,12 @@ function CallExpression(env, {fun, args}) {
     }
   }
 
-  // XXX functions should also report errors
-  return callee(posargs, keyargs);
+  try {
+    return callee(posargs, keyargs);
+  } catch (e) {
+    // XXX Report errors.
+    return FluentNone();
+  }
 }
 
 /**
