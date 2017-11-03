@@ -54,7 +54,7 @@ export default class Localization {
    * @private
    */
   async formatWithFallback(keys, method) {
-    const translations = [];
+    const translations = new Array(keys.length);
     for (let ctx of this.ctxs) {
       // This can operate on synchronous and asynchronous
       // contexts coming from the iterator.
