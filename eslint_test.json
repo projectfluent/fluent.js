@@ -1,0 +1,21 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "es6": true,
+        "node": true,
+        "mocha": true
+    },
+    "plugins": [
+        "mocha"
+    ],
+    "rules": {
+        "mocha/no-exclusive-tests": "error",
+        "mocha/no-identical-title": "error"
+    }
+}

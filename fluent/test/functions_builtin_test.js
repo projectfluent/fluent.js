@@ -83,7 +83,7 @@ suite('Built-in functions', function() {
       assert.equal(ctx.format(msg), 'Invalid Date');
     });
 
-    test.only('Date argument', function() {
+    test('Date argument', function () {
       const date = new Date('2016-09-29');
       // format the date argument to account for the testrunner's timezone
       const expectedDefault =
