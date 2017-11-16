@@ -27,8 +27,8 @@
     "localization",
     "l10n"
   ],
-  "engine": {
-    "node": ">=6"
+  "engines" : {
+    "node" : ">=8.9.0"
   },
   "dependencies": {
     "fluent": "~0.4.0",

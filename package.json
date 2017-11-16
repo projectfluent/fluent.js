@@ -2,6 +2,9 @@
   "name": "fluent-javascript",
   "version": "0.0.1",
   "private": true,
+  "engines" : {
+    "node" : ">=8.9.0"
+  },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-builtin-extend": "^1.1.2",

@@ -73,10 +73,13 @@ feedback.
 Local Development
 -----------------
 
-Hacking on `fluent.js` is easy!  To quickly get started clone the repo:
+Hacking on `fluent.js` is easy! To quickly get started clone the repo:
 
     $ git clone https://github.com/projectfluent/fluent.js.git
     $ cd fluent.js
+
+You'll need node.js 8 LTS (v8.9.0 and up). Older 8.x versions and 7.x
+versions have been reported to work as well. node.js 6.x is not supported.
 
 Install the build tools used by all packages (Babel, Rollup, Mocha etc.):
 
