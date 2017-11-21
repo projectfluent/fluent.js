@@ -1,5 +1,5 @@
-import { MessageContext } from 'fluent/compat';
-import { negotiateLanguages } from 'fluent-langneg/compat';
+import { MessageContext } from 'fluent';
+import { negotiateLanguages } from 'fluent-langneg';
 import delay from 'delay';
 
 async function fetchMessages(locale) {

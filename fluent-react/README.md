@@ -39,11 +39,15 @@ version of Babel's [latest preset][]:
 import 'fluent-react/compat';
 ```
 
-In some cases, using the `compat` build may be needed even if you target modern
-browsers.  For instance, the `create-react-app` boilerplate uses UglifyJS to
-minify its files.  As of April 2017, UglifyJS doesn't support some of the new
-JavaScript syntax features.  By using the `compat` build of all `fluent`
-packages you can ensure that the minifiction works properly.
+In some cases, using the `compat` build may be needed even if you target
+modern browsers. For instance, the [`create-react-app` boilerplate uses
+UglifyJS to minify its files][create-react-app-minify]. As of November 2017,
+UglifyJS doesn't support some of the new JavaScript syntax features. By using
+the `compat` build of all `fluent` packages you can ensure that the
+minifiction works properly.
+
+
+[create-react-app-minify]: https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-build-fails-to-minify
 
 
 ## Learn more

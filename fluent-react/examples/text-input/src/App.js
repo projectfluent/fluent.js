@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Localized } from 'fluent-react/compat';
+import { Localized } from 'fluent-react';
 
 function Header(props) {
   const { children } = props;

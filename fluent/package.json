@@ -28,8 +28,8 @@
     "localization",
     "l10n"
   ],
-  "engines" : {
-    "node" : ">=8.9.0"
+  "engines": {
+    "node": ">=8.9.0"
   },
   "devDependencies": {
     "sinon": "^2.1.0"

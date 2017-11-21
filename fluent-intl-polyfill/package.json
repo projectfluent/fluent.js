@@ -28,8 +28,8 @@
     "localization",
     "l10n"
   ],
-  "engines" : {
-    "node" : ">=8.9.0"
+  "engines": {
+    "node": ">=8.9.0"
   },
   "dependencies": {
     "intl-pluralrules": "projectfluent/IntlPluralRules#module"

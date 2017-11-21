@@ -1,5 +1,5 @@
-import { MessageContext } from 'fluent/compat';
-import { negotiateLanguages } from 'fluent-langneg/compat';
+import { MessageContext } from 'fluent';
+import { negotiateLanguages } from 'fluent-langneg';
 
 const MESSAGES_ALL = {
   'pl': `
