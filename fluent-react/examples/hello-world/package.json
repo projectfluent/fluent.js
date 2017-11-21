@@ -6,10 +6,10 @@
     "react-scripts": "0.9.0"
   },
   "dependencies": {
-    "fluent": "^0.4.0",
-    "fluent-intl-polyfill": "^0.1.0",
-    "fluent-langneg": "^0.1.0",
-    "fluent-react": "^0.3.0",
+    "fluent": "file:../../../fluent",
+    "fluent-intl-polyfill": "file:../../../fluent-intl-polyfill",
+    "fluent-langneg": "file:../../../fluent-langneg",
+    "fluent-react": "file:../../../fluent-react",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
