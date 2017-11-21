@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "0.9.0"
+    "react-scripts": "1.0.17"
   },
   "dependencies": {
     "fluent": "file:../../../fluent",
     "fluent-intl-polyfill": "file:../../../fluent-intl-polyfill",
     "fluent-react": "file:../../../fluent-react",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
