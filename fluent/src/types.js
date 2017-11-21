@@ -40,6 +40,39 @@ export class FluentType {
   valueOf() {
     throw new Error('Subclasses of FluentType must implement valueOf.');
   }
+
+  /**
+   * Internal field used for detecting instances of FluentType.
+   *
+   * @private
+   */
+  get $$typeof() {
+    return Symbol.for('FluentType');
+  }
+
+  /**
+   * Check if a value is an instance of FluentType.
+   *
+   * In some build/transpilation setups instanceof is unreliable for detecting
+   * subclasses of FluentType. Instead, FluentType.isTypeOf uses the $$typeof
+   * field and the FluentType Symbol to determine the type of the argument.
+   *
+   * @param {Any} obj - The value to check the type of.
+   * @returns {bool}
+   */
+  static isTypeOf(obj) {
+    // The best-case scenario: the bundler didn't break the identity of
+    // FluentType.
+    if (obj instanceof FluentType) {
+      return true;
+    }
+
+    // Discard all primitive values, Object.prototype, and Object.create(null)
+    // which by definition cannot be instances of FluentType. Then check the
+    // value of the custom $$typeof field defined by the base FluentType class.
+    return obj instanceof Object
+      && obj.$$typeof === Symbol.for('FluentType');
+  }
 }
 
 export class FluentNone extends FluentType {

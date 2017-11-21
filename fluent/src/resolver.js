@@ -382,7 +382,8 @@ function ExternalArgument(env, {name}) {
 
   const arg = args[name];
 
-  if (arg instanceof FluentType) {
+  // Return early if the argument already is an instance of FluentType.
+  if (FluentType.isTypeOf(arg)) {
     return arg;
   }
 
