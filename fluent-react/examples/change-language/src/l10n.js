@@ -1,9 +1,9 @@
 import React, { cloneElement, Children, Component } from 'react';
 
-import 'fluent-intl-polyfill/compat';
-import { MessageContext } from 'fluent/compat';
-import { LocalizationProvider } from 'fluent-react/compat';
-import { negotiateLanguages } from 'fluent-langneg/compat';
+import 'fluent-intl-polyfill';
+import { MessageContext } from 'fluent';
+import { LocalizationProvider } from 'fluent-react';
+import { negotiateLanguages } from 'fluent-langneg';
 
 const MESSAGES_ALL = {
   'pl': `

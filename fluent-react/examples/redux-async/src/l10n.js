@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import 'fluent-intl-polyfill/compat';
-import { LocalizationProvider } from 'fluent-react/compat';
+import 'fluent-intl-polyfill';
+import { LocalizationProvider } from 'fluent-react';
 
 import { changeLocales } from './actions';
 

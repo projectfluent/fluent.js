@@ -1,5 +1,5 @@
-import 'fluent-intl-polyfill/compat';
-import { MessageContext } from 'fluent/compat';
+import 'fluent-intl-polyfill';
+import { MessageContext } from 'fluent';
 
 const MESSAGES_ALL = {
   'pl': `
@@ -18,4 +18,3 @@ export function* generateMessages() {
     yield cx;
   }
 }
-
