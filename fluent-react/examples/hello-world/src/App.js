@@ -7,6 +7,11 @@ export default function App() {
       <Localized id="title">
         <h1>Hello, world!</h1>
       </Localized>
+      <Localized id='today-is' $date={new Date()}>
+        <p>
+          {'Today is { DATETIME($date, month: "long", day: "numeric") }.'}
+        </p>
+      </Localized>
     </div>
   );
 }

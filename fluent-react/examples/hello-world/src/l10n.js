@@ -5,9 +5,11 @@ import { negotiateLanguages } from 'fluent-langneg';
 const MESSAGES_ALL = {
   'pl': `
 title = Witaj świecie!
+today-is = Dziś jest { DATETIME($date, month: "long", day: "numeric") }.
   `,
   'en-US': `
 title = Hello, world!
+today-is = Today is { DATETIME($date, month: "long", day: "numeric") }.
   `,
 };
 
