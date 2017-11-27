@@ -243,7 +243,11 @@ suite('External arguments', function() {
 
       const parts = ctx.formatToParts(msg, args, errs);
       assert.equal(errs.length, 0);
-      assert.deepEqual(parts, [args.arg]);
+
+      const [part] = parts;
+      assert.equal(part, args.arg);
+      assert.equal(part.$$typeof, Symbol.for('FluentType'));
+      assert.equal(FluentType.isTypeOf(part), true);
 
       const vals = parts.map(part => part.valueOf(ctx));
       assert.deepEqual(vals, [argval]);
@@ -254,7 +258,11 @@ suite('External arguments', function() {
 
       const parts = ctx.formatToParts(msg, args, errs);
       assert.equal(errs.length, 0);
-      assert.deepEqual(parts, [args.arg]);
+
+      const [part] = parts;
+      assert.equal(part, args.arg);
+      assert.equal(part.$$typeof, Symbol.for('FluentType'));
+      assert.equal(FluentType.isTypeOf(part), true);
 
       const vals = parts.map(part => part.valueOf(ctx));
       assert.deepEqual(vals, [argval]);
