@@ -2,10 +2,24 @@
 
 ## Unreleased
 
-  - Add touchNext to CachedIterable
+  - …
+
+
+## fluent 0.4.2 (November 27, 2017)
+
+  - Add touchNext to CachedIterable.
 
     This allows the user of CachedIterable to trigger construction of an
     element yielded from the generator early.
+
+  - Add the static FluentType.isTypeOf method.
+
+    In some cases, bundlers such as Webpack would break the instanceof
+    FluentType check. The new FluentType.isTypeOf static method can be used
+    instead to guarantee the proper behavior.
+
+  - Catch errors thrown by Intl formatters.
+
 
 ## fluent 0.4.1 (June 22, 2017)
 
