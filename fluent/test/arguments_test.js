@@ -217,7 +217,7 @@ suite('External arguments', function() {
     let argval, args;
 
     class CustomType extends FluentType {
-      valueOf() {
+      toString() {
         return 'CUSTOM';
       }
     }

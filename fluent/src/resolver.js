@@ -29,7 +29,7 @@
  *
  * All other expressions (except for `FunctionReference` which is only used in
  * `CallExpression`) resolve to an instance of `FluentType`.  The caller should
- * use the `valueOf` method to convert the instance to a native value.
+ * use the `toString` method to convert the instance to a native value.
  *
  *
  * All functions in this file pass around a special object called `env`.
@@ -181,7 +181,7 @@ function VariantExpression(env, {id, key}) {
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.valueOf(ctx)}`));
+  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
   return Type(env, message);
 }
 
@@ -273,7 +273,7 @@ function SelectExpression(env, {exp, vars, def}) {
  * Resolve expression to a Fluent type.
  *
  * JavaScript strings are a special case.  Since they natively have the
- * `valueOf` method they can be used as if they were a Fluent type without
+ * `toString` method they can be used as if they were a Fluent type without
  * paying the cost of creating a instance of one.
  *
  * @param   {Object} env
@@ -483,7 +483,7 @@ function Pattern(env, ptn) {
       continue;
     }
 
-    const part = Type(env, elem).valueOf(ctx);
+    const part = Type(env, elem).toString(ctx);
 
     if (ctx._useIsolating) {
       result.push(FSI);
@@ -529,5 +529,5 @@ export default function resolve(ctx, args, message, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message).valueOf(ctx);
+  return Type(env, message).toString(ctx);
 }
