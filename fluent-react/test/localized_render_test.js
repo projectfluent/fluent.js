@@ -2,7 +2,7 @@ import React from 'react';
 import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import MessageContext from './message_context_stub';
+import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -10,6 +10,10 @@ suite('Localized - rendering', function() {
   test('rendering the value', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = FOO
+`)
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -25,12 +29,12 @@ suite('Localized - rendering', function() {
 
   test('rendering the attributes', function() {
     const mcx = new MessageContext();
-    sinon.stub(mcx, 'getMessage').returns({
-      value: null,
-      attrs: { attr: 'ATTR' }
-    });
-    sinon.stub(mcx, 'formatToParts').returns(null);
     const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .attr = ATTR
+`)
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -46,12 +50,12 @@ suite('Localized - rendering', function() {
 
   test('preserves existing attributes', function() {
     const mcx = new MessageContext();
-    sinon.stub(mcx, 'getMessage').returns({
-      value: null,
-      attrs: { attr: 'ATTR' }
-    });
-    sinon.stub(mcx, 'formatToParts').returns(null);
     const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .attr = ATTR
+`)
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -65,10 +69,14 @@ suite('Localized - rendering', function() {
     ));
   });
 
-  test('$arg is passed to formatToParts the value', function() {
+  test('$arg is passed to format the value', function() {
     const mcx = new MessageContext();
-    const formatToParts = sinon.stub(mcx, 'formatToParts').returns(null);
+    const format = sinon.spy(mcx, 'format');
     const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = { $arg }
+`)
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">
@@ -77,19 +85,19 @@ suite('Localized - rendering', function() {
       { context: { l10n } }
     );
 
-    const { args } = formatToParts.getCall(0);
+    const { args } = format.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
   });
 
   test('$arg is passed to format the attributes', function() {
     const mcx = new MessageContext();
-    sinon.stub(mcx, 'getMessage').returns({
-      value: null,
-      attrs: { attr: 'ATTR' }
-    });
-    sinon.stub(mcx, 'formatToParts').returns(null);
     const format = sinon.spy(mcx, 'format');
     const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = { $arg }
+    .attr = { $arg }
+`)
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">
@@ -97,10 +105,6 @@ suite('Localized - rendering', function() {
       </Localized>,
       { context: { l10n } }
     );
-
-    assert.ok(wrapper.contains(
-      <div attr="ATTR" />
-    ));
 
     const { args } = format.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });

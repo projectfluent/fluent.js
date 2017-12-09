@@ -1,8 +1,7 @@
 import React from 'react';
 import assert from 'assert';
-import sinon from 'sinon';
 import { mount } from 'enzyme';
-import MessageContext from './message_context_stub';
+import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -10,6 +9,10 @@ suite('Localized - change messages', function() {
   test('relocalizing', function() {
     const mcx1 = new MessageContext();
     const l10n = new ReactLocalization([mcx1]);
+
+    mcx1.addMessages(`
+foo = FOO
+`);
 
     const wrapper = mount(
       <Localized id="foo">
@@ -23,7 +26,10 @@ suite('Localized - change messages', function() {
     ));
 
     const mcx2 = new MessageContext();
-    sinon.stub(mcx2, 'getMessage').returns('BAR');
+    mcx2.addMessages(`
+foo = BAR
+`);
+
     l10n.setMessages([mcx2]);
 
     assert.ok(wrapper.contains(
