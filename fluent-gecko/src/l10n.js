@@ -1,41 +1,52 @@
 /* global Components, document, window */
-const { DocumentLocalization } =
-  Components.utils.import('resource://gre/modules/DOMLocalization.jsm');
+{
+  const { DOMLocalization } =
+    Components.utils.import('resource://gre/modules/DOMLocalization.jsm');
 
-function documentReady() {
-  const rs = document.readyState;
-  if (rs === 'interactive' || rs === 'completed') {
-    return Promise.resolve();
+  /**
+   * Polyfill for document.ready polyfill.
+   * See: https://github.com/whatwg/html/issues/127 for details.
+   *
+   * @returns {Promise}
+   */
+  function documentReady() {
+    const rs = document.readyState;
+    if (rs === 'interactive' || rs === 'completed') {
+      return Promise.resolve();
+    }
+
+    return new Promise(
+      resolve => document.addEventListener(
+        'readystatechange', resolve, { once: true }
+      )
+    );
   }
 
-  return new Promise(
-    resolve => document.addEventListener(
-      'readystatechange', resolve, { once: true }
-    )
-  );
-}
+  /**
+   * Scans the `elem` for links with localization resources.
+   *
+   * @param {Element} elem
+   * @returns {Array<string>}
+   */
+  function getResourceLinks(elem) {
+    return Array.from(elem.querySelectorAll('link[rel="localization"]')).map(
+      el => el.getAttribute('href')
+    );
+  }
 
-function getResourceLinks(elem) {
-  return Array.prototype.map.call(
-    elem.querySelectorAll('link[rel="localization"]'),
-    el => el.getAttribute('href')
-  );
-}
+  const resourceIds = getResourceLinks(document.head || document);
 
-function createLocalization(resIds) {
-  document.l10n = new DocumentLocalization(document, resIds);
+  document.l10n = new DOMLocalization(window, resourceIds);
 
-  document.l10n.registerObservers();
-  window.addEventListener('unload', () => {
-    document.l10n.unregisterObservers();
-  });
+  // trigger first context to be fetched eagerly
+  document.l10n.ctxs.touchNext();
 
   document.l10n.ready = documentReady().then(() => {
+    document.l10n.registerObservers();
+    window.addEventListener('unload', () => {
+      document.l10n.unregisterObservers();
+    });
     document.l10n.connectRoot(document.documentElement);
-    return document.l10n.translateDocument();
+    return document.l10n.translateRoots();
   });
 }
-
-const resIds = getResourceLinks(document.head || document);
-createLocalization(resIds);
-

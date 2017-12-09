@@ -150,6 +150,10 @@ export default class Localization {
     this.onLanguageChange();
   }
 
+  /**
+   * This method should be called when there's a reason to believe
+   * that language negotiation or available resources changed.
+   */
   onLanguageChange() {
     this.ctxs = new CachedIterable(this.generateMessages(this.resourceIds));
   }

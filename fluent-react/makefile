@@ -8,23 +8,23 @@ build: $(PACKAGE).js compat.js
 
 $(PACKAGE).js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
-	    --format umd \
+	    --output.format umd \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --id $(PACKAGE) \
+	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
 	    --globals $(DEPS) \
-	    --output $@
+	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
 compat.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 	    --config $(ROOT)/compat_config.js \
-	    --format umd \
+	    --output.format umd \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --id $(PACKAGE) \
+	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
 	    --globals $(DEPS) \
-	    --output $@
+	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
 clean:

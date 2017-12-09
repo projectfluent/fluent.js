@@ -7,22 +7,22 @@ build: $(PACKAGE).js compat.js
 
 $(PACKAGE).js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
-		--format iife \
+		--output.format iife \
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
-		--id $(PACKAGE) \
+		--amd.id $(PACKAGE) \
 		--name $(GLOBAL) \
 		--config $(CURDIR)/bundle_config.js \
-		--output $@
+		--output.file $@
 	@echo -e " $(OK) $@ built"
 
 compat.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 		--config $(CURDIR)/compat_config.js \
-		--format umd \
+		--output.format umd \
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
-		--id $(PACKAGE) \
+		--amd.id $(PACKAGE) \
 		--name $(GLOBAL) \
-		--output $@
+		--output.file $@
 	@echo -e " $(OK) $@ built"
 
 clean:

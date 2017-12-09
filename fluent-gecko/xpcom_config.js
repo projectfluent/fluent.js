@@ -1,7 +1,6 @@
 const version = require('../fluent/package.json').version;
 
 export default {
-  format: 'es',
   banner: `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */
 
 /* Copyright 2017 Mozilla Foundation and others
@@ -21,5 +20,11 @@ export default {
 
   intro: `/* fluent@${version} */`,
   preferConst: true,
-  context: 'this'
+  context: 'this',
+  output: {
+    format: 'es',
+  },
+  acron: {
+    ecmaVersion: '9'
+  }
 };
