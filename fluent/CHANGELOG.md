@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-  - …
+  - Remove MessageContext.formatToParts.
+
+    It's only use-case was passing React elements as arguments to
+    translations which is now possible thanks to DOM overlays (#101).
 
 
 ## fluent 0.4.2 (November 27, 2017)

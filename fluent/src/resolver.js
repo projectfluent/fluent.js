@@ -60,27 +60,6 @@ const PDI = '\u2069';
 
 
 /**
- * Helper for computing the total character length of a placeable.
- *
- * Used in Pattern.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Array}  parts
- *    List of parts of a placeable.
- * @returns {Number}
- * @private
- */
-function PlaceableLength(env, parts) {
-  const { ctx } = env;
-  return parts.reduce(
-    (sum, part) => sum + part.valueOf(ctx).length,
-    0
-  );
-}
-
-
-/**
  * Helper for choosing the default value from a set of members.
  *
  * Used in SelectExpressions and Type.
@@ -504,26 +483,20 @@ function Pattern(env, ptn) {
       continue;
     }
 
-    const part = Type(env, elem);
+    const part = Type(env, elem).valueOf(ctx);
 
     if (ctx._useIsolating) {
       result.push(FSI);
     }
 
-    if (Array.isArray(part)) {
-      const len = PlaceableLength(env, part);
-
-      if (len > MAX_PLACEABLE_LENGTH) {
-        errors.push(
-          new RangeError(
-            'Too many characters in placeable ' +
-            `(${len}, max allowed is ${MAX_PLACEABLE_LENGTH})`
-          )
-        );
-        result.push(new FluentNone());
-      } else {
-        result.push(...part);
-      }
+    if (part.length > MAX_PLACEABLE_LENGTH) {
+      errors.push(
+        new RangeError(
+          'Too many characters in placeable ' +
+          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        )
+      );
+      result.push(part.slice(MAX_PLACEABLE_LENGTH));
     } else {
       result.push(part);
     }
@@ -534,13 +507,11 @@ function Pattern(env, ptn) {
   }
 
   dirty.delete(ptn);
-  return result;
+  return result.join('');
 }
 
 /**
- * Format a translation into an `FluentType`.
- *
- * The return value must be unwrapped via `valueOf` by the caller.
+ * Format a translation into a string.
  *
  * @param   {MessageContext} ctx
  *    A MessageContext instance which will be used to resolve the
@@ -558,5 +529,5 @@ export default function resolve(ctx, args, message, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message);
+  return Type(env, message).valueOf(ctx);
 }

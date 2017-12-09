@@ -217,9 +217,8 @@ suite('External arguments', function() {
     let argval, args;
 
     class CustomType extends FluentType {
-      // This Type doesn't valueOf to a string.
       valueOf() {
-        return this.value;
+        return 'CUSTOM';
       }
     }
 
@@ -229,44 +228,25 @@ suite('External arguments', function() {
         foo = { $arg }
         bar = { foo }
       `);
-      // The argument value is an arbitrary object.
-      argval = new Object();
 
       args = {
         // CustomType is a wrapper around the value
-        arg: new CustomType(argval)
+        arg: new CustomType()
       };
-    });
 
-    test('interpolation', function(){
-      const msg = ctx.getMessage('foo');
+      test('interpolation', function () {
+        const msg = ctx.getMessage('foo');
+        const value = ctx.format(msg, args, errs);
+        assert.equal(value, 'CUSTOM');
+        assert.equal(errs.length, 0);
+      });
 
-      const parts = ctx.formatToParts(msg, args, errs);
-      assert.equal(errs.length, 0);
-
-      const [part] = parts;
-      assert.equal(part, args.arg);
-      assert.equal(part.$$typeof, Symbol.for('FluentType'));
-      assert.equal(FluentType.isTypeOf(part), true);
-
-      const vals = parts.map(part => part.valueOf(ctx));
-      assert.deepEqual(vals, [argval]);
-    });
-
-    test('nested interpolation', function(){
-      const msg = ctx.getMessage('bar');
-
-      const parts = ctx.formatToParts(msg, args, errs);
-      assert.equal(errs.length, 0);
-
-      const [part] = parts;
-      assert.equal(part, args.arg);
-      assert.equal(part.$$typeof, Symbol.for('FluentType'));
-      assert.equal(FluentType.isTypeOf(part), true);
-
-      const vals = parts.map(part => part.valueOf(ctx));
-      assert.deepEqual(vals, [argval]);
+      test('nested interpolation', function () {
+        const msg = ctx.getMessage('bar');
+        const value = ctx.format(msg, args, errs);
+        assert.equal(value, 'CUSTOM');
+        assert.equal(errs.length, 0);
+      });
     });
   });
-
 });

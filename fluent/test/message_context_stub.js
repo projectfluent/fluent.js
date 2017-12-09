@@ -16,8 +16,4 @@ export default class MessageContext {
   format(msg) {
     return msg;
   }
-
-  formatToParts(msg) {
-    return [msg];
-  }
 }
