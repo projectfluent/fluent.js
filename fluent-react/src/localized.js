@@ -16,7 +16,10 @@ function toArguments(props) {
       const name = propname.substr(1);
       args[name] = propval;
     } else if (isValidElement(propval)) {
-      elems[propname] = propval;
+      // We'll try to match localNames of elements found in the translation with
+      // names of elements passed as props. localNames are always lowercase.
+      const name = propname.toLowerCase();
+      elems[name] = propval;
     }
   }
 

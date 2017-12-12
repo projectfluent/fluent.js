@@ -51,6 +51,31 @@ foo = Click <button>me</button>!
     ));
   });
 
+  test('an element of different case is matched', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = Click <button>me</button>!
+`)
+
+    // The Button prop is capitalized whereas the <button> element in the
+    // translation is all lowercase. Since we're using DOM localNames, they
+    // should still match.
+    const wrapper = shallow(
+      <Localized id="foo" Button={<button onClick={alert}></button>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        Click <button onClick={alert}>me</button>!
+      </div>
+    ));
+  });
+
   test('two elements are matched', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
