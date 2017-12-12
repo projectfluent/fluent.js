@@ -12,6 +12,15 @@
     Without MessageContext.formatToParts, all use-cases for
     FluentType.valueOf boil down to stringification.
 
+  - Remove FluentType.isTypeOf.
+
+    fluent-react's markup overlays (#101) removed the dependency on fluent's
+    FluentType which was hardcoded as an import from fluent/compat. Without
+    this dependency all imports from fluent are in the hands of developers
+    again and they can decide to use the ES2015+ or the compat builds as they
+    wish. As long as they do it consistently, regular instanceof checks will
+    work well.
+
 
 ## fluent 0.4.2 (November 27, 2017)
 
