@@ -1,8 +1,7 @@
 import React from 'react';
 import assert from 'assert';
-import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import MessageContext from './message_context_stub';
+import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -10,6 +9,10 @@ suite('Localized - fallback', function() {
   test('message id in the first context', function() {
     const mcx1 = new MessageContext();
     const l10n = new ReactLocalization([mcx1]);
+
+    mcx1.addMessages(`
+foo = FOO
+`);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -25,9 +28,15 @@ suite('Localized - fallback', function() {
 
   test('message id in the second context', function() {
     const mcx1 = new MessageContext();
-    sinon.stub(mcx1, 'hasMessage').returns(false);
     const mcx2 = new MessageContext();
     const l10n = new ReactLocalization([mcx1, mcx2]);
+
+    mcx1.addMessages(`
+not-foo = NOT FOO
+`);
+    mcx2.addMessages(`
+foo = FOO
+`);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -43,8 +52,11 @@ suite('Localized - fallback', function() {
 
   test('missing message', function() {
     const mcx1 = new MessageContext();
-    sinon.stub(mcx1, 'hasMessage').returns(false);
     const l10n = new ReactLocalization([mcx1]);
+
+    mcx1.addMessages(`
+not-foo = NOT FOO
+`);
 
     const wrapper = shallow(
       <Localized id="foo">

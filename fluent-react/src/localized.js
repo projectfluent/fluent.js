@@ -1,53 +1,26 @@
 import { isValidElement, cloneElement, Component, Children } from 'react';
 import PropTypes from 'prop-types';
-import { MessageArgument } from 'fluent/compat';
 
 import { isReactLocalization } from './localization';
+import { parseMarkup } from './markup';
 
 /*
- * A Fluent argument type for React elements.
- *
- * When `MessageContext`'s `formatToParts` method is used, any interpolations
- * which are valid `MessageArgument` instances are returned unformatted.  The
- * parts can then be `valueOf`'ed and concatenated to create the final
- * translation.
- *
- * With `ElementArgument` it becomes possible to pass React elements as
- * arguments to translations.  This may be useful for passing links or buttons,
- * or in general: elements with logic which should be defined in the app.
- */
-class ElementArgument extends MessageArgument {
-  valueOf() {
-    return this.value;
-  }
-}
-
-/*
- * Prepare props passed to `Localized` for formetting.
- *
- * Filter props which are not intended for formatting and turn arguments which
- * are React elements into `ElementArgument` instances.
- *
+ * Prepare props passed to `Localized` for formatting.
  */
 function toArguments(props) {
   const args = {};
+  const elems = {};
 
-  for (const propname of Object.keys(props)) {
-    if (!propname.startsWith('$')) {
-      continue;
-    }
-
-    const arg = props[propname];
-    const name = propname.substr(1);
-
-    if (isValidElement(arg)) {
-      args[name] = new ElementArgument(arg);
-    } else {
-      args[name] = arg;
+  for (const [propname, propval] of Object.entries(props)) {
+    if (propname.startsWith('$')) {
+      const name = propname.substr(1);
+      args[name] = propval;
+    } else if (isValidElement(propval)) {
+      elems[propname] = propval;
     }
   }
 
-  return args;
+  return [args, elems];
 }
 
 /*
@@ -116,12 +89,37 @@ export default class Localized extends Component {
     }
 
     const msg = mcx.getMessage(id);
-    const args = toArguments(this.props);
-    const { parts, attrs } = l10n.formatCompound(mcx, msg, args);
+    const [args, elems] = toArguments(this.props);
+    const { value, attrs } = l10n.formatCompound(mcx, msg, args);
 
-    // The formatted parts can be passed to `cloneElements` as arguments.  They
-    // will be used as children of the cloned element.
-    return cloneElement(elem, attrs, ...parts);
+    if (value === null || !value.includes('<')) {
+      return cloneElement(elem, attrs, value);
+    }
+
+    const translationNodes = Array.from(parseMarkup(value).childNodes);
+    const translatedChildren = translationNodes.map(childNode => {
+      if (childNode.nodeType === childNode.TEXT_NODE) {
+        return childNode.textContent;
+      }
+
+      // If the child is not expected just take its textContent.
+      if (!elems.hasOwnProperty(childNode.localName)) {
+        return childNode.textContent;
+      }
+
+      return cloneElement(
+        elems[childNode.localName],
+        // XXX Explicitly ignore any attributes defined in the translation.
+        null,
+        // XXX React breaks if we try to pass non-null children to void elements
+        // (like <input>). At the same time, textContent of such elements is an
+        // empty string, so we explicitly pass null instead.
+        // See https://github.com/projectfluent/fluent.js/issues/105.
+        childNode.textContent || null
+      );
+    });
+
+    return cloneElement(elem, attrs, ...translatedChildren);
   }
 }
 

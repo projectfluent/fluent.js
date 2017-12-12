@@ -1,0 +1,20 @@
+{
+  "name": "fluent-react-example-html-markup",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "1.0.17"
+  },
+  "dependencies": {
+    "fluent": "file:../../../fluent",
+    "fluent-intl-polyfill": "file:../../../fluent-intl-polyfill",
+    "fluent-langneg": "file:../../../fluent-langneg",
+    "fluent-react": "file:../../../fluent-react",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  }
+}

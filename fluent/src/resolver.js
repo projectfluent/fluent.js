@@ -29,7 +29,7 @@
  *
  * All other expressions (except for `FunctionReference` which is only used in
  * `CallExpression`) resolve to an instance of `FluentType`.  The caller should
- * use the `valueOf` method to convert the instance to a native value.
+ * use the `toString` method to convert the instance to a native value.
  *
  *
  * All functions in this file pass around a special object called `env`.
@@ -57,27 +57,6 @@ const MAX_PLACEABLE_LENGTH = 2500;
 // Unicode bidi isolation characters.
 const FSI = '\u2068';
 const PDI = '\u2069';
-
-
-/**
- * Helper for computing the total character length of a placeable.
- *
- * Used in Pattern.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Array}  parts
- *    List of parts of a placeable.
- * @returns {Number}
- * @private
- */
-function PlaceableLength(env, parts) {
-  const { ctx } = env;
-  return parts.reduce(
-    (sum, part) => sum + part.valueOf(ctx).length,
-    0
-  );
-}
 
 
 /**
@@ -202,7 +181,7 @@ function VariantExpression(env, {id, key}) {
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.valueOf(ctx)}`));
+  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
   return Type(env, message);
 }
 
@@ -294,7 +273,7 @@ function SelectExpression(env, {exp, vars, def}) {
  * Resolve expression to a Fluent type.
  *
  * JavaScript strings are a special case.  Since they natively have the
- * `valueOf` method they can be used as if they were a Fluent type without
+ * `toString` method they can be used as if they were a Fluent type without
  * paying the cost of creating a instance of one.
  *
  * @param   {Object} env
@@ -504,26 +483,20 @@ function Pattern(env, ptn) {
       continue;
     }
 
-    const part = Type(env, elem);
+    const part = Type(env, elem).toString(ctx);
 
     if (ctx._useIsolating) {
       result.push(FSI);
     }
 
-    if (Array.isArray(part)) {
-      const len = PlaceableLength(env, part);
-
-      if (len > MAX_PLACEABLE_LENGTH) {
-        errors.push(
-          new RangeError(
-            'Too many characters in placeable ' +
-            `(${len}, max allowed is ${MAX_PLACEABLE_LENGTH})`
-          )
-        );
-        result.push(new FluentNone());
-      } else {
-        result.push(...part);
-      }
+    if (part.length > MAX_PLACEABLE_LENGTH) {
+      errors.push(
+        new RangeError(
+          'Too many characters in placeable ' +
+          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        )
+      );
+      result.push(part.slice(MAX_PLACEABLE_LENGTH));
     } else {
       result.push(part);
     }
@@ -534,13 +507,11 @@ function Pattern(env, ptn) {
   }
 
   dirty.delete(ptn);
-  return result;
+  return result.join('');
 }
 
 /**
- * Format a translation into an `FluentType`.
- *
- * The return value must be unwrapped via `valueOf` by the caller.
+ * Format a translation into a string.
  *
  * @param   {MessageContext} ctx
  *    A MessageContext instance which will be used to resolve the
@@ -558,5 +529,5 @@ export default function resolve(ctx, args, message, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message);
+  return Type(env, message).toString(ctx);
 }

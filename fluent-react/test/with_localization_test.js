@@ -1,8 +1,7 @@
 import React from 'react';
 import assert from 'assert';
-import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import MessageContext from './message_context_stub';
+import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 
@@ -36,6 +35,10 @@ suite('withLocalization', function() {
     const l10n = new ReactLocalization([mcx]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
+    mcx.addMessages(`
+foo = FOO
+`);
+
     const wrapper = shallow(
       <EnhancedComponent />,
       { context: { l10n } }
@@ -50,6 +53,10 @@ suite('withLocalization', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
     const EnhancedComponent = withLocalization(DummyComponent);
+
+    mcx.addMessages(`
+foo = FOO
+`);
 
     const wrapper = shallow(
       <EnhancedComponent />

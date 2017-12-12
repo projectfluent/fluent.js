@@ -1,6 +1,5 @@
 import resolve from './resolver';
 import parse from './parser';
-import { FluentNone } from './types';
 
 /**
  * Message contexts are single-language stores of translations.  They are
@@ -80,7 +79,7 @@ export class MessageContext {
    * Return the internal representation of a message.
    *
    * The internal representation should only be used as an argument to
-   * `MessageContext.format` and `MessageContext.formatToParts`.
+   * `MessageContext.format`.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {Any}
@@ -114,61 +113,6 @@ export class MessageContext {
     }
 
     return errors;
-  }
-
-  /**
-   * Format a message to an array of `FluentTypes` or null.
-   *
-   * Format a raw `message` from the context into an array of `FluentType`
-   * instances which may be used to build the final result.  It may also return
-   * `null` if it has a null value.  `args` will be used to resolve references
-   * to external arguments inside of the translation.
-   *
-   * See the documentation of {@link MessageContext#format} for more
-   * information about error handling.
-   *
-   * In case of errors `format` will try to salvage as much of the translation
-   * as possible and will still return a string.  For performance reasons, the
-   * encountered errors are not returned but instead are appended to the
-   * `errors` array passed as the third argument.
-   *
-   *     ctx.addMessages('hello = Hello, { $name }!');
-   *     const hello = ctx.getMessage('hello');
-   *     ctx.formatToParts(hello, { name: 'Jane' }, []);
-   *     // → ['Hello, ', '\u2068', 'Jane', '\u2069']
-   *
-   * The returned parts need to be formatted via `valueOf` before they can be
-   * used further.  This will ensure all values are correctly formatted
-   * according to the `MessageContext`'s locale.
-   *
-   *     const parts = ctx.formatToParts(hello, { name: 'Jane' }, []);
-   *     const str = parts.map(part => part.valueOf(ctx)).join('');
-   *
-   * @see MessageContext#format
-   * @param   {Object | string}    message
-   * @param   {Object | undefined} args
-   * @param   {Array}              errors
-   * @returns {?Array<FluentType>}
-   */
-  formatToParts(message, args, errors) {
-    // optimize entities which are simple strings with no attributes
-    if (typeof message === 'string') {
-      return [message];
-    }
-
-    // optimize simple-string entities with attributes
-    if (typeof message.val === 'string') {
-      return [message.val];
-    }
-
-    // optimize entities with null values
-    if (message.val === undefined) {
-      return null;
-    }
-
-    const result = resolve(this, args, message, errors);
-
-    return result instanceof FluentNone ? null : result;
   }
 
   /**
@@ -217,13 +161,7 @@ export class MessageContext {
       return null;
     }
 
-    const result = resolve(this, args, message, errors);
-
-    if (result instanceof FluentNone) {
-      return null;
-    }
-
-    return result.map(part => part.valueOf(this)).join('');
+    return resolve(this, args, message, errors);
   }
 
   _memoizeIntlObject(ctor, opts) {

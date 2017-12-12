@@ -50,10 +50,7 @@ export default class ReactLocalization {
   }
 
   formatCompound(mcx, msg, args) {
-    const rawParts = mcx.formatToParts(msg, args) || [];
-
-    // Format the parts using the current `MessageContext` instance.
-    const parts = rawParts.map(part => part.valueOf(mcx));
+    const value = mcx.format(msg, args);
 
     if (msg.attrs) {
       var attrs = {};
@@ -62,7 +59,7 @@ export default class ReactLocalization {
       }
     }
 
-    return { parts, attrs };
+    return { value, attrs };
   }
 
   /*

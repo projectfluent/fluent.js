@@ -2,7 +2,15 @@
 
 ## Unreleased
 
-  - …
+  - Remove MessageContext.formatToParts.
+
+    It's only use-case was passing React elements as arguments to
+    translations which is now possible thanks to DOM overlays (#101).
+
+  - Rename FluentType.valueOf to FluentType.toString.
+
+    Without MessageContext.formatToParts, all use-cases for
+    FluentType.valueOf boil down to stringification.
 
 
 ## fluent 0.4.2 (November 27, 2017)

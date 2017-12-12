@@ -4,7 +4,7 @@
  * The `FluentType` class is the base of Fluent's type system.
  *
  * Fluent types wrap JavaScript values and store additional configuration for
- * them, which can then be used in the `valueOf` method together with a proper
+ * them, which can then be used in the `toString` method together with a proper
  * `Intl` formatter.
  */
 export class FluentType {
@@ -22,23 +22,17 @@ export class FluentType {
   }
 
   /**
-   * Unwrap the instance of `FluentType`.
+   * Unwrap the instance of `FluentType` to a string.
    *
    * Unwrapped values are suitable for use outside of the `MessageContext`.
    * This method can use `Intl` formatters memoized by the `MessageContext`
    * instance passed as an argument.
    *
-   * In most cases, valueOf returns a string, but it can be overriden
-   * and there are use cases, where the return type is not a string.
-   *
-   * An example is fluent-react which implements a custom `FluentType`
-   * to represent React elements passed as arguments to format().
-   *
    * @param   {MessageContext} [ctx]
    * @returns {string}
    */
-  valueOf() {
-    throw new Error('Subclasses of FluentType must implement valueOf.');
+  toString() {
+    throw new Error('Subclasses of FluentType must implement toString.');
   }
 
   /**
@@ -76,7 +70,7 @@ export class FluentType {
 }
 
 export class FluentNone extends FluentType {
-  valueOf() {
+  toString() {
     return this.value || '???';
   }
 }
@@ -86,7 +80,7 @@ export class FluentNumber extends FluentType {
     super(parseFloat(value), opts);
   }
 
-  valueOf(ctx) {
+  toString(ctx) {
     try {
       const nf = ctx._memoizeIntlObject(
         Intl.NumberFormat, this.opts
@@ -118,7 +112,7 @@ export class FluentDateTime extends FluentType {
     super(new Date(value), opts);
   }
 
-  valueOf(ctx) {
+  toString(ctx) {
     try {
       const dtf = ctx._memoizeIntlObject(
         Intl.DateTimeFormat, this.opts
@@ -132,7 +126,7 @@ export class FluentDateTime extends FluentType {
 }
 
 export class FluentSymbol extends FluentType {
-  valueOf() {
+  toString() {
     return this.value;
   }
 
