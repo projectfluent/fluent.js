@@ -12,11 +12,14 @@ export default class CachedIterable {
    * @returns {CachedIterable}
    */
   constructor(iterable) {
-    if (!(Symbol.iterator in Object(iterable))) {
+    if (Symbol.asyncIterator in Object(iterable)) {
+      this.iterator = iterable[Symbol.asyncIterator]();
+    } else if (Symbol.iterator in Object(iterable)) {
+      this.iterator = iterable[Symbol.iterator]();
+    } else {
       throw new TypeError('Argument must implement the iteration protocol.');
     }
 
-    this.iterator = iterable[Symbol.iterator]();
     this.seen = [];
   }
 
@@ -28,6 +31,20 @@ export default class CachedIterable {
       next() {
         if (seen.length <= cur) {
           seen.push(iterator.next());
+        }
+        return seen[cur++];
+      }
+    };
+  }
+
+  [Symbol.asyncIterator]() {
+    const { seen, iterator } = this;
+    let cur = 0;
+
+    return {
+      async next() {
+        if (seen.length <= cur) {
+          seen.push(await iterator.next());
         }
         return seen[cur++];
       }

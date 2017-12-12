@@ -3,7 +3,6 @@ import { resolve } from 'path';
 const version = require('../fluent/package.json').version;
 
 export default {
-  format: 'es',
   banner: `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */
 
 /* Copyright 2017 Mozilla Foundation and others
@@ -25,6 +24,9 @@ export default {
   external: [
     resolve('../fluent-dom/src/localization.js')
   ],
+  output: {
+    format: 'es',
+  },
   preferConst: true,
   context: 'this'
 };
