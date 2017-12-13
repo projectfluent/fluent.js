@@ -33,7 +33,6 @@
         }
       },
       "attributes": [],
-      "tags": [],
       "comment": null,
       "span": {
         "type": "Span",
@@ -132,7 +131,6 @@
           }
         }
       ],
-      "tags": [],
       "comment": null,
       "span": {
         "type": "Span",
@@ -155,153 +153,11 @@
           }
         }
       ],
-      "content": ".attr2 = Bar Attr 2\n\n",
+      "content": ".attr2 = Bar Attr 2\n",
       "span": {
         "type": "Span",
         "start": 62,
-        "end": 83
-      }
-    },
-    {
-      "type": "Message",
-      "annotations": [],
-      "id": {
-        "type": "Identifier",
-        "name": "baz",
-        "span": {
-          "type": "Span",
-          "start": 83,
-          "end": 86
-        }
-      },
-      "value": {
-        "type": "Pattern",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Baz",
-            "span": {
-              "type": "Span",
-              "start": 89,
-              "end": 92
-            }
-          }
-        ],
-        "span": {
-          "type": "Span",
-          "start": 89,
-          "end": 92
-        }
-      },
-      "attributes": [],
-      "tags": [],
-      "comment": null,
-      "span": {
-        "type": "Span",
-        "start": 83,
-        "end": 92
-      }
-    },
-    {
-      "type": "Junk",
-      "annotations": [
-        {
-          "type": "Annotation",
-          "code": "E0002",
-          "args": [],
-          "message": "Expected an entry start",
-          "span": {
-            "type": "Span",
-            "start": 93,
-            "end": 93
-          }
-        }
-      ],
-      "content": "#tag\n\n",
-      "span": {
-        "type": "Span",
-        "start": 93,
-        "end": 99
-      }
-    },
-    {
-      "type": "Message",
-      "annotations": [],
-      "id": {
-        "type": "Identifier",
-        "name": "qux",
-        "span": {
-          "type": "Span",
-          "start": 99,
-          "end": 102
-        }
-      },
-      "value": {
-        "type": "Pattern",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Qux",
-            "span": {
-              "type": "Span",
-              "start": 105,
-              "end": 108
-            }
-          }
-        ],
-        "span": {
-          "type": "Span",
-          "start": 105,
-          "end": 108
-        }
-      },
-      "attributes": [],
-      "tags": [
-        {
-          "type": "Tag",
-          "name": {
-            "type": "Symbol",
-            "name": "tag1",
-            "span": {
-              "type": "Span",
-              "start": 114,
-              "end": 118
-            }
-          },
-          "span": {
-            "type": "Span",
-            "start": 113,
-            "end": 118
-          }
-        }
-      ],
-      "comment": null,
-      "span": {
-        "type": "Span",
-        "start": 99,
-        "end": 118
-      }
-    },
-    {
-      "type": "Junk",
-      "annotations": [
-        {
-          "type": "Annotation",
-          "code": "E0002",
-          "args": [],
-          "message": "Expected an entry start",
-          "span": {
-            "type": "Span",
-            "start": 119,
-            "end": 119
-          }
-        }
-      ],
-      "content": "#tag2\n",
-      "span": {
-        "type": "Span",
-        "start": 119,
-        "end": 125
+        "end": 82
       }
     }
   ],
@@ -309,6 +165,6 @@
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 125
+    "end": 82
   }
 }

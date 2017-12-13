@@ -22,13 +22,6 @@ key3 =
     .attr2 = Attr 2
 
 
-key4 = Value
-
-
-    #tag1
-
-
-    #tag2
 key5 = Value 5
 
 key6 = {

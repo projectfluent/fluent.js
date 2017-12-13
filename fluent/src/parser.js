@@ -119,7 +119,6 @@ class RuntimeParser {
   getMessage() {
     const id = this.getIdentifier();
     let attrs = null;
-    let tags = null;
 
     this.skipInlineWS();
 
@@ -161,27 +160,20 @@ class RuntimeParser {
 
       if (ch === '.') {
         attrs = this.getAttributes();
-      } else if (ch === '#') {
-        tags = this.getTags();
       }
     }
 
-    if (tags === null && attrs === null && typeof val === 'string') {
+    if (attrs === null && typeof val === 'string') {
       this.entries[id] = val;
     } else {
-      if (val === undefined) {
-        if (tags === null && attrs === null) {
-          throw this.error(`Expected a value (like: " = value") or
-            an attribute (like: ".key = value")`);
-        }
+      if (val === undefined && attrs === null) {
+        throw this.error(`Expected a value (like: " = value") or
+          an attribute (like: ".key = value")`);
       }
 
       this.entries[id] = { val };
       if (attrs) {
         this.entries[id].attrs = attrs;
-      }
-      if (tags) {
-        this.entries[id].tags = tags;
       }
     }
   }
@@ -394,7 +386,6 @@ class RuntimeParser {
         if (this._source[this._index] === '}' ||
             this._source[this._index] === '[' ||
             this._source[this._index] === '*' ||
-            this._source[this._index] === '#' ||
             this._source[this._index] === '.') {
           this._index = blankLinesEnd;
           break;
@@ -738,36 +729,6 @@ class RuntimeParser {
     }
 
     return attrs;
-  }
-
-  /**
-   * Parses a list of Message tags.
-   *
-   * @returns {Array}
-   * @private
-   */
-  getTags() {
-    const tags = [];
-
-    while (this._index < this._length) {
-      if (this._source[this._index] !== ' ') {
-        break;
-      }
-      this.skipInlineWS();
-
-      if (this._source[this._index] !== '#') {
-        break;
-      }
-      this._index++;
-
-      const symbol = this.getSymbol();
-
-      tags.push(symbol.name);
-
-      this.skipBlankLines();
-    }
-
-    return tags;
   }
 
   /**

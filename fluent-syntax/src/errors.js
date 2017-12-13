@@ -39,8 +39,6 @@ function getErrorMessage(code, args) {
       return 'Expected one of the variants to be marked as default (*)';
     case 'E0011':
       return 'Expected at least one variant after "->"';
-    case 'E0012':
-      return 'Tags cannot be added to messages with attributes';
     case 'E0013':
       return 'Expected variant key';
     case 'E0014':
