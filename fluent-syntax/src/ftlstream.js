@@ -109,7 +109,7 @@ export class FTLParserStream extends ParserStream {
     return ((cc >= 48 && cc <= 57) || cc === 45); // 0-9
   }
 
-  isPeekNextLineComment() {
+  isPeekNextLineZeroFourStyleComment() {
     if (!this.currentPeekIs('\n')) {
       return false;
     }
@@ -122,6 +122,39 @@ export class FTLParserStream extends ParserStream {
         this.resetPeek();
         return true;
       }
+    }
+
+    this.resetPeek();
+    return false;
+  }
+
+  // -1 - any
+  //  0 - comment
+  //  1 - group comment
+  //  2 - resource comment
+  isPeekNextLineComment(level = -1) {
+    if (!this.currentPeekIs('\n')) {
+      return false;
+    }
+
+    let i = 0;
+
+    while (i <= level || (level === -1 && i < 3)) {
+      this.peek();
+      if (!this.currentPeekIs('#')) {
+        if (i !== level && level !== -1) {
+          this.resetPeek();
+          return false;
+        }
+        break;
+      }
+      i++;
+    }
+
+    this.peek();
+    if ([' ', '\n'].includes(this.currentPeek())) {
+      this.resetPeek();
+      return true;
     }
 
     this.resetPeek();

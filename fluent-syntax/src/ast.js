@@ -19,11 +19,10 @@ class SyntaxNode extends BaseNode {
 }
 
 export class Resource extends SyntaxNode {
-  constructor(body = [], comment = null) {
+  constructor(body = []) {
     super();
     this.type = 'Resource';
     this.body = body;
-    this.comment = comment;
   }
 }
 
@@ -192,20 +191,31 @@ export class Symbol extends Identifier {
   }
 }
 
-export class Comment extends Entry {
+export class BaseComment extends Entry {
   constructor(content) {
     super();
-    this.type = 'Comment';
+    this.type = 'BaseComment';
     this.content = content;
   }
 }
 
-export class Section extends Entry {
-  constructor(name, comment = null) {
-    super();
-    this.type = 'Section';
-    this.name = name;
-    this.comment = comment;
+export class Comment extends BaseComment {
+  constructor(content) {
+    super(content);
+    this.type = 'Comment';
+  }
+}
+
+export class GroupComment extends BaseComment {
+  constructor(content) {
+    super(content);
+    this.type = 'GroupComment';
+  }
+}
+export class ResourceComment extends BaseComment {
+  constructor(content) {
+    super(content);
+    this.type = 'ResourceComment';
   }
 }
 
