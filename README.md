@@ -45,7 +45,7 @@ and others.
 [Read the Fluent Syntax Guide][] in order to learn more about the syntax.  If
 you're a tool author you may be interested in the formal [EBNF grammar][].
 
-[Read the Fluent Syntax Guide]: http://projectfluent.io/fluent/guide/
+[Read the Fluent Syntax Guide]: http://projectfluent.org/fluent/guide/
 [EBNF grammar]: https://github.com/projectfluent/fluent/tree/master/spec
 
 

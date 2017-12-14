@@ -2,7 +2,7 @@
   "name": "fluent-gecko",
   "description": "Gecko bindings for Fluent",
   "version": "0.0.1",
-  "homepage": "http://projectfluent.io",
+  "homepage": "http://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
   "contributors": [

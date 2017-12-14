@@ -31,7 +31,7 @@ import 'fluent-intl-polyfill';
 
 ## Learn more
 
-Find out more about Project Fluent at [projectfluent.io][], including
+Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
@@ -39,5 +39,5 @@ implementations, and information about how to get involved.
 [Stage 3+ proposals]: https://github.com/tc39/ecma402#current-proposals
 [Intl.PluralRules]:https://github.com/tc39/proposal-intl-plural-rules
 [intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
-[projectfluent.io]: http://projectfluent.io
-[FTL]: http://projectfluent.io/fluent/guide/
+[projectfluent.org]: http://projectfluent.org
+[FTL]: http://projectfluent.org/fluent/guide/
