@@ -19,7 +19,6 @@ suite('Parse entry', function() {
         "end": 9,
         "type": "Span"
       },
-      "tags": [],
       "value": {
         "elements": [
           {
@@ -72,7 +71,6 @@ suite('Serialize entry', function() {
         "end": 9,
         "type": "Span"
       },
-      "tags": [],
       "value": {
         "elements": [
           {

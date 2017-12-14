@@ -33,7 +33,6 @@
         }
       },
       "attributes": [],
-      "tags": [],
       "comment": null,
       "span": {
         "type": "Span",
@@ -92,7 +91,6 @@
           }
         }
       ],
-      "tags": [],
       "comment": null,
       "span": {
         "type": "Span",
@@ -169,7 +167,6 @@
           }
         }
       ],
-      "tags": [],
       "comment": null,
       "span": {
         "type": "Span",
@@ -182,7 +179,7 @@
       "annotations": [],
       "id": {
         "type": "Identifier",
-        "name": "key4",
+        "name": "key5",
         "span": {
           "type": "Span",
           "start": 128,
@@ -194,102 +191,26 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value",
+            "value": "Value 5",
             "span": {
               "type": "Span",
               "start": 135,
-              "end": 140
+              "end": 142
             }
           }
         ],
         "span": {
           "type": "Span",
           "start": 135,
-          "end": 140
+          "end": 142
         }
       },
       "attributes": [],
-      "tags": [
-        {
-          "type": "Tag",
-          "name": {
-            "type": "Symbol",
-            "name": "tag1",
-            "span": {
-              "type": "Span",
-              "start": 148,
-              "end": 152
-            }
-          },
-          "span": {
-            "type": "Span",
-            "start": 147,
-            "end": 152
-          }
-        },
-        {
-          "type": "Tag",
-          "name": {
-            "type": "Symbol",
-            "name": "tag2",
-            "span": {
-              "type": "Span",
-              "start": 160,
-              "end": 164
-            }
-          },
-          "span": {
-            "type": "Span",
-            "start": 159,
-            "end": 164
-          }
-        }
-      ],
       "comment": null,
       "span": {
         "type": "Span",
         "start": 128,
-        "end": 164
-      }
-    },
-    {
-      "type": "Message",
-      "annotations": [],
-      "id": {
-        "type": "Identifier",
-        "name": "key5",
-        "span": {
-          "type": "Span",
-          "start": 165,
-          "end": 169
-        }
-      },
-      "value": {
-        "type": "Pattern",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value 5",
-            "span": {
-              "type": "Span",
-              "start": 172,
-              "end": 179
-            }
-          }
-        ],
-        "span": {
-          "type": "Span",
-          "start": 172,
-          "end": 179
-        }
-      },
-      "attributes": [],
-      "tags": [],
-      "comment": null,
-      "span": {
-        "type": "Span",
-        "start": 165,
-        "end": 179
+        "end": 142
       }
     },
     {
@@ -300,8 +221,8 @@
         "name": "key6",
         "span": {
           "type": "Span",
-          "start": 181,
-          "end": 185
+          "start": 144,
+          "end": 148
         }
       },
       "value": {
@@ -320,8 +241,8 @@
                     "name": "one",
                     "span": {
                       "type": "Span",
-                      "start": 202,
-                      "end": 205
+                      "start": 165,
+                      "end": 168
                     }
                   },
                   "value": {
@@ -332,22 +253,22 @@
                         "value": "One",
                         "span": {
                           "type": "Span",
-                          "start": 207,
-                          "end": 210
+                          "start": 170,
+                          "end": 173
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 207,
-                      "end": 210
+                      "start": 170,
+                      "end": 173
                     }
                   },
                   "default": false,
                   "span": {
                     "type": "Span",
-                    "start": 201,
-                    "end": 210
+                    "start": 164,
+                    "end": 173
                   }
                 },
                 {
@@ -357,8 +278,8 @@
                     "name": "two",
                     "span": {
                       "type": "Span",
-                      "start": 225,
-                      "end": 228
+                      "start": 188,
+                      "end": 191
                     }
                   },
                   "value": {
@@ -369,51 +290,50 @@
                         "value": "Two",
                         "span": {
                           "type": "Span",
-                          "start": 230,
-                          "end": 233
+                          "start": 193,
+                          "end": 196
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 230,
-                      "end": 233
+                      "start": 193,
+                      "end": 196
                     }
                   },
                   "default": true,
                   "span": {
                     "type": "Span",
-                    "start": 223,
-                    "end": 233
+                    "start": 186,
+                    "end": 196
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 189,
-                "end": 241
+                "start": 152,
+                "end": 204
               }
             },
             "span": {
               "type": "Span",
-              "start": 188,
-              "end": 242
+              "start": 151,
+              "end": 205
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 188,
-          "end": 242
+          "start": 151,
+          "end": 205
         }
       },
       "attributes": [],
-      "tags": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 181,
-        "end": 242
+        "start": 144,
+        "end": 205
       }
     }
   ],
@@ -421,6 +341,6 @@
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 243
+    "end": 206
   }
 }

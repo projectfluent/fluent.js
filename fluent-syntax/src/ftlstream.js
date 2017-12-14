@@ -205,7 +205,6 @@ export class FTLParserStream extends ParserStream {
 
     if (this.currentPeekIs('}') ||
         this.currentPeekIs('.') ||
-        this.currentPeekIs('#') ||
         this.currentPeekIs('[') ||
         this.currentPeekIs('*')) {
       this.resetPeek();
@@ -214,33 +213,6 @@ export class FTLParserStream extends ParserStream {
 
     this.resetPeek();
     return true;
-  }
-
-  isPeekNextLineTagStart() {
-    if (!this.currentPeekIs('\n')) {
-      return false;
-    }
-
-    this.peek();
-
-    this.peekBlankLines();
-
-    const ptr = this.getPeekIndex();
-
-    this.peekInlineWS();
-
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
-
-    if (this.currentPeekIs('#')) {
-      this.resetPeek();
-      return true;
-    }
-
-    this.resetPeek();
-    return false;
   }
 
   skipToNextEntryStart() {
