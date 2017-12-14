@@ -25,7 +25,7 @@ const supportedLocales = negotiateLanguages(
 ```
 
 The API reference is available at
-http://projectfluent.io/fluent.js/fluent-langneg.
+http://projectfluent.org/fluent.js/fluent-langneg.
 
 ## Strategies
 
@@ -97,10 +97,10 @@ let supported = negotiateLanguages(requested, available, {
 
 ## Learn more
 
-Find out more about Project Fluent at [projectfluent.io][], including
+Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
 
-[projectfluent.io]: http://projectfluent.io
-[FTL]: http://projectfluent.io/fluent/guide/
+[projectfluent.org]: http://projectfluent.org
+[FTL]: http://projectfluent.org/fluent/guide/
