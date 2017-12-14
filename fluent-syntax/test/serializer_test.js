@@ -141,33 +141,6 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('tag', function() {
-    const input = ftl`
-      foo = Foo
-          #tag
-    `;
-    assert.equal(pretty(input), input);
-  });
-
-  test('multiple tag', function() {
-    const input = ftl`
-      foo = Foo
-          #tag1
-          #tag2
-    `;
-    assert.equal(pretty(input), input);
-  });
-
-  test('messages with tags', function() {
-    const input = ftl`
-      foo = Foo
-          #tag1
-      bar = Bar
-          #tag2
-    `;
-    assert.equal(pretty(input), input);
-  });
-
   test('attribute', function() {
     const input = ftl`
       foo

@@ -12,13 +12,6 @@
       "attr2": "Attr 2"
     }
   },
-  "key4": {
-    "val": "Value",
-    "tags": [
-      "tag1",
-      "tag2"
-    ]
-  },
   "key5": "Value 5",
   "key6": {
     "val": [

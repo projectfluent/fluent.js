@@ -130,38 +130,6 @@ function MessageReference(env, {name}) {
 }
 
 /**
- * Resolve an array of tags.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} id
- *    The identifier of the message with tags.
- * @param   {String} id.name
- *    The name of the identifier.
- * @returns {Array}
- * @private
- */
-function Tags(env, {name}) {
-  const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
-
-  if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
-    return new FluentNone(name);
-  }
-
-  if (!message.tags) {
-    errors.push(new RangeError(`No tags in message "${name}"`));
-    return new FluentNone(name);
-  }
-
-  return message.tags.map(
-    tag => new FluentSymbol(tag)
-  );
-}
-
-
-/**
  * Resolve a variant expression to the variant object.
  *
  * @param   {Object} env
@@ -262,9 +230,7 @@ function SelectExpression(env, {exp, vars, def}) {
     return DefaultMember(env, vars, def);
   }
 
-  const selector = exp.type === 'ref'
-    ? Tags(env, exp)
-    : Type(env, exp);
+  const selector = Type(env, exp);
   if (selector instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }

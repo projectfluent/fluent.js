@@ -42,7 +42,7 @@ export default class FluentParser {
 
     // Poor man's decorators.
     [
-      'getComment', 'getSection', 'getMessage', 'getAttribute', 'getTag',
+      'getComment', 'getSection', 'getMessage', 'getAttribute',
       'getIdentifier', 'getVariant', 'getSymbol', 'getNumber', 'getPattern',
       'getTextElement', 'getPlaceable', 'getExpression',
       'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
@@ -189,7 +189,6 @@ export default class FluentParser {
 
     let pattern;
     let attrs;
-    let tags;
 
     if (ps.currentIs('=')) {
       ps.next();
@@ -203,18 +202,11 @@ export default class FluentParser {
       attrs = this.getAttributes(ps);
     }
 
-    if (ps.isPeekNextLineTagStart()) {
-      if (attrs !== undefined) {
-        throw new ParseError('E0012');
-      }
-      tags = this.getTags(ps);
-    }
-
     if (pattern === undefined && attrs === undefined) {
       throw new ParseError('E0005', id.name);
     }
 
-    return new AST.Message(id, pattern, attrs, tags, comment);
+    return new AST.Message(id, pattern, attrs, comment);
   }
 
   getAttribute(ps) {
@@ -249,28 +241,6 @@ export default class FluentParser {
       }
     }
     return attrs;
-  }
-
-  getTag(ps) {
-    ps.expectChar('#');
-    const symb = this.getSymbol(ps);
-    return new AST.Tag(symb);
-  }
-
-  getTags(ps) {
-    const tags = [];
-
-    while (true) {
-      ps.expectIndent();
-
-      const tag = this.getTag(ps);
-      tags.push(tag);
-
-      if (!ps.isPeekNextLineTagStart()) {
-        break;
-      }
-    }
-    return tags;
   }
 
   getIdentifier(ps) {
