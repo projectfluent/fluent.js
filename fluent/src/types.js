@@ -22,9 +22,18 @@ export class FluentType {
   }
 
   /**
-   * Unwrap the instance of `FluentType` to a string.
+   * Unwrap the raw value stored by this `FluentType`.
    *
-   * Unwrapped values are suitable for use outside of the `MessageContext`.
+   * @returns {Any}
+   */
+  valueOf() {
+    return this.value;
+  }
+
+  /**
+   * Format this instance of `FluentType` to a string.
+   *
+   * Formatted values are suitable for use outside of the `MessageContext`.
    * This method can use `Intl` formatters memoized by the `MessageContext`
    * instance passed as an argument.
    *
