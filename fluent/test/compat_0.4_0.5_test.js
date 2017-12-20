@@ -3,7 +3,6 @@
 import assert from 'assert';
 
 import { MessageContext } from '../src/context';
-import { ftl } from './util';
 
 suite('Compatibility', function () {
   suite('browser/preferences/main.ftl', function () {
@@ -18,12 +17,12 @@ suite('Compatibility', function () {
 
     test('0.4 syntax', function () {
       const ctx = new MessageContext('en-US', { useIsolating: false });
-      const parsingErrors = ctx.addMessages(ftl`
-        // Variables:
-        //   $num - default value of the \`dom.ipc.processCount\` pref.
-        default-content-process-count
-            .label = { $num } (default)
-      `);
+      const parsingErrors = ctx.addMessages(`
+// Variables:
+//   $num - default value of the \`dom.ipc.processCount\` pref.
+default-content-process-count
+    .label = { $num } (default)
+`);
 
       assert.deepEqual(parsingErrors, []);
 
@@ -42,12 +41,12 @@ suite('Compatibility', function () {
 
     test('0.5 syntax', function () {
       const ctx = new MessageContext('en-US', { useIsolating: false });
-      const parsingErrors = ctx.addMessages(ftl`
-        # Variables:
-        #   $num - default value of the \`dom.ipc.processCount\` pref.
-        default-content-process-count =
-            .label = { $num } (default)
-      `);
+      const parsingErrors = ctx.addMessages(`
+# Variables:
+#   $num - default value of the \`dom.ipc.processCount\` pref.
+default-content-process-count =
+    .label = { $num } (default)
+`);
 
       assert.deepEqual(parsingErrors, [
         new SyntaxError('Expected an identifier (starting with [a-zA-Z_])')
@@ -77,20 +76,20 @@ suite('Compatibility', function () {
 
     test('0.4 syntax', function () {
       const ctx = new MessageContext('en-US', { useIsolating: false });
-      const parsingErrors = ctx.addMessages(ftl`
-        // This Source Code Form is subject to the terms of the Mozilla Public
-        // License, v. 2.0. If a copy of the MPL was not distributed with this
-        // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+      const parsingErrors = ctx.addMessages(`
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-        [[ Do Not Track ]]
+[[ Do Not Track ]]
 
-        do-not-track-description = Send websites a “Do Not Track” signal
-        do-not-track-learn-more = Learn more
-        do-not-track-option-default
-            .label = Only when using Tracking Protection
-        do-not-track-option-always
-            .label = Always
-      `);
+do-not-track-description = Send websites a “Do Not Track” signal
+do-not-track-learn-more = Learn more
+do-not-track-option-default
+    .label = Only when using Tracking Protection
+do-not-track-option-always
+    .label = Always
+`);
 
       assert.deepEqual(parsingErrors, []);
 
@@ -121,20 +120,20 @@ suite('Compatibility', function () {
 
     test('0.5 syntax', function () {
       const ctx = new MessageContext('en-US', { useIsolating: false });
-      const parsingErrors = ctx.addMessages(ftl`
-        # This Source Code Form is subject to the terms of the Mozilla Public
-        # License, v. 2.0. If a copy of the MPL was not distributed with this
-        # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+      const parsingErrors = ctx.addMessages(`
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-        ## Do Not Track
+## Do Not Track
 
-        do-not-track-description = Send websites a “Do Not Track” signal
-        do-not-track-learn-more = Learn more
-        do-not-track-option-default =
-            .label = Only when using Tracking Protection
-        do-not-track-option-always =
-            .label = Always
-      `);
+do-not-track-description = Send websites a “Do Not Track” signal
+do-not-track-learn-more = Learn more
+do-not-track-option-default =
+    .label = Only when using Tracking Protection
+do-not-track-option-always =
+    .label = Always
+`);
 
       assert.deepEqual(parsingErrors, [
         new SyntaxError('Expected an identifier (starting with [a-zA-Z_])')
