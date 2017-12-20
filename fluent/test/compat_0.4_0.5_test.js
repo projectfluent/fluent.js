@@ -5,7 +5,7 @@ import assert from 'assert';
 import { MessageContext } from '../src/context';
 import { ftl } from './util';
 
-suite.only('Compatibility', function () {
+suite('Compatibility', function () {
   suite('browser/preferences/main.ftl', function () {
     let args, errs;
 
