@@ -8,10 +8,8 @@ export default {
     babel({
       'babelrc': false,
       'presets': [
-        ['latest', {
-          'es2015': {
-            'modules': false
-          }
+        ['env', {
+          'modules': false
         }]
       ],
       'plugins': [
