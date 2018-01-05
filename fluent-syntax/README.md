@@ -33,8 +33,8 @@ http://projectfluent.org/fluent.js/fluent-syntax.
 
 ## Compatibility
 
-For legacy browsers, the `compat` build has been transpiled using the current
-version of Babel's [latest preset][]:
+For legacy browsers, the `compat` build has been transpiled using Babel's [env
+preset][]:
 
 ```javascript
 import 'fluent-syntax/compat';
@@ -48,6 +48,6 @@ documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
 
-[latest preset]: https://babeljs.io/docs/plugins/preset-latest/
+[env preset]: https://babeljs.io/docs/plugins/preset-env/
 [projectfluent.org]: http://projectfluent.org
 [FTL]: http://projectfluent.org/fluent/guide/

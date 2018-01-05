@@ -58,8 +58,8 @@ import 'fluent-intl-polyfill';
 import { MessageContext } from 'fluent';
 ```
 
-For legacy browsers, the `compat` build has been transpiled using the current
-version of Babel's [latest preset][]:
+For legacy browsers, the `compat` build has been transpiled using Babel's [env
+preset][]:
 
 ```javascript
 import { MessageContext } from 'fluent/compat';
@@ -76,6 +76,6 @@ implementations, and information about how to get involved.
 [intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
 [fluent-intl-polyfill]: https://www.npmjs.com/package/fluent-intl-polyfill
 [Stage 3 proposal]:https://github.com/tc39/proposal-intl-plural-rules
-[latest preset]: https://babeljs.io/docs/plugins/preset-latest/
+[env preset]: https://babeljs.io/docs/plugins/preset-env/
 [projectfluent.org]: http://projectfluent.org
 [FTL]: http://projectfluent.org/fluent/guide/
