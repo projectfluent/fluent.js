@@ -13,9 +13,3 @@ Object.keys(document.defaultView).forEach(property => {
 global.navigator = {
   userAgent: 'node.js'
 };
-
-require('babel-register')({
-  babelrc: false,
-  presets: ['react'],
-  plugins: ['transform-es2015-modules-commonjs']
-});

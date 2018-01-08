@@ -20,7 +20,11 @@ lint:
 	@echo -e " $(OK) $@"
 
 test:
-	@mocha --ui tdd --recursive --require ./test/setup
+	@mocha \
+	    --recursive \
+	    --ui tdd \
+	    --require babel-register \
+	    --require ./test/setup
 
 html: $(SOURCES)
 	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md \
