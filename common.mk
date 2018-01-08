@@ -20,7 +20,14 @@ lint:
 	@echo -e " $(OK) $@"
 
 test:
-	@mocha --ui tdd --recursive --require ./test/setup
+ifneq (,$(wildcard ./test/__setup.js))
+	@mocha --recursive --ui tdd \
+	    --require babel-register \
+	    --require ./test/__setup
+else
+	@mocha --recursive --ui tdd \
+	    --require babel-register
+endif
 
 html: $(SOURCES)
 	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md \

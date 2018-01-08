@@ -20,7 +20,7 @@ const variantCodeRe = '(?:-([a-z]{3}|\\*))';
  * It can also accept a range `*` character on any position.
  */
 const localeRe = new RegExp(
-`^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`, 'i');
+  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`, 'i');
 
 export const localeParts = ['language', 'script', 'region', 'variant'];
 

@@ -255,17 +255,17 @@ class RuntimeParser {
     let cc = this._source.charCodeAt(this._index);
 
     if ((cc >= 97 && cc <= 122) || // a-z
-        (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95 || cc === 32) {  // _ <space>
+        (cc >= 65 && cc <= 90) || // A-Z
+        cc === 95 || cc === 32) { // _ <space>
       cc = this._source.charCodeAt(++this._index);
     } else {
       throw this.error('Expected a keyword (starting with [a-zA-Z_])');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90) ||  // A-Z
-           (cc >= 48 && cc <= 57) ||  // 0-9
-           cc === 95 || cc === 45 || cc === 32) {  // _- <space>
+           (cc >= 65 && cc <= 90) || // A-Z
+           (cc >= 48 && cc <= 57) || // 0-9
+           cc === 95 || cc === 45 || cc === 32) { // _- <space>
       cc = this._source.charCodeAt(++this._index);
     }
 
@@ -882,8 +882,8 @@ class RuntimeParser {
         const cc = this._source.charCodeAt(start);
 
         if ((cc >= 97 && cc <= 122) || // a-z
-            (cc >= 65 && cc <= 90) ||  // A-Z
-             cc === 95 || cc === 47 || cc === 91) {  // _/[
+            (cc >= 65 && cc <= 90) || // A-Z
+             cc === 95 || cc === 47 || cc === 91) { // _/[
           this._index = start;
           return;
         }
