@@ -1,8 +1,9 @@
 import { resolve } from 'path';
+import bundleConfig from '../bundle_config';
 
 const version = require('../fluent/package.json').version;
 
-export default {
+export default Object.assign({}, bundleConfig, {
   external: [
     resolve('../fluent-dom/src/localization.js')
   ],
@@ -28,4 +29,4 @@ export default {
   },
   preferConst: true,
   context: 'this'
-};
+});

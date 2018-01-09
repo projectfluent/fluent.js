@@ -1,6 +1,9 @@
 import babel from 'rollup-plugin-babel';
 
 export default {
+  output: {
+    format: 'umd'
+  },
   plugins: [
     babel({
       'babelrc': false,
