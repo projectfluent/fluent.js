@@ -1,26 +1,11 @@
+import compatConfig from '../compat_config';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 
-export default {
-  output: {
-    format: 'umd'
-  },
+export default Object.assign({}, compatConfig, {
   context: 'this',
   plugins: [
     nodeResolve(),
-    babel({
-      'babelrc': false,
-      'presets': [
-        ['env', {
-          'modules': false
-        }]
-      ],
-      'plugins': [
-        'external-helpers',
-        ['babel-plugin-transform-builtin-extend', {
-          globals: ['Error']
-        }]
-      ]
-    }),
+    ...compatConfig.plugins
   ],
-};
+});

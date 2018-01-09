@@ -8,6 +8,7 @@ export default {
     babel({
       'babelrc': false,
       'presets': [
+        'stage-3',
         ['env', {
           // Cf. https://github.com/rollup/rollup-plugin-babel#modules
           'modules': false,
