@@ -21,7 +21,7 @@ function withSpan(fn) {
     }
 
     // Spans of Messages and Sections should include the attached Comment.
-    if (node.type === 'Message' || node.type === 'Section') {
+    if (node.type === 'Message') {
       if (node.comment !== null) {
         start = node.comment.span.start;
       }
@@ -42,7 +42,7 @@ export default class FluentParser {
 
     // Poor man's decorators.
     [
-      'getComment', 'getSection', 'getMessage', 'getAttribute',
+      'getComment', 'getMessage', 'getAttribute',
       'getIdentifier', 'getVariant', 'getSymbol', 'getNumber', 'getPattern',
       'getTextElement', 'getPlaceable', 'getExpression',
       'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
@@ -52,8 +52,6 @@ export default class FluentParser {
   }
 
   parse(source) {
-    let comment = null;
-
     const ps = new FTLParserStream(source);
     ps.skipBlankLines();
 
@@ -62,8 +60,16 @@ export default class FluentParser {
     while (ps.current()) {
       const entry = this.getEntryOrJunk(ps);
 
-      if (entry.type === 'Comment' && entries.length === 0) {
-        comment = entry;
+      if (entry === null) {
+        // That happens when we get a 0.4 style section
+        continue;
+      }
+
+      if (entry.type === 'Comment' &&
+        entry.zeroFourStyle && entries.length === 0) {
+        const comment = new AST.ResourceComment(entry.content);
+        comment.span = entry.span;
+        entries.push(comment);
       } else {
         entries.push(entry);
       }
@@ -72,7 +78,7 @@ export default class FluentParser {
       ps.skipBlankLines();
     }
 
-    const res = new AST.Resource(entries, comment);
+    const res = new AST.Resource(entries);
 
     if (this.withSpans) {
       res.addSpan(0, ps.getIndex());
@@ -117,7 +123,7 @@ export default class FluentParser {
   getEntry(ps) {
     let comment;
 
-    if (ps.currentIs('/')) {
+    if (ps.currentIs('/') || ps.currentIs('#')) {
       comment = this.getComment(ps);
 
       // The Comment content doesn't include the trailing newline. Consume
@@ -127,20 +133,25 @@ export default class FluentParser {
     }
 
     if (ps.currentIs('[')) {
-      return this.getSection(ps, comment);
+      this.skipSection(ps);
+      if (comment) {
+        return new AST.GroupComment(comment.content);
+      }
+      return null;
     }
 
-    if (ps.isIDStart()) {
+    if (ps.isIDStart() && (!comment || comment.type === 'Comment')) {
       return this.getMessage(ps, comment);
     }
 
     if (comment) {
       return comment;
     }
+
     throw new ParseError('E0002');
   }
 
-  getComment(ps) {
+  getZeroFourStyleComment(ps) {
     ps.expectChar('/');
     ps.expectChar('/');
     ps.takeCharIf(' ');
@@ -153,7 +164,7 @@ export default class FluentParser {
         content += ch;
       }
 
-      if (ps.isPeekNextLineComment()) {
+      if (ps.isPeekNextLineZeroFourStyleComment()) {
         content += '\n';
         ps.next();
         ps.expectChar('/');
@@ -163,23 +174,80 @@ export default class FluentParser {
         break;
       }
     }
-    return new AST.Comment(content);
+
+    const comment = new AST.Comment(content);
+    comment.zeroFourStyle = true;
+    return comment;
   }
 
-  getSection(ps, comment) {
+  getComment(ps) {
+    if (ps.currentIs('/')) {
+      return this.getZeroFourStyleComment(ps);
+    }
+
+    // 0 - comment
+    // 1 - group comment
+    // 2 - resource comment
+    let level = -1;
+    let content = '';
+
+    while (true) {
+      let i = -1;
+      while (ps.currentIs('#') && (i < (level === -1 ? 2 : level))) {
+        ps.next();
+        i++;
+      }
+
+      if (level === -1) {
+        level = i;
+      }
+
+      if (!ps.currentIs('\n')) {
+        ps.expectChar(' ');
+        let ch;
+        while ((ch = ps.takeChar(x => x !== '\n'))) {
+          content += ch;
+        }
+      }
+
+      if (ps.isPeekNextLineComment(level, false)) {
+        content += '\n';
+        ps.next();
+      } else {
+        break;
+      }
+    }
+
+    let Comment;
+    switch (level) {
+      case 0:
+        Comment = AST.Comment;
+        break;
+      case 1:
+        Comment = AST.GroupComment;
+        break;
+      case 2:
+        Comment = AST.ResourceComment;
+        break;
+    }
+    return new Comment(content);
+  }
+
+  skipSection(ps) {
     ps.expectChar('[');
     ps.expectChar('[');
 
     ps.skipInlineWS();
 
-    const symb = this.getSymbol(ps);
+    this.getSymbol(ps);
 
     ps.skipInlineWS();
 
     ps.expectChar(']');
     ps.expectChar(']');
 
-    return new AST.Section(symb, comment);
+    ps.skipInlineWS();
+    ps.next();
   }
 
   getMessage(ps, comment) {

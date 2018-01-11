@@ -76,22 +76,10 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('section', function() {
-    const input = ftl`
-      foo = Foo
-
-
-      [[ Section Header ]]
-
-      bar = Bar
-    `;
-    assert.equal(pretty(input), input);
-  });
-
   test('resource comment', function() {
     const input = ftl`
-      // A multiline
-      // resource comment.
+      ### A multiline
+      ### resource comment.
 
       foo = Foo
     `;
@@ -100,21 +88,21 @@ suite('Serializer', function() {
 
   test('message comment', function() {
     const input = ftl`
-      // A multiline
-      // message comment.
+      # A multiline
+      # message comment.
       foo = Foo
     `;
     assert.equal(pretty(input), input);
   });
 
-  test('section comment', function() {
+  test('group comment', function() {
     const input = ftl`
       foo = Foo
 
-
-      // A multiline
-      // section comment.
-      [[ Section Header ]]
+      ## Comment Header
+      ##
+      ## A multiline
+      ## section comment.
 
       bar = Bar
     `;
@@ -125,7 +113,7 @@ suite('Serializer', function() {
     const input = ftl`
       foo = Foo
 
-      // A Standalone Comment
+      # A Standalone Comment
 
       bar = Bar
     `;

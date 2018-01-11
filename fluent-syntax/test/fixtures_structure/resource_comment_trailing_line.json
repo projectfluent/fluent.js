@@ -1,16 +1,17 @@
 {
   "type": "Resource",
-  "body": [],
-  "comment": {
-    "type": "Comment",
-    "annotations": [],
-    "content": "This is a comment\nThis comment is multiline\n",
-    "span": {
-      "type": "Span",
-      "start": 0,
-      "end": 52
+  "body": [
+    {
+      "type": "ResourceComment",
+      "annotations": [],
+      "content": "This is a comment\nThis comment is multiline\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 52
+      }
     }
-  },
+  ],
   "span": {
     "type": "Span",
     "start": 0,

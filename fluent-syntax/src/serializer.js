@@ -14,6 +14,7 @@ function containNewLine(elems) {
 export default class FluentSerializer {
   constructor({ withJunk = false } = {}) {
     this.withJunk = withJunk;
+    this.hasEntries = false;
   }
 
   serialize(resource) {
@@ -23,11 +24,15 @@ export default class FluentSerializer {
       parts.push(
         `${serializeComment(resource.comment)}\n\n`
       );
+      this.hasEntries = true;
     }
 
     for (const entry of resource.body) {
       if (entry.types !== 'Junk' || this.withJunk) {
         parts.push(this.serializeEntry(entry));
+        if (this.hasEntries === false) {
+          this.hasEntries = true;
+        }
       }
     }
 
@@ -40,10 +45,21 @@ export default class FluentSerializer {
         return serializeMessage(entry);
       case 'Section':
         return serializeSection(entry);
-      case 'Comment': {
-        const comment = serializeComment(entry);
-        return `\n${comment}\n\n`;
-      }
+      case 'Comment':
+        if (this.hasEntries) {
+          return `\n${serializeComment(entry)}\n\n`;
+        }
+        return `${serializeComment(entry)}\n\n`;
+      case 'GroupComment':
+        if (this.hasEntries) {
+          return `\n${serializeGroupComment(entry)}\n\n`;
+        }
+        return `${serializeGroupComment(entry)}\n\n`;
+      case 'ResourceComment':
+        if (this.hasEntries) {
+          return `\n${serializeResourceComment(entry)}\n\n`;
+        }
+        return `${serializeResourceComment(entry)}\n\n`;
       case 'Junk':
         return serializeJunk(entry);
       default :
@@ -55,10 +71,21 @@ export default class FluentSerializer {
 
 function serializeComment(comment) {
   return comment.content.split('\n').map(
-    line => `// ${line}`
+    line => line.length ? `# ${line}` : '#'
   ).join('\n');
 }
 
+function serializeGroupComment(comment) {
+  return comment.content.split('\n').map(
+    line => line.length ? `## ${line}` : '##'
+  ).join('\n');
+}
+
+function serializeResourceComment(comment) {
+  return comment.content.split('\n').map(
+    line => line.length ? `### ${line}` : '###'
+  ).join('\n');
+}
 
 function serializeSection(section) {
   const name = serializeSymbol(section.name);

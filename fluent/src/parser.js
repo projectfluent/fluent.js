@@ -72,7 +72,8 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     // We don't care about comments or sections at runtime
-    if (ch === '/') {
+    if (ch === '/' ||
+      (ch === '#' && [' ', '#'].includes(this._source[this._index + 1]))) {
       this.skipComment();
       return;
     }
@@ -839,7 +840,9 @@ class RuntimeParser {
     let eol = this._source.indexOf('\n', this._index);
 
     while (eol !== -1 &&
-      this._source[eol + 1] === '/' && this._source[eol + 2] === '/') {
+      ((this._source[eol + 1] === '/' && this._source[eol + 2] === '/') ||
+       (this._source[eol + 1] === '#' &&
+         [' ', '#'].includes(this._source[eol + 2])))) {
       this._index = eol + 3;
 
       eol = this._source.indexOf('\n', this._index);
