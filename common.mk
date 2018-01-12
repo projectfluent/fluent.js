@@ -23,10 +23,12 @@ test:
 ifneq (,$(wildcard ./test/__setup.js))
 	@mocha --recursive --ui tdd \
 	    --require babel-register \
+	    --require babel-polyfill \
 	    --require ./test/__setup
 else
 	@mocha --recursive --ui tdd \
-	    --require babel-register
+	    --require babel-register \
+	    --require babel-polyfill
 endif
 
 html: $(SOURCES)
