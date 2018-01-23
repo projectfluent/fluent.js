@@ -4,7 +4,7 @@ import CachedIterable from '../src/cached_iterable';
 import MessageContext from './message_context_stub';
 import { mapContextSync } from '../src/index';
 
-suite('Fallback — single id', function() {
+suite('Sync Fallback — single id', function() {
   let ctx1, ctx2;
 
   suiteSetup(function() {
@@ -51,7 +51,7 @@ suite('Fallback — single id', function() {
   });
 });
 
-suite('Fallback — multiple ids', function() {
+suite('Sync Fallback — multiple ids', function() {
   let ctx1, ctx2;
 
   suiteSetup(function() {

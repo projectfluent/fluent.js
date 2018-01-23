@@ -1,4 +1,7 @@
 {
+    "presets": [
+        "stage-3"
+    ],
     "plugins": [
         "babel-plugin-transform-es2015-modules-commonjs"
     ]

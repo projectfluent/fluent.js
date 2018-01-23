@@ -48,7 +48,6 @@
  * @param {string|Array<string>} ids
  * @returns {MessageContext|Array<MessageContext>}
  */
-
 export function mapContextSync(iterable, ids) {
   if (!Array.isArray(ids)) {
     return getContextForId(iterable, ids);
@@ -70,4 +69,44 @@ function getContextForId(iterable, id) {
   }
 
   return null;
+}
+
+/*
+ * Asynchronously map an identifier or an array of identifiers to the best
+ * `MessageContext` instance(s).
+ *
+ * @param {AsyncIterable} iterable
+ * @param {string|Array<string>} ids
+ * @returns {Promise<MessageContext|Array<MessageContext>>}
+ */
+export async function mapContextAsync(iterable, ids) {
+  if (!Array.isArray(ids)) {
+    for await (const context of iterable) {
+      if (context.hasMessage(ids)) {
+        return context;
+      }
+    }
+  }
+
+  let remainingCount = ids.length;
+  const foundContexts = new Array(remainingCount).fill(null);
+
+  for await (const context of iterable) {
+    // XXX Switch to const [index, id] of id.entries() when we move to Babel 7.
+    // See https://github.com/babel/babel/issues/5880.
+    for (let index = 0; index < ids.length; index++) {
+      const id = ids[index];
+      if (!foundContexts[index] && context.hasMessage(id)) {
+        foundContexts[index] = context;
+        remainingCount--;
+      }
+
+      // Return early when all ids have been mapped to contexts.
+      if (remainingCount === 0) {
+        return foundContexts;
+      }
+    }
+  }
+
+  return foundContexts;
 }

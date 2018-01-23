@@ -1,6 +1,8 @@
+import bundleConfig from '../bundle_config';
+
 const version = require('../fluent/package.json').version;
 
-export default {
+export default Object.assign({}, bundleConfig, {
   preferConst: true,
   context: 'this',
   output: {
@@ -23,4 +25,4 @@ export default {
  */\n\n`,
     intro: `/* fluent@${version} */`,
   }
-};
+});

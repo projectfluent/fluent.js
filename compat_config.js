@@ -1,10 +1,14 @@
 import babel from 'rollup-plugin-babel';
 
 export default {
+  output: {
+    format: 'umd'
+  },
   plugins: [
     babel({
       'babelrc': false,
       'presets': [
+        'stage-3',
         ['env', {
           // Cf. https://github.com/rollup/rollup-plugin-babel#modules
           'modules': false,
