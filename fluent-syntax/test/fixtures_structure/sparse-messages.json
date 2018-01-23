@@ -237,7 +237,7 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "Symbol",
+                    "type": "VariantName",
                     "name": "one",
                     "span": {
                       "type": "Span",
@@ -274,7 +274,7 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "Symbol",
+                    "type": "VariantName",
                     "name": "two",
                     "span": {
                       "type": "Span",

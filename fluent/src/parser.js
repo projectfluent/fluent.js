@@ -100,7 +100,7 @@ class RuntimeParser {
     this._index += 1;
 
     this.skipInlineWS();
-    this.getSymbol();
+    this.getVariantName();
     this.skipInlineWS();
 
     if (this._source[this._index] !== ']' ||
@@ -244,12 +244,12 @@ class RuntimeParser {
   }
 
   /**
-   * Get Symbol.
+   * Get Variant name.
    *
    * @returns {Object}
    * @private
    */
-  getSymbol() {
+  getVariantName() {
     let name = '';
 
     const start = this._index;
@@ -280,7 +280,7 @@ class RuntimeParser {
 
     name += this._source.slice(start, this._index);
 
-    return { type: 'sym', name };
+    return { type: 'varname', name };
   }
 
   /**
@@ -792,7 +792,7 @@ class RuntimeParser {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getSymbol();
+      literal = this.getVariantName();
     }
 
     if (this._source[this._index] !== ']') {

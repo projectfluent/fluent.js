@@ -283,7 +283,7 @@ export class FTLParserStream extends ParserStream {
     return this.takeChar(closure);
   }
 
-  takeSymbChar() {
+  takeVariantNameChar() {
     const closure = ch => {
       const cc = ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z

@@ -42,8 +42,8 @@ export default class FluentParser {
 
     // Poor man's decorators.
     [
-      'getComment', 'getMessage', 'getAttribute',
-      'getIdentifier', 'getVariant', 'getSymbol', 'getNumber', 'getPattern',
+      'getComment', 'getMessage', 'getAttribute', 'getIdentifier',
+      'getVariant', 'getVariantName', 'getNumber', 'getPattern',
       'getTextElement', 'getPlaceable', 'getExpression',
       'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
     ].forEach(
@@ -239,7 +239,7 @@ export default class FluentParser {
 
     ps.skipInlineWS();
 
-    this.getSymbol(ps);
+    this.getVariantName(ps);
 
     ps.skipInlineWS();
 
@@ -337,7 +337,7 @@ export default class FluentParser {
       return this.getNumber(ps);
     }
 
-    return this.getSymbol(ps);
+    return this.getVariantName(ps);
   }
 
   getVariant(ps, hasDefault) {
@@ -396,13 +396,13 @@ export default class FluentParser {
     return variants;
   }
 
-  getSymbol(ps) {
+  getVariantName(ps) {
     let name = '';
 
     name += ps.takeIDStart();
 
     while (true) {
-      const ch = ps.takeSymbChar();
+      const ch = ps.takeVariantNameChar();
       if (ch) {
         name += ch;
       } else {
@@ -410,7 +410,7 @@ export default class FluentParser {
       }
     }
 
-    return new AST.Symbol(name.trimRight());
+    return new AST.VariantName(name.trimRight());
   }
 
   getDigits(ps) {
