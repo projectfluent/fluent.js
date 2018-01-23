@@ -131,9 +131,21 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('attribute', function() {
+  test('attribute (Syntax 0.4)', function() {
     const input = ftl`
       foo
+          .attr = Foo Attr
+    `;
+    const output = ftl`
+      foo =
+          .attr = Foo Attr
+    `;
+    assert.equal(pretty(input), output);
+  });
+
+  test('attribute', function() {
+    const input = ftl`
+      foo =
           .attr = Foo Attr
     `;
     assert.equal(pretty(input), input);
@@ -141,7 +153,7 @@ suite('Serializer', function() {
 
   test('multiline attribute', function() {
     const input = ftl`
-      foo
+      foo =
           .attr =
               Foo Attr
               Continued
@@ -149,9 +161,23 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('two attribute', function() {
+  test('two attributes (Syntax 0.4)', function() {
     const input = ftl`
       foo
+          .attr-a = Foo Attr A
+          .attr-b = Foo Attr B
+    `;
+    const output = ftl`
+      foo =
+          .attr-a = Foo Attr A
+          .attr-b = Foo Attr B
+    `;
+    assert.equal(pretty(input), output);
+  });
+
+  test('two attributes', function() {
+    const input = ftl`
+      foo =
           .attr-a = Foo Attr A
           .attr-b = Foo Attr B
     `;

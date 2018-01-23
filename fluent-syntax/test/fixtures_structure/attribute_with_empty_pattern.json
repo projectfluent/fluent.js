@@ -1,0 +1,130 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "value"
+          ],
+          "message": "Expected field: \"value\"",
+          "span": {
+            "type": "Span",
+            "start": 26,
+            "end": 26
+          }
+        }
+      ],
+      "content": "key1 = Value 1\n    .attr =\n\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 28
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "value"
+          ],
+          "message": "Expected field: \"value\"",
+          "span": {
+            "type": "Span",
+            "start": 46,
+            "end": 46
+          }
+        }
+      ],
+      "content": "key2 =\n    .attr =\n\n",
+      "span": {
+        "type": "Span",
+        "start": 28,
+        "end": 48
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "value"
+          ],
+          "message": "Expected field: \"value\"",
+          "span": {
+            "type": "Span",
+            "start": 87,
+            "end": 87
+          }
+        }
+      ],
+      "content": "key3 =\n    .attr1 = Attr 1\n    .attr2 =\n\n",
+      "span": {
+        "type": "Span",
+        "start": 48,
+        "end": 89
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "value"
+          ],
+          "message": "Expected field: \"value\"",
+          "span": {
+            "type": "Span",
+            "start": 108,
+            "end": 108
+          }
+        }
+      ],
+      "content": "key4 =\n    .attr1 =\n    .attr2 = Attr 2\n\n",
+      "span": {
+        "type": "Span",
+        "start": 89,
+        "end": 130
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "value"
+          ],
+          "message": "Expected field: \"value\"",
+          "span": {
+            "type": "Span",
+            "start": 149,
+            "end": 149
+          }
+        }
+      ],
+      "content": "key5 =\n    .attr1 =\n    .attr2 =\n",
+      "span": {
+        "type": "Span",
+        "start": 130,
+        "end": 163
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 163
+  }
+}

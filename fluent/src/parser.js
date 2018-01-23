@@ -121,47 +121,25 @@ class RuntimeParser {
    */
   getMessage() {
     const id = this.getPrivateIdentifier();
-    let attrs = null;
 
     this.skipInlineWS();
 
-    let ch = this._source[this._index];
-
-    let val;
-
-    if (ch === '=') {
+    if (this._source[this._index] === '=') {
       this._index++;
-
-      this.skipInlineWS();
-
-      if (this._source[this._index] === '\n') {
-        this.skipBlankLines();
-        if (this._source[this._index] === ' ') {
-          this.skipInlineWS();
-          val = this.getPattern();
-        }
-      } else {
-        // This is a fast-path for the most common
-        // case of `key = Value` where the value
-        // is in the same line as the key.
-        val = this.getPattern();
-      }
-    } else {
-      this.skipInlineWS();
-      this.skipBlankLines();
     }
 
-    ch = this._source[this._index];
+    this.skipInlineWS();
 
-    if (ch === ' ') {
+    const val = this.getPattern();
+
+    let attrs = null;
+
+    if (this._source[this._index] === ' ') {
       const lineStart = this._index;
       this.skipInlineWS();
 
-      ch = this._source[this._index];
-
-      this._index = lineStart;
-
-      if (ch === '.') {
+      if (this._source[this._index] === '.') {
+        this._index = lineStart;
         attrs = this.getAttributes();
       }
     }
@@ -169,13 +147,17 @@ class RuntimeParser {
     if (attrs === null && typeof val === 'string') {
       this.entries[id] = val;
     } else {
-      if (val === undefined && attrs === null) {
-        throw this.error(`Expected a value (like: " = value") or
-          an attribute (like: ".key = value")`);
+      if (val === null && attrs === null) {
+        throw this.error('Expected a value or an attribute');
       }
 
-      this.entries[id] = { val };
-      if (attrs) {
+      this.entries[id] = {};
+
+      if (val !== null) {
+        this.entries[id].val = val;
+      }
+
+      if (attrs !== null) {
         this.entries[id].attrs = attrs;
       }
     }
@@ -349,10 +331,10 @@ class RuntimeParser {
       eol = this._length;
     }
 
-    const line = start !== eol ?
-      this._source.slice(start, eol) : undefined;
+    const firstLineContent = start !== eol ?
+      this._source.slice(start, eol) : null;
 
-    if (line !== undefined && line.includes('{')) {
+    if (firstLineContent && firstLineContent.includes('{')) {
       return this.getComplexPattern();
     }
 
@@ -360,12 +342,29 @@ class RuntimeParser {
 
     this.skipBlankLines();
 
-    if (this._source[this._index] === ' ') {
-      this._index = start;
-      return this.getComplexPattern();
+    if (this._source[this._index] !== ' ') {
+      // No indentation means we're done with this message.
+      return firstLineContent;
     }
 
-    return line;
+    const lineStart = this._index;
+
+    this.skipInlineWS();
+
+    if (this._source[this._index] === '.') {
+      // The pattern is followed by an attribute. Rewind _index to the first
+      // column of the current line as expected by getAttributes.
+      this._index = lineStart;
+      return firstLineContent;
+    }
+
+    if (firstLineContent) {
+      // It's a multiline pattern which started on the same line as the
+      // identifier. Reparse the whole pattern to make sure we get all of it.
+      this._index = start;
+    }
+
+    return this.getComplexPattern();
   }
 
   /**
@@ -453,7 +452,7 @@ class RuntimeParser {
     }
 
     if (content.length === 0) {
-      return buffer.length ? buffer : undefined;
+      return buffer.length ? buffer : null;
     }
 
     if (buffer.length) {

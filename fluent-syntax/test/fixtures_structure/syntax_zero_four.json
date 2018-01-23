@@ -1,0 +1,162 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 4
+        }
+      },
+      "value": null,
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attr1",
+            "span": {
+              "type": "Span",
+              "start": 10,
+              "end": 15
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Attr 1",
+                "span": {
+                  "type": "Span",
+                  "start": 18,
+                  "end": 24
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 18,
+              "end": 24
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 4,
+            "end": 24
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "span": {
+          "type": "Span",
+          "start": 26,
+          "end": 30
+        }
+      },
+      "value": null,
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attr1",
+            "span": {
+              "type": "Span",
+              "start": 36,
+              "end": 41
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Attr 1",
+                "span": {
+                  "type": "Span",
+                  "start": 44,
+                  "end": 50
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 44,
+              "end": 50
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 30,
+            "end": 50
+          }
+        },
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attr2",
+            "span": {
+              "type": "Span",
+              "start": 56,
+              "end": 61
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Attr 2",
+                "span": {
+                  "type": "Span",
+                  "start": 64,
+                  "end": 70
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 64,
+              "end": 70
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 50,
+            "end": 70
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 26,
+        "end": 70
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 71
+  }
+}
