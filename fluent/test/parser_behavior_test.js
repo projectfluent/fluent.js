@@ -20,10 +20,10 @@ readdir(fixtures, function(err, filenames) {
     filename => filename.endsWith('.ftl')
   );
 
-  suite('Behavior tests', function() {
+  suite.skip('Behavior tests', function() {
     for (const filename of ftlnames) {
       const filepath = join(fixtures, filename);
-      test.skip(filename, function() {
+      test(filename, function() {
         return readfile(filepath).then(file => {
           const { directives, source } = preprocess(file);
           const expected = directives.join('\n') + '\n';

@@ -33,24 +33,43 @@ suite('Patterns', function(){
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
-        bar = { foo } Bar
-        baz = { missing }
-        qux = { malformed
+        -bar = Bar
+
+        ref-public = { foo }
+        ref-private = { -bar }
+
+        ref-missing-public = { missing }
+        ref-missing-private = { -missing }
+
+        ref-malformed = { malformed
       `);
     });
 
-    test('returns the value', function(){
-      const msg = ctx.getMessage('bar');
+    test('resolves the reference to a public message', function(){
+      const msg = ctx.getMessage('ref-public');
       const val = ctx.format(msg, args, errs);
-      assert.strictEqual(val, 'Foo Bar');
+      assert.strictEqual(val, 'Foo');
       assert.equal(errs.length, 0);
     });
 
-    test('returns the raw string if the referenced message is ' +
-       'not found', function(){
-      const msg = ctx.getMessage('baz');
+    test('resolves the reference to a private message', function(){
+      const msg = ctx.getMessage('ref-private');
+      const val = ctx.format(msg, args, errs);
+      assert.strictEqual(val, 'Bar');
+      assert.equal(errs.length, 0);
+    });
+
+    test('returns the id if a public reference is missing', function(){
+      const msg = ctx.getMessage('ref-missing-public');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'missing');
+      assert.ok(errs[0] instanceof ReferenceError); // unknown message
+    });
+
+    test('returns the id if a private reference is missing', function(){
+      const msg = ctx.getMessage('ref-missing-private');
+      const val = ctx.format(msg, args, errs);
+      assert.strictEqual(val, '-missing');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
   });
@@ -125,10 +144,11 @@ suite('Patterns', function(){
     suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
-        foo = { $sel ->
-           *[a] { foo }
-            [b] Bar
-        }
+        foo =
+            { $sel ->
+               *[a] { foo }
+                [b] Bar
+            }
         bar = { foo }
       `);
     });
@@ -152,11 +172,14 @@ suite('Patterns', function(){
     suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
-        foo = { ref-foo ->
-           *[a] Foo
-        }
+        -foo =
+            { -bar.attr ->
+               *[a] Foo
+            }
+        -bar
+            .attr = { -foo }
 
-        ref-foo = { foo }
+        foo = { -foo }
       `);
     });
 
@@ -172,14 +195,20 @@ suite('Patterns', function(){
     suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
-        foo = { foo ->
-           *[a] Foo
-        }
-
-        bar = { bar.attr ->
-           *[a] Bar
-        }
+        -foo =
+            { -bar.attr ->
+               *[a] Foo
+            }
             .attr = a
+
+        -bar =
+            { -foo.attr ->
+              *[a] Bar
+            }
+            .attr = { -foo }
+
+        foo = { -foo }
+        bar = { -bar }
       `);
     });
 

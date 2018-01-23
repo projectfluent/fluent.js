@@ -21,14 +21,14 @@
         "vars": [
           {
             "key": {
-              "type": "sym",
+              "type": "varname",
               "name": "one"
             },
             "val": "One"
           },
           {
             "key": {
-              "type": "sym",
+              "type": "varname",
               "name": "two"
             },
             "val": "Two"

@@ -50,11 +50,11 @@ suite('Select expressions', function() {
     });
   });
 
-  suite('with an invalid selector', function(){
+  suite('with a missing selector', function(){
     suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
-        foo = { bar ->
+        foo = { $none ->
            *[a] A
             [b] B
         }
@@ -66,7 +66,7 @@ suite('Select expressions', function() {
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown message
+      assert(errs[0] instanceof ReferenceError); // unknown external
     });
   });
 

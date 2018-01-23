@@ -93,20 +93,36 @@ export class FTLParserStream extends ParserStream {
     return undefined;
   }
 
-  isIDStart() {
-    if (this.ch === undefined) {
+  isCharIDStart(ch) {
+    if (ch === undefined) {
       return false;
     }
 
-    const cc = this.ch.charCodeAt(0);
-    return ((cc >= 97 && cc <= 122) || // a-z
-            (cc >= 65 && cc <= 90) || // A-Z
-             cc === 95); // _
+    const cc = ch.charCodeAt(0);
+    return (cc >= 97 && cc <= 122) || // a-z
+           (cc >= 65 && cc <= 90); // A-Z
+  }
+
+  isMessageIDStart() {
+    if (this.currentIs('-')) {
+      this.peek();
+    }
+
+    const ch = this.currentPeek();
+    const isID = this.isCharIDStart(ch);
+    this.resetPeek();
+    return isID;
   }
 
   isNumberStart() {
-    const cc = this.ch.charCodeAt(0);
-    return ((cc >= 48 && cc <= 57) || cc === 45); // 0-9
+    if (this.currentIs('-')) {
+      this.peek();
+    }
+
+    const cc = this.currentPeek().charCodeAt(0);
+    const isDigit = cc >= 48 && cc <= 57; // 0-9
+    this.resetPeek();
+    return isDigit;
   }
 
   isPeekNextLineZeroFourStyleComment() {
@@ -252,7 +268,7 @@ export class FTLParserStream extends ParserStream {
     while (this.ch) {
       if (this.currentIs('\n') && !this.peekCharIs('\n')) {
         this.next();
-        if (this.ch === undefined || this.isIDStart() ||
+        if (this.ch === undefined || this.isMessageIDStart() ||
             (this.currentIs('/') && this.peekCharIs('/')) ||
             (this.currentIs('[') && this.peekCharIs('['))) {
           break;
@@ -262,13 +278,20 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  takeIDStart() {
-    if (this.isIDStart()) {
+  takeIDStart(allowPrivate) {
+    if (allowPrivate && this.currentIs('-')) {
+      this.next();
+      return '-';
+    }
+
+    if (this.isCharIDStart(this.ch)) {
       const ret = this.ch;
       this.next();
       return ret;
     }
-    throw new ParseError('E0004', 'a-zA-Z_');
+
+    const allowedRange = allowPrivate ? 'a-zA-Z-' : 'a-zA-Z';
+    throw new ParseError('E0004', allowedRange);
   }
 
   takeIDChar() {
@@ -283,7 +306,7 @@ export class FTLParserStream extends ParserStream {
     return this.takeChar(closure);
   }
 
-  takeSymbChar() {
+  takeVariantNameChar() {
     const closure = ch => {
       const cc = ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z

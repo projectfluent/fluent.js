@@ -1,0 +1,105 @@
+{
+  "-brand-name": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": null,
+        "vars": [
+          {
+            "key": {
+              "type": "varname",
+              "name": "nominative"
+            },
+            "val": "Firefox"
+          },
+          {
+            "key": {
+              "type": "varname",
+              "name": "accusative"
+            },
+            "val": "Firefoxa"
+          }
+        ],
+        "def": 0
+      }
+    ],
+    "attrs": {
+      "gender": "masculine"
+    }
+  },
+  "update-command": {
+    "val": [
+      "Zaktualizuj ",
+      {
+        "type": "var",
+        "id": {
+          "type": "ref",
+          "name": "-brand-name"
+        },
+        "key": {
+          "type": "varname",
+          "name": "accusative"
+        }
+      },
+      "."
+    ]
+  },
+  "update-successful": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": {
+          "type": "attr",
+          "id": {
+            "type": "ref",
+            "name": "-brand-name"
+          },
+          "name": "gender"
+        },
+        "vars": [
+          {
+            "key": {
+              "type": "varname",
+              "name": "masculine"
+            },
+            "val": [
+              {
+                "type": "ref",
+                "name": "-brand-name"
+              },
+              " został pomyślnie zaktualizowany."
+            ]
+          },
+          {
+            "key": {
+              "type": "varname",
+              "name": "feminine"
+            },
+            "val": [
+              {
+                "type": "ref",
+                "name": "-brand-name"
+              },
+              " została pomyślnie zaktualizowana."
+            ]
+          },
+          {
+            "key": {
+              "type": "varname",
+              "name": "other"
+            },
+            "val": [
+              "Program ",
+              {
+                "type": "ref",
+                "name": "-brand-name"
+              },
+              " został pomyślnie zaktualizowany."
+            ]
+          }
+        ],
+        "def": 2
+      }
+    ]
+  }
+}

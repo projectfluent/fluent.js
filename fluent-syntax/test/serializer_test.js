@@ -6,7 +6,9 @@ import { parse, serialize } from '../src';
 
 function pretty(text) {
   const res = parse(text);
-  return serialize(res);
+  return serialize(res, {
+    withJunk: false
+  });
 }
 
 suite('Serializer', function() {
@@ -188,7 +190,7 @@ suite('Serializer', function() {
 
   test('select expression', function() {
     const input = ftl`
-      foo = { sel ->
+      foo = { $sel ->
              *[a] A
               [b] B
           }
@@ -254,13 +256,13 @@ suite('Serializer', function() {
   test('select expression in simple multiline value (current)', function() {
     const input = ftl`
       foo =
-          Foo { sel ->
+          Foo { $sel ->
              *[a] A
               [b] B
           }
     `;
     const output = ftl`
-      foo = Foo { sel ->
+      foo = Foo { $sel ->
              *[a] A
               [b] B
           }
@@ -272,7 +274,7 @@ suite('Serializer', function() {
     const input = ftl`
       foo =
           Foo
-          Bar { sel ->
+          Bar { $sel ->
              *[a] A
               [b] B
           }
@@ -283,19 +285,10 @@ suite('Serializer', function() {
   // XXX Parsing Error
   test.skip('nested select expression', function() {
     const input = ftl`
-      foo = { sel_a ->
-             *[a] { sel_b ->
+      foo = { $a ->
+             *[a] { $b ->
                  *[b] Foo
               }
-          }
-    `;
-    assert.equal(pretty(input), input);
-  });
-
-  test('selector message reference', function() {
-    const input = ftl`
-      foo = { bar ->
-             *[a] A
           }
     `;
     assert.equal(pretty(input), input);
@@ -328,18 +321,9 @@ suite('Serializer', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('selector variant expression', function() {
-    const input = ftl`
-      foo = { bar[baz] ->
-             *[a] A
-          }
-    `;
-    assert.equal(pretty(input), input);
-  });
-
   test('selector attribute expression', function() {
     const input = ftl`
-      foo = { bar.baz ->
+      foo = { -bar.baz ->
              *[a] A
           }
     `;

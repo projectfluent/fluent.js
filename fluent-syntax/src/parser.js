@@ -42,8 +42,8 @@ export default class FluentParser {
 
     // Poor man's decorators.
     [
-      'getComment', 'getMessage', 'getAttribute',
-      'getIdentifier', 'getVariant', 'getSymbol', 'getNumber', 'getPattern',
+      'getComment', 'getMessage', 'getAttribute', 'getIdentifier',
+      'getVariant', 'getVariantName', 'getNumber', 'getPattern',
       'getTextElement', 'getPlaceable', 'getExpression',
       'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
     ].forEach(
@@ -140,7 +140,7 @@ export default class FluentParser {
       return null;
     }
 
-    if (ps.isIDStart() && (!comment || comment.type === 'Comment')) {
+    if (ps.isMessageIDStart() && (!comment || comment.type === 'Comment')) {
       return this.getMessage(ps, comment);
     }
 
@@ -239,7 +239,7 @@ export default class FluentParser {
 
     ps.skipInlineWS();
 
-    this.getSymbol(ps);
+    this.getVariantName(ps);
 
     ps.skipInlineWS();
 
@@ -251,7 +251,7 @@ export default class FluentParser {
   }
 
   getMessage(ps, comment) {
-    const id = this.getIdentifier(ps);
+    const id = this.getPrivateIdentifier(ps);
 
     ps.skipInlineWS();
 
@@ -280,7 +280,7 @@ export default class FluentParser {
   getAttribute(ps) {
     ps.expectChar('.');
 
-    const key = this.getIdentifier(ps);
+    const key = this.getPublicIdentifier(ps);
 
     ps.skipInlineWS();
     ps.expectChar('=');
@@ -311,10 +311,18 @@ export default class FluentParser {
     return attrs;
   }
 
-  getIdentifier(ps) {
+  getPrivateIdentifier(ps) {
+    return this.getIdentifier(ps, true);
+  }
+
+  getPublicIdentifier(ps) {
+    return this.getIdentifier(ps, false);
+  }
+
+  getIdentifier(ps, allowPrivate) {
     let name = '';
 
-    name += ps.takeIDStart();
+    name += ps.takeIDStart(allowPrivate);
 
     let ch;
     while ((ch = ps.takeIDChar())) {
@@ -337,7 +345,7 @@ export default class FluentParser {
       return this.getNumber(ps);
     }
 
-    return this.getSymbol(ps);
+    return this.getVariantName(ps);
   }
 
   getVariant(ps, hasDefault) {
@@ -396,13 +404,13 @@ export default class FluentParser {
     return variants;
   }
 
-  getSymbol(ps) {
+  getVariantName(ps) {
     let name = '';
 
-    name += ps.takeIDStart();
+    name += ps.takeIDStart(false);
 
     while (true) {
-      const ch = ps.takeSymbChar();
+      const ch = ps.takeVariantNameChar();
       if (ch) {
         name += ch;
       } else {
@@ -410,7 +418,7 @@ export default class FluentParser {
       }
     }
 
-    return new AST.Symbol(name.trimRight());
+    return new AST.VariantName(name.trimRight());
   }
 
   getDigits(ps) {
@@ -544,25 +552,42 @@ export default class FluentParser {
 
     if (ps.currentIs('-')) {
       ps.peek();
+
       if (!ps.currentPeekIs('>')) {
         ps.resetPeek();
-      } else {
-        ps.next();
-        ps.next();
-
-        ps.skipInlineWS();
-
-        const variants = this.getVariants(ps);
-
-
-        if (variants.length === 0) {
-          throw new ParseError('E0011');
-        }
-
-        ps.expectIndent();
-
-        return new AST.SelectExpression(selector, variants);
+        return selector;
       }
+
+      if (selector.type === 'MessageReference') {
+        throw new ParseError('E0016');
+      }
+
+      if (selector.type === 'AttributeExpression' &&
+          !selector.id.name.startsWith('-')) {
+        throw new ParseError('E0018');
+      }
+
+      if (selector.type === 'VariantExpression') {
+        throw new ParseError('E0017');
+      }
+
+      ps.next();
+      ps.next();
+
+      ps.skipInlineWS();
+
+      const variants = this.getVariants(ps);
+
+      if (variants.length === 0) {
+        throw new ParseError('E0011');
+      }
+
+      ps.expectIndent();
+
+      return new AST.SelectExpression(selector, variants);
+    } else if (selector.type === 'AttributeExpression' &&
+               selector.id.name.startsWith('-')) {
+      throw new ParseError('E0019');
     }
 
     return selector;
@@ -580,7 +605,7 @@ export default class FluentParser {
     if (ch === '.') {
       ps.next();
 
-      const attr = this.getIdentifier(ps);
+      const attr = this.getPublicIdentifier(ps);
       return new AST.AttributeExpression(literal.id, attr);
     }
 
@@ -601,7 +626,7 @@ export default class FluentParser {
 
       ps.expectChar(')');
 
-      if (!/^[A-Z_-]+$/.test(literal.id.name)) {
+      if (!/^[A-Z][A-Z_?-]*$/.test(literal.id.name)) {
         throw new ParseError('E0008');
       }
 
@@ -693,17 +718,25 @@ export default class FluentParser {
       throw new ParseError('E0014');
     }
 
-    if (ps.isNumberStart()) {
-      return this.getNumber(ps);
-    } else if (ch === '"') {
-      return this.getString(ps);
-    } else if (ch === '$') {
+    if (ch === '$') {
       ps.next();
-      const name = this.getIdentifier(ps);
+      const name = this.getPublicIdentifier(ps);
       return new AST.ExternalArgument(name);
     }
 
-    const name = this.getIdentifier(ps);
-    return new AST.MessageReference(name);
+    if (ps.isMessageIDStart()) {
+      const name = this.getPrivateIdentifier(ps);
+      return new AST.MessageReference(name);
+    }
+
+    if (ps.isNumberStart()) {
+      return this.getNumber(ps);
+    }
+
+    if (ch === '"') {
+      return this.getString(ps);
+    }
+
+    throw new ParseError('E0014');
   }
 }

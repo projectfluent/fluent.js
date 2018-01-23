@@ -184,10 +184,10 @@ export class Identifier extends SyntaxNode {
   }
 }
 
-export class Symbol extends Identifier {
+export class VariantName extends Identifier {
   constructor(name) {
     super(name);
-    this.type = 'Symbol';
+    this.type = 'VariantName';
   }
 }
 

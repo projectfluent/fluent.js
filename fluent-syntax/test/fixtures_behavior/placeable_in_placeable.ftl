@@ -8,7 +8,7 @@
 //   }
 
 key4 = {  { foo }
-//~ ERROR E0004, pos 96, args "a-zA-Z_"
+//~ ERROR E0014, pos 96
 
 
 // key5 = { foo } }

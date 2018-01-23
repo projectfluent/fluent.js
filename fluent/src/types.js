@@ -123,9 +123,6 @@ export class FluentSymbol extends FluentType {
         Intl.PluralRules, other.opts
       );
       return this.value === pr.select(other.value);
-    } else if (Array.isArray(other)) {
-      const values = other.map(symbol => symbol.value);
-      return values.includes(this.value);
     }
     return false;
   }

@@ -28,7 +28,7 @@ export default class FluentSerializer {
     }
 
     for (const entry of resource.body) {
-      if (entry.types !== 'Junk' || this.withJunk) {
+      if (entry.type !== 'Junk' || this.withJunk) {
         parts.push(this.serializeEntry(entry));
         if (this.hasEntries === false) {
           this.hasEntries = true;
@@ -88,7 +88,7 @@ function serializeResourceComment(comment) {
 }
 
 function serializeSection(section) {
-  const name = serializeSymbol(section.name);
+  const name = serializeVariantName(section.name);
 
   if (section.comment) {
     const comment = serializeComment(section.comment);
@@ -309,15 +309,15 @@ function serializeIdentifier(identifier) {
 }
 
 
-function serializeSymbol(symbol) {
-  return symbol.name;
+function serializeVariantName(VariantName) {
+  return VariantName.name;
 }
 
 
 function serializeVariantKey(key) {
   switch (key.type) {
-    case 'Symbol':
-      return serializeSymbol(key);
+    case 'VariantName':
+      return serializeVariantName(key);
     case 'NumberExpression':
       return serializeNumberExpression(key);
     default:
