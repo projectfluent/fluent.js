@@ -16,6 +16,7 @@ program
   .usage('[options] [file]')
   .option('-r, --runtime', 'Use the runtime parser')
   .option('-s, --silent', 'Silence syntax errors')
+  .option('--with-spans', 'Compute spans of AST nodes')
   .parse(process.argv);
 
 if (program.args.length) {
@@ -47,12 +48,18 @@ function printRuntime(data) {
 }
 
 function printResource(data) {
+  const withSpans = !!program.withSpans;
   const source = data.toString();
-  const res = FluentSyntax.parse(source);
+  const res = FluentSyntax.parse(source, {withSpans});
   console.log(JSON.stringify(res, null, 2));
 
   if (!program.silent) {
-    res.body.map(entry => printAnnotations(source, entry));
+    // Spans are required to pretty-print the annotations. If needed, re-parse
+    // the source.
+    const {body} = withSpans
+      ? res
+      : FluentSyntax.parse(source, {withSpans: true});
+    body.map(entry => printAnnotations(source, entry));
   }
 }
 

@@ -34,5 +34,5 @@ fixtures: $(STRUCTURE_AST)
 
 .PHONY: $(STRUCTURE_AST)
 $(STRUCTURE_AST): test/fixtures_structure/%.json: test/fixtures_structure/%.ftl
-	@../tools/parse.js -s $< > $@
+	@../tools/parse.js --silent --with-spans $< > $@
 	@echo -e " $(OK) $@"
