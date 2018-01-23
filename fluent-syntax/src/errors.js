@@ -7,6 +7,7 @@ export class ParseError extends Error {
   }
 }
 
+/* eslint-disable complexity */
 function getErrorMessage(code, args) {
   switch (code) {
     case 'E0001':
@@ -32,9 +33,9 @@ function getErrorMessage(code, args) {
     case 'E0007':
       return 'Keyword cannot end with a whitespace';
     case 'E0008':
-      return 'Callee has to be a simple identifier';
+      return 'The callee has to be a simple, upper-case identifier';
     case 'E0009':
-      return 'Key has to be a simple identifier';
+      return 'The key has to be a simple identifier';
     case 'E0010':
       return 'Expected one of the variants to be marked as default (*)';
     case 'E0011':
@@ -45,6 +46,14 @@ function getErrorMessage(code, args) {
       return 'Expected literal';
     case 'E0015':
       return 'Only one variant can be marked as default (*)';
+    case 'E0016':
+      return 'Message references cannot be used as selectors';
+    case 'E0017':
+      return 'Variants cannot be used as selectors';
+    case 'E0018':
+      return 'Attributes of public messages cannot be used as selectors';
+    case 'E0019':
+      return 'Attributes of private messages cannot be used as placeables';
     default:
       return code;
   }

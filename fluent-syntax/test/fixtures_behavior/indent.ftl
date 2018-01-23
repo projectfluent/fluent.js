@@ -3,7 +3,7 @@
 
 key2 = {
 a }
-//~ ERROR E0004, pos 20, args "a-zA-Z_"
+//~ ERROR E0014, pos 20
 //~ ERROR E0005, pos 23, args "a"
 
 key3 = { a
@@ -12,4 +12,4 @@ key3 = { a
 
 key4 = {
 { a }}
-//~ ERROR E0004, pos 48, args "a-zA-Z_"
+//~ ERROR E0014, pos 48

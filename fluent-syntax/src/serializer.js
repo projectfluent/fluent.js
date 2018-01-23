@@ -28,7 +28,7 @@ export default class FluentSerializer {
     }
 
     for (const entry of resource.body) {
-      if (entry.types !== 'Junk' || this.withJunk) {
+      if (entry.type !== 'Junk' || this.withJunk) {
         parts.push(this.serializeEntry(entry));
         if (this.hasEntries === false) {
           this.hasEntries = true;
