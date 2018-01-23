@@ -98,7 +98,9 @@ function DefaultMember(env, members, def) {
  */
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
+  const message = name.startsWith('-')
+    ? ctx._privateMessages.get(name)
+    : ctx._publicMessages.get(name);
 
   if (!message) {
     errors.push(new ReferenceError(`Unknown message: ${name}`));

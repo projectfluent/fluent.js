@@ -2,7 +2,9 @@
 
 const MAX_PLACEABLES = 100;
 
-const identifierRe = new RegExp('[a-zA-Z_][a-zA-Z0-9_-]*', 'y');
+const privateIdentifierRe = new RegExp('-?[a-zA-Z][a-zA-Z0-9_-]*', 'y');
+const publicIdentifierRe = new RegExp('[a-zA-Z][a-zA-Z0-9_-]*', 'y');
+const functionIdentifierRe = /^[A-Z][A-Z_?-]*$/;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
@@ -118,7 +120,7 @@ class RuntimeParser {
    * @private
    */
   getMessage() {
-    const id = this.getIdentifier();
+    const id = this.getPrivateIdentifier();
     let attrs = null;
 
     this.skipInlineWS();
@@ -224,23 +226,42 @@ class RuntimeParser {
   }
 
   /**
-   * Get Message identifier.
+   * Get identifier of a Message, Attribute or External Attribute.
    *
    * @returns {String}
    * @private
    */
-  getIdentifier() {
-    identifierRe.lastIndex = this._index;
-
-    const result = identifierRe.exec(this._source);
+  getIdentifier(re) {
+    re.lastIndex = this._index;
+    const result = re.exec(this._source);
 
     if (result === null) {
       this._index += 1;
-      throw this.error('Expected an identifier (starting with [a-zA-Z_])');
+      throw this.error(`Expected an identifier [${re.toString()}]`);
     }
 
-    this._index = identifierRe.lastIndex;
+    this._index = re.lastIndex;
     return result[0];
+  }
+
+  /**
+   * Get a potentially private identifier (staring with a dash).
+   *
+   * @returns {String}
+   * @private
+   */
+  getPrivateIdentifier() {
+    return this.getIdentifier(privateIdentifierRe);
+  }
+
+  /**
+   * Get a public identifier.
+   *
+   * @returns {String}
+   * @private
+   */
+  getPublicIdentifier() {
+    return this.getIdentifier(publicIdentifierRe);
   }
 
   /**
@@ -479,12 +500,33 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     if (ch === '}') {
+      if (selector.type === 'attr' && selector.id.name.startsWith('-')) {
+        throw this.error(
+          'Attributes of private messages cannot be interpolated.'
+        );
+      }
+
       return selector;
     }
 
     if (ch !== '-' || this._source[this._index + 1] !== '>') {
       throw this.error('Expected "}" or "->"');
     }
+
+    if (selector.type === 'ref') {
+      throw this.error('Message references cannot be used as selectors.');
+    }
+
+    if (selector.type === 'var') {
+      throw this.error('Variants cannot be used as selectors.');
+    }
+
+    if (selector.type === 'attr' && !selector.id.name.startsWith('-')) {
+      throw this.error(
+        'Attributes of public messages cannot be used as selectors.'
+      );
+    }
+
 
     this._index += 2; // ->
 
@@ -526,7 +568,7 @@ class RuntimeParser {
     if (this._source[this._index] === '.') {
       this._index++;
 
-      const name = this.getIdentifier();
+      const name = this.getPublicIdentifier();
       this._index++;
       return {
         type: 'attr',
@@ -550,6 +592,10 @@ class RuntimeParser {
     if (this._source[this._index] === '(') {
       this._index++;
       const args = this.getCallArgs();
+
+      if (!functionIdentifierRe.test(literal.name)) {
+        throw this.error('Function names must be all upper-case');
+      }
 
       this._index++;
 
@@ -705,7 +751,7 @@ class RuntimeParser {
       }
       this._index++;
 
-      const key = this.getIdentifier();
+      const key = this.getPublicIdentifier();
 
       this.skipInlineWS();
 
@@ -810,23 +856,39 @@ class RuntimeParser {
    * @private
    */
   getLiteral() {
-    const cc = this._source.charCodeAt(this._index);
-    if ((cc >= 48 && cc <= 57) || cc === 45) {
-      return this.getNumber();
-    } else if (cc === 34) { // "
-      return this.getString();
-    } else if (cc === 36) { // $
+    const cc0 = this._source.charCodeAt(this._index);
+
+    if (cc0 === 36) { // $
       this._index++;
       return {
         type: 'ext',
-        name: this.getIdentifier()
+        name: this.getPublicIdentifier()
       };
     }
 
-    return {
-      type: 'ref',
-      name: this.getIdentifier()
-    };
+    const cc1 = cc0 === 45 // -
+      // Peek at the next character after the dash.
+      ? this._source.charCodeAt(this._index + 1)
+      // Or keep using the character at the current index.
+      : cc0;
+
+    if ((cc1 >= 97 && cc1 <= 122) || // a-z
+        (cc1 >= 65 && cc1 <= 90)) { // A-Z
+      return {
+        type: 'ref',
+        name: this.getPrivateIdentifier()
+      };
+    }
+
+    if ((cc1 >= 48 && cc1 <= 57)) { // 0-9
+      return this.getNumber();
+    }
+
+    if (cc0 === 34) { // "
+      return this.getString();
+    }
+
+    throw this.error('Expected literal');
   }
 
   /**
@@ -886,7 +948,7 @@ class RuntimeParser {
 
         if ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) || // A-Z
-             cc === 95 || cc === 47 || cc === 91) { // _/[
+             cc === 47 || cc === 91) { // /[
           this._index = start;
           return;
         }
