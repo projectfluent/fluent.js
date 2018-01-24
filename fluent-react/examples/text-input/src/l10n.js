@@ -6,13 +6,13 @@ const MESSAGES_ALL = {
   'pl': `
 hello = Cześć { $username }!
 hello-no-name = Witaj nieznajomy!
-type-name
+type-name =
     .placeholder = Twoje imię
   `,
   'en-US': `
 hello = Hello, { $username }!
 hello-no-name = Hello, stranger!
-type-name
+type-name =
     .placeholder = Your name
   `,
 };

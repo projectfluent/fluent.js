@@ -5,8 +5,18 @@ import { ParseError } from './errors';
 import { includes } from './util';
 
 const INLINE_WS = [' ', '\t'];
+const SPECIAL_LINE_START_CHARS = ['}', '.', '[', '*'];
 
 export class FTLParserStream extends ParserStream {
+  skipInlineWS() {
+    while (this.ch) {
+      if (!includes(INLINE_WS, this.ch)) {
+        break;
+      }
+      this.next();
+    }
+  }
+
   peekInlineWS() {
     let ch = this.currentPeek();
     while (ch) {
@@ -46,13 +56,9 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipInlineWS() {
-    while (this.ch) {
-      if (!includes(INLINE_WS, this.ch)) {
-        break;
-      }
-      this.next();
-    }
+  skipIndent() {
+    this.skipBlankLines();
+    this.skipInlineWS();
   }
 
   expectChar(ch) {
@@ -123,6 +129,24 @@ export class FTLParserStream extends ParserStream {
     const isDigit = cc >= 48 && cc <= 57; // 0-9
     this.resetPeek();
     return isDigit;
+  }
+
+  isCharPatternStart(ch) {
+    return !includes(SPECIAL_LINE_START_CHARS, ch);
+  }
+
+  isPeekPatternStart() {
+    this.peekInlineWS();
+
+    const ch = this.currentPeek();
+
+    if (ch === '\n') {
+      return this.isPeekNextLinePatternStart();
+    }
+
+    const isPattern = this.isCharPatternStart(this.currentPeek());
+    this.resetPeek();
+    return isPattern;
   }
 
   isPeekNextLineZeroFourStyleComment() {
@@ -234,7 +258,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextNonBlankLinePattern() {
+  isPeekNextLinePatternStart() {
     if (!this.currentPeekIs('\n')) {
       return false;
     }
@@ -252,10 +276,7 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    if (this.currentPeekIs('}') ||
-        this.currentPeekIs('.') ||
-        this.currentPeekIs('[') ||
-        this.currentPeekIs('*')) {
+    if (!this.isCharPatternStart(this.currentPeek())) {
       this.resetPeek();
       return false;
     }

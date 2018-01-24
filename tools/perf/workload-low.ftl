@@ -182,23 +182,23 @@ full-zoom-enlarge-menuitem
 full-zoom-enlarge-key1
     .key = +
 full-zoom-enlarge-key2
-    .key = 
+    .key = {""}
 full-zoom-enlarge-key3
-    .key = ""
+    .key = {""}
 full-zoom-reduce-menuitem
     .label = Zoom Out
     .accesskey = O
 full-zoom-reduce-key1
     .key = -
 full-zoom-reduce-key2
-    .key = ""
+    .key = {""}
 full-zoom-reset-menuitem
     .label = Reset
     .accesskey = R
 full-zoom-reset-key1
     .key = 0
 full-zoom-reset-key2
-    .key = ""
+    .key = {""}
 full-zoom-toggle-menuitem
     .label = Zoom Text Only
     .accesskey = T

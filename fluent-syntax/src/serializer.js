@@ -121,9 +121,9 @@ function serializeMessage(message) {
   }
 
   parts.push(serializeIdentifier(message.id));
+  parts.push(' =');
 
   if (message.value) {
-    parts.push(' =');
     parts.push(serializeValue(message.value));
   }
 

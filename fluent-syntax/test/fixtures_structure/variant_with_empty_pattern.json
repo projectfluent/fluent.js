@@ -1,0 +1,112 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 4
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "expression": {
+                "type": "NumberExpression",
+                "value": "1",
+                "span": {
+                  "type": "Span",
+                  "start": 13,
+                  "end": 14
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "VariantName",
+                    "name": "one",
+                    "span": {
+                      "type": "Span",
+                      "start": 27,
+                      "end": 30
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "Placeable",
+                        "expression": {
+                          "type": "StringExpression",
+                          "value": "",
+                          "span": {
+                            "type": "Span",
+                            "start": 33,
+                            "end": 35
+                          }
+                        },
+                        "span": {
+                          "type": "Span",
+                          "start": 32,
+                          "end": 36
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 32,
+                      "end": 36
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 17,
+                    "end": 36
+                  }
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 12,
+                "end": 41
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 11,
+              "end": 42
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 11,
+          "end": 42
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 43
+  }
+}

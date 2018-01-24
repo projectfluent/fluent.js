@@ -74,7 +74,6 @@ export default class FluentParser {
         entries.push(entry);
       }
 
-      ps.skipInlineWS();
       ps.skipBlankLines();
     }
 
@@ -258,12 +257,15 @@ export default class FluentParser {
     let pattern;
     let attrs;
 
+    // XXX Syntax 0.4 compatibility.
+    // XXX Replace with ps.expectChar('=').
     if (ps.currentIs('=')) {
       ps.next();
-      ps.skipInlineWS();
-      ps.skipBlankLines();
 
-      pattern = this.getPattern(ps);
+      if (ps.isPeekPatternStart()) {
+        ps.skipIndent();
+        pattern = this.getPattern(ps);
+      }
     }
 
     if (ps.isPeekNextLineAttributeStart()) {
@@ -278,29 +280,27 @@ export default class FluentParser {
   }
 
   getAttribute(ps) {
+    ps.expectIndent();
     ps.expectChar('.');
 
     const key = this.getPublicIdentifier(ps);
 
     ps.skipInlineWS();
     ps.expectChar('=');
-    ps.skipInlineWS();
 
-    const value = this.getPattern(ps);
-
-    if (value === undefined) {
-      throw new ParseError('E0006', 'value');
+    if (ps.isPeekPatternStart()) {
+      ps.skipIndent();
+      const value = this.getPattern(ps);
+      return new AST.Attribute(key, value);
     }
 
-    return new AST.Attribute(key, value);
+    throw new ParseError('E0006', 'value');
   }
 
   getAttributes(ps) {
     const attrs = [];
 
     while (true) {
-      ps.expectIndent();
-
       const attr = this.getAttribute(ps);
       attrs.push(attr);
 
@@ -349,6 +349,8 @@ export default class FluentParser {
   }
 
   getVariant(ps, hasDefault) {
+    ps.expectIndent();
+
     let defaultIndex = false;
 
     if (ps.currentIs('*')) {
@@ -366,15 +368,13 @@ export default class FluentParser {
 
     ps.expectChar(']');
 
-    ps.skipInlineWS();
-
-    const value = this.getPattern(ps);
-
-    if (!value) {
-      throw new ParseError('E0006', 'value');
+    if (ps.isPeekPatternStart()) {
+      ps.skipIndent();
+      const value = this.getPattern(ps);
+      return new AST.Variant(key, value, defaultIndex);
     }
 
-    return new AST.Variant(key, value, defaultIndex);
+    throw new ParseError('E0006', 'value');
   }
 
   getVariants(ps) {
@@ -382,8 +382,6 @@ export default class FluentParser {
     let hasDefault = false;
 
     while (true) {
-      ps.expectIndent();
-
       const variant = this.getVariant(ps, hasDefault);
 
       if (variant.default) {
@@ -459,18 +457,12 @@ export default class FluentParser {
     const elements = [];
     ps.skipInlineWS();
 
-    // Special-case: trim leading whitespace and newlines.
-    if (ps.isPeekNextNonBlankLinePattern()) {
-      ps.skipBlankLines();
-      ps.skipInlineWS();
-    }
-
     let ch;
     while ((ch = ps.current())) {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === '\n' && !ps.isPeekNextNonBlankLinePattern()) {
+      if (ch === '\n' && !ps.isPeekNextLinePatternStart()) {
         break;
       }
 
@@ -491,13 +483,12 @@ export default class FluentParser {
 
     let ch;
     while ((ch = ps.current())) {
-
       if (ch === '{') {
         return new AST.TextElement(buffer);
       }
 
       if (ch === '\n') {
-        if (!ps.isPeekNextNonBlankLinePattern()) {
+        if (!ps.isPeekNextLinePatternStart()) {
           return new AST.TextElement(buffer);
         }
 

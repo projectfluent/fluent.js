@@ -294,7 +294,7 @@ function Type(env, expr) {
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
-      if (expr.val !== undefined) {
+      if (expr.val !== null && expr.val !== undefined) {
         return Type(env, expr.val);
       }
 

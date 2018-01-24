@@ -2,28 +2,23 @@
   "type": "Resource",
   "body": [
     {
-      "type": "Message",
-      "annotations": [],
-      "id": {
-        "type": "Identifier",
-        "name": "foo",
-        "span": {
-          "type": "Span",
-          "start": 0,
-          "end": 3
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0005",
+          "args": [
+            "foo"
+          ],
+          "message": "Expected entry \"foo\" to have a value or attributes",
+          "span": {
+            "type": "Span",
+            "start": 5,
+            "end": 5
+          }
         }
-      },
-      "value": {
-        "type": "Pattern",
-        "elements": [],
-        "span": {
-          "type": "Span",
-          "start": 7,
-          "end": 7
-        }
-      },
-      "attributes": [],
-      "comment": null,
+      ],
+      "content": "foo = \n",
       "span": {
         "type": "Span",
         "start": 0,

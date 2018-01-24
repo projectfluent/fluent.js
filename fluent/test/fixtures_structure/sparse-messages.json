@@ -3,8 +3,7 @@
   "key2": {
     "attrs": {
       "attr": "Attribute"
-    },
-    "val": null
+    }
   },
   "key3": {
     "val": "Value\nValue2\n\n\nValue 4\nValue3",
