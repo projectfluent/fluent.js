@@ -1,17 +1,36 @@
 import assert from 'assert';
 import { ftl } from './util';
 
-import { parse, serialize } from '../src';
+import { FluentParser, FluentSerializer } from '../src';
 
 
-function pretty(text) {
-  const res = parse(text);
-  return serialize(res, {
-    withJunk: false
+suite('Serialize resource', function() {
+  let pretty;
+
+  setup(function() {
+    const parser = new FluentParser();
+    const serializer = new FluentSerializer({
+      withJunk: false
+    });
+
+    pretty = function pretty(text) {
+      const res = parser.parse(text);
+      return serializer.serialize(res);
+    }
   });
-}
 
-suite('Serializer', function() {
+  test('invalid resource', function() {
+    const serializer = new FluentSerializer();
+    assert.throws(
+      () => serializer.serialize(null),
+      /Cannot read property 'type'/
+    );
+    assert.throws(
+      () => serializer.serialize({}),
+      /Unknown resource type/
+    );
+  });
+
   test('simple message', function() {
     const input = ftl`
       foo = Foo
@@ -398,5 +417,92 @@ suite('Serializer', function() {
       foo = { FOO(bar, baz: "baz", 1) }
     `;
     assert.equal(pretty(input), input);
+  });
+});
+
+suite('Serialize expression', function() {
+  let pretty;
+
+  setup(function() {
+    const parser = new FluentParser();
+    const serializer = new FluentSerializer({
+      withJunk: false
+    });
+
+    pretty = function pretty(text) {
+      const {value: {elements: [placeable]}} = parser.parseEntry(text);
+      return serializer.serializeExpression(placeable.expression);
+    }
+  });
+
+  test('invalid expression', function() {
+    const serializer = new FluentSerializer();
+    assert.throws(
+      () => serializer.serializeExpression(null),
+      /Cannot read property 'type'/
+    );
+    assert.throws(
+      () => serializer.serializeExpression({}),
+      /Unknown expression type/
+    );
+  });
+
+  test('string expression', function() {
+    const input = ftl`
+      foo = { "str" }
+    `;
+    assert.equal(pretty(input), '"str"');
+  });
+
+  test('number expression', function() {
+    const input = ftl`
+      foo = { 3 }
+    `;
+    assert.equal(pretty(input), '3');
+  });
+
+  test('message reference', function() {
+    const input = ftl`
+      foo = { msg }
+    `;
+    assert.equal(pretty(input), 'msg');
+  });
+
+  test('external argument', function() {
+    const input = ftl`
+      foo = { $ext }
+    `;
+    assert.equal(pretty(input), '$ext');
+  });
+
+  test('attribute expression', function() {
+    const input = ftl`
+      foo = { msg.attr }
+    `;
+    assert.equal(pretty(input), 'msg.attr');
+  });
+
+  test('variant expression', function() {
+    const input = ftl`
+      foo = { -msg[variant] }
+    `;
+    assert.equal(pretty(input), '-msg[variant]');
+  });
+
+  test('call expression', function() {
+    const input = ftl`
+      foo = { BUILTIN(3.14, kwarg: "value") }
+    `;
+    assert.equal(pretty(input), 'BUILTIN(3.14, kwarg: "value")');
+  });
+
+  test('select expression', function() {
+    const input = ftl`
+      foo =
+          { $num ->
+              *[one] One
+          }
+    `;
+    assert.equal(pretty(input), '$num ->\n   *[one] One\n');
   });
 });

@@ -18,6 +18,10 @@ export default class FluentSerializer {
   }
 
   serialize(resource) {
+    if (resource.type !== 'Resource') {
+      throw new Error(`Unknown resource type: ${resource.type}`);
+    }
+
     const parts = [];
 
     if (resource.comment) {
@@ -65,6 +69,10 @@ export default class FluentSerializer {
       default :
         throw new Error(`Unknown entry type: ${entry.type}`);
     }
+  }
+
+  serializeExpression(expr) {
+    return serializeExpression(expr);
   }
 }
 
@@ -176,7 +184,13 @@ function serializePlaceable(placeable) {
     case 'Placeable':
       return `{${serializePlaceable(expr)}}`;
     case 'SelectExpression':
-      return `{${serializeSelectExpression(expr)}}`;
+      // Special-case select expression to control the whitespace around the
+      // opening and the closing brace.
+      return expr.expression
+        // A select expression with a selector.
+        ? `{ ${serializeSelectExpression(expr)}}`
+        // A variant list without a selector.
+        : `{${serializeSelectExpression(expr)}}`;
     default:
       return `{ ${serializeExpression(expr)} }`;
   }
@@ -199,6 +213,8 @@ function serializeExpression(expr) {
       return serializeVariantExpression(expr);
     case 'CallExpression':
       return serializeCallExpression(expr);
+    case 'SelectExpression':
+      return serializeSelectExpression(expr);
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
@@ -229,7 +245,7 @@ function serializeSelectExpression(expr) {
   const parts = [];
 
   if (expr.expression) {
-    const selector = ` ${serializeExpression(expr.expression)} ->`;
+    const selector = `${serializeExpression(expr.expression)} ->`;
     parts.push(selector);
   }
 
