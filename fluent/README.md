@@ -47,7 +47,7 @@ The API reference is available at http://projectfluent.org/fluent.js/fluent.
 
   - `Intl.DateTimeFormat` (standard, well-supported)
   - `Intl.NumberFormat` (standard, well-supported)
-  - `Intl.PluralRules` ([Stage 3 proposal][])
+  - `Intl.PluralRules` (standard, new in ECMAScript 2018)
 
 `Intl.PluralRules` may already be available in some engines.  In most cases,
 however, a polyfill will be required.  We recommend [fluent-intl-polyfill][]
