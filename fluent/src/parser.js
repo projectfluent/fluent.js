@@ -619,19 +619,18 @@ class RuntimeParser {
   getCallArgs() {
     const args = [];
 
-    if (this._source[this._index] === ')') {
-      return args;
-    }
-
     while (this._index < this._length) {
       this.skipInlineWS();
+
+      if (this._source[this._index] === ')') {
+        return args;
+      }
 
       const exp = this.getSelectorExpression();
 
       // MessageReference in this place may be an entity reference, like:
       // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
-      if (exp.type !== 'ref' ||
-         exp.namespace !== undefined) {
+      if (exp.type !== 'ref') {
         args.push(exp);
       } else {
         this.skipInlineWS();
