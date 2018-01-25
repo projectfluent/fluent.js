@@ -54,6 +54,8 @@ function getErrorMessage(code, args) {
       return 'Attributes of public messages cannot be used as selectors';
     case 'E0019':
       return 'Attributes of private messages cannot be used as placeables';
+    case 'E0020':
+      return 'Unterminated string expression';
     default:
       return code;
   }

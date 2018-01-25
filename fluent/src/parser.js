@@ -303,7 +303,7 @@ class RuntimeParser {
       }
 
       if (ch === '\n') {
-        break;
+        throw this.error('Unterminated string expression');
       }
     }
 
