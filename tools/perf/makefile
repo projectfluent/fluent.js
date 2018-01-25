@@ -1,4 +1,4 @@
-perf: perf-jsshell
+perf: perf-node
 
 perf-%:
 	@./tools/perf/test.js -e $* -s 30 -p
