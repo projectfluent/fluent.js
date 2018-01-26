@@ -692,8 +692,12 @@ export default class FluentParser {
     ps.expectChar('"');
 
     let ch;
-    while ((ch = ps.takeChar(x => x !== '"'))) {
+    while ((ch = ps.takeChar(x => x !== '"' && x !== '\n'))) {
       val += ch;
+    }
+
+    if (ps.currentIs('\n')) {
+      throw new ParseError('E0020');
     }
 
     ps.next();

@@ -24,16 +24,15 @@ readdir(ftlFixtures, function(err, filenames) {
       const jsonfilename = ftlfilename.replace(/ftl$/, 'json');
       const ftlpath = join(ftlFixtures, ftlfilename);
       const jsonpath = join(jsonFixtures, jsonfilename);
-      test(ftlfilename, function() {
-        return Promise.all(
+      test(ftlfilename, async function() {
+        const [ftl, expected] = await Promise.all(
           [ftlpath, jsonpath].map(readfile)
-        ).then(([ftl, expected]) => {
-          const [entries] = parse(ftl);
-          assert.deepEqual(
-            entries, JSON.parse(expected),
-            'Actual Annotations don\'t match the expected ones'
-          );
-        });
+        );
+        const [entries] = parse(ftl);
+        assert.deepEqual(
+          entries, JSON.parse(expected),
+          'Actual Annotations don\'t match the expected ones'
+        );
       });
     }
   });

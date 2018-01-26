@@ -2,16 +2,15 @@ import assert from 'assert';
 import { join } from 'path';
 import { readdir } from 'fs';
 import { readfile } from '../../fluent-syntax/test/util';
-import { preprocess, serializeAnnotation }
-  from '../../fluent-syntax/test/behavior_test';
+
 import parse from '../src/parser';
 
-// Use behavior tests fixtures from fluent-syntax.
-const fixtures = join(
-  __dirname, '..', '..', 'fluent-syntax', 'test','fixtures_behavior'
+const ftlFixtures = join(
+  __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_behavior'
 );
+const jsonFixtures = join(__dirname, 'fixtures_behavior');
 
-readdir(fixtures, function(err, filenames) {
+readdir(ftlFixtures, function(err, filenames) {
   if (err) {
     throw err;
   }
@@ -20,20 +19,42 @@ readdir(fixtures, function(err, filenames) {
     filename => filename.endsWith('.ftl')
   );
 
-  suite.skip('Behavior tests', function() {
-    for (const filename of ftlnames) {
-      const filepath = join(fixtures, filename);
-      test(filename, function() {
-        return readfile(filepath).then(file => {
-          const { directives, source } = preprocess(file);
-          const expected = directives.join('\n') + '\n';
-          const [entries, annots] = parse(source);
-          const actual = annots.map(serializeAnnotation).join('\n') + '\n';
-          assert.deepEqual(
-            actual, expected,
-            'Actual Annotations don\'t match the expected ones'
-          );
-        });
+  suite('Behavior tests', function() {
+    for (const ftlfilename of ftlnames) {
+      const jsonfilename = ftlfilename.replace(/ftl$/, 'json');
+      const ftlpath = join(ftlFixtures, ftlfilename);
+      const jsonpath = join(jsonFixtures, jsonfilename);
+
+      test(ftlfilename, async function() {
+        const [source, json] = await Promise.all(
+          [ftlpath, jsonpath].map(readfile)
+        );
+
+        const [entries] = parse(source);
+        const expectedEntries = JSON.parse(json);
+
+        for (const [id, expected] of Object.entries(expectedEntries)) {
+          assert(id in entries, `Expected message "${id}" to be parsed`);
+
+          const entry = entries[id];
+
+          if (expected.value) {
+            assert(typeof entry === 'string' || 'val' in entry);
+          } else {
+            assert(typeof entry !== 'string' && !('val' in entry));
+          }
+
+          if (expected.attributes) {
+            assert(typeof entry !== 'string' && 'attrs' in entry);
+            assert.deepEqual(
+              Object.keys(entry.attrs),
+              Object.keys(expected.attributes)
+            );
+          } else {
+            assert(typeof entry === 'string' || !('attrs' in entry));
+          }
+        }
+
       });
     }
   });
