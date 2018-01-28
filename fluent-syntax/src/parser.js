@@ -66,7 +66,7 @@ export default class FluentParser {
       }
 
       if (entry.type === 'Comment' &&
-        entry.zeroFourStyle && entries.length === 0) {
+        ps.lastCommentZeroFourSyntax && entries.length === 0) {
         const comment = new AST.ResourceComment(entry.content);
         comment.span = entry.span;
         entries.push(comment);
@@ -74,6 +74,7 @@ export default class FluentParser {
         entries.push(entry);
       }
 
+      ps.lastCommentZeroFourSyntax = false;
       ps.skipBlankLines();
     }
 
@@ -175,7 +176,7 @@ export default class FluentParser {
     }
 
     const comment = new AST.Comment(content);
-    comment.zeroFourStyle = true;
+    ps.lastCommentZeroFourSyntax = true;
     return comment;
   }
 
