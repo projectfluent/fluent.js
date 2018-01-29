@@ -38,6 +38,13 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
+  test('simple term', function() {
+    const input = ftl`
+      -foo = Foo
+    `;
+    assert.equal(pretty(input), input);
+  });
+
   test('two simple messages', function() {
     const input = ftl`
       foo = Foo
@@ -58,6 +65,13 @@ suite('Serialize resource', function() {
   test('message reference', function() {
     const input = ftl`
       foo = Foo { bar }
+    `;
+    assert.equal(pretty(input), input);
+  });
+
+  test('term reference', function() {
+    const input = ftl`
+      foo = Foo { -bar }
     `;
     assert.equal(pretty(input), input);
   });
@@ -85,7 +99,7 @@ suite('Serialize resource', function() {
 
   test('variant expression', function() {
     const input = ftl`
-      foo = Foo { bar[baz] }
+      foo = Foo { -bar[baz] }
     `;
     assert.equal(pretty(input), input);
   });

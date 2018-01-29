@@ -140,7 +140,7 @@ export default class FluentParser {
       return null;
     }
 
-    if (ps.isMessageIDStart() && (!comment || comment.type === 'Comment')) {
+    if (ps.isEntryIDStart() && (!comment || comment.type === 'Comment')) {
       return this.getMessage(ps, comment);
     }
 
@@ -251,7 +251,7 @@ export default class FluentParser {
   }
 
   getMessage(ps, comment) {
-    const id = this.getPrivateIdentifier(ps);
+    const id = this.getEntryIdentifier(ps);
 
     ps.skipInlineWS();
 
@@ -277,6 +277,10 @@ export default class FluentParser {
       throw new ParseError('E0005', id.name);
     }
 
+    if (id.name.startsWith('-')) {
+      return new AST.Term(id, pattern, attrs, comment);
+    }
+
     return new AST.Message(id, pattern, attrs, comment);
   }
 
@@ -284,7 +288,7 @@ export default class FluentParser {
     ps.expectIndent();
     ps.expectChar('.');
 
-    const key = this.getPublicIdentifier(ps);
+    const key = this.getIdentifier(ps);
 
     ps.skipInlineWS();
     ps.expectChar('=');
@@ -312,18 +316,13 @@ export default class FluentParser {
     return attrs;
   }
 
-  getPrivateIdentifier(ps) {
+  getEntryIdentifier(ps) {
     return this.getIdentifier(ps, true);
   }
 
-  getPublicIdentifier(ps) {
-    return this.getIdentifier(ps, false);
-  }
-
-  getIdentifier(ps, allowPrivate) {
+  getIdentifier(ps, allowTerm = false) {
     let name = '';
-
-    name += ps.takeIDStart(allowPrivate);
+    name += ps.takeIDStart(allowTerm);
 
     let ch;
     while ((ch = ps.takeIDChar())) {
@@ -597,7 +596,7 @@ export default class FluentParser {
     if (ch === '.') {
       ps.next();
 
-      const attr = this.getPublicIdentifier(ps);
+      const attr = this.getIdentifier(ps);
       return new AST.AttributeExpression(literal.id, attr);
     }
 
@@ -716,12 +715,12 @@ export default class FluentParser {
 
     if (ch === '$') {
       ps.next();
-      const name = this.getPublicIdentifier(ps);
+      const name = this.getIdentifier(ps);
       return new AST.ExternalArgument(name);
     }
 
-    if (ps.isMessageIDStart()) {
-      const name = this.getPrivateIdentifier(ps);
+    if (ps.isEntryIDStart()) {
+      const name = this.getEntryIdentifier(ps);
       return new AST.MessageReference(name);
     }
 

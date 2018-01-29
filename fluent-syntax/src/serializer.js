@@ -42,6 +42,7 @@ export default class FluentSerializer {
   serializeEntry(entry, state = 0) {
     switch (entry.type) {
       case 'Message':
+      case 'Term':
         return serializeMessage(entry);
       case 'Comment':
         if (state & HAS_ENTRIES) {

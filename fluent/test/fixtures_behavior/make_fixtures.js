@@ -33,9 +33,13 @@ function print(err, data) {
   printEntries(data.toString());
 }
 
+function isLocalizable(entry) {
+  return entry.type === 'Message' || entry.type === 'Term';
+}
+
 function printEntries(source) {
   const {body} = parser.parse(source);
-  const messages = body.filter(elem => elem.type === 'Message');
+  const messages = body.filter(isLocalizable);
 
   const entries = {};
 

@@ -35,39 +35,39 @@ suite('Patterns', function(){
         foo = Foo
         -bar = Bar
 
-        ref-public = { foo }
-        ref-private = { -bar }
+        ref-message = { foo }
+        ref-term = { -bar }
 
-        ref-missing-public = { missing }
-        ref-missing-private = { -missing }
+        ref-missing-message = { missing }
+        ref-missing-term = { -missing }
 
         ref-malformed = { malformed
       `);
     });
 
-    test('resolves the reference to a public message', function(){
-      const msg = ctx.getMessage('ref-public');
+    test('resolves the reference to a message', function(){
+      const msg = ctx.getMessage('ref-message');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.equal(errs.length, 0);
     });
 
-    test('resolves the reference to a private message', function(){
-      const msg = ctx.getMessage('ref-private');
+    test('resolves the reference to a term', function(){
+      const msg = ctx.getMessage('ref-term');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
     });
 
-    test('returns the id if a public reference is missing', function(){
-      const msg = ctx.getMessage('ref-missing-public');
+    test('returns the id if a message reference is missing', function(){
+      const msg = ctx.getMessage('ref-missing-message');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, 'missing');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
-    test('returns the id if a private reference is missing', function(){
-      const msg = ctx.getMessage('ref-missing-private');
+    test('returns the id if a term reference is missing', function(){
+      const msg = ctx.getMessage('ref-missing-term');
       const val = ctx.format(msg, args, errs);
       assert.strictEqual(val, '-missing');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message

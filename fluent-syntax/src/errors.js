@@ -51,9 +51,9 @@ function getErrorMessage(code, args) {
     case 'E0017':
       return 'Variants cannot be used as selectors';
     case 'E0018':
-      return 'Attributes of public messages cannot be used as selectors';
+      return 'Attributes of messages cannot be used as selectors';
     case 'E0019':
-      return 'Attributes of private messages cannot be used as placeables';
+      return 'Attributes of terms cannot be used as placeables';
     case 'E0020':
       return 'Unterminated string expression';
     default:
