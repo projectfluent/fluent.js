@@ -5,4 +5,4 @@ key1 = {
 err1 = {
     *[one]
     }
-//~ ERROR E0006, pos 51, args "value"
+//~ ERROR E0012, pos 51

@@ -50,8 +50,8 @@ export class MessageContext {
   constructor(locales, { functions = {}, useIsolating = true } = {}) {
     this.locales = Array.isArray(locales) ? locales : [locales];
 
-    this._privateMessages = new Map();
-    this._publicMessages = new Map();
+    this._terms = new Map();
+    this._messages = new Map();
     this._functions = functions;
     this._useIsolating = useIsolating;
     this._intls = new WeakMap();
@@ -63,7 +63,7 @@ export class MessageContext {
    * @returns {Iterator}
    */
   get messages() {
-    return this._publicMessages[Symbol.iterator]();
+    return this._messages[Symbol.iterator]();
   }
 
   /*
@@ -73,7 +73,7 @@ export class MessageContext {
    * @returns {bool}
    */
   hasMessage(id) {
-    return this._publicMessages.has(id);
+    return this._messages.has(id);
   }
 
   /*
@@ -86,7 +86,7 @@ export class MessageContext {
    * @returns {Any}
    */
   getMessage(id) {
-    return this._publicMessages.get(id);
+    return this._messages.get(id);
   }
 
   /**
@@ -111,11 +111,11 @@ export class MessageContext {
     const [entries, errors] = parse(source);
     for (const id in entries) {
       if (id.startsWith('-')) {
-        // Identifiers starting with a dash (-) are considered private and
-        // cannot be retrieved from MessageContext.
-        this._privateMessages.set(id, entries[id]);
+        // Identifiers starting with a dash (-) define terms. Terms are private
+        // and cannot be retrieved from MessageContext.
+        this._terms.set(id, entries[id]);
       } else {
-        this._publicMessages.set(id, entries[id]);
+        this._messages.set(id, entries[id]);
       }
     }
 

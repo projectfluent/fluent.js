@@ -99,11 +99,14 @@ function DefaultMember(env, members, def) {
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
   const message = name.startsWith('-')
-    ? ctx._privateMessages.get(name)
-    : ctx._publicMessages.get(name);
+    ? ctx._terms.get(name)
+    : ctx._messages.get(name);
 
   if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
+    const err = name.startsWith('-')
+      ? new ReferenceError(`Unknown term: ${name}`)
+      : new ReferenceError(`Unknown message: ${name}`);
+    errors.push(err);
     return new FluentNone(name);
   }
 

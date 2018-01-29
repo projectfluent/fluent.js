@@ -49,6 +49,17 @@ export class Message extends Entry {
   }
 }
 
+export class Term extends Entry {
+  constructor(id, value, attributes = [], comment = null) {
+    super();
+    this.type = 'Term';
+    this.id = id;
+    this.value = value;
+    this.attributes = attributes;
+    this.comment = comment;
+  }
+}
+
 export class Pattern extends SyntaxNode {
   constructor(elements) {
     super();

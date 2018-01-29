@@ -22,10 +22,10 @@ suite('Context', function() {
     });
 
     test('adds messages', function() {
-      assert.equal(ctx._publicMessages.has('foo'), true);
-      assert.equal(ctx._privateMessages.has('foo'), false);
-      assert.equal(ctx._publicMessages.has('-bar'), false);
-      assert.equal(ctx._privateMessages.has('-bar'), true);
+      assert.equal(ctx._messages.has('foo'), true);
+      assert.equal(ctx._terms.has('foo'), false);
+      assert.equal(ctx._messages.has('-bar'), false);
+      assert.equal(ctx._terms.has('-bar'), true);
     });
 
     test('preserves existing messages when new are added', function() {
@@ -33,23 +33,23 @@ suite('Context', function() {
         baz = Baz
       `);
 
-      assert.equal(ctx._publicMessages.has('foo'), true);
-      assert.equal(ctx._privateMessages.has('foo'), false);
-      assert.equal(ctx._publicMessages.has('-bar'), false);
-      assert.equal(ctx._privateMessages.has('-bar'), true);
+      assert.equal(ctx._messages.has('foo'), true);
+      assert.equal(ctx._terms.has('foo'), false);
+      assert.equal(ctx._messages.has('-bar'), false);
+      assert.equal(ctx._terms.has('-bar'), true);
 
-      assert.equal(ctx._publicMessages.has('baz'), true);
-      assert.equal(ctx._privateMessages.has('baz'), false);
+      assert.equal(ctx._messages.has('baz'), true);
+      assert.equal(ctx._terms.has('baz'), false);
     });
 
-    test('public and private can share the same name', function() {
+    test('messages and terms can share the same name', function() {
       ctx.addMessages(ftl`
         -foo = Private Foo
       `);
-      assert.equal(ctx._publicMessages.has('foo'), true);
-      assert.equal(ctx._privateMessages.has('foo'), false);
-      assert.equal(ctx._publicMessages.has('-foo'), false);
-      assert.equal(ctx._privateMessages.has('-foo'), true);
+      assert.equal(ctx._messages.has('foo'), true);
+      assert.equal(ctx._terms.has('foo'), false);
+      assert.equal(ctx._messages.has('-foo'), false);
+      assert.equal(ctx._terms.has('-foo'), true);
     });
 
 
@@ -58,7 +58,7 @@ suite('Context', function() {
         foo = New Foo
       `);
 
-      assert.equal(ctx._publicMessages.size, 2);
+      assert.equal(ctx._messages.size, 2);
 
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
@@ -72,7 +72,7 @@ suite('Context', function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
-        -bar = Private Bar
+        -bar = Bar
       `);
     });
 
@@ -80,7 +80,7 @@ suite('Context', function() {
       assert.equal(ctx.hasMessage('foo'), true);
     });
 
-    test('returns false for private and missing messages', function() {
+    test('returns false for terms and missing messages', function() {
       assert.equal(ctx.hasMessage('-bar'), false);
       assert.equal(ctx.hasMessage('baz'), false);
       assert.equal(ctx.hasMessage('-baz'), false);
@@ -92,7 +92,7 @@ suite('Context', function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
         foo = Foo
-        -bar = Private Bar
+        -bar = Bar
       `);
     });
 
@@ -100,7 +100,7 @@ suite('Context', function() {
       assert.equal(ctx.getMessage('foo'), 'Foo');
     });
 
-    test('returns null for private and missing messages', function() {
+    test('returns null for terms and missing messages', function() {
       assert.equal(ctx.getMessage('-bar'), null);
       assert.equal(ctx.getMessage('baz'), null);
       assert.equal(ctx.getMessage('-baz'), null);

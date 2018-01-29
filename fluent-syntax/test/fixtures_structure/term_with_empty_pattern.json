@@ -1,0 +1,82 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "-foo"
+          ],
+          "message": "Expected term \"-foo\" to have a value",
+          "span": {
+            "type": "Span",
+            "start": 6,
+            "end": 6
+          }
+        }
+      ],
+      "content": "-foo =\n    .attr = Attribute\n\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 30
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "-bar"
+          ],
+          "message": "Expected term \"-bar\" to have a value",
+          "span": {
+            "type": "Span",
+            "start": 36,
+            "end": 36
+          }
+        }
+      ],
+      "content": "-bar =\n\n",
+      "span": {
+        "type": "Span",
+        "start": 30,
+        "end": 38
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "args": [
+            "-baz"
+          ],
+          "message": "Expected term \"-baz\" to have a value",
+          "span": {
+            "type": "Span",
+            "start": 42,
+            "end": 42
+          }
+        }
+      ],
+      "content": "-baz\n",
+      "span": {
+        "type": "Span",
+        "start": 38,
+        "end": 43
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 43
+  }
+}

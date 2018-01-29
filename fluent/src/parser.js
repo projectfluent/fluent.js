@@ -2,8 +2,8 @@
 
 const MAX_PLACEABLES = 100;
 
-const privateIdentifierRe = new RegExp('-?[a-zA-Z][a-zA-Z0-9_-]*', 'y');
-const publicIdentifierRe = new RegExp('[a-zA-Z][a-zA-Z0-9_-]*', 'y');
+const entryIdentifierRe = /-?[a-zA-Z][a-zA-Z0-9_-]*/y;
+const identifierRe = /[a-zA-Z][a-zA-Z0-9_-]*/y;
 const functionIdentifierRe = /^[A-Z][A-Z_?-]*$/;
 
 /**
@@ -120,7 +120,7 @@ class RuntimeParser {
    * @private
    */
   getMessage() {
-    const id = this.getPrivateIdentifier();
+    const id = this.getEntryIdentifier();
 
     this.skipInlineWS();
 
@@ -131,6 +131,10 @@ class RuntimeParser {
     this.skipInlineWS();
 
     const val = this.getPattern();
+
+    if (id.startsWith('-') && val === null) {
+      throw this.error('Expected term to have a value');
+    }
 
     let attrs = null;
 
@@ -148,7 +152,7 @@ class RuntimeParser {
       this.entries[id] = val;
     } else {
       if (val === null && attrs === null) {
-        throw this.error('Expected a value or an attribute');
+        throw this.error('Expected message to have a value or attributes');
       }
 
       this.entries[id] = {};
@@ -208,12 +212,15 @@ class RuntimeParser {
   }
 
   /**
-   * Get identifier of a Message, Attribute or External Attribute.
+   * Get identifier using the provided regex.
+   *
+   * By default this will get identifiers of public messages, attributes and
+   * external arguments (without the $).
    *
    * @returns {String}
    * @private
    */
-  getIdentifier(re) {
+  getIdentifier(re = identifierRe) {
     re.lastIndex = this._index;
     const result = re.exec(this._source);
 
@@ -227,23 +234,13 @@ class RuntimeParser {
   }
 
   /**
-   * Get a potentially private identifier (staring with a dash).
+   * Get identifier of a Message or a Term (staring with a dash).
    *
    * @returns {String}
    * @private
    */
-  getPrivateIdentifier() {
-    return this.getIdentifier(privateIdentifierRe);
-  }
-
-  /**
-   * Get a public identifier.
-   *
-   * @returns {String}
-   * @private
-   */
-  getPublicIdentifier() {
-    return this.getIdentifier(publicIdentifierRe);
+  getEntryIdentifier() {
+    return this.getIdentifier(entryIdentifierRe);
   }
 
   /**
@@ -567,7 +564,7 @@ class RuntimeParser {
     if (this._source[this._index] === '.') {
       this._index++;
 
-      const name = this.getPublicIdentifier();
+      const name = this.getIdentifier();
       this._index++;
       return {
         type: 'attr',
@@ -749,7 +746,7 @@ class RuntimeParser {
       }
       this._index++;
 
-      const key = this.getPublicIdentifier();
+      const key = this.getIdentifier();
 
       this.skipInlineWS();
 
@@ -860,7 +857,7 @@ class RuntimeParser {
       this._index++;
       return {
         type: 'ext',
-        name: this.getPublicIdentifier()
+        name: this.getIdentifier()
       };
     }
 
@@ -874,7 +871,7 @@ class RuntimeParser {
         (cc1 >= 65 && cc1 <= 90)) { // A-Z
       return {
         type: 'ref',
-        name: this.getPrivateIdentifier()
+        name: this.getEntryIdentifier()
       };
     }
 

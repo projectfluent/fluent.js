@@ -6,11 +6,9 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0006",
-          "args": [
-            "value"
-          ],
-          "message": "Expected field: \"value\"",
+          "code": "E0012",
+          "args": [],
+          "message": "Expected value",
           "span": {
             "type": "Span",
             "start": 26,
@@ -30,11 +28,9 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0006",
-          "args": [
-            "value"
-          ],
-          "message": "Expected field: \"value\"",
+          "code": "E0012",
+          "args": [],
+          "message": "Expected value",
           "span": {
             "type": "Span",
             "start": 46,
@@ -54,11 +50,9 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0006",
-          "args": [
-            "value"
-          ],
-          "message": "Expected field: \"value\"",
+          "code": "E0012",
+          "args": [],
+          "message": "Expected value",
           "span": {
             "type": "Span",
             "start": 87,
@@ -78,11 +72,9 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0006",
-          "args": [
-            "value"
-          ],
-          "message": "Expected field: \"value\"",
+          "code": "E0012",
+          "args": [],
+          "message": "Expected value",
           "span": {
             "type": "Span",
             "start": 108,
@@ -102,11 +94,9 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0006",
-          "args": [
-            "value"
-          ],
-          "message": "Expected field: \"value\"",
+          "code": "E0012",
+          "args": [],
+          "message": "Expected value",
           "span": {
             "type": "Span",
             "start": 149,
