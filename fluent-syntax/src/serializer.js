@@ -11,10 +11,12 @@ function containNewLine(elems) {
   return !!withNewLine.length;
 }
 
+// Bit masks representing the state of the serializer.
+export const HAS_ENTRIES = 1;
+
 export default class FluentSerializer {
   constructor({ withJunk = false } = {}) {
     this.withJunk = withJunk;
-    this.hasEntries = false;
   }
 
   serialize(resource) {
@@ -22,20 +24,14 @@ export default class FluentSerializer {
       throw new Error(`Unknown resource type: ${resource.type}`);
     }
 
+    let state = 0;
     const parts = [];
-
-    if (resource.comment) {
-      parts.push(
-        `${serializeComment(resource.comment)}\n\n`
-      );
-      this.hasEntries = true;
-    }
 
     for (const entry of resource.body) {
       if (entry.type !== 'Junk' || this.withJunk) {
-        parts.push(this.serializeEntry(entry));
-        if (this.hasEntries === false) {
-          this.hasEntries = true;
+        parts.push(this.serializeEntry(entry, state));
+        if (!(state & HAS_ENTRIES)) {
+          state |= HAS_ENTRIES;
         }
       }
     }
@@ -43,24 +39,24 @@ export default class FluentSerializer {
     return parts.join('');
   }
 
-  serializeEntry(entry) {
+  serializeEntry(entry, state = 0) {
     switch (entry.type) {
       case 'Message':
         return serializeMessage(entry);
       case 'Section':
         return serializeSection(entry);
       case 'Comment':
-        if (this.hasEntries) {
+        if (state & HAS_ENTRIES) {
           return `\n${serializeComment(entry)}\n\n`;
         }
         return `${serializeComment(entry)}\n\n`;
       case 'GroupComment':
-        if (this.hasEntries) {
+        if (state & HAS_ENTRIES) {
           return `\n${serializeGroupComment(entry)}\n\n`;
         }
         return `${serializeGroupComment(entry)}\n\n`;
       case 'ResourceComment':
-        if (this.hasEntries) {
+        if (state & HAS_ENTRIES) {
           return `\n${serializeResourceComment(entry)}\n\n`;
         }
         return `${serializeResourceComment(entry)}\n\n`;

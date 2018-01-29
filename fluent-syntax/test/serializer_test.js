@@ -532,3 +532,63 @@ suite('Serialize expression', function() {
     assert.equal(pretty(input), '$num ->\n   *[one] One\n');
   });
 });
+
+suite('Serialize padding around comments', function() {
+  let pretty;
+
+  setup(function() {
+    const parser = new FluentParser();
+    const serializer = new FluentSerializer({
+      withJunk: false
+    });
+
+    pretty = function pretty(text) {
+      const res = parser.parse(text);
+      return serializer.serialize(res);
+    }
+  });
+
+  test('standalone comment has not padding when first', function() {
+    const input = ftl`
+      # Comment A
+
+      foo = Foo
+
+      # Comment B
+
+      bar = Bar
+    `;
+    assert.equal(pretty(input), input);
+    // Run again to make sure the same instance of the serializer doesn't keep
+    // state about how many entires is has already serialized.
+    assert.equal(pretty(input), input);
+  });
+
+  test('group comment has not padding when first', function() {
+    const input = ftl`
+      ## Group A
+
+      foo = Foo
+
+      ## Group B
+
+      bar = Bar
+    `;
+    assert.equal(pretty(input), input);
+    assert.equal(pretty(input), input);
+  });
+
+  test('resource comment has not padding when first', function() {
+    const input = ftl`
+      ## Resource Comment A
+
+      foo = Foo
+
+      ## Resource Comment B
+
+      bar = Bar
+    `;
+    assert.equal(pretty(input), input);
+    assert.equal(pretty(input), input);
+  });
+});
