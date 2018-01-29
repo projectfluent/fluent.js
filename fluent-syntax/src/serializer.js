@@ -43,8 +43,6 @@ export default class FluentSerializer {
     switch (entry.type) {
       case 'Message':
         return serializeMessage(entry);
-      case 'Section':
-        return serializeSection(entry);
       case 'Comment':
         if (state & HAS_ENTRIES) {
           return `\n${serializeComment(entry)}\n\n`;
@@ -79,27 +77,18 @@ function serializeComment(comment) {
   ).join('\n');
 }
 
+
 function serializeGroupComment(comment) {
   return comment.content.split('\n').map(
     line => line.length ? `## ${line}` : '##'
   ).join('\n');
 }
 
+
 function serializeResourceComment(comment) {
   return comment.content.split('\n').map(
     line => line.length ? `### ${line}` : '###'
   ).join('\n');
-}
-
-function serializeSection(section) {
-  const name = serializeVariantName(section.name);
-
-  if (section.comment) {
-    const comment = serializeComment(section.comment);
-    return `\n\n${comment}\n[[ ${name} ]]\n\n`;
-  }
-
-  return `\n\n[[ ${name} ]]\n\n`;
 }
 
 
