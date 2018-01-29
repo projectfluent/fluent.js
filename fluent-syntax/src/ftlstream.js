@@ -289,7 +289,9 @@ export class FTLParserStream extends ParserStream {
     while (this.ch) {
       if (this.currentIs('\n') && !this.peekCharIs('\n')) {
         this.next();
-        if (this.ch === undefined || this.isMessageIDStart() ||
+        if (this.ch === undefined ||
+            this.isMessageIDStart() ||
+            this.currentIs('#') ||
             (this.currentIs('/') && this.peekCharIs('/')) ||
             (this.currentIs('[') && this.peekCharIs('['))) {
           break;

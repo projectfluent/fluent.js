@@ -580,11 +580,11 @@ suite('Serialize padding around comments', function() {
 
   test('resource comment has not padding when first', function() {
     const input = ftl`
-      ## Resource Comment A
+      ### Resource Comment A
 
       foo = Foo
 
-      ## Resource Comment B
+      ### Resource Comment B
 
       bar = Bar
     `;
