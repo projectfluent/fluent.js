@@ -132,6 +132,10 @@ class RuntimeParser {
 
     const val = this.getPattern();
 
+    if (id.startsWith('-') && val === null) {
+      throw this.error('Expected term to have a value');
+    }
+
     let attrs = null;
 
     if (this._source[this._index] === ' ') {
@@ -148,7 +152,7 @@ class RuntimeParser {
       this.entries[id] = val;
     } else {
       if (val === null && attrs === null) {
-        throw this.error('Expected a value or an attribute');
+        throw this.error('Expected message to have a value or attributes');
       }
 
       this.entries[id] = {};

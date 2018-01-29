@@ -176,7 +176,7 @@ suite('Patterns', function(){
             { -bar.attr ->
                *[a] Foo
             }
-        -bar
+        -bar = Bar
             .attr = { -foo }
 
         foo = { -foo }

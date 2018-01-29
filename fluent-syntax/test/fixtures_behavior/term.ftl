@@ -23,3 +23,10 @@ err2 = { $-foo }
 
 err4 = { -brand() }
 //~ ERROR E0008, pos 340
+
+-err5 =
+//~ ERROR E0006, pos 351, args "-err5"
+
+-err6 =
+    .attr = Attribute
+//~ ERROR E0006, pos 360, args "-err6"

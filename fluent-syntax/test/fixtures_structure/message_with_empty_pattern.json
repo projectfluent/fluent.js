@@ -10,7 +10,7 @@
           "args": [
             "foo"
           ],
-          "message": "Expected entry \"foo\" to have a value or attributes",
+          "message": "Expected message \"foo\" to have a value or attributes",
           "span": {
             "type": "Span",
             "start": 5,

@@ -24,11 +24,11 @@ function getErrorMessage(code, args) {
     }
     case 'E0005': {
       const [id] = args;
-      return `Expected entry "${id}" to have a value or attributes`;
+      return `Expected message "${id}" to have a value or attributes`;
     }
     case 'E0006': {
-      const [field] = args;
-      return `Expected field: "${field}"`;
+      const [id] = args;
+      return `Expected term "${id}" to have a value`;
     }
     case 'E0007':
       return 'Keyword cannot end with a whitespace';
@@ -40,6 +40,8 @@ function getErrorMessage(code, args) {
       return 'Expected one of the variants to be marked as default (*)';
     case 'E0011':
       return 'Expected at least one variant after "->"';
+    case 'E0012':
+      return 'Expected value';
     case 'E0013':
       return 'Expected variant key';
     case 'E0014':

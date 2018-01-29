@@ -269,16 +269,20 @@ export default class FluentParser {
       }
     }
 
+    if (id.name.startsWith('-') && pattern === undefined) {
+      throw new ParseError('E0006', id.name);
+    }
+
     if (ps.isPeekNextLineAttributeStart()) {
       attrs = this.getAttributes(ps);
     }
 
-    if (pattern === undefined && attrs === undefined) {
-      throw new ParseError('E0005', id.name);
-    }
-
     if (id.name.startsWith('-')) {
       return new AST.Term(id, pattern, attrs, comment);
+    }
+
+    if (pattern === undefined && attrs === undefined) {
+      throw new ParseError('E0005', id.name);
     }
 
     return new AST.Message(id, pattern, attrs, comment);
@@ -299,7 +303,7 @@ export default class FluentParser {
       return new AST.Attribute(key, value);
     }
 
-    throw new ParseError('E0006', 'value');
+    throw new ParseError('E0012');
   }
 
   getAttributes(ps) {
@@ -374,7 +378,7 @@ export default class FluentParser {
       return new AST.Variant(key, value, defaultIndex);
     }
 
-    throw new ParseError('E0006', 'value');
+    throw new ParseError('E0012');
   }
 
   getVariants(ps) {
@@ -683,7 +687,7 @@ export default class FluentParser {
     } else if (ps.currentIs('"')) {
       return this.getString(ps);
     }
-    throw new ParseError('E0006', 'value');
+    throw new ParseError('E0012');
   }
 
   getString(ps) {
