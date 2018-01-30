@@ -4,7 +4,7 @@ import assert from 'assert';
 import sinon from 'sinon';
 
 import { MessageContext } from '../src/context';
-import { ftl } from './util';
+import { ftl } from '../src/util';
 
 suite('MessageContext constructor', function() {
   setup(function() {

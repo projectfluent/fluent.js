@@ -18,3 +18,5 @@ export {
 
 export { default as CachedIterable } from './cached_iterable';
 export { mapContextSync, mapContextAsync } from './fallback';
+
+export { ftl } from './util';

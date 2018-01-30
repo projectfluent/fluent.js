@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { MessageContext } from '../src/context';
-import { ftl } from './util';
+import { ftl } from '../src/util';
 
 suite('Patterns', function(){
   let ctx, args, errs;

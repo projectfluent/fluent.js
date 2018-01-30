@@ -1,5 +1,3 @@
-'use strict';
-
 function nonBlank(line) {
   return !/^\s*$/.test(line);
 }
@@ -9,6 +7,13 @@ function countIndent(line) {
   return indent.length;
 }
 
+/**
+ * Template literal tag for dedenting FTL code.
+ *
+ * Strip the common indent of non-blank lines. Remove blank lines.
+ *
+ * @param {Array<string>} strings
+ */
 export function ftl(strings) {
   const [code] = strings;
   const lines = code.split('\n').filter(nonBlank);
