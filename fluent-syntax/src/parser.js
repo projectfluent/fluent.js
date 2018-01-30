@@ -135,7 +135,11 @@ export default class FluentParser {
     if (ps.currentIs('[')) {
       this.skipSection(ps);
       if (comment) {
-        return new AST.GroupComment(comment.content);
+        const groupComment = new AST.GroupComment(comment.content);
+        if (this.withSpans) {
+          groupComment.span = comment.span;
+        }
+        return groupComment;
       }
       return null;
     }
