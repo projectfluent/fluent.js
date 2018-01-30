@@ -293,7 +293,6 @@ export default class FluentParser {
   }
 
   getAttribute(ps) {
-    ps.expectIndent();
     ps.expectChar('.');
 
     const key = this.getIdentifier(ps);
@@ -314,6 +313,7 @@ export default class FluentParser {
     const attrs = [];
 
     while (true) {
+      ps.expectIndent();
       const attr = this.getAttribute(ps);
       attrs.push(attr);
 
@@ -357,8 +357,6 @@ export default class FluentParser {
   }
 
   getVariant(ps, hasDefault) {
-    ps.expectIndent();
-
     let defaultIndex = false;
 
     if (ps.currentIs('*')) {
@@ -390,6 +388,7 @@ export default class FluentParser {
     let hasDefault = false;
 
     while (true) {
+      ps.expectIndent();
       const variant = this.getVariant(ps, hasDefault);
 
       if (variant.default) {
