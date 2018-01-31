@@ -19,13 +19,13 @@ The `MessageContext` constructor provides the core functionality of formatting
 translations from FTL files.
 
 ```javascript
-import { MessageContext } from 'fluent';
+import { MessageContext, ftl } from 'fluent';
 
 const ctx = new MessageContext('en-US');
 
-const errors = ctx.addMessages(`
-brand-name = Foo 3000
-welcome    = Welcome, { $name }, to { brand-name }!
+const errors = ctx.addMessages(ftl`
+    -brand-name = Foo 3000
+    welcome = Welcome, { $name }, to { -brand-name }!
 `);
 
 if (errors.length) {
@@ -59,7 +59,7 @@ import { MessageContext } from 'fluent';
 ```
 
 For legacy browsers, the `compat` build has been transpiled using Babel's [env
-preset][]:
+preset][]. It requires the regenerator runtime provided by [babel-polyfill][].
 
 ```javascript
 import { MessageContext } from 'fluent/compat';
@@ -75,6 +75,7 @@ implementations, and information about how to get involved.
 
 [intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
 [fluent-intl-polyfill]: https://www.npmjs.com/package/fluent-intl-polyfill
+[babel-polyfill]: https://babeljs.io/docs/usage/polyfill/
 [Stage 3 proposal]:https://github.com/tc39/proposal-intl-plural-rules
 [env preset]: https://babeljs.io/docs/plugins/preset-env/
 [projectfluent.org]: http://projectfluent.org

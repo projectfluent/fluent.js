@@ -1,21 +1,87 @@
 # Changelog
 
-## Unreleased
+## fluent 0.6.0 (January 31, 2018)
 
-  - Remove MessageContext.formatToParts.
+  - Implement Fluent Syntax 0.5.
+
+    - Add support for terms.
+    - Add support for `#`, `##` and `###` comments.
+    - Remove support for tags.
+    - Add support for `=` after the identifier in message and term
+      defintions.
+    - Forbid newlines in string expressions.
+    - Allow trailing comma in call expression argument lists.
+
+    In fluent 0.6.x the new Syntax 0.5 is supported alongside the old Syntax
+    0.4. This should make migrations easier. The parser will correctly parse
+    Syntax 0.4 comments (prefixed with `//`), sections and message
+    definitions without the `=` after the identifier. The one exception are
+    tags which are no longer supported. Please use attributed defined on
+    terms instead.
+
+  - Add `mapContextAsync`. (#125)
+
+    This is the async counterpart to mapContextSync. Given an async iterable
+    of `MessageContext` instances and an array of ids (or a single id), it
+    maps each identifier to the first `MessageContext` which contains the
+    message for it.
+
+    An ordered interable of `MessageContext` instances can represent the
+    current negotiated fallback chain of languages. This iterable can be used
+    to find the best existing translation for a given identifier.
+
+    The iterable of `MessageContexts` can now be async, allowing code like
+    this:
+
+    ```js
+    async formatString(id, args) {
+        const ctx = await mapContextAsync(contexts, id);
+
+        if (ctx === null) {
+            return id;
+        }
+
+        const msg = ctx.getMessage(id);
+        return ctx.format(msg, args);
+    }
+    ```
+
+    The iterable of `MessageContexts` should always be wrapped in
+    `CachedIterable` to optimize subsequent calls to `mapContextSync` and
+    `mapContextAsync`.
+
+    Because `mapContextAsync` uses asynchronous iteration you'll likely need
+    the regenerator runtime provided by `babel-polyfill` to run the `compat`
+    builds of `fluent`.
+
+  - Expose the `ftl` dedent helper.
+
+    The `ftl` template literal tag can be used to conveniently include FTL
+    snippets in other code. It strips the common indentation from the snippet
+    allowing it to be indented on the level dictated by the current code
+    indentation.
+
+    ```js
+    ctx.addMessages(ftl`
+        foo = Foo
+        bar = Bar
+    );
+    ```
+
+  - Remove `MessageContext.formatToParts`.
 
     It's only use-case was passing React elements as arguments to
     translations which is now possible thanks to DOM overlays (#101).
 
-  - Rename FluentType.valueOf to FluentType.toString.
+  - Rename `FluentType.valueOf` to `FluentType.toString1.
 
-    Without MessageContext.formatToParts, all use-cases for
-    FluentType.valueOf boil down to stringification.
+    Without `MessageContext.formatToParts`, all use-cases for
+    `FluentType.valueOf` boil down to stringification.
 
-  - Remove FluentType.isTypeOf.
+  - Remove `FluentType.isTypeOf`.
 
     fluent-react's markup overlays (#101) removed the dependency on fluent's
-    FluentType which was hardcoded as an import from fluent/compat. Without
+    `FluentType` which was hardcoded as an import from fluent/compat. Without
     this dependency all imports from fluent are in the hands of developers
     again and they can decide to use the ES2015+ or the compat builds as they
     wish. As long as they do it consistently, regular instanceof checks will
