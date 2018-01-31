@@ -4,10 +4,10 @@
     {
       "type": "GroupComment",
       "annotations": [],
-      "content": "",
+      "content": "Comment",
       "span": {
         "type": "Span",
-        "start": 1,
+        "start": 0,
         "end": 24
       }
     }

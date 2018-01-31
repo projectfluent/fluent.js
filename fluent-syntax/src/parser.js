@@ -46,6 +46,7 @@ export default class FluentParser {
       'getVariant', 'getVariantName', 'getNumber', 'getPattern',
       'getTextElement', 'getPlaceable', 'getExpression',
       'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
+      'getGroupCommentFromSection'
     ].forEach(
       name => this[name] = withSpan(this[name])
     );
@@ -133,15 +134,12 @@ export default class FluentParser {
     }
 
     if (ps.currentIs('[')) {
-      this.skipSection(ps);
-      if (comment) {
-        const groupComment = new AST.GroupComment(comment.content);
-        if (this.withSpans) {
-          groupComment.span = comment.span;
-        }
-        return groupComment;
+      const groupComment = this.getGroupCommentFromSection(ps, comment);
+      if (comment && this.withSpans) {
+        // The Group Comment should start where the section comment starts.
+        groupComment.span.start = comment.span.start;
       }
-      return null;
+      return groupComment;
     }
 
     if (ps.isEntryIDStart() && (!comment || comment.type === 'Comment')) {
@@ -237,7 +235,7 @@ export default class FluentParser {
     return new Comment(content);
   }
 
-  skipSection(ps) {
+  getGroupCommentFromSection(ps, comment) {
     ps.expectChar('[');
     ps.expectChar('[');
 
@@ -250,8 +248,13 @@ export default class FluentParser {
     ps.expectChar(']');
     ps.expectChar(']');
 
-    ps.skipInlineWS();
-    ps.next();
+    if (comment) {
+      return new AST.GroupComment(comment.content);
+    }
+
+    // A Section without a comment is like an empty Group Comment. Semantically
+    // it ends the previous group and starts a new one.
+    return new AST.GroupComment('');
   }
 
   getMessage(ps, comment) {
