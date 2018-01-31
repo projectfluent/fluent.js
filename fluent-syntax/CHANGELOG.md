@@ -1,8 +1,40 @@
 # Changelog
 
-## Unreleased
+## fluent-syntax 0.6.0 (January 31, 2018)
 
-  - …
+  - Implement Fluent Syntax 0.5.
+
+    - Add support for terms.
+    - Add support for `#`, `##` and `###` comments.
+    - Remove support for tags.
+    - Add support for `=` after the identifier in message and term
+      defintions.
+    - Forbid newlines in string expressions.
+    - Allow trailing comma in call expression argument lists.
+
+    In fluent-syntax 0.6.x the new Syntax 0.5 is supported alongside the old
+    Syntax 0.4. This should make migrations easier.
+
+    `FluentParser` will correctly parse Syntax 0.4 comments (prefixed with
+    `//`), sections and message definitions without the `=` after the
+    identifier. The one exception are tags which are no longer supported.
+    Please use attributed defined on terms instead.
+
+    `FluentSerializer` always serializes using the new Syntax 0.5.
+
+  - Add `AST.Placeable` (#64)
+
+    Added in Syntax Spec 0.4, `AST.Placeable` provides exact span data about
+    the opening and closing brace of placeables.
+
+  - Expose `FluentSerializer.serializeExpression`. (#134)
+
+  - Serialize standalone comments with surrounding white-space.
+
+  - Allow blank lines inside of messages. (#76)
+
+  - Trim trailing newline from Comments. (#77)
+
 
 ## fluent-syntax 0.5.0 (June 23rd, 2017)
 
