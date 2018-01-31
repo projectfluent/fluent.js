@@ -46,6 +46,7 @@ export default class FluentParser {
       'getVariant', 'getVariantName', 'getNumber', 'getPattern',
       'getTextElement', 'getPlaceable', 'getExpression',
       'getSelectorExpression', 'getCallArg', 'getString', 'getLiteral',
+      'getGroupCommentFromSection'
     ].forEach(
       name => this[name] = withSpan(this[name])
     );
@@ -133,11 +134,12 @@ export default class FluentParser {
     }
 
     if (ps.currentIs('[')) {
-      this.skipSection(ps);
-      if (comment) {
-        return new AST.GroupComment(comment.content);
+      const groupComment = this.getGroupCommentFromSection(ps, comment);
+      if (comment && this.withSpans) {
+        // The Group Comment should start where the section comment starts.
+        groupComment.span.start = comment.span.start;
       }
-      return null;
+      return groupComment;
     }
 
     if (ps.isEntryIDStart() && (!comment || comment.type === 'Comment')) {
@@ -233,7 +235,7 @@ export default class FluentParser {
     return new Comment(content);
   }
 
-  skipSection(ps) {
+  getGroupCommentFromSection(ps, comment) {
     ps.expectChar('[');
     ps.expectChar('[');
 
@@ -246,8 +248,13 @@ export default class FluentParser {
     ps.expectChar(']');
     ps.expectChar(']');
 
-    ps.skipInlineWS();
-    ps.next();
+    if (comment) {
+      return new AST.GroupComment(comment.content);
+    }
+
+    // A Section without a comment is like an empty Group Comment. Semantically
+    // it ends the previous group and starts a new one.
+    return new AST.GroupComment('');
   }
 
   getMessage(ps, comment) {
@@ -289,7 +296,6 @@ export default class FluentParser {
   }
 
   getAttribute(ps) {
-    ps.expectIndent();
     ps.expectChar('.');
 
     const key = this.getIdentifier(ps);
@@ -310,6 +316,7 @@ export default class FluentParser {
     const attrs = [];
 
     while (true) {
+      ps.expectIndent();
       const attr = this.getAttribute(ps);
       attrs.push(attr);
 
@@ -353,8 +360,6 @@ export default class FluentParser {
   }
 
   getVariant(ps, hasDefault) {
-    ps.expectIndent();
-
     let defaultIndex = false;
 
     if (ps.currentIs('*')) {
@@ -386,6 +391,7 @@ export default class FluentParser {
     let hasDefault = false;
 
     while (true) {
+      ps.expectIndent();
       const variant = this.getVariant(ps, hasDefault);
 
       if (variant.default) {
