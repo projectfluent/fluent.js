@@ -32,7 +32,7 @@ foo = FOO
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .attr = ATTR
 `)
 
@@ -53,7 +53,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .attr1 = ATTR 1
     .attr2 = ATTR 2
 `)
@@ -75,7 +75,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .attr = ATTR
 `)
 
@@ -96,7 +96,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .attr = ATTR
 `)
 
@@ -117,7 +117,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .attr = ATTR
 `)
 
@@ -138,7 +138,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .existing = ATTR
 `)
 
@@ -159,7 +159,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .existing = ATTR
 `)
 
@@ -180,7 +180,7 @@ foo
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
-foo
+foo =
     .existing = ATTR
 `)
 
