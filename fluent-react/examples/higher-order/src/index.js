@@ -1,6 +1,7 @@
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { LocalizationProvider } from 'fluent-react';
+import { LocalizationProvider } from 'fluent-react/compat';
 
 import { generateMessages } from './l10n';
 import App from './App';

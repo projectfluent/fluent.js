@@ -1,5 +1,5 @@
-import 'fluent-intl-polyfill';
-import { MessageContext } from 'fluent';
+import 'fluent-intl-polyfill/compat';
+import { MessageContext } from 'fluent/compat';
 
 const MESSAGES_ALL = {
   'pl': `

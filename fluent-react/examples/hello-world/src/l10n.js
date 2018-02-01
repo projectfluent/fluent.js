@@ -1,6 +1,6 @@
-import 'fluent-intl-polyfill';
-import { MessageContext } from 'fluent';
-import { negotiateLanguages } from 'fluent-langneg';
+import 'fluent-intl-polyfill/compat';
+import { MessageContext } from 'fluent/compat';
+import { negotiateLanguages } from 'fluent-langneg/compat';
 
 const MESSAGES_ALL = {
   'pl': `

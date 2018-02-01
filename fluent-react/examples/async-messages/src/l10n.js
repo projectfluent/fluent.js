@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import delay from 'delay';
 
-import 'fluent-intl-polyfill';
-import { MessageContext } from 'fluent';
-import { LocalizationProvider } from 'fluent-react';
-import { negotiateLanguages } from 'fluent-langneg';
+import 'fluent-intl-polyfill/compat';
+import { MessageContext } from 'fluent/compat';
+import { LocalizationProvider } from 'fluent-react/compat';
+import { negotiateLanguages } from 'fluent-langneg/compat';
 
 async function fetchMessages(locale) {
   const { PUBLIC_URL } = process.env;

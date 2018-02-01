@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "1.0.17"
+    "react-scripts": "1.1.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "delay": "^2.0.0",
     "fluent": "file:../../../fluent",
     "fluent-intl-polyfill": "file:../../../fluent-intl-polyfill",
     "fluent-langneg": "file:../../../fluent-langneg",
     "fluent-react": "file:../../../fluent-react",
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1"
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

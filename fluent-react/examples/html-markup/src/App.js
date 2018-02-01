@@ -1,5 +1,5 @@
 import React from 'react';
-import { Localized, withLocalization } from 'fluent-react';
+import { Localized, withLocalization } from 'fluent-react/compat';
 
 function App(props) {
   function showAlert(id) {
