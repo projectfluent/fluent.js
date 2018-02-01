@@ -114,10 +114,10 @@ export default class Localized extends Component {
         elems[childNode.localName],
         // XXX Explicitly ignore any attributes defined in the translation.
         null,
-        // XXX React breaks if we try to pass non-null children to void elements
-        // (like <input>). At the same time, textContent of such elements is an
-        // empty string, so we explicitly pass null instead.
-        // See https://github.com/projectfluent/fluent.js/issues/105.
+        // Void elements have textContent == "" but React doesn't allow them to
+        // have any children so we pass null here for any falsy textContent.
+        // This means that an empty element in the translation will always clear
+        // any existing children in the element passed in the prop.
         childNode.textContent || null
       );
     });

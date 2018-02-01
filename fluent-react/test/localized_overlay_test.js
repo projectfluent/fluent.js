@@ -172,8 +172,7 @@ foo = My name is <input/>.
     ));
   });
 
-  // XXX https://github.com/projectfluent/fluent.js/issues/105
-  test.skip('void element with invalid content', function() {
+  test('void elements cannot have text content', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
 
@@ -188,9 +187,56 @@ foo = My name is <input>invalid text content</input>.
       { context: { l10n } }
     );
 
+    // the opening <input> tag is parsed as an HTMLInputElement and the closing
+    // </input> is ignored. The "invalid text content" text is then parsed as a
+    // regular text node.
     assert.ok(wrapper.contains(
       <div>
-        My name is <input type="text" />.
+        My name is <input type="text" />invalid text content.
+      </div>
+    ));
+  });
+
+  test('text content of non-void elements can be empty', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = Empty <foo></foo>.
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" foo={<span />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        Empty <span />.
+      </div>
+    ));
+  });
+
+  test('translation clears text content of non-void elements', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = Empty <foo></foo>.
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" foo={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        Empty <span />.
       </div>
     ));
   });
