@@ -1,6 +1,6 @@
 # Changelog
 
-## fluent-react 0.6.0 (Unreleased)
+## fluent-react 0.6.0 (February 1, 2018)
 
   - Allow limited markup in translations. (#101)
 
@@ -50,7 +50,7 @@
     the element passed as a prop is cloned with the translated text content
     taken from the `DocumentFragment` used as `children`.
 
-  - Filter props set by translations with <Localized attrs={{…}}>.
+  - Filter props with <Localized attrs={{…}}>. (#139, #141)
 
     The `<Localized>` component now requires the `attrs` prop to set any
     localized attributes as props on the wrapped component. `attrs` should be
@@ -73,6 +73,8 @@
     translation.
 
 #### Migrating from `fluent-react` 0.4.1 to 0.6.0
+
+##### Add attrs to Localized.
 
 If you're setting localized attributes as props of elements wrapped in
 `<Localized>`, in `fluent-react` 0.6.0 you'll need to also explicitly allow
@@ -103,6 +105,8 @@ translations overwriting important props which shouldn't change.
     />
 </Localized>
 ```
+
+##### Don't pass elements as $arguments.
 
 In `fluent-react` 0.4.1 it was possible to pass React elements as _external
 arguments_ to localization via the `$`-prefixed props, just like you'd pass
@@ -183,6 +187,18 @@ send-comment = <confirm>Send</confirm> or <cancel>go back</cancel>.
     <p>{'<confirm>Send</confirm> or <cancel>go back</cancel>.'}</p>
 </Localized>
 ```
+
+##### Use fluent 0.6.0+.
+
+`fluent-react` 0.6.0 works best with `fluent` 0.6.0. It might still work with
+`fluent` 0.4.x but passing elements as `$`-prefixed arguments to translations
+will break your app. You might also run into other issues with translations
+with attributes and no values. Upgrading your code to [`fluent` 0.6.0][] and
+your localization files to [Fluent Syntax 0.5][] is the best way to avoid
+troubles.
+
+[`fluent` 0.6.0]: https://github.com/projectfluent/fluent.js/releases/tag/fluent%400.6.0
+[Fluent Syntax 0.5]: https://github.com/projectfluent/fluent/releases/tag/v0.5.0
 
 ## fluent-react 0.4.1 (June 30, 2017)
 
