@@ -1,6 +1,6 @@
 import React from 'react';
 import assert from 'assert';
-import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
@@ -14,7 +14,7 @@ suite('Localized - change messages', function() {
 foo = FOO
 `);
 
-    const wrapper = mount(
+    const wrapper = shallow(
       <Localized id="foo">
         <div />
       </Localized>,
@@ -32,6 +32,7 @@ foo = BAR
 
     l10n.setMessages([mcx2]);
 
+    wrapper.update();
     assert.ok(wrapper.contains(
       <div>BAR</div>
     ));
