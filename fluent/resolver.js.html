@@ -57,8 +57,23 @@
  *
  * All other expressions (except for `FunctionReference` which is only used in
  * `CallExpression`) resolve to an instance of `FluentType`.  The caller should
- * use the `valueOf` method to convert the instance to a native value.
+ * use the `toString` method to convert the instance to a native value.
+ *
+ *
+ * All functions in this file pass around a special object called `env`.
+ * This object stores a set of elements used by all resolve functions:
+ *
+ *  * {MessageContext} ctx
+ *      context for which the given resolution is happening
+ *  * {Object} args
+ *      list of developer provided arguments that can be used
+ *  * {Array} errors
+ *      list of errors collected while resolving
+ *  * {WeakSet} dirty
+ *      Set of patterns already encountered during this resolution.
+ *      This is used to prevent cyclic resolutions.
  */
+
 
 import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
   from './types';
@@ -73,26 +88,17 @@ const PDI = '\u2069';
 
 
 /**
- * Helper for computing the total character length of a placeable.
- *
- * Used in Pattern.
- *
- * @private
- */
-function PlaceableLength(env, parts) {
-  const { ctx } = env;
-  return parts.reduce(
-    (sum, part) => sum + part.valueOf(ctx).length,
-    0
-  );
-}
-
-
-/**
  * Helper for choosing the default value from a set of members.
  *
  * Used in SelectExpressions and Type.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} members
+ *    Hash map of variants from which the default value is to be selected.
+ * @param   {Number} def
+ *    The index of the default variant.
+ * @returns {FluentType}
  * @private
  */
 function DefaultMember(env, members, def) {
@@ -107,16 +113,28 @@ function DefaultMember(env, members, def) {
 
 
 /**
- * Resolve a reference to a message to the message object.
+ * Resolve a reference to another message.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} id
+ *    The identifier of the message to be resolved.
+ * @param   {String} id.name
+ *    The name of the identifier.
+ * @returns {FluentType}
  * @private
  */
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
+  const message = name.startsWith('-')
+    ? ctx._terms.get(name)
+    : ctx._messages.get(name);
 
   if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
+    const err = name.startsWith('-')
+      ? new ReferenceError(`Unknown term: ${name}`)
+      : new ReferenceError(`Unknown message: ${name}`);
+    errors.push(err);
     return new FluentNone(name);
   }
 
@@ -124,33 +142,19 @@ function MessageReference(env, {name}) {
 }
 
 /**
- * Resolve an array of tags.
- *
- * @private
- */
-function Tags(env, {name}) {
-  const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
-
-  if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
-    return new FluentNone(name);
-  }
-
-  if (!message.tags) {
-    errors.push(new RangeError(`No tags in message "${name}"`));
-    return new FluentNone(name);
-  }
-
-  return message.tags.map(
-    tag => new FluentSymbol(tag)
-  );
-}
-
-
-/**
  * Resolve a variant expression to the variant object.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {Object} expr.id
+ *    An Identifier of a message for which the variant is resolved.
+ * @param   {Object} expr.id.name
+ *    Name a message for which the variant is resolved.
+ * @param   {Object} expr.key
+ *    Variant key to be resolved.
+ * @returns {FluentType}
  * @private
  */
 function VariantExpression(env, {id, key}) {
@@ -178,7 +182,7 @@ function VariantExpression(env, {id, key}) {
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.valueOf(ctx)}`));
+  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
   return Type(env, message);
 }
 
@@ -186,6 +190,15 @@ function VariantExpression(env, {id, key}) {
 /**
  * Resolve an attribute expression to the attribute object.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.id
+ *    An ID of a message for which the attribute is resolved.
+ * @param   {String} expr.name
+ *    Name of the attribute to be resolved.
+ * @returns {FluentType}
  * @private
  */
 function AttributeExpression(env, {id, name}) {
@@ -211,6 +224,17 @@ function AttributeExpression(env, {id, name}) {
 /**
  * Resolve a select expression to the member object.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.exp
+ *    Selector expression
+ * @param   {Array} expr.vars
+ *    List of variants for the select expression.
+ * @param   {Number} expr.def
+ *    Index of the default variant.
+ * @returns {FluentType}
  * @private
  */
 function SelectExpression(env, {exp, vars, def}) {
@@ -218,9 +242,7 @@ function SelectExpression(env, {exp, vars, def}) {
     return DefaultMember(env, vars, def);
   }
 
-  const selector = exp.type === 'ref'
-    ? Tags(env, exp)
-    : Type(env, exp);
+  const selector = Type(env, exp);
   if (selector instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }
@@ -250,10 +272,13 @@ function SelectExpression(env, {exp, vars, def}) {
  * Resolve expression to a Fluent type.
  *
  * JavaScript strings are a special case.  Since they natively have the
- * `valueOf` method they can be used as if they were a Fluent type without
+ * `toString` method they can be used as if they were a Fluent type without
  * paying the cost of creating a instance of one.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
  * @param   {Object} expr
+ *    An expression object to be resolved into a Fluent type.
  * @returns {FluentType}
  * @private
  */
@@ -272,7 +297,7 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case 'sym':
+    case 'varname':
       return new FluentSymbol(expr.name);
     case 'num':
       return new FluentNumber(expr.val);
@@ -300,7 +325,7 @@ function Type(env, expr) {
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
-      if (expr.val !== undefined) {
+      if (expr.val !== null &amp;&amp; expr.val !== undefined) {
         return Type(env, expr.val);
       }
 
@@ -316,6 +341,13 @@ function Type(env, expr) {
 /**
  * Resolve a reference to an external argument.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.name
+ *    Name of an argument to be returned.
+ * @returns {FluentType}
  * @private
  */
 function ExternalArgument(env, {name}) {
@@ -328,6 +360,7 @@ function ExternalArgument(env, {name}) {
 
   const arg = args[name];
 
+  // Return early if the argument already is an instance of FluentType.
   if (arg instanceof FluentType) {
     return arg;
   }
@@ -353,6 +386,13 @@ function ExternalArgument(env, {name}) {
 /**
  * Resolve a reference to a function.
  *
+ * @param   {Object}  env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {String} expr.name
+ *    Name of the function to be returned.
+ * @returns {Function}
  * @private
  */
 function FunctionReference(env, {name}) {
@@ -377,6 +417,15 @@ function FunctionReference(env, {name}) {
 /**
  * Resolve a call to a Function with positional and key-value arguments.
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {Object} expr.fun
+ *    FTL Function object.
+ * @param   {Array} expr.args
+ *    FTL Function argument list.
+ * @returns {FluentType}
  * @private
  */
 function CallExpression(env, {fun, args}) {
@@ -387,7 +436,7 @@ function CallExpression(env, {fun, args}) {
   }
 
   const posargs = [];
-  const keyargs = [];
+  const keyargs = {};
 
   for (const arg of args) {
     if (arg.type === 'narg') {
@@ -397,13 +446,22 @@ function CallExpression(env, {fun, args}) {
     }
   }
 
-  // XXX functions should also report errors
-  return callee(posargs, keyargs);
+  try {
+    return callee(posargs, keyargs);
+  } catch (e) {
+    // XXX Report errors.
+    return new FluentNone();
+  }
 }
 
 /**
  * Resolve a pattern (a complex string with placeables).
  *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Array} ptn
+ *    Array of pattern elements.
+ * @returns {Array}
  * @private
  */
 function Pattern(env, ptn) {
@@ -424,26 +482,20 @@ function Pattern(env, ptn) {
       continue;
     }
 
-    const part = Type(env, elem);
+    const part = Type(env, elem).toString(ctx);
 
     if (ctx._useIsolating) {
       result.push(FSI);
     }
 
-    if (Array.isArray(part)) {
-      const len = PlaceableLength(env, part);
-
-      if (len > MAX_PLACEABLE_LENGTH) {
-        errors.push(
-          new RangeError(
-            'Too many characters in placeable ' +
-            `(${len}, max allowed is ${MAX_PLACEABLE_LENGTH})`
-          )
-        );
-        result.push(new FluentNone());
-      } else {
-        result.push(...part);
-      }
+    if (part.length > MAX_PLACEABLE_LENGTH) {
+      errors.push(
+        new RangeError(
+          'Too many characters in placeable ' +
+          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        )
+      );
+      result.push(part.slice(MAX_PLACEABLE_LENGTH));
     } else {
       result.push(part);
     }
@@ -454,25 +506,29 @@ function Pattern(env, ptn) {
   }
 
   dirty.delete(ptn);
-  return result;
+  return result.join('');
 }
 
 /**
- * Format a translation into an `FluentType`.
- *
- * The return value must be unwrapped via `valueOf` by the caller.
+ * Format a translation into a string.
  *
  * @param   {MessageContext} ctx
+ *    A MessageContext instance which will be used to resolve the
+ *    contextual information of the message.
  * @param   {Object}         args
+ *    List of arguments provided by the developer which can be accessed
+ *    from the message.
  * @param   {Object}         message
+ *    An object with the Message to be resolved.
  * @param   {Array}          errors
+ *    An error array that any encountered errors will be appended to.
  * @returns {FluentType}
  */
 export default function resolve(ctx, args, message, errors = []) {
   const env = {
     ctx, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message);
+  return Type(env, message).toString(ctx);
 }
 </code></pre>
         </article>
@@ -484,13 +540,13 @@ export default function resolve(ctx, args, message, errors = []) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li><li><a href="global.html#touchNext">touchNext</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 19:47:38 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:50 GMT+0100 (STD)
 </footer>
 
 <script> prettyPrint(); </script>

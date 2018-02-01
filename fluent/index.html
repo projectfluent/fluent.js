@@ -50,13 +50,13 @@ install it from the npm registry or use it as a standalone script (as the
 <code>Fluent</code> global).</p>
 <pre class="prettyprint source"><code>npm install fluent</code></pre><h2>How to use</h2><p>The <code>MessageContext</code> constructor provides the core functionality of formatting
 translations from FTL files.</p>
-<pre class="prettyprint source lang-javascript"><code>import { MessageContext } from 'fluent';
+<pre class="prettyprint source lang-javascript"><code>import { MessageContext, ftl } from 'fluent';
 
 const ctx = new MessageContext('en-US');
 
-const errors = ctx.addMessages(`
-brand-name = Foo 3000
-welcome    = Welcome, { $name }, to { brand-name }!
+const errors = ctx.addMessages(ftl`
+    -brand-name = Foo 3000
+    welcome = Welcome, { $name }, to { -brand-name }!
 `);
 
 if (errors.length) {
@@ -66,21 +66,21 @@ if (errors.length) {
 const welcome = ctx.getMessage('welcome');
 
 ctx.format(welcome, { name: 'Anna' });
-// → 'Welcome, Anna, to Foo 3000!'</code></pre><p>The API reference is available at http://projectfluent.io/fluent.js/fluent.</p>
+// → 'Welcome, Anna, to Foo 3000!'</code></pre><p>The API reference is available at http://projectfluent.org/fluent.js/fluent.</p>
 <h2>Compatibility</h2><p><code>fluent</code> requires the following <code>Intl</code> formatters:</p>
 <ul>
 <li><code>Intl.DateTimeFormat</code> (standard, well-supported)</li>
 <li><code>Intl.NumberFormat</code> (standard, well-supported)</li>
-<li><code>Intl.PluralRules</code> (<a href="https://github.com/tc39/proposal-intl-plural-rules">Stage 3 proposal</a>)</li>
+<li><code>Intl.PluralRules</code> (standard, new in ECMAScript 2018)</li>
 </ul>
 <p><code>Intl.PluralRules</code> may already be available in some engines.  In most cases,
 however, a polyfill will be required.  We recommend <a href="https://www.npmjs.com/package/fluent-intl-polyfill">fluent-intl-polyfill</a>
 which uses <a href="https://www.npmjs.com/package/intl-pluralrules">intl-pluralrules</a>.</p>
 <pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
-import { MessageContext } from 'fluent';</code></pre><p>For legacy browsers, the <code>compat</code> build has been transpiled using the current
-version of Babel's <a href="https://babeljs.io/docs/plugins/preset-latest/">latest preset</a>:</p>
-<pre class="prettyprint source lang-javascript"><code>import { MessageContext } from 'fluent/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.io">projectfluent.io</a>, including
-documentation of the Fluent file format (<a href="http://projectfluent.io/fluent/guide/">FTL</a>), links to other packages and
+import { MessageContext } from 'fluent';</code></pre><p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel's <a href="https://babeljs.io/docs/plugins/preset-env/">env
+preset</a>. It requires the regenerator runtime provided by <a href="https://babeljs.io/docs/usage/polyfill/">babel-polyfill</a>.</p>
+<pre class="prettyprint source lang-javascript"><code>import { MessageContext } from 'fluent/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.org">projectfluent.org</a>, including
+documentation of the Fluent file format (<a href="http://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
 implementations, and information about how to get involved.</p></article>
     </section>
 
@@ -169,7 +169,9 @@ implementations, and information about how to get involved.</p></article>
 
     
 
-     
+    
+
+    
 
     
 
@@ -224,7 +226,20 @@ instantly resolve to the value of the <code>brand-name</code> message.  Instead,
 want to get the message object and look for its <code>nominative</code> variant.</p>
 <p>All other expressions (except for <code>FunctionReference</code> which is only used in
 <code>CallExpression</code>) resolve to an instance of <code>FluentType</code>.  The caller should
-use the <code>valueOf</code> method to convert the instance to a native value.</p></div>
+use the <code>toString</code> method to convert the instance to a native value.</p>
+<p>All functions in this file pass around a special object called <code>env</code>.
+This object stores a set of elements used by all resolve functions:</p>
+<ul>
+<li>{MessageContext} ctx
+  context for which the given resolution is happening</li>
+<li>{Object} args
+  list of developer provided arguments that can be used</li>
+<li>{Array} errors
+  list of errors collected while resolving</li>
+<li>{WeakSet} dirty
+  Set of patterns already encountered during this resolution.
+  This is used to prevent cyclic resolutions.</li>
+</ul></div>
         
 
         
@@ -281,7 +296,9 @@ use the <code>valueOf</code> method to convert the instance to a native value.</
 
     
 
-     
+    
+
+    
 
     
 
@@ -302,13 +319,13 @@ use the <code>valueOf</code> method to convert the instance to a native value.</
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li><li><a href="global.html#touchNext">touchNext</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 19:47:38 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:50 GMT+0100 (STD)
 </footer>
 
 <script> prettyPrint(); </script>
