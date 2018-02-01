@@ -50,8 +50,59 @@
     the element passed as a prop is cloned with the translated text content
     taken from the `DocumentFragment` used as `children`.
 
+  - Filter props set by translations with <Localized attrs={{…}}>.
 
- #### Migrating from `fluent-react` 0.4.1
+    The `<Localized>` component now requires the `attrs` prop to set any
+    localized attributes as props on the wrapped component. `attrs` should be
+    an object with attribute names as keys and booleans as values.
+
+    ```jsx
+    <Localized id="type-name" attrs={{placeholder: true}}>
+        <input
+            type="text"
+            placeholder="Localizable placeholder"
+            value={name}
+            onChange={…}
+        />
+    </Localized>
+    ```
+
+    By default, if `attrs` is not passed, no attributes will be set. This is
+    a breaking change compared to the previous behavior: in `fluent-react`
+    0.4.1 and before `<Localized>` would set _all_ attributes found in the
+    translation.
+
+#### Migrating from `fluent-react` 0.4.1 to 0.6.0
+
+If you're setting localized attributes as props of elements wrapped in
+`<Localized>`, in `fluent-react` 0.6.0 you'll need to also explicitly allow
+the props you're interested in using the `attrs` prop. This protects your
+components from accidentally gaining props they aren't expecting or from
+translations overwriting important props which shouldn't change.
+
+```jsx
+// BEFORE (fluent-react 0.4.1)
+<Localized id="type-name">
+    <input
+        type="text"
+        placeholder="Localizable placeholder"
+        value={name}
+        onChange={…}
+    />
+</Localized>
+```
+
+```jsx
+// AFTER (fluent-react 0.6.0)
+<Localized id="type-name" attrs={{placeholder: true}}>
+    <input
+        type="text"
+        placeholder="Localizable placeholder"
+        value={name}
+        onChange={…}
+    />
+</Localized>
+```
 
 In `fluent-react` 0.4.1 it was possible to pass React elements as _external
 arguments_ to localization via the `$`-prefixed props, just like you'd pass

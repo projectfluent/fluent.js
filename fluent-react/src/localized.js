@@ -76,7 +76,7 @@ export default class Localized extends Component {
 
   render() {
     const { l10n } = this.context;
-    const { id, children } = this.props;
+    const { id, attrs, children } = this.props;
     const elem = Children.only(children);
 
     if (!l10n) {
@@ -93,13 +93,29 @@ export default class Localized extends Component {
 
     const msg = mcx.getMessage(id);
     const [args, elems] = toArguments(this.props);
-    const { value, attrs } = l10n.formatCompound(mcx, msg, args);
+    const {
+      value: messageValue,
+      attrs: messageAttrs
+    } = l10n.formatCompound(mcx, msg, args);
 
-    if (value === null || !value.includes('<')) {
-      return cloneElement(elem, attrs, value);
+    // The default is to forbid all message attributes. If the attrs prop exists
+    // on the Localized instance, only set message attributes which have been
+    // explicitly allowed by the developer.
+    if (attrs && messageAttrs) {
+      var localizedProps = {};
+
+      for (const [name, value] of Object.entries(messageAttrs)) {
+        if (attrs[name]) {
+          localizedProps[name] = value;
+        }
+      }
     }
 
-    const translationNodes = Array.from(parseMarkup(value).childNodes);
+    if (messageValue === null || !messageValue.includes('<')) {
+      return cloneElement(elem, localizedProps, messageValue);
+    }
+
+    const translationNodes = Array.from(parseMarkup(messageValue).childNodes);
     const translatedChildren = translationNodes.map(childNode => {
       if (childNode.nodeType === childNode.TEXT_NODE) {
         return childNode.textContent;
@@ -122,7 +138,7 @@ export default class Localized extends Component {
       );
     });
 
-    return cloneElement(elem, attrs, ...translatedChildren);
+    return cloneElement(elem, localizedProps, ...translatedChildren);
   }
 }
 
