@@ -7,7 +7,7 @@ import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - rendering', function() {
-  test('rendering the value', function() {
+  test('render the value', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
 
@@ -27,7 +27,71 @@ foo = FOO
     ));
   });
 
-  test('rendering the attributes', function() {
+  test('render an allowed attribute', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .attr = ATTR
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{attr: true}}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div attr="ATTR" />
+    ));
+  });
+
+  test('only render allowed attributes', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .attr1 = ATTR 1
+    .attr2 = ATTR 2
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{attr2: true}}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div attr2="ATTR 2" />
+    ));
+  });
+
+  test('filter out forbidden attributes', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .attr = ATTR
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{attr: false}}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div />
+    ));
+  });
+
+  test('filter all attributes if attrs not given', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
 
@@ -44,17 +108,80 @@ foo
     );
 
     assert.ok(wrapper.contains(
-      <div attr="ATTR" />
+      <div />
     ));
   });
 
-  test('preserves existing attributes', function() {
+  test('preserve existing attributes when setting new ones', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
 foo
     .attr = ATTR
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{attr: true}}>
+        <div existing={true} />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div existing={true} attr="ATTR" />
+    ));
+  });
+
+  test('overwrite existing attributes if allowed', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .existing = ATTR
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{existing: true}}>
+        <div existing={true} />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div existing="ATTR" />
+    ));
+  });
+
+  test('protect existing attributes if setting is forbidden', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .existing = ATTR
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{existing: false}}>
+        <div existing={true} />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div existing={true} />
+    ));
+  });
+
+  test('protect existing attributes by default', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo
+    .existing = ATTR
 `)
 
     const wrapper = shallow(
@@ -65,7 +192,7 @@ foo
     );
 
     assert.ok(wrapper.contains(
-      <div existing={true} attr="ATTR" />
+      <div existing={true} />
     ));
   });
 
