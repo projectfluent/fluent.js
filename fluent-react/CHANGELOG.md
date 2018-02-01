@@ -1,8 +1,137 @@
 # Changelog
 
-## Unreleased
+## fluent-react 0.6.0 (Unreleased)
 
-  - …
+  - Allow limited markup in translations. (#101)
+
+    Translations in Fluent can now include simple HTML-like markup. Elements
+    found in translations will be matched with props passed to `<Localized>`.
+    These props must be React elements. Their content will be replaced by the
+    localizable content found for the corrensponding markup in the
+    translation.
+
+    This is a breaking change from `fluent-react` 0.4.1. See migration notes
+    below.
+
+    ```properties
+    send-comment = <confirm>Send</confirm> or <cancel>go back</cancel>.
+    ```
+
+    ```js
+    <Localized
+        id="send-comment"
+        confirm={
+            <button onClick={sendComment}></button>
+        }
+        cancel={
+            <Link to="/"></Link>
+        }
+    >
+        <p>{'<confirm>Send</confirm> or <cancel>go back</cancel>.'}</p>
+    </Localized>
+    ```
+
+    The rendered result will include the props interpolated into the
+    translation:
+
+    ```js
+    <p>
+        <button onClick={sendComment}>Send</button> or <Link to="/">go back</Link>.
+    </p>
+    ```
+
+    When naming markup elements it's possible to use any name which is a
+    valid prop name. Translations containing markup will be parsed using a
+    hidden `<template>` element. It creates a safe inert `DocumentFragment`
+    with a hierarchy of text nodes and HTML elements. Any unknown elements
+    (e.g. `cancel` in the example above) are parsed as `HTMLUnknownElements`.
+    `fluent-react` then tries to match all elements found in the translation
+    with props passed to the `<Localized>` component. If a match is found,
+    the element passed as a prop is cloned with the translated text content
+    taken from the `DocumentFragment` used as `children`.
+
+
+ #### Migrating from `fluent-react` 0.4.1
+
+In `fluent-react` 0.4.1 it was possible to pass React elements as _external
+arguments_ to localization via the `$`-prefixed props, just like you'd pass
+a number or a date. This was a bad localization practice because it
+resulted in the translation being split into multiple strings.
+
+```properties
+# Bad practice. This won't work in fluent-react 0.6.0.
+send-comment-confirm = Send
+send-comment-cancel = go back
+send-comment = { $confirmButton } or { $cancelLink }.
+```
+
+```jsx
+// Bad practice. This won't work in fluent-react 0.6.0.
+<Localized
+    id="send-comment"
+    $confirmButton={
+        <Localized id="send-comment-confirm">
+            <button onClick={sendComment}>{'Send'}</button>
+        </Localized>
+    }
+    $cancelLink={
+        <Localized id="send-comment-cancel">
+            <Link to="/">{'go back'}</Link>
+        </Localized>
+    }
+>
+    <p>{'{ $confirmButton } or { $cancelLink}.'}</p>
+</Localized>
+```
+
+`fluent-react` 0.6.0 removes support for this feature. It is no longer
+possible to pass React elements as `$`-prefixed _arguments_ to translations.
+Please migrate your code to use markup in translations and pass React
+elements as _props_ to `<Localized>`.
+
+In the example above, change `$confirmButton` to `confirm` and `$cancelLink`
+to `cancel`. Note that you don't need to wrap the passed element in another
+`<Localized>` anymore. In particular, you don't need to assign a new message
+id for it. The text for this element will be taken from the `send-comment`
+message which can now include the markup for the button and the link.
+
+```properties
+send-comment = <confirm>Send</confirm> or <cancel>go back</cancel>.
+```
+
+```jsx
+// BEFORE (fluent-react 0.4.1)
+<Localized
+    id="send-comment"
+    $confirmButton={
+        <Localized id="send-comment-button">
+            <button onClick={sendComment}>{'Send'}</button>
+        </Localized>
+    }
+    $cancelLink={
+        <Localized id="send-comment-cancel">
+            <Link to="/">{'go back'}</Link>
+        </Localized>
+    }
+>
+    <p>{'{ $confirmButton } or { $cancelLink}.'}</p>
+</Localized>
+```
+
+```jsx
+// AFTER (fluent-react 0.6.0)
+<Localized
+    id="send-comment"
+    confirm={
+        <button onClick={sendComment}></button>
+    }
+    cancel={
+        <Link to="/"></Link>
+    }
+>
+    <p>{'<confirm>Send</confirm> or <cancel>go back</cancel>.'}</p>
+</Localized>
+```
 
 ## fluent-react 0.4.1 (June 30, 2017)
 
