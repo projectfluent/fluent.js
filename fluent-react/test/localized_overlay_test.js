@@ -239,4 +239,26 @@ foo = Click <button><em>me</em></button>!
     ));
   });
 
+  test('non-React element prop is used in markup', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = <confirm>Sign in</confirm>.
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" confirm="Not a React element">
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        Sign in.
+      </div>
+    ));
+  });
+
 });
