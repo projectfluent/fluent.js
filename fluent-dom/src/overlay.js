@@ -144,7 +144,7 @@ function sanitizeUsing(translationFragment, sourceElement) {
     // If a child of the same type exists in sourceElement, take its functional
     // (i.e. non-localizable) attributes. This also removes the child from
     // sourceElement.
-    const sourceChild = shiftNamedElement(sourceElement, childNode.localName);
+    const sourceChild = getNamedElement(sourceElement, childNode);
 
     // Find the union of all safe attributes: localizable attributes from
     // childNode and functional attributes from sourceChild.
@@ -157,7 +157,7 @@ function sanitizeUsing(translationFragment, sourceElement) {
     translationFragment.replaceChild(mergedChild, childNode);
   }
 
-  // SourceElement might have been already modified by shiftNamedElement.
+  // SourceElement might have been already modified by getNamedElement.
   // Let's clear it to make sure other code doesn't rely on random leftovers.
   sourceElement.textContent = '';
 
@@ -263,19 +263,32 @@ function isAttrNameLocalizable(name, element, explicitlyAllowed = null) {
 }
 
 /**
- * Remove and return the first child of the given type.
+ * Remove and return the first child of the given type optionally matching
+ * the order key.
  *
  * @param {DOMFragment} element
- * @param {string}      localName
+ * @param {Element}     targetElement
  * @returns {Element | null}
  * @private
  */
-function shiftNamedElement(element, localName) {
+function getNamedElement(element, targetElement) {
+  let firstMatch = null;
+  const orderKey = targetElement.getAttribute('data-l10n-order');
+
   for (const child of element.children) {
-    if (child.localName === localName) {
-      element.removeChild(child);
-      return child;
+    if (child.localName === targetElement.localName) {
+      if (orderKey === null ||
+        child.getAttribute('data-l10n-order') === orderKey) {
+        element.removeChild(child);
+        return child;
+      } else if (firstMatch === null) {
+        firstMatch = child;
+      }
     }
+  }
+  if (firstMatch) {
+    element.removeChild(firstMatch);
+    return firstMatch;
   }
   return null;
 }
