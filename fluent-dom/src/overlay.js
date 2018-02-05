@@ -11,7 +11,10 @@ const LOCALIZABLE_ELEMENTS = {
   'http://www.w3.org/1999/xhtml': [
     'a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data',
     'time', 'code', 'var', 'samp', 'kbd', 'sub', 'sup', 'i', 'b', 'u',
-    'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'br', 'wbr'
+    'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'br', 'wbr',
+
+    // Elements below were manually selected for inclusion
+    'img',
   ],
 };
 

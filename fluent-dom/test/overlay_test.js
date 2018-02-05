@@ -24,7 +24,7 @@ suite('Filtering elements in translation', function() {
   test('forbidden element', function() {
     const element = elem('div')`Foo`;
     const translation = {
-      value: 'FOO <img src="img.png" />',
+      value: 'FOO <iframe src="img.png" />',
       attrs: null
     };
 
