@@ -12,14 +12,14 @@ export default function withLocalization(Inner) {
     /*
      * Find a translation by `id` and format it to a string using `args`.
      */
-    getString(id, args) {
+    getString(id, args, fallback) {
       const { l10n } = this.context;
 
       if (!l10n) {
-        return id;
+        return fallback || id;
       }
 
-      return l10n.getString(id, args);
+      return l10n.getString(id, args, fallback);
     }
 
     render() {
