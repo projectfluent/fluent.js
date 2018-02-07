@@ -57,8 +57,11 @@ suite('Primitives', function() {
 
         placeable-attr   = { bar.attr }
 
-        selector-attr    = { bar.attr ->
-           *[Bar Attribute] Member 3
+        -baz = Baz
+            .attr = Baz Attribute
+
+        selector-attr    = { -baz.attr ->
+           *[Baz Attribute] Member 3
         }
       `);
     });

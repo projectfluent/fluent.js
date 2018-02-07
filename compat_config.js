@@ -13,6 +13,7 @@ export default {
       ],
       'plugins': [
         'external-helpers',
+        'babel-plugin-optimize-starts-with',
         ['babel-plugin-transform-builtin-extend', {
           globals: ['Error']
         }]

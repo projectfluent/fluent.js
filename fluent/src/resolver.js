@@ -119,10 +119,15 @@ function DefaultMember(env, members, def) {
  */
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
+  const message = name.startsWith('-')
+    ? ctx._terms.get(name)
+    : ctx._messages.get(name);
 
   if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
+    const err = name.startsWith('-')
+      ? new ReferenceError(`Unknown term: ${name}`)
+      : new ReferenceError(`Unknown message: ${name}`);
+    errors.push(err);
     return new FluentNone(name);
   }
 
@@ -285,7 +290,7 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case 'sym':
+    case 'varname':
       return new FluentSymbol(expr.name);
     case 'num':
       return new FluentNumber(expr.val);
@@ -313,7 +318,7 @@ function Type(env, expr) {
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
-      if (expr.val !== undefined) {
+      if (expr.val !== null && expr.val !== undefined) {
         return Type(env, expr.val);
       }
 

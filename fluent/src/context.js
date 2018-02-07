@@ -51,6 +51,7 @@ export class MessageContext {
   constructor(locales, { functions = {}, useIsolating = true } = {}) {
     this.locales = Array.isArray(locales) ? locales : [locales];
 
+    this._terms = new Map();
     this._messages = new Map();
     this._functions = functions;
     this._useIsolating = useIsolating;
@@ -58,7 +59,7 @@ export class MessageContext {
   }
 
   /*
-   * Return an iterator over `[id, message]` pairs.
+   * Return an iterator over public `[id, message]` pairs.
    *
    * @returns {Iterator}
    */
@@ -110,7 +111,13 @@ export class MessageContext {
   addMessages(source) {
     const [entries, errors] = parse(source);
     for (const id in entries) {
-      this._messages.set(id, entries[id]);
+      if (id.startsWith('-')) {
+        // Identifiers starting with a dash (-) define terms. Terms are private
+        // and cannot be retrieved from MessageContext.
+        this._terms.set(id, entries[id]);
+      } else {
+        this._messages.set(id, entries[id]);
+      }
     }
 
     return errors;

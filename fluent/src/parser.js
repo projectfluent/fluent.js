@@ -2,7 +2,9 @@
 
 const MAX_PLACEABLES = 100;
 
-const identifierRe = new RegExp('[a-zA-Z_][a-zA-Z0-9_-]*', 'y');
+const entryIdentifierRe = /-?[a-zA-Z][a-zA-Z0-9_-]*/y;
+const identifierRe = /[a-zA-Z][a-zA-Z0-9_-]*/y;
+const functionIdentifierRe = /^[A-Z][A-Z_?-]*$/;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
@@ -72,7 +74,8 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     // We don't care about comments or sections at runtime
-    if (ch === '/') {
+    if (ch === '/' ||
+      (ch === '#' && [' ', '#'].includes(this._source[this._index + 1]))) {
       this.skipComment();
       return;
     }
@@ -99,7 +102,7 @@ class RuntimeParser {
     this._index += 1;
 
     this.skipInlineWS();
-    this.getSymbol();
+    this.getVariantName();
     this.skipInlineWS();
 
     if (this._source[this._index] !== ']' ||
@@ -117,48 +120,30 @@ class RuntimeParser {
    * @private
    */
   getMessage() {
-    const id = this.getIdentifier();
-    let attrs = null;
+    const id = this.getEntryIdentifier();
 
     this.skipInlineWS();
 
-    let ch = this._source[this._index];
-
-    let val;
-
-    if (ch === '=') {
+    if (this._source[this._index] === '=') {
       this._index++;
-
-      this.skipInlineWS();
-
-      if (this._source[this._index] === '\n') {
-        this.skipBlankLines();
-        if (this._source[this._index] === ' ') {
-          this.skipInlineWS();
-          val = this.getPattern();
-        }
-      } else {
-        // This is a fast-path for the most common
-        // case of `key = Value` where the value
-        // is in the same line as the key.
-        val = this.getPattern();
-      }
-    } else {
-      this.skipInlineWS();
-      this.skipBlankLines();
     }
 
-    ch = this._source[this._index];
+    this.skipInlineWS();
 
-    if (ch === ' ') {
+    const val = this.getPattern();
+
+    if (id.startsWith('-') && val === null) {
+      throw this.error('Expected term to have a value');
+    }
+
+    let attrs = null;
+
+    if (this._source[this._index] === ' ') {
       const lineStart = this._index;
       this.skipInlineWS();
 
-      ch = this._source[this._index];
-
-      this._index = lineStart;
-
-      if (ch === '.') {
+      if (this._source[this._index] === '.') {
+        this._index = lineStart;
         attrs = this.getAttributes();
       }
     }
@@ -166,13 +151,17 @@ class RuntimeParser {
     if (attrs === null && typeof val === 'string') {
       this.entries[id] = val;
     } else {
-      if (val === undefined && attrs === null) {
-        throw this.error(`Expected a value (like: " = value") or
-          an attribute (like: ".key = value")`);
+      if (val === null && attrs === null) {
+        throw this.error('Expected message to have a value or attributes');
       }
 
-      this.entries[id] = { val };
-      if (attrs) {
+      this.entries[id] = {};
+
+      if (val !== null) {
+        this.entries[id].val = val;
+      }
+
+      if (attrs !== null) {
         this.entries[id].attrs = attrs;
       }
     }
@@ -223,49 +212,61 @@ class RuntimeParser {
   }
 
   /**
-   * Get Message identifier.
+   * Get identifier using the provided regex.
+   *
+   * By default this will get identifiers of public messages, attributes and
+   * external arguments (without the $).
    *
    * @returns {String}
    * @private
    */
-  getIdentifier() {
-    identifierRe.lastIndex = this._index;
-
-    const result = identifierRe.exec(this._source);
+  getIdentifier(re = identifierRe) {
+    re.lastIndex = this._index;
+    const result = re.exec(this._source);
 
     if (result === null) {
       this._index += 1;
-      throw this.error('Expected an identifier (starting with [a-zA-Z_])');
+      throw this.error(`Expected an identifier [${re.toString()}]`);
     }
 
-    this._index = identifierRe.lastIndex;
+    this._index = re.lastIndex;
     return result[0];
   }
 
   /**
-   * Get Symbol.
+   * Get identifier of a Message or a Term (staring with a dash).
+   *
+   * @returns {String}
+   * @private
+   */
+  getEntryIdentifier() {
+    return this.getIdentifier(entryIdentifierRe);
+  }
+
+  /**
+   * Get Variant name.
    *
    * @returns {Object}
    * @private
    */
-  getSymbol() {
+  getVariantName() {
     let name = '';
 
     const start = this._index;
     let cc = this._source.charCodeAt(this._index);
 
     if ((cc >= 97 && cc <= 122) || // a-z
-        (cc >= 65 && cc <= 90) ||  // A-Z
-        cc === 95 || cc === 32) {  // _ <space>
+        (cc >= 65 && cc <= 90) || // A-Z
+        cc === 95 || cc === 32) { // _ <space>
       cc = this._source.charCodeAt(++this._index);
     } else {
       throw this.error('Expected a keyword (starting with [a-zA-Z_])');
     }
 
     while ((cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90) ||  // A-Z
-           (cc >= 48 && cc <= 57) ||  // 0-9
-           cc === 95 || cc === 45 || cc === 32) {  // _- <space>
+           (cc >= 65 && cc <= 90) || // A-Z
+           (cc >= 48 && cc <= 57) || // 0-9
+           cc === 95 || cc === 45 || cc === 32) { // _- <space>
       cc = this._source.charCodeAt(++this._index);
     }
 
@@ -279,7 +280,7 @@ class RuntimeParser {
 
     name += this._source.slice(start, this._index);
 
-    return { type: 'sym', name };
+    return { type: 'varname', name };
   }
 
   /**
@@ -299,7 +300,7 @@ class RuntimeParser {
       }
 
       if (ch === '\n') {
-        break;
+        throw this.error('Unterminated string expression');
       }
     }
 
@@ -327,10 +328,10 @@ class RuntimeParser {
       eol = this._length;
     }
 
-    const line = start !== eol ?
-      this._source.slice(start, eol) : undefined;
+    const firstLineContent = start !== eol ?
+      this._source.slice(start, eol) : null;
 
-    if (line !== undefined && line.includes('{')) {
+    if (firstLineContent && firstLineContent.includes('{')) {
       return this.getComplexPattern();
     }
 
@@ -338,12 +339,29 @@ class RuntimeParser {
 
     this.skipBlankLines();
 
-    if (this._source[this._index] === ' ') {
-      this._index = start;
-      return this.getComplexPattern();
+    if (this._source[this._index] !== ' ') {
+      // No indentation means we're done with this message.
+      return firstLineContent;
     }
 
-    return line;
+    const lineStart = this._index;
+
+    this.skipInlineWS();
+
+    if (this._source[this._index] === '.') {
+      // The pattern is followed by an attribute. Rewind _index to the first
+      // column of the current line as expected by getAttributes.
+      this._index = lineStart;
+      return firstLineContent;
+    }
+
+    if (firstLineContent) {
+      // It's a multiline pattern which started on the same line as the
+      // identifier. Reparse the whole pattern to make sure we get all of it.
+      this._index = start;
+    }
+
+    return this.getComplexPattern();
   }
 
   /**
@@ -431,7 +449,7 @@ class RuntimeParser {
     }
 
     if (content.length === 0) {
-      return buffer.length ? buffer : undefined;
+      return buffer.length ? buffer : null;
     }
 
     if (buffer.length) {
@@ -478,12 +496,33 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     if (ch === '}') {
+      if (selector.type === 'attr' && selector.id.name.startsWith('-')) {
+        throw this.error(
+          'Attributes of private messages cannot be interpolated.'
+        );
+      }
+
       return selector;
     }
 
     if (ch !== '-' || this._source[this._index + 1] !== '>') {
       throw this.error('Expected "}" or "->"');
     }
+
+    if (selector.type === 'ref') {
+      throw this.error('Message references cannot be used as selectors.');
+    }
+
+    if (selector.type === 'var') {
+      throw this.error('Variants cannot be used as selectors.');
+    }
+
+    if (selector.type === 'attr' && !selector.id.name.startsWith('-')) {
+      throw this.error(
+        'Attributes of public messages cannot be used as selectors.'
+      );
+    }
+
 
     this._index += 2; // ->
 
@@ -550,6 +589,10 @@ class RuntimeParser {
       this._index++;
       const args = this.getCallArgs();
 
+      if (!functionIdentifierRe.test(literal.name)) {
+        throw this.error('Function names must be all upper-case');
+      }
+
       this._index++;
 
       literal.type = 'fun';
@@ -573,19 +616,18 @@ class RuntimeParser {
   getCallArgs() {
     const args = [];
 
-    if (this._source[this._index] === ')') {
-      return args;
-    }
-
     while (this._index < this._length) {
       this.skipInlineWS();
+
+      if (this._source[this._index] === ')') {
+        return args;
+      }
 
       const exp = this.getSelectorExpression();
 
       // MessageReference in this place may be an entity reference, like:
       // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
-      if (exp.type !== 'ref' ||
-         exp.namespace !== undefined) {
+      if (exp.type !== 'ref') {
         args.push(exp);
       } else {
         this.skipInlineWS();
@@ -791,7 +833,7 @@ class RuntimeParser {
     if ((cc >= 48 && cc <= 57) || cc === 45) {
       literal = this.getNumber();
     } else {
-      literal = this.getSymbol();
+      literal = this.getVariantName();
     }
 
     if (this._source[this._index] !== ']') {
@@ -809,12 +851,9 @@ class RuntimeParser {
    * @private
    */
   getLiteral() {
-    const cc = this._source.charCodeAt(this._index);
-    if ((cc >= 48 && cc <= 57) || cc === 45) {
-      return this.getNumber();
-    } else if (cc === 34) { // "
-      return this.getString();
-    } else if (cc === 36) { // $
+    const cc0 = this._source.charCodeAt(this._index);
+
+    if (cc0 === 36) { // $
       this._index++;
       return {
         type: 'ext',
@@ -822,10 +861,29 @@ class RuntimeParser {
       };
     }
 
-    return {
-      type: 'ref',
-      name: this.getIdentifier()
-    };
+    const cc1 = cc0 === 45 // -
+      // Peek at the next character after the dash.
+      ? this._source.charCodeAt(this._index + 1)
+      // Or keep using the character at the current index.
+      : cc0;
+
+    if ((cc1 >= 97 && cc1 <= 122) || // a-z
+        (cc1 >= 65 && cc1 <= 90)) { // A-Z
+      return {
+        type: 'ref',
+        name: this.getEntryIdentifier()
+      };
+    }
+
+    if ((cc1 >= 48 && cc1 <= 57)) { // 0-9
+      return this.getNumber();
+    }
+
+    if (cc0 === 34) { // "
+      return this.getString();
+    }
+
+    throw this.error('Expected literal');
   }
 
   /**
@@ -839,7 +897,9 @@ class RuntimeParser {
     let eol = this._source.indexOf('\n', this._index);
 
     while (eol !== -1 &&
-      this._source[eol + 1] === '/' && this._source[eol + 2] === '/') {
+      ((this._source[eol + 1] === '/' && this._source[eol + 2] === '/') ||
+       (this._source[eol + 1] === '#' &&
+         [' ', '#'].includes(this._source[eol + 2])))) {
       this._index = eol + 3;
 
       eol = this._source.indexOf('\n', this._index);
@@ -882,8 +942,8 @@ class RuntimeParser {
         const cc = this._source.charCodeAt(start);
 
         if ((cc >= 97 && cc <= 122) || // a-z
-            (cc >= 65 && cc <= 90) ||  // A-Z
-             cc === 95 || cc === 47 || cc === 91) {  // _/[
+            (cc >= 65 && cc <= 90) || // A-Z
+             cc === 47 || cc === 91) { // /[
           this._index = start;
           return;
         }
