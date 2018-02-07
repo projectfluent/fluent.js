@@ -1,0 +1,59 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Comment",
+      "annotations": [],
+      "content": "This is\n\nAn example of a multiline comment",
+      "span": {
+        "type": "Span",
+        "start": 1,
+        "end": 48
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key",
+        "span": {
+          "type": "Span",
+          "start": 50,
+          "end": 53
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 56,
+              "end": 61
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 56,
+          "end": 61
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 50,
+        "end": 61
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 62
+  }
+}

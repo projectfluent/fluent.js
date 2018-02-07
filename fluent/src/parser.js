@@ -75,7 +75,8 @@ class RuntimeParser {
 
     // We don't care about comments or sections at runtime
     if (ch === '/' ||
-      (ch === '#' && [' ', '#'].includes(this._source[this._index + 1]))) {
+      (ch === '#' &&
+        [' ', '#', '\n'].includes(this._source[this._index + 1]))) {
       this.skipComment();
       return;
     }
