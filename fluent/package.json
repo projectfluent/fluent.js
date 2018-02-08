@@ -26,7 +26,19 @@
   },
   "keywords": [
     "localization",
-    "l10n"
+    "l10n",
+    "internationalization",
+    "i18n",
+    "ftl",
+    "plural",
+    "gender",
+    "locale",
+    "language",
+    "formatting",
+    "translate",
+    "translation",
+    "format",
+    "parser"
   ],
   "engines": {
     "node": ">=8.9.0"

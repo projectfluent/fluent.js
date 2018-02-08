@@ -26,7 +26,12 @@
   },
   "keywords": [
     "localization",
-    "l10n"
+    "l10n",
+    "internationalization",
+    "i18n",
+    "locale",
+    "language",
+    "language-negotiation"
   ],
   "engines": {
     "node": ">=8.9.0"
