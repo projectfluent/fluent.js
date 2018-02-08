@@ -1,5 +1,10 @@
 # Changelog
 
+## fluent 0.6.2 (February 8, 2018)
+
+  - Correctly parse empty comment lines. (#149)
+  - Forbid null attribute and variant values. (part of #150)
+
 ## fluent 0.6.0 (January 31, 2018)
 
   - Implement Fluent Syntax 0.5.
