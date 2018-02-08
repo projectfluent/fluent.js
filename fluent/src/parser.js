@@ -341,7 +341,9 @@ class RuntimeParser {
     this.skipBlankLines();
 
     if (this._source[this._index] !== ' ') {
-      // No indentation means we're done with this message.
+      // No indentation means we're done with this message. Callers should check
+      // if the return value here is null. It may be OK for messages, but not OK
+      // for terms, attributes and variants.
       return firstLineContent;
     }
 
@@ -760,6 +762,10 @@ class RuntimeParser {
 
       const val = this.getPattern();
 
+      if (val === null) {
+        throw this.error('Expected attribute to have a value');
+      }
+
       if (typeof val === 'string') {
         attrs[key] = val;
       } else {
@@ -807,11 +813,13 @@ class RuntimeParser {
 
       this.skipInlineWS();
 
-      const variant = {
-        key,
-        val: this.getPattern()
-      };
-      variants[index++] = variant;
+      const val = this.getPattern();
+
+      if (val === null) {
+        throw this.error('Expected variant to have a value');
+      }
+
+      variants[index++] = {key, val};
 
       this.skipWS();
     }

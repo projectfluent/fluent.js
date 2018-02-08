@@ -2,6 +2,16 @@
   "type": "Resource",
   "body": [
     {
+      "type": "ResourceComment",
+      "annotations": [],
+      "content": "BE CAREFUL WHEN EDITING THIS FILE\n\nThe last character in this file is the equals sign in `bar =` in line 10.\nWe want to test a message with no value and with no EOL after its\nidentifier. Most editors automatically add a trailing newline at EOF.\nIf you edit this file make sure to turn this behavior off.",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 326
+      }
+    },
+    {
       "type": "Junk",
       "annotations": [
         {
@@ -13,22 +23,46 @@
           "message": "Expected message \"foo\" to have a value or attributes",
           "span": {
             "type": "Span",
-            "start": 5,
-            "end": 5
+            "start": 333,
+            "end": 333
           }
         }
       ],
-      "content": "foo = \n",
+      "content": "foo = \n\n",
       "span": {
         "type": "Span",
-        "start": 0,
-        "end": 7
+        "start": 328,
+        "end": 336
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0005",
+          "args": [
+            "bar"
+          ],
+          "message": "Expected message \"bar\" to have a value or attributes",
+          "span": {
+            "type": "Span",
+            "start": 341,
+            "end": 341
+          }
+        }
+      ],
+      "content": "bar =",
+      "span": {
+        "type": "Span",
+        "start": 336,
+        "end": 341
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 7
+    "end": 341
   }
 }

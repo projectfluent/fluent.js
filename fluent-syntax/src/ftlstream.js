@@ -131,22 +131,20 @@ export class FTLParserStream extends ParserStream {
     return isDigit;
   }
 
-  isCharPatternStart(ch) {
+  isCharPatternContinuation(ch) {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
   isPeekPatternStart() {
     this.peekInlineWS();
-
     const ch = this.currentPeek();
 
-    if (ch === '\n') {
-      return this.isPeekNextLinePatternStart();
+    // Inline Patterns may start with any char.
+    if (ch !== undefined && ch !== '\n') {
+      return true;
     }
 
-    const isPattern = this.isCharPatternStart(this.currentPeek());
-    this.resetPeek();
-    return isPattern;
+    return this.isPeekNextLinePatternStart();
   }
 
   isPeekNextLineZeroFourStyleComment() {
@@ -276,7 +274,7 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    if (!this.isCharPatternStart(this.currentPeek())) {
+    if (!this.isCharPatternContinuation(this.currentPeek())) {
       this.resetPeek();
       return false;
     }

@@ -1,0 +1,901 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 5
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": ".Value",
+            "span": {
+              "type": "Span",
+              "start": 8,
+              "end": 14
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 8,
+          "end": 14
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 14
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 15,
+          "end": 20
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "…Value",
+            "span": {
+              "type": "Span",
+              "start": 23,
+              "end": 29
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 23,
+          "end": 29
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 15,
+        "end": 29
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key03",
+        "span": {
+          "type": "Span",
+          "start": 30,
+          "end": 35
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringExpression",
+              "value": ".",
+              "span": {
+                "type": "Span",
+                "start": 39,
+                "end": 42
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 38,
+              "end": 43
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 43,
+              "end": 48
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 38,
+          "end": 48
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 30,
+        "end": 48
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key04",
+        "span": {
+          "type": "Span",
+          "start": 49,
+          "end": 54
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringExpression",
+              "value": ".",
+              "span": {
+                "type": "Span",
+                "start": 62,
+                "end": 65
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 61,
+              "end": 66
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 66,
+              "end": 71
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 61,
+          "end": 71
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 49,
+        "end": 71
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key05",
+        "span": {
+          "type": "Span",
+          "start": 73,
+          "end": 78
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value\n",
+            "span": {
+              "type": "Span",
+              "start": 81,
+              "end": 91
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringExpression",
+              "value": ".",
+              "span": {
+                "type": "Span",
+                "start": 92,
+                "end": 95
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 91,
+              "end": 96
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "Continued",
+            "span": {
+              "type": "Span",
+              "start": 96,
+              "end": 105
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 81,
+          "end": 105
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 73,
+        "end": 105
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key06",
+        "span": {
+          "type": "Span",
+          "start": 107,
+          "end": 112
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": ".Value\n",
+            "span": {
+              "type": "Span",
+              "start": 115,
+              "end": 126
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringExpression",
+              "value": ".",
+              "span": {
+                "type": "Span",
+                "start": 127,
+                "end": 130
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 126,
+              "end": 131
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "Continued",
+            "span": {
+              "type": "Span",
+              "start": 131,
+              "end": 140
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 115,
+          "end": 140
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 107,
+        "end": 140
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 214,
+            "end": 214
+          }
+        }
+      ],
+      "content": "# ERROR (attr .Continued must have a value)\nkey07 = Value\n    .Continued\n\n",
+      "span": {
+        "type": "Span",
+        "start": 142,
+        "end": 216
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 274,
+            "end": 274
+          }
+        }
+      ],
+      "content": "# ERROR (attr .Value must have a value)\nkey08 =\n    .Value\n\n",
+      "span": {
+        "type": "Span",
+        "start": 216,
+        "end": 276
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 334,
+            "end": 334
+          }
+        }
+      ],
+      "content": "# ERROR (attr .Value must have a value)\nkey09 =\n    .Value\n    Continued\n\n",
+      "span": {
+        "type": "Span",
+        "start": 276,
+        "end": 350
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key10",
+        "span": {
+          "type": "Span",
+          "start": 350,
+          "end": 355
+        }
+      },
+      "value": null,
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "Value",
+            "span": {
+              "type": "Span",
+              "start": 363,
+              "end": 368
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "which looks like an attribute\nContinued",
+                "span": {
+                  "type": "Span",
+                  "start": 371,
+                  "end": 414
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 371,
+              "end": 414
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 362,
+            "end": 414
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 350,
+        "end": 414
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key11",
+        "span": {
+          "type": "Span",
+          "start": 416,
+          "end": 421
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringExpression",
+              "value": ".",
+              "span": {
+                "type": "Span",
+                "start": 429,
+                "end": 432
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 428,
+              "end": 433
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "Value = which looks like an attribute\nContinued",
+            "span": {
+              "type": "Span",
+              "start": 433,
+              "end": 484
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 428,
+          "end": 484
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 416,
+        "end": 484
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key12",
+        "span": {
+          "type": "Span",
+          "start": 486,
+          "end": 491
+        }
+      },
+      "value": null,
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "accesskey",
+            "span": {
+              "type": "Span",
+              "start": 499,
+              "end": 508
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "A",
+                "span": {
+                  "type": "Span",
+                  "start": 515,
+                  "end": 516
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 515,
+              "end": 516
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 498,
+            "end": 516
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 486,
+        "end": 516
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key13",
+        "span": {
+          "type": "Span",
+          "start": 522,
+          "end": 527
+        }
+      },
+      "value": null,
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attribute",
+            "span": {
+              "type": "Span",
+              "start": 535,
+              "end": 544
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": ".Value",
+                "span": {
+                  "type": "Span",
+                  "start": 547,
+                  "end": 553
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 547,
+              "end": 553
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 534,
+            "end": 553
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 522,
+        "end": 553
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key14",
+        "span": {
+          "type": "Span",
+          "start": 555,
+          "end": 560
+        }
+      },
+      "value": null,
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attribute",
+            "span": {
+              "type": "Span",
+              "start": 568,
+              "end": 577
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "Placeable",
+                "expression": {
+                  "type": "StringExpression",
+                  "value": ".",
+                  "span": {
+                    "type": "Span",
+                    "start": 590,
+                    "end": 593
+                  }
+                },
+                "span": {
+                  "type": "Span",
+                  "start": 589,
+                  "end": 594
+                }
+              },
+              {
+                "type": "TextElement",
+                "value": "Value",
+                "span": {
+                  "type": "Span",
+                  "start": 594,
+                  "end": 599
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 589,
+              "end": 599
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 567,
+            "end": 599
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 555,
+        "end": 599
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key15",
+        "span": {
+          "type": "Span",
+          "start": 601,
+          "end": 606
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "expression": {
+                "type": "NumberExpression",
+                "value": "1",
+                "span": {
+                  "type": "Span",
+                  "start": 615,
+                  "end": 616
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "VariantName",
+                    "name": "one",
+                    "span": {
+                      "type": "Span",
+                      "start": 629,
+                      "end": 632
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": ".Value",
+                        "span": {
+                          "type": "Span",
+                          "start": 634,
+                          "end": 640
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 634,
+                      "end": 640
+                    }
+                  },
+                  "default": false,
+                  "span": {
+                    "type": "Span",
+                    "start": 628,
+                    "end": 640
+                  }
+                },
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "VariantName",
+                    "name": "other",
+                    "span": {
+                      "type": "Span",
+                      "start": 650,
+                      "end": 655
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "Placeable",
+                        "expression": {
+                          "type": "StringExpression",
+                          "value": ".",
+                          "span": {
+                            "type": "Span",
+                            "start": 670,
+                            "end": 673
+                          }
+                        },
+                        "span": {
+                          "type": "Span",
+                          "start": 669,
+                          "end": 674
+                        }
+                      },
+                      {
+                        "type": "TextElement",
+                        "value": "Value",
+                        "span": {
+                          "type": "Span",
+                          "start": 674,
+                          "end": 679
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 669,
+                      "end": 679
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 648,
+                    "end": 679
+                  }
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 614,
+                "end": 684
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 613,
+              "end": 685
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 613,
+          "end": 685
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 601,
+        "end": 685
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0012",
+          "args": [],
+          "message": "Expected value",
+          "span": {
+            "type": "Span",
+            "start": 755,
+            "end": 755
+          }
+        }
+      ],
+      "content": "# ERROR (variant must have a value)\nkey16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n\n",
+      "span": {
+        "type": "Span",
+        "start": 687,
+        "end": 781
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 860,
+            "end": 860
+          }
+        }
+      ],
+      "content": "# ERROR (unclosed placeable)\nkey17 =\n    { 1 ->\n       *[one] Value\n           .Continued\n    }\n",
+      "span": {
+        "type": "Span",
+        "start": 781,
+        "end": 877
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 877
+  }
+}
