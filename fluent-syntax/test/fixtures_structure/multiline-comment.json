@@ -11,16 +11,16 @@
           "message": "Expected an entry start",
           "span": {
             "type": "Span",
-            "start": 0,
-            "end": 0
+            "start": 1,
+            "end": 1
           }
         }
       ],
-      "content": "### BE CAREFUL WHEN EDITING THIS FILE\n###\n### The last character in this file is the equals sign in `bar =` in line 10.\n### We want to test a message with no value and with no EOL after its\n### identifier. Most editors automatically add a trailing newline at EOF.\n### If you edit this file make sure to turn this behavior off.\n\n",
+      "content": "# This is\n#\n# An example of a multiline comment\n\n",
       "span": {
         "type": "Span",
-        "start": 0,
-        "end": 328
+        "start": 1,
+        "end": 50
       }
     },
     {
@@ -28,11 +28,11 @@
       "annotations": [],
       "id": {
         "type": "Identifier",
-        "name": "foo",
+        "name": "key",
         "span": {
           "type": "Span",
-          "start": 328,
-          "end": 331
+          "start": 50,
+          "end": 53
         }
       },
       "value": {
@@ -40,26 +40,26 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": "bar =",
+            "value": "Value",
             "span": {
               "type": "Span",
-              "start": 336,
-              "end": 341
+              "start": 56,
+              "end": 61
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 336,
-          "end": 341
+          "start": 56,
+          "end": 61
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 328,
-        "end": 341
+        "start": 50,
+        "end": 61
       }
     }
   ],
@@ -67,6 +67,6 @@
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 341
+    "end": 62
   }
 }
