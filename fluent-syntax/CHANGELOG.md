@@ -1,5 +1,20 @@
 # Changelog
 
+## fluent-syntax 0.6.2 (February 8, 2018)
+
+  - Inline Patterns may start with any character. (#150)
+
+    `}`, `.`, `*` and `[` are only special when they appear at the beginning of
+    indented Pattern lines. When a Pattern starts on the same line as `id =` or
+    `[variant key]`, its first character doesn't carry any special meaning and
+    it may be one of those four ones as well.
+
+    This also fixes a regression from 0.6.0 where a message at the EOF without
+    value nor attributes was incorrectly parsed as a message with an empty
+    Pattern rather than produce a syntax error.
+
+  - Ensure CallExpression's args are always an array, even if empty.
+
 ## fluent-syntax 0.6.0 (January 31, 2018)
 
   - Implement Fluent Syntax 0.5.
