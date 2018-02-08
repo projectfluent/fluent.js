@@ -3,21 +3,13 @@
   "key2": {
     "attrs": {
       "attr": "Attribute"
-    },
-    "val": null
+    }
   },
   "key3": {
     "val": "Value\nValue2\n\n\nValue 4\nValue3",
     "attrs": {
       "attr2": "Attr 2"
     }
-  },
-  "key4": {
-    "val": "Value",
-    "tags": [
-      "tag1",
-      "tag2"
-    ]
   },
   "key5": "Value 5",
   "key6": {
@@ -28,14 +20,14 @@
         "vars": [
           {
             "key": {
-              "type": "sym",
+              "type": "varname",
               "name": "one"
             },
             "val": "One"
           },
           {
             "key": {
-              "type": "sym",
+              "type": "varname",
               "name": "two"
             },
             "val": "Two"

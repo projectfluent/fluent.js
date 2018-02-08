@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-optimize-starts-with": "^1.0.1",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.7.7",
     "babel-preset-latest": "^6.22.0",

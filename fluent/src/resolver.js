@@ -119,47 +119,20 @@ function DefaultMember(env, members, def) {
  */
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
+  const message = name.startsWith('-')
+    ? ctx._terms.get(name)
+    : ctx._messages.get(name);
 
   if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
+    const err = name.startsWith('-')
+      ? new ReferenceError(`Unknown term: ${name}`)
+      : new ReferenceError(`Unknown message: ${name}`);
+    errors.push(err);
     return new FluentNone(name);
   }
 
   return message;
 }
-
-/**
- * Resolve an array of tags.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} id
- *    The identifier of the message with tags.
- * @param   {String} id.name
- *    The name of the identifier.
- * @returns {Array}
- * @private
- */
-function Tags(env, {name}) {
-  const { ctx, errors } = env;
-  const message = ctx.getMessage(name);
-
-  if (!message) {
-    errors.push(new ReferenceError(`Unknown message: ${name}`));
-    return new FluentNone(name);
-  }
-
-  if (!message.tags) {
-    errors.push(new RangeError(`No tags in message "${name}"`));
-    return new FluentNone(name);
-  }
-
-  return message.tags.map(
-    tag => new FluentSymbol(tag)
-  );
-}
-
 
 /**
  * Resolve a variant expression to the variant object.
@@ -262,9 +235,7 @@ function SelectExpression(env, {exp, vars, def}) {
     return DefaultMember(env, vars, def);
   }
 
-  const selector = exp.type === 'ref'
-    ? Tags(env, exp)
-    : Type(env, exp);
+  const selector = Type(env, exp);
   if (selector instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }
@@ -319,7 +290,7 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case 'sym':
+    case 'varname':
       return new FluentSymbol(expr.name);
     case 'num':
       return new FluentNumber(expr.val);
@@ -347,7 +318,7 @@ function Type(env, expr) {
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
-      if (expr.val !== undefined) {
+      if (expr.val !== null && expr.val !== undefined) {
         return Type(env, expr.val);
       }
 

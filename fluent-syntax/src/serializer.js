@@ -92,22 +92,12 @@ function serializeMessage(message) {
     parts.push(serializeValue(message.value));
   }
 
-  for (const tag of message.tags) {
-    parts.push(serializeTag(tag));
-  }
-
   for (const attribute of message.attributes) {
     parts.push(serializeAttribute(attribute));
   }
 
   parts.push('\n');
   return parts.join('');
-}
-
-
-function serializeTag(tag) {
-  const name = serializeSymbol(tag.name);
-  return `\n    #${name}`;
 }
 
 

@@ -40,13 +40,12 @@ export class Entry extends SyntaxNode {
 }
 
 export class Message extends Entry {
-  constructor(id, value = null, attributes = [], tags = [], comment = null) {
+  constructor(id, value = null, attributes = [], comment = null) {
     super();
     this.type = 'Message';
     this.id = id;
     this.value = value;
     this.attributes = attributes;
-    this.tags = tags;
     this.comment = comment;
   }
 }
@@ -156,14 +155,6 @@ export class Attribute extends SyntaxNode {
     this.type = 'Attribute';
     this.id = id;
     this.value = value;
-  }
-}
-
-export class Tag extends SyntaxNode {
-  constructor(name) {
-    super();
-    this.type = 'Tag';
-    this.name = name;
   }
 }
 
