@@ -1,0 +1,114 @@
+{
+  "key01": ".Value",
+  "key02": "…Value",
+  "key03": {
+    "val": [
+      ".",
+      "Value"
+    ]
+  },
+  "key04": {
+    "val": [
+      ".",
+      "Value"
+    ]
+  },
+  "key05": {
+    "val": [
+      "Value\n",
+      ".",
+      "Continued"
+    ]
+  },
+  "key06": {
+    "val": [
+      ".Value\n",
+      ".",
+      "Continued"
+    ]
+  },
+  "key10": {
+    "attrs": {
+      "Value": "which looks like an attribute\nContinued"
+    }
+  },
+  "key11": {
+    "val": [
+      ".",
+      "Value = which looks like an attribute\nContinued"
+    ]
+  },
+  "key12": {
+    "attrs": {
+      "accesskey": "A"
+    }
+  },
+  "key13": {
+    "attrs": {
+      "attribute": ".Value"
+    }
+  },
+  "key14": {
+    "attrs": {
+      "attribute": {
+        "val": [
+          ".",
+          "Value"
+        ]
+      }
+    }
+  },
+  "key15": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": {
+          "type": "num",
+          "val": "1"
+        },
+        "vars": [
+          {
+            "key": {
+              "type": "varname",
+              "name": "one"
+            },
+            "val": ".Value"
+          },
+          {
+            "key": {
+              "type": "varname",
+              "name": "other"
+            },
+            "val": [
+              ".",
+              "Value"
+            ]
+          }
+        ],
+        "def": 1
+      }
+    ]
+  },
+  "key17": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": {
+          "type": "num",
+          "val": "1"
+        },
+        "vars": [
+          {
+            "key": {
+              "type": "varname",
+              "name": "one"
+            },
+            "val": "Value"
+          }
+        ],
+        "def": 0
+      },
+      "Continued"
+    ]
+  }
+}
