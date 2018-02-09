@@ -111,10 +111,21 @@ export default class Localized extends Component {
       }
     }
 
-    if (messageValue === null || !messageValue.includes('<')) {
+    // If the message has a null value, we're onl interested in its attributes.
+    // Do not pass the null value to cloneElement as it would nuke all children
+    // of the wrapped component.
+    if (messageValue === null) {
+      return cloneElement(elem, localizedProps);
+    }
+
+    // If the message value doesn't contain any markup, insert it as the only
+    // child of the wrapped component.
+    if (!messageValue.includes('<')) {
       return cloneElement(elem, localizedProps, messageValue);
     }
 
+    // If the message contains markup, parse it and try to match the children
+    // found in the translation with the props passed to this Localized.
     const translationNodes = Array.from(parseMarkup(messageValue).childNodes);
     const translatedChildren = translationNodes.map(childNode => {
       if (childNode.nodeType === childNode.TEXT_NODE) {

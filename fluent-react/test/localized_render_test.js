@@ -196,6 +196,32 @@ foo =
     ));
   });
 
+  test('preserve children when translation value is null', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo =
+    .title = TITLE
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{title: true}}>
+        <select>
+          <option>Option</option>
+        </select>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <select title="TITLE">
+        <option>Option</option>
+      </select>
+    ));
+  });
+
+
   test('$arg is passed to format the value', function() {
     const mcx = new MessageContext();
     const format = sinon.spy(mcx, 'format');
