@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+  - …
+
+## fluent-dom 0.1.0
 
   - Extend formatWithFallback to accept async iterator (#46)
   - Documented all methods
@@ -18,7 +21,6 @@
   - Added a guard to prevent leaking attributes between translations (#73)
   - Added a performance optimization coalescing all translations from mutations
   per animation frame (#113)
-  - …
 
 ## fluent-dom 0.0.1
 
