@@ -39,6 +39,6 @@
     "node": ">=8.9.0"
   },
   "devDependencies": {
-    "jsdom": "^9.12.0"
+    "jsdom": "^11.6.2"
   }
 }
