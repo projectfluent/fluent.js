@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { isReactLocalization } from './localization';
 import { parseMarkup } from './markup';
+import VOID_ELEMENTS from '../vendor/voidElementTags';
 
 /*
  * Prepare props passed to `Localized` for formatting.
@@ -111,7 +112,15 @@ export default class Localized extends Component {
       }
     }
 
-    // If the message has a null value, we're onl interested in its attributes.
+    // If the wrapped component is a known void element, explicitly dismiss the
+    // message value and do not pass it to cloneElement in order to avoi the
+    // "void element tags must neither have `children` nor use
+    // `dangerouslySetInnerHTML`" error.
+    if (elem.type in VOID_ELEMENTS) {
+      return cloneElement(elem, localizedProps);
+    }
+
+    // If the message has a null value, we're only interested in its attributes.
     // Do not pass the null value to cloneElement as it would nuke all children
     // of the wrapped component.
     if (messageValue === null) {
