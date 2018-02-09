@@ -24,6 +24,7 @@ be installed independently of each other.
   - [fluent-intl-polyfill](https://github.com/projectfluent/fluent.js/tree/master/fluent-intl-polyfill)
   - [fluent-langneg](https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg)
   - [fluent-react](https://github.com/projectfluent/fluent.js/tree/master/fluent-react)
+  - [fluent-merge](https://github.com/projectfluent/fluent.js/tree/master/fluent-merge)
 
 You can install each of the above packages via `npm`, e.g. `npm install
 fluent-react`.  See the end of this `README` for instructions on how to build
