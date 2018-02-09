@@ -329,3 +329,57 @@ suite('Retranslation', function() {
       'FOO <em>B</em>');
   });
 });
+
+suite('overlay dom elements with data-l10n-order', function() {
+  test('two children of the same type with keys', function() {
+    const element = elem('div')`
+      <a data-l10n-order="one" href="foo"></a> <a data-l10n-order="two" href="bar"></a>`;
+    const translation = {
+      value: '<a data-l10n-order="two" title="bar">bar</a> <a data-l10n-order="one" title="foo">foo</a>',
+      attrs: null
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.innerHTML,
+      '<a title="bar" data-l10n-order="two" href="bar">bar</a> <a title="foo" data-l10n-order="one" href="foo">foo</a>');
+  });
+
+  test('source without keys', function() {
+    const element = elem('div')`
+      <a href="foo"></a> <a href="bar"></a>`;
+    const translation = {
+      value: '<a data-l10n-order="two" title="bar">bar</a> <a data-l10n-order="one" title="foo">foo</a>',
+      attrs: null
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.innerHTML,
+      '<a title="bar" href="foo">bar</a> <a title="foo" href="bar">foo</a>');
+  });
+
+  test('translation without keys', function() {
+    const element = elem('div')`
+      <a data-l10n-order="one" href="foo"></a> <a data-l10n-order="two" href="bar"></a>`;
+    const translation = {
+      value: '<a title="bar">bar</a> <a title="foo">foo</a>',
+      attrs: null
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.innerHTML,
+      '<a title="bar" data-l10n-order="one" href="foo">bar</a> <a title="foo" data-l10n-order="two" href="bar">foo</a>');
+  });
+
+  test('translation with one key', function() {
+    const element = elem('div')`
+      <a data-l10n-order="one" href="foo"></a> <a data-l10n-order="two" href="bar"></a>`;
+    const translation = {
+      value: '<a data-l10n-order="two" title="bar">bar</a> <a title="foo">foo</a>',
+      attrs: null
+    };
+
+    overlayElement(element, translation);
+    assert.equal(element.innerHTML,
+      '<a title="bar" data-l10n-order="two" href="bar">bar</a> <a title="foo" data-l10n-order="one" href="foo">foo</a>');
+  });
+});
