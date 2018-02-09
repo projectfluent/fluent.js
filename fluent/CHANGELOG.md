@@ -1,8 +1,29 @@
 # Changelog
 
-## Unreleased
+## fluent 0.4.3 (February 9, 2018)
 
-  - …
+This is a 0.4.x API-compatible version of `fluent` intended to make the
+migration to Fluent Syntax 0.5 easier. It includes changes to the
+`MessageContext` parser backported from [`fluent` 0.6.0][] and [`fluent`
+0.6.2][].
+
+[`fluent` 0.6.0]: https://github.com/projectfluent/fluent.js/releases/tag/fluent%400.6.0
+[`fluent` 0.6.2]: https://github.com/projectfluent/fluent.js/releases/tag/fluent%400.6.2
+
+In particular, this version brings support for Fluent Syntax 0.5:
+
+  - Add support for terms.
+  - Add support for `#`, `##` and `###` comments.
+  - Remove support for tags.
+  - Add support for `=` after the identifier in message and term definitions.
+  - Forbid newlines in string expressions.
+  - Allow trailing comma in call expression argument lists.
+
+The new Syntax 0.5 is supported alongside Syntax 0.4 in order to aid
+migrating to the new syntax. The parser will correctly parse Syntax 0.4
+comments (prefixed with `//`), sections and message definitions without the
+`=` after the identifier. The one exception are tags which are no longer
+supported. Please use attributes defined on terms instead.
 
 
 ## fluent 0.4.2 (November 27, 2017)
