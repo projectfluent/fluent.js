@@ -65,11 +65,11 @@ export default class ReactLocalization {
   /*
    * Find a translation by `id` and format it to a string using `args`.
    */
-  getString(id, args) {
+  getString(id, args, fallback) {
     const mcx = this.getMessageContext(id);
 
     if (mcx === null) {
-      return id;
+      return fallback || id;
     }
 
     const msg = mcx.getMessage(id);

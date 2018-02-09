@@ -46,7 +46,26 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the translation.
-    assert.equal(getString('foo'), 'FOO');
+    assert.equal(getString('foo', {}), 'FOO');
+  });
+
+  test('getString with access to the l10n context, with fallback value', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+    const EnhancedComponent = withLocalization(DummyComponent);
+
+    mcx.addMessages(`
+foo = FOO
+`);
+
+    const wrapper = shallow(
+      <EnhancedComponent />,
+      { context: { l10n } }
+    );
+
+    const getString = wrapper.prop('getString');
+    // Returns the translation, even if fallback value provided.
+    assert.equal(getString('bar', {}, 'fallback'), 'fallback');
   });
 
   test('getString without access to the l10n context', function() {
@@ -63,7 +82,25 @@ foo = FOO
     );
 
     const getString = wrapper.prop('getString');
-    // Returns the id.
+    // Returns the id if no fallback.
     assert.equal(getString('foo', {arg: 1}), 'foo');
+  });
+
+  test('getString without access to the l10n context, with fallback value', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+    const EnhancedComponent = withLocalization(DummyComponent);
+
+    mcx.addMessages(`
+foo = FOO
+`);
+
+    const wrapper = shallow(
+      <EnhancedComponent />
+    );
+
+    const getString = wrapper.prop('getString');
+    // Returns the fallback if provided.
+    assert.equal(getString('foo', {arg: 1}, 'fallback message'), 'fallback message');
   });
 });
