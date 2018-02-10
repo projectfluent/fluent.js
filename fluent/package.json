@@ -44,6 +44,6 @@
     "node": ">=8.9.0"
   },
   "devDependencies": {
-    "sinon": "^2.1.0"
+    "sinon": "^4.2.2"
   }
 }
