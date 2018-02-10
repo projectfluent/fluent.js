@@ -1,5 +1,9 @@
 # Changelog
 
+## fluent 0.6.3 (February 9, 2018)
+
+  - Update sinon to 4.2.2
+
 ## fluent 0.6.2 (February 8, 2018)
 
   - Correctly parse empty comment lines. (#149)
