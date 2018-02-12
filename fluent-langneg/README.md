@@ -4,6 +4,11 @@
 Project Fluent, a localization framework designed to unleash 
 the expressive power of the natural language.
 
+It's main function is to provide functionality around the
+[Intl.Locale][] API with a focus
+on language negotiation, matching and selection.
+
+
 ## Installation
 
 `fluent-langneg` can be used both on the client-side and the server-side.
@@ -84,17 +89,6 @@ in case the requested locale is too generic.
 An example of that scenario is when the user requests `en` locale, and
 the application supportes `en-GB` and `en-US`.
 
-Unicode CLDR maintains a complete list of likely subtags that the
-user can load into `fluent-langneg` to replace the minimal version.
-
-```javascript
-let data = require('cldr-core/supplemental/likelySubtags.json');
-
-let supported = negotiateLanguages(requested, available, {
-  likelySubtags: data.supplemental.likelySubtags
-});
-```
-
 ## Learn more
 
 Find out more about Project Fluent at [projectfluent.org][], including
@@ -104,3 +98,4 @@ implementations, and information about how to get involved.
 
 [projectfluent.org]: http://projectfluent.org
 [FTL]: http://projectfluent.org/fluent/guide/
+[Intl.Locale]: https://github.com/tc39/proposal-intl-locale
