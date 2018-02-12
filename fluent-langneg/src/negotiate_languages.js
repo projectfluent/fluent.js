@@ -43,12 +43,6 @@ function GetOption(options, property, type, values, fallback) {
  *         a string with BCP47 locale ID to be used
  *         as a last resort locale.
  *
- *       likelySubtags:
- *         a key-value map of locale keys to their most expanded variants.
- *         For example:
- *           'en' -> 'en-Latn-US',
- *           'ru' -> 'ru-Cyrl-RU',
- *
  *
  * It returns an Array of strings with BCP47 locale IDs sorted according to the
  * user preferences.
@@ -76,8 +70,6 @@ export default function negotiateLanguages(
 ) {
 
   const defaultLocale = GetOption(options, 'defaultLocale', 'string');
-  const likelySubtags = GetOption(
-    options, 'likelySubtags', 'object', undefined);
   const strategy = GetOption(options, 'strategy', 'string',
     ['filtering', 'matching', 'lookup'], 'filtering');
 
@@ -94,7 +86,7 @@ export default function negotiateLanguages(
 
   const supportedLocales = filterMatches(
     resolvedReqLoc,
-    resolvedAvailLoc, strategy, likelySubtags
+    resolvedAvailLoc, strategy
   );
 
   if (strategy === 'lookup') {
