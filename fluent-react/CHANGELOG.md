@@ -1,5 +1,26 @@
 # Changelog
 
+## fluent-react 0.6.1 (February 19, 2018)
+
+  - Preserve children of wrapped components if translation value is null. (#154)
+
+    `<Localized>` now special-cases translations with null values; it
+    preserves the original children of the wrapped element and only sets
+    translated attributes.
+
+  - Protect void elements from translations which try to set children. (#155)
+
+    A broken translation may have a value where none is expected.
+    `<Localized>` components now protect wrapped void elements from having
+    this unexpected value inserted as children.
+
+  - Add a third argument to getString for fallback. (#147)
+
+    The new third argument to the `getString` function in `withLocalized`
+    wrapped components allows for definition of a fallback message in case
+    the message id is not fount in the message context. The fallback message
+    may also be used for extraction of source copy.
+
 ## fluent-react 0.6.0 (February 1, 2018)
 
   - Allow limited markup in translations. (#101)
