@@ -7,16 +7,16 @@
  *
  */
 
-export { default as _parse } from './parser';
+export { default as _parse } from "./parser";
 
-export { MessageContext } from './context';
+export { MessageContext } from "./context";
 export {
   FluentType as MessageArgument,
   FluentNumber as MessageNumberArgument,
   FluentDateTime as MessageDateTimeArgument,
-} from './types';
+} from "./types";
 
-export { default as CachedIterable } from './cached_iterable';
-export { mapContextSync, mapContextAsync } from './fallback';
+export { default as CachedIterable } from "./cached_iterable";
+export { mapContextSync, mapContextAsync } from "./fallback";
 
-export { ftl } from './util';
+export { ftl } from "./util";

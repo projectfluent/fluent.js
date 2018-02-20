@@ -6,14 +6,14 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 const { L10nRegistry } =
-  Cu.import('resource://gre/modules/L10nRegistry.jsm', {});
+  Cu.import("resource://gre/modules/L10nRegistry.jsm", {});
 const ObserverService =
-  Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService);
+  Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 const { Services } =
-  Cu.import('resource://gre/modules/Services.jsm', {});
+  Cu.import("resource://gre/modules/Services.jsm", {});
 
 
-import Localization from '../../fluent-dom/src/localization';
+import Localization from "../../fluent-dom/src/localization";
 
 /**
  * The default localization strategy for Gecko. It comabines locales
@@ -41,4 +41,4 @@ class GeckoLocalization extends Localization {
 }
 
 this.Localization = GeckoLocalization;
-this.EXPORTED_SYMBOLS = ['Localization'];
+this.EXPORTED_SYMBOLS = ["Localization"];

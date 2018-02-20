@@ -73,7 +73,7 @@
         "prefer-spread": 2,
         "quotes": [
             2,
-            "single",
+            "double",
             {
                 "avoidEscape": true
             }

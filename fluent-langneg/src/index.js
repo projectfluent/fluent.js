@@ -7,5 +7,5 @@
  *
  */
 
-export { default as negotiateLanguages } from './negotiate_languages';
-export { default as acceptedLanguages } from './accepted_languages';
+export { default as negotiateLanguages } from "./negotiate_languages";
+export { default as acceptedLanguages } from "./accepted_languages";

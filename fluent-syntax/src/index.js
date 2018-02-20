@@ -1,7 +1,7 @@
-import FluentParser from './parser';
-import FluentSerializer from './serializer';
+import FluentParser from "./parser";
+import FluentSerializer from "./serializer";
 
-export * from './ast';
+export * from "./ast";
 export { FluentParser, FluentSerializer };
 
 export function parse(source, opts) {
@@ -16,7 +16,7 @@ export function serialize(resource, opts) {
 
 export function lineOffset(source, pos) {
   // Subtract 1 to get the offset.
-  return source.substring(0, pos).split('\n').length - 1;
+  return source.substring(0, pos).split("\n").length - 1;
 }
 
 export function columnOffset(source, pos) {
@@ -24,7 +24,7 @@ export function columnOffset(source, pos) {
   // pos.  This allows us to correctly handle ths case where the character at
   // pos  is a line break as well.
   const fromIndex = pos - 1;
-  const prevLineBreak = source.lastIndexOf('\n', fromIndex);
+  const prevLineBreak = source.lastIndexOf("\n", fromIndex);
 
   // pos is a position in the first line of source.
   if (prevLineBreak === -1) {

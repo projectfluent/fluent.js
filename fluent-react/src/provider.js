@@ -1,7 +1,7 @@
-import { Component, Children } from 'react';
-import PropTypes from 'prop-types';
+import { Component, Children } from "react";
+import PropTypes from "prop-types";
 
-import ReactLocalization, { isReactLocalization} from './localization';
+import ReactLocalization, { isReactLocalization} from "./localization";
 
 /*
  * The Provider component for the `ReactLocalization` class.
@@ -27,11 +27,11 @@ export default class LocalizationProvider extends Component {
     const { messages } = props;
 
     if (messages === undefined) {
-      throw new Error('LocalizationProvider must receive the messages prop.');
+      throw new Error("LocalizationProvider must receive the messages prop.");
     }
 
     if (!messages[Symbol.iterator]) {
-      throw new Error('The messages prop must be an iterable.');
+      throw new Error("The messages prop must be an iterable.");
     }
 
     this.l10n = new ReactLocalization(messages);

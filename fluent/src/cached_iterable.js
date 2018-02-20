@@ -17,7 +17,7 @@ export default class CachedIterable {
     } else if (Symbol.iterator in Object(iterable)) {
       this.iterator = iterable[Symbol.iterator]();
     } else {
-      throw new TypeError('Argument must implement the iteration protocol.');
+      throw new TypeError("Argument must implement the iteration protocol.");
     }
 
     this.seen = [];

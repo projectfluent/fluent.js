@@ -11,12 +11,12 @@
  * `FluentType`.  Functions must return `FluentType` objects as well.
  */
 
-import { FluentNumber, FluentDateTime } from './types';
+import { FluentNumber, FluentDateTime } from "./types";
 
 export default {
-  'NUMBER': ([arg], opts) =>
+  "NUMBER": ([arg], opts) =>
     new FluentNumber(arg.valueOf(), merge(arg.opts, opts)),
-  'DATETIME': ([arg], opts) =>
+  "DATETIME": ([arg], opts) =>
     new FluentDateTime(arg.valueOf(), merge(arg.opts, opts)),
 };
 

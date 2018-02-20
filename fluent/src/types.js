@@ -41,13 +41,13 @@ export class FluentType {
    * @returns {string}
    */
   toString() {
-    throw new Error('Subclasses of FluentType must implement toString.');
+    throw new Error("Subclasses of FluentType must implement toString.");
   }
 }
 
 export class FluentNone extends FluentType {
   toString() {
-    return this.value || '???';
+    return this.value || "???";
   }
 }
 
@@ -116,7 +116,7 @@ export class FluentSymbol extends FluentType {
   match(ctx, other) {
     if (other instanceof FluentSymbol) {
       return this.value === other.value;
-    } else if (typeof other === 'string') {
+    } else if (typeof other === "string") {
       return this.value === other;
     } else if (other instanceof FluentNumber) {
       const pr = ctx._memoizeIntlObject(

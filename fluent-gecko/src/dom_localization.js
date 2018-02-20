@@ -1,5 +1,5 @@
 /* global L10nRegistry, Services */
-import DOMLocalization from '../../fluent-dom/src/dom_localization';
+import DOMLocalization from "../../fluent-dom/src/dom_localization";
 
 /**
  * The default localization strategy for Gecko. It comabines locales
@@ -32,4 +32,4 @@ class GeckoDOMLocalization extends DOMLocalization {
 }
 
 this.DOMLocalization = GeckoDOMLocalization;
-this.EXPORTED_SYMBOLS = ['DOMLocalization'];
+this.EXPORTED_SYMBOLS = ["DOMLocalization"];

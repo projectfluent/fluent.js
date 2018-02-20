@@ -1,6 +1,6 @@
-import { createElement, Component } from 'react';
+import { createElement, Component } from "react";
 
-import { isReactLocalization } from './localization';
+import { isReactLocalization } from "./localization";
 
 export default function withLocalization(Inner) {
   class WithLocalization extends Component {
@@ -40,5 +40,5 @@ export default function withLocalization(Inner) {
 }
 
 function displayName(component) {
-  return component.displayName || component.name || 'Component';
+  return component.displayName || component.name || "Component";
 }
