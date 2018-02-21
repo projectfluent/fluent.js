@@ -448,6 +448,10 @@ function Pattern(env, ptn) {
   dirty.add(ptn);
   const result = [];
 
+  // Wrap interpolations with Directional Isolate Formatting characters
+  // only when the pattern has more than one element.
+  const useIsolating = ctx._useIsolating && ptn.length > 1;
+
   for (const elem of ptn) {
     if (typeof elem === "string") {
       result.push(elem);
@@ -456,7 +460,7 @@ function Pattern(env, ptn) {
 
     const part = Type(env, elem).toString(ctx);
 
-    if (ctx._useIsolating) {
+    if (useIsolating) {
       result.push(FSI);
     }
 
@@ -472,7 +476,7 @@ function Pattern(env, ptn) {
       result.push(part);
     }
 
-    if (ctx._useIsolating) {
+    if (useIsolating) {
       result.push(PDI);
     }
   }

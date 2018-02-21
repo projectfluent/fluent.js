@@ -68,3 +68,26 @@ suite('Isolating interpolations', function(){
     assert.equal(errs.length, 0);
   });
 });
+
+suite('Skip isolation cases', function(){
+  let ctx, args, errs;
+
+  suiteSetup(function() {
+    ctx = new MessageContext('en-US');
+    ctx.addMessages(ftl`
+      -brand-short-name = Amaya
+      foo = { -brand-short-name }
+    `);
+  });
+
+  setup(function() {
+    errs = [];
+  });
+
+  test('skips isolation if the only element is a placeable', function(){
+    const msg = ctx.getMessage('foo');
+    const val = ctx.format(msg, args, errs);
+    assert.equal(val, `Amaya`);
+    assert.equal(errs.length, 0);
+  });
+});
