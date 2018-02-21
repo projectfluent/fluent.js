@@ -3,7 +3,7 @@ key =
 
     Value
 
-key2
+key2 =
 
 
     .attr = Attribute

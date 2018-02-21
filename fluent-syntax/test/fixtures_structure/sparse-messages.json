@@ -61,8 +61,8 @@
             "name": "attr",
             "span": {
               "type": "Span",
-              "start": 31,
-              "end": 35
+              "start": 33,
+              "end": 37
             }
           },
           "value": {
@@ -73,21 +73,21 @@
                 "value": "Attribute",
                 "span": {
                   "type": "Span",
-                  "start": 38,
-                  "end": 47
+                  "start": 40,
+                  "end": 49
                 }
               }
             ],
             "span": {
               "type": "Span",
-              "start": 38,
-              "end": 47
+              "start": 40,
+              "end": 49
             }
           },
           "span": {
             "type": "Span",
-            "start": 30,
-            "end": 47
+            "start": 32,
+            "end": 49
           }
         }
       ],
@@ -95,7 +95,7 @@
       "span": {
         "type": "Span",
         "start": 19,
-        "end": 47
+        "end": 49
       }
     },
     {
@@ -106,8 +106,8 @@
         "name": "key3",
         "span": {
           "type": "Span",
-          "start": 50,
-          "end": 54
+          "start": 52,
+          "end": 56
         }
       },
       "value": {
@@ -118,15 +118,15 @@
             "value": "Value\nValue2\n\n\nValue 4\nValue3",
             "span": {
               "type": "Span",
-              "start": 61,
-              "end": 102
+              "start": 63,
+              "end": 104
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 61,
-          "end": 102
+          "start": 63,
+          "end": 104
         }
       },
       "attributes": [
@@ -137,8 +137,8 @@
             "name": "attr2",
             "span": {
               "type": "Span",
-              "start": 111,
-              "end": 116
+              "start": 113,
+              "end": 118
             }
           },
           "value": {
@@ -149,29 +149,29 @@
                 "value": "Attr 2",
                 "span": {
                   "type": "Span",
-                  "start": 119,
-                  "end": 125
+                  "start": 121,
+                  "end": 127
                 }
               }
             ],
             "span": {
               "type": "Span",
-              "start": 119,
-              "end": 125
+              "start": 121,
+              "end": 127
             }
           },
           "span": {
             "type": "Span",
-            "start": 110,
-            "end": 125
+            "start": 112,
+            "end": 127
           }
         }
       ],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 50,
-        "end": 125
+        "start": 52,
+        "end": 127
       }
     },
     {
@@ -182,8 +182,8 @@
         "name": "key5",
         "span": {
           "type": "Span",
-          "start": 128,
-          "end": 132
+          "start": 130,
+          "end": 134
         }
       },
       "value": {
@@ -194,23 +194,23 @@
             "value": "Value 5",
             "span": {
               "type": "Span",
-              "start": 135,
-              "end": 142
+              "start": 137,
+              "end": 144
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 135,
-          "end": 142
+          "start": 137,
+          "end": 144
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 128,
-        "end": 142
+        "start": 130,
+        "end": 144
       }
     },
     {
@@ -221,8 +221,8 @@
         "name": "key6",
         "span": {
           "type": "Span",
-          "start": 144,
-          "end": 148
+          "start": 146,
+          "end": 150
         }
       },
       "value": {
@@ -241,8 +241,8 @@
                     "name": "one",
                     "span": {
                       "type": "Span",
-                      "start": 165,
-                      "end": 168
+                      "start": 167,
+                      "end": 170
                     }
                   },
                   "value": {
@@ -253,22 +253,22 @@
                         "value": "One",
                         "span": {
                           "type": "Span",
-                          "start": 170,
-                          "end": 173
+                          "start": 172,
+                          "end": 175
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 170,
-                      "end": 173
+                      "start": 172,
+                      "end": 175
                     }
                   },
                   "default": false,
                   "span": {
                     "type": "Span",
-                    "start": 164,
-                    "end": 173
+                    "start": 166,
+                    "end": 175
                   }
                 },
                 {
@@ -278,8 +278,8 @@
                     "name": "two",
                     "span": {
                       "type": "Span",
-                      "start": 188,
-                      "end": 191
+                      "start": 190,
+                      "end": 193
                     }
                   },
                   "value": {
@@ -290,56 +290,56 @@
                         "value": "Two",
                         "span": {
                           "type": "Span",
-                          "start": 193,
-                          "end": 196
+                          "start": 195,
+                          "end": 198
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 193,
-                      "end": 196
+                      "start": 195,
+                      "end": 198
                     }
                   },
                   "default": true,
                   "span": {
                     "type": "Span",
-                    "start": 186,
-                    "end": 196
+                    "start": 188,
+                    "end": 198
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 152,
-                "end": 204
+                "start": 154,
+                "end": 206
               }
             },
             "span": {
               "type": "Span",
-              "start": 151,
-              "end": 205
+              "start": 153,
+              "end": 207
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 151,
-          "end": 205
+          "start": 153,
+          "end": 207
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 144,
-        "end": 205
+        "start": 146,
+        "end": 207
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 206
+    "end": 208
   }
 }
