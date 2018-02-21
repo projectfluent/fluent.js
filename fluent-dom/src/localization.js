@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global console */
 
-import { CachedIterable } from '../../fluent/src/index';
+import { CachedIterable } from "../../fluent/src/index";
 
 /**
  * Specialized version of an Error used to indicate errors that are result
@@ -16,7 +16,7 @@ import { CachedIterable } from '../../fluent/src/index';
 class L10nError extends Error {
   constructor(message) {
     super();
-    this.name = 'L10nError';
+    this.name = "L10nError";
     this.message = message;
   }
 }
@@ -58,7 +58,7 @@ export default class Localization {
     for (let ctx of this.ctxs) {
       // This can operate on synchronous and asynchronous
       // contexts coming from the iterator.
-      if (typeof ctx.then === 'function') {
+      if (typeof ctx.then === "function") {
         ctx = await ctx;
       }
       const errors = keysFromContext(method, ctx, keys, translations);
@@ -290,7 +290,7 @@ function keysFromContext(method, ctx, keys, translations) {
       hasErrors = true;
     }
 
-    if (messageErrors.length && typeof console !== 'undefined') {
+    if (messageErrors.length && typeof console !== "undefined") {
       messageErrors.forEach(error => console.warn(error));
     }
   });

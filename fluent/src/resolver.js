@@ -48,15 +48,15 @@
 
 
 import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
-  from './types';
-import builtins from './builtins';
+  from "./types";
+import builtins from "./builtins";
 
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
 
 // Unicode bidi isolation characters.
-const FSI = '\u2068';
-const PDI = '\u2069';
+const FSI = "\u2068";
+const PDI = "\u2069";
 
 
 /**
@@ -79,7 +79,7 @@ function DefaultMember(env, members, def) {
   }
 
   const { errors } = env;
-  errors.push(new RangeError('No default'));
+  errors.push(new RangeError("No default"));
   return new FluentNone();
 }
 
@@ -98,12 +98,12 @@ function DefaultMember(env, members, def) {
  */
 function MessageReference(env, {name}) {
   const { ctx, errors } = env;
-  const message = name.startsWith('-')
+  const message = name.startsWith("-")
     ? ctx._terms.get(name)
     : ctx._messages.get(name);
 
   if (!message) {
-    const err = name.startsWith('-')
+    const err = name.startsWith("-")
       ? new ReferenceError(`Unknown term: ${name}`)
       : new ReferenceError(`Unknown message: ${name}`);
     errors.push(err);
@@ -140,7 +140,7 @@ function VariantExpression(env, {id, key}) {
 
   function isVariantList(node) {
     return Array.isArray(node) &&
-      node[0].type === 'sel' &&
+      node[0].type === "sel" &&
       node[0].exp === null;
   }
 
@@ -257,7 +257,7 @@ function SelectExpression(env, {exp, vars, def}) {
 function Type(env, expr) {
   // A fast-path for strings which are the most common case, and for
   // `FluentNone` which doesn't require any additional logic.
-  if (typeof expr === 'string' || expr instanceof FluentNone) {
+  if (typeof expr === "string" || expr instanceof FluentNone) {
     return expr;
   }
 
@@ -269,29 +269,29 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case 'varname':
+    case "varname":
       return new FluentSymbol(expr.name);
-    case 'num':
+    case "num":
       return new FluentNumber(expr.val);
-    case 'ext':
+    case "ext":
       return ExternalArgument(env, expr);
-    case 'fun':
+    case "fun":
       return FunctionReference(env, expr);
-    case 'call':
+    case "call":
       return CallExpression(env, expr);
-    case 'ref': {
+    case "ref": {
       const message = MessageReference(env, expr);
       return Type(env, message);
     }
-    case 'attr': {
+    case "attr": {
       const attr = AttributeExpression(env, expr);
       return Type(env, attr);
     }
-    case 'var': {
+    case "var": {
       const variant = VariantExpression(env, expr);
       return Type(env, variant);
     }
-    case 'sel': {
+    case "sel": {
       const member = SelectExpression(env, expr);
       return Type(env, member);
     }
@@ -302,7 +302,7 @@ function Type(env, expr) {
       }
 
       const { errors } = env;
-      errors.push(new RangeError('No value'));
+      errors.push(new RangeError("No value"));
       return new FluentNone();
     }
     default:
@@ -339,11 +339,11 @@ function ExternalArgument(env, {name}) {
 
   // Convert the argument to a Fluent type.
   switch (typeof arg) {
-    case 'string':
+    case "string":
       return arg;
-    case 'number':
+    case "number":
       return new FluentNumber(arg);
-    case 'object':
+    case "object":
       if (arg instanceof Date) {
         return new FluentDateTime(arg);
       }
@@ -378,7 +378,7 @@ function FunctionReference(env, {name}) {
     return new FluentNone(`${name}()`);
   }
 
-  if (typeof func !== 'function') {
+  if (typeof func !== "function") {
     errors.push(new TypeError(`Function ${name}() is not callable`));
     return new FluentNone(`${name}()`);
   }
@@ -411,7 +411,7 @@ function CallExpression(env, {fun, args}) {
   const keyargs = {};
 
   for (const arg of args) {
-    if (arg.type === 'narg') {
+    if (arg.type === "narg") {
       keyargs[arg.name] = Type(env, arg.val);
     } else {
       posargs.push(Type(env, arg));
@@ -440,7 +440,7 @@ function Pattern(env, ptn) {
   const { ctx, dirty, errors } = env;
 
   if (dirty.has(ptn)) {
-    errors.push(new RangeError('Cyclic reference'));
+    errors.push(new RangeError("Cyclic reference"));
     return new FluentNone();
   }
 
@@ -449,7 +449,7 @@ function Pattern(env, ptn) {
   const result = [];
 
   for (const elem of ptn) {
-    if (typeof elem === 'string') {
+    if (typeof elem === "string") {
       result.push(elem);
       continue;
     }
@@ -463,7 +463,7 @@ function Pattern(env, ptn) {
     if (part.length > MAX_PLACEABLE_LENGTH) {
       errors.push(
         new RangeError(
-          'Too many characters in placeable ' +
+          "Too many characters in placeable " +
           `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
         )
       );
@@ -478,7 +478,7 @@ function Pattern(env, ptn) {
   }
 
   dirty.delete(ptn);
-  return result.join('');
+  return result.join("");
 }
 
 /**

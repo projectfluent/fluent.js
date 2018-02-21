@@ -1,5 +1,5 @@
-import resolve from './resolver';
-import parse from './parser';
+import resolve from "./resolver";
+import parse from "./parser";
 
 /**
  * Message contexts are single-language stores of translations.  They are
@@ -110,7 +110,7 @@ export class MessageContext {
   addMessages(source) {
     const [entries, errors] = parse(source);
     for (const id in entries) {
-      if (id.startsWith('-')) {
+      if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from MessageContext.
         this._terms.set(id, entries[id]);
@@ -154,12 +154,12 @@ export class MessageContext {
    */
   format(message, args, errors) {
     // optimize entities which are simple strings with no attributes
-    if (typeof message === 'string') {
+    if (typeof message === "string") {
       return message;
     }
 
     // optimize simple-string entities with attributes
-    if (typeof message.val === 'string') {
+    if (typeof message.val === "string") {
       return message.val;
     }
 

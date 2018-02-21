@@ -1,11 +1,11 @@
 /* eslint no-magic-numbers: 0 */
 
-import { getLikelySubtagsMin } from './subtags';
+import { getLikelySubtagsMin } from "./subtags";
 
-const languageCodeRe = '([a-z]{2,3}|\\*)';
-const scriptCodeRe = '(?:-([a-z]{4}|\\*))';
-const regionCodeRe = '(?:-([a-z]{2}|\\*))';
-const variantCodeRe = '(?:-([a-z]{3}|\\*))';
+const languageCodeRe = "([a-z]{2,3}|\\*)";
+const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
+const regionCodeRe = "(?:-([a-z]{2}|\\*))";
+const variantCodeRe = "(?:-([a-z]{3}|\\*))";
 
 /**
  * Regular expression splitting locale id into four pieces:
@@ -20,9 +20,9 @@ const variantCodeRe = '(?:-([a-z]{3}|\\*))';
  * It can also accept a range `*` character on any position.
  */
 const localeRe = new RegExp(
-  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`, 'i');
+  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`, "i");
 
-export const localeParts = ['language', 'script', 'region', 'variant'];
+export const localeParts = ["language", "script", "region", "variant"];
 
 export default class Locale {
   /**
@@ -35,12 +35,12 @@ export default class Locale {
    * properly parsed as `en-*-US-*`.
    */
   constructor(locale, range = false) {
-    const result = localeRe.exec(locale.replace(/_/g, '-'));
+    const result = localeRe.exec(locale.replace(/_/g, "-"));
     if (!result) {
       return;
     }
 
-    const missing = range ? '*' : undefined;
+    const missing = range ? "*" : undefined;
 
     const language = result[1] || missing;
     const script = result[2] || missing;
@@ -60,7 +60,7 @@ export default class Locale {
 
   matches(locale) {
     return localeParts.every(part => {
-      return this[part] === '*' || locale[part] === '*' ||
+      return this[part] === "*" || locale[part] === "*" ||
         (this[part] === undefined && locale[part] === undefined) ||
         (this[part] !== undefined && locale[part] !== undefined &&
         this[part].toLowerCase() === locale[part].toLowerCase());
@@ -68,11 +68,11 @@ export default class Locale {
   }
 
   setVariantRange() {
-    this.variant = '*';
+    this.variant = "*";
   }
 
   setRegionRange() {
-    this.region = '*';
+    this.region = "*";
   }
 
   addLikelySubtags() {

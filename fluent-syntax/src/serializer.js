@@ -1,12 +1,12 @@
-import { includes } from './util';
+import { includes } from "./util";
 
 function indent(content) {
-  return content.split('\n').join('\n    ');
+  return content.split("\n").join("\n    ");
 }
 
 function containNewLine(elems) {
   const withNewLine = elems.filter(
-    elem => (elem.type === 'TextElement' && includes(elem.value, '\n'))
+    elem => (elem.type === "TextElement" && includes(elem.value, "\n"))
   );
   return !!withNewLine.length;
 }
@@ -20,7 +20,7 @@ export default class FluentSerializer {
   }
 
   serialize(resource) {
-    if (resource.type !== 'Resource') {
+    if (resource.type !== "Resource") {
       throw new Error(`Unknown resource type: ${resource.type}`);
     }
 
@@ -28,7 +28,7 @@ export default class FluentSerializer {
     const parts = [];
 
     for (const entry of resource.body) {
-      if (entry.type !== 'Junk' || this.withJunk) {
+      if (entry.type !== "Junk" || this.withJunk) {
         parts.push(this.serializeEntry(entry, state));
         if (!(state & HAS_ENTRIES)) {
           state |= HAS_ENTRIES;
@@ -36,30 +36,30 @@ export default class FluentSerializer {
       }
     }
 
-    return parts.join('');
+    return parts.join("");
   }
 
   serializeEntry(entry, state = 0) {
     switch (entry.type) {
-      case 'Message':
-      case 'Term':
+      case "Message":
+      case "Term":
         return serializeMessage(entry);
-      case 'Comment':
+      case "Comment":
         if (state & HAS_ENTRIES) {
           return `\n${serializeComment(entry)}\n\n`;
         }
         return `${serializeComment(entry)}\n\n`;
-      case 'GroupComment':
+      case "GroupComment":
         if (state & HAS_ENTRIES) {
           return `\n${serializeGroupComment(entry)}\n\n`;
         }
         return `${serializeGroupComment(entry)}\n\n`;
-      case 'ResourceComment':
+      case "ResourceComment":
         if (state & HAS_ENTRIES) {
           return `\n${serializeResourceComment(entry)}\n\n`;
         }
         return `${serializeResourceComment(entry)}\n\n`;
-      case 'Junk':
+      case "Junk":
         return serializeJunk(entry);
       default :
         throw new Error(`Unknown entry type: ${entry.type}`);
@@ -73,23 +73,23 @@ export default class FluentSerializer {
 
 
 function serializeComment(comment) {
-  return comment.content.split('\n').map(
-    line => line.length ? `# ${line}` : '#'
-  ).join('\n');
+  return comment.content.split("\n").map(
+    line => line.length ? `# ${line}` : "#"
+  ).join("\n");
 }
 
 
 function serializeGroupComment(comment) {
-  return comment.content.split('\n').map(
-    line => line.length ? `## ${line}` : '##'
-  ).join('\n');
+  return comment.content.split("\n").map(
+    line => line.length ? `## ${line}` : "##"
+  ).join("\n");
 }
 
 
 function serializeResourceComment(comment) {
-  return comment.content.split('\n').map(
-    line => line.length ? `### ${line}` : '###'
-  ).join('\n');
+  return comment.content.split("\n").map(
+    line => line.length ? `### ${line}` : "###"
+  ).join("\n");
 }
 
 
@@ -103,11 +103,11 @@ function serializeMessage(message) {
 
   if (message.comment) {
     parts.push(serializeComment(message.comment));
-    parts.push('\n');
+    parts.push("\n");
   }
 
   parts.push(serializeIdentifier(message.id));
-  parts.push(' =');
+  parts.push(" =");
 
   if (message.value) {
     parts.push(serializeValue(message.value));
@@ -117,8 +117,8 @@ function serializeMessage(message) {
     parts.push(serializeAttribute(attribute));
   }
 
-  parts.push('\n');
-  return parts.join('');
+  parts.push("\n");
+  return parts.join("");
 }
 
 
@@ -142,15 +142,15 @@ function serializeValue(pattern) {
 
 
 function serializePattern(pattern) {
-  return pattern.elements.map(serializeElement).join('');
+  return pattern.elements.map(serializeElement).join("");
 }
 
 
 function serializeElement(element) {
   switch (element.type) {
-    case 'TextElement':
+    case "TextElement":
       return serializeTextElement(element);
-    case 'Placeable':
+    case "Placeable":
       return serializePlaceable(element);
     default:
       throw new Error(`Unknown element type: ${element.type}`);
@@ -167,9 +167,9 @@ function serializePlaceable(placeable) {
   const expr = placeable.expression;
 
   switch (expr.type) {
-    case 'Placeable':
+    case "Placeable":
       return `{${serializePlaceable(expr)}}`;
-    case 'SelectExpression':
+    case "SelectExpression":
       // Special-case select expression to control the whitespace around the
       // opening and the closing brace.
       return expr.expression
@@ -185,21 +185,21 @@ function serializePlaceable(placeable) {
 
 function serializeExpression(expr) {
   switch (expr.type) {
-    case 'StringExpression':
+    case "StringExpression":
       return serializeStringExpression(expr);
-    case 'NumberExpression':
+    case "NumberExpression":
       return serializeNumberExpression(expr);
-    case 'MessageReference':
+    case "MessageReference":
       return serializeMessageReference(expr);
-    case 'ExternalArgument':
+    case "ExternalArgument":
       return serializeExternalArgument(expr);
-    case 'AttributeExpression':
+    case "AttributeExpression":
       return serializeAttributeExpression(expr);
-    case 'VariantExpression':
+    case "VariantExpression":
       return serializeVariantExpression(expr);
-    case 'CallExpression':
+    case "CallExpression":
       return serializeCallExpression(expr);
-    case 'SelectExpression':
+    case "SelectExpression":
       return serializeSelectExpression(expr);
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
@@ -239,8 +239,8 @@ function serializeSelectExpression(expr) {
     parts.push(serializeVariant(variant));
   }
 
-  parts.push('\n');
-  return parts.join('');
+  parts.push("\n");
+  return parts.join("");
 }
 
 
@@ -272,14 +272,14 @@ function serializeVariantExpression(expr) {
 
 function serializeCallExpression(expr) {
   const fun = serializeFunction(expr.callee);
-  const args = expr.args.map(serializeCallArgument).join(', ');
+  const args = expr.args.map(serializeCallArgument).join(", ");
   return `${fun}(${args})`;
 }
 
 
 function serializeCallArgument(arg) {
   switch (arg.type) {
-    case 'NamedArgument':
+    case "NamedArgument":
       return serializeNamedArgument(arg);
     default:
       return serializeExpression(arg);
@@ -296,9 +296,9 @@ function serializeNamedArgument(arg) {
 
 function serializeArgumentValue(argval) {
   switch (argval.type) {
-    case 'StringExpression':
+    case "StringExpression":
       return serializeStringExpression(argval);
-    case 'NumberExpression':
+    case "NumberExpression":
       return serializeNumberExpression(argval);
     default:
       throw new Error(`Unknown argument type: ${argval.type}`);
@@ -318,9 +318,9 @@ function serializeVariantName(VariantName) {
 
 function serializeVariantKey(key) {
   switch (key.type) {
-    case 'VariantName':
+    case "VariantName":
       return serializeVariantName(key);
-    case 'NumberExpression':
+    case "NumberExpression":
       return serializeNumberExpression(key);
     default:
       throw new Error(`Unknown variant key type: ${key.type}`);

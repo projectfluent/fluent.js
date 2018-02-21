@@ -1,9 +1,9 @@
-import { isValidElement, cloneElement, Component, Children } from 'react';
-import PropTypes from 'prop-types';
+import { isValidElement, cloneElement, Component, Children } from "react";
+import PropTypes from "prop-types";
 
-import { isReactLocalization } from './localization';
-import { parseMarkup } from './markup';
-import VOID_ELEMENTS from '../vendor/voidElementTags';
+import { isReactLocalization } from "./localization";
+import { parseMarkup } from "./markup";
+import VOID_ELEMENTS from "../vendor/voidElementTags";
 
 /*
  * Prepare props passed to `Localized` for formatting.
@@ -13,7 +13,7 @@ function toArguments(props) {
   const elems = {};
 
   for (const [propname, propval] of Object.entries(props)) {
-    if (propname.startsWith('$')) {
+    if (propname.startsWith("$")) {
       const name = propname.substr(1);
       args[name] = propval;
     } else if (isValidElement(propval)) {
@@ -129,7 +129,7 @@ export default class Localized extends Component {
 
     // If the message value doesn't contain any markup, insert it as the only
     // child of the wrapped component.
-    if (!messageValue.includes('<')) {
+    if (!messageValue.includes("<")) {
       return cloneElement(elem, localizedProps, messageValue);
     }
 

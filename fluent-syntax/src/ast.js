@@ -21,7 +21,7 @@ class SyntaxNode extends BaseNode {
 export class Resource extends SyntaxNode {
   constructor(body = []) {
     super();
-    this.type = 'Resource';
+    this.type = "Resource";
     this.body = body;
   }
 }
@@ -29,7 +29,7 @@ export class Resource extends SyntaxNode {
 export class Entry extends SyntaxNode {
   constructor() {
     super();
-    this.type = 'Entry';
+    this.type = "Entry";
     this.annotations = [];
   }
 
@@ -41,7 +41,7 @@ export class Entry extends SyntaxNode {
 export class Message extends Entry {
   constructor(id, value = null, attributes = [], comment = null) {
     super();
-    this.type = 'Message';
+    this.type = "Message";
     this.id = id;
     this.value = value;
     this.attributes = attributes;
@@ -52,7 +52,7 @@ export class Message extends Entry {
 export class Term extends Entry {
   constructor(id, value, attributes = [], comment = null) {
     super();
-    this.type = 'Term';
+    this.type = "Term";
     this.id = id;
     this.value = value;
     this.attributes = attributes;
@@ -63,7 +63,7 @@ export class Term extends Entry {
 export class Pattern extends SyntaxNode {
   constructor(elements) {
     super();
-    this.type = 'Pattern';
+    this.type = "Pattern";
     this.elements = elements;
   }
 }
@@ -71,7 +71,7 @@ export class Pattern extends SyntaxNode {
 export class TextElement extends SyntaxNode {
   constructor(value) {
     super();
-    this.type = 'TextElement';
+    this.type = "TextElement";
     this.value = value;
   }
 }
@@ -79,7 +79,7 @@ export class TextElement extends SyntaxNode {
 export class Placeable extends SyntaxNode {
   constructor(expression) {
     super();
-    this.type = 'Placeable';
+    this.type = "Placeable";
     this.expression = expression;
   }
 }
@@ -87,14 +87,14 @@ export class Placeable extends SyntaxNode {
 export class Expression extends SyntaxNode {
   constructor() {
     super();
-    this.type = 'Expression';
+    this.type = "Expression";
   }
 }
 
 export class StringExpression extends Expression {
   constructor(value) {
     super();
-    this.type = 'StringExpression';
+    this.type = "StringExpression";
     this.value = value;
   }
 }
@@ -102,7 +102,7 @@ export class StringExpression extends Expression {
 export class NumberExpression extends Expression {
   constructor(value) {
     super();
-    this.type = 'NumberExpression';
+    this.type = "NumberExpression";
     this.value = value;
   }
 }
@@ -110,7 +110,7 @@ export class NumberExpression extends Expression {
 export class MessageReference extends Expression {
   constructor(id) {
     super();
-    this.type = 'MessageReference';
+    this.type = "MessageReference";
     this.id = id;
   }
 }
@@ -118,7 +118,7 @@ export class MessageReference extends Expression {
 export class ExternalArgument extends Expression {
   constructor(id) {
     super();
-    this.type = 'ExternalArgument';
+    this.type = "ExternalArgument";
     this.id = id;
   }
 }
@@ -126,7 +126,7 @@ export class ExternalArgument extends Expression {
 export class SelectExpression extends Expression {
   constructor(expression, variants) {
     super();
-    this.type = 'SelectExpression';
+    this.type = "SelectExpression";
     this.expression = expression;
     this.variants = variants;
   }
@@ -135,7 +135,7 @@ export class SelectExpression extends Expression {
 export class AttributeExpression extends Expression {
   constructor(id, name) {
     super();
-    this.type = 'AttributeExpression';
+    this.type = "AttributeExpression";
     this.id = id;
     this.name = name;
   }
@@ -144,7 +144,7 @@ export class AttributeExpression extends Expression {
 export class VariantExpression extends Expression {
   constructor(id, key) {
     super();
-    this.type = 'VariantExpression';
+    this.type = "VariantExpression";
     this.id = id;
     this.key = key;
   }
@@ -153,7 +153,7 @@ export class VariantExpression extends Expression {
 export class CallExpression extends Expression {
   constructor(callee, args = []) {
     super();
-    this.type = 'CallExpression';
+    this.type = "CallExpression";
     this.callee = callee;
     this.args = args;
   }
@@ -162,7 +162,7 @@ export class CallExpression extends Expression {
 export class Attribute extends SyntaxNode {
   constructor(id, value) {
     super();
-    this.type = 'Attribute';
+    this.type = "Attribute";
     this.id = id;
     this.value = value;
   }
@@ -171,7 +171,7 @@ export class Attribute extends SyntaxNode {
 export class Variant extends SyntaxNode {
   constructor(key, value, def = false) {
     super();
-    this.type = 'Variant';
+    this.type = "Variant";
     this.key = key;
     this.value = value;
     this.default = def;
@@ -181,7 +181,7 @@ export class Variant extends SyntaxNode {
 export class NamedArgument extends SyntaxNode {
   constructor(name, val) {
     super();
-    this.type = 'NamedArgument';
+    this.type = "NamedArgument";
     this.name = name;
     this.val = val;
   }
@@ -190,7 +190,7 @@ export class NamedArgument extends SyntaxNode {
 export class Identifier extends SyntaxNode {
   constructor(name) {
     super();
-    this.type = 'Identifier';
+    this.type = "Identifier";
     this.name = name;
   }
 }
@@ -198,14 +198,14 @@ export class Identifier extends SyntaxNode {
 export class VariantName extends Identifier {
   constructor(name) {
     super(name);
-    this.type = 'VariantName';
+    this.type = "VariantName";
   }
 }
 
 export class BaseComment extends Entry {
   constructor(content) {
     super();
-    this.type = 'BaseComment';
+    this.type = "BaseComment";
     this.content = content;
   }
 }
@@ -213,34 +213,34 @@ export class BaseComment extends Entry {
 export class Comment extends BaseComment {
   constructor(content) {
     super(content);
-    this.type = 'Comment';
+    this.type = "Comment";
   }
 }
 
 export class GroupComment extends BaseComment {
   constructor(content) {
     super(content);
-    this.type = 'GroupComment';
+    this.type = "GroupComment";
   }
 }
 export class ResourceComment extends BaseComment {
   constructor(content) {
     super(content);
-    this.type = 'ResourceComment';
+    this.type = "ResourceComment";
   }
 }
 
 export class Function extends Identifier {
   constructor(name) {
     super(name);
-    this.type = 'Function';
+    this.type = "Function";
   }
 }
 
 export class Junk extends Entry {
   constructor(content) {
     super();
-    this.type = 'Junk';
+    this.type = "Junk";
     this.content = content;
   }
 }
@@ -248,7 +248,7 @@ export class Junk extends Entry {
 export class Span extends BaseNode {
   constructor(start, end) {
     super();
-    this.type = 'Span';
+    this.type = "Span";
     this.start = start;
     this.end = end;
   }
@@ -257,7 +257,7 @@ export class Span extends BaseNode {
 export class Annotation extends SyntaxNode {
   constructor(code, args = [], message) {
     super();
-    this.type = 'Annotation';
+    this.type = "Annotation";
     this.code = code;
     this.args = args;
     this.message = message;

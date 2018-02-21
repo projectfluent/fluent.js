@@ -1,11 +1,11 @@
 /* eslint no-magic-numbers: "off" */
 
-import { ParserStream } from './stream';
-import { ParseError } from './errors';
-import { includes } from './util';
+import { ParserStream } from "./stream";
+import { ParseError } from "./errors";
+import { includes } from "./util";
 
-const INLINE_WS = [' ', '\t'];
-const SPECIAL_LINE_START_CHARS = ['}', '.', '[', '*'];
+const INLINE_WS = [" ", "\t"];
+const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
   skipInlineWS() {
@@ -31,7 +31,7 @@ export class FTLParserStream extends ParserStream {
     while (true) {
       this.peekInlineWS();
 
-      if (this.currentPeekIs('\n')) {
+      if (this.currentPeekIs("\n")) {
         this.skipToPeek();
         this.next();
       } else {
@@ -47,7 +47,7 @@ export class FTLParserStream extends ParserStream {
 
       this.peekInlineWS();
 
-      if (this.currentPeekIs('\n')) {
+      if (this.currentPeekIs("\n")) {
         this.peek();
       } else {
         this.resetPeek(lineStart);
@@ -67,18 +67,18 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    if (ch === '\n') {
+    if (ch === "\n") {
       // Unicode Character 'SYMBOL FOR NEWLINE' (U+2424)
-      throw new ParseError('E0003', '\u2424');
+      throw new ParseError("E0003", "\u2424");
     }
 
-    throw new ParseError('E0003', ch);
+    throw new ParseError("E0003", ch);
   }
 
   expectIndent() {
-    this.expectChar('\n');
+    this.expectChar("\n");
     this.skipBlankLines();
-    this.expectChar(' ');
+    this.expectChar(" ");
     this.skipInlineWS();
   }
 
@@ -110,7 +110,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isEntryIDStart() {
-    if (this.currentIs('-')) {
+    if (this.currentIs("-")) {
       this.peek();
     }
 
@@ -121,7 +121,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isNumberStart() {
-    if (this.currentIs('-')) {
+    if (this.currentIs("-")) {
       this.peek();
     }
 
@@ -140,7 +140,7 @@ export class FTLParserStream extends ParserStream {
     const ch = this.currentPeek();
 
     // Inline Patterns may start with any char.
-    if (ch !== undefined && ch !== '\n') {
+    if (ch !== undefined && ch !== "\n") {
       return true;
     }
 
@@ -148,15 +148,15 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekNextLineZeroFourStyleComment() {
-    if (!this.currentPeekIs('\n')) {
+    if (!this.currentPeekIs("\n")) {
       return false;
     }
 
     this.peek();
 
-    if (this.currentPeekIs('/')) {
+    if (this.currentPeekIs("/")) {
       this.peek();
-      if (this.currentPeekIs('/')) {
+      if (this.currentPeekIs("/")) {
         this.resetPeek();
         return true;
       }
@@ -171,7 +171,7 @@ export class FTLParserStream extends ParserStream {
   //  1 - group comment
   //  2 - resource comment
   isPeekNextLineComment(level = -1) {
-    if (!this.currentPeekIs('\n')) {
+    if (!this.currentPeekIs("\n")) {
       return false;
     }
 
@@ -179,7 +179,7 @@ export class FTLParserStream extends ParserStream {
 
     while (i <= level || (level === -1 && i < 3)) {
       this.peek();
-      if (!this.currentPeekIs('#')) {
+      if (!this.currentPeekIs("#")) {
         if (i !== level && level !== -1) {
           this.resetPeek();
           return false;
@@ -190,7 +190,7 @@ export class FTLParserStream extends ParserStream {
     }
 
     this.peek();
-    if ([' ', '\n'].includes(this.currentPeek())) {
+    if ([" ", "\n"].includes(this.currentPeek())) {
       this.resetPeek();
       return true;
     }
@@ -200,7 +200,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekNextLineVariantStart() {
-    if (!this.currentPeekIs('\n')) {
+    if (!this.currentPeekIs("\n")) {
       return false;
     }
 
@@ -217,11 +217,11 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    if (this.currentPeekIs('*')) {
+    if (this.currentPeekIs("*")) {
       this.peek();
     }
 
-    if (this.currentPeekIs('[') && !this.peekCharIs('[')) {
+    if (this.currentPeekIs("[") && !this.peekCharIs("[")) {
       this.resetPeek();
       return true;
     }
@@ -230,7 +230,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekNextLineAttributeStart() {
-    if (!this.currentPeekIs('\n')) {
+    if (!this.currentPeekIs("\n")) {
       return false;
     }
 
@@ -247,7 +247,7 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    if (this.currentPeekIs('.')) {
+    if (this.currentPeekIs(".")) {
       this.resetPeek();
       return true;
     }
@@ -257,7 +257,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekNextLinePatternStart() {
-    if (!this.currentPeekIs('\n')) {
+    if (!this.currentPeekIs("\n")) {
       return false;
     }
 
@@ -285,13 +285,13 @@ export class FTLParserStream extends ParserStream {
 
   skipToNextEntryStart() {
     while (this.ch) {
-      if (this.currentIs('\n') && !this.peekCharIs('\n')) {
+      if (this.currentIs("\n") && !this.peekCharIs("\n")) {
         this.next();
         if (this.ch === undefined ||
             this.isEntryIDStart() ||
-            this.currentIs('#') ||
-            (this.currentIs('/') && this.peekCharIs('/')) ||
-            (this.currentIs('[') && this.peekCharIs('['))) {
+            this.currentIs("#") ||
+            (this.currentIs("/") && this.peekCharIs("/")) ||
+            (this.currentIs("[") && this.peekCharIs("["))) {
           break;
         }
       }
@@ -300,9 +300,9 @@ export class FTLParserStream extends ParserStream {
   }
 
   takeIDStart(allowTerm) {
-    if (allowTerm && this.currentIs('-')) {
+    if (allowTerm && this.currentIs("-")) {
       this.next();
-      return '-';
+      return "-";
     }
 
     if (this.isCharIDStart(this.ch)) {
@@ -311,8 +311,8 @@ export class FTLParserStream extends ParserStream {
       return ret;
     }
 
-    const allowedRange = allowTerm ? 'a-zA-Z-' : 'a-zA-Z';
-    throw new ParseError('E0004', allowedRange);
+    const allowedRange = allowTerm ? "a-zA-Z-" : "a-zA-Z";
+    throw new ParseError("E0004", allowedRange);
   }
 
   takeIDChar() {

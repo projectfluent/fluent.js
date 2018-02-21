@@ -1,17 +1,17 @@
-import filterMatches from './matches';
+import filterMatches from "./matches";
 
 function GetOption(options, property, type, values, fallback) {
   let value = options[property];
 
   if (value !== undefined) {
-    if (type === 'boolean') {
+    if (type === "boolean") {
       value = new Boolean(value);
-    } else if (type === 'string') {
+    } else if (type === "string") {
       value = String(value);
     }
 
     if (values !== undefined && values.indexOf(value) === -1) {
-      throw new Error('Invalid option value');
+      throw new Error("Invalid option value");
     }
 
     return value;
@@ -69,12 +69,12 @@ export default function negotiateLanguages(
   options = {}
 ) {
 
-  const defaultLocale = GetOption(options, 'defaultLocale', 'string');
-  const strategy = GetOption(options, 'strategy', 'string',
-    ['filtering', 'matching', 'lookup'], 'filtering');
+  const defaultLocale = GetOption(options, "defaultLocale", "string");
+  const strategy = GetOption(options, "strategy", "string",
+    ["filtering", "matching", "lookup"], "filtering");
 
-  if (strategy === 'lookup' && !defaultLocale) {
-    throw new Error('defaultLocale cannot be undefined for strategy `lookup`');
+  if (strategy === "lookup" && !defaultLocale) {
+    throw new Error("defaultLocale cannot be undefined for strategy `lookup`");
   }
 
   const resolvedReqLoc = Array.from(Object(requestedLocales)).map(loc => {
@@ -89,7 +89,7 @@ export default function negotiateLanguages(
     resolvedAvailLoc, strategy
   );
 
-  if (strategy === 'lookup') {
+  if (strategy === "lookup") {
     if (supportedLocales.length === 0) {
       supportedLocales.push(defaultLocale);
     }

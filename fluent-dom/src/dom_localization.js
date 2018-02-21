@@ -1,8 +1,8 @@
-import overlayElement from './overlay';
-import Localization from './localization';
+import overlayElement from "./overlay";
+import Localization from "./localization";
 
-const L10NID_ATTR_NAME = 'data-l10n-id';
-const L10NARGS_ATTR_NAME = 'data-l10n-args';
+const L10NID_ATTR_NAME = "data-l10n-id";
+const L10NARGS_ATTR_NAME = "data-l10n-args";
 
 const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
 
@@ -128,7 +128,7 @@ export default class DOMLocalization extends Localization {
       if (root === newRoot ||
           root.contains(newRoot) ||
           newRoot.contains(root)) {
-        throw new Error('Cannot add a root that overlaps with existing root.');
+        throw new Error("Cannot add a root that overlaps with existing root.");
       }
     }
 
@@ -198,10 +198,10 @@ export default class DOMLocalization extends Localization {
   translateMutations(mutations) {
     for (const mutation of mutations) {
       switch (mutation.type) {
-        case 'attributes':
+        case "attributes":
           this.pendingElements.add(mutation.target);
           break;
-        case 'childList':
+        case "childList":
           for (const addedNode of mutation.addedNodes) {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
@@ -298,7 +298,7 @@ export default class DOMLocalization extends Localization {
   getTranslatables(element) {
     const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
 
-    if (typeof element.hasAttribute === 'function' &&
+    if (typeof element.hasAttribute === "function" &&
         element.hasAttribute(L10NID_ATTR_NAME)) {
       nodes.push(element);
     }

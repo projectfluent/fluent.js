@@ -16,7 +16,7 @@
     "babel-register": "^6.26.0",
     "colors": "^1.1.2",
     "commander": "^2.12",
-    "eslint": "^4.15.0",
+    "eslint": "^4.18.1",
     "eslint-plugin-mocha": "^4.11.0",
     "fuzzer": "^0.2.1",
     "gh-pages": "^1.1.0",

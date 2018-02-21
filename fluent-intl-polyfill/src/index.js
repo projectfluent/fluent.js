@@ -6,4 +6,4 @@
  *
  */
 
-export { default as PluralRules } from 'intl-pluralrules';
+export { default as PluralRules } from "intl-pluralrules";

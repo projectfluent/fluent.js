@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: 0 */
 /* eslint complexity: ["error", { "max": 27 }] */
 
-import Locale from './locale';
+import Locale from "./locale";
 
 /**
  * Negotiates the languages between the list of requested locales against
@@ -101,9 +101,9 @@ export default function filterMatches(
             break;
           }
         }
-        if (strategy === 'lookup') {
+        if (strategy === "lookup") {
           return Array.from(supportedLocales);
-        } else if (strategy === 'filtering') {
+        } else if (strategy === "filtering") {
           continue;
         } else {
           continue outer;
@@ -119,9 +119,9 @@ export default function filterMatches(
       if (requestedLocale.matches(availableLocale)) {
         supportedLocales.add(availableLocale.string);
         availLocales.delete(availableLocale);
-        if (strategy === 'lookup') {
+        if (strategy === "lookup") {
           return Array.from(supportedLocales);
-        } else if (strategy === 'filtering') {
+        } else if (strategy === "filtering") {
           continue;
         } else {
           continue outer;
@@ -138,9 +138,9 @@ export default function filterMatches(
         if (requestedLocale.matches(availableLocale)) {
           supportedLocales.add(availableLocale.string);
           availLocales.delete(availableLocale);
-          if (strategy === 'lookup') {
+          if (strategy === "lookup") {
             return Array.from(supportedLocales);
-          } else if (strategy === 'filtering') {
+          } else if (strategy === "filtering") {
             continue;
           } else {
             continue outer;
@@ -157,9 +157,9 @@ export default function filterMatches(
       if (requestedLocale.matches(availableLocale)) {
         supportedLocales.add(availableLocale.string);
         availLocales.delete(availableLocale);
-        if (strategy === 'lookup') {
+        if (strategy === "lookup") {
           return Array.from(supportedLocales);
-        } else if (strategy === 'filtering') {
+        } else if (strategy === "filtering") {
           continue;
         } else {
           continue outer;
@@ -175,9 +175,9 @@ export default function filterMatches(
       if (requestedLocale.matches(availableLocale)) {
         supportedLocales.add(availableLocale.string);
         availLocales.delete(availableLocale);
-        if (strategy === 'lookup') {
+        if (strategy === "lookup") {
           return Array.from(supportedLocales);
-        } else if (strategy === 'filtering') {
+        } else if (strategy === "filtering") {
           continue;
         } else {
           continue outer;
