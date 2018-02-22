@@ -1,1 +1,12 @@
-{}
+{
+  "key3": {
+    "attrs": {
+      "attr": "Attr"
+    }
+  },
+  "key4": {
+    "attrs": {
+      "attr": "Attr"
+    }
+  }
+}

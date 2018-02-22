@@ -132,6 +132,10 @@ export class FTLParserStream extends ParserStream {
   }
 
   isCharPatternContinuation(ch) {
+    if (ch === undefined) {
+      return false;
+    }
+
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 

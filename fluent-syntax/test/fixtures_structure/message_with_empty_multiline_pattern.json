@@ -1,0 +1,68 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "ResourceComment",
+      "annotations": [],
+      "content": "BE CAREFUL WHEN EDITING THIS FILE\n\nThe last character in this file is the space (\" \") on line 14.\nWe want to test a message with no value and with no EOL at the\nend of the fie. Most editors automatically add a trailing newline\nat EOF. If you edit this file make sure to turn this behavior off.",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 316
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0005",
+          "args": [
+            "key1"
+          ],
+          "message": "Expected message \"key1\" to have a value or attributes",
+          "span": {
+            "type": "Span",
+            "start": 324,
+            "end": 324
+          }
+        }
+      ],
+      "content": "key1 =\n\n \n\n",
+      "span": {
+        "type": "Span",
+        "start": 318,
+        "end": 329
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0005",
+          "args": [
+            "key2"
+          ],
+          "message": "Expected message \"key2\" to have a value or attributes",
+          "span": {
+            "type": "Span",
+            "start": 335,
+            "end": 335
+          }
+        }
+      ],
+      "content": "key2 =\n\n ",
+      "span": {
+        "type": "Span",
+        "start": 329,
+        "end": 338
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 338
+  }
+}

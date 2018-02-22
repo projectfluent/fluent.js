@@ -273,6 +273,8 @@ export default class FluentParser {
       if (ps.isPeekPatternStart()) {
         ps.skipIndent();
         pattern = this.getPattern(ps);
+      } else {
+        ps.skipInlineWS();
       }
     }
 
