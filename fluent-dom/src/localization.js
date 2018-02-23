@@ -4,24 +4,6 @@
 import { CachedIterable } from "../../fluent/src/index";
 
 /**
- * Specialized version of an Error used to indicate errors that are result
- * of a problem during the localization process.
- *
- * We use them to identify the class of errors the require a fallback
- * mechanism to be triggered vs errors that should be reported, but
- * do not prevent the message from being used.
- *
- * An example of an L10nError is a missing entry.
- */
-class L10nError extends Error {
-  constructor(message) {
-    super();
-    this.name = "L10nError";
-    this.message = message;
-  }
-}
-
-/**
  * The `Localization` class is a central high-level API for vanilla
  * JavaScript use of Fluent.
  * It combines language negotiation, MessageContext and I/O to
@@ -55,17 +37,55 @@ export default class Localization {
    */
   async formatWithFallback(keys, method) {
     const translations = [];
+    let hasMissing = true;
+    let debugInfo = null;
+
     for (let ctx of this.ctxs) {
       // This can operate on synchronous and asynchronous
       // contexts coming from the iterator.
       if (typeof ctx.then === "function") {
         ctx = await ctx;
       }
-      const errors = keysFromContext(method, ctx, keys, translations);
-      if (!errors) {
+      const missingIds = keysFromContext(method, ctx, keys, translations);
+      if (missingIds === null) {
+        hasMissing = false;
         break;
+      } else {
+        if (debugInfo === null) {
+          debugInfo = new Map();
+        }
+        debugInfo.set(
+          ctx.locales[0],
+          missingIds
+        );
       }
     }
+
+    if (hasMissing) {
+      keys.forEach((key, i) => {
+        if (translations[i] === undefined) {
+          translations[i] = { value: key[0], attrs: null };
+        }
+      });
+    }
+
+    if (debugInfo !== null && typeof console !== "undefined") {
+      let msg = hasMissing ?
+        "Could not resolve all keys." :
+        "Had to use fallback to resolve all keys.";
+
+      for (const [locale, ids] of debugInfo.entries()) {
+        msg +=
+          `\nMissing translations in ${locale}: ${Array.from(ids).join(", ")}`;
+      }
+
+      if (hasMissing) {
+        console.error(`[Fluent] ${msg}`);
+      } else {
+        console.warn(`[Fluent] ${msg}`);
+      }
+    }
+
     return translations;
   }
 
@@ -179,12 +199,6 @@ export default class Localization {
  */
 function valueFromContext(ctx, errors, id, args) {
   const msg = ctx.getMessage(id);
-
-  if (msg === undefined) {
-    errors.push(new L10nError(`Unknown entity: ${id}`));
-    return id;
-  }
-
   return ctx.format(msg, args, errors);
 }
 
@@ -213,11 +227,6 @@ function valueFromContext(ctx, errors, id, args) {
 function messageFromContext(ctx, errors, id, args) {
   const msg = ctx.getMessage(id);
 
-  if (msg === undefined) {
-    errors.push(new L10nError(`Unknown message: ${id}`));
-    return { value: id, attrs: null };
-  }
-
   const formatted = {
     value: ctx.format(msg, args, errors),
     attrs: null,
@@ -243,7 +252,7 @@ function messageFromContext(ctx, errors, id, args) {
  * This function is an inner function for `Localization.formatWithFallback`.
  *
  * It takes a `MessageContext`, list of l10n-ids and a method to be used for
- * key resolution (either `valueFromContext` or `entityFromContext`) and
+ * key resolution (either `valueFromContext` or `messageFromContext`) and
  * optionally a value returned from `keysFromContext` executed against
  * another `MessageContext`.
  *
@@ -258,8 +267,8 @@ function messageFromContext(ctx, errors, id, args) {
  * we return it. If it does, we'll try to resolve the key using the passed
  * `MessageContext`.
  *
- * In the end, we fill the translations array, and return if we
- * encountered at least one error.
+ * In the end, we fill the translations array, and return `true` if all
+ * keys were translated by now.
  *
  * See `Localization.formatWithFallback` for more info on how this is used.
  *
@@ -273,27 +282,24 @@ function messageFromContext(ctx, errors, id, args) {
  */
 function keysFromContext(method, ctx, keys, translations) {
   const messageErrors = [];
-  let hasErrors = false;
+  let missingIds = null;
 
   keys.forEach((key, i) => {
     if (translations[i] !== undefined) {
       return;
     }
 
-    messageErrors.length = 0;
-    const translation = method(ctx, messageErrors, key[0], key[1]);
-
-    if (messageErrors.length === 0 ||
-        !messageErrors.some(e => e instanceof L10nError)) {
-      translations[i] = translation;
+    if (ctx.hasMessage(key[0])) {
+      messageErrors.length = 0;
+      translations[i] = method(ctx, messageErrors, key[0], key[1]);
+      // XXX: Report resolver errors
     } else {
-      hasErrors = true;
-    }
-
-    if (messageErrors.length && typeof console !== "undefined") {
-      messageErrors.forEach(error => console.warn(error));
+      if (missingIds === null) {
+        missingIds = new Set();
+      }
+      missingIds.add(key[0]);
     }
   });
 
-  return hasErrors;
+  return missingIds;
 }
