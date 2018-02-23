@@ -34,30 +34,20 @@ function getResourceLinks(elem) {
   );
 }
 
-function fetchSync(url) {
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", url, false);
-  xhr.send(null);
-  return xhr.responseText;
-}
-
-const sync = true;
-
 async function generateContext(locale, resourceIds) {
   const ctx = new MessageContext([locale]);
-  for (const resourceId of resourceIds) {
+  await Promise.all(resourceIds.map(resourceId => {
     const url = resourceId.replace("{locale}", locale);
-    const source = sync ?
-      fetchSync(url) :
-      await fetch(url).then(d => d.text());
-    ctx.addMessages(source);
-  }
+    return fetch(url)
+      .then(d => d.text())
+      .then(source => ctx.addMessages(source));
+  }));
   return ctx;
 }
 
 const meta = getMeta(document.head);
 
-function * generateMessages(resourceIds) {
+function* generateMessages(resourceIds) {
   const locales = negotiateLanguages(
     navigator.languages,
     meta.available,
@@ -66,7 +56,6 @@ function * generateMessages(resourceIds) {
     }
   );
   for (const locale of locales) {
-    // This yields a promise. In the future we'd like to use async iteration.
     yield generateContext(locale, resourceIds);
   }
 }
@@ -79,7 +68,5 @@ window.addEventListener("languagechange", document.l10n);
 
 document.l10n.ready = documentReady().then(() => {
   document.l10n.connectRoot(document.documentElement);
-  return document.l10n.translateRoots().then(() => {
-    document.body.style.display = "block";
-  });
+  return document.l10n.translateRoots();
 });
