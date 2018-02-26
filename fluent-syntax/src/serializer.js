@@ -4,11 +4,13 @@ function indent(content) {
   return content.split("\n").join("\n    ");
 }
 
-function containNewLine(elems) {
-  const withNewLine = elems.filter(
-    elem => (elem.type === "TextElement" && includes(elem.value, "\n"))
-  );
-  return !!withNewLine.length;
+function includesNewLine(elem) {
+  return elem.type === "TextElement" && includes(elem.value, "\n");
+}
+
+function isSelectExpr(elem) {
+  return elem.type === "Placeable"
+    && elem.expression.type === "SelectExpression";
 }
 
 // Bit masks representing the state of the serializer.
@@ -131,9 +133,12 @@ function serializeAttribute(attribute) {
 
 function serializeValue(pattern) {
   const content = indent(serializePattern(pattern));
-  const multi = containNewLine(pattern.elements);
 
-  if (multi) {
+  const startOnNewLine =
+    pattern.elements.some(includesNewLine)
+    || pattern.elements.some(isSelectExpr);
+
+  if (startOnNewLine) {
     return `\n    ${content}`;
   }
 
