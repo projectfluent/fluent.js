@@ -53,13 +53,26 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('simple multiline message', function() {
+  test('block multiline message', function() {
     const input = ftl`
       foo =
           Foo
           Bar
     `;
     assert.equal(pretty(input), input);
+  });
+
+  test('inline multiline message', function() {
+    const input = ftl`
+      foo = Foo
+          Bar
+    `;
+    const output = ftl`
+      foo =
+          Foo
+          Bar
+    `;
+    assert.equal(pretty(input), output);
   });
 
   test('message reference', function() {
@@ -239,7 +252,8 @@ suite('Serialize resource', function() {
 
   test('select expression without selector', function() {
     const input = ftl`
-      foo = {
+      foo =
+          {
              *[a] A
               [b] B
           }
@@ -249,7 +263,8 @@ suite('Serialize resource', function() {
 
   test('select expression', function() {
     const input = ftl`
-      foo = { $sel ->
+      foo =
+          { $sel ->
              *[a] A
               [b] B
           }
@@ -257,32 +272,41 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
-  // XXX Parsing Error
-  test.skip('multiline variant with first line inline', function() {
+  test('multiline variant', function() {
     const input = ftl`
-      foo = {
-             *[a] AAA
+      foo =
+          {
+             *[a]
+                  AAA
                   BBB
           }
     `;
     assert.equal(pretty(input), input);
   });
 
-  // XXX Parsing Error
-  test.skip('multiline variant', function() {
+  test('multiline variant with first line inline', function() {
     const input = ftl`
-      foo = {
-             *[a]
-                 AAA
-                 BBB
+      foo =
+          {
+             *[a] AAA
+                  BBB
           }
     `;
-    assert.equal(pretty(input), input);
+    const output = ftl`
+      foo =
+          {
+             *[a]
+                  AAA
+                  BBB
+          }
+    `;
+    assert.equal(pretty(input), output);
   });
 
   test('variant key words', function() {
     const input = ftl`
-      foo = {
+      foo =
+          {
              *[a b c] A B C
           }
     `;
@@ -291,28 +315,15 @@ suite('Serialize resource', function() {
 
   test('variant key number', function() {
     const input = ftl`
-      foo = {
+      foo =
+          {
              *[1] 1
           }
     `;
     assert.equal(pretty(input), input);
   });
 
-  // XXX The Serializer doesn't know te value is multiline
-  test.skip('select expression in simple multiline value', function() {
-    const input = ftl`
-      foo =
-          Foo { sel ->
-             *[a] A
-              [b] B
-          }
-    `;
-    assert.equal(pretty(input), input);
-  });
-
-  // XXX None of the Text elements contain a new-line, so the serializer outputs
-  // a single-line value.
-  test('select expression in simple multiline value (current)', function() {
+  test('select expression in block value', function() {
     const input = ftl`
       foo =
           Foo { $sel ->
@@ -320,8 +331,19 @@ suite('Serialize resource', function() {
               [b] B
           }
     `;
-    const output = ftl`
+    assert.equal(pretty(input), input);
+  });
+
+  test('select expression in inline value', function() {
+    const input = ftl`
       foo = Foo { $sel ->
+             *[a] A
+              [b] B
+          }
+    `;
+    const output = ftl`
+      foo =
+          Foo { $sel ->
              *[a] A
               [b] B
           }
@@ -341,13 +363,14 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
-  // XXX Parsing Error
-  test.skip('nested select expression', function() {
+  test('nested select expression', function() {
     const input = ftl`
-      foo = { $a ->
-             *[a] { $b ->
-                 *[b] Foo
-              }
+      foo =
+          { $a ->
+             *[a]
+                  { $b ->
+                     *[b] Foo
+                  }
           }
     `;
     assert.equal(pretty(input), input);
@@ -355,7 +378,8 @@ suite('Serialize resource', function() {
 
   test('selector external argument', function() {
     const input = ftl`
-      foo = { $bar ->
+      foo =
+          { $bar ->
              *[a] A
           }
     `;
@@ -364,7 +388,8 @@ suite('Serialize resource', function() {
 
   test('selector number expression', function() {
     const input = ftl`
-      foo = { 1 ->
+      foo =
+          { 1 ->
              *[a] A
           }
     `;
@@ -373,7 +398,8 @@ suite('Serialize resource', function() {
 
   test('selector string expression', function() {
     const input = ftl`
-      foo = { "bar" ->
+      foo =
+          { "bar" ->
              *[a] A
           }
     `;
@@ -382,7 +408,8 @@ suite('Serialize resource', function() {
 
   test('selector attribute expression', function() {
     const input = ftl`
-      foo = { -bar.baz ->
+      foo =
+          { -bar.baz ->
              *[a] A
           }
     `;
