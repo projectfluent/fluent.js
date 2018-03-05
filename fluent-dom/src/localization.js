@@ -37,8 +37,6 @@ export default class Localization {
    */
   async formatWithFallback(keys, method) {
     const translations = [];
-    let hasMissing = true;
-    let debugInfo = null;
 
     for (let ctx of this.ctxs) {
       // This can operate on synchronous and asynchronous
@@ -47,42 +45,11 @@ export default class Localization {
         ctx = await ctx;
       }
       const missingIds = keysFromContext(method, ctx, keys, translations);
-      if (missingIds === null) {
-        hasMissing = false;
-        break;
-      } else {
-        if (debugInfo === null) {
-          debugInfo = new Map();
-        }
-        debugInfo.set(
-          ctx.locales[0],
-          missingIds
-        );
-      }
-    }
 
-    if (hasMissing) {
-      keys.forEach((key, i) => {
-        if (translations[i] === undefined) {
-          translations[i] = { value: key[0], attrs: null };
-        }
-      });
-    }
-
-    if (debugInfo !== null && typeof console !== "undefined") {
-      let msg = hasMissing ?
-        "Could not resolve all keys." :
-        "Had to use fallback to resolve all keys.";
-
-      for (const [locale, ids] of debugInfo.entries()) {
-        msg +=
-          `\nMissing translations in ${locale}: ${Array.from(ids).join(", ")}`;
-      }
-
-      if (hasMissing) {
-        console.error(`[Fluent] ${msg}`);
-      } else {
-        console.warn(`[Fluent] ${msg}`);
+      if (typeof console !== "undefined") {
+        const locale = ctx.locales[0];
+        const ids = Array.from(missingIds).join(", ");
+        console.warn(`Missing translations in ${locale}: ${ids}`);
       }
     }
 
@@ -267,8 +234,8 @@ function messageFromContext(ctx, errors, id, args) {
  * we return it. If it does, we'll try to resolve the key using the passed
  * `MessageContext`.
  *
- * In the end, we fill the translations array, and return `true` if all
- * keys were translated by now.
+ * In the end, we fill the translations array, and return the Set with
+ * missing ids.
  *
  * See `Localization.formatWithFallback` for more info on how this is used.
  *
@@ -277,7 +244,7 @@ function messageFromContext(ctx, errors, id, args) {
  * @param {Array<string>}  keys
  * @param {{Array<{value: string, attrs: Object}>}} translations
  *
- * @returns {Boolean}
+ * @returns {Set<string>}
  * @private
  */
 function keysFromContext(method, ctx, keys, translations) {
