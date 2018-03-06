@@ -282,7 +282,9 @@ export default class DOMLocalization extends Localization {
     this.pauseObserving();
 
     for (let i = 0; i < elements.length; i++) {
-      overlayElement(elements[i], translations[i]);
+      if (translations[i] !== undefined) {
+        overlayElement(elements[i], translations[i]);
+      }
     }
 
     this.resumeObserving();

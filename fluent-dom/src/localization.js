@@ -249,7 +249,7 @@ function messageFromContext(ctx, errors, id, args) {
  */
 function keysFromContext(method, ctx, keys, translations) {
   const messageErrors = [];
-  let missingIds = null;
+  const missingIds = new Set();
 
   keys.forEach((key, i) => {
     if (translations[i] !== undefined) {
@@ -261,9 +261,6 @@ function keysFromContext(method, ctx, keys, translations) {
       translations[i] = method(ctx, messageErrors, key[0], key[1]);
       // XXX: Report resolver errors
     } else {
-      if (missingIds === null) {
-        missingIds = new Set();
-      }
       missingIds.add(key[0]);
     }
   });
