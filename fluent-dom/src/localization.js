@@ -46,6 +46,10 @@ export default class Localization {
       }
       const missingIds = keysFromContext(method, ctx, keys, translations);
 
+      if (missingIds.size === 0) {
+        break;
+      }
+
       if (typeof console !== "undefined") {
         const locale = ctx.locales[0];
         const ids = Array.from(missingIds).join(", ");
