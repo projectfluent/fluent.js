@@ -34,14 +34,24 @@ function getResourceLinks(elem) {
   );
 }
 
-async function generateContext(locale, resourceIds) {
+async function fetchResource(locale, id) {
+  const url = id.replace("{locale}", locale);
+  const response = await fetch(url);
+  return response.text();
+}
+
+async function createContext(locale, resourceIds) {
   const ctx = new MessageContext([locale]);
-  await Promise.all(resourceIds.map(resourceId => {
-    const url = resourceId.replace("{locale}", locale);
-    return fetch(url)
-      .then(d => d.text())
-      .then(source => ctx.addMessages(source));
-  }));
+
+  // First fetch all resources
+  const resources = await Promise.all(
+    resourceIds.map(id => fetchResource(locale, id))
+  );
+
+  // Then apply them preserving order
+  for (const resource of resources) {
+    ctx.addMessages(resource);
+  }
   return ctx;
 }
 
@@ -56,7 +66,7 @@ function* generateMessages(resourceIds) {
     }
   );
   for (const locale of locales) {
-    yield generateContext(locale, resourceIds);
+    yield createContext(locale, resourceIds);
   }
 }
 
