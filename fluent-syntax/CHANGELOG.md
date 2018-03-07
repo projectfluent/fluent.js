@@ -1,5 +1,11 @@
 # Changelog
 
+## fluent-syntax 0.6.4 (March 7, 2018)
+
+  - Whitespace-only values are now correctly parsed as null. (#159)
+  - Correctly parse Patterns at EOF. (#159)
+  - Serialize values with Select Expression on a new line. (#161)
+
 ## fluent-syntax 0.6.2 (February 8, 2018)
 
   - Inline Patterns may start with any character. (#150)
