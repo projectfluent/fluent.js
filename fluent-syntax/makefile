@@ -23,6 +23,10 @@ compat.js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
+.PHONY: test-without-babel-polyfill
+test-without-babel-polyfill:
+	@mocha --recursive --ui tdd --require babel-register test/
+
 clean:
 	@rm -f $(PACKAGE).js compat.js
 	@echo -e " $(OK) clean"
