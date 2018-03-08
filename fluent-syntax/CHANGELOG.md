@@ -1,5 +1,18 @@
 # Changelog
 
+## fluent-syntax 0.6.5 (March 8, 2018)
+
+  - Temporarily relax the `engines` requirement. (#164)
+
+    Include node 6.9.* LTS in the `engines` requirement to unblock
+    [mozilla/addons-linter#1789][] and thus unblock langpack signing for
+    Firefox 60.
+
+    This is a temporary measure until `addons-linter` phases out the support
+    for node 6 which should happen in May 2018.
+
+    [mozilla/addons-linter#1789]: https://github.com/mozilla/addons-linter/issues/1789
+
 ## fluent-syntax 0.6.4 (March 7, 2018)
 
   - Whitespace-only values are now correctly parsed as null. (#159)
