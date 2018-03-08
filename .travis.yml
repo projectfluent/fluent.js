@@ -1,7 +1,10 @@
 sudo: false
 language: node_js
-script: make deps && make dist
+script:
+  - make deps && make dist
+  - make -C fluent-syntax test-without-babel-polyfill
 node_js:
+  - "6"
   - "8"
 cache:
   directories: node_modules
