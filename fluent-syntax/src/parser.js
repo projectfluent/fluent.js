@@ -633,8 +633,13 @@ export default class FluentParser {
         throw new ParseError("E0008");
       }
 
+      const func = new AST.Function(literal.id.name);
+      if (this.withSpans) {
+        func.addSpan(literal.span.start, literal.span.end);
+      }
+
       return new AST.CallExpression(
-        new AST.Function(literal.id.name),
+        func,
         args
       );
     }
