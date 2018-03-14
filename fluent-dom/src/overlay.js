@@ -43,152 +43,148 @@ const LOCALIZABLE_ATTRIBUTES = {
 
 
 /**
- * Overlay translation onto a DOM element.
+ * Translate an element.
  *
- * @param   {Element} targetElement
- * @param   {string|Object} translation
+ * Translate the element's text content and attributes. Some HTML markup is
+ * allowed in the translation. The element's children with the data-l10n-name
+ * attribute will be treated as arguments to the translation. If the
+ * translation defines the same children, their attributes and text contents
+ * will be used for translating the matching source child.
+ *
+ * @param   {Element} element
+ * @param   {Object} translation
  * @private
  */
-export default function overlayElement(targetElement, translation) {
+export default function translateElement(element, translation) {
   const value = translation.value;
 
   if (typeof value === "string") {
     if (!reOverlay.test(value)) {
       // If the translation doesn't contain any markup skip the overlay logic.
-      targetElement.textContent = value;
+      element.textContent = value;
     } else {
       // Else parse the translation's HTML using an inert template element,
-      // sanitize it and replace the targetElement's content.
-      const templateElement = targetElement.ownerDocument.createElementNS(
-        "http://www.w3.org/1999/xhtml", "template");
-      templateElement.innerHTML = value;
-      targetElement.appendChild(
-        // The targetElement will be cleared at the end of sanitization.
-        sanitizeUsing(templateElement.content, targetElement)
+      // sanitize it and replace the element's content.
+      const templateElement = element.ownerDocument.createElementNS(
+        "http://www.w3.org/1999/xhtml", "template"
       );
+      templateElement.innerHTML = value;
+      overlayChildNodes(templateElement.content, element);
     }
   }
 
-  const explicitlyAllowed = targetElement.hasAttribute("data-l10n-attrs")
-    ? targetElement.getAttribute("data-l10n-attrs")
+  // Even if the translation doesn't define any localizable attributes, run
+  // overlayAttributes to remove any localizable attributes set by previous
+  // translations.
+  overlayAttributes(translation, element);
+}
+
+/**
+ * Replace child nodes of an element with child nodes of another element.
+ *
+ * The contents of the target element will be cleared and fully replaced with
+ * sanitized contents of the source element.
+ *
+ * @param   {Element} fromElement - The source of child nodes to overlay.
+ * @param   {Element} toElement - The target of the overlay.
+ * @private
+ */
+function overlayChildNodes(fromElement, toElement) {
+  const content = toElement.ownerDocument.createDocumentFragment();
+
+  for (const childNode of fromElement.childNodes) {
+    content.appendChild(sanitizeUsing(childNode, toElement));
+  }
+
+  toElement.textContent = "";
+  toElement.appendChild(content);
+}
+
+/**
+ * Transplant localizable attributes of an element to another element.
+ *
+ * Any localizable attributes already set on the target element will be
+ * cleared.
+ *
+ * @param   {Element|Object} fromElement - The source of child nodes to overlay.
+ * @param   {Element} toElement - The target of the overlay.
+ * @private
+ */
+function overlayAttributes(fromElement, toElement) {
+  const explicitlyAllowed = toElement.hasAttribute("data-l10n-attrs")
+    ? toElement.getAttribute("data-l10n-attrs")
       .split(",").map(i => i.trim())
     : null;
 
-  // Remove localizable attributes which may have been set by a previous
-  // translation.
-  for (const attr of Array.from(targetElement.attributes)) {
-    if (isAttrNameLocalizable(attr.name, targetElement, explicitlyAllowed)) {
-      targetElement.removeAttribute(attr.name);
+  // Remove existing localizable attributes.
+  for (const attr of Array.from(toElement.attributes)) {
+    if (isAttrNameLocalizable(attr.name, toElement, explicitlyAllowed)) {
+      toElement.removeAttribute(attr.name);
     }
   }
 
-  if (translation.attrs) {
-    for (const [name, val] of translation.attrs) {
-      if (isAttrNameLocalizable(name, targetElement, explicitlyAllowed)) {
-        targetElement.setAttribute(name, val);
-      }
+  // fromElement might be a {value, attributes} object as returned by
+  // Localization.messageFromContext. In which case attributes may be null to
+  // save GC cycles.
+  if (!fromElement.attributes) {
+    return;
+  }
+
+  // Set localizable attributes.
+  for (const attr of Array.from(fromElement.attributes)) {
+    if (isAttrNameLocalizable(attr.name, toElement, explicitlyAllowed)) {
+      toElement.setAttribute(attr.name, attr.value);
     }
   }
 }
 
 /**
- * Sanitize `translationFragment` using `sourceElement` to add functional
- * HTML attributes to children.  `sourceElement` will have all its child nodes
- * removed.
+ * Sanitize a child node created by the translation.
  *
- * The sanitization is conducted according to the following rules:
+ * If childNode has the data-l10n-name attribute, try to find a corresponding
+ * child in sourceElement and use it as the base for the sanitization. This
+ * will preserve functional attribtues defined on the child element in the
+ * source HTML.
  *
- *   - Allow text nodes.
- *   - Replace forbidden children with their textContent.
- *   - Remove forbidden attributes from allowed children.
- *
- * Additionally when a child of the same type is present in `sourceElement` its
- * attributes will be merged into the translated child.  Whitelisted attributes
- * of the translated child will then overwrite the ones present in the source.
- *
- * The overlay logic is subject to the following limitations:
- *
- *   - Children are always cloned.  Event handlers attached to them are lost.
- *   - Nested HTML in source and in translations is not supported.
- *   - Multiple children of the same type will be matched in order.
- *
- * @param {DocumentFragment} translationFragment
- * @param {Element} sourceElement
- * @returns {DocumentFragment}
+ * @param   {Element} childNode - The child node to be sanitized.
+ * @param   {Element} sourceElement - The source for data-l10n-name lookups.
+ * @returns {Element}
  * @private
  */
-function sanitizeUsing(translationFragment, sourceElement) {
-  const ownerDocument = translationFragment.ownerDocument;
-  // Take one node from translationFragment at a time and check it against
-  // the allowed list or try to match it with a corresponding element
-  // in the source.
-  for (const childNode of translationFragment.childNodes) {
-
-    if (childNode.nodeType === childNode.TEXT_NODE) {
-      continue;
-    }
-
-    // If the child is forbidden just take its textContent.
-    if (!isElementLocalizable(childNode)) {
-      const text = ownerDocument.createTextNode(childNode.textContent);
-      translationFragment.replaceChild(text, childNode);
-      continue;
-    }
-
-    // Start the sanitization with an empty element.
-    const mergedChild = ownerDocument.createElement(childNode.localName);
-
-    // Explicitly discard nested HTML by serializing childNode to a TextNode.
-    mergedChild.textContent = childNode.textContent;
-
-    // If a child of the same type exists in sourceElement, take its functional
-    // (i.e. non-localizable) attributes. This also removes the child from
-    // sourceElement.
-    const sourceChild = shiftNamedElement(sourceElement, childNode.localName);
-
-    // Find the union of all safe attributes: localizable attributes from
-    // childNode and functional attributes from sourceChild.
-    const safeAttributes = sanitizeAttrsUsing(childNode, sourceChild);
-
-    for (const attr of safeAttributes) {
-      mergedChild.setAttribute(attr.name, attr.value);
-    }
-
-    translationFragment.replaceChild(mergedChild, childNode);
+function sanitizeUsing(childNode, sourceElement) {
+  if (childNode.nodeType === childNode.TEXT_NODE) {
+    return childNode.cloneNode(false);
   }
 
-  // SourceElement might have been already modified by shiftNamedElement.
-  // Let's clear it to make sure other code doesn't rely on random leftovers.
-  sourceElement.textContent = "";
+  if (childNode.hasAttribute("data-l10n-name")) {
+    const sourceChild = sourceElement.querySelector(
+      `[data-l10n-name="${childNode.getAttribute("data-l10n-name")}"]`);
 
-  return translationFragment;
-}
-
-/**
- * Sanitize and merge attributes.
- *
- * Only localizable attributes from the translated child element and only
- * functional attributes from the source child element are considered safe.
- *
- * @param {Element} translatedElement
- * @param {Element} sourceElement
- * @returns {Array<Attr>}
- * @private
- */
-function sanitizeAttrsUsing(translatedElement, sourceElement) {
-  const localizedAttrs = Array.from(translatedElement.attributes).filter(
-    attr => isAttrNameLocalizable(attr.name, translatedElement)
-  );
-
-  if (!sourceElement) {
-    return localizedAttrs;
+    if (sourceChild && sourceChild.localName === childNode.localName) {
+      // Remove it from sourceElement so that the translation cannot use
+      // the same reference name again.
+      sourceElement.removeChild(sourceChild);
+      // We can't currently guarantee that a translation won't remove
+      // sourceChild from the element completely, which could break the app if
+      // it relies on an event handler attached to the sourceChild. Let's make
+      // this limitation explicit for now by breaking the identitiy of the
+      // sourceChild by cloning it. This will destroy all event handlers
+      // attached to sourceChild via addEventListener and via on<name>
+      // properties.
+      const clone = sourceChild.cloneNode(false);
+      return shallowPopulate(clone, childNode);
+    }
   }
 
-  const functionalAttrs = Array.from(sourceElement.attributes).filter(
-    attr => !isAttrNameLocalizable(attr.name, sourceElement)
-  );
+  if (isElementLocalizable(childNode)) {
+    // Start with an empty element of the same type to remove nested children
+    // and non-localizable attributes defined by the translation.
+    const clone = childNode.ownerDocument.createElement(childNode.localName);
+    return shallowPopulate(clone, childNode);
+  }
 
-  return localizedAttrs.concat(functionalAttrs);
+  // If all else fails, convert the element to its text content.
+  return childNode.ownerDocument.createTextNode(childNode.textContent);
 }
 
 /**
@@ -263,19 +259,15 @@ function isAttrNameLocalizable(name, element, explicitlyAllowed = null) {
 }
 
 /**
- * Remove and return the first child of the given type.
+ * Helper to set textContent and localizable attributes on an element.
  *
- * @param {DOMFragment} element
- * @param {string}      localName
- * @returns {Element | null}
+ * @param   {Element} element
+ * @param   {Element} fromElement
+ * @returns {Element}
  * @private
  */
-function shiftNamedElement(element, localName) {
-  for (const child of element.children) {
-    if (child.localName === localName) {
-      element.removeChild(child);
-      return child;
-    }
-  }
-  return null;
+function shallowPopulate(element, fromElement) {
+  element.textContent = fromElement.textContent;
+  overlayAttributes(fromElement, element);
+  return element;
 }

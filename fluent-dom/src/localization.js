@@ -200,18 +200,15 @@ function messageFromContext(ctx, errors, id, args) {
 
   const formatted = {
     value: ctx.format(msg, args, errors),
-    attrs: null,
+    attributes: null,
   };
 
   if (msg.attrs) {
-    formatted.attrs = [];
-    for (const attrName in msg.attrs) {
-      const formattedAttr = ctx.format(msg.attrs[attrName], args, errors);
-      if (formattedAttr !== null) {
-        formatted.attrs.push([
-          attrName,
-          formattedAttr
-        ]);
+    formatted.attributes = [];
+    for (const [name, attr] of Object.entries(msg.attrs)) {
+      const value = ctx.format(attr, args, errors);
+      if (value !== null) {
+        formatted.attributes.push({name, value});
       }
     }
   }

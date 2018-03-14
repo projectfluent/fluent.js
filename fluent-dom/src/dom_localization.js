@@ -1,4 +1,4 @@
-import overlayElement from "./overlay";
+import translateElement from "./overlay";
 import Localization from "./localization";
 
 const L10NID_ATTR_NAME = "data-l10n-id";
@@ -283,7 +283,7 @@ export default class DOMLocalization extends Localization {
 
     for (let i = 0; i < elements.length; i++) {
       if (translations[i] !== undefined) {
-        overlayElement(elements[i], translations[i]);
+        translateElement(elements[i], translations[i]);
       }
     }
 
