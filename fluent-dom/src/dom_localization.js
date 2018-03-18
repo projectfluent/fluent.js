@@ -199,7 +199,9 @@ export default class DOMLocalization extends Localization {
     for (const mutation of mutations) {
       switch (mutation.type) {
         case "attributes":
-          this.pendingElements.add(mutation.target);
+          if (mutation.target.hasAttribute("data-l10n-id")) {
+            this.pendingElements.add(mutation.target);
+          }
           break;
         case "childList":
           for (const addedNode of mutation.addedNodes) {
