@@ -1,5 +1,10 @@
 # Changelog
 
+## fluent-syntax 0.6.6 (March 19, 2018)
+
+  - `Function` AST nodes have a span now. (#167)
+
+
 ## fluent-syntax 0.6.5 (March 8, 2018)
 
   - Temporarily relax the `engines` requirement. (#164)
