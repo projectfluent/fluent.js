@@ -7,6 +7,67 @@
  */
 class BaseNode {
   constructor() {}
+
+  equals(other, ignoredFields = ["span"]) {
+    const thisKeys = new Set(Object.keys(this));
+    const otherKeys = new Set(Object.keys(other));
+    if (ignoredFields) {
+      for (const fieldName of ignoredFields) {
+        thisKeys.delete(fieldName);
+        otherKeys.delete(fieldName);
+      }
+    }
+    if (thisKeys.size !== otherKeys.size) {
+      return false;
+    }
+    for (const fieldName of thisKeys) {
+      if (!otherKeys.has(fieldName)) {
+        return false;
+      }
+      const thisVal = this[fieldName];
+      const otherVal = other[fieldName];
+      if (typeof thisVal !== typeof otherVal) {
+        return false;
+      }
+      if (thisVal instanceof Array) {
+        if (thisVal.length !== otherVal.length) {
+          return false;
+        }
+        // Sort elements of order-agnostic fields to ensure the
+        // comparison is order-agnostic as well. Annotations should be
+        // here too but they don't have sorting keys.
+        if (["attributes", "variants"].indexOf(fieldName) >= 0) {
+          thisVal.sort(sorting_key_compare);
+          otherVal.sort(sorting_key_compare);
+        }
+        for (let i = 0, ii = thisVal.length; i < ii; ++i) {
+          if (!scalars_equal(thisVal[i], otherVal[i], ignoredFields)) {
+            return false;
+          }
+        }
+      } else if (!scalars_equal(thisVal, otherVal, ignoredFields)) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+function scalars_equal(thisVal, otherVal, ignoredFields) {
+  if (thisVal instanceof BaseNode) {
+    return thisVal.equals(otherVal, ignoredFields);
+  }
+  return thisVal === otherVal;
+}
+
+function sorting_key_compare(left, right) {
+  if (left.sorting_key < right.sorting_key) {
+    return -1;
+  }
+  if (left.sorting_key === right.sorting_key) {
+    return 0;
+  }
+  return 1;
 }
 
 /*
@@ -188,6 +249,10 @@ export class Attribute extends SyntaxNode {
     this.id = id;
     this.value = value;
   }
+
+  get sorting_key() {
+    return this.id.name;
+  }
 }
 
 export class Variant extends SyntaxNode {
@@ -197,6 +262,13 @@ export class Variant extends SyntaxNode {
     this.key = key;
     this.value = value;
     this.default = def;
+  }
+
+  get sorting_key() {
+    if (this.key instanceof NumberLiteral) {
+      return this.key.value;
+    }
+    return this.key.name;
   }
 }
 
