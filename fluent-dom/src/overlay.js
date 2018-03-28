@@ -3,15 +3,18 @@
 const reOverlay = /<|&#?\w+;/;
 
 /**
- * The list of elements that are allowed to be inserted into a localization.
+ * Elements allowed in translations even if they are not present in the source
+ * HTML. They are text-level elements as defined by the HTML5 spec:
+ * https://www.w3.org/TR/html5/text-level-semantics.html with the exception of:
  *
- * Source: https://www.w3.org/TR/html5/text-level-semantics.html
+ *   - a - because we don't allow href on it anyways,
+ *   - ruby, rt, rp - because we don't allow nested elements to be inserted.
  */
 const LOCALIZABLE_ELEMENTS = {
   "http://www.w3.org/1999/xhtml": [
-    "a", "em", "strong", "small", "s", "cite", "q", "dfn", "abbr", "data",
+    "em", "strong", "small", "s", "cite", "q", "dfn", "abbr", "data",
     "time", "code", "var", "samp", "kbd", "sub", "sup", "i", "b", "u",
-    "mark", "ruby", "rt", "rp", "bdi", "bdo", "span", "br", "wbr"
+    "mark", "bdi", "bdo", "span", "br", "wbr"
   ],
 };
 
@@ -145,6 +148,11 @@ function overlayAttributes(fromElement, toElement) {
  * child in sourceElement and use it as the base for the sanitization. This
  * will preserve functional attribtues defined on the child element in the
  * source HTML.
+ *
+ * This function must return new nodes or clones in all code paths. The
+ * returned nodes are immediately appended to the intermediate DocumentFragment
+ * which also _removes_ them from the constructed <template> containing the
+ * translation, which in turn breaks the for…of iteration over its child nodes.
  *
  * @param   {Element} childNode - The child node to be sanitized.
  * @param   {Element} sourceElement - The source for data-l10n-name lookups.

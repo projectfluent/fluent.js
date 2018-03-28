@@ -64,13 +64,13 @@ suite('Attributes of localized text markup', function() {
   test('forbidden attribute', function() {
     const element = elem('div')`Foo Bar`;
     const translation = {
-      value: 'FOO <a href="BAR" title="BAR">BAR</a>',
+      value: 'FOO <em class="BAR" title="BAR">BAR</em>',
       attrs: null,
     };
 
     translateElement(element, translation);
     assert.equal(element.innerHTML,
-      'FOO <a title="BAR">BAR</a>');
+      'FOO <em title="BAR">BAR</em>');
   });
 
   test('attributes do not leak on first translation', function() {
