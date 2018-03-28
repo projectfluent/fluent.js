@@ -10,7 +10,7 @@ const reOverlay = /<|&#?\w+;/;
  *   - a - because we don't allow href on it anyways,
  *   - ruby, rt, rp - because we don't allow nested elements to be inserted.
  */
-const LOCALIZABLE_ELEMENTS = {
+const TEXT_LEVEL_ELEMENTS = {
   "http://www.w3.org/1999/xhtml": [
     "em", "strong", "small", "s", "cite", "q", "dfn", "abbr", "data",
     "time", "code", "var", "samp", "kbd", "sub", "sup", "i", "b", "u",
@@ -184,7 +184,7 @@ function sanitizeUsing(childNode, sourceElement) {
     }
   }
 
-  if (isElementLocalizable(childNode)) {
+  if (isElementAllowed(childNode)) {
     // Start with an empty element of the same type to remove nested children
     // and non-localizable attributes defined by the translation.
     const clone = childNode.ownerDocument.createElement(childNode.localName);
@@ -205,8 +205,8 @@ function sanitizeUsing(childNode, sourceElement) {
  * @returns {boolean}
  * @private
  */
-function isElementLocalizable(element) {
-  const allowed = LOCALIZABLE_ELEMENTS[element.namespaceURI];
+function isElementAllowed(element) {
+  const allowed = TEXT_LEVEL_ELEMENTS[element.namespaceURI];
   return allowed && allowed.includes(element.localName);
 }
 
