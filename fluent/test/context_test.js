@@ -53,16 +53,19 @@ suite('Context', function() {
     });
 
 
-    test('overwrites existing messages if the ids are the same', function() {
-      ctx.addMessages(ftl`
+    test('does not overwrite existing messages if the ids are the same', function() {
+      const errors = ctx.addMessages(ftl`
         foo = New Foo
       `);
+
+      // Attempt to overwrite error reported
+      assert.equal(errors.length, 1);
 
       assert.equal(ctx._messages.size, 2);
 
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'New Foo');
+      assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
   });
