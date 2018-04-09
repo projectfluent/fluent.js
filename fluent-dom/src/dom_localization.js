@@ -165,7 +165,7 @@ export default class DOMLocalization extends Localization {
   translateRoots() {
     const roots = Array.from(this.roots);
     return Promise.all(
-      roots.map(root => this.translateElements(this.getTranslatables(root)))
+      roots.map(root => this.translateFragment(root))
     );
   }
 
@@ -231,7 +231,6 @@ export default class DOMLocalization extends Localization {
       }
     }
   }
-
 
   /**
    * Translate a DOM element or fragment asynchronously using this

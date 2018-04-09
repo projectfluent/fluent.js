@@ -83,9 +83,9 @@ export default function overlayElement(targetElement, translation) {
   }
 
   if (translation.attrs) {
-    for (const [name, val] of translation.attrs) {
-      if (isAttrNameLocalizable(name, targetElement, explicitlyAllowed)) {
-        targetElement.setAttribute(name, val);
+    for (const {name: attrName, value: attrValue} of translation.attrs) {
+      if (isAttrNameLocalizable(attrName, targetElement, explicitlyAllowed)) {
+        targetElement.setAttribute(attrName, attrValue);
       }
     }
   }

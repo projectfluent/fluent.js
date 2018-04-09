@@ -100,7 +100,7 @@ suite('Filtering top-level attributes', function() {
     const translation = {
       value: null,
       attrs: [
-        ['title', 'FOO']
+        {name: 'title', value: 'FOO'}
       ]
     };
 
@@ -114,7 +114,7 @@ suite('Filtering top-level attributes', function() {
     const translation = {
       value: null,
       attrs: [
-        ['disabled', 'DISABLED']
+        {name: 'disabled', value: 'DISABLED'}
       ]
     };
 
@@ -274,7 +274,7 @@ suite('Retranslation', function() {
     const translationA = {
       value: 'FOO A',
       attrs: [
-        ['title', 'TITLE A']
+        {name: 'title', value: 'TITLE A'}
       ]
     };
     const translationB = {
