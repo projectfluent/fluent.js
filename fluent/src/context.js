@@ -1,6 +1,8 @@
 import resolve from "./resolver";
 import parse from "./parser";
 
+/* global Intl */
+
 /**
  * Message contexts are single-language stores of translations.  They are
  * responsible for parsing translation resources in the Fluent syntax and can
@@ -48,7 +50,11 @@ export class MessageContext {
    * @returns {MessageContext}
    */
   constructor(locales, { functions = {}, useIsolating = true } = {}) {
-    this.locales = Array.isArray(locales) ? locales : [locales];
+    if (Intl.getCanonicalLocales) {
+      this.locales = Intl.getCanonicalLocales(locales);
+    } else {
+      this.locales = Array.isArray(locales) ? locales : [locales];
+    }
 
     this._terms = new Map();
     this._messages = new Map();
