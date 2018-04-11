@@ -1,3 +1,6 @@
+/* eslint no-console: ["error", {allow: ["warn"]}] */
+/* global console */
+
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
 // &amp;, &#0038;, &#x0026;.
 const reOverlay = /<|&#?\w+;/;
@@ -165,10 +168,22 @@ function sanitizeUsing(sourceElement, childNode) {
   }
 
   if (childNode.hasAttribute("data-l10n-name")) {
+    const childName = childNode.getAttribute("data-l10n-name");
     const sourceChild = sourceElement.querySelector(
-      `[data-l10n-name="${childNode.getAttribute("data-l10n-name")}"]`);
+      `[data-l10n-name="${childName}"]`
+    );
 
-    if (sourceChild && sourceChild.localName === childNode.localName) {
+    if (!sourceChild) {
+      console.warn(
+        `An element named "${childName}" wasn't found in the source.`
+      );
+    } else if (sourceChild.localName !== childNode.localName) {
+      console.warn(
+        `An element named "${childName}" was found in the translation ` +
+        `but its type ${childNode.localName} didn't match the element ` +
+        `found in the source (${sourceChild.localName}).`
+      );
+    } else {
       // Remove it from sourceElement so that the translation cannot use
       // the same reference name again.
       sourceElement.removeChild(sourceChild);
@@ -190,6 +205,12 @@ function sanitizeUsing(sourceElement, childNode) {
     const clone = childNode.ownerDocument.createElement(childNode.localName);
     return shallowPopulateUsing(childNode, clone);
   }
+
+  console.warn(
+    `An element of forbidden type "${childNode.localName}" was found in ` +
+    "the translation. Only elements with data-l10n-name can be overlaid " +
+    "onto source elements of the same data-l10n-name."
+  );
 
   // If all else fails, convert the element to its text content.
   return childNode.ownerDocument.createTextNode(childNode.textContent);
