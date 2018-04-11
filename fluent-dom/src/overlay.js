@@ -88,15 +88,15 @@ export default function translateElement(element, translation) {
  * The contents of the target element will be cleared and fully replaced with
  * sanitized contents of the source element.
  *
- * @param   {Element} fromElement - The source of child nodes to overlay.
- * @param   {Element} toElement - The target of the overlay.
+ * @param {DocumentFragment} fromElement - The source of children to overlay.
+ * @param {Element} toElement - The target of the overlay.
  * @private
  */
 function overlayChildNodes(fromElement, toElement) {
   const content = toElement.ownerDocument.createDocumentFragment();
 
   for (const childNode of fromElement.childNodes) {
-    content.appendChild(sanitizeUsing(childNode, toElement));
+    content.appendChild(sanitizeUsing(toElement, childNode));
   }
 
   toElement.textContent = "";
@@ -154,12 +154,12 @@ function overlayAttributes(fromElement, toElement) {
  * which also _removes_ them from the constructed <template> containing the
  * translation, which in turn breaks the for…of iteration over its child nodes.
  *
- * @param   {Element} childNode - The child node to be sanitized.
  * @param   {Element} sourceElement - The source for data-l10n-name lookups.
+ * @param   {Element} childNode - The child node to be sanitized.
  * @returns {Element}
  * @private
  */
-function sanitizeUsing(childNode, sourceElement) {
+function sanitizeUsing(sourceElement, childNode) {
   if (childNode.nodeType === childNode.TEXT_NODE) {
     return childNode.cloneNode(false);
   }
@@ -180,7 +180,7 @@ function sanitizeUsing(childNode, sourceElement) {
       // attached to sourceChild via addEventListener and via on<name>
       // properties.
       const clone = sourceChild.cloneNode(false);
-      return shallowPopulate(clone, childNode);
+      return shallowPopulateUsing(childNode, clone);
     }
   }
 
@@ -188,7 +188,7 @@ function sanitizeUsing(childNode, sourceElement) {
     // Start with an empty element of the same type to remove nested children
     // and non-localizable attributes defined by the translation.
     const clone = childNode.ownerDocument.createElement(childNode.localName);
-    return shallowPopulate(clone, childNode);
+    return shallowPopulateUsing(childNode, clone);
   }
 
   // If all else fails, convert the element to its text content.
@@ -269,13 +269,13 @@ function isAttrNameLocalizable(name, element, explicitlyAllowed = null) {
 /**
  * Helper to set textContent and localizable attributes on an element.
  *
- * @param   {Element} element
  * @param   {Element} fromElement
+ * @param   {Element} toElement
  * @returns {Element}
  * @private
  */
-function shallowPopulate(element, fromElement) {
-  element.textContent = fromElement.textContent;
-  overlayAttributes(fromElement, element);
-  return element;
+function shallowPopulateUsing(fromElement, toElement) {
+  toElement.textContent = fromElement.textContent;
+  overlayAttributes(fromElement, toElement);
+  return toElement;
 }
