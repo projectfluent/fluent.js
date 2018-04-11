@@ -1,5 +1,10 @@
 # Changelog
 
+## fluent 0.6.4 (April 11, 2018)
+
+  - Minor optimization to bidirectionality isolation
+  - Added error logging when attempting an already registered message id
+
 ## fluent 0.6.3 (February 9, 2018)
 
   - Update sinon to 4.2.2
