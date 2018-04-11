@@ -3,6 +3,14 @@
 ## Unreleased
   - …
 
+## fluent-dom 0.2.0
+
+  - DOM Overlays v2 (#168)
+    Major refactor of DOM Overlays allowing developers to provide node elements as attributes.
+  - Refactored error reporting (#160)
+  - Fixed a minor bug which caused an extranous retranslation when `data-l10n-id` was
+    being removed from an element.
+
 ## fluent-dom 0.1.0
 
   - Extend formatWithFallback to accept async iterator (#46)
