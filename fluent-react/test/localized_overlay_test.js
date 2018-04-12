@@ -29,6 +29,50 @@ true = 0 < 3 is true.
     ));
   });
 
+  test('& in text', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+megaman = Jumping & Shooting
+`)
+
+    const wrapper = shallow(
+      <Localized id="megaman">
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        Jumping & Shooting
+      </div>
+    ));
+  });
+
+  test('HTML entity', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+two = First &middot; Second
+`)
+
+    const wrapper = shallow(
+      <Localized id="two">
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        First · Second
+      </div>
+    ));
+  });
+
   test('one element is matched', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);

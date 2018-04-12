@@ -5,6 +5,10 @@ import { isReactLocalization } from "./localization";
 import { parseMarkup } from "./markup";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
 
+// Match the opening angle bracket (<) in HTML tags, and HTML entities like
+// &amp;, &#0038;, &#x0026;.
+const reMarkup = /<|&#?\w+;/;
+
 /*
  * Prepare props passed to `Localized` for formatting.
  */
@@ -127,9 +131,9 @@ export default class Localized extends Component {
       return cloneElement(elem, localizedProps);
     }
 
-    // If the message value doesn't contain any markup, insert it as the only
-    // child of the wrapped component.
-    if (!messageValue.includes("<")) {
+    // If the message value doesn't contain any markup nor any HTML entities,
+    // insert it as the only child of the wrapped component.
+    if (!reMarkup.test(messageValue)) {
       return cloneElement(elem, localizedProps, messageValue);
     }
 
