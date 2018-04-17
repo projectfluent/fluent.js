@@ -189,9 +189,17 @@
             "type": "Placeable",
             "expression": {
               "type": "VariantExpression",
-              "id": {
-                "type": "Identifier",
-                "name": "-brand-name",
+              "ref": {
+                "type": "MessageReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "-brand-name",
+                  "span": {
+                    "type": "Span",
+                    "start": 145,
+                    "end": 156
+                  }
+                },
                 "span": {
                   "type": "Span",
                   "start": 145,

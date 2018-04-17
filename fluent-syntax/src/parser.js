@@ -619,7 +619,7 @@ export default class FluentParser {
 
       ps.expectChar("]");
 
-      return new AST.VariantExpression(literal.id, key);
+      return new AST.VariantExpression(literal, key);
     }
 
     if (ch === "(") {
