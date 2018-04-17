@@ -117,7 +117,7 @@ export default class Localized extends Component {
     }
 
     // If the wrapped component is a known void element, explicitly dismiss the
-    // message value and do not pass it to cloneElement in order to avoi the
+    // message value and do not pass it to cloneElement in order to avoid the
     // "void element tags must neither have `children` nor use
     // `dangerouslySetInnerHTML`" error.
     if (elem.type in VOID_ELEMENTS) {
@@ -150,16 +150,21 @@ export default class Localized extends Component {
         return childNode.textContent;
       }
 
-      return cloneElement(
-        elems[childNode.localName],
-        // XXX Explicitly ignore any attributes defined in the translation.
-        null,
-        // Void elements have textContent == "" but React doesn't allow them to
-        // have any children so we pass null here for any falsy textContent.
-        // This means that an empty element in the translation will always clear
-        // any existing children in the element passed in the prop.
-        childNode.textContent || null
-      );
+      const sourceChild = elems[childNode.localName];
+
+      // If the element passed as a prop to <Localized> is a known void element,
+      // explicitly dismiss any textContent which might have accidentally been
+      // defined in the translation to prevent the "void element tags must not
+      // have children" error.
+      if (sourceChild.type in VOID_ELEMENTS) {
+        return sourceChild;
+      }
+
+      // TODO Protect contents of elements wrapped in <Localized>
+      // https://github.com/projectfluent/fluent.js/issues/184
+      // TODO  Control localizable attributes on elements passed as props
+      // https://github.com/projectfluent/fluent.js/issues/185
+      return cloneElement(sourceChild, null, childNode.textContent);
     });
 
     return cloneElement(elem, localizedProps, ...translatedChildren);

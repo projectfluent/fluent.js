@@ -6,7 +6,6 @@ import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - overlay', function() {;
-
   test('< in text', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
@@ -194,97 +193,6 @@ foo = <confirm>Sign in</confirm>.
     ));
   });
 
-  test('void element is matched', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
-    mcx.addMessages(`
-foo = My name is <input/>.
-`)
-
-    const wrapper = shallow(
-      <Localized id="foo" input={<input type="text" />}>
-        <div />
-      </Localized>,
-      { context: { l10n } }
-    );
-
-    assert.ok(wrapper.contains(
-      <div>
-        My name is <input type="text" />.
-      </div>
-    ));
-  });
-
-  test('void elements cannot have text content', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
-    mcx.addMessages(`
-foo = My name is <input>invalid text content</input>.
-`)
-
-    const wrapper = shallow(
-      <Localized id="foo" input={<input type="text" />}>
-        <div />
-      </Localized>,
-      { context: { l10n } }
-    );
-
-    // the opening <input> tag is parsed as an HTMLInputElement and the closing
-    // </input> is ignored. The "invalid text content" text is then parsed as a
-    // regular text node.
-    assert.ok(wrapper.contains(
-      <div>
-        My name is <input type="text" />invalid text content.
-      </div>
-    ));
-  });
-
-  test('text content of non-void elements can be empty', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
-    mcx.addMessages(`
-foo = Empty <foo></foo>.
-`)
-
-    const wrapper = shallow(
-      <Localized id="foo" foo={<span />}>
-        <div />
-      </Localized>,
-      { context: { l10n } }
-    );
-
-    assert.ok(wrapper.contains(
-      <div>
-        Empty <span />.
-      </div>
-    ));
-  });
-
-  test('translation clears text content of non-void elements', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
-    mcx.addMessages(`
-foo = Empty <foo></foo>.
-`)
-
-    const wrapper = shallow(
-      <Localized id="foo" foo={<span>Hardcoded</span>}>
-        <div />
-      </Localized>,
-      { context: { l10n } }
-    );
-
-    assert.ok(wrapper.contains(
-      <div>
-        Empty <span />.
-      </div>
-    ));
-  });
-
   test('attributes on translated children are ignored', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
@@ -347,6 +255,428 @@ foo = <confirm>Sign in</confirm>.
     assert.ok(wrapper.contains(
       <div>
         Sign in.
+      </div>
+    ));
+  });
+
+});
+
+suite('Localized - overlay of void elements', function() {;
+  test('void prop name, void prop value, void translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <input/> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" input={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" /> AFTER
+      </div>
+    ));
+  });
+
+  test('void prop name, void prop value, empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <input></input> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" input={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" /> AFTER
+      </div>
+    ));
+  });
+
+  test('void prop name, void prop value, non-empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <input>Foo</input> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" input={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    // The opening <input> tag is parsed as an HTMLInputElement and the closing
+    // </input> is ignored. "Foo" is then parsed as a regular text node.
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" />Foo AFTER
+      </div>
+    ));
+  });
+
+  test('void prop name, non-empty prop value, void translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <input/> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" input={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>{""}</span> AFTER
+      </div>
+    ));
+  });
+
+  test('void prop name, non-empty prop value, empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <input></input> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" input={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>{""}</span> AFTER
+      </div>
+    ));
+  });
+
+  test('void prop name, non-empty prop value, non-empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <input>Foo</input> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" input={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    // The opening <input> tag is parsed as an HTMLInputElement and the closing
+    // </input> is ignored. "Foo" is then parsed as a regular text node.
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>{""}</span>Foo AFTER
+      </div>
+    ));
+  });
+
+  test('non-void prop name, void prop value, void translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <span/> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" span={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    // XXX HTML parser breaks self-closing elements
+    // https://github.com/projectfluent/fluent.js/issues/188
+    // <span/> is parsed as an unclosed <span> element. Everything that follows
+    // it becomes its children and is ignored because the <input> passed as a
+    // prop is known to be void.
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" />
+      </div>
+    ));
+  });
+
+  test('non-void prop name, void prop value, empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <span></span> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" span={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" /> AFTER
+      </div>
+    ));
+  });
+
+  test('non-void prop name, void prop value, non-empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <span>Foo</span> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" span={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" /> AFTER
+      </div>
+    ));
+  });
+
+  test('non-void prop name, non-empty prop value, void translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <span/> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" span={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    // XXX HTML parser breaks self-closing elements
+    // https://github.com/projectfluent/fluent.js/issues/188
+    // <span/> is parsed as an unclosed <span> element. Everything that follows
+    // it becomes its children and is inserted into the <span> passed as a prop.
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span> AFTER</span>
+      </div>
+    ));
+  });
+
+  test('non-void prop name, non-empty prop value, empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <span></span> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" span={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>{""}</span> AFTER
+      </div>
+    ));
+  });
+
+  test('non-void prop name, non-empty prop value, non-empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <span>Foo</span> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" span={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>Foo</span> AFTER
+      </div>
+    ));
+  });
+
+  test('custom prop name, void prop value, void translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <text-input/> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" text-input={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    // XXX HTML parser breaks self-closing elements
+    // https://github.com/projectfluent/fluent.js/issues/188
+    // <text-input/> is parsed as an unclosed <text-input> custom element.
+    // Everything that follows it becomes its children which are ignored because
+    // the <input> passed as a prop is known to be void.
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" />
+      </div>
+    ));
+  });
+
+  test('custom prop name, void prop value, empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <text-input></text-input> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" text-input={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" /> AFTER
+      </div>
+    ));
+  });
+
+  test('custom prop name, void prop value, non-empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <text-input>Foo</text-input> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" text-input={<input type="text" />}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <input type="text" /> AFTER
+      </div>
+    ));
+  });
+
+  test('custom prop name, non-empty prop value, void translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <text-elem/> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" text-elem={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    // XXX HTML parser breaks self-closing elements
+    // https://github.com/projectfluent/fluent.js/issues/188
+    // <text-elem/> is parsed as an unclosed <text-elem> custom element.
+    // Everything that follows it becomes its children which are inserted into
+    // the <span> passed as a prop.
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span> AFTER</span>
+      </div>
+    ));
+  });
+
+  test('custom prop name, non-empty prop value, empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <text-elem></text-elem> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" text-elem={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>{""}</span> AFTER
+      </div>
+    ));
+  });
+
+  test('custom prop name, non-empty prop value, non-empty translation', function() {
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = BEFORE <text-elem>Foo</text-elem> AFTER
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" text-elem={<span>Hardcoded</span>}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        BEFORE <span>Foo</span> AFTER
       </div>
     ));
   });
