@@ -1,5 +1,15 @@
 # Changelog
 
+## fluent-syntax 0.7.0 (April 17, 2018)
+
+  - Add the `ref` field to `VariantExpression`.
+
+    The `Identifier`-typed `id` field of `VariantExpression` has been removed
+    and replaced by an `Expression`-typed `ref` field. The new `ref` field
+    can now hold `MessageReference` nodes. The range of valid expressions for
+    `ref` may be extended in the future.
+
+
 ## fluent-syntax 0.6.6 (March 19, 2018)
 
   - `Function` AST nodes have a span now. (#167)

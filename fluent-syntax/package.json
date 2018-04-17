@@ -1,7 +1,7 @@
 {
   "name": "fluent-syntax",
   "description": "AST and parser for Fluent",
-  "version": "0.6.6",
+  "version": "0.7.0",
   "homepage": "http://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
