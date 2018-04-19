@@ -61,11 +61,11 @@ export default class Localization {
   }
 
   /**
-   * Format translations into {value, attrs} objects.
+   * Format translations into {value, attributes} objects.
    *
    * The fallback logic is the same as in `formatValues` but the argument type
-   * is stricter (an array of arrays) and it returns {value, attrs} objects
-   * which are suitable for the translation of DOM elements.
+   * is stricter (an array of arrays) and it returns {value, attributes}
+   * objects which are suitable for the translation of DOM elements.
    *
    *     docL10n.formatMessages([
    *       ['hello', { who: 'Mary' }],
@@ -73,14 +73,14 @@ export default class Localization {
    *     ]).then(console.log);
    *
    *     // [
-   *     //   { value: 'Hello, Mary!', attrs: null },
-   *     //   { value: 'Welcome!', attrs: { title: 'Hello' } }
+   *     //   { value: 'Hello, Mary!', attributes: null },
+   *     //   { value: 'Welcome!', attributes: { title: 'Hello' } }
    *     // ]
    *
    * Returns a Promise resolving to an array of the translation strings.
    *
    * @param   {Array<Array>} keys
-   * @returns {Promise<Array<{value: string, attrs: Object}>>}
+   * @returns {Promise<Array<{value: string, attributes: Object}>>}
    * @private
    */
   formatMessages(keys) {
@@ -174,7 +174,7 @@ function valueFromContext(ctx, errors, id, args) {
 }
 
 /**
- * Format all public values of a message into a { value, attrs } object.
+ * Format all public values of a message into a {value, attributes} object.
  *
  * This function is passed as a method to `keysFromContext` and resolve
  * a single L10n Entity using provided `MessageContext`.
@@ -183,7 +183,7 @@ function valueFromContext(ctx, errors, id, args) {
  * entity.
  *
  * If the function fails to retrieve the entity, the value is set to the ID of
- * an entity, and attrs to `null`. If formatting fails, it will return
+ * an entity, and attributes to `null`. If formatting fails, it will return
  * a partially resolved value and attributes.
  *
  * In both cases, an error is being added to the errors array.
@@ -243,7 +243,7 @@ function messageFromContext(ctx, errors, id, args) {
  * @param {Function}       method
  * @param {MessageContext} ctx
  * @param {Array<string>}  keys
- * @param {{Array<{value: string, attrs: Object}>}} translations
+ * @param {{Array<{value: string, attributes: Object}>}} translations
  *
  * @returns {Set<string>}
  * @private

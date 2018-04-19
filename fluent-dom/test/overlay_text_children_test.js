@@ -29,7 +29,7 @@ suite('Text-semantic argument elements', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      '<em title="FOO">FOO</em>'
+      'FOO'
     );
   });
 
