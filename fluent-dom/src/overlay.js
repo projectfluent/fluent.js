@@ -62,7 +62,7 @@ const LOCALIZABLE_ATTRIBUTES = {
  * @private
  */
 export default function translateElement(element, translation) {
-  const value = translation.value;
+  const {value} = translation;
 
   if (typeof value === "string") {
     if (!reOverlay.test(value)) {
@@ -99,7 +99,29 @@ function overlayChildNodes(fromElement, toElement) {
   const content = toElement.ownerDocument.createDocumentFragment();
 
   for (const childNode of fromElement.childNodes) {
-    content.appendChild(sanitizeUsing(toElement, childNode));
+    if (childNode.nodeType === childNode.TEXT_NODE) {
+      content.appendChild(childNode.cloneNode(false));
+      continue;
+    }
+
+    if (childNode.hasAttribute("data-l10n-name")) {
+      content.appendChild(namedChildFrom(toElement, childNode));
+      continue;
+    }
+
+    if (isElementAllowed(childNode)) {
+      content.appendChild(allowedChild(childNode));
+      continue;
+    }
+
+    console.warn(
+      `An element of forbidden type "${childNode.localName}" was found in ` +
+      "the translation. Only elements with data-l10n-name can be overlaid " +
+      "onto source elements of the same data-l10n-name."
+    );
+
+    // If all else fails, convert the element to its text content.
+    content.appendChild(textNode(childNode));
   }
 
   toElement.textContent = "";
@@ -145,75 +167,79 @@ function overlayAttributes(fromElement, toElement) {
 }
 
 /**
- * Sanitize a child node created by the translation.
+ * Sanitize a child element created by the translation.
  *
- * If childNode has the data-l10n-name attribute, try to find a corresponding
- * child in sourceElement and use it as the base for the sanitization. This
- * will preserve functional attribtues defined on the child element in the
- * source HTML.
- *
- * This function must return new nodes or clones in all code paths. The
- * returned nodes are immediately appended to the intermediate DocumentFragment
- * which also _removes_ them from the constructed <template> containing the
- * translation, which in turn breaks the for…of iteration over its child nodes.
+ * Try to find a corresponding child in sourceElement and use it as the base
+ * for the sanitization. This will preserve functional attribtues defined on
+ * the child element in the source HTML.
  *
  * @param   {Element} sourceElement - The source for data-l10n-name lookups.
- * @param   {Element} childNode - The child node to be sanitized.
+ * @param   {Element} translatedChild - The translated child to be sanitized.
  * @returns {Element}
  * @private
  */
-function sanitizeUsing(sourceElement, childNode) {
-  if (childNode.nodeType === childNode.TEXT_NODE) {
-    return childNode.cloneNode(false);
-  }
-
-  if (childNode.hasAttribute("data-l10n-name")) {
-    const childName = childNode.getAttribute("data-l10n-name");
-    const sourceChild = sourceElement.querySelector(
-      `[data-l10n-name="${childName}"]`
-    );
-
-    if (!sourceChild) {
-      console.warn(
-        `An element named "${childName}" wasn't found in the source.`
-      );
-    } else if (sourceChild.localName !== childNode.localName) {
-      console.warn(
-        `An element named "${childName}" was found in the translation ` +
-        `but its type ${childNode.localName} didn't match the element ` +
-        `found in the source (${sourceChild.localName}).`
-      );
-    } else {
-      // Remove it from sourceElement so that the translation cannot use
-      // the same reference name again.
-      sourceElement.removeChild(sourceChild);
-      // We can't currently guarantee that a translation won't remove
-      // sourceChild from the element completely, which could break the app if
-      // it relies on an event handler attached to the sourceChild. Let's make
-      // this limitation explicit for now by breaking the identitiy of the
-      // sourceChild by cloning it. This will destroy all event handlers
-      // attached to sourceChild via addEventListener and via on<name>
-      // properties.
-      const clone = sourceChild.cloneNode(false);
-      return shallowPopulateUsing(childNode, clone);
-    }
-  }
-
-  if (isElementAllowed(childNode)) {
-    // Start with an empty element of the same type to remove nested children
-    // and non-localizable attributes defined by the translation.
-    const clone = childNode.ownerDocument.createElement(childNode.localName);
-    return shallowPopulateUsing(childNode, clone);
-  }
-
-  console.warn(
-    `An element of forbidden type "${childNode.localName}" was found in ` +
-    "the translation. Only elements with data-l10n-name can be overlaid " +
-    "onto source elements of the same data-l10n-name."
+function namedChildFrom(sourceElement, translatedChild) {
+  const childName = translatedChild.getAttribute("data-l10n-name");
+  const sourceChild = sourceElement.querySelector(
+    `[data-l10n-name="${childName}"]`
   );
 
-  // If all else fails, convert the element to its text content.
-  return childNode.ownerDocument.createTextNode(childNode.textContent);
+  if (!sourceChild) {
+    console.warn(
+      `An element named "${childName}" wasn't found in the source.`
+    );
+    return textNode(translatedChild);
+  }
+
+  if (sourceChild.localName !== translatedChild.localName) {
+    console.warn(
+      `An element named "${childName}" was found in the translation ` +
+      `but its type ${translatedChild.localName} didn't match the ` +
+      `element found in the source (${sourceChild.localName}).`
+    );
+    return textNode(translatedChild);
+  }
+
+  // Remove it from sourceElement so that the translation cannot use
+  // the same reference name again.
+  sourceElement.removeChild(sourceChild);
+  // We can't currently guarantee that a translation won't remove
+  // sourceChild from the element completely, which could break the app if
+  // it relies on an event handler attached to the sourceChild. Let's make
+  // this limitation explicit for now by breaking the identitiy of the
+  // sourceChild by cloning it. This will destroy all event handlers
+  // attached to sourceChild via addEventListener and via on<name>
+  // properties.
+  const clone = sourceChild.cloneNode(false);
+  return shallowPopulateUsing(translatedChild, clone);
+}
+
+/**
+ * Sanitize an allowed element.
+ *
+ * Text-level elements allowed in translations may only use safe attributes
+ * and will have any nested markup stripped to text content.
+ *
+ * @param   {Element} element - The element to be sanitized.
+ * @returns {Element}
+ * @private
+ */
+function allowedChild(element) {
+  // Start with an empty element of the same type to remove nested children
+  // and non-localizable attributes defined by the translation.
+  const clone = element.ownerDocument.createElement(element.localName);
+  return shallowPopulateUsing(element, clone);
+}
+
+/**
+ * Convert an element to a text node.
+ *
+ * @param   {Element} element - The element to be sanitized.
+ * @returns {Node}
+ * @private
+ */
+function textNode(element) {
+  return element.ownerDocument.createTextNode(element.textContent);
 }
 
 /**
