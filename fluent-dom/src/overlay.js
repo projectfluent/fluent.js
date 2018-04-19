@@ -91,41 +91,41 @@ export default function translateElement(element, translation) {
  * The contents of the target element will be cleared and fully replaced with
  * sanitized contents of the source element.
  *
- * @param {DocumentFragment} fromElement - The source of children to overlay.
+ * @param {DocumentFragment} fromFragment - The source of children to overlay.
  * @param {Element} toElement - The target of the overlay.
  * @private
  */
-function overlayChildNodes(fromElement, toElement) {
-  const content = toElement.ownerDocument.createDocumentFragment();
-
-  for (const childNode of fromElement.childNodes) {
+function overlayChildNodes(fromFragment, toElement) {
+  for (const childNode of fromFragment.childNodes) {
     if (childNode.nodeType === childNode.TEXT_NODE) {
-      content.appendChild(childNode.cloneNode(false));
+      // Keep the translated text node.
       continue;
     }
 
     if (childNode.hasAttribute("data-l10n-name")) {
-      content.appendChild(namedChildFrom(toElement, childNode));
+      const sanitized = namedChildFrom(toElement, childNode);
+      fromFragment.replaceChild(sanitized, childNode);
       continue;
     }
 
     if (isElementAllowed(childNode)) {
-      content.appendChild(allowedChild(childNode));
+      const sanitized = allowedChild(childNode);
+      fromFragment.replaceChild(sanitized, childNode);
       continue;
     }
 
     console.warn(
       `An element of forbidden type "${childNode.localName}" was found in ` +
-      "the translation. Only elements with data-l10n-name can be overlaid " +
-      "onto source elements of the same data-l10n-name."
+      "the translation. Only safe text-level elements and elements with " +
+      "data-l10n-name are allowed."
     );
 
-    // If all else fails, convert the element to its text content.
-    content.appendChild(textNode(childNode));
+    // If all else fails, replace the element with its text content.
+    fromFragment.replaceChild(textNode(childNode), childNode);
   }
 
   toElement.textContent = "";
-  toElement.appendChild(content);
+  toElement.appendChild(fromFragment);
 }
 
 /**
