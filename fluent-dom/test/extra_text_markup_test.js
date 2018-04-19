@@ -7,7 +7,7 @@ suite('Localized text markup', function() {
     const element = elem('div')`Foo`;
     const translation = {
       value: 'FOO <em>BAR</em> BAZ',
-      attrs: null
+      attributes: null
     };
 
     translateElement(element, translation);
@@ -18,7 +18,7 @@ suite('Localized text markup', function() {
     const element = elem('div')`Foo`;
     const translation = {
       value: 'FOO <img src="img.png" />',
-      attrs: null
+      attributes: null
     };
 
     translateElement(element, translation);
@@ -29,7 +29,7 @@ suite('Localized text markup', function() {
     const element = elem('div')`Foo`;
     const translation = {
       value: 'FOO <button>BUTTON</button>',
-      attrs: null
+      attributes: null
     };
 
     translateElement(element, translation);
@@ -40,7 +40,7 @@ suite('Localized text markup', function() {
     const element = elem('div')`Foo`;
     const translation = {
       value: 'FOO <em><strong>BAR</strong></em> BAZ',
-      attrs: null
+      attributes: null
     };
 
     translateElement(element, translation);
@@ -53,7 +53,7 @@ suite('Attributes of localized text markup', function() {
     const element = elem('div')`Foo Bar`;
     const translation = {
       value: 'FOO <em title="BAR">BAR</em>',
-      attrs: null,
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -65,7 +65,7 @@ suite('Attributes of localized text markup', function() {
     const element = elem('div')`Foo Bar`;
     const translation = {
       value: 'FOO <em class="BAR" title="BAR">BAR</em>',
-      attrs: null,
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -78,7 +78,7 @@ suite('Attributes of localized text markup', function() {
       <em title="Foo">Foo</a>`;
     const translation = {
       value: '<em>FOO</em>',
-      attrs: null
+      attributes: null
     };
 
     translateElement(element, translation);
