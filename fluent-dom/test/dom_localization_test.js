@@ -2,7 +2,7 @@ import assert from "assert";
 import { MessageContext } from "../../fluent/src/index";
 import DOMLocalization from "../src/dom_localization";
 
-function* mockGenerateMessages(resourceIds) {
+async function* mockGenerateMessages(resourceIds) {
   const mc = new MessageContext(["en-US"]);
   mc.addMessages("key1 = Key 1");
   yield mc;

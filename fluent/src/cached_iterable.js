@@ -1,15 +1,15 @@
 /*
- * CachedIterable caches the elements yielded by an iterable.
+ * CachedSyncIterable caches the elements yielded by an iterable.
  *
  * It can be used to iterate over an iterable many times without depleting the
  * iterable.
  */
-export class CachedIterable {
+export class CachedSyncIterable {
   /**
-   * Create an `CachedIterable` instance.
+   * Create an `CachedSyncIterable` instance.
    *
    * @param {Iterable} iterable
-   * @returns {CachedIterable}
+   * @returns {CachedSyncIterable}
    */
   constructor(iterable) {
     if (Symbol.iterator in Object(iterable)) {

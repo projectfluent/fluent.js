@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global console */
 
-import { CachedIterable } from "../../fluent/src/index";
+import { CachedAsyncIterable } from "../../fluent/src/index";
 
 /**
  * The `Localization` class is a central high-level API for vanilla
@@ -20,7 +20,8 @@ export default class Localization {
   constructor(resourceIds, generateMessages) {
     this.resourceIds = resourceIds;
     this.generateMessages = generateMessages;
-    this.ctxs = new CachedIterable(this.generateMessages(this.resourceIds));
+    this.ctxs =
+      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
 
   /**
@@ -38,12 +39,7 @@ export default class Localization {
   async formatWithFallback(keys, method) {
     const translations = [];
 
-    for (let ctx of this.ctxs) {
-      // This can operate on synchronous and asynchronous
-      // contexts coming from the iterator.
-      if (typeof ctx.then === "function") {
-        ctx = await ctx;
-      }
+    for await (const ctx of this.ctxs) {
       const missingIds = keysFromContext(method, ctx, keys, translations);
 
       if (missingIds.size === 0) {
@@ -146,7 +142,8 @@ export default class Localization {
    * that language negotiation or available resources changed.
    */
   onLanguageChange() {
-    this.ctxs = new CachedIterable(this.generateMessages(this.resourceIds));
+    this.ctxs =
+      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
 }
 
