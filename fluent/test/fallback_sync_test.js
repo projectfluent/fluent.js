@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import CachedIterable from '../src/cached_iterable';
+import { CachedSyncIterable } from '../src/cached_iterable';
 import MessageContext from './message_context_stub';
 import { mapContextSync } from '../src/index';
 
@@ -15,13 +15,13 @@ suite('Sync Fallback — single id', function() {
   });
 
   test('eager iterable', function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedSyncIterable([ctx1, ctx2]);
     assert.equal(mapContextSync(contexts, 'foo'), ctx2);
     assert.equal(mapContextSync(contexts, 'bar'), ctx1);
   });
 
   test('eager iterable works more than once', function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedSyncIterable([ctx1, ctx2]);
     assert.equal(mapContextSync(contexts, 'foo'), ctx2);
     assert.equal(mapContextSync(contexts, 'bar'), ctx1);
     assert.equal(mapContextSync(contexts, 'foo'), ctx2);
@@ -33,7 +33,7 @@ suite('Sync Fallback — single id', function() {
       yield *[ctx1, ctx2];
     }
 
-    const contexts = new CachedIterable(generateMessages());
+    const contexts = new CachedSyncIterable(generateMessages());
     assert.equal(mapContextSync(contexts, 'foo'), ctx2);
     assert.equal(mapContextSync(contexts, 'bar'), ctx1);
   });
@@ -43,7 +43,7 @@ suite('Sync Fallback — single id', function() {
       yield *[ctx1, ctx2];
     }
 
-    const contexts = new CachedIterable(generateMessages());
+    const contexts = new CachedSyncIterable(generateMessages());
     assert.equal(mapContextSync(contexts, 'foo'), ctx2);
     assert.equal(mapContextSync(contexts, 'bar'), ctx1);
     assert.equal(mapContextSync(contexts, 'foo'), ctx2);
@@ -62,7 +62,7 @@ suite('Sync Fallback — multiple ids', function() {
   });
 
   test('existing translations', function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedSyncIterable([ctx1, ctx2]);
     assert.deepEqual(
       mapContextSync(contexts, ['foo', 'bar']),
       [ctx1, ctx1]
@@ -70,7 +70,7 @@ suite('Sync Fallback — multiple ids', function() {
   });
 
   test('fallback translations', function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedSyncIterable([ctx1, ctx2]);
     assert.deepEqual(
       mapContextSync(contexts, ['foo', 'bar', 'baz']),
       [ctx1, ctx1, ctx2]
@@ -78,7 +78,7 @@ suite('Sync Fallback — multiple ids', function() {
   });
 
   test('missing translations', function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedSyncIterable([ctx1, ctx2]);
     assert.deepEqual(
       mapContextSync(contexts, ['foo', 'bar', 'baz', 'qux']),
       [ctx1, ctx1, ctx2, null]

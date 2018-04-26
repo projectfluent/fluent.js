@@ -26,7 +26,8 @@
  *         return ctx.format(msg, args);
  *     }
  *
- * In order to pass an iterator to mapContext*, wrap it in CachedIterable.
+ * In order to pass an iterator to mapContext*, wrap it in
+ * Cached{Sync|Async}Iterable.
  * This allows multiple calls to mapContext* without advancing and eventually
  * depleting the iterator.
  *
@@ -35,7 +36,7 @@
  *         yield *[ctx1, ctx2];
  *     }
  *
- *     const contexts = new CachedIterable(generateMessages());
+ *     const contexts = new CachedSyncIterable(generateMessages());
  *     const ctx = mapContextSync(contexts, id);
  *
  */

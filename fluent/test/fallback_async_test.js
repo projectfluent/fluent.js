@@ -1,27 +1,31 @@
 import assert from 'assert';
 
-import CachedIterable from '../src/cached_iterable';
+import { CachedAsyncIterable } from '../src/cached_iterable';
 import MessageContext from './message_context_stub';
 import { mapContextAsync } from '../src/index';
 
 suite('Async Fallback — single id', function() {
-  let ctx1, ctx2;
+  let ctx1, ctx2, generateMessages;
 
   suiteSetup(function() {
     ctx1 = new MessageContext();
     ctx1._setMessages(['bar']);
     ctx2 = new MessageContext();
     ctx2._setMessages(['foo', 'bar']);
+
+    generateMessages = async function *generateMessages() {
+      yield *[ctx1, ctx2];
+    }
   });
 
   test('eager iterable', async function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.equal(await mapContextAsync(contexts, 'foo'), ctx2);
     assert.equal(await mapContextAsync(contexts, 'bar'), ctx1);
   });
 
   test('eager iterable works more than once', async function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.equal(await mapContextAsync(contexts, 'foo'), ctx2);
     assert.equal(await mapContextAsync(contexts, 'bar'), ctx1);
     assert.equal(await mapContextAsync(contexts, 'foo'), ctx2);
@@ -29,21 +33,13 @@ suite('Async Fallback — single id', function() {
   });
 
   test('lazy iterable', async function() {
-    async function *generateMessages() {
-      yield *[ctx1, ctx2];
-    }
-
-    const contexts = new CachedIterable(generateMessages());
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.equal(await mapContextAsync(contexts, 'foo'), ctx2);
     assert.equal(await mapContextAsync(contexts, 'bar'), ctx1);
   });
 
   test('lazy iterable works more than once', async function() {
-    async function *generateMessages() {
-      yield *[ctx1, ctx2];
-    }
-
-    const contexts = new CachedIterable(generateMessages());
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.equal(await mapContextAsync(contexts, 'foo'), ctx2);
     assert.equal(await mapContextAsync(contexts, 'bar'), ctx1);
     assert.equal(await mapContextAsync(contexts, 'foo'), ctx2);
@@ -52,17 +48,21 @@ suite('Async Fallback — single id', function() {
 });
 
 suite('Async Fallback — multiple ids', async function() {
-  let ctx1, ctx2;
+  let ctx1, ctx2, generateMessages;
 
   suiteSetup(function() {
     ctx1 = new MessageContext();
     ctx1._setMessages(['foo', 'bar']);
     ctx2 = new MessageContext();
     ctx2._setMessages(['foo', 'bar', 'baz']);
+
+    generateMessages = async function *generateMessages() {
+      yield *[ctx1, ctx2];
+    }
   });
 
   test('existing translations', async function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.deepEqual(
       await mapContextAsync(contexts, ['foo', 'bar']),
       [ctx1, ctx1]
@@ -70,7 +70,7 @@ suite('Async Fallback — multiple ids', async function() {
   });
 
   test('fallback translations', async function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.deepEqual(
       await mapContextAsync(contexts, ['foo', 'bar', 'baz']),
       [ctx1, ctx1, ctx2]
@@ -78,7 +78,7 @@ suite('Async Fallback — multiple ids', async function() {
   });
 
   test('missing translations', async function() {
-    const contexts = new CachedIterable([ctx1, ctx2]);
+    const contexts = new CachedAsyncIterable(generateMessages());
     assert.deepEqual(
       await mapContextAsync(contexts, ['foo', 'bar', 'baz', 'qux']),
       [ctx1, ctx1, ctx2, null]
