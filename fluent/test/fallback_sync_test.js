@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import CachedIterable from '../src/cached_iterable';
+import {CachedIterable} from '../src/cached_iterable';
 import MessageContext from './message_context_stub';
 import { mapContextSync } from '../src/index';
 
