@@ -256,5 +256,21 @@ suite('CachedSyncIterable', function() {
       }
       assert.deepEqual(values, [o1, o2]);
     });
+
+    test('async version handles sync iterator', async function() {
+      const iterable = new CachedAsyncIterable([o1, o2]);
+      await iterable.touchNext();
+      await iterable.touchNext();
+      await iterable.touchNext();
+
+      // It's a bit quirky compared to the sync counterpart,
+      // but there's no good way to fold async iterator into
+      // an array.
+      let values = [];
+      for await (let elem of iterable) {
+        values.push(elem);
+      }
+      assert.deepEqual(values, [o1, o2]);
+    });
   });
 });

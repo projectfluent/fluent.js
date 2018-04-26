@@ -68,6 +68,8 @@ export class CachedAsyncIterable {
   constructor(iterable) {
     if (Symbol.asyncIterator in Object(iterable)) {
       this.iterator = iterable[Symbol.asyncIterator]();
+    } else if (Symbol.iterator in Object(iterable)) {
+      this.iterator = iterable[Symbol.iterator]();
     } else {
       throw new TypeError("Argument must implement the iteration protocol.");
     }
