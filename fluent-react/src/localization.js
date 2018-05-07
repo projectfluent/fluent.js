@@ -1,4 +1,4 @@
-import { CachedIterable, mapContextSync } from "fluent/compat";
+import { CachedIterable, mapContextSync } from "fluent";
 
 /*
  * `ReactLocalization` handles translation formatting and fallback.

@@ -1,5 +1,11 @@
 {
     "presets": [
         "@babel/preset-react"
+    ],
+    "plugins": [
+        ["babel-plugin-transform-rename-import", {
+          "original": "fluent",
+          "replacement": "fluent/compat"
+        }]
     ]
 }
