@@ -1,6 +1,6 @@
 import React from 'react';
 import assert from 'assert';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
@@ -103,4 +103,25 @@ foo = FOO
     // Returns the fallback if provided.
     assert.equal(getString('foo', {arg: 1}, 'fallback message'), 'fallback message');
   });
+
+  test('getString with access to the l10n context, with message changes', function() {
+    const initialMcx = new MessageContext();
+    const l10n = new ReactLocalization([initialMcx]);
+    const EnhancedComponent = withLocalization(({ getString }) => getString('foo'));
+
+    initialMcx.addMessages('foo = FOO');
+
+    const wrapper = mount(
+      <EnhancedComponent />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), 'FOO');
+
+    const newMcx = new MessageContext();
+    newMcx.addMessages('foo = BAR');
+    l10n.setMessages([newMcx]);
+
+    assert.equal(wrapper.text(), 'BAR');
+  })
 });
