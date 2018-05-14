@@ -24,6 +24,16 @@ export default class Localization {
       new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
 
+  addResourceIds(resourceIds) {
+    this.resourceIds.push(...resourceIds);
+    this.onChange();
+  }
+
+  removeResourceIds(resourceIds) {
+    this.resourceIds = this.resourceIds.filter(r => !resourceIds.includes(r));
+    this.onChange();
+  }
+
   /**
    * Format translations and handle fallback if needed.
    *
@@ -134,14 +144,14 @@ export default class Localization {
   }
 
   handleEvent() {
-    this.onLanguageChange();
+    this.onChange();
   }
 
   /**
    * This method should be called when there's a reason to believe
    * that language negotiation or available resources changed.
    */
-  onLanguageChange() {
+  onChange() {
     this.ctxs =
       new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
