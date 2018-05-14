@@ -314,13 +314,13 @@ export default class DOMLocalization extends Localization {
    * array.
    *
    * @param {Element} element
-   * @returns {Array<string, Object>}
+   * @returns {Object}
    * @private
    */
   getKeysForElement(element) {
-    return [
-      element.getAttribute(L10NID_ATTR_NAME),
-      JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
-    ];
+    return {
+      id: element.getAttribute(L10NID_ATTR_NAME),
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
+    };
   }
 }
