@@ -3,6 +3,12 @@
 ## Unreleased
   - …
 
+## fluent-dom 0.3.0
+  - Refactor the overlay sanitization methods into separate functions. (#189)
+  - Separate out CachedIterable and CachedAsyncIterable, and add a param to touchNext. (#191)
+  - Localization.formatValues should accept an array of objects. (#198)
+  - Allow adding and removing resource Ids from a Localization. (#197)
+
 ## fluent-dom 0.2.0
 
   - DOM Overlays v2 (#168)
