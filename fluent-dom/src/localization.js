@@ -31,7 +31,7 @@ export default class Localization {
    * DOMLocalization. In case of errors, fetch the next context in the
    * fallback chain.
    *
-   * @param   {Array<Array>}          keys    - Translation keys to format.
+   * @param   {Array<Object>}         keys    - Translation keys to format.
    * @param   {Function}              method  - Formatting function.
    * @returns {Promise<Array<string|Object>>}
    * @private
@@ -64,8 +64,8 @@ export default class Localization {
    * objects which are suitable for the translation of DOM elements.
    *
    *     docL10n.formatMessages([
-   *       ['hello', { who: 'Mary' }],
-   *       ['welcome', undefined]
+   *       {id: 'hello', args: { who: 'Mary' }},
+   *       {id: 'welcome'}
    *     ]).then(console.log);
    *
    *     // [
@@ -75,7 +75,7 @@ export default class Localization {
    *
    * Returns a Promise resolving to an array of the translation strings.
    *
-   * @param   {Array<Array>} keys
+   * @param   {Array<Object>} keys
    * @returns {Promise<Array<{value: string, attributes: Object}>>}
    * @private
    */
@@ -90,16 +90,16 @@ export default class Localization {
    * either be simple string identifiers or `[id, args]` arrays.
    *
    *     docL10n.formatValues([
-   *       ['hello', { who: 'Mary' }],
-   *       ['hello', { who: 'John' }],
-   *       ['welcome']
+   *       {id: 'hello', args: { who: 'Mary' }},
+   *       {id: 'hello', args: { who: 'John' }},
+   *       {id: 'welcome'}
    *     ]).then(console.log);
    *
    *     // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
    *
    * Returns a Promise resolving to an array of the translation strings.
    *
-   * @param   {Array<Array>} keys
+   * @param   {Array<Object>} keys
    * @returns {Promise<Array<string>>}
    */
   formatValues(keys) {
@@ -129,7 +129,7 @@ export default class Localization {
    * @returns {Promise<string>}
    */
   async formatValue(id, args) {
-    const [val] = await this.formatValues([[id, args]]);
+    const [val] = await this.formatValues([{id, args}]);
     return val;
   }
 
@@ -249,17 +249,17 @@ function keysFromContext(method, ctx, keys, translations) {
   const messageErrors = [];
   const missingIds = new Set();
 
-  keys.forEach((key, i) => {
+  keys.forEach(({id, args}, i) => {
     if (translations[i] !== undefined) {
       return;
     }
 
-    if (ctx.hasMessage(key[0])) {
+    if (ctx.hasMessage(id)) {
       messageErrors.length = 0;
-      translations[i] = method(ctx, messageErrors, key[0], key[1]);
+      translations[i] = method(ctx, messageErrors, id, args);
       // XXX: Report resolver errors
     } else {
-      missingIds.add(key[0]);
+      missingIds.add(id);
     }
   });
 
