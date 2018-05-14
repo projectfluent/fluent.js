@@ -26,12 +26,12 @@ export default class Localization {
 
   addResourceIds(resourceIds) {
     this.resourceIds.push(...resourceIds);
-    this.onLanguageChange();
+    this.onChange();
   }
 
   removeResourceIds(resourceIds) {
     this.resourceIds = this.resourceIds.filter(r => !resourceIds.includes(r));
-    this.onLanguageChange();
+    this.onChange();
   }
 
   /**
@@ -144,14 +144,14 @@ export default class Localization {
   }
 
   handleEvent() {
-    this.onLanguageChange();
+    this.onChange();
   }
 
   /**
    * This method should be called when there's a reason to believe
    * that language negotiation or available resources changed.
    */
-  onLanguageChange() {
+  onChange() {
     this.ctxs =
       new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
