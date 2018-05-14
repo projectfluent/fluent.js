@@ -24,6 +24,16 @@ export default class Localization {
       new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
 
+  addResourceIds(resourceIds) {
+    this.resourceIds.push(...resourceIds);
+    this.onLanguageChange();
+  }
+
+  removeResourceIds(resourceIds) {
+    this.resourceIds = this.resourceIds.filter(r => !resourceIds.includes(r));
+    this.onLanguageChange();
+  }
+
   /**
    * Format translations and handle fallback if needed.
    *
