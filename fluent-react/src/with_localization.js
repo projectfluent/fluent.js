@@ -4,11 +4,6 @@ import { isReactLocalization } from "./localization";
 
 export default function withLocalization(Inner) {
   class WithLocalization extends Component {
-    constructor(props, context) {
-      super(props, context);
-      this.getString = this.getString.bind(this);
-    }
-
     componentDidMount() {
       const { l10n } = this.context;
 
@@ -50,7 +45,11 @@ export default function withLocalization(Inner) {
     render() {
       return createElement(
         Inner,
-        Object.assign({ getString: (...args) => this.getString(...args) }, this.props)
+        Object.assign(
+          // getString needs to be re-bound on updates to trigger a re-render of Inner
+          { getString: (...args) => this.getString(...args) },
+          this.props
+        )
       );
     }
   }
