@@ -4,9 +4,29 @@ import { isReactLocalization } from "./localization";
 
 export default function withLocalization(Inner) {
   class WithLocalization extends Component {
-    constructor(props, context) {
-      super(props, context);
-      this.getString = this.getString.bind(this);
+    componentDidMount() {
+      const { l10n } = this.context;
+
+      if (l10n) {
+        l10n.subscribe(this);
+      }
+    }
+
+    componentWillUnmount() {
+      const { l10n } = this.context;
+
+      if (l10n) {
+        l10n.unsubscribe(this);
+      }
+    }
+
+    /*
+     * Rerender this component in a new language.
+     */
+    relocalize() {
+      // When the `ReactLocalization`'s fallback chain changes, update the
+      // component.
+      this.forceUpdate();
     }
 
     /*
@@ -25,7 +45,11 @@ export default function withLocalization(Inner) {
     render() {
       return createElement(
         Inner,
-        Object.assign({ getString: this.getString }, this.props)
+        Object.assign(
+          // getString needs to be re-bound on updates to trigger a re-render
+          { getString: (...args) => this.getString(...args) },
+          this.props
+        )
       );
     }
   }
