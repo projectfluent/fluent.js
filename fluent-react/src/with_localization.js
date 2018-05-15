@@ -46,7 +46,7 @@ export default function withLocalization(Inner) {
       return createElement(
         Inner,
         Object.assign(
-          // getString needs to be re-bound on updates to trigger a re-render of Inner
+          // getString needs to be re-bound on updates to trigger a re-render
           { getString: (...args) => this.getString(...args) },
           this.props
         )
