@@ -20,10 +20,10 @@ lint:
 	@echo -e " $(OK) $@"
 
 test:
-ifneq (,$(wildcard ./test/__setup.js))
+ifneq (,$(wildcard ./test/index.js))
 	@mocha --recursive --ui tdd \
 	    --require $(ROOT)/mocha_setup \
-	    --require ./test/__setup \
+	    --require ./test/index \
 	    test/**/*_test.js
 else
 	@mocha --recursive --ui tdd \

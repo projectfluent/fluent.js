@@ -1,6 +1,6 @@
 import assert from 'assert';
 import translateElement from '../src/overlay';
-import {elem} from './util';
+import {elem} from './index';
 
 suite('Text-semantic argument elements', function() {
   test('without data-l10n-name', function() {
