@@ -13,3 +13,11 @@ Object.keys(document.defaultView).forEach(property => {
 global.navigator = {
   userAgent: 'node.js'
 };
+
+exports.elem = function elem(name) {
+  return function(str) {
+    const element = document.createElement(name);
+    element.innerHTML = str;
+    return element;
+  }
+}

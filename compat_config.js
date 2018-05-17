@@ -8,8 +8,7 @@ export default {
     babel({
       'babelrc': false,
       'presets': [
-        'stage-3',
-        ['env', {
+        ['@babel/preset-env', {
           // Cf. https://github.com/rollup/rollup-plugin-babel#modules
           'modules': false,
           'targets': {
@@ -22,12 +21,9 @@ export default {
           }
         }]
       ],
-      'plugins': [
-        // Cf. https://github.com/rollup/rollup-plugin-babel#helpers
-        'external-helpers',
-        ['babel-plugin-transform-builtin-extend', {
-          globals: ['Error']
-        }]
+      plugins: [
+        "@babel/plugin-proposal-async-generator-functions",
+        "@babel/plugin-proposal-object-rest-spread"
       ]
     }),
   ],

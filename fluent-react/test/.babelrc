@@ -1,8 +1,5 @@
 {
     "presets": [
-        "babel-preset-react"
-    ],
-    "plugins": [
-        "babel-plugin-transform-es2015-modules-commonjs"
+        "@babel/preset-react"
     ]
 }

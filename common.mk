@@ -20,17 +20,15 @@ lint:
 	@echo -e " $(OK) $@"
 
 test:
-ifneq (,$(wildcard ./test/__setup.js))
+ifneq (,$(wildcard ./test/index.js))
 	@mocha --recursive --ui tdd \
-	    --require babel-register \
-	    --require babel-polyfill \
-	    --require ./test/__setup \
-	    test/
+	    --require $(ROOT)/mocha_setup \
+	    --require ./test/index \
+	    test/**/*_test.js
 else
 	@mocha --recursive --ui tdd \
-	    --require babel-register \
-	    --require babel-polyfill \
-	    test/
+	    --require $(ROOT)/mocha_setup \
+	    test/**/*_test.js
 endif
 
 html: $(SOURCES)

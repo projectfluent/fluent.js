@@ -1,6 +1,6 @@
 import assert from 'assert';
 import translateElement from '../src/overlay';
-import {elem} from './util';
+import {elem} from './index';
 
 suite('Top-level attributes', function() {
   test('allowed attribute', function() {

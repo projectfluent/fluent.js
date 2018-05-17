@@ -7,9 +7,7 @@ const readline = require('readline');
 const program = require('commander');
 const fuzzer = require('fuzzer');
 
-require('babel-register')({
-  plugins: ['transform-es2015-modules-commonjs']
-});
+require = require('esm')(module);
 
 fuzzer.seed(Math.random() * 1000000000);
 
