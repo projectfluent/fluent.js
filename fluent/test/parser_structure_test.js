@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { join } from 'path';
 import { readdir } from 'fs';
-import { readfile } from '../../fluent-syntax/test/util';
+import { readfile } from './util';
 
 import parse from '../src/parser';
 

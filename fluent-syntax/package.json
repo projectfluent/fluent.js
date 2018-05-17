@@ -41,7 +41,6 @@
     "ast",
     "serializer",
     "parser"
-
   ],
   "engines": {
     "node": ">=6.9.0"

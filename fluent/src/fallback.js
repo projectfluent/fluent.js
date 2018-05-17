@@ -92,10 +92,7 @@ export async function mapContextAsync(iterable, ids) {
   const foundContexts = new Array(remainingCount).fill(null);
 
   for await (const context of iterable) {
-    // XXX Switch to const [index, id] of id.entries() when we move to Babel 7.
-    // See https://github.com/babel/babel/issues/5880.
-    for (let index = 0; index < ids.length; index++) {
-      const id = ids[index];
+    for (const [index, id] of ids.entries()) {
       if (!foundContexts[index] && context.hasMessage(id)) {
         foundContexts[index] = context;
         remainingCount--;
