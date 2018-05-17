@@ -5,9 +5,7 @@
 const fs = require('fs');
 const program = require('commander');
 
-require('@babel/register')({
-  plugins: ["@babel/plugin-transform-modules-commonjs"]
-});
+require = require('esm')(module);
 const FluentSyntax = require('../fluent-syntax/src');
 
 program

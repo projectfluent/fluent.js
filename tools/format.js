@@ -8,10 +8,10 @@ const program = require('commander');
 
 require('@babel/register')({
   plugins: [
-    "@babel/plugin-proposal-async-generator-functions",
-    "@babel/plugin-transform-modules-commonjs"
+    '@babel/plugin-proposal-async-generator-functions',
   ]
 });
+require = require('esm')(module);
 require('../fluent-intl-polyfill/src');
 const Fluent = require('../fluent/src');
 

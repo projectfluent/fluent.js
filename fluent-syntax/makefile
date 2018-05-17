@@ -25,7 +25,7 @@ compat.js: $(SOURCES)
 
 .PHONY: test-without-babel-polyfill
 test-without-babel-polyfill:
-	@mocha --recursive --ui tdd --require mocha_setup test/**/*_test.js
+	@mocha --recursive --ui tdd --require esm test/**/*_test.js
 
 clean:
 	@rm -f $(PACKAGE).js compat.js
