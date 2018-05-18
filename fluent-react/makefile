@@ -1,6 +1,6 @@
 PACKAGE := fluent-react
 GLOBAL  := FluentReact
-DEPS    := fluent/compat:Fluent,react:React,prop-types:PropTypes
+DEPS    := fluent:Fluent,react:React,prop-types:PropTypes
 
 include ../common.mk
 
@@ -18,11 +18,11 @@ $(PACKAGE).js: $(SOURCES)
 
 compat.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
-	    --config $(ROOT)/compat_config.js \
+	    --config $(CURDIR)/compat_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
-	    --globals $(DEPS) \
+	    --globals fluent/compat:Fluent,$(DEPS) \
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
