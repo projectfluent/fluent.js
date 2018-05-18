@@ -1,5 +1,56 @@
 # Changelog
 
+## fluent-react 0.7.0 (May 18, 2018)
+
+  - Protect void elements against translated text content. (#174)
+
+    Text content found in the translated markup is now ignored when the
+    element passed as a prop to `<Localized>` is a known void element. This
+    prevents the _element is a void element tag and must neither have
+    children nor use dangerouslySetInnerHTML_ error in React.
+
+    For instance, `<input>` is a known void element and it must not have the
+    text content set by the buggy translation in the following example:
+
+    ```jsx
+    <Localized id="hello" text-input={<input type="text" />}>
+        <div />
+    </Localized>
+    ```
+
+    ```properties
+    hello = Hello, <text-input>invalid text content</text-input>.
+    ```
+
+    Due to this change some build setups might now require the
+    `@babel/plugin-proposal-object-rest-spread` or the
+    `@babel/plugin-syntax-object-rest-spread` plugin.
+
+  - Support HTML entities in translations. (#183)
+
+    Translations with HTML entities will now trigger the markup sanitization
+    logic and will be consequently parsed into the characters they represent.
+
+  - Re-render `withLocalization`-components on l10n changes. (#196)
+
+    Components enhanced by the `withLocalization` are now re-rendered when
+    the enclosing `<LocalizationProvider>` receives a new value of the
+    `messages` prop.
+
+  - Use compat dependencies only in fluent-react/compat. (#193)
+
+    When `fluent-react` is imported as `fluent-react` it will now use the
+    untranspiled version of its `fluent` dependency for consistency. When
+    it's imported as `fluent-react/compat` it will use `fluent/compat` too.
+
+    Due to this change some build setups might now require the
+    `@babel/plugin-proposal-async-generator-functions` or the
+    `@babel/plugin-syntax-async-generators` plugin.
+
+  - Upgrade to Babel 7. (#126)
+
+    `fluent-react/compat` is now built with Babel 7.
+
 ## fluent-react 0.6.1 (February 19, 2018)
 
   - Preserve children of wrapped components if translation value is null. (#154)
