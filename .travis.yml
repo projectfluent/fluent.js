@@ -1,12 +1,7 @@
 sudo: false
 language: node_js
-script:
-  - if [[ $(node --version) = v8.* ]]; then make deps && make dist; fi
-  - if [[ $(node --version) = v6.* ]]; then make -C fluent-syntax dist; fi
-  - make -C fluent-syntax test-without-babel-polyfill
-node_js:
-  - "6"
-  - "8"
+script: make deps && make dist
+node_js: "8.9"
 cache:
   directories: node_modules
 notifications:
