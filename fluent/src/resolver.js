@@ -257,7 +257,10 @@ function SelectExpression(env, {exp, vars, def}) {
 function Type(env, expr) {
   // A fast-path for strings which are the most common case, and for
   // `FluentNone` which doesn't require any additional logic.
-  if (typeof expr === "string" || expr instanceof FluentNone) {
+  if (typeof expr === "string") {
+    return env.ctx._transform(expr);
+  }
+  if (expr instanceof FluentNone) {
     return expr;
   }
 
@@ -454,7 +457,7 @@ function Pattern(env, ptn) {
 
   for (const elem of ptn) {
     if (typeof elem === "string") {
-      result.push(elem);
+      result.push(ctx._transform(elem));
       continue;
     }
 
