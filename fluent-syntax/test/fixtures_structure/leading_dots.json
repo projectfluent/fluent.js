@@ -97,7 +97,7 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringExpression",
+              "type": "StringLiteral",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -153,7 +153,7 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringExpression",
+              "type": "StringLiteral",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -218,7 +218,7 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringExpression",
+              "type": "StringLiteral",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -283,7 +283,7 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringExpression",
+              "type": "StringLiteral",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -469,7 +469,7 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringExpression",
+              "type": "StringLiteral",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -654,7 +654,7 @@
               {
                 "type": "Placeable",
                 "expression": {
-                  "type": "StringExpression",
+                  "type": "StringLiteral",
                   "value": ".",
                   "span": {
                     "type": "Span",
@@ -718,7 +718,7 @@
             "expression": {
               "type": "SelectExpression",
               "expression": {
-                "type": "NumberExpression",
+                "type": "NumberLiteral",
                 "value": "1",
                 "span": {
                   "type": "Span",
@@ -781,7 +781,7 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "StringExpression",
+                          "type": "StringLiteral",
                           "value": ".",
                           "span": {
                             "type": "Span",
