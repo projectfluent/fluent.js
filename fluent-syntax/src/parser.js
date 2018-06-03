@@ -670,6 +670,7 @@ export default class FluentParser {
 
   getCallArgs(ps) {
     const args = [];
+    const argumentNames = new Set();
 
     ps.skipInlineWS();
 
@@ -679,6 +680,14 @@ export default class FluentParser {
       }
 
       const arg = this.getCallArg(ps);
+      if (arg.type === "NamedArgument") {
+        if (argumentNames.has(arg.name.name)) {
+          throw new ParseError("E0022");
+        }
+        argumentNames.add(arg.name.name);
+      } else if (argumentNames.size > 0) {
+        throw new ParseError("E0021");
+      }
       args.push(arg);
 
       ps.skipInlineWS();
