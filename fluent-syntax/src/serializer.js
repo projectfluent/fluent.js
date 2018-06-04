@@ -277,18 +277,14 @@ function serializeVariantExpression(expr) {
 
 function serializeCallExpression(expr) {
   const fun = serializeFunction(expr.callee);
-  const args = expr.args.map(serializeCallArgument).join(", ");
-  return `${fun}(${args})`;
-}
-
-
-function serializeCallArgument(arg) {
-  switch (arg.type) {
-    case "NamedArgument":
-      return serializeNamedArgument(arg);
-    default:
-      return serializeExpression(arg);
+  const positional = expr.positional.map(serializeExpression).join(", ");
+  const named = expr.named.map(serializeNamedArgument).join(", ");
+  if (expr.positional.length > 0 && expr.named.length > 0) {
+    return `${fun}(${positional}, ${named})`;
+  } else if (expr.positional.length > 0) {
+    return `${fun}(${positional})`;
   }
+  return `${fun}(${named})`;
 }
 
 
