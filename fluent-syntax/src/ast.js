@@ -115,10 +115,10 @@ export class MessageReference extends Expression {
   }
 }
 
-export class VariableExpression extends Expression {
+export class VariableReference extends Expression {
   constructor(id) {
     super();
-    this.type = "VariableExpression";
+    this.type = "VariableReference";
     this.id = id;
   }
 }

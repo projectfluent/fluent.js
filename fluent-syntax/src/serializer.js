@@ -196,8 +196,8 @@ function serializeExpression(expr) {
       return serializeNumberLiteral(expr);
     case "MessageReference":
       return serializeMessageReference(expr);
-    case "VariableExpression":
-      return serializeVariableExpression(expr);
+    case "VariableReference":
+      return serializeVariableReference(expr);
     case "AttributeExpression":
       return serializeAttributeExpression(expr);
     case "VariantExpression":
@@ -227,7 +227,7 @@ function serializeMessageReference(expr) {
 }
 
 
-function serializeVariableExpression(expr) {
+function serializeVariableReference(expr) {
   return `$${serializeIdentifier(expr.id)}`;
 }
 
