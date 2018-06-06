@@ -20,7 +20,7 @@ function withSpan(fn) {
       return node;
     }
 
-    // Spans of Messages and Sections should include the attached Comment.
+    // Spans of Messages should include the attached Comment.
     if (node.type === "Message") {
       if (node.comment !== null) {
         start = node.comment.span.start;
@@ -46,7 +46,6 @@ export default class FluentParser {
       "getVariant", "getVariantName", "getNumber", "getPattern",
       "getTextElement", "getPlaceable", "getExpression",
       "getSelectorExpression", "getCallArg", "getString", "getLiteral",
-      "getGroupCommentFromSection"
     ].forEach(
       name => this[name] = withSpan(this[name])
     );
@@ -61,21 +60,7 @@ export default class FluentParser {
     while (ps.current()) {
       const entry = this.getEntryOrJunk(ps);
 
-      if (entry === null) {
-        // That happens when we get a 0.4 style section
-        continue;
-      }
-
-      if (entry.type === "Comment" &&
-        ps.lastCommentZeroFourSyntax && entries.length === 0) {
-        const comment = new AST.ResourceComment(entry.content);
-        comment.span = entry.span;
-        entries.push(comment);
-      } else {
-        entries.push(entry);
-      }
-
-      ps.lastCommentZeroFourSyntax = false;
+      entries.push(entry);
       ps.skipBlankLines();
     }
 
@@ -133,15 +118,6 @@ export default class FluentParser {
       ps.expectChar(ps.current() ? "\n" : undefined);
     }
 
-    if (ps.currentIs("[")) {
-      const groupComment = this.getGroupCommentFromSection(ps, comment);
-      if (comment && this.withSpans) {
-        // The Group Comment should start where the section comment starts.
-        groupComment.span.start = comment.span.start;
-      }
-      return groupComment;
-    }
-
     if (ps.isEntryIDStart() && (!comment || comment.type === "Comment")) {
       return this.getMessage(ps, comment);
     }
@@ -153,40 +129,7 @@ export default class FluentParser {
     throw new ParseError("E0002");
   }
 
-  getZeroFourStyleComment(ps) {
-    ps.expectChar("/");
-    ps.expectChar("/");
-    ps.takeCharIf(" ");
-
-    let content = "";
-
-    while (true) {
-      let ch;
-      while ((ch = ps.takeChar(x => x !== "\n"))) {
-        content += ch;
-      }
-
-      if (ps.isPeekNextLineZeroFourStyleComment()) {
-        content += "\n";
-        ps.next();
-        ps.expectChar("/");
-        ps.expectChar("/");
-        ps.takeCharIf(" ");
-      } else {
-        break;
-      }
-    }
-
-    const comment = new AST.Comment(content);
-    ps.lastCommentZeroFourSyntax = true;
-    return comment;
-  }
-
   getComment(ps) {
-    if (ps.currentIs("/")) {
-      return this.getZeroFourStyleComment(ps);
-    }
-
     // 0 - comment
     // 1 - group comment
     // 2 - resource comment
@@ -235,28 +178,6 @@ export default class FluentParser {
     return new Comment(content);
   }
 
-  getGroupCommentFromSection(ps, comment) {
-    ps.expectChar("[");
-    ps.expectChar("[");
-
-    ps.skipInlineWS();
-
-    this.getVariantName(ps);
-
-    ps.skipInlineWS();
-
-    ps.expectChar("]");
-    ps.expectChar("]");
-
-    if (comment) {
-      return new AST.GroupComment(comment.content);
-    }
-
-    // A Section without a comment is like an empty Group Comment. Semantically
-    // it ends the previous group and starts a new one.
-    return new AST.GroupComment("");
-  }
-
   getMessage(ps, comment) {
     const id = this.getEntryIdentifier(ps);
 
@@ -265,11 +186,7 @@ export default class FluentParser {
     let pattern;
     let attrs;
 
-    // XXX Syntax 0.4 compatibility.
-    // XXX Replace with ps.expectChar('=').
-    if (ps.currentIs("=")) {
-      ps.next();
-
+    if (ps.expectChar("=")) {
       if (ps.isPeekPatternStart()) {
         ps.skipIndent();
         pattern = this.getPattern(ps);

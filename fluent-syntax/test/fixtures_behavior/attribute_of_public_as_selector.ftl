@@ -3,4 +3,4 @@ err1 =
         [1] One
        *[2] Two
     }
-//~ ERROR E0018, pos 21
+#~ ERROR E0018, pos 21

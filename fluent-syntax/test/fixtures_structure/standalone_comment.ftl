@@ -1,3 +1,3 @@
 foo = Value
 
-// This is a standalone comment
+# This is a standalone comment

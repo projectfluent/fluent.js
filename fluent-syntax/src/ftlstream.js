@@ -151,25 +151,6 @@ export class FTLParserStream extends ParserStream {
     return this.isPeekNextLinePatternStart();
   }
 
-  isPeekNextLineZeroFourStyleComment() {
-    if (!this.currentPeekIs("\n")) {
-      return false;
-    }
-
-    this.peek();
-
-    if (this.currentPeekIs("/")) {
-      this.peek();
-      if (this.currentPeekIs("/")) {
-        this.resetPeek();
-        return true;
-      }
-    }
-
-    this.resetPeek();
-    return false;
-  }
-
   // -1 - any
   //  0 - comment
   //  1 - group comment
