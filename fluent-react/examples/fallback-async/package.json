@@ -1,0 +1,20 @@
+{
+  "name": "fluent-react-example-fallback-async",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "1.1.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "fluent": "file:../../../fluent",
+    "fluent-intl-polyfill": "file:../../../fluent-intl-polyfill",
+    "fluent-react": "file:../../../fluent-react",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  }
+}

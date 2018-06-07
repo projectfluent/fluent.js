@@ -1,6 +1,6 @@
 PACKAGE := fluent-react
 GLOBAL  := FluentReact
-DEPS    := fluent:Fluent,react:React,prop-types:PropTypes
+DEPS    := fluent:Fluent,cached-iterable:CachedIterable,react:React,prop-types:PropTypes
 
 include ../common.mk
 
