@@ -20,7 +20,7 @@
             "type": "Placeable",
             "expression": {
               "type": "SelectExpression",
-              "expression": null,
+              "selector": null,
               "variants": [
                 {
                   "type": "Variant",
@@ -270,7 +270,7 @@
             "type": "Placeable",
             "expression": {
               "type": "SelectExpression",
-              "expression": {
+              "selector": {
                 "type": "AttributeExpression",
                 "ref": {
                   "type": "MessageReference",

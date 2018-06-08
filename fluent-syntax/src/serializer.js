@@ -177,7 +177,7 @@ function serializePlaceable(placeable) {
     case "SelectExpression":
       // Special-case select expression to control the whitespace around the
       // opening and the closing brace.
-      return expr.expression
+      return expr.selector
         // A select expression with a selector.
         ? `{ ${serializeSelectExpression(expr)}}`
         // A variant list without a selector.
@@ -235,8 +235,8 @@ function serializeVariableReference(expr) {
 function serializeSelectExpression(expr) {
   const parts = [];
 
-  if (expr.expression) {
-    const selector = `${serializeExpression(expr.expression)} ->`;
+  if (expr.selector) {
+    const selector = `${serializeExpression(expr.selector)} ->`;
     parts.push(selector);
   }
 

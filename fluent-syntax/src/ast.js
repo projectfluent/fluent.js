@@ -117,10 +117,10 @@ export class VariableReference extends SyntaxNode {
 }
 
 export class SelectExpression extends SyntaxNode {
-  constructor(expression, variants) {
+  constructor(selector, variants) {
     super();
     this.type = "SelectExpression";
-    this.expression = expression;
+    this.selector = selector;
     this.variants = variants;
   }
 }

@@ -717,7 +717,7 @@
             "type": "Placeable",
             "expression": {
               "type": "SelectExpression",
-              "expression": {
+              "selector": {
                 "type": "NumberLiteral",
                 "value": "1",
                 "span": {
