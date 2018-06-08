@@ -91,18 +91,18 @@ export class Expression extends SyntaxNode {
   }
 }
 
-export class StringExpression extends Expression {
+export class StringLiteral extends Expression {
   constructor(value) {
     super();
-    this.type = "StringExpression";
+    this.type = "StringLiteral";
     this.value = value;
   }
 }
 
-export class NumberExpression extends Expression {
+export class NumberLiteral extends Expression {
   constructor(value) {
     super();
-    this.type = "NumberExpression";
+    this.type = "NumberLiteral";
     this.value = value;
   }
 }
@@ -115,10 +115,10 @@ export class MessageReference extends Expression {
   }
 }
 
-export class ExternalArgument extends Expression {
+export class VariableReference extends Expression {
   constructor(id) {
     super();
-    this.type = "ExternalArgument";
+    this.type = "VariableReference";
     this.id = id;
   }
 }

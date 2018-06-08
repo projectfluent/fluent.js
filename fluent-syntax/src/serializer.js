@@ -190,14 +190,14 @@ function serializePlaceable(placeable) {
 
 function serializeExpression(expr) {
   switch (expr.type) {
-    case "StringExpression":
-      return serializeStringExpression(expr);
-    case "NumberExpression":
-      return serializeNumberExpression(expr);
+    case "StringLiteral":
+      return serializeStringLiteral(expr);
+    case "NumberLiteral":
+      return serializeNumberLiteral(expr);
     case "MessageReference":
       return serializeMessageReference(expr);
-    case "ExternalArgument":
-      return serializeExternalArgument(expr);
+    case "VariableReference":
+      return serializeVariableReference(expr);
     case "AttributeExpression":
       return serializeAttributeExpression(expr);
     case "VariantExpression":
@@ -212,12 +212,12 @@ function serializeExpression(expr) {
 }
 
 
-function serializeStringExpression(expr) {
+function serializeStringLiteral(expr) {
   return `"${expr.value}"`;
 }
 
 
-function serializeNumberExpression(expr) {
+function serializeNumberLiteral(expr) {
   return expr.value;
 }
 
@@ -227,7 +227,7 @@ function serializeMessageReference(expr) {
 }
 
 
-function serializeExternalArgument(expr) {
+function serializeVariableReference(expr) {
   return `$${serializeIdentifier(expr.id)}`;
 }
 
@@ -301,10 +301,10 @@ function serializeNamedArgument(arg) {
 
 function serializeArgumentValue(argval) {
   switch (argval.type) {
-    case "StringExpression":
-      return serializeStringExpression(argval);
-    case "NumberExpression":
-      return serializeNumberExpression(argval);
+    case "StringLiteral":
+      return serializeStringLiteral(argval);
+    case "NumberLiteral":
+      return serializeNumberLiteral(argval);
     default:
       throw new Error(`Unknown argument type: ${argval.type}`);
   }
@@ -325,8 +325,8 @@ function serializeVariantKey(key) {
   switch (key.type) {
     case "VariantName":
       return serializeVariantName(key);
-    case "NumberExpression":
-      return serializeNumberExpression(key);
+    case "NumberLiteral":
+      return serializeNumberLiteral(key);
     default:
       throw new Error(`Unknown variant key type: ${key.type}`);
   }
