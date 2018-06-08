@@ -24,6 +24,22 @@ export default class CachedAsyncIterable {
     }
 
     /**
+     * Create an `CachedAsyncIterable` instance from an iterable or, if
+     * another instance of `CachedAsyncIterable` is passed, return it
+     * without any modifications.
+     *
+     * @param {Iterable} iterable
+     * @returns {CachedAsyncIterable}
+     */
+    static from(iterable) {
+        if (iterable instanceof CachedAsyncIterable) {
+            return iterable;
+        }
+
+        return new CachedAsyncIterable(iterable);
+    }
+
+    /**
      * Synchronous iterator over the cached elements.
      *
      * Return a generator object implementing the iterator protocol over the
