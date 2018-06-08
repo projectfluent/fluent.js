@@ -455,7 +455,7 @@ suite('Serialize resource', function() {
 
   test('call expression with positional and named arguments', function() {
     const input = ftl`
-      foo = { FOO(bar, baz: "baz", 1) }
+      foo = { FOO(bar, 1, baz: "baz") }
     `;
     assert.equal(pretty(input), input);
   });

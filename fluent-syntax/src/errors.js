@@ -58,6 +58,10 @@ function getErrorMessage(code, args) {
       return "Attributes of terms cannot be used as placeables";
     case "E0020":
       return "Unterminated string expression";
+    case "E0021":
+      return "Positional arguments must not follow named arguments";
+    case "E0022":
+      return "Named arguments must be unique";
     default:
       return code;
   }
