@@ -133,10 +133,10 @@ export class SelectExpression extends Expression {
 }
 
 export class AttributeExpression extends Expression {
-  constructor(id, name) {
+  constructor(ref, name) {
     super();
     this.type = "AttributeExpression";
-    this.id = id;
+    this.ref = ref;
     this.name = name;
   }
 }

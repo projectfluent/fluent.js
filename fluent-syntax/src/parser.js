@@ -483,7 +483,7 @@ export default class FluentParser {
       }
 
       if (selector.type === "AttributeExpression" &&
-          !selector.id.name.startsWith("-")) {
+          !selector.ref.id.name.startsWith("-")) {
         throw new ParseError("E0018");
       }
 
@@ -506,7 +506,7 @@ export default class FluentParser {
 
       return new AST.SelectExpression(selector, variants);
     } else if (selector.type === "AttributeExpression" &&
-               selector.id.name.startsWith("-")) {
+               selector.ref.id.name.startsWith("-")) {
       throw new ParseError("E0019");
     }
 
@@ -526,7 +526,7 @@ export default class FluentParser {
       ps.next();
 
       const attr = this.getIdentifier(ps);
-      return new AST.AttributeExpression(literal.id, attr);
+      return new AST.AttributeExpression(literal, attr);
     }
 
     if (ch === "[") {
