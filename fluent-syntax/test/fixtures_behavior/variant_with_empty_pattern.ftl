@@ -5,4 +5,4 @@ key1 = {
 err1 = {
     *[one]
     }
-//~ ERROR E0012, pos 51
+#~ ERROR E0012, pos 51

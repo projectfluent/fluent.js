@@ -1,3 +1,3 @@
 key = { no-caps-name() }
 
-//~ ERROR E0008, pos 22
+#~ ERROR E0008, pos 22

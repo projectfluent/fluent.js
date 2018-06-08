@@ -150,7 +150,7 @@ suite('Serialize resource', function() {
       ## Comment Header
       ##
       ## A multiline
-      ## section comment.
+      ## group comment.
 
       bar = Bar
     `;
@@ -177,18 +177,6 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('attribute (Syntax 0.4)', function() {
-    const input = ftl`
-      foo
-          .attr = Foo Attr
-    `;
-    const output = ftl`
-      foo =
-          .attr = Foo Attr
-    `;
-    assert.equal(pretty(input), output);
-  });
-
   test('attribute', function() {
     const input = ftl`
       foo =
@@ -205,20 +193,6 @@ suite('Serialize resource', function() {
               Continued
     `;
     assert.equal(pretty(input), input);
-  });
-
-  test('two attributes (Syntax 0.4)', function() {
-    const input = ftl`
-      foo
-          .attr-a = Foo Attr A
-          .attr-b = Foo Attr B
-    `;
-    const output = ftl`
-      foo =
-          .attr-a = Foo Attr A
-          .attr-b = Foo Attr B
-    `;
-    assert.equal(pretty(input), output);
   });
 
   test('two attributes', function() {
