@@ -262,9 +262,9 @@ function serializeVariant(variant) {
 
 
 function serializeAttributeExpression(expr) {
-  const id = serializeIdentifier(expr.id);
+  const ref = serializeExpression(expr.ref);
   const name = serializeIdentifier(expr.name);
-  return `${id}.${name}`;
+  return `${ref}.${name}`;
 }
 
 

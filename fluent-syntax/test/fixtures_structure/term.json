@@ -272,9 +272,17 @@
               "type": "SelectExpression",
               "expression": {
                 "type": "AttributeExpression",
-                "id": {
-                  "type": "Identifier",
-                  "name": "-brand-name",
+                "ref": {
+                  "type": "MessageReference",
+                  "id": {
+                    "type": "Identifier",
+                    "name": "-brand-name",
+                    "span": {
+                      "type": "Span",
+                      "start": 199,
+                      "end": 210
+                    }
+                  },
                   "span": {
                     "type": "Span",
                     "start": 199,
