@@ -84,14 +84,7 @@ export class Placeable extends SyntaxNode {
   }
 }
 
-export class Expression extends SyntaxNode {
-  constructor() {
-    super();
-    this.type = "Expression";
-  }
-}
-
-export class StringLiteral extends Expression {
+export class StringLiteral extends SyntaxNode {
   constructor(value) {
     super();
     this.type = "StringLiteral";
@@ -99,7 +92,7 @@ export class StringLiteral extends Expression {
   }
 }
 
-export class NumberLiteral extends Expression {
+export class NumberLiteral extends SyntaxNode {
   constructor(value) {
     super();
     this.type = "NumberLiteral";
@@ -107,7 +100,7 @@ export class NumberLiteral extends Expression {
   }
 }
 
-export class MessageReference extends Expression {
+export class MessageReference extends SyntaxNode {
   constructor(id) {
     super();
     this.type = "MessageReference";
@@ -115,7 +108,7 @@ export class MessageReference extends Expression {
   }
 }
 
-export class VariableReference extends Expression {
+export class VariableReference extends SyntaxNode {
   constructor(id) {
     super();
     this.type = "VariableReference";
@@ -123,7 +116,7 @@ export class VariableReference extends Expression {
   }
 }
 
-export class SelectExpression extends Expression {
+export class SelectExpression extends SyntaxNode {
   constructor(expression, variants) {
     super();
     this.type = "SelectExpression";
@@ -132,7 +125,7 @@ export class SelectExpression extends Expression {
   }
 }
 
-export class AttributeExpression extends Expression {
+export class AttributeExpression extends SyntaxNode {
   constructor(ref, name) {
     super();
     this.type = "AttributeExpression";
@@ -141,7 +134,7 @@ export class AttributeExpression extends Expression {
   }
 }
 
-export class VariantExpression extends Expression {
+export class VariantExpression extends SyntaxNode {
   constructor(ref, key) {
     super();
     this.type = "VariantExpression";
@@ -150,7 +143,7 @@ export class VariantExpression extends Expression {
   }
 }
 
-export class CallExpression extends Expression {
+export class CallExpression extends SyntaxNode {
   constructor(callee, positional = [], named = []) {
     super();
     this.type = "CallExpression";
