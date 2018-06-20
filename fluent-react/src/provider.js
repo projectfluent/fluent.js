@@ -30,7 +30,7 @@ export default class LocalizationProvider extends Component {
       throw new Error("LocalizationProvider must receive the messages prop.");
     }
 
-    if (!messages[Symbol.iterator]) {
+    if (!messages[Symbol.iterator] && !messages[Symbol.asyncIterator]) {
       throw new Error("The messages prop must be an iterable.");
     }
 
@@ -69,6 +69,10 @@ function isIterable(props, propName, componentName) {
   const prop = props[propName];
 
   if (Symbol.iterator in Object(prop)) {
+    return null;
+  }
+
+  if (Symbol.asyncIterator in Object(prop)) {
     return null;
   }
 

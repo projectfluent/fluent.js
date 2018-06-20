@@ -4,13 +4,20 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
+import CachedAsyncIterable from '../src/cached_async_iterable';
 import { Localized } from '../src/index';
 
 suite('Localized - rendering', function() {
-  test('render the value', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+  let mcx, l10n;
 
+  setup(async function() {
+    mcx = new MessageContext();
+    const contexts = new CachedAsyncIterable([mcx]);
+    await contexts.touchNext(1);
+    l10n = new ReactLocalization(contexts);
+  });
+
+  test('render the value', async function() {
     mcx.addMessages(`
 foo = FOO
 `)
@@ -28,9 +35,6 @@ foo = FOO
   });
 
   test('render an allowed attribute', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .attr = ATTR
@@ -49,9 +53,6 @@ foo =
   });
 
   test('only render allowed attributes', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .attr1 = ATTR 1
@@ -71,9 +72,6 @@ foo =
   });
 
   test('filter out forbidden attributes', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .attr = ATTR
@@ -92,9 +90,6 @@ foo =
   });
 
   test('filter all attributes if attrs not given', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .attr = ATTR
@@ -113,9 +108,6 @@ foo =
   });
 
   test('preserve existing attributes when setting new ones', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .attr = ATTR
@@ -134,9 +126,6 @@ foo =
   });
 
   test('overwrite existing attributes if allowed', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .existing = ATTR
@@ -155,9 +144,6 @@ foo =
   });
 
   test('protect existing attributes if setting is forbidden', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .existing = ATTR
@@ -176,9 +162,6 @@ foo =
   });
 
   test('protect existing attributes by default', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .existing = ATTR
@@ -197,9 +180,6 @@ foo =
   });
 
   test('preserve children when translation value is null', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
-
     mcx.addMessages(`
 foo =
     .title = TITLE
@@ -223,9 +203,7 @@ foo =
 
 
   test('$arg is passed to format the value', function() {
-    const mcx = new MessageContext();
     const format = sinon.spy(mcx, 'format');
-    const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
 foo = { $arg }
@@ -243,9 +221,7 @@ foo = { $arg }
   });
 
   test('$arg is passed to format the attributes', function() {
-    const mcx = new MessageContext();
     const format = sinon.spy(mcx, 'format');
-    const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
 foo = { $arg }

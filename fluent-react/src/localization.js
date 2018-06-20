@@ -1,4 +1,5 @@
-import { CachedIterable, mapContextSync } from "fluent";
+import {mapContextSync} from "fluent";
+import CachedAsyncIterable from "./cached_async_iterable";
 
 /*
  * `ReactLocalization` handles translation formatting and fallback.
@@ -17,8 +18,10 @@ import { CachedIterable, mapContextSync } from "fluent";
  */
 export default class ReactLocalization {
   constructor(messages) {
-    this.contexts = new CachedIterable(messages);
+    this.contexts = CachedAsyncIterable.from(messages);
     this.subs = new Set();
+
+    this.isFetching = false;
   }
 
   /*
@@ -39,14 +42,39 @@ export default class ReactLocalization {
    * Set a new `messages` iterable and trigger the retranslation.
    */
   setMessages(messages) {
-    this.contexts = new CachedIterable(messages);
-
-    // Update all subscribed Localized components.
-    this.subs.forEach(comp => comp.relocalize());
+    this.contexts = CachedAsyncIterable.from(messages);
+    if (this.contexts.length === 0) {
+      // If the iterable has an empty cache, request the first context but do
+      // not await it.
+      this.touchNext(1);
+    } else {
+      // Otherwise, let's try to use the new cached contexts. Update all
+      // subscribed Localized components.
+      this.subs.forEach(comp => comp.relocalize());
+    }
   }
 
   getMessageContext(id) {
-    return mapContextSync(this.contexts, id);
+    const mcx = mapContextSync(this.contexts, id);
+    if (mcx === null && !this.isFetching) {
+      // Request the next context but do not await it.
+      this.touchNext(1);
+    }
+    return mcx;
+  }
+
+  async touchNext(count = 1) {
+    // Fetch the first `count` contexts.
+    this.isFetching = true;
+    const last = await this.contexts.touchNext(count);
+    this.isFetching = false;
+
+    if (!last.done) {
+      // If the iterable of contexts has not been exhausted yet, the newly
+      // fetched context might offer fallback translations. Update all
+      // subscribed Localized components.
+      this.subs.forEach(comp => comp.relocalize());
+    }
   }
 
   formatCompound(mcx, msg, args) {
