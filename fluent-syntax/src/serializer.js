@@ -13,6 +13,11 @@ function isSelectExpr(elem) {
     && elem.expression.type === "SelectExpression";
 }
 
+function isVariantList(elem) {
+  return elem.type === "Placeable"
+    && elem.expression.type === "VariantList";
+}
+
 // Bit masks representing the state of the serializer.
 export const HAS_ENTRIES = 1;
 
@@ -131,18 +136,21 @@ function serializeAttribute(attribute) {
 }
 
 
-function serializeValue(pattern) {
-  const content = indent(serializePattern(pattern));
+function serializeValue(value) {
+  const content = value.type === "VariantList" ?
+    serializeVariantList(value) : serializePattern(value);
 
   const startOnNewLine =
-    pattern.elements.some(includesNewLine)
-    || pattern.elements.some(isSelectExpr);
+    value.type === "VariantList" ||
+    value.elements.some(isSelectExpr) ||
+    value.elements.some(isVariantList) ||
+    value.elements.some(includesNewLine);
 
   if (startOnNewLine) {
-    return `\n    ${content}`;
+    return `\n    ${indent(content)}`;
   }
 
-  return ` ${content}`;
+  return ` ${indent(content)}`;
 }
 
 
@@ -207,6 +215,8 @@ function serializeExpression(expr) {
       return serializeCallExpression(expr);
     case "SelectExpression":
       return serializeSelectExpression(expr);
+    case "VariantList":
+      return serializeVariantList(expr);
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
@@ -240,6 +250,17 @@ function serializeSelectExpression(expr) {
     const selector = `${serializeExpression(expr.selector)} ->`;
     parts.push(selector);
   }
+
+  for (const variant of expr.variants) {
+    parts.push(serializeVariant(variant));
+  }
+
+  parts.push("\n");
+  return parts.join("");
+}
+
+function serializeVariantList(expr) {
+  const parts = [];
 
   for (const variant of expr.variants) {
     parts.push(serializeVariant(variant));
