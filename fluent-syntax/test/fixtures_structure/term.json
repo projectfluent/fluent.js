@@ -190,7 +190,7 @@
             "expression": {
               "type": "VariantExpression",
               "ref": {
-                "type": "MessageReference",
+                "type": "TermReference",
                 "id": {
                   "type": "Identifier",
                   "name": "-brand-name",
@@ -273,7 +273,7 @@
               "selector": {
                 "type": "AttributeExpression",
                 "ref": {
-                  "type": "MessageReference",
+                  "type": "TermReference",
                   "id": {
                     "type": "Identifier",
                     "name": "-brand-name",
@@ -322,7 +322,7 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "MessageReference",
+                          "type": "TermReference",
                           "id": {
                             "type": "Identifier",
                             "name": "-brand-name",
@@ -384,7 +384,7 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "MessageReference",
+                          "type": "TermReference",
                           "id": {
                             "type": "Identifier",
                             "name": "-brand-name",
@@ -455,7 +455,7 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "MessageReference",
+                          "type": "TermReference",
                           "id": {
                             "type": "Identifier",
                             "name": "-brand-name",

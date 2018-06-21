@@ -195,6 +195,7 @@ function serializeExpression(expr) {
     case "NumberLiteral":
       return serializeNumberLiteral(expr);
     case "MessageReference":
+    case "TermReference":
       return serializeMessageReference(expr);
     case "VariableReference":
       return serializeVariableReference(expr);

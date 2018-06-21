@@ -109,11 +109,7 @@ export class FTLParserStream extends ParserStream {
            (cc >= 65 && cc <= 90); // A-Z
   }
 
-  isEntryIDStart() {
-    if (this.currentIs("-")) {
-      this.peek();
-    }
-
+  isIdentifierStart() {
     const ch = this.currentPeek();
     const isID = this.isCharIDStart(ch);
     this.resetPeek();
@@ -273,10 +269,9 @@ export class FTLParserStream extends ParserStream {
       if (this.currentIs("\n") && !this.peekCharIs("\n")) {
         this.next();
         if (this.ch === undefined ||
-            this.isEntryIDStart() ||
-            this.currentIs("#") ||
-            (this.currentIs("/") && this.peekCharIs("/")) ||
-            (this.currentIs("[") && this.peekCharIs("["))) {
+            this.isIdentifierStart() ||
+            this.currentIs("-") ||
+            this.currentIs("#")) {
           break;
         }
       }
@@ -284,20 +279,14 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  takeIDStart(allowTerm) {
-    if (allowTerm && this.currentIs("-")) {
-      this.next();
-      return "-";
-    }
-
+  takeIDStart() {
     if (this.isCharIDStart(this.ch)) {
       const ret = this.ch;
       this.next();
       return ret;
     }
 
-    const allowedRange = allowTerm ? "a-zA-Z-" : "a-zA-Z";
-    throw new ParseError("E0004", allowedRange);
+    throw new ParseError("E0004", "a-zA-Z");
   }
 
   takeIDChar() {

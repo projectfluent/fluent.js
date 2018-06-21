@@ -108,6 +108,14 @@ export class MessageReference extends SyntaxNode {
   }
 }
 
+export class TermReference extends SyntaxNode {
+  constructor(id) {
+    super();
+    this.type = "TermReference";
+    this.id = id;
+  }
+}
+
 export class VariableReference extends SyntaxNode {
   constructor(id) {
     super();

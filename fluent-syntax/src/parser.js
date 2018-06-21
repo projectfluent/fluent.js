@@ -42,9 +42,9 @@ export default class FluentParser {
 
     // Poor man's decorators.
     [
-      "getComment", "getMessage", "getAttribute", "getIdentifier",
-      "getVariant", "getVariantName", "getNumber", "getPattern",
-      "getTextElement", "getPlaceable", "getExpression",
+      "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
+      "getTermIdentifier", "getVariant", "getVariantName", "getNumber",
+      "getPattern", "getTextElement", "getPlaceable", "getExpression",
       "getSelectorExpression", "getCallArg", "getString", "getLiteral",
     ].forEach(
       name => this[name] = withSpan(this[name])
@@ -109,20 +109,31 @@ export default class FluentParser {
   getEntry(ps) {
     let comment;
 
-    if (ps.currentIs("/") || ps.currentIs("#")) {
+    if (ps.currentIs("#")) {
       comment = this.getComment(ps);
 
       // The Comment content doesn't include the trailing newline. Consume
       // this newline here to be ready for the next entry.  undefined stands
       // for EOF.
       ps.expectChar(ps.current() ? "\n" : undefined);
+
+      if (comment.type === "GroupComment"
+        || comment.type === "ResourceComment") {
+        // Group and Resource comments are always standalone.
+        return comment;
+      }
     }
 
-    if (ps.isEntryIDStart() && (!comment || comment.type === "Comment")) {
+    if (ps.currentIs("-")) {
+      return this.getTerm(ps, comment);
+    }
+
+    if (ps.isIdentifierStart()) {
       return this.getMessage(ps, comment);
     }
 
     if (comment) {
+      // It's a standalone Comment.
       return comment;
     }
 
@@ -179,32 +190,20 @@ export default class FluentParser {
   }
 
   getMessage(ps, comment) {
-    const id = this.getEntryIdentifier(ps);
+    const id = this.getIdentifier(ps);
 
     ps.skipInlineWS();
+    ps.expectChar("=");
 
-    let pattern;
-    let attrs;
-
-    if (ps.expectChar("=")) {
-      if (ps.isPeekPatternStart()) {
-        ps.skipIndent();
-        pattern = this.getPattern(ps);
-      } else {
-        ps.skipInlineWS();
-      }
-    }
-
-    if (id.name.startsWith("-") && pattern === undefined) {
-      throw new ParseError("E0006", id.name);
+    if (ps.isPeekPatternStart()) {
+      ps.skipIndent();
+      var pattern = this.getPattern(ps);
+    } else {
+      ps.skipInlineWS();
     }
 
     if (ps.isPeekNextLineAttributeStart()) {
-      attrs = this.getAttributes(ps);
-    }
-
-    if (id.name.startsWith("-")) {
-      return new AST.Term(id, pattern, attrs, comment);
+      var attrs = this.getAttributes(ps);
     }
 
     if (pattern === undefined && attrs === undefined) {
@@ -212,6 +211,26 @@ export default class FluentParser {
     }
 
     return new AST.Message(id, pattern, attrs, comment);
+  }
+
+  getTerm(ps, comment) {
+    const id = this.getTermIdentifier(ps);
+
+    ps.skipInlineWS();
+    ps.expectChar("=");
+
+    if (ps.isPeekPatternStart()) {
+      ps.skipIndent();
+      var pattern = this.getPattern(ps);
+    } else {
+      throw new ParseError("E0006", id.name);
+    }
+
+    if (ps.isPeekNextLineAttributeStart()) {
+      var attrs = this.getAttributes(ps);
+    }
+
+    return new AST.Term(id, pattern, attrs, comment);
   }
 
   getAttribute(ps) {
@@ -246,13 +265,8 @@ export default class FluentParser {
     return attrs;
   }
 
-  getEntryIdentifier(ps) {
-    return this.getIdentifier(ps, true);
-  }
-
-  getIdentifier(ps, allowTerm = false) {
-    let name = "";
-    name += ps.takeIDStart(allowTerm);
+  getIdentifier(ps) {
+    let name = ps.takeIDStart();
 
     let ch;
     while ((ch = ps.takeIDChar())) {
@@ -332,9 +346,7 @@ export default class FluentParser {
   }
 
   getVariantName(ps) {
-    let name = "";
-
-    name += ps.takeIDStart(false);
+    let name = ps.takeIDStart();
 
     while (true) {
       const ch = ps.takeVariantNameChar();
@@ -483,7 +495,7 @@ export default class FluentParser {
       }
 
       if (selector.type === "AttributeExpression" &&
-          !selector.ref.id.name.startsWith("-")) {
+          selector.ref.type === "MessageReference") {
         throw new ParseError("E0018");
       }
 
@@ -506,7 +518,7 @@ export default class FluentParser {
 
       return new AST.SelectExpression(selector, variants);
     } else if (selector.type === "AttributeExpression" &&
-               selector.ref.id.name.startsWith("-")) {
+               selector.ref.type === "TermReference") {
       throw new ParseError("E0019");
     }
 
@@ -516,7 +528,8 @@ export default class FluentParser {
   getSelectorExpression(ps) {
     const literal = this.getLiteral(ps);
 
-    if (literal.type !== "MessageReference") {
+    if (literal.type !== "MessageReference"
+      && literal.type !== "TermReference") {
       return literal;
     }
 
@@ -665,17 +678,22 @@ export default class FluentParser {
 
     if (ch === "$") {
       ps.next();
-      const name = this.getIdentifier(ps);
-      return new AST.VariableReference(name);
+      const id = this.getIdentifier(ps);
+      return new AST.VariableReference(id);
     }
 
-    if (ps.isEntryIDStart()) {
-      const name = this.getEntryIdentifier(ps);
-      return new AST.MessageReference(name);
+    if (ps.isIdentifierStart()) {
+      const id = this.getIdentifier(ps);
+      return new AST.MessageReference(id);
     }
 
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
+    }
+
+    if (ch === "-") {
+      const id = this.getTermIdentifier(ps);
+      return new AST.TermReference(id);
     }
 
     if (ch === '"') {
@@ -683,5 +701,12 @@ export default class FluentParser {
     }
 
     throw new ParseError("E0014");
+  }
+
+  getTermIdentifier(ps) {
+    ps.expectChar("-");
+    const id = this.getIdentifier(ps);
+    return new AST.Identifier(`-${id.name}`);
+
   }
 }
