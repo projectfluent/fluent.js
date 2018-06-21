@@ -72,6 +72,8 @@ readdir(fixtures, function(err, filenames) {
       const filepath = join(fixtures, filename);
       test(filename, function() {
         return readfile(filepath).then(file => {
+          file = file.indexOf("\r") !== -1 ?
+            file.replace(/(?:\r\n)/g, "\n") : file;
           const { directives, source } = preprocess(file);
           const expected = directives.join('\n') + '\n';
           const ast = parse(source);

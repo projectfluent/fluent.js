@@ -30,7 +30,8 @@ class RuntimeParser {
    * @returns {Array<Object, Array>}
    */
   getResource(string) {
-    this._source = string;
+    this._source = string.indexOf("\r") !== -1 ?
+      string.replace(/(?:\r\n)/g, "\n") : string;
     this._index = 0;
     this._length = string.length;
     this.entries = {};
