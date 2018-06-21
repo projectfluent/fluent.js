@@ -82,7 +82,8 @@ export default class Localized extends Component {
   render() {
     const { l10n } = this.context;
     const { id, attrs, children } = this.props;
-    const elem = Children.only(children);
+    const elem = typeof(children) !== "undefined" ?
+      Children.only(children) : null;
 
     if (!l10n) {
       // Use the wrapped component as fallback.
@@ -114,6 +115,10 @@ export default class Localized extends Component {
           localizedProps[name] = value;
         }
       }
+    }
+
+    if (!elem) {
+      return messageValue;
     }
 
     // If the wrapped component is a known void element, explicitly dismiss the
@@ -176,5 +181,5 @@ Localized.contextTypes = {
 };
 
 Localized.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node
 };

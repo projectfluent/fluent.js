@@ -45,13 +45,11 @@ suite('Localized - validation', function() {
   });
 
   test('without a child', function() {
-    function render() {
-      shallow(
-        <Localized />,
-        { context: { l10n: new ReactLocalization([]) } }
-      );
-    }
-    assert.throws(render, /a single React element child/);
+    const wrapper = shallow(
+      <Localized />,
+      { context: { l10n: new ReactLocalization([]) } }
+    );
+    assert.equal(wrapper.length, 1);
   });
 
   test('with multiple children', function() {
