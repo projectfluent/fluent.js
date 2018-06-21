@@ -1,0 +1,60 @@
+import * as fluent from 'fluent';
+import * as React from 'react';
+
+export declare interface LocalizedProps
+{
+    getString(id: string, args?: object, fallback?: string): string;
+}
+
+export declare type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+export declare function withLocalization<P extends LocalizedProps>(
+    WrappedComponent: React.ComponentType<P>): React.ComponentType<Omit<P, keyof LocalizedProps>>;
+
+export declare function isReactLocalization(props: object, propName: string) : Error | null;
+
+export declare interface LocalizationProviderProps {
+    messages: Iterable<fluent.MessageContext>,
+    children?: React.ReactNode
+}
+
+export declare class ReactLocalization {
+    constructor(messages: Iterable<string>);
+    public subscribe(component: React.Component): void;
+    public unsubscribe(component: React.Component): void;
+    public setMessages(messages: Iterable<string>): void;
+    public getMessageContext(id: string): fluent.MessageContext;
+    public formatCompound(mcx: fluent.MessageContext, msg: string, args?: object): {
+        value: string,
+        attrs?: object
+    };
+    public getString(id: string, args?: object, fallback?: string): string;
+}
+
+export declare interface ChildContextType {
+    l10n: ReactLocalization
+}
+
+export declare class LocalizationProvider extends React.Component<LocalizationProviderProps> {
+    public static childContextTypes: ChildContextType;
+    constructor(props: LocalizationProviderProps);
+    public getChildContext(): ReactLocalization;
+    public componentWillReceiveProps(next: LocalizationProviderProps): void;
+    public render() : React.ReactNode;
+}
+
+export declare interface LocalizedProperties {
+    id: string;
+    children?: React.ReactNode;
+}
+
+export declare class Localized extends React.Component<any> {
+    public componentDidMount(): void;
+    public componentWillUnmount(): void;
+
+    /**
+     * Rerender this component in a new language.
+     */
+    public relocalize(): void;
+    public render(): React.ReactNode;
+}
