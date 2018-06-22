@@ -1,6 +1,6 @@
 import { Component, Children } from "react";
 import PropTypes from "prop-types";
-
+import { parseMarkup } from "./markup";
 import ReactLocalization, { isReactLocalization} from "./localization";
 
 /*
@@ -39,7 +39,8 @@ export default class LocalizationProvider extends Component {
 
   getChildContext() {
     return {
-      l10n: this.l10n
+      l10n: this.l10n,
+      parseMarkup: this.props.parseMarkup || parseMarkup
     };
   }
 
@@ -57,12 +58,14 @@ export default class LocalizationProvider extends Component {
 }
 
 LocalizationProvider.childContextTypes = {
-  l10n: isReactLocalization
+  l10n: isReactLocalization,
+  parseMarkup: PropTypes.func
 };
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  messages: isIterable
+  messages: isIterable,
+  parseMarkup: PropTypes.func
 };
 
 function isIterable(props, propName, componentName) {

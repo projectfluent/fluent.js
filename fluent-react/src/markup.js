@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
-const TEMPLATE = document.createElement("template");
+const TEMPLATE = typeof(document) !== "undefined" ?
+  document.createElement("template") : null;
 
 export function parseMarkup(str) {
   TEMPLATE.innerHTML = str;

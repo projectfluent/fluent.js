@@ -1,9 +1,10 @@
 import React from 'react';
 import assert from 'assert';
-import { shallow } from 'enzyme';
+import { render, shallow } from 'enzyme';
 import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
-import { Localized } from '../src/index';
+import { parseMarkup } from '../src/markup';
+import { LocalizationProvider, Localized } from '../src/index';
 
 suite('Localized - overlay', function() {;
   test('< in text', function() {
@@ -679,6 +680,29 @@ foo = BEFORE <text-elem>Foo</text-elem> AFTER
         BEFORE <span>Foo</span> AFTER
       </div>
     ));
+  });
+
+  test('custom markup parser passed in from LocalizationProvider', function() {
+    let parseMarkupCalls = [];
+    function testParseMarkup(str) {
+      parseMarkupCalls.push(str);
+      return parseMarkup(str);
+    }
+
+    const mcx = new MessageContext();
+    mcx.addMessages(`
+foo = test <text-elem>custom markup parser</text-elem>
+`);
+
+    const wrapper = render(
+      <LocalizationProvider messages={[mcx]} parseMarkup={testParseMarkup}>
+        <Localized id="foo" text-elem={<span>not used</span>}>
+          <div/>
+        </Localized>
+      </LocalizationProvider>      
+    );
+
+    assert.deepEqual(parseMarkupCalls, ['test <text-elem>custom markup parser</text-elem>']);
   });
 
 });
