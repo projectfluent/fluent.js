@@ -59,9 +59,32 @@ export default class FluentParser {
 
     while (ps.current()) {
       const entry = this.getEntryOrJunk(ps);
+      const blankLines = ps.skipBlankLines();
 
+      // Regular Comments require special logic. Comments may be attached to
+      // Messages or Terms if they are followed immediately by them. However
+      // they should parse as standalone when they're followed by Junk.
+      // Consequently, we only attach them once we know that the Message or the
+      // Term parsed successfully.
+      if (entry.type === "Comment" && blankLines === 0 && ps.current()) {
+        const next = this.getEntryOrJunk(ps);
+        ps.skipBlankLines();
+
+        if (next.type === "Message" || next.type === "Term") {
+          // Attach it.
+          next.comment = entry;
+          entries.push(next);
+        } else {
+          // entry is a standalone Comment and next is Junk, GroupComment or
+          // ResourceComment. Push both independently of each other.
+          entries.push(entry, next);
+        }
+
+        continue;
+      }
+
+      // No special logic for other types of entries.
       entries.push(entry);
-      ps.skipBlankLines();
     }
 
     const res = new AST.Resource(entries);
@@ -73,9 +96,28 @@ export default class FluentParser {
     return res;
   }
 
+  /*
+   * Parse the first Message or Term in `source`.
+   *
+   * Skip all encountered comments and start parsing at the first Message or
+   * Term start. Return Junk if the parsing is not successful.
+   *
+   * Preceding comments are ignored unless they contain syntax errors
+   * themselves, in which case Junk for the invalid comment is returned.
+   */
   parseEntry(source) {
     const ps = new FTLParserStream(source);
     ps.skipBlankLines();
+
+    while (ps.currentIs("#")) {
+      const skipped = this.getEntryOrJunk(ps);
+      if (skipped.type === "Junk") {
+        // Don't skip Junk comments.
+        return skipped;
+      }
+      ps.skipBlankLines();
+    }
+
     return this.getEntryOrJunk(ps);
   }
 
@@ -107,34 +149,16 @@ export default class FluentParser {
   }
 
   getEntry(ps) {
-    let comment;
-
     if (ps.currentIs("#")) {
-      comment = this.getComment(ps);
-
-      // The Comment content doesn't include the trailing newline. Consume
-      // this newline here to be ready for the next entry.  undefined stands
-      // for EOF.
-      ps.expectChar(ps.current() ? "\n" : undefined);
-
-      if (comment.type === "GroupComment"
-        || comment.type === "ResourceComment") {
-        // Group and Resource comments are always standalone.
-        return comment;
-      }
+      return this.getComment(ps);
     }
 
     if (ps.currentIs("-")) {
-      return this.getTerm(ps, comment);
+      return this.getTerm(ps);
     }
 
     if (ps.isIdentifierStart()) {
-      return this.getMessage(ps, comment);
-    }
-
-    if (comment) {
-      // It's a standalone Comment.
-      return comment;
+      return this.getMessage(ps);
     }
 
     throw new ParseError("E0002");
@@ -189,7 +213,7 @@ export default class FluentParser {
     return new Comment(content);
   }
 
-  getMessage(ps, comment) {
+  getMessage(ps) {
     const id = this.getIdentifier(ps);
 
     ps.skipInlineWS();
@@ -210,10 +234,10 @@ export default class FluentParser {
       throw new ParseError("E0005", id.name);
     }
 
-    return new AST.Message(id, pattern, attrs, comment);
+    return new AST.Message(id, pattern, attrs);
   }
 
-  getTerm(ps, comment) {
+  getTerm(ps) {
     const id = this.getTermIdentifier(ps);
 
     ps.skipInlineWS();
@@ -230,7 +254,7 @@ export default class FluentParser {
       var attrs = this.getAttributes(ps);
     }
 
-    return new AST.Term(id, pattern, attrs, comment);
+    return new AST.Term(id, pattern, attrs);
   }
 
   getAttribute(ps) {
