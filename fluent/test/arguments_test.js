@@ -6,7 +6,7 @@ import { MessageContext } from '../src/context';
 import { FluentType } from '../src/types';
 import { ftl } from '../src/util';
 
-suite('External arguments', function() {
+suite('Variables', function() {
   let ctx, errs;
 
   setup(function() {
@@ -102,49 +102,49 @@ suite('External arguments', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, {}, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof ReferenceError); // unknown external
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
     test('cannot be arrays', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: [1, 2, 3] }, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof TypeError); // unsupported external type
+      assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a dict-like object', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: { prop: 1 } }, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof TypeError); // unsupported external type
+      assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a boolean', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: true }, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof TypeError); // unsupported external type
+      assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be undefined', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: undefined }, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof TypeError); // unsupported external type
+      assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be null', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: null }, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof TypeError); // unsupported external type
+      assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a function', function() {
       const msg = ctx.getMessage('foo');
       const val = ctx.format(msg, { arg: () => null }, errs);
       assert.equal(val, 'arg');
-      assert(errs[0] instanceof TypeError); // unsupported external type
+      assert(errs[0] instanceof TypeError); // unsupported variable type
     });
   });
 

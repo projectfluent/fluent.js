@@ -216,7 +216,7 @@ class RuntimeParser {
    * Get identifier using the provided regex.
    *
    * By default this will get identifiers of public messages, attributes and
-   * external arguments (without the $).
+   * variables (without the $).
    *
    * @returns {String}
    * @private
@@ -499,7 +499,7 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     if (ch === "}") {
-      if (selector.type === "attr" && selector.id.name.startsWith("-")) {
+      if (selector.type === "getattr" && selector.id.name.startsWith("-")) {
         throw this.error(
           "Attributes of private messages cannot be interpolated."
         );
@@ -516,11 +516,11 @@ class RuntimeParser {
       throw this.error("Message references cannot be used as selectors.");
     }
 
-    if (selector.type === "var") {
+    if (selector.type === "getvar") {
       throw this.error("Variants cannot be used as selectors.");
     }
 
-    if (selector.type === "attr" && !selector.id.name.startsWith("-")) {
+    if (selector.type === "getattr" && !selector.id.name.startsWith("-")) {
       throw this.error(
         "Attributes of public messages cannot be used as selectors."
       );
@@ -570,7 +570,7 @@ class RuntimeParser {
       const name = this.getIdentifier();
       this._index++;
       return {
-        type: "attr",
+        type: "getattr",
         id: literal,
         name
       };
@@ -582,7 +582,7 @@ class RuntimeParser {
       const key = this.getVariantKey();
       this._index++;
       return {
-        type: "var",
+        type: "getvar",
         id: literal,
         key
       };
@@ -865,7 +865,7 @@ class RuntimeParser {
     if (cc0 === 36) { // $
       this._index++;
       return {
-        type: "ext",
+        type: "var",
         name: this.getIdentifier()
       };
     }

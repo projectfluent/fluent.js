@@ -66,7 +66,7 @@ suite('Select expressions', function() {
       const val = ctx.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown external
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
   });
 

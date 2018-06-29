@@ -45,7 +45,7 @@ suite('Functions', function() {
         pass-number        = { IDENTITY(1) }
         pass-message       = { IDENTITY(foo) }
         pass-attr          = { IDENTITY(foo.attr) }
-        pass-external      = { IDENTITY($ext) }
+        pass-variable      = { IDENTITY($var) }
         pass-function-call = { IDENTITY(IDENTITY(1)) }
       `);
     });
@@ -90,10 +90,10 @@ suite('Functions', function() {
       assert.equal(errs.length, 0);
     });
 
-    test('accepts externals', function() {
-      const msg = ctx.getMessage('pass-external');
-      const val = ctx.format(msg, { ext: "Ext" }, errs);
-      assert.equal(val, 'Ext');
+    test('accepts variables', function() {
+      const msg = ctx.getMessage('pass-variable');
+      const val = ctx.format(msg, { var: "Variable" }, errs);
+      assert.equal(val, 'Variable');
       assert.equal(errs.length, 0);
     });
 
