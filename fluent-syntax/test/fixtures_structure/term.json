@@ -19,8 +19,7 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "SelectExpression",
-              "selector": null,
+              "type": "VariantList",
               "variants": [
                 {
                   "type": "Variant",

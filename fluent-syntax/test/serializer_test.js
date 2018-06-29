@@ -224,7 +224,7 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
-  test.only('select expression without selector', function() {
+  test('select expression without selector', function() {
     const input = ftl`
       foo =
           {

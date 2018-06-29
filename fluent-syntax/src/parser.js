@@ -196,7 +196,7 @@ export default class FluentParser {
     ps.skipInlineWS();
     ps.expectChar("=");
 
-    if (ps.isPeekPatternStart()) {
+    if (ps.isPeekValueStart()) {
       ps.skipIndent();
       var pattern = this.getPattern(ps);
     } else {
@@ -220,7 +220,7 @@ export default class FluentParser {
     ps.skipInlineWS();
     ps.expectChar("=");
 
-    if (ps.isPeekPatternStart()) {
+    if (ps.isPeekValueStart()) {
       ps.skipIndent();
       var pattern = this.getValue(ps);
     } else {
@@ -242,7 +242,7 @@ export default class FluentParser {
     ps.skipInlineWS();
     ps.expectChar("=");
 
-    if (ps.isPeekPatternStart()) {
+    if (ps.isPeekValueStart()) {
       ps.skipIndent();
       const value = this.getPattern(ps);
       return new AST.Attribute(key, value);
@@ -311,7 +311,7 @@ export default class FluentParser {
 
     ps.expectChar("]");
 
-    if (ps.isPeekPatternStart()) {
+    if (ps.isPeekValueStart()) {
       ps.skipIndent();
       const value = this.getValue(ps);
       return new AST.Variant(key, value, defaultIndex);
@@ -396,14 +396,14 @@ export default class FluentParser {
   }
 
   getValue(ps) {
-    let pattern = this.getPattern(ps);
+    if (ps.isPeekNextLineVariantStart()) {
+      const variants = this.getVariants(ps);
 
-    if (pattern.elements.length === 1 &&
-        pattern.elements[0].type === "Placeable" &&
-        pattern.elements[0].expression.type === "VariantList") {
-      return pattern.elements[0].expression;
+      ps.expectIndent();
+      return new AST.VariantList(variants);
     }
-    return pattern;
+
+    return this.getPattern(ps);
   }
 
   getPattern(ps) {
@@ -415,7 +415,7 @@ export default class FluentParser {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === "\n" && !ps.isPeekNextLinePatternStart()) {
+      if (ch === "\n" && !ps.isPeekNextLineValueStart()) {
         break;
       }
 
@@ -441,7 +441,7 @@ export default class FluentParser {
       }
 
       if (ch === "\n") {
-        if (!ps.isPeekNextLinePatternStart()) {
+        if (!ps.isPeekNextLineValueStart()) {
           return new AST.TextElement(buffer);
         }
 
@@ -524,6 +524,9 @@ export default class FluentParser {
 
       if (variants.length === 0) {
         throw new ParseError("E0011");
+      }
+      if (variants.some(v => v.type === "VariantList")) {
+        throw new ParseError("E0023");
       }
 
       ps.expectIndent();
