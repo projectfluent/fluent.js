@@ -78,7 +78,7 @@ suite('Patterns', function(){
     suiteSetup(function() {
       ctx = new MessageContext('en-US', { useIsolating: false });
       ctx.addMessages(ftl`
-        foo
+        foo =
             .attr = Foo Attr
         bar = { foo } Bar
       `);

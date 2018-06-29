@@ -74,44 +74,13 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     // We don't care about comments or sections at runtime
-    if (ch === "/" ||
-      (ch === "#" &&
-        [" ", "#", "\n"].includes(this._source[this._index + 1]))) {
+    if (ch === "#" &&
+        [" ", "#", "\n"].includes(this._source[this._index + 1])) {
       this.skipComment();
       return;
     }
 
-    if (ch === "[") {
-      this.skipSection();
-      return;
-    }
-
     this.getMessage();
-  }
-
-  /**
-   * Skip the section entry from the current index.
-   *
-   * @private
-   */
-  skipSection() {
-    this._index += 1;
-    if (this._source[this._index] !== "[") {
-      throw this.error('Expected "[[" to open a section');
-    }
-
-    this._index += 1;
-
-    this.skipInlineWS();
-    this.getVariantName();
-    this.skipInlineWS();
-
-    if (this._source[this._index] !== "]" ||
-        this._source[this._index + 1] !== "]") {
-      throw this.error('Expected "]]" to close a section');
-    }
-
-    this._index += 2;
   }
 
   /**
@@ -127,6 +96,8 @@ class RuntimeParser {
 
     if (this._source[this._index] === "=") {
       this._index++;
+    } else {
+      throw this.error("Expected \"=\" after the identifier");
     }
 
     this.skipInlineWS();
@@ -905,12 +876,11 @@ class RuntimeParser {
     // to parse them properly and skip their content.
     let eol = this._source.indexOf("\n", this._index);
 
-    while (eol !== -1 &&
-      ((this._source[eol + 1] === "/" && this._source[eol + 2] === "/") ||
-       (this._source[eol + 1] === "#" &&
-         [" ", "#"].includes(this._source[eol + 2])))) {
-      this._index = eol + 3;
+    while (eol !== -1
+      && this._source[eol + 1] === "#"
+      && [" ", "#"].includes(this._source[eol + 2])) {
 
+      this._index = eol + 3;
       eol = this._source.indexOf("\n", this._index);
 
       if (eol === -1) {
@@ -952,7 +922,7 @@ class RuntimeParser {
 
         if ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) || // A-Z
-             cc === 47 || cc === 91) { // /[
+             cc === 45) { // -
           this._index = start;
           return;
         }

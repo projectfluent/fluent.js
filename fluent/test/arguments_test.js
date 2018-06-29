@@ -19,7 +19,7 @@ suite('Variables', function() {
       ctx.addMessages(ftl`
         foo = Foo { $num }
         bar = { foo }
-        baz
+        baz =
             .attr = Baz Attribute { $num }
         qux = { "a" ->
            *[a]     Baz Variant A { $num }
