@@ -56,6 +56,7 @@ export default class FluentParser {
     ps.skipBlankLines();
 
     const entries = [];
+    let lastComment = null;
 
     while (ps.current()) {
       const entry = this.getEntryOrJunk(ps);
@@ -64,23 +65,22 @@ export default class FluentParser {
       // Regular Comments require special logic. Comments may be attached to
       // Messages or Terms if they are followed immediately by them. However
       // they should parse as standalone when they're followed by Junk.
-      // Consequently, we only attach them once we know that the Message or the
-      // Term parsed successfully.
+      // Consequently, we only attach Comments once we know that the Message
+      // or the Term parsed successfully.
       if (entry.type === "Comment" && blankLines === 0 && ps.current()) {
-        const next = this.getEntryOrJunk(ps);
-        ps.skipBlankLines();
-
-        if (next.type === "Message" || next.type === "Term") {
-          // Attach it.
-          next.comment = entry;
-          entries.push(next);
-        } else {
-          // entry is a standalone Comment and next is Junk, GroupComment or
-          // ResourceComment. Push both independently of each other.
-          entries.push(entry, next);
-        }
-
+        // Stash the comment and decide what to do with it in the next pass.
+        lastComment = entry;
         continue;
+      }
+
+      if (lastComment) {
+        if (entry.type === "Message" || entry.type === "Term") {
+          entry.comment = lastComment;
+        } else {
+          entries.push(lastComment);
+        }
+        // In either case, the stashed comment has been dealt with; clear it.
+        lastComment = null;
       }
 
       // No special logic for other types of entries.
