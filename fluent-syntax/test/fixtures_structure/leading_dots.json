@@ -322,6 +322,16 @@
       }
     },
     {
+      "type": "Comment",
+      "annotations": [],
+      "content": "ERROR (attr .Continued must have a value)",
+      "span": {
+        "type": "Span",
+        "start": 142,
+        "end": 185
+      }
+    },
+    {
       "type": "Junk",
       "annotations": [
         {
@@ -338,11 +348,21 @@
           }
         }
       ],
-      "content": "# ERROR (attr .Continued must have a value)\nkey07 = Value\n    .Continued\n\n",
+      "content": "key07 = Value\n    .Continued\n\n",
       "span": {
         "type": "Span",
-        "start": 142,
+        "start": 186,
         "end": 216
+      }
+    },
+    {
+      "type": "Comment",
+      "annotations": [],
+      "content": "ERROR (attr .Value must have a value)",
+      "span": {
+        "type": "Span",
+        "start": 216,
+        "end": 255
       }
     },
     {
@@ -362,11 +382,21 @@
           }
         }
       ],
-      "content": "# ERROR (attr .Value must have a value)\nkey08 =\n    .Value\n\n",
+      "content": "key08 =\n    .Value\n\n",
       "span": {
         "type": "Span",
-        "start": 216,
+        "start": 256,
         "end": 276
+      }
+    },
+    {
+      "type": "Comment",
+      "annotations": [],
+      "content": "ERROR (attr .Value must have a value)",
+      "span": {
+        "type": "Span",
+        "start": 276,
+        "end": 315
       }
     },
     {
@@ -386,10 +416,10 @@
           }
         }
       ],
-      "content": "# ERROR (attr .Value must have a value)\nkey09 =\n    .Value\n    Continued\n\n",
+      "content": "key09 =\n    .Value\n    Continued\n\n",
       "span": {
         "type": "Span",
-        "start": 276,
+        "start": 316,
         "end": 350
       }
     },
@@ -847,6 +877,16 @@
       }
     },
     {
+      "type": "Comment",
+      "annotations": [],
+      "content": "ERROR (variant must have a value)",
+      "span": {
+        "type": "Span",
+        "start": 687,
+        "end": 722
+      }
+    },
+    {
       "type": "Junk",
       "annotations": [
         {
@@ -861,11 +901,21 @@
           }
         }
       ],
-      "content": "# ERROR (variant must have a value)\nkey16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n\n",
+      "content": "key16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n\n",
       "span": {
         "type": "Span",
-        "start": 687,
+        "start": 723,
         "end": 781
+      }
+    },
+    {
+      "type": "Comment",
+      "annotations": [],
+      "content": "ERROR (unclosed placeable)",
+      "span": {
+        "type": "Span",
+        "start": 781,
+        "end": 809
       }
     },
     {
@@ -885,10 +935,10 @@
           }
         }
       ],
-      "content": "# ERROR (unclosed placeable)\nkey17 =\n    { 1 ->\n       *[one] Value\n           .Continued\n    }\n",
+      "content": "key17 =\n    { 1 ->\n       *[one] Value\n           .Continued\n    }\n",
       "span": {
         "type": "Span",
-        "start": 781,
+        "start": 810,
         "end": 877
       }
     }
