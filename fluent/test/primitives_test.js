@@ -52,7 +52,7 @@ suite('Primitives', function() {
            *[Foo] Member 1
         }
 
-        bar
+        bar =
             .attr = Bar Attribute
 
         placeable-attr   = { bar.attr }
@@ -130,7 +130,7 @@ suite('Primitives', function() {
 
         placeable-message = { bar } Baz
 
-        baz
+        baz =
             .attr = { bar } Baz Attribute
 
         placeable-attr = { baz.attr }
