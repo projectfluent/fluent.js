@@ -24,16 +24,24 @@ key3 =
 
 key5 = Value 5
 
--key6 = {
-
+key6 = { $sel ->
 
          [one] One
 
-
-
-
         *[two] Two
 
+    }
 
+-key7 = {    
+
+         *[one] One
+
+    }
+
+-key8 =
+
+  {
+
+         *[one] One
 
     }

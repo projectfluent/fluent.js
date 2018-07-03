@@ -46,7 +46,7 @@ export default class FluentParser {
       "getTermIdentifier", "getVariant", "getVariantName", "getNumber",
       "getValue", "getPattern", "getVariantList", "getTextElement",
       "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
-      "getString", "getLiteral",
+      "getString", "getLiteral", "getVariantList"
     ].forEach(
       name => this[name] = withSpan(this[name])
     );
@@ -396,14 +396,24 @@ export default class FluentParser {
   }
 
   getValue(ps) {
-    if (ps.isPeekNextLineVariantStart()) {
-      const variants = this.getVariants(ps);
-
-      ps.expectIndent();
-      return new AST.VariantList(variants);
+    if (ps.currentIs("{")) {
+      ps.peek();
+      ps.peekInlineWS();
+      if (ps.isPeekNextLineVariantStart()) {
+        return this.getVariantList(ps);
+      }
     }
 
     return this.getPattern(ps);
+  }
+
+  getVariantList(ps) {
+    ps.expectChar("{");
+    ps.skipInlineWS();
+    const variants = this.getVariants(ps);
+    ps.expectIndent();
+    ps.expectChar("}");
+    return new AST.VariantList(variants);
   }
 
   getPattern(ps) {
@@ -480,14 +490,6 @@ export default class FluentParser {
   }
 
   getExpression(ps) {
-    if (ps.isPeekNextLineVariantStart()) {
-      const variants = this.getVariants(ps);
-
-      ps.expectIndent();
-
-      return new AST.VariantList(variants);
-    }
-
     ps.skipInlineWS();
 
     const selector = this.getSelectorExpression(ps);

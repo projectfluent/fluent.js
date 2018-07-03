@@ -1,3 +1,3 @@
-key = {
+-term = {
         *[New York] Nowy Jork
     }
