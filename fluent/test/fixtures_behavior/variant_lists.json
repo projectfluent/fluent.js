@@ -1,8 +1,8 @@
 {
-  "key": {
+  "-term1": {
     "value": true
   },
-  "-term": {
+  "-term2": {
     "value": true
   }
 }

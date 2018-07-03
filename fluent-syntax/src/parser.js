@@ -551,7 +551,9 @@ export default class FluentParser {
       if (variants.length === 0) {
         throw new ParseError("E0011");
       }
-      if (variants.some(v => v.type === "VariantList")) {
+
+      // VariantLists are only allowed in other VariantLists.
+      if (variants.some(v => v.value.type === "VariantList")) {
         throw new ParseError("E0023");
       }
 
