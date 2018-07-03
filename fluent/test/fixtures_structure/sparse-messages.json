@@ -17,7 +17,7 @@
       {
         "type": "sel",
         "exp": {
-          "type": "ext",
+          "type": "var",
           "name": "sel"
         },
         "vars": [

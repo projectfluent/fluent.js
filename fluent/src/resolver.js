@@ -4,11 +4,11 @@
  * The role of the Fluent resolver is to format a translation object to an
  * instance of `FluentType` or an array of instances.
  *
- * Translations can contain references to other messages or external arguments,
+ * Translations can contain references to other messages or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language.  See the documentation of the Fluent syntax for more
+ * context's language. See the documentation of the Fluent syntax for more
  * information.
  *
  * In case of errors the resolver will try to salvage as much of the
@@ -273,8 +273,8 @@ function Type(env, expr) {
       return new FluentSymbol(expr.name);
     case "num":
       return new FluentNumber(expr.val);
-    case "ext":
-      return ExternalArgument(env, expr);
+    case "var":
+      return VariableReference(env, expr);
     case "fun":
       return FunctionReference(env, expr);
     case "call":
@@ -283,11 +283,11 @@ function Type(env, expr) {
       const message = MessageReference(env, expr);
       return Type(env, message);
     }
-    case "attr": {
+    case "getattr": {
       const attr = AttributeExpression(env, expr);
       return Type(env, attr);
     }
-    case "var": {
+    case "getvar": {
       const variant = VariantExpression(env, expr);
       return Type(env, variant);
     }
@@ -311,7 +311,7 @@ function Type(env, expr) {
 }
 
 /**
- * Resolve a reference to an external argument.
+ * Resolve a reference to a variable.
  *
  * @param   {Object} env
  *    Resolver environment object.
@@ -322,11 +322,11 @@ function Type(env, expr) {
  * @returns {FluentType}
  * @private
  */
-function ExternalArgument(env, {name}) {
+function VariableReference(env, {name}) {
   const { args, errors } = env;
 
   if (!args || !args.hasOwnProperty(name)) {
-    errors.push(new ReferenceError(`Unknown external: ${name}`));
+    errors.push(new ReferenceError(`Unknown variable: ${name}`));
     return new FluentNone(name);
   }
 
@@ -349,7 +349,7 @@ function ExternalArgument(env, {name}) {
       }
     default:
       errors.push(
-        new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
+        new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
       return new FluentNone(name);
   }

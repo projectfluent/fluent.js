@@ -74,44 +74,13 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     // We don't care about comments or sections at runtime
-    if (ch === "/" ||
-      (ch === "#" &&
-        [" ", "#", "\n"].includes(this._source[this._index + 1]))) {
+    if (ch === "#" &&
+        [" ", "#", "\n"].includes(this._source[this._index + 1])) {
       this.skipComment();
       return;
     }
 
-    if (ch === "[") {
-      this.skipSection();
-      return;
-    }
-
     this.getMessage();
-  }
-
-  /**
-   * Skip the section entry from the current index.
-   *
-   * @private
-   */
-  skipSection() {
-    this._index += 1;
-    if (this._source[this._index] !== "[") {
-      throw this.error('Expected "[[" to open a section');
-    }
-
-    this._index += 1;
-
-    this.skipInlineWS();
-    this.getVariantName();
-    this.skipInlineWS();
-
-    if (this._source[this._index] !== "]" ||
-        this._source[this._index + 1] !== "]") {
-      throw this.error('Expected "]]" to close a section');
-    }
-
-    this._index += 2;
   }
 
   /**
@@ -127,6 +96,8 @@ class RuntimeParser {
 
     if (this._source[this._index] === "=") {
       this._index++;
+    } else {
+      throw this.error("Expected \"=\" after the identifier");
     }
 
     this.skipInlineWS();
@@ -216,7 +187,7 @@ class RuntimeParser {
    * Get identifier using the provided regex.
    *
    * By default this will get identifiers of public messages, attributes and
-   * external arguments (without the $).
+   * variables (without the $).
    *
    * @returns {String}
    * @private
@@ -499,7 +470,7 @@ class RuntimeParser {
     const ch = this._source[this._index];
 
     if (ch === "}") {
-      if (selector.type === "attr" && selector.id.name.startsWith("-")) {
+      if (selector.type === "getattr" && selector.id.name.startsWith("-")) {
         throw this.error(
           "Attributes of private messages cannot be interpolated."
         );
@@ -516,11 +487,11 @@ class RuntimeParser {
       throw this.error("Message references cannot be used as selectors.");
     }
 
-    if (selector.type === "var") {
+    if (selector.type === "getvar") {
       throw this.error("Variants cannot be used as selectors.");
     }
 
-    if (selector.type === "attr" && !selector.id.name.startsWith("-")) {
+    if (selector.type === "getattr" && !selector.id.name.startsWith("-")) {
       throw this.error(
         "Attributes of public messages cannot be used as selectors."
       );
@@ -570,7 +541,7 @@ class RuntimeParser {
       const name = this.getIdentifier();
       this._index++;
       return {
-        type: "attr",
+        type: "getattr",
         id: literal,
         name
       };
@@ -582,7 +553,7 @@ class RuntimeParser {
       const key = this.getVariantKey();
       this._index++;
       return {
-        type: "var",
+        type: "getvar",
         id: literal,
         key
       };
@@ -865,7 +836,7 @@ class RuntimeParser {
     if (cc0 === 36) { // $
       this._index++;
       return {
-        type: "ext",
+        type: "var",
         name: this.getIdentifier()
       };
     }
@@ -905,12 +876,11 @@ class RuntimeParser {
     // to parse them properly and skip their content.
     let eol = this._source.indexOf("\n", this._index);
 
-    while (eol !== -1 &&
-      ((this._source[eol + 1] === "/" && this._source[eol + 2] === "/") ||
-       (this._source[eol + 1] === "#" &&
-         [" ", "#"].includes(this._source[eol + 2])))) {
-      this._index = eol + 3;
+    while (eol !== -1
+      && this._source[eol + 1] === "#"
+      && [" ", "#"].includes(this._source[eol + 2])) {
 
+      this._index = eol + 3;
       eol = this._source.indexOf("\n", this._index);
 
       if (eol === -1) {
@@ -952,7 +922,7 @@ class RuntimeParser {
 
         if ((cc >= 97 && cc <= 122) || // a-z
             (cc >= 65 && cc <= 90) || // A-Z
-             cc === 47 || cc === 91) { // /[
+             cc === 45) { // -
           this._index = start;
           return;
         }

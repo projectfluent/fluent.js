@@ -28,15 +28,21 @@ export class FTLParserStream extends ParserStream {
   }
 
   skipBlankLines() {
+    // Many Parser methods leave the cursor at the line break
+    // without going into the next line. We want to count fully blank lines in
+    // this case. Starting the count at -1 will give the right number.
+    let lineCount = this.currentIs("\n") ? -1 : 0;
+
     while (true) {
       this.peekInlineWS();
 
       if (this.currentPeekIs("\n")) {
         this.skipToPeek();
         this.next();
+        lineCount++;
       } else {
         this.resetPeek();
-        break;
+        return lineCount;
       }
     }
   }

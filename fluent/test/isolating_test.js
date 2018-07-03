@@ -33,21 +33,21 @@ suite('Isolating interpolations', function(){
     assert.equal(errs.length, 0);
   });
 
-  test('isolates interpolated string-typed external arguments', function(){
+  test('isolates interpolated string-typed variables', function(){
     const msg = ctx.getMessage('baz');
     const val = ctx.format(msg, {arg: 'Arg'}, errs);
     assert.equal(val, `${FSI}Arg${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
 
-  test('isolates interpolated number-typed external arguments', function(){
+  test('isolates interpolated number-typed variables', function(){
     const msg = ctx.getMessage('baz');
     const val = ctx.format(msg, {arg: 1}, errs);
     assert.equal(val, `${FSI}1${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
 
-  test('isolates interpolated date-typed external arguments', function(){
+  test('isolates interpolated date-typed variables', function(){
     const dtf = new Intl.DateTimeFormat('en-US');
     const arg = new Date('2016-09-29');
 
