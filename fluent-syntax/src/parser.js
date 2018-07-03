@@ -449,7 +449,7 @@ export default class FluentParser {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === "\n" && !ps.isPeekNextLineValueStart()) {
+      if (ch === "\n" && !ps.isPeekNextLineValue()) {
         break;
       }
 
@@ -475,7 +475,7 @@ export default class FluentParser {
       }
 
       if (ch === "\n") {
-        if (!ps.isPeekNextLineValueStart()) {
+        if (!ps.isPeekNextLineValue()) {
           return new AST.TextElement(buffer);
         }
 

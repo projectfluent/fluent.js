@@ -150,7 +150,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    return this.isPeekNextLineValueStart();
+    return this.isPeekNextLineValue();
   }
 
   // -1 - any
@@ -243,7 +243,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineValueStart() {
+  isPeekNextLineValue() {
     if (!this.currentPeekIs("\n")) {
       return false;
     }
