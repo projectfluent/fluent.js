@@ -153,7 +153,7 @@ function serializePattern(pattern) {
     return `\n    ${indent(content)}`;
   }
 
-  return ` ${indent(content)}`;
+  return ` ${content}`;
 }
 
 
