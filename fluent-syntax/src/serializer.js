@@ -285,7 +285,7 @@ function serializeCallExpression(expr) {
 
 function serializeNamedArgument(arg) {
   const name = serializeIdentifier(arg.name);
-  const value = serializeArgumentValue(arg.val);
+  const value = serializeArgumentValue(arg.value);
   return `${name}: ${value}`;
 }
 
