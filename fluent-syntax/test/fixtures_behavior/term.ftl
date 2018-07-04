@@ -22,7 +22,7 @@ err2 = { $-foo }
 #~ ERROR E0004, pos 315, args "a-zA-Z"
 
 err4 = { -brand() }
-#~ ERROR E0008, pos 340
+#~ ERROR E0008, pos 339
 
 -err5 =
 #~ ERROR E0006, pos 351, args "-err5"
