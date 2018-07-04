@@ -324,7 +324,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "ERROR (attr .Continued must have a value)",
+      "content": "ERROR (attr .Continued must have a value)\n",
       "span": {
         "type": "Span",
         "start": 142,
@@ -358,7 +358,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "ERROR (attr .Value must have a value)",
+      "content": "ERROR (attr .Value must have a value)\n",
       "span": {
         "type": "Span",
         "start": 216,
@@ -392,7 +392,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "ERROR (attr .Value must have a value)",
+      "content": "ERROR (attr .Value must have a value)\n",
       "span": {
         "type": "Span",
         "start": 276,
@@ -879,7 +879,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "ERROR (variant must have a value)",
+      "content": "ERROR (variant must have a value)\n",
       "span": {
         "type": "Span",
         "start": 687,
@@ -911,7 +911,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "ERROR (unclosed placeable)",
+      "content": "ERROR (unclosed placeable)\n",
       "span": {
         "type": "Span",
         "start": 781,

@@ -4,7 +4,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "This is\n\nAn example of a multiline comment",
+      "content": "This is\n\nAn example of a multiline comment\n",
       "span": {
         "type": "Span",
         "start": 1,

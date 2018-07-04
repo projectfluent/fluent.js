@@ -191,8 +191,13 @@ export default class FluentParser {
         }
       }
 
-      if (ps.isPeekNextLineComment(level, false)) {
+      if (!ps.currentIs(undefined)) {
         content += "\n";
+      } else {
+        break;
+      }
+
+      if (ps.isPeekNextLineComment(level, false)) {
         ps.next();
       } else {
         break;

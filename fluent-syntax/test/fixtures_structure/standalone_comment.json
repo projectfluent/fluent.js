@@ -43,7 +43,7 @@
     {
       "type": "Comment",
       "annotations": [],
-      "content": "This is a standalone comment",
+      "content": "This is a standalone comment\n",
       "span": {
         "type": "Span",
         "start": 13,

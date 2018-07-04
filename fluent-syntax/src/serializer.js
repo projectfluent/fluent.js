@@ -48,19 +48,19 @@ export default class FluentSerializer {
         return serializeMessage(entry);
       case "Comment":
         if (state & HAS_ENTRIES) {
-          return `\n${serializeComment(entry)}\n\n`;
+          return `\n${serializeComment(entry, "#")}\n`;
         }
-        return `${serializeComment(entry)}\n\n`;
+        return `${serializeComment(entry, "#")}\n`;
       case "GroupComment":
         if (state & HAS_ENTRIES) {
-          return `\n${serializeGroupComment(entry)}\n\n`;
+          return `\n${serializeComment(entry, "##")}\n`;
         }
-        return `${serializeGroupComment(entry)}\n\n`;
+        return `${serializeComment(entry, "##")}\n`;
       case "ResourceComment":
         if (state & HAS_ENTRIES) {
-          return `\n${serializeResourceComment(entry)}\n\n`;
+          return `\n${serializeComment(entry, "###")}\n`;
         }
-        return `${serializeResourceComment(entry)}\n\n`;
+        return `${serializeComment(entry, "###")}\n`;
       case "Junk":
         return serializeJunk(entry);
       default :
@@ -74,24 +74,14 @@ export default class FluentSerializer {
 }
 
 
-function serializeComment(comment) {
-  return comment.content.split("\n").map(
-    line => line.length ? `# ${line}` : "#"
+function serializeComment(comment, prefix = "#") {
+  // Remove the trailing newline.
+  const content = comment.content.slice(0, comment.content.length - 1);
+  const prefixed = content.split("\n").map(
+    line => line.length ? `${prefix} ${line}` : prefix
   ).join("\n");
-}
-
-
-function serializeGroupComment(comment) {
-  return comment.content.split("\n").map(
-    line => line.length ? `## ${line}` : "##"
-  ).join("\n");
-}
-
-
-function serializeResourceComment(comment) {
-  return comment.content.split("\n").map(
-    line => line.length ? `### ${line}` : "###"
-  ).join("\n");
+  // Re-add the trailing newline.
+  return `${prefixed}\n`;
 }
 
 
@@ -105,7 +95,6 @@ function serializeMessage(message) {
 
   if (message.comment) {
     parts.push(serializeComment(message.comment));
-    parts.push("\n");
   }
 
   parts.push(serializeIdentifier(message.id));
