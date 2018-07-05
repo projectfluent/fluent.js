@@ -64,6 +64,8 @@ function getErrorMessage(code, args) {
       return "Named arguments must be unique";
     case "E0023":
       return "VariantLists are only allowed inside of other VariantLists.";
+    case "E0024":
+      return "Cannot access variants of a message.";
     default:
       return code;
   }

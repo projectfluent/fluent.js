@@ -4,7 +4,7 @@
     {
       "type": "ResourceComment",
       "annotations": [],
-      "content": "BE CAREFUL WHEN EDITING THIS FILE\n\nThe last character in this file is the space (\" \") on line 14.\nWe want to test a message with no value and with no EOL at the\nend of the fie. Most editors automatically add a trailing newline\nat EOF. If you edit this file make sure to turn this behavior off.",
+      "content": "BE CAREFUL WHEN EDITING THIS FILE\n\nThe last character in this file is the space (\" \") on line 14.\nWe want to test a message with no value and with no EOL at the\nend of the fie. Most editors automatically add a trailing newline\nat EOF. If you edit this file make sure to turn this behavior off.\n",
       "span": {
         "type": "Span",
         "start": 0,

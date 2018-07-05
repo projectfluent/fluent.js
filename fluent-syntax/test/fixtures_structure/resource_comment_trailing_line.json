@@ -4,7 +4,7 @@
     {
       "type": "ResourceComment",
       "annotations": [],
-      "content": "This is a comment\nThis comment is multiline\n",
+      "content": "This is a comment\nThis comment is multiline\n\n",
       "span": {
         "type": "Span",
         "start": 0,

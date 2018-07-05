@@ -191,8 +191,13 @@ export default class FluentParser {
         }
       }
 
-      if (ps.isPeekNextLineComment(level, false)) {
+      if (!ps.currentIs(undefined)) {
         content += "\n";
+      } else {
+        break;
+      }
+
+      if (ps.isPeekNextLineComment(level, false)) {
         ps.next();
       } else {
         break;
@@ -588,6 +593,10 @@ export default class FluentParser {
     if (ch === "[") {
       ps.next();
 
+      if (literal.type === "MessageReference") {
+        throw new ParseError("E0024");
+      }
+
       const key = this.getVariantKey(ps);
 
       ps.expectChar("]");
@@ -598,13 +607,13 @@ export default class FluentParser {
     if (ch === "(") {
       ps.next();
 
-      const args = this.getCallArgs(ps);
-
-      ps.expectChar(")");
-
       if (!/^[A-Z][A-Z_?-]*$/.test(literal.id.name)) {
         throw new ParseError("E0008");
       }
+
+      const args = this.getCallArgs(ps);
+
+      ps.expectChar(")");
 
       const func = new AST.Function(literal.id.name);
       if (this.withSpans) {

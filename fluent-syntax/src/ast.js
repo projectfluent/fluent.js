@@ -189,11 +189,11 @@ export class Variant extends SyntaxNode {
 }
 
 export class NamedArgument extends SyntaxNode {
-  constructor(name, val) {
+  constructor(name, value) {
     super();
     this.type = "NamedArgument";
     this.name = name;
-    this.val = val;
+    this.value = value;
   }
 }
 
