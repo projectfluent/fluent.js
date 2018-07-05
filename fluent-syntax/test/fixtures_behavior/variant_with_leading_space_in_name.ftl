@@ -1,4 +1,4 @@
-key = {
+-term = {
         *[  one] Foo
     }
-#~ ERROR E0004, pos 18, args "a-zA-Z"
+#~ ERROR E0004, pos 20, args "a-zA-Z"

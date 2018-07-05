@@ -14,99 +14,80 @@
         }
       },
       "value": {
-        "type": "Pattern",
-        "elements": [
+        "type": "VariantList",
+        "variants": [
           {
-            "type": "Placeable",
-            "expression": {
-              "type": "SelectExpression",
-              "selector": null,
-              "variants": [
+            "type": "Variant",
+            "key": {
+              "type": "VariantName",
+              "name": "nominative",
+              "span": {
+                "type": "Span",
+                "start": 29,
+                "end": 39
+              }
+            },
+            "value": {
+              "type": "Pattern",
+              "elements": [
                 {
-                  "type": "Variant",
-                  "key": {
-                    "type": "VariantName",
-                    "name": "nominative",
-                    "span": {
-                      "type": "Span",
-                      "start": 29,
-                      "end": 39
-                    }
-                  },
-                  "value": {
-                    "type": "Pattern",
-                    "elements": [
-                      {
-                        "type": "TextElement",
-                        "value": "Firefox",
-                        "span": {
-                          "type": "Span",
-                          "start": 41,
-                          "end": 48
-                        }
-                      }
-                    ],
-                    "span": {
-                      "type": "Span",
-                      "start": 41,
-                      "end": 48
-                    }
-                  },
-                  "default": true,
+                  "type": "TextElement",
+                  "value": "Firefox",
                   "span": {
                     "type": "Span",
-                    "start": 27,
+                    "start": 41,
                     "end": 48
                   }
-                },
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 41,
+                "end": 48
+              }
+            },
+            "default": true,
+            "span": {
+              "type": "Span",
+              "start": 27,
+              "end": 48
+            }
+          },
+          {
+            "type": "Variant",
+            "key": {
+              "type": "VariantName",
+              "name": "accusative",
+              "span": {
+                "type": "Span",
+                "start": 58,
+                "end": 68
+              }
+            },
+            "value": {
+              "type": "Pattern",
+              "elements": [
                 {
-                  "type": "Variant",
-                  "key": {
-                    "type": "VariantName",
-                    "name": "accusative",
-                    "span": {
-                      "type": "Span",
-                      "start": 58,
-                      "end": 68
-                    }
-                  },
-                  "value": {
-                    "type": "Pattern",
-                    "elements": [
-                      {
-                        "type": "TextElement",
-                        "value": "Firefoxa",
-                        "span": {
-                          "type": "Span",
-                          "start": 70,
-                          "end": 78
-                        }
-                      }
-                    ],
-                    "span": {
-                      "type": "Span",
-                      "start": 70,
-                      "end": 78
-                    }
-                  },
-                  "default": false,
+                  "type": "TextElement",
+                  "value": "Firefoxa",
                   "span": {
                     "type": "Span",
-                    "start": 57,
+                    "start": 70,
                     "end": 78
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 19,
-                "end": 83
+                "start": 70,
+                "end": 78
               }
             },
+            "default": false,
             "span": {
               "type": "Span",
-              "start": 18,
-              "end": 84
+              "start": 57,
+              "end": 78
             }
           }
         ],

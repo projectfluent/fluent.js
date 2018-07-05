@@ -141,7 +141,7 @@ export class FTLParserStream extends ParserStream {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
-  isPeekPatternStart() {
+  isPeekValueStart() {
     this.peekInlineWS();
     const ch = this.currentPeek();
 
@@ -150,7 +150,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    return this.isPeekNextLinePatternStart();
+    return this.isPeekNextLineValue();
   }
 
   // -1 - any
@@ -243,7 +243,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLinePatternStart() {
+  isPeekNextLineValue() {
     if (!this.currentPeekIs("\n")) {
       return false;
     }

@@ -1,5 +1,8 @@
 {
   "-term1": {
     "value": true
+  },
+  "-term2": {
+    "value": true
   }
 }

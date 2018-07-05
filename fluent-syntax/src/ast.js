@@ -68,6 +68,14 @@ export class Pattern extends SyntaxNode {
   }
 }
 
+export class VariantList extends SyntaxNode {
+  constructor(variants) {
+    super();
+    this.type = "VariantList";
+    this.variants = variants;
+  }
+}
+
 export class TextElement extends SyntaxNode {
   constructor(value) {
     super();

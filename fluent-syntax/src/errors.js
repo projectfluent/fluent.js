@@ -62,6 +62,8 @@ function getErrorMessage(code, args) {
       return "Positional arguments must not follow named arguments";
     case "E0022":
       return "Named arguments must be unique";
+    case "E0023":
+      return "VariantLists are only allowed inside of other VariantLists.";
     default:
       return code;
   }

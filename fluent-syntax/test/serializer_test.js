@@ -224,9 +224,9 @@ suite('Serialize resource', function() {
     assert.equal(pretty(input), input);
   });
 
-  test('select expression without selector', function() {
+  test('variant list', function() {
     const input = ftl`
-      foo =
+      -foo =
           {
              *[a] A
               [b] B
@@ -249,7 +249,7 @@ suite('Serialize resource', function() {
   test('multiline variant', function() {
     const input = ftl`
       foo =
-          {
+          { $sel ->
              *[a]
                   AAA
                   BBB
@@ -261,14 +261,14 @@ suite('Serialize resource', function() {
   test('multiline variant with first line inline', function() {
     const input = ftl`
       foo =
-          {
+          { $sel ->
              *[a] AAA
                   BBB
           }
     `;
     const output = ftl`
       foo =
-          {
+          { $sel ->
              *[a]
                   AAA
                   BBB
@@ -280,7 +280,7 @@ suite('Serialize resource', function() {
   test('variant key words', function() {
     const input = ftl`
       foo =
-          {
+          { $sel ->
              *[a b c] A B C
           }
     `;
@@ -290,7 +290,7 @@ suite('Serialize resource', function() {
   test('variant key number', function() {
     const input = ftl`
       foo =
-          {
+          { $sel ->
              *[1] 1
           }
     `;

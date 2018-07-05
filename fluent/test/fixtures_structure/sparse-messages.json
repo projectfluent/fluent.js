@@ -16,7 +16,10 @@
     "val": [
       {
         "type": "sel",
-        "exp": null,
+        "exp": {
+          "type": "var",
+          "name": "sel"
+        },
         "vars": [
           {
             "key": {
@@ -34,6 +37,42 @@
           }
         ],
         "def": 1
+      }
+    ]
+  },
+  "-key7": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": null,
+        "vars": [
+          {
+            "key": {
+              "type": "varname",
+              "name": "one"
+            },
+            "val": "One"
+          }
+        ],
+        "def": 0
+      }
+    ]
+  },
+  "-key8": {
+    "val": [
+      {
+        "type": "sel",
+        "exp": null,
+        "vars": [
+          {
+            "key": {
+              "type": "varname",
+              "name": "one"
+            },
+            "val": "One"
+          }
+        ],
+        "def": 0
       }
     ]
   }
