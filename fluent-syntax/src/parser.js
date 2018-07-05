@@ -657,6 +657,7 @@ export default class FluentParser {
     const argumentNames = new Set();
 
     ps.skipInlineWS();
+    ps.skipIndent();
 
     while (true) {
       if (ps.current() === ")") {
@@ -677,10 +678,12 @@ export default class FluentParser {
       }
 
       ps.skipInlineWS();
+      ps.skipIndent();
 
       if (ps.current() === ",") {
         ps.next();
         ps.skipInlineWS();
+        ps.skipIndent();
         continue;
       } else {
         break;
