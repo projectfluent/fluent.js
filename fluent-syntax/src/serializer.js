@@ -1,7 +1,9 @@
 import { includes } from "./util";
 
-function indent(content) {
-  return content.split("\n").join("\n    ");
+const DEFAULT_INDENT = 4;
+
+function indent(level, shift = 0) {
+  return " ".repeat(level * DEFAULT_INDENT + shift);
 }
 
 function includesNewLine(elem) {
@@ -101,7 +103,7 @@ function serializeMessage(message) {
   parts.push(" =");
 
   if (message.value) {
-    parts.push(serializeValue(message.value));
+    parts.push(serializeValue(message.value, 1));
   }
 
   for (const attribute of message.attributes) {
@@ -115,61 +117,63 @@ function serializeMessage(message) {
 
 function serializeAttribute(attribute) {
   const id = serializeIdentifier(attribute.id);
-  const value = indent(serializeValue(attribute.value));
+  const value = serializeValue(attribute.value, 2);
   return `\n    .${id} =${value}`;
 }
 
 
-function serializeValue(value) {
+function serializeValue(value, level = 1) {
   switch (value.type) {
     case "Pattern":
-      return serializePattern(value);
+      return serializePattern(value, level);
     case "VariantList":
-      return serializeVariantList(value);
+      return serializeVariantList(value, level);
     default:
       throw new Error(`Unknown value type: ${value.type}`);
   }
 }
 
 
-function serializePattern(pattern) {
-  const content = pattern.elements.map(serializeElement).join("");
+function serializePattern(pattern, level) {
+  const content = pattern.elements.map(
+    element => serializeElement(element, level)).join("");
   const startOnNewLine =
     pattern.elements.some(isSelectExpr) ||
     pattern.elements.some(includesNewLine);
 
   if (startOnNewLine) {
-    return `\n    ${indent(content)}`;
+    return `\n${indent(level)}${content}`;
   }
 
   return ` ${content}`;
 }
 
 
-function serializeVariantList(varlist) {
-  const content = varlist.variants.map(serializeVariant).join("");
-  return `\n    {${indent(content)}\n    }`;
+function serializeVariantList(varlist, level) {
+  const content = varlist.variants.map(
+    variant => serializeVariant(variant, level + 1)).join("");
+  return `\n${indent(level)}{${content}\n${indent(level)}}`;
 }
 
 
-function serializeVariant(variant) {
+function serializeVariant(variant, level) {
   const key = serializeVariantKey(variant.key);
-  const value = indent(serializeValue(variant.value));
+  const value = serializeValue(variant.value, level + 1);
 
   if (variant.default) {
-    return `\n   *[${key}]${value}`;
+    return `\n${indent(level, -1)}*[${key}]${value}`;
   }
 
-  return `\n    [${key}]${value}`;
+  return `\n${indent(level)}[${key}]${value}`;
 }
 
 
-function serializeElement(element) {
+function serializeElement(element, level) {
   switch (element.type) {
     case "TextElement":
       return serializeTextElement(element);
     case "Placeable":
-      return serializePlaceable(element);
+      return serializePlaceable(element, level);
     default:
       throw new Error(`Unknown element type: ${element.type}`);
   }
@@ -181,7 +185,7 @@ function serializeTextElement(text) {
 }
 
 
-function serializePlaceable(placeable) {
+function serializePlaceable(placeable, level) {
   const expr = placeable.expression;
 
   switch (expr.type) {
@@ -190,14 +194,14 @@ function serializePlaceable(placeable) {
     case "SelectExpression":
       // Special-case select expression to control the whitespace around the
       // opening and the closing brace.
-      return `{ ${serializeSelectExpression(expr)}}`;
+      return `{ ${serializeSelectExpression(expr, level)}${indent(level)}}`;
     default:
-      return `{ ${serializeExpression(expr)} }`;
+      return `{ ${serializeExpression(expr, level)} }`;
   }
 }
 
 
-function serializeExpression(expr) {
+function serializeExpression(expr, level = 0) {
   switch (expr.type) {
     case "StringLiteral":
       return serializeStringLiteral(expr);
@@ -215,7 +219,7 @@ function serializeExpression(expr) {
     case "CallExpression":
       return serializeCallExpression(expr);
     case "SelectExpression":
-      return serializeSelectExpression(expr);
+      return serializeSelectExpression(expr, level);
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
@@ -242,13 +246,13 @@ function serializeVariableReference(expr) {
 }
 
 
-function serializeSelectExpression(expr) {
+function serializeSelectExpression(expr, level) {
   const parts = [];
   const selector = `${serializeExpression(expr.selector)} ->`;
   parts.push(selector);
 
   for (const variant of expr.variants) {
-    parts.push(serializeVariant(variant));
+    parts.push(serializeVariant(variant, level + 1));
   }
 
   parts.push("\n");

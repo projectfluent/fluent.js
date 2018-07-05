@@ -208,7 +208,7 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value\n",
+            "value": "Value\n    ",
             "span": {
               "type": "Span",
               "start": 81,
@@ -273,7 +273,7 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": ".Value\n",
+            "value": ".Value\n    ",
             "span": {
               "type": "Span",
               "start": 115,
@@ -453,7 +453,7 @@
             "elements": [
               {
                 "type": "TextElement",
-                "value": "which looks like an attribute\nContinued",
+                "value": "which looks like an attribute\n    Continued",
                 "span": {
                   "type": "Span",
                   "start": 371,
@@ -515,7 +515,7 @@
           },
           {
             "type": "TextElement",
-            "value": "Value = which looks like an attribute\nContinued",
+            "value": "Value = which looks like an attribute\n    Continued",
             "span": {
               "type": "Span",
               "start": 433,

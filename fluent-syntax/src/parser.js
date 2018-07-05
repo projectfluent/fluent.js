@@ -485,7 +485,6 @@ export default class FluentParser {
         }
 
         ps.next();
-        ps.skipInlineWS();
 
         // Add the new line to the buffer
         buffer += ch;

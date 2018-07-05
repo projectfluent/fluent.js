@@ -52,7 +52,7 @@
           },
           {
             "type": "TextElement",
-            "value": "\nat the end of line.  The message should\nconsist of three lines of text.",
+            "value": "\n    at the end of line.  The message should\n    consist of three lines of text.",
             "span": {
               "type": "Span",
               "start": 51,
