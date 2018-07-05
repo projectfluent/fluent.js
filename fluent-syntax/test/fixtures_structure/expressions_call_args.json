@@ -1,0 +1,120 @@
+{
+  "body": [
+    {
+      "annotations": [],
+      "attributes": [],
+      "comment": null,
+      "id": {
+        "name": "key",
+        "span": {
+          "end": 3,
+          "start": 0,
+          "type": "Span"
+        },
+        "type": "Identifier"
+      },
+      "span": {
+        "end": 43,
+        "start": 0,
+        "type": "Span"
+      },
+      "type": "Message",
+      "value": {
+        "elements": [
+          {
+            "expression": {
+              "callee": {
+                "name": "FOO",
+                "span": {
+                  "end": 11,
+                  "start": 8,
+                  "type": "Span"
+                },
+                "type": "Function"
+              },
+              "named": [
+                {
+                  "name": {
+                    "name": "arg1",
+                    "span": {
+                      "end": 16,
+                      "start": 12,
+                      "type": "Span"
+                    },
+                    "type": "Identifier"
+                  },
+                  "span": {
+                    "end": 19,
+                    "start": 12,
+                    "type": "Span"
+                  },
+                  "type": "NamedArgument",
+                  "val": {
+                    "span": {
+                      "end": 19,
+                      "start": 18,
+                      "type": "Span"
+                    },
+                    "type": "NumberLiteral",
+                    "value": "1"
+                  }
+                },
+                {
+                  "name": {
+                    "name": "arg2",
+                    "span": {
+                      "end": 37,
+                      "start": 33,
+                      "type": "Span"
+                    },
+                    "type": "Identifier"
+                  },
+                  "span": {
+                    "end": 40,
+                    "start": 33,
+                    "type": "Span"
+                  },
+                  "type": "NamedArgument",
+                  "val": {
+                    "span": {
+                      "end": 40,
+                      "start": 39,
+                      "type": "Span"
+                    },
+                    "type": "NumberLiteral",
+                    "value": "2"
+                  }
+                }
+              ],
+              "positional": [],
+              "span": {
+                "end": 41,
+                "start": 8,
+                "type": "Span"
+              },
+              "type": "CallExpression"
+            },
+            "span": {
+              "end": 43,
+              "start": 6,
+              "type": "Span"
+            },
+            "type": "Placeable"
+          }
+        ],
+        "span": {
+          "end": 43,
+          "start": 6,
+          "type": "Span"
+        },
+        "type": "Pattern"
+      }
+    }
+  ],
+  "span": {
+    "end": 44,
+    "start": 0,
+    "type": "Span"
+  },
+  "type": "Resource"
+}
