@@ -459,6 +459,14 @@ suite('Serialize resource', function() {
     `;
     assert.equal(pretty(input), input);
   });
+
+  test('nested placeables', function() {
+    const input = ftl`
+      foo = {{ FOO() }}
+    `;
+    assert.equal(pretty(input), input);
+  });
+
 });
 
 suite('Serialize expression', function() {
