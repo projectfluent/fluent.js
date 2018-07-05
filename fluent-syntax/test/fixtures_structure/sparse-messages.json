@@ -115,7 +115,7 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value\nValue2\n\n\nValue 4\nValue3",
+            "value": "Value\n    Value2\n\n\n    Value 4\n    Value3",
             "span": {
               "type": "Span",
               "start": 63,
