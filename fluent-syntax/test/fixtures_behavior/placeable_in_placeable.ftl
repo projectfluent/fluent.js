@@ -1,6 +1,6 @@
-# key1 = {{ foo }}
+key1 = {{ foo }}
 
-# key2 = {  { foo }  }
+key2 = {  { foo }  }
 
 # key3 =
 #   {
@@ -8,7 +8,7 @@
 #   }
 
 key4 = {  { foo }
-#~ ERROR E0014, pos 90
+#~ ERROR E0003, pos 93, args "}"
 
 
 # key5 = { foo } }

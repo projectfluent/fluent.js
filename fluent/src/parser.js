@@ -529,6 +529,10 @@ class RuntimeParser {
    * @private
    */
   getSelectorExpression() {
+    if (this._source[this._index] === "{") {
+      return this.getPlaceable();
+    }
+
     const literal = this.getLiteral();
 
     if (literal.type !== "ref") {

@@ -574,6 +574,9 @@ export default class FluentParser {
   }
 
   getSelectorExpression(ps) {
+    if (ps.currentIs("{")) {
+      return this.getPlaceable(ps);
+    }
     const literal = this.getLiteral(ps);
 
     if (literal.type !== "MessageReference"

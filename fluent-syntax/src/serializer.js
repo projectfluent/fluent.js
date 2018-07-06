@@ -216,6 +216,8 @@ function serializeExpression(expr) {
       return serializeCallExpression(expr);
     case "SelectExpression":
       return serializeSelectExpression(expr);
+    case "Placeable":
+      return serializePlaceable(expr);
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
