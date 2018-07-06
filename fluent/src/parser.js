@@ -591,7 +591,7 @@ class RuntimeParser {
     const args = [];
 
     while (this._index < this._length) {
-      this.skipInlineWS();
+      this.skipWS();
 
       if (this._source[this._index] === ")") {
         return args;
@@ -608,7 +608,7 @@ class RuntimeParser {
 
         if (this._source[this._index] === ":") {
           this._index++;
-          this.skipInlineWS();
+          this.skipWS();
 
           const val = this.getSelectorExpression();
 
@@ -636,7 +636,7 @@ class RuntimeParser {
         }
       }
 
-      this.skipInlineWS();
+      this.skipWS();
 
       if (this._source[this._index] === ")") {
         break;
