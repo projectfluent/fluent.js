@@ -17,21 +17,25 @@ export default class Localization {
    *
    * @returns {Localization}
    */
-  constructor(resourceIds, generateMessages) {
+  constructor(resourceIds = [], generateMessages) {
     this.resourceIds = resourceIds;
     this.generateMessages = generateMessages;
-    this.ctxs =
-      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+    if (resourceIds.length) {
+      this.ctxs =
+        new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+    }
   }
 
   addResourceIds(resourceIds) {
     this.resourceIds.push(...resourceIds);
     this.onChange();
+    return this.resourceIds.length;
   }
 
   removeResourceIds(resourceIds) {
     this.resourceIds = this.resourceIds.filter(r => !resourceIds.includes(r));
     this.onChange();
+    return this.resourceIds.length;
   }
 
   /**
@@ -152,8 +156,11 @@ export default class Localization {
    * that language negotiation or available resources changed.
    */
   onChange() {
-    this.ctxs =
-      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+    if (this.resourceIds.length) {
+      this.ctxs =
+        new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+      this.ctxs.touchNext(2);
+    }
   }
 }
 

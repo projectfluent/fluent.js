@@ -16,13 +16,12 @@ const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
  */
 export default class DOMLocalization extends Localization {
   /**
-   * @param {Window}           windowElement
    * @param {Array<String>}    resourceIds      - List of resource IDs
    * @param {Function}         generateMessages - Function that returns a
    *                                              generator over MessageContexts
    * @returns {DOMLocalization}
    */
-  constructor(windowElement, resourceIds, generateMessages) {
+  constructor(resourceIds, generateMessages) {
     super(resourceIds, generateMessages);
 
     // A Set of DOM trees observed by the `MutationObserver`.
@@ -31,10 +30,8 @@ export default class DOMLocalization extends Localization {
     this.pendingrAF = null;
     // list of elements pending for translation.
     this.pendingElements = new Set();
-    this.windowElement = windowElement;
-    this.mutationObserver = new windowElement.MutationObserver(
-      mutations => this.translateMutations(mutations)
-    );
+    this.windowElement = null;
+    this.mutationObserver = null;
 
     this.observerConfig = {
       attribute: true,
@@ -132,6 +129,19 @@ export default class DOMLocalization extends Localization {
       }
     }
 
+    if (this.windowElement) {
+      if (this.windowElement !== newRoot.ownerGlobal) {
+        throw new Error(`Cannot connect a root:
+          DOMLocalization already has a root from a different window.`);
+      }
+    } else {
+      this.windowElement = newRoot.ownerGlobal;
+      this.mutationObserver = new this.windowElement.MutationObserver(
+        mutations => this.translateMutations(mutations)
+      );
+    }
+
+
     this.roots.add(newRoot);
     this.mutationObserver.observe(newRoot, this.observerConfig);
   }
@@ -150,11 +160,17 @@ export default class DOMLocalization extends Localization {
    */
   disconnectRoot(root) {
     this.roots.delete(root);
-    // Pause and resume the mutation observer to stop observing `root`.
+    // Pause the mutation observer to stop observing `root`.
     this.pauseObserving();
-    this.resumeObserving();
 
-    return this.roots.size === 0;
+    if (this.roots.size === 0) {
+      this.mutationObserver = null;
+      this.windowElement = null;
+      return true;
+    }
+
+    this.resumeObserving();
+    return false;
   }
 
   /**
@@ -175,6 +191,10 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   pauseObserving() {
+    if (!this.mutationObserver) {
+      return;
+    }
+
     this.translateMutations(this.mutationObserver.takeRecords());
     this.mutationObserver.disconnect();
   }
@@ -185,6 +205,10 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   resumeObserving() {
+    if (!this.mutationObserver) {
+      return;
+    }
+
     for (const root of this.roots) {
       this.mutationObserver.observe(root, this.observerConfig);
     }
