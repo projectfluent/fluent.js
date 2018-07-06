@@ -2,6 +2,17 @@ import resolve from "./resolver";
 import parse from "./parser";
 
 /**
+ * Fluent Resource is a structure storing a map
+ * of localization entries.
+ */
+class FluentResource extends Map {
+  constructor(entries, errors = []) {
+    super(entries);
+    this.errors = errors;
+  }
+}
+
+/**
  * Message contexts are single-language stores of translations.  They are
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
@@ -96,6 +107,11 @@ export class MessageContext {
     return this._messages.get(id);
   }
 
+  static parseResource(source) {
+    const [entries, errors] = parse(source);
+    return new FluentResource(Object.entries(entries), errors);
+  }
+
   /**
    * Add a translation resource to the context.
    *
@@ -115,8 +131,13 @@ export class MessageContext {
    * @returns {Array<Error>}
    */
   addMessages(source) {
-    const [entries, errors] = parse(source);
-    for (const id in entries) {
+    const res = MessageContext.parseResource(source);
+    return this.addResource(res);
+  }
+
+  addResource(res) {
+    const errors = res.errors.slice();
+    for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from MessageContext.
@@ -124,13 +145,13 @@ export class MessageContext {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
-        this._terms.set(id, entries[id]);
+        this._terms.set(id, value);
       } else {
         if (this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
-        this._messages.set(id, entries[id]);
+        this._messages.set(id, value);
       }
     }
 
