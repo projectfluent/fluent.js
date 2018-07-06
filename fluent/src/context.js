@@ -135,6 +135,24 @@ export class MessageContext {
     return this.addResource(res);
   }
 
+  /**
+   * Add a translation resource to the context.
+   *
+   * The translation resource must be a proper FluentResource
+   * parsed by `MessageContext.parseResource`.
+   *
+   *     let res = MessageContext.parseResource("foo = Foo");
+   *     ctx.addResource(res);
+   *     ctx.getMessage('foo');
+   *
+   *     // Returns a raw representation of the 'foo' message.
+   *
+   * Parsed entities should be formatted with the `format` method in case they
+   * contain logic (references, select expressions etc.).
+   *
+   * @param   {FluentResource} res - FluentResource object.
+   * @returns {Array<Error>}
+   */
   addResource(res) {
     const errors = res.errors.slice();
     for (const [id, value] of res) {
