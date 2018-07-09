@@ -66,6 +66,14 @@ function getErrorMessage(code, args) {
       return "VariantLists are only allowed inside of other VariantLists.";
     case "E0024":
       return "Cannot access variants of a message.";
+    case "E0025": {
+      const [char] = args;
+      return `Unknown escape sequence: \\${char}.`;
+    }
+    case "E0026": {
+      const [char] = args;
+      return `Invalid Unicode escape sequence: \\u${char}.`;
+    }
     default:
       return code;
   }

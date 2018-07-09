@@ -493,22 +493,43 @@ export default class FluentParser {
       }
 
       if (ch === "\\") {
-        const ch2 = ps.next();
-
-        if (ch2 === "{" || ch2 === '"') {
-          buffer += ch2;
-        } else {
-          buffer += ch + ch2;
-        }
-
+        ps.next();
+        buffer += this.getEscapeSequence(ps);
       } else {
-        buffer += ps.ch;
+        buffer += ch;
+        ps.next();
       }
-
-      ps.next();
     }
 
     return new AST.TextElement(buffer);
+  }
+
+  getEscapeSequence(ps, specials = ["{", "\\"]) {
+    const next = ps.current();
+
+    if (specials.includes(next)) {
+      ps.next();
+      return `\\${next}`;
+    }
+
+    if (next === "u") {
+      let sequence = "";
+      ps.next();
+
+      for (let i = 0; i < 4; i++) {
+        const ch = ps.takeHexDigit();
+
+        if (ch === undefined) {
+          throw new ParseError("E0026", sequence + ps.current());
+        }
+
+        sequence += ch;
+      }
+
+      return `\\u${sequence}`;
+    }
+
+    throw new ParseError("E0025", next);
   }
 
   getPlaceable(ps) {
@@ -714,7 +735,11 @@ export default class FluentParser {
 
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== "\n"))) {
-      val += ch;
+      if (ch === "\\") {
+        val += this.getEscapeSequence(ps, ["{", "\\", "\""]);
+      } else {
+        val += ch;
+      }
     }
 
     if (ps.currentIs("\n")) {

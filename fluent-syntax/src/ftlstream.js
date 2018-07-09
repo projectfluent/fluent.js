@@ -88,14 +88,6 @@ export class FTLParserStream extends ParserStream {
     this.skipInlineWS();
   }
 
-  takeCharIf(ch) {
-    if (this.ch === ch) {
-      this.next();
-      return true;
-    }
-    return false;
-  }
-
   takeChar(f) {
     const ch = this.ch;
     if (ch !== undefined && f(ch)) {
@@ -323,6 +315,17 @@ export class FTLParserStream extends ParserStream {
     const closure = ch => {
       const cc = ch.charCodeAt(0);
       return (cc >= 48 && cc <= 57); // 0-9
+    };
+
+    return this.takeChar(closure);
+  }
+
+  takeHexDigit() {
+    const closure = ch => {
+      const cc = ch.charCodeAt(0);
+      return (cc >= 48 && cc <= 57) // 0-9
+        || (cc >= 65 && cc <= 70) // A-F
+        || (cc >= 97 && cc <= 102); // a-f
     };
 
     return this.takeChar(closure);
