@@ -20,10 +20,8 @@ export default class Localization {
   constructor(resourceIds = [], generateMessages) {
     this.resourceIds = resourceIds;
     this.generateMessages = generateMessages;
-    if (resourceIds.length) {
-      this.ctxs =
-        new CachedAsyncIterable(this.generateMessages(this.resourceIds));
-    }
+    this.ctxs =
+      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
   }
 
   addResourceIds(resourceIds) {
