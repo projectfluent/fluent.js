@@ -8,16 +8,9 @@ async function* mockGenerateMessages(resourceIds) {
   yield mc;
 }
 
-const mockWindow = {
-  MutationObserver: class MutationObserver {
-    takeRecords() {return new Set();}
-    disconnect() {}
-  }
-};
-
 suite("translateFragment", function() {
   test("translates a node", async function() {
-    const domLoc = new DOMLocalization(mockWindow, ["test.ftl"], mockGenerateMessages);
+    const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
     const frag = document.createDocumentFragment();
     const elem = document.createElement("p");
@@ -30,7 +23,7 @@ suite("translateFragment", function() {
   });
 
   test("does not inject content into a node with missing translation", async function() {
-    const domLoc = new DOMLocalization(mockWindow, ["test.ftl"], mockGenerateMessages);
+    const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
     const frag = document.createDocumentFragment();
     const elem = document.createElement("p");
