@@ -1,16 +1,5 @@
 import resolve from "./resolver";
-import parse from "./parser";
-
-/**
- * Fluent Resource is a structure storing a map
- * of localization entries.
- */
-class FluentResource extends Map {
-  constructor(entries, errors = []) {
-    super(entries);
-    this.errors = errors;
-  }
-}
+import FluentResource from "./resource";
 
 /**
  * Message contexts are single-language stores of translations.  They are
@@ -107,11 +96,6 @@ export class MessageContext {
     return this._messages.get(id);
   }
 
-  static parseResource(source) {
-    const [entries, errors] = parse(source);
-    return new FluentResource(Object.entries(entries), errors);
-  }
-
   /**
    * Add a translation resource to the context.
    *
@@ -131,7 +115,7 @@ export class MessageContext {
    * @returns {Array<Error>}
    */
   addMessages(source) {
-    const res = MessageContext.parseResource(source);
+    const res = FluentResource.fromString(source);
     return this.addResource(res);
   }
 
