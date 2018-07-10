@@ -5,6 +5,9 @@ import { FTLParserStream } from "./ftlstream";
 import { ParseError } from "./errors";
 
 
+const trailingWSRe = /[ \t\n\r]+$/;
+
+
 function withSpan(fn) {
   return function(ps, ...args) {
     if (!this.withSpans) {
@@ -387,7 +390,7 @@ export default class FluentParser {
       }
     }
 
-    return new AST.VariantName(name.trimRight());
+    return new AST.VariantName(name.replace(trailingWSRe, ""));
   }
 
   getDigits(ps) {
@@ -470,7 +473,7 @@ export default class FluentParser {
     // Trim trailing whitespace.
     const lastElement = elements[elements.length - 1];
     if (lastElement.type === "TextElement") {
-      lastElement.value = lastElement.value.trimRight();
+      lastElement.value = lastElement.value.replace(trailingWSRe, "");
     }
 
     return new AST.Pattern(elements);

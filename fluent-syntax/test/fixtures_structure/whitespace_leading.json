@@ -57,8 +57,56 @@
         "name": "key2",
         "span": {
           "type": "Span",
+          "start": 65,
+          "end": 69
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "    Value",
+            "span": {
+              "type": "Span",
+              "start": 75,
+              "end": 84
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 75,
+          "end": 84
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "annotations": [],
+        "content": "        ↓ nbsp\n",
+        "span": {
+          "type": "Span",
           "start": 48,
-          "end": 52
+          "end": 64
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 65,
+        "end": 84
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "span": {
+          "type": "Span",
+          "start": 86,
+          "end": 90
         }
       },
       "value": {
@@ -71,14 +119,14 @@
               "value": "",
               "span": {
                 "type": "Span",
-                "start": 56,
-                "end": 58
+                "start": 94,
+                "end": 96
               }
             },
             "span": {
               "type": "Span",
-              "start": 55,
-              "end": 59
+              "start": 93,
+              "end": 97
             }
           },
           {
@@ -86,23 +134,23 @@
             "value": "         Value",
             "span": {
               "type": "Span",
-              "start": 59,
-              "end": 73
+              "start": 97,
+              "end": 111
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 55,
-          "end": 73
+          "start": 93,
+          "end": 111
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 48,
-        "end": 73
+        "start": 86,
+        "end": 111
       }
     },
     {
@@ -110,11 +158,11 @@
       "annotations": [],
       "id": {
         "type": "Identifier",
-        "name": "key3",
+        "name": "key4",
         "span": {
           "type": "Span",
-          "start": 74,
-          "end": 78
+          "start": 112,
+          "end": 116
         }
       },
       "value": {
@@ -127,14 +175,14 @@
               "value": "         ",
               "span": {
                 "type": "Span",
-                "start": 82,
-                "end": 93
+                "start": 120,
+                "end": 131
               }
             },
             "span": {
               "type": "Span",
-              "start": 81,
-              "end": 94
+              "start": 119,
+              "end": 132
             }
           },
           {
@@ -142,29 +190,29 @@
             "value": "Value",
             "span": {
               "type": "Span",
-              "start": 94,
-              "end": 99
+              "start": 132,
+              "end": 137
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 81,
-          "end": 99
+          "start": 119,
+          "end": 137
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 74,
-        "end": 99
+        "start": 112,
+        "end": 137
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 100
+    "end": 138
   }
 }

@@ -1,5 +1,8 @@
 #           < whitespace >
 key1 = Value              
 
-key2 = Value              {placeable}.
-key3 = Value{"           "}
+#              ↓ nbsp
+key2 = Value       
+
+key3 = Value              {placeable}.
+key4 = Value{"           "}
