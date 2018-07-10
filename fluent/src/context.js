@@ -1,5 +1,5 @@
 import resolve from "./resolver";
-import parse from "./parser";
+import FluentResource from "./resource";
 
 /**
  * Message contexts are single-language stores of translations.  They are
@@ -115,8 +115,31 @@ export class MessageContext {
    * @returns {Array<Error>}
    */
   addMessages(source) {
-    const [entries, errors] = parse(source);
-    for (const id in entries) {
+    const res = FluentResource.fromString(source);
+    return this.addResource(res);
+  }
+
+  /**
+   * Add a translation resource to the context.
+   *
+   * The translation resource must be a proper FluentResource
+   * parsed by `MessageContext.parseResource`.
+   *
+   *     let res = MessageContext.parseResource("foo = Foo");
+   *     ctx.addResource(res);
+   *     ctx.getMessage('foo');
+   *
+   *     // Returns a raw representation of the 'foo' message.
+   *
+   * Parsed entities should be formatted with the `format` method in case they
+   * contain logic (references, select expressions etc.).
+   *
+   * @param   {FluentResource} res - FluentResource object.
+   * @returns {Array<Error>}
+   */
+  addResource(res) {
+    const errors = res.errors.slice();
+    for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from MessageContext.
@@ -124,13 +147,13 @@ export class MessageContext {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
-        this._terms.set(id, entries[id]);
+        this._terms.set(id, value);
       } else {
         if (this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
-        this._messages.set(id, entries[id]);
+        this._messages.set(id, value);
       }
     }
 
