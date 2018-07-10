@@ -156,11 +156,9 @@ export default class Localization {
    * that language negotiation or available resources changed.
    */
   onChange() {
-    if (this.resourceIds.length) {
-      this.ctxs =
-        new CachedAsyncIterable(this.generateMessages(this.resourceIds));
-      this.ctxs.touchNext(2);
-    }
+    this.ctxs =
+      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+    this.ctxs.touchNext(2);
   }
 }
 

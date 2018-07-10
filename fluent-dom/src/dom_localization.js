@@ -166,9 +166,12 @@ export default class DOMLocalization extends Localization {
     if (this.roots.size === 0) {
       this.mutationObserver = null;
       this.windowElement = null;
+      this.pendingrAF = null;
+      this.pendingElements.clear();
       return true;
     }
 
+    // Resume observing all other roots.
     this.resumeObserving();
     return false;
   }
