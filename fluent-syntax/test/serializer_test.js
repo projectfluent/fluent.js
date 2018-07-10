@@ -614,4 +614,25 @@ suite('Serialize padding around comments', function() {
     assert.equal(pretty(input), input);
     assert.equal(pretty(input), input);
   });
+
+  test('Escaped special char in TextElement', function() {
+    const input = ftl`
+      foo = \\{Escaped}
+    `;
+    assert.equal(pretty(input), input);
+  });
+
+  test('Escaped special char in StringLiteral', function() {
+    const input = ftl`
+      foo = { "Escaped \\" quote" }
+    `;
+    assert.equal(pretty(input), input);
+  });
+
+  test('Unicode escape sequence', function() {
+    const input = ftl`
+      foo = \\u0065
+    `;
+    assert.equal(pretty(input), input);
+  });
 });

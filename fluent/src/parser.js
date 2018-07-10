@@ -5,6 +5,7 @@ const MAX_PLACEABLES = 100;
 const entryIdentifierRe = /-?[a-zA-Z][a-zA-Z0-9_-]*/y;
 const identifierRe = /[a-zA-Z][a-zA-Z0-9_-]*/y;
 const functionIdentifierRe = /^[A-Z][A-Z_?-]*$/;
+const unicodeEscapeRe = /^[a-fA-F0-9]{4}$/;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
@@ -262,21 +263,30 @@ class RuntimeParser {
    * @private
    */
   getString() {
-    const start = this._index + 1;
+    let value = "";
+    this._index++;
 
-    while (++this._index < this._length) {
+    while (this._index < this._length) {
       const ch = this._source[this._index];
 
       if (ch === '"') {
+        this._index++;
         break;
       }
 
       if (ch === "\n") {
         throw this.error("Unterminated string expression");
       }
+
+      if (ch === "\\") {
+        value += this.getEscapedCharacter(["{", "\\", "\""]);
+      } else {
+        this._index++;
+        value += ch;
+      }
     }
 
-    return this._source.substring(start, this._index++);
+    return value;
   }
 
   /**
@@ -303,7 +313,9 @@ class RuntimeParser {
     const firstLineContent = start !== eol ?
       this._source.slice(start, eol) : null;
 
-    if (firstLineContent && firstLineContent.includes("{")) {
+    if (firstLineContent
+      && (firstLineContent.includes("{")
+        || firstLineContent.includes("\\"))) {
       return this.getComplexPattern();
     }
 
@@ -390,13 +402,19 @@ class RuntimeParser {
         }
         ch = this._source[this._index];
         continue;
-      } else if (ch === "\\") {
-        const ch2 = this._source[this._index + 1];
-        if (ch2 === '"' || ch2 === "{" || ch2 === "\\") {
-          ch = ch2;
-          this._index++;
-        }
-      } else if (ch === "{") {
+      }
+
+      if (ch === undefined) {
+        break;
+      }
+
+      if (ch === "\\") {
+        buffer += this.getEscapedCharacter();
+        ch = this._source[this._index];
+        continue;
+      }
+
+      if (ch === "{") {
         // Push the buffer to content array right before placeable
         if (buffer.length) {
           content.push(buffer);
@@ -408,18 +426,13 @@ class RuntimeParser {
         buffer = "";
         content.push(this.getPlaceable());
 
-        this._index++;
-
-        ch = this._source[this._index];
+        ch = this._source[++this._index];
         placeables++;
         continue;
       }
 
-      if (ch) {
-        buffer += ch;
-      }
-      this._index++;
-      ch = this._source[this._index];
+      buffer += ch;
+      ch = this._source[++this._index];
     }
 
     if (content.length === 0) {
@@ -433,6 +446,34 @@ class RuntimeParser {
     return content;
   }
   /* eslint-enable complexity */
+
+  /**
+   * Parse an escape sequence and return the unescaped character.
+   *
+   * @returns {string}
+   * @private
+   */
+  getEscapedCharacter(specials = ["{", "\\"]) {
+    this._index++;
+    const next = this._source[this._index];
+
+    if (specials.includes(next)) {
+      this._index++;
+      return next;
+    }
+
+    if (next === "u") {
+      const sequence = this._source.slice(this._index + 1, this._index + 5);
+      if (unicodeEscapeRe.test(sequence)) {
+        this._index += 5;
+        return String.fromCodePoint(parseInt(sequence, 16));
+      }
+
+      throw this.error(`Invalid Unicode escape sequence: \\u${sequence}`);
+    }
+
+    throw this.error(`Unknown escape sequence: \\${next}`);
+  }
 
   /**
    * Parses a single placeable in a Message pattern and returns its
