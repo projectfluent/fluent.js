@@ -467,6 +467,12 @@ export default class FluentParser {
       }
     }
 
+    // Trim trailing whitespace.
+    const lastElement = elements[elements.length - 1];
+    if (lastElement.type === "TextElement") {
+      lastElement.value = lastElement.value.trimRight();
+    }
+
     return new AST.Pattern(elements);
   }
 

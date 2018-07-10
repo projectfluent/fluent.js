@@ -1,0 +1,19 @@
+{
+  "key1": "Value",
+  "key2": {
+    "val": [
+      "Value              ",
+      {
+        "type": "ref",
+        "name": "placeable"
+      },
+      "."
+    ]
+  },
+  "key3": {
+    "val": [
+      "Value",
+      "           "
+    ]
+  }
+}

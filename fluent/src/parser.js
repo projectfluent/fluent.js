@@ -310,8 +310,13 @@ class RuntimeParser {
       eol = this._length;
     }
 
-    const firstLineContent = start !== eol ?
-      this._source.slice(start, eol) : null;
+    // If there's any text between the = and the EOL, store it for now. The next
+    // non-empty line will decide what to do with it.
+    const firstLineContent = start !== eol
+      // Trim the trailing whitespace in case this is a single-line pattern.
+      // Multiline patterns are parsed anew by getComplexPattern.
+      ? this._source.slice(start, eol).trimRight()
+      : null;
 
     if (firstLineContent
       && (firstLineContent.includes("{")
@@ -440,7 +445,8 @@ class RuntimeParser {
     }
 
     if (buffer.length) {
-      content.push(buffer);
+      // Trim trailing whitespace, too.
+      content.push(buffer.trimRight());
     }
 
     return content;

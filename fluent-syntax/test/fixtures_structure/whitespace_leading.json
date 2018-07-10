@@ -1,0 +1,170 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key1",
+        "span": {
+          "type": "Span",
+          "start": 21,
+          "end": 25
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 41,
+              "end": 46
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 41,
+          "end": 46
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "annotations": [],
+        "content": "    < whitespace >\n",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 20
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 21,
+        "end": 46
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "span": {
+          "type": "Span",
+          "start": 48,
+          "end": 52
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "value": "",
+              "span": {
+                "type": "Span",
+                "start": 56,
+                "end": 58
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 55,
+              "end": 59
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "         Value",
+            "span": {
+              "type": "Span",
+              "start": 59,
+              "end": 73
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 55,
+          "end": 73
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 48,
+        "end": 73
+      }
+    },
+    {
+      "type": "Message",
+      "annotations": [],
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "span": {
+          "type": "Span",
+          "start": 74,
+          "end": 78
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "value": "         ",
+              "span": {
+                "type": "Span",
+                "start": 82,
+                "end": 93
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 81,
+              "end": 94
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 94,
+              "end": 99
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 81,
+          "end": 99
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 74,
+        "end": 99
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 100
+  }
+}
