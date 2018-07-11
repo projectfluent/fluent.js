@@ -25,11 +25,6 @@ readdir(fixtures, function(err, filenames) {
       // Call arguments edge-cases.
       "call_expressions.ftl",
 
-      // isPeekNextLineComment gives a false positive when the next line doesn't
-      // start with # but is indented by at least (n + 1) spaces, where n is the
-      // current comment level.
-      "mixed_entries.ftl",
-
       // The tooling parser rejects variant keys which contain leading whitespace.
       // There's even a behavior fixture for this; it must have been a
       // deliberate decision.

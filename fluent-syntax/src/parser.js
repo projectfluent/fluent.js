@@ -200,7 +200,7 @@ export default class FluentParser {
         break;
       }
 
-      if (ps.isPeekNextLineComment(level, false)) {
+      if (ps.isPeekNextLineComment(level)) {
         ps.next();
       } else {
         break;
