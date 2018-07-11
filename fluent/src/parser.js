@@ -6,6 +6,8 @@ const entryIdentifierRe = /-?[a-zA-Z][a-zA-Z0-9_-]*/y;
 const identifierRe = /[a-zA-Z][a-zA-Z0-9_-]*/y;
 const functionIdentifierRe = /^[A-Z][A-Z_?-]*$/;
 const unicodeEscapeRe = /^[a-fA-F0-9]{4}$/;
+const trailingWSRe = /[ \t\n\r]+$/;
+
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
@@ -310,8 +312,13 @@ class RuntimeParser {
       eol = this._length;
     }
 
-    const firstLineContent = start !== eol ?
-      this._source.slice(start, eol) : null;
+    // If there's any text between the = and the EOL, store it for now. The next
+    // non-empty line will decide what to do with it.
+    const firstLineContent = start !== eol
+      // Trim the trailing whitespace in case this is a single-line pattern.
+      // Multiline patterns are parsed anew by getComplexPattern.
+      ? this._source.slice(start, eol).replace(trailingWSRe, "")
+      : null;
 
     if (firstLineContent
       && (firstLineContent.includes("{")
@@ -440,7 +447,8 @@ class RuntimeParser {
     }
 
     if (buffer.length) {
-      content.push(buffer);
+      // Trim trailing whitespace, too.
+      content.push(buffer.replace(trailingWSRe, ""));
     }
 
     return content;
