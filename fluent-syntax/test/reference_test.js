@@ -34,11 +34,6 @@ readdir(fixtures, function(err, filenames) {
       // There's even a behavior fixture for this; it must have been a
       // deliberate decision.
       "select_expressions.ftl",
-
-      // Broken Attributes break the entire Entry right now.
-      // https://github.com/projectfluent/fluent.js/issues/237
-      "leading_dots.ftl",
-      "variant_lists.ftl"
     ];
 
     for (const filename of ftlnames) {

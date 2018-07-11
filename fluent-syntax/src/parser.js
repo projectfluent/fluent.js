@@ -287,9 +287,16 @@ export default class FluentParser {
     const attrs = [];
 
     while (true) {
+      const lineStart = ps.getIndex() + 1;
       ps.expectIndent();
-      const attr = this.getAttribute(ps);
-      attrs.push(attr);
+
+      try {
+        const attr = this.getAttribute(ps);
+        attrs.push(attr);
+      } catch (err) {
+        ps.setIndex(lineStart);
+        return attrs;
+      }
 
       if (!ps.isPeekNextLineAttributeStart()) {
         break;
