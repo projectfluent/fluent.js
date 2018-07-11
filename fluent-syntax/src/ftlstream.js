@@ -159,7 +159,7 @@ export class FTLParserStream extends ParserStream {
     while (i <= level || (level === -1 && i < 3)) {
       this.peek();
       if (!this.currentPeekIs("#")) {
-        if (i !== level && level !== -1) {
+        if (i <= level && level !== -1) {
           this.resetPeek();
           return false;
         }

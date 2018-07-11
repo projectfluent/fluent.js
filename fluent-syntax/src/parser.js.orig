@@ -5,9 +5,6 @@ import { FTLParserStream } from "./ftlstream";
 import { ParseError } from "./errors";
 
 
-const trailingWSRe = /[ \t\n\r]+$/;
-
-
 function withSpan(fn) {
   return function(ps, ...args) {
     if (!this.withSpans) {
@@ -194,13 +191,8 @@ export default class FluentParser {
         }
       }
 
-      if (!ps.currentIs(undefined)) {
+      if (ps.isPeekNextLineComment(level, false)) {
         content += "\n";
-      } else {
-        break;
-      }
-
-      if (ps.isPeekNextLineComment(level)) {
         ps.next();
       } else {
         break;
@@ -390,7 +382,7 @@ export default class FluentParser {
       }
     }
 
-    return new AST.VariantName(name.replace(trailingWSRe, ""));
+    return new AST.VariantName(name.trimRight());
   }
 
   getDigits(ps) {
@@ -470,12 +462,6 @@ export default class FluentParser {
       }
     }
 
-    // Trim trailing whitespace.
-    const lastElement = elements[elements.length - 1];
-    if (lastElement.type === "TextElement") {
-      lastElement.value = lastElement.value.replace(trailingWSRe, "");
-    }
-
     return new AST.Pattern(elements);
   }
 
@@ -502,43 +488,22 @@ export default class FluentParser {
       }
 
       if (ch === "\\") {
-        ps.next();
-        buffer += this.getEscapeSequence(ps);
+        const ch2 = ps.next();
+
+        if (ch2 === "{" || ch2 === '"') {
+          buffer += ch2;
+        } else {
+          buffer += ch + ch2;
+        }
+
       } else {
-        buffer += ch;
-        ps.next();
+        buffer += ps.ch;
       }
+
+      ps.next();
     }
 
     return new AST.TextElement(buffer);
-  }
-
-  getEscapeSequence(ps, specials = ["{", "\\"]) {
-    const next = ps.current();
-
-    if (specials.includes(next)) {
-      ps.next();
-      return `\\${next}`;
-    }
-
-    if (next === "u") {
-      let sequence = "";
-      ps.next();
-
-      for (let i = 0; i < 4; i++) {
-        const ch = ps.takeHexDigit();
-
-        if (ch === undefined) {
-          throw new ParseError("E0026", sequence + ps.current());
-        }
-
-        sequence += ch;
-      }
-
-      return `\\u${sequence}`;
-    }
-
-    throw new ParseError("E0025", next);
   }
 
   getPlaceable(ps) {
@@ -604,9 +569,6 @@ export default class FluentParser {
   }
 
   getSelectorExpression(ps) {
-    if (ps.currentIs("{")) {
-      return this.getPlaceable(ps);
-    }
     const literal = this.getLiteral(ps);
 
     if (literal.type !== "MessageReference"
@@ -626,10 +588,6 @@ export default class FluentParser {
     if (ch === "[") {
       ps.next();
 
-      if (literal.type === "MessageReference") {
-        throw new ParseError("E0024");
-      }
-
       const key = this.getVariantKey(ps);
 
       ps.expectChar("]");
@@ -640,13 +598,13 @@ export default class FluentParser {
     if (ch === "(") {
       ps.next();
 
-      if (!/^[A-Z][A-Z_?-]*$/.test(literal.id.name)) {
-        throw new ParseError("E0008");
-      }
-
       const args = this.getCallArgs(ps);
 
       ps.expectChar(")");
+
+      if (!/^[A-Z][A-Z_?-]*$/.test(literal.id.name)) {
+        throw new ParseError("E0008");
+      }
 
       const func = new AST.Function(literal.id.name);
       if (this.withSpans) {
@@ -690,7 +648,6 @@ export default class FluentParser {
     const argumentNames = new Set();
 
     ps.skipInlineWS();
-    ps.skipIndent();
 
     while (true) {
       if (ps.current() === ")") {
@@ -711,12 +668,10 @@ export default class FluentParser {
       }
 
       ps.skipInlineWS();
-      ps.skipIndent();
 
       if (ps.current() === ",") {
         ps.next();
         ps.skipInlineWS();
-        ps.skipIndent();
         continue;
       } else {
         break;
@@ -744,11 +699,7 @@ export default class FluentParser {
 
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== "\n"))) {
-      if (ch === "\\") {
-        val += this.getEscapeSequence(ps, ["{", "\\", "\""]);
-      } else {
-        val += ch;
-      }
+      val += ch;
     }
 
     if (ps.currentIs("\n")) {
