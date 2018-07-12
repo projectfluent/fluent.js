@@ -1,5 +1,6 @@
 import resolve from "./resolver";
 import FluentResource from "./resource";
+import IntlMemoizer from "./intl_memoizer";
 
 /**
  * Message contexts are single-language stores of translations.  They are
@@ -52,7 +53,8 @@ export class MessageContext {
   constructor(locales, {
     functions = {},
     useIsolating = true,
-    transform = v => v
+    transform = v => v,
+    intlMemoizer = new IntlMemoizer(),
   } = {}) {
     this.locales = Array.isArray(locales) ? locales : [locales];
 
@@ -61,7 +63,7 @@ export class MessageContext {
     this._functions = functions;
     this._useIsolating = useIsolating;
     this._transform = transform;
-    this._intls = new WeakMap();
+    this._intlMemoizer = intlMemoizer;
   }
 
   /*
@@ -210,14 +212,6 @@ export class MessageContext {
   }
 
   _memoizeIntlObject(ctor, opts) {
-    const cache = this._intls.get(ctor) || {};
-    const id = JSON.stringify(opts);
-
-    if (!cache[id]) {
-      cache[id] = new ctor(this.locales, opts);
-      this._intls.set(ctor, cache);
-    }
-
-    return cache[id];
+    return this._intlMemoizer.get(ctor, this.locales, opts);
   }
 }
