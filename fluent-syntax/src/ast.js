@@ -60,14 +60,6 @@ export class Term extends Entry {
   }
 }
 
-export class Pattern extends SyntaxNode {
-  constructor(elements) {
-    super();
-    this.type = "Pattern";
-    this.elements = elements;
-  }
-}
-
 export class VariantList extends SyntaxNode {
   constructor(variants) {
     super();
@@ -76,7 +68,20 @@ export class VariantList extends SyntaxNode {
   }
 }
 
-export class TextElement extends SyntaxNode {
+export class Pattern extends SyntaxNode {
+  constructor(elements) {
+    super();
+    this.type = "Pattern";
+    this.elements = elements;
+  }
+}
+
+/*
+ * An abstract base class for elements of Patterns.
+ */
+export class PatternElement extends SyntaxNode {}
+
+export class TextElement extends PatternElement {
   constructor(value) {
     super();
     this.type = "TextElement";
@@ -84,7 +89,7 @@ export class TextElement extends SyntaxNode {
   }
 }
 
-export class Placeable extends SyntaxNode {
+export class Placeable extends PatternElement {
   constructor(expression) {
     super();
     this.type = "Placeable";
@@ -92,7 +97,12 @@ export class Placeable extends SyntaxNode {
   }
 }
 
-export class StringLiteral extends SyntaxNode {
+/*
+ * An abstract base class for expressions.
+ */
+export class Expression extends SyntaxNode {}
+
+export class StringLiteral extends Expression {
   constructor(value) {
     super();
     this.type = "StringLiteral";
@@ -100,7 +110,7 @@ export class StringLiteral extends SyntaxNode {
   }
 }
 
-export class NumberLiteral extends SyntaxNode {
+export class NumberLiteral extends Expression {
   constructor(value) {
     super();
     this.type = "NumberLiteral";
@@ -108,7 +118,7 @@ export class NumberLiteral extends SyntaxNode {
   }
 }
 
-export class MessageReference extends SyntaxNode {
+export class MessageReference extends Expression {
   constructor(id) {
     super();
     this.type = "MessageReference";
@@ -116,7 +126,7 @@ export class MessageReference extends SyntaxNode {
   }
 }
 
-export class TermReference extends SyntaxNode {
+export class TermReference extends Expression {
   constructor(id) {
     super();
     this.type = "TermReference";
@@ -124,7 +134,7 @@ export class TermReference extends SyntaxNode {
   }
 }
 
-export class VariableReference extends SyntaxNode {
+export class VariableReference extends Expression {
   constructor(id) {
     super();
     this.type = "VariableReference";
@@ -132,7 +142,7 @@ export class VariableReference extends SyntaxNode {
   }
 }
 
-export class SelectExpression extends SyntaxNode {
+export class SelectExpression extends Expression {
   constructor(selector, variants) {
     super();
     this.type = "SelectExpression";
@@ -141,7 +151,7 @@ export class SelectExpression extends SyntaxNode {
   }
 }
 
-export class AttributeExpression extends SyntaxNode {
+export class AttributeExpression extends Expression {
   constructor(ref, name) {
     super();
     this.type = "AttributeExpression";
@@ -150,7 +160,7 @@ export class AttributeExpression extends SyntaxNode {
   }
 }
 
-export class VariantExpression extends SyntaxNode {
+export class VariantExpression extends Expression {
   constructor(ref, key) {
     super();
     this.type = "VariantExpression";
@@ -159,7 +169,7 @@ export class VariantExpression extends SyntaxNode {
   }
 }
 
-export class CallExpression extends SyntaxNode {
+export class CallExpression extends Expression {
   constructor(callee, positional = [], named = []) {
     super();
     this.type = "CallExpression";
