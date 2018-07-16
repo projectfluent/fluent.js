@@ -309,6 +309,13 @@ export default class FluentParser {
     return new AST.Identifier(name);
   }
 
+  getTermIdentifier(ps) {
+    ps.expectChar("-");
+    const id = this.getIdentifier(ps);
+    return new AST.Identifier(`-${id.name}`);
+
+  }
+
   getVariantKey(ps) {
     const ch = ps.current();
 
@@ -793,12 +800,5 @@ export default class FluentParser {
     }
 
     throw new ParseError("E0014");
-  }
-
-  getTermIdentifier(ps) {
-    ps.expectChar("-");
-    const id = this.getIdentifier(ps);
-    return new AST.Identifier(`-${id.name}`);
-
   }
 }
