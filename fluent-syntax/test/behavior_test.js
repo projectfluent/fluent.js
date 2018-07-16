@@ -4,7 +4,7 @@ import { readdir } from 'fs';
 import { readfile } from './util';
 import { parse } from '../src';
 
-const sigil = '^#~ ';
+const sigil = '^# ~';
 const reDirective = new RegExp(`${sigil}(.*)[\n$]`, 'gm');
 
 function* directives(source) {

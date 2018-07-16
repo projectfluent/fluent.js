@@ -1,3 +1,3 @@
 key = Value
     .label =
-#~ ERROR E0012, pos 24
+# ~ERROR E0012, pos 24

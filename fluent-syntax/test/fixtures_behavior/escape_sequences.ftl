@@ -1,7 +1,7 @@
-#~ ERROR E0025, pos 8, args "A"
+# ~ERROR E0025, pos 8, args "A"
 key1 = \A
 
-#~ ERROR E0026, pos 23, args "000z"
+# ~ERROR E0026, pos 23, args "000z"
 key2 = \u000z
 
 key3 = \{Escaped}

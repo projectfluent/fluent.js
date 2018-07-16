@@ -5,4 +5,4 @@
 -term2 = {
     *[one]
     }
-#~ ERROR E0012, pos 55
+# ~ERROR E0012, pos 55
