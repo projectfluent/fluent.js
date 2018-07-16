@@ -254,7 +254,7 @@ export default class FluentParser {
 
     if (ps.isPeekValueStart()) {
       ps.skipIndent();
-      var pattern = this.getValue(ps);
+      var value = this.getValue(ps);
     } else {
       throw new ParseError("E0006", id.name);
     }
@@ -263,7 +263,7 @@ export default class FluentParser {
       var attrs = this.getAttributes(ps);
     }
 
-    return new AST.Term(id, pattern, attrs);
+    return new AST.Term(id, value, attrs);
   }
 
   getAttribute(ps) {
