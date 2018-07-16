@@ -278,10 +278,8 @@ function serializeCallExpression(expr) {
   const named = expr.named.map(serializeNamedArgument).join(", ");
   if (expr.positional.length > 0 && expr.named.length > 0) {
     return `${fun}(${positional}, ${named})`;
-  } else if (expr.positional.length > 0) {
-    return `${fun}(${positional})`;
   }
-  return `${fun}(${named})`;
+  return `${fun}(${positional || named})`;
 }
 
 
