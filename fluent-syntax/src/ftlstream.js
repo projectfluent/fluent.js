@@ -84,6 +84,15 @@ export class FTLParserStream extends ParserStream {
     this.skipInlineWS();
   }
 
+  expectLineEnd() {
+    if (this.ch) {
+      return this.expectChar("\n");
+    }
+
+    // EOF is a valid line end in Fluent.
+    return true;
+  }
+
   takeChar(f) {
     const ch = this.ch;
     if (ch !== undefined && f(ch)) {

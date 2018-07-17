@@ -241,6 +241,7 @@ export default class FluentParser {
       throw new ParseError("E0005", id.name);
     }
 
+    ps.expectLineEnd();
     return new AST.Message(id, pattern, attrs);
   }
 
@@ -261,6 +262,7 @@ export default class FluentParser {
       var attrs = this.getAttributes(ps);
     }
 
+    ps.expectLineEnd();
     return new AST.Term(id, value, attrs);
   }
 
