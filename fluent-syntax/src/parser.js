@@ -14,20 +14,13 @@ function withSpan(fn) {
       return fn.call(this, ps, ...args);
     }
 
-    let start = ps.getIndex();
+    const start = ps.getIndex();
     const node = fn.call(this, ps, ...args);
 
     // Don't re-add the span if the node already has it.  This may happen when
     // one decorated function calls another decorated function.
     if (node.span) {
       return node;
-    }
-
-    // Spans of Messages should include the attached Comment.
-    if (node.type === "Message") {
-      if (node.comment !== null) {
-        start = node.comment.span.start;
-      }
     }
 
     const end = ps.getIndex();
@@ -80,6 +73,9 @@ export default class FluentParser {
       if (lastComment) {
         if (entry.type === "Message" || entry.type === "Term") {
           entry.comment = lastComment;
+          if (this.withSpans) {
+            entry.span.start = entry.comment.span.start;
+          }
         } else {
           entries.push(lastComment);
         }
