@@ -190,18 +190,20 @@ export default class FluentParser {
         }
       }
 
-      if (!ps.currentIs(undefined)) {
-        content += "\n";
-      } else {
-        break;
-      }
-
       if (ps.isPeekNextLineComment(level)) {
+        content += ps.current();
         ps.next();
       } else {
         break;
       }
     }
+
+    // Add the terminal line break.
+    if (!ps.currentIs(undefined)) {
+      content += ps.current();
+      ps.next();
+    }
+
 
     let Comment;
     switch (level) {
