@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key1",
@@ -35,23 +34,21 @@
       "attributes": [],
       "comment": {
         "type": "Comment",
-        "annotations": [],
-        "content": "    < whitespace >\n",
+        "content": "    < whitespace >",
         "span": {
           "type": "Span",
           "start": 0,
-          "end": 21
+          "end": 20
         }
       },
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 47
+        "end": 46
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key2",
@@ -83,23 +80,21 @@
       "attributes": [],
       "comment": {
         "type": "Comment",
-        "annotations": [],
-        "content": "        ↓ nbsp\n",
+        "content": "        ↓ nbsp",
         "span": {
           "type": "Span",
           "start": 48,
-          "end": 65
+          "end": 64
         }
       },
       "span": {
         "type": "Span",
         "start": 48,
-        "end": 85
+        "end": 84
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key3",
@@ -150,12 +145,11 @@
       "span": {
         "type": "Span",
         "start": 86,
-        "end": 112
+        "end": 111
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key4",
@@ -206,7 +200,7 @@
       "span": {
         "type": "Span",
         "start": 112,
-        "end": 138
+        "end": 137
       }
     }
   ],

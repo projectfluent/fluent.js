@@ -3,17 +3,15 @@
   "body": [
     {
       "type": "Comment",
-      "annotations": [],
-      "content": "This is\n\nAn example of a multiline comment\n",
+      "content": "This is\n\nAn example of a multiline comment",
       "span": {
         "type": "Span",
         "start": 1,
-        "end": 49
+        "end": 48
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key",
@@ -47,7 +45,7 @@
       "span": {
         "type": "Span",
         "start": 50,
-        "end": 62
+        "end": 61
       }
     }
   ],

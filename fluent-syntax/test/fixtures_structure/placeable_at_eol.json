@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key1",
@@ -71,12 +70,11 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 132
+        "end": 131
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key2",
@@ -135,12 +133,11 @@
       "span": {
         "type": "Span",
         "start": 133,
-        "end": 185
+        "end": 184
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key3",
@@ -199,7 +196,7 @@
       "span": {
         "type": "Span",
         "start": 186,
-        "end": 235
+        "end": 234
       }
     }
   ],
