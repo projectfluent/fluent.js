@@ -125,7 +125,9 @@ export default class FluentParser {
     const entryStartPos = ps.getIndex();
 
     try {
-      return this.getEntry(ps);
+      const entry = this.getEntry(ps);
+      ps.expectLineEnd();
+      return entry;
     } catch (err) {
       if (!(err instanceof ParseError)) {
         throw err;
@@ -198,13 +200,6 @@ export default class FluentParser {
       }
     }
 
-    // Add the terminal line break.
-    if (!ps.currentIs(undefined)) {
-      content += ps.current();
-      ps.next();
-    }
-
-
     let Comment;
     switch (level) {
       case 0:
@@ -241,7 +236,6 @@ export default class FluentParser {
       throw new ParseError("E0005", id.name);
     }
 
-    ps.expectLineEnd();
     return new AST.Message(id, pattern, attrs);
   }
 
@@ -262,7 +256,6 @@ export default class FluentParser {
       var attrs = this.getAttributes(ps);
     }
 
-    ps.expectLineEnd();
     return new AST.Term(id, value, attrs);
   }
 

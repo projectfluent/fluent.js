@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "foo",
@@ -37,7 +36,7 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 10
+        "end": 9
       }
     },
     {
@@ -64,7 +63,6 @@
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "bar",
@@ -135,7 +133,7 @@
       "span": {
         "type": "Span",
         "start": 28,
-        "end": 62
+        "end": 61
       }
     },
     {

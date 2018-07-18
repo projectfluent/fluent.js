@@ -75,12 +75,10 @@ export default class FluentSerializer {
 
 
 function serializeComment(comment, prefix = "#") {
-  // Remove the trailing newline.
-  const content = comment.content.slice(0, comment.content.length - 1);
-  const prefixed = content.split("\n").map(
+  const prefixed = comment.content.split("\n").map(
     line => line.length ? `${prefix} ${line}` : prefix
   ).join("\n");
-  // Re-add the trailing newline.
+  // Add the trailing newline.
   return `${prefixed}\n`;
 }
 

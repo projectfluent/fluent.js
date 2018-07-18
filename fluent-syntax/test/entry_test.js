@@ -23,7 +23,6 @@ suite('Parse entry', function() {
         ],
         "type": "Pattern"
       },
-      "annotations": [],
       "attributes": [],
       "type": "Message",
       "id": {
@@ -52,7 +51,6 @@ suite('Parse entry', function() {
         ],
         "type": "Pattern"
       },
-      "annotations": [],
       "attributes": [],
       "type": "Message",
       "id": {
@@ -110,7 +108,6 @@ suite('Parse entry', function() {
         ],
         "type": "Pattern"
       },
-      "annotations": [],
       "attributes": [],
       "type": "Message",
       "id": {
@@ -169,7 +166,6 @@ suite('Serialize entry', function() {
         ],
         "type": "Pattern"
       },
-      "annotations": [],
       "attributes": [],
       "type": "Message",
       "id": {

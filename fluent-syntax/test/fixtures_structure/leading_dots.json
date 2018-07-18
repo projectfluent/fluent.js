@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key01",
@@ -37,12 +36,11 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 15
+        "end": 14
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key02",
@@ -76,12 +74,11 @@
       "span": {
         "type": "Span",
         "start": 15,
-        "end": 30
+        "end": 29
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key03",
@@ -132,12 +129,11 @@
       "span": {
         "type": "Span",
         "start": 30,
-        "end": 49
+        "end": 48
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key04",
@@ -188,12 +184,11 @@
       "span": {
         "type": "Span",
         "start": 49,
-        "end": 72
+        "end": 71
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key05",
@@ -253,12 +248,11 @@
       "span": {
         "type": "Span",
         "start": 73,
-        "end": 106
+        "end": 105
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key06",
@@ -318,17 +312,16 @@
       "span": {
         "type": "Span",
         "start": 107,
-        "end": 141
+        "end": 140
       }
     },
     {
       "type": "Comment",
-      "annotations": [],
-      "content": "ERROR (attr .Continued must have a value)\n",
+      "content": "ERROR (attr .Continued must have a value)",
       "span": {
         "type": "Span",
         "start": 142,
-        "end": 186
+        "end": 185
       }
     },
     {
@@ -357,12 +350,11 @@
     },
     {
       "type": "Comment",
-      "annotations": [],
-      "content": "ERROR (attr .Value must have a value)\n",
+      "content": "ERROR (attr .Value must have a value)",
       "span": {
         "type": "Span",
         "start": 216,
-        "end": 256
+        "end": 255
       }
     },
     {
@@ -391,12 +383,11 @@
     },
     {
       "type": "Comment",
-      "annotations": [],
-      "content": "ERROR (attr .Value must have a value)\n",
+      "content": "ERROR (attr .Value must have a value)",
       "span": {
         "type": "Span",
         "start": 276,
-        "end": 316
+        "end": 315
       }
     },
     {
@@ -425,7 +416,6 @@
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key10",
@@ -478,12 +468,11 @@
       "span": {
         "type": "Span",
         "start": 350,
-        "end": 415
+        "end": 414
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key11",
@@ -534,12 +523,11 @@
       "span": {
         "type": "Span",
         "start": 416,
-        "end": 485
+        "end": 484
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key12",
@@ -592,12 +580,11 @@
       "span": {
         "type": "Span",
         "start": 486,
-        "end": 517
+        "end": 516
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key13",
@@ -650,12 +637,11 @@
       "span": {
         "type": "Span",
         "start": 522,
-        "end": 554
+        "end": 553
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key14",
@@ -725,12 +711,11 @@
       "span": {
         "type": "Span",
         "start": 555,
-        "end": 600
+        "end": 599
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key15",
@@ -873,17 +858,16 @@
       "span": {
         "type": "Span",
         "start": 601,
-        "end": 686
+        "end": 685
       }
     },
     {
       "type": "Comment",
-      "annotations": [],
-      "content": "ERROR (variant must have a value)\n",
+      "content": "ERROR (variant must have a value)",
       "span": {
         "type": "Span",
         "start": 687,
-        "end": 723
+        "end": 722
       }
     },
     {
@@ -910,12 +894,11 @@
     },
     {
       "type": "Comment",
-      "annotations": [],
-      "content": "ERROR (unclosed placeable)\n",
+      "content": "ERROR (unclosed placeable)",
       "span": {
         "type": "Span",
         "start": 781,
-        "end": 810
+        "end": 809
       }
     },
     {

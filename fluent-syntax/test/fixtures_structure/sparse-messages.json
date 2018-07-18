@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key",
@@ -37,12 +36,11 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 18
+        "end": 17
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key2",
@@ -95,12 +93,11 @@
       "span": {
         "type": "Span",
         "start": 19,
-        "end": 50
+        "end": 49
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key3",
@@ -171,12 +168,11 @@
       "span": {
         "type": "Span",
         "start": 52,
-        "end": 128
+        "end": 127
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key5",
@@ -210,12 +206,11 @@
       "span": {
         "type": "Span",
         "start": 130,
-        "end": 145
+        "end": 144
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key6",
@@ -349,12 +344,11 @@
       "span": {
         "type": "Span",
         "start": 146,
-        "end": 210
+        "end": 209
       }
     },
     {
       "type": "Term",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "-key7",
@@ -416,12 +410,11 @@
       "span": {
         "type": "Span",
         "start": 211,
-        "end": 253
+        "end": 252
       }
     },
     {
       "type": "Term",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "-key8",
@@ -483,7 +476,7 @@
       "span": {
         "type": "Span",
         "start": 254,
-        "end": 295
+        "end": 294
       }
     }
   ],

@@ -25,10 +25,6 @@ function getCodeName(code) {
   switch (code[0]) {
     case 'E':
       return `ERROR ${code}`;
-    case 'W':
-      return `WARNING ${code}`;
-    case 'H':
-      return `HINT ${code}`;
     default:
       throw new Error('Unknown Annotation code');
   }
@@ -53,7 +49,10 @@ export function serializeAnnotation(annot) {
 }
 
 function toDirectives(annots, cur) {
-  return annots.concat(cur.annotations.map(serializeAnnotation));
+  if (cur.type === "Junk") {
+    return annots.concat(cur.annotations.map(serializeAnnotation));
+  }
+  return annots;
 }
 
 const fixtures = join(__dirname, 'fixtures_behavior');

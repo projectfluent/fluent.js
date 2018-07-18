@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Term",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "-brand-name",
@@ -139,12 +138,11 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 109
+        "end": 108
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "update-command",
@@ -229,12 +227,11 @@
       "span": {
         "type": "Span",
         "start": 110,
-        "end": 172
+        "end": 171
       }
     },
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "update-successful",
@@ -506,7 +503,7 @@
       "span": {
         "type": "Span",
         "start": 173,
-        "end": 438
+        "end": 437
       }
     }
   ],
