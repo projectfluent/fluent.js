@@ -61,7 +61,7 @@ readdir(fixtures, function(err, filenames) {
 
         assert.deepEqual(
           ast, ref,
-          "Parsed AST doesn\'t match the expected one");
+          "Parsed AST doesn't match the expected one");
       });
     }
   });

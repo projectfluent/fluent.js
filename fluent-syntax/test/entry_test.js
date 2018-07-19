@@ -1,14 +1,14 @@
-import assert from 'assert';
-import { ftl } from './util';
+import assert from "assert";
+import { ftl } from "./util";
 
-import { FluentParser, FluentSerializer } from '../src';
+import { FluentParser, FluentSerializer } from "../src";
 
-suite('Parse entry', function() {
+suite("Parse entry", function() {
   setup(function() {
     this.parser = new FluentParser({withSpans: false});
   });
 
-  test('simple message', function() {
+  test("simple message", function() {
     const input = ftl`
       foo = Foo
     `;
@@ -35,7 +35,7 @@ suite('Parse entry', function() {
     assert.deepEqual(message, output)
   });
 
-  test('ignore attached comment', function() {
+  test("ignore attached comment", function() {
     const input = ftl`
       # Attached Comment
       foo = Foo
@@ -63,7 +63,7 @@ suite('Parse entry', function() {
     assert.deepEqual(message, output)
   });
 
-  test('return junk', function() {
+  test("return junk", function() {
     const input = ftl`
       # Attached Comment
       junk
@@ -90,7 +90,7 @@ suite('Parse entry', function() {
     assert.deepEqual(message, output)
   });
 
-  test('ignore all valid comments', function() {
+  test("ignore all valid comments", function() {
     const input = ftl`
       # Attached Comment
       ## Group Comment
@@ -120,7 +120,7 @@ suite('Parse entry', function() {
     assert.deepEqual(message, output)
   });
 
-  test('do not ignore invalid comments', function() {
+  test("do not ignore invalid comments", function() {
     const input = ftl`
       # Attached Comment
       ##Invalid Comment
@@ -149,12 +149,12 @@ suite('Parse entry', function() {
 });
 
 
-suite('Serialize entry', function() {
+suite("Serialize entry", function() {
   setup(function() {
     this.serializer = new FluentSerializer();
   });
 
-  test('simple message', function() {
+  test("simple message", function() {
     const input = {
       "comment": null,
       "value": {
