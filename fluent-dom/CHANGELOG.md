@@ -7,6 +7,11 @@
     Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,
     iOS Safari 10.3+ and node 8.9+.
 
+  - Add the `cached-iterable` runtime dependency.
+
+    `CachedAsyncIterable` is now available from its own package rather than
+    from the `fluent` package.
+
 ## fluent-dom 0.3.0
 
   - Refactor the overlay sanitization methods into separate functions. (#189)

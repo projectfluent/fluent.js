@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global console */
 
-import { CachedAsyncIterable } from "../../fluent/src/index";
+import { CachedAsyncIterable } from "cached-iterable";
 
 /**
  * The `Localization` class is a central high-level API for vanilla
@@ -20,8 +20,8 @@ export default class Localization {
   constructor(resourceIds = [], generateMessages) {
     this.resourceIds = resourceIds;
     this.generateMessages = generateMessages;
-    this.ctxs =
-      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+    this.ctxs = CachedAsyncIterable.from(
+      this.generateMessages(this.resourceIds));
   }
 
   addResourceIds(resourceIds) {
@@ -154,8 +154,8 @@ export default class Localization {
    * that language negotiation or available resources changed.
    */
   onChange() {
-    this.ctxs =
-      new CachedAsyncIterable(this.generateMessages(this.resourceIds));
+    this.ctxs = CachedAsyncIterable.from(
+      this.generateMessages(this.resourceIds));
     this.ctxs.touchNext(2);
   }
 }

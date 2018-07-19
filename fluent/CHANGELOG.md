@@ -7,6 +7,10 @@
     Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,
     iOS Safari 10.3+ and node 8.9+.
 
+  - Move CachedSyncIterable and CachedAsyncIterable to an external dependency.
+
+    They are now available from the `cached-iterable` package.
+
 ## fluent 0.6.4 (April 11, 2018)
 
   - Minor optimization to bidirectionality isolation

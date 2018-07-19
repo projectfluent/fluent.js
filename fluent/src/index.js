@@ -16,7 +16,6 @@ export {
   FluentDateTime as MessageDateTimeArgument,
 } from "./types";
 
-export { CachedSyncIterable, CachedAsyncIterable } from "./cached_iterable";
 export { mapContextSync, mapContextAsync } from "./fallback";
 
 export { ftl } from "./util";
