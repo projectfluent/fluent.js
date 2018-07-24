@@ -1,4 +1,5 @@
-import { CachedIterable, mapContextSync } from "fluent";
+import { mapContextSync } from "fluent";
+import { CachedSyncIterable } from "cached-iterable";
 
 /*
  * `ReactLocalization` handles translation formatting and fallback.
@@ -17,7 +18,7 @@ import { CachedIterable, mapContextSync } from "fluent";
  */
 export default class ReactLocalization {
   constructor(messages) {
-    this.contexts = new CachedIterable(messages);
+    this.contexts = CachedSyncIterable.from(messages);
     this.subs = new Set();
   }
 
@@ -39,7 +40,7 @@ export default class ReactLocalization {
    * Set a new `messages` iterable and trigger the retranslation.
    */
   setMessages(messages) {
-    this.contexts = new CachedIterable(messages);
+    this.contexts = CachedSyncIterable.from(messages);
 
     // Update all subscribed Localized components.
     this.subs.forEach(comp => comp.relocalize());

@@ -40,5 +40,8 @@
   },
   "devDependencies": {
     "jsdom": "^11.6.2"
+  },
+  "dependencies": {
+    "cached-iterable": "^0.2.1"
   }
 }
