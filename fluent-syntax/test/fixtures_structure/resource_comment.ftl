@@ -1,2 +1,2 @@
-// This is a resource wide comment
-// It's multiline
+### This is a resource wide comment
+### It's multiline

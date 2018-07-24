@@ -1,1 +1,8 @@
-{}
+{
+  "key1": {
+    "value": true
+  },
+  "key2": {
+    "value": true
+  }
+}

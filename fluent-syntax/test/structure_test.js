@@ -1,11 +1,11 @@
-import assert from 'assert';
-import { join } from 'path';
-import { readdir } from 'fs';
-import { readfile } from './util';
+import assert from "assert";
+import { join } from "path";
+import { readdir } from "fs";
+import { readfile } from "./util";
 
-import { parse } from '../src';
+import { parse } from "../src";
 
-const fixtures = join(__dirname, 'fixtures_structure');
+const fixtures = join(__dirname, "fixtures_structure");
 
 readdir(fixtures, function(err, filenames) {
   if (err) {
@@ -13,13 +13,13 @@ readdir(fixtures, function(err, filenames) {
   }
 
   const ftlnames = filenames.filter(
-    filename => filename.endsWith('.ftl')
+    filename => filename.endsWith(".ftl")
   );
 
-  suite('Structure tests', function() {
+  suite("Structure tests", function() {
     for (const filename of ftlnames) {
       const ftlpath = join(fixtures, filename);
-      const astpath = ftlpath.replace(/ftl$/, 'json');
+      const astpath = ftlpath.replace(/ftl$/, "json");
       test(filename, function() {
         return Promise.all(
           [ftlpath, astpath].map(readfile)
@@ -27,7 +27,7 @@ readdir(fixtures, function(err, filenames) {
           const ast = parse(ftl);
           assert.deepEqual(
             ast, JSON.parse(expected),
-            'Parsed AST doesn\'t match the expected one'
+            "Parsed AST doesn't match the expected one"
           );
         });
       });

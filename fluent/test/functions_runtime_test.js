@@ -34,7 +34,7 @@ suite('Runtime-specific functions', function() {
       assert.equal(errs.length, 0);
     });
 
-    // XXX When passed as external args, convert JS types to FTL types
+    // XXX When they are passed as variables, convert JS types to FTL types
     // https://bugzil.la/1307116
     it.skip('works for numbers', function() {
       const msg = ctx.getMessage('bar');

@@ -21,7 +21,7 @@ suite('Referencing values', function(){
           [a] A{ 4 }
          *[b] B{ 4 }
       }
-      key5
+      key5 =
           .a = A5
           .b = B5
 
