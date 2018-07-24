@@ -1,15 +1,37 @@
 # Changelog
 
-## Unreleased
+## fluent 0.7.0 (July 24, 2018)
+
+  - Implement support for Fluent Syntax 0.6.
+
+    Syntax 0.6 keeps the syntax unchanged and makes many small changes to the
+    previousl underspecified areas of the spec. The runtime parser now
+    supports Unicode escapes and properly trims whitespace in TextElements.
+
+  - Add `FluentResource`. (#244)
+
+    `FluentResource` is a class representing a parsed Fluent document. It was
+    added with caching in mind. It's now possible to parse a Fluent document
+    inton an instance of `FluentResouce` once and use it to construct new
+    `MessageContexts`. For this end, `MessageContext` now has the
+    `addResource` method which takes an instance of `FluentResource`.
+
+  - Add the `transform` option to `MessageContext`. (#213)
+
+    `MessageContext` now accepts a new option, `transform`, which may be a
+    function. If passed it will be used to transform the string parts of
+    patterns. This may be used to implement programmatic transformations of
+    translations, e.g. to create pseudo-localizations.
 
   - Drop support for IE and old evergreen browsers. (#133)
 
     Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,
     iOS Safari 10.3+ and node 8.9+.
 
-  - Move CachedSyncIterable and CachedAsyncIterable to an external dependency.
+  - Move `CachedSyncIterable` and `CachedAsyncIterable` to a dependency.
 
-    They are now available from the `cached-iterable` package.
+    They are now available from the `cached-iterable` package. `fluent`
+    depends on it for running tests.
 
 ## fluent 0.6.4 (April 11, 2018)
 
