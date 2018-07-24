@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## fluent-syntax 0.8.0 (July 24, 2018)
+
+  - Implement support for Fluent Syntax 0.6. (#253)
+
+    Syntax 0.6 keeps the syntax unchanged but makes many changes to the AST.
+    Consult https://github.com/projectfluent/fluent/releases/tag/v0.6.0
+    for the list of changes.
 
   - Drop support for IE and old evergreen browsers. (#133)
 
