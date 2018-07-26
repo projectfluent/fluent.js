@@ -29,6 +29,53 @@ suite('parse headers', () => {
     );
   });
 
+  test('with out of order quality values', () => {
+    assert.deepStrictEqual(
+      acceptedLanguages('en;q=0.8, fr;q=0.9, de;q=0.7, *;q=0.5, fr-CH'), [
+        'fr-CH',
+        'fr',
+        'en',
+        'de',
+        '*'
+      ]
+    );
+  });
+
+  test('with equal q values', () => {
+    assert.deepStrictEqual(
+      acceptedLanguages('en;q=0.1, fr;q=0.1, de;q=0.1, *;q=0.1'), [
+        'en',
+        'fr',
+        'de',
+        '*'
+      ]
+    );
+  });
+
+  test('with duff q values', () => {
+    assert.deepStrictEqual(
+      acceptedLanguages('en;q=no, fr;z=0.9, de;q=0.7;q=9, *;q=0.5, fr-CH;q=a=0.1'), [
+        'en',
+        'fr',
+        'fr-CH',
+        'de',
+        '*'
+      ]
+    );
+  });
+
+  test('with empty entries', () => {
+    assert.deepStrictEqual(
+      acceptedLanguages('en;q=0.8,,, fr;q=0.9,, de;q=0.7, *;q=0.5, fr-CH'), [
+        'fr-CH',
+        'fr',
+        'en',
+        'de',
+        '*'
+      ]
+    );
+  });
+
   test('edge cases', () => {
     const args = [
       null,
