@@ -62,7 +62,7 @@ suite('Localized - validation', function() {
         { context: { l10n: new ReactLocalization([]) } }
       );
     }
-    assert.throws(render, /a single React element child/);
+    assert.throws(render, /a single React node child/);
   });
 
   test('without id', function() {
