@@ -1,8 +1,8 @@
-key1 = {
+-term1 = {
     *[one] {""}
     }
 
-err1 = {
+-term2 = {
     *[one]
     }
-//~ ERROR E0012, pos 51
+# ~ERROR E0012, pos 55

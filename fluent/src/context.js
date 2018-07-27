@@ -1,18 +1,18 @@
 import resolve from "./resolver";
-import parse from "./parser";
+import FluentResource from "./resource";
 
 /**
  * Message contexts are single-language stores of translations.  They are
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
- * Always use `MessageContext.format` to retrieve translation units from
- * a context.  Translations can contain references to other entities or
- * external arguments, conditional logic in form of select expressions, traits
- * which describe their grammatical features, and can use Fluent builtins which
- * make use of the `Intl` formatters to format numbers, dates, lists and more
- * into the context's language.  See the documentation of the Fluent syntax for
- * more information.
+ * Always use `MessageContext.format` to retrieve translation units from a
+ * context. Translations can contain references to other entities or variables,
+ * conditional logic in form of select expressions, traits which describe their
+ * grammatical features, and can use Fluent builtins which make use of the
+ * `Intl` formatters to format numbers, dates, lists and more into the
+ * context's language. See the documentation of the Fluent syntax for more
+ * information.
  */
 export class MessageContext {
 
@@ -115,8 +115,31 @@ export class MessageContext {
    * @returns {Array<Error>}
    */
   addMessages(source) {
-    const [entries, errors] = parse(source);
-    for (const id in entries) {
+    const res = FluentResource.fromString(source);
+    return this.addResource(res);
+  }
+
+  /**
+   * Add a translation resource to the context.
+   *
+   * The translation resource must be a proper FluentResource
+   * parsed by `MessageContext.parseResource`.
+   *
+   *     let res = MessageContext.parseResource("foo = Foo");
+   *     ctx.addResource(res);
+   *     ctx.getMessage('foo');
+   *
+   *     // Returns a raw representation of the 'foo' message.
+   *
+   * Parsed entities should be formatted with the `format` method in case they
+   * contain logic (references, select expressions etc.).
+   *
+   * @param   {FluentResource} res - FluentResource object.
+   * @returns {Array<Error>}
+   */
+  addResource(res) {
+    const errors = res.errors.slice();
+    for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from MessageContext.
@@ -124,13 +147,13 @@ export class MessageContext {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
-        this._terms.set(id, entries[id]);
+        this._terms.set(id, value);
       } else {
         if (this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
-        this._messages.set(id, entries[id]);
+        this._messages.set(id, value);
       }
     }
 
@@ -141,8 +164,8 @@ export class MessageContext {
    * Format a message to a string or null.
    *
    * Format a raw `message` from the context into a string (or a null if it has
-   * a null value).  `args` will be used to resolve references to external
-   * arguments inside of the translation.
+   * a null value).  `args` will be used to resolve references to variables
+   * passed as arguments to the translation.
    *
    * In case of errors `format` will try to salvage as much of the translation
    * as possible and will still return a string.  For performance reasons, the
@@ -160,7 +183,7 @@ export class MessageContext {
    *
    *     // Returns 'Hello, name!' and `errors` is now:
    *
-   *     [<ReferenceError: Unknown external: name>]
+   *     [<ReferenceError: Unknown variable: name>]
    *
    * @param   {Object | string}    message
    * @param   {Object | undefined} args

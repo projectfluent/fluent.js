@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "key1",
@@ -20,8 +19,8 @@
             "type": "Placeable",
             "expression": {
               "type": "SelectExpression",
-              "expression": {
-                "type": "NumberExpression",
+              "selector": {
+                "type": "NumberLiteral",
                 "value": "1",
                 "span": {
                   "type": "Span",
@@ -47,7 +46,7 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "StringExpression",
+                          "type": "StringLiteral",
                           "value": "",
                           "span": {
                             "type": "Span",

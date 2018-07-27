@@ -11,8 +11,16 @@ export default {
       plugins: [
         ...babelConfig.plugins,
         ["babel-plugin-transform-rename-import", {
-          original: "fluent",
-          replacement: "fluent/compat",
+          replacements: [
+            {
+              original: "fluent",
+              replacement: "fluent/compat",
+            },
+            {
+              original: "cached-iterable",
+              replacement: "cached-iterable/compat",
+            },
+          ]
         }],
       ]
     }),

@@ -31,12 +31,14 @@ function print(err, data) {
   console.log(pretty);
 
   if (!program.silent) {
-    res.body.map(entry => printAnnotations(res.source, entry));
+    res.body
+      .filter(entry => entry.type === "Junk")
+      .map(entry => printAnnotations(res.source, entry));
   }
 }
 
-function printAnnotations(source, entry) {
-  const { span, annotations } = entry;
+function printAnnotations(source, junk) {
+  const { span, annotations } = junk;
   for (const annot of annotations) {
     printAnnotation(source, span, annot);
   }

@@ -1,3 +1,4 @@
+import nodeResolve from 'rollup-plugin-node-resolve';
 import bundleConfig from '../bundle_config';
 
 const version = require('../fluent-dom/package.json').version;
@@ -24,5 +25,8 @@ export default Object.assign({}, bundleConfig, {
  * limitations under the License.
  */\n\n`,
     intro: `/* fluent-dom@${version} */`,
-  }
+  },
+  plugins: [
+    nodeResolve(),
+  ]
 });

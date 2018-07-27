@@ -1,14 +1,14 @@
-// key1 = {{ foo }}
+key1 = {{ foo }}
 
-// key2 = {  { foo }  }
+key2 = {  { foo }  }
 
-// key3 =
-//   {
-//     { foo }
-//   }
+# key3 =
+#   {
+#     { foo }
+#   }
 
 key4 = {  { foo }
-//~ ERROR E0014, pos 96
+# ~ERROR E0003, pos 93, args "}"
 
 
-// key5 = { foo } }
+# key5 = { foo } }

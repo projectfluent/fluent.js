@@ -54,11 +54,11 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0006",
+          "code": "E0003",
           "args": [
-            "-baz"
+            "="
           ],
-          "message": "Expected term \"-baz\" to have a value",
+          "message": "Expected token: \"=\"",
           "span": {
             "type": "Span",
             "start": 42,

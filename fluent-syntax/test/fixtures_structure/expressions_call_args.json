@@ -1,0 +1,119 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 3
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "CallExpression",
+              "callee": {
+                "type": "Function",
+                "name": "FOO",
+                "span": {
+                  "type": "Span",
+                  "start": 8,
+                  "end": 11
+                }
+              },
+              "positional": [],
+              "named": [
+                {
+                  "type": "NamedArgument",
+                  "name": {
+                    "type": "Identifier",
+                    "name": "arg1",
+                    "span": {
+                      "type": "Span",
+                      "start": 12,
+                      "end": 16
+                    }
+                  },
+                  "value": {
+                    "type": "NumberLiteral",
+                    "value": "1",
+                    "span": {
+                      "type": "Span",
+                      "start": 18,
+                      "end": 19
+                    }
+                  },
+                  "span": {
+                    "type": "Span",
+                    "start": 12,
+                    "end": 19
+                  }
+                },
+                {
+                  "type": "NamedArgument",
+                  "name": {
+                    "type": "Identifier",
+                    "name": "arg2",
+                    "span": {
+                      "type": "Span",
+                      "start": 33,
+                      "end": 37
+                    }
+                  },
+                  "value": {
+                    "type": "NumberLiteral",
+                    "value": "2",
+                    "span": {
+                      "type": "Span",
+                      "start": 39,
+                      "end": 40
+                    }
+                  },
+                  "span": {
+                    "type": "Span",
+                    "start": 33,
+                    "end": 40
+                  }
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 8,
+                "end": 41
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 6,
+              "end": 43
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 6,
+          "end": 43
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 43
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 44
+  }
+}

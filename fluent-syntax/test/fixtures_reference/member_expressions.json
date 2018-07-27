@@ -1,0 +1,76 @@
+{
+    "type": "Resource",
+    "body": [
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "variant-expression"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "VariantExpression",
+                            "ref": {
+                                "type": "TermReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "-term"
+                                }
+                            },
+                            "key": {
+                                "type": "VariantName",
+                                "name": "case"
+                            }
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "attribute-expression"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "AttributeExpression",
+                            "ref": {
+                                "type": "MessageReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "msg"
+                                }
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "name": "attr"
+                            }
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "GroupComment",
+            "content": "Invalid syntax"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "variant-expression = {msg[case]}\nattribute-expression = {-term.attr}\n"
+        }
+    ]
+}
