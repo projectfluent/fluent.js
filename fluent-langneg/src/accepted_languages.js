@@ -15,8 +15,8 @@ export default function acceptedLanguages(acceptLanguageHeader = "") {
   if (typeof acceptLanguageHeader !== "string") {
     throw new TypeError("Argument must be a string");
   }
-  const tokens = acceptLanguageHeader.split(",").map(t => t.trim()).
-    filter(t => t !== "");
+  const tokens = acceptLanguageHeader.split(",").map(t => t.trim())
+    .filter(t => t !== "");
   const langsWithQ = [];
   tokens.forEach((t, index) =>
     langsWithQ.push(parseAcceptLanguageEntry(t, index)));
