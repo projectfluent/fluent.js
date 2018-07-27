@@ -55,11 +55,11 @@ suite('parse headers', () => {
   test('with duff q values', () => {
     assert.deepStrictEqual(
       acceptedLanguages('en;q=no, fr;z=0.9, de;q=0.7;q=9, *;q=0.5, fr-CH;q=a=0.1'), [
-        'en',
         'fr',
         'fr-CH',
         'de',
-        '*'
+        '*',
+        'en'
       ]
     );
   });
