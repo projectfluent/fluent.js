@@ -37,15 +37,16 @@ export default class FluentParser {
     this.withSpans = withSpans;
 
     // Poor man's decorators.
-    [
+    const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
       "getTermIdentifier", "getVariant", "getVariantName", "getNumber",
       "getValue", "getPattern", "getVariantList", "getTextElement",
       "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
       "getString", "getLiteral", "getVariantList"
-    ].forEach(
-      name => this[name] = withSpan(this[name])
-    );
+    ];
+    for (const name of methodNames) {
+      this[name] = withSpan(this[name]);
+    }
   }
 
   parse(source) {
