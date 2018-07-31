@@ -120,11 +120,16 @@ export class FTLParserStream extends ParserStream {
   }
 
   isNumberStart() {
-    if (this.currentIs("-")) {
-      this.peek();
+    const ch = this.currentIs("-")
+      ? this.peek()
+      : this.current();
+
+    if (ch === undefined) {
+      this.resetPeek();
+      return false;
     }
 
-    const cc = this.currentPeek().charCodeAt(0);
+    const cc = ch.charCodeAt(0);
     const isDigit = cc >= 48 && cc <= 57; // 0-9
     this.resetPeek();
     return isDigit;
