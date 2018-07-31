@@ -39,7 +39,7 @@
     "node": ">=8.9.0"
   },
   "devDependencies": {
-    "jsdom": "^11.6.2"
+    "jsdom": "^11.12.0"
   },
   "dependencies": {
     "cached-iterable": "^0.2.1"

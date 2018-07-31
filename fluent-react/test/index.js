@@ -3,7 +3,7 @@
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const { window } = new JSDOM('', {
-  userAgent: 'node.js',
+  url: 'http://localhost',
 });
 
 for (const [key, value] of Object.entries(window)) {
