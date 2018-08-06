@@ -138,7 +138,8 @@ export default class FluentBundle {
    * @returns {Array<Error>}
    */
   addResource(res) {
-    const errors = res.errors.slice();
+    const errors = [];
+
     for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
@@ -202,7 +203,7 @@ export default class FluentBundle {
     }
 
     // optimize entities with null values
-    if (message.val === undefined) {
+    if (message.val === null) {
       return null;
     }
 

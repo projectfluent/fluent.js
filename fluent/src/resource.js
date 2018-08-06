@@ -5,14 +5,12 @@ import parse from "./parser";
  * of localization entries.
  */
 export default class FluentResource extends Map {
-  constructor(entries, errors = []) {
+  constructor(entries) {
     super(entries);
-    this.errors = errors;
   }
 
   static fromString(source) {
-    const [entries, errors] = parse(source);
-    return new FluentResource(Object.entries(entries), errors);
+    const entries = parse(source);
+    return new FluentResource(entries);
   }
 }
-

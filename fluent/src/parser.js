@@ -2,20 +2,26 @@
 
 const MAX_PLACEABLES = 100;
 
-const entryIdentifierRe = /-?[a-zA-Z][a-zA-Z0-9_-]*/y;
-const identifierRe = /[a-zA-Z][a-zA-Z0-9_-]*/y;
-const functionIdentifierRe = /^[A-Z][A-Z_?-]*$/;
 const unicodeEscapeRe = /^[a-fA-F0-9]{4}$/;
-const trailingWSRe = /[ \t\n\r]+$/;
 
+const messageStartRe = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */my;
+const attributeStartRe = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
+const variantStartRe = /\*?\[.*?] */y;
+
+const textElementRe = /([^\\{\n\r]+)/y;
+
+const whitespaceRe = /\s+/y;
+const indentRe = /\s*\n * /y;
+
+const identifierRe = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
+const numberRe = /-?[0-9]+(\.[0-9]+)?/y;
+const stringRe = /".*?"/y;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
  *
  * It's only public method is `getResource(source)` which takes an FTL string
- * and returns a two element Array with an Object of entries generated from the
- * source as the first element and an array of SyntaxError objects as the
- * second.
+ * and returns an Object of entries parsed from the source.
  *
  * This parser is optimized for runtime performance.
  *
@@ -36,54 +42,61 @@ class RuntimeParser {
     this._source = string;
     this._index = 0;
     this._length = string.length;
-    this.entries = {};
 
-    const errors = [];
+    const entries = [];
 
-    this.skipWS();
-    while (this._index < this._length) {
+    for (const offset of this.entryOffsets(string)) {
+      this._index = offset;
       try {
-        this.getEntry();
+        entries.push(this.getMessage());
       } catch (e) {
-        if (e instanceof SyntaxError) {
-          errors.push(e);
-
-          this.skipToNextEntryStart();
-        } else {
-          throw e;
-        }
+        //console.error(e);
+        continue;
       }
-      this.skipWS();
     }
 
-    return [this.entries, errors];
+    return entries;
   }
 
-  /**
-   * Parse the source string from the current index as an FTL entry
-   * and add it to object's entries property.
-   *
-   * @private
-   */
-  getEntry() {
-    // The index here should either be at the beginning of the file
-    // or right after new line.
-    if (this._index !== 0 &&
-        this._source[this._index - 1] !== "\n") {
-      throw this.error(`Expected an entry to start
-        at the beginning of the file or on a new line.`);
+  *entryOffsets(source) {
+    let lastIndex = 0;
+    while (true) {
+      messageStartRe.lastIndex = lastIndex;
+      if (messageStartRe.test(source)) {
+        yield messageStartRe.lastIndex = lastIndex;
+      }
+
+      let lineEnd = source.indexOf("\n", lastIndex);
+      if (lineEnd === -1) {
+        break;
+      }
+
+      lastIndex = lineEnd + 1;
+    }
+  }
+
+  test(re) {
+    re.lastIndex = this._index;
+    return re.test(this._source);
+  }
+
+  skip(re) {
+    if (this.test(re)) {
+      this._index = re.lastIndex;
+    }
+  }
+
+  match(re) {
+    re.lastIndex = this._index;
+    let result = re.exec(this._source);
+
+    if (result === null) {
+      this._index += 1;
+      throw new SyntaxError();
     }
 
-    const ch = this._source[this._index];
-
-    // We don't care about comments or sections at runtime
-    if (ch === "#" &&
-        [" ", "#", "\n"].includes(this._source[this._index + 1])) {
-      this.skipComment();
-      return;
-    }
-
-    this.getMessage();
+    this._index = re.lastIndex;
+    return result[1];
   }
 
   /**
@@ -93,202 +106,72 @@ class RuntimeParser {
    * @private
    */
   getMessage() {
-    const id = this.getEntryIdentifier();
-
-    this.skipInlineWS();
-
-    if (this._source[this._index] === "=") {
-      this._index++;
-    } else {
-      throw this.error("Expected \"=\" after the identifier");
-    }
-
-    this.skipInlineWS();
-
-    const val = this.getPattern();
-
-    if (id.startsWith("-") && val === null) {
-      throw this.error("Expected term to have a value");
-    }
-
-    let attrs = null;
-
-    if (this._source[this._index] === " ") {
-      const lineStart = this._index;
-      this.skipInlineWS();
-
-      if (this._source[this._index] === ".") {
-        this._index = lineStart;
-        attrs = this.getAttributes();
-      }
-    }
+    let id = this.match(messageStartRe);
+    let val = this.getPatternRegex();
+    this.skip(whitespaceRe);
+    //console.log(this._source.slice(0, this._index) + "|");
+    let attrs = this.getAttributes();
 
     if (attrs === null && typeof val === "string") {
-      this.entries[id] = val;
-    } else {
-      if (val === null && attrs === null) {
-        throw this.error("Expected message to have a value or attributes");
-      }
-
-      this.entries[id] = {};
-
-      if (val !== null) {
-        this.entries[id].val = val;
-      }
-
-      if (attrs !== null) {
-        this.entries[id].attrs = attrs;
-      }
+      return [id, val];
     }
+
+    return [id, {val, attrs}];
   }
 
   /**
-   * Skip whitespace.
+   * Skip multiline whitespace. Return true if it was indented.
    *
    * @private
    */
-  skipWS() {
-    let ch = this._source[this._index];
-    while (ch === " " || ch === "\n" || ch === "\t" || ch === "\r") {
-      ch = this._source[++this._index];
+  skipIndent() {
+    indentRe.lastIndex = this._index;
+    if (!indentRe.test(this._source)) {
+      return false;
+    }
+    let start = this._index;
+
+    this._index = indentRe.lastIndex;
+    switch (this._source[this._index]) {
+      case ".":
+      case "[":
+      case "*":
+      case "}":
+        return false;
+      default:
+        return this._source.slice(start, this._index);
     }
   }
 
-  /**
-   * Skip inline whitespace (space and \t).
-   *
-   * @private
-   */
-  skipInlineWS() {
-    let ch = this._source[this._index];
-    while (ch === " " || ch === "\t") {
-      ch = this._source[++this._index];
-    }
-  }
-
-  /**
-   * Skip blank lines.
-   *
-   * @private
-   */
-  skipBlankLines() {
+  getPatternRegex() {
+    let elements = [];
     while (true) {
-      const ptr = this._index;
+      if (this.test(textElementRe)) {
+        let element = this.match(textElementRe);
+        elements.push(element);
 
-      this.skipInlineWS();
-
-      if (this._source[this._index] === "\n") {
-        this._index += 1;
-      } else {
-        this._index = ptr;
-        break;
-      }
-    }
-  }
-
-  /**
-   * Get identifier using the provided regex.
-   *
-   * By default this will get identifiers of public messages, attributes and
-   * variables (without the $).
-   *
-   * @returns {String}
-   * @private
-   */
-  getIdentifier(re = identifierRe) {
-    re.lastIndex = this._index;
-    const result = re.exec(this._source);
-
-    if (result === null) {
-      this._index += 1;
-      throw this.error(`Expected an identifier [${re.toString()}]`);
-    }
-
-    this._index = re.lastIndex;
-    return result[0];
-  }
-
-  /**
-   * Get identifier of a Message or a Term (staring with a dash).
-   *
-   * @returns {String}
-   * @private
-   */
-  getEntryIdentifier() {
-    return this.getIdentifier(entryIdentifierRe);
-  }
-
-  /**
-   * Get Variant name.
-   *
-   * @returns {Object}
-   * @private
-   */
-  getVariantName() {
-    let name = "";
-
-    const start = this._index;
-    let cc = this._source.charCodeAt(this._index);
-
-    if ((cc >= 97 && cc <= 122) || // a-z
-        (cc >= 65 && cc <= 90) || // A-Z
-        cc === 95 || cc === 32) { // _ <space>
-      cc = this._source.charCodeAt(++this._index);
-    } else {
-      throw this.error("Expected a keyword (starting with [a-zA-Z_])");
-    }
-
-    while ((cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90) || // A-Z
-           (cc >= 48 && cc <= 57) || // 0-9
-           cc === 95 || cc === 45 || cc === 32) { // _- <space>
-      cc = this._source.charCodeAt(++this._index);
-    }
-
-    // If we encountered the end of name, we want to test if the last
-    // collected character is a space.
-    // If it is, we will backtrack to the last non-space character because
-    // the keyword cannot end with a space character.
-    while (this._source.charCodeAt(this._index - 1) === 32) {
-      this._index--;
-    }
-
-    name += this._source.slice(start, this._index);
-
-    return { type: "varname", name };
-  }
-
-  /**
-   * Get simple string argument enclosed in `"`.
-   *
-   * @returns {String}
-   * @private
-   */
-  getString() {
-    let value = "";
-    this._index++;
-
-    while (this._index < this._length) {
-      const ch = this._source[this._index];
-
-      if (ch === '"') {
-        this._index++;
-        break;
+        //console.log(this._source.slice(0, this._index) + "|");
       }
 
-      if (ch === "\n") {
-        throw this.error("Unterminated string expression");
+      let block = this.skipIndent();
+
+      if (block) {
+        elements.push(block.replace(/ /g, ""));
+        continue;
       }
 
-      if (ch === "\\") {
-        value += this.getEscapedCharacter(["{", "\\", "\""]);
-      } else {
-        this._index++;
-        value += ch;
-      }
+      break;
     }
 
-    return value;
+    if (elements.length === 0) {
+      return null;
+    }
+
+    if (elements.length === 1) {
+      return elements[0];
+    }
+
+    return elements;
   }
 
   /**
@@ -312,39 +195,16 @@ class RuntimeParser {
       eol = this._length;
     }
 
-    // If there's any text between the = and the EOL, store it for now. The next
-    // non-empty line will decide what to do with it.
-    const firstLineContent = start !== eol
-      // Trim the trailing whitespace in case this is a single-line pattern.
-      // Multiline patterns are parsed anew by getComplexPattern.
-      ? this._source.slice(start, eol).replace(trailingWSRe, "")
-      : null;
+    const firstLineContent = start !== eol ?
+      this._source.slice(start, eol) : null;
 
-    if (firstLineContent
-      && (firstLineContent.includes("{")
-        || firstLineContent.includes("\\"))) {
+    if (firstLineContent && firstLineContent.includes("{")) {
       return this.getComplexPattern();
     }
 
-    this._index = eol + 1;
+    this._index = eol;
 
-    this.skipBlankLines();
-
-    if (this._source[this._index] !== " ") {
-      // No indentation means we're done with this message. Callers should check
-      // if the return value here is null. It may be OK for messages, but not OK
-      // for terms, attributes and variants.
-      return firstLineContent;
-    }
-
-    const lineStart = this._index;
-
-    this.skipInlineWS();
-
-    if (this._source[this._index] === ".") {
-      // The pattern is followed by an attribute. Rewind _index to the first
-      // column of the current line as expected by getAttributes.
-      this._index = lineStart;
+    if (!this.skipIndent()) {
       return firstLineContent;
     }
 
@@ -372,43 +232,29 @@ class RuntimeParser {
     const content = [];
     let placeables = 0;
 
-    let ch = this._source[this._index];
 
+    outer:
     while (this._index < this._length) {
+
+      let ch = this._source[this._index];
+
       // This block handles multi-line strings combining strings separated
       // by new line.
       if (ch === "\n") {
-        this._index++;
 
-        // We want to capture the start and end pointers
-        // around blank lines and add them to the buffer
-        // but only if the blank lines are in the middle
-        // of the string.
         const blankLinesStart = this._index;
-        this.skipBlankLines();
-        const blankLinesEnd = this._index;
 
-
-        if (this._source[this._index] !== " ") {
-          break;
-        }
-        this.skipInlineWS();
-
-        if (this._source[this._index] === "}" ||
-            this._source[this._index] === "[" ||
-            this._source[this._index] === "*" ||
-            this._source[this._index] === ".") {
-          this._index = blankLinesEnd;
-          break;
+        if (this.skipIndent()) {
+          ch = this._source[this._index];
+        } else {
+          break outer;
         }
 
-        buffer += this._source.substring(blankLinesStart, blankLinesEnd);
+        const blankLinesEnd = this._index - 1;
+        const blank = this._source.substring(blankLinesStart, blankLinesEnd);
 
-        if (buffer.length || content.length) {
-          buffer += "\n";
-        }
-        ch = this._source[this._index];
-        continue;
+        // normalize new lines
+        buffer += blank.replace(/\n[ \t]*/g, "\n");
       }
 
       if (ch === undefined) {
@@ -427,8 +273,7 @@ class RuntimeParser {
           content.push(buffer);
         }
         if (placeables > MAX_PLACEABLES - 1) {
-          throw this.error(
-            `Too many placeables, maximum allowed is ${MAX_PLACEABLES}`);
+          throw new SyntaxError();
         }
         buffer = "";
         content.push(this.getPlaceable());
@@ -439,7 +284,7 @@ class RuntimeParser {
       }
 
       buffer += ch;
-      ch = this._source[++this._index];
+      ch = this.source[++this._index];
     }
 
     if (content.length === 0) {
@@ -447,8 +292,7 @@ class RuntimeParser {
     }
 
     if (buffer.length) {
-      // Trim trailing whitespace, too.
-      content.push(buffer.replace(trailingWSRe, ""));
+      content.push(buffer);
     }
 
     return content;
@@ -493,82 +337,23 @@ class RuntimeParser {
   getPlaceable() {
     const start = ++this._index;
 
-    this.skipWS();
-
-    if (this._source[this._index] === "*" ||
-       (this._source[this._index] === "[" &&
-        this._source[this._index + 1] !== "]")) {
-      const variants = this.getVariants();
-
-      return {
-        type: "sel",
-        exp: null,
-        vars: variants[0],
-        def: variants[1]
-      };
+    const onlyVariants = this.getVariants();
+    if (onlyVariants) {
+      return {type: "sel", sel: null, ...onlyVariants};
     }
-
-    // Rewind the index and only support in-line white-space now.
-    this._index = start;
-    this.skipInlineWS();
 
     const selector = this.getSelectorExpression();
 
-    this.skipWS();
+    this.skip(whitespaceRe);
 
     const ch = this._source[this._index];
 
     if (ch === "}") {
-      if (selector.type === "getattr" && selector.id.name.startsWith("-")) {
-        throw this.error(
-          "Attributes of private messages cannot be interpolated."
-        );
-      }
-
       return selector;
     }
 
-    if (ch !== "-" || this._source[this._index + 1] !== ">") {
-      throw this.error('Expected "}" or "->"');
-    }
-
-    if (selector.type === "ref") {
-      throw this.error("Message references cannot be used as selectors.");
-    }
-
-    if (selector.type === "getvar") {
-      throw this.error("Variants cannot be used as selectors.");
-    }
-
-    if (selector.type === "getattr" && !selector.id.name.startsWith("-")) {
-      throw this.error(
-        "Attributes of public messages cannot be used as selectors."
-      );
-    }
-
-
     this._index += 2; // ->
-
-    this.skipInlineWS();
-
-    if (this._source[this._index] !== "\n") {
-      throw this.error("Variants should be listed in a new line");
-    }
-
-    this.skipWS();
-
-    const variants = this.getVariants();
-
-    if (variants[0].length === 0) {
-      throw this.error("Expected members for the select expression");
-    }
-
-    return {
-      type: "sel",
-      exp: selector,
-      vars: variants[0],
-      def: variants[1]
-    };
+    return {type: "sel", sel: null, ...this.getVariants()};
   }
 
   /**
@@ -591,7 +376,7 @@ class RuntimeParser {
     if (this._source[this._index] === ".") {
       this._index++;
 
-      const name = this.getIdentifier();
+      const name = this.match(identifierRe);
       this._index++;
       return {
         type: "getattr",
@@ -615,10 +400,6 @@ class RuntimeParser {
     if (this._source[this._index] === "(") {
       this._index++;
       const args = this.getCallArgs();
-
-      if (!functionIdentifierRe.test(literal.name)) {
-        throw this.error("Function names must be all upper-case");
-      }
 
       this._index++;
 
@@ -644,7 +425,7 @@ class RuntimeParser {
     const args = [];
 
     while (this._index < this._length) {
-      this.skipWS();
+      this.skip(whitespaceRe);
 
       if (this._source[this._index] === ")") {
         return args;
@@ -661,7 +442,7 @@ class RuntimeParser {
 
         if (this._source[this._index] === ":") {
           this._index++;
-          this.skipWS();
+          this.skip(whitespaceRe);
 
           const val = this.getSelectorExpression();
 
@@ -689,7 +470,7 @@ class RuntimeParser {
         }
       }
 
-      this.skipWS();
+      this.skip(whitespaceRe);
 
       if (this._source[this._index] === ")") {
         break;
@@ -704,91 +485,62 @@ class RuntimeParser {
   }
 
   /**
+   * Get simple string argument enclosed in `"`.
+   *
+   * @returns {String}
+   * @private
+   */
+  getString() {
+    stringRe.lastIndex = this._index;
+    const result = stringRe.exec(this._source);
+    this._index = stringRe.lastIndex;
+
+    // Trim the quotes
+    return result[0].slice(1, -1);
+  }
+
+  /**
    * Parses an FTL Number.
    *
    * @returns {Object}
    * @private
    */
   getNumber() {
-    let num = "";
-    let cc = this._source.charCodeAt(this._index);
-
-    // The number literal may start with negative sign `-`.
-    if (cc === 45) {
-      num += "-";
-      cc = this._source.charCodeAt(++this._index);
-    }
-
-    // next, we expect at least one digit
-    if (cc < 48 || cc > 57) {
-      throw this.error(`Unknown literal "${num}"`);
-    }
-
-    // followed by potentially more digits
-    while (cc >= 48 && cc <= 57) {
-      num += this._source[this._index++];
-      cc = this._source.charCodeAt(this._index);
-    }
-
-    // followed by an optional decimal separator `.`
-    if (cc === 46) {
-      num += this._source[this._index++];
-      cc = this._source.charCodeAt(this._index);
-
-      // followed by at least one digit
-      if (cc < 48 || cc > 57) {
-        throw this.error(`Unknown literal "${num}"`);
-      }
-
-      // and optionally more digits
-      while (cc >= 48 && cc <= 57) {
-        num += this._source[this._index++];
-        cc = this._source.charCodeAt(this._index);
-      }
-    }
+    numberRe.lastIndex = this._index;
+    const result = numberRe.exec(this._source);
+    this._index = numberRe.lastIndex;
 
     return {
       type: "num",
-      val: num
+      val: result[0]
     };
   }
 
   /**
    * Parses a list of Message attributes.
    *
-   * @returns {Object}
+   * @returns {Object?}
    * @private
    */
   getAttributes() {
     const attrs = {};
+    let hasAttributes = false;
 
     while (this._index < this._length) {
-      if (this._source[this._index] !== " ") {
+      attributeStartRe.lastIndex = this._index;
+      const result = attributeStartRe.exec(this._source);
+
+      if (result === null) {
         break;
+      } else if (!hasAttributes) {
+        hasAttributes = true;
       }
-      this.skipInlineWS();
 
-      if (this._source[this._index] !== ".") {
-        break;
-      }
-      this._index++;
+      this._index = attributeStartRe.lastIndex;
 
-      const key = this.getIdentifier();
-
-      this.skipInlineWS();
-
-      if (this._source[this._index] !== "=") {
-        throw this.error('Expected "="');
-      }
-      this._index++;
-
-      this.skipInlineWS();
-
-      const val = this.getPattern();
-
-      if (val === null) {
-        throw this.error("Expected attribute to have a value");
-      }
+      const key = result[1];
+      const val = this.getPatternRegex();
+      this.skip(whitespaceRe);
 
       if (typeof val === "string") {
         attrs[key] = val;
@@ -797,58 +549,47 @@ class RuntimeParser {
           val
         };
       }
-
-      this.skipBlankLines();
     }
 
-    return attrs;
+    return hasAttributes ? attrs : null;
   }
 
   /**
-   * Parses a list of Selector variants.
+   * Parses a list of variants.
    *
-   * @returns {Array}
+   * @returns {Object?}
    * @private
    */
   getVariants() {
-    const variants = [];
+    const vars = [];
     let index = 0;
-    let defaultIndex;
+    let def;
 
     while (this._index < this._length) {
-      const ch = this._source[this._index];
+      this.skip(whitespaceRe);
 
-      if ((ch !== "[" || this._source[this._index + 1] === "[") &&
-          ch !== "*") {
+      variantStartRe.lastIndex = this._index;
+      const result = variantStartRe.exec(this._source);
+
+      if (result === null) {
         break;
       }
-      if (ch === "*") {
-        this._index++;
-        defaultIndex = index;
-      }
 
-      if (this._source[this._index] !== "[") {
-        throw this.error('Expected "["');
+      if (this._source[this._index] === "*") {
+        this._index += 2;
+        def = index;
+      } else {
+        this._index++
       }
-
-      this._index++;
 
       const key = this.getVariantKey();
 
-      this.skipInlineWS();
-
+      this._index = variantStartRe.lastIndex;
       const val = this.getPattern();
-
-      if (val === null) {
-        throw this.error("Expected variant to have a value");
-      }
-
-      variants[index++] = {key, val};
-
-      this.skipWS();
+      vars[index++] = {key, val};
     }
 
-    return [variants, defaultIndex];
+    return index > 0 ? {vars, def} : null;
   }
 
   /**
@@ -858,19 +599,13 @@ class RuntimeParser {
    * @private
    */
   getVariantKey() {
-    // VariantKey may be a Keyword or Number
-
-    const cc = this._source.charCodeAt(this._index);
     let literal;
 
-    if ((cc >= 48 && cc <= 57) || cc === 45) {
+    numberRe.lastIndex = this._index;
+    if (numberRe.test(this._source)) {
       literal = this.getNumber();
     } else {
-      literal = this.getVariantName();
-    }
-
-    if (this._source[this._index] !== "]") {
-      throw this.error('Expected "]"');
+      literal = this.match(identifierRe);
     }
 
     this._index++;
@@ -884,112 +619,35 @@ class RuntimeParser {
    * @private
    */
   getLiteral() {
-    const cc0 = this._source.charCodeAt(this._index);
-
-    if (cc0 === 36) { // $
+    if (this._source[this._index] === "$") {
       this._index++;
       return {
         type: "var",
-        name: this.getIdentifier()
+        name: this.match(identifierRe)
       };
     }
 
-    const cc1 = cc0 === 45 // -
-      // Peek at the next character after the dash.
-      ? this._source.charCodeAt(this._index + 1)
-      // Or keep using the character at the current index.
-      : cc0;
-
-    if ((cc1 >= 97 && cc1 <= 122) || // a-z
-        (cc1 >= 65 && cc1 <= 90)) { // A-Z
+    identifierRe.lastIndex = this._index;
+    if (identifierRe.test(this._source)) {
       return {
         type: "ref",
-        name: this.getEntryIdentifier()
+        name: this.match(identifierRe)
       };
     }
 
-    if ((cc1 >= 48 && cc1 <= 57)) { // 0-9
+    numberRe.lastIndex = this._index;
+    if (numberRe.test(this._source)) {
       return this.getNumber();
     }
 
-    if (cc0 === 34) { // "
+    stringRe.lastIndex = this._index;
+    if (stringRe.test(this._source)) {
       return this.getString();
     }
 
-    throw this.error("Expected literal");
+    throw new SyntaxError();
   }
 
-  /**
-   * Skips an FTL comment.
-   *
-   * @private
-   */
-  skipComment() {
-    // At runtime, we don't care about comments so we just have
-    // to parse them properly and skip their content.
-    let eol = this._source.indexOf("\n", this._index);
-
-    while (eol !== -1
-      && this._source[eol + 1] === "#"
-      && [" ", "#"].includes(this._source[eol + 2])) {
-
-      this._index = eol + 3;
-      eol = this._source.indexOf("\n", this._index);
-
-      if (eol === -1) {
-        break;
-      }
-    }
-
-    if (eol === -1) {
-      this._index = this._length;
-    } else {
-      this._index = eol + 1;
-    }
-  }
-
-  /**
-   * Creates a new SyntaxError object with a given message.
-   *
-   * @param {String} message
-   * @returns {Object}
-   * @private
-   */
-  error(message) {
-    return new SyntaxError(message);
-  }
-
-  /**
-   * Skips to the beginning of a next entry after the current position.
-   * This is used to mark the boundary of junk entry in case of error,
-   * and recover from the returned position.
-   *
-   * @private
-   */
-  skipToNextEntryStart() {
-    let start = this._index;
-
-    while (true) {
-      if (start === 0 || this._source[start - 1] === "\n") {
-        const cc = this._source.charCodeAt(start);
-
-        if ((cc >= 97 && cc <= 122) || // a-z
-            (cc >= 65 && cc <= 90) || // A-Z
-             cc === 45) { // -
-          this._index = start;
-          return;
-        }
-      }
-
-      start = this._source.indexOf("\n", start);
-
-      if (start === -1) {
-        this._index = this._length;
-        return;
-      }
-      start++;
-    }
-  }
 }
 
 /**
@@ -997,7 +655,7 @@ class RuntimeParser {
  * object with entries and a list of errors.
  *
  * @param {String} string
- * @returns {Array<Object, Array>}
+ * @returns {Object}
  */
 export default function parse(string) {
   const parser = new RuntimeParser();

@@ -36,12 +36,8 @@ function print(err, data) {
 
 function printRuntime(data) {
   const parse = require('../fluent/src/parser').default;
-  const [res, errors] = parse(data.toString());
+  const res = parse(data.toString());
   console.log(JSON.stringify(res, null, 2));
-
-  if (!program.silent) {
-    errors.map(e => console.error(e.message));
-  }
 }
 
 function printResource(data) {
