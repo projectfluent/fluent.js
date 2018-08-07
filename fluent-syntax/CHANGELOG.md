@@ -1,5 +1,12 @@
 # Changelog
 
+## fluent-syntax 0.8.1 (August 1, 2018)
+
+### Bug fixes
+
+- Avoid forEach to make code minification-friendly. (#263)
+- Don't call charCodeAt() on undefined when at EOF. (#265)
+
 ## fluent-syntax 0.8.0 (July 24, 2018)
 
   - Implement support for Fluent Syntax 0.6. (#253)
