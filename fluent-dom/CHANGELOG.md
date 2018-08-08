@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## fluent-dom 0.4.0
+
   - Drop support for IE and old evergreen browsers. (#133)
 
     Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,
@@ -11,6 +13,8 @@
 
     `CachedAsyncIterable` is now available from its own package rather than
     from the `fluent` package.
+
+  - Modify the constructor to not require `window `element to be passed.
 
 ## fluent-dom 0.3.0
 
