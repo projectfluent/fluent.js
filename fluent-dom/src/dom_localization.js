@@ -130,12 +130,12 @@ export default class DOMLocalization extends Localization {
     }
 
     if (this.windowElement) {
-      if (this.windowElement !== newRoot.ownerGlobal) {
+      if (this.windowElement !== newRoot.ownerDocument.defaultView) {
         throw new Error(`Cannot connect a root:
           DOMLocalization already has a root from a different window.`);
       }
     } else {
-      this.windowElement = newRoot.ownerGlobal;
+      this.windowElement = newRoot.ownerDocument.defaultView;
       this.mutationObserver = new this.windowElement.MutationObserver(
         mutations => this.translateMutations(mutations)
       );
