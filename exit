@@ -1,0 +1,357 @@
+[1mdiff --git a/fluent-syntax/src/ast.js b/fluent-syntax/src/ast.js[m
+[1mindex 97c81b3..cd802c1 100644[m
+[1m--- a/fluent-syntax/src/ast.js[m
+[1m+++ b/fluent-syntax/src/ast.js[m
+[36m@@ -208,12 +208,12 @@[m [mexport class Identifier extends SyntaxNode {[m
+   }[m
+ }[m
+ [m
+[31m-export class VariantName extends Identifier {[m
+[31m-  constructor(name) {[m
+[31m-    super(name);[m
+[31m-    this.type = "VariantName";[m
+[31m-  }[m
+[31m-}[m
+[32m+[m[32m// export class VariantName extends Identifier {[m
+[32m+[m[32m//   constructor(name) {[m
+[32m+[m[32m//     super(name);[m
+[32m+[m[32m//     this.type = "VariantName";[m
+[32m+[m[32m//   }[m
+[32m+[m[32m// }[m
+ [m
+ export class BaseComment extends Entry {[m
+   constructor(content) {[m
+[1mdiff --git a/fluent-syntax/src/ftlstream.js b/fluent-syntax/src/ftlstream.js[m
+[1mindex 06106bc..6da81eb 100644[m
+[1m--- a/fluent-syntax/src/ftlstream.js[m
+[1m+++ b/fluent-syntax/src/ftlstream.js[m
+[36m@@ -309,17 +309,17 @@[m [mexport class FTLParserStream extends ParserStream {[m
+     return this.takeChar(closure);[m
+   }[m
+ [m
+[31m-  takeVariantNameChar() {[m
+[31m-    const closure = ch => {[m
+[31m-      const cc = ch.charCodeAt(0);[m
+[31m-      return ((cc >= 97 && cc <= 122) || // a-z[m
+[31m-              (cc >= 65 && cc <= 90) || // A-Z[m
+[31m-              (cc >= 48 && cc <= 57) || // 0-9[m
+[31m-               cc === 95 || cc === 45 || cc === 32); // _-<space>[m
+[31m-    };[m
+[31m-[m
+[31m-    return this.takeChar(closure);[m
+[31m-  }[m
+[32m+[m[32m  // takeVariantNameChar() {[m
+[32m+[m[32m  //   const closure = ch => {[m
+[32m+[m[32m  //     const cc = ch.charCodeAt(0);[m
+[32m+[m[32m  //     return ((cc >= 97 && cc <= 122) || // a-z[m
+[32m+[m[32m  //             (cc >= 65 && cc <= 90) || // A-Z[m
+[32m+[m[32m  //             (cc >= 48 && cc <= 57) || // 0-9[m
+[32m+[m[32m  //              cc === 95 || cc === 45 || cc === 32); // _-<space>[m
+[32m+[m[32m  //   };[m
+[32m+[m
+[32m+[m[32m  //   return this.takeChar(closure);[m
+[32m+[m[32m  // }[m
+ [m
+   takeDigit() {[m
+     const closure = ch => {[m
+[1mdiff --git a/fluent-syntax/src/parser.js b/fluent-syntax/src/parser.js[m
+[1mindex 75fd74d..6a09c6e 100644[m
+[1m--- a/fluent-syntax/src/parser.js[m
+[1m+++ b/fluent-syntax/src/parser.js[m
+[36m@@ -39,11 +39,18 @@[m [mexport default class FluentParser {[m
+     // Poor man's decorators.[m
+     const methodNames = [[m
+       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",[m
+[31m-      "getTermIdentifier", "getVariant", "getVariantName", "getNumber",[m
+[32m+[m[32m      "getTermIdentifier", "getVariant", "getNumber",[m
+       "getValue", "getPattern", "getVariantList", "getTextElement",[m
+       "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",[m
+       "getString", "getLiteral"[m
+     ];[m
+[32m+[m[32m    // const methodNames = [[m
+[32m+[m[32m    //   "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",[m
+[32m+[m[32m    //   "getTermIdentifier", "getVariant", "getVariantName", "getNumber",[m
+[32m+[m[32m    //   "getValue", "getPattern", "getVariantList", "getTextElement",[m
+[32m+[m[32m    //   "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",[m
+[32m+[m[32m    //   "getString", "getLiteral"[m
+[32m+[m[32m    // ];[m
+     for (const name of methodNames) {[m
+       this[name] = withSpan(this[name]);[m
+     }[m
+[36m@@ -323,7 +330,7 @@[m [mexport default class FluentParser {[m
+       return this.getNumber(ps);[m
+     }[m
+ [m
+[31m-    return this.getVariantName(ps);[m
+[32m+[m[32m    return this.getIdentifier(ps);[m
+   }[m
+ [m
+   getVariant(ps, hasDefault) {[m
+[36m@@ -379,20 +386,20 @@[m [mexport default class FluentParser {[m
+     return variants;[m
+   }[m
+ [m
+[31m-  getVariantName(ps) {[m
+[31m-    let name = ps.takeIDStart();[m
+[32m+[m[32m  // getVariantName(ps) {[m
+[32m+[m[32m  //   let name = ps.takeIDStart();[m
+ [m
+[31m-    while (true) {[m
+[31m-      const ch = ps.takeVariantNameChar();[m
+[31m-      if (ch) {[m
+[31m-        name += ch;[m
+[31m-      } else {[m
+[31m-        break;[m
+[31m-      }[m
+[31m-    }[m
+[32m+[m[32m  //   while (true) {[m
+[32m+[m[32m  //     const ch = ps.takeVariantNameChar();[m
+[32m+[m[32m  //     if (ch) {[m
+[32m+[m[32m  //       name += ch;[m
+[32m+[m[32m  //     } else {[m
+[32m+[m[32m  //       break;[m
+[32m+[m[32m  //     }[m
+[32m+[m[32m  //   }[m
+ [m
+[31m-    return new AST.VariantName(name.replace(trailingWSRe, ""));[m
+[31m-  }[m
+[32m+[m[32m  //   return new AST.VariantName(name.replace(trailingWSRe, ""));[m
+[32m+[m[32m  // }[m
+ [m
+   getDigits(ps) {[m
+     let num = "";[m
+[1mdiff --git a/fluent-syntax/src/serializer.js b/fluent-syntax/src/serializer.js[m
+[1mindex 4c326e8..9ae42b4 100644[m
+[1m--- a/fluent-syntax/src/serializer.js[m
+[1m+++ b/fluent-syntax/src/serializer.js[m
+[36m@@ -305,15 +305,17 @@[m [mfunction serializeIdentifier(identifier) {[m
+ }[m
+ [m
+ [m
+[31m-function serializeVariantName(VariantName) {[m
+[31m-  return VariantName.name;[m
+[31m-}[m
+[32m+[m[32m// function serializeVariantName(VariantName) {[m
+[32m+[m[32m//   return VariantName.name;[m
+[32m+[m[32m// }[m
+ [m
+ [m
+ function serializeVariantKey(key) {[m
+   switch (key.type) {[m
+[31m-    case "VariantName":[m
+[31m-      return serializeVariantName(key);[m
+[32m+[m[32m    case "Identifier":[m
+[32m+[m[32m      return serializeIdentifier(key);[m
+[32m+[m[32m    // case "VariantName":[m
+[32m+[m[32m    //   return serializeVariantName(key);[m
+     case "NumberLiteral":[m
+       return serializeNumberLiteral(key);[m
+     default:[m
+[1mdiff --git a/fluent-syntax/test/fixtures_behavior/variant_with_symbol_with_space.ftl b/fluent-syntax/test/fixtures_behavior/variant_with_symbol_with_space.ftl[m
+[1mindex a3a630c..53e649e 100644[m
+[1m--- a/fluent-syntax/test/fixtures_behavior/variant_with_symbol_with_space.ftl[m
+[1m+++ b/fluent-syntax/test/fixtures_behavior/variant_with_symbol_with_space.ftl[m
+[36m@@ -1,3 +1,4 @@[m
+[32m+[m[32m# ~ERROR E0003, pos 23, args "]"[m
+ -term = {[m
+         *[New York] Nowy Jork[m
+[31m-    }[m
+[32m+[m[32m    }[m
+\ No newline at end of file[m
+[1mdiff --git a/fluent-syntax/test/fixtures_reference/member_expressions.json b/fluent-syntax/test/fixtures_reference/member_expressions.json[m
+[1mindex f23f28a..939ff5e 100644[m
+[1m--- a/fluent-syntax/test/fixtures_reference/member_expressions.json[m
+[1m+++ b/fluent-syntax/test/fixtures_reference/member_expressions.json[m
+[36m@@ -22,7 +22,7 @@[m
+                                 }[m
+                             },[m
+                             "key": {[m
+[31m-                                "type": "VariantName",[m
+[32m+[m[32m                                "type": "Identifier",[m
+                                 "name": "case"[m
+                             }[m
+                         }[m
+[1mdiff --git a/fluent-syntax/test/fixtures_reference/sparse_entries.json b/fluent-syntax/test/fixtures_reference/sparse_entries.json[m
+[1mindex 549263b..0c4a368 100644[m
+[1m--- a/fluent-syntax/test/fixtures_reference/sparse_entries.json[m
+[1m+++ b/fluent-syntax/test/fixtures_reference/sparse_entries.json[m
+[36m@@ -120,7 +120,7 @@[m
+                                 {[m
+                                     "type": "Variant",[m
+                                     "key": {[m
+[31m-                                        "type": "VariantName",[m
+[32m+[m[32m                                        "type": "Identifier",[m
+                                         "name": "one"[m
+                                     },[m
+                                     "value": {[m
+[36m@@ -137,7 +137,7 @@[m
+                                 {[m
+                                     "type": "Variant",[m
+                                     "key": {[m
+[31m-                                        "type": "VariantName",[m
+[32m+[m[32m                                        "type": "Identifier",[m
+                                         "name": "two"[m
+                                     },[m
+                                     "value": {[m
+[1mdiff --git a/fluent-syntax/test/fixtures_structure/leading_dots.json b/fluent-syntax/test/fixtures_structure/leading_dots.json[m
+[1mindex 34a19f3..837427b 100644[m
+[1m--- a/fluent-syntax/test/fixtures_structure/leading_dots.json[m
+[1m+++ b/fluent-syntax/test/fixtures_structure/leading_dots.json[m
+[36m@@ -745,7 +745,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "one",[m
+                     "span": {[m
+                       "type": "Span",[m
+[36m@@ -782,7 +782,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "other",[m
+                     "span": {[m
+                       "type": "Span",[m
+[1mdiff --git a/fluent-syntax/test/fixtures_structure/sparse-messages.json b/fluent-syntax/test/fixtures_structure/sparse-messages.json[m
+[1mindex b58ccaa..90f8fdb 100644[m
+[1m--- a/fluent-syntax/test/fixtures_structure/sparse-messages.json[m
+[1m+++ b/fluent-syntax/test/fixtures_structure/sparse-messages.json[m
+[36m@@ -248,7 +248,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "one",[m
+                     "span": {[m
+                       "type": "Span",[m
+[36m@@ -285,7 +285,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "two",[m
+                     "span": {[m
+                       "type": "Span",[m
+[36m@@ -364,7 +364,7 @@[m
+           {[m
+             "type": "Variant",[m
+             "key": {[m
+[31m-              "type": "VariantName",[m
+[32m+[m[32m              "type": "Identifier",[m
+               "name": "one",[m
+               "span": {[m
+                 "type": "Span",[m
+[36m@@ -430,7 +430,7 @@[m
+           {[m
+             "type": "Variant",[m
+             "key": {[m
+[31m-              "type": "VariantName",[m
+[32m+[m[32m              "type": "Identifier",[m
+               "name": "one",[m
+               "span": {[m
+                 "type": "Span",[m
+[1mdiff --git a/fluent-syntax/test/fixtures_structure/term.json b/fluent-syntax/test/fixtures_structure/term.json[m
+[1mindex 4250e4c..f9cf94d 100644[m
+[1m--- a/fluent-syntax/test/fixtures_structure/term.json[m
+[1m+++ b/fluent-syntax/test/fixtures_structure/term.json[m
+[36m@@ -18,7 +18,7 @@[m
+           {[m
+             "type": "Variant",[m
+             "key": {[m
+[31m-              "type": "VariantName",[m
+[32m+[m[32m              "type": "Identifier",[m
+               "name": "nominative",[m
+               "span": {[m
+                 "type": "Span",[m
+[36m@@ -55,7 +55,7 @@[m
+           {[m
+             "type": "Variant",[m
+             "key": {[m
+[31m-              "type": "VariantName",[m
+[32m+[m[32m              "type": "Identifier",[m
+               "name": "accusative",[m
+               "span": {[m
+                 "type": "Span",[m
+[36m@@ -186,7 +186,7 @@[m
+                 }[m
+               },[m
+               "key": {[m
+[31m-                "type": "VariantName",[m
+[32m+[m[32m                "type": "Identifier",[m
+                 "name": "accusative",[m
+                 "span": {[m
+                   "type": "Span",[m
+[36m@@ -286,7 +286,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "masculine",[m
+                     "span": {[m
+                       "type": "Span",[m
+[36m@@ -348,7 +348,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "feminine",[m
+                     "span": {[m
+                       "type": "Span",[m
+[36m@@ -410,7 +410,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "other",[m
+                     "span": {[m
+                       "type": "Span",[m
+[1mdiff --git a/fluent-syntax/test/fixtures_structure/variant_with_empty_pattern.json b/fluent-syntax/test/fixtures_structure/variant_with_empty_pattern.json[m
+[1mindex 007f49f..19fe137 100644[m
+[1m--- a/fluent-syntax/test/fixtures_structure/variant_with_empty_pattern.json[m
+[1m+++ b/fluent-syntax/test/fixtures_structure/variant_with_empty_pattern.json[m
+[36m@@ -32,7 +32,7 @@[m
+                 {[m
+                   "type": "Variant",[m
+                   "key": {[m
+[31m-                    "type": "VariantName",[m
+[32m+[m[32m                    "type": "Identifier",[m
+                     "name": "one",[m
+                     "span": {[m
+                       "type": "Span",[m
+[1mdiff --git a/fluent-syntax/test/serializer_test.js b/fluent-syntax/test/serializer_test.js[m
+[1mindex d83b7a7..c52d5b0 100644[m
+[1m--- a/fluent-syntax/test/serializer_test.js[m
+[1m+++ b/fluent-syntax/test/serializer_test.js[m
+[36m@@ -277,15 +277,15 @@[m [msuite("Serialize resource", function() {[m
+     assert.equal(pretty(input), output);[m
+   });[m
+ [m
+[31m-  test("variant key words", function() {[m
+[31m-    const input = ftl`[m
+[31m-      foo =[m
+[31m-          { $sel ->[m
+[31m-             *[a b c] A B C[m
+[31m-          }[m
+[31m-    `;[m
+[31m-    assert.equal(pretty(input), input);[m
+[31m-  });[m
+[32m+[m[32m  // test("variant key words", function() {[m
+[32m+[m[32m  //   const input = ftl`[m
+[32m+[m[32m  //     foo =[m
+[32m+[m[32m  //         { $sel ->[m
+[32m+[m[32m  //            *[a b c] A B C[m
+[32m+[m[32m  //         }[m
+[32m+[m[32m  //   `;[m
+[32m+[m[32m  //   assert.equal(pretty(input), input);[m
+[32m+[m[32m  // });[m
+ [m
+   test("variant key number", function() {[m
+     const input = ftl`[m
