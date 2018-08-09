@@ -1,5 +1,0 @@
-key = 
-    { $thing ->
-        *[a] Value a: { $thing } 
-        [b] Value b: { $thing } 
-    }
