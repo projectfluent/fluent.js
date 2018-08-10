@@ -4,9 +4,11 @@ import { shallow } from 'enzyme';
 import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import createParseMarkup from '../src/markup';
-import { LocalizationProvider, Localized } from '../src/index';
+import { Localized } from '../src/index';
 
 suite('Localized - overlay', function() {;
+  let parseMarkup = createParseMarkup();
+
   test('< in text', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
@@ -19,7 +21,7 @@ true = 0 < 3 is true.
       <Localized id="true">
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -41,7 +43,7 @@ megaman = Jumping & Shooting
       <Localized id="megaman">
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -63,7 +65,7 @@ two = First &middot; Second
       <Localized id="two">
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -85,7 +87,7 @@ foo = Click <button>me</button>!
       <Localized id="foo" button={<button onClick={alert}></button>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -110,7 +112,7 @@ foo = Click <button>me</button>!
       <Localized id="foo" Button={<button onClick={alert}></button>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -135,7 +137,7 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
       >
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -159,7 +161,7 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
       >
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -184,7 +186,7 @@ foo = <confirm>Sign in</confirm>.
       >
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -206,7 +208,7 @@ foo = Click <button className="foo">me</button>!
       <Localized id="foo" button={<button onClick={alert}></button>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -228,7 +230,7 @@ foo = Click <button><em>me</em></button>!
       <Localized id="foo" button={<button onClick={alert}></button>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -250,7 +252,7 @@ foo = <confirm>Sign in</confirm>.
       <Localized id="foo" confirm="Not a React element">
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -263,6 +265,8 @@ foo = <confirm>Sign in</confirm>.
 });
 
 suite('Localized - overlay of void elements', function() {;
+  let parseMarkup = createParseMarkup();
+
   test('void prop name, void prop value, void translation', function() {
     const mcx = new MessageContext();
     const l10n = new ReactLocalization([mcx]);
@@ -275,7 +279,7 @@ foo = BEFORE <input/> AFTER
       <Localized id="foo" input={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -297,7 +301,7 @@ foo = BEFORE <input></input> AFTER
       <Localized id="foo" input={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -319,7 +323,7 @@ foo = BEFORE <input>Foo</input> AFTER
       <Localized id="foo" input={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     // The opening <input> tag is parsed as an HTMLInputElement and the closing
@@ -343,7 +347,7 @@ foo = BEFORE <input/> AFTER
       <Localized id="foo" input={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -365,7 +369,7 @@ foo = BEFORE <input></input> AFTER
       <Localized id="foo" input={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -387,7 +391,7 @@ foo = BEFORE <input>Foo</input> AFTER
       <Localized id="foo" input={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     // The opening <input> tag is parsed as an HTMLInputElement and the closing
@@ -411,7 +415,7 @@ foo = BEFORE <span/> AFTER
       <Localized id="foo" span={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     // XXX HTML parser breaks self-closing elements
@@ -438,7 +442,7 @@ foo = BEFORE <span></span> AFTER
       <Localized id="foo" span={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -460,7 +464,7 @@ foo = BEFORE <span>Foo</span> AFTER
       <Localized id="foo" span={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -482,7 +486,7 @@ foo = BEFORE <span/> AFTER
       <Localized id="foo" span={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     // XXX HTML parser breaks self-closing elements
@@ -508,7 +512,7 @@ foo = BEFORE <span></span> AFTER
       <Localized id="foo" span={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -530,7 +534,7 @@ foo = BEFORE <span>Foo</span> AFTER
       <Localized id="foo" span={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -552,7 +556,7 @@ foo = BEFORE <text-input/> AFTER
       <Localized id="foo" text-input={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     // XXX HTML parser breaks self-closing elements
@@ -579,7 +583,7 @@ foo = BEFORE <text-input></text-input> AFTER
       <Localized id="foo" text-input={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -601,7 +605,7 @@ foo = BEFORE <text-input>Foo</text-input> AFTER
       <Localized id="foo" text-input={<input type="text" />}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -623,7 +627,7 @@ foo = BEFORE <text-elem/> AFTER
       <Localized id="foo" text-elem={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     // XXX HTML parser breaks self-closing elements
@@ -650,7 +654,7 @@ foo = BEFORE <text-elem></text-elem> AFTER
       <Localized id="foo" text-elem={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(
@@ -672,7 +676,7 @@ foo = BEFORE <text-elem>Foo</text-elem> AFTER
       <Localized id="foo" text-elem={<span>Hardcoded</span>}>
         <div />
       </Localized>,
-      { context: { l10n } }
+      { context: { l10n, parseMarkup } }
     );
 
     assert.ok(wrapper.contains(

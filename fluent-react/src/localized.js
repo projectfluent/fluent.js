@@ -1,7 +1,6 @@
 import { isValidElement, cloneElement, Component, Children } from "react";
 import PropTypes from "prop-types";
 import { isReactLocalization } from "./localization";
-import createParseMarkup from "./markup";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
@@ -79,9 +78,8 @@ export default class Localized extends Component {
   }
 
   render() {
-    const { l10n } = this.context;
+    const { l10n, parseMarkup } = this.context;
     const { id, attrs, children } = this.props;
-    const {parseMarkup = createParseMarkup()} = this.context;
     const elem = Children.only(children);
 
     if (!l10n) {
