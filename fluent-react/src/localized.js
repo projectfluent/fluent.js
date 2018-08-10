@@ -1,8 +1,6 @@
 import { isValidElement, cloneElement, Component, Children } from "react";
 import PropTypes from "prop-types";
-
 import { isReactLocalization } from "./localization";
-import { parseMarkup } from "./markup";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
@@ -80,7 +78,7 @@ export default class Localized extends Component {
   }
 
   render() {
-    const { l10n } = this.context;
+    const { l10n, parseMarkup } = this.context;
     const { id, attrs, children } = this.props;
     const elem = Children.only(children);
 
@@ -139,7 +137,7 @@ export default class Localized extends Component {
 
     // If the message contains markup, parse it and try to match the children
     // found in the translation with the props passed to this Localized.
-    const translationNodes = Array.from(parseMarkup(messageValue).childNodes);
+    const translationNodes = parseMarkup(messageValue);
     const translatedChildren = translationNodes.map(childNode => {
       if (childNode.nodeType === childNode.TEXT_NODE) {
         return childNode.textContent;
@@ -172,7 +170,8 @@ export default class Localized extends Component {
 }
 
 Localized.contextTypes = {
-  l10n: isReactLocalization
+  l10n: isReactLocalization,
+  parseMarkup: PropTypes.func,
 };
 
 Localized.propTypes = {

@@ -1,8 +1,28 @@
 /* eslint-env browser */
 
-const TEMPLATE = document.createElement("template");
+let cachedParseMarkup;
 
-export function parseMarkup(str) {
-  TEMPLATE.innerHTML = str;
-  return TEMPLATE.content;
+// We use a function creator to make the reference to `document` lazy. At the
+// same time, it's eager enough to throw in <LocalizationProvider> as soon as
+// it's first mounted which reduces the risk of this error making it to the
+// runtime without developers noticing it in development.
+export default function createParseMarkup() {
+  if (typeof(document) === "undefined") {
+    // We can't use <template> to sanitize translations.
+    throw new Error(
+      "`document` is undefined. Without it, translations cannot " +
+      "be safely sanitized. Consult the documentation at " +
+      "https://github.com/projectfluent/fluent.js/wiki/React-Overlays."
+    );
+  }
+
+  if (!cachedParseMarkup) {
+    const template = document.createElement("template");
+    cachedParseMarkup = function parseMarkup(str) {
+      template.innerHTML = str;
+      return Array.from(template.content.childNodes);
+    };
+  }
+
+  return cachedParseMarkup;
 }
