@@ -3,9 +3,9 @@
 let cachedParseMarkup;
 
 // We use a function creator to make the reference to `document` lazy. At the
-// same time, it's eager enough to throw in <Localized> as soon as it's first
-// rendered which reduces the risk of this error making it to the runtime
-// without developers noticing it in development.
+// same time, it's eager enough to throw in <LocalizationProvider> as soon as
+// it's first mounted which reduces the risk of this error making it to the
+// runtime without developers noticing it in development.
 export default function createParseMarkup() {
   if (typeof(document) === "undefined") {
     // We can't use <template> to sanitize translations.

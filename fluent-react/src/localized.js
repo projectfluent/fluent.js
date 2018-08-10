@@ -171,7 +171,7 @@ export default class Localized extends Component {
 
 Localized.contextTypes = {
   l10n: isReactLocalization,
-  parseMarkup: PropTypes.func
+  parseMarkup: PropTypes.func,
 };
 
 Localized.propTypes = {
