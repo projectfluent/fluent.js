@@ -1,9 +1,9 @@
 import React from 'react';
 import assert from 'assert';
-import { render, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import { MessageContext } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
-import { parseMarkup } from '../src/markup';
+import createParseMarkup from '../src/markup';
 import { LocalizationProvider, Localized } from '../src/index';
 
 suite('Localized - overlay', function() {;
@@ -681,28 +681,64 @@ foo = BEFORE <text-elem>Foo</text-elem> AFTER
       </div>
     ));
   });
+});
 
-  test('custom markup parser passed in from LocalizationProvider', function() {
+suite('Localized - custom parseMarkup', function() {;
+  test('is called if defined in the context', function() {
     let parseMarkupCalls = [];
-    function testParseMarkup(str) {
+    function parseMarkup(str) {
       parseMarkupCalls.push(str);
-      return parseMarkup(str);
+      return createParseMarkup()(str);
     }
 
     const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
     mcx.addMessages(`
-foo = test <text-elem>custom markup parser</text-elem>
+# We must use an HTML tag to trigger the overlay logic.
+foo = test <em>custom markup parser</em>
 `);
 
-    const wrapper = render(
-      <LocalizationProvider messages={[mcx]} parseMarkup={testParseMarkup}>
-        <Localized id="foo" text-elem={<span>not used</span>}>
-          <div/>
-        </Localized>
-      </LocalizationProvider>      
+    shallow(
+      <Localized id="foo">
+        <div />
+      </Localized>,
+      { context: { l10n, parseMarkup } }
     );
 
-    assert.deepEqual(parseMarkupCalls, ['test <text-elem>custom markup parser</text-elem>']);
+    assert.deepEqual(parseMarkupCalls, ['test <em>custom markup parser</em>']);
   });
 
+  test('custom sanitization logic', function() {
+    function parseMarkup(str) {
+      return [
+        {
+          TEXT_NODE: 3,
+          nodeType: 3,
+          textContent: str.toUpperCase()
+        }
+      ];
+    }
+
+    const mcx = new MessageContext();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+# We must use an HTML tag to trigger the overlay logic.
+foo = test <em>custom markup parser</em>
+`);
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <div />
+      </Localized>,
+      { context: { l10n, parseMarkup } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div>
+        TEST &lt;EM&gt;CUSTOM MARKUP PARSER&lt;/EM&gt;
+      </div>
+    ));
+  });
 });

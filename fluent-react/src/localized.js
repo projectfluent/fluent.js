@@ -1,7 +1,7 @@
 import { isValidElement, cloneElement, Component, Children } from "react";
 import PropTypes from "prop-types";
 import { isReactLocalization } from "./localization";
-import { parseMarkup } from "./markup";
+import createParseMarkup from "./markup";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
@@ -81,9 +81,8 @@ export default class Localized extends Component {
   render() {
     const { l10n } = this.context;
     const { id, attrs, children } = this.props;
+    const {parseMarkup = createParseMarkup()} = this.context;
     const elem = Children.only(children);
-
-    const markupParser = this.context.parseMarkup || parseMarkup;
 
     if (!l10n) {
       // Use the wrapped component as fallback.
@@ -140,7 +139,7 @@ export default class Localized extends Component {
 
     // If the message contains markup, parse it and try to match the children
     // found in the translation with the props passed to this Localized.
-    const translationNodes = Array.from(markupParser(messageValue).childNodes);
+    const translationNodes = parseMarkup(messageValue);
     const translatedChildren = translationNodes.map(childNode => {
       if (childNode.nodeType === childNode.TEXT_NODE) {
         return childNode.textContent;
