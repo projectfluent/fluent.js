@@ -23,7 +23,7 @@ readdir(fixtures, function(err, filenames) {
     // in the reference parser. Skip them for now.
     const skips = [
       // Call arguments edge-cases.
-      "call_expressions.ftl",
+      // "call_expressions.ftl",
 
       // The tooling parser rejects variant keys which contain leading whitespace.
       // There's even a behavior fixture for this; it must have been a

@@ -5,12 +5,23 @@ import { ParseError } from "./errors";
 import { includes } from "./util";
 
 const INLINE_WS = [" ", "\t"];
+const ANY_WS = [" ", "\t", "\n", "\r\n"];
+const LINE_END = ["\n", "\r\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
   skipInlineWS() {
     while (this.ch) {
       if (!includes(INLINE_WS, this.ch)) {
+        break;
+      }
+      this.next();
+    }
+  }
+
+  skipAnyWS() {
+    while (this.ch) {
+      if (!includes(ANY_WS, this.ch)) {
         break;
       }
       this.next();
@@ -24,6 +35,25 @@ export class FTLParserStream extends ParserStream {
         break;
       }
       ch = this.peek();
+    }
+  }
+
+  peekAnyWS() {
+    let ch = this.currentPeek();
+    while (ch) {
+      if (!includes(ANY_WS, ch)) {
+        break;
+      }
+      ch = this.peek();
+    }
+  }
+
+  peekLineEnd() {
+    let ch = this.currentPeek();
+    if (!includes(LINE_END, ch)) {
+      ch = this.peek();
+    } else {
+      throw new ParseError("E0003", ch); // This is a placeholder error
     }
   }
 
@@ -229,7 +259,8 @@ export class FTLParserStream extends ParserStream {
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekLineEnd();
+    this.peekAnyWS();
 
     if (this.getPeekIndex() - ptr === 0) {
       this.resetPeek();

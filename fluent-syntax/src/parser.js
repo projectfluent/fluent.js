@@ -247,7 +247,7 @@ export default class FluentParser {
     ps.expectChar("=");
 
     if (ps.isPeekValueStart()) {
-      ps.skipIndent();
+      ps.skipAnyWS();
       var value = this.getValue(ps);
     } else {
       throw new ParseError("E0006", id.name);
@@ -345,7 +345,7 @@ export default class FluentParser {
     ps.expectChar("]");
 
     if (ps.isPeekValueStart()) {
-      ps.skipIndent();
+      ps.skipAnyWS();
       const value = this.getValue(ps);
       return new AST.Variant(key, value, defaultIndex);
     }
@@ -444,7 +444,7 @@ export default class FluentParser {
     ps.expectChar("{");
     ps.skipInlineWS();
     const variants = this.getVariants(ps);
-    ps.expectIndent();
+    ps.skipAnyWS();
     ps.expectChar("}");
     return new AST.VariantList(variants);
   }
@@ -544,7 +544,9 @@ export default class FluentParser {
 
   getPlaceable(ps) {
     ps.expectChar("{");
+    ps.skipAnyWS();
     const expression = this.getExpression(ps);
+    ps.skipAnyWS();
     ps.expectChar("}");
     return new AST.Placeable(expression);
   }
@@ -667,7 +669,7 @@ export default class FluentParser {
   getCallArg(ps) {
     const exp = this.getSelectorExpression(ps);
 
-    ps.skipInlineWS();
+    ps.skipAnyWS();
 
     if (ps.current() !== ":") {
       return exp;
@@ -678,7 +680,7 @@ export default class FluentParser {
     }
 
     ps.next();
-    ps.skipInlineWS();
+    ps.skipAnyWS();
 
     const val = this.getArgVal(ps);
 
@@ -690,8 +692,8 @@ export default class FluentParser {
     const named = [];
     const argumentNames = new Set();
 
-    ps.skipInlineWS();
-    ps.skipIndent();
+    ps.skipAnyWS();
+    // ps.skipIndent();
 
     while (true) {
       if (ps.current() === ")") {
@@ -711,13 +713,13 @@ export default class FluentParser {
         positional.push(arg);
       }
 
-      ps.skipInlineWS();
-      ps.skipIndent();
+      ps.skipAnyWS();
+      // ps.skipIndent();
 
       if (ps.current() === ",") {
         ps.next();
-        ps.skipInlineWS();
-        ps.skipIndent();
+        ps.skipAnyWS();
+        // ps.skipIndent();
         continue;
       } else {
         break;

@@ -1,4 +1,4 @@
 -term = {
 *[one] Value
     }
-# ~ERROR E0014, pos 9
+# ~ERROR E0014, pos 10
