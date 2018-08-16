@@ -28,6 +28,12 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
+  skipLineEnd() {
+    if (!includes(LINE_END, this.ch)) {
+      this.next();
+    }
+  }
+
   peekInlineWS() {
     let ch = this.currentPeek();
     while (ch) {

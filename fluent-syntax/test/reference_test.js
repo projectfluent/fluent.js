@@ -28,7 +28,7 @@ readdir(fixtures, function(err, filenames) {
       // The tooling parser rejects variant keys which contain leading whitespace.
       // There's even a behavior fixture for this; it must have been a
       // deliberate decision.
-      "select_expressions.ftl",
+      // "select_expressions.ftl",
 
       // Broken Attributes break the entire Entry right now.
       // https://github.com/projectfluent/fluent.js/issues/237
