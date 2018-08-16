@@ -5,7 +5,7 @@ import { ParseError } from "./errors";
 import { includes } from "./util";
 
 const INLINE_WS = [" ", "\t"];
-const ANY_WS = [" ", "\t", "\n"];
+const ANY_WS = [" ", "\t", "\r", "\n"];
 const LINE_END = ["\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
@@ -88,9 +88,13 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipIndent() {
+  // skipIndent() {
+  //   this.skipBlankLines();
+  //   // this.skipInlineWS();
+  // }
+
+  skipBreakLine() {
     this.skipBlankLines();
-    this.skipInlineWS();
   }
 
   expectChar(ch) {
@@ -107,11 +111,16 @@ export class FTLParserStream extends ParserStream {
     throw new ParseError("E0003", ch);
   }
 
-  expectIndent() {
+  // expectIndent() {
+  //   this.expectChar("\n");
+  //   this.skipBlankLines();
+  //   this.expectChar(" ");
+  //   this.skipInlineWS();
+  // }
+
+  expectBreakLine() {
     this.expectChar("\n");
     this.skipBlankLines();
-    this.expectChar(" ");
-    this.skipInlineWS();
   }
 
   expectLineEnd() {

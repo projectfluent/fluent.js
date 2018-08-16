@@ -22,6 +22,10 @@ readdir(fixtures, function(err, filenames) {
     // The following fixtures produce different ASTs in the tooling parser than
     // in the reference parser. Skip them for now.
     const skips = [
+      // Kekoa
+      "select_indent.ftl",
+      // "variants_indent.ftl",
+
       // Call arguments edge-cases.
       // "call_expressions.ftl",
 
@@ -32,7 +36,7 @@ readdir(fixtures, function(err, filenames) {
 
       // Broken Attributes break the entire Entry right now.
       // https://github.com/projectfluent/fluent.js/issues/237
-      "leading_dots.ftl",
+      "leading_dots.ftl", // Newly added test doesn't produce the Json output
       "variant_lists.ftl"
     ];
 

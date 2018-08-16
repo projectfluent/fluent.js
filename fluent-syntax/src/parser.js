@@ -223,7 +223,7 @@ export default class FluentParser {
     ps.expectChar("=");
 
     if (ps.isPeekValueStart()) {
-      ps.skipIndent();
+
       var pattern = this.getPattern(ps);
     } else {
       ps.skipInlineWS();
@@ -261,6 +261,8 @@ export default class FluentParser {
   }
 
   getAttribute(ps) {
+    ps.expectLineEnd();
+    ps.skipAnyWS();
     ps.expectChar(".");
 
     const key = this.getIdentifier(ps);
@@ -269,7 +271,6 @@ export default class FluentParser {
     ps.expectChar("=");
 
     if (ps.isPeekValueStart()) {
-      ps.skipIndent();
       const value = this.getPattern(ps);
       return new AST.Attribute(key, value);
     }
@@ -281,7 +282,6 @@ export default class FluentParser {
     const attrs = [];
 
     while (true) {
-      ps.expectIndent();
       const attr = this.getAttribute(ps);
       attrs.push(attr);
 
@@ -329,6 +329,7 @@ export default class FluentParser {
   getVariant(ps, hasDefault) {
     let defaultIndex = false;
 
+    // ps.expectLineEnd();
     ps.skipAnyWS();
 
     if (ps.currentIs("*")) {
@@ -446,8 +447,8 @@ export default class FluentParser {
   }
 
   getVariantList(ps) {
+    ps.skipAnyWS();
     ps.expectChar("{");
-    ps.skipInlineWS();
     const variants = this.getVariants(ps);
     ps.skipAnyWS();
     ps.expectChar("}");
@@ -456,6 +457,9 @@ export default class FluentParser {
 
   getPattern(ps) {
     const elements = [];
+    // ps.skipInlineWS();
+
+    ps.skipBreakLine();
     ps.skipInlineWS();
 
     let ch;
@@ -600,7 +604,7 @@ export default class FluentParser {
         throw new ParseError("E0023");
       }
 
-      ps.expectIndent();
+      ps.expectLineEnd();
 
       return new AST.SelectExpression(selector, variants);
     } else if (selector.type === "AttributeExpression" &&
@@ -652,7 +656,11 @@ export default class FluentParser {
         throw new ParseError("E0008");
       }
 
+      ps.skipAnyWS();
+
       const args = this.getCallArgs(ps);
+
+      ps.skipAnyWS();
 
       ps.expectChar(")");
 
@@ -697,7 +705,7 @@ export default class FluentParser {
     const named = [];
     const argumentNames = new Set();
 
-    ps.skipAnyWS();
+    // ps.skipAnyWS();
 
     while (true) {
       if (ps.current() === ")") {
