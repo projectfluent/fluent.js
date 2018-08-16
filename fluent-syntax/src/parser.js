@@ -348,7 +348,7 @@ export default class FluentParser {
     const key = this.getVariantKey(ps);
 
     ps.skipAnyWS();
-    
+
     ps.expectChar("]");
 
     if (ps.isPeekValueStart()) {
