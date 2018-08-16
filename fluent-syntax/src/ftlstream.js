@@ -5,8 +5,8 @@ import { ParseError } from "./errors";
 import { includes } from "./util";
 
 const INLINE_WS = [" ", "\t"];
-const ANY_WS = [" ", "\t", "\n", "\r\n"];
-const LINE_END = ["\n", "\r\n"];
+const ANY_WS = [" ", "\t", "\n"];
+const LINE_END = ["\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
@@ -24,12 +24,6 @@ export class FTLParserStream extends ParserStream {
       if (!includes(ANY_WS, this.ch)) {
         break;
       }
-      this.next();
-    }
-  }
-
-  skipLineEnd() {
-    if (!includes(LINE_END, this.ch)) {
       this.next();
     }
   }

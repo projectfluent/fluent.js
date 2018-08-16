@@ -329,7 +329,6 @@ export default class FluentParser {
   getVariant(ps, hasDefault) {
     let defaultIndex = false;
 
-    ps.skipLineEnd();
     ps.skipAnyWS();
 
     if (ps.currentIs("*")) {
@@ -365,7 +364,6 @@ export default class FluentParser {
     let hasDefault = false;
 
     while (true) {
-      // ps.expectIndent();
       const variant = this.getVariant(ps, hasDefault);
 
       if (variant.default) {
@@ -378,8 +376,6 @@ export default class FluentParser {
         break;
       }
     }
-
-    ps.skipLineEnd();
 
     if (!hasDefault) {
       throw new ParseError("E0010");
@@ -702,7 +698,6 @@ export default class FluentParser {
     const argumentNames = new Set();
 
     ps.skipAnyWS();
-    // ps.skipIndent();
 
     while (true) {
       if (ps.current() === ")") {
@@ -723,12 +718,10 @@ export default class FluentParser {
       }
 
       ps.skipAnyWS();
-      // ps.skipIndent();
 
       if (ps.current() === ",") {
         ps.next();
         ps.skipAnyWS();
-        // ps.skipIndent();
         continue;
       } else {
         break;
