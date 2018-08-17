@@ -6,7 +6,7 @@
  * @param {string|Array<string>} ids
  * @returns {FluentBundle|Array<FluentBundle>}
  */
-export default function mapContextSync(iterable, ids) {
+export default function mapBundleSync(iterable, ids) {
   if (!Array.isArray(ids)) {
     return getBundleForId(iterable, ids);
   }

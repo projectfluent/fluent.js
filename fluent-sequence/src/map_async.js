@@ -6,7 +6,7 @@
  * @param {string|Array<string>} ids
  * @returns {Promise<FluentBundle|Array<FluentBundle>>}
  */
-export default async function mapContextAsync(iterable, ids) {
+export default async function mapBundleAsync(iterable, ids) {
   if (!Array.isArray(ids)) {
     for await (const bundle of iterable) {
       if (bundle.hasMessage(ids)) {

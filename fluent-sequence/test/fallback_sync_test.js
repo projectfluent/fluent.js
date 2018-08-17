@@ -2,7 +2,7 @@ import assert from 'assert';
 
 import {CachedSyncIterable} from 'cached-iterable';
 import FluentBundle from './bundle_stub';
-import {mapContextSync} from '../src/index';
+import {mapBundleSync} from '../src/index';
 
 suite('Sync Fallback — single id', function() {
   let bundle1, bundle2;
@@ -16,16 +16,16 @@ suite('Sync Fallback — single id', function() {
 
   test('eager iterable', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
-    assert.equal(mapContextSync(bundles, 'foo'), bundle2);
-    assert.equal(mapContextSync(bundles, 'bar'), bundle1);
+    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
   });
 
   test('eager iterable works more than once', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
-    assert.equal(mapContextSync(bundles, 'foo'), bundle2);
-    assert.equal(mapContextSync(bundles, 'bar'), bundle1);
-    assert.equal(mapContextSync(bundles, 'foo'), bundle2);
-    assert.equal(mapContextSync(bundles, 'bar'), bundle1);
+    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable', function() {
@@ -34,8 +34,8 @@ suite('Sync Fallback — single id', function() {
     }
 
     const bundles = new CachedSyncIterable(generateBundles());
-    assert.equal(mapContextSync(bundles, 'foo'), bundle2);
-    assert.equal(mapContextSync(bundles, 'bar'), bundle1);
+    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable works more than once', function() {
@@ -44,10 +44,10 @@ suite('Sync Fallback — single id', function() {
     }
 
     const bundles = new CachedSyncIterable(generateBundles());
-    assert.equal(mapContextSync(bundles, 'foo'), bundle2);
-    assert.equal(mapContextSync(bundles, 'bar'), bundle1);
-    assert.equal(mapContextSync(bundles, 'foo'), bundle2);
-    assert.equal(mapContextSync(bundles, 'bar'), bundle1);
+    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
   });
 });
 
@@ -64,7 +64,7 @@ suite('Sync Fallback — multiple ids', function() {
   test('existing translations', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
     assert.deepEqual(
-      mapContextSync(bundles, ['foo', 'bar']),
+      mapBundleSync(bundles, ['foo', 'bar']),
       [bundle1, bundle1]
     );
   });
@@ -72,7 +72,7 @@ suite('Sync Fallback — multiple ids', function() {
   test('fallback translations', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
     assert.deepEqual(
-      mapContextSync(bundles, ['foo', 'bar', 'baz']),
+      mapBundleSync(bundles, ['foo', 'bar', 'baz']),
       [bundle1, bundle1, bundle2]
     );
   });
@@ -80,7 +80,7 @@ suite('Sync Fallback — multiple ids', function() {
   test('missing translations', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
     assert.deepEqual(
-      mapContextSync(bundles, ['foo', 'bar', 'baz', 'qux']),
+      mapBundleSync(bundles, ['foo', 'bar', 'baz', 'qux']),
       [bundle1, bundle1, bundle2, null]
     );
   });

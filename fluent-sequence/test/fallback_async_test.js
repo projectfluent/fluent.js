@@ -2,7 +2,7 @@ import assert from 'assert';
 
 import {CachedAsyncIterable} from 'cached-iterable';
 import FluentBundle from './bundle_stub';
-import {mapContextAsync} from '../src/index';
+import {mapBundleAsync} from '../src/index';
 
 suite('Async Fallback — single id', function() {
   let bundle1, bundle2, generateBundles;
@@ -20,30 +20,30 @@ suite('Async Fallback — single id', function() {
 
   test('eager iterable', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapContextAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapContextAsync(bundles, 'bar'), bundle1);
+    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 
   test('eager iterable works more than once', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapContextAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapContextAsync(bundles, 'bar'), bundle1);
-    assert.equal(await mapContextAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapContextAsync(bundles, 'bar'), bundle1);
+    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapContextAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapContextAsync(bundles, 'bar'), bundle1);
+    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable works more than once', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapContextAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapContextAsync(bundles, 'bar'), bundle1);
-    assert.equal(await mapContextAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapContextAsync(bundles, 'bar'), bundle1);
+    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 });
 
@@ -64,7 +64,7 @@ suite('Async Fallback — multiple ids', async function() {
   test('existing translations', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
     assert.deepEqual(
-      await mapContextAsync(bundles, ['foo', 'bar']),
+      await mapBundleAsync(bundles, ['foo', 'bar']),
       [bundle1, bundle1]
     );
   });
@@ -72,7 +72,7 @@ suite('Async Fallback — multiple ids', async function() {
   test('fallback translations', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
     assert.deepEqual(
-      await mapContextAsync(bundles, ['foo', 'bar', 'baz']),
+      await mapBundleAsync(bundles, ['foo', 'bar', 'baz']),
       [bundle1, bundle1, bundle2]
     );
   });
@@ -80,7 +80,7 @@ suite('Async Fallback — multiple ids', async function() {
   test('missing translations', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
     assert.deepEqual(
-      await mapContextAsync(bundles, ['foo', 'bar', 'baz', 'qux']),
+      await mapBundleAsync(bundles, ['foo', 'bar', 'baz', 'qux']),
       [bundle1, bundle1, bundle2, null]
     );
   });
@@ -99,7 +99,7 @@ suite('Async Fallback — early return', async function() {
   test('break early if possible', async function() {
     const bundles = [bundle1, bundle2].values();
     assert.deepEqual(
-      await mapContextAsync(bundles, ['foo', 'bar']),
+      await mapBundleAsync(bundles, ['foo', 'bar']),
       [bundle1, bundle1]
     );
     assert.deepEqual(
@@ -111,7 +111,7 @@ suite('Async Fallback — early return', async function() {
   test('iterate over all bundles', async function() {
     const bundles = [bundle1, bundle2].values();
     assert.deepEqual(
-      await mapContextAsync(bundles, ['foo', 'bar', 'baz']),
+      await mapBundleAsync(bundles, ['foo', 'bar', 'baz']),
       [bundle1, bundle1, bundle2]
     );
     assert.deepEqual(

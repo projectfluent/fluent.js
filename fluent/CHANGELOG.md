@@ -14,6 +14,9 @@
     package. `fluent-sequence` 0.1.0 corresponds to the exact implementation
     of these functions from `fluent` 0.7.0.
 
+    In later versions of `fluent-sequence`, these functions are called
+    `mapBundleSync` and `mapBundleAsync`.
+
 ## fluent 0.7.0 (July 24, 2018)
 
   - Implement support for Fluent Syntax 0.6.
