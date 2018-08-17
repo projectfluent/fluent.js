@@ -5,7 +5,7 @@ import { CachedSyncIterable } from "cached-iterable";
  * `ReactLocalization` handles translation formatting and fallback.
  *
  * The current negotiated fallback chain of languages is stored in the
- * `ReactLocalization` instance in form of an iterable of `MessageContext`
+ * `ReactLocalization` instance in form of an iterable of `FluentBundle`
  * instances.  This iterable is used to find the best existing translation for
  * a given identifier.
  *
@@ -18,7 +18,7 @@ import { CachedSyncIterable } from "cached-iterable";
  */
 export default class ReactLocalization {
   constructor(messages) {
-    this.contexts = CachedSyncIterable.from(messages);
+    this.bundles = CachedSyncIterable.from(messages);
     this.subs = new Set();
   }
 
@@ -39,24 +39,24 @@ export default class ReactLocalization {
   /*
    * Set a new `messages` iterable and trigger the retranslation.
    */
-  setMessages(messages) {
-    this.contexts = CachedSyncIterable.from(messages);
+  setBundles(bundles) {
+    this.bundles = CachedSyncIterable.from(bundles);
 
     // Update all subscribed Localized components.
     this.subs.forEach(comp => comp.relocalize());
   }
 
-  getMessageContext(id) {
-    return mapContextSync(this.contexts, id);
+  getBundle(id) {
+    return mapContextSync(this.bundles, id);
   }
 
-  formatCompound(mcx, msg, args) {
-    const value = mcx.format(msg, args);
+  formatCompound(bundle, msg, args) {
+    const value = bundle.format(msg, args);
 
     if (msg.attrs) {
       var attrs = {};
       for (const name of Object.keys(msg.attrs)) {
-        attrs[name] = mcx.format(msg.attrs[name], args);
+        attrs[name] = bundle.format(msg.attrs[name], args);
       }
     }
 
@@ -67,14 +67,14 @@ export default class ReactLocalization {
    * Find a translation by `id` and format it to a string using `args`.
    */
   getString(id, args, fallback) {
-    const mcx = this.getMessageContext(id);
+    const bundle = this.getBundle(id);
 
-    if (mcx === null) {
+    if (bundle === null) {
       return fallback || id;
     }
 
-    const msg = mcx.getMessage(id);
-    return mcx.format(msg, args);
+    const msg = bundle.getMessage(id);
+    return bundle.format(msg, args);
   }
 }
 

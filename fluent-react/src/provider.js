@@ -16,8 +16,8 @@ import createParseMarkup from "./markup";
  *     </LocalizationProvider>
  *
  * The `LocalizationProvider` component takes one prop: `messages`.  It should
- * be an iterable of `MessageContext` instances in order of the user's
- * preferred languages.  The `MessageContext` instances will be used by
+ * be an iterable of `FluentBundle` instances in order of the user's
+ * preferred languages.  The `FluentBundle` instances will be used by
  * `ReactLocalization` to format translations.  If a translation is missing in
  * one instance, `ReactLocalization` will fall back to the next one.
  */
@@ -49,7 +49,7 @@ export default class LocalizationProvider extends Component {
     const { messages } = next;
 
     if (messages !== this.props.messages) {
-      this.l10n.setMessages(messages);
+      this.l10n.setBundles(messages);
     }
   }
 

@@ -315,12 +315,12 @@ troubles.
     `LocalizationProvider` component.
 
     The `LocalizationProvider` component takes one prop: `messages`.  It should
-    be an iterable of `MessageContext` instances in order of user's preferred
+    be an iterable of `FluentBundle` instances in order of user's preferred
     languages.  This iterable will be used by `Localization` to format
     translations.  If a translation is missing in one language, `Localization`
     will fall back to the next locale.
 
-  - The relevant `MessageContext` is now cached in `Localized`'s state.
+  - The relevant `FluentBundle` is now cached in `Localized`'s state.
 
 ## fluent-react 0.2.0
 

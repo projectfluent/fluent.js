@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+  - Rename `MessageContext` to `FluentBundle`. (#222)
+
+    Also, export `FluentType` and its derived classes under their own names
+    rather than `MessageArgument` etc.
+
   - Move `mapContext*` functions to `fluent-sequence`. (#273)
 
     The `mapContextSync` and `mapContextAsync` functions previously exported
@@ -91,14 +96,14 @@
 
     ```js
     async formatString(id, args) {
-        const ctx = await mapContextAsync(contexts, id);
+        const bundle = await mapContextAsync(bundles, id);
 
-        if (ctx === null) {
+        if (bundle === null) {
             return id;
         }
 
-        const msg = ctx.getMessage(id);
-        return ctx.format(msg, args);
+        const msg = bundle.getMessage(id);
+        return bundle.format(msg, args);
     }
     ```
 
@@ -118,7 +123,7 @@
     indentation.
 
     ```js
-    ctx.addMessages(ftl`
+    bundle.addMessages(ftl`
         foo = Foo
         bar = Bar
     );
@@ -178,14 +183,14 @@
     might be implemented as follows:
 
         getString(id, args) {
-            const ctx = mapContextSync(contexts, id);
+            const bundle = mapContextSync(bundles, id);
 
-            if (ctx === null) {
+            if (bundle === null) {
                 return id;
             }
 
-            const msg = ctx.getMessage(id);
-            return ctx.format(msg, args);
+            const msg = bundle.getMessage(id);
+            return bundle.format(msg, args);
         }
 
     In order to pass an iterator to mapContext*, wrap it in CachedIterable.
@@ -194,11 +199,11 @@
 
         function *generateMessages() {
             // Some lazy logic for yielding MessageContexts.
-            yield *[ctx1, ctx2];
+            yield *[bundle1, bundle2];
         }
 
-        const contexts = new CachedIterable(generateMessages());
-        const ctx = mapContextSync(contexts, id);
+        const bundles = new CachedIterable(generateMessages());
+        const bundle = mapContextSync(bundles, id);
 
 
 ## fluent 0.4.0 (May 17th, 2017)
@@ -211,13 +216,13 @@
 
     Before:
 
-        const msg = ctx.messages.get(id);
-        const txt = ctx.format(msg);
+        const msg = bundle.messages.get(id);
+        const txt = bundle.format(msg);
 
     Now:
 
-        const msg = ctx.getMessage(id);
-        const txt = ctx.format(msg);
+        const msg = bundle.getMessage(id);
+        const txt = bundle.format(msg);
 
   - The compat build is now transpiled using rollup-plugin-babel.
 

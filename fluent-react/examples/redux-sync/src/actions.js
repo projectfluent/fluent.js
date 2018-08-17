@@ -1,4 +1,4 @@
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
 const MESSAGES_ALL = {
@@ -23,9 +23,9 @@ export function changeLocales(userLocales) {
 
   const generateMessages = function* () {
     for (const locale of currentLocales) {
-      const cx = new MessageContext(locale);
-      cx.addMessages(MESSAGES_ALL[locale]);
-      yield cx;
+      const bundle = new FluentBundle(locale);
+      bundle.addMessages(MESSAGES_ALL[locale]);
+      yield bundle;
     }
   }
 

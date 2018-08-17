@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { ftl } from '../src/util';
 
 // Unicode bidi isolation characters.
@@ -10,11 +10,11 @@ const FSI = '\u2068';
 const PDI = '\u2069';
 
 suite('Isolating interpolations', function(){
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   suiteSetup(function() {
-    ctx = new MessageContext('en-US');
-    ctx.addMessages(ftl`
+    bundle = new FluentBundle('en-US');
+    bundle.addMessages(ftl`
       foo = Foo
       bar = { foo } Bar
       baz = { $arg } Baz
@@ -27,22 +27,22 @@ suite('Isolating interpolations', function(){
   });
 
   test('isolates interpolated message references', function(){
-    const msg = ctx.getMessage('bar');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('bar');
+    const val = bundle.format(msg, args, errs);
     assert.equal(val, `${FSI}Foo${PDI} Bar`);
     assert.equal(errs.length, 0);
   });
 
   test('isolates interpolated string-typed variables', function(){
-    const msg = ctx.getMessage('baz');
-    const val = ctx.format(msg, {arg: 'Arg'}, errs);
+    const msg = bundle.getMessage('baz');
+    const val = bundle.format(msg, {arg: 'Arg'}, errs);
     assert.equal(val, `${FSI}Arg${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
 
   test('isolates interpolated number-typed variables', function(){
-    const msg = ctx.getMessage('baz');
-    const val = ctx.format(msg, {arg: 1}, errs);
+    const msg = bundle.getMessage('baz');
+    const val = bundle.format(msg, {arg: 1}, errs);
     assert.equal(val, `${FSI}1${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
@@ -51,16 +51,16 @@ suite('Isolating interpolations', function(){
     const dtf = new Intl.DateTimeFormat('en-US');
     const arg = new Date('2016-09-29');
 
-    const msg = ctx.getMessage('baz');
-    const val = ctx.format(msg, {arg}, errs);
+    const msg = bundle.getMessage('baz');
+    const val = bundle.format(msg, {arg}, errs);
     // format the date argument to account for the testrunner's timezone
     assert.equal(val, `${FSI}${dtf.format(arg)}${PDI} Baz`);
     assert.equal(errs.length, 0);
   });
 
   test('isolates complex interpolations', function(){
-    const msg = ctx.getMessage('qux');
-    const val = ctx.format(msg, {arg: 'Arg'}, errs);
+    const msg = bundle.getMessage('qux');
+    const val = bundle.format(msg, {arg: 'Arg'}, errs);
 
     const expected_bar = `${FSI}${FSI}Foo${PDI} Bar${PDI}`;
     const expected_baz = `${FSI}${FSI}Arg${PDI} Baz${PDI}`;
@@ -70,11 +70,11 @@ suite('Isolating interpolations', function(){
 });
 
 suite('Skip isolation cases', function(){
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   suiteSetup(function() {
-    ctx = new MessageContext('en-US');
-    ctx.addMessages(ftl`
+    bundle = new FluentBundle('en-US');
+    bundle.addMessages(ftl`
       -brand-short-name = Amaya
       foo = { -brand-short-name }
     `);
@@ -85,8 +85,8 @@ suite('Skip isolation cases', function(){
   });
 
   test('skips isolation if the only element is a placeable', function(){
-    const msg = ctx.getMessage('foo');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('foo');
+    const val = bundle.format(msg, args, errs);
     assert.equal(val, `Amaya`);
     assert.equal(errs.length, 0);
   });

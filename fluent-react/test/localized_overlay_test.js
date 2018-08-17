@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import createParseMarkup from '../src/markup';
 import { Localized } from '../src/index';
@@ -10,10 +10,10 @@ suite('Localized - overlay', function() {;
   let parseMarkup = createParseMarkup();
 
   test('< in text', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 true = 0 < 3 is true.
 `)
 
@@ -32,10 +32,10 @@ true = 0 < 3 is true.
   });
 
   test('& in text', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 megaman = Jumping & Shooting
 `)
 
@@ -54,10 +54,10 @@ megaman = Jumping & Shooting
   });
 
   test('HTML entity', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 two = First &middot; Second
 `)
 
@@ -76,10 +76,10 @@ two = First &middot; Second
   });
 
   test('one element is matched', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = Click <button>me</button>!
 `)
 
@@ -98,10 +98,10 @@ foo = Click <button>me</button>!
   });
 
   test('an element of different case is matched', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = Click <button>me</button>!
 `)
 
@@ -123,10 +123,10 @@ foo = Click <button>me</button>!
   });
 
   test('two elements are matched', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
 `)
 
@@ -148,10 +148,10 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
   });
 
   test('unexpected child is reduced to text', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
 `)
 
@@ -172,10 +172,10 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
   });
 
   test('element not found in the translation is removed', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = <confirm>Sign in</confirm>.
 `)
 
@@ -197,10 +197,10 @@ foo = <confirm>Sign in</confirm>.
   });
 
   test('attributes on translated children are ignored', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = Click <button className="foo">me</button>!
 `)
 
@@ -219,10 +219,10 @@ foo = Click <button className="foo">me</button>!
   });
 
   test('nested children are ignored', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = Click <button><em>me</em></button>!
 `)
 
@@ -241,10 +241,10 @@ foo = Click <button><em>me</em></button>!
   });
 
   test('non-React element prop is used in markup', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = <confirm>Sign in</confirm>.
 `)
 
@@ -268,10 +268,10 @@ suite('Localized - overlay of void elements', function() {;
   let parseMarkup = createParseMarkup();
 
   test('void prop name, void prop value, void translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <input/> AFTER
 `)
 
@@ -290,10 +290,10 @@ foo = BEFORE <input/> AFTER
   });
 
   test('void prop name, void prop value, empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <input></input> AFTER
 `)
 
@@ -312,10 +312,10 @@ foo = BEFORE <input></input> AFTER
   });
 
   test('void prop name, void prop value, non-empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <input>Foo</input> AFTER
 `)
 
@@ -336,10 +336,10 @@ foo = BEFORE <input>Foo</input> AFTER
   });
 
   test('void prop name, non-empty prop value, void translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <input/> AFTER
 `)
 
@@ -358,10 +358,10 @@ foo = BEFORE <input/> AFTER
   });
 
   test('void prop name, non-empty prop value, empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <input></input> AFTER
 `)
 
@@ -380,10 +380,10 @@ foo = BEFORE <input></input> AFTER
   });
 
   test('void prop name, non-empty prop value, non-empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <input>Foo</input> AFTER
 `)
 
@@ -404,10 +404,10 @@ foo = BEFORE <input>Foo</input> AFTER
   });
 
   test('non-void prop name, void prop value, void translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <span/> AFTER
 `)
 
@@ -431,10 +431,10 @@ foo = BEFORE <span/> AFTER
   });
 
   test('non-void prop name, void prop value, empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <span></span> AFTER
 `)
 
@@ -453,10 +453,10 @@ foo = BEFORE <span></span> AFTER
   });
 
   test('non-void prop name, void prop value, non-empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <span>Foo</span> AFTER
 `)
 
@@ -475,10 +475,10 @@ foo = BEFORE <span>Foo</span> AFTER
   });
 
   test('non-void prop name, non-empty prop value, void translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <span/> AFTER
 `)
 
@@ -501,10 +501,10 @@ foo = BEFORE <span/> AFTER
   });
 
   test('non-void prop name, non-empty prop value, empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <span></span> AFTER
 `)
 
@@ -523,10 +523,10 @@ foo = BEFORE <span></span> AFTER
   });
 
   test('non-void prop name, non-empty prop value, non-empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <span>Foo</span> AFTER
 `)
 
@@ -545,10 +545,10 @@ foo = BEFORE <span>Foo</span> AFTER
   });
 
   test('custom prop name, void prop value, void translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <text-input/> AFTER
 `)
 
@@ -572,10 +572,10 @@ foo = BEFORE <text-input/> AFTER
   });
 
   test('custom prop name, void prop value, empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <text-input></text-input> AFTER
 `)
 
@@ -594,10 +594,10 @@ foo = BEFORE <text-input></text-input> AFTER
   });
 
   test('custom prop name, void prop value, non-empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <text-input>Foo</text-input> AFTER
 `)
 
@@ -616,10 +616,10 @@ foo = BEFORE <text-input>Foo</text-input> AFTER
   });
 
   test('custom prop name, non-empty prop value, void translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <text-elem/> AFTER
 `)
 
@@ -643,10 +643,10 @@ foo = BEFORE <text-elem/> AFTER
   });
 
   test('custom prop name, non-empty prop value, empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <text-elem></text-elem> AFTER
 `)
 
@@ -665,10 +665,10 @@ foo = BEFORE <text-elem></text-elem> AFTER
   });
 
   test('custom prop name, non-empty prop value, non-empty translation', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = BEFORE <text-elem>Foo</text-elem> AFTER
 `)
 
@@ -695,10 +695,10 @@ suite('Localized - custom parseMarkup', function() {;
       return createParseMarkup()(str);
     }
 
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 # We must use an HTML tag to trigger the overlay logic.
 foo = test <em>custom markup parser</em>
 `);
@@ -724,10 +724,10 @@ foo = test <em>custom markup parser</em>
       ];
     }
 
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 # We must use an HTML tag to trigger the overlay logic.
 foo = test <em>custom markup parser</em>
 `);

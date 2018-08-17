@@ -19,30 +19,30 @@ suite('LocalizationProvider - changing props', function() {
     assert.equal(oldL10n, newL10n);
   });
 
-  test('calls the ReactLocalization\'s setMessages method', function() {
+  test('calls the ReactLocalization\'s setBundles method', function() {
     const wrapper = shallow(
       <LocalizationProvider messages={[]}>
         <div />
       </LocalizationProvider>
     );
 
-    const spy = sinon.spy(wrapper.instance().l10n, 'setMessages');
+    const spy = sinon.spy(wrapper.instance().l10n, 'setBundles');
     const newMessages = [];
     wrapper.setProps({ messages: newMessages });
     const { args } = spy.getCall(0);
     assert.deepEqual(args, [newMessages]);
   });
 
-  test('changes the ReactLocalization\'s messages contexts', function() {
+  test('changes the ReactLocalization\'s messages bundles', function() {
     const wrapper = shallow(
       <LocalizationProvider messages={[]}>
         <div />
       </LocalizationProvider>
     );
 
-    const oldContexts = wrapper.instance().l10n.contexts;
+    const oldContexts = wrapper.instance().l10n.bundles;
     wrapper.setProps({ messages: [] });
-    const newContexts = wrapper.instance().l10n.contexts;
+    const newContexts = wrapper.instance().l10n.bundles;
 
     assert.notEqual(oldContexts, newContexts);
   });

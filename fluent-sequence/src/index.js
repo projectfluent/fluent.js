@@ -1,6 +1,6 @@
 /*
  * @module fluent-sequence
- * @overview Manage ordered sequences of MessageContexts.
+ * @overview Manage ordered sequences of FluentBundles.
  */
 
 export {default as mapContextSync} from "./map_sync";
