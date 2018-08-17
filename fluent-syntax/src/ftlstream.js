@@ -107,7 +107,7 @@ export class FTLParserStream extends ParserStream {
       includes(LINE_END, this.peekBlankInlineWS())) {
       ch = this.skipBlankBlock();
     } else {
-      throw new ParseError("E0003", ch); // This is a placeholder error
+      throw new ParseError("E0003", this.ch); // This is a placeholder error
     }
   }
 
