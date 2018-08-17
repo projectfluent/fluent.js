@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+  - Move `mapContext*` functions to `fluent-sequence`. (#273)
+
+    The `mapContextSync` and `mapContextAsync` functions previously exported
+    by the `fluent` package have been moved to the new `fluent-sequence`
+    package. `fluent-sequence` 0.1.0 corresponds to the exact implementation
+    of these functions from `fluent` 0.7.0.
+
 ## fluent 0.7.0 (July 24, 2018)
 
   - Implement support for Fluent Syntax 0.6.
