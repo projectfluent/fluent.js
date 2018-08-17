@@ -11,33 +11,33 @@ import { CachedSyncIterable } from "cached-iterable";
  *
  * `Localized` components must subscribe to the changes of the
  * `ReactLocalization`'s fallback chain.  When the fallback chain changes (the
- * `messages` iterable is set anew), all subscribed compontent must relocalize.
+ * `bundles` iterable is set anew), all subscribed compontent must relocalize.
  *
  * The `ReactLocalization` class instances are exposed to `Localized` elements
  * via the `LocalizationProvider` component.
  */
 export default class ReactLocalization {
-  constructor(messages) {
-    this.bundles = CachedSyncIterable.from(messages);
+  constructor(bundles) {
+    this.bundles = CachedSyncIterable.from(bundles);
     this.subs = new Set();
   }
 
   /*
-   * Subscribe a `Localized` component to changes of `messages`.
+   * Subscribe a `Localized` component to changes of `bundles`.
    */
   subscribe(comp) {
     this.subs.add(comp);
   }
 
   /*
-   * Unsubscribe a `Localized` component from `messages` changes.
+   * Unsubscribe a `Localized` component from `bundles` changes.
    */
   unsubscribe(comp) {
     this.subs.delete(comp);
   }
 
   /*
-   * Set a new `messages` iterable and trigger the retranslation.
+   * Set a new `bundles` iterable and trigger the retranslation.
    */
   setBundles(bundles) {
     this.bundles = CachedSyncIterable.from(bundles);

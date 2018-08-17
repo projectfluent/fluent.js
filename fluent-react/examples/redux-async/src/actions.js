@@ -29,7 +29,7 @@ export function changeLocales(userLocales) {
       (obj, cur) => Object.assign(obj, cur)
     );
 
-    const generateMessages = function* () {
+    const generateBundles = function* () {
       for (const locale of currentLocales) {
         const bundle = new FluentBundle(locale);
         bundle.addMessages(messages[locale]);
@@ -41,7 +41,7 @@ export function changeLocales(userLocales) {
       type: 'CHANGE_LOCALES_RESPONSE',
       userLocales,
       currentLocales,
-      messages: generateMessages()
+      bundles: generateBundles()
     });
   };
 }

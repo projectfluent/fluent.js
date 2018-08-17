@@ -21,7 +21,7 @@ export function changeLocales(userLocales) {
     { defaultLocale: 'en-US' }
   );
 
-  const generateMessages = function* () {
+  const generateBundles = function* () {
     for (const locale of currentLocales) {
       const bundle = new FluentBundle(locale);
       bundle.addMessages(MESSAGES_ALL[locale]);
@@ -33,6 +33,6 @@ export function changeLocales(userLocales) {
     type: 'CHANGE_LOCALES',
     userLocales,
     currentLocales,
-    messages: generateMessages()
+    bundles: generateBundles()
   };
 }

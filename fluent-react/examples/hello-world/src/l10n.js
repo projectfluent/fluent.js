@@ -13,7 +13,7 @@ today-is = Today is { DATETIME($date, month: "long", day: "numeric") }.
   `,
 };
 
-export function* generateMessages(userLocales) {
+export function* generateBundles(userLocales) {
   // Choose locales that are best for the user.
   const currentLocales = negotiateLanguages(
     userLocales,

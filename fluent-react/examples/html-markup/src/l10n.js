@@ -21,7 +21,7 @@ agree-alert = Cool, agreed.
   `,
 };
 
-export function* generateMessages(userLocales) {
+export function* generateBundles(userLocales) {
   // Choose locales that are best for the user.
   const currentLocales = negotiateLanguages(
     userLocales,

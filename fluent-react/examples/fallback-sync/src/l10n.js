@@ -11,7 +11,7 @@ bar = Bar in English
   `,
 };
 
-export function* generateMessages() {
+export function* generateBundles() {
   for (const locale of ['pl', 'en-US']) {
     const bundle = new FluentBundle(locale);
     bundle.addMessages(MESSAGES_ALL[locale]);

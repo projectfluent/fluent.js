@@ -5,7 +5,7 @@ import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
-suite('Localized - change messages', function() {
+suite('Localized - change bundles', function() {
   test('relocalizing', function() {
     const bundle1 = new FluentBundle();
     const l10n = new ReactLocalization([bundle1]);

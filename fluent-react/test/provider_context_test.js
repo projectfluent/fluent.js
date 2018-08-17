@@ -22,7 +22,7 @@ suite('LocalizationProvider - context', function() {
     };
 
     const wrapper = render(
-      <LocalizationProvider messages={[bundle]}>
+      <LocalizationProvider bundles={[bundle]}>
         <Testing />
       </LocalizationProvider>
     );
@@ -43,7 +43,7 @@ suite('LocalizationProvider - context', function() {
     };
 
     const wrapper = render(
-      <LocalizationProvider messages={[]} parseMarkup={() => "Test"}>
+      <LocalizationProvider bundles={[]} parseMarkup={() => "Test"}>
         <Testing />
       </LocalizationProvider>
     );

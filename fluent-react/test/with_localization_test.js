@@ -14,7 +14,7 @@ suite('withLocalization', function() {
     const EnhancedComponent = withLocalization(DummyComponent);
 
     const wrapper = shallow(
-      <LocalizationProvider messages={[]}>
+      <LocalizationProvider bundles={[]}>
         <EnhancedComponent />
       </LocalizationProvider>
     );

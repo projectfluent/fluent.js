@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+  - Rename the `messages` prop to `bundles`. (#222)
+
+    `<LocalizationProvider>` now expects an iterable of `FluentBundles` to be
+    passed as the `bundles` prop, rather than `messages`.
+
   - Drop support for IE and old evergreen browsers. (#133)
 
     Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,

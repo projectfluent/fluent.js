@@ -23,7 +23,7 @@ async function createMessagesGenerator(currentLocales) {
     (obj, cur) => Object.assign(obj, cur)
   );
 
-  return function* generateMessages() {
+  return function* generateBundles() {
     for (const locale of currentLocales) {
       const bundle = new FluentBundle(locale);
       bundle.addMessages(messages[locale]);
@@ -51,21 +51,21 @@ export class AppLocalizationProvider extends Component {
 
   async componentWillMount() {
     const { currentLocales } = this.state;
-    const generateMessages  = await createMessagesGenerator(currentLocales);
-    this.setState({ messages: generateMessages() });
+    const generateBundles  = await createMessagesGenerator(currentLocales);
+    this.setState({ bundles: generateBundles() });
   }
 
   render() {
     const { children } = this.props;
-    const { messages } = this.state;
+    const { bundles } = this.state;
 
-    if (!messages) {
+    if (!bundles) {
       // Show a loader.
       return <div>…</div>;
     }
 
     return (
-      <LocalizationProvider messages={messages}>
+      <LocalizationProvider bundles={bundles}>
         {children}
       </LocalizationProvider>
     );

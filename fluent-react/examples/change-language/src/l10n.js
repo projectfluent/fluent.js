@@ -18,7 +18,7 @@ change = Change to { $locale }
   `,
 };
 
-function* generateMessages(currentLocales) {
+function* generateBundles(currentLocales) {
   for (const locale of currentLocales) {
     const bundle = new FluentBundle(locale);
     bundle.addMessages(MESSAGES_ALL[locale]);
@@ -59,7 +59,7 @@ export class AppLocalizationProvider extends Component {
     };
 
     return (
-      <LocalizationProvider messages={generateMessages(currentLocales)}>
+      <LocalizationProvider bundles={generateBundles(currentLocales)}>
         { cloneElement(child, l10nProps) }
       </LocalizationProvider>
     );
