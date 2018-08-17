@@ -51,21 +51,21 @@ export default class FluentParser {
 
   parse(source) {
     const ps = new FTLParserStream(source);
-    ps.skipBlankLines();
+    ps.skipLineBreak();
 
     const entries = [];
     let lastComment = null;
 
     while (ps.current()) {
       const entry = this.getEntryOrJunk(ps);
-      const blankLines = ps.skipBlankLines();
+      const LineBreak = ps.skipLineBreak();
 
       // Regular Comments require special logic. Comments may be attached to
       // Messages or Terms if they are followed immediately by them. However
       // they should parse as standalone when they're followed by Junk.
       // Consequently, we only attach Comments once we know that the Message
       // or the Term parsed successfully.
-      if (entry.type === "Comment" && blankLines === 0 && ps.current()) {
+      if (entry.type === "Comment" && LineBreak === 0 && ps.current()) {
         // Stash the comment and decide what to do with it in the next pass.
         lastComment = entry;
         continue;
@@ -108,7 +108,7 @@ export default class FluentParser {
    */
   parseEntry(source) {
     const ps = new FTLParserStream(source);
-    ps.skipBlankLines();
+    ps.skipLineBreak();
 
     while (ps.currentIs("#")) {
       const skipped = this.getEntryOrJunk(ps);
@@ -116,7 +116,7 @@ export default class FluentParser {
         // Don't skip Junk comments.
         return skipped;
       }
-      ps.skipBlankLines();
+      ps.skipLineBreak();
     }
 
     return this.getEntryOrJunk(ps);
@@ -219,14 +219,14 @@ export default class FluentParser {
   getMessage(ps) {
     const id = this.getIdentifier(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInlineWS();
     ps.expectChar("=");
 
     if (ps.isPeekValueStart()) {
 
       var pattern = this.getPattern(ps);
     } else {
-      ps.skipInlineWS();
+      ps.skipBlankInlineWS();
     }
 
     if (ps.isPeekNextLineAttributeStart()) {
@@ -243,11 +243,11 @@ export default class FluentParser {
   getTerm(ps) {
     const id = this.getTermIdentifier(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInlineWS();
     ps.expectChar("=");
 
     if (ps.isPeekValueStart()) {
-      ps.skipAnyWS();
+      ps.skipBlank();
       var value = this.getValue(ps);
     } else {
       throw new ParseError("E0006", id.name);
@@ -262,12 +262,12 @@ export default class FluentParser {
 
   getAttribute(ps) {
     ps.expectLineEnd();
-    ps.skipAnyWS();
+    ps.skipBlank();
     ps.expectChar(".");
 
     const key = this.getIdentifier(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInlineWS();
     ps.expectChar("=");
 
     if (ps.isPeekValueStart()) {
@@ -329,7 +329,7 @@ export default class FluentParser {
   getVariant(ps, hasDefault) {
     let defaultIndex = false;
 
-    ps.skipAnyWS();
+    ps.skipBlank();
 
     if (ps.currentIs("*")) {
       if (hasDefault) {
@@ -342,16 +342,16 @@ export default class FluentParser {
 
     ps.expectChar("[");
 
-    ps.skipAnyWS();
+    ps.skipBlank();
 
     const key = this.getVariantKey(ps);
 
-    ps.skipAnyWS();
+    ps.skipBlank();
 
     ps.expectChar("]");
 
     if (ps.isPeekValueStart()) {
-      ps.skipAnyWS();
+      ps.skipBlank();
       const value = this.getValue(ps);
       return new AST.Variant(key, value, defaultIndex);
     }
@@ -436,7 +436,7 @@ export default class FluentParser {
   getValue(ps) {
     if (ps.currentIs("{")) {
       ps.peek();
-      ps.peekInlineWS();
+      ps.peekBlankInlineWS();
       if (ps.isPeekNextLineVariantStart()) {
         return this.getVariantList(ps);
       }
@@ -446,10 +446,10 @@ export default class FluentParser {
   }
 
   getVariantList(ps) {
-    ps.skipAnyWS();
+    ps.skipBlank();
     ps.expectChar("{");
     const variants = this.getVariants(ps);
-    ps.skipAnyWS();
+    ps.skipBlank();
     ps.expectChar("}");
     return new AST.VariantList(variants);
   }
@@ -457,8 +457,8 @@ export default class FluentParser {
   getPattern(ps) {
     const elements = [];
 
-    ps.skipBreakLine();
-    ps.skipInlineWS();
+    ps.skipBlankBlock();
+    ps.skipBlankInlineWS();
 
     let ch;
     while ((ch = ps.current())) {
@@ -502,7 +502,7 @@ export default class FluentParser {
         }
 
         ps.next();
-        ps.skipInlineWS();
+        ps.skipBlankInlineWS();
 
         // Add the new line to the buffer
         buffer += ch;
@@ -551,19 +551,19 @@ export default class FluentParser {
 
   getPlaceable(ps) {
     ps.expectChar("{");
-    ps.skipAnyWS();
+    ps.skipBlank();
     const expression = this.getExpression(ps);
-    ps.skipAnyWS();
+    ps.skipBlank();
     ps.expectChar("}");
     return new AST.Placeable(expression);
   }
 
   getExpression(ps) {
-    ps.skipInlineWS();
+    ps.skipBlankInlineWS();
 
     const selector = this.getSelectorExpression(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInlineWS();
 
     if (ps.currentIs("-")) {
       ps.peek();
@@ -589,7 +589,7 @@ export default class FluentParser {
       ps.next();
       ps.next();
 
-      ps.skipInlineWS();
+      ps.skipBlankInlineWS();
 
       const variants = this.getVariants(ps);
 
@@ -654,11 +654,11 @@ export default class FluentParser {
         throw new ParseError("E0008");
       }
 
-      ps.skipAnyWS();
+      ps.skipBlank();
 
       const args = this.getCallArgs(ps);
 
-      ps.skipAnyWS();
+      ps.skipBlank();
 
       ps.expectChar(")");
 
@@ -680,7 +680,7 @@ export default class FluentParser {
   getCallArg(ps) {
     const exp = this.getSelectorExpression(ps);
 
-    ps.skipAnyWS();
+    ps.skipBlank();
 
     if (ps.current() !== ":") {
       return exp;
@@ -691,7 +691,7 @@ export default class FluentParser {
     }
 
     ps.next();
-    ps.skipAnyWS();
+    ps.skipBlank();
 
     const val = this.getArgVal(ps);
 
@@ -721,11 +721,11 @@ export default class FluentParser {
         positional.push(arg);
       }
 
-      ps.skipAnyWS();
+      ps.skipBlank();
 
       if (ps.current() === ",") {
         ps.next();
-        ps.skipAnyWS();
+        ps.skipBlank();
         continue;
       } else {
         break;

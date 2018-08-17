@@ -10,7 +10,7 @@ const LINE_END = ["\n", "\r\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
-  skipInlineWS() {
+  skipBlankInlineWS() {
     while (this.ch) {
       if (!includes(INLINE_WS, this.ch)) {
         break;
@@ -19,7 +19,7 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipAnyWS() {
+  skipBlank() {
     while (this.ch) {
       if (!includes(ANY_WS, this.ch)) {
         break;
@@ -28,7 +28,7 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekInlineWS() {
+  peekBlankInlineWS() {
     let ch = this.currentPeek();
     while (ch) {
       if (!includes(INLINE_WS, ch)) {
@@ -38,7 +38,7 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekAnyWS() {
+  peekBlank() {
     let ch = this.currentPeek();
     while (ch) {
       if (!includes(ANY_WS, ch)) {
@@ -57,10 +57,10 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipBlankLines() {
+  skipLineBreak() {
     let lineCount = 0;
     while (true) {
-      this.peekInlineWS();
+      this.peekBlankInlineWS();
 
       if (this.currentPeekIs("\n")) {
         this.skipToPeek();
@@ -73,11 +73,11 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekBlankLines() {
+  peekLineBreak() {
     while (true) {
       const lineStart = this.getPeekIndex();
 
-      this.peekInlineWS();
+      this.peekBlankInlineWS();
 
       if (this.currentPeekIs("\n")) {
         this.peek();
@@ -88,8 +88,8 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipBreakLine() {
-    this.skipBlankLines();
+  skipBlankBlock() {
+    this.skipLineBreak();
   }
 
   expectChar(ch) {
@@ -106,9 +106,9 @@ export class FTLParserStream extends ParserStream {
     throw new ParseError("E0003", ch);
   }
 
-  expectBreakLine() {
+  expectBlankBlock() {
     this.expectChar("\n");
-    this.skipBlankLines();
+    this.skipLineBreak();
   }
 
   expectLineEnd() {
@@ -171,7 +171,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekValueStart() {
-    this.peekInlineWS();
+    this.peekBlankInlineWS();
     const ch = this.currentPeek();
 
     // Inline Patterns may start with any char.
@@ -222,11 +222,11 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
-    this.peekBlankLines();
+    this.peekLineBreak();
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekBlankInlineWS();
 
     if (this.currentPeekIs("*")) {
       this.peek();
@@ -247,12 +247,12 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
-    this.peekBlankLines();
+    this.peekLineBreak();
 
     const ptr = this.getPeekIndex();
 
     this.peekLineEnd();
-    this.peekAnyWS();
+    this.peekBlank();
 
     if (this.getPeekIndex() - ptr === 0) {
       this.resetPeek();
@@ -275,11 +275,11 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
-    this.peekBlankLines();
+    this.peekLineBreak();
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekBlankInlineWS();
 
     let isIndented = this.getPeekIndex() - ptr !== 0;
 

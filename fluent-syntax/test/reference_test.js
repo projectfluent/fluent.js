@@ -22,9 +22,6 @@ readdir(fixtures, function(err, filenames) {
     // The following fixtures produce different ASTs in the tooling parser than
     // in the reference parser. Skip them for now.
     const skips = [
-      // Kekoa
-      "select_indent.ftl",
-      // "variants_indent.ftl",
 
       // Call arguments edge-cases.
       // "call_expressions.ftl",
