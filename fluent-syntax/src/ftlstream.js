@@ -6,7 +6,7 @@ import { includes } from "./util";
 
 const INLINE_WS = [" ", "\t"];
 const ANY_WS = [" ", "\t", "\r", "\n"];
-const LINE_END = ["\n"];
+const LINE_END = ["\n", "\r\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
@@ -88,11 +88,6 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  // skipIndent() {
-  //   this.skipBlankLines();
-  //   // this.skipInlineWS();
-  // }
-
   skipBreakLine() {
     this.skipBlankLines();
   }
@@ -110,13 +105,6 @@ export class FTLParserStream extends ParserStream {
 
     throw new ParseError("E0003", ch);
   }
-
-  // expectIndent() {
-  //   this.expectChar("\n");
-  //   this.skipBlankLines();
-  //   this.expectChar(" ");
-  //   this.skipInlineWS();
-  // }
 
   expectBreakLine() {
     this.expectChar("\n");
@@ -240,11 +228,6 @@ export class FTLParserStream extends ParserStream {
 
     this.peekInlineWS();
 
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
-
     if (this.currentPeekIs("*")) {
       this.peek();
     }
@@ -298,18 +281,22 @@ export class FTLParserStream extends ParserStream {
 
     this.peekInlineWS();
 
-    if (this.getPeekIndex() - ptr === 0) {
+    let isIndented = this.getPeekIndex() - ptr !== 0;
+
+    // Placeable / VariantList can start irrelevant of indentation
+    if (this.currentPeekIs('{')) {
       this.resetPeek();
-      return false;
+      return true;
     }
 
-    if (!this.isCharPatternContinuation(this.currentPeek())) {
+    // character pattern can start only indented
+    if (this.isCharPatternContinuation(this.currentPeek())) {
       this.resetPeek();
-      return false;
+      return isIndented;
     }
 
     this.resetPeek();
-    return true;
+    return false;
   }
 
   skipToNextEntryStart() {

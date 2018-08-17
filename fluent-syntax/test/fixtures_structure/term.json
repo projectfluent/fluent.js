@@ -123,13 +123,13 @@
             ],
             "span": {
               "type": "Span",
-              "start": 99,
+              "start": 98,
               "end": 108
             }
           },
           "span": {
             "type": "Span",
-            "start": 89,
+            "start": 84,
             "end": 108
           }
         }
@@ -218,7 +218,7 @@
         ],
         "span": {
           "type": "Span",
-          "start": 131,
+          "start": 126,
           "end": 171
         }
       },
@@ -482,7 +482,7 @@
               "span": {
                 "type": "Span",
                 "start": 199,
-                "end": 436
+                "end": 432
               }
             },
             "span": {
@@ -494,7 +494,7 @@
         ],
         "span": {
           "type": "Span",
-          "start": 197,
+          "start": 192,
           "end": 437
         }
       },

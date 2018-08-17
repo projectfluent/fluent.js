@@ -78,7 +78,7 @@
               "span": {
                 "type": "Span",
                 "start": 13,
-                "end": 41
+                "end": 37
               }
             },
             "span": {
@@ -90,7 +90,7 @@
         ],
         "span": {
           "type": "Span",
-          "start": 11,
+          "start": 6,
           "end": 42
         }
       },

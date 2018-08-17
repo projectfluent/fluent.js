@@ -329,7 +329,6 @@ export default class FluentParser {
   getVariant(ps, hasDefault) {
     let defaultIndex = false;
 
-    // ps.expectLineEnd();
     ps.skipAnyWS();
 
     if (ps.currentIs("*")) {
@@ -457,7 +456,6 @@ export default class FluentParser {
 
   getPattern(ps) {
     const elements = [];
-    // ps.skipInlineWS();
 
     ps.skipBreakLine();
     ps.skipInlineWS();
@@ -704,8 +702,6 @@ export default class FluentParser {
     const positional = [];
     const named = [];
     const argumentNames = new Set();
-
-    // ps.skipAnyWS();
 
     while (true) {
       if (ps.current() === ")") {
