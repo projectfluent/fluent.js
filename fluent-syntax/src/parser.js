@@ -559,11 +559,10 @@ export default class FluentParser {
   }
 
   getExpression(ps) {
-    ps.skipBlankInlineWS();
 
     const selector = this.getSelectorExpression(ps);
 
-    ps.skipBlankInlineWS();
+    ps.skipBlank();
 
     if (ps.currentIs("-")) {
       ps.peek();
