@@ -1,8 +1,8 @@
 {
-  "name": "fluent",
-  "description": "Localization library for expressive translations.",
-  "version": "0.7.0",
-  "homepage": "http://projectfluent.org",
+  "name": "fluent-sequence",
+  "description": "Manage ordered sequences of MessageContexts",
+  "version": "0.1.0",
+  "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
   "contributors": [
@@ -18,32 +18,20 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent.js",
+  "main": "./fluent-sequence.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
   },
   "keywords": [
-    "localization",
-    "l10n",
-    "internationalization",
-    "i18n",
-    "ftl",
-    "plural",
-    "gender",
-    "locale",
-    "language",
-    "formatting",
-    "translate",
-    "translation",
-    "format",
-    "parser"
+    "fluent",
+    "ftl"
   ],
   "engines": {
     "node": ">=8.9.0"
   },
   "devDependencies": {
-    "sinon": "^4.2.2"
+    "cached-iterable": "^0.2.1"
   }
 }

@@ -1,8 +1,8 @@
 import assert from 'assert';
 
-import { CachedAsyncIterable } from 'cached-iterable';
+import {CachedAsyncIterable} from 'cached-iterable';
 import MessageContext from './message_context_stub';
-import { mapContextAsync } from '../src/index';
+import {mapContextAsync} from '../src/index';
 
 suite('Async Fallback — single id', function() {
   let ctx1, ctx2, generateMessages;

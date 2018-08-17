@@ -16,6 +16,4 @@ export {
   FluentDateTime as MessageDateTimeArgument,
 } from "./types";
 
-export { mapContextSync, mapContextAsync } from "./fallback";
-
 export { ftl } from "./util";

@@ -1,8 +1,8 @@
 import assert from 'assert';
 
-import { CachedSyncIterable } from 'cached-iterable';
+import {CachedSyncIterable} from 'cached-iterable';
 import MessageContext from './message_context_stub';
-import { mapContextSync } from '../src/index';
+import {mapContextSync} from '../src/index';
 
 suite('Sync Fallback — single id', function() {
   let ctx1, ctx2;
