@@ -51,14 +51,14 @@ export default class FluentParser {
 
   parse(source) {
     const ps = new FTLParserStream(source);
-    ps.skipLineBreak();
+    ps.skipBlankBlock();
 
     const entries = [];
     let lastComment = null;
 
     while (ps.current()) {
       const entry = this.getEntryOrJunk(ps);
-      const LineBreak = ps.skipLineBreak();
+      const LineBreak = ps.skipBlankBlock();
 
       // Regular Comments require special logic. Comments may be attached to
       // Messages or Terms if they are followed immediately by them. However
@@ -108,7 +108,7 @@ export default class FluentParser {
    */
   parseEntry(source) {
     const ps = new FTLParserStream(source);
-    ps.skipLineBreak();
+    ps.skipBlankBlock();
 
     while (ps.currentIs("#")) {
       const skipped = this.getEntryOrJunk(ps);
@@ -116,7 +116,7 @@ export default class FluentParser {
         // Don't skip Junk comments.
         return skipped;
       }
-      ps.skipLineBreak();
+      ps.skipBlankBlock();
     }
 
     return this.getEntryOrJunk(ps);
