@@ -224,8 +224,6 @@ export class FTLParserStream extends ParserStream {
 
     this.peekLineBreak();
 
-    const ptr = this.getPeekIndex();
-
     this.peekBlankInlineWS();
 
     if (this.currentPeekIs("*")) {
@@ -281,10 +279,10 @@ export class FTLParserStream extends ParserStream {
 
     this.peekBlankInlineWS();
 
-    let isIndented = this.getPeekIndex() - ptr !== 0;
+    const isIndented = this.getPeekIndex() - ptr !== 0;
 
     // Placeable / VariantList can start irrelevant of indentation
-    if (this.currentPeekIs('{')) {
+    if (this.currentPeekIs("{")) {
       this.resetPeek();
       return true;
     }
