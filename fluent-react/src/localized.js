@@ -87,19 +87,19 @@ export default class Localized extends Component {
       return elem;
     }
 
-    const mcx = l10n.getMessageContext(id);
+    const bundle = l10n.getBundle(id);
 
-    if (mcx === null) {
+    if (bundle === null) {
       // Use the wrapped component as fallback.
       return elem;
     }
 
-    const msg = mcx.getMessage(id);
+    const msg = bundle.getMessage(id);
     const [args, elems] = toArguments(this.props);
     const {
       value: messageValue,
       attrs: messageAttrs
-    } = l10n.formatCompound(mcx, msg, args);
+    } = l10n.formatCompound(bundle, msg, args);
 
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been

@@ -1,6 +1,6 @@
 {
   "name": "fluent-sequence",
-  "description": "Manage ordered sequences of MessageContexts",
+  "description": "Manage ordered sequences of FluentBundles",
   "version": "0.1.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",

@@ -7,7 +7,7 @@
  * React's Components system and the virtual DOM.  Translations are exposed to
  * components via the provider pattern.
  *
- *     <LocalizationProvider messages={…}>
+ *     <LocalizationProvider bundles={…}>
  *         <Localized id="hello-world">
  *             <p>{'Hello, world!'}</p>
  *         </Localized>

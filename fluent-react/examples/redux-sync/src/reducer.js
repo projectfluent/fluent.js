@@ -1,16 +1,16 @@
 export default function reducer(state = {
   userLocales: ['en-US'],
   currentLocales: ['en-US'],
-  messages: null
+  bundles: null
 }, action) {
   switch (action.type) {
     case 'CHANGE_LOCALES': {
-      const { userLocales, currentLocales, messages } = action;
+      const { userLocales, currentLocales, bundles } = action;
       return {
         ...state,
         userLocales,
         currentLocales,
-        messages
+        bundles
       };
     }
     default:

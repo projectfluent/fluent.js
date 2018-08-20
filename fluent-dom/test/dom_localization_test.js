@@ -1,11 +1,11 @@
 import assert from "assert";
-import { MessageContext } from "../../fluent/src/index";
+import { FluentBundle } from "../../fluent/src/index";
 import DOMLocalization from "../src/dom_localization";
 
 async function* mockGenerateMessages(resourceIds) {
-  const mc = new MessageContext(["en-US"]);
-  mc.addMessages("key1 = Key 1");
-  yield mc;
+  const bundle = new FluentBundle(["en-US"]);
+  bundle.addMessages("key1 = Key 1");
+  yield bundle;
 }
 
 suite("translateFragment", function() {

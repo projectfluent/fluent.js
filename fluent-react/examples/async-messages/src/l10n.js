@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import delay from 'delay';
 
 import 'fluent-intl-polyfill/compat';
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
@@ -19,15 +19,15 @@ async function createMessagesGenerator(currentLocales) {
   const fetched = await Promise.all(
     currentLocales.map(fetchMessages)
   );
-  const bundle = fetched.reduce(
+  const messages = fetched.reduce(
     (obj, cur) => Object.assign(obj, cur)
   );
 
-  return function* generateMessages() {
+  return function* generateBundles() {
     for (const locale of currentLocales) {
-      const cx = new MessageContext(locale);
-      cx.addMessages(bundle[locale]);
-      yield cx;
+      const bundle = new FluentBundle(locale);
+      bundle.addMessages(messages[locale]);
+      yield bundle;
     }
   }
 }
@@ -51,21 +51,21 @@ export class AppLocalizationProvider extends Component {
 
   async componentWillMount() {
     const { currentLocales } = this.state;
-    const generateMessages  = await createMessagesGenerator(currentLocales);
-    this.setState({ messages: generateMessages() });
+    const generateBundles  = await createMessagesGenerator(currentLocales);
+    this.setState({ bundles: generateBundles() });
   }
 
   render() {
     const { children } = this.props;
-    const { messages } = this.state;
+    const { bundles } = this.state;
 
-    if (!messages) {
+    if (!bundles) {
       // Show a loader.
       return <div>…</div>;
     }
 
     return (
-      <LocalizationProvider messages={messages}>
+      <LocalizationProvider bundles={bundles}>
         {children}
       </LocalizationProvider>
     );

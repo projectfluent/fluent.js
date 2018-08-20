@@ -2,14 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from "prop-types";
 import assert from 'assert';
 import { render } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import { LocalizationProvider, isReactLocalization } from '../src/index';
 
 
 suite('LocalizationProvider - context', function() {
   test('exposes localization', function() {
-    const mcx = new MessageContext();
-    mcx.addMessages("foo = Foo");
+    const bundle = new FluentBundle();
+    bundle.addMessages("foo = Foo");
 
     class Testing extends Component {
       render() {
@@ -22,7 +22,7 @@ suite('LocalizationProvider - context', function() {
     };
 
     const wrapper = render(
-      <LocalizationProvider messages={[mcx]}>
+      <LocalizationProvider bundles={[bundle]}>
         <Testing />
       </LocalizationProvider>
     );
@@ -43,7 +43,7 @@ suite('LocalizationProvider - context', function() {
     };
 
     const wrapper = render(
-      <LocalizationProvider messages={[]} parseMarkup={() => "Test"}>
+      <LocalizationProvider bundles={[]} parseMarkup={() => "Test"}>
         <Testing />
       </LocalizationProvider>
     );

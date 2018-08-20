@@ -2,11 +2,11 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { ftl } from '../src/util';
 
 suite('Select expressions', function() {
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   setup(function() {
     errs = [];
@@ -14,8 +14,8 @@ suite('Select expressions', function() {
 
   suite('with a matching selector', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { "a" ->
             [a] A
            *[b] B
@@ -24,8 +24,8 @@ suite('Select expressions', function() {
     });
 
     test('selects the variant matching the selector', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
@@ -33,8 +33,8 @@ suite('Select expressions', function() {
 
   suite('with a valid non-matching selector', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { "c" ->
            *[a] A
             [b] B
@@ -43,8 +43,8 @@ suite('Select expressions', function() {
     });
 
     test('selects the default variant', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
@@ -52,8 +52,8 @@ suite('Select expressions', function() {
 
   suite('with a missing selector', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $none ->
            *[a] A
             [b] B
@@ -62,8 +62,8 @@ suite('Select expressions', function() {
     });
 
     test('selects the default variant', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown variable
@@ -72,8 +72,8 @@ suite('Select expressions', function() {
 
   suite('with a number selector', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { 1 ->
            *[0] A
             [1] B
@@ -87,22 +87,22 @@ suite('Select expressions', function() {
     });
 
     test('selects the right variant', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'B');
     });
 
     test('selects the default variant', function() {
-      const msg = ctx.getMessage('bar');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
     });
   });
 
   suite('with a number selector and plural categories', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { 1 ->
            *[one] A
             [other] B
@@ -116,14 +116,14 @@ suite('Select expressions', function() {
     });
 
     test('selects the right category', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
     });
 
     test('selects the exact match', function() {
-      const msg = ctx.getMessage('bar');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
     });
   });

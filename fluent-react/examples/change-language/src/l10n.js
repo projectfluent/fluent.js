@@ -1,7 +1,7 @@
 import React, { cloneElement, Children, Component } from 'react';
 
 import 'fluent-intl-polyfill/compat';
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
@@ -18,11 +18,11 @@ change = Change to { $locale }
   `,
 };
 
-function* generateMessages(currentLocales) {
+function* generateBundles(currentLocales) {
   for (const locale of currentLocales) {
-    const cx = new MessageContext(locale);
-    cx.addMessages(MESSAGES_ALL[locale]);
-    yield cx;
+    const bundle = new FluentBundle(locale);
+    bundle.addMessages(MESSAGES_ALL[locale]);
+    yield bundle;
   }
 }
 
@@ -59,7 +59,7 @@ export class AppLocalizationProvider extends Component {
     };
 
     return (
-      <LocalizationProvider messages={generateMessages(currentLocales)}>
+      <LocalizationProvider bundles={generateBundles(currentLocales)}>
         { cloneElement(child, l10nProps) }
       </LocalizationProvider>
     );

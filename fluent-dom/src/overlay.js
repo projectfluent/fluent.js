@@ -152,7 +152,7 @@ function overlayAttributes(fromElement, toElement) {
   }
 
   // fromElement might be a {value, attributes} object as returned by
-  // Localization.messageFromContext. In which case attributes may be null to
+  // Localization.messageFromBundle. In which case attributes may be null to
   // save GC cycles.
   if (!fromElement.attributes) {
     return;

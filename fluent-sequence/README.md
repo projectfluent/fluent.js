@@ -1,7 +1,7 @@
 # fluent-sequence
 
 `fluent-sequence` provides mapping functions from string identifiers to
-`MessageContext` instances taken from synchronous or asynchronous sequences.
+`FluentBundle` instances taken from synchronous or asynchronous sequences.
 It's part of Project Fluent, a localization framework designed to unleash the
 expressive power of the natural language.
 
@@ -17,25 +17,25 @@ the `FluentSequence` global).
 
 ## How to use
 
-An ordered iterable of `MessageContext` instances can represent the current
+An ordered iterable of `FluentBundle` instances can represent the current
 negotiated fallback chain of languages. This iterable can be used to find the
 best existing translation for a given identifier.
 
-`fluent-sequence` provides two mapping functions: `mapContextSync`, and
-`mapContextAsync`. They can be used to find the first `MessageContext` in the
+`fluent-sequence` provides two mapping functions: `mapBundleSync`, and
+`mapBundleAsync`. They can be used to find the first `FluentBundle` in the
 given iterable which contains the translation with the given identifier. If
 the iterable is ordered according to the result of a language negotiation the
-returned `MessageContext` contains the best available translation.
+returned `FluentBundle` contains the best available translation.
 
 A simple function which formats translations based on the identifier might
 be implemented as follows:
 
 ```js
-import {mapContextSync} from "fluent-sequence";
+import {mapBundleSync} from "fluent-sequence";
 
 function formatString(id, args) {
-    // contexts is a negotiated iterable of MessageContext instances.
-    let ctx = mapContextSync(contexts, id);
+    // contexts is a negotiated iterable of FluentBundle instances.
+    let ctx = mapBundleSync(contexts, id);
 
     if (ctx === null) {
         return id;
@@ -46,9 +46,9 @@ function formatString(id, args) {
 }
 ```
 
-When passing a synchronous iterator to `mapContextSync`, wrap it in
+When passing a synchronous iterator to `mapBundleSync`, wrap it in
 `CachedSyncIterable` from the [`cached-iterable`][] package. When passing an
-asynchronous iterator to `mapContextAsync`, wrap it in `CachedAsyncIterable`.
+asynchronous iterator to `mapBundleAsync`, wrap it in `CachedAsyncIterable`.
 This allows multiple calls to `mapContext*` without advancing and eventually
 depleting the iterator.
 

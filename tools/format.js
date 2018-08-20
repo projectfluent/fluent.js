@@ -55,14 +55,14 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const ctx = new Fluent.MessageContext(program.lang);
-  const parseErrors = ctx.addMessages(data.toString());
+  const bundle = new Fluent.FluentBundle(program.lang);
+  const parseErrors = bundle.addMessages(data.toString());
 
   parseErrors.forEach(printError);
 
-  for (const [id, message] of ctx.messages) {
+  for (const [id, message] of bundle.messages) {
     const formatErrors = [];
-    printEntry(id, ctx.format(message, ext, formatErrors));
+    printEntry(id, bundle.format(message, ext, formatErrors));
     formatErrors.forEach(printError);
   }
 }

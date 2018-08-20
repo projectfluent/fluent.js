@@ -1,4 +1,4 @@
-import { MessageContext } from "../../fluent/src/index";
+import { FluentBundle } from "../../fluent/src/index";
 
-this.MessageContext = MessageContext;
-this.EXPORTED_SYMBOLS = ["MessageContext"];
+this.FluentBundle = FluentBundle;
+this.EXPORTED_SYMBOLS = ["FluentBundle"];

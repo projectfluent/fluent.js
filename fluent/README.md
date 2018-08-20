@@ -15,15 +15,15 @@ install it from the npm registry or use it as a standalone script (as the
 
 ## How to use
 
-The `MessageContext` constructor provides the core functionality of formatting
+The `FluentBundle` constructor provides the core functionality of formatting
 translations from FTL files.
 
 ```javascript
-import { MessageContext, ftl } from 'fluent';
+import { FluentBundle, ftl } from 'fluent';
 
-const ctx = new MessageContext('en-US');
+const bundle = new FluentBundle('en-US');
 
-const errors = ctx.addMessages(ftl`
+const errors = bundle.addMessages(ftl`
     -brand-name = Foo 3000
     welcome = Welcome, { $name }, to { -brand-name }!
 `);
@@ -32,9 +32,9 @@ if (errors.length) {
   // syntax errors are per-message and don't break the whole resource
 }
 
-const welcome = ctx.getMessage('welcome');
+const welcome = bundle.getMessage('welcome');
 
-ctx.format(welcome, { name: 'Anna' });
+bundle.format(welcome, { name: 'Anna' });
 // → 'Welcome, Anna, to Foo 3000!'
 ```
 
@@ -55,14 +55,14 @@ which uses [intl-pluralrules][].
 
 ```javascript
 import 'fluent-intl-polyfill';
-import { MessageContext } from 'fluent';
+import { FluentBundle } from 'fluent';
 ```
 
 For legacy browsers, the `compat` build has been transpiled using Babel's [env
 preset][]. It requires the regenerator runtime provided by [babel-polyfill][].
 
 ```javascript
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 ```
 
 

@@ -2,12 +2,12 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { FluentType } from '../src/types';
 import { ftl } from '../src/util';
 
 suite('Variables', function() {
-  let ctx, errs;
+  let bundle, errs;
 
   setup(function() {
     errs = [];
@@ -15,8 +15,8 @@ suite('Variables', function() {
 
   suite('in values', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = Foo { $num }
         bar = { foo }
         baz =
@@ -28,29 +28,29 @@ suite('Variables', function() {
     });
 
     test('can be used in the message value', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { num: 3 }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in the message value which is referenced', function() {
-      const msg = ctx.getMessage('bar');
-      const val = ctx.format(msg, { num: 3 }, errs);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in an attribute', function() {
-      const msg = ctx.getMessage('baz').attrs.attr;
-      const val = ctx.format(msg, { num: 3 }, errs);
+      const msg = bundle.getMessage('baz').attrs.attr;
+      const val = bundle.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Baz Attribute 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in a variant', function() {
-      const msg = ctx.getMessage('qux');
-      const val = ctx.format(msg, { num: 3 }, errs);
+      const msg = bundle.getMessage('qux');
+      const val = bundle.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Baz Variant A 3');
       assert.equal(errs.length, 0);
     });
@@ -58,8 +58,8 @@ suite('Variables', function() {
 
   suite('in selectors', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $num -> 
            *[3] Foo
         }
@@ -67,8 +67,8 @@ suite('Variables', function() {
     });
 
     test('can be used as a selector', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { num: 3 }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { num: 3 }, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
@@ -76,15 +76,15 @@ suite('Variables', function() {
 
   suite('in function calls', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { NUMBER($num) }
       `);
     });
 
     test('can be a positional argument', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { num: 3 }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { num: 3 }, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });
@@ -92,57 +92,57 @@ suite('Variables', function() {
 
   suite('simple errors', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $arg }
       `);
     });
 
     test('falls back to argument\'s name if it\'s missing', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, {}, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, {}, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
     test('cannot be arrays', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { arg: [1, 2, 3] }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { arg: [1, 2, 3] }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a dict-like object', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { arg: { prop: 1 } }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { arg: { prop: 1 } }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a boolean', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { arg: true }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { arg: true }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be undefined', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { arg: undefined }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { arg: undefined }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be null', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { arg: null }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { arg: null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a function', function() {
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, { arg: () => null }, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, { arg: () => null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
@@ -152,8 +152,8 @@ suite('Variables', function() {
     let args;
 
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $arg }
       `);
       args = {
@@ -162,8 +162,8 @@ suite('Variables', function() {
     });
 
     test('can be a string', function(){
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Argument');
       assert.equal(errs.length, 0);
     });
@@ -173,8 +173,8 @@ suite('Variables', function() {
     let args;
 
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $arg }
       `);
       args = {
@@ -183,8 +183,8 @@ suite('Variables', function() {
     });
 
     test('can be a number', function(){
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
@@ -195,8 +195,8 @@ suite('Variables', function() {
 
     suiteSetup(function() {
       dtf = new Intl.DateTimeFormat('en-US');
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $arg }
       `);
       args = {
@@ -205,8 +205,8 @@ suite('Variables', function() {
     });
 
     test('can be a date', function(){
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       // format the date argument to account for the testrunner's timezone
       assert.equal(val, dtf.format(args.arg));
       assert.equal(errs.length, 0);
@@ -223,8 +223,8 @@ suite('Variables', function() {
     }
 
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = { $arg }
         bar = { foo }
       `);
@@ -235,15 +235,15 @@ suite('Variables', function() {
       };
 
       test('interpolation', function () {
-        const msg = ctx.getMessage('foo');
-        const value = ctx.format(msg, args, errs);
+        const msg = bundle.getMessage('foo');
+        const value = bundle.format(msg, args, errs);
         assert.equal(value, 'CUSTOM');
         assert.equal(errs.length, 0);
       });
 
       test('nested interpolation', function () {
-        const msg = ctx.getMessage('bar');
-        const value = ctx.format(msg, args, errs);
+        const msg = bundle.getMessage('bar');
+        const value = bundle.format(msg, args, errs);
         assert.equal(value, 'CUSTOM');
         assert.equal(errs.length, 0);
       });
