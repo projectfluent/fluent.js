@@ -1,21 +1,27 @@
 # Changelog
 
-## Unreleased
+## fluent 0.8.0 (August 20, 2018)
 
   - Rename `MessageContext` to `FluentBundle`. (#222)
 
-    Also, export `FluentType` and its derived classes under their own names
-    rather than `MessageArgument` etc.
+    The following renames have been made to the public API:
 
-  - Move `mapContext*` functions to `fluent-sequence`. (#273)
+    - Rename `MessageContext` to `FluentBundle`.
+    - Rename `MessageArgument` to `FluentType`.
+    - Rename `MessageNumberArgument` to `FluentNumber`.
+    - Rename `MessageDateTimeArgument` to `FluentDateTime`.
+
+  - Move `mapContext*` functions to [`fluent-sequence`][]. (#273)
 
     The `mapContextSync` and `mapContextAsync` functions previously exported
-    by the `fluent` package have been moved to the new `fluent-sequence`
-    package. `fluent-sequence` 0.1.0 corresponds to the exact implementation
-    of these functions from `fluent` 0.7.0.
+    by the `fluent` package have been moved to the new [`fluent-sequence`][]
+    package. [`fluent-sequence`][] 0.1.0 corresponds to the exact
+    implementation of these functions from `fluent` 0.7.0.
 
-    In later versions of `fluent-sequence`, these functions are called
+    In later versions of [`fluent-sequence`][], these functions are called
     `mapBundleSync` and `mapBundleAsync`.
+
+[`fluent-sequence`]: https://www.npmjs.com/package/fluent-sequence
 
 ## fluent 0.7.0 (July 24, 2018)
 
