@@ -1,4 +1,4 @@
-import { mapContextSync } from "fluent";
+import { mapBundleSync } from "fluent-sequence";
 import { CachedSyncIterable } from "cached-iterable";
 
 /*
@@ -47,7 +47,7 @@ export default class ReactLocalization {
   }
 
   getBundle(id) {
-    return mapContextSync(this.bundles, id);
+    return mapBundleSync(this.bundles, id);
   }
 
   formatCompound(bundle, msg, args) {

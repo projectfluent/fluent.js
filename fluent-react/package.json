@@ -47,10 +47,11 @@
   },
   "dependencies": {
     "cached-iterable": "^0.2.1",
-    "fluent": "^0.4.0 || ^0.6.0",
+    "fluent-sequence": "^0.2.0",
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {
+    "fluent": ">= 0.8.0",
     "react": "^0.14.9 || ^15.0.0 || ^16.0.0"
   },
   "devDependencies": {

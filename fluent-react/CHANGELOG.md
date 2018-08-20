@@ -17,6 +17,13 @@
     `CachedSyncIterable` is now available from its own package rather than
     from the `fluent` package.
 
+  - Add the `fluent-sequence` runtime dependency.
+
+    `mapBundleSync` is now available from its own package rather than from
+    the `fluent` package.
+
+  - Define `fluent >= 0.8.0` as a peer dependency.
+
 ## fluent-react 0.7.0 (May 18, 2018)
 
   - Protect void elements against translated text content. (#174)
