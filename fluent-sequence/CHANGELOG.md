@@ -1,9 +1,9 @@
 # Changelog
 
-## Unreleased
+## fluent-sequence 0.2.0 (August 20, 2018)
 
-  - Rename `mapContextSync` to `mapBundleSync`.
-  - Rename `mapContextAsync` to `mapBundleAsync`.
+  - Rename `mapContextSync` to `mapBundleSync`. (#276)
+  - Rename `mapContextAsync` to `mapBundleAsync`. (#276)
 
   - Declare `fluent` as peer dependency.
 
