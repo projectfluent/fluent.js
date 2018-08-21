@@ -1,4 +1,3 @@
-import 'fluent-intl-polyfill/compat';
 import { FluentBundle } from 'fluent/compat';
 
 const MESSAGES_ALL = {

@@ -1,6 +1,5 @@
 import React, { cloneElement, Children, Component } from 'react';
 
-import 'fluent-intl-polyfill/compat';
 import { FluentBundle } from 'fluent/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';

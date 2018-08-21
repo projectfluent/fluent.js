@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import delay from 'delay';
 
-import 'fluent-intl-polyfill/compat';
 import { FluentBundle } from 'fluent/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
+// Hand off handling FTL assets to Parcel.
+import ftl from '../public/*.ftl';
+
 async function fetchMessages(locale) {
-  const { PUBLIC_URL } = process.env;
-  const response = await fetch(`${PUBLIC_URL}/${locale}.ftl`);
+  const response = await fetch(ftl[locale]);
   const messages = await response.text();
 
   await delay(1000);

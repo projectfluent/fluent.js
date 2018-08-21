@@ -1,4 +1,3 @@
-import 'fluent-intl-polyfill/compat';
 import { FluentBundle } from 'fluent/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
