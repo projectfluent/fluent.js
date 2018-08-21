@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import 'fluent-intl-polyfill/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
 
 import { changeLocales } from './actions';
