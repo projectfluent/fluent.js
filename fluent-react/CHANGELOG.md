@@ -1,11 +1,20 @@
 # Changelog
 
-## Unreleased
+## fluent-react 0.8.0 (August 21, 2018)
 
   - Rename the `messages` prop to `bundles`. (#222)
 
     `<LocalizationProvider>` now expects an iterable of `FluentBundles` to be
     passed as the `bundles` prop, rather than `messages`.
+
+  - Allow custom `parseMarkup` functions. (#233)
+
+    By default, `fluent-react` uses a `<template>` element to parse and
+    sanitize markup in translations. In some scenarios like server-side
+    rendering (SSR) or apps written in React Native, `<template>` is not
+    available natively. In these situations a custom parseMarkup can be
+    passed as a prop to `<LocalizationProvider>`. It will be used by all
+    `<Localized>` components under it. See the [wiki for details](https://github.com/projectfluent/fluent.js/wiki/React-Overlays#custom-markup-parsers).
 
   - Drop support for IE and old evergreen browsers. (#133)
 
