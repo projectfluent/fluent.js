@@ -766,5 +766,4 @@ foo = test <em>custom markup parser</em>
       </div>
     ));
   });
-
 });
