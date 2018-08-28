@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## fluent-react 0.8.1 (August 28, 2018)
 
   - Change the fluent peer dependency to 0.8.x.
 
