@@ -32,11 +32,11 @@
  * The role of the Fluent resolver is to format a translation object to an
  * instance of `FluentType` or an array of instances.
  *
- * Translations can contain references to other messages or external arguments,
+ * Translations can contain references to other messages or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language.  See the documentation of the Fluent syntax for more
+ * context's language. See the documentation of the Fluent syntax for more
  * information.
  *
  * In case of errors the resolver will try to salvage as much of the
@@ -63,7 +63,7 @@
  * All functions in this file pass around a special object called `env`.
  * This object stores a set of elements used by all resolve functions:
  *
- *  * {MessageContext} ctx
+ *  * {FluentBundle} bundle
  *      context for which the given resolution is happening
  *  * {Object} args
  *      list of developer provided arguments that can be used
@@ -76,15 +76,15 @@
 
 
 import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
-  from './types';
-import builtins from './builtins';
+  from "./types";
+import builtins from "./builtins";
 
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
 
 // Unicode bidi isolation characters.
-const FSI = '\u2068';
-const PDI = '\u2069';
+const FSI = "\u2068";
+const PDI = "\u2069";
 
 
 /**
@@ -107,7 +107,7 @@ function DefaultMember(env, members, def) {
   }
 
   const { errors } = env;
-  errors.push(new RangeError('No default'));
+  errors.push(new RangeError("No default"));
   return new FluentNone();
 }
 
@@ -125,13 +125,13 @@ function DefaultMember(env, members, def) {
  * @private
  */
 function MessageReference(env, {name}) {
-  const { ctx, errors } = env;
-  const message = name.startsWith('-')
-    ? ctx._terms.get(name)
-    : ctx._messages.get(name);
+  const { bundle, errors } = env;
+  const message = name.startsWith("-")
+    ? bundle._terms.get(name)
+    : bundle._messages.get(name);
 
   if (!message) {
-    const err = name.startsWith('-')
+    const err = name.startsWith("-")
       ? new ReferenceError(`Unknown term: ${name}`)
       : new ReferenceError(`Unknown message: ${name}`);
     errors.push(err);
@@ -163,12 +163,12 @@ function VariantExpression(env, {id, key}) {
     return message;
   }
 
-  const { ctx, errors } = env;
+  const { bundle, errors } = env;
   const keyword = Type(env, key);
 
   function isVariantList(node) {
     return Array.isArray(node) &amp;&amp;
-      node[0].type === 'sel' &amp;&amp;
+      node[0].type === "sel" &amp;&amp;
       node[0].exp === null;
   }
 
@@ -176,13 +176,14 @@ function VariantExpression(env, {id, key}) {
     // Match the specified key against keys of each variant, in order.
     for (const variant of message.val[0].vars) {
       const variantKey = Type(env, variant.key);
-      if (keyword.match(ctx, variantKey)) {
+      if (keyword.match(bundle, variantKey)) {
         return variant;
       }
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
+  errors.push(
+    new ReferenceError(`Unknown variant: ${keyword.toString(bundle)}`));
   return Type(env, message);
 }
 
@@ -257,9 +258,9 @@ function SelectExpression(env, {exp, vars, def}) {
       continue;
     }
 
-    const { ctx } = env;
+    const { bundle } = env;
 
-    if (key.match(ctx, selector)) {
+    if (key.match(bundle, selector)) {
       return variant;
     }
   }
@@ -285,7 +286,10 @@ function SelectExpression(env, {exp, vars, def}) {
 function Type(env, expr) {
   // A fast-path for strings which are the most common case, and for
   // `FluentNone` which doesn't require any additional logic.
-  if (typeof expr === 'string' || expr instanceof FluentNone) {
+  if (typeof expr === "string") {
+    return env.bundle._transform(expr);
+  }
+  if (expr instanceof FluentNone) {
     return expr;
   }
 
@@ -297,29 +301,29 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case 'varname':
+    case "varname":
       return new FluentSymbol(expr.name);
-    case 'num':
+    case "num":
       return new FluentNumber(expr.val);
-    case 'ext':
-      return ExternalArgument(env, expr);
-    case 'fun':
+    case "var":
+      return VariableReference(env, expr);
+    case "fun":
       return FunctionReference(env, expr);
-    case 'call':
+    case "call":
       return CallExpression(env, expr);
-    case 'ref': {
+    case "ref": {
       const message = MessageReference(env, expr);
       return Type(env, message);
     }
-    case 'attr': {
+    case "getattr": {
       const attr = AttributeExpression(env, expr);
       return Type(env, attr);
     }
-    case 'var': {
+    case "getvar": {
       const variant = VariantExpression(env, expr);
       return Type(env, variant);
     }
-    case 'sel': {
+    case "sel": {
       const member = SelectExpression(env, expr);
       return Type(env, member);
     }
@@ -330,7 +334,7 @@ function Type(env, expr) {
       }
 
       const { errors } = env;
-      errors.push(new RangeError('No value'));
+      errors.push(new RangeError("No value"));
       return new FluentNone();
     }
     default:
@@ -339,7 +343,7 @@ function Type(env, expr) {
 }
 
 /**
- * Resolve a reference to an external argument.
+ * Resolve a reference to a variable.
  *
  * @param   {Object} env
  *    Resolver environment object.
@@ -350,11 +354,11 @@ function Type(env, expr) {
  * @returns {FluentType}
  * @private
  */
-function ExternalArgument(env, {name}) {
+function VariableReference(env, {name}) {
   const { args, errors } = env;
 
   if (!args || !args.hasOwnProperty(name)) {
-    errors.push(new ReferenceError(`Unknown external: ${name}`));
+    errors.push(new ReferenceError(`Unknown variable: ${name}`));
     return new FluentNone(name);
   }
 
@@ -367,17 +371,17 @@ function ExternalArgument(env, {name}) {
 
   // Convert the argument to a Fluent type.
   switch (typeof arg) {
-    case 'string':
+    case "string":
       return arg;
-    case 'number':
+    case "number":
       return new FluentNumber(arg);
-    case 'object':
+    case "object":
       if (arg instanceof Date) {
         return new FluentDateTime(arg);
       }
     default:
       errors.push(
-        new TypeError(`Unsupported external type: ${name}, ${typeof arg}`)
+        new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
       return new FluentNone(name);
   }
@@ -397,8 +401,8 @@ function ExternalArgument(env, {name}) {
  */
 function FunctionReference(env, {name}) {
   // Some functions are built-in.  Others may be provided by the runtime via
-  // the `MessageContext` constructor.
-  const { ctx: { _functions }, errors } = env;
+  // the `FluentBundle` constructor.
+  const { bundle: { _functions }, errors } = env;
   const func = _functions[name] || builtins[name];
 
   if (!func) {
@@ -406,7 +410,7 @@ function FunctionReference(env, {name}) {
     return new FluentNone(`${name}()`);
   }
 
-  if (typeof func !== 'function') {
+  if (typeof func !== "function") {
     errors.push(new TypeError(`Function ${name}() is not callable`));
     return new FluentNone(`${name}()`);
   }
@@ -439,7 +443,7 @@ function CallExpression(env, {fun, args}) {
   const keyargs = {};
 
   for (const arg of args) {
-    if (arg.type === 'narg') {
+    if (arg.type === "narg") {
       keyargs[arg.name] = Type(env, arg.val);
     } else {
       posargs.push(Type(env, arg));
@@ -465,10 +469,10 @@ function CallExpression(env, {fun, args}) {
  * @private
  */
 function Pattern(env, ptn) {
-  const { ctx, dirty, errors } = env;
+  const { bundle, dirty, errors } = env;
 
   if (dirty.has(ptn)) {
-    errors.push(new RangeError('Cyclic reference'));
+    errors.push(new RangeError("Cyclic reference"));
     return new FluentNone();
   }
 
@@ -476,22 +480,26 @@ function Pattern(env, ptn) {
   dirty.add(ptn);
   const result = [];
 
+  // Wrap interpolations with Directional Isolate Formatting characters
+  // only when the pattern has more than one element.
+  const useIsolating = bundle._useIsolating &amp;&amp; ptn.length > 1;
+
   for (const elem of ptn) {
-    if (typeof elem === 'string') {
-      result.push(elem);
+    if (typeof elem === "string") {
+      result.push(bundle._transform(elem));
       continue;
     }
 
-    const part = Type(env, elem).toString(ctx);
+    const part = Type(env, elem).toString(bundle);
 
-    if (ctx._useIsolating) {
+    if (useIsolating) {
       result.push(FSI);
     }
 
     if (part.length > MAX_PLACEABLE_LENGTH) {
       errors.push(
         new RangeError(
-          'Too many characters in placeable ' +
+          "Too many characters in placeable " +
           `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
         )
       );
@@ -500,20 +508,20 @@ function Pattern(env, ptn) {
       result.push(part);
     }
 
-    if (ctx._useIsolating) {
+    if (useIsolating) {
       result.push(PDI);
     }
   }
 
   dirty.delete(ptn);
-  return result.join('');
+  return result.join("");
 }
 
 /**
  * Format a translation into a string.
  *
- * @param   {MessageContext} ctx
- *    A MessageContext instance which will be used to resolve the
+ * @param   {FluentBundle} bundle
+ *    A FluentBundle instance which will be used to resolve the
  *    contextual information of the message.
  * @param   {Object}         args
  *    List of arguments provided by the developer which can be accessed
@@ -524,11 +532,11 @@ function Pattern(env, ptn) {
  *    An error array that any encountered errors will be appended to.
  * @returns {FluentType}
  */
-export default function resolve(ctx, args, message, errors = []) {
+export default function resolve(bundle, args, message, errors = []) {
   const env = {
-    ctx, args, errors, dirty: new WeakSet()
+    bundle, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message).toString(ctx);
+  return Type(env, message).toString(bundle);
 }
 </code></pre>
         </article>
@@ -540,13 +548,13 @@ export default function resolve(ctx, args, message, errors = []) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li><li><a href="global.html#touchNext">touchNext</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentBundle.html">FluentBundle</a></li><li><a href="FluentType.html">FluentType</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:50 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:30 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: MessageContext</title>
+    <title>JSDoc: Class: FluentBundle</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: MessageContext</h1>
+    <h1 class="page-title">Class: FluentBundle</h1>
 
     
 
@@ -28,18 +28,18 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>MessageContext<span class="signature">(locales, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>FluentBundle<span class="signature">(locales, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>Message contexts are single-language stores of translations.  They are
+            <div class="class-description"><p>Message bundles are single-language stores of translations.  They are
 responsible for parsing translation resources in the Fluent syntax and can
 format translation units (entities) to strings.</p>
-<p>Always use <code>MessageContext.format</code> to retrieve translation units from
-a context.  Translations can contain references to other entities or
-external arguments, conditional logic in form of select expressions, traits
-which describe their grammatical features, and can use Fluent builtins which
-make use of the <code>Intl</code> formatters to format numbers, dates, lists and more
-into the context's language.  See the documentation of the Fluent syntax for
-more information.</p></div>
+<p>Always use <code>FluentBundle.format</code> to retrieve translation units from a
+context. Translations can contain references to other entities or variables,
+conditional logic in form of select expressions, traits which describe their
+grammatical features, and can use Fluent builtins which make use of the
+<code>Intl</code> formatters to format numbers, dates, lists and more into the
+context's language. See the documentation of the Fluent syntax for more
+information.</p></div>
         
     
 </header>
@@ -54,7 +54,7 @@ more information.</p></div>
     
 
     
-    <h4 class="name" id="MessageContext"><span class="type-signature"></span>new MessageContext<span class="signature">(locales, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="FluentBundle"><span class="type-signature"></span>new FluentBundle<span class="signature">(locales, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -62,15 +62,15 @@ more information.</p></div>
 
 
 <div class="description">
-    <p>Create an instance of <code>MessageContext</code>.</p>
+    <p>Create an instance of <code>FluentBundle</code>.</p>
 <p>The <code>locales</code> argument is used to instantiate <code>Intl</code> formatters used by
 translations.  The <code>options</code> object can be used to configure the context.</p>
 <p>Examples:</p>
-<pre class="prettyprint source"><code>const ctx = new MessageContext(locales);
+<pre class="prettyprint source"><code>const bundle = new FluentBundle(locales);
 
-const ctx = new MessageContext(locales, { useIsolating: false });
+const bundle = new FluentBundle(locales, { useIsolating: false });
 
-const ctx = new MessageContext(locales, {
+const bundle = new FluentBundle(locales, {
   useIsolating: true,
   functions: {
     NODE_ENV: () => process.env.NODE_ENV
@@ -81,6 +81,8 @@ const ctx = new MessageContext(locales, {
 <pre class="prettyprint source"><code>          translations as builtins.</code></pre></li>
 <li><p><code>useIsolating</code> - boolean specifying whether to use Unicode isolation</p>
 <pre class="prettyprint source"><code>           marks (FSI, PDI) for bidi interpolations.</code></pre></li>
+<li><p><code>transform</code> - a function used to transform string parts of patterns.</p>
+</li>
 </ul>
 </div>
 
@@ -286,8 +288,8 @@ const ctx = new MessageContext(locales, {
 <p>The translation resource must use the Fluent syntax.  It will be parsed by
 the context and each translation unit (message) will be available in the
 context by its identifier.</p>
-<pre class="prettyprint source"><code>ctx.addMessages('foo = Foo');
-ctx.getMessage('foo');
+<pre class="prettyprint source"><code>bundle.addMessages('foo = Foo');
+bundle.getMessage('foo');
 
 // Returns a raw representation of the 'foo' message.</code></pre><p>Parsed entities should be formatted with the <code>format</code> method in case they
 contain logic (references, select expressions etc.).</p>
@@ -383,7 +385,168 @@ contain logic (references, select expressions etc.).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line110">line 110</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line117">line 117</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Error></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addResource"><span class="type-signature"></span>addResource<span class="signature">(res)</span><span class="type-signature"> &rarr; {Array.&lt;Error>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Add a translation resource to the context.</p>
+<p>The translation resource must be a proper FluentResource
+parsed by <code>FluentBundle.parseResource</code>.</p>
+<pre class="prettyprint source"><code>let res = FluentBundle.parseResource(&quot;foo = Foo&quot;);
+bundle.addResource(res);
+bundle.getMessage('foo');
+
+// Returns a raw representation of the 'foo' message.</code></pre><p>Parsed entities should be formatted with the <code>format</code> method in case they
+contain logic (references, select expressions etc.).</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">FluentResource</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>FluentResource object.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line140">line 140</a>
     </li></ul></dd>
     
 
@@ -445,24 +608,24 @@ contain logic (references, select expressions etc.).</p>
 <div class="description">
     <p>Format a message to a string or null.</p>
 <p>Format a raw <code>message</code> from the context into a string (or a null if it has
-a null value).  <code>args</code> will be used to resolve references to external
-arguments inside of the translation.</p>
+a null value).  <code>args</code> will be used to resolve references to variables
+passed as arguments to the translation.</p>
 <p>In case of errors <code>format</code> will try to salvage as much of the translation
 as possible and will still return a string.  For performance reasons, the
 encountered errors are not returned but instead are appended to the
 <code>errors</code> array passed as the third argument.</p>
 <pre class="prettyprint source"><code>const errors = [];
-ctx.addMessages('hello = Hello, { $name }!');
-const hello = ctx.getMessage('hello');
-ctx.format(hello, { name: 'Jane' }, errors);
+bundle.addMessages('hello = Hello, { $name }!');
+const hello = bundle.getMessage('hello');
+bundle.format(hello, { name: 'Jane' }, errors);
 
 // Returns 'Hello, Jane!' and `errors` is empty.
 
-ctx.format(hello, undefined, errors);
+bundle.format(hello, undefined, errors);
 
 // Returns 'Hello, name!' and `errors` is now:
 
-[&lt;ReferenceError: Unknown external: name>]</code></pre>
+[&lt;ReferenceError: Unknown variable: name>]</code></pre>
 </div>
 
 
@@ -607,7 +770,7 @@ ctx.format(hello, undefined, errors);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line155">line 155</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line193">line 193</a>
     </li></ul></dd>
     
 
@@ -669,13 +832,13 @@ ctx.format(hello, undefined, errors);
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li><li><a href="global.html#touchNext">touchNext</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentBundle.html">FluentBundle</a></li><li><a href="FluentType.html">FluentType</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:50 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:30 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>

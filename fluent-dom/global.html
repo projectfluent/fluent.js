@@ -98,14 +98,19 @@
 
         
             
-<h4 class="name" id="LOCALIZABLE_ELEMENTS"><span class="type-signature">(constant) </span>LOCALIZABLE_ELEMENTS<span class="type-signature"></span></h4>
+<h4 class="name" id="TEXT_LEVEL_ELEMENTS"><span class="type-signature">(constant) </span>TEXT_LEVEL_ELEMENTS<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    <p>The list of elements that are allowed to be inserted into a localization.</p>
-<p>Source: https://www.w3.org/TR/html5/text-level-semantics.html</p>
+    <p>Elements allowed in translations even if they are not present in the source
+HTML. They are text-level elements as defined by the HTML5 spec:
+https://www.w3.org/TR/html5/text-level-semantics.html with the exception of:</p>
+<ul>
+<li>a - because we don't allow href on it anyways,</li>
+<li>ruby, rt, rp - because we don't allow nested elements to be inserted.</li>
+</ul>
 </div>
 
 
@@ -143,7 +148,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="overlay.js.html">overlay.js</a>, <a href="overlay.js.html#line10">line 10</a>
+        <a href="overlay.js.html">overlay.js</a>, <a href="overlay.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -274,7 +279,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line126">line 126</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -413,7 +418,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line151">line 151</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line161">line 161</a>
     </li></ul></dd>
     
 
@@ -619,7 +624,7 @@ notifications.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line144">line 144</a>
+        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -683,9 +688,9 @@ notifications.</p>
 <p>A generalized version of <code>DOMLocalization.formatValue</code>. Keys can
 either be simple string identifiers or <code>[id, args]</code> arrays.</p>
 <pre class="prettyprint source"><code>docL10n.formatValues([
-  ['hello', { who: 'Mary' }],
-  ['hello', { who: 'John' }],
-  ['welcome']
+  {id: 'hello', args: { who: 'Mary' }},
+  {id: 'hello', args: { who: 'John' }},
+  {id: 'welcome'}
 ]).then(console.log);
 
 // ['Hello, Mary!', 'Hello, John!', 'Welcome!']</code></pre><p>Returns a Promise resolving to an array of the translation strings.</p>
@@ -730,7 +735,7 @@ either be simple string identifiers or <code>[id, args]</code> arrays.</p>
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;Array></span>
+<span class="param-type">Array.&lt;Object></span>
 
 
             
@@ -781,7 +786,7 @@ either be simple string identifiers or <code>[id, args]</code> arrays.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line118">line 118</a>
+        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line117">line 117</a>
     </li></ul></dd>
     
 
@@ -938,7 +943,7 @@ either be simple string identifiers or <code>[id, args]</code> arrays.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line111">line 111</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -990,7 +995,7 @@ either be simple string identifiers or <code>[id, args]</code> arrays.</p>
     
 
     
-    <h4 class="name" id="onLanguageChange"><span class="type-signature"></span>onLanguageChange<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="onChange"><span class="type-signature"></span>onChange<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -1043,7 +1048,7 @@ that language negotiation or available resources changed.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line157">line 157</a>
+        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line156">line 156</a>
     </li></ul></dd>
     
 
@@ -1242,7 +1247,7 @@ asynchronously.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line88">line 88</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line85">line 85</a>
     </li></ul></dd>
     
 
@@ -1400,7 +1405,7 @@ with information about which translations to use.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line264">line 264</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line292">line 292</a>
     </li></ul></dd>
     
 
@@ -1558,7 +1563,7 @@ with information about which translations to use.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line247">line 247</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -1662,7 +1667,7 @@ with information about which translations to use.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line165">line 165</a>
+        <a href="dom_localization.js.html">dom_localization.js</a>, <a href="dom_localization.js.html#line184">line 184</a>
     </li></ul></dd>
     
 
@@ -1724,13 +1729,13 @@ with information about which translations to use.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="L10nError.html">L10nError</a></li><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#LOCALIZABLE_ELEMENTS">LOCALIZABLE_ELEMENTS</a></li><li><a href="global.html#onLanguageChange">onLanguageChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#onChange">onChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#TEXT_LEVEL_ELEMENTS">TEXT_LEVEL_ELEMENTS</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:54 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:31 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -26,37 +26,37 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import resolve from './resolver';
-import parse from './parser';
+            <pre class="prettyprint source linenums"><code>import resolve from "./resolver";
+import FluentResource from "./resource";
 
 /**
- * Message contexts are single-language stores of translations.  They are
+ * Message bundles are single-language stores of translations.  They are
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
- * Always use `MessageContext.format` to retrieve translation units from
- * a context.  Translations can contain references to other entities or
- * external arguments, conditional logic in form of select expressions, traits
- * which describe their grammatical features, and can use Fluent builtins which
- * make use of the `Intl` formatters to format numbers, dates, lists and more
- * into the context's language.  See the documentation of the Fluent syntax for
- * more information.
+ * Always use `FluentBundle.format` to retrieve translation units from a
+ * context. Translations can contain references to other entities or variables,
+ * conditional logic in form of select expressions, traits which describe their
+ * grammatical features, and can use Fluent builtins which make use of the
+ * `Intl` formatters to format numbers, dates, lists and more into the
+ * context's language. See the documentation of the Fluent syntax for more
+ * information.
  */
-export class MessageContext {
+export class FluentBundle {
 
   /**
-   * Create an instance of `MessageContext`.
+   * Create an instance of `FluentBundle`.
    *
    * The `locales` argument is used to instantiate `Intl` formatters used by
    * translations.  The `options` object can be used to configure the context.
    *
    * Examples:
    *
-   *     const ctx = new MessageContext(locales);
+   *     const bundle = new FluentBundle(locales);
    *
-   *     const ctx = new MessageContext(locales, { useIsolating: false });
+   *     const bundle = new FluentBundle(locales, { useIsolating: false });
    *
-   *     const ctx = new MessageContext(locales, {
+   *     const bundle = new FluentBundle(locales, {
    *       useIsolating: true,
    *       functions: {
    *         NODE_ENV: () => process.env.NODE_ENV
@@ -71,17 +71,24 @@ export class MessageContext {
    *   - `useIsolating` - boolean specifying whether to use Unicode isolation
    *                    marks (FSI, PDI) for bidi interpolations.
    *
+   *   - `transform` - a function used to transform string parts of patterns.
+   *
    * @param   {string|Array&lt;string>} locales - Locale or locales of the context
    * @param   {Object} [options]
-   * @returns {MessageContext}
+   * @returns {FluentBundle}
    */
-  constructor(locales, { functions = {}, useIsolating = true } = {}) {
+  constructor(locales, {
+    functions = {},
+    useIsolating = true,
+    transform = v => v
+  } = {}) {
     this.locales = Array.isArray(locales) ? locales : [locales];
 
     this._terms = new Map();
     this._messages = new Map();
     this._functions = functions;
     this._useIsolating = useIsolating;
+    this._transform = transform;
     this._intls = new WeakMap();
   }
 
@@ -108,7 +115,7 @@ export class MessageContext {
    * Return the internal representation of a message.
    *
    * The internal representation should only be used as an argument to
-   * `MessageContext.format`.
+   * `FluentBundle.format`.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {Any}
@@ -124,8 +131,8 @@ export class MessageContext {
    * the context and each translation unit (message) will be available in the
    * context by its identifier.
    *
-   *     ctx.addMessages('foo = Foo');
-   *     ctx.getMessage('foo');
+   *     bundle.addMessages('foo = Foo');
+   *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
@@ -136,14 +143,45 @@ export class MessageContext {
    * @returns {Array&lt;Error>}
    */
   addMessages(source) {
-    const [entries, errors] = parse(source);
-    for (const id in entries) {
-      if (id.startsWith('-')) {
+    const res = FluentResource.fromString(source);
+    return this.addResource(res);
+  }
+
+  /**
+   * Add a translation resource to the context.
+   *
+   * The translation resource must be a proper FluentResource
+   * parsed by `FluentBundle.parseResource`.
+   *
+   *     let res = FluentBundle.parseResource("foo = Foo");
+   *     bundle.addResource(res);
+   *     bundle.getMessage('foo');
+   *
+   *     // Returns a raw representation of the 'foo' message.
+   *
+   * Parsed entities should be formatted with the `format` method in case they
+   * contain logic (references, select expressions etc.).
+   *
+   * @param   {FluentResource} res - FluentResource object.
+   * @returns {Array&lt;Error>}
+   */
+  addResource(res) {
+    const errors = res.errors.slice();
+    for (const [id, value] of res) {
+      if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
-        // and cannot be retrieved from MessageContext.
-        this._terms.set(id, entries[id]);
+        // and cannot be retrieved from FluentBundle.
+        if (this._terms.has(id)) {
+          errors.push(`Attempt to override an existing term: "${id}"`);
+          continue;
+        }
+        this._terms.set(id, value);
       } else {
-        this._messages.set(id, entries[id]);
+        if (this._messages.has(id)) {
+          errors.push(`Attempt to override an existing message: "${id}"`);
+          continue;
+        }
+        this._messages.set(id, value);
       }
     }
 
@@ -154,8 +192,8 @@ export class MessageContext {
    * Format a message to a string or null.
    *
    * Format a raw `message` from the context into a string (or a null if it has
-   * a null value).  `args` will be used to resolve references to external
-   * arguments inside of the translation.
+   * a null value).  `args` will be used to resolve references to variables
+   * passed as arguments to the translation.
    *
    * In case of errors `format` will try to salvage as much of the translation
    * as possible and will still return a string.  For performance reasons, the
@@ -163,17 +201,17 @@ export class MessageContext {
    * `errors` array passed as the third argument.
    *
    *     const errors = [];
-   *     ctx.addMessages('hello = Hello, { $name }!');
-   *     const hello = ctx.getMessage('hello');
-   *     ctx.format(hello, { name: 'Jane' }, errors);
+   *     bundle.addMessages('hello = Hello, { $name }!');
+   *     const hello = bundle.getMessage('hello');
+   *     bundle.format(hello, { name: 'Jane' }, errors);
    *
    *     // Returns 'Hello, Jane!' and `errors` is empty.
    *
-   *     ctx.format(hello, undefined, errors);
+   *     bundle.format(hello, undefined, errors);
    *
    *     // Returns 'Hello, name!' and `errors` is now:
    *
-   *     [&lt;ReferenceError: Unknown external: name>]
+   *     [&lt;ReferenceError: Unknown variable: name>]
    *
    * @param   {Object | string}    message
    * @param   {Object | undefined} args
@@ -182,13 +220,13 @@ export class MessageContext {
    */
   format(message, args, errors) {
     // optimize entities which are simple strings with no attributes
-    if (typeof message === 'string') {
-      return message;
+    if (typeof message === "string") {
+      return this._transform(message);
     }
 
     // optimize simple-string entities with attributes
-    if (typeof message.val === 'string') {
-      return message.val;
+    if (typeof message.val === "string") {
+      return this._transform(message.val);
     }
 
     // optimize entities with null values
@@ -221,13 +259,13 @@ export class MessageContext {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li><li><a href="global.html#touchNext">touchNext</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentBundle.html">FluentBundle</a></li><li><a href="FluentType.html">FluentType</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:50 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:30 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>

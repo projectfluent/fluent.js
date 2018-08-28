@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: builtins.js</title>
+    <title>JSDoc: Source: resource.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: builtins.js</h1>
+    <h1 class="page-title">Source: resource.js</h1>
 
     
 
@@ -26,39 +26,24 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @overview
- *
- * The FTL resolver ships with a number of functions built-in.
- *
- * Each function take two arguments:
- *   - args - an array of positional args
- *   - opts - an object of key-value args
- *
- * Arguments to functions are guaranteed to already be instances of
- * `FluentType`.  Functions must return `FluentType` objects as well.
+            <pre class="prettyprint source linenums"><code>import parse from "./parser";
+
+/**
+ * Fluent Resource is a structure storing a map
+ * of localization entries.
  */
-
-import { FluentNumber, FluentDateTime } from "./types";
-
-export default {
-  "NUMBER": ([arg], opts) =>
-    new FluentNumber(arg.valueOf(), merge(arg.opts, opts)),
-  "DATETIME": ([arg], opts) =>
-    new FluentDateTime(arg.valueOf(), merge(arg.opts, opts)),
-};
-
-function merge(argopts, opts) {
-  return Object.assign({}, argopts, values(opts));
-}
-
-function values(opts) {
-  const unwrapped = {};
-  for (const [name, opt] of Object.entries(opts)) {
-    unwrapped[name] = opt.valueOf();
+export default class FluentResource extends Map {
+  constructor(entries, errors = []) {
+    super(entries);
+    this.errors = errors;
   }
-  return unwrapped;
+
+  static fromString(source) {
+    const [entries, errors] = parse(source);
+    return new FluentResource(Object.entries(entries), errors);
+  }
 }
+
 </code></pre>
         </article>
     </section>

@@ -48,13 +48,13 @@ framework designed to unleash the expressive power of the natural language.</p>
 <h2>Installation</h2><p><code>fluent</code> can be used both on the client-side and the server-side.  You can
 install it from the npm registry or use it as a standalone script (as the
 <code>Fluent</code> global).</p>
-<pre class="prettyprint source"><code>npm install fluent</code></pre><h2>How to use</h2><p>The <code>MessageContext</code> constructor provides the core functionality of formatting
+<pre class="prettyprint source"><code>npm install fluent</code></pre><h2>How to use</h2><p>The <code>FluentBundle</code> constructor provides the core functionality of formatting
 translations from FTL files.</p>
-<pre class="prettyprint source lang-javascript"><code>import { MessageContext, ftl } from 'fluent';
+<pre class="prettyprint source lang-javascript"><code>import { FluentBundle, ftl } from 'fluent';
 
-const ctx = new MessageContext('en-US');
+const bundle = new FluentBundle('en-US');
 
-const errors = ctx.addMessages(ftl`
+const errors = bundle.addMessages(ftl`
     -brand-name = Foo 3000
     welcome = Welcome, { $name }, to { -brand-name }!
 `);
@@ -63,9 +63,9 @@ if (errors.length) {
   // syntax errors are per-message and don't break the whole resource
 }
 
-const welcome = ctx.getMessage('welcome');
+const welcome = bundle.getMessage('welcome');
 
-ctx.format(welcome, { name: 'Anna' });
+bundle.format(welcome, { name: 'Anna' });
 // → 'Welcome, Anna, to Foo 3000!'</code></pre><p>The API reference is available at http://projectfluent.org/fluent.js/fluent.</p>
 <h2>Compatibility</h2><p><code>fluent</code> requires the following <code>Intl</code> formatters:</p>
 <ul>
@@ -77,9 +77,9 @@ ctx.format(welcome, { name: 'Anna' });
 however, a polyfill will be required.  We recommend <a href="https://www.npmjs.com/package/fluent-intl-polyfill">fluent-intl-polyfill</a>
 which uses <a href="https://www.npmjs.com/package/intl-pluralrules">intl-pluralrules</a>.</p>
 <pre class="prettyprint source lang-javascript"><code>import 'fluent-intl-polyfill';
-import { MessageContext } from 'fluent';</code></pre><p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel's <a href="https://babeljs.io/docs/plugins/preset-env/">env
+import { FluentBundle } from 'fluent';</code></pre><p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel's <a href="https://babeljs.io/docs/plugins/preset-env/">env
 preset</a>. It requires the regenerator runtime provided by <a href="https://babeljs.io/docs/usage/polyfill/">babel-polyfill</a>.</p>
-<pre class="prettyprint source lang-javascript"><code>import { MessageContext } from 'fluent/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.org">projectfluent.org</a>, including
+<pre class="prettyprint source lang-javascript"><code>import { FluentBundle } from 'fluent/compat';</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.org">projectfluent.org</a>, including
 documentation of the Fluent file format (<a href="http://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
 implementations, and information about how to get involved.</p></article>
     </section>
@@ -207,11 +207,11 @@ implementations, and information about how to get involved.</p></article>
         
             <div class="description"><p>The role of the Fluent resolver is to format a translation object to an
 instance of <code>FluentType</code> or an array of instances.</p>
-<p>Translations can contain references to other messages or external arguments,
+<p>Translations can contain references to other messages or variables,
 conditional logic in form of select expressions, traits which describe their
 grammatical features, and can use Fluent builtins which make use of the
 <code>Intl</code> formatters to format numbers, dates, lists and more into the
-context's language.  See the documentation of the Fluent syntax for more
+context's language. See the documentation of the Fluent syntax for more
 information.</p>
 <p>In case of errors the resolver will try to salvage as much of the
 translation as possible.  In rare situations where the resolver didn't know
@@ -230,7 +230,7 @@ use the <code>toString</code> method to convert the instance to a native value.<
 <p>All functions in this file pass around a special object called <code>env</code>.
 This object stores a set of elements used by all resolve functions:</p>
 <ul>
-<li>{MessageContext} ctx
+<li>{FluentBundle} bundle
   context for which the given resolution is happening</li>
 <li>{Object} args
   list of developer provided arguments that can be used</li>
@@ -319,13 +319,13 @@ This object stores a set of elements used by all resolve functions:</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentType.html">FluentType</a></li><li><a href="MessageContext.html">MessageContext</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li><li><a href="global.html#touchNext">touchNext</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FluentBundle.html">FluentBundle</a></li><li><a href="FluentType.html">FluentType</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="RuntimeParser.html">RuntimeParser</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ftl">ftl</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:50 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:30 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>

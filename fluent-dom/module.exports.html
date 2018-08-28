@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>exports<span class="signature">(windowElement, resourceIds, generateMessages)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>exports<span class="signature">(resourceIds, generateBundles)</span><span class="type-signature"></span></h2>
         
             <div class="class-description"><p>The <code>DOMLocalization</code> class is responsible for fetching resources and
 formatting translations.</p>
@@ -49,7 +49,7 @@ trees with a <code>MutationObserver</code>.</p></div>
     
 
     
-    <h4 class="name" id="exports"><span class="type-signature"></span>new exports<span class="signature">(windowElement, resourceIds, generateMessages)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="exports"><span class="type-signature"></span>new exports<span class="signature">(resourceIds, generateBundles)</span><span class="type-signature"></span></h4>
     
 
     
@@ -89,29 +89,6 @@ trees with a <code>MutationObserver</code>.</p></div>
 
         <tr>
             
-                <td class="name"><code>windowElement</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Window</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>resourceIds</code></td>
             
 
@@ -135,7 +112,7 @@ trees with a <code>MutationObserver</code>.</p></div>
 
         <tr>
             
-                <td class="name"><code>generateMessages</code></td>
+                <td class="name"><code>generateBundles</code></td>
             
 
             <td class="type">
@@ -152,7 +129,7 @@ trees with a <code>MutationObserver</code>.</p></div>
             
 
             <td class="description last"><p>Function that returns a
-                                             generator over MessageContexts</p></td>
+                                            generator over FluentBundles</p></td>
         </tr>
 
     
@@ -257,11 +234,11 @@ trees with a <code>MutationObserver</code>.</p></div>
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>exports<span class="signature">(resourceIds, generateMessages)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>exports<span class="signature">(resourceIds, generateBundles)</span><span class="type-signature"></span></h2>
         
             <div class="class-description"><p>The <code>Localization</code> class is a central high-level API for vanilla
 JavaScript use of Fluent.
-It combines language negotiation, MessageContext and I/O to
+It combines language negotiation, FluentBundle and I/O to
 provide a scriptable API to format translations.</p></div>
         
     
@@ -277,7 +254,7 @@ provide a scriptable API to format translations.</p></div>
     
 
     
-    <h4 class="name" id="exports"><span class="type-signature"></span>new exports<span class="signature">(resourceIds, generateMessages)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="exports"><span class="type-signature"></span>new exports<span class="signature">(resourceIds, generateBundles)</span><span class="type-signature"></span></h4>
     
 
     
@@ -340,7 +317,7 @@ provide a scriptable API to format translations.</p></div>
 
         <tr>
             
-                <td class="name"><code>generateMessages</code></td>
+                <td class="name"><code>generateBundles</code></td>
             
 
             <td class="type">
@@ -357,7 +334,7 @@ provide a scriptable API to format translations.</p></div>
             
 
             <td class="description last"><p>Function that returns a
-                                          generator over MessageContexts</p></td>
+                                         generator over FluentBundles</p></td>
         </tr>
 
     
@@ -398,7 +375,7 @@ provide a scriptable API to format translations.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line30">line 30</a>
+        <a href="localization.js.html">localization.js</a>, <a href="localization.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -458,13 +435,13 @@ provide a scriptable API to format translations.</p></div>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="L10nError.html">L10nError</a></li><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#LOCALIZABLE_ELEMENTS">LOCALIZABLE_ELEMENTS</a></li><li><a href="global.html#onLanguageChange">onLanguageChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#onChange">onChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#TEXT_LEVEL_ELEMENTS">TEXT_LEVEL_ELEMENTS</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:54 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:31 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -26,11 +26,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import overlayElement from './overlay';
-import Localization from './localization';
+            <pre class="prettyprint source linenums"><code>import translateElement from "./overlay";
+import Localization from "./localization";
 
-const L10NID_ATTR_NAME = 'data-l10n-id';
-const L10NARGS_ATTR_NAME = 'data-l10n-args';
+const L10NID_ATTR_NAME = "data-l10n-id";
+const L10NARGS_ATTR_NAME = "data-l10n-args";
 
 const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
 
@@ -44,14 +44,13 @@ const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
  */
 export default class DOMLocalization extends Localization {
   /**
-   * @param {Window}           windowElement
-   * @param {Array&lt;String>}    resourceIds      - List of resource IDs
-   * @param {Function}         generateMessages - Function that returns a
-   *                                              generator over MessageContexts
+   * @param {Array&lt;String>}    resourceIds     - List of resource IDs
+   * @param {Function}         generateBundles - Function that returns a
+   *                                             generator over FluentBundles
    * @returns {DOMLocalization}
    */
-  constructor(windowElement, resourceIds, generateMessages) {
-    super(resourceIds, generateMessages);
+  constructor(resourceIds, generateBundles) {
+    super(resourceIds, generateBundles);
 
     // A Set of DOM trees observed by the `MutationObserver`.
     this.roots = new Set();
@@ -59,10 +58,8 @@ export default class DOMLocalization extends Localization {
     this.pendingrAF = null;
     // list of elements pending for translation.
     this.pendingElements = new Set();
-    this.windowElement = windowElement;
-    this.mutationObserver = new windowElement.MutationObserver(
-      mutations => this.translateMutations(mutations)
-    );
+    this.windowElement = null;
+    this.mutationObserver = null;
 
     this.observerConfig = {
       attribute: true,
@@ -73,8 +70,8 @@ export default class DOMLocalization extends Localization {
     };
   }
 
-  onLanguageChange() {
-    super.onLanguageChange();
+  onChange() {
+    super.onChange();
     this.translateRoots();
   }
 
@@ -156,9 +153,22 @@ export default class DOMLocalization extends Localization {
       if (root === newRoot ||
           root.contains(newRoot) ||
           newRoot.contains(root)) {
-        throw new Error('Cannot add a root that overlaps with existing root.');
+        throw new Error("Cannot add a root that overlaps with existing root.");
       }
     }
+
+    if (this.windowElement) {
+      if (this.windowElement !== newRoot.ownerDocument.defaultView) {
+        throw new Error(`Cannot connect a root:
+          DOMLocalization already has a root from a different window.`);
+      }
+    } else {
+      this.windowElement = newRoot.ownerDocument.defaultView;
+      this.mutationObserver = new this.windowElement.MutationObserver(
+        mutations => this.translateMutations(mutations)
+      );
+    }
+
 
     this.roots.add(newRoot);
     this.mutationObserver.observe(newRoot, this.observerConfig);
@@ -178,11 +188,20 @@ export default class DOMLocalization extends Localization {
    */
   disconnectRoot(root) {
     this.roots.delete(root);
-    // Pause and resume the mutation observer to stop observing `root`.
+    // Pause the mutation observer to stop observing `root`.
     this.pauseObserving();
-    this.resumeObserving();
 
-    return this.roots.size === 0;
+    if (this.roots.size === 0) {
+      this.mutationObserver = null;
+      this.windowElement = null;
+      this.pendingrAF = null;
+      this.pendingElements.clear();
+      return true;
+    }
+
+    // Resume observing all other roots.
+    this.resumeObserving();
+    return false;
   }
 
   /**
@@ -193,7 +212,7 @@ export default class DOMLocalization extends Localization {
   translateRoots() {
     const roots = Array.from(this.roots);
     return Promise.all(
-      roots.map(root => this.translateElements(this.getTranslatables(root)))
+      roots.map(root => this.translateFragment(root))
     );
   }
 
@@ -203,6 +222,10 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   pauseObserving() {
+    if (!this.mutationObserver) {
+      return;
+    }
+
     this.translateMutations(this.mutationObserver.takeRecords());
     this.mutationObserver.disconnect();
   }
@@ -213,6 +236,10 @@ export default class DOMLocalization extends Localization {
    * @private
    */
   resumeObserving() {
+    if (!this.mutationObserver) {
+      return;
+    }
+
     for (const root of this.roots) {
       this.mutationObserver.observe(root, this.observerConfig);
     }
@@ -226,10 +253,12 @@ export default class DOMLocalization extends Localization {
   translateMutations(mutations) {
     for (const mutation of mutations) {
       switch (mutation.type) {
-        case 'attributes':
-          this.pendingElements.add(mutation.target);
+        case "attributes":
+          if (mutation.target.hasAttribute("data-l10n-id")) {
+            this.pendingElements.add(mutation.target);
+          }
           break;
-        case 'childList':
+        case "childList":
           for (const addedNode of mutation.addedNodes) {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
@@ -257,7 +286,6 @@ export default class DOMLocalization extends Localization {
       }
     }
   }
-
 
   /**
    * Translate a DOM element or fragment asynchronously using this
@@ -310,7 +338,9 @@ export default class DOMLocalization extends Localization {
     this.pauseObserving();
 
     for (let i = 0; i &lt; elements.length; i++) {
-      overlayElement(elements[i], translations[i]);
+      if (translations[i] !== undefined) {
+        translateElement(elements[i], translations[i]);
+      }
     }
 
     this.resumeObserving();
@@ -326,7 +356,7 @@ export default class DOMLocalization extends Localization {
   getTranslatables(element) {
     const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
 
-    if (typeof element.hasAttribute === 'function' &amp;&amp;
+    if (typeof element.hasAttribute === "function" &amp;&amp;
         element.hasAttribute(L10NID_ATTR_NAME)) {
       nodes.push(element);
     }
@@ -339,14 +369,14 @@ export default class DOMLocalization extends Localization {
    * array.
    *
    * @param {Element} element
-   * @returns {Array&lt;string, Object>}
+   * @returns {Object}
    * @private
    */
   getKeysForElement(element) {
-    return [
-      element.getAttribute(L10NID_ATTR_NAME),
-      JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
-    ];
+    return {
+      id: element.getAttribute(L10NID_ATTR_NAME),
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
+    };
   }
 }
 </code></pre>
@@ -359,13 +389,13 @@ export default class DOMLocalization extends Localization {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="L10nError.html">L10nError</a></li><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#LOCALIZABLE_ELEMENTS">LOCALIZABLE_ELEMENTS</a></li><li><a href="global.html#onLanguageChange">onLanguageChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#onChange">onChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#TEXT_LEVEL_ELEMENTS">TEXT_LEVEL_ELEMENTS</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 01 2018 12:57:54 GMT+0100 (STD)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:31 GMT+0200 (DST)
 </footer>
 
 <script> prettyPrint(); </script>
