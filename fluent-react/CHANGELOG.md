@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+  - Change the fluent peer dependency to 0.8.x.
+
+    Pin down the version of the `fluent` peer dependency to 0.8.x in case there
+    are any breaking API changes in future its versions.
+
 ## fluent-react 0.8.0 (August 21, 2018)
 
   - Rename the `messages` prop to `bundles`. (#222)
