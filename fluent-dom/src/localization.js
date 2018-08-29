@@ -82,7 +82,10 @@ export default class Localization {
    *
    *     // [
    *     //   { value: 'Hello, Mary!', attributes: null },
-   *     //   { value: 'Welcome!', attributes: [ { name: "title", value: 'Hello' } ] }
+   *     //   {
+   *     //     value: 'Welcome!',
+   *     //     attributes: [ { name: "title", value: 'Hello' } ]
+   *     //   }
    *     // ]
    *
    * Returns a Promise resolving to an array of the translation strings.
