@@ -262,6 +262,27 @@ foo = <confirm>Sign in</confirm>.
     ));
   });
 
+  test("markup in element's child are used for missing message", function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+  
+    // Message is not defined in the bundle, but we can default to 
+    // the elements child if it is just a string.
+    const wrapper = shallow(
+      <Localized id="foo" button={<button onClick={alert}></button>}>
+        <div>
+          {"Click <button>me</button>!"}
+        </div>
+      </Localized>,
+      { context: { l10n, parseMarkup } }
+    );
+  
+    assert.ok(wrapper.contains(
+      <div>
+        Click <button onClick={alert}>me</button>!
+      </div>
+    ));
+  });
 });
 
 suite('Localized - overlay of void elements', function() {;
