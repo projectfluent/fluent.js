@@ -39,7 +39,7 @@ export default class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getTermIdentifier", "getVariant", "getVariantName", "getNumber",
+      "getTermIdentifier", "getVariant", "getNumber",
       "getValue", "getPattern", "getVariantList", "getTextElement",
       "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
       "getString", "getLiteral"
@@ -323,7 +323,7 @@ export default class FluentParser {
       return this.getNumber(ps);
     }
 
-    return this.getVariantName(ps);
+    return this.getIdentifier(ps);
   }
 
   getVariant(ps, hasDefault) {
@@ -377,21 +377,6 @@ export default class FluentParser {
     }
 
     return variants;
-  }
-
-  getVariantName(ps) {
-    let name = ps.takeIDStart();
-
-    while (true) {
-      const ch = ps.takeVariantNameChar();
-      if (ch) {
-        name += ch;
-      } else {
-        break;
-      }
-    }
-
-    return new AST.VariantName(name.replace(trailingWSRe, ""));
   }
 
   getDigits(ps) {
