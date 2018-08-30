@@ -32,7 +32,7 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "VariantName",
+                    "type": "Identifier",
                     "name": "one",
                     "span": {
                       "type": "Span",

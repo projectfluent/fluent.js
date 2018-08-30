@@ -277,16 +277,6 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), output);
   });
 
-  test("variant key words", function() {
-    const input = ftl`
-      foo =
-          { $sel ->
-             *[a b c] A B C
-          }
-    `;
-    assert.equal(pretty(input), input);
-  });
-
   test("variant key number", function() {
     const input = ftl`
       foo =
