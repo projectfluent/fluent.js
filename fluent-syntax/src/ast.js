@@ -26,17 +26,10 @@ export class Resource extends SyntaxNode {
   }
 }
 
-export class Entry extends SyntaxNode {
-  constructor() {
-    super();
-    this.type = "Entry";
-    this.annotations = [];
-  }
-
-  addAnnotation(annot) {
-    this.annotations.push(annot);
-  }
-}
+/*
+ * An abstract base class for useful elements of Resource.body.
+ */
+export class Entry extends SyntaxNode {}
 
 export class Message extends Entry {
   constructor(id, value = null, attributes = [], comment = null) {
@@ -60,6 +53,14 @@ export class Term extends Entry {
   }
 }
 
+export class VariantList extends SyntaxNode {
+  constructor(variants) {
+    super();
+    this.type = "VariantList";
+    this.variants = variants;
+  }
+}
+
 export class Pattern extends SyntaxNode {
   constructor(elements) {
     super();
@@ -68,7 +69,12 @@ export class Pattern extends SyntaxNode {
   }
 }
 
-export class TextElement extends SyntaxNode {
+/*
+ * An abstract base class for elements of Patterns.
+ */
+export class PatternElement extends SyntaxNode {}
+
+export class TextElement extends PatternElement {
   constructor(value) {
     super();
     this.type = "TextElement";
@@ -76,7 +82,7 @@ export class TextElement extends SyntaxNode {
   }
 }
 
-export class Placeable extends SyntaxNode {
+export class Placeable extends PatternElement {
   constructor(expression) {
     super();
     this.type = "Placeable";
@@ -84,25 +90,23 @@ export class Placeable extends SyntaxNode {
   }
 }
 
-export class Expression extends SyntaxNode {
-  constructor() {
-    super();
-    this.type = "Expression";
-  }
-}
+/*
+ * An abstract base class for expressions.
+ */
+export class Expression extends SyntaxNode {}
 
-export class StringExpression extends Expression {
+export class StringLiteral extends Expression {
   constructor(value) {
     super();
-    this.type = "StringExpression";
+    this.type = "StringLiteral";
     this.value = value;
   }
 }
 
-export class NumberExpression extends Expression {
+export class NumberLiteral extends Expression {
   constructor(value) {
     super();
-    this.type = "NumberExpression";
+    this.type = "NumberLiteral";
     this.value = value;
   }
 }
@@ -115,28 +119,36 @@ export class MessageReference extends Expression {
   }
 }
 
-export class ExternalArgument extends Expression {
+export class TermReference extends Expression {
   constructor(id) {
     super();
-    this.type = "ExternalArgument";
+    this.type = "TermReference";
+    this.id = id;
+  }
+}
+
+export class VariableReference extends Expression {
+  constructor(id) {
+    super();
+    this.type = "VariableReference";
     this.id = id;
   }
 }
 
 export class SelectExpression extends Expression {
-  constructor(expression, variants) {
+  constructor(selector, variants) {
     super();
     this.type = "SelectExpression";
-    this.expression = expression;
+    this.selector = selector;
     this.variants = variants;
   }
 }
 
 export class AttributeExpression extends Expression {
-  constructor(id, name) {
+  constructor(ref, name) {
     super();
     this.type = "AttributeExpression";
-    this.id = id;
+    this.ref = ref;
     this.name = name;
   }
 }
@@ -151,11 +163,12 @@ export class VariantExpression extends Expression {
 }
 
 export class CallExpression extends Expression {
-  constructor(callee, args = []) {
+  constructor(callee, positional = [], named = []) {
     super();
     this.type = "CallExpression";
     this.callee = callee;
-    this.args = args;
+    this.positional = positional;
+    this.named = named;
   }
 }
 
@@ -179,11 +192,11 @@ export class Variant extends SyntaxNode {
 }
 
 export class NamedArgument extends SyntaxNode {
-  constructor(name, val) {
+  constructor(name, value) {
     super();
     this.type = "NamedArgument";
     this.name = name;
-    this.val = val;
+    this.value = value;
   }
 }
 
@@ -237,11 +250,16 @@ export class Function extends Identifier {
   }
 }
 
-export class Junk extends Entry {
+export class Junk extends SyntaxNode {
   constructor(content) {
     super();
     this.type = "Junk";
+    this.annotations = [];
     this.content = content;
+  }
+
+  addAnnotation(annot) {
+    this.annotations.push(annot);
   }
 }
 

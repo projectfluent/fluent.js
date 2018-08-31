@@ -1,5 +1,6 @@
 PACKAGE := fluent-dom
 GLOBAL := FluentDOM
+DEPS    := cached-iterable:CachedIterable
 
 include ../common.mk
 
@@ -11,6 +12,7 @@ $(PACKAGE).js: $(SOURCES)
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--amd.id $(PACKAGE) \
 		--name $(GLOBAL) \
+		--globals $(DEPS) \
 		--output.file $@
 	@echo -e " $(OK) $@ built"
 
@@ -20,6 +22,7 @@ compat.js: $(SOURCES)
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--amd.id $(PACKAGE) \
 		--name $(GLOBAL) \
+		--globals $(DEPS) \
 		--output.file $@
 	@echo -e " $(OK) $@ built"
 

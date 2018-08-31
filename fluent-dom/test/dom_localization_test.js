@@ -1,23 +1,16 @@
 import assert from "assert";
-import { MessageContext } from "../../fluent/src/index";
+import { FluentBundle } from "../../fluent/src/index";
 import DOMLocalization from "../src/dom_localization";
 
 async function* mockGenerateMessages(resourceIds) {
-  const mc = new MessageContext(["en-US"]);
-  mc.addMessages("key1 = Key 1");
-  yield mc;
+  const bundle = new FluentBundle(["en-US"]);
+  bundle.addMessages("key1 = Key 1");
+  yield bundle;
 }
-
-const mockWindow = {
-  MutationObserver: class MutationObserver {
-    takeRecords() {return new Set();}
-    disconnect() {}
-  }
-};
 
 suite("translateFragment", function() {
   test("translates a node", async function() {
-    const domLoc = new DOMLocalization(mockWindow, ["test.ftl"], mockGenerateMessages);
+    const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
     const frag = document.createDocumentFragment();
     const elem = document.createElement("p");
@@ -30,7 +23,7 @@ suite("translateFragment", function() {
   });
 
   test("does not inject content into a node with missing translation", async function() {
-    const domLoc = new DOMLocalization(mockWindow, ["test.ftl"], mockGenerateMessages);
+    const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
     const frag = document.createDocumentFragment();
     const elem = document.createElement("p");

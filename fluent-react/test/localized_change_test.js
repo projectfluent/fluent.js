@@ -1,16 +1,16 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
-suite('Localized - change messages', function() {
+suite('Localized - change bundles', function() {
   test('relocalizing', function() {
-    const mcx1 = new MessageContext();
-    const l10n = new ReactLocalization([mcx1]);
+    const bundle1 = new FluentBundle();
+    const l10n = new ReactLocalization([bundle1]);
 
-    mcx1.addMessages(`
+    bundle1.addMessages(`
 foo = FOO
 `);
 
@@ -25,12 +25,12 @@ foo = FOO
       <div>FOO</div>
     ));
 
-    const mcx2 = new MessageContext();
-    mcx2.addMessages(`
+    const bundle2 = new FluentBundle();
+    bundle2.addMessages(`
 foo = BAR
 `);
 
-    l10n.setMessages([mcx2]);
+    l10n.setBundles([bundle2]);
 
     wrapper.update();
     assert.ok(wrapper.contains(

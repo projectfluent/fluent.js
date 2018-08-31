@@ -1,0 +1,101 @@
+{
+    "type": "Resource",
+    "body": [
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "message-reference"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "MessageReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "msg"
+                            }
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "term-reference"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "TermReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "-term"
+                            }
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "variable-reference"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "VariableReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "var"
+                            }
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "not-call-expression"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "MessageReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "FUN"
+                            }
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        }
+    ]
+}

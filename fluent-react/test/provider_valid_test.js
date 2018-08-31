@@ -15,7 +15,7 @@ suite('LocalizationProvider - validation', function() {
 
   test('valid use', function() {
     const wrapper = shallow(
-      <LocalizationProvider messages={[]}>
+      <LocalizationProvider bundles={[]}>
         <div />
       </LocalizationProvider>
     );
@@ -25,7 +25,7 @@ suite('LocalizationProvider - validation', function() {
   test('without a child', function() {
     function render() {
       shallow(
-        <LocalizationProvider messages={[]} />
+        <LocalizationProvider bundles={[]} />
       );
     }
     assert.throws(render, /a single React element child/);
@@ -34,7 +34,7 @@ suite('LocalizationProvider - validation', function() {
   test('with multiple children', function() {
     function render() {
       shallow(
-        <LocalizationProvider messages={[]}>
+        <LocalizationProvider bundles={[]}>
           <div />
           <div />
         </LocalizationProvider>
@@ -43,19 +43,19 @@ suite('LocalizationProvider - validation', function() {
     assert.throws(render, /a single React element child/);
   });
 
-  test('without messages', function() {
+  test('without bundles', function() {
     function render() {
       shallow(
         <LocalizationProvider />
       );
     }
-    assert.throws(render, /must receive the messages prop/);
+    assert.throws(render, /must receive the bundles prop/);
   });
 
-  test('without iterable messages', function() {
+  test('without iterable bundles', function() {
     function render() {
       shallow(
-        <LocalizationProvider messages={0}/>
+        <LocalizationProvider bundles={0}/>
       );
     }
     assert.throws(render, /must be an iterable/);

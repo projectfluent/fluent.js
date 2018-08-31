@@ -1,5 +1,25 @@
 # Changelog
 
+## fluent-syntax 0.8.1 (August 1, 2018)
+
+### Bug fixes
+
+- Avoid forEach to make code minification-friendly. (#263)
+- Don't call charCodeAt() on undefined when at EOF. (#265)
+
+## fluent-syntax 0.8.0 (July 24, 2018)
+
+  - Implement support for Fluent Syntax 0.6. (#253)
+
+    Syntax 0.6 keeps the syntax unchanged but makes many changes to the AST.
+    Consult https://github.com/projectfluent/fluent/releases/tag/v0.6.0
+    for the list of changes.
+
+  - Drop support for IE and old evergreen browsers. (#133)
+
+    Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,
+    iOS Safari 10.3+ and node 8.9+.
+
 ## fluent-syntax 0.7.0 (April 17, 2018)
 
   - Add the `ref` field to `VariantExpression`.
