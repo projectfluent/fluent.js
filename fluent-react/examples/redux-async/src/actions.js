@@ -1,10 +1,12 @@
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 import delay from 'delay';
 
+// Hand off handling FTL assets to Parcel.
+import ftl from "../public/*.ftl";
+
 async function fetchMessages(locale) {
-  const { PUBLIC_URL } = process.env;
-  const response = await fetch(`${PUBLIC_URL}/${locale}.ftl`);
+  const response = await fetch(ftl[locale]);
   const messages = await response.text();
 
   await delay(1000);
@@ -25,15 +27,15 @@ export function changeLocales(userLocales) {
       currentLocales.map(fetchMessages)
     );
 
-    const bundle = fetched.reduce(
+    const messages = fetched.reduce(
       (obj, cur) => Object.assign(obj, cur)
     );
 
-    const generateMessages = function* () {
+    const generateBundles = function* () {
       for (const locale of currentLocales) {
-        const cx = new MessageContext(locale);
-        cx.addMessages(bundle[locale]);
-        yield cx;
+        const bundle = new FluentBundle(locale);
+        bundle.addMessages(messages[locale]);
+        yield bundle;
       }
     }
 
@@ -41,7 +43,7 @@ export function changeLocales(userLocales) {
       type: 'CHANGE_LOCALES_RESPONSE',
       userLocales,
       currentLocales,
-      messages: generateMessages()
+      bundles: generateBundles()
     });
   };
 }

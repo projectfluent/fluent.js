@@ -1,0 +1,262 @@
+{
+    "type": "Resource",
+    "body": [
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "new-messages"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "SelectExpression",
+                            "selector": {
+                                "type": "CallExpression",
+                                "callee": {
+                                    "type": "Function",
+                                    "name": "BUILTIN"
+                                },
+                                "positional": [],
+                                "named": []
+                            },
+                            "variants": [
+                                {
+                                    "type": "Variant",
+                                    "key": {
+                                        "type": "NumberLiteral",
+                                        "value": "0"
+                                    },
+                                    "value": {
+                                        "type": "Pattern",
+                                        "elements": [
+                                            {
+                                                "type": "TextElement",
+                                                "value": "Zero"
+                                            }
+                                        ]
+                                    },
+                                    "default": false
+                                },
+                                {
+                                    "type": "Variant",
+                                    "key": {
+                                        "type": "VariantName",
+                                        "name": "other"
+                                    },
+                                    "value": {
+                                        "type": "Pattern",
+                                        "elements": [
+                                            {
+                                                "type": "Placeable",
+                                                "expression": {
+                                                    "type": "StringLiteral",
+                                                    "value": ""
+                                                }
+                                            },
+                                            {
+                                                "type": "TextElement",
+                                                "value": "Other"
+                                            }
+                                        ]
+                                    },
+                                    "default": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "valid-selector"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "SelectExpression",
+                            "selector": {
+                                "type": "AttributeExpression",
+                                "ref": {
+                                    "type": "TermReference",
+                                    "id": {
+                                        "type": "Identifier",
+                                        "name": "-term"
+                                    }
+                                },
+                                "name": {
+                                    "type": "Identifier",
+                                    "name": "case"
+                                }
+                            },
+                            "variants": [
+                                {
+                                    "type": "Variant",
+                                    "key": {
+                                        "type": "VariantName",
+                                        "name": "many     words"
+                                    },
+                                    "value": {
+                                        "type": "Pattern",
+                                        "elements": [
+                                            {
+                                                "type": "TextElement",
+                                                "value": "value"
+                                            }
+                                        ]
+                                    },
+                                    "default": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "invalid-selector =\n    { -term[case] ->\n       *[key] value\n    }\n"
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "empty-variant"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "SelectExpression",
+                            "selector": {
+                                "type": "NumberLiteral",
+                                "value": "1"
+                            },
+                            "variants": [
+                                {
+                                    "type": "Variant",
+                                    "key": {
+                                        "type": "VariantName",
+                                        "name": "one"
+                                    },
+                                    "value": {
+                                        "type": "Pattern",
+                                        "elements": [
+                                            {
+                                                "type": "Placeable",
+                                                "expression": {
+                                                    "type": "StringLiteral",
+                                                    "value": ""
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "default": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "nested-select"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "SelectExpression",
+                            "selector": {
+                                "type": "NumberLiteral",
+                                "value": "1"
+                            },
+                            "variants": [
+                                {
+                                    "type": "Variant",
+                                    "key": {
+                                        "type": "VariantName",
+                                        "name": "one"
+                                    },
+                                    "value": {
+                                        "type": "Pattern",
+                                        "elements": [
+                                            {
+                                                "type": "Placeable",
+                                                "expression": {
+                                                    "type": "SelectExpression",
+                                                    "selector": {
+                                                        "type": "NumberLiteral",
+                                                        "value": "2"
+                                                    },
+                                                    "variants": [
+                                                        {
+                                                            "type": "Variant",
+                                                            "key": {
+                                                                "type": "VariantName",
+                                                                "name": "two"
+                                                            },
+                                                            "value": {
+                                                                "type": "Pattern",
+                                                                "elements": [
+                                                                    {
+                                                                        "type": "TextElement",
+                                                                        "value": "Value"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "default": true
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "default": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR VariantLists cannot appear in SelectExpressions"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "nested-variant-list =\n    { 1 ->\n       *[one] {\n          *[two] Value\n       }\n    }\n"
+        }
+    ]
+}

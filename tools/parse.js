@@ -56,12 +56,14 @@ function printResource(data) {
     const {body} = withSpans
       ? res
       : FluentSyntax.parse(source, {withSpans: true});
-    body.map(entry => printAnnotations(source, entry));
+    body
+      .filter(entry => entry.type === "Junk")
+      .map(junk => printAnnotations(source, junk));
   }
 }
 
-function printAnnotations(source, entry) {
-  const { span, annotations } = entry;
+function printAnnotations(source, junk) {
+  const { span, annotations } = junk;
   for (const annot of annotations) {
     printAnnotation(source, span, annot);
   }

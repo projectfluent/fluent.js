@@ -2,17 +2,17 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { ftl } from '../src/util';
 
 suite('Transformations', function(){
-  let ctx, errs;
+  let bundle, errs;
 
   suiteSetup(function() {
-    ctx = new MessageContext('en-US', {
+    bundle = new FluentBundle('en-US', {
       transform: v => v.replace(/a/g, "A") 
     });
-    ctx.addMessages(ftl`
+    bundle.addMessages(ftl`
       foo = Faa
           .bar = Bar { $foo } Baz
     `);
@@ -23,9 +23,9 @@ suite('Transformations', function(){
   });
 
   test('transforms strings', function(){
-    const msg = ctx.getMessage('foo');
-    const val = ctx.format(msg, {}, errs);
-    const attr = ctx.format(msg.attrs["bar"], {foo: "arg"}, errs);
+    const msg = bundle.getMessage('foo');
+    const val = bundle.format(msg, {}, errs);
+    const attr = bundle.format(msg.attrs["bar"], {foo: "arg"}, errs);
     assert(val.includes("FAA"));
     assert(attr.includes("BAr"));
     assert(attr.includes("BAz"));

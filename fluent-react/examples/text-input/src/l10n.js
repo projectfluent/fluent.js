@@ -1,5 +1,4 @@
-import 'fluent-intl-polyfill/compat';
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
 const MESSAGES_ALL = {
@@ -17,7 +16,7 @@ type-name =
   `,
 };
 
-export function* generateMessages(userLocales) {
+export function* generateBundles(userLocales) {
   // Choose locales that are best for the user.
   const currentLocales = negotiateLanguages(
     userLocales,
@@ -26,8 +25,8 @@ export function* generateMessages(userLocales) {
   );
 
   for (const locale of currentLocales) {
-    const cx = new MessageContext(locale);
-    cx.addMessages(MESSAGES_ALL[locale]);
-    yield cx;
+    const bundle = new FluentBundle(locale);
+    bundle.addMessages(MESSAGES_ALL[locale]);
+    yield bundle;
   }
 }

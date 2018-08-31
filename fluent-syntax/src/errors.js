@@ -58,6 +58,22 @@ function getErrorMessage(code, args) {
       return "Attributes of terms cannot be used as placeables";
     case "E0020":
       return "Unterminated string expression";
+    case "E0021":
+      return "Positional arguments must not follow named arguments";
+    case "E0022":
+      return "Named arguments must be unique";
+    case "E0023":
+      return "VariantLists are only allowed inside of other VariantLists.";
+    case "E0024":
+      return "Cannot access variants of a message.";
+    case "E0025": {
+      const [char] = args;
+      return `Unknown escape sequence: \\${char}.`;
+    }
+    case "E0026": {
+      const [char] = args;
+      return `Invalid Unicode escape sequence: \\u${char}.`;
+    }
     default:
       return code;
   }

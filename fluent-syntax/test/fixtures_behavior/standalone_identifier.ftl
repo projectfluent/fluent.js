@@ -1,2 +1,2 @@
 foo
-//~ ERROR E0005, pos 3, args "foo"
+# ~ERROR E0003, pos 3, args "="

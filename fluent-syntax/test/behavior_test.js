@@ -1,11 +1,11 @@
-import assert from 'assert';
-import { join } from 'path';
-import { readdir } from 'fs';
-import { readfile } from './util';
-import { parse } from '../src';
+import assert from "assert";
+import { join } from "path";
+import { readdir } from "fs";
+import { readfile } from "./util";
+import { parse } from "../src";
 
-const sigil = '^\/\/~ ';
-const reDirective = new RegExp(`${sigil}(.*)[\n$]`, 'gm');
+const sigil = "^# ~";
+const reDirective = new RegExp(`${sigil}(.*)[\n$]`, "gm");
 
 function* directives(source) {
   let match;
@@ -17,20 +17,16 @@ function* directives(source) {
 export function preprocess(source) {
   return {
     directives: [...directives(source)],
-    source: source.replace(reDirective, ''),
+    source: source.replace(reDirective, ""),
   };
 }
 
 function getCodeName(code) {
   switch (code[0]) {
-    case 'E':
+    case "E":
       return `ERROR ${code}`;
-    case 'W':
-      return `WARNING ${code}`;
-    case 'H':
-      return `HINT ${code}`;
     default:
-      throw new Error('Unknown Annotation code');
+      throw new Error("Unknown Annotation code");
   }
 }
 
@@ -45,18 +41,21 @@ export function serializeAnnotation(annot) {
   }
 
   if (args.length) {
-    const prettyArgs = args.map(arg => `"${arg}"`).join(' ');
+    const prettyArgs = args.map(arg => `"${arg}"`).join(" ");
     parts.push(`args ${prettyArgs}`);
   }
 
-  return parts.join(', ');
+  return parts.join(", ");
 }
 
 function toDirectives(annots, cur) {
-  return annots.concat(cur.annotations.map(serializeAnnotation));
+  if (cur.type === "Junk") {
+    return annots.concat(cur.annotations.map(serializeAnnotation));
+  }
+  return annots;
 }
 
-const fixtures = join(__dirname, 'fixtures_behavior');
+const fixtures = join(__dirname, "fixtures_behavior");
 
 readdir(fixtures, function(err, filenames) {
   if (err) {
@@ -64,20 +63,20 @@ readdir(fixtures, function(err, filenames) {
   }
 
   const ftlnames = filenames.filter(
-    filename => filename.endsWith('.ftl')
+    filename => filename.endsWith(".ftl")
   );
 
-  suite('Behavior tests', function() {
+  suite("Behavior tests", function() {
     for (const filename of ftlnames) {
       const filepath = join(fixtures, filename);
       test(filename, function() {
         return readfile(filepath).then(file => {
           const { directives, source } = preprocess(file);
-          const expected = directives.join('\n') + '\n';
+          const expected = directives.join("\n") + "\n";
           const ast = parse(source);
-          const actual = ast.body.reduce(toDirectives, []).join('\n') + '\n';
+          const actual = ast.body.reduce(toDirectives, []).join("\n") + "\n";
           assert.deepEqual(
-            actual, expected, 'Annotations mismatch'
+            actual, expected, "Annotations mismatch"
           );
         });
       });

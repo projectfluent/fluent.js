@@ -28,15 +28,17 @@ export class FTLParserStream extends ParserStream {
   }
 
   skipBlankLines() {
+    let lineCount = 0;
     while (true) {
       this.peekInlineWS();
 
       if (this.currentPeekIs("\n")) {
         this.skipToPeek();
         this.next();
+        lineCount++;
       } else {
         this.resetPeek();
-        break;
+        return lineCount;
       }
     }
   }
@@ -82,12 +84,13 @@ export class FTLParserStream extends ParserStream {
     this.skipInlineWS();
   }
 
-  takeCharIf(ch) {
-    if (this.ch === ch) {
-      this.next();
+  expectLineEnd() {
+    if (this.ch === undefined) {
+      // EOF is a valid line end in Fluent.
       return true;
     }
-    return false;
+
+    return this.expectChar("\n");
   }
 
   takeChar(f) {
@@ -109,11 +112,7 @@ export class FTLParserStream extends ParserStream {
            (cc >= 65 && cc <= 90); // A-Z
   }
 
-  isEntryIDStart() {
-    if (this.currentIs("-")) {
-      this.peek();
-    }
-
+  isIdentifierStart() {
     const ch = this.currentPeek();
     const isID = this.isCharIDStart(ch);
     this.resetPeek();
@@ -121,11 +120,16 @@ export class FTLParserStream extends ParserStream {
   }
 
   isNumberStart() {
-    if (this.currentIs("-")) {
-      this.peek();
+    const ch = this.currentIs("-")
+      ? this.peek()
+      : this.current();
+
+    if (ch === undefined) {
+      this.resetPeek();
+      return false;
     }
 
-    const cc = this.currentPeek().charCodeAt(0);
+    const cc = ch.charCodeAt(0);
     const isDigit = cc >= 48 && cc <= 57; // 0-9
     this.resetPeek();
     return isDigit;
@@ -139,7 +143,7 @@ export class FTLParserStream extends ParserStream {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
-  isPeekPatternStart() {
+  isPeekValueStart() {
     this.peekInlineWS();
     const ch = this.currentPeek();
 
@@ -148,26 +152,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    return this.isPeekNextLinePatternStart();
-  }
-
-  isPeekNextLineZeroFourStyleComment() {
-    if (!this.currentPeekIs("\n")) {
-      return false;
-    }
-
-    this.peek();
-
-    if (this.currentPeekIs("/")) {
-      this.peek();
-      if (this.currentPeekIs("/")) {
-        this.resetPeek();
-        return true;
-      }
-    }
-
-    this.resetPeek();
-    return false;
+    return this.isPeekNextLineValue();
   }
 
   // -1 - any
@@ -184,7 +169,7 @@ export class FTLParserStream extends ParserStream {
     while (i <= level || (level === -1 && i < 3)) {
       this.peek();
       if (!this.currentPeekIs("#")) {
-        if (i !== level && level !== -1) {
+        if (i <= level && level !== -1) {
           this.resetPeek();
           return false;
         }
@@ -260,7 +245,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLinePatternStart() {
+  isPeekNextLineValue() {
     if (!this.currentPeekIs("\n")) {
       return false;
     }
@@ -292,10 +277,9 @@ export class FTLParserStream extends ParserStream {
       if (this.currentIs("\n") && !this.peekCharIs("\n")) {
         this.next();
         if (this.ch === undefined ||
-            this.isEntryIDStart() ||
-            this.currentIs("#") ||
-            (this.currentIs("/") && this.peekCharIs("/")) ||
-            (this.currentIs("[") && this.peekCharIs("["))) {
+            this.isIdentifierStart() ||
+            this.currentIs("-") ||
+            this.currentIs("#")) {
           break;
         }
       }
@@ -303,20 +287,14 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  takeIDStart(allowTerm) {
-    if (allowTerm && this.currentIs("-")) {
-      this.next();
-      return "-";
-    }
-
+  takeIDStart() {
     if (this.isCharIDStart(this.ch)) {
       const ret = this.ch;
       this.next();
       return ret;
     }
 
-    const allowedRange = allowTerm ? "a-zA-Z-" : "a-zA-Z";
-    throw new ParseError("E0004", allowedRange);
+    throw new ParseError("E0004", "a-zA-Z");
   }
 
   takeIDChar() {
@@ -347,6 +325,17 @@ export class FTLParserStream extends ParserStream {
     const closure = ch => {
       const cc = ch.charCodeAt(0);
       return (cc >= 48 && cc <= 57); // 0-9
+    };
+
+    return this.takeChar(closure);
+  }
+
+  takeHexDigit() {
+    const closure = ch => {
+      const cc = ch.charCodeAt(0);
+      return (cc >= 48 && cc <= 57) // 0-9
+        || (cc >= 65 && cc <= 70) // A-F
+        || (cc >= 97 && cc <= 102); // a-f
     };
 
     return this.takeChar(closure);

@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "foo",

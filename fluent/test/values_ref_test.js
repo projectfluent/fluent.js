@@ -2,15 +2,15 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { ftl } from '../src/util';
 
 suite('Referencing values', function(){
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   suiteSetup(function() {
-    ctx = new MessageContext('en-US', { useIsolating: false });
-    ctx.addMessages(ftl`
+    bundle = new FluentBundle('en-US', { useIsolating: false });
+    bundle.addMessages(ftl`
       key1 = Value 1
       key2 = {
           [a] A2
@@ -21,7 +21,7 @@ suite('Referencing values', function(){
           [a] A{ 4 }
          *[b] B{ 4 }
       }
-      key5
+      key5 =
           .a = A5
           .b = B5
 
@@ -47,65 +47,65 @@ suite('Referencing values', function(){
   });
 
   test('references the value', function(){
-    const msg = ctx.getMessage('ref1');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('ref1');
+    const val = bundle.format(msg, args, errs);
     assert.equal(val, 'Value 1');
     assert.equal(errs.length, 0);
   });
 
   test('references the default variant', function(){
-    const msg = ctx.getMessage('ref2');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('ref2');
+    const val = bundle.format(msg, args, errs);
     assert.equal(val, 'B2');
     assert.equal(errs.length, 0);
   });
 
   test('references the value if it is a pattern', function(){
-    const msg = ctx.getMessage('ref3');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('ref3');
+    const val = bundle.format(msg, args, errs);
     assert.equal(val, 'Value 3');
     assert.equal(errs.length, 0);
   });
 
   test('references the default variant if it is a pattern', function(){
-    const msg = ctx.getMessage('ref4');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('ref4');
+    const val = bundle.format(msg, args, errs);
     assert.equal(val, 'B4');
     assert.equal(errs.length, 0);
   });
 
   test('uses ??? if there is no value', function(){
-    const msg = ctx.getMessage('ref5');
-    const val = ctx.format(msg, args, errs);
+    const msg = bundle.getMessage('ref5');
+    const val = bundle.format(msg, args, errs);
     assert.strictEqual(val, '???');
     assert.ok(errs[0] instanceof RangeError); // no default
   });
 
   test('references the variants', function(){
-    const msg_a = ctx.getMessage('ref6');
-    const msg_b = ctx.getMessage('ref7');
-    const val_a = ctx.format(msg_a, args, errs)
-    const val_b = ctx.format(msg_b, args, errs)
+    const msg_a = bundle.getMessage('ref6');
+    const msg_b = bundle.getMessage('ref7');
+    const val_a = bundle.format(msg_a, args, errs)
+    const val_b = bundle.format(msg_b, args, errs)
     assert.strictEqual(val_a, 'A2');
     assert.strictEqual(val_b, 'B2');
     assert.equal(errs.length, 0);
   });
 
   test('references the variants which are patterns', function(){
-    const msg_a = ctx.getMessage('ref8');
-    const msg_b = ctx.getMessage('ref9');
-    const val_a = ctx.format(msg_a, args, errs)
-    const val_b = ctx.format(msg_b, args, errs)
+    const msg_a = bundle.getMessage('ref8');
+    const msg_b = bundle.getMessage('ref9');
+    const val_a = bundle.format(msg_a, args, errs)
+    const val_b = bundle.format(msg_b, args, errs)
     assert.strictEqual(val_a, 'A4');
     assert.strictEqual(val_b, 'B4');
     assert.equal(errs.length, 0);
   });
 
   test('references the attributes', function(){
-    const msg_a = ctx.getMessage('ref10');
-    const msg_b = ctx.getMessage('ref11');
-    const val_a = ctx.format(msg_a, args, errs)
-    const val_b = ctx.format(msg_b, args, errs)
+    const msg_a = bundle.getMessage('ref10');
+    const msg_b = bundle.getMessage('ref11');
+    const val_a = bundle.format(msg_a, args, errs)
+    const val_b = bundle.format(msg_b, args, errs)
     assert.strictEqual(val_a, 'A5');
     assert.strictEqual(val_b, 'B5');
     assert.equal(errs.length, 0);

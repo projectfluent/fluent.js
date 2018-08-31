@@ -3,7 +3,6 @@
   "body": [
     {
       "type": "Message",
-      "annotations": [],
       "id": {
         "type": "Identifier",
         "name": "foo",
@@ -42,18 +41,17 @@
     },
     {
       "type": "Comment",
-      "annotations": [],
       "content": "This is a standalone comment",
       "span": {
         "type": "Span",
         "start": 13,
-        "end": 44
+        "end": 43
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 45
+    "end": 44
   }
 }

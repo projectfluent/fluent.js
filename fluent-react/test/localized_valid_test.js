@@ -16,7 +16,7 @@ suite('Localized - validation', function() {
 
   test('inside of a LocalizationProvider', function() {
     const wrapper = shallow(
-      <LocalizationProvider messages={[]}>
+      <LocalizationProvider bundles={[]}>
         <Localized>
           <div />
         </Localized>

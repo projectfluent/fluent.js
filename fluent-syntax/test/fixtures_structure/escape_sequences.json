@@ -1,0 +1,287 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "backslash",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 9
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value with \\\\ (an escaped backslash)",
+            "span": {
+              "type": "Span",
+              "start": 12,
+              "end": 48
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 12,
+          "end": 48
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "closing-brace",
+        "span": {
+          "type": "Span",
+          "start": 49,
+          "end": 62
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value with \\{ (an opening brace)",
+            "span": {
+              "type": "Span",
+              "start": 65,
+              "end": 97
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 65,
+          "end": 97
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 49,
+        "end": 97
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "unicode-escape",
+        "span": {
+          "type": "Span",
+          "start": 98,
+          "end": 112
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "\\u0041",
+            "span": {
+              "type": "Span",
+              "start": 115,
+              "end": 121
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 115,
+          "end": 121
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 98,
+        "end": 121
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "escaped-unicode",
+        "span": {
+          "type": "Span",
+          "start": 122,
+          "end": 137
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "\\\\u0041",
+            "span": {
+              "type": "Span",
+              "start": 140,
+              "end": 147
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 140,
+          "end": 147
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 122,
+        "end": 147
+      }
+    },
+    {
+      "type": "GroupComment",
+      "content": "String Expressions",
+      "span": {
+        "type": "Span",
+        "start": 149,
+        "end": 170
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "quote-in-string",
+        "span": {
+          "type": "Span",
+          "start": 171,
+          "end": 186
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "value": "\\\"",
+              "span": {
+                "type": "Span",
+                "start": 190,
+                "end": 194
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 189,
+              "end": 195
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 189,
+          "end": 195
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 171,
+        "end": 195
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "backslash-in-string",
+        "span": {
+          "type": "Span",
+          "start": 196,
+          "end": 215
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "value": "\\\\",
+              "span": {
+                "type": "Span",
+                "start": 219,
+                "end": 223
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 218,
+              "end": 224
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 218,
+          "end": 224
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 196,
+        "end": 224
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 249,
+            "end": 249
+          }
+        }
+      ],
+      "content": "mismatched-quote = {\"\\\\\"\"}\n",
+      "span": {
+        "type": "Span",
+        "start": 225,
+        "end": 252
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 252
+  }
+}

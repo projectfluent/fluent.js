@@ -18,13 +18,13 @@ import Localization from "../../fluent-dom/src/localization";
 /**
  * The default localization strategy for Gecko. It comabines locales
  * available in L10nRegistry, with locales requested by the user to
- * generate the iterator over MessageContexts.
+ * generate the iterator over FluentBundles.
  *
  * In the future, we may want to allow certain modules to override this
  * with a different negotitation strategy to allow for the module to
  * be localized into a different language - for example DevTools.
  */
-function defaultGenerateMessages(resourceIds) {
+function defaultGenerateBundles(resourceIds) {
   const requestedLocales = Services.locale.getRequestedLocales();
   const availableLocales = L10nRegistry.getAvailableLocales();
   const defaultLocale = Services.locale.defaultLocale;
@@ -35,8 +35,8 @@ function defaultGenerateMessages(resourceIds) {
 }
 
 class GeckoLocalization extends Localization {
-  constructor(resourceIds, generateMessages = defaultGenerateMessages) {
-    super(resourceIds, generateMessages);
+  constructor(resourceIds, generateBundles = defaultGenerateBundles) {
+    super(resourceIds, generateBundles);
   }
 }
 

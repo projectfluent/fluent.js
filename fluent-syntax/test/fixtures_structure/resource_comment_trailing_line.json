@@ -3,18 +3,17 @@
   "body": [
     {
       "type": "ResourceComment",
-      "annotations": [],
       "content": "This is a comment\nThis comment is multiline\n",
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 52
+        "end": 55
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 53
+    "end": 56
   }
 }
