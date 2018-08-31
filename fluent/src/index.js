@@ -9,13 +9,7 @@
 
 export { default as _parse } from "./parser";
 
-export { MessageContext } from "./context";
-export {
-  FluentType as MessageArgument,
-  FluentNumber as MessageNumberArgument,
-  FluentDateTime as MessageDateTimeArgument,
-} from "./types";
-
-export { mapContextSync, mapContextAsync } from "./fallback";
+export { FluentBundle } from "./context";
+export { FluentType, FluentNumber, FluentDateTime } from "./types";
 
 export { ftl } from "./util";

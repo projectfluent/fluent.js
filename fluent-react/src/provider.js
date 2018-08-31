@@ -1,7 +1,7 @@
 import { Component, Children } from "react";
 import PropTypes from "prop-types";
-
 import ReactLocalization, { isReactLocalization} from "./localization";
+import createParseMarkup from "./markup";
 
 /*
  * The Provider component for the `ReactLocalization` class.
@@ -11,43 +11,45 @@ import ReactLocalization, { isReactLocalization} from "./localization";
  * elements in the descendant's render tree without the need to pass them
  * explicitly.
  *
- *     <LocalizationProvider messages={…}>
+ *     <LocalizationProvider bundles={…}>
  *         …
  *     </LocalizationProvider>
  *
- * The `LocalizationProvider` component takes one prop: `messages`.  It should
- * be an iterable of `MessageContext` instances in order of the user's
- * preferred languages.  The `MessageContext` instances will be used by
+ * The `LocalizationProvider` component takes one prop: `bundles`.  It should
+ * be an iterable of `FluentBundle` instances in order of the user's
+ * preferred languages.  The `FluentBundle` instances will be used by
  * `ReactLocalization` to format translations.  If a translation is missing in
  * one instance, `ReactLocalization` will fall back to the next one.
  */
 export default class LocalizationProvider extends Component {
   constructor(props) {
     super(props);
-    const { messages } = props;
+    const {bundles, parseMarkup} = props;
 
-    if (messages === undefined) {
-      throw new Error("LocalizationProvider must receive the messages prop.");
+    if (bundles === undefined) {
+      throw new Error("LocalizationProvider must receive the bundles prop.");
     }
 
-    if (!messages[Symbol.iterator]) {
-      throw new Error("The messages prop must be an iterable.");
+    if (!bundles[Symbol.iterator]) {
+      throw new Error("The bundles prop must be an iterable.");
     }
 
-    this.l10n = new ReactLocalization(messages);
+    this.l10n = new ReactLocalization(bundles);
+    this.parseMarkup = parseMarkup || createParseMarkup();
   }
 
   getChildContext() {
     return {
-      l10n: this.l10n
+      l10n: this.l10n,
+      parseMarkup: this.parseMarkup,
     };
   }
 
   componentWillReceiveProps(next) {
-    const { messages } = next;
+    const { bundles } = next;
 
-    if (messages !== this.props.messages) {
-      this.l10n.setMessages(messages);
+    if (bundles !== this.props.bundles) {
+      this.l10n.setBundles(bundles);
     }
   }
 
@@ -57,12 +59,14 @@ export default class LocalizationProvider extends Component {
 }
 
 LocalizationProvider.childContextTypes = {
-  l10n: isReactLocalization
+  l10n: isReactLocalization,
+  parseMarkup: PropTypes.func,
 };
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  messages: isIterable
+  bundles: isIterable,
+  parseMarkup: PropTypes.func,
 };
 
 function isIterable(props, propName, componentName) {

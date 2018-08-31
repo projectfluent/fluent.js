@@ -42,7 +42,7 @@ export default class FluentParser {
       "getTermIdentifier", "getVariant", "getVariantName", "getNumber",
       "getValue", "getPattern", "getVariantList", "getTextElement",
       "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
-      "getString", "getLiteral", "getVariantList"
+      "getString", "getLiteral"
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);

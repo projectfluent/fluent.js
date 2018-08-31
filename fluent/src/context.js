@@ -2,11 +2,11 @@ import resolve from "./resolver";
 import FluentResource from "./resource";
 
 /**
- * Message contexts are single-language stores of translations.  They are
+ * Message bundles are single-language stores of translations.  They are
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
- * Always use `MessageContext.format` to retrieve translation units from a
+ * Always use `FluentBundle.format` to retrieve translation units from a
  * context. Translations can contain references to other entities or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
@@ -14,21 +14,21 @@ import FluentResource from "./resource";
  * context's language. See the documentation of the Fluent syntax for more
  * information.
  */
-export class MessageContext {
+export class FluentBundle {
 
   /**
-   * Create an instance of `MessageContext`.
+   * Create an instance of `FluentBundle`.
    *
    * The `locales` argument is used to instantiate `Intl` formatters used by
    * translations.  The `options` object can be used to configure the context.
    *
    * Examples:
    *
-   *     const ctx = new MessageContext(locales);
+   *     const bundle = new FluentBundle(locales);
    *
-   *     const ctx = new MessageContext(locales, { useIsolating: false });
+   *     const bundle = new FluentBundle(locales, { useIsolating: false });
    *
-   *     const ctx = new MessageContext(locales, {
+   *     const bundle = new FluentBundle(locales, {
    *       useIsolating: true,
    *       functions: {
    *         NODE_ENV: () => process.env.NODE_ENV
@@ -47,7 +47,7 @@ export class MessageContext {
    *
    * @param   {string|Array<string>} locales - Locale or locales of the context
    * @param   {Object} [options]
-   * @returns {MessageContext}
+   * @returns {FluentBundle}
    */
   constructor(locales, {
     functions = {},
@@ -87,7 +87,7 @@ export class MessageContext {
    * Return the internal representation of a message.
    *
    * The internal representation should only be used as an argument to
-   * `MessageContext.format`.
+   * `FluentBundle.format`.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {Any}
@@ -103,8 +103,8 @@ export class MessageContext {
    * the context and each translation unit (message) will be available in the
    * context by its identifier.
    *
-   *     ctx.addMessages('foo = Foo');
-   *     ctx.getMessage('foo');
+   *     bundle.addMessages('foo = Foo');
+   *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
@@ -123,11 +123,11 @@ export class MessageContext {
    * Add a translation resource to the context.
    *
    * The translation resource must be a proper FluentResource
-   * parsed by `MessageContext.parseResource`.
+   * parsed by `FluentBundle.parseResource`.
    *
-   *     let res = MessageContext.parseResource("foo = Foo");
-   *     ctx.addResource(res);
-   *     ctx.getMessage('foo');
+   *     let res = FluentBundle.parseResource("foo = Foo");
+   *     bundle.addResource(res);
+   *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
@@ -142,7 +142,7 @@ export class MessageContext {
     for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
-        // and cannot be retrieved from MessageContext.
+        // and cannot be retrieved from FluentBundle.
         if (this._terms.has(id)) {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
@@ -173,13 +173,13 @@ export class MessageContext {
    * `errors` array passed as the third argument.
    *
    *     const errors = [];
-   *     ctx.addMessages('hello = Hello, { $name }!');
-   *     const hello = ctx.getMessage('hello');
-   *     ctx.format(hello, { name: 'Jane' }, errors);
+   *     bundle.addMessages('hello = Hello, { $name }!');
+   *     const hello = bundle.getMessage('hello');
+   *     bundle.format(hello, { name: 'Jane' }, errors);
    *
    *     // Returns 'Hello, Jane!' and `errors` is empty.
    *
-   *     ctx.format(hello, undefined, errors);
+   *     bundle.format(hello, undefined, errors);
    *
    *     // Returns 'Hello, name!' and `errors` is now:
    *

@@ -1,16 +1,16 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - void elements', function() {
   test('do not render the value in void elements', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = FOO
 `)
 
@@ -27,10 +27,10 @@ foo = FOO
   });
 
   test('render attributes in void elements', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .title = TITLE
 `)
@@ -48,10 +48,10 @@ foo =
   });
 
   test('render attributes but not value in void elements', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = FOO
     .title = TITLE
 `)

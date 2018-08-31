@@ -24,10 +24,10 @@ const trailingWSRe = /[ \t\n\r]+$/;
  */
 class RuntimeParser {
   /**
-   * Parse FTL code into entries formattable by the MessageContext.
+   * Parse FTL code into entries formattable by the FluentBundle.
    *
    * Given a string of FTL syntax, return a map of entries that can be passed
-   * to MessageContext.format and a list of errors encountered during parsing.
+   * to FluentBundle.format and a list of errors encountered during parsing.
    *
    * @param {String} string
    * @returns {Array<Object, Array>}

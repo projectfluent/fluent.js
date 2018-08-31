@@ -1,5 +1,28 @@
 # Changelog
 
+## fluent 0.8.0 (August 20, 2018)
+
+  - Rename `MessageContext` to `FluentBundle`. (#222)
+
+    The following renames have been made to the public API:
+
+    - Rename `MessageContext` to `FluentBundle`.
+    - Rename `MessageArgument` to `FluentType`.
+    - Rename `MessageNumberArgument` to `FluentNumber`.
+    - Rename `MessageDateTimeArgument` to `FluentDateTime`.
+
+  - Move `mapContext*` functions to [`fluent-sequence`][]. (#273)
+
+    The `mapContextSync` and `mapContextAsync` functions previously exported
+    by the `fluent` package have been moved to the new [`fluent-sequence`][]
+    package. [`fluent-sequence`][] 0.1.0 corresponds to the exact
+    implementation of these functions from `fluent` 0.7.0.
+
+    In later versions of [`fluent-sequence`][], these functions are called
+    `mapBundleSync` and `mapBundleAsync`.
+
+[`fluent-sequence`]: https://www.npmjs.com/package/fluent-sequence
+
 ## fluent 0.7.0 (July 24, 2018)
 
   - Implement support for Fluent Syntax 0.6.
@@ -82,14 +105,14 @@
 
     ```js
     async formatString(id, args) {
-        const ctx = await mapContextAsync(contexts, id);
+        const bundle = await mapContextAsync(bundles, id);
 
-        if (ctx === null) {
+        if (bundle === null) {
             return id;
         }
 
-        const msg = ctx.getMessage(id);
-        return ctx.format(msg, args);
+        const msg = bundle.getMessage(id);
+        return bundle.format(msg, args);
     }
     ```
 
@@ -109,7 +132,7 @@
     indentation.
 
     ```js
-    ctx.addMessages(ftl`
+    bundle.addMessages(ftl`
         foo = Foo
         bar = Bar
     );
@@ -169,14 +192,14 @@
     might be implemented as follows:
 
         getString(id, args) {
-            const ctx = mapContextSync(contexts, id);
+            const bundle = mapContextSync(bundles, id);
 
-            if (ctx === null) {
+            if (bundle === null) {
                 return id;
             }
 
-            const msg = ctx.getMessage(id);
-            return ctx.format(msg, args);
+            const msg = bundle.getMessage(id);
+            return bundle.format(msg, args);
         }
 
     In order to pass an iterator to mapContext*, wrap it in CachedIterable.
@@ -185,11 +208,11 @@
 
         function *generateMessages() {
             // Some lazy logic for yielding MessageContexts.
-            yield *[ctx1, ctx2];
+            yield *[bundle1, bundle2];
         }
 
-        const contexts = new CachedIterable(generateMessages());
-        const ctx = mapContextSync(contexts, id);
+        const bundles = new CachedIterable(generateMessages());
+        const bundle = mapContextSync(bundles, id);
 
 
 ## fluent 0.4.0 (May 17th, 2017)
@@ -202,13 +225,13 @@
 
     Before:
 
-        const msg = ctx.messages.get(id);
-        const txt = ctx.format(msg);
+        const msg = bundle.messages.get(id);
+        const txt = bundle.format(msg);
 
     Now:
 
-        const msg = ctx.getMessage(id);
-        const txt = ctx.format(msg);
+        const msg = bundle.getMessage(id);
+        const txt = bundle.format(msg);
 
   - The compat build is now transpiled using rollup-plugin-babel.
 

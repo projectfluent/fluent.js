@@ -2,7 +2,7 @@ export default function reducer(state = {
   isFetching: false,
   userLocales: ['en-US'],
   currentLocales: ['en-US'],
-  messages: null
+  bundles: null
 }, action) {
   switch (action.type) {
     case 'CHANGE_LOCALES_REQUEST': {
@@ -12,13 +12,13 @@ export default function reducer(state = {
       };
     }
     case 'CHANGE_LOCALES_RESPONSE': {
-      const { userLocales, currentLocales, messages } = action;
+      const { userLocales, currentLocales, bundles } = action;
       return {
         ...state,
         isFetching: false,
         userLocales,
         currentLocales,
-        messages
+        bundles
       };
     }
     default:

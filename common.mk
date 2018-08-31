@@ -12,7 +12,7 @@ export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
 all: lint test build
 
 # Used for pre-publishing.
-dist: lint test build html
+dist: clean lint test build html
 
 lint:
 	@eslint --config $(ROOT)/eslint_src.json --max-warnings 0 src/

@@ -3,10 +3,10 @@
 import assert from 'assert';
 import sinon from 'sinon';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { ftl } from '../src/util';
 
-suite('MessageContext constructor', function() {
+suite('FluentBundle constructor', function() {
   setup(function() {
     this.nf = sinon.spy(Intl, 'NumberFormat');
   });
@@ -17,13 +17,13 @@ suite('MessageContext constructor', function() {
 
   test('accepts a single locale string', function() {
     const errs = [];
-    const ctx = new MessageContext('en-US', { useIsolating: false });
-    ctx.addMessages(ftl`
+    const bundle = new FluentBundle('en-US', { useIsolating: false });
+    bundle.addMessages(ftl`
       foo = Foo { 1 }
     `);
 
-    const msg = ctx.getMessage('foo');
-    const val = ctx.format(msg, null, errs);
+    const msg = bundle.getMessage('foo');
+    const val = bundle.format(msg, null, errs);
 
     assert.equal(val, 'Foo 1');
     assert.equal(errs.length, 0);
@@ -34,13 +34,13 @@ suite('MessageContext constructor', function() {
 
   test('accepts an array of locales', function() {
     const errs = [];
-    const ctx = new MessageContext(['de', 'en-US'], { useIsolating: false });
-    ctx.addMessages(ftl`
+    const bundle = new FluentBundle(['de', 'en-US'], { useIsolating: false });
+    bundle.addMessages(ftl`
       foo = Foo { 1 }
     `);
 
-    const msg = ctx.getMessage('foo');
-    const val = ctx.format(msg, null, errs);
+    const msg = bundle.getMessage('foo');
+    const val = bundle.format(msg, null, errs);
 
     assert.equal(val, 'Foo 1');
     assert.equal(errs.length, 0);

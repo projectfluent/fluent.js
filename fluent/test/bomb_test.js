@@ -2,11 +2,11 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import { FluentBundle } from '../src/context';
 import { ftl } from '../src/util';
 
 suite('Reference bombs', function() {
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   setup(function() {
     errs = [];
@@ -14,8 +14,8 @@ suite('Reference bombs', function() {
 
   suite('Billion Laughs', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         lol0 = LOL
         lol1 = {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0}
         lol2 = {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1}
@@ -33,8 +33,8 @@ suite('Reference bombs', function() {
     // XXX Protect the FTL Resolver against the billion laughs attack
     // https://bugzil.la/1307126
     it.skip('does not expand all placeables', function() {
-      const msg = ctx.getMessage('lolz');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('lolz');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, '???');
       assert.equal(errs.length, 1);
     });
