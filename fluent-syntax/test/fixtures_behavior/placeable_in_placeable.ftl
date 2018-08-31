@@ -8,7 +8,7 @@ key2 = {  { foo }  }
 #   }
 
 key4 = {  { foo }
-# ~ERROR E0003, pos 93, args "}"
+# ~ERROR E0003, pos 96, args "}"
 
 
 # key5 = { foo } }

@@ -1,5 +1,5 @@
 key = { $foo -> }
-# ~ERROR E0003, pos 16, args "␤"
+# ~ERROR E0003, pos 16, args "["
 
 key = { $foo ->
     }

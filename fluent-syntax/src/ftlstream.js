@@ -5,10 +5,12 @@ import { ParseError } from "./errors";
 import { includes } from "./util";
 
 const INLINE_WS = [" ", "\t"];
+const ANY_WS = [" ", "\t", "\r", "\n"];
+const LINE_END = ["\n", "\r\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
-  skipInlineWS() {
+  skipBlankInlineWS() {
     while (this.ch) {
       if (!includes(INLINE_WS, this.ch)) {
         break;
@@ -17,7 +19,16 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekInlineWS() {
+  skipBlank() {
+    while (this.ch) {
+      if (!includes(ANY_WS, this.ch)) {
+        break;
+      }
+      this.next();
+    }
+  }
+
+  peekBlankInlineWS() {
     let ch = this.currentPeek();
     while (ch) {
       if (!includes(INLINE_WS, ch)) {
@@ -27,10 +38,29 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipBlankLines() {
+  peekBlank() {
+    let ch = this.currentPeek();
+    while (ch) {
+      if (!includes(ANY_WS, ch)) {
+        break;
+      }
+      ch = this.peek();
+    }
+  }
+
+  peekLineEnd() {
+    let ch = this.currentPeek();
+    if (!includes(LINE_END, ch)) {
+      ch = this.peek();
+    } else {
+      throw new ParseError("E0003", ch); // This is a placeholder error
+    }
+  }
+
+  skipBlankBlock() {
     let lineCount = 0;
     while (true) {
-      this.peekInlineWS();
+      this.peekBlankInlineWS();
 
       if (this.currentPeekIs("\n")) {
         this.skipToPeek();
@@ -43,11 +73,11 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekBlankLines() {
+  peekBlankBlock() {
     while (true) {
       const lineStart = this.getPeekIndex();
 
-      this.peekInlineWS();
+      this.peekBlankInlineWS();
 
       if (this.currentPeekIs("\n")) {
         this.peek();
@@ -56,11 +86,6 @@ export class FTLParserStream extends ParserStream {
         break;
       }
     }
-  }
-
-  skipIndent() {
-    this.skipBlankLines();
-    this.skipInlineWS();
   }
 
   expectChar(ch) {
@@ -77,11 +102,13 @@ export class FTLParserStream extends ParserStream {
     throw new ParseError("E0003", ch);
   }
 
-  expectIndent() {
-    this.expectChar("\n");
-    this.skipBlankLines();
-    this.expectChar(" ");
-    this.skipInlineWS();
+  expectBlankBlock() {
+    if (includes(INLINE_WS, this.ch) &&
+      includes(LINE_END, this.peekBlankInlineWS())) {
+      this.skipBlankBlock();
+    } else {
+      throw new ParseError("E0003", this.ch); // This is a placeholder error
+    }
   }
 
   expectLineEnd() {
@@ -144,7 +171,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekValueStart() {
-    this.peekInlineWS();
+    this.peekBlankInlineWS();
     const ch = this.currentPeek();
 
     // Inline Patterns may start with any char.
@@ -195,16 +222,9 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
-    this.peekBlankLines();
+    this.peekBlankBlock();
 
-    const ptr = this.getPeekIndex();
-
-    this.peekInlineWS();
-
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
+    this.peekBlankInlineWS();
 
     if (this.currentPeekIs("*")) {
       this.peek();
@@ -225,11 +245,12 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
-    this.peekBlankLines();
+    this.peekBlankBlock();
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekLineEnd();
+    this.peekBlank();
 
     if (this.getPeekIndex() - ptr === 0) {
       this.resetPeek();
@@ -252,24 +273,28 @@ export class FTLParserStream extends ParserStream {
 
     this.peek();
 
-    this.peekBlankLines();
+    this.peekBlankBlock();
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekBlankInlineWS();
 
-    if (this.getPeekIndex() - ptr === 0) {
+    const isIndented = this.getPeekIndex() - ptr !== 0;
+
+    // Placeable / VariantList can start irrelevant of indentation
+    if (this.currentPeekIs("{")) {
       this.resetPeek();
-      return false;
+      return true;
     }
 
-    if (!this.isCharPatternContinuation(this.currentPeek())) {
+    // character pattern can start only indented
+    if (this.isCharPatternContinuation(this.currentPeek())) {
       this.resetPeek();
-      return false;
+      return isIndented;
     }
 
     this.resetPeek();
-    return true;
+    return false;
   }
 
   skipToNextEntryStart() {

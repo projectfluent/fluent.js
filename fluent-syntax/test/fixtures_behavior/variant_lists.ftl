@@ -1,4 +1,4 @@
-# ~ERROR E0014, pos 16
+# ~ERROR E0014, pos 25
 message1 =
     {
         *[one] One
