@@ -15,7 +15,7 @@ export declare function isReactLocalization(props: object, propName: string): Er
 
 export declare interface LocalizationProviderProps {
   bundles: Iterable<fluent.FluentBundle>
-  parseMarkup?: (str: string) => DocumentFragment
+  parseMarkup?: (str: string) => Array<Node & ChildNode>
   children?: React.ReactNode
 }
 
