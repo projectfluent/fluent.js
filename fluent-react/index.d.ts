@@ -15,7 +15,7 @@ export declare function isReactLocalization(props: object, propName: string): Er
 
 export declare interface LocalizationProviderProps {
   bundles: Iterable<fluent.FluentBundle>
-  parseMarkup?: (str: string) => NodeListOf<Node & ChildNode>
+  parseMarkup?: (str: string) => DocumentFragment
   children?: React.ReactNode
 }
 
@@ -83,7 +83,13 @@ export declare interface LocalizedComponentProps {
     children?: React.ReactNode;
 }
 
-export declare class Localized extends React.Component<LocalizedComponentProps> {
+// This needs to be `any` rather than LocalizedComponentProps because
+// external arguments used during translation are passed as props
+// starting with a $ symbol, e.g.
+//   <Localized id="hello-world" $username={name}>
+//     <p>{'Hello, { $username }!'}</p>
+//   </Localized>
+export declare class Localized extends React.Component<any> {
     public componentDidMount(): void;
     public componentWillUnmount(): void;
 
