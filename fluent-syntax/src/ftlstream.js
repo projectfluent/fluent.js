@@ -4,11 +4,12 @@ import { ParserStream } from "./stream";
 import { ParseError } from "./errors";
 import { includes } from "./util";
 
-const INLINE_WS = [" ", "\t"];
+const INLINE_WS = [" "];
+const ANY_WS = [" ", "\r", "\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
-  skipInlineWS() {
+  skipBlankInline() {
     while (this.ch) {
       if (!includes(INLINE_WS, this.ch)) {
         break;
@@ -17,7 +18,7 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekInlineWS() {
+  peekBlankInline() {
     let ch = this.currentPeek();
     while (ch) {
       if (!includes(INLINE_WS, ch)) {
@@ -27,10 +28,10 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipBlankLines() {
+  skipBlankBlock() {
     let lineCount = 0;
     while (true) {
-      this.peekInlineWS();
+      this.peekBlankInline();
 
       if (this.currentPeekIs("\n")) {
         this.skipToPeek();
@@ -43,11 +44,11 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekBlankLines() {
+  peekBlankBlock() {
     while (true) {
       const lineStart = this.getPeekIndex();
 
-      this.peekInlineWS();
+      this.peekBlankInline();
 
       if (this.currentPeekIs("\n")) {
         this.peek();
@@ -58,9 +59,16 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipIndent() {
-    this.skipBlankLines();
-    this.skipInlineWS();
+  skipBlank() {
+    while (includes(ANY_WS, this.ch)) {
+      this.next();
+    }
+  }
+
+  peekBlank() {
+    while (includes(ANY_WS, this.currentPeek())) {
+      this.peek();
+    }
   }
 
   expectChar(ch) {
@@ -79,9 +87,9 @@ export class FTLParserStream extends ParserStream {
 
   expectIndent() {
     this.expectChar("\n");
-    this.skipBlankLines();
+    this.skipBlankBlock();
     this.expectChar(" ");
-    this.skipInlineWS();
+    this.skipBlankInline();
   }
 
   expectLineEnd() {
@@ -144,11 +152,12 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekValueStart() {
-    this.peekInlineWS();
+    this.peekBlankInline();
     const ch = this.currentPeek();
 
     // Inline Patterns may start with any char.
     if (ch !== undefined && ch !== "\n") {
+      this.skipToPeek();
       return true;
     }
 
@@ -193,25 +202,21 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    this.peek();
 
-    this.peekBlankLines();
+    this.peekBlank();
+    const def = this.currentPeekIs("*");
 
-    const ptr = this.getPeekIndex();
-
-    this.peekInlineWS();
-
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
-
-    if (this.currentPeekIs("*")) {
+    if (def) {
+      this.skipToPeek();
       this.peek();
     }
 
     if (this.currentPeekIs("[") && !this.peekCharIs("[")) {
-      this.resetPeek();
+      if (def) {
+        this.resetPeek();
+      } else {
+        this.skipToPeek();
+      }
       return true;
     }
     this.resetPeek();
@@ -219,25 +224,10 @@ export class FTLParserStream extends ParserStream {
   }
 
   isPeekNextLineAttributeStart() {
-    if (!this.currentPeekIs("\n")) {
-      return false;
-    }
-
-    this.peek();
-
-    this.peekBlankLines();
-
-    const ptr = this.getPeekIndex();
-
-    this.peekInlineWS();
-
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
+    this.peekBlank();
 
     if (this.currentPeekIs(".")) {
-      this.resetPeek();
+      this.skipToPeek();
       return true;
     }
 
@@ -245,18 +235,16 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineValue() {
+  isPeekNextLineValue(skipToPeek = true) {
     if (!this.currentPeekIs("\n")) {
       return false;
     }
 
-    this.peek();
-
-    this.peekBlankLines();
+    this.peekBlankBlock();
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekBlankInline();
 
     if (this.getPeekIndex() - ptr === 0) {
       this.resetPeek();
@@ -268,7 +256,11 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    this.resetPeek();
+    if (skipToPeek) {
+      this.skipToPeek();
+    } else {
+      this.resetPeek();
+    }
     return true;
   }
 
