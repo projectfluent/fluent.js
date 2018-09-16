@@ -86,6 +86,10 @@ export class ParserStream {
     return this.index;
   }
 
+  setIndex(idx) {
+    return this.index = idx;
+  }
+
   getPeekIndex() {
     return this.peekIndex;
   }
