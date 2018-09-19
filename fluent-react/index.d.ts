@@ -35,7 +35,7 @@ export declare interface LocalizationProviderProps {
  * via the `LocalizationProvider` component.
  */
 export declare class ReactLocalization {
-  constructor(messages: Iterable<string>);
+  constructor(bundles: Iterable<fluent.FluentBundle>);
 
   /*
    * Subscribe a `Localized` component to changes of `bundles`.
@@ -50,7 +50,7 @@ export declare class ReactLocalization {
   /*
    * Set a new `bundles` iterable and trigger the retranslation.
    */
-  public setBundles(messages: Iterable<fluent.FluentBundle>): void;
+  public setBundles(bundles: Iterable<fluent.FluentBundle>): void;
   
   public getBundle(id: string): fluent.FluentBundle;
   
