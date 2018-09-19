@@ -99,3 +99,5 @@ export declare class Localized extends React.Component<any> {
     public relocalize(): void;
     public render(): React.ReactNode;
 }
+
+export function createParseMarkup(): (str: string) => Array<Node & ChildNode>;

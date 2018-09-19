@@ -22,3 +22,4 @@ export { default as withLocalization } from "./with_localization";
 export { default as Localized } from "./localized";
 export { default as ReactLocalization, isReactLocalization }
   from "./localization";
+export { default as createParseMarkup } from "./markup";
