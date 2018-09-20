@@ -4,14 +4,14 @@ import { ParserStream } from "./stream";
 import { ParseError } from "./errors";
 import { includes } from "./util";
 
-const INLINE_WS = [" "];
-const ANY_WS = [" ", "\r", "\n"];
+const INLINE_WS = " ";
+const ANY_WS = [INLINE_WS, "\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
   skipBlankInline() {
     while (this.ch) {
-      if (!includes(INLINE_WS, this.ch)) {
+      if (this.ch !== INLINE_WS) {
         break;
       }
       this.next();
@@ -21,7 +21,7 @@ export class FTLParserStream extends ParserStream {
   peekBlankInline() {
     let ch = this.currentPeek();
     while (ch) {
-      if (!includes(INLINE_WS, ch)) {
+      if (ch !== INLINE_WS) {
         break;
       }
       ch = this.peek();
@@ -202,21 +202,14 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-
     this.peekBlank();
-    const def = this.currentPeekIs("*");
 
-    if (def) {
-      this.skipToPeek();
+    if (this.currentPeekIs("*")) {
       this.peek();
     }
 
-    if (this.currentPeekIs("[") && !this.peekCharIs("[")) {
-      if (def) {
-        this.resetPeek();
-      } else {
-        this.skipToPeek();
-      }
+    if (this.currentPeekIs("[")) {
+      this.resetPeek();
       return true;
     }
     this.resetPeek();
@@ -246,14 +239,16 @@ export class FTLParserStream extends ParserStream {
 
     this.peekBlankInline();
 
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
+    if (!this.currentPeekIs("{")) {
+      if (this.getPeekIndex() - ptr === 0) {
+        this.resetPeek();
+        return false;
+      }
 
-    if (!this.isCharPatternContinuation(this.currentPeek())) {
-      this.resetPeek();
-      return false;
+      if (!this.isCharPatternContinuation(this.currentPeek())) {
+        this.resetPeek();
+        return false;
+      }
     }
 
     if (skipToPeek) {

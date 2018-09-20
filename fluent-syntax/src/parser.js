@@ -50,7 +50,7 @@ export default class FluentParser {
   }
 
   parse(source) {
-    const ps = new FTLParserStream(source);
+    const ps = new FTLParserStream(source.replace(/\r\n/g, "\n"));
     ps.skipBlankBlock();
 
     const entries = [];
@@ -107,7 +107,7 @@ export default class FluentParser {
    * themselves, in which case Junk for the invalid comment is returned.
    */
   parseEntry(source) {
-    const ps = new FTLParserStream(source);
+    const ps = new FTLParserStream(source.replace(/\r\n/g, "\n"));
     ps.skipBlankBlock();
 
     while (ps.currentIs("#")) {
@@ -369,6 +369,7 @@ export default class FluentParser {
       if (!ps.isPeekNextLineVariantStart()) {
         break;
       }
+      ps.skipBlank();
     }
 
     if (!hasDefault) {
@@ -415,9 +416,8 @@ export default class FluentParser {
   getValue(ps) {
     if (ps.currentIs("{")) {
       ps.peek();
-      ps.peekBlank();
-      if (ps.currentPeek() === "*" || ps.currentPeek() === "[") {
-        ps.resetPeek();
+      ps.peekBlankInline();
+      if (ps.isPeekNextLineVariantStart()) {
         return this.getVariantList(ps);
       }
 
@@ -429,8 +429,11 @@ export default class FluentParser {
 
   getVariantList(ps) {
     ps.expectChar("{");
+    ps.skipBlankInline();
+    ps.expectChar("\n");
     ps.skipBlank();
     const variants = this.getVariants(ps);
+    ps.expectChar("\n");
     ps.skipBlank();
     ps.expectChar("}");
     return new AST.VariantList(variants);
@@ -462,6 +465,9 @@ export default class FluentParser {
     const lastElement = elements[elements.length - 1];
     if (lastElement && lastElement.type === "TextElement") {
       lastElement.value = lastElement.value.replace(trailingWSRe, "");
+      if (lastElement.value.length === 0) {
+        elements.pop();
+      }
     }
 
     return new AST.Pattern(elements);
