@@ -151,7 +151,9 @@ export class FTLParserStream extends ParserStream {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
-  isPeekValueStart() {
+  isValueStart({skip = true} = {}) {
+    if (skip === false) throw new Error("Unimplemented");
+
     this.peekBlankInline();
     const ch = this.currentPeek();
 
@@ -161,7 +163,7 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    return this.isPeekNextLineValue();
+    return this.isNextLineValue();
   }
 
   // -1 - any
@@ -216,7 +218,9 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineAttributeStart() {
+  isNextLineAttributeStart({skip = true} = {}) {
+    if (skip === false) throw new Error("Unimplemented");
+
     this.peekBlank();
 
     if (this.currentPeekIs(".")) {
@@ -228,7 +232,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineValue(skipToPeek = true) {
+  isNextLineValue({skip = true} = {}) {
     if (!this.currentPeekIs("\n")) {
       return false;
     }
@@ -251,7 +255,7 @@ export class FTLParserStream extends ParserStream {
       }
     }
 
-    if (skipToPeek) {
+    if (skip) {
       this.skipToPeek();
     } else {
       this.resetPeek();

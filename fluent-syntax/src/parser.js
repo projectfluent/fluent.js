@@ -222,11 +222,11 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isPeekValueStart()) {
+    if (ps.isValueStart()) {
       var pattern = this.getPattern(ps);
     }
 
-    if (ps.isPeekNextLineAttributeStart()) {
+    if (ps.isNextLineAttributeStart()) {
       var attrs = this.getAttributes(ps);
     }
 
@@ -243,14 +243,14 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isPeekValueStart()) {
+    if (ps.isValueStart()) {
       ps.skipBlankInline();
       var value = this.getValue(ps);
     } else {
       throw new ParseError("E0006", id.name);
     }
 
-    if (ps.isPeekNextLineAttributeStart()) {
+    if (ps.isNextLineAttributeStart()) {
       var attrs = this.getAttributes(ps);
     }
 
@@ -265,7 +265,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isPeekValueStart()) {
+    if (ps.isValueStart()) {
       ps.skipBlankInline();
       const value = this.getPattern(ps);
       return new AST.Attribute(key, value);
@@ -281,7 +281,7 @@ export default class FluentParser {
       const attr = this.getAttribute(ps);
       attrs.push(attr);
 
-      if (!ps.isPeekNextLineAttributeStart()) {
+      if (!ps.isNextLineAttributeStart()) {
         break;
       }
     }
@@ -344,7 +344,7 @@ export default class FluentParser {
 
     ps.expectChar("]");
 
-    if (ps.isPeekValueStart()) {
+    if (ps.isValueStart()) {
       ps.skipBlankInline();
       const value = this.getValue(ps);
       return new AST.Variant(key, value, defaultIndex);
@@ -448,7 +448,7 @@ export default class FluentParser {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === "\n" && !ps.isPeekNextLineValue(false)) {
+      if (ch === "\n" && !ps.isNextLineValue({skip: false})) {
         break;
       }
 
@@ -483,7 +483,7 @@ export default class FluentParser {
       }
 
       if (ch === "\n") {
-        if (!ps.isPeekNextLineValue(false)) {
+        if (!ps.isNextLineValue({skip: false})) {
           return new AST.TextElement(buffer);
         }
 
