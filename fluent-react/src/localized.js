@@ -1,4 +1,4 @@
-import { isValidElement, cloneElement, Component, Children } from "react";
+import { isValidElement, cloneElement, Component } from "react";
 import PropTypes from "prop-types";
 import { isReactLocalization } from "./localization";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
@@ -79,8 +79,13 @@ export default class Localized extends Component {
 
   render() {
     const { l10n, parseMarkup } = this.context;
-    const { id, attrs, children } = this.props;
-    const elem = Children.only(children);
+    const { id, attrs, children: elem } = this.props;
+
+    // Validate that the child element isn't an array
+    if (Array.isArray(elem)) {
+      throw new Error("<Localized/> expected to receive a single " +
+        "React node child");
+    }
 
     if (!l10n) {
       // Use the wrapped component as fallback.
@@ -100,6 +105,13 @@ export default class Localized extends Component {
       value: messageValue,
       attrs: messageAttrs
     } = l10n.formatCompound(bundle, msg, args);
+
+    // Check if the fallback is a valid element -- if not then it's not
+    // markup (e.g. nothing or a fallback string) so just use the
+    // formatted message value
+    if (!isValidElement(elem)) {
+      return messageValue;
+    }
 
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been
@@ -175,5 +187,5 @@ Localized.contextTypes = {
 };
 
 Localized.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node
 };
