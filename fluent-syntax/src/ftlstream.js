@@ -4,33 +4,34 @@ import { ParserStream } from "./stream";
 import { ParseError } from "./errors";
 import { includes } from "./util";
 
-const INLINE_WS = [" ", "\t"];
+const INLINE_WS = " ";
+const ANY_WS = [INLINE_WS, "\n"];
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
-  skipInlineWS() {
+  skipBlankInline() {
     while (this.ch) {
-      if (!includes(INLINE_WS, this.ch)) {
+      if (this.ch !== INLINE_WS) {
         break;
       }
       this.next();
     }
   }
 
-  peekInlineWS() {
+  peekBlankInline() {
     let ch = this.currentPeek();
     while (ch) {
-      if (!includes(INLINE_WS, ch)) {
+      if (ch !== INLINE_WS) {
         break;
       }
       ch = this.peek();
     }
   }
 
-  skipBlankLines() {
+  skipBlankBlock() {
     let lineCount = 0;
     while (true) {
-      this.peekInlineWS();
+      this.peekBlankInline();
 
       if (this.currentPeekIs("\n")) {
         this.skipToPeek();
@@ -43,11 +44,11 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  peekBlankLines() {
+  peekBlankBlock() {
     while (true) {
       const lineStart = this.getPeekIndex();
 
-      this.peekInlineWS();
+      this.peekBlankInline();
 
       if (this.currentPeekIs("\n")) {
         this.peek();
@@ -58,9 +59,16 @@ export class FTLParserStream extends ParserStream {
     }
   }
 
-  skipIndent() {
-    this.skipBlankLines();
-    this.skipInlineWS();
+  skipBlank() {
+    while (includes(ANY_WS, this.ch)) {
+      this.next();
+    }
+  }
+
+  peekBlank() {
+    while (includes(ANY_WS, this.currentPeek())) {
+      this.peek();
+    }
   }
 
   expectChar(ch) {
@@ -79,9 +87,9 @@ export class FTLParserStream extends ParserStream {
 
   expectIndent() {
     this.expectChar("\n");
-    this.skipBlankLines();
+    this.skipBlankBlock();
     this.expectChar(" ");
-    this.skipInlineWS();
+    this.skipBlankInline();
   }
 
   expectLineEnd() {
@@ -143,16 +151,19 @@ export class FTLParserStream extends ParserStream {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
-  isPeekValueStart() {
-    this.peekInlineWS();
+  isValueStart({skip = true} = {}) {
+    if (skip === false) throw new Error("Unimplemented");
+
+    this.peekBlankInline();
     const ch = this.currentPeek();
 
     // Inline Patterns may start with any char.
     if (ch !== undefined && ch !== "\n") {
+      this.skipToPeek();
       return true;
     }
 
-    return this.isPeekNextLineValue();
+    return this.isNextLineValue();
   }
 
   // -1 - any
@@ -193,24 +204,13 @@ export class FTLParserStream extends ParserStream {
       return false;
     }
 
-    this.peek();
-
-    this.peekBlankLines();
-
-    const ptr = this.getPeekIndex();
-
-    this.peekInlineWS();
-
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
+    this.peekBlank();
 
     if (this.currentPeekIs("*")) {
       this.peek();
     }
 
-    if (this.currentPeekIs("[") && !this.peekCharIs("[")) {
+    if (this.currentPeekIs("[")) {
       this.resetPeek();
       return true;
     }
@@ -218,26 +218,13 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineAttributeStart() {
-    if (!this.currentPeekIs("\n")) {
-      return false;
-    }
+  isNextLineAttributeStart({skip = true} = {}) {
+    if (skip === false) throw new Error("Unimplemented");
 
-    this.peek();
-
-    this.peekBlankLines();
-
-    const ptr = this.getPeekIndex();
-
-    this.peekInlineWS();
-
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
-    }
+    this.peekBlank();
 
     if (this.currentPeekIs(".")) {
-      this.resetPeek();
+      this.skipToPeek();
       return true;
     }
 
@@ -245,30 +232,34 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineValue() {
+  isNextLineValue({skip = true} = {}) {
     if (!this.currentPeekIs("\n")) {
       return false;
     }
 
-    this.peek();
-
-    this.peekBlankLines();
+    this.peekBlankBlock();
 
     const ptr = this.getPeekIndex();
 
-    this.peekInlineWS();
+    this.peekBlankInline();
 
-    if (this.getPeekIndex() - ptr === 0) {
-      this.resetPeek();
-      return false;
+    if (!this.currentPeekIs("{")) {
+      if (this.getPeekIndex() - ptr === 0) {
+        this.resetPeek();
+        return false;
+      }
+
+      if (!this.isCharPatternContinuation(this.currentPeek())) {
+        this.resetPeek();
+        return false;
+      }
     }
 
-    if (!this.isCharPatternContinuation(this.currentPeek())) {
+    if (skip) {
+      this.skipToPeek();
+    } else {
       this.resetPeek();
-      return false;
     }
-
-    this.resetPeek();
     return true;
   }
 
