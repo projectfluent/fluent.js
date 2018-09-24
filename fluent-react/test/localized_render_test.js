@@ -265,7 +265,7 @@ foo = { $arg }
 
   test('render with a string fallback and no message returns the fallback',
   function() {
-    const mcx = new MessageContext();
+    const mcx = new FluentBundle();
     const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
@@ -279,7 +279,7 @@ foo = { $arg }
   });
 
   test('render with a string fallback returns the message', function() {
-    const mcx = new MessageContext();
+    const mcx = new FluentBundle();
     const l10n = new ReactLocalization([mcx]);
     mcx.addMessages(`
 foo = Test message
@@ -296,7 +296,7 @@ foo = Test message
   });
 
   test('render without a fallback returns the message', function() {
-    const mcx = new MessageContext();
+    const mcx = new FluentBundle();
     const l10n = new ReactLocalization([mcx]);
 
     mcx.addMessages(`
@@ -313,7 +313,7 @@ foo = Message
 
   test('render without a fallback and no message returns nothing',
   function() {
-    const mcx = new MessageContext();
+    const mcx = new FluentBundle();
     const l10n = new ReactLocalization([mcx]);
 
     const wrapper = shallow(
