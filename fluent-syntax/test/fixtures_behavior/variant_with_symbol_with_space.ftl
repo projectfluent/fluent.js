@@ -1,4 +1,4 @@
-# ~ERROR E0003, pos 23, args "]"
+# ~ERROR E0003, pos 24, args "]"
 -term = {
         *[New York] Nowy Jork
     }
