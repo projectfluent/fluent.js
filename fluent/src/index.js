@@ -7,8 +7,6 @@
  *
  */
 
-export { default as _parse } from "./parser";
-
 export { default as FluentBundle } from "./context";
 export { default as FluentResource } from "./resource";
 export { FluentType, FluentNumber, FluentDateTime } from "./types";
