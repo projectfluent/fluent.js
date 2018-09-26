@@ -2,7 +2,8 @@
 
 import assert from 'assert';
 
-import { FluentBundle } from '../src/context';
+import FluentBundle from '../src/context';
+import FluentResource from '../src/resource';
 import { ftl } from '../src/util';
 
 suite('Bundle', function() {
@@ -67,6 +68,24 @@ suite('Bundle', function() {
       const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
+    });
+  });
+
+  suite('addResource', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      let resource = FluentResource.fromString(ftl`
+        foo = Foo
+        -bar = Bar
+      `);
+      bundle.addResource(resource);
+    });
+
+    test('adds messages', function() {
+      assert.equal(bundle._messages.has('foo'), true);
+      assert.equal(bundle._terms.has('foo'), false);
+      assert.equal(bundle._messages.has('-bar'), false);
+      assert.equal(bundle._terms.has('-bar'), true);
     });
   });
 
