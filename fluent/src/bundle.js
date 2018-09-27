@@ -7,11 +7,11 @@ import FluentResource from "./resource";
  * format translation units (entities) to strings.
  *
  * Always use `FluentBundle.format` to retrieve translation units from a
- * context. Translations can contain references to other entities or variables,
+ * bundle. Translations can contain references to other entities or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language. See the documentation of the Fluent syntax for more
+ * bundle's language. See the documentation of the Fluent syntax for more
  * information.
  */
 export default class FluentBundle {
@@ -20,7 +20,7 @@ export default class FluentBundle {
    * Create an instance of `FluentBundle`.
    *
    * The `locales` argument is used to instantiate `Intl` formatters used by
-   * translations.  The `options` object can be used to configure the context.
+   * translations.  The `options` object can be used to configure the bundle.
    *
    * Examples:
    *
@@ -45,7 +45,7 @@ export default class FluentBundle {
    *
    *   - `transform` - a function used to transform string parts of patterns.
    *
-   * @param   {string|Array<string>} locales - Locale or locales of the context
+   * @param   {string|Array<string>} locales - Locale or locales of the bundle
    * @param   {Object} [options]
    * @returns {FluentBundle}
    */
@@ -74,7 +74,7 @@ export default class FluentBundle {
   }
 
   /*
-   * Check if a message is present in the context.
+   * Check if a message is present in the bundle.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {bool}
@@ -97,11 +97,11 @@ export default class FluentBundle {
   }
 
   /**
-   * Add a translation resource to the context.
+   * Add a translation resource to the bundle.
    *
    * The translation resource must use the Fluent syntax.  It will be parsed by
-   * the context and each translation unit (message) will be available in the
-   * context by its identifier.
+   * the bundle and each translation unit (message) will be available in the
+   * bundle by its identifier.
    *
    *     bundle.addMessages('foo = Foo');
    *     bundle.getMessage('foo');
@@ -120,7 +120,7 @@ export default class FluentBundle {
   }
 
   /**
-   * Add a translation resource to the context.
+   * Add a translation resource to the bundle.
    *
    * The translation resource must be an instance of FluentResource,
    * e.g. parsed by `FluentResource.fromString`.
@@ -163,7 +163,7 @@ export default class FluentBundle {
   /**
    * Format a message to a string or null.
    *
-   * Format a raw `message` from the context into a string (or a null if it has
+   * Format a raw `message` from the bundle into a string (or a null if it has
    * a null value).  `args` will be used to resolve references to variables
    * passed as arguments to the translation.
    *

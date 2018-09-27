@@ -7,7 +7,7 @@
  *
  */
 
-export { default as FluentBundle } from "./context";
+export { default as FluentBundle } from "./bundle";
 export { default as FluentResource } from "./resource";
 export { FluentType, FluentNumber, FluentDateTime } from "./types";
 

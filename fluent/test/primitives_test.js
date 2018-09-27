@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import FluentBundle from '../src/context';
+import FluentBundle from '../src/bundle';
 import { ftl } from '../src/util';
 
 suite('Primitives', function() {
