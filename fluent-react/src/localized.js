@@ -101,10 +101,7 @@ export default class Localized extends Component {
 
     const msg = bundle.getMessage(id);
     const [args, elems] = toArguments(this.props);
-    const {
-      value: messageValue,
-      attrs: messageAttrs
-    } = l10n.formatCompound(bundle, msg, args);
+    const messageValue = bundle.format(msg, args);
 
     // Check if the fallback is a valid element -- if not then it's not
     // markup (e.g. nothing or a fallback string) so just use the
@@ -116,12 +113,11 @@ export default class Localized extends Component {
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been
     // explicitly allowed by the developer.
-    if (attrs && messageAttrs) {
+    if (attrs && msg.attrs) {
       var localizedProps = {};
-
-      for (const [name, value] of Object.entries(messageAttrs)) {
-        if (attrs[name]) {
-          localizedProps[name] = value;
+      for (const [name, allowed] of Object.entries(attrs)) {
+        if (allowed && msg.attrs.hasOwnProperty(name)) {
+          localizedProps[name] = bundle.format(msg.attrs[name], args);
         }
       }
     }

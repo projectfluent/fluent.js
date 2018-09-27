@@ -50,19 +50,6 @@ export default class ReactLocalization {
     return mapBundleSync(this.bundles, id);
   }
 
-  formatCompound(bundle, msg, args) {
-    const value = bundle.format(msg, args);
-
-    if (msg.attrs) {
-      var attrs = {};
-      for (const name of Object.keys(msg.attrs)) {
-        attrs[name] = bundle.format(msg.attrs[name], args);
-      }
-    }
-
-    return { value, attrs };
-  }
-
   /*
    * Find a translation by `id` and format it to a string using `args`.
    */
