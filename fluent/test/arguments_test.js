@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import { FluentBundle } from '../src/context';
+import FluentBundle from '../src/context';
 import { FluentType } from '../src/types';
 import { ftl } from '../src/util';
 

@@ -14,7 +14,7 @@ import FluentResource from "./resource";
  * context's language. See the documentation of the Fluent syntax for more
  * information.
  */
-export class FluentBundle {
+export default class FluentBundle {
 
   /**
    * Create an instance of `FluentBundle`.
@@ -122,10 +122,10 @@ export class FluentBundle {
   /**
    * Add a translation resource to the context.
    *
-   * The translation resource must be a proper FluentResource
-   * parsed by `FluentBundle.parseResource`.
+   * The translation resource must be an instance of FluentResource,
+   * e.g. parsed by `FluentResource.fromString`.
    *
-   *     let res = FluentBundle.parseResource("foo = Foo");
+   *     let res = FluentResource.fromString("foo = Foo");
    *     bundle.addResource(res);
    *     bundle.getMessage('foo');
    *
