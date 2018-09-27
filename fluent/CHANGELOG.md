@@ -1,5 +1,22 @@
 # Changelog
 
+## fluent 0.8.1 (September 27, 2018)
+
+  - Expose `FluentResource` as an export. (#286)
+
+  `FluentResource` is a data structure representing a parsed Fluent document.
+  It can be used to cache resources which can then be added to `FluentBundle`
+  via the `addResource` method. To create a `FluentResource` given a string
+  of Fluent translations, use the static `FluentResource.fromString` method.
+
+  ```js
+  let resource = FluentResource.fromString(text);
+  bundle.addResource(resource);
+  ```
+
+  The undocumented `_parse` export was also removed in favor of
+  `FluentResource.fromString`.
+
 ## fluent 0.8.0 (August 20, 2018)
 
   - Rename `MessageContext` to `FluentBundle`. (#222)
