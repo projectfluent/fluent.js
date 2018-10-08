@@ -140,8 +140,8 @@ function VariantExpression(env, {id, key}) {
 
   function isVariantList(node) {
     return Array.isArray(node) &&
-      node[0].type === "sel" &&
-      node[0].exp === null;
+      node[0].type === "select" &&
+      node[0].selector === null;
   }
 
   if (isVariantList(message.value)) {
@@ -201,7 +201,7 @@ function AttributeExpression(env, {id, name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {String} expr.exp
+ * @param   {String} expr.selector
  *    Selector expression
  * @param   {Array} expr.vars
  *    List of variants for the select expression.
@@ -210,13 +210,13 @@ function AttributeExpression(env, {id, name}) {
  * @returns {FluentType}
  * @private
  */
-function SelectExpression(env, {exp, vars, def}) {
-  if (exp === null) {
+function SelectExpression(env, {selector, vars, def}) {
+  if (selector === null) {
     return DefaultMember(env, vars, def);
   }
 
-  const selector = Type(env, exp);
-  if (selector instanceof FluentNone) {
+  let selectorValue = Type(env, selector);
+  if (selectorValue instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }
 
@@ -232,7 +232,7 @@ function SelectExpression(env, {exp, vars, def}) {
 
     const { bundle } = env;
 
-    if (key.match(bundle, selector)) {
+    if (key.match(bundle, selectorValue)) {
       return variant;
     }
   }
@@ -295,7 +295,7 @@ function Type(env, expr) {
       const variant = VariantExpression(env, expr);
       return Type(env, variant);
     }
-    case "sel": {
+    case "select": {
       const member = SelectExpression(env, expr);
       return Type(env, member);
     }

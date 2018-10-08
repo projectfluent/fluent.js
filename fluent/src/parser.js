@@ -232,7 +232,7 @@ class RuntimeParser {
 
     const onlyVariants = this.getVariants();
     if (onlyVariants) {
-      return {type: "sel", sel: null, ...onlyVariants};
+      return {type: "select", selector: null, ...onlyVariants};
     }
 
     const selector = this.getSelectorExpression();
@@ -246,7 +246,11 @@ class RuntimeParser {
     }
 
     this._index += 2; // ->
-    return {type: "sel", sel: null, ...this.getVariants()};
+    return {
+      type: "select",
+      selector,
+      ...this.getVariants()
+    };
   }
 
   /**
