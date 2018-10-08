@@ -34,12 +34,12 @@ export default class RuntimeParser {
    * @returns {Iterator} entries
    */
   *entries(string) {
-    this._source = string;
-    this._index = 0;
-    this._length = string.length;
+    this.source = string;
+    this.cursor = 0;
+    this.length = string.length;
 
     for (const offset of this.entryOffsets(string)) {
-      this._index = offset;
+      this.cursor = offset;
       try {
         yield this.getMessage();
       } catch (e) {
@@ -63,26 +63,26 @@ export default class RuntimeParser {
   }
 
   test(re) {
-    re.lastIndex = this._index;
-    return re.test(this._source);
+    re.lastIndex = this.cursor;
+    return re.test(this.source);
   }
 
   skip(re) {
     if (this.test(re)) {
-      this._index = re.lastIndex;
+      this.cursor = re.lastIndex;
     }
   }
 
   match(re) {
-    re.lastIndex = this._index;
-    let result = re.exec(this._source);
+    re.lastIndex = this.cursor;
+    let result = re.exec(this.source);
 
     if (result === null) {
-      this._index += 1;
+      this.cursor += 1;
       throw new SyntaxError();
     }
 
-    this._index = re.lastIndex;
+    this.cursor = re.lastIndex;
     return result[1];
   }
 
@@ -105,21 +105,21 @@ export default class RuntimeParser {
    * @private
    */
   skipIndent() {
-    let start = this._index;
+    let start = this.cursor;
     this.skip(RE_BLANK);
 
-    switch (this._source[this._index]) {
+    switch (this.source[this.cursor]) {
       case ".":
       case "[":
       case "*":
       case "}":
         return false;
       case "{":
-        return this._source.slice(start, this._index);
+        return this.source.slice(start, this.cursor);
     }
-    switch (this._source[this._index - 1]) {
+    switch (this.source[this.cursor - 1]) {
       case " ":
-        return this._source.slice(start, this._index);
+        return this.source.slice(start, this.cursor);
       default:
         return false;
     }
@@ -130,7 +130,7 @@ export default class RuntimeParser {
       var first = this.match(RE_TEXT_ELEMENT);
     }
 
-    if (this._source[this._index] === "{") {
+    if (this.source[this.cursor] === "{") {
       return first
         ? this.getPatternElements(first)
         : this.getPatternElements();
@@ -156,14 +156,14 @@ export default class RuntimeParser {
         continue;
       }
 
-      if (this._source[this._index] === "{") {
+      if (this.source[this.cursor] === "{") {
         let element = this.getPlaceable();
         elements.push(element);
         placeableCount++;
         if (placeableCount > MAX_PLACEABLES) {
           throw new SyntaxError();
         }
-        this._index++;
+        this.cursor++;
         continue;
       }
 
@@ -189,18 +189,18 @@ export default class RuntimeParser {
    * @private
    */
   getEscapedCharacter(specials = ["{", "\\"]) {
-    this._index++;
-    const next = this._source[this._index];
+    this.cursor++;
+    const next = this.source[this.cursor];
 
     if (specials.includes(next)) {
-      this._index++;
+      this.cursor++;
       return next;
     }
 
     if (next === "u") {
-      const sequence = this._source.slice(this._index + 1, this._index + 5);
+      const sequence = this.source.slice(this.cursor + 1, this.cursor + 5);
       if (RE_UNICODE_ESCAPE.test(sequence)) {
-        this._index += 5;
+        this.cursor += 5;
         return String.fromCodePoint(parseInt(sequence, 16));
       }
 
@@ -218,7 +218,7 @@ export default class RuntimeParser {
    * @private
    */
   getPlaceable() {
-    this._index++;
+    this.cursor++;
 
     const onlyVariants = this.getVariants();
     if (onlyVariants) {
@@ -229,13 +229,13 @@ export default class RuntimeParser {
 
     this.skip(RE_BLANK);
 
-    const ch = this._source[this._index];
+    const ch = this.source[this.cursor];
 
     if (ch === "}") {
       return selector;
     }
 
-    this._index += 2; // ->
+    this.cursor += 2; // ->
     return {
       type: "select",
       selector,
@@ -250,7 +250,7 @@ export default class RuntimeParser {
    * @private
    */
   getSelectorExpression() {
-    if (this._source[this._index] === "{") {
+    if (this.source[this.cursor] === "{") {
       return this.getPlaceable();
     }
 
@@ -260,11 +260,11 @@ export default class RuntimeParser {
       return literal;
     }
 
-    if (this._source[this._index] === ".") {
-      this._index++;
+    if (this.source[this.cursor] === ".") {
+      this.cursor++;
 
       const name = this.match(RE_IDENTIFIER);
-      this._index++;
+      this.cursor++;
       return {
         type: "getattr",
         id: literal,
@@ -272,11 +272,11 @@ export default class RuntimeParser {
       };
     }
 
-    if (this._source[this._index] === "[") {
-      this._index++;
+    if (this.source[this.cursor] === "[") {
+      this.cursor++;
 
       const key = this.getVariantKey();
-      this._index++;
+      this.cursor++;
       return {
         type: "getvar",
         id: literal,
@@ -284,11 +284,11 @@ export default class RuntimeParser {
       };
     }
 
-    if (this._source[this._index] === "(") {
-      this._index++;
+    if (this.source[this.cursor] === "(") {
+      this.cursor++;
       const args = this.getCallArgs();
 
-      this._index++;
+      this.cursor++;
 
       literal.type = "fun";
 
@@ -311,10 +311,10 @@ export default class RuntimeParser {
   getCallArgs() {
     const args = [];
 
-    while (this._index < this._length) {
+    while (this.cursor < this.length) {
       this.skip(RE_BLANK);
 
-      if (this._source[this._index] === ")") {
+      if (this.source[this.cursor] === ")") {
         return args;
       }
 
@@ -325,8 +325,8 @@ export default class RuntimeParser {
       if (exp.type === "ref") {
         this.skip(RE_BLANK);
 
-        if (this._source[this._index] === ":") {
-          this._index++;
+        if (this.source[this.cursor] === ":") {
+          this.cursor++;
           this.skip(RE_BLANK);
 
           args.push({
@@ -344,10 +344,10 @@ export default class RuntimeParser {
 
       this.skip(RE_BLANK);
 
-      if (this._source[this._index] === ")") {
+      if (this.source[this.cursor] === ")") {
         break;
-      } else if (this._source[this._index] === ",") {
-        this._index++;
+      } else if (this.source[this.cursor] === ",") {
+        this.cursor++;
       } else {
         throw new SyntaxError();
       }
@@ -400,26 +400,26 @@ export default class RuntimeParser {
     let index = 0;
     let def;
 
-    while (this._index < this._length) {
+    while (this.cursor < this.length) {
       this.skip(RE_BLANK);
 
-      RE_VARIANT_START.lastIndex = this._index;
-      const result = RE_VARIANT_START.exec(this._source);
+      RE_VARIANT_START.lastIndex = this.cursor;
+      const result = RE_VARIANT_START.exec(this.source);
 
       if (result === null) {
         break;
       }
 
-      if (this._source[this._index] === "*") {
-        this._index += 2;
+      if (this.source[this.cursor] === "*") {
+        this.cursor += 2;
         def = index;
       } else {
-        this._index++
+        this.cursor++
       }
 
       const key = this.getVariantKey();
 
-      this._index = RE_VARIANT_START.lastIndex;
+      this.cursor = RE_VARIANT_START.lastIndex;
       const value = this.getPattern();
       vars[index++] = {key, value};
     }
@@ -440,7 +440,7 @@ export default class RuntimeParser {
       var literal = this.match(RE_IDENTIFIER);
     }
 
-    this._index++;
+    this.cursor++;
     return literal;
   }
 
@@ -465,8 +465,8 @@ export default class RuntimeParser {
    * @private
    */
   getLiteral() {
-    if (this._source[this._index] === "$") {
-      this._index++;
+    if (this.source[this.cursor] === "$") {
+      this.cursor++;
       return {
         type: "var",
         name: this.match(RE_IDENTIFIER)
