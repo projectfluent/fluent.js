@@ -47,12 +47,6 @@ export default class FluentResource extends Map {
       return re.test(source);
     }
 
-    function skip(re) {
-      if (test(re)) {
-        cursor = re.lastIndex;
-      }
-    }
-
     function match(re) {
       re.lastIndex = cursor;
       let result = re.exec(source);
@@ -72,9 +66,16 @@ export default class FluentResource extends Map {
       return {value, attrs};
     }
 
+    function skipBlank() {
+      if (test(RE_BLANK)) {
+        cursor = RE_BLANK.lastIndex;
+      }
+
+    }
+
     function skipIndent() {
       let start = cursor;
-      skip(RE_BLANK);
+      skipBlank();
 
       switch (source[cursor]) {
         case ".":
@@ -185,7 +186,7 @@ export default class FluentResource extends Map {
 
       const selector = parseInlineExpression();
 
-      skip(RE_BLANK);
+      skipBlank();
 
       const ch = source[cursor];
 
@@ -251,7 +252,7 @@ export default class FluentResource extends Map {
       const args = [];
 
       while (cursor < source.length) {
-        skip(RE_BLANK);
+        skipBlank();
 
         if (source[cursor] === ")") {
           return args;
@@ -262,11 +263,11 @@ export default class FluentResource extends Map {
         // MessageReference in this place may be an entity reference, like:
         // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
         if (exp.type === "ref") {
-          skip(RE_BLANK);
+          skipBlank();
 
           if (source[cursor] === ":") {
             cursor++;
-            skip(RE_BLANK);
+            skipBlank();
 
             args.push({
               type: "narg",
@@ -281,7 +282,7 @@ export default class FluentResource extends Map {
           args.push(exp);
         }
 
-        skip(RE_BLANK);
+        skipBlank();
 
         if (source[cursor] === ")") {
           break;
@@ -300,7 +301,7 @@ export default class FluentResource extends Map {
       let hasAttributes = false;
 
       while (true) {
-        skip(RE_BLANK);
+        skipBlank();
         if (!test(RE_ATTRIBUTE_START)) {
           break;
         } else if (!hasAttributes) {
@@ -328,7 +329,7 @@ export default class FluentResource extends Map {
       let def;
 
       while (cursor < source.length) {
-        skip(RE_BLANK);
+        skipBlank();
         if (!test(RE_VARIANT_START)) {
           break;
         }
@@ -350,11 +351,11 @@ export default class FluentResource extends Map {
     }
 
     function parseVariantKey() {
-      skip(RE_BLANK);
+      skipBlank();
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumber()
         : match(RE_IDENTIFIER);
-      skip(RE_BLANK);
+      skipBlank();
       return key;
     }
 
