@@ -106,15 +106,9 @@ class RuntimeParser {
    */
   getMessage() {
     let id = this.match(RE_MESSAGE_START);
-    let val = this.getPattern();
-    this.skip(RE_BLANK);
+    let value = this.getPattern();
     let attrs = this.getAttributes();
-
-    if (attrs === null && typeof val === "string") {
-      return [id, val];
-    }
-
-    return [id, {val, attrs}];
+    return [id, {value, attrs}];
   }
 
   /**
@@ -343,20 +337,20 @@ class RuntimeParser {
           this._index++;
           this.skip(RE_BLANK);
 
-          const val = this.getSelectorExpression();
+          const value = this.getSelectorExpression();
 
           // If the expression returned as a value of the argument
           // is not a quote delimited string or number, throw.
           //
           // We don't have to check here if the pattern is quote delimited
           // because that's the only type of string allowed in expressions.
-          if (typeof val === "string" ||
-              Array.isArray(val) ||
-              val.type === "num") {
+          if (typeof value === "string" ||
+              Array.isArray(value) ||
+              value.type === "num") {
             args.push({
               type: "narg",
               name: exp.name,
-              val
+              value
             });
           } else {
             this._index = this._source.lastIndexOf(":", this._index) + 1;
@@ -390,30 +384,25 @@ class RuntimeParser {
    * @private
    */
   getAttributes() {
-    const attrs = {};
+    let attrs = {};
     let hasAttributes = false;
 
-    while (this._index < this._length) {
-      RE_ATTRIBUTE_START.lastIndex = this._index;
-      const result = RE_ATTRIBUTE_START.exec(this._source);
-
-      if (result === null) {
+    while (true) {
+      this.skip(RE_BLANK);
+      if (!this.test(RE_ATTRIBUTE_START)) {
         break;
       } else if (!hasAttributes) {
         hasAttributes = true;
       }
 
-      this._index = RE_ATTRIBUTE_START.lastIndex;
+      let key = this.match(RE_ATTRIBUTE_START);
+      let value = this.getPattern();
 
-      const key = result[1];
-      const val = this.getPattern();
-      this.skip(RE_BLANK);
-
-      if (typeof val === "string") {
-        attrs[key] = val;
+      if (typeof value === "string") {
+        attrs[key] = value;
       } else {
         attrs[key] = {
-          val
+          value
         };
       }
     }
@@ -452,8 +441,8 @@ class RuntimeParser {
       const key = this.getVariantKey();
 
       this._index = RE_VARIANT_START.lastIndex;
-      const val = this.getPattern();
-      vars[index++] = {key, val};
+      const value = this.getPattern();
+      vars[index++] = {key, value};
     }
 
     return index > 0 ? {vars, def} : null;
@@ -485,7 +474,7 @@ class RuntimeParser {
   getNumber() {
     return {
       type: "num",
-      val: this.match(RE_NUMBER_LITERAL),
+      value: this.match(RE_NUMBER_LITERAL),
     };
   }
 

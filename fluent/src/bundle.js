@@ -198,12 +198,12 @@ export default class FluentBundle {
     }
 
     // optimize simple-string entities with attributes
-    if (typeof message.val === "string") {
-      return this._transform(message.val);
+    if (typeof message.value === "string") {
+      return this._transform(message.value);
     }
 
     // optimize entities with null values
-    if (message.val === null) {
+    if (message.value === null) {
       return null;
     }
 

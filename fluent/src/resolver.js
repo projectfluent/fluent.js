@@ -144,9 +144,9 @@ function VariantExpression(env, {id, key}) {
       node[0].exp === null;
   }
 
-  if (isVariantList(message.val)) {
+  if (isVariantList(message.value)) {
     // Match the specified key against keys of each variant, in order.
-    for (const variant of message.val[0].vars) {
+    for (const variant of message.value[0].vars) {
       const variantKey = Type(env, variant.key);
       if (keyword.match(bundle, variantKey)) {
         return variant;
@@ -276,7 +276,7 @@ function Type(env, expr) {
     case "varname":
       return new FluentSymbol(expr.name);
     case "num":
-      return new FluentNumber(expr.val);
+      return new FluentNumber(expr.value);
     case "var":
       return VariableReference(env, expr);
     case "fun":
@@ -301,8 +301,8 @@ function Type(env, expr) {
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
-      if (expr.val !== null && expr.val !== undefined) {
-        return Type(env, expr.val);
+      if (expr.value !== null && expr.value !== undefined) {
+        return Type(env, expr.value);
       }
 
       const { errors } = env;
@@ -416,7 +416,7 @@ function CallExpression(env, {fun, args}) {
 
   for (const arg of args) {
     if (arg.type === "narg") {
-      keyargs[arg.name] = Type(env, arg.val);
+      keyargs[arg.name] = Type(env, arg.value);
     } else {
       posargs.push(Type(env, arg));
     }
