@@ -126,6 +126,8 @@ class RuntimeParser {
       case "*":
       case "}":
         return false;
+      case "{":
+        return this._source.slice(start, this._index);
     }
     switch (this._source[this._index - 1]) {
       case " ":
