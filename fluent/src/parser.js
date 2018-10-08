@@ -4,7 +4,7 @@ const MAX_PLACEABLES = 100;
 
 const RE_UNICODE_ESCAPE = /^[a-fA-F0-9]{4}$/;
 
-const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */my;
+const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
 const RE_VARIANT_START = /\*?\[.*?] */y;
 
@@ -62,15 +62,11 @@ class RuntimeParser {
     while (true) {
       RE_MESSAGE_START.lastIndex = lastIndex;
       if (RE_MESSAGE_START.test(source)) {
-        yield RE_MESSAGE_START.lastIndex = lastIndex;
-      }
-
-      let lineEnd = source.indexOf("\n", lastIndex);
-      if (lineEnd === -1) {
+        yield lastIndex;
+        lastIndex = RE_MESSAGE_START.lastIndex;
+      } else {
         break;
       }
-
-      lastIndex = lineEnd + 1;
     }
   }
 
