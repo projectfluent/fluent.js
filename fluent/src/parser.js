@@ -14,8 +14,8 @@ const whitespaceRe = /\s+/y;
 const indentRe = /\s*\n * /y;
 
 const identifierRe = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
-const numberRe = /-?[0-9]+(\.[0-9]+)?/y;
-const stringRe = /".*?"/y;
+const numberRe = /(-?[0-9]+(\.[0-9]+)?)/y;
+const stringRe = /"(.*?)"/y;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
@@ -107,7 +107,7 @@ class RuntimeParser {
    */
   getMessage() {
     let id = this.match(messageStartRe);
-    let val = this.getPatternRegex();
+    let val = this.getPattern();
     this.skip(whitespaceRe);
     //console.log(this._source.slice(0, this._index) + "|");
     let attrs = this.getAttributes();
@@ -143,14 +143,25 @@ class RuntimeParser {
     }
   }
 
-  getPatternRegex() {
+  getPattern() {
     let elements = [];
+    let placeableCount = 0;
     while (true) {
       if (this.test(textElementRe)) {
         let element = this.match(textElementRe);
         elements.push(element);
 
         //console.log(this._source.slice(0, this._index) + "|");
+      }
+
+      if (this._source[this._index] === "{") {
+        let element = this.getPlaceable();
+        elements.push(element);
+        placeableCount++;
+        if (placeableCount > MAX_PLACEABLES) {
+          throw new SyntaxError();
+        }
+        this._index++;
       }
 
       let block = this.skipIndent();
@@ -160,6 +171,9 @@ class RuntimeParser {
         continue;
       }
 
+      // TODO Escapes
+      // TODO Normalize leading and trailing whitespace
+
       break;
     }
 
@@ -167,137 +181,12 @@ class RuntimeParser {
       return null;
     }
 
-    if (elements.length === 1) {
+    if (elements.length === 1 && typeof(elements[0]) === "string") {
       return elements[0];
     }
 
     return elements;
   }
-
-  /**
-   * Parses a Message pattern.
-   * Message Pattern may be a simple string or an array of strings
-   * and placeable expressions.
-   *
-   * @returns {String|Array}
-   * @private
-   */
-  getPattern() {
-    // We're going to first try to see if the pattern is simple.
-    // If it is we can just look for the end of the line and read the string.
-    //
-    // Then, if either the line contains a placeable opening `{` or the
-    // next line starts an indentation, we switch to complex pattern.
-    const start = this._index;
-    let eol = this._source.indexOf("\n", this._index);
-
-    if (eol === -1) {
-      eol = this._length;
-    }
-
-    const firstLineContent = start !== eol ?
-      this._source.slice(start, eol) : null;
-
-    if (firstLineContent && firstLineContent.includes("{")) {
-      return this.getComplexPattern();
-    }
-
-    this._index = eol;
-
-    if (!this.skipIndent()) {
-      return firstLineContent;
-    }
-
-    if (firstLineContent) {
-      // It's a multiline pattern which started on the same line as the
-      // identifier. Reparse the whole pattern to make sure we get all of it.
-      this._index = start;
-    }
-
-    return this.getComplexPattern();
-  }
-
-  /**
-   * Parses a complex Message pattern.
-   * This function is called by getPattern when the message is multiline,
-   * or contains escape chars or placeables.
-   * It does full parsing of complex patterns.
-   *
-   * @returns {Array}
-   * @private
-   */
-  /* eslint-disable complexity */
-  getComplexPattern() {
-    let buffer = "";
-    const content = [];
-    let placeables = 0;
-
-
-    outer:
-    while (this._index < this._length) {
-
-      let ch = this._source[this._index];
-
-      // This block handles multi-line strings combining strings separated
-      // by new line.
-      if (ch === "\n") {
-
-        const blankLinesStart = this._index;
-
-        if (this.skipIndent()) {
-          ch = this._source[this._index];
-        } else {
-          break outer;
-        }
-
-        const blankLinesEnd = this._index - 1;
-        const blank = this._source.substring(blankLinesStart, blankLinesEnd);
-
-        // normalize new lines
-        buffer += blank.replace(/\n[ \t]*/g, "\n");
-      }
-
-      if (ch === undefined) {
-        break;
-      }
-
-      if (ch === "\\") {
-        buffer += this.getEscapedCharacter();
-        ch = this._source[this._index];
-        continue;
-      }
-
-      if (ch === "{") {
-        // Push the buffer to content array right before placeable
-        if (buffer.length) {
-          content.push(buffer);
-        }
-        if (placeables > MAX_PLACEABLES - 1) {
-          throw new SyntaxError();
-        }
-        buffer = "";
-        content.push(this.getPlaceable());
-
-        ch = this._source[++this._index];
-        placeables++;
-        continue;
-      }
-
-      buffer += ch;
-      ch = this.source[++this._index];
-    }
-
-    if (content.length === 0) {
-      return buffer.length ? buffer : null;
-    }
-
-    if (buffer.length) {
-      content.push(buffer);
-    }
-
-    return content;
-  }
-  /* eslint-enable complexity */
 
   /**
    * Parse an escape sequence and return the unescaped character.
@@ -485,34 +374,15 @@ class RuntimeParser {
   }
 
   /**
-   * Get simple string argument enclosed in `"`.
-   *
-   * @returns {String}
-   * @private
-   */
-  getString() {
-    stringRe.lastIndex = this._index;
-    const result = stringRe.exec(this._source);
-    this._index = stringRe.lastIndex;
-
-    // Trim the quotes
-    return result[0].slice(1, -1);
-  }
-
-  /**
    * Parses an FTL Number.
    *
    * @returns {Object}
    * @private
    */
   getNumber() {
-    numberRe.lastIndex = this._index;
-    const result = numberRe.exec(this._source);
-    this._index = numberRe.lastIndex;
-
     return {
       type: "num",
-      val: result[0]
+      val: this.match(numberRe),
     };
   }
 
@@ -539,7 +409,7 @@ class RuntimeParser {
       this._index = attributeStartRe.lastIndex;
 
       const key = result[1];
-      const val = this.getPatternRegex();
+      const val = this.getPattern();
       this.skip(whitespaceRe);
 
       if (typeof val === "string") {
@@ -642,7 +512,7 @@ class RuntimeParser {
 
     stringRe.lastIndex = this._index;
     if (stringRe.test(this._source)) {
-      return this.getString();
+      return this.match(stringRe);
     }
 
     throw new SyntaxError();
