@@ -36,25 +36,19 @@ export default class RuntimeParser {
     this.cursor = 0;
     this.length = string.length;
 
-    for (const offset of this.entryOffsets(string)) {
-      this.cursor = offset;
+    RE_MESSAGE_START.lastIndex = 0;
+    while (true) {
+      let next = RE_MESSAGE_START.exec(this.source);
+      if (next === null) {
+        break;
+      }
+
+      this.cursor = RE_MESSAGE_START.lastIndex;
       try {
-        yield this.getMessage();
+        yield [next[1], this.getMessage()];
       } catch (e) {
         console.error(e);
         continue;
-      }
-    }
-  }
-
-  *entryOffsets(source) {
-    RE_MESSAGE_START.lastIndex = 0;
-    while (true) {
-      let lastIndex = RE_MESSAGE_START.lastIndex;
-      if (RE_MESSAGE_START.test(source)) {
-        yield lastIndex;
-      } else {
-        break;
       }
     }
   }
@@ -90,10 +84,9 @@ export default class RuntimeParser {
    * @private
    */
   getMessage() {
-    let id = this.match(RE_MESSAGE_START);
     let value = this.getPattern();
     let attrs = this.getAttributes();
-    return [id, {value, attrs}];
+    return {value, attrs};
   }
 
   /**
