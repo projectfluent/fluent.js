@@ -37,7 +37,7 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.set(next[1], getMessage());
+        resource.set(next[1], parseMessage());
       } catch (e) {
         console.error(e);
         continue;
@@ -70,23 +70,12 @@ export default class FluentResource extends Map {
       return result[1];
     }
 
-    /**
-     * Parse the source string from the current index as an FTL message
-     * and add it to the entries property on the Parser.
-     *
-     * @private
-     */
-    function getMessage() {
-      let value = getPattern();
-      let attrs = getAttributes();
+    function parseMessage() {
+      let value = parsePattern();
+      let attrs = parseAttributes();
       return {value, attrs};
     }
 
-    /**
-     * Skip multiline whitespace. Return true if it was indented.
-     *
-     * @private
-     */
     function skipIndent() {
       let start = cursor;
       skip(RE_BLANK);
@@ -108,28 +97,28 @@ export default class FluentResource extends Map {
       }
     }
 
-    function getPattern() {
+    function parsePattern() {
       if (test(RE_TEXT_ELEMENT)) {
         var first = match(RE_TEXT_ELEMENT);
       }
 
       if (source[cursor] === "{") {
         return first
-          ? getPatternElements(first)
-          : getPatternElements();
+          ? parsePatternElements(first)
+          : parsePatternElements();
       }
 
       let block = skipIndent();
       if (block) {
         return first
-          ? getPatternElements(first, block)
-          : getPatternElements(block);
+          ? parsePatternElements(first, block)
+          : parsePatternElements(block);
       }
 
       return first;
     }
 
-    function getPatternElements(...elements) {
+    function parsePatternElements(...elements) {
       let placeableCount = 0;
 
       while (true) {
@@ -140,7 +129,7 @@ export default class FluentResource extends Map {
         }
 
         if (source[cursor] === "{") {
-          let element = getPlaceable();
+          let element = parsePlaceable();
           elements.push(element);
           placeableCount++;
           if (placeableCount > MAX_PLACEABLES) {
@@ -167,11 +156,8 @@ export default class FluentResource extends Map {
 
     /**
      * Parse an escape sequence and return the unescaped character.
-     *
-     * @returns {string}
-     * @private
      */
-    function getEscapedCharacter(specials = ["{", "\\"]) {
+    function parseEscapedCharacter(specials = ["{", "\\"]) {
       cursor++;
       const next = source[cursor];
 
@@ -193,22 +179,15 @@ export default class FluentResource extends Map {
       throw error(`Unknown escape sequence: \\${next}`);
     }
 
-    /**
-     * Parses a single placeable in a Message pattern and returns its
-     * expression.
-     *
-     * @returns {Object}
-     * @private
-     */
-    function getPlaceable() {
+    function parsePlaceable() {
       cursor++;
 
-      const onlyVariants = getVariants();
+      const onlyVariants = parseVariants();
       if (onlyVariants) {
         return {type: "select", selector: null, ...onlyVariants};
       }
 
-      const selector = getInlineExpression();
+      const selector = parseInlineExpression();
 
       skip(RE_BLANK);
 
@@ -222,22 +201,16 @@ export default class FluentResource extends Map {
       return {
         type: "select",
         selector,
-        ...getVariants()
+        ...parseVariants()
       };
     }
 
-    /**
-     * Parses an inline expression.
-     *
-     * @returns {Object}
-     * @private
-     */
-    function getInlineExpression() {
+    function parseInlineExpression() {
       if (source[cursor] === "{") {
-        return getPlaceable();
+        return parsePlaceable();
       }
 
-      const literal = getLiteral();
+      const literal = parseLiteral();
 
       if (literal.type !== "ref") {
         return literal;
@@ -255,7 +228,7 @@ export default class FluentResource extends Map {
 
       if (source[cursor] === "[") {
         cursor++;
-        const key = getVariantKey();
+        const key = parseVariantKey();
         cursor++;
         return {
           type: "getvar",
@@ -266,7 +239,7 @@ export default class FluentResource extends Map {
 
       if (source[cursor] === "(") {
         cursor++;
-        const args = getCallArgs();
+        const args = parseCallArgs();
         cursor++;
         return {
           type: "call",
@@ -278,13 +251,7 @@ export default class FluentResource extends Map {
       return literal;
     }
 
-    /**
-     * Parses call arguments for a CallExpression.
-     *
-     * @returns {Array}
-     * @private
-     */
-    function getCallArgs() {
+    function parseCallArgs() {
       const args = [];
 
       while (cursor < source.length) {
@@ -294,7 +261,7 @@ export default class FluentResource extends Map {
           return args;
         }
 
-        const exp = getInlineExpression();
+        const exp = parseInlineExpression();
 
         // MessageReference in this place may be an entity reference, like:
         // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
@@ -308,7 +275,7 @@ export default class FluentResource extends Map {
             args.push({
               type: "narg",
               name: exp.name,
-              value: getInlineExpression(),
+              value: parseInlineExpression(),
             });
 
           } else {
@@ -332,13 +299,7 @@ export default class FluentResource extends Map {
       return args;
     }
 
-    /**
-     * Parses a list of Message attributes.
-     *
-     * @returns {Object?}
-     * @private
-     */
-    function getAttributes() {
+    function parseAttributes() {
       let attrs = {};
       let hasAttributes = false;
 
@@ -351,7 +312,7 @@ export default class FluentResource extends Map {
         }
 
         let key = match(RE_ATTRIBUTE_START);
-        let value = getPattern();
+        let value = parsePattern();
 
         if (typeof value === "string") {
           attrs[key] = value;
@@ -365,13 +326,7 @@ export default class FluentResource extends Map {
       return hasAttributes ? attrs : null;
     }
 
-    /**
-     * Parses a list of variants.
-     *
-     * @returns {Object?}
-     * @private
-     */
-    function getVariants() {
+    function parseVariants() {
       const vars = [];
       let index = 0;
       let def;
@@ -389,51 +344,32 @@ export default class FluentResource extends Map {
           cursor++
         }
 
-        const key = getVariantKey();
+        const key = parseVariantKey();
         cursor = RE_VARIANT_START.lastIndex;
-        const value = getPattern();
+        const value = parsePattern();
         vars[index++] = {key, value};
       }
 
       return index > 0 ? {vars, def} : null;
     }
 
-    /**
-     * Parses a Variant key.
-     *
-     * @returns {String}
-     * @private
-     */
-    function getVariantKey() {
+    function parseVariantKey() {
       skip(RE_BLANK);
       let key = test(RE_NUMBER_LITERAL)
-        ? getNumber()
+        ? parseNumber()
         : match(RE_IDENTIFIER);
       skip(RE_BLANK);
       return key;
     }
 
-    /**
-     * Parses an FTL Number.
-     *
-     * @returns {Object}
-     * @private
-     */
-    function getNumber() {
+    function parseNumber() {
       return {
         type: "num",
         value: match(RE_NUMBER_LITERAL),
       };
     }
 
-
-    /**
-     * Parses an FTL literal.
-     *
-     * @returns {Object}
-     * @private
-     */
-    function getLiteral() {
+    function parseLiteral() {
       if (source[cursor] === "$") {
         cursor++;
         return {
@@ -450,7 +386,7 @@ export default class FluentResource extends Map {
       }
 
       if (test(RE_NUMBER_LITERAL)) {
-        return getNumber();
+        return parseNumber();
       }
 
       if (test(RE_STRING_LITERAL)) {
