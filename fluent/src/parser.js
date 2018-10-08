@@ -222,7 +222,7 @@ export default class RuntimeParser {
       return {type: "select", selector: null, ...onlyVariants};
     }
 
-    const selector = this.getSelectorExpression();
+    const selector = this.getInlineExpression();
 
     this.skip(RE_BLANK);
 
@@ -241,12 +241,12 @@ export default class RuntimeParser {
   }
 
   /**
-   * Parses a selector expression.
+   * Parses an inline expression.
    *
    * @returns {Object}
    * @private
    */
-  getSelectorExpression() {
+  getInlineExpression() {
     if (this.source[this.cursor] === "{") {
       return this.getPlaceable();
     }
@@ -308,7 +308,7 @@ export default class RuntimeParser {
         return args;
       }
 
-      const exp = this.getSelectorExpression();
+      const exp = this.getInlineExpression();
 
       // MessageReference in this place may be an entity reference, like:
       // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
@@ -322,7 +322,7 @@ export default class RuntimeParser {
           args.push({
             type: "narg",
             name: exp.name,
-            value: this.getSelectorExpression(),
+            value: this.getInlineExpression(),
           });
 
         } else {
