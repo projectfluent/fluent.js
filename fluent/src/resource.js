@@ -19,10 +19,6 @@ const RE_STRING_LITERAL = /"(.*?)"/y;
  * of parsed localization entries.
  */
 export default class FluentResource extends Map {
-  constructor(entries) {
-    super(entries);
-  }
-
   static fromString(source) {
     RE_MESSAGE_START.lastIndex = 0;
 
@@ -239,7 +235,7 @@ export default class FluentResource extends Map {
 
       if (source[cursor] === "(") {
         cursor++;
-        const args = parseCallArgs();
+        const args = parseArguments();
         cursor++;
         return {
           type: "call",
@@ -251,7 +247,7 @@ export default class FluentResource extends Map {
       return literal;
     }
 
-    function parseCallArgs() {
+    function parseArguments() {
       const args = [];
 
       while (cursor < source.length) {
