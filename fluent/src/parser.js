@@ -50,12 +50,11 @@ export default class RuntimeParser {
   }
 
   *entryOffsets(source) {
-    let lastIndex = 0;
+    RE_MESSAGE_START.lastIndex = 0;
     while (true) {
-      RE_MESSAGE_START.lastIndex = lastIndex;
+      let lastIndex = RE_MESSAGE_START.lastIndex;
       if (RE_MESSAGE_START.test(source)) {
         yield lastIndex;
-        lastIndex = RE_MESSAGE_START.lastIndex;
       } else {
         break;
       }
