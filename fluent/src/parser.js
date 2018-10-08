@@ -328,39 +328,24 @@ class RuntimeParser {
 
       // MessageReference in this place may be an entity reference, like:
       // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
-      if (exp.type !== "ref") {
-        args.push(exp);
-      } else {
-        this.skipInlineWS();
+      if (exp.type === "ref") {
+        this.skip(RE_BLANK);
 
         if (this._source[this._index] === ":") {
           this._index++;
           this.skip(RE_BLANK);
 
-          const value = this.getSelectorExpression();
-
-          // If the expression returned as a value of the argument
-          // is not a quote delimited string or number, throw.
-          //
-          // We don't have to check here if the pattern is quote delimited
-          // because that's the only type of string allowed in expressions.
-          if (typeof value === "string" ||
-              Array.isArray(value) ||
-              value.type === "num") {
-            args.push({
-              type: "narg",
-              name: exp.name,
-              value
-            });
-          } else {
-            this._index = this._source.lastIndexOf(":", this._index) + 1;
-            throw this.error(
-              "Expected string in quotes, number.");
-          }
+          args.push({
+            type: "narg",
+            name: exp.name,
+            value: this.getSelectorExpression(),
+          });
 
         } else {
           args.push(exp);
         }
+      } else {
+        args.push(exp);
       }
 
       this.skip(RE_BLANK);
@@ -370,7 +355,7 @@ class RuntimeParser {
       } else if (this._source[this._index] === ",") {
         this._index++;
       } else {
-        throw this.error('Expected "," or ")"');
+        throw new SyntaxError();
       }
     }
 
