@@ -2,20 +2,19 @@
 
 const MAX_PLACEABLES = 100;
 
-const unicodeEscapeRe = /^[a-fA-F0-9]{4}$/;
+const RE_UNICODE_ESCAPE = /^[a-fA-F0-9]{4}$/;
 
-const messageStartRe = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */my;
-const attributeStartRe = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
-const variantStartRe = /\*?\[.*?] */y;
+const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */my;
+const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
+const RE_VARIANT_START = /\*?\[.*?] */y;
 
-const textElementRe = /([^\\{\n\r]+)/y;
+const RE_TEXT_ELEMENT = /([^\\{\n\r]+)/y;
 
-const whitespaceRe = /\s+/y;
-const indentRe = /\s*\n * /y;
+const RE_BLANK = /\s+/y;
 
-const identifierRe = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
-const numberRe = /(-?[0-9]+(\.[0-9]+)?)/y;
-const stringRe = /"(.*?)"/y;
+const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
+const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
+const RE_STRING_LITERAL = /"(.*?)"/y;
 
 /**
  * The `Parser` class is responsible for parsing FTL resources.
@@ -61,9 +60,9 @@ class RuntimeParser {
   *entryOffsets(source) {
     let lastIndex = 0;
     while (true) {
-      messageStartRe.lastIndex = lastIndex;
-      if (messageStartRe.test(source)) {
-        yield messageStartRe.lastIndex = lastIndex;
+      RE_MESSAGE_START.lastIndex = lastIndex;
+      if (RE_MESSAGE_START.test(source)) {
+        yield RE_MESSAGE_START.lastIndex = lastIndex;
       }
 
       let lineEnd = source.indexOf("\n", lastIndex);
@@ -106,9 +105,9 @@ class RuntimeParser {
    * @private
    */
   getMessage() {
-    let id = this.match(messageStartRe);
+    let id = this.match(RE_MESSAGE_START);
     let val = this.getPattern();
-    this.skip(whitespaceRe);
+    this.skip(RE_BLANK);
     let attrs = this.getAttributes();
 
     if (attrs === null && typeof val === "string") {
@@ -125,7 +124,7 @@ class RuntimeParser {
    */
   skipIndent() {
     let start = this._index;
-    this.skip(whitespaceRe);
+    this.skip(RE_BLANK);
 
     switch (this._source[this._index]) {
       case ".":
@@ -143,8 +142,8 @@ class RuntimeParser {
   }
 
   getPattern() {
-    if (this.test(textElementRe)) {
-      var first = this.match(textElementRe);
+    if (this.test(RE_TEXT_ELEMENT)) {
+      var first = this.match(RE_TEXT_ELEMENT);
     }
 
     if (this._source[this._index] === "{") {
@@ -167,8 +166,8 @@ class RuntimeParser {
     let placeableCount = 0;
 
     while (true) {
-      if (this.test(textElementRe)) {
-        let element = this.match(textElementRe);
+      if (this.test(RE_TEXT_ELEMENT)) {
+        let element = this.match(RE_TEXT_ELEMENT);
         elements.push(element);
         continue;
       }
@@ -217,7 +216,7 @@ class RuntimeParser {
 
     if (next === "u") {
       const sequence = this._source.slice(this._index + 1, this._index + 5);
-      if (unicodeEscapeRe.test(sequence)) {
+      if (RE_UNICODE_ESCAPE.test(sequence)) {
         this._index += 5;
         return String.fromCodePoint(parseInt(sequence, 16));
       }
@@ -245,7 +244,7 @@ class RuntimeParser {
 
     const selector = this.getSelectorExpression();
 
-    this.skip(whitespaceRe);
+    this.skip(RE_BLANK);
 
     const ch = this._source[this._index];
 
@@ -277,7 +276,7 @@ class RuntimeParser {
     if (this._source[this._index] === ".") {
       this._index++;
 
-      const name = this.match(identifierRe);
+      const name = this.match(RE_IDENTIFIER);
       this._index++;
       return {
         type: "getattr",
@@ -326,7 +325,7 @@ class RuntimeParser {
     const args = [];
 
     while (this._index < this._length) {
-      this.skip(whitespaceRe);
+      this.skip(RE_BLANK);
 
       if (this._source[this._index] === ")") {
         return args;
@@ -343,7 +342,7 @@ class RuntimeParser {
 
         if (this._source[this._index] === ":") {
           this._index++;
-          this.skip(whitespaceRe);
+          this.skip(RE_BLANK);
 
           const val = this.getSelectorExpression();
 
@@ -371,7 +370,7 @@ class RuntimeParser {
         }
       }
 
-      this.skip(whitespaceRe);
+      this.skip(RE_BLANK);
 
       if (this._source[this._index] === ")") {
         break;
@@ -394,7 +393,7 @@ class RuntimeParser {
   getNumber() {
     return {
       type: "num",
-      val: this.match(numberRe),
+      val: this.match(RE_NUMBER_LITERAL),
     };
   }
 
@@ -409,8 +408,8 @@ class RuntimeParser {
     let hasAttributes = false;
 
     while (this._index < this._length) {
-      attributeStartRe.lastIndex = this._index;
-      const result = attributeStartRe.exec(this._source);
+      RE_ATTRIBUTE_START.lastIndex = this._index;
+      const result = RE_ATTRIBUTE_START.exec(this._source);
 
       if (result === null) {
         break;
@@ -418,11 +417,11 @@ class RuntimeParser {
         hasAttributes = true;
       }
 
-      this._index = attributeStartRe.lastIndex;
+      this._index = RE_ATTRIBUTE_START.lastIndex;
 
       const key = result[1];
       const val = this.getPattern();
-      this.skip(whitespaceRe);
+      this.skip(RE_BLANK);
 
       if (typeof val === "string") {
         attrs[key] = val;
@@ -448,10 +447,10 @@ class RuntimeParser {
     let def;
 
     while (this._index < this._length) {
-      this.skip(whitespaceRe);
+      this.skip(RE_BLANK);
 
-      variantStartRe.lastIndex = this._index;
-      const result = variantStartRe.exec(this._source);
+      RE_VARIANT_START.lastIndex = this._index;
+      const result = RE_VARIANT_START.exec(this._source);
 
       if (result === null) {
         break;
@@ -466,7 +465,7 @@ class RuntimeParser {
 
       const key = this.getVariantKey();
 
-      this._index = variantStartRe.lastIndex;
+      this._index = RE_VARIANT_START.lastIndex;
       const val = this.getPattern();
       vars[index++] = {key, val};
     }
@@ -483,11 +482,11 @@ class RuntimeParser {
   getVariantKey() {
     let literal;
 
-    numberRe.lastIndex = this._index;
-    if (numberRe.test(this._source)) {
+    RE_NUMBER_LITERAL.lastIndex = this._index;
+    if (RE_NUMBER_LITERAL.test(this._source)) {
       literal = this.getNumber();
     } else {
-      literal = this.match(identifierRe);
+      literal = this.match(RE_IDENTIFIER);
     }
 
     this._index++;
@@ -505,26 +504,26 @@ class RuntimeParser {
       this._index++;
       return {
         type: "var",
-        name: this.match(identifierRe)
+        name: this.match(RE_IDENTIFIER)
       };
     }
 
-    identifierRe.lastIndex = this._index;
-    if (identifierRe.test(this._source)) {
+    RE_IDENTIFIER.lastIndex = this._index;
+    if (RE_IDENTIFIER.test(this._source)) {
       return {
         type: "ref",
-        name: this.match(identifierRe)
+        name: this.match(RE_IDENTIFIER)
       };
     }
 
-    numberRe.lastIndex = this._index;
-    if (numberRe.test(this._source)) {
+    RE_NUMBER_LITERAL.lastIndex = this._index;
+    if (RE_NUMBER_LITERAL.test(this._source)) {
       return this.getNumber();
     }
 
-    stringRe.lastIndex = this._index;
-    if (stringRe.test(this._source)) {
-      return this.match(stringRe);
+    RE_STRING_LITERAL.lastIndex = this._index;
+    if (RE_STRING_LITERAL.test(this._source)) {
+      return this.match(RE_STRING_LITERAL);
     }
 
     throw new SyntaxError();
