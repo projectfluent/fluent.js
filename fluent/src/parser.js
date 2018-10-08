@@ -19,42 +19,34 @@ const RE_STRING_LITERAL = /"(.*?)"/y;
 /**
  * The `Parser` class is responsible for parsing FTL resources.
  *
- * It's only public method is `getResource(source)` which takes an FTL string
- * and returns an Object of entries parsed from the source.
- *
- * This parser is optimized for runtime performance.
- *
- * There is an equivalent of this parser in syntax/parser which is
- * generating full AST which is useful for FTL tools.
+ * This parser is optimized for runtime performance. There is an equivalent of
+ * this parser in syntax/parser which is generating full AST which is useful
+ * for FTL tools.
  */
-class RuntimeParser {
+export default class RuntimeParser {
   /**
    * Parse FTL code into entries formattable by the FluentBundle.
    *
-   * Given a string of FTL syntax, return a map of entries that can be passed
-   * to FluentBundle.format and a list of errors encountered during parsing.
+   * Given a string of FTL syntax, return an iterator over entries which can be
+   * consumed by the FluentResource constructor.
    *
    * @param {String} string
-   * @returns {Array<Object, Array>}
+   * @returns {Iterator} entries
    */
-  getResource(string) {
+  *entries(string) {
     this._source = string;
     this._index = 0;
     this._length = string.length;
 
-    const entries = [];
-
     for (const offset of this.entryOffsets(string)) {
       this._index = offset;
       try {
-        entries.push(this.getMessage());
+        yield this.getMessage();
       } catch (e) {
         console.error(e);
         continue;
       }
     }
-
-    return entries;
   }
 
   *entryOffsets(source) {
@@ -498,17 +490,4 @@ class RuntimeParser {
 
     throw new SyntaxError();
   }
-
-}
-
-/**
- * Parses an FTL string using RuntimeParser and returns the generated
- * object with entries and a list of errors.
- *
- * @param {String} string
- * @returns {Object}
- */
-export default function parse(string) {
-  const parser = new RuntimeParser();
-  return parser.getResource(string);
 }

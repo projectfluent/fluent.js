@@ -1,4 +1,4 @@
-import parse from "./parser";
+import RuntimeParser from "./parser";
 
 /**
  * Fluent Resource is a structure storing a map
@@ -10,7 +10,7 @@ export default class FluentResource extends Map {
   }
 
   static fromString(source) {
-    const entries = parse(source);
-    return new FluentResource(entries);
+    let parser = new RuntimeParser();
+    return new FluentResource(parser.entries(source));
   }
 }

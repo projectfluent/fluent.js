@@ -35,9 +35,9 @@ function print(err, data) {
 }
 
 function printRuntime(data) {
-  const parse = require('../fluent/src/parser').default;
-  const res = parse(data.toString());
-  console.log(JSON.stringify(res, null, 2));
+  const parser = new (require('../fluent/src/parser').default)();
+  const res = parser.entries(data.toString());
+  console.log(new Map(res));
 }
 
 function printResource(data) {
