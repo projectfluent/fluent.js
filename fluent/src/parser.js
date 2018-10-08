@@ -184,7 +184,6 @@ class RuntimeParser {
       }
 
       let block = this.skipIndent();
-
       if (block) {
         elements.push(block.replace(/ /g, ""));
         continue;
@@ -235,7 +234,7 @@ class RuntimeParser {
    * @private
    */
   getPlaceable() {
-    const start = ++this._index;
+    this._index++;
 
     const onlyVariants = this.getVariants();
     if (onlyVariants) {
@@ -385,19 +384,6 @@ class RuntimeParser {
   }
 
   /**
-   * Parses an FTL Number.
-   *
-   * @returns {Object}
-   * @private
-   */
-  getNumber() {
-    return {
-      type: "num",
-      val: this.match(RE_NUMBER_LITERAL),
-    };
-  }
-
-  /**
    * Parses a list of Message attributes.
    *
    * @returns {Object?}
@@ -480,18 +466,29 @@ class RuntimeParser {
    * @private
    */
   getVariantKey() {
-    let literal;
-
-    RE_NUMBER_LITERAL.lastIndex = this._index;
-    if (RE_NUMBER_LITERAL.test(this._source)) {
-      literal = this.getNumber();
+    if (this.test(RE_NUMBER_LITERAL)) {
+      var literal = this.getNumber();
     } else {
-      literal = this.match(RE_IDENTIFIER);
+      var literal = this.match(RE_IDENTIFIER);
     }
 
     this._index++;
     return literal;
   }
+
+  /**
+   * Parses an FTL Number.
+   *
+   * @returns {Object}
+   * @private
+   */
+  getNumber() {
+    return {
+      type: "num",
+      val: this.match(RE_NUMBER_LITERAL),
+    };
+  }
+
 
   /**
    * Parses an FTL literal.
@@ -508,21 +505,18 @@ class RuntimeParser {
       };
     }
 
-    RE_IDENTIFIER.lastIndex = this._index;
-    if (RE_IDENTIFIER.test(this._source)) {
+    if (this.test(RE_IDENTIFIER)) {
       return {
         type: "ref",
         name: this.match(RE_IDENTIFIER)
       };
     }
 
-    RE_NUMBER_LITERAL.lastIndex = this._index;
-    if (RE_NUMBER_LITERAL.test(this._source)) {
+    if (this.test(RE_NUMBER_LITERAL)) {
       return this.getNumber();
     }
 
-    RE_STRING_LITERAL.lastIndex = this._index;
-    if (RE_STRING_LITERAL.test(this._source)) {
+    if (this.test(RE_STRING_LITERAL)) {
       return this.match(RE_STRING_LITERAL);
     }
 
