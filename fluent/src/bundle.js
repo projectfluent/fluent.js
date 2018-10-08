@@ -1,5 +1,5 @@
-import resolve from "./resolver";
-import FluentResource from "./resource";
+import resolve from "./resolver.js";
+import FluentResource from "./resource.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are

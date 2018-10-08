@@ -1,5 +1,3 @@
-/*  eslint no-magic-numbers: [0]  */
-
 const MAX_PLACEABLES = 100;
 
 const RE_UNICODE_ESCAPE = /^[a-fA-F0-9]{4}$/;

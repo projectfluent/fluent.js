@@ -7,8 +7,8 @@
  *
  */
 
-export { default as FluentBundle } from "./bundle";
-export { default as FluentResource } from "./resource";
-export { FluentType, FluentNumber, FluentDateTime } from "./types";
+export { default as FluentBundle } from "./bundle.js";
+export { default as FluentResource } from "./resource.js";
+export { FluentType, FluentNumber, FluentDateTime } from "./types.js";
 
-export { ftl } from "./util";
+export { ftl } from "./util.js";

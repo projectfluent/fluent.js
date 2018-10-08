@@ -48,8 +48,8 @@
 
 
 import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
-  from "./types";
-import builtins from "./builtins";
+  from "./types.js";
+import builtins from "./builtins.js";
 
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;

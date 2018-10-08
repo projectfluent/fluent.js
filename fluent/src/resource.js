@@ -1,4 +1,4 @@
-import RuntimeParser from "./parser";
+import RuntimeParser from "./parser.js";
 
 /**
  * Fluent Resource is a structure storing a map
