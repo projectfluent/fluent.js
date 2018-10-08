@@ -259,9 +259,7 @@ export default class RuntimeParser {
 
     if (this.source[this.cursor] === ".") {
       this.cursor++;
-
       const name = this.match(RE_IDENTIFIER);
-      this.cursor++;
       return {
         type: "getattr",
         id: literal,
@@ -271,7 +269,6 @@ export default class RuntimeParser {
 
     if (this.source[this.cursor] === "[") {
       this.cursor++;
-
       const key = this.getVariantKey();
       this.cursor++;
       return {
@@ -284,14 +281,10 @@ export default class RuntimeParser {
     if (this.source[this.cursor] === "(") {
       this.cursor++;
       const args = this.getCallArgs();
-
       this.cursor++;
-
-      literal.type = "fun";
-
       return {
         type: "call",
-        fun: literal,
+        fun: {...literal, type: "fun"},
         args
       };
     }
@@ -399,11 +392,7 @@ export default class RuntimeParser {
 
     while (this.cursor < this.length) {
       this.skip(RE_BLANK);
-
-      RE_VARIANT_START.lastIndex = this.cursor;
-      const result = RE_VARIANT_START.exec(this.source);
-
-      if (result === null) {
+      if (!this.test(RE_VARIANT_START)) {
         break;
       }
 
@@ -415,7 +404,6 @@ export default class RuntimeParser {
       }
 
       const key = this.getVariantKey();
-
       this.cursor = RE_VARIANT_START.lastIndex;
       const value = this.getPattern();
       vars[index++] = {key, value};
@@ -431,14 +419,12 @@ export default class RuntimeParser {
    * @private
    */
   getVariantKey() {
-    if (this.test(RE_NUMBER_LITERAL)) {
-      var literal = this.getNumber();
-    } else {
-      var literal = this.match(RE_IDENTIFIER);
-    }
-
-    this.cursor++;
-    return literal;
+    this.skip(RE_BLANK);
+    let key = this.test(RE_NUMBER_LITERAL)
+      ? this.getNumber()
+      : this.match(RE_IDENTIFIER);
+    this.skip(RE_BLANK);
+    return key;
   }
 
   /**
