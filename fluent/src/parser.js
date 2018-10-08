@@ -50,7 +50,7 @@ class RuntimeParser {
       try {
         entries.push(this.getMessage());
       } catch (e) {
-        //console.error(e);
+        console.error(e);
         continue;
       }
     }
@@ -109,7 +109,6 @@ class RuntimeParser {
     let id = this.match(messageStartRe);
     let val = this.getPattern();
     this.skip(whitespaceRe);
-    //console.log(this._source.slice(0, this._index) + "|");
     let attrs = this.getAttributes();
 
     if (attrs === null && typeof val === "string") {
@@ -125,33 +124,53 @@ class RuntimeParser {
    * @private
    */
   skipIndent() {
-    indentRe.lastIndex = this._index;
-    if (!indentRe.test(this._source)) {
-      return false;
-    }
     let start = this._index;
+    this.skip(whitespaceRe);
 
-    this._index = indentRe.lastIndex;
     switch (this._source[this._index]) {
       case ".":
       case "[":
       case "*":
       case "}":
         return false;
-      default:
+    }
+    switch (this._source[this._index - 1]) {
+      case " ":
         return this._source.slice(start, this._index);
+      default:
+        return false;
     }
   }
 
   getPattern() {
-    let elements = [];
+    if (this.test(textElementRe)) {
+      var first = this.match(textElementRe);
+    }
+
+    if (this._source[this._index] === "{") {
+      return first
+        ? this.getPatternElements(first)
+        : this.getPatternElements();
+    }
+
+    let block = this.skipIndent();
+    if (block) {
+      return first
+        ? this.getPatternElements(first, block)
+        : this.getPatternElements(block);
+    }
+
+    return first;
+  }
+
+  getPatternElements(...elements) {
     let placeableCount = 0;
+
     while (true) {
       if (this.test(textElementRe)) {
         let element = this.match(textElementRe);
         elements.push(element);
-
-        //console.log(this._source.slice(0, this._index) + "|");
+        continue;
       }
 
       if (this._source[this._index] === "{") {
@@ -162,6 +181,7 @@ class RuntimeParser {
           throw new SyntaxError();
         }
         this._index++;
+        continue;
       }
 
       let block = this.skipIndent();
@@ -175,14 +195,6 @@ class RuntimeParser {
       // TODO Normalize leading and trailing whitespace
 
       break;
-    }
-
-    if (elements.length === 0) {
-      return null;
-    }
-
-    if (elements.length === 1 && typeof(elements[0]) === "string") {
-      return elements[0];
     }
 
     return elements;
