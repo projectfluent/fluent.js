@@ -327,14 +327,7 @@ export default class FluentResource extends Map {
 
         let key = match(RE_ATTRIBUTE_START);
         let value = parsePattern();
-
-        if (typeof value === "string") {
-          attrs[key] = value;
-        } else {
-          attrs[key] = {
-            value
-          };
-        }
+        attrs[key] = value;
       }
 
       return hasAttributes ? attrs : null;
