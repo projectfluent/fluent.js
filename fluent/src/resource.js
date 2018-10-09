@@ -378,6 +378,7 @@ export default class FluentResource extends Map {
         case "[":
         case "*":
         case "}":
+        case undefined:
           return false;
         case "{":
           return source.slice(start, cursor);
