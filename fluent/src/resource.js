@@ -220,13 +220,10 @@ export default class FluentResource extends Map {
       }
 
       if (source[cursor] === "[") {
-        cursor++;
-        let key = parseVariantKey();
-        cursor++;
         return {
           type: "getvar",
           id: literal,
-          key
+          key: parseVariantKey(),
         };
       }
 
@@ -297,17 +294,15 @@ export default class FluentResource extends Map {
       let index = 0;
       let def;
 
-      while (cursor < source.length) {
+      while (true) {
         skipBlank();
         if (!test(RE_VARIANT_START)) {
           break;
         }
 
         if (source[cursor] === "*") {
-          cursor += 2;
+          cursor++;
           def = index;
-        } else {
-          cursor++
         }
 
         let key = parseVariantKey();
@@ -320,11 +315,13 @@ export default class FluentResource extends Map {
     }
 
     function parseVariantKey() {
+      cursor++;
       skipBlank();
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumber()
         : match(RE_IDENTIFIER);
       skipBlank();
+      cursor++;
       return key;
     }
 
