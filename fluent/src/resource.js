@@ -144,7 +144,6 @@ export default class FluentResource extends Map {
           }
           elements.push(parsePlaceable());
           needsTrimming = false;
-          cursor++;
           continue;
         }
 
@@ -177,6 +176,7 @@ export default class FluentResource extends Map {
 
       let onlyVariants = parseVariants();
       if (onlyVariants) {
+        cursor++;
         return {type: "select", selector: null, ...onlyVariants};
       }
 
@@ -184,12 +184,15 @@ export default class FluentResource extends Map {
       skipBlank();
 
       if (source[cursor] === "}") {
+        cursor++;
         return selector;
       }
 
       if (test(RE_SELECT_ARROW)) {
         cursor = RE_SELECT_ARROW.lastIndex;
-        return {type: "select", selector, ...parseVariants()};
+        let variants = parseVariants();
+        cursor++;
+        return {type: "select", selector, ...variants};
       }
 
       throw new SyntaxError();
