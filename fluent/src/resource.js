@@ -1,20 +1,20 @@
 const MAX_PLACEABLES = 100;
 
 const RE_TEXT_ESCAPE = /\\([\\{])/y;
+const RE_STRING_ESCAPE = /\\([\\"])/y;
 const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
 const RE_VARIANT_START = /\*?\[.*?] */y;
 
-const RE_TEXT_ELEMENT = /([^\\{\n\r]+)/y;
-
 const RE_BLANK = /\s+/y;
 const RE_TRAILING_SPACES = / +$/mg;
 
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
-const RE_STRING_LITERAL = /"(.*?)"/y;
+const RE_STRING_VALUE = /([^\\"\n\r]*)/y;
+const RE_TEXT_VALUE = /([^\\{\n\r]+)/y;
 
 /**
  * Fluent Resource is a structure storing a map
@@ -105,8 +105,8 @@ export default class FluentResource extends Map {
     }
 
     function parsePattern() {
-      if (test(RE_TEXT_ELEMENT)) {
-        var first = match(RE_TEXT_ELEMENT);
+      if (test(RE_TEXT_VALUE)) {
+        var first = match(RE_TEXT_VALUE);
       }
 
       switch (source[cursor]) {
@@ -133,18 +133,19 @@ export default class FluentResource extends Map {
 
     function parsePatternElements(...elements) {
       let placeableCount = 0;
+      let needsTrimming = false;
 
       while (true) {
-        if (test(RE_TEXT_ELEMENT)) {
-          let element = match(RE_TEXT_ELEMENT);
-          elements.push(element);
+        if (test(RE_TEXT_VALUE)) {
+          elements.push(match(RE_TEXT_VALUE));
+          needsTrimming = true;
           continue;
         }
 
+        needsTrimming = false;
         if (source[cursor] === "{") {
           elements.push(parsePlaceable());
-          placeableCount++;
-          if (placeableCount > MAX_PLACEABLES) {
+          if (++placeableCount > MAX_PLACEABLES) {
             throw new SyntaxError();
           }
           cursor++;
@@ -165,22 +166,22 @@ export default class FluentResource extends Map {
         break;
       }
 
-      let last = elements[elements.length - 1];
-      if (typeof(last) === "string") {
-        elements[elements.length - 1] = normalize(last);
+      if (needsTrimming) {
+        let lastIndex = elements.length - 1;
+        elements[lastIndex] = normalize(elements[lastIndex]);
       }
 
       return elements;
     }
 
-    function parseEscape(re) {
+    function parseEscape(reSpecialized) {
       if (test(RE_UNICODE_ESCAPE)) {
         let sequence = match(RE_UNICODE_ESCAPE);
         return String.fromCodePoint(parseInt(sequence, 16));
       }
 
-      if (test(re)) {
-        return match(re);
+      if (test(reSpecialized)) {
+        return match(reSpecialized);
       }
 
       throw new SyntaxError();
@@ -195,12 +196,9 @@ export default class FluentResource extends Map {
       }
 
       const selector = parseInlineExpression();
-
       skipBlank();
 
-      const ch = source[cursor];
-
-      if (ch === "}") {
+      if (source[cursor] === "}") {
         return selector;
       }
 
@@ -369,6 +367,21 @@ export default class FluentResource extends Map {
       };
     }
 
+    function parseString() {
+      cursor++;
+      let value = "";
+      while (true) {
+        value += match(RE_STRING_VALUE);
+        if (source[cursor] === "\\") {
+          value += parseEscape(RE_STRING_ESCAPE);
+        }
+        if (source[cursor] === "\"") {
+          cursor++;
+          return value;
+        }
+      }
+    }
+
     function parseLiteral() {
       if (source[cursor] === "$") {
         cursor++;
@@ -389,8 +402,8 @@ export default class FluentResource extends Map {
         return parseNumber();
       }
 
-      if (test(RE_STRING_LITERAL)) {
-        return match(RE_STRING_LITERAL);
+      if (source[cursor] === "\"") {
+        return parseString();
       }
 
       throw new SyntaxError();
