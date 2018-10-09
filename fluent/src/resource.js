@@ -55,12 +55,18 @@ export default class FluentResource extends Map {
       let result = re.exec(source);
 
       if (result === null) {
-        cursor += 1;
+        cursor++;
         throw new SyntaxError();
       }
 
       cursor = re.lastIndex;
       return result[1];
+    }
+
+    function expect(char) {
+      if (source[cursor++] !== char) {
+        throw new SyntaxError();
+      }
     }
 
     function skipBlank() {
@@ -172,11 +178,11 @@ export default class FluentResource extends Map {
     }
 
     function parsePlaceable() {
-      cursor++;
+      expect("{");
 
       let onlyVariants = parseVariants();
       if (onlyVariants) {
-        cursor++;
+        expect("}");
         return {type: "select", selector: null, ...onlyVariants};
       }
 
@@ -191,7 +197,7 @@ export default class FluentResource extends Map {
       if (test(RE_SELECT_ARROW)) {
         cursor = RE_SELECT_ARROW.lastIndex;
         let variants = parseVariants();
-        cursor++;
+        expect("}");
         return {type: "select", selector, ...variants};
       }
 
@@ -302,13 +308,13 @@ export default class FluentResource extends Map {
     }
 
     function parseVariantKey() {
-      cursor++;
+      expect("[");
       skipBlank();
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumber()
         : match(RE_IDENTIFIER);
       skipBlank();
-      cursor++;
+      expect("]");
       return key;
     }
 
@@ -338,7 +344,7 @@ export default class FluentResource extends Map {
     }
 
     function parseString() {
-      cursor++;
+      expect("\"");
       let value = "";
       while (true) {
         value += match(RE_STRING_VALUE);
