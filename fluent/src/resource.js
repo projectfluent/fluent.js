@@ -9,6 +9,7 @@ const RE_VARIANT_START = /\*?\[.*?] */y;
 const RE_TEXT_ELEMENT = /([^\\{\n\r]+)/y;
 
 const RE_BLANK = /\s+/y;
+const RE_TRAILING_SPACES = / +$/mg;
 
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
@@ -90,12 +91,16 @@ export default class FluentResource extends Map {
         case "{":
           return source.slice(start, cursor);
       }
-      switch (source[cursor - 1]) {
-        case " ":
-          return source.slice(start, cursor);
-        default:
-          return false;
+
+      if (source[cursor - 1] === " ") {
+        return source.slice(start, cursor);
       }
+
+      return false;
+    }
+
+    function normalize(text) {
+      return text.replace(RE_TRAILING_SPACES, "");
     }
 
     function parsePattern() {
@@ -112,11 +117,15 @@ export default class FluentResource extends Map {
       let block = skipIndent();
       if (block) {
         return first
-          ? parsePatternElements(first, block)
+          ? parsePatternElements(first, normalize(block))
           : parsePatternElements();
       }
 
-      return first;
+      if (first) {
+        return normalize(first);
+      }
+
+      return null;
     }
 
     function parsePatternElements(...elements) {
@@ -142,14 +151,18 @@ export default class FluentResource extends Map {
 
         let block = skipIndent();
         if (block) {
-          elements.push(block.replace(/ /g, ""));
+          elements.push(normalize(block));
           continue;
         }
 
         // TODO Escapes
-        // TODO Normalize leading and trailing whitespace
 
         break;
+      }
+
+      let last = elements[elements.length - 1];
+      if (typeof(last) === "string") {
+        elements[elements.length - 1] = normalize(last);
       }
 
       return elements;
