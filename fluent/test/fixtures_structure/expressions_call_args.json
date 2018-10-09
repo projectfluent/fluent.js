@@ -2,8 +2,8 @@
     "key": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FOO"
             },
             "args": [

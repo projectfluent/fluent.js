@@ -307,7 +307,7 @@ function Type(env, expr) {
       return new FluentNumber(expr.value);
     case "var":
       return VariableReference(env, expr);
-    case "fun":
+    case "func":
       return FunctionReference(env, expr);
     case "call":
       return CallExpression(env, expr);
@@ -425,18 +425,18 @@ function FunctionReference(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.fun
+ * @param   {Object} expr.callee
  *    FTL Function object.
  * @param   {Array} expr.args
  *    FTL Function argument list.
  * @returns {FluentType}
  * @private
  */
-function CallExpression(env, {fun, args}) {
-  const callee = FunctionReference(env, fun);
+function CallExpression(env, {callee, args}) {
+  const func = FunctionReference(env, callee);
 
-  if (callee instanceof FluentNone) {
-    return callee;
+  if (func instanceof FluentNone) {
+    return func;
   }
 
   const posargs = [];
@@ -451,7 +451,7 @@ function CallExpression(env, {fun, args}) {
   }
 
   try {
-    return callee(posargs, keyargs);
+    return func(posargs, keyargs);
   } catch (e) {
     // XXX Report errors.
     return new FluentNone();

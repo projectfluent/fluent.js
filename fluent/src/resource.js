@@ -229,9 +229,9 @@ export default class FluentResource extends Map {
       }
 
       if (consume("(")) {
-        let fun = {...ref, type: "fun"}
+        let callee = {...ref, type: "func"}
         let args = parseArguments();
-        return {type: "call", fun, args};
+        return {type: "call", callee, args};
       }
 
       return ref;

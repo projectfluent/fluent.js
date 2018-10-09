@@ -4,8 +4,8 @@
             "type": "select",
             "selector": {
                 "type": "call",
-                "fun": {
-                    "type": "fun",
+                "callee": {
+                    "type": "func",
                     "name": "BUILTIN"
                 },
                 "args": []

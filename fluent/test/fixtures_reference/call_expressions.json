@@ -2,8 +2,8 @@
     "positional-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -22,8 +22,8 @@
     "named-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -46,8 +46,8 @@
     "dense-named-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -70,8 +70,8 @@
     "mixed-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -103,8 +103,8 @@
     "shuffled-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -136,8 +136,8 @@
     "duplicate-named-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -160,8 +160,8 @@
     "sparse-inline-call": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -184,8 +184,8 @@
     "empty-inline-call": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": []
@@ -194,8 +194,8 @@
     "multiline-call": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -218,8 +218,8 @@
     "sparse-multiline-call": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -242,8 +242,8 @@
     "empty-multiline-call": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": []
@@ -252,8 +252,8 @@
     "unindented-arg-number": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -267,8 +267,8 @@
     "unindented-arg-string": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -279,8 +279,8 @@
     "unindented-arg-msg-ref": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -294,8 +294,8 @@
     "unindented-arg-term-ref": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -309,8 +309,8 @@
     "unindented-arg-var-ref": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -324,15 +324,15 @@
     "unindented-arg-call": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
                 {
                     "type": "call",
-                    "fun": {
-                        "type": "fun",
+                    "callee": {
+                        "type": "func",
                         "name": "OTHER"
                     },
                     "args": []
@@ -343,8 +343,8 @@
     "unindented-named-arg": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -362,8 +362,8 @@
     "unindented-closing-paren": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -377,8 +377,8 @@
     "one-argument": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -392,8 +392,8 @@
     "many-arguments": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -415,8 +415,8 @@
     "inline-sparse-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -438,8 +438,8 @@
     "mulitline-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -457,8 +457,8 @@
     "mulitline-sparse-args": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -476,8 +476,8 @@
     "missing-arg": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": []
@@ -486,8 +486,8 @@
     "missing-sparse-arg": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": []
@@ -496,8 +496,8 @@
     "sparse-named-arg": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -531,8 +531,8 @@
     "unindented-colon": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
@@ -550,8 +550,8 @@
     "unindented-value": [
         {
             "type": "call",
-            "fun": {
-                "type": "fun",
+            "callee": {
+                "type": "func",
                 "name": "FUN"
             },
             "args": [
