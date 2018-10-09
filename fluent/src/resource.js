@@ -2,7 +2,9 @@ const MAX_PLACEABLES = 100;
 
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
-const RE_VARIANT_START = /\*?\[.*?] */y;
+// We want to match multiline variant keys. [^] is a pre-ES2018 trick
+// which works around the lack of the dotall flag, /s.
+const RE_VARIANT_START = /\*?\[[^]*?] */y;
 
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
@@ -183,6 +185,7 @@ export default class FluentResource extends Map {
 
     function parsePlaceable() {
       consume("{", SyntaxError);
+      skipBlank();
 
       let onlyVariants = parseVariants();
       if (onlyVariants) {
@@ -192,7 +195,6 @@ export default class FluentResource extends Map {
 
       let selector = parseInlineExpression();
       skipBlank();
-
       if (consume("}")) {
         return selector;
       }
