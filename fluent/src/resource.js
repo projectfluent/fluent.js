@@ -137,9 +137,9 @@ export default class FluentResource extends Map {
           continue;
         }
 
-        needsTrimming = false;
         if (source[cursor] === "{") {
           elements.push(parsePlaceable());
+          needsTrimming = false;
           if (++placeableCount > MAX_PLACEABLES) {
             throw new SyntaxError();
           }
@@ -150,11 +150,13 @@ export default class FluentResource extends Map {
         let block = parseIndent();
         if (block) {
           elements.push(normalize(block));
+          needsTrimming = false;
           continue;
         }
 
         if (source[cursor] === "\\") {
           elements.push(parseEscape(RE_TEXT_ESCAPE));
+          needsTrimming = false;
           continue;
         }
 
@@ -407,6 +409,5 @@ export default class FluentResource extends Map {
     function normalize(text) {
       return text.replace(RE_TRAILING_SPACES, "");
     }
-
   }
 }
