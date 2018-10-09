@@ -362,12 +362,15 @@ export default class FluentResource extends Map {
       let value = "";
       while (true) {
         value += match(RE_STRING_VALUE);
-        if (source[cursor] === "\\") {
-          value += parseEscape(RE_STRING_ESCAPE);
-        }
-        if (source[cursor] === "\"") {
-          cursor++;
-          return value;
+        switch (source[cursor]) {
+          case "\\":
+            value += parseEscape(RE_STRING_ESCAPE);
+            continue;
+          case "\"":
+            cursor++;
+            return value;
+          default:
+            throw new SyntaxError();
         }
       }
     }
