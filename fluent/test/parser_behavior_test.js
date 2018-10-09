@@ -34,24 +34,24 @@ readdir(ftlFixtures, function(err, filenames) {
         const expectedEntries = JSON.parse(json);
 
         for (const [id, expected] of Object.entries(expectedEntries)) {
-          assert(resoruce.has(id), `Expected message "${id}" to be parsed`);
+          assert(resource.has(id), `Expected message "${id}" to be parsed`);
 
           const entry = resource.get(id);
 
           if (expected.value) {
-            assert(typeof entry === 'string' || 'value' in entry);
+            assert(hasValue(entry), `Expected ${id} to have a value`);
           } else {
-            assert(typeof entry !== 'string' && !('value' in entry));
+            assert(!hasValue(entry), `Expected ${id} to have a null value`);
           }
 
           if (expected.attributes) {
-            assert(typeof entry !== 'string' && 'attrs' in entry);
+            assert(hasAttrs(entry), `Expected ${id} to have attributes`);
             assert.deepEqual(
               Object.keys(entry.attrs),
               Object.keys(expected.attributes)
             );
           } else {
-            assert(typeof entry === 'string' || !('attrs' in entry));
+            assert(!hasAttrs(entry), `Expected ${id} to have zero attributes`);
           }
         }
 
@@ -59,3 +59,14 @@ readdir(ftlFixtures, function(err, filenames) {
     }
   });
 });
+
+function hasValue(entry) {
+  return typeof entry === 'string'
+    || Array.isArray(entry)
+    || entry.hasOwnProperty('value');
+}
+
+function hasAttrs(entry) {
+  return typeof entry !== 'string'
+    && entry.hasOwnProperty('attrs');
+}
