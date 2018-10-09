@@ -29,7 +29,7 @@
                 "type": "ref",
                 "name": "-brand-name"
             },
-            "key": "accusative"
+            "selector": "accusative"
         },
         "."
     ],

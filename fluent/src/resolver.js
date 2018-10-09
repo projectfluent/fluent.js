@@ -47,7 +47,7 @@
  */
 
 
-import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
+import { FluentType, FluentNone, FluentNumber, FluentDateTime }
   from "./types.js";
 import builtins from "./builtins.js";
 
@@ -58,6 +58,44 @@ const MAX_PLACEABLE_LENGTH = 2500;
 const FSI = "\u2068";
 const PDI = "\u2069";
 
+
+/**
+ * Helper for matching a variant key to the given selector.
+ *
+ * Used in SelectExpressions and VariantExpressions.
+ *
+ * @param   {FluentBundle} bundle
+ *    Resolver environment object.
+ * @param   {FluentType} key
+ *    The key of the currently considered variant.
+ * @param   {FluentType} selector
+ *    The selector based om which the correct variant should be chosen.
+ * @returns {FluentType}
+ * @private
+ */
+function match(bundle, selector, key) {
+  if (key === selector) {
+    // Both are strings.
+    return true;
+  }
+
+  if (key instanceof FluentNumber
+    && selector instanceof FluentNumber
+    && key.value === selector.value) {
+    return true;
+  }
+
+  if (selector instanceof FluentNumber && typeof key === "string") {
+    let category = bundle
+      ._memoizeIntlObject(Intl.PluralRules, selector.opts)
+      .select(selector.value);
+    if (key === category) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 /**
  * Helper for choosing the default value from a set of members.
@@ -129,14 +167,15 @@ function MessageReference(env, {name}) {
  * @returns {FluentType}
  * @private
  */
-function VariantExpression(env, {ref, key}) {
+function VariantExpression(env, {ref, selector}) {
   const message = MessageReference(env, ref);
   if (message instanceof FluentNone) {
     return message;
   }
 
   const { bundle, errors } = env;
-  const keyword = Type(env, key);
+  const sel = Type(env, selector);
+  const value = message.value || message;
 
   function isVariantList(node) {
     return Array.isArray(node) &&
@@ -144,18 +183,18 @@ function VariantExpression(env, {ref, key}) {
       node[0].selector === null;
   }
 
-  if (isVariantList(message.value)) {
+  if (isVariantList(value)) {
     // Match the specified key against keys of each variant, in order.
-    for (const variant of message.value[0].vars) {
-      const variantKey = Type(env, variant.key);
-      if (keyword.match(bundle, variantKey)) {
+    for (const variant of value[0].vars) {
+      const key = Type(env, variant.key);
+      if (match(env.bundle, sel, key)) {
         return variant;
       }
     }
   }
 
   errors.push(
-    new ReferenceError(`Unknown variant: ${keyword.toString(bundle)}`));
+    new ReferenceError(`Unknown variant: ${sel.toString(bundle)}`));
   return Type(env, message);
 }
 
@@ -215,24 +254,15 @@ function SelectExpression(env, {selector, vars, def}) {
     return DefaultMember(env, vars, def);
   }
 
-  let selectorValue = Type(env, selector);
-  if (selectorValue instanceof FluentNone) {
+  let sel = Type(env, selector);
+  if (sel instanceof FluentNone) {
     return DefaultMember(env, vars, def);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of vars) {
     const key = Type(env, variant.key);
-    const keyCanMatch =
-      key instanceof FluentNumber || key instanceof FluentSymbol;
-
-    if (!keyCanMatch) {
-      continue;
-    }
-
-    const { bundle } = env;
-
-    if (key.match(bundle, selectorValue)) {
+    if (match(env.bundle, sel, key)) {
       return variant;
     }
   }
@@ -273,8 +303,6 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case "varname":
-      return new FluentSymbol(expr.name);
     case "num":
       return new FluentNumber(expr.value);
     case "var":

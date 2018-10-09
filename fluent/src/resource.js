@@ -41,7 +41,7 @@ export default class FluentResource extends Map {
       try {
         resource.set(next[1], parseMessage());
       } catch (e) {
-        console.error(e);
+        //console.error(e);
         continue;
       }
     }
@@ -225,7 +225,7 @@ export default class FluentResource extends Map {
       }
 
       if (source[cursor] === "[") {
-        return {type: "getvar", ref, key: parseVariantKey()};
+        return {type: "getvar", ref, selector: parseVariantKey()};
       }
 
       if (consume("(")) {

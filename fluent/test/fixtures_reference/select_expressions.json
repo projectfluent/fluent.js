@@ -58,7 +58,7 @@
                     "type": "ref",
                     "name": "-term"
                 },
-                "key": "case"
+                "selector": "case"
             },
             "vars": [
                 {

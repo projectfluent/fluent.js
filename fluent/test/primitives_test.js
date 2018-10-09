@@ -58,10 +58,10 @@ suite('Primitives', function() {
         placeable-attr   = { bar.attr }
 
         -baz = Baz
-            .attr = Baz Attribute
+            .attr = BazAttribute
 
         selector-attr    = { -baz.attr ->
-           *[Baz Attribute] Member 3
+           *[BazAttribute] Member 3
         }
       `);
     });
@@ -151,8 +151,7 @@ suite('Primitives', function() {
 
     test('is detected to be complex', function(){
       const msg = bundle.getMessage('bar');
-      assert.equal(typeof msg, 'object');
-      assert(Array.isArray(msg.val));
+      assert(Array.isArray(msg));
     });
 
     test('can be a value of a message referenced in a placeable', function(){

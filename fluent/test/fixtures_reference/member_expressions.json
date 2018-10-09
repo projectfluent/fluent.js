@@ -6,7 +6,7 @@
                 "type": "ref",
                 "name": "msg"
             },
-            "key": "case"
+            "selector": "case"
         }
     ],
     "attribute-expression": [
