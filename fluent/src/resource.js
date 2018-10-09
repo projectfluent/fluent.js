@@ -1,6 +1,7 @@
 const MAX_PLACEABLES = 100;
 
-const RE_UNICODE_ESCAPE = /^[a-fA-F0-9]{4}$/;
+const RE_TEXT_ESCAPE = /\\([\\{])/y;
+const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
@@ -108,10 +109,12 @@ export default class FluentResource extends Map {
         var first = match(RE_TEXT_ELEMENT);
       }
 
-      if (source[cursor] === "{") {
-        return first
-          ? parsePatternElements(first)
-          : parsePatternElements();
+      switch (source[cursor]) {
+        case "{":
+        case "\\":
+          return first
+            ? parsePatternElements(first)
+            : parsePatternElements();
       }
 
       let block = skipIndent();
@@ -139,8 +142,7 @@ export default class FluentResource extends Map {
         }
 
         if (source[cursor] === "{") {
-          let element = parsePlaceable();
-          elements.push(element);
+          elements.push(parsePlaceable());
           placeableCount++;
           if (placeableCount > MAX_PLACEABLES) {
             throw new SyntaxError();
@@ -155,7 +157,10 @@ export default class FluentResource extends Map {
           continue;
         }
 
-        // TODO Escapes
+        if (source[cursor] === "\\") {
+          elements.push(parseEscape(RE_TEXT_ESCAPE));
+          continue;
+        }
 
         break;
       }
@@ -168,29 +173,17 @@ export default class FluentResource extends Map {
       return elements;
     }
 
-    /**
-     * Parse an escape sequence and return the unescaped character.
-     */
-    function parseEscapedCharacter(specials = ["{", "\\"]) {
-      cursor++;
-      const next = source[cursor];
-
-      if (specials.includes(next)) {
-        cursor++;
-        return next;
+    function parseEscape(re) {
+      if (test(RE_UNICODE_ESCAPE)) {
+        let sequence = match(RE_UNICODE_ESCAPE);
+        return String.fromCodePoint(parseInt(sequence, 16));
       }
 
-      if (next === "u") {
-        const sequence = source.slice(cursor + 1, cursor + 5);
-        if (RE_UNICODE_ESCAPE.test(sequence)) {
-          cursor += 5;
-          return String.fromCodePoint(parseInt(sequence, 16));
-        }
-
-        throw error(`Invalid Unicode escape sequence: \\u${sequence}`);
+      if (test(re)) {
+        return match(re);
       }
 
-      throw error(`Unknown escape sequence: \\${next}`);
+      throw new SyntaxError();
     }
 
     function parsePlaceable() {
