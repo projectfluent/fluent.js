@@ -113,7 +113,7 @@ export default class FluentResource extends Map {
       if (block) {
         return first
           ? parsePatternElements(first, block)
-          : parsePatternElements(block);
+          : parsePatternElements();
       }
 
       return first;
