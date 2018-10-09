@@ -16,6 +16,7 @@ const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 
 const RE_BLANK = /\s+/y;
 const RE_TRAILING_SPACES = / +$/mg;
+const RE_CRLF = /\r\n/g;
 
 /**
  * Fluent Resource is a structure storing a map
@@ -125,12 +126,12 @@ export default class FluentResource extends Map {
       let block = parseIndent();
       if (block) {
         return first
-          ? parsePatternElements(first, normalize(block))
+          ? parsePatternElements(first, trim(block))
           : parsePatternElements();
       }
 
       if (first) {
-        return normalize(first);
+        return trim(first);
       }
 
       return null;
@@ -158,7 +159,7 @@ export default class FluentResource extends Map {
 
         let block = parseIndent();
         if (block) {
-          elements.push(normalize(block));
+          elements.push(trim(block));
           needsTrimming = false;
           continue;
         }
@@ -174,7 +175,7 @@ export default class FluentResource extends Map {
 
       if (needsTrimming) {
         let lastIndex = elements.length - 1;
-        elements[lastIndex] = normalize(elements[lastIndex]);
+        elements[lastIndex] = trim(elements[lastIndex]);
       }
 
       return elements;
@@ -381,17 +382,17 @@ export default class FluentResource extends Map {
         case undefined:
           return false;
         case "{":
-          return source.slice(start, cursor);
+          return source.slice(start, cursor).replace(RE_CRLF, "\n");
       }
 
       if (source[cursor - 1] === " ") {
-        return source.slice(start, cursor);
+        return source.slice(start, cursor).replace(RE_CRLF, "\n");
       }
 
       return false;
     }
 
-    function normalize(text) {
+    function trim(text) {
       return text.replace(RE_TRAILING_SPACES, "");
     }
   }
