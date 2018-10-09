@@ -37,7 +37,7 @@ function print(err, data) {
 function printRuntime(data) {
   const FluentResource = require('../fluent/src/resource').default;
   const res = FluentResource.fromString(data.toString());
-  console.log(JSON.stringify([...res.entries()], null, 4));
+  console.log(JSON.stringify(toObject(res), null, 4));
 }
 
 function printResource(data) {
@@ -84,4 +84,12 @@ function printAnnotation(source, span, annot) {
 
 function indent(spaces) {
   return new Array(spaces + 1).join(' ');
+}
+
+function toObject(map) {
+  let obj = {};
+  for (let [k, v] of map.entries()) {
+    obj[k] = v;
+  }
+  return obj;
 }

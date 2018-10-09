@@ -1,105 +1,83 @@
 {
-  "-brand-name": {
-    "val": [
-      {
-        "type": "sel",
-        "exp": null,
-        "vars": [
-          {
-            "key": {
-              "type": "varname",
-              "name": "nominative"
-            },
-            "val": "Firefox"
-          },
-          {
-            "key": {
-              "type": "varname",
-              "name": "accusative"
-            },
-            "val": "Firefoxa"
-          }
+    "-brand-name": {
+        "value": [
+            {
+                "type": "select",
+                "selector": null,
+                "vars": [
+                    {
+                        "key": "nominative",
+                        "value": "Firefox"
+                    },
+                    {
+                        "key": "accusative",
+                        "value": "Firefoxa"
+                    }
+                ],
+                "def": 0
+            }
         ],
-        "def": 0
-      }
-    ],
-    "attrs": {
-      "gender": "masculine"
-    }
-  },
-  "update-command": {
-    "val": [
-      "Zaktualizuj ",
-      {
-        "type": "getvar",
-        "id": {
-          "type": "ref",
-          "name": "-brand-name"
-        },
-        "key": {
-          "type": "varname",
-          "name": "accusative"
+        "attrs": {
+            "gender": "masculine"
         }
-      },
-      "."
-    ]
-  },
-  "update-successful": {
-    "val": [
-      {
-        "type": "sel",
-        "exp": {
-          "type": "getattr",
-          "id": {
-            "type": "ref",
-            "name": "-brand-name"
-          },
-          "name": "gender"
+    },
+    "update-command": [
+        "Zaktualizuj ",
+        {
+            "type": "getvar",
+            "ref": {
+                "type": "ref",
+                "name": "-brand-name"
+            },
+            "key": "accusative"
         },
-        "vars": [
-          {
-            "key": {
-              "type": "varname",
-              "name": "masculine"
+        "."
+    ],
+    "update-successful": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "getattr",
+                "ref": {
+                    "type": "ref",
+                    "name": "-brand-name"
+                },
+                "name": "gender"
             },
-            "val": [
-              {
-                "type": "ref",
-                "name": "-brand-name"
-              },
-              " został pomyślnie zaktualizowany."
-            ]
-          },
-          {
-            "key": {
-              "type": "varname",
-              "name": "feminine"
-            },
-            "val": [
-              {
-                "type": "ref",
-                "name": "-brand-name"
-              },
-              " została pomyślnie zaktualizowana."
-            ]
-          },
-          {
-            "key": {
-              "type": "varname",
-              "name": "other"
-            },
-            "val": [
-              "Program ",
-              {
-                "type": "ref",
-                "name": "-brand-name"
-              },
-              " został pomyślnie zaktualizowany."
-            ]
-          }
-        ],
-        "def": 2
-      }
+            "vars": [
+                {
+                    "key": "masculine",
+                    "value": [
+                        {
+                            "type": "ref",
+                            "name": "-brand-name"
+                        },
+                        " został pomyślnie zaktualizowany."
+                    ]
+                },
+                {
+                    "key": "feminine",
+                    "value": [
+                        {
+                            "type": "ref",
+                            "name": "-brand-name"
+                        },
+                        " została pomyślnie zaktualizowana."
+                    ]
+                },
+                {
+                    "key": "other",
+                    "value": [
+                        "Program ",
+                        {
+                            "type": "ref",
+                            "name": "-brand-name"
+                        },
+                        " został pomyślnie zaktualizowany."
+                    ]
+                }
+            ],
+            "def": 2
+        }
     ]
-  }
 }

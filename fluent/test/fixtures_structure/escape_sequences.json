@@ -1,16 +1,25 @@
 {
-  "backslash": "Value with \\ (an escaped backslash)",
-  "closing-brace": "Value with { (an opening brace)",
-  "unicode-escape": "A",
-  "escaped-unicode": "\\u0041",
-  "quote-in-string": {
-    "val": [
-      "\""
+    "backslash": [
+        "Value with ",
+        "\\",
+        " (an escaped backslash)"
+    ],
+    "closing-brace": [
+        "Value with ",
+        "{",
+        " (an opening brace)"
+    ],
+    "unicode-escape": [
+        "A"
+    ],
+    "escaped-unicode": [
+        "\\",
+        "u0041"
+    ],
+    "quote-in-string": [
+        "\""
+    ],
+    "backslash-in-string": [
+        "\\"
     ]
-  },
-  "backslash-in-string": {
-    "val": [
-      "\\"
-    ]
-  }
 }

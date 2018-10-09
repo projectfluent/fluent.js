@@ -63,7 +63,7 @@ function print(err, data) {
   for (let [id, message] of bundle.messages) {
     const formatErrors = [];
     printEntry(id, bundle.format(message, ext, formatErrors));
-    if (message.attrs) {
+    if (message && message.attrs) {
       for (let [name, attr] of Object.entries(message.attrs)) {
         printEntry(`    .${name}`, bundle.format(attr, ext, formatErrors));
       }

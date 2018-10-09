@@ -1,30 +1,27 @@
 {
-  "key1": {
-    "val": [
-      "A multiline message with a ",
-      {
-        "type": "ref",
-        "name": "placeable"
-      },
-      "\nat the end of line.  The message should\nconsist of three lines of text."
+    "key1": [
+        "A multiline message with a ",
+        {
+            "type": "ref",
+            "name": "placeable"
+        },
+        "\n",
+        "at the end of line.  The message should",
+        "\n",
+        "consist of three lines of text."
+    ],
+    "key2": [
+        "A multiline message with a ",
+        {
+            "type": "ref",
+            "name": "placeable"
+        }
+    ],
+    "key3": [
+        "A singleline message with a ",
+        {
+            "type": "ref",
+            "name": "placeable"
+        }
     ]
-  },
-  "key2": {
-    "val": [
-      "A multiline message with a ",
-      {
-        "type": "ref",
-        "name": "placeable"
-      }
-    ]
-  },
-  "key3": {
-    "val": [
-      "A singleline message with a ",
-      {
-        "type": "ref",
-        "name": "placeable"
-      }
-    ]
-  }
 }

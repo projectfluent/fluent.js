@@ -1,1 +1,9 @@
-{}
+{
+    "-foo": {
+        "value": null,
+        "attrs": {
+            "attr": "Attribute"
+        }
+    },
+    "-bar": null
+}
