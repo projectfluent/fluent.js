@@ -229,9 +229,9 @@ export default class FluentResource extends Map {
       }
 
       if (consume("(")) {
+        let fun = {...ref, type: "fun"}
         let args = parseArguments();
-        cursor++;
-        return {type: "call", fun: {...ref, type: "fun"}, args};
+        return {type: "call", fun, args};
       }
 
       return ref;
@@ -240,48 +240,40 @@ export default class FluentResource extends Map {
     function parseArguments() {
       let args = [];
 
-      while (cursor < source.length) {
+      while (true) {
         skipBlank();
 
-        if (source[cursor] === ")") {
-          return args;
+        switch (source[cursor]) {
+          case ")":
+            cursor++;
+            return args;
+          case ",":
+            cursor++;
+            continue;
+          case undefined:
+            throw new SyntaxError();
         }
 
-        let exp = parseInlineExpression();
+        let ref = parseInlineExpression();
+        if (ref.type !== "ref") {
+          args.push(ref);
+          continue;
+        }
 
-        // MessageReference in this place may be an entity reference, like:
-        // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
-        if (exp.type === "ref") {
+        skipBlank();
+        if (consume(":")) {
+          // The reference is the beginning of a named argument.
           skipBlank();
-
-          if (consume(":")) {
-            skipBlank();
-
-            args.push({
-              type: "narg",
-              name: exp.name,
-              value: parseInlineExpression(),
-            });
-
-          } else {
-            args.push(exp);
-          }
+          args.push({
+            type: "narg",
+            name: ref.name,
+            value: parseInlineExpression(),
+          });
         } else {
-          args.push(exp);
-        }
-
-        skipBlank();
-
-        if (source[cursor] === ")") {
-          break;
-        } else if (source[cursor] === ",") {
-          cursor++;
-        } else {
-          throw new SyntaxError();
+          // It's a regular message reference.
+          args.push(ref);
         }
       }
-
-      return args;
     }
 
     function parseVariants() {

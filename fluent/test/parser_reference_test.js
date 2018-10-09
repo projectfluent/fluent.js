@@ -30,7 +30,7 @@ readdir(ftlFixtures, function(err, filenames) {
         );
         const resource = FluentResource.fromString(ftl);
         assert.deepEqual(
-          toObject(resource), JSON.parse(expected),
+          JSON.parse(expected), toObject(resource),
           'Actual Annotations don\'t match the expected ones'
         );
       });
