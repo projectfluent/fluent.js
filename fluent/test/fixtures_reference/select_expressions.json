@@ -10,7 +10,7 @@
                 },
                 "args": []
             },
-            "vars": [
+            "variants": [
                 {
                     "key": {
                         "type": "num",
@@ -26,7 +26,7 @@
                     ]
                 }
             ],
-            "def": 1
+            "star": 1
         }
     ],
     "valid-selector": [
@@ -40,13 +40,13 @@
                 },
                 "name": "case"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "invalid-selector": [
@@ -60,13 +60,13 @@
                 },
                 "selector": "case"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "empty-variant": [
@@ -76,7 +76,7 @@
                 "type": "num",
                 "value": "1"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
@@ -84,7 +84,7 @@
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "nested-select": [
@@ -94,7 +94,7 @@
                 "type": "num",
                 "value": "1"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
@@ -104,18 +104,18 @@
                                 "type": "num",
                                 "value": "2"
                             },
-                            "vars": [
+                            "variants": [
                                 {
                                     "key": "two",
                                     "value": "Value"
                                 }
                             ],
-                            "def": 0
+                            "star": 0
                         }
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "nested-variant-list": [
@@ -125,25 +125,25 @@
                 "type": "num",
                 "value": "1"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
                         {
                             "type": "select",
                             "selector": null,
-                            "vars": [
+                            "variants": [
                                 {
                                     "key": "two",
                                     "value": "Value"
                                 }
                             ],
-                            "def": 0
+                            "star": 0
                         }
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ]
 }

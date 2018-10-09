@@ -3,33 +3,33 @@
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-identifier-surrounded-by-whitespace": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-int-number": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": {
                         "type": "num",
@@ -38,14 +38,14 @@
                     "value": "value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-float-number": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": {
                         "type": "num",
@@ -54,7 +54,7 @@
                     "value": "value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ]
 }

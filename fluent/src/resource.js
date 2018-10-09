@@ -277,9 +277,9 @@ export default class FluentResource extends Map {
     }
 
     function parseVariants() {
-      let vars = [];
+      let variants = [];
       let index = 0;
-      let def;
+      let star;
 
       while (true) {
         skipBlank();
@@ -288,16 +288,16 @@ export default class FluentResource extends Map {
         }
 
         if (consume("*")) {
-          def = index;
+          star = index;
         }
 
         let key = parseVariantKey();
         cursor = RE_VARIANT_START.lastIndex;
         let value = parsePattern();
-        vars[index++] = {key, value};
+        variants[index++] = {key, value};
       }
 
-      return index > 0 ? {vars, def} : null;
+      return index > 0 ? {variants, star} : null;
     }
 
     function parseVariantKey() {

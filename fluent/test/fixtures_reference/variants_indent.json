@@ -3,46 +3,46 @@
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-variants-allman": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-variants-gnu": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-variants-no-indent": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
@@ -52,7 +52,7 @@
                     "value": "Other"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ]
 }

@@ -30,7 +30,7 @@
                 "type": "num",
                 "value": "1"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": "One"
@@ -40,7 +40,7 @@
                     "value": "Two"
                 }
             ],
-            "def": 1
+            "star": 1
         }
     ]
 }

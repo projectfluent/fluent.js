@@ -30,7 +30,7 @@
                 "type": "var",
                 "name": "sel"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": "One"
@@ -40,33 +40,33 @@
                     "value": "Two"
                 }
             ],
-            "def": 1
+            "star": 1
         }
     ],
     "-key7": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": "One"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-key8": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": "One"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ]
 }

@@ -70,7 +70,7 @@
                 "type": "num",
                 "value": "1"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": ".Value"
@@ -83,7 +83,7 @@
                     ]
                 }
             ],
-            "def": 1
+            "star": 1
         }
     ]
 }

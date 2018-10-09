@@ -6,7 +6,7 @@
                 "type": "num",
                 "value": "1"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
@@ -14,7 +14,7 @@
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ]
 }

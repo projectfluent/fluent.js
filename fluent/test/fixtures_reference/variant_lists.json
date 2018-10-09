@@ -3,13 +3,13 @@
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-variant-list-in-term-attr": {
@@ -19,13 +19,13 @@
                 {
                     "type": "select",
                     "selector": null,
-                    "vars": [
+                    "variants": [
                         {
                             "key": "key",
                             "value": "Value"
                         }
                     ],
-                    "def": 0
+                    "star": 0
                 }
             ]
         }
@@ -34,13 +34,13 @@
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "variant-list-in-message-attr": {
@@ -50,13 +50,13 @@
                 {
                     "type": "select",
                     "selector": null,
-                    "vars": [
+                    "variants": [
                         {
                             "key": "key",
                             "value": "Value"
                         }
                     ],
-                    "def": 0
+                    "star": 0
                 }
             ]
         }
@@ -65,32 +65,32 @@
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
                         {
                             "type": "select",
                             "selector": null,
-                            "vars": [
+                            "variants": [
                                 {
                                     "key": "two",
                                     "value": "Value"
                                 }
                             ],
-                            "def": 0
+                            "star": 0
                         }
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "-nested-select": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
@@ -100,25 +100,25 @@
                                 "type": "num",
                                 "value": "2"
                             },
-                            "vars": [
+                            "variants": [
                                 {
                                     "key": "two",
                                     "value": "Value"
                                 }
                             ],
-                            "def": 0
+                            "star": 0
                         }
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "nested-select-then-variant-list": [
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "one",
                     "value": [
@@ -128,30 +128,30 @@
                                 "type": "num",
                                 "value": "2"
                             },
-                            "vars": [
+                            "variants": [
                                 {
                                     "key": "two",
                                     "value": [
                                         {
                                             "type": "select",
                                             "selector": null,
-                                            "vars": [
+                                            "variants": [
                                                 {
                                                     "key": "three",
                                                     "value": "Value"
                                                 }
                                             ],
-                                            "def": 0
+                                            "star": 0
                                         }
                                     ]
                                 }
                             ],
-                            "def": 0
+                            "star": 0
                         }
                     ]
                 }
             ],
-            "def": 0
+            "star": 0
         }
     ],
     "variant-list-in-placeable": [
@@ -159,13 +159,13 @@
         {
             "type": "select",
             "selector": null,
-            "vars": [
+            "variants": [
                 {
                     "key": "key",
                     "value": "Value"
                 }
             ],
-            "def": 0
+            "star": 0
         },
         " and a postfix here make this a Pattern."
     ]

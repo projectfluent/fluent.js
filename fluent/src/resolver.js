@@ -106,14 +106,14 @@ function match(bundle, selector, key) {
  *    Resolver environment object.
  * @param   {Object} members
  *    Hash map of variants from which the default value is to be selected.
- * @param   {Number} def
+ * @param   {Number} star
  *    The index of the default variant.
  * @returns {FluentType}
  * @private
  */
-function DefaultMember(env, members, def) {
-  if (members[def]) {
-    return members[def];
+function DefaultMember(env, members, star) {
+  if (members[star]) {
+    return members[star];
   }
 
   const { errors } = env;
@@ -185,7 +185,7 @@ function VariantExpression(env, {ref, selector}) {
 
   if (isVariantList(value)) {
     // Match the specified key against keys of each variant, in order.
-    for (const variant of value[0].vars) {
+    for (const variant of value[0].variants) {
       const key = Type(env, variant.key);
       if (match(env.bundle, sel, key)) {
         return variant;
@@ -242,32 +242,32 @@ function AttributeExpression(env, {ref, name}) {
  *    An expression to be resolved.
  * @param   {String} expr.selector
  *    Selector expression
- * @param   {Array} expr.vars
+ * @param   {Array} expr.variants
  *    List of variants for the select expression.
- * @param   {Number} expr.def
+ * @param   {Number} expr.star
  *    Index of the default variant.
  * @returns {FluentType}
  * @private
  */
-function SelectExpression(env, {selector, vars, def}) {
+function SelectExpression(env, {selector, variants, star}) {
   if (selector === null) {
-    return DefaultMember(env, vars, def);
+    return DefaultMember(env, variants, star);
   }
 
   let sel = Type(env, selector);
   if (sel instanceof FluentNone) {
-    return DefaultMember(env, vars, def);
+    return DefaultMember(env, variants, star);
   }
 
   // Match the selector against keys of each variant, in order.
-  for (const variant of vars) {
+  for (const variant of variants) {
     const key = Type(env, variant.key);
     if (match(env.bundle, sel, key)) {
       return variant;
     }
   }
 
-  return DefaultMember(env, vars, def);
+  return DefaultMember(env, variants, star);
 }
 
 

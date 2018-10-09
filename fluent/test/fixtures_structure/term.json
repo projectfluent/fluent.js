@@ -4,7 +4,7 @@
             {
                 "type": "select",
                 "selector": null,
-                "vars": [
+                "variants": [
                     {
                         "key": "nominative",
                         "value": "Firefox"
@@ -14,7 +14,7 @@
                         "value": "Firefoxa"
                     }
                 ],
-                "def": 0
+                "star": 0
             }
         ],
         "attrs": {
@@ -44,7 +44,7 @@
                 },
                 "name": "gender"
             },
-            "vars": [
+            "variants": [
                 {
                     "key": "masculine",
                     "value": [
@@ -77,7 +77,7 @@
                     ]
                 }
             ],
-            "def": 2
+            "star": 2
         }
     ]
 }
