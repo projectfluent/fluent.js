@@ -8,6 +8,7 @@ const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
 const RE_STRING_VALUE = /([^\\"\n\r]*)/y;
 const RE_TEXT_VALUE = /([^\\{\n\r]+)/y;
+const RE_SELECT_ARROW = /->/y;
 
 const RE_TEXT_ESCAPE = /\\([\\{])/y;
 const RE_STRING_ESCAPE = /\\([\\"])/y;
@@ -186,12 +187,16 @@ export default class FluentResource extends Map {
         return selector;
       }
 
-      cursor += 2; // ->
-      return {
-        type: "select",
-        selector,
-        ...parseVariants()
-      };
+      if (test(RE_SELECT_ARROW)) {
+        cursor = RE_SELECT_ARROW.lastIndex;
+        return {
+          type: "select",
+          selector,
+          ...parseVariants()
+        };
+      }
+
+      throw new SyntaxError();
     }
 
     function parseInlineExpression() {
