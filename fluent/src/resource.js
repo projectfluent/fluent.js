@@ -1,20 +1,20 @@
 const MAX_PLACEABLES = 100;
 
-const RE_TEXT_ESCAPE = /\\([\\{])/y;
-const RE_STRING_ESCAPE = /\\([\\"])/y;
-const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
-
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
 const RE_VARIANT_START = /\*?\[.*?] */y;
-
-const RE_BLANK = /\s+/y;
-const RE_TRAILING_SPACES = / +$/mg;
 
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
 const RE_STRING_VALUE = /([^\\"\n\r]*)/y;
 const RE_TEXT_VALUE = /([^\\{\n\r]+)/y;
+
+const RE_TEXT_ESCAPE = /\\([\\{])/y;
+const RE_STRING_ESCAPE = /\\([\\"])/y;
+const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
+
+const RE_BLANK = /\s+/y;
+const RE_TRAILING_SPACES = / +$/mg;
 
 /**
  * Fluent Resource is a structure storing a map
@@ -62,6 +62,12 @@ export default class FluentResource extends Map {
       return result[1];
     }
 
+    function skipBlank() {
+      if (test(RE_BLANK)) {
+        cursor = RE_BLANK.lastIndex;
+      }
+    }
+
     function parseMessage() {
       let value = parsePattern();
       let attrs = parseAttributes();
@@ -73,35 +79,24 @@ export default class FluentResource extends Map {
       return {value, attrs};
     }
 
-    function skipBlank() {
-      if (test(RE_BLANK)) {
-        cursor = RE_BLANK.lastIndex;
-      }
-    }
+    function parseAttributes() {
+      let attrs = {};
+      let hasAttributes = false;
 
-    function skipIndent() {
-      let start = cursor;
-      skipBlank();
+      while (true) {
+        skipBlank();
+        if (!test(RE_ATTRIBUTE_START)) {
+          break;
+        } else if (!hasAttributes) {
+          hasAttributes = true;
+        }
 
-      switch (source[cursor]) {
-        case ".":
-        case "[":
-        case "*":
-        case "}":
-          return false;
-        case "{":
-          return source.slice(start, cursor);
+        let key = match(RE_ATTRIBUTE_START);
+        let value = parsePattern();
+        attrs[key] = value;
       }
 
-      if (source[cursor - 1] === " ") {
-        return source.slice(start, cursor);
-      }
-
-      return false;
-    }
-
-    function normalize(text) {
-      return text.replace(RE_TRAILING_SPACES, "");
+      return hasAttributes ? attrs : null;
     }
 
     function parsePattern() {
@@ -117,7 +112,7 @@ export default class FluentResource extends Map {
             : parsePatternElements();
       }
 
-      let block = skipIndent();
+      let block = parseIndent();
       if (block) {
         return first
           ? parsePatternElements(first, normalize(block))
@@ -152,7 +147,7 @@ export default class FluentResource extends Map {
           continue;
         }
 
-        let block = skipIndent();
+        let block = parseIndent();
         if (block) {
           elements.push(normalize(block));
           continue;
@@ -174,28 +169,15 @@ export default class FluentResource extends Map {
       return elements;
     }
 
-    function parseEscape(reSpecialized) {
-      if (test(RE_UNICODE_ESCAPE)) {
-        let sequence = match(RE_UNICODE_ESCAPE);
-        return String.fromCodePoint(parseInt(sequence, 16));
-      }
-
-      if (test(reSpecialized)) {
-        return match(reSpecialized);
-      }
-
-      throw new SyntaxError();
-    }
-
     function parsePlaceable() {
       cursor++;
 
-      const onlyVariants = parseVariants();
+      let onlyVariants = parseVariants();
       if (onlyVariants) {
         return {type: "select", selector: null, ...onlyVariants};
       }
 
-      const selector = parseInlineExpression();
+      let selector = parseInlineExpression();
       skipBlank();
 
       if (source[cursor] === "}") {
@@ -215,15 +197,14 @@ export default class FluentResource extends Map {
         return parsePlaceable();
       }
 
-      const literal = parseLiteral();
-
+      let literal = parseLiteral();
       if (literal.type !== "ref") {
         return literal;
       }
 
       if (source[cursor] === ".") {
         cursor++;
-        const name = match(RE_IDENTIFIER);
+        let name = match(RE_IDENTIFIER);
         return {
           type: "getattr",
           id: literal,
@@ -233,7 +214,7 @@ export default class FluentResource extends Map {
 
       if (source[cursor] === "[") {
         cursor++;
-        const key = parseVariantKey();
+        let key = parseVariantKey();
         cursor++;
         return {
           type: "getvar",
@@ -244,7 +225,7 @@ export default class FluentResource extends Map {
 
       if (source[cursor] === "(") {
         cursor++;
-        const args = parseArguments();
+        let args = parseArguments();
         cursor++;
         return {
           type: "call",
@@ -257,7 +238,7 @@ export default class FluentResource extends Map {
     }
 
     function parseArguments() {
-      const args = [];
+      let args = [];
 
       while (cursor < source.length) {
         skipBlank();
@@ -266,7 +247,7 @@ export default class FluentResource extends Map {
           return args;
         }
 
-        const exp = parseInlineExpression();
+        let exp = parseInlineExpression();
 
         // MessageReference in this place may be an entity reference, like:
         // `call(foo)`, or, if it's followed by `:` it will be a key-value pair.
@@ -304,28 +285,8 @@ export default class FluentResource extends Map {
       return args;
     }
 
-    function parseAttributes() {
-      let attrs = {};
-      let hasAttributes = false;
-
-      while (true) {
-        skipBlank();
-        if (!test(RE_ATTRIBUTE_START)) {
-          break;
-        } else if (!hasAttributes) {
-          hasAttributes = true;
-        }
-
-        let key = match(RE_ATTRIBUTE_START);
-        let value = parsePattern();
-        attrs[key] = value;
-      }
-
-      return hasAttributes ? attrs : null;
-    }
-
     function parseVariants() {
-      const vars = [];
+      let vars = [];
       let index = 0;
       let def;
 
@@ -342,9 +303,9 @@ export default class FluentResource extends Map {
           cursor++
         }
 
-        const key = parseVariantKey();
+        let key = parseVariantKey();
         cursor = RE_VARIANT_START.lastIndex;
-        const value = parsePattern();
+        let value = parsePattern();
         vars[index++] = {key, value};
       }
 
@@ -358,28 +319,6 @@ export default class FluentResource extends Map {
         : match(RE_IDENTIFIER);
       skipBlank();
       return key;
-    }
-
-    function parseNumber() {
-      return {
-        type: "num",
-        value: match(RE_NUMBER_LITERAL),
-      };
-    }
-
-    function parseString() {
-      cursor++;
-      let value = "";
-      while (true) {
-        value += match(RE_STRING_VALUE);
-        if (source[cursor] === "\\") {
-          value += parseEscape(RE_STRING_ESCAPE);
-        }
-        if (source[cursor] === "\"") {
-          cursor++;
-          return value;
-        }
-      }
     }
 
     function parseLiteral() {
@@ -408,5 +347,66 @@ export default class FluentResource extends Map {
 
       throw new SyntaxError();
     }
+
+    function parseNumber() {
+      return {
+        type: "num",
+        value: match(RE_NUMBER_LITERAL),
+      };
+    }
+
+    function parseString() {
+      cursor++;
+      let value = "";
+      while (true) {
+        value += match(RE_STRING_VALUE);
+        if (source[cursor] === "\\") {
+          value += parseEscape(RE_STRING_ESCAPE);
+        }
+        if (source[cursor] === "\"") {
+          cursor++;
+          return value;
+        }
+      }
+    }
+
+    function parseEscape(reSpecialized) {
+      if (test(RE_UNICODE_ESCAPE)) {
+        let sequence = match(RE_UNICODE_ESCAPE);
+        return String.fromCodePoint(parseInt(sequence, 16));
+      }
+
+      if (test(reSpecialized)) {
+        return match(reSpecialized);
+      }
+
+      throw new SyntaxError();
+    }
+
+    function parseIndent() {
+      let start = cursor;
+      skipBlank();
+
+      switch (source[cursor]) {
+        case ".":
+        case "[":
+        case "*":
+        case "}":
+          return false;
+        case "{":
+          return source.slice(start, cursor);
+      }
+
+      if (source[cursor - 1] === " ") {
+        return source.slice(start, cursor);
+      }
+
+      return false;
+    }
+
+    function normalize(text) {
+      return text.replace(RE_TRAILING_SPACES, "");
+    }
+
   }
 }
