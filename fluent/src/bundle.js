@@ -2,33 +2,33 @@ import resolve from "./resolver";
 import FluentResource from "./resource";
 
 /**
- * Message contexts are single-language stores of translations.  They are
+ * Message bundles are single-language stores of translations.  They are
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
- * Always use `MessageContext.format` to retrieve translation units from a
- * context. Translations can contain references to other entities or variables,
+ * Always use `FluentBundle.format` to retrieve translation units from a
+ * bundle. Translations can contain references to other entities or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language. See the documentation of the Fluent syntax for more
+ * bundle's language. See the documentation of the Fluent syntax for more
  * information.
  */
-export class MessageContext {
+export default class FluentBundle {
 
   /**
-   * Create an instance of `MessageContext`.
+   * Create an instance of `FluentBundle`.
    *
    * The `locales` argument is used to instantiate `Intl` formatters used by
-   * translations.  The `options` object can be used to configure the context.
+   * translations.  The `options` object can be used to configure the bundle.
    *
    * Examples:
    *
-   *     const ctx = new MessageContext(locales);
+   *     const bundle = new FluentBundle(locales);
    *
-   *     const ctx = new MessageContext(locales, { useIsolating: false });
+   *     const bundle = new FluentBundle(locales, { useIsolating: false });
    *
-   *     const ctx = new MessageContext(locales, {
+   *     const bundle = new FluentBundle(locales, {
    *       useIsolating: true,
    *       functions: {
    *         NODE_ENV: () => process.env.NODE_ENV
@@ -45,9 +45,9 @@ export class MessageContext {
    *
    *   - `transform` - a function used to transform string parts of patterns.
    *
-   * @param   {string|Array<string>} locales - Locale or locales of the context
+   * @param   {string|Array<string>} locales - Locale or locales of the bundle
    * @param   {Object} [options]
-   * @returns {MessageContext}
+   * @returns {FluentBundle}
    */
   constructor(locales, {
     functions = {},
@@ -74,7 +74,7 @@ export class MessageContext {
   }
 
   /*
-   * Check if a message is present in the context.
+   * Check if a message is present in the bundle.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {bool}
@@ -87,7 +87,7 @@ export class MessageContext {
    * Return the internal representation of a message.
    *
    * The internal representation should only be used as an argument to
-   * `MessageContext.format`.
+   * `FluentBundle.format`.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {Any}
@@ -97,14 +97,14 @@ export class MessageContext {
   }
 
   /**
-   * Add a translation resource to the context.
+   * Add a translation resource to the bundle.
    *
    * The translation resource must use the Fluent syntax.  It will be parsed by
-   * the context and each translation unit (message) will be available in the
-   * context by its identifier.
+   * the bundle and each translation unit (message) will be available in the
+   * bundle by its identifier.
    *
-   *     ctx.addMessages('foo = Foo');
-   *     ctx.getMessage('foo');
+   *     bundle.addMessages('foo = Foo');
+   *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
@@ -120,14 +120,14 @@ export class MessageContext {
   }
 
   /**
-   * Add a translation resource to the context.
+   * Add a translation resource to the bundle.
    *
-   * The translation resource must be a proper FluentResource
-   * parsed by `MessageContext.parseResource`.
+   * The translation resource must be an instance of FluentResource,
+   * e.g. parsed by `FluentResource.fromString`.
    *
-   *     let res = MessageContext.parseResource("foo = Foo");
-   *     ctx.addResource(res);
-   *     ctx.getMessage('foo');
+   *     let res = FluentResource.fromString("foo = Foo");
+   *     bundle.addResource(res);
+   *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
@@ -142,7 +142,7 @@ export class MessageContext {
     for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
-        // and cannot be retrieved from MessageContext.
+        // and cannot be retrieved from FluentBundle.
         if (this._terms.has(id)) {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
@@ -163,7 +163,7 @@ export class MessageContext {
   /**
    * Format a message to a string or null.
    *
-   * Format a raw `message` from the context into a string (or a null if it has
+   * Format a raw `message` from the bundle into a string (or a null if it has
    * a null value).  `args` will be used to resolve references to variables
    * passed as arguments to the translation.
    *
@@ -173,13 +173,13 @@ export class MessageContext {
    * `errors` array passed as the third argument.
    *
    *     const errors = [];
-   *     ctx.addMessages('hello = Hello, { $name }!');
-   *     const hello = ctx.getMessage('hello');
-   *     ctx.format(hello, { name: 'Jane' }, errors);
+   *     bundle.addMessages('hello = Hello, { $name }!');
+   *     const hello = bundle.getMessage('hello');
+   *     bundle.format(hello, { name: 'Jane' }, errors);
    *
    *     // Returns 'Hello, Jane!' and `errors` is empty.
    *
-   *     ctx.format(hello, undefined, errors);
+   *     bundle.format(hello, undefined, errors);
    *
    *     // Returns 'Hello, name!' and `errors` is now:
    *

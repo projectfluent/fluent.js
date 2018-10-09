@@ -1,16 +1,16 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - fallback', function() {
   test('message id in the first context', function() {
-    const mcx1 = new MessageContext();
-    const l10n = new ReactLocalization([mcx1]);
+    const bundle1 = new FluentBundle();
+    const l10n = new ReactLocalization([bundle1]);
 
-    mcx1.addMessages(`
+    bundle1.addMessages(`
 foo = FOO
 `);
 
@@ -27,14 +27,14 @@ foo = FOO
   });
 
   test('message id in the second context', function() {
-    const mcx1 = new MessageContext();
-    const mcx2 = new MessageContext();
-    const l10n = new ReactLocalization([mcx1, mcx2]);
+    const bundle1 = new FluentBundle();
+    const bundle2 = new FluentBundle();
+    const l10n = new ReactLocalization([bundle1, bundle2]);
 
-    mcx1.addMessages(`
+    bundle1.addMessages(`
 not-foo = NOT FOO
 `);
-    mcx2.addMessages(`
+    bundle2.addMessages(`
 foo = FOO
 `);
 
@@ -51,10 +51,10 @@ foo = FOO
   });
 
   test('missing message', function() {
-    const mcx1 = new MessageContext();
-    const l10n = new ReactLocalization([mcx1]);
+    const bundle1 = new FluentBundle();
+    const l10n = new ReactLocalization([bundle1]);
 
-    mcx1.addMessages(`
+    bundle1.addMessages(`
 not-foo = NOT FOO
 `);
 

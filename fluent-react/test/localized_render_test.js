@@ -2,16 +2,16 @@ import React from 'react';
 import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
 suite('Localized - rendering', function() {
   test('render the value', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = FOO
 `)
 
@@ -28,10 +28,10 @@ foo = FOO
   });
 
   test('render an allowed attribute', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .attr = ATTR
 `)
@@ -49,10 +49,10 @@ foo =
   });
 
   test('only render allowed attributes', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .attr1 = ATTR 1
     .attr2 = ATTR 2
@@ -71,10 +71,10 @@ foo =
   });
 
   test('filter out forbidden attributes', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .attr = ATTR
 `)
@@ -92,10 +92,10 @@ foo =
   });
 
   test('filter all attributes if attrs not given', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .attr = ATTR
 `)
@@ -113,10 +113,10 @@ foo =
   });
 
   test('preserve existing attributes when setting new ones', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .attr = ATTR
 `)
@@ -134,10 +134,10 @@ foo =
   });
 
   test('overwrite existing attributes if allowed', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .existing = ATTR
 `)
@@ -155,10 +155,10 @@ foo =
   });
 
   test('protect existing attributes if setting is forbidden', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .existing = ATTR
 `)
@@ -176,10 +176,10 @@ foo =
   });
 
   test('protect existing attributes by default', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .existing = ATTR
 `)
@@ -197,10 +197,10 @@ foo =
   });
 
   test('preserve children when translation value is null', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo =
     .title = TITLE
 `)
@@ -223,11 +223,11 @@ foo =
 
 
   test('$arg is passed to format the value', function() {
-    const mcx = new MessageContext();
-    const format = sinon.spy(mcx, 'format');
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const format = sinon.spy(bundle, 'format');
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = { $arg }
 `)
 
@@ -243,11 +243,11 @@ foo = { $arg }
   });
 
   test('$arg is passed to format the attributes', function() {
-    const mcx = new MessageContext();
-    const format = sinon.spy(mcx, 'format');
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const format = sinon.spy(bundle, 'format');
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = { $arg }
     .attr = { $arg }
 `)
@@ -261,5 +261,66 @@ foo = { $arg }
 
     const { args } = format.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
+  });
+
+  test('render with a string fallback and no message returns the fallback',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        String fallback
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), 'String fallback');
+  });
+
+  test('render with a string fallback returns the message', function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo = Test message
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        String fallback
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), 'Test message');
+  });
+
+  test('render without a fallback returns the message', function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo = Message
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), 'Message');
+  });
+
+  test('render without a fallback and no message returns nothing',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), '');
   });
 });

@@ -13,8 +13,8 @@ export default {
         ["babel-plugin-transform-rename-import", {
           replacements: [
             {
-              original: "fluent",
-              replacement: "fluent/compat",
+              original: "fluent-sequence",
+              replacement: "fluent-sequence/compat",
             },
             {
               original: "cached-iterable",

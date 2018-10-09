@@ -16,7 +16,7 @@ can install it from the npm registry or use it as a standalone script (as the
 
 The `DOMLocalization` constructor provides the core functionality of
 full-fallback ready message formatting. It uses a lazy-resolved
-`MessageContext` objects from the `fluent` package to format messages.
+`FluentBundle` objects from the `fluent` package to format messages.
 
 On top of that, `DOMLocalization` can localize any DOMFragment by
 identifying localizable elements with `data-l10n-id` and translating them.
@@ -27,7 +27,7 @@ import { DOMLocalization } from 'fluent-dom'
 const l10n = new DOMLocalization(MutationObserver, [
   '/browser/main.ftl',
   '/toolkit/menu.ftl'
-], generateMessages);
+], generateBundles);
 
 l10n.connectRoot(document.documentElement);
 
@@ -47,15 +47,15 @@ class that provides just the API needed to format messages in the running code.
 ```javascript
 import { Localization } from 'fluent-dom'
 
-function *generateMessages() {
-  // Some lazy logic for yielding MessageContexts.
-  yield *[ctx1, ctx2];
+function *generateBundles() {
+  // Some lazy logic for yielding FluentBundles.
+  yield *[bundle1, bundle2];
 }
 
 const l10n = new Localization(document, [
   '/browser/main.ftl',
   '/toolkit/menu.ftl'
-], generateMessages);
+], generateBundles);
 
 async function main() {
   const msg = await l10n.formatValue('welcome', { name: 'Anna' });

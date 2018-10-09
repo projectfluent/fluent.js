@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { mount, shallow } from 'enzyme';
-import { MessageContext } from '../../fluent/src';
+import { FluentBundle } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 
@@ -14,7 +14,7 @@ suite('withLocalization', function() {
     const EnhancedComponent = withLocalization(DummyComponent);
 
     const wrapper = shallow(
-      <LocalizationProvider messages={[]}>
+      <LocalizationProvider bundles={[]}>
         <EnhancedComponent />
       </LocalizationProvider>
     );
@@ -31,11 +31,11 @@ suite('withLocalization', function() {
   });
 
   test('getString with access to the l10n context', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = FOO
 `);
 
@@ -50,11 +50,11 @@ foo = FOO
   });
 
   test('getString with access to the l10n context, with fallback value', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    mcx.addMessages(`
+    bundle.addMessages(`
 foo = FOO
 `);
 
@@ -69,13 +69,7 @@ foo = FOO
   });
 
   test('getString without access to the l10n context', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
     const EnhancedComponent = withLocalization(DummyComponent);
-
-    mcx.addMessages(`
-foo = FOO
-`);
 
     const wrapper = shallow(
       <EnhancedComponent />
@@ -87,13 +81,7 @@ foo = FOO
   });
 
   test('getString without access to the l10n context, with fallback value', function() {
-    const mcx = new MessageContext();
-    const l10n = new ReactLocalization([mcx]);
     const EnhancedComponent = withLocalization(DummyComponent);
-
-    mcx.addMessages(`
-foo = FOO
-`);
 
     const wrapper = shallow(
       <EnhancedComponent />
@@ -105,11 +93,11 @@ foo = FOO
   });
 
   test('getString with access to the l10n context, with message changes', function() {
-    const initialMcx = new MessageContext();
-    const l10n = new ReactLocalization([initialMcx]);
+    const initialBundle = new FluentBundle();
+    const l10n = new ReactLocalization([initialBundle]);
     const EnhancedComponent = withLocalization(({ getString }) => getString('foo'));
 
-    initialMcx.addMessages('foo = FOO');
+    initialBundle.addMessages('foo = FOO');
 
     const wrapper = mount(
       <EnhancedComponent />,
@@ -118,9 +106,9 @@ foo = FOO
 
     assert.equal(wrapper.text(), 'FOO');
 
-    const newMcx = new MessageContext();
-    newMcx.addMessages('foo = BAR');
-    l10n.setMessages([newMcx]);
+    const newBundle = new FluentBundle();
+    newBundle.addMessages('foo = BAR');
+    l10n.setBundles([newBundle]);
 
     assert.equal(wrapper.text(), 'BAR');
   })

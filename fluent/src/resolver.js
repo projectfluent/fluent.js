@@ -8,7 +8,7 @@
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language. See the documentation of the Fluent syntax for more
+ * bundle's language. See the documentation of the Fluent syntax for more
  * information.
  *
  * In case of errors the resolver will try to salvage as much of the
@@ -35,8 +35,8 @@
  * All functions in this file pass around a special object called `env`.
  * This object stores a set of elements used by all resolve functions:
  *
- *  * {MessageContext} ctx
- *      context for which the given resolution is happening
+ *  * {FluentBundle} bundle
+ *      bundle for which the given resolution is happening
  *  * {Object} args
  *      list of developer provided arguments that can be used
  *  * {Array} errors
@@ -97,10 +97,10 @@ function DefaultMember(env, members, def) {
  * @private
  */
 function MessageReference(env, {name}) {
-  const { ctx, errors } = env;
+  const { bundle, errors } = env;
   const message = name.startsWith("-")
-    ? ctx._terms.get(name)
-    : ctx._messages.get(name);
+    ? bundle._terms.get(name)
+    : bundle._messages.get(name);
 
   if (!message) {
     const err = name.startsWith("-")
@@ -135,7 +135,7 @@ function VariantExpression(env, {id, key}) {
     return message;
   }
 
-  const { ctx, errors } = env;
+  const { bundle, errors } = env;
   const keyword = Type(env, key);
 
   function isVariantList(node) {
@@ -148,13 +148,14 @@ function VariantExpression(env, {id, key}) {
     // Match the specified key against keys of each variant, in order.
     for (const variant of message.val[0].vars) {
       const variantKey = Type(env, variant.key);
-      if (keyword.match(ctx, variantKey)) {
+      if (keyword.match(bundle, variantKey)) {
         return variant;
       }
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
+  errors.push(
+    new ReferenceError(`Unknown variant: ${keyword.toString(bundle)}`));
   return Type(env, message);
 }
 
@@ -229,9 +230,9 @@ function SelectExpression(env, {exp, vars, def}) {
       continue;
     }
 
-    const { ctx } = env;
+    const { bundle } = env;
 
-    if (key.match(ctx, selector)) {
+    if (key.match(bundle, selector)) {
       return variant;
     }
   }
@@ -258,7 +259,7 @@ function Type(env, expr) {
   // A fast-path for strings which are the most common case, and for
   // `FluentNone` which doesn't require any additional logic.
   if (typeof expr === "string") {
-    return env.ctx._transform(expr);
+    return env.bundle._transform(expr);
   }
   if (expr instanceof FluentNone) {
     return expr;
@@ -372,8 +373,8 @@ function VariableReference(env, {name}) {
  */
 function FunctionReference(env, {name}) {
   // Some functions are built-in.  Others may be provided by the runtime via
-  // the `MessageContext` constructor.
-  const { ctx: { _functions }, errors } = env;
+  // the `FluentBundle` constructor.
+  const { bundle: { _functions }, errors } = env;
   const func = _functions[name] || builtins[name];
 
   if (!func) {
@@ -440,7 +441,7 @@ function CallExpression(env, {fun, args}) {
  * @private
  */
 function Pattern(env, ptn) {
-  const { ctx, dirty, errors } = env;
+  const { bundle, dirty, errors } = env;
 
   if (dirty.has(ptn)) {
     errors.push(new RangeError("Cyclic reference"));
@@ -453,15 +454,15 @@ function Pattern(env, ptn) {
 
   // Wrap interpolations with Directional Isolate Formatting characters
   // only when the pattern has more than one element.
-  const useIsolating = ctx._useIsolating && ptn.length > 1;
+  const useIsolating = bundle._useIsolating && ptn.length > 1;
 
   for (const elem of ptn) {
     if (typeof elem === "string") {
-      result.push(ctx._transform(elem));
+      result.push(bundle._transform(elem));
       continue;
     }
 
-    const part = Type(env, elem).toString(ctx);
+    const part = Type(env, elem).toString(bundle);
 
     if (useIsolating) {
       result.push(FSI);
@@ -491,8 +492,8 @@ function Pattern(env, ptn) {
 /**
  * Format a translation into a string.
  *
- * @param   {MessageContext} ctx
- *    A MessageContext instance which will be used to resolve the
+ * @param   {FluentBundle} bundle
+ *    A FluentBundle instance which will be used to resolve the
  *    contextual information of the message.
  * @param   {Object}         args
  *    List of arguments provided by the developer which can be accessed
@@ -503,9 +504,9 @@ function Pattern(env, ptn) {
  *    An error array that any encountered errors will be appended to.
  * @returns {FluentType}
  */
-export default function resolve(ctx, args, message, errors = []) {
+export default function resolve(bundle, args, message, errors = []) {
   const env = {
-    ctx, args, errors, dirty: new WeakSet()
+    bundle, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message).toString(ctx);
+  return Type(env, message).toString(bundle);
 }
