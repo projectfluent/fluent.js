@@ -1,0 +1,149 @@
+{
+    "new-messages": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "call",
+                "fun": {
+                    "type": "fun",
+                    "name": "BUILTIN"
+                },
+                "args": []
+            },
+            "vars": [
+                {
+                    "key": {
+                        "type": "num",
+                        "value": "0"
+                    },
+                    "value": "Zero"
+                },
+                {
+                    "key": "other",
+                    "value": [
+                        "",
+                        "Other"
+                    ]
+                }
+            ],
+            "def": 1
+        }
+    ],
+    "valid-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "getattr",
+                "ref": {
+                    "type": "ref",
+                    "name": "-term"
+                },
+                "name": "case"
+            },
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "invalid-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "getvar",
+                "ref": {
+                    "type": "ref",
+                    "name": "-term"
+                },
+                "key": "case"
+            },
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "empty-variant": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "num",
+                "value": "1"
+            },
+            "vars": [
+                {
+                    "key": "one",
+                    "value": [
+                        ""
+                    ]
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "nested-select": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "num",
+                "value": "1"
+            },
+            "vars": [
+                {
+                    "key": "one",
+                    "value": [
+                        {
+                            "type": "select",
+                            "selector": {
+                                "type": "num",
+                                "value": "2"
+                            },
+                            "vars": [
+                                {
+                                    "key": "two",
+                                    "value": "Value"
+                                }
+                            ],
+                            "def": 0
+                        }
+                    ]
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "nested-variant-list": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "num",
+                "value": "1"
+            },
+            "vars": [
+                {
+                    "key": "one",
+                    "value": [
+                        {
+                            "type": "select",
+                            "selector": null,
+                            "vars": [
+                                {
+                                    "key": "two",
+                                    "value": "Value"
+                                }
+                            ],
+                            "def": 0
+                        }
+                    ]
+                }
+            ],
+            "def": 0
+        }
+    ]
+}

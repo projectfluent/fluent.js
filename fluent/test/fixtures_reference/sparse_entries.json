@@ -1,0 +1,46 @@
+{
+    "key01": [
+        "Value"
+    ],
+    "key02": {
+        "value": null,
+        "attrs": {
+            "attr": "Attribute"
+        }
+    },
+    "key03": {
+        "value": [
+            "Value",
+            "\n",
+            "Continued",
+            "\n\n\n",
+            "Over multiple",
+            "\n",
+            "Lines"
+        ],
+        "attrs": {
+            "attr": "Attribute"
+        }
+    },
+    "key05": "Value",
+    "key06": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "num",
+                "value": "1"
+            },
+            "vars": [
+                {
+                    "key": "one",
+                    "value": "One"
+                },
+                {
+                    "key": "two",
+                    "value": "Two"
+                }
+            ],
+            "def": 1
+        }
+    ]
+}

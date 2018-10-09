@@ -1,0 +1,22 @@
+{
+    "variant-expression": [
+        {
+            "type": "getvar",
+            "ref": {
+                "type": "ref",
+                "name": "msg"
+            },
+            "key": "case"
+        }
+    ],
+    "attribute-expression": [
+        {
+            "type": "getattr",
+            "ref": {
+                "type": "ref",
+                "name": "-term"
+            },
+            "name": "attr"
+        }
+    ]
+}

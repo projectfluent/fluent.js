@@ -1,0 +1,172 @@
+{
+    "-variant-list-in-term": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "-variant-list-in-term-attr": {
+        "value": "Value",
+        "attrs": {
+            "attr": [
+                {
+                    "type": "select",
+                    "selector": null,
+                    "vars": [
+                        {
+                            "key": "key",
+                            "value": "Value"
+                        }
+                    ],
+                    "def": 0
+                }
+            ]
+        }
+    },
+    "variant-list-in-message": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "variant-list-in-message-attr": {
+        "value": "Value",
+        "attrs": {
+            "attr": [
+                {
+                    "type": "select",
+                    "selector": null,
+                    "vars": [
+                        {
+                            "key": "key",
+                            "value": "Value"
+                        }
+                    ],
+                    "def": 0
+                }
+            ]
+        }
+    },
+    "-nested-variant-list-in-term": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "one",
+                    "value": [
+                        {
+                            "type": "select",
+                            "selector": null,
+                            "vars": [
+                                {
+                                    "key": "two",
+                                    "value": "Value"
+                                }
+                            ],
+                            "def": 0
+                        }
+                    ]
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "-nested-select": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "one",
+                    "value": [
+                        {
+                            "type": "select",
+                            "selector": {
+                                "type": "num",
+                                "value": "2"
+                            },
+                            "vars": [
+                                {
+                                    "key": "two",
+                                    "value": "Value"
+                                }
+                            ],
+                            "def": 0
+                        }
+                    ]
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "nested-select-then-variant-list": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "one",
+                    "value": [
+                        {
+                            "type": "select",
+                            "selector": {
+                                "type": "num",
+                                "value": "2"
+                            },
+                            "vars": [
+                                {
+                                    "key": "two",
+                                    "value": [
+                                        {
+                                            "type": "select",
+                                            "selector": null,
+                                            "vars": [
+                                                {
+                                                    "key": "three",
+                                                    "value": "Value"
+                                                }
+                                            ],
+                                            "def": 0
+                                        }
+                                    ]
+                                }
+                            ],
+                            "def": 0
+                        }
+                    ]
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "variant-list-in-placeable": [
+        "A prefix here ",
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "def": 0
+        },
+        " and a postfix here make this a Pattern."
+    ]
+}

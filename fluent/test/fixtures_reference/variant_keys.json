@@ -1,0 +1,60 @@
+{
+    "-simple-identifier": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "-identifier-surrounded-by-whitespace": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "-int-number": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": {
+                        "type": "num",
+                        "value": "1"
+                    },
+                    "value": "value"
+                }
+            ],
+            "def": 0
+        }
+    ],
+    "-float-number": [
+        {
+            "type": "select",
+            "selector": null,
+            "vars": [
+                {
+                    "key": {
+                        "type": "num",
+                        "value": "3.14"
+                    },
+                    "value": "value"
+                }
+            ],
+            "def": 0
+        }
+    ]
+}

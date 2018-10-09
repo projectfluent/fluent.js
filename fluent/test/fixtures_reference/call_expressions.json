@@ -1,0 +1,549 @@
+{
+    "positional-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                "a",
+                {
+                    "type": "ref",
+                    "name": "msg"
+                }
+            ]
+        }
+    ],
+    "named-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "y",
+                    "value": "Y"
+                }
+            ]
+        }
+    ],
+    "dense-named-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "y",
+                    "value": "Y"
+                }
+            ]
+        }
+    ],
+    "mixed-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                "a",
+                {
+                    "type": "ref",
+                    "name": "msg"
+                },
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "y",
+                    "value": "Y"
+                }
+            ]
+        }
+    ],
+    "shuffled-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                "a",
+                {
+                    "type": "narg",
+                    "name": "y",
+                    "value": "Y"
+                },
+                {
+                    "type": "ref",
+                    "name": "msg"
+                }
+            ]
+        }
+    ],
+    "duplicate-named-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": "X"
+                }
+            ]
+        }
+    ],
+    "sparse-inline-call": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                "a",
+                {
+                    "type": "ref",
+                    "name": "msg"
+                },
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "empty-inline-call": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": []
+        }
+    ],
+    "multiline-call": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                "a",
+                {
+                    "type": "ref",
+                    "name": "msg"
+                },
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "sparse-multiline-call": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                "a",
+                {
+                    "type": "ref",
+                    "name": "msg"
+                },
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "empty-multiline-call": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": []
+        }
+    ],
+    "unindented-arg-number": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                }
+            ]
+        }
+    ],
+    "unindented-arg-string": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                "a"
+            ]
+        }
+    ],
+    "unindented-arg-msg-ref": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "ref",
+                    "name": "msg"
+                }
+            ]
+        }
+    ],
+    "unindented-arg-term-ref": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "ref",
+                    "name": "-msg"
+                }
+            ]
+        }
+    ],
+    "unindented-arg-var-ref": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "var",
+                    "name": "var"
+                }
+            ]
+        }
+    ],
+    "unindented-arg-call": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "call",
+                    "fun": {
+                        "type": "fun",
+                        "name": "OTHER"
+                    },
+                    "args": []
+                }
+            ]
+        }
+    ],
+    "unindented-named-arg": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "unindented-closing-paren": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "ref",
+                    "name": "x"
+                }
+            ]
+        }
+    ],
+    "one-argument": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                }
+            ]
+        }
+    ],
+    "many-arguments": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                {
+                    "type": "num",
+                    "value": "2"
+                },
+                {
+                    "type": "num",
+                    "value": "3"
+                }
+            ]
+        }
+    ],
+    "inline-sparse-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                {
+                    "type": "num",
+                    "value": "2"
+                },
+                {
+                    "type": "num",
+                    "value": "3"
+                }
+            ]
+        }
+    ],
+    "mulitline-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                {
+                    "type": "num",
+                    "value": "2"
+                }
+            ]
+        }
+    ],
+    "mulitline-sparse-args": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "num",
+                    "value": "1"
+                },
+                {
+                    "type": "num",
+                    "value": "2"
+                }
+            ]
+        }
+    ],
+    "sparse-named-arg": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "y",
+                    "value": {
+                        "type": "num",
+                        "value": "2"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "z",
+                    "value": {
+                        "type": "num",
+                        "value": "3"
+                    }
+                }
+            ]
+        }
+    ],
+    "unindented-colon": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "unindented-value": [
+        {
+            "type": "call",
+            "fun": {
+                "type": "fun",
+                "name": "FUN"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "x",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ]
+}
