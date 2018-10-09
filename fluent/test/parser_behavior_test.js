@@ -3,7 +3,7 @@ import { join } from 'path';
 import { readdir } from 'fs';
 import { readfile } from './index';
 
-import parse from '../src/parser';
+import FluentResource from '../src/resource';
 
 const ftlFixtures = join(
   __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_behavior'
@@ -30,18 +30,18 @@ readdir(ftlFixtures, function(err, filenames) {
           [ftlpath, jsonpath].map(readfile)
         );
 
-        const [entries] = parse(source);
+        const resource = FluentResource.fromString(source);
         const expectedEntries = JSON.parse(json);
 
         for (const [id, expected] of Object.entries(expectedEntries)) {
-          assert(id in entries, `Expected message "${id}" to be parsed`);
+          assert(resoruce.has(id), `Expected message "${id}" to be parsed`);
 
-          const entry = entries[id];
+          const entry = resource.get(id);
 
           if (expected.value) {
-            assert(typeof entry === 'string' || 'val' in entry);
+            assert(typeof entry === 'string' || 'value' in entry);
           } else {
-            assert(typeof entry !== 'string' && !('val' in entry));
+            assert(typeof entry !== 'string' && !('value' in entry));
           }
 
           if (expected.attributes) {
