@@ -1,3 +1,5 @@
+import FluentError from "./error.js";
+
 const MAX_PLACEABLES = 100;
 
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
@@ -40,9 +42,14 @@ export default class FluentResource extends Map {
       cursor = RE_MESSAGE_START.lastIndex;
       try {
         resource.set(next[1], parseMessage());
-      } catch (e) {
-        //console.error(e);
-        continue;
+      } catch (err) {
+        if (err instanceof FluentError) {
+          // Don't report any errors. Skip directly to the beginning of the next
+          // message or term. For best results users are advised to validate
+          // translations with the fluent-syntax parser pre-runtime.
+          continue;
+        }
+        throw err;
       }
     }
 
@@ -59,7 +66,7 @@ export default class FluentResource extends Map {
 
       if (result === null) {
         cursor++;
-        throw new SyntaxError();
+        throw new FluentError();
       }
 
       cursor = re.lastIndex;
@@ -152,7 +159,7 @@ export default class FluentResource extends Map {
 
         if (source[cursor] === "{") {
           if (++placeableCount > MAX_PLACEABLES) {
-            throw new SyntaxError();
+            throw new FluentError();
           }
           elements.push(parsePlaceable());
           needsTrimming = false;
@@ -184,12 +191,12 @@ export default class FluentResource extends Map {
     }
 
     function parsePlaceable() {
-      consume("{", SyntaxError);
+      consume("{", FluentError);
       skipBlank();
 
       let onlyVariants = parseVariants();
       if (onlyVariants) {
-        consume("}", SyntaxError);
+        consume("}", FluentError);
         return {type: "select", selector: null, ...onlyVariants};
       }
 
@@ -202,11 +209,11 @@ export default class FluentResource extends Map {
       if (test(RE_SELECT_ARROW)) {
         cursor = RE_SELECT_ARROW.lastIndex;
         let variants = parseVariants();
-        consume("}", SyntaxError);
+        consume("}", FluentError);
         return {type: "select", selector, ...variants};
       }
 
-      throw new SyntaxError();
+      throw new FluentError();
     }
 
     function parseInlineExpression() {
@@ -251,7 +258,7 @@ export default class FluentResource extends Map {
             cursor++;
             continue;
           case undefined:
-            throw new SyntaxError();
+            throw new FluentError();
         }
 
         let ref = parseInlineExpression();
@@ -301,13 +308,13 @@ export default class FluentResource extends Map {
     }
 
     function parseVariantKey() {
-      consume("[", SyntaxError);
+      consume("[", FluentError);
       skipBlank();
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumber()
         : match(RE_IDENTIFIER);
       skipBlank();
-      consume("]", SyntaxError);
+      consume("]", FluentError);
       return key;
     }
 
@@ -328,7 +335,7 @@ export default class FluentResource extends Map {
         return parseString();
       }
 
-      throw new SyntaxError();
+      throw new FluentError();
     }
 
     function parseNumber() {
@@ -336,7 +343,7 @@ export default class FluentResource extends Map {
     }
 
     function parseString() {
-      consume("\"", SyntaxError);
+      consume("\"", FluentError);
       let value = "";
       while (true) {
         value += match(RE_STRING_VALUE);
@@ -347,7 +354,7 @@ export default class FluentResource extends Map {
         if (consume("\"")) {
           return value;
         }
-        throw new SyntaxError();
+        throw new FluentError();
       }
     }
 
@@ -361,7 +368,7 @@ export default class FluentResource extends Map {
         return match(reSpecialized);
       }
 
-      throw new SyntaxError();
+      throw new FluentError();
     }
 
     function parseIndent() {

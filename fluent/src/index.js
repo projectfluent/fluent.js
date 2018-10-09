@@ -9,6 +9,7 @@
 
 export { default as FluentBundle } from "./bundle.js";
 export { default as FluentResource } from "./resource.js";
+export { default as FluentError } from "./error.js";
 export { FluentType, FluentNumber, FluentDateTime } from "./types.js";
 
 export { ftl } from "./util.js";
