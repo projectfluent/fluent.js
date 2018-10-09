@@ -120,7 +120,7 @@ function MessageReference(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.id
+ * @param   {Object} expr.ref
  *    An Identifier of a message for which the variant is resolved.
  * @param   {Object} expr.id.name
  *    Name a message for which the variant is resolved.
@@ -129,8 +129,8 @@ function MessageReference(env, {name}) {
  * @returns {FluentType}
  * @private
  */
-function VariantExpression(env, {id, key}) {
-  const message = MessageReference(env, id);
+function VariantExpression(env, {ref, key}) {
+  const message = MessageReference(env, ref);
   if (message instanceof FluentNone) {
     return message;
   }
@@ -167,15 +167,15 @@ function VariantExpression(env, {id, key}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {String} expr.id
+ * @param   {String} expr.ref
  *    An ID of a message for which the attribute is resolved.
  * @param   {String} expr.name
  *    Name of the attribute to be resolved.
  * @returns {FluentType}
  * @private
  */
-function AttributeExpression(env, {id, name}) {
-  const message = MessageReference(env, id);
+function AttributeExpression(env, {ref, name}) {
+  const message = MessageReference(env, ref);
   if (message instanceof FluentNone) {
     return message;
   }

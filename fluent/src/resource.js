@@ -139,11 +139,11 @@ export default class FluentResource extends Map {
         }
 
         if (source[cursor] === "{") {
-          elements.push(parsePlaceable());
-          needsTrimming = false;
           if (++placeableCount > MAX_PLACEABLES) {
             throw new SyntaxError();
           }
+          elements.push(parsePlaceable());
+          needsTrimming = false;
           cursor++;
           continue;
         }
@@ -189,11 +189,7 @@ export default class FluentResource extends Map {
 
       if (test(RE_SELECT_ARROW)) {
         cursor = RE_SELECT_ARROW.lastIndex;
-        return {
-          type: "select",
-          selector,
-          ...parseVariants()
-        };
+        return {type: "select", selector, ...parseVariants()};
       }
 
       throw new SyntaxError();
@@ -204,41 +200,29 @@ export default class FluentResource extends Map {
         return parsePlaceable();
       }
 
-      let literal = parseLiteral();
-      if (literal.type !== "ref") {
-        return literal;
+      let ref = parseLiteral();
+      if (ref.type !== "ref") {
+        return ref;
       }
 
       if (source[cursor] === ".") {
         cursor++;
         let name = match(RE_IDENTIFIER);
-        return {
-          type: "getattr",
-          id: literal,
-          name
-        };
+        return {type: "getattr", ref, name};
       }
 
       if (source[cursor] === "[") {
-        return {
-          type: "getvar",
-          id: literal,
-          key: parseVariantKey(),
-        };
+        return {type: "getvar", ref, key: parseVariantKey()};
       }
 
       if (source[cursor] === "(") {
         cursor++;
         let args = parseArguments();
         cursor++;
-        return {
-          type: "call",
-          fun: {...literal, type: "fun"},
-          args
-        };
+        return {type: "call", fun: {...ref, type: "fun"}, args};
       }
 
-      return literal;
+      return ref;
     }
 
     function parseArguments() {
@@ -328,17 +312,11 @@ export default class FluentResource extends Map {
     function parseLiteral() {
       if (source[cursor] === "$") {
         cursor++;
-        return {
-          type: "var",
-          name: match(RE_IDENTIFIER)
-        };
+        return {type: "var", name: match(RE_IDENTIFIER)};
       }
 
       if (test(RE_IDENTIFIER)) {
-        return {
-          type: "ref",
-          name: match(RE_IDENTIFIER)
-        };
+        return {type: "ref", name: match(RE_IDENTIFIER)};
       }
 
       if (test(RE_NUMBER_LITERAL)) {
@@ -353,10 +331,7 @@ export default class FluentResource extends Map {
     }
 
     function parseNumber() {
-      return {
-        type: "num",
-        value: match(RE_NUMBER_LITERAL),
-      };
+      return {type: "num", value: match(RE_NUMBER_LITERAL)};
     }
 
     function parseString() {
