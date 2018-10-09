@@ -63,6 +63,11 @@ export default class FluentResource extends Map {
     function parseMessage() {
       let value = parsePattern();
       let attrs = parseAttributes();
+
+      if (attrs === null) {
+        return value;
+      }
+
       return {value, attrs};
     }
 
@@ -70,7 +75,6 @@ export default class FluentResource extends Map {
       if (test(RE_BLANK)) {
         cursor = RE_BLANK.lastIndex;
       }
-
     }
 
     function skipIndent() {
