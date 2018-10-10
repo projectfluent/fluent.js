@@ -83,7 +83,7 @@ export default class FluentResource extends Map {
       re.lastIndex = cursor;
       let result = re.exec(source);
       if (result === null) {
-        throw new FluentError();
+        throw new FluentError(`Expected ${re.toString()}`);
       }
       cursor = re.lastIndex;
       return result[1];
@@ -96,7 +96,7 @@ export default class FluentResource extends Map {
         cursor++;
         return true;
       } else if (error) {
-        throw new error;
+        throw new error(`Expected ${char}`);
       }
     }
 
@@ -188,7 +188,7 @@ export default class FluentResource extends Map {
 
         if (source[cursor] === "{") {
           if (++placeableCount > MAX_PLACEABLES) {
-            throw new FluentError();
+            throw new FluentError("Too many placeables");
           }
           elements.push(Placeable());
           needsTrimming = false;
@@ -246,7 +246,7 @@ export default class FluentResource extends Map {
         return {type: "select", selector, ...variants};
       }
 
-      throw new FluentError();
+      throw new FluentError("Unclosed placeable");
     }
 
     function InlineExpression() {
@@ -296,7 +296,7 @@ export default class FluentResource extends Map {
             cursor++;
             continue;
           case undefined: // EOF
-            throw new FluentError();
+            throw new FluentError("Unclosed argument list");
         }
 
         let ref = InlineExpression();
@@ -366,7 +366,7 @@ export default class FluentResource extends Map {
         return StringLiteral();
       }
 
-      throw new FluentError();
+      throw new FluentError("Invalid expression");
     }
 
     function NumberLiteral() {
@@ -389,7 +389,7 @@ export default class FluentResource extends Map {
         }
 
         // We've reached an EOL of EOF.
-        throw new FluentError();
+        throw new FluentError("Unclosed string literal");
       }
     }
 
@@ -403,7 +403,7 @@ export default class FluentResource extends Map {
         return match(reSpecialized);
       }
 
-      throw new FluentError();
+      throw new FluentError("Unknown escape sequence");
     }
 
     // Parse blank space. Return it if it looks like indent before a pattern
