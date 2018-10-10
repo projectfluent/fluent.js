@@ -155,12 +155,12 @@ export default class FluentResource extends Map {
 
       // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if
       // what comes after the newline is indented.
-      let block = Indent();
-      if (block) {
+      let indent = Indent();
+      if (indent) {
         return first
           // If there's text on the first line, the blank block is part of the
           // translation content.
-          ? PatternElements(first, trim(block))
+          ? PatternElements(first, trim(indent))
           // Otherwise, we're dealing with a block pattern. The blank block is
           // the leading whitespace; discard it.
           : PatternElements();
@@ -195,9 +195,9 @@ export default class FluentResource extends Map {
           continue;
         }
 
-        let block = Indent();
-        if (block) {
-          elements.push(trim(block));
+        let indent = Indent();
+        if (indent) {
+          elements.push(trim(indent));
           needsTrimming = false;
           continue;
         }
