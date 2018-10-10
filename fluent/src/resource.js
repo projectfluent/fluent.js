@@ -45,7 +45,7 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.set(next[1], parseMessage());
+        resource.set(next[1], Message());
       } catch (err) {
         if (err instanceof FluentError) {
           // Don't report any Fluent syntax errors. Skip directly to the
@@ -106,9 +106,9 @@ export default class FluentResource extends Map {
       }
     }
 
-    function parseMessage() {
-      let value = parsePattern();
-      let attrs = parseAttributes();
+    function Message() {
+      let value = Pattern();
+      let attrs = Attributes();
 
       if (attrs === null) {
         return value;
@@ -117,7 +117,7 @@ export default class FluentResource extends Map {
       return {value, attrs};
     }
 
-    function parseAttributes() {
+    function Attributes() {
       let attrs = {};
       let hasAttributes = false;
 
@@ -130,13 +130,13 @@ export default class FluentResource extends Map {
         }
 
         let name = match(RE_ATTRIBUTE_START);
-        attrs[name] = parsePattern();
+        attrs[name] = Pattern();
       }
 
       return hasAttributes ? attrs : null;
     }
 
-    function parsePattern() {
+    function Pattern() {
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_VALUE)) {
         var first = match(RE_TEXT_VALUE);
@@ -149,21 +149,21 @@ export default class FluentResource extends Map {
         case "\\":
           return first
             // Re-use the text parsed above, if possible.
-            ? parsePatternElements(first)
-            : parsePatternElements();
+            ? PatternElements(first)
+            : PatternElements();
       }
 
       // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if
       // what comes after the newline is indented.
-      let block = parseIndent();
+      let block = Indent();
       if (block) {
         return first
           // If there's text on the first line, the blank block is part of the
           // translation content.
-          ? parsePatternElements(first, trim(block))
+          ? PatternElements(first, trim(block))
           // Otherwise, we're dealing with a block pattern. The blank block is
           // the leading whitespace; discard it.
-          : parsePatternElements();
+          : PatternElements();
       }
 
       if (first) {
@@ -175,7 +175,7 @@ export default class FluentResource extends Map {
     }
 
     // Parse a complex pattern as an array of elements.
-    function parsePatternElements(...elements) {
+    function PatternElements(...elements) {
       let placeableCount = 0;
       let needsTrimming = false;
 
@@ -190,12 +190,12 @@ export default class FluentResource extends Map {
           if (++placeableCount > MAX_PLACEABLES) {
             throw new FluentError();
           }
-          elements.push(parsePlaceable());
+          elements.push(Placeable());
           needsTrimming = false;
           continue;
         }
 
-        let block = parseIndent();
+        let block = Indent();
         if (block) {
           elements.push(trim(block));
           needsTrimming = false;
@@ -203,7 +203,7 @@ export default class FluentResource extends Map {
         }
 
         if (source[cursor] === "\\") {
-          elements.push(parseEscape(RE_TEXT_ESCAPE));
+          elements.push(EscapeSequence(RE_TEXT_ESCAPE));
           needsTrimming = false;
           continue;
         }
@@ -222,18 +222,18 @@ export default class FluentResource extends Map {
       return elements;
     }
 
-    function parsePlaceable() {
+    function Placeable() {
       consume("{", FluentError);
       skipBlank();
 
       // VariantLists are parsed as selector-less SelectExpressions.
-      let onlyVariants = parseVariants();
+      let onlyVariants = Variants();
       if (onlyVariants) {
         consume("}", FluentError);
         return {type: "select", selector: null, ...onlyVariants};
       }
 
-      let selector = parseInlineExpression();
+      let selector = InlineExpression();
       skipBlank();
       if (consume("}")) {
         return selector;
@@ -241,7 +241,7 @@ export default class FluentResource extends Map {
 
       if (test(RE_SELECT_ARROW)) {
         cursor = RE_SELECT_ARROW.lastIndex;
-        let variants = parseVariants();
+        let variants = Variants();
         consume("}", FluentError);
         return {type: "select", selector, ...variants};
       }
@@ -249,10 +249,10 @@ export default class FluentResource extends Map {
       throw new FluentError();
     }
 
-    function parseInlineExpression() {
+    function InlineExpression() {
       if (source[cursor] === "{") {
         // Support nested placeables.
-        return parsePlaceable();
+        return Placeable();
       }
 
       if (consume("$")) {
@@ -268,22 +268,21 @@ export default class FluentResource extends Map {
         }
 
         if (source[cursor] === "[") {
-          return {type: "getvar", ref, selector: parseVariantKey()};
+          return {type: "getvar", ref, selector: VariantKey()};
         }
 
         if (consume("(")) {
           let callee = {...ref, type: "func"}
-          let args = parseArguments();
-          return {type: "call", callee, args};
+          return {type: "call", callee, args: Arguments()};
         }
 
         return ref;
       }
 
-      return parseLiteral();
+      return Literal();
     }
 
-    function parseArguments() {
+    function Arguments() {
       let args = [];
 
       while (true) {
@@ -300,7 +299,7 @@ export default class FluentResource extends Map {
             throw new FluentError();
         }
 
-        let ref = parseInlineExpression();
+        let ref = InlineExpression();
         if (ref.type !== "ref") {
           args.push(ref);
           continue;
@@ -313,7 +312,7 @@ export default class FluentResource extends Map {
           args.push({
             type: "narg",
             name: ref.name,
-            value: parseLiteral(),
+            value: Literal(),
           });
         } else {
           // It's a regular message reference.
@@ -322,7 +321,7 @@ export default class FluentResource extends Map {
       }
     }
 
-    function parseVariants() {
+    function Variants() {
       let variants = [];
       let count = 0;
       let star;
@@ -337,20 +336,19 @@ export default class FluentResource extends Map {
           star = count;
         }
 
-        let key = parseVariantKey();
+        let key = VariantKey();
         cursor = RE_VARIANT_START.lastIndex;
-        let value = parsePattern();
-        variants[count++] = {key, value};
+        variants[count++] = {key, value: Pattern()};
       }
 
       return count > 0 ? {variants, star} : null;
     }
 
-    function parseVariantKey() {
+    function VariantKey() {
       consume("[", FluentError);
       skipBlank();
       if (test(RE_NUMBER_LITERAL)) {
-        var key = parseNumber();
+        var key = NumberLiteral();
       } else {
         var key = match(RE_IDENTIFIER);
       }
@@ -359,30 +357,30 @@ export default class FluentResource extends Map {
       return key;
     }
 
-    function parseLiteral() {
+    function Literal() {
       if (test(RE_NUMBER_LITERAL)) {
-        return parseNumber();
+        return NumberLiteral();
       }
 
       if (source[cursor] === "\"") {
-        return parseString();
+        return StringLiteral();
       }
 
       throw new FluentError();
     }
 
-    function parseNumber() {
+    function NumberLiteral() {
       return {type: "num", value: match(RE_NUMBER_LITERAL)};
     }
 
-    function parseString() {
+    function StringLiteral() {
       consume("\"", FluentError);
       let value = "";
       while (true) {
         value += match(RE_STRING_VALUE);
 
         if (source[cursor] === "\\") {
-          value += parseEscape(RE_STRING_ESCAPE);
+          value += EscapeSequence(RE_STRING_ESCAPE);
           continue;
         }
 
@@ -395,7 +393,7 @@ export default class FluentResource extends Map {
       }
     }
 
-    function parseEscape(reSpecialized) {
+    function EscapeSequence(reSpecialized) {
       if (test(RE_UNICODE_ESCAPE)) {
         let sequence = match(RE_UNICODE_ESCAPE);
         return String.fromCodePoint(parseInt(sequence, 16));
@@ -410,7 +408,7 @@ export default class FluentResource extends Map {
 
     // Parse blank space. Return it if it looks like indent before a pattern
     // line. Skip it othwerwise.
-    function parseIndent() {
+    function Indent() {
       let start = cursor;
       skipBlank();
 
