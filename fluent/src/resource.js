@@ -255,27 +255,32 @@ export default class FluentResource extends Map {
         return parsePlaceable();
       }
 
-      let ref = parseLiteral();
-      if (ref.type !== "ref") {
+      if (consume("$")) {
+        return {type: "var", name: match(RE_IDENTIFIER)};
+      }
+
+      if (test(RE_IDENTIFIER)) {
+        let ref = {type: "ref", name: match(RE_IDENTIFIER)};
+
+        if (consume(".")) {
+          let name = match(RE_IDENTIFIER);
+          return {type: "getattr", ref, name};
+        }
+
+        if (source[cursor] === "[") {
+          return {type: "getvar", ref, selector: parseVariantKey()};
+        }
+
+        if (consume("(")) {
+          let callee = {...ref, type: "func"}
+          let args = parseArguments();
+          return {type: "call", callee, args};
+        }
+
         return ref;
       }
 
-      if (consume(".")) {
-        let name = match(RE_IDENTIFIER);
-        return {type: "getattr", ref, name};
-      }
-
-      if (source[cursor] === "[") {
-        return {type: "getvar", ref, selector: parseVariantKey()};
-      }
-
-      if (consume("(")) {
-        let callee = {...ref, type: "func"}
-        let args = parseArguments();
-        return {type: "call", callee, args};
-      }
-
-      return ref;
+      return parseLiteral();
     }
 
     function parseArguments() {
@@ -308,7 +313,7 @@ export default class FluentResource extends Map {
           args.push({
             type: "narg",
             name: ref.name,
-            value: parseInlineExpression(),
+            value: parseLiteral(),
           });
         } else {
           // It's a regular message reference.
@@ -355,14 +360,6 @@ export default class FluentResource extends Map {
     }
 
     function parseLiteral() {
-      if (consume("$")) {
-        return {type: "var", name: match(RE_IDENTIFIER)};
-      }
-
-      if (test(RE_IDENTIFIER)) {
-        return {type: "ref", name: match(RE_IDENTIFIER)};
-      }
-
       if (test(RE_NUMBER_LITERAL)) {
         return parseNumber();
       }
