@@ -1,7 +1,5 @@
 import FluentError from "./error.js";
 
-const MAX_PLACEABLES = 100;
-
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
 // We want to match multiline variant keys. [^] is a pre-ES2018 trick
@@ -21,6 +19,10 @@ const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 const RE_BLANK = /\s+/y;
 const RE_TRAILING_SPACES = / +$/mg;
 const RE_CRLF = /\r\n/g;
+
+// Maximum number of placeables in a single Pattern to protect against Quadratic
+// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
+const MAX_PLACEABLES = 100;
 
 /**
  * Fluent Resource is a structure storing a map of parsed localization entries.
@@ -252,7 +254,7 @@ export default class FluentResource extends Map {
 
     function InlineExpression() {
       if (source[cursor] === "{") {
-        // Support nested placeables.
+        // It's a nested placeable.
         return Placeable();
       }
 
@@ -390,6 +392,7 @@ export default class FluentResource extends Map {
       }
     }
 
+    // Unescape known escape sequences.
     function EscapeSequence(reSpecialized) {
       if (test(RE_UNICODE_ESCAPE)) {
         let sequence = match(RE_UNICODE_ESCAPE);
