@@ -23,16 +23,20 @@ const RE_TRAILING_SPACES = / +$/mg;
 const RE_CRLF = /\r\n/g;
 
 /**
- * Fluent Resource is a structure storing a map
- * of parsed localization entries.
+ * Fluent Resource is a structure storing a map of parsed localization entries.
  */
 export default class FluentResource extends Map {
+  /**
+   * Create a new FluentResource from Fluent code.
+   */
   static fromString(source) {
     RE_MESSAGE_START.lastIndex = 0;
 
-    let cursor = 0;
     let resource = new this();
+    let cursor = 0;
 
+    // Iterate over the beginnings of messages and terms to efficiently skip
+    // comments and recover from errors.
     while (true) {
       let next = RE_MESSAGE_START.exec(source);
       if (next === null) {
@@ -44,9 +48,8 @@ export default class FluentResource extends Map {
         resource.set(next[1], parseMessage());
       } catch (err) {
         if (err instanceof FluentError) {
-          // Don't report any errors. Skip directly to the beginning of the next
-          // message or term. For best results users are advised to validate
-          // translations with the fluent-syntax parser pre-runtime.
+          // Don't report any Fluent syntax errors. Skip directly to the
+          // beginning of the next message or term.
           continue;
         }
         throw err;
@@ -55,24 +58,39 @@ export default class FluentResource extends Map {
 
     return resource;
 
+    // The parser implementation is inlined below for performance reasons.
+
+    // The parser focuses on minimizing the number of false negatives at the
+    // expense of increasing the risk of false positives. In other words, it
+    // aims at parsing valid Fluent messages with a success rate of 100%, but it
+    // may also parse a few invalid messages which the reference parser would
+    // reject. The parser doesn't perform any validation and may produce entries
+    // which wouldn't make sense in the real world. For best results users are
+    // advised to validate translations with the fluent-syntax parser
+    // pre-runtime.
+
+    // The parser makes an extensive use of sticky regexes which can be anchored
+    // to any offset of the source string without slicing it. Errors are thrown
+    // to bail out of parsing of ill-formed messages.
+
     function test(re) {
       re.lastIndex = cursor;
       return re.test(source);
     }
 
+    // Execute a regex, advance the cursor, and return the capture group.
     function match(re) {
       re.lastIndex = cursor;
       let result = re.exec(source);
-
       if (result === null) {
-        cursor++;
         throw new FluentError();
       }
-
       cursor = re.lastIndex;
       return result[1];
     }
 
+    // Advance the cursor by one char, if matching. Optionally, throw the
+    // specified error otherwise.
     function consume(char, error) {
       if (source[cursor] === char) {
         cursor++;
@@ -111,41 +129,52 @@ export default class FluentResource extends Map {
           hasAttributes = true;
         }
 
-        let key = match(RE_ATTRIBUTE_START);
-        let value = parsePattern();
-        attrs[key] = value;
+        let name = match(RE_ATTRIBUTE_START);
+        attrs[name] = parsePattern();
       }
 
       return hasAttributes ? attrs : null;
     }
 
     function parsePattern() {
+      // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_VALUE)) {
         var first = match(RE_TEXT_VALUE);
       }
 
+      // If there's an backslash escape or a placeable on the first line, fall
+      // back to parsing a complex pattern.
       switch (source[cursor]) {
         case "{":
         case "\\":
           return first
+            // Re-use the text parsed above, if possible.
             ? parsePatternElements(first)
             : parsePatternElements();
       }
 
+      // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if
+      // what comes after the newline is indented.
       let block = parseIndent();
       if (block) {
         return first
+          // If there's text on the first line, the blank block is part of the
+          // translation content.
           ? parsePatternElements(first, trim(block))
+          // Otherwise, we're dealing with a block pattern. The blank block is
+          // the leading whitespace; discard it.
           : parsePatternElements();
       }
 
       if (first) {
+        // It was just a simple inline text after all.
         return trim(first);
       }
 
       return null;
     }
 
+    // Parse a complex pattern as an array of elements.
     function parsePatternElements(...elements) {
       let placeableCount = 0;
       let needsTrimming = false;
@@ -183,6 +212,9 @@ export default class FluentResource extends Map {
       }
 
       if (needsTrimming) {
+        // Trim the trailing whitespace of the last element if it's a
+        // TextElement. Use a flag rather than a typeof check to tell
+        // TextElements and StringLiterals apart (both are strings).
         let lastIndex = elements.length - 1;
         elements[lastIndex] = trim(elements[lastIndex]);
       }
@@ -194,6 +226,7 @@ export default class FluentResource extends Map {
       consume("{", FluentError);
       skipBlank();
 
+      // VariantLists are parsed as selector-less SelectExpressions.
       let onlyVariants = parseVariants();
       if (onlyVariants) {
         consume("}", FluentError);
@@ -218,6 +251,7 @@ export default class FluentResource extends Map {
 
     function parseInlineExpression() {
       if (source[cursor] === "{") {
+        // Support nested placeables.
         return parsePlaceable();
       }
 
@@ -251,13 +285,13 @@ export default class FluentResource extends Map {
         skipBlank();
 
         switch (source[cursor]) {
-          case ")":
+          case ")": // End of the argument list.
             cursor++;
             return args;
-          case ",":
+          case ",": // Parse another argument.
             cursor++;
             continue;
-          case undefined:
+          case undefined: // EOF
             throw new FluentError();
         }
 
@@ -285,7 +319,7 @@ export default class FluentResource extends Map {
 
     function parseVariants() {
       let variants = [];
-      let index = 0;
+      let count = 0;
       let star;
 
       while (true) {
@@ -295,16 +329,16 @@ export default class FluentResource extends Map {
         }
 
         if (consume("*")) {
-          star = index;
+          star = count;
         }
 
         let key = parseVariantKey();
         cursor = RE_VARIANT_START.lastIndex;
         let value = parsePattern();
-        variants[index++] = {key, value};
+        variants[count++] = {key, value};
       }
 
-      return index > 0 ? {variants, star} : null;
+      return count > 0 ? {variants, star} : null;
     }
 
     function parseVariantKey() {
@@ -347,13 +381,17 @@ export default class FluentResource extends Map {
       let value = "";
       while (true) {
         value += match(RE_STRING_VALUE);
+
         if (source[cursor] === "\\") {
           value += parseEscape(RE_STRING_ESCAPE);
           continue;
         }
+
         if (consume("\"")) {
           return value;
         }
+
+        // We've reached an EOL of EOF.
         throw new FluentError();
       }
     }
@@ -371,6 +409,8 @@ export default class FluentResource extends Map {
       throw new FluentError();
     }
 
+    // Parse blank space. Return it if it looks like indent before a pattern
+    // line. Skip it othwerwise.
     function parseIndent() {
       let start = cursor;
       skipBlank();
@@ -380,19 +420,24 @@ export default class FluentResource extends Map {
         case "[":
         case "*":
         case "}":
-        case undefined:
+        case undefined: // EOF
           return false;
         case "{":
+          // Placeables don't require indentation. (EBNF: block-placeable)
           return source.slice(start, cursor).replace(RE_CRLF, "\n");
       }
 
+      // If the first character on the line is not one of the special characters
+      // listed above, check if there's at least one space of indent before it.
       if (source[cursor - 1] === " ") {
+        // It's a text continuation. (EBNF: indented-char)
         return source.slice(start, cursor).replace(RE_CRLF, "\n");
       }
 
       return false;
     }
 
+    // Trim spaces trailing on every line of text.
     function trim(text) {
       return text.replace(RE_TRAILING_SPACES, "");
     }
