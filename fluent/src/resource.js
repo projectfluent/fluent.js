@@ -292,33 +292,31 @@ export default class FluentResource extends Map {
           case ")": // End of the argument list.
             cursor++;
             return args;
-          case ",": // Parse another argument.
-            cursor++;
-            continue;
           case undefined: // EOF
             throw new FluentError("Unclosed argument list");
         }
 
-        let ref = InlineExpression();
-        if (ref.type !== "ref") {
-          args.push(ref);
-          continue;
-        }
-
+        args.push(Argument());
         skipBlank();
-        if (consume(":")) {
-          // The reference is the beginning of a named argument.
-          skipBlank();
-          args.push({
-            type: "narg",
-            name: ref.name,
-            value: Literal(),
-          });
-        } else {
-          // It's a regular message reference.
-          args.push(ref);
-        }
+        consume(",");
       }
+    }
+
+    function Argument() {
+      let ref = InlineExpression();
+      if (ref.type !== "ref") {
+        return ref;
+      }
+
+      skipBlank();
+      if (consume(":")) {
+        // The reference is the beginning of a named argument.
+        skipBlank();
+        return {type: "narg", name: ref.name, value: Literal()};
+      }
+
+      // It's a regular message reference.
+      return ref;
     }
 
     function Variants() {

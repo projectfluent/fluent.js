@@ -473,26 +473,6 @@
             ]
         }
     ],
-    "missing-arg": [
-        {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
-            "args": []
-        }
-    ],
-    "missing-sparse-arg": [
-        {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
-            "args": []
-        }
-    ],
     "sparse-named-arg": [
         {
             "type": "call",
