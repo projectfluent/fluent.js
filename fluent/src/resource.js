@@ -344,9 +344,11 @@ export default class FluentResource extends Map {
     function parseVariantKey() {
       consume("[", FluentError);
       skipBlank();
-      let key = test(RE_NUMBER_LITERAL)
-        ? parseNumber()
-        : match(RE_IDENTIFIER);
+      if (test(RE_NUMBER_LITERAL)) {
+        var key = parseNumber();
+      } else {
+        var key = match(RE_IDENTIFIER);
+      }
       skipBlank();
       consume("]", FluentError);
       return key;
