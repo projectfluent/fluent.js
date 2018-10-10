@@ -68,7 +68,6 @@
         "no-mixed-spaces-and-tabs": 2,
         "no-tabs": 2,
         "prefer-arrow-callback": 1,
-        "prefer-const": 2,
         "prefer-template": 2,
         "prefer-spread": 2,
         "quotes": [

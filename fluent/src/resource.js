@@ -98,6 +98,7 @@ export default class FluentResource extends Map {
       } else if (error) {
         throw new error(`Expected ${char}`);
       }
+      return false;
     }
 
     function skipBlank() {
@@ -272,7 +273,7 @@ export default class FluentResource extends Map {
         }
 
         if (consume("(")) {
-          let callee = {...ref, type: "func"}
+          let callee = {...ref, type: "func"};
           return {type: "call", callee, args: Arguments()};
         }
 
@@ -345,11 +346,9 @@ export default class FluentResource extends Map {
     function VariantKey() {
       consume("[", FluentError);
       skipBlank();
-      if (test(RE_NUMBER_LITERAL)) {
-        var key = NumberLiteral();
-      } else {
-        var key = match(RE_IDENTIFIER);
-      }
+      let key = test(RE_NUMBER_LITERAL)
+        ? NumberLiteral()
+        : match(RE_IDENTIFIER);
       skipBlank();
       consume("]", FluentError);
       return key;

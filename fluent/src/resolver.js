@@ -1,3 +1,5 @@
+/* global Intl */
+
 /**
  * @overview
  *
