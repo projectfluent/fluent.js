@@ -1,21 +1,37 @@
 import FluentError from "./error.js";
 
+// This regex is used to iterate through the beginnings of messages and terms.
+// With the /m flag, the ^ matches at the beginning of each line.
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
+
+// Both Attributes and Variants are parsed in while loops. These regexes are
+// used to break out of them.
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
-// We want to match multiline variant keys. [^] is a pre-ES2018 trick
-// which works around the lack of the dotall flag, /s.
+// [^] matches all characters, including newlines.
+// XXX Use /s (dotall) when it's widely supported.
 const RE_VARIANT_START = /\*?\[[^]*?] */y;
 
+// Common tokens.
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
-const RE_STRING_VALUE = /([^\\"\n\r]*)/y;
-const RE_TEXT_VALUE = /([^\\{\n\r]+)/y;
 const RE_SELECT_ARROW = /->/y;
 
-const RE_TEXT_ESCAPE = /\\([\\{])/y;
-const RE_STRING_ESCAPE = /\\([\\"])/y;
-const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
+// A "run" is a sequence of text or string literal characters which don't
+// require any special handling. For TextElements such special characters are:
+// { (starts a placeable), \ (starts an escape sequence), and line breaks which
+// require additional logic to check if the next line is indented. For
+// StringLiterals they are: \ (starts an escape sequence), " (ends the
+// literal), and line breaks which are not allowed in StringLiterals. Also note
+// that string runs may be empty, but text runs may not.
+const RE_TEXT_RUN = /([^\\{\n\r]+)/y;
+const RE_STRING_RUN = /([^\\"\n\r]*)/y;
 
+// Escape sequences.
+const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
+const RE_STRING_ESCAPE = /\\([\\"])/y;
+const RE_TEXT_ESCAPE = /\\([\\{])/y;
+
+// Whitespace tokens.
 const RE_BLANK = /\s+/y;
 const RE_TRAILING_SPACES = / +$/mg;
 const RE_CRLF = /\r\n/g;
@@ -141,8 +157,8 @@ export default class FluentResource extends Map {
 
     function Pattern() {
       // First try to parse any simple text on the same line as the id.
-      if (test(RE_TEXT_VALUE)) {
-        var first = match(RE_TEXT_VALUE);
+      if (test(RE_TEXT_RUN)) {
+        var first = match(RE_TEXT_RUN);
       }
 
       // If there's an backslash escape or a placeable on the first line, fall
@@ -183,8 +199,8 @@ export default class FluentResource extends Map {
       let needsTrimming = false;
 
       while (true) {
-        if (test(RE_TEXT_VALUE)) {
-          elements.push(match(RE_TEXT_VALUE));
+        if (test(RE_TEXT_RUN)) {
+          elements.push(match(RE_TEXT_RUN));
           needsTrimming = true;
           continue;
         }
@@ -376,7 +392,7 @@ export default class FluentResource extends Map {
       consume("\"", FluentError);
       let value = "";
       while (true) {
-        value += match(RE_STRING_VALUE);
+        value += match(RE_STRING_RUN);
 
         if (source[cursor] === "\\") {
           value += EscapeSequence(RE_STRING_ESCAPE);
