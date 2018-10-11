@@ -14,7 +14,7 @@ const RE_VARIANT_START = /\*?\[[^]*?] */y;
 // Common tokens.
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
-const RE_SELECT_ARROW = /->/y;
+const RE_SELECT_ARROW = /->\s*/y;
 
 // A "run" is a sequence of text or string literal characters which don't
 // require any special handling. For TextElements such special characters are:
@@ -140,11 +140,8 @@ export default class FluentResource extends Map {
       let attrs = {};
       let hasAttributes = false;
 
-      while (true) {
-        skipBlank();
-        if (!test(RE_ATTRIBUTE_START)) {
-          break;
-        } else if (!hasAttributes) {
+      while (test(RE_ATTRIBUTE_START)) {
+        if (!hasAttributes) {
           hasAttributes = true;
         }
 
@@ -343,12 +340,7 @@ export default class FluentResource extends Map {
       let count = 0;
       let star;
 
-      while (true) {
-        skipBlank();
-        if (!test(RE_VARIANT_START)) {
-          break;
-        }
-
+      while (test(RE_VARIANT_START)) {
         if (consume("*")) {
           star = count;
         }
