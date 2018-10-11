@@ -108,17 +108,6 @@ export default class FluentResource extends Map {
       return re.test(source);
     }
 
-    // Execute a regex, advance the cursor, and return the capture group.
-    function match(re) {
-      re.lastIndex = cursor;
-      let result = re.exec(source);
-      if (result === null) {
-        throw new FluentError(`Expected ${re.toString()}`);
-      }
-      cursor = re.lastIndex;
-      return result[1];
-    }
-
     // Advance the cursor by the char, if it matches. If not, optionally throw
     // the specified error.
     function char(ch, error) {
@@ -145,6 +134,17 @@ export default class FluentResource extends Map {
       return false;
     }
 
+    // Execute a regex, advance the cursor, and return the capture group.
+    function Match(re) {
+      re.lastIndex = cursor;
+      let result = re.exec(source);
+      if (result === null) {
+        throw new FluentError(`Expected ${re.toString()}`);
+      }
+      cursor = re.lastIndex;
+      return result[1];
+    }
+
     function Message() {
       let value = Pattern();
       let attrs = Attributes();
@@ -165,7 +165,7 @@ export default class FluentResource extends Map {
           hasAttributes = true;
         }
 
-        let name = match(RE_ATTRIBUTE_START);
+        let name = Match(RE_ATTRIBUTE_START);
         attrs[name] = Pattern();
       }
 
@@ -175,7 +175,7 @@ export default class FluentResource extends Map {
     function Pattern() {
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_RUN)) {
-        var first = match(RE_TEXT_RUN);
+        var first = Match(RE_TEXT_RUN);
       }
 
       // If there's an backslash escape or a placeable on the first line, fall
@@ -217,7 +217,7 @@ export default class FluentResource extends Map {
 
       while (true) {
         if (test(RE_TEXT_RUN)) {
-          elements.push(match(RE_TEXT_RUN));
+          elements.push(Match(RE_TEXT_RUN));
           needsTrimming = true;
           continue;
         }
@@ -290,14 +290,14 @@ export default class FluentResource extends Map {
       }
 
       if (char("$")) {
-        return {type: "var", name: match(RE_IDENTIFIER)};
+        return {type: "var", name: Match(RE_IDENTIFIER)};
       }
 
       if (test(RE_IDENTIFIER)) {
-        let ref = {type: "ref", name: match(RE_IDENTIFIER)};
+        let ref = {type: "ref", name: Match(RE_IDENTIFIER)};
 
         if (char(".")) {
-          let name = match(RE_IDENTIFIER);
+          let name = Match(RE_IDENTIFIER);
           return {type: "getattr", ref, name};
         }
 
@@ -369,7 +369,7 @@ export default class FluentResource extends Map {
       token(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? NumberLiteral()
-        : match(RE_IDENTIFIER);
+        : Match(RE_IDENTIFIER);
       token(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
@@ -387,14 +387,14 @@ export default class FluentResource extends Map {
     }
 
     function NumberLiteral() {
-      return {type: "num", value: match(RE_NUMBER_LITERAL)};
+      return {type: "num", value: Match(RE_NUMBER_LITERAL)};
     }
 
     function StringLiteral() {
       char("\"", FluentError);
       let value = "";
       while (true) {
-        value += match(RE_STRING_RUN);
+        value += Match(RE_STRING_RUN);
 
         if (source[cursor] === "\\") {
           value += EscapeSequence(RE_STRING_ESCAPE);
@@ -413,12 +413,12 @@ export default class FluentResource extends Map {
     // Unescape known escape sequences.
     function EscapeSequence(reSpecialized) {
       if (test(RE_UNICODE_ESCAPE)) {
-        let sequence = match(RE_UNICODE_ESCAPE);
+        let sequence = Match(RE_UNICODE_ESCAPE);
         return String.fromCodePoint(parseInt(sequence, 16));
       }
 
       if (test(reSpecialized)) {
-        return match(reSpecialized);
+        return Match(reSpecialized);
       }
 
       throw new FluentError("Unknown escape sequence");
