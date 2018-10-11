@@ -119,15 +119,23 @@ export default class FluentResource extends Map {
       return result[1];
     }
 
-    // Advance the cursor by the match, if successful. If the match failed,
-    // optionally throw the specified error.
-    function skip(re, error) {
-      if (typeof re === "string") {
-        if (source[cursor] === re) {
-          cursor++;
-          return true;
-        }
-      } else if (test(re)) {
+    // Advance the cursor by the char, if it matches. If not, optionally throw
+    // the specified error.
+    function char(ch, error) {
+      if (source[cursor] === ch) {
+        cursor++;
+        return true;
+      }
+      if (error) {
+        throw new error(`Expected ${ch}`);
+      }
+      return false;
+    }
+
+    // Advance the cursor by the token, if it matches. If not, optionally throw
+    // the specified error.
+    function token(re, error) {
+      if (test(re)) {
         cursor = re.lastIndex;
         return true;
       }
@@ -251,24 +259,24 @@ export default class FluentResource extends Map {
     }
 
     function Placeable() {
-      skip(TOKEN_BRACE_OPEN, FluentError);
+      token(TOKEN_BRACE_OPEN, FluentError);
 
       // VariantLists are parsed as selector-less SelectExpressions.
       let onlyVariants = Variants();
       if (onlyVariants) {
-        skip(TOKEN_BRACE_CLOSE, FluentError);
+        token(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector: null, ...onlyVariants};
       }
 
       let selector = InlineExpression();
-      if (skip(TOKEN_BRACE_CLOSE)) {
+      if (token(TOKEN_BRACE_CLOSE)) {
         return selector;
       }
 
       if (test(TOKEN_ARROW)) {
         cursor = TOKEN_ARROW.lastIndex;
         let variants = Variants();
-        skip(TOKEN_BRACE_CLOSE, FluentError);
+        token(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector, ...variants};
       }
 
@@ -281,14 +289,14 @@ export default class FluentResource extends Map {
         return Placeable();
       }
 
-      if (skip("$")) {
+      if (char("$")) {
         return {type: "var", name: match(RE_IDENTIFIER)};
       }
 
       if (test(RE_IDENTIFIER)) {
         let ref = {type: "ref", name: match(RE_IDENTIFIER)};
 
-        if (skip(".")) {
+        if (char(".")) {
           let name = match(RE_IDENTIFIER);
           return {type: "getattr", ref, name};
         }
@@ -297,7 +305,7 @@ export default class FluentResource extends Map {
           return {type: "getvar", ref, selector: VariantKey()};
         }
 
-        if (skip(TOKEN_PAREN_OPEN)) {
+        if (token(TOKEN_PAREN_OPEN)) {
           let callee = {...ref, type: "func"};
           return {type: "call", callee, args: Arguments()};
         }
@@ -320,7 +328,7 @@ export default class FluentResource extends Map {
         }
 
         args.push(Argument());
-        skip(TOKEN_COMMA);
+        token(TOKEN_COMMA);
       }
     }
 
@@ -330,7 +338,7 @@ export default class FluentResource extends Map {
         return ref;
       }
 
-      if (skip(TOKEN_COLON)) {
+      if (token(TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
         return {type: "narg", name: ref.name, value: Literal()};
       }
@@ -345,7 +353,7 @@ export default class FluentResource extends Map {
       let star;
 
       while (test(RE_VARIANT_START)) {
-        if (skip("*")) {
+        if (char("*")) {
           star = count;
         }
 
@@ -358,11 +366,11 @@ export default class FluentResource extends Map {
     }
 
     function VariantKey() {
-      skip(TOKEN_BRACKET_OPEN, FluentError);
+      token(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? NumberLiteral()
         : match(RE_IDENTIFIER);
-      skip(TOKEN_BRACKET_CLOSE, FluentError);
+      token(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
 
@@ -383,7 +391,7 @@ export default class FluentResource extends Map {
     }
 
     function StringLiteral() {
-      skip("\"", FluentError);
+      char("\"", FluentError);
       let value = "";
       while (true) {
         value += match(RE_STRING_RUN);
@@ -393,7 +401,7 @@ export default class FluentResource extends Map {
           continue;
         }
 
-        if (skip("\"")) {
+        if (char("\"")) {
           return value;
         }
 
@@ -420,7 +428,7 @@ export default class FluentResource extends Map {
     // line. Skip it othwerwise.
     function Indent() {
       let start = cursor;
-      skip(TOKEN_BLANK);
+      token(TOKEN_BLANK);
 
       switch (source[cursor]) {
         case ".":
