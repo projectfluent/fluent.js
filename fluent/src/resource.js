@@ -75,7 +75,7 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.set(next[1], Message());
+        resource.set(next[1], parseMessage());
       } catch (err) {
         if (err instanceof FluentError) {
           // Don't report any Fluent syntax errors. Skip directly to the
@@ -110,20 +110,20 @@ export default class FluentResource extends Map {
 
     // Advance the cursor by the char, if it matches. If not, optionally throw
     // the specified error.
-    function char(ch, error) {
-      if (source[cursor] === ch) {
+    function consumeChar(char, error) {
+      if (source[cursor] === char) {
         cursor++;
         return true;
       }
       if (error) {
-        throw new error(`Expected ${ch}`);
+        throw new error(`Expected ${char}`);
       }
       return false;
     }
 
     // Advance the cursor by the token, if it matches. If not, optionally throw
     // the specified error.
-    function token(re, error) {
+    function consumeToken(re, error) {
       if (test(re)) {
         cursor = re.lastIndex;
         return true;
@@ -135,7 +135,7 @@ export default class FluentResource extends Map {
     }
 
     // Execute a regex, advance the cursor, and return the capture group.
-    function Match(re) {
+    function match(re) {
       re.lastIndex = cursor;
       let result = re.exec(source);
       if (result === null) {
@@ -145,9 +145,9 @@ export default class FluentResource extends Map {
       return result[1];
     }
 
-    function Message() {
-      let value = Pattern();
-      let attrs = Attributes();
+    function parseMessage() {
+      let value = parsePattern();
+      let attrs = parseAttributes();
 
       if (attrs === null) {
         return value;
@@ -156,7 +156,7 @@ export default class FluentResource extends Map {
       return {value, attrs};
     }
 
-    function Attributes() {
+    function parseAttributes() {
       let attrs = {};
       let hasAttributes = false;
 
@@ -165,17 +165,17 @@ export default class FluentResource extends Map {
           hasAttributes = true;
         }
 
-        let name = Match(RE_ATTRIBUTE_START);
-        attrs[name] = Pattern();
+        let name = match(RE_ATTRIBUTE_START);
+        attrs[name] = parsePattern();
       }
 
       return hasAttributes ? attrs : null;
     }
 
-    function Pattern() {
+    function parsePattern() {
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_RUN)) {
-        var first = Match(RE_TEXT_RUN);
+        var first = match(RE_TEXT_RUN);
       }
 
       // If there's a backslash escape or a placeable on the first line, fall
@@ -185,21 +185,21 @@ export default class FluentResource extends Map {
         case "\\":
           return first
             // Re-use the text parsed above, if possible.
-            ? PatternElements(first)
-            : PatternElements();
+            ? parsePatternElements(first)
+            : parsePatternElements();
       }
 
       // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if
       // what comes after the newline is indented.
-      let indent = Indent();
+      let indent = parseIndent();
       if (indent) {
         return first
           // If there's text on the first line, the blank block is part of the
           // translation content.
-          ? PatternElements(first, trim(indent))
+          ? parsePatternElements(first, trim(indent))
           // Otherwise, we're dealing with a block pattern. The blank block is
           // the leading whitespace; discard it.
-          : PatternElements();
+          : parsePatternElements();
       }
 
       if (first) {
@@ -211,13 +211,13 @@ export default class FluentResource extends Map {
     }
 
     // Parse a complex pattern as an array of elements.
-    function PatternElements(...elements) {
+    function parsePatternElements(...elements) {
       let placeableCount = 0;
       let needsTrimming = false;
 
       while (true) {
         if (test(RE_TEXT_RUN)) {
-          elements.push(Match(RE_TEXT_RUN));
+          elements.push(match(RE_TEXT_RUN));
           needsTrimming = true;
           continue;
         }
@@ -226,12 +226,12 @@ export default class FluentResource extends Map {
           if (++placeableCount > MAX_PLACEABLES) {
             throw new FluentError("Too many placeables");
           }
-          elements.push(Placeable());
+          elements.push(parsePlaceable());
           needsTrimming = false;
           continue;
         }
 
-        let indent = Indent();
+        let indent = parseIndent();
         if (indent) {
           elements.push(trim(indent));
           needsTrimming = false;
@@ -239,7 +239,7 @@ export default class FluentResource extends Map {
         }
 
         if (source[cursor] === "\\") {
-          elements.push(EscapeSequence(RE_TEXT_ESCAPE));
+          elements.push(parseEscapeSequence(RE_TEXT_ESCAPE));
           needsTrimming = false;
           continue;
         }
@@ -258,65 +258,65 @@ export default class FluentResource extends Map {
       return elements;
     }
 
-    function Placeable() {
-      token(TOKEN_BRACE_OPEN, FluentError);
+    function parsePlaceable() {
+      consumeToken(TOKEN_BRACE_OPEN, FluentError);
 
       // VariantLists are parsed as selector-less SelectExpressions.
-      let onlyVariants = Variants();
+      let onlyVariants = parseVariants();
       if (onlyVariants) {
-        token(TOKEN_BRACE_CLOSE, FluentError);
+        consumeToken(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector: null, ...onlyVariants};
       }
 
-      let selector = InlineExpression();
-      if (token(TOKEN_BRACE_CLOSE)) {
+      let selector = parseInlineExpression();
+      if (consumeToken(TOKEN_BRACE_CLOSE)) {
         return selector;
       }
 
       if (test(TOKEN_ARROW)) {
         cursor = TOKEN_ARROW.lastIndex;
-        let variants = Variants();
-        token(TOKEN_BRACE_CLOSE, FluentError);
+        let variants = parseVariants();
+        consumeToken(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector, ...variants};
       }
 
       throw new FluentError("Unclosed placeable");
     }
 
-    function InlineExpression() {
+    function parseInlineExpression() {
       if (source[cursor] === "{") {
         // It's a nested placeable.
-        return Placeable();
+        return parsePlaceable();
       }
 
-      if (char("$")) {
-        return {type: "var", name: Match(RE_IDENTIFIER)};
+      if (consumeChar("$")) {
+        return {type: "var", name: match(RE_IDENTIFIER)};
       }
 
       if (test(RE_IDENTIFIER)) {
-        let ref = {type: "ref", name: Match(RE_IDENTIFIER)};
+        let ref = {type: "ref", name: match(RE_IDENTIFIER)};
 
-        if (char(".")) {
-          let name = Match(RE_IDENTIFIER);
+        if (consumeChar(".")) {
+          let name = match(RE_IDENTIFIER);
           return {type: "getattr", ref, name};
         }
 
         if (source[cursor] === "[") {
-          return {type: "getvar", ref, selector: VariantKey()};
+          return {type: "getvar", ref, selector: parseVariantKey()};
         }
 
-        if (token(TOKEN_PAREN_OPEN)) {
+        if (consumeToken(TOKEN_PAREN_OPEN)) {
           let callee = {...ref, type: "func"};
-          return {type: "call", callee, args: Arguments()};
+          return {type: "call", callee, args: parseArguments()};
         }
 
         return ref;
       }
 
-      return Literal();
+      return parseLiteral();
     }
 
-    function Arguments() {
+    function parseArguments() {
       let args = [];
       while (true) {
         switch (source[cursor]) {
@@ -327,82 +327,82 @@ export default class FluentResource extends Map {
             throw new FluentError("Unclosed argument list");
         }
 
-        args.push(Argument());
+        args.push(parseArgument());
         // Commas between arguments are treated as whitespace.
-        token(TOKEN_COMMA);
+        consumeToken(TOKEN_COMMA);
       }
     }
 
-    function Argument() {
-      let ref = InlineExpression();
+    function parseArgument() {
+      let ref = parseInlineExpression();
       if (ref.type !== "ref") {
         return ref;
       }
 
-      if (token(TOKEN_COLON)) {
+      if (consumeToken(TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
-        return {type: "narg", name: ref.name, value: Literal()};
+        return {type: "narg", name: ref.name, value: parseLiteral()};
       }
 
       // It's a regular message reference.
       return ref;
     }
 
-    function Variants() {
+    function parseVariants() {
       let variants = [];
       let count = 0;
       let star;
 
       while (test(RE_VARIANT_START)) {
-        if (char("*")) {
+        if (consumeChar("*")) {
           star = count;
         }
 
-        let key = VariantKey();
+        let key = parseVariantKey();
         cursor = RE_VARIANT_START.lastIndex;
-        variants[count++] = {key, value: Pattern()};
+        variants[count++] = {key, value: parsePattern()};
       }
 
       return count > 0 ? {variants, star} : null;
     }
 
-    function VariantKey() {
-      token(TOKEN_BRACKET_OPEN, FluentError);
+    function parseVariantKey() {
+      consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
-        ? NumberLiteral()
-        : Match(RE_IDENTIFIER);
-      token(TOKEN_BRACKET_CLOSE, FluentError);
+        ? parseNumberLiteral()
+        : match(RE_IDENTIFIER);
+      consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
 
-    function Literal() {
+    function parseLiteral() {
       if (test(RE_NUMBER_LITERAL)) {
-        return NumberLiteral();
+        return parseNumberLiteral();
       }
 
       if (source[cursor] === "\"") {
-        return StringLiteral();
+        return parseStringLiteral();
       }
 
       throw new FluentError("Invalid expression");
     }
 
-    function NumberLiteral() {
-      return {type: "num", value: Match(RE_NUMBER_LITERAL)};
+    function parseNumberLiteral() {
+      return {type: "num", value: match(RE_NUMBER_LITERAL)};
     }
 
-    function StringLiteral() {
-      char("\"", FluentError);
+    function parseStringLiteral() {
+      consumeChar("\"", FluentError);
       let value = "";
       while (true) {
-        value += Match(RE_STRING_RUN);
+        value += match(RE_STRING_RUN);
 
         if (source[cursor] === "\\") {
-          value += EscapeSequence(RE_STRING_ESCAPE);
+          value += parseEscapeSequence(RE_STRING_ESCAPE);
           continue;
         }
 
-        if (char("\"")) {
+        if (consumeChar("\"")) {
           return value;
         }
 
@@ -412,14 +412,14 @@ export default class FluentResource extends Map {
     }
 
     // Unescape known escape sequences.
-    function EscapeSequence(reSpecialized) {
+    function parseEscapeSequence(reSpecialized) {
       if (test(RE_UNICODE_ESCAPE)) {
-        let sequence = Match(RE_UNICODE_ESCAPE);
+        let sequence = match(RE_UNICODE_ESCAPE);
         return String.fromCodePoint(parseInt(sequence, 16));
       }
 
       if (test(reSpecialized)) {
-        return Match(reSpecialized);
+        return match(reSpecialized);
       }
 
       throw new FluentError("Unknown escape sequence");
@@ -427,9 +427,9 @@ export default class FluentResource extends Map {
 
     // Parse blank space. Return it if it looks like indent before a pattern
     // line. Skip it othwerwise.
-    function Indent() {
+    function parseIndent() {
       let start = cursor;
-      token(TOKEN_BLANK);
+      consumeToken(TOKEN_BLANK);
 
       // Check the first non-blank character after the indent.
       switch (source[cursor]) {
