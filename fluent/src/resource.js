@@ -430,25 +430,32 @@ export default class FluentResource extends Map {
       let start = cursor;
       token(TOKEN_BLANK);
 
+      // Check the first non-blank character after the indent.
       switch (source[cursor]) {
         case ".":
         case "[":
         case "*":
         case "}":
         case undefined: // EOF
+          // A special character. End the Pattern.
           return false;
         case "{":
-          // Placeables don't require indentation. (EBNF: block-placeable)
+          // Placeables don't require indentation (in EBNF: block-placeable).
+          // Continue the Pattern.
           return source.slice(start, cursor).replace(RE_CRLF, "\n");
       }
 
       // If the first character on the line is not one of the special characters
-      // listed above, check if there's at least one space of indent before it.
+      // listed above, it's a regular text character. Check if there's at least
+      // one space of indent before it.
       if (source[cursor - 1] === " ") {
-        // It's a text continuation. (EBNF: indented-char)
+        // It's an indented text character (in EBNF: indented-char). Continue
+        // the Pattern.
         return source.slice(start, cursor).replace(RE_CRLF, "\n");
       }
 
+      // A not-indented text character is likely the identifier of the next
+      // message. End the Pattern.
       return false;
     }
 
