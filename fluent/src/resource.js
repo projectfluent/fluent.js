@@ -108,28 +108,28 @@ export default class FluentResource extends Map {
       return re.test(source);
     }
 
-    // Advance the cursor by the char, if it matches. If not, optionally throw
-    // the specified error.
-    function consumeChar(char, error) {
+    // Advance the cursor by the char if it matches. May be used as a predicate
+    // (was the match found?) or, if errorClass is passed, as an assertion.
+    function consumeChar(char, errorClass) {
       if (source[cursor] === char) {
         cursor++;
         return true;
       }
-      if (error) {
-        throw new error(`Expected ${char}`);
+      if (errorClass) {
+        throw new errorClass(`Expected ${char}`);
       }
       return false;
     }
 
-    // Advance the cursor by the token, if it matches. If not, optionally throw
-    // the specified error.
-    function consumeToken(re, error) {
+    // Advance the cursor by the token if it matches. May be used as a predicate
+    // (was the match found?) or, if errorClass is passed, as an assertion.
+    function consumeToken(re, errorClass) {
       if (test(re)) {
         cursor = re.lastIndex;
         return true;
       }
-      if (error) {
-        throw new error(`Expected ${re.toString()}`);
+      if (errorClass) {
+        throw new errorClass(`Expected ${re.toString()}`);
       }
       return false;
     }
@@ -273,8 +273,7 @@ export default class FluentResource extends Map {
         return selector;
       }
 
-      if (test(TOKEN_ARROW)) {
-        cursor = TOKEN_ARROW.lastIndex;
+      if (consumeToken(TOKEN_ARROW)) {
         let variants = parseVariants();
         consumeToken(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector, ...variants};
