@@ -43,8 +43,8 @@ const TOKEN_BRACKET_CLOSE = /\s*]/y;
 const TOKEN_PAREN_OPEN = /\(\s*/y;
 const TOKEN_ARROW = /\s*->\s*/y;
 const TOKEN_COLON = /\s*:\s*/y;
-// As a deviation from the well-formed Fluent grammar, accept argument lists
-// without commas between arguments.
+// Note the optional comma. As a deviation from the Fluent EBNF, the parser
+// doesn't enforce commas between call arguments.
 const TOKEN_COMMA = /\s*,?\s*/y;
 const TOKEN_BLANK = /\s+/y;
 
@@ -178,7 +178,7 @@ export default class FluentResource extends Map {
         var first = Match(RE_TEXT_RUN);
       }
 
-      // If there's an backslash escape or a placeable on the first line, fall
+      // If there's a backslash escape or a placeable on the first line, fall
       // back to parsing a complex pattern.
       switch (source[cursor]) {
         case "{":
@@ -328,6 +328,7 @@ export default class FluentResource extends Map {
         }
 
         args.push(Argument());
+        // Commas between arguments are treated as whitespace.
         token(TOKEN_COMMA);
       }
     }
