@@ -1,7 +1,7 @@
 import FluentError from "./error.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
-// With the /m flag, the ^ matches at the beginning of each line.
+// With the /m flag, the ^ matches at the beginning of every line.
 const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
 
 // Both Attributes and Variants are parsed in while loops. These regexes are
@@ -11,10 +11,8 @@ const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
 // XXX Use /s (dotall) when it's widely supported.
 const RE_VARIANT_START = /\*?\[[^]*?] */y;
 
-// Common tokens.
 const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
-const RE_SELECT_ARROW = /->\s*/y;
 
 // A "run" is a sequence of text or string literal characters which don't
 // require any special handling. For TextElements such special characters are:
@@ -31,10 +29,24 @@ const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 const RE_STRING_ESCAPE = /\\([\\"])/y;
 const RE_TEXT_ESCAPE = /\\([\\{])/y;
 
-// Whitespace tokens.
-const RE_BLANK = /\s+/y;
+// Used for trimming TextElements and indents. With the /m flag, the $ matches
+// the end of every line.
 const RE_TRAILING_SPACES = / +$/mg;
+// CRLFs are normalized to LF.
 const RE_CRLF = /\r\n/g;
+
+// Common tokens.
+const TOKEN_BRACE_OPEN = /{\s*/y;
+const TOKEN_BRACE_CLOSE = /\s*}/y;
+const TOKEN_BRACKET_OPEN = /\[\s*/y;
+const TOKEN_BRACKET_CLOSE = /\s*]/y;
+const TOKEN_PAREN_OPEN = /\(\s*/y;
+const TOKEN_ARROW = /\s*->\s*/y;
+const TOKEN_COLON = /\s*:\s*/y;
+// As a deviation from the well-formed Fluent grammar, accept argument lists
+// without commas between arguments.
+const TOKEN_COMMA = /\s*,?\s*/y;
+const TOKEN_BLANK = /\s+/y;
 
 // Maximum number of placeables in a single Pattern to protect against Quadratic
 // Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
@@ -107,22 +119,22 @@ export default class FluentResource extends Map {
       return result[1];
     }
 
-    // Advance the cursor by one char, if matching. Optionally, throw the
-    // specified error otherwise.
-    function consume(char, error) {
-      if (source[cursor] === char) {
-        cursor++;
+    // Advance the cursor by the match, if successful. If the match failed,
+    // optionally throw the specified error.
+    function skip(re, error) {
+      if (typeof re === "string") {
+        if (source[cursor] === re) {
+          cursor++;
+          return true;
+        }
+      } else if (test(re)) {
+        cursor = re.lastIndex;
         return true;
-      } else if (error) {
-        throw new error(`Expected ${char}`);
+      }
+      if (error) {
+        throw new error(`Expected ${re.toString()}`);
       }
       return false;
-    }
-
-    function skipBlank() {
-      if (test(RE_BLANK)) {
-        cursor = RE_BLANK.lastIndex;
-      }
     }
 
     function Message() {
@@ -239,26 +251,24 @@ export default class FluentResource extends Map {
     }
 
     function Placeable() {
-      consume("{", FluentError);
-      skipBlank();
+      skip(TOKEN_BRACE_OPEN, FluentError);
 
       // VariantLists are parsed as selector-less SelectExpressions.
       let onlyVariants = Variants();
       if (onlyVariants) {
-        consume("}", FluentError);
+        skip(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector: null, ...onlyVariants};
       }
 
       let selector = InlineExpression();
-      skipBlank();
-      if (consume("}")) {
+      if (skip(TOKEN_BRACE_CLOSE)) {
         return selector;
       }
 
-      if (test(RE_SELECT_ARROW)) {
-        cursor = RE_SELECT_ARROW.lastIndex;
+      if (test(TOKEN_ARROW)) {
+        cursor = TOKEN_ARROW.lastIndex;
         let variants = Variants();
-        consume("}", FluentError);
+        skip(TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector, ...variants};
       }
 
@@ -271,14 +281,14 @@ export default class FluentResource extends Map {
         return Placeable();
       }
 
-      if (consume("$")) {
+      if (skip("$")) {
         return {type: "var", name: match(RE_IDENTIFIER)};
       }
 
       if (test(RE_IDENTIFIER)) {
         let ref = {type: "ref", name: match(RE_IDENTIFIER)};
 
-        if (consume(".")) {
+        if (skip(".")) {
           let name = match(RE_IDENTIFIER);
           return {type: "getattr", ref, name};
         }
@@ -287,7 +297,7 @@ export default class FluentResource extends Map {
           return {type: "getvar", ref, selector: VariantKey()};
         }
 
-        if (consume("(")) {
+        if (skip(TOKEN_PAREN_OPEN)) {
           let callee = {...ref, type: "func"};
           return {type: "call", callee, args: Arguments()};
         }
@@ -300,10 +310,7 @@ export default class FluentResource extends Map {
 
     function Arguments() {
       let args = [];
-
       while (true) {
-        skipBlank();
-
         switch (source[cursor]) {
           case ")": // End of the argument list.
             cursor++;
@@ -313,8 +320,7 @@ export default class FluentResource extends Map {
         }
 
         args.push(Argument());
-        skipBlank();
-        consume(",");
+        skip(TOKEN_COMMA);
       }
     }
 
@@ -324,10 +330,8 @@ export default class FluentResource extends Map {
         return ref;
       }
 
-      skipBlank();
-      if (consume(":")) {
+      if (skip(TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
-        skipBlank();
         return {type: "narg", name: ref.name, value: Literal()};
       }
 
@@ -341,7 +345,7 @@ export default class FluentResource extends Map {
       let star;
 
       while (test(RE_VARIANT_START)) {
-        if (consume("*")) {
+        if (skip("*")) {
           star = count;
         }
 
@@ -354,13 +358,11 @@ export default class FluentResource extends Map {
     }
 
     function VariantKey() {
-      consume("[", FluentError);
-      skipBlank();
+      skip(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? NumberLiteral()
         : match(RE_IDENTIFIER);
-      skipBlank();
-      consume("]", FluentError);
+      skip(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
 
@@ -381,7 +383,7 @@ export default class FluentResource extends Map {
     }
 
     function StringLiteral() {
-      consume("\"", FluentError);
+      skip("\"", FluentError);
       let value = "";
       while (true) {
         value += match(RE_STRING_RUN);
@@ -391,7 +393,7 @@ export default class FluentResource extends Map {
           continue;
         }
 
-        if (consume("\"")) {
+        if (skip("\"")) {
           return value;
         }
 
@@ -418,7 +420,7 @@ export default class FluentResource extends Map {
     // line. Skip it othwerwise.
     function Indent() {
       let start = cursor;
-      skipBlank();
+      skip(TOKEN_BLANK);
 
       switch (source[cursor]) {
         case ".":
