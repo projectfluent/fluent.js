@@ -29,8 +29,6 @@ l10n.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 clean:
-	@rm -f ./dist/FluentBundle.jsm
-	@rm -f ./dist/Localization.jsm
-	@rm -f ./dist/DOMLocalization.jsm
-	@rm -f ./dist/l10n.js
+	@rm -rf dist
+	@rm -rf .nyc_output
 	@echo -e " $(OK) clean"

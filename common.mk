@@ -21,12 +21,12 @@ lint:
 
 test:
 ifneq (,$(wildcard ./test/index.js))
-	@mocha --recursive --ui tdd \
+	@nyc mocha --recursive --ui tdd \
 	    --require $(ROOT)/mocha_setup \
 	    --require ./test/index \
 	    test/**/*_test.js
 else
-	@mocha --recursive --ui tdd \
+	@nyc mocha --recursive --ui tdd \
 	    --require $(ROOT)/mocha_setup \
 	    test/**/*_test.js
 endif

@@ -1,3 +1,4 @@
 docs
 test
 makefile
+.nyc_output

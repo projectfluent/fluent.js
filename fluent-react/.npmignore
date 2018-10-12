@@ -2,3 +2,4 @@ docs
 examples
 test
 makefile
+.nyc_output
