@@ -163,14 +163,16 @@ export class FTLParserStream extends ParserStream {
       return true;
     }
 
-    return this.isNextLineValue();
+    return this.isNextLineValue({skip});
   }
 
   // -1 - any
   //  0 - comment
   //  1 - group comment
   //  2 - resource comment
-  isPeekNextLineComment(level = -1) {
+  isNextLineComment(level = -1, {skip = false}) {
+    if (skip === true) throw new Error("Unimplemented");
+
     if (!this.currentPeekIs("\n")) {
       return false;
     }
@@ -199,7 +201,9 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isPeekNextLineVariantStart() {
+  isNextLineVariantStart({skip = false}) {
+    if (skip === true) throw new Error("Unimplemented");
+
     if (!this.currentPeekIs("\n")) {
       return false;
     }
@@ -218,7 +222,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isNextLineAttributeStart({skip = true} = {}) {
+  isNextLineAttributeStart({skip = true}) {
     if (skip === false) throw new Error("Unimplemented");
 
     this.peekBlank();
@@ -232,7 +236,7 @@ export class FTLParserStream extends ParserStream {
     return false;
   }
 
-  isNextLineValue({skip = true} = {}) {
+  isNextLineValue({skip = true}) {
     if (!this.currentPeekIs("\n")) {
       return false;
     }
