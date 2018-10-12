@@ -193,7 +193,7 @@ export default class FluentParser {
         }
       }
 
-      if (ps.isPeekNextLineComment(level)) {
+      if (ps.isNextLineComment(level, {skip: false})) {
         content += ps.current();
         ps.next();
       } else {
@@ -226,7 +226,7 @@ export default class FluentParser {
       var pattern = this.getPattern(ps);
     }
 
-    if (ps.isNextLineAttributeStart()) {
+    if (ps.isNextLineAttributeStart({skip: true})) {
       var attrs = this.getAttributes(ps);
     }
 
@@ -250,7 +250,7 @@ export default class FluentParser {
       throw new ParseError("E0006", id.name);
     }
 
-    if (ps.isNextLineAttributeStart()) {
+    if (ps.isNextLineAttributeStart({skip: true})) {
       var attrs = this.getAttributes(ps);
     }
 
@@ -281,7 +281,7 @@ export default class FluentParser {
       const attr = this.getAttribute(ps);
       attrs.push(attr);
 
-      if (!ps.isNextLineAttributeStart()) {
+      if (!ps.isNextLineAttributeStart({skip: true})) {
         break;
       }
     }
@@ -366,7 +366,7 @@ export default class FluentParser {
 
       variants.push(variant);
 
-      if (!ps.isPeekNextLineVariantStart()) {
+      if (!ps.isNextLineVariantStart({skip: false})) {
         break;
       }
       ps.skipBlank();
@@ -417,7 +417,7 @@ export default class FluentParser {
     if (ps.currentIs("{")) {
       ps.peek();
       ps.peekBlankInline();
-      if (ps.isPeekNextLineVariantStart()) {
+      if (ps.isNextLineVariantStart({skip: false})) {
         return this.getVariantList(ps);
       }
 
