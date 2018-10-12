@@ -30,5 +30,5 @@ l10n.js: $(SOURCES)
 
 clean:
 	@rm -rf dist
-	@rm -rf .nyc_output
+	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

@@ -1,4 +1,5 @@
+.nyc_output
+coverage
 docs
 test
 makefile
-.nyc_output
