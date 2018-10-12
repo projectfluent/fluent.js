@@ -1,1 +1,35 @@
-{}
+{
+    "key1": {
+        "value": "Value 1",
+        "attrs": {
+            "attr": null
+        }
+    },
+    "key2": {
+        "value": null,
+        "attrs": {
+            "attr": null
+        }
+    },
+    "key3": {
+        "value": null,
+        "attrs": {
+            "attr1": "Attr 1",
+            "attr2": null
+        }
+    },
+    "key4": {
+        "value": null,
+        "attrs": {
+            "attr1": null,
+            "attr2": "Attr 2"
+        }
+    },
+    "key5": {
+        "value": null,
+        "attrs": {
+            "attr1": null,
+            "attr2": null
+        }
+    }
+}

@@ -1,16 +1,12 @@
 {
-  "key1": "Value",
-  "key2": "    Value",
-  "key3": {
-    "val": [
-      "",
-      "         Value"
+    "key1": "Value",
+    "key2": "    Value",
+    "key3": [
+        "",
+        "         Value"
+    ],
+    "key4": [
+        "         ",
+        "Value"
     ]
-  },
-  "key4": {
-    "val": [
-      "         ",
-      "Value"
-    ]
-  }
 }

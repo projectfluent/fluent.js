@@ -1,0 +1,26 @@
+{
+    "message-reference": [
+        {
+            "type": "ref",
+            "name": "msg"
+        }
+    ],
+    "term-reference": [
+        {
+            "type": "ref",
+            "name": "-term"
+        }
+    ],
+    "variable-reference": [
+        {
+            "type": "var",
+            "name": "var"
+        }
+    ],
+    "not-call-expression": [
+        {
+            "type": "ref",
+            "name": "FUN"
+        }
+    ]
+}

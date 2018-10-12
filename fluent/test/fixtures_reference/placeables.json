@@ -1,0 +1,20 @@
+{
+    "nested-placeable": [
+        {
+            "type": "num",
+            "value": "1"
+        }
+    ],
+    "padded-placeable": [
+        {
+            "type": "num",
+            "value": "1"
+        }
+    ],
+    "sparse-placeable": [
+        {
+            "type": "num",
+            "value": "1"
+        }
+    ]
+}

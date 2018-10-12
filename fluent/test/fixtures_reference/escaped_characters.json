@@ -7,7 +7,7 @@
     "closing-brace": [
         "Value with ",
         "{",
-        " (an opening brace)"
+        " (a closing brace)"
     ],
     "unicode-escape": [
         "A"

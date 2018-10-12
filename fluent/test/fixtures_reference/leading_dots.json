@@ -28,7 +28,7 @@
         "value": null,
         "attrs": {
             "Value": [
-                "which looks like an attribute",
+                "which is an attribute",
                 "\n",
                 "Continued"
             ]
@@ -85,5 +85,20 @@
             ],
             "star": 1
         }
+    ],
+    "key18": null,
+    "key19": {
+        "value": null,
+        "attrs": {
+            "attribute": [
+                "Value",
+                "\n",
+                "Continued"
+            ]
+        }
+    },
+    "key20": [
+        ".",
+        "Value"
     ]
 }

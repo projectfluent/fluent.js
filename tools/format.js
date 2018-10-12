@@ -60,9 +60,14 @@ function print(err, data) {
 
   parseErrors.forEach(printError);
 
-  for (const [id, message] of bundle.messages) {
+  for (let [id, message] of bundle.messages) {
     const formatErrors = [];
     printEntry(id, bundle.format(message, ext, formatErrors));
+    if (message && message.attrs) {
+      for (let [name, attr] of Object.entries(message.attrs)) {
+        printEntry(`    .${name}`, bundle.format(attr, ext, formatErrors));
+      }
+    }
     formatErrors.forEach(printError);
   }
 }

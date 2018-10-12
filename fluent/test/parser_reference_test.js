@@ -6,9 +6,9 @@ import { readfile, toObject } from './index';
 import FluentResource from '../src/resource';
 
 const ftlFixtures = join(
-  __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_structure'
+  __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_reference'
 );
-const jsonFixtures = join(__dirname, 'fixtures_structure');
+const jsonFixtures = join(__dirname, 'fixtures_reference');
 
 readdir(ftlFixtures, function(err, filenames) {
   if (err) {
@@ -19,7 +19,7 @@ readdir(ftlFixtures, function(err, filenames) {
     filename => filename.endsWith('.ftl')
   );
 
-  suite('Structure tests', function() {
+  suite('Reference tests', function() {
     for (const ftlfilename of ftlnames) {
       const jsonfilename = ftlfilename.replace(/ftl$/, 'json');
       const ftlpath = join(ftlFixtures, ftlfilename);

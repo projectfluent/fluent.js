@@ -1,5 +1,5 @@
-import resolve from "./resolver";
-import FluentResource from "./resource";
+import resolve from "./resolver.js";
+import FluentResource from "./resource.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -138,7 +138,8 @@ export default class FluentBundle {
    * @returns {Array<Error>}
    */
   addResource(res) {
-    const errors = res.errors.slice();
+    const errors = [];
+
     for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
@@ -196,14 +197,14 @@ export default class FluentBundle {
       return this._transform(message);
     }
 
-    // optimize simple-string entities with attributes
-    if (typeof message.val === "string") {
-      return this._transform(message.val);
+    // optimize entities with null values
+    if (message === null || message.value === null) {
+      return null;
     }
 
-    // optimize entities with null values
-    if (message.val === undefined) {
-      return null;
+    // optimize simple-string entities with attributes
+    if (typeof message.value === "string") {
+      return this._transform(message.value);
     }
 
     return resolve(this, args, message, errors);
