@@ -14,7 +14,7 @@ function withSpan(fn) {
       return fn.call(this, ps, ...args);
     }
 
-    const start = ps.getIndex();
+    const start = ps.index;
     const node = fn.call(this, ps, ...args);
 
     // Don't re-add the span if the node already has it.  This may happen when
@@ -23,7 +23,7 @@ function withSpan(fn) {
       return node;
     }
 
-    const end = ps.getIndex();
+    const end = ps.index;
     node.addSpan(start, end);
     return node;
   };
@@ -56,7 +56,7 @@ export default class FluentParser {
     const entries = [];
     let lastComment = null;
 
-    while (ps.current()) {
+    while (ps.currentChar) {
       const entry = this.getEntryOrJunk(ps);
       const blankLines = ps.skipBlankBlock();
 
@@ -65,7 +65,7 @@ export default class FluentParser {
       // they should parse as standalone when they're followed by Junk.
       // Consequently, we only attach Comments once we know that the Message
       // or the Term parsed successfully.
-      if (entry.type === "Comment" && blankLines === 0 && ps.current()) {
+      if (entry.type === "Comment" && blankLines === 0 && ps.currentChar) {
         // Stash the comment and decide what to do with it in the next pass.
         lastComment = entry;
         continue;
@@ -91,7 +91,7 @@ export default class FluentParser {
     const res = new AST.Resource(entries);
 
     if (this.withSpans) {
-      res.addSpan(0, ps.getIndex());
+      res.addSpan(0, ps.index);
     }
 
     return res;
@@ -110,7 +110,7 @@ export default class FluentParser {
     const ps = new FTLParserStream(source.replace(/\r\n/g, "\n"));
     ps.skipBlankBlock();
 
-    while (ps.currentIs("#")) {
+    while (ps.currentChar === "#") {
       const skipped = this.getEntryOrJunk(ps);
       if (skipped.type === "Junk") {
         // Don't skip Junk comments.
@@ -123,7 +123,7 @@ export default class FluentParser {
   }
 
   getEntryOrJunk(ps) {
-    const entryStartPos = ps.getIndex();
+    const entryStartPos = ps.index;
 
     try {
       const entry = this.getEntry(ps);
@@ -134,12 +134,12 @@ export default class FluentParser {
         throw err;
       }
 
-      const errorIndex = ps.getIndex();
+      const errorIndex = ps.index;
       ps.skipToNextEntryStart();
-      const nextEntryStart = ps.getIndex();
+      const nextEntryStart = ps.index;
 
       // Create a Junk instance
-      const slice = ps.getSlice(entryStartPos, nextEntryStart);
+      const slice = ps.string.substring(entryStartPos, nextEntryStart);
       const junk = new AST.Junk(slice);
       if (this.withSpans) {
         junk.addSpan(entryStartPos, nextEntryStart);
@@ -152,11 +152,11 @@ export default class FluentParser {
   }
 
   getEntry(ps) {
-    if (ps.currentIs("#")) {
+    if (ps.currentChar === "#") {
       return this.getComment(ps);
     }
 
-    if (ps.currentIs("-")) {
+    if (ps.currentChar === "-") {
       return this.getTerm(ps);
     }
 
@@ -176,7 +176,7 @@ export default class FluentParser {
 
     while (true) {
       let i = -1;
-      while (ps.currentIs("#") && (i < (level === -1 ? 2 : level))) {
+      while (ps.currentChar === "#" && (i < (level === -1 ? 2 : level))) {
         ps.next();
         i++;
       }
@@ -185,7 +185,7 @@ export default class FluentParser {
         level = i;
       }
 
-      if (!ps.currentIs("\n")) {
+      if (ps.currentChar !== "\n") {
         ps.expectChar(" ");
         let ch;
         while ((ch = ps.takeChar(x => x !== "\n"))) {
@@ -194,7 +194,7 @@ export default class FluentParser {
       }
 
       if (ps.isNextLineComment(level, {skip: false})) {
-        content += ps.current();
+        content += ps.currentChar;
         ps.next();
       } else {
         break;
@@ -305,7 +305,7 @@ export default class FluentParser {
   }
 
   getVariantKey(ps) {
-    const ch = ps.current();
+    const ch = ps.currentChar;
 
     if (!ch) {
       throw new ParseError("E0013");
@@ -323,7 +323,7 @@ export default class FluentParser {
   getVariant(ps, hasDefault) {
     let defaultIndex = false;
 
-    if (ps.currentIs("*")) {
+    if (ps.currentChar === "*") {
       if (hasDefault) {
         throw new ParseError("E0015");
       }
@@ -394,14 +394,14 @@ export default class FluentParser {
   getNumber(ps) {
     let num = "";
 
-    if (ps.currentIs("-")) {
+    if (ps.currentChar === "-") {
       num += "-";
       ps.next();
     }
 
     num = `${num}${this.getDigits(ps)}`;
 
-    if (ps.currentIs(".")) {
+    if (ps.currentChar === ".") {
       num += ".";
       ps.next();
       num = `${num}${this.getDigits(ps)}`;
@@ -411,7 +411,7 @@ export default class FluentParser {
   }
 
   getValue(ps) {
-    if (ps.currentIs("{")) {
+    if (ps.currentChar === "{") {
       ps.peek();
       ps.peekBlankInline();
       if (ps.isNextLineVariantStart({skip: false})) {
@@ -441,7 +441,7 @@ export default class FluentParser {
     ps.skipBlankInline();
 
     let ch;
-    while ((ch = ps.current())) {
+    while ((ch = ps.currentChar)) {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
@@ -474,7 +474,7 @@ export default class FluentParser {
     let buffer = "";
 
     let ch;
-    while ((ch = ps.current())) {
+    while ((ch = ps.currentChar)) {
       if (ch === "{") {
         return new AST.TextElement(buffer);
       }
@@ -505,7 +505,7 @@ export default class FluentParser {
   }
 
   getEscapeSequence(ps, specials = ["{", "\\"]) {
-    const next = ps.current();
+    const next = ps.currentChar;
 
     if (specials.includes(next)) {
       ps.next();
@@ -520,7 +520,7 @@ export default class FluentParser {
         const ch = ps.takeHexDigit();
 
         if (ch === undefined) {
-          throw new ParseError("E0026", sequence + ps.current());
+          throw new ParseError("E0026", sequence + ps.currentChar);
         }
 
         sequence += ch;
@@ -546,10 +546,10 @@ export default class FluentParser {
 
     ps.skipBlank();
 
-    if (ps.currentIs("-")) {
+    if (ps.currentChar === "-") {
       ps.peek();
 
-      if (!ps.currentPeekIs(">")) {
+      if (ps.currentPeek !== ">") {
         ps.resetPeek();
         return selector;
       }
@@ -598,7 +598,7 @@ export default class FluentParser {
   }
 
   getSelectorExpression(ps) {
-    if (ps.currentIs("{")) {
+    if (ps.currentChar === "{") {
       return this.getPlaceable(ps);
     }
     const literal = this.getLiteral(ps);
@@ -608,7 +608,7 @@ export default class FluentParser {
       return literal;
     }
 
-    const ch = ps.current();
+    const ch = ps.currentChar;
 
     if (ch === ".") {
       ps.next();
@@ -662,7 +662,7 @@ export default class FluentParser {
 
     ps.skipBlank();
 
-    if (ps.current() !== ":") {
+    if (ps.currentChar !== ":") {
       return exp;
     }
 
@@ -686,7 +686,7 @@ export default class FluentParser {
     ps.skipBlank();
 
     while (true) {
-      if (ps.current() === ")") {
+      if (ps.currentChar === ")") {
         break;
       }
 
@@ -705,7 +705,7 @@ export default class FluentParser {
 
       ps.skipBlank();
 
-      if (ps.current() === ",") {
+      if (ps.currentChar === ",") {
         ps.next();
         ps.skipBlank();
         continue;
@@ -722,7 +722,7 @@ export default class FluentParser {
   getArgVal(ps) {
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
-    } else if (ps.currentIs('"')) {
+    } else if (ps.currentChar === '"') {
       return this.getString(ps);
     }
     throw new ParseError("E0012");
@@ -742,7 +742,7 @@ export default class FluentParser {
       }
     }
 
-    if (ps.currentIs("\n")) {
+    if (ps.currentChar === "\n") {
       throw new ParseError("E0020");
     }
 
@@ -753,7 +753,7 @@ export default class FluentParser {
   }
 
   getLiteral(ps) {
-    const ch = ps.current();
+    const ch = ps.currentChar;
 
     if (!ch) {
       throw new ParseError("E0014");
