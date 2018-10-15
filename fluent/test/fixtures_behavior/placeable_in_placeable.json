@@ -4,5 +4,8 @@
   },
   "key2": {
     "value": true
+  },
+  "key5": {
+    "value": true
   }
 }

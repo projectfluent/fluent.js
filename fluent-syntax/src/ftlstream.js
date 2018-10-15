@@ -259,7 +259,12 @@ export class FTLParserStream extends ParserStream {
     return true;
   }
 
-  skipToNextEntryStart() {
+  skipToNextEntryStart(junkStart) {
+    let lastNewline = this.string.lastIndexOf("\n", this.index);
+    if (junkStart < lastNewline) {
+      // We're beyond the start of the junk. Rewind to the last seen newline.
+      this.index = lastNewline;
+    }
     while (this.currentChar) {
       if (this.currentChar === "\n" && this.peek() !== "\n") {
         this.next();

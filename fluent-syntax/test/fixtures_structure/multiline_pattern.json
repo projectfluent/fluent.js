@@ -1,0 +1,250 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 5
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value\nContinued here.",
+            "span": {
+              "type": "Span",
+              "start": 8,
+              "end": 33
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 8,
+          "end": 33
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 33
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 35,
+          "end": 40
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value\nContinued here.",
+            "span": {
+              "type": "Span",
+              "start": 47,
+              "end": 72
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 47,
+          "end": 72
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 35,
+        "end": 72
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key03",
+        "span": {
+          "type": "Span",
+          "start": 159,
+          "end": 164
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 171,
+              "end": 176
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 171,
+          "end": 176
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "content": "ERROR \"Continued\" looks like a new message.\nkey03 parses fine with just \"Value\".",
+        "span": {
+          "type": "Span",
+          "start": 74,
+          "end": 158
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 74,
+        "end": 176
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 187,
+            "end": 187
+          }
+        }
+      ],
+      "content": "Continued here\n    and here.\n\n",
+      "span": {
+        "type": "Span",
+        "start": 177,
+        "end": 207
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key04",
+        "span": {
+          "type": "Span",
+          "start": 299,
+          "end": 304
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 311,
+              "end": 316
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 311,
+          "end": 316
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "content": "ERROR \"Continued\" and \"and\" look like new messages\nkey04 parses fine with just \"Value\".",
+        "span": {
+          "type": "Span",
+          "start": 207,
+          "end": 298
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 207,
+        "end": 316
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 327,
+            "end": 327
+          }
+        }
+      ],
+      "content": "Continued here\n",
+      "span": {
+        "type": "Span",
+        "start": 317,
+        "end": 332
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 336,
+            "end": 336
+          }
+        }
+      ],
+      "content": "and even here.\n",
+      "span": {
+        "type": "Span",
+        "start": 332,
+        "end": 347
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 347
+  }
+}

@@ -134,9 +134,13 @@ export default class FluentParser {
         throw err;
       }
 
-      const errorIndex = ps.index;
-      ps.skipToNextEntryStart();
+      let errorIndex = ps.index;
+      ps.skipToNextEntryStart(entryStartPos);
       const nextEntryStart = ps.index;
+      if (nextEntryStart < errorIndex) {
+        // The position of the error must be inside of the Junk's span.
+        errorIndex = nextEntryStart;
+      }
 
       // Create a Junk instance
       const slice = ps.string.substring(entryStartPos, nextEntryStart);
