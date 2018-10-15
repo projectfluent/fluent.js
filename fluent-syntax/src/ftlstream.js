@@ -151,7 +151,7 @@ export class FTLParserStream extends ParserStream {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
-  isValueStart({skip = true} = {}) {
+  isValueStart({skip = true}) {
     if (skip === false) throw new Error("Unimplemented");
 
     this.peekBlankInline();

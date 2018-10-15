@@ -222,7 +222,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isValueStart()) {
+    if (ps.isValueStart({skip: true})) {
       var pattern = this.getPattern(ps);
     }
 
@@ -243,8 +243,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isValueStart()) {
-      ps.skipBlankInline();
+    if (ps.isValueStart({skip: true})) {
       var value = this.getValue(ps);
     } else {
       throw new ParseError("E0006", id.name);
@@ -265,8 +264,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isValueStart()) {
-      ps.skipBlankInline();
+    if (ps.isValueStart({skip: true})) {
       const value = this.getPattern(ps);
       return new AST.Attribute(key, value);
     }
@@ -344,8 +342,7 @@ export default class FluentParser {
 
     ps.expectChar("]");
 
-    if (ps.isValueStart()) {
-      ps.skipBlankInline();
+    if (ps.isValueStart({skip: true})) {
       const value = this.getValue(ps);
       return new AST.Variant(key, value, defaultIndex);
     }
