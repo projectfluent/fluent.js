@@ -85,13 +85,6 @@ export class FTLParserStream extends ParserStream {
     throw new ParseError("E0003", ch);
   }
 
-  expectIndent() {
-    this.expectChar("\n");
-    this.skipBlankBlock();
-    this.expectChar(" ");
-    this.skipBlankInline();
-  }
-
   expectLineEnd() {
     if (this.ch === undefined) {
       // EOF is a valid line end in Fluent.
