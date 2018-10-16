@@ -551,9 +551,8 @@ export default class FluentParser {
     ps.skipBlank();
 
     if (ps.currentChar === "-") {
-      ps.peek();
 
-      if (ps.currentPeek !== ">") {
+      if (ps.peek() !== ">") {
         ps.resetPeek();
         return selector;
       }

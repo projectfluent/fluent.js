@@ -114,9 +114,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   isIdentifierStart() {
-    const isID = this.isCharIDStart(this.currentPeek);
-    this.resetPeek();
-    return isID;
+    return this.isCharIDStart(this.currentPeek);
   }
 
   isNumberStart() {
@@ -172,8 +170,7 @@ export class FTLParserStream extends ParserStream {
     let i = 0;
 
     while (i <= level || (level === -1 && i < 3)) {
-      this.peek();
-      if (this.currentPeek !== "#") {
+      if (this.peek() !== "#") {
         if (i <= level && level !== -1) {
           this.resetPeek();
           return false;
@@ -183,8 +180,7 @@ export class FTLParserStream extends ParserStream {
       i++;
     }
 
-    this.peek();
-    if ([" ", "\n"].includes(this.currentPeek)) {
+    if ([" ", "\n"].includes(this.peek())) {
       this.resetPeek();
       return true;
     }
@@ -262,20 +258,22 @@ export class FTLParserStream extends ParserStream {
   skipToNextEntryStart(junkStart) {
     let lastNewline = this.string.lastIndexOf("\n", this.index);
     if (junkStart < lastNewline) {
-      // We're beyond the start of the junk. Rewind to the last seen newline.
+      // Last seen newline is _after_ the junk start. It's safe to rewind
+      // without the risk of resuming at the same broken entry.
       this.index = lastNewline;
     }
     while (this.currentChar) {
-      if (this.currentChar === "\n" && this.peek() !== "\n") {
+      // We're only interested in beginnings of line.
+      if (this.currentChar !== "\n") {
         this.next();
-        if (this.currentChar === undefined ||
-            this.isIdentifierStart() ||
-            this.currentChar === "-" ||
-            this.currentChar === "#") {
-          break;
-        }
+        continue;
       }
-      this.next();
+
+      // Break if the first char in this line looks like an entry start.
+      const first = this.next();
+      if (this.isCharIDStart(first) || first === "-" || first === "#") {
+        break;
+      }
     }
   }
 
