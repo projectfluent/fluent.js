@@ -10,8 +10,8 @@ const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FTLParserStream extends ParserStream {
   skipBlankInline() {
-    while (this.ch) {
-      if (this.ch !== INLINE_WS) {
+    while (this.currentChar) {
+      if (this.currentChar !== INLINE_WS) {
         break;
       }
       this.next();
@@ -19,7 +19,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   peekBlankInline() {
-    let ch = this.currentPeek();
+    let ch = this.currentPeek;
     while (ch) {
       if (ch !== INLINE_WS) {
         break;
@@ -33,7 +33,7 @@ export class FTLParserStream extends ParserStream {
     while (true) {
       this.peekBlankInline();
 
-      if (this.currentPeekIs("\n")) {
+      if (this.currentPeek === "\n") {
         this.skipToPeek();
         this.next();
         lineCount++;
@@ -46,11 +46,11 @@ export class FTLParserStream extends ParserStream {
 
   peekBlankBlock() {
     while (true) {
-      const lineStart = this.getPeekIndex();
+      const lineStart = this.peekOffset;
 
       this.peekBlankInline();
 
-      if (this.currentPeekIs("\n")) {
+      if (this.currentPeek === "\n") {
         this.peek();
       } else {
         this.resetPeek(lineStart);
@@ -60,19 +60,19 @@ export class FTLParserStream extends ParserStream {
   }
 
   skipBlank() {
-    while (includes(ANY_WS, this.ch)) {
+    while (includes(ANY_WS, this.currentChar)) {
       this.next();
     }
   }
 
   peekBlank() {
-    while (includes(ANY_WS, this.currentPeek())) {
+    while (includes(ANY_WS, this.currentPeek)) {
       this.peek();
     }
   }
 
   expectChar(ch) {
-    if (this.ch === ch) {
+    if (this.currentChar === ch) {
       this.next();
       return true;
     }
@@ -86,7 +86,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   expectLineEnd() {
-    if (this.ch === undefined) {
+    if (this.currentChar === undefined) {
       // EOF is a valid line end in Fluent.
       return true;
     }
@@ -95,7 +95,7 @@ export class FTLParserStream extends ParserStream {
   }
 
   takeChar(f) {
-    const ch = this.ch;
+    const ch = this.currentChar;
     if (ch !== undefined && f(ch)) {
       this.next();
       return ch;
@@ -114,16 +114,15 @@ export class FTLParserStream extends ParserStream {
   }
 
   isIdentifierStart() {
-    const ch = this.currentPeek();
-    const isID = this.isCharIDStart(ch);
+    const isID = this.isCharIDStart(this.currentPeek);
     this.resetPeek();
     return isID;
   }
 
   isNumberStart() {
-    const ch = this.currentIs("-")
+    const ch = this.currentChar === "-"
       ? this.peek()
-      : this.current();
+      : this.currentChar;
 
     if (ch === undefined) {
       this.resetPeek();
@@ -148,7 +147,7 @@ export class FTLParserStream extends ParserStream {
     if (skip === false) throw new Error("Unimplemented");
 
     this.peekBlankInline();
-    const ch = this.currentPeek();
+    const ch = this.currentPeek;
 
     // Inline Patterns may start with any char.
     if (ch !== undefined && ch !== "\n") {
@@ -166,7 +165,7 @@ export class FTLParserStream extends ParserStream {
   isNextLineComment(level = -1, {skip = false}) {
     if (skip === true) throw new Error("Unimplemented");
 
-    if (!this.currentPeekIs("\n")) {
+    if (this.currentPeek !== "\n") {
       return false;
     }
 
@@ -174,7 +173,7 @@ export class FTLParserStream extends ParserStream {
 
     while (i <= level || (level === -1 && i < 3)) {
       this.peek();
-      if (!this.currentPeekIs("#")) {
+      if (this.currentPeek !== "#") {
         if (i <= level && level !== -1) {
           this.resetPeek();
           return false;
@@ -185,7 +184,7 @@ export class FTLParserStream extends ParserStream {
     }
 
     this.peek();
-    if ([" ", "\n"].includes(this.currentPeek())) {
+    if ([" ", "\n"].includes(this.currentPeek)) {
       this.resetPeek();
       return true;
     }
@@ -197,17 +196,17 @@ export class FTLParserStream extends ParserStream {
   isNextLineVariantStart({skip = false}) {
     if (skip === true) throw new Error("Unimplemented");
 
-    if (!this.currentPeekIs("\n")) {
+    if (this.currentPeek !== "\n") {
       return false;
     }
 
     this.peekBlank();
 
-    if (this.currentPeekIs("*")) {
+    if (this.currentPeek === "*") {
       this.peek();
     }
 
-    if (this.currentPeekIs("[")) {
+    if (this.currentPeek === "[") {
       this.resetPeek();
       return true;
     }
@@ -220,7 +219,7 @@ export class FTLParserStream extends ParserStream {
 
     this.peekBlank();
 
-    if (this.currentPeekIs(".")) {
+    if (this.currentPeek === ".") {
       this.skipToPeek();
       return true;
     }
@@ -230,23 +229,23 @@ export class FTLParserStream extends ParserStream {
   }
 
   isNextLineValue({skip = true}) {
-    if (!this.currentPeekIs("\n")) {
+    if (this.currentPeek !== "\n") {
       return false;
     }
 
     this.peekBlankBlock();
 
-    const ptr = this.getPeekIndex();
+    const ptr = this.peekOffset;
 
     this.peekBlankInline();
 
-    if (!this.currentPeekIs("{")) {
-      if (this.getPeekIndex() - ptr === 0) {
+    if (this.currentPeek !== "{") {
+      if (this.peekOffset - ptr === 0) {
         this.resetPeek();
         return false;
       }
 
-      if (!this.isCharPatternContinuation(this.currentPeek())) {
+      if (!this.isCharPatternContinuation(this.currentPeek)) {
         this.resetPeek();
         return false;
       }
@@ -260,14 +259,19 @@ export class FTLParserStream extends ParserStream {
     return true;
   }
 
-  skipToNextEntryStart() {
-    while (this.ch) {
-      if (this.currentIs("\n") && !this.peekCharIs("\n")) {
+  skipToNextEntryStart(junkStart) {
+    let lastNewline = this.string.lastIndexOf("\n", this.index);
+    if (junkStart < lastNewline) {
+      // We're beyond the start of the junk. Rewind to the last seen newline.
+      this.index = lastNewline;
+    }
+    while (this.currentChar) {
+      if (this.currentChar === "\n" && this.peek() !== "\n") {
         this.next();
-        if (this.ch === undefined ||
+        if (this.currentChar === undefined ||
             this.isIdentifierStart() ||
-            this.currentIs("-") ||
-            this.currentIs("#")) {
+            this.currentChar === "-" ||
+            this.currentChar === "#") {
           break;
         }
       }
@@ -276,8 +280,8 @@ export class FTLParserStream extends ParserStream {
   }
 
   takeIDStart() {
-    if (this.isCharIDStart(this.ch)) {
-      const ret = this.ch;
+    if (this.isCharIDStart(this.currentChar)) {
+      const ret = this.currentChar;
       this.next();
       return ret;
     }
