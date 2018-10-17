@@ -464,9 +464,9 @@ export default class FluentParser {
 
     // Trim trailing whitespace.
     const lastElement = elements[elements.length - 1];
-    if (lastElement && lastElement.type === "TextElement") {
+    if (lastElement.type === "TextElement") {
       lastElement.value = lastElement.value.replace(trailingWSRe, "");
-      if (lastElement.value.length === 0) {
+      if (lastElement.value === "") {
         elements.pop();
       }
     }
