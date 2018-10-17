@@ -1,7 +1,7 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast";
-import { FTLParserStream } from "./ftlstream";
+import { FluentParserStream } from "./stream";
 import { ParseError } from "./errors";
 
 
@@ -50,7 +50,7 @@ export default class FluentParser {
   }
 
   parse(source) {
-    const ps = new FTLParserStream(source.replace(/\r\n/g, "\n"));
+    const ps = new FluentParserStream(source);
     ps.skipBlankBlock();
 
     const entries = [];
@@ -107,7 +107,7 @@ export default class FluentParser {
    * themselves, in which case Junk for the invalid comment is returned.
    */
   parseEntry(source) {
-    const ps = new FTLParserStream(source.replace(/\r\n/g, "\n"));
+    const ps = new FluentParserStream(source);
     ps.skipBlankBlock();
 
     while (ps.currentChar === "#") {
