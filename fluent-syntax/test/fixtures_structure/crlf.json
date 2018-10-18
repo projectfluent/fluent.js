@@ -8,8 +8,8 @@
         "name": "key01",
         "span": {
           "type": "Span",
-          "start": 0,
-          "end": 5
+          "start": 2,
+          "end": 7
         }
       },
       "value": {
@@ -20,23 +20,23 @@
             "value": "Value 01",
             "span": {
               "type": "Span",
-              "start": 8,
-              "end": 17
+              "start": 10,
+              "end": 18
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 8,
-          "end": 17
+          "start": 10,
+          "end": 18
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 0,
-        "end": 17
+        "start": 2,
+        "end": 18
       }
     },
     {
@@ -46,8 +46,8 @@
         "name": "key02",
         "span": {
           "type": "Span",
-          "start": 18,
-          "end": 23
+          "start": 20,
+          "end": 25
         }
       },
       "value": {
@@ -58,32 +58,69 @@
             "value": "Value 02\nContinued",
             "span": {
               "type": "Span",
-              "start": 31,
-              "end": 55
+              "start": 35,
+              "end": 58
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 31,
-          "end": 55
+          "start": 35,
+          "end": 58
         }
       },
-      "attributes": [],
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "title",
+            "span": {
+              "type": "Span",
+              "start": 67,
+              "end": 72
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Title",
+                "span": {
+                  "type": "Span",
+                  "start": 75,
+                  "end": 80
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 75,
+              "end": 80
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 66,
+            "end": 80
+          }
+        }
+      ],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 18,
-        "end": 55
+        "start": 20,
+        "end": 80
       }
     },
     {
       "type": "Comment",
-      "content": "ERROR Missing value or attributes",
+      "content": "ERROR Unclosed StringLiteral",
       "span": {
         "type": "Span",
-        "start": 58,
-        "end": 94
+        "start": 84,
+        "end": 114
       }
     },
     {
@@ -91,23 +128,21 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0003",
-          "args": [
-            "="
-          ],
-          "message": "Expected token: \"=\"",
+          "code": "E0020",
+          "args": [],
+          "message": "Unterminated string expression",
           "span": {
             "type": "Span",
-            "start": 101,
-            "end": 101
+            "start": 130,
+            "end": 130
           }
         }
       ],
-      "content": "err03\r\n\r\n",
+      "content": "err03 = { \"str\r\n\r\n",
       "span": {
         "type": "Span",
-        "start": 95,
-        "end": 104
+        "start": 116,
+        "end": 134
       }
     },
     {
@@ -115,8 +150,8 @@
       "content": "ERROR Missing newline after ->.",
       "span": {
         "type": "Span",
-        "start": 104,
-        "end": 138
+        "start": 134,
+        "end": 167
       }
     },
     {
@@ -131,22 +166,22 @@
           "message": "Expected token: \"␤\"",
           "span": {
             "type": "Span",
-            "start": 157,
-            "end": 157
+            "start": 187,
+            "end": 187
           }
         }
       ],
       "content": "err04 = { $sel -> }\r\n",
       "span": {
         "type": "Span",
-        "start": 139,
-        "end": 160
+        "start": 169,
+        "end": 190
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 160
+    "end": 190
   }
 }
