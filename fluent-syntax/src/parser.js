@@ -1,7 +1,7 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast";
-import { FluentParserStream } from "./stream";
+import { EOL, FluentParserStream } from "./stream";
 import { ParseError } from "./errors";
 
 
@@ -189,10 +189,10 @@ export default class FluentParser {
         level = i;
       }
 
-      if (ps.currentChar !== "\n") {
+      if (ps.currentChar !== EOL) {
         ps.expectChar(" ");
         let ch;
-        while ((ch = ps.takeChar(x => x !== "\n"))) {
+        while ((ch = ps.takeChar(x => x !== EOL))) {
           content += ch;
         }
       }
@@ -431,10 +431,10 @@ export default class FluentParser {
   getVariantList(ps) {
     ps.expectChar("{");
     ps.skipBlankInline();
-    ps.expectChar("\n");
+    ps.expectLineEnd();
     ps.skipBlank();
     const variants = this.getVariants(ps);
-    ps.expectChar("\n");
+    ps.expectLineEnd();
     ps.skipBlank();
     ps.expectChar("}");
     return new AST.VariantList(variants);
@@ -442,14 +442,13 @@ export default class FluentParser {
 
   getPattern(ps) {
     const elements = [];
-    ps.skipBlankInline();
 
     let ch;
     while ((ch = ps.currentChar)) {
 
       // The end condition for getPattern's while loop is a newline
       // which is not followed by a valid pattern continuation.
-      if (ch === "\n" && !ps.isNextLineValue({skip: false})) {
+      if (ch === EOL && !ps.isNextLineValue({skip: false})) {
         break;
       }
 
@@ -483,7 +482,7 @@ export default class FluentParser {
         return new AST.TextElement(buffer);
       }
 
-      if (ch === "\n") {
+      if (ps.currentChar === EOL) {
         if (!ps.isNextLineValue({skip: false})) {
           return new AST.TextElement(buffer);
         }
@@ -491,18 +490,18 @@ export default class FluentParser {
         ps.next();
         ps.skipBlankInline();
 
-        // Add the new line to the buffer
-        buffer += ch;
+        buffer += EOL;
         continue;
       }
 
       if (ch === "\\") {
         ps.next();
         buffer += this.getEscapeSequence(ps);
-      } else {
-        buffer += ch;
-        ps.next();
+        continue;
       }
+
+      buffer += ch;
+      ps.next();
     }
 
     return new AST.TextElement(buffer);
@@ -523,7 +522,7 @@ export default class FluentParser {
       for (let i = 0; i < 4; i++) {
         const ch = ps.takeHexDigit();
 
-        if (ch === undefined) {
+        if (ch === null) {
           throw new ParseError("E0026", sequence + ps.currentChar);
         }
 
@@ -574,7 +573,7 @@ export default class FluentParser {
       ps.next();
 
       ps.skipBlankInline();
-      ps.expectChar("\n");
+      ps.expectLineEnd();
       ps.skipBlank();
 
       const variants = this.getVariants(ps);
@@ -734,10 +733,10 @@ export default class FluentParser {
   getString(ps) {
     let val = "";
 
-    ps.expectChar('"');
+    ps.expectChar("\"");
 
     let ch;
-    while ((ch = ps.takeChar(x => x !== '"' && x !== "\n"))) {
+    while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
         val += this.getEscapeSequence(ps, ["{", "\\", "\""]);
       } else {
@@ -745,11 +744,11 @@ export default class FluentParser {
       }
     }
 
-    if (ps.currentChar === "\n") {
+    if (ps.currentChar === EOL) {
       throw new ParseError("E0020");
     }
 
-    ps.next();
+    ps.expectChar("\"");
 
     return new AST.StringLiteral(val);
 
