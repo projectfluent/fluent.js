@@ -19,13 +19,23 @@ export class ParserStream {
   }
 
   next() {
-    this.index++;
     this.peekOffset = 0;
+    this.index++;
+    // Normalize CRLF to LF.
+    if (this.string[this.index] === "\r"
+        && this.string[this.index + 1] === "\n") {
+      this.index++;
+    }
     return this.string[this.index];
   }
 
   peek() {
     this.peekOffset++;
+    // Normalize CRLF to LF.
+    if (this.string[this.index + this.peekOffset] === "\r"
+        && this.string[this.index + this.peekOffset + 1] === "\n") {
+      this.peekOffset++;
+    }
     return this.string[this.index + this.peekOffset];
   }
 
@@ -39,32 +49,20 @@ export class ParserStream {
   }
 }
 
-const INLINE_WS = " ";
-const ANY_WS = [INLINE_WS, "\n"];
+export const EOL = "\n";
+export const EOF = undefined;
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FluentParserStream extends ParserStream {
-  constructor(string) {
-    // Normalize line endings to LF.
-    super(string.replace(/\r\n/g, "\n"));
-  }
-
   skipBlankInline() {
-    while (this.currentChar) {
-      if (this.currentChar !== INLINE_WS) {
-        break;
-      }
+    while (this.currentChar === " ") {
       this.next();
     }
   }
 
   peekBlankInline() {
-    let ch = this.currentPeek;
-    while (ch) {
-      if (ch !== INLINE_WS) {
-        break;
-      }
-      ch = this.peek();
+    while (this.currentPeek === " ") {
+      this.peek();
     }
   }
 
@@ -73,8 +71,7 @@ export class FluentParserStream extends ParserStream {
     while (true) {
       this.peekBlankInline();
 
-      if (this.currentPeek === "\n") {
-        this.skipToPeek();
+      if (this.currentPeek === EOL) {
         this.next();
         lineCount++;
       } else {
@@ -90,7 +87,7 @@ export class FluentParserStream extends ParserStream {
 
       this.peekBlankInline();
 
-      if (this.currentPeek === "\n") {
+      if (this.currentPeek === EOL) {
         this.peek();
       } else {
         this.resetPeek(lineStart);
@@ -100,13 +97,13 @@ export class FluentParserStream extends ParserStream {
   }
 
   skipBlank() {
-    while (includes(ANY_WS, this.currentChar)) {
+    while (this.currentChar === " " || this.currentChar === EOL) {
       this.next();
     }
   }
 
   peekBlank() {
-    while (includes(ANY_WS, this.currentPeek)) {
+    while (this.currentPeek === " " || this.currentPeek === EOL) {
       this.peek();
     }
   }
@@ -117,34 +114,35 @@ export class FluentParserStream extends ParserStream {
       return true;
     }
 
-    if (ch === "\n") {
-      // Unicode Character 'SYMBOL FOR NEWLINE' (U+2424)
-      throw new ParseError("E0003", "\u2424");
-    }
-
     throw new ParseError("E0003", ch);
   }
 
   expectLineEnd() {
-    if (this.currentChar === undefined) {
+    if (this.currentChar === EOF) {
       // EOF is a valid line end in Fluent.
       return true;
     }
 
-    return this.expectChar("\n");
+    if (this.currentChar === EOL) {
+      this.next();
+      return true;
+    }
+
+    // Unicode Character 'SYMBOL FOR NEWLINE' (U+2424)
+    throw new ParseError("E0003", "\u2424");
   }
 
   takeChar(f) {
     const ch = this.currentChar;
-    if (ch !== undefined && f(ch)) {
+    if (ch !== EOF && f(ch)) {
       this.next();
       return ch;
     }
-    return undefined;
+    return null;
   }
 
   isCharIDStart(ch) {
-    if (ch === undefined) {
+    if (ch === EOF) {
       return false;
     }
 
@@ -162,7 +160,7 @@ export class FluentParserStream extends ParserStream {
       ? this.peek()
       : this.currentChar;
 
-    if (ch === undefined) {
+    if (ch === EOF) {
       this.resetPeek();
       return false;
     }
@@ -174,7 +172,7 @@ export class FluentParserStream extends ParserStream {
   }
 
   isCharPatternContinuation(ch) {
-    if (ch === undefined) {
+    if (ch === EOF) {
       return false;
     }
 
@@ -188,7 +186,7 @@ export class FluentParserStream extends ParserStream {
     const ch = this.currentPeek;
 
     // Inline Patterns may start with any char.
-    if (ch !== undefined && ch !== "\n") {
+    if (ch !== EOF && ch !== EOL) {
       this.skipToPeek();
       return true;
     }
@@ -203,7 +201,7 @@ export class FluentParserStream extends ParserStream {
   isNextLineComment(level = -1, {skip = false}) {
     if (skip === true) throw new Error("Unimplemented");
 
-    if (this.currentPeek !== "\n") {
+    if (this.currentPeek !== EOL) {
       return false;
     }
 
@@ -220,7 +218,9 @@ export class FluentParserStream extends ParserStream {
       i++;
     }
 
-    if ([" ", "\n"].includes(this.peek())) {
+    // The first char after #, ## or ###.
+    const ch = this.peek();
+    if (ch === " " || ch === EOL) {
       this.resetPeek();
       return true;
     }
@@ -232,7 +232,7 @@ export class FluentParserStream extends ParserStream {
   isNextLineVariantStart({skip = false}) {
     if (skip === true) throw new Error("Unimplemented");
 
-    if (this.currentPeek !== "\n") {
+    if (this.currentPeek !== EOL) {
       return false;
     }
 
@@ -265,7 +265,7 @@ export class FluentParserStream extends ParserStream {
   }
 
   isNextLineValue({skip = true}) {
-    if (this.currentPeek !== "\n") {
+    if (this.currentPeek !== EOL) {
       return false;
     }
 
@@ -296,7 +296,7 @@ export class FluentParserStream extends ParserStream {
   }
 
   skipToNextEntryStart(junkStart) {
-    let lastNewline = this.string.lastIndexOf("\n", this.index);
+    let lastNewline = this.string.lastIndexOf(EOL, this.index);
     if (junkStart < lastNewline) {
       // Last seen newline is _after_ the junk start. It's safe to rewind
       // without the risk of resuming at the same broken entry.
@@ -304,7 +304,7 @@ export class FluentParserStream extends ParserStream {
     }
     while (this.currentChar) {
       // We're only interested in beginnings of line.
-      if (this.currentChar !== "\n") {
+      if (this.currentChar !== EOL) {
         this.next();
         continue;
       }

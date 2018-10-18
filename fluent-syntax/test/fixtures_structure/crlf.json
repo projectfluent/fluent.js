@@ -1,0 +1,152 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 5
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 01",
+            "span": {
+              "type": "Span",
+              "start": 8,
+              "end": 17
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 8,
+          "end": 17
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 17
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 18,
+          "end": 23
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 02\nContinued",
+            "span": {
+              "type": "Span",
+              "start": 31,
+              "end": 55
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 31,
+          "end": 55
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 18,
+        "end": 55
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Missing value or attributes",
+      "span": {
+        "type": "Span",
+        "start": 58,
+        "end": 94
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 101,
+            "end": 101
+          }
+        }
+      ],
+      "content": "err03\r\n\r\n",
+      "span": {
+        "type": "Span",
+        "start": 95,
+        "end": 104
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Missing newline after ->.",
+      "span": {
+        "type": "Span",
+        "start": 104,
+        "end": 138
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "␤"
+          ],
+          "message": "Expected token: \"␤\"",
+          "span": {
+            "type": "Span",
+            "start": 157,
+            "end": 157
+          }
+        }
+      ],
+      "content": "err04 = { $sel -> }\r\n",
+      "span": {
+        "type": "Span",
+        "start": 139,
+        "end": 160
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 160
+  }
+}
