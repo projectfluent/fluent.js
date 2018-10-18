@@ -482,7 +482,7 @@ export default class FluentParser {
         return new AST.TextElement(buffer);
       }
 
-      if (ps.currentChar === EOL) {
+      if (ch === EOL) {
         if (!ps.isNextLineValue({skip: false})) {
           return new AST.TextElement(buffer);
         }

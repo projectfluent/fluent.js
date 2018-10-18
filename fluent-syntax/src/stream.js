@@ -10,32 +10,45 @@ export class ParserStream {
     this.peekOffset = 0;
   }
 
+  charAt(offset) {
+    // When the cursor is at CRLF, return LF but don't move the cursor.
+    // The cursor still points to the EOL position, which in this case is the
+    // beginning of the compound CRLF sequence. This ensures slices of
+    // [inclusive, exclusive) continue to work properly.
+    if (this.string[offset] === "\r"
+        && this.string[offset + 1] === "\n") {
+      return "\n";
+    }
+
+    return this.string[offset];
+  }
+
   get currentChar() {
-    return this.string[this.index];
+    return this.charAt(this.index);
   }
 
   get currentPeek() {
-    return this.string[this.index + this.peekOffset];
+    return this.charAt(this.index + this.peekOffset);
   }
 
   next() {
     this.peekOffset = 0;
-    this.index++;
-    // Normalize CRLF to LF.
+    // Skip over the CRLF as if it was a single character.
     if (this.string[this.index] === "\r"
         && this.string[this.index + 1] === "\n") {
       this.index++;
     }
+    this.index++;
     return this.string[this.index];
   }
 
   peek() {
-    this.peekOffset++;
-    // Normalize CRLF to LF.
+    // Skip over the CRLF as if it was a single character.
     if (this.string[this.index + this.peekOffset] === "\r"
         && this.string[this.index + this.peekOffset + 1] === "\n") {
       this.peekOffset++;
     }
+    this.peekOffset++;
     return this.string[this.index + this.peekOffset];
   }
 
