@@ -1,7 +1,7 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast";
-import { EOL, FluentParserStream } from "./stream";
+import { EOF, EOL, FluentParserStream } from "./stream";
 import { ParseError } from "./errors";
 
 
@@ -311,7 +311,7 @@ export default class FluentParser {
   getVariantKey(ps) {
     const ch = ps.currentChar;
 
-    if (!ch) {
+    if (ch === EOF) {
       throw new ParseError("E0013");
     }
 
@@ -522,7 +522,7 @@ export default class FluentParser {
       for (let i = 0; i < 4; i++) {
         const ch = ps.takeHexDigit();
 
-        if (ch === null) {
+        if (!ch) {
           throw new ParseError("E0026", sequence + ps.currentChar);
         }
 
@@ -757,7 +757,7 @@ export default class FluentParser {
   getLiteral(ps) {
     const ch = ps.currentChar;
 
-    if (!ch) {
+    if (ch === EOF) {
       throw new ParseError("E0014");
     }
 

@@ -147,7 +147,10 @@ export class FluentParserStream extends ParserStream {
 
   takeChar(f) {
     const ch = this.currentChar;
-    if (ch !== EOF && f(ch)) {
+    if (ch === EOF) {
+      return EOF;
+    }
+    if (f(ch)) {
       this.next();
       return ch;
     }
