@@ -1,9 +1,9 @@
 import assert from 'assert';
 import { join } from 'path';
 import { readdir } from 'fs';
-import { readfile } from './index';
+import { readfile, toObject } from './index';
 
-import parse from '../src/parser';
+import FluentResource from '../src/resource';
 
 const ftlFixtures = join(
   __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_structure'
@@ -28,9 +28,9 @@ readdir(ftlFixtures, function(err, filenames) {
         const [ftl, expected] = await Promise.all(
           [ftlpath, jsonpath].map(readfile)
         );
-        const [entries] = parse(ftl);
+        const resource = FluentResource.fromString(ftl);
         assert.deepEqual(
-          entries, JSON.parse(expected),
+          JSON.parse(expected), toObject(resource),
           'Actual Annotations don\'t match the expected ones'
         );
       });

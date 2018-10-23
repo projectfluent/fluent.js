@@ -1,5 +1,8 @@
 {
   "foo": {
-    "value": true
+    "value": true,
+    "attributes": {
+      "attr": true
+    }
   }
 }

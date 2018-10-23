@@ -1,25 +1,20 @@
 {
-  "key1": {
-    "val": [
-      {
-        "type": "sel",
-        "exp": {
-          "type": "num",
-          "val": "1"
-        },
-        "vars": [
-          {
-            "key": {
-              "type": "varname",
-              "name": "one"
+    "key1": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "num",
+                "value": "1"
             },
-            "val": [
-              ""
-            ]
-          }
-        ],
-        "def": 0
-      }
+            "variants": [
+                {
+                    "key": "one",
+                    "value": [
+                        ""
+                    ]
+                }
+            ],
+            "star": 0
+        }
     ]
-  }
 }

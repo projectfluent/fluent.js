@@ -46,8 +46,8 @@
           "message": "Expected message \"key2\" to have a value or attributes",
           "span": {
             "type": "Span",
-            "start": 344,
-            "end": 344
+            "start": 343,
+            "end": 343
           }
         }
       ],

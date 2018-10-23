@@ -1,0 +1,11 @@
+{
+    "string-expression": [
+        "abc"
+    ],
+    "number-expression": [
+        {
+            "type": "num",
+            "value": "-3.14"
+        }
+    ]
+}

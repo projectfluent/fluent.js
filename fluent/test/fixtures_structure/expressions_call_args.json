@@ -1,31 +1,29 @@
 {
-  "key": {
-    "val": [
-      {
-        "type": "call",
-        "fun": {
-          "type": "fun",
-          "name": "FOO"
-        },
-        "args": [
-          {
-            "type": "narg",
-            "name": "arg1",
-            "val": {
-              "type": "num",
-              "val": "1"
-            }
-          },
-          {
-            "type": "narg",
-            "name": "arg2",
-            "val": {
-              "type": "num",
-              "val": "2"
-            }
-          }
-        ]
-      }
+    "key": [
+        {
+            "type": "call",
+            "callee": {
+                "type": "func",
+                "name": "FOO"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "arg1",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "arg2",
+                    "value": {
+                        "type": "num",
+                        "value": "2"
+                    }
+                }
+            ]
+        }
     ]
-  }
 }
