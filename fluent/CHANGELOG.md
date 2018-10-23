@@ -1,5 +1,51 @@
 # Changelog
 
+## fluent 0.9.0 (October 23, 2018)
+
+This release of `fluent` brings support for version 0.7 of the Fluent Syntax
+spec. The `FluentBundle` API remains unchanged. Files written in valid Syntax
+0.6 may parse differently in this release. See the compatibility note below.
+
+  - Implement Fluent Syntax 0.7. (#287)
+
+    The major new feature of Syntax 0.7 is the relaxation of the indentation
+    requirement for all non-text elements of patterns. It's finally possible
+    to leave the closing brace of select expressions unindented:
+
+        emails = { $unread_email_count ->
+            [one] You have one unread email.
+           *[other] You have { $unread_email_count } unread emails.
+        }
+
+    Consult the [changelog](https://github.com/projectfluent/fluent/releases/tag/v0.7.0)
+    to learn about other changes in Syntax 0.7.
+
+  - Re-write the runtime parser. (#289)
+
+    Syntax 0.7 was an opportunity to completely re-write the runtime parser,
+    which was originally created in the pre-0.1 era of Fluent. It's now less
+    than a half of the code size of the old parser and also slightly faster.
+
+    The parser takes an optimistic approach to parsing. It focuses on
+    minimizing the number of false negatives at the expense of increasing the
+    risk of false positives. In other words, it aims at parsing valid Fluent
+    messages with a success rate of 100%, but it may also parse a few invalid
+    messages which the reference parser would reject. The parser doesn't
+    perform strict validation of the all productions of the Fluent grammar.
+    It may thus produce entries which wouldn't make sense in the real world.
+    For best results users are advised to validate translations with the
+    `fluent-syntax` parser pre-runtime (e.g. by using Pontoon or
+    `compare-locales`).
+
+### Backward-incompatible changes
+
+  - Variant keys can now be either numbers (as previously) or identifiers.
+    Variant keys with spaces in them produce syntax errors, e.g. `[New York]`.
+  - `CR` is not a valid EOL character anymore. Please use `LF` or `CRLF`.
+  - `Tab` is not recognized as syntax whitespace. It can only be used in
+    translation content.
+
+
 ## fluent 0.8.1 (September 27, 2018)
 
   - Expose `FluentResource` as an export. (#286)
