@@ -1,5 +1,17 @@
 # Changelog
 
+## fluent 0.9.1 (October 23, 2018)
+
+  - Forbid messages with `null` values and no attributes. (#299)
+
+    Fix a parser behavior which caused it to parse messages without values
+    nor attributes as `"message-id": null`. This skewed the return values of
+    `FluentBundle.hasMessage` which would report `true` for messages which
+    were `null`. This, in turn, would break code which assumed
+    `FluentBundle.getMessage` would always return non-`null` values if it was
+    guarded by a call to `hasMessage` first.
+
+
 ## fluent 0.9.0 (October 23, 2018)
 
 This release of `fluent` brings support for version 0.7 of the Fluent Syntax
