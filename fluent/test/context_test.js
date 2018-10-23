@@ -94,7 +94,21 @@ suite('Bundle', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = Foo
-        -bar = Bar
+        bar =
+            .attr = Bar Attr
+        -term = Term
+
+        # ERROR No value.
+        err1 =
+        # ERROR Broken value.
+        err2 = {}
+        # ERROR No attribute value.
+        err3 =
+            .attr =
+        # ERROR Broken attribute value.
+        err4 =
+            .attr1 = Attr
+            .attr2 = {}
       `);
     });
 
@@ -103,9 +117,16 @@ suite('Bundle', function() {
     });
 
     test('returns false for terms and missing messages', function() {
-      assert.equal(bundle.hasMessage('-bar'), false);
-      assert.equal(bundle.hasMessage('baz'), false);
-      assert.equal(bundle.hasMessage('-baz'), false);
+      assert.equal(bundle.hasMessage('-term'), false);
+      assert.equal(bundle.hasMessage('missing'), false);
+      assert.equal(bundle.hasMessage('-missing'), false);
+    });
+
+    test('returns false for broken messages', function() {
+      assert.equal(bundle.hasMessage('err1'), false);
+      assert.equal(bundle.hasMessage('err2'), false);
+      assert.equal(bundle.hasMessage('err3'), false);
+      assert.equal(bundle.hasMessage('err4'), false);
     });
   });
 

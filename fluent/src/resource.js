@@ -150,6 +150,9 @@ export default class FluentResource extends Map {
       let attrs = parseAttributes();
 
       if (attrs === null) {
+        if (value === null) {
+          throw new FluentError("Expected message value or attributes");
+        }
         return value;
       }
 
@@ -158,18 +161,17 @@ export default class FluentResource extends Map {
 
     function parseAttributes() {
       let attrs = {};
-      let hasAttributes = false;
 
       while (test(RE_ATTRIBUTE_START)) {
-        if (!hasAttributes) {
-          hasAttributes = true;
-        }
-
         let name = match(RE_ATTRIBUTE_START);
-        attrs[name] = parsePattern();
+        let value = parsePattern();
+        if (value === null) {
+          throw new FluentError("Expected attribute value");
+        }
+        attrs[name] = value;
       }
 
-      return hasAttributes ? attrs : null;
+      return Object.keys(attrs).length > 0 ? attrs : null;
     }
 
     function parsePattern() {
@@ -359,7 +361,11 @@ export default class FluentResource extends Map {
 
         let key = parseVariantKey();
         cursor = RE_VARIANT_START.lastIndex;
-        variants[count++] = {key, value: parsePattern()};
+        let value = parsePattern();
+        if (value === null) {
+          throw new FluentError("Expected variant value");
+        }
+        variants[count++] = {key, value};
       }
 
       return count > 0 ? {variants, star} : null;

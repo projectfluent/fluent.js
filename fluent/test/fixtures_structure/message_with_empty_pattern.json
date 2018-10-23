@@ -1,6 +1,4 @@
 {
-    "key1": null,
-    "key2": null,
     "key3": {
         "value": null,
         "attrs": {
@@ -12,6 +10,5 @@
         "attrs": {
             "attr": "Attr"
         }
-    },
-    "key5": null
+    }
 }
