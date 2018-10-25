@@ -1,8 +1,30 @@
 # Changelog
 
+## fluent-react 0.8.2 (October 25, 2018)
+
+  - Allow `<Localized>` with no children elements. (#230)
+
+    It's now possible to use string literals as children to `<Localized>`.
+    Previously, the string would need to be wrapped in a `<span>` or some
+    other element. Thanks to @blushingpenguin for this contribution!
+
+    ```
+    <Localized id="message">
+        String fallback.
+    </Localized>
+    ```
+
+  - Accept `fluent` 0.9.x as a peer dependency.
+
+  - Only format attributes defined in `<Localized attrs=…>`.
+
+    A tiny optimization to avoid formatting attributes found in the
+    localization which would be rejected by the sanitization logic in
+    `<Localized>` anyways.
+
 ## fluent-react 0.8.1 (August 28, 2018)
 
-  - Change the fluent peer dependency to 0.8.x.
+  - Change the `fluent` peer dependency to 0.8.x.
 
     Pin down the version of the `fluent` peer dependency to 0.8.x in case there
     are any breaking API changes in future its versions.
