@@ -9,9 +9,12 @@ function Header(props) {
 }
 
 export default class App extends Component {
-  state = {
-    name: ''
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: ''
+    };
+  }
 
   handleNameChange(name) {
     this.setState({ name });
