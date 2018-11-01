@@ -18,8 +18,7 @@ suite('Literals as selectors', function() {
          *[b] B
       }
     `);
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
     assert.equal(val, 'A');
     assert.equal(errs.length, 0);
   });
@@ -31,8 +30,7 @@ suite('Literals as selectors', function() {
          *[b] B
       }
     `);
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
     assert.equal(val, 'B');
     assert.equal(errs.length, 0);
   });
@@ -44,8 +42,7 @@ suite('Literals as selectors', function() {
          *[1] B
       }
     `);
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
     assert.equal(val, 'A');
     assert.equal(errs.length, 0);
   });
@@ -57,8 +54,7 @@ suite('Literals as selectors', function() {
          *[1] B
       }
     `);
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
     assert.equal(val, 'B');
     assert.equal(errs.length, 0);
   });
@@ -70,8 +66,7 @@ suite('Literals as selectors', function() {
          *[other] B
       }
     `);
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
     assert.equal(val, 'A');
     assert.equal(errs.length, 0);
   });

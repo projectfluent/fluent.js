@@ -83,19 +83,6 @@ export default class FluentBundle {
     return this._messages.has(id);
   }
 
-  /*
-   * Return the internal representation of a message.
-   *
-   * The internal representation should only be used as an argument to
-   * `FluentBundle.format`.
-   *
-   * @param {string} id - The identifier of the message to check.
-   * @returns {Any}
-   */
-  getMessage(id) {
-    return this._messages.get(id);
-  }
-
   /**
    * Add a translation resource to the bundle.
    *
@@ -221,23 +208,89 @@ export default class FluentBundle {
    * @param   {Array}              errors
    * @returns {?string}
    */
-  format(message, args, errors) {
-    // optimize entities which are simple strings with no attributes
-    if (typeof message === "string") {
-      return this._transform(message);
-    }
 
-    // optimize entities with null values
-    if (message === null || message.value === null) {
+  format(path, args, errors) {
+    let parts = path.split(".");
+    let id = parts[0];
+    let message = this._messages.get(id);
+
+    if (!this._messages.has(id)) {
+      errors.push(`Message not found: "${id}"`);
       return null;
     }
 
-    // optimize simple-string entities with attributes
-    if (typeof message.value === "string") {
-      return this._transform(message.value);
+    // Optimize entities with null values.
+    // Resolve the value of the message.
+    if (parts.length === 1) {
+      // Optimize entities which are simple strings with no attributes.
+      if (typeof message === "string") {
+        return this._transform(message);
+      }
+      // Optimize simple-string entities with attributes.
+      if (typeof message.value === "string") {
+        return this._transform(message.value);
+      }
+
+      if (message.value === null) {
+        return null;
+      }
+
+      return resolve(this, args, message, errors);
     }
 
-    return resolve(this, args, message, errors);
+    // Resolve an attribute of the message.
+    if (parts.length === 2) {
+      if (message.attrs === null) {
+        errors.push(`Message has no attributes: "${id}"`);
+        return null;
+      }
+
+      let attr = message.attrs[parts[1]];
+
+      if (attr === undefined){
+        errors.push(`No attribute called: "${parts[1]}"`);
+        return null;
+      }
+
+      return resolve(this, args, attr, errors);
+    }
+
+    errors.push(`Invalid path: "${path}"`);
+    return null;
+  }
+
+  compound(id, args, errors) {
+
+    if (!this._messages.has(id)) {
+      errors.push(`Message not found: "${id}"`);
+      return null;
+    }
+
+    let message = this._messages.get(id);
+
+    if (message.value !== null) {
+      var message_value = resolve(this, args, message, errors);
+    } else {
+      message_value = null;
+    }
+
+    var compoundShape = {
+      value: message_value,
+      attributes: new Map()
+    };
+
+    if (message.attrs === undefined) {
+      return compoundShape;
+    }
+
+    for (let attr of Object.keys(message.attrs)) {
+      compoundShape.attributes.set(
+        resolve(this, args, attr, errors),
+        message.attrs[attr]
+      );
+    }
+
+    return compoundShape;
   }
 
   _memoizeIntlObject(ctor, opts) {

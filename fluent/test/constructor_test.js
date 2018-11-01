@@ -22,8 +22,7 @@ suite('FluentBundle constructor', function() {
       foo = Foo { 1 }
     `);
 
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
 
     assert.equal(val, 'Foo 1');
     assert.equal(errs.length, 0);
@@ -39,8 +38,7 @@ suite('FluentBundle constructor', function() {
       foo = Foo { 1 }
     `);
 
-    const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.format('foo', null, errs);
 
     assert.equal(val, 'Foo 1');
     assert.equal(errs.length, 0);
