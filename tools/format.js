@@ -55,12 +55,13 @@ function print(err, data) {
 
   parseErrors.forEach(printError);
 
-  for (let [id, message] of bundle.messages) {
+  for (let id of bundle._messages.keys()) {
     const formatErrors = [];
-    printEntry(id, bundle.format(message, ext, formatErrors));
-    if (message && message.attrs) {
-      for (let [name, attr] of Object.entries(message.attrs)) {
-        printEntry(`    .${name}`, bundle.format(attr, ext, formatErrors));
+    printEntry(id, bundle.format(id, ext, formatErrors));
+    let message = bundle._messages.get(id);
+    if (message) {
+      for (let name of Object.keys(message.attrs)) {
+        printEntry(`    .${name}`, bundle.compound(name, ext, formatErrors));
       }
     }
     formatErrors.forEach(printError);

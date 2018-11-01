@@ -64,8 +64,7 @@ suite('Bundle', function() {
 
       assert.equal(bundle._messages.size, 2);
 
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
@@ -80,8 +79,7 @@ suite('Bundle', function() {
 
       assert.equal(bundle._messages.size, 2);
 
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'New Foo');
       assert.equal(errs.length, 0);
     });
@@ -116,16 +114,14 @@ suite('Bundle', function() {
       let resource2 = FluentResource.fromString('key = Bar');
       let errors = bundle.addResource(resource2);
       assert.equal(errors.length, 1);
-      let msg = bundle.getMessage('key');
-      assert.equal(bundle.format(msg), 'Foo');
+      assert.equal(bundle.format('key'), 'Foo');
     });
 
     test('addResource allowOverrides is true', function() {
       let resource2 = FluentResource.fromString('key = Bar');
       let errors = bundle.addResource(resource2, { allowOverrides: true });
       assert.equal(errors.length, 0);
-      let msg = bundle.getMessage('key');
-      assert.equal(bundle.format(msg), 'Bar');
+      assert.equal(bundle.format('key'), 'Bar');
     });
   });
 
@@ -167,26 +163,6 @@ suite('Bundle', function() {
       assert.equal(bundle.hasMessage('err2'), false);
       assert.equal(bundle.hasMessage('err3'), false);
       assert.equal(bundle.hasMessage('err4'), false);
-    });
-  });
-
-  suite('getMessage', function(){
-    suiteSetup(function() {
-      bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
-        foo = Foo
-        -bar = Bar
-      `);
-    });
-
-    test('returns public messages', function() {
-      assert.equal(bundle.getMessage('foo'), 'Foo');
-    });
-
-    test('returns null for terms and missing messages', function() {
-      assert.equal(bundle.getMessage('-bar'), null);
-      assert.equal(bundle.getMessage('baz'), null);
-      assert.equal(bundle.getMessage('-baz'), null);
     });
   });
 
