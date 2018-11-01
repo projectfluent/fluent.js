@@ -31,34 +31,49 @@
           "end": 9
         }
       },
-      "attributes": [],
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attr",
+            "span": {
+              "type": "Span",
+              "start": 11,
+              "end": 15
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Foo Attr",
+                "span": {
+                  "type": "Span",
+                  "start": 18,
+                  "end": 26
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 18,
+              "end": 26
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 10,
+            "end": 26
+          }
+        }
+      ],
       "comment": null,
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 9
-      }
-    },
-    {
-      "type": "Junk",
-      "annotations": [
-        {
-          "type": "Annotation",
-          "code": "E0002",
-          "args": [],
-          "message": "Expected an entry start",
-          "span": {
-            "type": "Span",
-            "start": 10,
-            "end": 10
-          }
-        }
-      ],
-      "content": ".attr = Foo Attr\n\n",
-      "span": {
-        "type": "Span",
-        "start": 10,
-        "end": 28
+        "end": 26
       }
     },
     {
@@ -127,35 +142,49 @@
             "start": 42,
             "end": 61
           }
+        },
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "attr2",
+            "span": {
+              "type": "Span",
+              "start": 63,
+              "end": 68
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Bar Attr 2",
+                "span": {
+                  "type": "Span",
+                  "start": 71,
+                  "end": 81
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 71,
+              "end": 81
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 62,
+            "end": 81
+          }
         }
       ],
       "comment": null,
       "span": {
         "type": "Span",
         "start": 28,
-        "end": 61
-      }
-    },
-    {
-      "type": "Junk",
-      "annotations": [
-        {
-          "type": "Annotation",
-          "code": "E0002",
-          "args": [],
-          "message": "Expected an entry start",
-          "span": {
-            "type": "Span",
-            "start": 62,
-            "end": 62
-          }
-        }
-      ],
-      "content": ".attr2 = Bar Attr 2\n",
-      "span": {
-        "type": "Span",
-        "start": 62,
-        "end": 82
+        "end": 81
       }
     }
   ],

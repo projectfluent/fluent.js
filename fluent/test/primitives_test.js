@@ -2,11 +2,11 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import FluentBundle from '../src/bundle';
 import { ftl } from '../src/util';
 
 suite('Primitives', function() {
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   setup(function() {
     errs = [];
@@ -14,8 +14,8 @@ suite('Primitives', function() {
 
   suite('Numbers', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         one     = { 1 }
         select  = { 1 ->
            *[0] Zero
@@ -25,15 +25,15 @@ suite('Primitives', function() {
     });
 
     test('can be used in a placeable', function(){
-      const msg = ctx.getMessage('one');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('one');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
 
     test('can be used as a selector', function(){
-      const msg = ctx.getMessage('select');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('select');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'One');
       assert.equal(errs.length, 0);
     });
@@ -41,8 +41,8 @@ suite('Primitives', function() {
 
   suite('Simple string value', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo               = Foo
 
         placeable-literal = { "Foo" } Bar
@@ -58,64 +58,64 @@ suite('Primitives', function() {
         placeable-attr   = { bar.attr }
 
         -baz = Baz
-            .attr = Baz Attribute
+            .attr = BazAttribute
 
         selector-attr    = { -baz.attr ->
-           *[Baz Attribute] Member 3
+           *[BazAttribute] Member 3
         }
       `);
     });
 
     test('can be used as a value', function(){
-      const msg = ctx.getMessage('foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
 
     test('is detected to be non-complex', function(){
-      const msg = ctx.getMessage('foo');
+      const msg = bundle.getMessage('foo');
       assert.equal(typeof msg, 'string');
     });
 
     test('can be used in a placeable', function(){
-      const msg = ctx.getMessage('placeable-literal');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('placeable-literal');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
     test('can be a value of a message referenced in a placeable', function(){
-      const msg = ctx.getMessage('placeable-message');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('placeable-message');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Bar');
       assert.equal(errs.length, 0);
     });
 
     test('can be a selector', function(){
-      const msg = ctx.getMessage('selector-literal');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('selector-literal');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Member 1');
       assert.equal(errs.length, 0);
     });
 
     test('can be used as an attribute value', function(){
-      const msg = ctx.getMessage('bar').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('bar').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be a value of an attribute used in a placeable', function(){
-      const msg = ctx.getMessage('placeable-attr');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('placeable-attr');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be a value of an attribute used as a selector', function(){
-      const msg = ctx.getMessage('selector-attr');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('selector-attr');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Member 3');
       assert.equal(errs.length, 0);
     });
@@ -123,63 +123,62 @@ suite('Primitives', function() {
 
   suite('Complex string value', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo               = Foo
-        bar               = { foo } Bar
+        bar               = { foo }Bar
 
-        placeable-message = { bar } Baz
+        placeable-message = { bar }Baz
 
         baz =
-            .attr = { bar } Baz Attribute
+            .attr = { bar }BazAttribute
 
         placeable-attr = { baz.attr }
 
         selector-attr = { baz.attr ->
-            [Foo Bar Baz Attribute] Variant
-           *[ok] Valid
+            [FooBarBazAttribute] FooBarBaz
+           *[other] Other
         }
       `);
     });
 
     test('can be used as a value', function(){
-      const msg = ctx.getMessage('bar');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar');
+      const msg = bundle.getMessage('bar');
+      const val = bundle.format(msg, args, errs);
+      assert.equal(val, 'FooBar');
       assert.equal(errs.length, 0);
     });
 
     test('is detected to be complex', function(){
-      const msg = ctx.getMessage('bar');
-      assert.equal(typeof msg, 'object');
-      assert(Array.isArray(msg.val));
+      const msg = bundle.getMessage('bar');
+      assert(Array.isArray(msg));
     });
 
     test('can be a value of a message referenced in a placeable', function(){
-      const msg = ctx.getMessage('placeable-message');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar Baz');
+      const msg = bundle.getMessage('placeable-message');
+      const val = bundle.format(msg, args, errs);
+      assert.equal(val, 'FooBarBaz');
       assert.equal(errs.length, 0);
     });
 
     test('can be used as an attribute value', function(){
-      const msg = ctx.getMessage('baz').attrs.attr
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar Baz Attribute');
+      const msg = bundle.getMessage('baz').attrs.attr
+      const val = bundle.format(msg, args, errs);
+      assert.equal(val, 'FooBarBazAttribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be a value of an attribute used in a placeable', function(){
-      const msg = ctx.getMessage('placeable-attr');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Foo Bar Baz Attribute');
+      const msg = bundle.getMessage('placeable-attr');
+      const val = bundle.format(msg, args, errs);
+      assert.equal(val, 'FooBarBazAttribute');
       assert.equal(errs.length, 0);
     });
 
-    test.skip('can be a value of an attribute used as a selector', function(){
-      const msg = ctx.getMessage('selector-attr');
-      const val = ctx.format(msg, args, errs);
-      assert.equal(val, 'Variant 2');
+    test('can be a value of an attribute used as a selector', function(){
+      const msg = bundle.getMessage('selector-attr');
+      const val = bundle.format(msg, args, errs);
+      assert.equal(val, 'FooBarBaz');
       assert.equal(errs.length, 0);
     });
 

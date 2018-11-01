@@ -1,5 +1,35 @@
 # Changelog
 
+## fluent-syntax 0.9.0 (October 23, 2018)
+
+This release of `fluent-syntax` brings support for version 0.7 of the
+Fluent Syntax spec. The API remains unchanged. Files written in valid
+Syntax 0.6 may not parse correctly in this release. See the summary of
+backwards-incompatible changes below.
+
+  - Implement Fluent Syntax 0.7. (#287)
+
+    The major new feature of Syntax 0.7 is the relaxation of the indentation
+    requirement for all non-text elements of patterns. It's finally possible
+    to leave the closing brace of select expressions unindented:
+
+        emails = { $unread_email_count ->
+            [one] You have one unread email.
+           *[other] You have { $unread_email_count } unread emails.
+        }
+
+    Consult the [changelog](https://github.com/projectfluent/fluent/releases/tag/v0.7.0)
+    to learn about other changes in Syntax 0.7.
+
+### Backward-incompatible changes:
+
+  - Variant keys can now be either `NumberLiterals` (as previously) or
+    `Identifiers`. The `VariantName` node class has been removed. Variant
+    keys with spaces in them produce syntax errors, e.g. `[New York]`.
+  - `CR` is not a valid EOL character anymore. Please use `LF` or `CRLF`.
+  - `Tab` is not recognized as syntax whitespace. It can only be used in
+    translation content.
+
 ## fluent-syntax 0.8.1 (August 1, 2018)
 
 ### Bug fixes

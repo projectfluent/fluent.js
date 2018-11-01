@@ -1,6 +1,6 @@
 PACKAGE := fluent-react
 GLOBAL  := FluentReact
-DEPS    := fluent:Fluent,cached-iterable:CachedIterable,react:React,prop-types:PropTypes
+DEPS    := fluent-sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes
 
 include ../common.mk
 
@@ -22,10 +22,11 @@ compat.js: $(SOURCES)
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
-	    --globals fluent/compat:Fluent,cached-iterable/compat:CachedIterable,$(DEPS) \
+	    --globals fluent-sequence/compat:FluentSequence,cached-iterable/compat:CachedIterable,$(DEPS) \
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
 clean:
 	@rm -f $(PACKAGE).js compat.js
+	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

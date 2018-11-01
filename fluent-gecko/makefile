@@ -2,9 +2,9 @@ PACKAGE := fluent-gecko
 
 include ../common.mk
 
-build: MessageContext.jsm Localization.jsm DOMLocalization.jsm l10n.js
+build: Fluent.jsm Localization.jsm DOMLocalization.jsm l10n.js
 
-MessageContext.jsm: $(SOURCES)
+Fluent.jsm: $(SOURCES)
 	@rollup $(CURDIR)/src/message_context.js \
 	    --config ./xpcom_config.js \
 	    --output.file ./dist/$@
@@ -29,8 +29,6 @@ l10n.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 clean:
-	@rm -f ./dist/MessageContext.jsm
-	@rm -f ./dist/Localization.jsm
-	@rm -f ./dist/DOMLocalization.jsm
-	@rm -f ./dist/l10n.js
+	@rm -rf dist
+	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

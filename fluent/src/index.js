@@ -7,15 +7,9 @@
  *
  */
 
-export { default as _parse } from "./parser";
+export { default as FluentBundle } from "./bundle.js";
+export { default as FluentResource } from "./resource.js";
+export { default as FluentError } from "./error.js";
+export { FluentType, FluentNumber, FluentDateTime } from "./types.js";
 
-export { MessageContext } from "./context";
-export {
-  FluentType as MessageArgument,
-  FluentNumber as MessageNumberArgument,
-  FluentDateTime as MessageDateTimeArgument,
-} from "./types";
-
-export { mapContextSync, mapContextAsync } from "./fallback";
-
-export { ftl } from "./util";
+export { ftl } from "./util.js";

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import 'fluent-intl-polyfill/compat';
 import { LocalizationProvider } from 'fluent-react/compat';
 
 import { changeLocales } from './actions';
@@ -13,22 +12,22 @@ class AppLocalizationProvider extends Component {
   }
 
   render() {
-    const { messages, children } = this.props;
+    const { bundles, children } = this.props;
 
-    if (!messages) {
+    if (!bundles) {
       // Show a loader
       return <div>…</div>;
     }
 
     return (
-      <LocalizationProvider messages={messages}>
+      <LocalizationProvider bundles={bundles}>
         {children}
       </LocalizationProvider>
     );
   }
 }
 
-const mapStateToProps = state => ({ messages: state.messages });
+const mapStateToProps = state => ({ bundles: state.bundles });
 const mapDispatchToProps = { changeLocales };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

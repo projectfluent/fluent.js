@@ -1,5 +1,4 @@
-import 'fluent-intl-polyfill/compat';
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 
 const MESSAGES_ALL = {
   'pl': `
@@ -11,10 +10,10 @@ bar = Bar in English
   `,
 };
 
-export function* generateMessages() {
+export function* generateBundles() {
   for (const locale of ['pl', 'en-US']) {
-    const cx = new MessageContext(locale);
-    cx.addMessages(MESSAGES_ALL[locale]);
-    yield cx;
+    const bundle = new FluentBundle(locale);
+    bundle.addMessages(MESSAGES_ALL[locale]);
+    yield bundle;
   }
 }

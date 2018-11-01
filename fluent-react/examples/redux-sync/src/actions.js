@@ -1,4 +1,4 @@
-import { MessageContext } from 'fluent/compat';
+import { FluentBundle } from 'fluent/compat';
 import { negotiateLanguages } from 'fluent-langneg/compat';
 
 const MESSAGES_ALL = {
@@ -21,11 +21,11 @@ export function changeLocales(userLocales) {
     { defaultLocale: 'en-US' }
   );
 
-  const generateMessages = function* () {
+  const generateBundles = function* () {
     for (const locale of currentLocales) {
-      const cx = new MessageContext(locale);
-      cx.addMessages(MESSAGES_ALL[locale]);
-      yield cx;
+      const bundle = new FluentBundle(locale);
+      bundle.addMessages(MESSAGES_ALL[locale]);
+      yield bundle;
     }
   }
 
@@ -33,6 +33,6 @@ export function changeLocales(userLocales) {
     type: 'CHANGE_LOCALES',
     userLocales,
     currentLocales,
-    messages: generateMessages()
+    bundles: generateBundles()
   };
 }

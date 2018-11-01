@@ -12,7 +12,7 @@ export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
 all: lint test build
 
 # Used for pre-publishing.
-dist: lint test build html
+dist: clean lint test build html
 
 lint:
 	@eslint --config $(ROOT)/eslint_src.json --max-warnings 0 src/
@@ -21,12 +21,14 @@ lint:
 
 test:
 ifneq (,$(wildcard ./test/index.js))
-	@mocha --recursive --ui tdd \
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
 	    --require $(ROOT)/mocha_setup \
 	    --require ./test/index \
 	    test/**/*_test.js
 else
-	@mocha --recursive --ui tdd \
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
 	    --require $(ROOT)/mocha_setup \
 	    test/**/*_test.js
 endif

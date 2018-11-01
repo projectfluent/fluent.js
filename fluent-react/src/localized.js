@@ -1,8 +1,6 @@
-import { isValidElement, cloneElement, Component, Children } from "react";
+import { isValidElement, cloneElement, Component } from "react";
 import PropTypes from "prop-types";
-
 import { isReactLocalization } from "./localization";
-import { parseMarkup } from "./markup";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
@@ -80,38 +78,46 @@ export default class Localized extends Component {
   }
 
   render() {
-    const { l10n } = this.context;
-    const { id, attrs, children } = this.props;
-    const elem = Children.only(children);
+    const { l10n, parseMarkup } = this.context;
+    const { id, attrs, children: elem } = this.props;
+
+    // Validate that the child element isn't an array
+    if (Array.isArray(elem)) {
+      throw new Error("<Localized/> expected to receive a single " +
+        "React node child");
+    }
 
     if (!l10n) {
       // Use the wrapped component as fallback.
       return elem;
     }
 
-    const mcx = l10n.getMessageContext(id);
+    const bundle = l10n.getBundle(id);
 
-    if (mcx === null) {
+    if (bundle === null) {
       // Use the wrapped component as fallback.
       return elem;
     }
 
-    const msg = mcx.getMessage(id);
+    const msg = bundle.getMessage(id);
     const [args, elems] = toArguments(this.props);
-    const {
-      value: messageValue,
-      attrs: messageAttrs
-    } = l10n.formatCompound(mcx, msg, args);
+    const messageValue = bundle.format(msg, args);
+
+    // Check if the fallback is a valid element -- if not then it's not
+    // markup (e.g. nothing or a fallback string) so just use the
+    // formatted message value
+    if (!isValidElement(elem)) {
+      return messageValue;
+    }
 
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been
     // explicitly allowed by the developer.
-    if (attrs && messageAttrs) {
+    if (attrs && msg.attrs) {
       var localizedProps = {};
-
-      for (const [name, value] of Object.entries(messageAttrs)) {
-        if (attrs[name]) {
-          localizedProps[name] = value;
+      for (const [name, allowed] of Object.entries(attrs)) {
+        if (allowed && msg.attrs.hasOwnProperty(name)) {
+          localizedProps[name] = bundle.format(msg.attrs[name], args);
         }
       }
     }
@@ -139,7 +145,7 @@ export default class Localized extends Component {
 
     // If the message contains markup, parse it and try to match the children
     // found in the translation with the props passed to this Localized.
-    const translationNodes = Array.from(parseMarkup(messageValue).childNodes);
+    const translationNodes = parseMarkup(messageValue);
     const translatedChildren = translationNodes.map(childNode => {
       if (childNode.nodeType === childNode.TEXT_NODE) {
         return childNode.textContent;
@@ -172,9 +178,10 @@ export default class Localized extends Component {
 }
 
 Localized.contextTypes = {
-  l10n: isReactLocalization
+  l10n: isReactLocalization,
+  parseMarkup: PropTypes.func,
 };
 
 Localized.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node
 };

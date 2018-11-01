@@ -18,7 +18,7 @@
           {
             "type": "Variant",
             "key": {
-              "type": "VariantName",
+              "type": "Identifier",
               "name": "nominative",
               "span": {
                 "type": "Span",
@@ -55,7 +55,7 @@
           {
             "type": "Variant",
             "key": {
-              "type": "VariantName",
+              "type": "Identifier",
               "name": "accusative",
               "span": {
                 "type": "Span",
@@ -186,7 +186,7 @@
                 }
               },
               "key": {
-                "type": "VariantName",
+                "type": "Identifier",
                 "name": "accusative",
                 "span": {
                   "type": "Span",
@@ -286,7 +286,7 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "VariantName",
+                    "type": "Identifier",
                     "name": "masculine",
                     "span": {
                       "type": "Span",
@@ -348,7 +348,7 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "VariantName",
+                    "type": "Identifier",
                     "name": "feminine",
                     "span": {
                       "type": "Span",
@@ -410,7 +410,7 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "VariantName",
+                    "type": "Identifier",
                     "name": "other",
                     "span": {
                       "type": "Span",

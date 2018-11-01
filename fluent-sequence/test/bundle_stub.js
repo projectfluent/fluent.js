@@ -1,4 +1,4 @@
-export default class MessageContext {
+export default class BundleStub {
   _setMessages(ids) {
     this.ids = ids;
   }

@@ -1,6 +1,49 @@
 # Changelog
 
-## Unreleased
+## fluent-react 0.8.2 (October 25, 2018)
+
+  - Allow `<Localized>` with no children elements. (#230)
+
+    It's now possible to use string literals as children to `<Localized>`.
+    Previously, the string would need to be wrapped in a `<span>` or some
+    other element. Thanks to @blushingpenguin for this contribution!
+
+    ```
+    <Localized id="message">
+        String fallback.
+    </Localized>
+    ```
+
+  - Accept `fluent` 0.9.x as a peer dependency.
+
+  - Only format attributes defined in `<Localized attrs=…>`.
+
+    A tiny optimization to avoid formatting attributes found in the
+    localization which would be rejected by the sanitization logic in
+    `<Localized>` anyways.
+
+## fluent-react 0.8.1 (August 28, 2018)
+
+  - Change the `fluent` peer dependency to 0.8.x.
+
+    Pin down the version of the `fluent` peer dependency to 0.8.x in case there
+    are any breaking API changes in future its versions.
+
+## fluent-react 0.8.0 (August 21, 2018)
+
+  - Rename the `messages` prop to `bundles`. (#222)
+
+    `<LocalizationProvider>` now expects an iterable of `FluentBundles` to be
+    passed as the `bundles` prop, rather than `messages`.
+
+  - Allow custom `parseMarkup` functions. (#233)
+
+    By default, `fluent-react` uses a `<template>` element to parse and
+    sanitize markup in translations. In some scenarios like server-side
+    rendering (SSR) or apps written in React Native, `<template>` is not
+    available natively. In these situations a custom parseMarkup can be
+    passed as a prop to `<LocalizationProvider>`. It will be used by all
+    `<Localized>` components under it. See the [wiki for details](https://github.com/projectfluent/fluent.js/wiki/React-Overlays#custom-markup-parsers).
 
   - Drop support for IE and old evergreen browsers. (#133)
 
@@ -11,6 +54,13 @@
 
     `CachedSyncIterable` is now available from its own package rather than
     from the `fluent` package.
+
+  - Add the `fluent-sequence` runtime dependency.
+
+    `mapBundleSync` is now available from its own package rather than from
+    the `fluent` package.
+
+  - Define `fluent >= 0.8.0` as a peer dependency.
 
 ## fluent-react 0.7.0 (May 18, 2018)
 
@@ -315,12 +365,12 @@ troubles.
     `LocalizationProvider` component.
 
     The `LocalizationProvider` component takes one prop: `messages`.  It should
-    be an iterable of `MessageContext` instances in order of user's preferred
+    be an iterable of `FluentBundle` instances in order of user's preferred
     languages.  This iterable will be used by `Localization` to format
     translations.  If a translation is missing in one language, `Localization`
     will fall back to the next locale.
 
-  - The relevant `MessageContext` is now cached in `Localized`'s state.
+  - The relevant `FluentBundle` is now cached in `Localized`'s state.
 
 ## fluent-react 0.2.0
 

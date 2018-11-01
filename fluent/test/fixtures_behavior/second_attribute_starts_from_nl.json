@@ -2,7 +2,8 @@
   "key": {
     "value": true,
     "attributes": {
-      "label": true
+      "label": true,
+      "accesskey": true
     }
   }
 }

@@ -1,3 +1,5 @@
+/* global Intl */
+
 /**
  * @overview
  *
@@ -8,7 +10,7 @@
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language. See the documentation of the Fluent syntax for more
+ * bundle's language. See the documentation of the Fluent syntax for more
  * information.
  *
  * In case of errors the resolver will try to salvage as much of the
@@ -35,8 +37,8 @@
  * All functions in this file pass around a special object called `env`.
  * This object stores a set of elements used by all resolve functions:
  *
- *  * {MessageContext} ctx
- *      context for which the given resolution is happening
+ *  * {FluentBundle} bundle
+ *      bundle for which the given resolution is happening
  *  * {Object} args
  *      list of developer provided arguments that can be used
  *  * {Array} errors
@@ -47,9 +49,9 @@
  */
 
 
-import { FluentType, FluentNone, FluentNumber, FluentDateTime, FluentSymbol }
-  from "./types";
-import builtins from "./builtins";
+import { FluentType, FluentNone, FluentNumber, FluentDateTime }
+  from "./types.js";
+import builtins from "./builtins.js";
 
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
@@ -60,6 +62,44 @@ const PDI = "\u2069";
 
 
 /**
+ * Helper for matching a variant key to the given selector.
+ *
+ * Used in SelectExpressions and VariantExpressions.
+ *
+ * @param   {FluentBundle} bundle
+ *    Resolver environment object.
+ * @param   {FluentType} key
+ *    The key of the currently considered variant.
+ * @param   {FluentType} selector
+ *    The selector based om which the correct variant should be chosen.
+ * @returns {FluentType}
+ * @private
+ */
+function match(bundle, selector, key) {
+  if (key === selector) {
+    // Both are strings.
+    return true;
+  }
+
+  if (key instanceof FluentNumber
+    && selector instanceof FluentNumber
+    && key.value === selector.value) {
+    return true;
+  }
+
+  if (selector instanceof FluentNumber && typeof key === "string") {
+    let category = bundle
+      ._memoizeIntlObject(Intl.PluralRules, selector.opts)
+      .select(selector.value);
+    if (key === category) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
  * Helper for choosing the default value from a set of members.
  *
  * Used in SelectExpressions and Type.
@@ -68,14 +108,14 @@ const PDI = "\u2069";
  *    Resolver environment object.
  * @param   {Object} members
  *    Hash map of variants from which the default value is to be selected.
- * @param   {Number} def
+ * @param   {Number} star
  *    The index of the default variant.
  * @returns {FluentType}
  * @private
  */
-function DefaultMember(env, members, def) {
-  if (members[def]) {
-    return members[def];
+function DefaultMember(env, members, star) {
+  if (members[star]) {
+    return members[star];
   }
 
   const { errors } = env;
@@ -97,10 +137,10 @@ function DefaultMember(env, members, def) {
  * @private
  */
 function MessageReference(env, {name}) {
-  const { ctx, errors } = env;
+  const { bundle, errors } = env;
   const message = name.startsWith("-")
-    ? ctx._terms.get(name)
-    : ctx._messages.get(name);
+    ? bundle._terms.get(name)
+    : bundle._messages.get(name);
 
   if (!message) {
     const err = name.startsWith("-")
@@ -120,7 +160,7 @@ function MessageReference(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.id
+ * @param   {Object} expr.ref
  *    An Identifier of a message for which the variant is resolved.
  * @param   {Object} expr.id.name
  *    Name a message for which the variant is resolved.
@@ -129,32 +169,34 @@ function MessageReference(env, {name}) {
  * @returns {FluentType}
  * @private
  */
-function VariantExpression(env, {id, key}) {
-  const message = MessageReference(env, id);
+function VariantExpression(env, {ref, selector}) {
+  const message = MessageReference(env, ref);
   if (message instanceof FluentNone) {
     return message;
   }
 
-  const { ctx, errors } = env;
-  const keyword = Type(env, key);
+  const { bundle, errors } = env;
+  const sel = Type(env, selector);
+  const value = message.value || message;
 
   function isVariantList(node) {
     return Array.isArray(node) &&
-      node[0].type === "sel" &&
-      node[0].exp === null;
+      node[0].type === "select" &&
+      node[0].selector === null;
   }
 
-  if (isVariantList(message.val)) {
+  if (isVariantList(value)) {
     // Match the specified key against keys of each variant, in order.
-    for (const variant of message.val[0].vars) {
-      const variantKey = Type(env, variant.key);
-      if (keyword.match(ctx, variantKey)) {
+    for (const variant of value[0].variants) {
+      const key = Type(env, variant.key);
+      if (match(env.bundle, sel, key)) {
         return variant;
       }
     }
   }
 
-  errors.push(new ReferenceError(`Unknown variant: ${keyword.toString(ctx)}`));
+  errors.push(
+    new ReferenceError(`Unknown variant: ${sel.toString(bundle)}`));
   return Type(env, message);
 }
 
@@ -166,15 +208,15 @@ function VariantExpression(env, {id, key}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {String} expr.id
+ * @param   {String} expr.ref
  *    An ID of a message for which the attribute is resolved.
  * @param   {String} expr.name
  *    Name of the attribute to be resolved.
  * @returns {FluentType}
  * @private
  */
-function AttributeExpression(env, {id, name}) {
-  const message = MessageReference(env, id);
+function AttributeExpression(env, {ref, name}) {
+  const message = MessageReference(env, ref);
   if (message instanceof FluentNone) {
     return message;
   }
@@ -200,43 +242,34 @@ function AttributeExpression(env, {id, name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {String} expr.exp
+ * @param   {String} expr.selector
  *    Selector expression
- * @param   {Array} expr.vars
+ * @param   {Array} expr.variants
  *    List of variants for the select expression.
- * @param   {Number} expr.def
+ * @param   {Number} expr.star
  *    Index of the default variant.
  * @returns {FluentType}
  * @private
  */
-function SelectExpression(env, {exp, vars, def}) {
-  if (exp === null) {
-    return DefaultMember(env, vars, def);
+function SelectExpression(env, {selector, variants, star}) {
+  if (selector === null) {
+    return DefaultMember(env, variants, star);
   }
 
-  const selector = Type(env, exp);
-  if (selector instanceof FluentNone) {
-    return DefaultMember(env, vars, def);
+  let sel = Type(env, selector);
+  if (sel instanceof FluentNone) {
+    return DefaultMember(env, variants, star);
   }
 
   // Match the selector against keys of each variant, in order.
-  for (const variant of vars) {
+  for (const variant of variants) {
     const key = Type(env, variant.key);
-    const keyCanMatch =
-      key instanceof FluentNumber || key instanceof FluentSymbol;
-
-    if (!keyCanMatch) {
-      continue;
-    }
-
-    const { ctx } = env;
-
-    if (key.match(ctx, selector)) {
+    if (match(env.bundle, sel, key)) {
       return variant;
     }
   }
 
-  return DefaultMember(env, vars, def);
+  return DefaultMember(env, variants, star);
 }
 
 
@@ -258,7 +291,7 @@ function Type(env, expr) {
   // A fast-path for strings which are the most common case, and for
   // `FluentNone` which doesn't require any additional logic.
   if (typeof expr === "string") {
-    return env.ctx._transform(expr);
+    return env.bundle._transform(expr);
   }
   if (expr instanceof FluentNone) {
     return expr;
@@ -272,13 +305,11 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
-    case "varname":
-      return new FluentSymbol(expr.name);
     case "num":
-      return new FluentNumber(expr.val);
+      return new FluentNumber(expr.value);
     case "var":
       return VariableReference(env, expr);
-    case "fun":
+    case "func":
       return FunctionReference(env, expr);
     case "call":
       return CallExpression(env, expr);
@@ -294,14 +325,14 @@ function Type(env, expr) {
       const variant = VariantExpression(env, expr);
       return Type(env, variant);
     }
-    case "sel": {
+    case "select": {
       const member = SelectExpression(env, expr);
       return Type(env, member);
     }
     case undefined: {
       // If it's a node with a value, resolve the value.
-      if (expr.val !== null && expr.val !== undefined) {
-        return Type(env, expr.val);
+      if (expr.value !== null && expr.value !== undefined) {
+        return Type(env, expr.value);
       }
 
       const { errors } = env;
@@ -372,8 +403,8 @@ function VariableReference(env, {name}) {
  */
 function FunctionReference(env, {name}) {
   // Some functions are built-in.  Others may be provided by the runtime via
-  // the `MessageContext` constructor.
-  const { ctx: { _functions }, errors } = env;
+  // the `FluentBundle` constructor.
+  const { bundle: { _functions }, errors } = env;
   const func = _functions[name] || builtins[name];
 
   if (!func) {
@@ -396,18 +427,18 @@ function FunctionReference(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.fun
+ * @param   {Object} expr.callee
  *    FTL Function object.
  * @param   {Array} expr.args
  *    FTL Function argument list.
  * @returns {FluentType}
  * @private
  */
-function CallExpression(env, {fun, args}) {
-  const callee = FunctionReference(env, fun);
+function CallExpression(env, {callee, args}) {
+  const func = FunctionReference(env, callee);
 
-  if (callee instanceof FluentNone) {
-    return callee;
+  if (func instanceof FluentNone) {
+    return func;
   }
 
   const posargs = [];
@@ -415,14 +446,14 @@ function CallExpression(env, {fun, args}) {
 
   for (const arg of args) {
     if (arg.type === "narg") {
-      keyargs[arg.name] = Type(env, arg.val);
+      keyargs[arg.name] = Type(env, arg.value);
     } else {
       posargs.push(Type(env, arg));
     }
   }
 
   try {
-    return callee(posargs, keyargs);
+    return func(posargs, keyargs);
   } catch (e) {
     // XXX Report errors.
     return new FluentNone();
@@ -440,7 +471,7 @@ function CallExpression(env, {fun, args}) {
  * @private
  */
 function Pattern(env, ptn) {
-  const { ctx, dirty, errors } = env;
+  const { bundle, dirty, errors } = env;
 
   if (dirty.has(ptn)) {
     errors.push(new RangeError("Cyclic reference"));
@@ -453,15 +484,15 @@ function Pattern(env, ptn) {
 
   // Wrap interpolations with Directional Isolate Formatting characters
   // only when the pattern has more than one element.
-  const useIsolating = ctx._useIsolating && ptn.length > 1;
+  const useIsolating = bundle._useIsolating && ptn.length > 1;
 
   for (const elem of ptn) {
     if (typeof elem === "string") {
-      result.push(ctx._transform(elem));
+      result.push(bundle._transform(elem));
       continue;
     }
 
-    const part = Type(env, elem).toString(ctx);
+    const part = Type(env, elem).toString(bundle);
 
     if (useIsolating) {
       result.push(FSI);
@@ -491,8 +522,8 @@ function Pattern(env, ptn) {
 /**
  * Format a translation into a string.
  *
- * @param   {MessageContext} ctx
- *    A MessageContext instance which will be used to resolve the
+ * @param   {FluentBundle} bundle
+ *    A FluentBundle instance which will be used to resolve the
  *    contextual information of the message.
  * @param   {Object}         args
  *    List of arguments provided by the developer which can be accessed
@@ -503,9 +534,9 @@ function Pattern(env, ptn) {
  *    An error array that any encountered errors will be appended to.
  * @returns {FluentType}
  */
-export default function resolve(ctx, args, message, errors = []) {
+export default function resolve(bundle, args, message, errors = []) {
   const env = {
-    ctx, args, errors, dirty: new WeakSet()
+    bundle, args, errors, dirty: new WeakSet()
   };
-  return Type(env, message).toString(ctx);
+  return Type(env, message).toString(bundle);
 }

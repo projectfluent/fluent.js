@@ -25,4 +25,5 @@ compat.js: $(SOURCES)
 
 clean:
 	@rm -f $(PACKAGE).js compat.js
+	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

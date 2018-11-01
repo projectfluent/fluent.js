@@ -1,5 +1,103 @@
 # Changelog
 
+## fluent 0.9.1 (October 23, 2018)
+
+  - Forbid messages with `null` values and no attributes. (#299)
+
+    Fix a parser behavior which caused it to parse messages without values
+    nor attributes as `"message-id": null`. This skewed the return values of
+    `FluentBundle.hasMessage` which would report `true` for messages which
+    were `null`. This, in turn, would break code which assumed
+    `FluentBundle.getMessage` would always return non-`null` values if it was
+    guarded by a call to `hasMessage` first.
+
+
+## fluent 0.9.0 (October 23, 2018)
+
+This release of `fluent` brings support for version 0.7 of the Fluent Syntax
+spec. The `FluentBundle` API remains unchanged. Files written in valid Syntax
+0.6 may parse differently in this release. See the compatibility note below.
+
+  - Implement Fluent Syntax 0.7. (#287)
+
+    The major new feature of Syntax 0.7 is the relaxation of the indentation
+    requirement for all non-text elements of patterns. It's finally possible
+    to leave the closing brace of select expressions unindented:
+
+        emails = { $unread_email_count ->
+            [one] You have one unread email.
+           *[other] You have { $unread_email_count } unread emails.
+        }
+
+    Consult the [changelog](https://github.com/projectfluent/fluent/releases/tag/v0.7.0)
+    to learn about other changes in Syntax 0.7.
+
+  - Re-write the runtime parser. (#289)
+
+    Syntax 0.7 was an opportunity to completely re-write the runtime parser,
+    which was originally created in the pre-0.1 era of Fluent. It's now less
+    than a half of the code size of the old parser and also slightly faster.
+
+    The parser takes an optimistic approach to parsing. It focuses on
+    minimizing the number of false negatives at the expense of increasing the
+    risk of false positives. In other words, it aims at parsing valid Fluent
+    messages with a success rate of 100%, but it may also parse a few invalid
+    messages which the reference parser would reject. The parser doesn't
+    perform strict validation of the all productions of the Fluent grammar.
+    It may thus produce entries which wouldn't make sense in the real world.
+    For best results users are advised to validate translations with the
+    `fluent-syntax` parser pre-runtime (e.g. by using Pontoon or
+    `compare-locales`).
+
+### Backward-incompatible changes
+
+  - Variant keys can now be either numbers (as previously) or identifiers.
+    Variant keys with spaces in them produce syntax errors, e.g. `[New York]`.
+  - `CR` is not a valid EOL character anymore. Please use `LF` or `CRLF`.
+  - `Tab` is not recognized as syntax whitespace. It can only be used in
+    translation content.
+
+
+## fluent 0.8.1 (September 27, 2018)
+
+  - Expose `FluentResource` as an export. (#286)
+
+  `FluentResource` is a data structure representing a parsed Fluent document.
+  It can be used to cache resources which can then be added to `FluentBundle`
+  via the `addResource` method. To create a `FluentResource` given a string
+  of Fluent translations, use the static `FluentResource.fromString` method.
+
+  ```js
+  let resource = FluentResource.fromString(text);
+  bundle.addResource(resource);
+  ```
+
+  The undocumented `_parse` export was also removed in favor of
+  `FluentResource.fromString`.
+
+## fluent 0.8.0 (August 20, 2018)
+
+  - Rename `MessageContext` to `FluentBundle`. (#222)
+
+    The following renames have been made to the public API:
+
+    - Rename `MessageContext` to `FluentBundle`.
+    - Rename `MessageArgument` to `FluentType`.
+    - Rename `MessageNumberArgument` to `FluentNumber`.
+    - Rename `MessageDateTimeArgument` to `FluentDateTime`.
+
+  - Move `mapContext*` functions to [`fluent-sequence`][]. (#273)
+
+    The `mapContextSync` and `mapContextAsync` functions previously exported
+    by the `fluent` package have been moved to the new [`fluent-sequence`][]
+    package. [`fluent-sequence`][] 0.1.0 corresponds to the exact
+    implementation of these functions from `fluent` 0.7.0.
+
+    In later versions of [`fluent-sequence`][], these functions are called
+    `mapBundleSync` and `mapBundleAsync`.
+
+[`fluent-sequence`]: https://www.npmjs.com/package/fluent-sequence
+
 ## fluent 0.7.0 (July 24, 2018)
 
   - Implement support for Fluent Syntax 0.6.
@@ -82,14 +180,14 @@
 
     ```js
     async formatString(id, args) {
-        const ctx = await mapContextAsync(contexts, id);
+        const bundle = await mapContextAsync(bundles, id);
 
-        if (ctx === null) {
+        if (bundle === null) {
             return id;
         }
 
-        const msg = ctx.getMessage(id);
-        return ctx.format(msg, args);
+        const msg = bundle.getMessage(id);
+        return bundle.format(msg, args);
     }
     ```
 
@@ -109,7 +207,7 @@
     indentation.
 
     ```js
-    ctx.addMessages(ftl`
+    bundle.addMessages(ftl`
         foo = Foo
         bar = Bar
     );
@@ -169,14 +267,14 @@
     might be implemented as follows:
 
         getString(id, args) {
-            const ctx = mapContextSync(contexts, id);
+            const bundle = mapContextSync(bundles, id);
 
-            if (ctx === null) {
+            if (bundle === null) {
                 return id;
             }
 
-            const msg = ctx.getMessage(id);
-            return ctx.format(msg, args);
+            const msg = bundle.getMessage(id);
+            return bundle.format(msg, args);
         }
 
     In order to pass an iterator to mapContext*, wrap it in CachedIterable.
@@ -185,11 +283,11 @@
 
         function *generateMessages() {
             // Some lazy logic for yielding MessageContexts.
-            yield *[ctx1, ctx2];
+            yield *[bundle1, bundle2];
         }
 
-        const contexts = new CachedIterable(generateMessages());
-        const ctx = mapContextSync(contexts, id);
+        const bundles = new CachedIterable(generateMessages());
+        const bundle = mapContextSync(bundles, id);
 
 
 ## fluent 0.4.0 (May 17th, 2017)
@@ -202,13 +300,13 @@
 
     Before:
 
-        const msg = ctx.messages.get(id);
-        const txt = ctx.format(msg);
+        const msg = bundle.messages.get(id);
+        const txt = bundle.format(msg);
 
     Now:
 
-        const msg = ctx.getMessage(id);
-        const txt = ctx.format(msg);
+        const msg = bundle.getMessage(id);
+        const txt = bundle.format(msg);
 
   - The compat build is now transpiled using rollup-plugin-babel.
 

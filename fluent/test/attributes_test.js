@@ -2,11 +2,11 @@
 
 import assert from 'assert';
 
-import { MessageContext } from '../src/context';
+import FluentBundle from '../src/bundle';
 import { ftl } from '../src/util';
 
 suite('Attributes', function() {
-  let ctx, args, errs;
+  let bundle, args, errs;
 
   setup(function() {
     errs = [];
@@ -14,8 +14,8 @@ suite('Attributes', function() {
 
   suite('missing', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = Foo
         bar = Bar
             .attr = Bar Attribute
@@ -31,32 +31,32 @@ suite('Attributes', function() {
     });
 
     test('falls back gracefully for entities with string values and no attributes', function() {
-      const msg = ctx.getMessage('ref-foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
     test('falls back gracefully for entities with string values and other attributes', function() {
-      const msg = ctx.getMessage('ref-bar');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-bar');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Bar');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
     test('falls back gracefully for entities with pattern values and no attributes', function() {
-      const msg = ctx.getMessage('ref-baz');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-baz');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Baz');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
     test('falls back gracefully for entities with pattern values and other attributes', function() {
-      const msg = ctx.getMessage('ref-qux');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-qux');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Qux');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
@@ -65,8 +65,8 @@ suite('Attributes', function() {
 
   suite('with string values', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = Foo
             .attr = Foo Attribute
         bar = { foo } Bar
@@ -78,29 +78,29 @@ suite('Attributes', function() {
     });
 
     test('can be referenced for entities with string values', function() {
-      const msg = ctx.getMessage('ref-foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be formatted directly for entities with string values', function() {
-      const msg = ctx.getMessage('foo').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be referenced for entities with pattern values', function() {
-      const msg = ctx.getMessage('ref-bar');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-bar');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be formatted directly for entities with pattern values', function() {
-      const msg = ctx.getMessage('bar').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('bar').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
@@ -108,8 +108,8 @@ suite('Attributes', function() {
 
   suite('with simple pattern values', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = Foo
         bar = Bar
             .attr = { foo } Attribute
@@ -125,43 +125,43 @@ suite('Attributes', function() {
     });
 
     test('can be referenced for entities with string values', function() {
-      const msg = ctx.getMessage('ref-bar');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-bar');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be formatted directly for entities with string values', function() {
-      const msg = ctx.getMessage('bar').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('bar').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be referenced for entities with simple pattern values', function() {
-      const msg = ctx.getMessage('ref-baz');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-baz');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be formatted directly for entities with simple pattern values', function() {
-      const msg = ctx.getMessage('baz').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('baz').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('works with self-references', function() {
-      const msg = ctx.getMessage('ref-qux');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-qux');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Qux Attribute');
       assert.equal(errs.length, 0);
     });
 
     test('can be formatted directly when it uses a self-reference', function() {
-      const msg = ctx.getMessage('qux').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('qux').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Qux Attribute');
       assert.equal(errs.length, 0);
     });
@@ -169,8 +169,8 @@ suite('Attributes', function() {
 
   suite('with values with select expressions', function(){
     suiteSetup(function() {
-      ctx = new MessageContext('en-US', { useIsolating: false });
-      ctx.addMessages(ftl`
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addMessages(ftl`
         foo = Foo
             .attr = { "a" ->
                         [a] A
@@ -182,15 +182,15 @@ suite('Attributes', function() {
     });
 
     test('can be referenced', function() {
-      const msg = ctx.getMessage('ref-foo');
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('ref-foo');
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
 
     test('can be formatted directly', function() {
-      const msg = ctx.getMessage('foo').attrs.attr;
-      const val = ctx.format(msg, args, errs);
+      const msg = bundle.getMessage('foo').attrs.attr;
+      const val = bundle.format(msg, args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });

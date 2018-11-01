@@ -16,18 +16,18 @@ var resource = FluentSyntax.parse(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var [entries] = Fluent._parse(ftlCode);
+var resource = Fluent.FluentResource.fromString(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
-var ctx = new Fluent.MessageContext('en-US');
-var errors = ctx.addMessages(ftlCode);
+var bundle = new Fluent.FluentBundle('en-US');
+var errors = bundle.addMessages(ftlCode);
 
 times.format = dateNow();
-for (const [id, message] of ctx.messages) {
-  ctx.format(message, args, errors);
+for (const [id, message] of bundle.messages) {
+  bundle.format(message, args, errors);
   if (message.attrs) {
     for (const name in message.attrs) {
-      ctx.format(message.attrs[name], args, errors)
+      bundle.format(message.attrs[name], args, errors)
     }
   }
 }

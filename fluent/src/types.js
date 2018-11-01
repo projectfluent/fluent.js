@@ -33,11 +33,11 @@ export class FluentType {
   /**
    * Format this instance of `FluentType` to a string.
    *
-   * Formatted values are suitable for use outside of the `MessageContext`.
-   * This method can use `Intl` formatters memoized by the `MessageContext`
+   * Formatted values are suitable for use outside of the `FluentBundle`.
+   * This method can use `Intl` formatters memoized by the `FluentBundle`
    * instance passed as an argument.
    *
-   * @param   {MessageContext} [ctx]
+   * @param   {FluentBundle} [bundle]
    * @returns {string}
    */
   toString() {
@@ -56,9 +56,9 @@ export class FluentNumber extends FluentType {
     super(parseFloat(value), opts);
   }
 
-  toString(ctx) {
+  toString(bundle) {
     try {
-      const nf = ctx._memoizeIntlObject(
+      const nf = bundle._memoizeIntlObject(
         Intl.NumberFormat, this.opts
       );
       return nf.format(this.value);
@@ -67,20 +67,6 @@ export class FluentNumber extends FluentType {
       return this.value;
     }
   }
-
-  /**
-   * Compare the object with another instance of a FluentType.
-   *
-   * @param   {MessageContext} ctx
-   * @param   {FluentType}     other
-   * @returns {bool}
-   */
-  match(ctx, other) {
-    if (other instanceof FluentNumber) {
-      return this.value === other.value;
-    }
-    return false;
-  }
 }
 
 export class FluentDateTime extends FluentType {
@@ -88,9 +74,9 @@ export class FluentDateTime extends FluentType {
     super(new Date(value), opts);
   }
 
-  toString(ctx) {
+  toString(bundle) {
     try {
-      const dtf = ctx._memoizeIntlObject(
+      const dtf = bundle._memoizeIntlObject(
         Intl.DateTimeFormat, this.opts
       );
       return dtf.format(this.value);
@@ -98,32 +84,5 @@ export class FluentDateTime extends FluentType {
       // XXX Report the error.
       return this.value;
     }
-  }
-}
-
-export class FluentSymbol extends FluentType {
-  toString() {
-    return this.value;
-  }
-
-  /**
-   * Compare the object with another instance of a FluentType.
-   *
-   * @param   {MessageContext} ctx
-   * @param   {FluentType}     other
-   * @returns {bool}
-   */
-  match(ctx, other) {
-    if (other instanceof FluentSymbol) {
-      return this.value === other.value;
-    } else if (typeof other === "string") {
-      return this.value === other;
-    } else if (other instanceof FluentNumber) {
-      const pr = ctx._memoizeIntlObject(
-        Intl.PluralRules, other.opts
-      );
-      return this.value === pr.select(other.value);
-    }
-    return false;
   }
 }

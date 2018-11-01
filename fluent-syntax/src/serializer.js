@@ -304,16 +304,10 @@ function serializeIdentifier(identifier) {
   return identifier.name;
 }
 
-
-function serializeVariantName(VariantName) {
-  return VariantName.name;
-}
-
-
 function serializeVariantKey(key) {
   switch (key.type) {
-    case "VariantName":
-      return serializeVariantName(key);
+    case "Identifier":
+      return serializeIdentifier(key);
     case "NumberLiteral":
       return serializeNumberLiteral(key);
     default:
