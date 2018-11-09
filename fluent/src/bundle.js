@@ -191,23 +191,86 @@ export default class FluentBundle {
    * @param   {Array}              errors
    * @returns {?string}
    */
-  format(message, args, errors) {
-    // optimize entities which are simple strings with no attributes
-    if (typeof message === "string") {
-      return this._transform(message);
-    }
+
+   /* 
+   * FluentBundle.format(path: str, args: object?): string?
+   * 
+   * format would 
+   * take a message identifier (foo) or an attribute path (foo.title) and 
+   * return the formatted translation as a string, or null if the translation doesn't exist. 
+   * 
+   */
+  format(path, args, errors) {
+
+    var parts = path.split(".");
+    var message_id = parts[0];
+    var message = this.getMessage(message_id);
 
     // optimize entities with null values
     if (message === null || message.value === null) {
       return null;
     }
-
-    // optimize simple-string entities with attributes
-    if (typeof message.value === "string") {
-      return this._transform(message.value);
+    else if (parts.length === 1) {
+      // optimize entities which are simple strings with no attributes
+      if (typeof message === "string") {
+        return this._transform(message);
+      }
+      // optimize simple-string entities with attributes
+      if (typeof message.value === "string") {
+        return this._transform(message.value);
+      }
+    }
+    else if (parts.length === 2) {
+      var attr;
+      for (attr in message.attributes) {
+        if (attr.id.name === parts[1]) {
+          return resolve(this, args, attr, errors);
+        }
+      }
     }
 
     return resolve(this, args, message, errors);
+  }
+
+  /*
+  * Build an object of {value, attributes}. AKA compound object. 
+  * 
+  * The main use-case for this method are bindings, like fluent-dom and fluent-react. 
+  * There, it's useful to ask fluent for all translations for a given element or component. 
+  * Some bindings will prefer to just ask for all attributes and iterate over what they get 
+  * (that's what fluent-dom currently does), 
+  * while others ask for individual attributes based on what the component allows 
+  * (that's what fluent-react does). 
+  * To support both of these use-cases, FluentBundle.compound returns an object of 
+  * {value: string, attributes: Map}. 
+  * The Map interface provides both the iteration (Map.entries()) and lookup (Map.get()).
+  * 
+  * If, in the future, there's a concern about the performance of FluentBundle.compound() 
+  * related to a high number of attributes which are formatted only to be thrown away by the bindings, 
+  * we can swap the Map for a custom object which implements the same methods, 
+  * but lazily. I.e. attributes.get(name) would only format the name attribute when it's called. 
+  * For now, however, let's just use a regular eager Map.
+  */
+
+  /* 
+  * FluentBundle.compound(id: str, args: object?): {value: string, attributes: Map {name: string, value: string}}?
+  * 
+  * 
+  * 
+  */
+  compound(id, args, errors) {
+    var compoundShape = {value, attributes: new Map()};
+
+    var message = this.getMessage(id);
+
+    compoundShape.value = this._transform(message);
+
+    var attr;
+    for (attr in message.attributes) {
+      compoundShape.attributes.set(attr.id.name, this._transform(attr))
+    }
+
+    return compoundShape;
   }
 
   _memoizeIntlObject(ctor, opts) {
