@@ -1,3 +1,5 @@
+### NOTE: Disable final newline insertion and trimming when editing this file.
+
 key01 = Value 01
 
 key02 = Value 02

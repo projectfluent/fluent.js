@@ -6,17 +6,19 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
-          "args": [],
-          "message": "Expected literal",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 9,
-            "end": 9
+            "start": 10,
+            "end": 10
           }
         }
       ],
-      "content": "err01 = {×××}\n",
+      "content": "err01 = {1xx}\n",
       "span": {
         "type": "Span",
         "start": 0,
@@ -28,17 +30,19 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
-          "args": [],
-          "message": "Expected literal",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 23,
-            "end": 23
+            "start": 24,
+            "end": 24
           }
         }
       ],
-      "content": "err02 = {×××}\n\n",
+      "content": "err02 = {1xx}\n\n",
       "span": {
         "type": "Span",
         "start": 14,
@@ -50,17 +54,19 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
-          "args": [],
-          "message": "Expected literal",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 38,
-            "end": 38
+            "start": 39,
+            "end": 39
           }
         }
       ],
-      "content": "err03 = {×××}\n×××\n\n",
+      "content": "err03 = {1xx}\n1xx\n\n",
       "span": {
         "type": "Span",
         "start": 29,
@@ -72,17 +78,19 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
-          "args": [],
-          "message": "Expected literal",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 57,
-            "end": 57
+            "start": 58,
+            "end": 58
           }
         }
       ],
-      "content": "err04 = {×××}\n\n×××\n\n",
+      "content": "err04 = {1xx}\n\n1xx\n\n",
       "span": {
         "type": "Span",
         "start": 48,
@@ -94,17 +102,19 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
-          "args": [],
-          "message": "Expected literal",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 79,
-            "end": 79
+            "start": 80,
+            "end": 80
           }
         }
       ],
-      "content": "err05 = {\n\n×××\n\n",
+      "content": "err05 = {\n\n1xx\n\n",
       "span": {
         "type": "Span",
         "start": 68,
@@ -116,17 +126,19 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
-          "args": [],
-          "message": "Expected literal",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 93,
-            "end": 93
+            "start": 94,
+            "end": 94
           }
         }
       ],
-      "content": "err06 = {×××\n\n    .attr = Value\n\n",
+      "content": "err06 = {1xx\n\n    .attr = Value\n\n",
       "span": {
         "type": "Span",
         "start": 84,
