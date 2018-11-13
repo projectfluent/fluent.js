@@ -1,0 +1,262 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 5
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 01",
+            "span": {
+              "type": "Span",
+              "start": 8,
+              "end": 16
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 8,
+          "end": 16
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 16
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 18,
+          "end": 23
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 02",
+            "span": {
+              "type": "Span",
+              "start": 26,
+              "end": 34
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 26,
+          "end": 34
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 18,
+        "end": 34
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key03",
+        "span": {
+          "type": "Span",
+          "start": 37,
+          "end": 42
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 03\n\nContinued",
+            "span": {
+              "type": "Span",
+              "start": 50,
+              "end": 73
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 50,
+          "end": 73
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 37,
+        "end": 73
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key04",
+        "span": {
+          "type": "Span",
+          "start": 147,
+          "end": 152
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 04\n\nContinued",
+            "span": {
+              "type": "Span",
+              "start": 160,
+              "end": 187
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 160,
+          "end": 187
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "content": "There are four spaces on the line between \"Value 04\" and \"Continued\".",
+        "span": {
+          "type": "Span",
+          "start": 75,
+          "end": 146
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 75,
+        "end": 187
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key05",
+        "span": {
+          "type": "Span",
+          "start": 247,
+          "end": 252
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 05",
+            "span": {
+              "type": "Span",
+              "start": 259,
+              "end": 267
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 259,
+          "end": 267
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "content": "There are four spaces on the line following \"Value 05\".",
+        "span": {
+          "type": "Span",
+          "start": 189,
+          "end": 246
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 189,
+        "end": 267
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key06",
+        "span": {
+          "type": "Span",
+          "start": 331,
+          "end": 336
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 06",
+            "span": {
+              "type": "Span",
+              "start": 339,
+              "end": 347
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 339,
+          "end": 347
+        }
+      },
+      "attributes": [],
+      "comment": {
+        "type": "Comment",
+        "content": "There are four spaces on the line following \"Value 06\".",
+        "span": {
+          "type": "Span",
+          "start": 273,
+          "end": 330
+        }
+      },
+      "span": {
+        "type": "Span",
+        "start": 273,
+        "end": 347
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 352
+  }
+}
