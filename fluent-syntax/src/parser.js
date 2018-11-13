@@ -135,18 +135,18 @@ export default class FluentParser {
       }
 
       let errorIndex = ps.index;
-      ps.skipToNextEntryStart(entryStartPos);
-      const nextEntryStart = ps.index;
-      if (nextEntryStart < errorIndex) {
+      ps.skipToJunkEnd(entryStartPos);
+      const junkEnd = ps.index;
+      if (junkEnd < errorIndex) {
         // The position of the error must be inside of the Junk's span.
-        errorIndex = nextEntryStart;
+        errorIndex = junkEnd;
       }
 
       // Create a Junk instance
-      const slice = ps.string.substring(entryStartPos, nextEntryStart);
+      const slice = ps.string.substring(entryStartPos, junkEnd);
       const junk = new AST.Junk(slice);
       if (this.withSpans) {
-        junk.addSpan(entryStartPos, nextEntryStart);
+        junk.addSpan(entryStartPos, junkEnd);
       }
       const annot = new AST.Annotation(err.code, err.args, err.message);
       annot.addSpan(errorIndex, errorIndex);

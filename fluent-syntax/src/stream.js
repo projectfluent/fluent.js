@@ -87,6 +87,10 @@ export class FluentParserStream extends ParserStream {
       if (this.currentPeek === EOL) {
         this.next();
         lineCount++;
+      } else if (this.currentPeek === EOF) {
+        // Consume inline blanks before the EOF.
+        this.skipToPeek();
+        return lineCount;
       } else {
         this.resetPeek();
         return lineCount;
@@ -157,7 +161,7 @@ export class FluentParserStream extends ParserStream {
     return null;
   }
 
-  isCharIDStart(ch) {
+  isCharIdStart(ch) {
     if (ch === EOF) {
       return false;
     }
@@ -168,7 +172,7 @@ export class FluentParserStream extends ParserStream {
   }
 
   isIdentifierStart() {
-    return this.isCharIDStart(this.currentPeek);
+    return this.isCharIdStart(this.currentPeek);
   }
 
   isNumberStart() {
@@ -311,7 +315,7 @@ export class FluentParserStream extends ParserStream {
     return true;
   }
 
-  skipToNextEntryStart(junkStart) {
+  skipToJunkEnd(junkStart) {
     let lastNewline = this.string.lastIndexOf(EOL, this.index);
     if (junkStart < lastNewline) {
       // Last seen newline is _after_ the junk start. It's safe to rewind
@@ -325,16 +329,17 @@ export class FluentParserStream extends ParserStream {
         continue;
       }
 
-      // Break if the first char in this line looks like an entry start.
-      const first = this.next();
-      if (this.isCharIDStart(first) || first === "-" || first === "#") {
+      const ch = this.next();
+      // Break if the first char in this line looks like a beginning of a
+      // message, term or comment, or if it's a blank line.
+      if (this.isCharIdStart(ch) || ch === "-" || ch === "#" || ch === EOL) {
         break;
       }
     }
   }
 
   takeIDStart() {
-    if (this.isCharIDStart(this.currentChar)) {
+    if (this.isCharIdStart(this.currentChar)) {
       const ret = this.currentChar;
       this.next();
       return ret;

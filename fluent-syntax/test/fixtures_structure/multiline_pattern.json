@@ -140,11 +140,11 @@
           }
         }
       ],
-      "content": "Continued here\n    and here.\n\n",
+      "content": "Continued here\n    and here.\n",
       "span": {
         "type": "Span",
         "start": 177,
-        "end": 207
+        "end": 206
       }
     },
     {

@@ -27,11 +27,11 @@
           }
         }
       ],
-      "content": "key1 =\n\n \n\n",
+      "content": "key1 =\n",
       "span": {
         "type": "Span",
         "start": 318,
-        "end": 329
+        "end": 325
       }
     },
     {
@@ -51,11 +51,11 @@
           }
         }
       ],
-      "content": "key2 =\n\n ",
+      "content": "key2 =\n",
       "span": {
         "type": "Span",
         "start": 329,
-        "end": 338
+        "end": 336
       }
     }
   ],

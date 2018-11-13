@@ -16,11 +16,11 @@
           }
         }
       ],
-      "content": "key1 = Value 1\n    .attr =\n\n",
+      "content": "key1 = Value 1\n    .attr =\n",
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 28
+        "end": 27
       }
     },
     {
@@ -38,11 +38,11 @@
           }
         }
       ],
-      "content": "key2 =\n    .attr =\n\n",
+      "content": "key2 =\n    .attr =\n",
       "span": {
         "type": "Span",
         "start": 28,
-        "end": 48
+        "end": 47
       }
     },
     {
@@ -60,11 +60,11 @@
           }
         }
       ],
-      "content": "key3 =\n    .attr1 = Attr 1\n    .attr2 =\n\n",
+      "content": "key3 =\n    .attr1 = Attr 1\n    .attr2 =\n",
       "span": {
         "type": "Span",
         "start": 48,
-        "end": 89
+        "end": 88
       }
     },
     {
@@ -82,11 +82,11 @@
           }
         }
       ],
-      "content": "key4 =\n    .attr1 =\n    .attr2 = Attr 2\n\n",
+      "content": "key4 =\n    .attr1 =\n    .attr2 = Attr 2\n",
       "span": {
         "type": "Span",
         "start": 89,
-        "end": 130
+        "end": 129
       }
     },
     {

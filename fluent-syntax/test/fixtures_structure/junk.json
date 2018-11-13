@@ -1,0 +1,226 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "args": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 9,
+            "end": 9
+          }
+        }
+      ],
+      "content": "err01 = {×××}\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 14
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "args": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 23,
+            "end": 23
+          }
+        }
+      ],
+      "content": "err02 = {×××}\n",
+      "span": {
+        "type": "Span",
+        "start": 14,
+        "end": 28
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "args": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 38,
+            "end": 38
+          }
+        }
+      ],
+      "content": "err03 = {×××}\n×××\n",
+      "span": {
+        "type": "Span",
+        "start": 29,
+        "end": 47
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "args": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 57,
+            "end": 57
+          }
+        }
+      ],
+      "content": "err04 = {×××}\n",
+      "span": {
+        "type": "Span",
+        "start": 48,
+        "end": 62
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0002",
+          "args": [],
+          "message": "Expected an entry start",
+          "span": {
+            "type": "Span",
+            "start": 63,
+            "end": 63
+          }
+        }
+      ],
+      "content": "×××\n",
+      "span": {
+        "type": "Span",
+        "start": 63,
+        "end": 67
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "args": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 78,
+            "end": 78
+          }
+        }
+      ],
+      "content": "err05 = {\n×××\n",
+      "span": {
+        "type": "Span",
+        "start": 68,
+        "end": 82
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 94,
+            "end": 94
+          }
+        }
+      ],
+      "content": "err06 = {\n\n",
+      "span": {
+        "type": "Span",
+        "start": 83,
+        "end": 94
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key07",
+        "span": {
+          "type": "Span",
+          "start": 94,
+          "end": 99
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value",
+            "span": {
+              "type": "Span",
+              "start": 102,
+              "end": 107
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 102,
+          "end": 107
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 94,
+        "end": 107
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "args": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 119,
+            "end": 119
+          }
+        }
+      ],
+      "content": "err08 = {\n",
+      "span": {
+        "type": "Span",
+        "start": 109,
+        "end": 119
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 119
+  }
+}

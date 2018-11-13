@@ -67,7 +67,7 @@ function printAnnotations(source, junk) {
 
 function printAnnotation(source, span, annot) {
   const { code, message, span: { start } } = annot;
-  const slice = source.substring(span.start, span.end).trimRight();
+  const slice = source.substring(span.start, span.end);
   const lineNumber = FluentSyntax.lineOffset(source, start) + 1;
   const columnOffset = FluentSyntax.columnOffset(source, start);
   const showLines = lineNumber - FluentSyntax.lineOffset(source, span.start);

@@ -18,11 +18,11 @@
           }
         }
       ],
-      "content": "-foo =\n    .attr = Attribute\n\n",
+      "content": "-foo =\n    .attr = Attribute\n",
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 30
+        "end": 29
       }
     },
     {
@@ -42,11 +42,11 @@
           }
         }
       ],
-      "content": "-bar =\n\n",
+      "content": "-bar =\n",
       "span": {
         "type": "Span",
         "start": 30,
-        "end": 38
+        "end": 37
       }
     },
     {

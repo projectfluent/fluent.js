@@ -341,11 +341,11 @@
           }
         }
       ],
-      "content": "key07 = Value\n    .Continued\n\n",
+      "content": "key07 = Value\n    .Continued\n",
       "span": {
         "type": "Span",
         "start": 186,
-        "end": 216
+        "end": 215
       }
     },
     {
@@ -374,11 +374,11 @@
           }
         }
       ],
-      "content": "key08 =\n    .Value\n\n",
+      "content": "key08 =\n    .Value\n",
       "span": {
         "type": "Span",
         "start": 256,
-        "end": 276
+        "end": 275
       }
     },
     {
@@ -407,11 +407,11 @@
           }
         }
       ],
-      "content": "key09 =\n    .Value\n    Continued\n\n",
+      "content": "key09 =\n    .Value\n    Continued\n",
       "span": {
         "type": "Span",
         "start": 316,
-        "end": 350
+        "end": 349
       }
     },
     {
@@ -885,11 +885,11 @@
           }
         }
       ],
-      "content": "key16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n\n",
+      "content": "key16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n",
       "span": {
         "type": "Span",
         "start": 723,
-        "end": 781
+        "end": 780
       }
     },
     {
