@@ -487,12 +487,6 @@ export default class FluentParser {
         continue;
       }
 
-      if (ch === "\\") {
-        ps.next();
-        buffer += this.getEscapeSequence(ps);
-        continue;
-      }
-
       buffer += ch;
       ps.next();
     }
@@ -500,10 +494,10 @@ export default class FluentParser {
     return new AST.TextElement(buffer);
   }
 
-  getEscapeSequence(ps, specials = ["{", "\\"]) {
+  getEscapeSequence(ps) {
     const next = ps.currentChar;
 
-    if (specials.includes(next)) {
+    if (next === "\\" || next === "\"") {
       ps.next();
       return `\\${next}`;
     }
@@ -731,7 +725,7 @@ export default class FluentParser {
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
-        val += this.getEscapeSequence(ps, ["{", "\\", "\""]);
+        val += this.getEscapeSequence(ps);
       } else {
         val += ch;
       }

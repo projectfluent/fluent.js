@@ -15,19 +15,17 @@ const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
 
 // A "run" is a sequence of text or string literal characters which don't
-// require any special handling. For TextElements such special characters are:
-// { (starts a placeable), \ (starts an escape sequence), and line breaks which
-// require additional logic to check if the next line is indented. For
-// StringLiterals they are: \ (starts an escape sequence), " (ends the
-// literal), and line breaks which are not allowed in StringLiterals. Also note
-// that string runs may be empty, but text runs may not.
-const RE_TEXT_RUN = /([^\\{\n\r]+)/y;
+// require any special handling. For TextElements such special characters are: {
+// (starts a placeable), and line breaks which require additional logic to check
+// if the next line is indented. For StringLiterals they are: \ (starts an
+// escape sequence), " (ends the literal), and line breaks which are not allowed
+// in StringLiterals. Note that string runs may be empty; text runs may not.
+const RE_TEXT_RUN = /([^{\n\r]+)/y;
 const RE_STRING_RUN = /([^\\"\n\r]*)/y;
 
 // Escape sequences.
 const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 const RE_STRING_ESCAPE = /\\([\\"])/y;
-const RE_TEXT_ESCAPE = /\\([\\{])/y;
 
 // Used for trimming TextElements and indents. With the /m flag, the $ matches
 // the end of every line.
@@ -180,15 +178,12 @@ export default class FluentResource extends Map {
         var first = match(RE_TEXT_RUN);
       }
 
-      // If there's a backslash escape or a placeable on the first line, fall
-      // back to parsing a complex pattern.
-      switch (source[cursor]) {
-        case "{":
-        case "\\":
-          return first
-            // Re-use the text parsed above, if possible.
-            ? parsePatternElements(first)
-            : parsePatternElements();
+      // If there's a placeable on the first line, parse a complex pattern.
+      if (source[cursor] === "{") {
+        return first
+          // Re-use the text parsed above, if possible.
+          ? parsePatternElements(first)
+          : parsePatternElements();
       }
 
       // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if
@@ -236,12 +231,6 @@ export default class FluentResource extends Map {
         let indent = parseIndent();
         if (indent) {
           elements.push(trim(indent));
-          needsTrimming = false;
-          continue;
-        }
-
-        if (source[cursor] === "\\") {
-          elements.push(parseEscapeSequence(RE_TEXT_ESCAPE));
           needsTrimming = false;
           continue;
         }
@@ -403,7 +392,7 @@ export default class FluentResource extends Map {
         value += match(RE_STRING_RUN);
 
         if (source[cursor] === "\\") {
-          value += parseEscapeSequence(RE_STRING_ESCAPE);
+          value += parseEscapeSequence();
           continue;
         }
 
@@ -417,7 +406,7 @@ export default class FluentResource extends Map {
     }
 
     // Unescape known escape sequences.
-    function parseEscapeSequence(reSpecialized) {
+    function parseEscapeSequence() {
       if (test(RE_UNICODE_ESCAPE)) {
         let sequence = match(RE_UNICODE_ESCAPE);
         let codepoint = parseInt(sequence, 16);
@@ -429,8 +418,8 @@ export default class FluentResource extends Map {
           : "�";
       }
 
-      if (test(reSpecialized)) {
-        return match(reSpecialized);
+      if (test(RE_STRING_ESCAPE)) {
+        return match(RE_STRING_ESCAPE);
       }
 
       throw new FluentError("Unknown escape sequence");

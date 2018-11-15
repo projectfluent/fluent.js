@@ -457,9 +457,9 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), input);
   });
 
-  test("Escaped special char in TextElement", function() {
+  test("Backslash in TextElement", function() {
     const input = ftl`
-      foo = \\{Escaped}
+      foo = \\{ placeable }
     `;
     assert.equal(pretty(input), input);
   });
@@ -473,7 +473,7 @@ suite("Serialize resource", function() {
 
   test("Unicode escape sequence", function() {
     const input = ftl`
-      foo = \\u0065
+      foo = { "\\u0065" }
     `;
     assert.equal(pretty(input), input);
   });
