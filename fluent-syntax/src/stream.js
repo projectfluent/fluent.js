@@ -85,12 +85,21 @@ export class FluentParserStream extends ParserStream {
       this.peekBlankInline();
 
       if (this.currentPeek === EOL) {
+        this.skipToPeek();
         this.next();
         lineCount++;
-      } else {
-        this.resetPeek();
+        continue;
+      }
+
+      if (this.currentPeek === EOF) {
+        // Consume any inline blanks before the EOF.
+        this.skipToPeek();
         return lineCount;
       }
+
+      // Any other char; reset to column 1 on this line.
+      this.resetPeek();
+      return lineCount;
     }
   }
 
@@ -157,7 +166,7 @@ export class FluentParserStream extends ParserStream {
     return null;
   }
 
-  isCharIDStart(ch) {
+  isCharIdStart(ch) {
     if (ch === EOF) {
       return false;
     }
@@ -168,7 +177,7 @@ export class FluentParserStream extends ParserStream {
   }
 
   isIdentifierStart() {
-    return this.isCharIDStart(this.currentPeek);
+    return this.isCharIdStart(this.currentPeek);
   }
 
   isNumberStart() {
@@ -327,14 +336,14 @@ export class FluentParserStream extends ParserStream {
 
       // Break if the first char in this line looks like an entry start.
       const first = this.next();
-      if (this.isCharIDStart(first) || first === "-" || first === "#") {
+      if (this.isCharIdStart(first) || first === "-" || first === "#") {
         break;
       }
     }
   }
 
   takeIDStart() {
-    if (this.isCharIDStart(this.currentChar)) {
+    if (this.isCharIdStart(this.currentChar)) {
       const ret = this.currentChar;
       this.next();
       return ret;
