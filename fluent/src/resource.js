@@ -420,7 +420,13 @@ export default class FluentResource extends Map {
     function parseEscapeSequence(reSpecialized) {
       if (test(RE_UNICODE_ESCAPE)) {
         let sequence = match(RE_UNICODE_ESCAPE);
-        return String.fromCodePoint(parseInt(sequence, 16));
+        let codepoint = parseInt(sequence, 16);
+        return codepoint <= 0xD7FF || 0xE000 <= codepoint
+          // It's a Unicode scalar value.
+          ? String.fromCodePoint(codepoint)
+          // Lonely surrogates can cause trouble when the parsing result is
+          // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
+          : "�";
       }
 
       if (test(reSpecialized)) {

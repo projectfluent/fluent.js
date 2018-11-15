@@ -1,0 +1,19 @@
+{
+    "face-with-tears-of-joy": "😂",
+    "tetragram-for-centre": "𝌆",
+    "surrogates-in-text": [
+        "�",
+        "�"
+    ],
+    "surrogates-in-string": [
+        "��"
+    ],
+    "surrogates-in-adjacent-strings": [
+        "�",
+        "�"
+    ],
+    "emoji-in-text": "A face 😂 with tears of joy.",
+    "emoji-in-string": [
+        "A face 😂 with tears of joy."
+    ]
+}
