@@ -39,10 +39,9 @@ export default class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getTermIdentifier", "getVariant", "getNumber",
-      "getValue", "getPattern", "getVariantList", "getTextElement",
-      "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
-      "getString", "getLiteral"
+      "getVariant", "getNumber", "getValue", "getPattern", "getVariantList",
+      "getTextElement", "getPlaceable", "getExpression",
+      "getSelectorExpression", "getCallArg", "getString", "getLiteral"
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -242,7 +241,8 @@ export default class FluentParser {
   }
 
   getTerm(ps) {
-    const id = this.getTermIdentifier(ps);
+    ps.expectChar("-");
+    const id = this.getIdentifier(ps);
 
     ps.skipBlankInline();
     ps.expectChar("=");
@@ -299,13 +299,6 @@ export default class FluentParser {
     }
 
     return new AST.Identifier(name);
-  }
-
-  getTermIdentifier(ps) {
-    ps.expectChar("-");
-    const id = this.getIdentifier(ps);
-    return new AST.Identifier(`-${id.name}`);
-
   }
 
   getVariantKey(ps) {
@@ -777,7 +770,8 @@ export default class FluentParser {
     }
 
     if (ch === "-") {
-      const id = this.getTermIdentifier(ps);
+      ps.next();
+      const id = this.getIdentifier(ps);
       return new AST.TermReference(id);
     }
 

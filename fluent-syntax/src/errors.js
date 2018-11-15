@@ -28,7 +28,7 @@ function getErrorMessage(code, args) {
     }
     case "E0006": {
       const [id] = args;
-      return `Expected term "${id}" to have a value`;
+      return `Expected term "-${id}" to have a value`;
     }
     case "E0007":
       return "Keyword cannot end with a whitespace";

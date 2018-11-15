@@ -8,7 +8,7 @@
           "type": "Annotation",
           "code": "E0006",
           "args": [
-            "-foo"
+            "foo"
           ],
           "message": "Expected term \"-foo\" to have a value",
           "span": {
@@ -32,7 +32,7 @@
           "type": "Annotation",
           "code": "E0006",
           "args": [
-            "-bar"
+            "bar"
           ],
           "message": "Expected term \"-bar\" to have a value",
           "span": {

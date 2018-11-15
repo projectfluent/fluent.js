@@ -5,10 +5,10 @@
       "type": "Term",
       "id": {
         "type": "Identifier",
-        "name": "-brand-name",
+        "name": "brand-name",
         "span": {
           "type": "Span",
-          "start": 0,
+          "start": 1,
           "end": 11
         }
       },
@@ -172,10 +172,10 @@
                 "type": "TermReference",
                 "id": {
                   "type": "Identifier",
-                  "name": "-brand-name",
+                  "name": "brand-name",
                   "span": {
                     "type": "Span",
-                    "start": 145,
+                    "start": 146,
                     "end": 156
                   }
                 },
@@ -254,10 +254,10 @@
                   "type": "TermReference",
                   "id": {
                     "type": "Identifier",
-                    "name": "-brand-name",
+                    "name": "brand-name",
                     "span": {
                       "type": "Span",
-                      "start": 199,
+                      "start": 200,
                       "end": 210
                     }
                   },
@@ -303,10 +303,10 @@
                           "type": "TermReference",
                           "id": {
                             "type": "Identifier",
-                            "name": "-brand-name",
+                            "name": "brand-name",
                             "span": {
                               "type": "Span",
-                              "start": 243,
+                              "start": 244,
                               "end": 254
                             }
                           },
@@ -365,10 +365,10 @@
                           "type": "TermReference",
                           "id": {
                             "type": "Identifier",
-                            "name": "-brand-name",
+                            "name": "brand-name",
                             "span": {
                               "type": "Span",
-                              "start": 311,
+                              "start": 312,
                               "end": 322
                             }
                           },
@@ -436,10 +436,10 @@
                           "type": "TermReference",
                           "id": {
                             "type": "Identifier",
-                            "name": "-brand-name",
+                            "name": "brand-name",
                             "span": {
                               "type": "Span",
-                              "start": 385,
+                              "start": 386,
                               "end": 396
                             }
                           },
