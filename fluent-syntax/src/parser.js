@@ -452,6 +452,8 @@ export default class FluentParser {
       if (ch === "{") {
         const element = this.getPlaceable(ps);
         elements.push(element);
+      } else if (ch === "}") {
+        throw new ParseError("E0027");
       } else {
         const element = this.getTextElement(ps);
         elements.push(element);
@@ -475,7 +477,7 @@ export default class FluentParser {
 
     let ch;
     while ((ch = ps.currentChar)) {
-      if (ch === "{") {
+      if (ch === "{" || ch === "}") {
         return new AST.TextElement(buffer);
       }
 

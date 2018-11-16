@@ -74,6 +74,8 @@ function getErrorMessage(code, args) {
       const [char] = args;
       return `Invalid Unicode escape sequence: \\u${char}.`;
     }
+    case "E0027":
+      return "Unbalanced closing brace in TextElement.";
     default:
       return code;
   }

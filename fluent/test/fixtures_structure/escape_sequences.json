@@ -27,5 +27,9 @@
         "{",
         " brace."
     ],
-    "brace-close": "A closing } brace."
+    "brace-close": [
+        "A closing ",
+        "}",
+        " brace."
+    ]
 }

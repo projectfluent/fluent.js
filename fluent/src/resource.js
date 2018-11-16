@@ -20,7 +20,7 @@ const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
 // if the next line is indented. For StringLiterals they are: \ (starts an
 // escape sequence), " (ends the literal), and line breaks which are not allowed
 // in StringLiterals. Note that string runs may be empty; text runs may not.
-const RE_TEXT_RUN = /([^{\n\r]+)/y;
+const RE_TEXT_RUN = /([^{}\n\r]+)/y;
 const RE_STRING_RUN = /([^\\"\n\r]*)/y;
 
 // Escape sequences.
@@ -179,7 +179,7 @@ export default class FluentResource extends Map {
       }
 
       // If there's a placeable on the first line, parse a complex pattern.
-      if (source[cursor] === "{") {
+      if (source[cursor] === "{" || source[cursor] === "}") {
         return first
           // Re-use the text parsed above, if possible.
           ? parsePatternElements(first)
@@ -226,6 +226,10 @@ export default class FluentResource extends Map {
           elements.push(parsePlaceable());
           needsTrimming = false;
           continue;
+        }
+
+        if (source[cursor] === "}") {
+          throw new FluentError("Unbalanced closing brace");
         }
 
         let indent = parseIndent();

@@ -582,18 +582,44 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": "A closing } brace.",
+            "value": "A closing ",
             "span": {
               "type": "Span",
               "start": 560,
-              "end": 578
+              "end": 570
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "value": "}",
+              "span": {
+                "type": "Span",
+                "start": 571,
+                "end": 574
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 570,
+              "end": 575
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": " brace.",
+            "span": {
+              "type": "Span",
+              "start": 575,
+              "end": 582
             }
           }
         ],
         "span": {
           "type": "Span",
           "start": 560,
-          "end": 578
+          "end": 582
         }
       },
       "attributes": [],
@@ -601,13 +627,13 @@
       "span": {
         "type": "Span",
         "start": 546,
-        "end": 578
+        "end": 582
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 579
+    "end": 583
   }
 }
