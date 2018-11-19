@@ -5,6 +5,9 @@
   "engines": {
     "node": ">=8.9.0"
   },
+  "scripts":{
+    "init" :"lerna bootstrap --hoist"
+  },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.47",
     "@babel/plugin-proposal-async-generator-functions": "^7.0.0-beta.47",
@@ -22,6 +25,7 @@
     "fuzzer": "^0.2.1",
     "gh-pages": "^1.1.0",
     "jsdoc": "^3.5.5",
+    "lerna": "^3.3.1",
     "mocha": "^4.1.0",
     "nyc": "^13.0.1",
     "prettyjson": "^1.2.1",
