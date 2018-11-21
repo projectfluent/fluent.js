@@ -11,7 +11,10 @@
                     "type": "num",
                     "value": "1"
                 },
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
                     "name": "msg"
@@ -38,7 +41,10 @@
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 }
             ]
         }
@@ -62,7 +68,10 @@
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 }
             ]
         }
@@ -79,7 +88,10 @@
                     "type": "num",
                     "value": "1"
                 },
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
                     "name": "msg"
@@ -95,7 +107,10 @@
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 }
             ]
         }
@@ -120,11 +135,17 @@
                         "value": "1"
                     }
                 },
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 },
                 {
                     "type": "ref",
@@ -152,7 +173,10 @@
                 {
                     "type": "narg",
                     "name": "x",
-                    "value": "X"
+                    "value": {
+                        "type": "str",
+                        "value": "X"
+                    }
                 }
             ]
         }
@@ -165,7 +189,10 @@
                 "name": "FUN"
             },
             "args": [
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
                     "name": "msg"
@@ -199,7 +226,10 @@
                 "name": "FUN"
             },
             "args": [
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
                     "name": "msg"
@@ -223,7 +253,10 @@
                 "name": "FUN"
             },
             "args": [
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
                     "name": "msg"
@@ -272,7 +305,10 @@
                 "name": "FUN"
             },
             "args": [
-                "a"
+                {
+                    "type": "str",
+                    "value": "a"
+                }
             ]
         }
     ],

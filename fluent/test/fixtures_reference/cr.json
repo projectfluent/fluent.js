@@ -3,6 +3,7 @@
     "err02": "Value 02",
     "err03": {
         "value": [
+            "\r\r",
             "Value 03",
             "\r",
             "Continued"
