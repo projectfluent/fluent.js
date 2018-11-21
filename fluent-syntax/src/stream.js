@@ -67,43 +67,18 @@ export const EOF = undefined;
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FluentParserStream extends ParserStream {
-  skipBlankInline() {
-    let blank = "";
-    while (this.currentChar === " ") {
-      blank += " ";
-      this.next();
-    }
-    return blank;
-  }
-
   peekBlankInline() {
+    const start = this.index + this.peekOffset;
     while (this.currentPeek === " ") {
       this.peek();
     }
+    return this.string.slice(start, this.index + this.peekOffset);
   }
 
-  skipBlankBlock() {
-    let blank = "";
-    while (true) {
-      this.peekBlankInline();
-
-      if (this.currentPeek === EOL) {
-        this.skipToPeek();
-        this.next();
-        blank += EOL;
-        continue;
-      }
-
-      if (this.currentPeek === EOF) {
-        // Consume any inline blanks before the EOF.
-        this.skipToPeek();
-        return blank;
-      }
-
-      // Any other char; reset to column 1 on this line.
-      this.resetPeek();
-      return blank;
-    }
+  skipBlankInline() {
+    const blank = this.peekBlankInline();
+    this.skipToPeek();
+    return blank;
   }
 
   peekBlankBlock() {
@@ -112,25 +87,35 @@ export class FluentParserStream extends ParserStream {
       const lineStart = this.peekOffset;
       this.peekBlankInline();
       if (this.currentPeek === EOL) {
-        this.peek();
         blank += EOL;
-      } else {
-        this.resetPeek(lineStart);
+        this.peek();
+        continue;
+      }
+      if (this.currentPeek === EOF) {
+        // Treat the blank line at EOF as a blank block.
         return blank;
       }
+      // Any other char; reset to column 1 on this line.
+      this.resetPeek(lineStart);
+      return blank;
     }
   }
 
-  skipBlank() {
-    while (this.currentChar === " " || this.currentChar === EOL) {
-      this.next();
-    }
+  skipBlankBlock() {
+    const blank = this.peekBlankBlock();
+    this.skipToPeek();
+    return blank;
   }
 
   peekBlank() {
     while (this.currentPeek === " " || this.currentPeek === EOL) {
       this.peek();
     }
+  }
+
+  skipBlank() {
+    this.peekBlank();
+    this.skipToPeek();
   }
 
   expectChar(ch) {
