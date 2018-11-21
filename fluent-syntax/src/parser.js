@@ -68,7 +68,9 @@ export default class FluentParser {
       // they should parse as standalone when they're followed by Junk.
       // Consequently, we only attach Comments once we know that the Message
       // or the Term parsed successfully.
-      if (entry.type === "Comment" && blankLines === 0 && ps.currentChar) {
+      if (entry.type === "Comment"
+          && blankLines.length === 0
+          && ps.currentChar) {
         // Stash the comment and decide what to do with it in the next pass.
         lastComment = entry;
         continue;
@@ -200,7 +202,7 @@ export default class FluentParser {
         }
       }
 
-      if (ps.isNextLineComment(level, {skip: false})) {
+      if (ps.isNextLineComment(level)) {
         content += ps.currentChar;
         ps.next();
       } else {
@@ -229,19 +231,14 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isValueStart({skip: true})) {
-      var pattern = this.getPattern(ps);
-    }
+    const value = this.getInlineOrBlock(ps, this.getPattern);
+    const attrs = this.getAttributes(ps);
 
-    if (ps.isNextLineAttributeStart({skip: true})) {
-      var attrs = this.getAttributes(ps);
-    }
-
-    if (pattern === undefined && attrs === undefined) {
+    if (value === null && attrs.length === 0) {
       throw new ParseError("E0005", id.name);
     }
 
-    return new AST.Message(id, pattern, attrs);
+    return new AST.Message(id, value, attrs);
   }
 
   getTerm(ps) {
@@ -251,17 +248,29 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isValueStart({skip: true})) {
-      var value = this.getValue(ps);
-    } else {
+    const value = this.getInlineOrBlock(ps, this.getValue);
+    if (value === null) {
       throw new ParseError("E0006", id.name);
     }
 
-    if (ps.isNextLineAttributeStart({skip: true})) {
-      var attrs = this.getAttributes(ps);
+    const attrs = this.getAttributes(ps);
+    return new AST.Term(id, value, attrs);
+  }
+
+  getInlineOrBlock(ps, method) {
+    ps.peekBlankInline();
+    if (ps.isValueStart()) {
+      ps.skipToPeek();
+      return method.call(this, ps, {isBlock: false});
     }
 
-    return new AST.Term(id, value, attrs);
+    ps.peekBlankBlock();
+    if (ps.isValueContinuation()) {
+      ps.skipToPeek();
+      return method.call(this, ps, {isBlock: true});
+    }
+
+    return null;
   }
 
   getAttribute(ps) {
@@ -272,24 +281,22 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isValueStart({skip: true})) {
-      const value = this.getPattern(ps);
-      return new AST.Attribute(key, value);
+    const value = this.getInlineOrBlock(ps, this.getPattern);
+    if (value === null) {
+      throw new ParseError("E0012");
     }
 
-    throw new ParseError("E0012");
+    return new AST.Attribute(key, value);
   }
 
   getAttributes(ps) {
     const attrs = [];
-
-    while (true) {
+    ps.peekBlank();
+    while (ps.isAttributeStart()) {
+      ps.skipToPeek();
       const attr = this.getAttribute(ps);
       attrs.push(attr);
-
-      if (!ps.isNextLineAttributeStart({skip: true})) {
-        break;
-      }
+      ps.peekBlank();
     }
     return attrs;
   }
@@ -340,22 +347,22 @@ export default class FluentParser {
     const key = this.getVariantKey(ps);
 
     ps.skipBlank();
-
     ps.expectChar("]");
 
-    if (ps.isValueStart({skip: true})) {
-      const value = this.getValue(ps);
-      return new AST.Variant(key, value, defaultIndex);
+    const value = this.getInlineOrBlock(ps, this.getValue);
+    if (value === null) {
+      throw new ParseError("E0012");
     }
 
-    throw new ParseError("E0012");
+    return new AST.Variant(key, value, defaultIndex);
   }
 
   getVariants(ps) {
     const variants = [];
     let hasDefault = false;
 
-    while (true) {
+    ps.skipBlank();
+    while (ps.isVariantStart()) {
       const variant = this.getVariant(ps, hasDefault);
 
       if (variant.default) {
@@ -363,11 +370,12 @@ export default class FluentParser {
       }
 
       variants.push(variant);
-
-      if (!ps.isNextLineVariantStart({skip: false})) {
-        break;
-      }
+      ps.expectLineEnd();
       ps.skipBlank();
+    }
+
+    if (variants.length === 0) {
+      throw new ParseError("E0011");
     }
 
     if (!hasDefault) {
@@ -411,65 +419,135 @@ export default class FluentParser {
     return new AST.NumberLiteral(num);
   }
 
-  getValue(ps) {
-    if (ps.currentChar === "{") {
+  getValue(ps, {isBlock}) {
+    ps.peekBlankInline();
+    const peekOffset = ps.peekOffset;
+    if (ps.currentPeek === "{") {
       ps.peek();
-      ps.peekBlankInline();
-      if (ps.isNextLineVariantStart({skip: false})) {
+      ps.peekBlank();
+      if (ps.isVariantStart()) {
+        ps.resetPeek(peekOffset);
+        ps.skipToPeek();
         return this.getVariantList(ps);
       }
-
-      ps.resetPeek();
     }
 
-    return this.getPattern(ps);
+    ps.resetPeek();
+    return this.getPattern(ps, {isBlock});
   }
 
   getVariantList(ps) {
     ps.expectChar("{");
     ps.skipBlankInline();
     ps.expectLineEnd();
-    ps.skipBlank();
     const variants = this.getVariants(ps);
-    ps.expectLineEnd();
     ps.skipBlank();
     ps.expectChar("}");
     return new AST.VariantList(variants);
   }
 
-  getPattern(ps) {
+  getPattern(ps, {isBlock}) {
     const elements = [];
+    if (isBlock) {
+      const blankStart = ps.index;
+      const firstIndent = ps.skipBlankInline();
+      elements.push(this.getIndent(ps, firstIndent, blankStart));
+      var commonIndentLength = firstIndent.length;
+    } else {
+      var commonIndentLength = Infinity;
+    }
 
     let ch;
-    while ((ch = ps.currentChar)) {
+    elements: while ((ch = ps.currentChar)) {
+      switch (ch) {
+        case EOL: {
+          const blankStart = ps.index;
+          const blankLines = ps.peekBlankBlock();
+          if (ps.isValueContinuation()) {
+            ps.skipToPeek();
+            const indent = ps.skipBlankInline();
+            commonIndentLength = Math.min(commonIndentLength, indent.length);
+            elements.push(this.getIndent(ps, blankLines + indent, blankStart));
+            continue elements;
+          }
 
-      // The end condition for getPattern's while loop is a newline
-      // which is not followed by a valid pattern continuation.
-      if (ch === EOL && !ps.isNextLineValue({skip: false})) {
-        break;
+          // The end condition for getPattern's while loop is a newline
+          // which is not followed by a valid pattern continuation.
+          ps.resetPeek();
+          break elements;
+        }
+        case "{":
+          elements.push(this.getPlaceable(ps));
+          continue elements;
+        case "}":
+          throw new ParseError("E0027");
+        default:
+          const element = this.getTextElement(ps);
+          elements.push(element);
+      }
+    }
+
+    return new AST.Pattern(this.dedent(elements, commonIndentLength));
+  }
+
+  getIndent(ps, value, start) {
+    return {
+      type: "Indent",
+      span: {start, end: ps.index},
+      value,
+    };
+  }
+
+  dedent(elements, commonIndent) {
+    const trimmed = [];
+
+    for (let element of elements) {
+      if (element.type === "Placeable") {
+        trimmed.push(element);
+        continue;
       }
 
-      if (ch === "{") {
-        const element = this.getPlaceable(ps);
-        elements.push(element);
-      } else if (ch === "}") {
-        throw new ParseError("E0027");
-      } else {
-        const element = this.getTextElement(ps);
-        elements.push(element);
+      if (element.type === "Indent") {
+        // Strip common indent.
+        element.value = element.value.slice(
+          0, element.value.length - commonIndent);
+        if (element.value.length === 0) {
+          continue;
+        }
       }
+
+      let prev = trimmed[trimmed.length - 1];
+      if (prev && prev.type === "TextElement") {
+        // Join adjacent TextElements by replacing them with their sum.
+        const sum = new AST.TextElement(prev.value + element.value);
+        if (this.withSpans) {
+          sum.addSpan(prev.span.start, element.span.end);
+        }
+        trimmed[trimmed.length - 1] = sum;
+        continue;
+      }
+
+      if (element.type === "Indent") {
+        const textElement = new AST.TextElement(element.value);
+        if (this.withSpans) {
+          textElement.addSpan(element.span.start, element.span.end);
+        }
+        element = textElement;
+      }
+
+      trimmed.push(element);
     }
 
     // Trim trailing whitespace.
-    const lastElement = elements[elements.length - 1];
+    const lastElement = trimmed[trimmed.length - 1];
     if (lastElement.type === "TextElement") {
       lastElement.value = lastElement.value.replace(trailingWSRe, "");
-      if (lastElement.value === "") {
-        elements.pop();
+      if (lastElement.value.length === 0) {
+        trimmed.pop();
       }
     }
 
-    return new AST.Pattern(elements);
+    return trimmed;
   }
 
   getTextElement(ps) {
@@ -482,15 +560,7 @@ export default class FluentParser {
       }
 
       if (ch === EOL) {
-        if (!ps.isNextLineValue({skip: false})) {
-          return new AST.TextElement(buffer);
-        }
-
-        ps.next();
-        ps.skipBlankInline();
-
-        buffer += EOL;
-        continue;
+        return new AST.TextElement(buffer);
       }
 
       buffer += ch;
@@ -567,14 +637,8 @@ export default class FluentParser {
 
       ps.skipBlankInline();
       ps.expectLineEnd();
-      ps.skipBlank();
 
       const variants = this.getVariants(ps);
-      ps.skipBlank();
-
-      if (variants.length === 0) {
-        throw new ParseError("E0011");
-      }
 
       // VariantLists are only allowed in other VariantLists.
       if (variants.some(v => v.value.type === "VariantList")) {
@@ -596,6 +660,7 @@ export default class FluentParser {
     if (ps.currentChar === "{") {
       return this.getPlaceable(ps);
     }
+
     const literal = this.getLiteral(ps);
 
     if (literal.type !== "MessageReference"

@@ -68,9 +68,12 @@ const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FluentParserStream extends ParserStream {
   skipBlankInline() {
+    let blank = "";
     while (this.currentChar === " ") {
+      blank += " ";
       this.next();
     }
+    return blank;
   }
 
   peekBlankInline() {
@@ -80,40 +83,40 @@ export class FluentParserStream extends ParserStream {
   }
 
   skipBlankBlock() {
-    let lineCount = 0;
+    let blank = "";
     while (true) {
       this.peekBlankInline();
 
       if (this.currentPeek === EOL) {
         this.skipToPeek();
         this.next();
-        lineCount++;
+        blank += EOL;
         continue;
       }
 
       if (this.currentPeek === EOF) {
         // Consume any inline blanks before the EOF.
         this.skipToPeek();
-        return lineCount;
+        return blank;
       }
 
       // Any other char; reset to column 1 on this line.
       this.resetPeek();
-      return lineCount;
+      return blank;
     }
   }
 
   peekBlankBlock() {
+    let blank = "";
     while (true) {
       const lineStart = this.peekOffset;
-
       this.peekBlankInline();
-
       if (this.currentPeek === EOL) {
         this.peek();
+        blank += EOL;
       } else {
         this.resetPeek(lineStart);
-        break;
+        return blank;
       }
     }
   }
@@ -204,29 +207,39 @@ export class FluentParserStream extends ParserStream {
     return !includes(SPECIAL_LINE_START_CHARS, ch);
   }
 
-  isValueStart({skip = true}) {
-    if (skip === false) throw new Error("Unimplemented");
-
-    this.peekBlankInline();
-    const ch = this.currentPeek;
-
+  isValueStart() {
     // Inline Patterns may start with any char.
-    if (ch !== EOF && ch !== EOL) {
-      this.skipToPeek();
+    const ch = this.currentPeek;
+    return ch !== EOL && ch !== EOF;
+  }
+
+  isValueContinuation() {
+    const column1 = this.peekOffset;
+    this.peekBlankInline();
+
+    if (this.currentPeek === "{") {
+      this.resetPeek(column1);
       return true;
     }
 
-    return this.isNextLineValue({skip});
+    if (this.peekOffset - column1 === 0) {
+      return false;
+    }
+
+    if (this.isCharPatternContinuation(this.currentPeek)) {
+      this.resetPeek(column1);
+      return true;
+    }
+
+    return false;
   }
 
   // -1 - any
   //  0 - comment
   //  1 - group comment
   //  2 - resource comment
-  isNextLineComment(level = -1, {skip = false}) {
-    if (skip === true) throw new Error("Unimplemented");
-
-    if (this.currentPeek !== EOL) {
+  isNextLineComment(level = -1) {
+    if (this.currentChar !== EOL) {
       return false;
     }
 
@@ -254,70 +267,21 @@ export class FluentParserStream extends ParserStream {
     return false;
   }
 
-  isNextLineVariantStart({skip = false}) {
-    if (skip === true) throw new Error("Unimplemented");
-
-    if (this.currentPeek !== EOL) {
-      return false;
-    }
-
-    this.peekBlank();
-
+  isVariantStart() {
+    const currentPeekOffset = this.peekOffset;
     if (this.currentPeek === "*") {
       this.peek();
     }
-
     if (this.currentPeek === "[") {
-      this.resetPeek();
+      this.resetPeek(currentPeekOffset);
       return true;
     }
-    this.resetPeek();
+    this.resetPeek(currentPeekOffset);
     return false;
   }
 
-  isNextLineAttributeStart({skip = true}) {
-    if (skip === false) throw new Error("Unimplemented");
-
-    this.peekBlank();
-
-    if (this.currentPeek === ".") {
-      this.skipToPeek();
-      return true;
-    }
-
-    this.resetPeek();
-    return false;
-  }
-
-  isNextLineValue({skip = true}) {
-    if (this.currentPeek !== EOL) {
-      return false;
-    }
-
-    this.peekBlankBlock();
-
-    const ptr = this.peekOffset;
-
-    this.peekBlankInline();
-
-    if (this.currentPeek !== "{") {
-      if (this.peekOffset - ptr === 0) {
-        this.resetPeek();
-        return false;
-      }
-
-      if (!this.isCharPatternContinuation(this.currentPeek)) {
-        this.resetPeek();
-        return false;
-      }
-    }
-
-    if (skip) {
-      this.skipToPeek();
-    } else {
-      this.resetPeek();
-    }
-    return true;
+  isAttributeStart() {
+    return this.currentPeek === ".";
   }
 
   skipToNextEntryStart(junkStart) {
