@@ -221,7 +221,8 @@ function serializeExpression(expr) {
     case "NumberLiteral":
       return serializeNumberLiteral(expr);
     case "MessageReference":
-      return serializeMessageReference(expr);
+    case "FunctionReference":
+      return serializeIdentifier(expr.id);
     case "TermReference":
       return serializeTermReference(expr);
     case "VariableReference":
@@ -249,11 +250,6 @@ function serializeStringLiteral(expr) {
 
 function serializeNumberLiteral(expr) {
   return expr.value;
-}
-
-
-function serializeMessageReference(expr) {
-  return serializeIdentifier(expr.id);
 }
 
 
@@ -296,7 +292,7 @@ function serializeVariantExpression(expr) {
 
 
 function serializeCallExpression(expr) {
-  const fun = serializeFunction(expr.callee);
+  const fun = serializeExpression(expr.callee);
   const positional = expr.positional.map(serializeExpression).join(", ");
   const named = expr.named.map(serializeNamedArgument).join(", ");
   if (expr.positional.length > 0 && expr.named.length > 0) {
@@ -338,9 +334,4 @@ function serializeVariantKey(key) {
     default:
       throw new Error(`Unknown variant key type: ${key.type}`);
   }
-}
-
-
-function serializeFunction(fun) {
-  return fun.name;
 }

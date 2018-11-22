@@ -718,7 +718,7 @@ export default class FluentParser {
 
       ps.expectChar(")");
 
-      const func = new AST.Function(literal.id.name);
+      const func = new AST.FunctionReference(literal.id);
       if (this.withSpans) {
         func.addSpan(literal.span.start, literal.span.end);
       }
