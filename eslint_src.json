@@ -32,17 +32,6 @@
         ],
         "no-implied-eval": 2,
         "no-loop-func": 2,
-        "no-magic-numbers": [
-            1,
-            {
-                "ignore": [
-                    -1,
-                    0,
-                    1,
-                    2
-                ]
-            }
-        ],
         "no-useless-call": 2,
         "no-useless-concat": 2,
         "no-delete-var": 2,

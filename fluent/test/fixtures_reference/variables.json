@@ -1,0 +1,32 @@
+{
+    "key01": [
+        {
+            "type": "var",
+            "name": "var"
+        }
+    ],
+    "key02": [
+        {
+            "type": "var",
+            "name": "var"
+        }
+    ],
+    "key03": [
+        {
+            "type": "var",
+            "name": "var"
+        }
+    ],
+    "key04": [
+        {
+            "type": "var",
+            "name": "var"
+        }
+    ],
+    "err03": [
+        {
+            "type": "var",
+            "name": "-var"
+        }
+    ]
+}

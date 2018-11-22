@@ -44,8 +44,9 @@ export default class FluentSerializer {
   serializeEntry(entry, state = 0) {
     switch (entry.type) {
       case "Message":
-      case "Term":
         return serializeMessage(entry);
+      case "Term":
+        return serializeTerm(entry);
       case "Comment":
         if (state & HAS_ENTRIES) {
           return `\n${serializeComment(entry, "#")}\n`;
@@ -95,14 +96,32 @@ function serializeMessage(message) {
     parts.push(serializeComment(message.comment));
   }
 
-  parts.push(serializeIdentifier(message.id));
-  parts.push(" =");
+  parts.push(`${serializeIdentifier(message.id)} =`);
 
   if (message.value) {
     parts.push(serializeValue(message.value));
   }
 
   for (const attribute of message.attributes) {
+    parts.push(serializeAttribute(attribute));
+  }
+
+  parts.push("\n");
+  return parts.join("");
+}
+
+
+function serializeTerm(term) {
+  const parts = [];
+
+  if (term.comment) {
+    parts.push(serializeComment(term.comment));
+  }
+
+  parts.push(`-${serializeIdentifier(term.id)} =`);
+  parts.push(serializeValue(term.value));
+
+  for (const attribute of term.attributes) {
     parts.push(serializeAttribute(attribute));
   }
 
@@ -202,8 +221,9 @@ function serializeExpression(expr) {
     case "NumberLiteral":
       return serializeNumberLiteral(expr);
     case "MessageReference":
-    case "TermReference":
       return serializeMessageReference(expr);
+    case "TermReference":
+      return serializeTermReference(expr);
     case "VariableReference":
       return serializeVariableReference(expr);
     case "AttributeExpression":
@@ -234,6 +254,11 @@ function serializeNumberLiteral(expr) {
 
 function serializeMessageReference(expr) {
   return serializeIdentifier(expr.id);
+}
+
+
+function serializeTermReference(expr) {
+  return `-${serializeIdentifier(expr.id)}`;
 }
 
 

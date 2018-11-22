@@ -6,6 +6,10 @@ import { ParseError } from "./errors";
 
 
 const trailingWSRe = /[ \t\n\r]+$/;
+// The Fluent Syntax spec uses /.*/ to parse comment lines. It matches all
+// characters except the following ones, which are considered line endings by
+// the regex engine.
+const COMMENT_EOL = ["\n", "\r", "\u2028", "\u2029"];
 
 
 function withSpan(fn) {
@@ -39,10 +43,9 @@ export default class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getTermIdentifier", "getVariant", "getNumber",
-      "getValue", "getPattern", "getVariantList", "getTextElement",
-      "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
-      "getString", "getLiteral"
+      "getVariant", "getNumber", "getValue", "getPattern", "getVariantList",
+      "getTextElement", "getPlaceable", "getExpression",
+      "getSelectorExpression", "getCallArg", "getString", "getLiteral"
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -189,10 +192,10 @@ export default class FluentParser {
         level = i;
       }
 
-      if (ps.currentChar !== EOL) {
+      if (!COMMENT_EOL.includes(ps.currentChar)) {
         ps.expectChar(" ");
         let ch;
-        while ((ch = ps.takeChar(x => x !== EOL))) {
+        while ((ch = ps.takeChar(x => !COMMENT_EOL.includes(x)))) {
           content += ch;
         }
       }
@@ -242,7 +245,8 @@ export default class FluentParser {
   }
 
   getTerm(ps) {
-    const id = this.getTermIdentifier(ps);
+    ps.expectChar("-");
+    const id = this.getIdentifier(ps);
 
     ps.skipBlankInline();
     ps.expectChar("=");
@@ -299,13 +303,6 @@ export default class FluentParser {
     }
 
     return new AST.Identifier(name);
-  }
-
-  getTermIdentifier(ps) {
-    ps.expectChar("-");
-    const id = this.getIdentifier(ps);
-    return new AST.Identifier(`-${id.name}`);
-
   }
 
   getVariantKey(ps) {
@@ -455,6 +452,8 @@ export default class FluentParser {
       if (ch === "{") {
         const element = this.getPlaceable(ps);
         elements.push(element);
+      } else if (ch === "}") {
+        throw new ParseError("E0027");
       } else {
         const element = this.getTextElement(ps);
         elements.push(element);
@@ -478,7 +477,7 @@ export default class FluentParser {
 
     let ch;
     while ((ch = ps.currentChar)) {
-      if (ch === "{") {
+      if (ch === "{" || ch === "}") {
         return new AST.TextElement(buffer);
       }
 
@@ -494,12 +493,6 @@ export default class FluentParser {
         continue;
       }
 
-      if (ch === "\\") {
-        ps.next();
-        buffer += this.getEscapeSequence(ps);
-        continue;
-      }
-
       buffer += ch;
       ps.next();
     }
@@ -507,10 +500,10 @@ export default class FluentParser {
     return new AST.TextElement(buffer);
   }
 
-  getEscapeSequence(ps, specials = ["{", "\\"]) {
+  getEscapeSequence(ps) {
     const next = ps.currentChar;
 
-    if (specials.includes(next)) {
+    if (next === "\\" || next === "\"") {
       ps.next();
       return `\\${next}`;
     }
@@ -738,7 +731,7 @@ export default class FluentParser {
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
-        val += this.getEscapeSequence(ps, ["{", "\\", "\""]);
+        val += this.getEscapeSequence(ps);
       } else {
         val += ch;
       }
@@ -777,7 +770,8 @@ export default class FluentParser {
     }
 
     if (ch === "-") {
-      const id = this.getTermIdentifier(ps);
+      ps.next();
+      const id = this.getIdentifier(ps);
       return new AST.TermReference(id);
     }
 

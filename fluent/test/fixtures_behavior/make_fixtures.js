@@ -36,22 +36,22 @@ function isLocalizable(entry) {
 
 function printEntries(source) {
   const {body} = parser.parse(source);
-  const messages = body.filter(isLocalizable);
-
   const entries = {};
 
-  for (const msg of messages) {
-    const entry = entries[msg.id.name] = {};
+  for (const entry of body.filter(isLocalizable)) {
+    const id = entry.type === 'Term'
+      ? `-${entry.id.name}` : entry.id.name;
+    const expected = entries[id] = {};
 
-    if (msg.value !== null) {
-      entry.value = true;
+    if (entry.value !== null) {
+      expected.value = true;
     }
 
-    if (msg.attributes.length > 0) {
-      entry.attributes = {};
+    if (entry.attributes.length > 0) {
+      expected.attributes = {};
 
-      for (const attr of msg.attributes) {
-        entry.attributes[attr.id.name] = true
+      for (const attr of entry.attributes) {
+        expected.attributes[attr.id.name] = true
       }
     }
 

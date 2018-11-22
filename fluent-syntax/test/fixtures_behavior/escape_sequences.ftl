@@ -1,10 +1,16 @@
-# ~ERROR E0025, pos 8, args "A"
-key1 = \A
+## Backslash is a regular character in text elements.
+key01 = \A
+key02 = \u0041
+key03 = \\u0041
+key04 = \u000z
+key05 = \{Value}
 
-# ~ERROR E0026, pos 23, args "000z"
-key2 = \u000z
+key06 = {"Escaped \" quote"}
+key07 = {"Escaped \\ backslash"}
+key08 = {"Escaped \u0041 A"}
 
-key3 = \{Escaped}
-key4 = {"Escaped \" quote"}
-key5 = \u0041
-key6 = \\u0041
+# ~ERROR E0025, pos 232, args "A"
+key09 = {"\A"}
+
+# ~ERROR E0026, pos 252, args "000z"
+key10 = {"\u000z"}
