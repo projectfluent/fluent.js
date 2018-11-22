@@ -601,7 +601,7 @@ export default class FluentParser {
 
     if (next === "\\" || next === "\"") {
       ps.next();
-      return `\\${next}`;
+      return [`\\${next}`, next];
     }
 
     if (next === "u") {
@@ -618,7 +618,15 @@ export default class FluentParser {
         sequence += ch;
       }
 
-      return `\\u${sequence}`;
+      const codepoint = parseInt(sequence, 16);
+      const unescaped = codepoint <= 0xD7FF || 0xE000 <= codepoint
+        // It's a Unicode scalar value.
+        ? String.fromCodePoint(codepoint)
+        // Escape sequences reresenting surrogate code points are well-formed
+        // but invalid in Fluent. Replace them with U+FFFD REPLACEMENT
+        // CHARACTER.
+        : "�";
+      return [`\\u${sequence}`, unescaped];
     }
 
     throw new ParseError("E0025", next);
@@ -805,16 +813,20 @@ export default class FluentParser {
   }
 
   getString(ps) {
-    let val = "";
+    let raw = "";
+    let value = "";
 
     ps.expectChar("\"");
 
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
-        val += this.getEscapeSequence(ps);
+        const [sequence, unescaped] = this.getEscapeSequence(ps);
+        raw += sequence;
+        value += unescaped;
       } else {
-        val += ch;
+        raw += ch;
+        value += ch;
       }
     }
 
@@ -824,8 +836,7 @@ export default class FluentParser {
 
     ps.expectChar("\"");
 
-    return new AST.StringLiteral(val);
-
+    return new AST.StringLiteral(raw, value);
   }
 
   getLiteral(ps) {

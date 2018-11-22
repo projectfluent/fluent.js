@@ -95,6 +95,7 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
+              "raw": ".",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -150,6 +151,7 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
+              "raw": ".",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -214,6 +216,7 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
+              "raw": ".",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -278,6 +281,7 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
+              "raw": ".",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -489,6 +493,7 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
+              "raw": ".",
               "value": ".",
               "span": {
                 "type": "Span",
@@ -671,6 +676,7 @@
                 "type": "Placeable",
                 "expression": {
                   "type": "StringLiteral",
+                  "raw": ".",
                   "value": ".",
                   "span": {
                     "type": "Span",
@@ -797,6 +803,7 @@
                         "type": "Placeable",
                         "expression": {
                           "type": "StringLiteral",
+                          "raw": ".",
                           "value": ".",
                           "span": {
                             "type": "Span",
