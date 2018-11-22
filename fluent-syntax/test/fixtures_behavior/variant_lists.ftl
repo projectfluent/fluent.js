@@ -4,7 +4,7 @@ message1 =
         *[one] One
     }
 
-# ~ERROR E0023, pos 123
+# ~ERROR E0014, pos 97
 message2 =
     { $sel ->
         *[one] {
@@ -24,7 +24,7 @@ message2 =
          }
     }
 
-# ~ERROR E0023, pos 318
+# ~ERROR E0014, pos 292
 -term3 =
     { $sel ->
         *[one] {

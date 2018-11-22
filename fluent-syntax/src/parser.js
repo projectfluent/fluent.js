@@ -43,7 +43,7 @@ export default class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getVariant", "getNumber", "getValue", "getPattern", "getVariantList",
+      "getVariant", "getNumber", "getPattern", "getVariantList",
       "getTextElement", "getPlaceable", "getExpression",
       "getSelectorExpression", "getCallArg", "getString", "getLiteral"
     ];
@@ -231,7 +231,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    const value = this.getInlineOrBlock(ps, this.getPattern);
+    const value = this.maybeGetValue(ps, {allowVariantList: false});
     const attrs = this.getAttributes(ps);
 
     if (value === null && attrs.length === 0) {
@@ -248,29 +248,17 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    const value = this.getInlineOrBlock(ps, this.getValue);
+    // XXX Once https://github.com/projectfluent/fluent/pull/220 lands,
+    // getTerm will be the only place where VariantLists are still legal. Move
+    // the code from getPatternOrVariantList up to here then, and remove the
+    // allowVariantList switch.
+    const value = this.maybeGetValue(ps, {allowVariantList: true});
     if (value === null) {
       throw new ParseError("E0006", id.name);
     }
 
     const attrs = this.getAttributes(ps);
     return new AST.Term(id, value, attrs);
-  }
-
-  getInlineOrBlock(ps, method) {
-    ps.peekBlankInline();
-    if (ps.isValueStart()) {
-      ps.skipToPeek();
-      return method.call(this, ps, {isBlock: false});
-    }
-
-    ps.peekBlankBlock();
-    if (ps.isValueContinuation()) {
-      ps.skipToPeek();
-      return method.call(this, ps, {isBlock: true});
-    }
-
-    return null;
   }
 
   getAttribute(ps) {
@@ -281,7 +269,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    const value = this.getInlineOrBlock(ps, this.getPattern);
+    const value = this.maybeGetValue(ps, {allowVariantList: false});
     if (value === null) {
       throw new ParseError("E0012");
     }
@@ -328,7 +316,7 @@ export default class FluentParser {
     return this.getIdentifier(ps);
   }
 
-  getVariant(ps, hasDefault) {
+  getVariant(ps, {hasDefault, allowVariantList}) {
     let defaultIndex = false;
 
     if (ps.currentChar === "*") {
@@ -349,7 +337,9 @@ export default class FluentParser {
     ps.skipBlank();
     ps.expectChar("]");
 
-    const value = this.getInlineOrBlock(ps, this.getValue);
+    // XXX We need to pass allowVariantList all the way down to here because
+    // nested VariantLists in Terms are legal for now.
+    const value = this.maybeGetValue(ps, {allowVariantList});
     if (value === null) {
       throw new ParseError("E0012");
     }
@@ -357,13 +347,13 @@ export default class FluentParser {
     return new AST.Variant(key, value, defaultIndex);
   }
 
-  getVariants(ps) {
+  getVariants(ps, {allowVariantList}) {
     const variants = [];
     let hasDefault = false;
 
     ps.skipBlank();
     while (ps.isVariantStart()) {
-      const variant = this.getVariant(ps, hasDefault);
+      const variant = this.getVariant(ps, {allowVariantList, hasDefault});
 
       if (variant.default) {
         hasDefault = true;
@@ -419,29 +409,55 @@ export default class FluentParser {
     return new AST.NumberLiteral(num);
   }
 
-  getValue(ps, {isBlock}) {
+  // maybeGetValue distinguishes between patterns which start on the same line
+  // as the identifier (a.k.a. inline signleline patterns and inline multiline
+  // patterns) and patterns which start on a new line (a.k.a. block multiline
+  // patterns). The distinction is important for the dedentation logic: the
+  // indent of the first line of a block pattern must be taken into account when
+  // calculating the maximum common indent.
+  maybeGetValue(ps, {allowVariantList}) {
     ps.peekBlankInline();
-    const peekOffset = ps.peekOffset;
-    if (ps.currentPeek === "{") {
+    if (ps.isValueStart()) {
+      ps.skipToPeek();
+      return this.getPatternOrVariantList(
+        ps, {isBlock: false, allowVariantList});
+    }
+
+    ps.peekBlankBlock();
+    if (ps.isValueContinuation()) {
+      ps.skipToPeek();
+      return this.getPatternOrVariantList(
+        ps, {isBlock: true, allowVariantList});
+    }
+
+    return null;
+  }
+
+  // Parse a VariantList (if allowed) or a Pattern.
+  getPatternOrVariantList(ps, {isBlock, allowVariantList}) {
+    ps.peekBlankInline();
+    if (allowVariantList && ps.currentPeek === "{") {
+      const start = ps.peekOffset;
       ps.peek();
-      ps.peekBlank();
-      if (ps.isVariantStart()) {
-        ps.resetPeek(peekOffset);
-        ps.skipToPeek();
-        return this.getVariantList(ps);
+      ps.peekBlankInline();
+      if (ps.currentPeek === EOL) {
+        ps.peekBlank();
+        if (ps.isVariantStart()) {
+          ps.resetPeek(start);
+          ps.skipToPeek();
+          return this.getVariantList(ps, {allowVariantList});
+        }
       }
     }
 
     ps.resetPeek();
-    return this.getPattern(ps, {isBlock});
+    const pattern = this.getPattern(ps, {isBlock});
+    return pattern;
   }
 
   getVariantList(ps) {
     ps.expectChar("{");
-    ps.skipBlankInline();
-    ps.expectLineEnd();
-    const variants = this.getVariants(ps);
-    ps.skipBlank();
+    var variants = this.getVariants(ps, {allowVariantList: true});
     ps.expectChar("}");
     return new AST.VariantList(variants);
   }
@@ -449,6 +465,8 @@ export default class FluentParser {
   getPattern(ps, {isBlock}) {
     const elements = [];
     if (isBlock) {
+      // A block pattern is a pattern which starts on a new line. Store and
+      // measure the indent of this first line for the dedentation logic.
       const blankStart = ps.index;
       const firstIndent = ps.skipBlankInline();
       elements.push(this.getIndent(ps, firstIndent, blankStart));
@@ -487,9 +505,13 @@ export default class FluentParser {
       }
     }
 
-    return new AST.Pattern(this.dedent(elements, commonIndentLength));
+    const dedented = this.dedent(elements, commonIndentLength);
+    return new AST.Pattern(dedented);
   }
 
+  // Create a token representing an indent. It's not part of the AST and it will
+  // be trimmed and merged into adjacent TextElements, or turned into a new
+  // TextElement, if it's surrounded by two Placeables.
   getIndent(ps, value, start) {
     return {
       type: "Indent",
@@ -498,6 +520,8 @@ export default class FluentParser {
     };
   }
 
+  // Dedent a list of elements by removing the maximum common indent from the
+  // beginning of text lines. The common indent is calculated in getPattern.
   dedent(elements, commonIndent) {
     const trimmed = [];
 
@@ -528,6 +552,8 @@ export default class FluentParser {
       }
 
       if (element.type === "Indent") {
+        // If the indent hasn't been merged into a preceding TextElement,
+        // convert it into a new TextElement.
         const textElement = new AST.TextElement(element.value);
         if (this.withSpans) {
           textElement.addSpan(element.span.start, element.span.end);
@@ -538,7 +564,7 @@ export default class FluentParser {
       trimmed.push(element);
     }
 
-    // Trim trailing whitespace.
+    // Trim trailing whitespace from the Pattern.
     const lastElement = trimmed[trimmed.length - 1];
     if (lastElement.type === "TextElement") {
       lastElement.value = lastElement.value.replace(trailingWSRe, "");
@@ -600,16 +626,14 @@ export default class FluentParser {
 
   getPlaceable(ps) {
     ps.expectChar("{");
+    ps.skipBlank();
     const expression = this.getExpression(ps);
     ps.expectChar("}");
     return new AST.Placeable(expression);
   }
 
   getExpression(ps) {
-    ps.skipBlank();
-
     const selector = this.getSelectorExpression(ps);
-
     ps.skipBlank();
 
     if (ps.currentChar === "-") {
@@ -638,20 +662,12 @@ export default class FluentParser {
       ps.skipBlankInline();
       ps.expectLineEnd();
 
-      const variants = this.getVariants(ps);
-
-      // VariantLists are only allowed in other VariantLists.
-      if (variants.some(v => v.value.type === "VariantList")) {
-        throw new ParseError("E0023");
-      }
-
+      const variants = this.getVariants(ps, {allowVariantList: false});
       return new AST.SelectExpression(selector, variants);
     } else if (selector.type === "AttributeExpression" &&
                selector.ref.type === "TermReference") {
       throw new ParseError("E0019");
     }
-
-    ps.skipBlank();
 
     return selector;
   }
