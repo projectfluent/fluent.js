@@ -1,11 +1,9 @@
 {
     "key": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FOO"
-            },
+            "type": "ref",
+            "name": "FOO",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",

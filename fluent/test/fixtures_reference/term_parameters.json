@@ -4,7 +4,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "arg"
+                "name": "arg",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -17,27 +19,25 @@
     ],
     "key01": [
         {
-            "type": "ref",
-            "name": "-term"
+            "type": "term",
+            "name": "term",
+            "attr": null,
+            "args": null
         }
     ],
     "key02": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "-term"
-            },
+            "type": "term",
+            "name": "term",
+            "attr": null,
             "args": []
         }
     ],
     "key03": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "-term"
-            },
+            "type": "term",
+            "name": "term",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -52,11 +52,9 @@
     ],
     "key04": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "-term"
-            },
+            "type": "term",
+            "name": "term",
+            "attr": null,
             "args": [
                 {
                     "type": "str",

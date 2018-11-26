@@ -1,26 +1,106 @@
 {
-    "message-reference": [
+    "message-reference-placeable": [
         {
             "type": "ref",
-            "name": "msg"
+            "name": "msg",
+            "attr": null,
+            "args": null
         }
     ],
-    "term-reference": [
+    "term-reference-placeable": [
         {
-            "type": "ref",
-            "name": "-term"
+            "type": "term",
+            "name": "term",
+            "attr": null,
+            "args": null
         }
     ],
-    "variable-reference": [
+    "variable-reference-placeable": [
         {
             "type": "var",
-            "name": "var"
+            "name": "var",
+            "attr": null,
+            "args": null
         }
     ],
-    "not-call-expression": [
+    "function-reference-placeable": [
         {
             "type": "ref",
-            "name": "FUN"
+            "name": "FUN",
+            "attr": null,
+            "args": null
+        }
+    ],
+    "variable-reference-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "var",
+                "attr": null,
+                "args": null
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "message-reference-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "msg",
+                "attr": null,
+                "args": null
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "term-reference-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": null
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "function-expression-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "FUN",
+                "attr": null,
+                "args": null
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
         }
     ]
 }

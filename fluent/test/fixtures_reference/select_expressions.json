@@ -3,11 +3,9 @@
         {
             "type": "select",
             "selector": {
-                "type": "call",
-                "ref": {
-                    "type": "ref",
-                    "name": "BUILTIN"
-                },
+                "type": "ref",
+                "name": "BUILTIN",
+                "attr": null,
                 "args": []
             },
             "variants": [
@@ -32,12 +30,10 @@
         {
             "type": "select",
             "selector": {
-                "type": "getattr",
-                "ref": {
-                    "type": "ref",
-                    "name": "-term"
-                },
-                "name": "case"
+                "type": "term",
+                "name": "term",
+                "attr": "case",
+                "args": null
             },
             "variants": [
                 {
@@ -52,8 +48,10 @@
         {
             "type": "select",
             "selector": {
-                "type": "ref",
-                "name": "-term"
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -68,11 +66,8 @@
         {
             "type": "select",
             "selector": {
-                "type": "getvar",
-                "ref": {
-                    "type": "ref",
-                    "name": "-term"
-                },
+                "type": "term",
+                "name": "term",
                 "selector": "case"
             },
             "variants": [
@@ -88,11 +83,9 @@
         {
             "type": "select",
             "selector": {
-                "type": "call",
-                "ref": {
-                    "type": "ref",
-                    "name": "-term"
-                },
+                "type": "term",
+                "name": "term",
+                "attr": null,
                 "args": [
                     {
                         "type": "narg",

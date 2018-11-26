@@ -344,4 +344,96 @@ suite("Macros", function() {
       assert.equal(errs.length, 0);
     });
   });
+
+  suite("Parameterized term attributes", function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle("en-US", {
+        useIsolating: false,
+      });
+      bundle.addMessages(ftl`
+        -ship = Ship
+            .gender = {$style ->
+               *[traditional] neuter
+                [chicago] feminine
+            }
+
+        ref-attr = {-ship.gender ->
+           *[masculine] He
+            [feminine] She
+            [neuter] It
+        }
+        call-attr-no-args = {-ship.gender() ->
+           *[masculine] He
+            [feminine] She
+            [neuter] It
+        }
+        call-attr-with-expected-arg = {-ship.gender(style: "chicago") ->
+           *[masculine] He
+            [feminine] She
+            [neuter] It
+        }
+        call-attr-with-other-arg = {-ship.gender(other: 3) ->
+           *[masculine] He
+            [feminine] She
+            [neuter] It
+        }
+      `);
+    });
+
+    test("Not parameterized, no externals", function() {
+      const msg = bundle.getMessage("ref-attr");
+      const val = bundle.format(msg, {}, errs);
+      assert.equal(val, "It");
+      assert.equal(errs.length, 1);
+    });
+
+    test("Not parameterized but with externals", function() {
+      const msg = bundle.getMessage("ref-attr");
+      const val = bundle.format(msg, {style: "chicago"}, errs);
+      assert.equal(val, "It");
+      assert.equal(errs.length, 1);
+    });
+
+    test("No arguments, no externals", function() {
+      const msg = bundle.getMessage("call-attr-no-args");
+      const val = bundle.format(msg, {}, errs);
+      assert.equal(val, "It");
+      assert.equal(errs.length, 1);
+    });
+
+    test("No arguments, but with externals", function() {
+      const msg = bundle.getMessage("call-attr-no-args");
+      const val = bundle.format(msg, {style: "chicago"}, errs);
+      assert.equal(val, "It");
+      assert.equal(errs.length, 1);
+    });
+
+    test("With expected args, no externals", function() {
+      const msg = bundle.getMessage("call-attr-with-expected-arg");
+      const val = bundle.format(msg, {}, errs);
+      assert.equal(val, "She");
+      assert.equal(errs.length, 0);
+    });
+
+    test("With expected args, and with externals", function() {
+      const msg = bundle.getMessage("call-attr-with-expected-arg");
+      const val = bundle.format(msg, {style: "chicago"}, errs);
+      assert.equal(val, "She");
+      assert.equal(errs.length, 0);
+    });
+
+    test("With other args, no externals", function() {
+      const msg = bundle.getMessage("call-attr-with-other-arg");
+      const val = bundle.format(msg, {}, errs);
+      assert.equal(val, "It");
+      assert.equal(errs.length, 1);
+    });
+
+    test("With other args, and with externals", function() {
+      const msg = bundle.getMessage("call-attr-with-other-arg");
+      const val = bundle.format(msg, {style: "chicago"}, errs);
+      assert.equal(val, "It");
+      assert.equal(errs.length, 1);
+    });
+  });
 });

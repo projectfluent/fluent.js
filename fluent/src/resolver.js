@@ -17,23 +17,8 @@
  * translation as possible.  In rare situations where the resolver didn't know
  * how to recover from an error it will return an instance of `FluentNone`.
  *
- * `MessageReference`, `VariantExpression`, `AttributeExpression` and
- * `SelectExpression` resolve to raw Runtime Entries objects and the result of
- * the resolution needs to be passed into `Type` to get their real value.
- * This is useful for composing expressions.  Consider:
- *
- *     brand-name[nominative]
- *
- * which is a `VariantExpression` with properties `id: MessageReference` and
- * `key: Keyword`.  If `MessageReference` was resolved eagerly, it would
- * instantly resolve to the value of the `brand-name` message.  Instead, we
- * want to get the message object and look for its `nominative` variant.
- *
- * All other expressions (except for `FunctionReference` which is only used as
- * a callee in `FunctionExpression`) resolve to an instance of `FluentType`.
- * The caller should use the `toString` method to convert the instance to a
- * native value.
- *
+ * All expressions resolve to an instance of `FluentType`. The caller should
+ * use the `toString` method to convert the instance to a native value.
  *
  * All functions in this file pass around a special object called `env`.
  * This object stores a set of elements used by all resolve functions:
@@ -62,20 +47,7 @@ const FSI = "\u2068";
 const PDI = "\u2069";
 
 
-/**
- * Helper for matching a variant key to the given selector.
- *
- * Used in SelectExpressions and VariantExpressions.
- *
- * @param   {FluentBundle} bundle
- *    Resolver environment object.
- * @param   {FluentType} key
- *    The key of the currently considered variant.
- * @param   {FluentType} selector
- *    The selector based om which the correct variant should be chosen.
- * @returns {FluentType}
- * @private
- */
+// Helper: match a variant key to the given selector.
 function match(bundle, selector, key) {
   if (key === selector) {
     // Both are strings.
@@ -100,23 +72,10 @@ function match(bundle, selector, key) {
   return false;
 }
 
-/**
- * Helper for choosing the default value from a set of members.
- *
- * Used in SelectExpressions and Type.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} members
- *    Hash map of variants from which the default value is to be selected.
- * @param   {Number} star
- *    The index of the default variant.
- * @returns {FluentType}
- * @private
- */
-function DefaultMember(env, members, star) {
-  if (members[star]) {
-    return members[star];
+// Helper: resolve the default variant from a list of variants.
+function getDefault(env, variants, star) {
+  if (variants[star]) {
+    return Type(env, variants[star]);
   }
 
   const { errors } = env;
@@ -124,176 +83,34 @@ function DefaultMember(env, members, star) {
   return new FluentNone();
 }
 
+// Helper: resolve arguments to a call expression.
+function getArguments(env, args) {
+  const positional = [];
+  const named = {};
 
-/**
- * Resolve a reference to another message.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} id
- *    The identifier of the message to be resolved.
- * @param   {String} id.name
- *    The name of the identifier.
- * @returns {FluentType}
- * @private
- */
-function MessageReference(env, {name}) {
-  const { bundle, errors } = env;
-  const message = name[0] === "-"
-    ? bundle._terms.get(name)
-    : bundle._messages.get(name);
-
-  if (!message) {
-    const err = name[0] === "-"
-      ? new ReferenceError(`Unknown term: ${name}`)
-      : new ReferenceError(`Unknown message: ${name}`);
-    errors.push(err);
-    return new FluentNone(name);
-  }
-
-  return message;
-}
-
-/**
- * Resolve a variant expression to the variant object.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {Object} expr.ref
- *    An Identifier of a message for which the variant is resolved.
- * @param   {Object} expr.id.name
- *    Name a message for which the variant is resolved.
- * @param   {Object} expr.key
- *    Variant key to be resolved.
- * @returns {FluentType}
- * @private
- */
-function VariantExpression(env, {ref, selector}) {
-  const message = MessageReference(env, ref);
-  if (message instanceof FluentNone) {
-    return message;
-  }
-
-  const { bundle, errors } = env;
-  const sel = Type(env, selector);
-  const value = message.value || message;
-
-  function isVariantList(node) {
-    return Array.isArray(node) &&
-      node[0].type === "select" &&
-      node[0].selector === null;
-  }
-
-  if (isVariantList(value)) {
-    // Match the specified key against keys of each variant, in order.
-    for (const variant of value[0].variants) {
-      const key = Type(env, variant.key);
-      if (match(env.bundle, sel, key)) {
-        return variant;
+  if (args) {
+    for (const arg of args) {
+      if (arg.type === "narg") {
+        named[arg.name] = Type(env, arg.value);
+      } else {
+        positional.push(Type(env, arg));
       }
     }
   }
 
-  errors.push(
-    new ReferenceError(`Unknown variant: ${sel.toString(bundle)}`));
-  return Type(env, message);
+  return [positional, named];
 }
 
-
-/**
- * Resolve an attribute expression to the attribute object.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {String} expr.ref
- *    An ID of a message for which the attribute is resolved.
- * @param   {String} expr.name
- *    Name of the attribute to be resolved.
- * @returns {FluentType}
- * @private
- */
-function AttributeExpression(env, {ref, name}) {
-  const message = MessageReference(env, ref);
-  if (message instanceof FluentNone) {
-    return message;
-  }
-
-  if (message.attrs) {
-    // Match the specified name against keys of each attribute.
-    for (const attrName in message.attrs) {
-      if (name === attrName) {
-        return message.attrs[name];
-      }
-    }
-  }
-
-  const { errors } = env;
-  errors.push(new ReferenceError(`Unknown attribute: ${name}`));
-  return Type(env, message);
-}
-
-/**
- * Resolve a select expression to the member object.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {String} expr.selector
- *    Selector expression
- * @param   {Array} expr.variants
- *    List of variants for the select expression.
- * @param   {Number} expr.star
- *    Index of the default variant.
- * @returns {FluentType}
- * @private
- */
-function SelectExpression(env, {selector, variants, star}) {
-  if (selector === null) {
-    return DefaultMember(env, variants, star);
-  }
-
-  let sel = Type(env, selector);
-  if (sel instanceof FluentNone) {
-    return DefaultMember(env, variants, star);
-  }
-
-  // Match the selector against keys of each variant, in order.
-  for (const variant of variants) {
-    const key = Type(env, variant.key);
-    if (match(env.bundle, sel, key)) {
-      return variant;
-    }
-  }
-
-  return DefaultMember(env, variants, star);
-}
-
-
-/**
- * Resolve expression to a Fluent type.
- *
- * JavaScript strings are a special case.  Since they natively have the
- * `toString` method they can be used as if they were a Fluent type without
- * paying the cost of creating a instance of one.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression object to be resolved into a Fluent type.
- * @returns {FluentType}
- * @private
- */
+// Resolve an expression to a Fluent type.
 function Type(env, expr) {
-  // A fast-path for strings which are the most common case, and for
-  // `FluentNone` which doesn't require any additional logic.
+  // A fast-path for strings which are the most common case. Since they
+  // natively have the `toString` method they can be used as if they were
+  // a FluentType instance without incurring the cost of creating one.
   if (typeof expr === "string") {
     return env.bundle._transform(expr);
   }
+
+  // A fast-path for `FluentNone` which doesn't require any additional logic.
   if (expr instanceof FluentNone) {
     return expr;
   }
@@ -304,7 +121,6 @@ function Type(env, expr) {
     return Pattern(env, expr);
   }
 
-
   switch (expr.type) {
     case "str":
       return expr.value;
@@ -312,28 +128,14 @@ function Type(env, expr) {
       return new FluentNumber(expr.value);
     case "var":
       return VariableReference(env, expr);
-    case "call":
-      return expr.ref.name[0] === "-"
-        ? MacroExpression(env, expr)
-        : FunctionExpression(env, expr);
-    case "ref": {
-      const message = MessageReference(env, expr);
-      return expr.name[0] === "-"
-        ? Type({...env, args: {}}, message)
-        : Type(env, message);
-    }
-    case "getattr": {
-      const attr = AttributeExpression(env, expr);
-      return Type(env, attr);
-    }
-    case "getvar": {
-      const variant = VariantExpression(env, expr);
-      return Type(env, variant);
-    }
-    case "select": {
-      const member = SelectExpression(env, expr);
-      return Type(env, member);
-    }
+    case "term":
+      return TermReference({...env, args: {}}, expr);
+    case "ref":
+      return expr.args
+        ? FunctionReference(env, expr)
+        : MessageReference(env, expr);
+    case "select":
+      return SelectExpression(env, expr);
     case undefined: {
       // If it's a node with a value, resolve the value.
       if (expr.value !== null && expr.value !== undefined) {
@@ -349,18 +151,7 @@ function Type(env, expr) {
   }
 }
 
-/**
- * Resolve a reference to a variable.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {String} expr.name
- *    Name of an argument to be returned.
- * @returns {FluentType}
- * @private
- */
+// Resolve a reference to a variable.
 function VariableReference(env, {name}) {
   const { args, errors } = env;
 
@@ -394,22 +185,76 @@ function VariableReference(env, {name}) {
   }
 }
 
-/**
- * Resolve a reference to a function.
- *
- * @param   {Object}  env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {String} expr.name
- *    Name of the function to be returned.
- * @returns {Function}
- * @private
- */
-function FunctionReference(env, {name}) {
-  // Some functions are built-in.  Others may be provided by the runtime via
+// Resolve a reference to another message.
+function MessageReference(env, {name, attr}) {
+  const {bundle, errors} = env;
+  const message = bundle._messages.get(name);
+  if (!message) {
+    const err = new ReferenceError(`Unknown message: ${name}`);
+    errors.push(err);
+    return new FluentNone(name);
+  }
+
+  if (attr) {
+    const attribute = message.attrs && message.attrs[attr];
+    if (attribute) {
+      return Type(env, attribute);
+    }
+    errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    return Type(env, message);
+  }
+
+  return Type(env, message);
+}
+
+// Resolve a call to a Term with key-value arguments.
+function TermReference(env, {name, attr, selector, args}) {
+  const {bundle, errors} = env;
+
+  const id = `-${name}`;
+  const term = bundle._terms.get(id);
+  if (!term) {
+    const err = new ReferenceError(`Unknown term: ${id}`);
+    errors.push(err);
+    return new FluentNone(id);
+  }
+
+  // Every TermReference has its own args.
+  const [, keyargs] = getArguments(env, args);
+  const local = {...env, args: keyargs};
+
+  if (attr) {
+    const attribute = term.attrs && term.attrs[attr];
+    if (attribute) {
+      return Type(local, attribute);
+    }
+    errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    return Type(local, term);
+  }
+
+  const variantList = getVariantList(term);
+  if (selector && variantList) {
+    return SelectExpression(local, {...variantList, selector});
+  }
+
+  return Type(local, term);
+}
+
+// Helper: convert a value into a variant list, if possible.
+function getVariantList(term) {
+  const value = term.value || term;
+  return Array.isArray(value)
+    && value[0].type === "select"
+    && value[0].selector === null
+    ? value[0]
+    : null;
+}
+
+// Resolve a call to a Function with positional and key-value arguments.
+function FunctionReference(env, {name, args}) {
+  // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
-  const { bundle: { _functions }, errors } = env;
+  const {bundle: {_functions}, errors} = env;
   const func = _functions[name] || builtins[name];
 
   if (!func) {
@@ -422,88 +267,39 @@ function FunctionReference(env, {name}) {
     return new FluentNone(`${name}()`);
   }
 
-  return func;
-}
-
-/**
- * Resolve a call to a Function with positional and key-value arguments.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {Object} expr.ref
- *    FTL Function object.
- * @param   {Array} expr.args
- *    FTL Function argument list.
- * @returns {FluentType}
- * @private
- */
-function FunctionExpression(env, {ref, args}) {
-  const func = FunctionReference(env, ref);
-  if (func instanceof FluentNone) {
-    return func;
-  }
-
-  const posargs = [];
-  const keyargs = {};
-
-  for (const arg of args) {
-    if (arg.type === "narg") {
-      keyargs[arg.name] = Type(env, arg.value);
-    } else {
-      posargs.push(Type(env, arg));
-    }
-  }
-
   try {
-    return func(posargs, keyargs);
+    return func(...getArguments(env, args));
   } catch (e) {
     // XXX Report errors.
     return new FluentNone();
   }
 }
 
-/**
- * Resolve a call to a Term with key-value arguments.
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Object} expr
- *    An expression to be resolved.
- * @param   {Object} expr.ref
- *    FTL Function object.
- * @param   {Array} expr.args
- *    FTL Function argument list.
- * @returns {FluentType}
- * @private
- */
-function MacroExpression(env, {ref, args}) {
-  const callee = MessageReference(env, ref);
-  if (callee instanceof FluentNone) {
-    return callee;
+// Resolve a select expression to the member object.
+function SelectExpression(env, {selector, variants, star}) {
+  if (selector === null) {
+    return getDefault(env, variants, star);
   }
 
-  const keyargs = {};
-  for (const arg of args) {
-    if (arg.type === "narg") {
-      keyargs[arg.name] = Type(env, arg.value);
+  let sel = Type(env, selector);
+  if (sel instanceof FluentNone) {
+    const variant = getDefault(env, variants, star);
+    return Type(env, variant);
+  }
+
+  // Match the selector against keys of each variant, in order.
+  for (const variant of variants) {
+    const key = Type(env, variant.key);
+    if (match(env.bundle, sel, key)) {
+      return Type(env, variant);
     }
   }
 
-  return Type({...env, args: keyargs}, callee);
+  const variant = getDefault(env, variants, star);
+  return Type(env, variant);
 }
 
-/**
- * Resolve a pattern (a complex string with placeables).
- *
- * @param   {Object} env
- *    Resolver environment object.
- * @param   {Array} ptn
- *    Array of pattern elements.
- * @returns {Array}
- * @private
- */
+// Resolve a pattern (a complex string with placeables).
 function Pattern(env, ptn) {
   const { bundle, dirty, errors } = env;
 
