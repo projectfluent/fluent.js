@@ -655,12 +655,18 @@ export default class FluentParser {
         throw new ParseError("E0016");
       }
 
-      if (selector.type === "AttributeExpression" &&
-          selector.ref.type === "MessageReference") {
+      if (selector.type === "AttributeExpression"
+          && selector.ref.type === "MessageReference") {
         throw new ParseError("E0018");
       }
 
-      if (selector.type === "VariantExpression") {
+      if (selector.type === "TermReference"
+          || selector.type === "VariantExpression") {
+        throw new ParseError("E0017");
+      }
+
+      if (selector.type === "CallExpression"
+          && selector.callee.type === "TermReference") {
         throw new ParseError("E0017");
       }
 
@@ -672,8 +678,8 @@ export default class FluentParser {
 
       const variants = this.getVariants(ps, {allowVariantList: false});
       return new AST.SelectExpression(selector, variants);
-    } else if (selector.type === "AttributeExpression" &&
-               selector.ref.type === "TermReference") {
+    } else if (selector.type === "AttributeExpression"
+        && selector.ref.type === "TermReference") {
       throw new ParseError("E0019");
     }
 
@@ -685,60 +691,59 @@ export default class FluentParser {
       return this.getPlaceable(ps);
     }
 
-    const literal = this.getLiteral(ps);
-
-    if (literal.type !== "MessageReference"
-      && literal.type !== "TermReference") {
-      return literal;
+    const selector = this.getLiteral(ps);
+    switch (selector.type) {
+      case "StringLiteral":
+      case "NumberLiteral":
+      case "VariableReference":
+        return selector;
     }
 
-    const ch = ps.currentChar;
-
-    if (ch === ".") {
+    if (ps.currentChar === ".") {
       ps.next();
-
       const attr = this.getIdentifier(ps);
-      return new AST.AttributeExpression(literal, attr);
+      return new AST.AttributeExpression(selector, attr);
     }
 
-    if (ch === "[") {
+    if (ps.currentChar === "[") {
       ps.next();
 
-      if (literal.type === "MessageReference") {
+      if (selector.type === "MessageReference") {
         throw new ParseError("E0024");
       }
 
       const key = this.getVariantKey(ps);
-
       ps.expectChar("]");
-
-      return new AST.VariantExpression(literal, key);
+      return new AST.VariantExpression(selector, key);
     }
 
-    if (ch === "(") {
+    if (ps.currentChar === "(") {
       ps.next();
 
-      if (!/^[A-Z][A-Z_?-]*$/.test(literal.id.name)) {
-        throw new ParseError("E0008");
+      if (selector.type === "MessageReference") {
+        if (/^[A-Z][A-Z_?-]*$/.test(selector.id.name)) {
+          // The callee is a Function.
+          var func = new AST.FunctionReference(selector.id);
+          if (this.withSpans) {
+            func.addSpan(selector.span.start, selector.span.end);
+          }
+        } else {
+          // Messages can't be callees.
+          throw new ParseError("E0008");
+        }
       }
 
       const args = this.getCallArgs(ps);
-
       ps.expectChar(")");
 
-      const func = new AST.FunctionReference(literal.id);
-      if (this.withSpans) {
-        func.addSpan(literal.span.start, literal.span.end);
-      }
-
       return new AST.CallExpression(
-        func,
+        func || selector,
         args.positional,
         args.named,
       );
     }
 
-    return literal;
+    return selector;
   }
 
   getCallArg(ps) {

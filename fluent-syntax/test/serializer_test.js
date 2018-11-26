@@ -450,6 +450,13 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), input);
   });
 
+  test("macro call", function() {
+    const input = ftl`
+      foo = { -term() }
+    `;
+    assert.equal(pretty(input), input);
+  });
+
   test("nested placeables", function() {
     const input = ftl`
       foo = {{ FOO() }}
