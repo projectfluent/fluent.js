@@ -363,7 +363,7 @@ function VariableReference(env, {name}) {
 
   if (!args || !args.hasOwnProperty(name)) {
     errors.push(new ReferenceError(`Unknown variable: ${name}`));
-    return new FluentNone(name);
+    return new FluentNone(`$${name}`);
   }
 
   const arg = args[name];
@@ -387,7 +387,7 @@ function VariableReference(env, {name}) {
       errors.push(
         new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
-      return new FluentNone(name);
+      return new FluentNone(`$${name}`);
   }
 }
 
