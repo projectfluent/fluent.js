@@ -13,5 +13,8 @@
   },
   "key3": {
     "value": true
+  },
+  "key4": {
+    "value": true
   }
 }

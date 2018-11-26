@@ -311,8 +311,7 @@ export default class FluentResource extends Map {
         }
 
         if (consumeToken(TOKEN_PAREN_OPEN)) {
-          let callee = {...ref, type: "func"};
-          return {type: "call", callee, args: parseArguments()};
+          return {type: "call", ref, args: parseArguments()};
         }
 
         return ref;

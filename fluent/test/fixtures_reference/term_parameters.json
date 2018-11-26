@@ -1,0 +1,84 @@
+{
+    "-term": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "arg"
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "key01": [
+        {
+            "type": "ref",
+            "name": "-term"
+        }
+    ],
+    "key02": [
+        {
+            "type": "call",
+            "ref": {
+                "type": "ref",
+                "name": "-term"
+            },
+            "args": []
+        }
+    ],
+    "key03": [
+        {
+            "type": "call",
+            "ref": {
+                "type": "ref",
+                "name": "-term"
+            },
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "arg",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                }
+            ]
+        }
+    ],
+    "key04": [
+        {
+            "type": "call",
+            "ref": {
+                "type": "ref",
+                "name": "-term"
+            },
+            "args": [
+                {
+                    "type": "str",
+                    "value": "positional"
+                },
+                {
+                    "type": "narg",
+                    "name": "narg1",
+                    "value": {
+                        "type": "num",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "narg",
+                    "name": "narg2",
+                    "value": {
+                        "type": "num",
+                        "value": "2"
+                    }
+                }
+            ]
+        }
+    ]
+}
