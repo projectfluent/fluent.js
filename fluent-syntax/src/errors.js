@@ -33,7 +33,7 @@ function getErrorMessage(code, args) {
     case "E0007":
       return "Keyword cannot end with a whitespace";
     case "E0008":
-      return "The callee has to be a simple, upper-case identifier";
+      return "The callee has to be an upper-case identifier or a term";
     case "E0009":
       return "The key has to be a simple identifier";
     case "E0010":
