@@ -46,10 +46,11 @@ readdir(fixtures, function(err, filenames) {
         const ref = JSON.parse(expected)
         const ast = parser.parse(ftl);
 
-        // Ignore Junk which is parsed differently by the tooling parser, and
-        // which doesn't carry spans nor annotations in the reference parser.
-        ref.body = ref.body.filter(entry => entry.type !== "Junk");
-        ast.body = ast.body.filter(entry => entry.type !== "Junk");
+        // Only compare Junk content and ignore annotations, which carry error
+        // messages and positions. The reference parser doesn't produce
+        // annotations at the moment.
+        ast.body = ast.body.map(entry => entry.type === "Junk" ?
+          {...entry, annotations: []} : entry);
 
         assert.deepEqual(
           ast, ref,
