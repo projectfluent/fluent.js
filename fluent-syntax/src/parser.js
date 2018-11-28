@@ -227,7 +227,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    const value = this.maybeGetValue(ps, {allowVariantList: false});
+    const value = this.maybeGetPattern(ps);
     const attrs = this.getAttributes(ps);
 
     if (value === null && attrs.length === 0) {
@@ -244,11 +244,9 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    // XXX Once https://github.com/projectfluent/fluent/pull/220 lands,
-    // getTerm will be the only place where VariantLists are still legal. Move
-    // the code from getPatternOrVariantList up to here then, and remove the
-    // allowVariantList switch.
-    const value = this.maybeGetValue(ps, {allowVariantList: true});
+    // Syntax 0.8 compat: VariantLists are supported but deprecated. They can
+    // only be found as values of Terms. Nested VariantLists are not allowed.
+    const value = this.maybeGetVariantList(ps) || this.maybeGetPattern(ps);
     if (value === null) {
       throw new ParseError("E0006", id.name);
     }
@@ -265,7 +263,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    const value = this.maybeGetValue(ps, {allowVariantList: false});
+    const value = this.maybeGetPattern(ps);
     if (value === null) {
       throw new ParseError("E0012");
     }
@@ -312,7 +310,7 @@ export default class FluentParser {
     return this.getIdentifier(ps);
   }
 
-  getVariant(ps, {hasDefault, allowVariantList}) {
+  getVariant(ps, {hasDefault}) {
     let defaultIndex = false;
 
     if (ps.currentChar === "*") {
@@ -333,9 +331,7 @@ export default class FluentParser {
     ps.skipBlank();
     ps.expectChar("]");
 
-    // XXX We need to pass allowVariantList all the way down to here because
-    // nested VariantLists in Terms are legal for now.
-    const value = this.maybeGetValue(ps, {allowVariantList});
+    const value = this.maybeGetPattern(ps);
     if (value === null) {
       throw new ParseError("E0012");
     }
@@ -343,13 +339,13 @@ export default class FluentParser {
     return new AST.Variant(key, value, defaultIndex);
   }
 
-  getVariants(ps, {allowVariantList}) {
+  getVariants(ps) {
     const variants = [];
     let hasDefault = false;
 
     ps.skipBlank();
     while (ps.isVariantStart()) {
-      const variant = this.getVariant(ps, {allowVariantList, hasDefault});
+      const variant = this.getVariant(ps, {hasDefault});
 
       if (variant.default) {
         hasDefault = true;
@@ -405,34 +401,34 @@ export default class FluentParser {
     return new AST.NumberLiteral(num);
   }
 
-  // maybeGetValue distinguishes between patterns which start on the same line
+  // maybeGetPattern distinguishes between patterns which start on the same line
   // as the identifier (a.k.a. inline signleline patterns and inline multiline
   // patterns) and patterns which start on a new line (a.k.a. block multiline
   // patterns). The distinction is important for the dedentation logic: the
   // indent of the first line of a block pattern must be taken into account when
   // calculating the maximum common indent.
-  maybeGetValue(ps, {allowVariantList}) {
+  maybeGetPattern(ps) {
     ps.peekBlankInline();
     if (ps.isValueStart()) {
       ps.skipToPeek();
-      return this.getPatternOrVariantList(
-        ps, {isBlock: false, allowVariantList});
+      return this.getPattern(ps, {isBlock: false});
     }
 
     ps.peekBlankBlock();
     if (ps.isValueContinuation()) {
       ps.skipToPeek();
-      return this.getPatternOrVariantList(
-        ps, {isBlock: true, allowVariantList});
+      return this.getPattern(ps, {isBlock: true});
     }
 
     return null;
   }
 
-  // Parse a VariantList (if allowed) or a Pattern.
-  getPatternOrVariantList(ps, {isBlock, allowVariantList}) {
-    ps.peekBlankInline();
-    if (allowVariantList && ps.currentPeek === "{") {
+  // Deprecated in Syntax 0.8. VariantLists are only allowed as values of Terms.
+  // Values of Messages, Attributes and Variants must be Patterns. This method
+  // is only used in getTerm.
+  maybeGetVariantList(ps) {
+    ps.peekBlank();
+    if (ps.currentPeek === "{") {
       const start = ps.peekOffset;
       ps.peek();
       ps.peekBlankInline();
@@ -441,19 +437,18 @@ export default class FluentParser {
         if (ps.isVariantStart()) {
           ps.resetPeek(start);
           ps.skipToPeek();
-          return this.getVariantList(ps, {allowVariantList});
+          return this.getVariantList(ps);
         }
       }
     }
 
     ps.resetPeek();
-    const pattern = this.getPattern(ps, {isBlock});
-    return pattern;
+    return null;
   }
 
   getVariantList(ps) {
     ps.expectChar("{");
-    var variants = this.getVariants(ps, {allowVariantList: true});
+    var variants = this.getVariants(ps);
     ps.expectChar("}");
     return new AST.VariantList(variants);
   }
@@ -679,7 +674,7 @@ export default class FluentParser {
       ps.skipBlankInline();
       ps.expectLineEnd();
 
-      const variants = this.getVariants(ps, {allowVariantList: false});
+      const variants = this.getVariants(ps);
       return new AST.SelectExpression(selector, variants);
     }
 
