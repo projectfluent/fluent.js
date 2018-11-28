@@ -69,8 +69,8 @@ function getErrorMessage(code, args) {
       return `Unknown escape sequence: \\${char}.`;
     }
     case "E0026": {
-      const [char] = args;
-      return `Invalid Unicode escape sequence: \\u${char}.`;
+      const [sequence] = args;
+      return `Invalid Unicode escape sequence: ${sequence}.`;
     }
     case "E0027":
       return "Unbalanced closing brace in TextElement.";

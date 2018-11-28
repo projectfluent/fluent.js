@@ -23,8 +23,8 @@ const RE_TEXT_RUN = /([^{}\n\r]+)/y;
 const RE_STRING_RUN = /([^\\"\n\r]*)/y;
 
 // Escape sequences.
-const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 const RE_STRING_ESCAPE = /\\([\\"])/y;
+const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})|\\U([a-fA-F0-9]{6})/y;
 
 // Used for trimming TextElements and indents.
 const RE_LEADING_NEWLINES = /^\n+/;
@@ -425,19 +425,19 @@ export default class FluentResource extends Map {
 
     // Unescape known escape sequences.
     function parseEscapeSequence() {
+      if (test(RE_STRING_ESCAPE)) {
+        return match1(RE_STRING_ESCAPE);
+      }
+
       if (test(RE_UNICODE_ESCAPE)) {
-        let sequence = match1(RE_UNICODE_ESCAPE);
-        let codepoint = parseInt(sequence, 16);
+        let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);
+        let codepoint = parseInt(codepoint4 || codepoint6, 16);
         return codepoint <= 0xD7FF || 0xE000 <= codepoint
           // It's a Unicode scalar value.
           ? String.fromCodePoint(codepoint)
           // Lonely surrogates can cause trouble when the parsing result is
           // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
           : "�";
-      }
-
-      if (test(RE_STRING_ESCAPE)) {
-        return match1(RE_STRING_ESCAPE);
       }
 
       throw new FluentError("Unknown escape sequence");

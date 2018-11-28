@@ -18,11 +18,23 @@
     "backslash-in-string": [
         "\\"
     ],
-    "string-unicode-sequence": [
+    "string-unicode-4digits": [
         "A"
     ],
-    "string-escaped-unicode": [
+    "escape-unicode-4digits": [
         "\\u0041"
+    ],
+    "string-unicode-6digits": [
+        "😂"
+    ],
+    "escape-unicode-6digits": [
+        "\\U01F602"
+    ],
+    "string-too-many-4digits": [
+        "A00"
+    ],
+    "string-too-many-6digits": [
+        "😂00"
     ],
     "brace-open": [
         "An opening ",

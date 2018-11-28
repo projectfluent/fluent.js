@@ -599,37 +599,44 @@ export default class FluentParser {
   getEscapeSequence(ps) {
     const next = ps.currentChar;
 
-    if (next === "\\" || next === "\"") {
-      ps.next();
-      return [`\\${next}`, next];
+    switch (next) {
+      case "\\":
+      case "\"":
+        ps.next();
+        return [`\\${next}`, next];
+      case "u":
+        return this.getUnicodeEscapeSequence(ps, next, 4);
+      case "U":
+        return this.getUnicodeEscapeSequence(ps, next, 6);
+      default:
+        throw new ParseError("E0025", next);
     }
+  }
 
-    if (next === "u") {
-      let sequence = "";
-      ps.next();
+  getUnicodeEscapeSequence(ps, u, digits) {
+    ps.expectChar(u);
 
-      for (let i = 0; i < 4; i++) {
-        const ch = ps.takeHexDigit();
+    let sequence = "";
+    for (let i = 0; i < digits; i++) {
+      const ch = ps.takeHexDigit();
 
-        if (!ch) {
-          throw new ParseError("E0026", sequence + ps.currentChar);
-        }
-
-        sequence += ch;
+      if (!ch) {
+        throw new ParseError(
+          "E0026", `\\${u}${sequence}${ps.currentChar}`);
       }
 
-      const codepoint = parseInt(sequence, 16);
-      const unescaped = codepoint <= 0xD7FF || 0xE000 <= codepoint
-        // It's a Unicode scalar value.
-        ? String.fromCodePoint(codepoint)
-        // Escape sequences reresenting surrogate code points are well-formed
-        // but invalid in Fluent. Replace them with U+FFFD REPLACEMENT
-        // CHARACTER.
-        : "�";
-      return [`\\u${sequence}`, unescaped];
+      sequence += ch;
     }
 
-    throw new ParseError("E0025", next);
+    const codepoint = parseInt(sequence, 16);
+    const unescaped = codepoint <= 0xD7FF || 0xE000 <= codepoint
+      // It's a Unicode scalar value.
+      ? String.fromCodePoint(codepoint)
+      // Escape sequences reresenting surrogate code points are well-formed
+      // but invalid in Fluent. Replace them with U+FFFD REPLACEMENT
+      // CHARACTER.
+      : "�";
+    return [`\\${u}${sequence}`, unescaped];
   }
 
   getPlaceable(ps) {
