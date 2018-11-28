@@ -27,11 +27,13 @@ const RE_STRING_RUN = /([^\\"\n\r]*)/y;
 const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})/y;
 const RE_STRING_ESCAPE = /\\([\\"])/y;
 
-// Used for trimming TextElements and indents. With the /m flag, the $ matches
-// the end of every line.
-const RE_TRAILING_SPACES = / +$/mg;
-// CRLFs are normalized to LF.
-const RE_CRLF = /\r\n/g;
+// Used for trimming TextElements and indents.
+const RE_LEADING_NEWLINES = /^\n+/;
+const RE_TRAILING_SPACES = / +$/;
+// Used in makeIndent to strip spaces from blank lines and normalize CRLF to LF.
+const RE_BLANK_LINES = / *\r?\n/g;
+// Used in makeIndent to measure the indentation.
+const RE_INDENT = /( *)$/;
 
 // Common tokens.
 const TOKEN_BRACE_OPEN = /{\s*/y;
@@ -180,42 +182,41 @@ export default class FluentResource extends Map {
 
       // If there's a placeable on the first line, parse a complex pattern.
       if (source[cursor] === "{" || source[cursor] === "}") {
-        return first
-          // Re-use the text parsed above, if possible.
-          ? parsePatternElements(first)
-          : parsePatternElements();
+        // Re-use the text parsed above, if possible.
+        return parsePatternElements(first ? [first] : [], Infinity);
       }
 
       // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if
       // what comes after the newline is indented.
       let indent = parseIndent();
       if (indent) {
-        return first
+        if (first) {
           // If there's text on the first line, the blank block is part of the
-          // translation content.
-          ? parsePatternElements(first, trim(indent))
-          // Otherwise, we're dealing with a block pattern. The blank block is
-          // the leading whitespace; discard it.
-          : parsePatternElements();
+          // translation content in its entirety.
+          return parsePatternElements([first, indent], indent.length);
+        }
+        // Otherwise, we're dealing with a block pattern, i.e. a pattern which
+        // starts on a new line. Discrad the leading newlines but keep the
+        // inline indent; it will be used by the dedentation logic.
+        indent.value = trim(indent.value, RE_LEADING_NEWLINES);
+        return parsePatternElements([indent], indent.length);
       }
 
       if (first) {
         // It was just a simple inline text after all.
-        return trim(first);
+        return trim(first, RE_TRAILING_SPACES);
       }
 
       return null;
     }
 
     // Parse a complex pattern as an array of elements.
-    function parsePatternElements(...elements) {
+    function parsePatternElements(elements = [], commonIndent) {
       let placeableCount = 0;
-      let needsTrimming = false;
 
       while (true) {
         if (test(RE_TEXT_RUN)) {
           elements.push(match(RE_TEXT_RUN));
-          needsTrimming = true;
           continue;
         }
 
@@ -224,7 +225,6 @@ export default class FluentResource extends Map {
             throw new FluentError("Too many placeables");
           }
           elements.push(parsePlaceable());
-          needsTrimming = false;
           continue;
         }
 
@@ -234,23 +234,34 @@ export default class FluentResource extends Map {
 
         let indent = parseIndent();
         if (indent) {
-          elements.push(trim(indent));
-          needsTrimming = false;
+          elements.push(indent);
+          commonIndent = Math.min(commonIndent, indent.length);
           continue;
         }
 
         break;
       }
 
-      if (needsTrimming) {
-        // Trim the trailing whitespace of the last element if it's a
-        // TextElement. Use a flag rather than a typeof check to tell
-        // TextElements and StringLiterals apart (both are strings).
-        let lastIndex = elements.length - 1;
-        elements[lastIndex] = trim(elements[lastIndex]);
+      let lastIndex = elements.length - 1;
+      // Trim the trailing spaces in the last element if it's a TextElement.
+      if (typeof elements[lastIndex] === "string") {
+        elements[lastIndex] = trim(elements[lastIndex], RE_TRAILING_SPACES);
       }
 
-      return elements;
+      let baked = [];
+      for (let element of elements) {
+        if (element.type === "indent") {
+          // Dedent indented lines by the maximum common indent.
+          element = element.value.slice(0, element.value.length - commonIndent);
+        } else if (element.type === "str") {
+          // Optimize StringLiterals into their value.
+          element = element.value;
+        }
+        if (element) {
+          baked.push(element);
+        }
+      }
+      return baked;
     }
 
     function parsePlaceable() {
@@ -401,7 +412,7 @@ export default class FluentResource extends Map {
         }
 
         if (consumeChar("\"")) {
-          return value;
+          return {type: "str", value};
         }
 
         // We've reached an EOL of EOF.
@@ -447,7 +458,7 @@ export default class FluentResource extends Map {
         case "{":
           // Placeables don't require indentation (in EBNF: block-placeable).
           // Continue the Pattern.
-          return source.slice(start, cursor).replace(RE_CRLF, "\n");
+          return makeIndent(source.slice(start, cursor));
       }
 
       // If the first character on the line is not one of the special characters
@@ -456,7 +467,7 @@ export default class FluentResource extends Map {
       if (source[cursor - 1] === " ") {
         // It's an indented text character (in EBNF: indented-char). Continue
         // the Pattern.
-        return source.slice(start, cursor).replace(RE_CRLF, "\n");
+        return makeIndent(source.slice(start, cursor));
       }
 
       // A not-indented text character is likely the identifier of the next
@@ -464,9 +475,16 @@ export default class FluentResource extends Map {
       return false;
     }
 
-    // Trim spaces trailing on every line of text.
-    function trim(text) {
-      return text.replace(RE_TRAILING_SPACES, "");
+    // Trim blanks in text according to the given regex.
+    function trim(text, re) {
+      return text.replace(re, "");
+    }
+
+    // Normalize a blank block and extract the indent details.
+    function makeIndent(blank) {
+      let value = blank.replace(RE_BLANK_LINES, "\n");
+      let length = RE_INDENT.exec(blank)[1].length;
+      return {type: "indent", value, length};
     }
   }
 }

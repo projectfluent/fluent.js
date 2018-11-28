@@ -305,6 +305,8 @@ function Type(env, expr) {
 
 
   switch (expr.type) {
+    case "str":
+      return expr.value;
     case "num":
       return new FluentNumber(expr.value);
     case "var":

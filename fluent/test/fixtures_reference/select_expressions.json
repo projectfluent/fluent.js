@@ -21,7 +21,6 @@
                 {
                     "key": "other",
                     "value": [
-                        "",
                         "Other"
                     ]
                 }
@@ -79,9 +78,7 @@
             "variants": [
                 {
                     "key": "one",
-                    "value": [
-                        ""
-                    ]
+                    "value": []
                 }
             ],
             "star": 0

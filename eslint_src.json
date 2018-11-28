@@ -48,7 +48,6 @@
         "no-extend-native": 2,
         "no-global-assign": 2,
         "no-extra-bind": 2,
-        "no-redeclare": 2,
         "array-bracket-spacing": 2,
         "brace-style": [
             1,
