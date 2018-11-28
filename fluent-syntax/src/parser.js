@@ -6,10 +6,6 @@ import { ParseError } from "./errors";
 
 
 const trailingWSRe = /[ \t\n\r]+$/;
-// The Fluent Syntax spec uses /.*/ to parse comment lines. It matches all
-// characters except the following ones, which are considered line endings by
-// the regex engine.
-const COMMENT_EOL = ["\n", "\r", "\u2028", "\u2029"];
 
 
 function withSpan(fn) {
@@ -194,10 +190,10 @@ export default class FluentParser {
         level = i;
       }
 
-      if (!COMMENT_EOL.includes(ps.currentChar)) {
+      if (ps.currentChar !== EOL) {
         ps.expectChar(" ");
         let ch;
-        while ((ch = ps.takeChar(x => !COMMENT_EOL.includes(x)))) {
+        while ((ch = ps.takeChar(x => x !== EOL))) {
           content += ch;
         }
       }
