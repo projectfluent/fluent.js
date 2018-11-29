@@ -17,8 +17,11 @@
                             "selector": {
                                 "type": "CallExpression",
                                 "callee": {
-                                    "type": "Function",
-                                    "name": "BUILTIN"
+                                    "type": "FunctionReference",
+                                    "id": {
+                                        "type": "Identifier",
+                                        "name": "BUILTIN"
+                                    }
                                 },
                                 "positional": [],
                                 "named": []
@@ -54,6 +57,7 @@
                                                 "type": "Placeable",
                                                 "expression": {
                                                     "type": "StringLiteral",
+                                                    "raw": "",
                                                     "value": ""
                                                 }
                                             },
@@ -166,6 +170,7 @@
                                                 "type": "Placeable",
                                                 "expression": {
                                                     "type": "StringLiteral",
+                                                    "raw": "",
                                                     "value": ""
                                                 }
                                             }

@@ -1,4 +1,44 @@
 {
+    "function-callee": [
+        {
+            "type": "call",
+            "callee": {
+                "type": "func",
+                "name": "FUNCTION"
+            },
+            "args": []
+        }
+    ],
+    "mixed-case-callee": [
+        {
+            "type": "call",
+            "callee": {
+                "type": "func",
+                "name": "Function"
+            },
+            "args": []
+        }
+    ],
+    "message-callee": [
+        {
+            "type": "call",
+            "callee": {
+                "type": "func",
+                "name": "message"
+            },
+            "args": []
+        }
+    ],
+    "term-callee": [
+        {
+            "type": "call",
+            "callee": {
+                "type": "func",
+                "name": "-term"
+            },
+            "args": []
+        }
+    ],
     "positional-args": [
         {
             "type": "call",
