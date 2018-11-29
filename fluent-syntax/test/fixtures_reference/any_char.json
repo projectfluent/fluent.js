@@ -5,66 +5,64 @@
             "type": "Message",
             "id": {
                 "type": "Identifier",
-                "name": "key01"
+                "name": "control0"
             },
             "value": {
                 "type": "Pattern",
                 "elements": [
                     {
                         "type": "TextElement",
-                        "value": "\tValue 01"
+                        "value": "abc\u0007def"
                     }
                 ]
             },
             "attributes": [],
             "comment": {
                 "type": "Comment",
-                "content": "OK (tab after = is part of the value)"
+                "content": "            ↓ BEL, U+0007"
             }
-        },
-        {
-            "type": "Comment",
-            "content": "Error (tab before =)"
-        },
-        {
-            "type": "Junk",
-            "annotations": [],
-            "content": "key02\t= Value 02\n\n"
-        },
-        {
-            "type": "Comment",
-            "content": "Error (tab is not a valid indent)"
-        },
-        {
-            "type": "Junk",
-            "annotations": [],
-            "content": "key03 =\n\tThis line isn't properly indented.\n\n"
         },
         {
             "type": "Message",
             "id": {
                 "type": "Identifier",
-                "name": "key04"
+                "name": "delete"
             },
             "value": {
                 "type": "Pattern",
                 "elements": [
                     {
                         "type": "TextElement",
-                        "value": "This line is indented by 4 spaces,"
+                        "value": "abcdef"
                     }
                 ]
             },
             "attributes": [],
             "comment": {
                 "type": "Comment",
-                "content": "Partial Error (tab is not a valid indent)"
+                "content": "          ↓ DEL, U+007F"
             }
         },
         {
-            "type": "Junk",
-            "annotations": [],
-            "content": "\twhereas this line by 1 tab.\n"
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "control1"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "TextElement",
+                        "value": "abcdef"
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": {
+                "type": "Comment",
+                "content": "            ↓ BPM, U+0082"
+            }
         }
     ]
 }
