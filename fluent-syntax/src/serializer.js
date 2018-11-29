@@ -265,13 +265,13 @@ function serializeVariantExpression(expr) {
 
 
 function serializeCallExpression(expr) {
-  const fun = serializeExpression(expr.callee);
+  const callee = serializeExpression(expr.callee);
   const positional = expr.positional.map(serializeExpression).join(", ");
   const named = expr.named.map(serializeNamedArgument).join(", ");
   if (expr.positional.length > 0 && expr.named.length > 0) {
-    return `${fun}(${positional}, ${named})`;
+    return `${callee}(${positional}, ${named})`;
   }
-  return `${fun}(${positional || named})`;
+  return `${callee}(${positional || named})`;
 }
 
 

@@ -29,9 +29,10 @@
  * instantly resolve to the value of the `brand-name` message.  Instead, we
  * want to get the message object and look for its `nominative` variant.
  *
- * All other expressions (except for `FunctionReference` which is only used in
- * `CallExpression`) resolve to an instance of `FluentType`.  The caller should
- * use the `toString` method to convert the instance to a native value.
+ * All other expressions (except for `FunctionReference` which is only used as
+ * a callee in `FunctionExpression`) resolve to an instance of `FluentType`.
+ * The caller should use the `toString` method to convert the instance to a
+ * native value.
  *
  *
  * All functions in this file pass around a special object called `env`.
@@ -138,12 +139,12 @@ function DefaultMember(env, members, star) {
  */
 function MessageReference(env, {name}) {
   const { bundle, errors } = env;
-  const message = name.startsWith("-")
+  const message = name[0] === "-"
     ? bundle._terms.get(name)
     : bundle._messages.get(name);
 
   if (!message) {
-    const err = name.startsWith("-")
+    const err = name[0] === "-"
       ? new ReferenceError(`Unknown term: ${name}`)
       : new ReferenceError(`Unknown message: ${name}`);
     errors.push(err);
@@ -311,13 +312,15 @@ function Type(env, expr) {
       return new FluentNumber(expr.value);
     case "var":
       return VariableReference(env, expr);
-    case "func":
-      return FunctionReference(env, expr);
     case "call":
-      return CallExpression(env, expr);
+      return expr.ref.name[0] === "-"
+        ? MacroExpression(env, expr)
+        : FunctionExpression(env, expr);
     case "ref": {
       const message = MessageReference(env, expr);
-      return Type(env, message);
+      return expr.name[0] === "-"
+        ? Type({...env, args: {}}, message)
+        : Type(env, message);
     }
     case "getattr": {
       const attr = AttributeExpression(env, expr);
@@ -363,7 +366,7 @@ function VariableReference(env, {name}) {
 
   if (!args || !args.hasOwnProperty(name)) {
     errors.push(new ReferenceError(`Unknown variable: ${name}`));
-    return new FluentNone(name);
+    return new FluentNone(`$${name}`);
   }
 
   const arg = args[name];
@@ -387,7 +390,7 @@ function VariableReference(env, {name}) {
       errors.push(
         new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
-      return new FluentNone(name);
+      return new FluentNone(`$${name}`);
   }
 }
 
@@ -429,16 +432,15 @@ function FunctionReference(env, {name}) {
  *    Resolver environment object.
  * @param   {Object} expr
  *    An expression to be resolved.
- * @param   {Object} expr.callee
+ * @param   {Object} expr.ref
  *    FTL Function object.
  * @param   {Array} expr.args
  *    FTL Function argument list.
  * @returns {FluentType}
  * @private
  */
-function CallExpression(env, {callee, args}) {
-  const func = FunctionReference(env, callee);
-
+function FunctionExpression(env, {ref, args}) {
+  const func = FunctionReference(env, ref);
   if (func instanceof FluentNone) {
     return func;
   }
@@ -460,6 +462,36 @@ function CallExpression(env, {callee, args}) {
     // XXX Report errors.
     return new FluentNone();
   }
+}
+
+/**
+ * Resolve a call to a Term with key-value arguments.
+ *
+ * @param   {Object} env
+ *    Resolver environment object.
+ * @param   {Object} expr
+ *    An expression to be resolved.
+ * @param   {Object} expr.ref
+ *    FTL Function object.
+ * @param   {Array} expr.args
+ *    FTL Function argument list.
+ * @returns {FluentType}
+ * @private
+ */
+function MacroExpression(env, {ref, args}) {
+  const callee = MessageReference(env, ref);
+  if (callee instanceof FluentNone) {
+    return callee;
+  }
+
+  const keyargs = {};
+  for (const arg of args) {
+    if (arg.type === "narg") {
+      keyargs[arg.name] = Type(env, arg.value);
+    }
+  }
+
+  return Type({...env, args: keyargs}, callee);
 }
 
 /**

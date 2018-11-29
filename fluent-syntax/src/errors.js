@@ -51,7 +51,7 @@ function getErrorMessage(code, args) {
     case "E0016":
       return "Message references cannot be used as selectors";
     case "E0017":
-      return "Variants cannot be used as selectors";
+      return "Terms cannot be used as selectors";
     case "E0018":
       return "Attributes of messages cannot be used as selectors";
     case "E0019":

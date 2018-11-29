@@ -4,8 +4,8 @@
             "type": "select",
             "selector": {
                 "type": "call",
-                "callee": {
-                    "type": "func",
+                "ref": {
+                    "type": "ref",
                     "name": "BUILTIN"
                 },
                 "args": []
@@ -28,7 +28,7 @@
             "star": 1
         }
     ],
-    "valid-selector": [
+    "valid-selector-term-attribute": [
         {
             "type": "select",
             "selector": {
@@ -48,7 +48,23 @@
             "star": 0
         }
     ],
-    "invalid-selector": [
+    "invalid-selector-term-value": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "-term"
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "invalid-selector-term-variant": [
         {
             "type": "select",
             "selector": {
@@ -58,6 +74,35 @@
                     "name": "-term"
                 },
                 "selector": "case"
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "invalid-selector-term-call": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "call",
+                "ref": {
+                    "type": "ref",
+                    "name": "-term"
+                },
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "case",
+                        "value": {
+                            "type": "str",
+                            "value": "nominative"
+                        }
+                    }
+                ]
             },
             "variants": [
                 {
