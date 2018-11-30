@@ -2,17 +2,16 @@ import FluentError from "./error.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
 // With the /m flag, the ^ matches at the beginning of every line.
-const RE_MESSAGE_START = /^(-?[a-zA-Z][a-zA-Z0-9_-]*) *= */mg;
+const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */mg;
 
 // Both Attributes and Variants are parsed in while loops. These regexes are
 // used to break out of them.
-const RE_ATTRIBUTE_START = /\.([a-zA-Z][a-zA-Z0-9_-]*) *= */y;
-// [^] matches all characters, including newlines.
-// XXX Use /s (dotall) when it's widely supported.
-const RE_VARIANT_START = /\*?\[[^]*?] */y;
+const RE_ATTRIBUTE_START = /\.([a-zA-Z][\w-]*) *= */y;
+const RE_VARIANT_START = /\*?\[/y;
 
-const RE_IDENTIFIER = /(-?[a-zA-Z][a-zA-Z0-9_-]*)/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
+const RE_IDENTIFIER = /([a-zA-Z][\w-]*)/y;
+const RE_REFERENCE = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y;
 
 // A "run" is a sequence of text or string literal characters which don't
 // require any special handling. For TextElements such special characters are: {
@@ -39,8 +38,8 @@ const RE_INDENT = /( *)$/;
 const TOKEN_BRACE_OPEN = /{\s*/y;
 const TOKEN_BRACE_CLOSE = /\s*}/y;
 const TOKEN_BRACKET_OPEN = /\[\s*/y;
-const TOKEN_BRACKET_CLOSE = /\s*]/y;
-const TOKEN_PAREN_OPEN = /\(\s*/y;
+const TOKEN_BRACKET_CLOSE = /\s*] */y;
+const TOKEN_PAREN_OPEN = /\s*\(\s*/y;
 const TOKEN_ARROW = /\s*->\s*/y;
 const TOKEN_COLON = /\s*:\s*/y;
 // Note the optional comma. As a deviation from the Fluent EBNF, the parser
@@ -134,7 +133,7 @@ export default class FluentResource extends Map {
       return false;
     }
 
-    // Execute a regex, advance the cursor, and return the capture group.
+    // Execute a regex, advance the cursor, and return all capture groups.
     function match(re) {
       re.lastIndex = cursor;
       let result = re.exec(source);
@@ -142,7 +141,12 @@ export default class FluentResource extends Map {
         throw new FluentError(`Expected ${re.toString()}`);
       }
       cursor = re.lastIndex;
-      return result[1];
+      return result;
+    }
+
+    // Execute a regex, advance the cursor, and return the capture group.
+    function match1(re) {
+      return match(re)[1];
     }
 
     function parseMessage() {
@@ -163,7 +167,7 @@ export default class FluentResource extends Map {
       let attrs = {};
 
       while (test(RE_ATTRIBUTE_START)) {
-        let name = match(RE_ATTRIBUTE_START);
+        let name = match1(RE_ATTRIBUTE_START);
         let value = parsePattern();
         if (value === null) {
           throw new FluentError("Expected attribute value");
@@ -177,7 +181,7 @@ export default class FluentResource extends Map {
     function parsePattern() {
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_RUN)) {
-        var first = match(RE_TEXT_RUN);
+        var first = match1(RE_TEXT_RUN);
       }
 
       // If there's a placeable on the first line, parse a complex pattern.
@@ -216,7 +220,7 @@ export default class FluentResource extends Map {
 
       while (true) {
         if (test(RE_TEXT_RUN)) {
-          elements.push(match(RE_TEXT_RUN));
+          elements.push(match1(RE_TEXT_RUN));
           continue;
         }
 
@@ -294,27 +298,20 @@ export default class FluentResource extends Map {
         return parsePlaceable();
       }
 
-      if (consumeChar("$")) {
-        return {type: "var", name: match(RE_IDENTIFIER)};
-      }
-
-      if (test(RE_IDENTIFIER)) {
-        let ref = {type: "ref", name: match(RE_IDENTIFIER)};
-
-        if (consumeChar(".")) {
-          let name = match(RE_IDENTIFIER);
-          return {type: "getattr", ref, name};
-        }
+      if (test(RE_REFERENCE)) {
+        let [, sigil, name, attr = null] = match(RE_REFERENCE);
+        let type = {"$": "var", "-": "term"}[sigil] || "ref";
 
         if (source[cursor] === "[") {
-          return {type: "getvar", ref, selector: parseVariantKey()};
+          // DEPRECATED VariantExpressions will be removed before 1.0.
+          return {type, name, selector: parseVariantKey()};
         }
 
         if (consumeToken(TOKEN_PAREN_OPEN)) {
-          return {type: "call", ref, args: parseArguments()};
+          return {type, name, attr, args: parseArguments()};
         }
 
-        return ref;
+        return {type, name, attr, args: null};
       }
 
       return parseLiteral();
@@ -363,7 +360,6 @@ export default class FluentResource extends Map {
         }
 
         let key = parseVariantKey();
-        cursor = RE_VARIANT_START.lastIndex;
         let value = parsePattern();
         if (value === null) {
           throw new FluentError("Expected variant value");
@@ -371,14 +367,22 @@ export default class FluentResource extends Map {
         variants[count++] = {key, value};
       }
 
-      return count > 0 ? {variants, star} : null;
+      if (count === 0) {
+        return null;
+      }
+
+      if (star === undefined) {
+        throw new FluentError("Expected default variant");
+      }
+
+      return {variants, star};
     }
 
     function parseVariantKey() {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : match(RE_IDENTIFIER);
+        : match1(RE_IDENTIFIER);
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
@@ -396,14 +400,14 @@ export default class FluentResource extends Map {
     }
 
     function parseNumberLiteral() {
-      return {type: "num", value: match(RE_NUMBER_LITERAL)};
+      return {type: "num", value: match1(RE_NUMBER_LITERAL)};
     }
 
     function parseStringLiteral() {
       consumeChar("\"", FluentError);
       let value = "";
       while (true) {
-        value += match(RE_STRING_RUN);
+        value += match1(RE_STRING_RUN);
 
         if (source[cursor] === "\\") {
           value += parseEscapeSequence();
@@ -422,7 +426,7 @@ export default class FluentResource extends Map {
     // Unescape known escape sequences.
     function parseEscapeSequence() {
       if (test(RE_UNICODE_ESCAPE)) {
-        let sequence = match(RE_UNICODE_ESCAPE);
+        let sequence = match1(RE_UNICODE_ESCAPE);
         let codepoint = parseInt(sequence, 16);
         return codepoint <= 0xD7FF || 0xE000 <= codepoint
           // It's a Unicode scalar value.
@@ -433,7 +437,7 @@ export default class FluentResource extends Map {
       }
 
       if (test(RE_STRING_ESCAPE)) {
-        return match(RE_STRING_ESCAPE);
+        return match1(RE_STRING_ESCAPE);
       }
 
       throw new FluentError("Unknown escape sequence");

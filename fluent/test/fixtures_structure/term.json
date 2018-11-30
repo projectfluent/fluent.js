@@ -24,11 +24,8 @@
     "update-command": [
         "Zaktualizuj ",
         {
-            "type": "getvar",
-            "ref": {
-                "type": "ref",
-                "name": "-brand-name"
-            },
+            "type": "term",
+            "name": "brand-name",
             "selector": "accusative"
         },
         "."
@@ -37,20 +34,20 @@
         {
             "type": "select",
             "selector": {
-                "type": "getattr",
-                "ref": {
-                    "type": "ref",
-                    "name": "-brand-name"
-                },
-                "name": "gender"
+                "type": "term",
+                "name": "brand-name",
+                "attr": "gender",
+                "args": null
             },
             "variants": [
                 {
                     "key": "masculine",
                     "value": [
                         {
-                            "type": "ref",
-                            "name": "-brand-name"
+                            "type": "term",
+                            "name": "brand-name",
+                            "attr": null,
+                            "args": null
                         },
                         " został pomyślnie zaktualizowany."
                     ]
@@ -59,8 +56,10 @@
                     "key": "feminine",
                     "value": [
                         {
-                            "type": "ref",
-                            "name": "-brand-name"
+                            "type": "term",
+                            "name": "brand-name",
+                            "attr": null,
+                            "args": null
                         },
                         " została pomyślnie zaktualizowana."
                     ]
@@ -70,8 +69,10 @@
                     "value": [
                         "Program ",
                         {
-                            "type": "ref",
-                            "name": "-brand-name"
+                            "type": "term",
+                            "name": "brand-name",
+                            "attr": null,
+                            "args": null
                         },
                         " został pomyślnie zaktualizowany."
                     ]

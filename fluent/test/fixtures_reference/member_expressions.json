@@ -1,22 +1,102 @@
 {
-    "variant-expression": [
+    "message-attribute-expression-placeable": [
         {
-            "type": "getvar",
-            "ref": {
-                "type": "ref",
-                "name": "msg"
-            },
+            "type": "ref",
+            "name": "msg",
+            "attr": "attr",
+            "args": null
+        }
+    ],
+    "term-variant-expression-placeable": [
+        {
+            "type": "term",
+            "name": "term",
             "selector": "case"
         }
     ],
-    "attribute-expression": [
+    "message-variant-expression-placeable": [
         {
-            "type": "getattr",
-            "ref": {
-                "type": "ref",
-                "name": "-term"
+            "type": "ref",
+            "name": "msg",
+            "selector": "case"
+        }
+    ],
+    "term-attribute-expression-placeable": [
+        {
+            "type": "term",
+            "name": "term",
+            "attr": "attr",
+            "args": null
+        }
+    ],
+    "term-attribute-expression-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
+                "attr": "attr",
+                "args": null
             },
-            "name": "attr"
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "message-attribute-expression-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "msg",
+                "attr": "attr",
+                "args": null
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "term-variant-expression-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
+                "selector": "case"
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "message-variant-expression-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "msg",
+                "selector": "case"
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
         }
     ]
 }

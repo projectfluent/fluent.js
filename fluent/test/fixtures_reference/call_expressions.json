@@ -1,51 +1,9 @@
 {
-    "function-callee": [
-        {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUNCTION"
-            },
-            "args": []
-        }
-    ],
-    "term-callee": [
-        {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "-term"
-            },
-            "args": []
-        }
-    ],
-    "mixed-case-callee": [
-        {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "Function"
-            },
-            "args": []
-        }
-    ],
-    "message-callee": [
-        {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "message"
-            },
-            "args": []
-        }
-    ],
     "positional-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -57,18 +15,18 @@
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "named-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -91,11 +49,9 @@
     ],
     "dense-named-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -118,11 +74,9 @@
     ],
     "mixed-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -134,7 +88,9 @@
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -157,11 +113,9 @@
     ],
     "shuffled-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -189,18 +143,18 @@
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "duplicate-named-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -223,11 +177,9 @@
     ],
     "sparse-inline-call": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "str",
@@ -235,7 +187,9 @@
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -250,21 +204,17 @@
     ],
     "empty-inline-call": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": []
         }
     ],
     "multiline-call": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "str",
@@ -272,7 +222,9 @@
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -287,11 +239,9 @@
     ],
     "sparse-multiline-call": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "str",
@@ -299,7 +249,9 @@
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -314,21 +266,17 @@
     ],
     "empty-multiline-call": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": []
         }
     ],
     "unindented-arg-number": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -339,11 +287,9 @@
     ],
     "unindented-arg-string": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "str",
@@ -354,63 +300,59 @@
     ],
     "unindented-arg-msg-ref": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "unindented-arg-term-ref": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
-                    "type": "ref",
-                    "name": "-msg"
+                    "type": "term",
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "unindented-arg-var-ref": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "var",
-                    "name": "var"
+                    "name": "var",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "unindented-arg-call": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
-                    "type": "call",
-                    "ref": {
-                        "type": "ref",
-                        "name": "OTHER"
-                    },
+                    "type": "ref",
+                    "name": "OTHER",
+                    "attr": null,
                     "args": []
                 }
             ]
@@ -418,11 +360,9 @@
     ],
     "unindented-named-arg": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -437,26 +377,24 @@
     ],
     "unindented-closing-paren": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "ref",
-                    "name": "x"
+                    "name": "x",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "one-argument": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -467,11 +405,9 @@
     ],
     "many-arguments": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -490,11 +426,9 @@
     ],
     "inline-sparse-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -513,11 +447,9 @@
     ],
     "mulitline-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -532,11 +464,9 @@
     ],
     "mulitline-sparse-args": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -551,11 +481,9 @@
     ],
     "sparse-named-arg": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -586,11 +514,9 @@
     ],
     "unindented-colon": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -605,11 +531,9 @@
     ],
     "unindented-value": [
         {
-            "type": "call",
-            "ref": {
-                "type": "ref",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",

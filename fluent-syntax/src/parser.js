@@ -678,8 +678,15 @@ export default class FluentParser {
 
       const variants = this.getVariants(ps, {allowVariantList: false});
       return new AST.SelectExpression(selector, variants);
-    } else if (selector.type === "AttributeExpression"
+    }
+
+    if (selector.type === "AttributeExpression"
         && selector.ref.type === "TermReference") {
+      throw new ParseError("E0019");
+    }
+
+    if (selector.type === "CallExpression"
+        && selector.callee.type === "AttributeExpression") {
       throw new ParseError("E0019");
     }
 
@@ -691,18 +698,12 @@ export default class FluentParser {
       return this.getPlaceable(ps);
     }
 
-    const selector = this.getLiteral(ps);
+    let selector = this.getLiteral(ps);
     switch (selector.type) {
       case "StringLiteral":
       case "NumberLiteral":
       case "VariableReference":
         return selector;
-    }
-
-    if (ps.currentChar === ".") {
-      ps.next();
-      const attr = this.getIdentifier(ps);
-      return new AST.AttributeExpression(selector, attr);
     }
 
     if (ps.currentChar === "[") {
@@ -715,6 +716,12 @@ export default class FluentParser {
       const key = this.getVariantKey(ps);
       ps.expectChar("]");
       return new AST.VariantExpression(selector, key);
+    }
+
+    if (ps.currentChar === ".") {
+      ps.next();
+      const attr = this.getIdentifier(ps);
+      selector = new AST.AttributeExpression(selector, attr);
     }
 
     if (ps.currentChar === "(") {
@@ -731,6 +738,11 @@ export default class FluentParser {
           // Messages can't be callees.
           throw new ParseError("E0008");
         }
+      }
+
+      if (selector.type === "AttributeExpression"
+          && selector.ref.type === "MessageReference") {
+        throw new ParseError("E0008");
       }
 
       const args = this.getCallArgs(ps);

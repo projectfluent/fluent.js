@@ -5,7 +5,9 @@
         "Value with \\",
         {
             "type": "ref",
-            "name": "placeable"
+            "name": "placeable",
+            "attr": null,
+            "args": null
         }
     ],
     "text-backslash-u": "\\u0041",
