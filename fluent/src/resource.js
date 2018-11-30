@@ -367,7 +367,15 @@ export default class FluentResource extends Map {
         variants[count++] = {key, value};
       }
 
-      return count > 0 ? {variants, star} : null;
+      if (count === 0) {
+        return null;
+      }
+
+      if (star === undefined) {
+        throw new FluentError("Expected default variant");
+      }
+
+      return {variants, star};
     }
 
     function parseVariantKey() {
