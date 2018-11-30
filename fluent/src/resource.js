@@ -7,11 +7,10 @@ const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */mg;
 // Both Attributes and Variants are parsed in while loops. These regexes are
 // used to break out of them.
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][\w-]*) *= */y;
-// [^] matches all characters, including newlines.
-// XXX Use /s (dotall) when it's widely supported.
-const RE_VARIANT_START = /\*?\[[^]*?] */y;
+const RE_VARIANT_START = /\*?\[/y;
 
 const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
+const RE_IDENTIFIER = /([a-zA-Z][\w-]*)/y;
 const RE_REFERENCE = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y;
 
 // A "run" is a sequence of text or string literal characters which don't
@@ -39,7 +38,7 @@ const RE_INDENT = /( *)$/;
 const TOKEN_BRACE_OPEN = /{\s*/y;
 const TOKEN_BRACE_CLOSE = /\s*}/y;
 const TOKEN_BRACKET_OPEN = /\[\s*/y;
-const TOKEN_BRACKET_CLOSE = /\s*]/y;
+const TOKEN_BRACKET_CLOSE = /\s*] */y;
 const TOKEN_PAREN_OPEN = /\s*\(\s*/y;
 const TOKEN_ARROW = /\s*->\s*/y;
 const TOKEN_COLON = /\s*:\s*/y;
@@ -361,7 +360,6 @@ export default class FluentResource extends Map {
         }
 
         let key = parseVariantKey();
-        cursor = RE_VARIANT_START.lastIndex;
         let value = parsePattern();
         if (value === null) {
           throw new FluentError("Expected variant value");
@@ -376,7 +374,7 @@ export default class FluentResource extends Map {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : match(RE_REFERENCE)[2];
+        : match1(RE_IDENTIFIER);
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }

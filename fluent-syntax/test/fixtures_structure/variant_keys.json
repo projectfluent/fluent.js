@@ -1,0 +1,500 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 0,
+          "end": 5
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "selector": {
+                "type": "VariableReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "sel",
+                  "span": {
+                    "type": "Span",
+                    "start": 11,
+                    "end": 14
+                  }
+                },
+                "span": {
+                  "type": "Span",
+                  "start": 10,
+                  "end": 14
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "key",
+                    "span": {
+                      "type": "Span",
+                      "start": 33,
+                      "end": 36
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "Value",
+                        "span": {
+                          "type": "Span",
+                          "start": 43,
+                          "end": 48
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 43,
+                      "end": 48
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 22,
+                    "end": 48
+                  }
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 10,
+                "end": 49
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 8,
+              "end": 50
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 8,
+          "end": 50
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 50
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 52,
+          "end": 57
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "selector": {
+                "type": "VariableReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "sel",
+                  "span": {
+                    "type": "Span",
+                    "start": 63,
+                    "end": 66
+                  }
+                },
+                "span": {
+                  "type": "Span",
+                  "start": 62,
+                  "end": 66
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "key",
+                    "span": {
+                      "type": "Span",
+                      "start": 85,
+                      "end": 88
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "Value",
+                        "span": {
+                          "type": "Span",
+                          "start": 104,
+                          "end": 109
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 100,
+                      "end": 109
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 74,
+                    "end": 109
+                  }
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 62,
+                "end": 110
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 60,
+              "end": 111
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 60,
+          "end": 111
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 52,
+        "end": 111
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 137,
+            "end": 137
+          }
+        }
+      ],
+      "content": "err01 = { $sel ->\n    *[\"key\"] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 113,
+        "end": 153
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "0-9"
+          ],
+          "message": "Expected a character from range: \"0-9\"",
+          "span": {
+            "type": "Span",
+            "start": 178,
+            "end": 178
+          }
+        }
+      ],
+      "content": "err02 = { $sel ->\n    *[-key] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 153,
+        "end": 192
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "0-9"
+          ],
+          "message": "Expected a character from range: \"0-9\"",
+          "span": {
+            "type": "Span",
+            "start": 217,
+            "end": 217
+          }
+        }
+      ],
+      "content": "err03 = { $sel ->\n    *[-key.attr] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 192,
+        "end": 236
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "0-9"
+          ],
+          "message": "Expected a character from range: \"0-9\"",
+          "span": {
+            "type": "Span",
+            "start": 261,
+            "end": 261
+          }
+        }
+      ],
+      "content": "err04 = { $sel ->\n    *[-key()] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 236,
+        "end": 277
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "0-9"
+          ],
+          "message": "Expected a character from range: \"0-9\"",
+          "span": {
+            "type": "Span",
+            "start": 302,
+            "end": 302
+          }
+        }
+      ],
+      "content": "err05 = { $sel ->\n    *[-key.attr()] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 277,
+        "end": 323
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "]"
+          ],
+          "message": "Expected token: \"]\"",
+          "span": {
+            "type": "Span",
+            "start": 350,
+            "end": 350
+          }
+        }
+      ],
+      "content": "err06 = { $sel ->\n    *[key.attr] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 323,
+        "end": 366
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 390,
+            "end": 390
+          }
+        }
+      ],
+      "content": "err07 = { $sel ->\n    *[$key] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 366,
+        "end": 405
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "]"
+          ],
+          "message": "Expected token: \"]\"",
+          "span": {
+            "type": "Span",
+            "start": 433,
+            "end": 433
+          }
+        }
+      ],
+      "content": "err08 = { $sel ->\n    *[FUNC()] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 405,
+        "end": 446
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 470,
+            "end": 470
+          }
+        }
+      ],
+      "content": "err09 = { $sel ->\n    *[{key}] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 446,
+        "end": 486
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 510,
+            "end": 510
+          }
+        }
+      ],
+      "content": "err10 = { $sel ->\n    *[{\"key\"}] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 486,
+        "end": 528
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 552,
+            "end": 552
+          }
+        }
+      ],
+      "content": "err11 = { $sel ->\n    *[{3.14}] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 528,
+        "end": 569
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "args": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 593,
+            "end": 593
+          }
+        }
+      ],
+      "content": "err12 = { $sel ->\n    *[{$key}] Value\n}\n",
+      "span": {
+        "type": "Span",
+        "start": 569,
+        "end": 609
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 609
+  }
+}
