@@ -17,6 +17,7 @@ message2 =
         *[one] One
     }
 
+# ~ERROR E0014, pos 211
 -term2 =
     {
         *[one] {

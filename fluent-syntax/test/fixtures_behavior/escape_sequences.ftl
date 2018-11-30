@@ -12,5 +12,5 @@ key08 = {"Escaped \u0041 A"}
 # ~ERROR E0025, pos 232, args "A"
 key09 = {"\A"}
 
-# ~ERROR E0026, pos 252, args "000z"
+# ~ERROR E0026, pos 252, args "\u000z"
 key10 = {"\u000z"}
