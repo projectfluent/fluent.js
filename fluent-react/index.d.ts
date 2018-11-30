@@ -71,7 +71,7 @@ export declare interface ChildContextType {
 }
 
 export declare class LocalizationProvider extends React.Component<LocalizationProviderProps> {
-    public static childContextTypes: ChildContextType;
+    public static childContextTypes: ReactLocalization.ValidationMap<ChildContextType>;
     constructor(props: LocalizationProviderProps);
     public getChildContext(): ChildContextType;
     public componentWillReceiveProps(next: LocalizationProviderProps): void;
