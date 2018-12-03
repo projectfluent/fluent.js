@@ -17,11 +17,6 @@ function withSpan(fn) {
     const start = ps.index;
     const node = fn.call(this, ps, ...args);
 
-    // node may be null if fn is one of the maybeGet* methods.
-    if (node === null) {
-      return node;
-    }
-
     // Don't re-add the span if the node already has it. This may happen when
     // one decorated function calls another decorated function.
     if (node.span) {
@@ -47,7 +42,7 @@ export default class FluentParser {
       "getVariant", "getNumber", "getPattern", "getVariantList",
       "getTextElement", "getPlaceable", "getExpression",
       "getInlineExpression", "getCallArgument", "getString",
-      "maybeGetReferenceExpression", "maybeGetLiteral"
+      "getSimpleExpression", "getLiteral"
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -701,17 +696,10 @@ export default class FluentParser {
       return this.getPlaceable(ps);
     }
 
-    const literal = this.maybeGetLiteral(ps);
-    if (literal !== null) {
-      return literal;
-    }
-
-    let expr = this.maybeGetReferenceExpression(ps);
-    if (expr === null) {
-      throw new ParseError("E0028");
-    }
-
+    let expr = this.getSimpleExpression(ps);
     switch (expr.type) {
+      case "NumberLiteral":
+      case "StringLiteral":
       case "VariableReference":
         return expr;
       case "MessageReference": {
@@ -757,11 +745,19 @@ export default class FluentParser {
         return expr;
       }
       default:
-        throw new ParseError("E00XX");
+        throw new ParseError("E0028");
     }
   }
 
-  maybeGetReferenceExpression(ps) {
+  getSimpleExpression(ps) {
+    if (ps.isNumberStart()) {
+      return this.getNumber(ps);
+    }
+
+    if (ps.currentChar === '"') {
+      return this.getString(ps);
+    }
+
     if (ps.currentChar === "$") {
       ps.next();
       const id = this.getIdentifier(ps);
@@ -779,7 +775,7 @@ export default class FluentParser {
       return new AST.MessageReference(id);
     }
 
-    return null;
+    throw new ParseError("E0028");
   }
 
   getCallArgument(ps) {
@@ -798,11 +794,7 @@ export default class FluentParser {
     ps.next();
     ps.skipBlank();
 
-    const value = this.maybeGetLiteral(ps);
-    if (value === null) {
-      throw new ParseError("E0014");
-    }
-
+    const value = this.getLiteral(ps);
     return new AST.NamedArgument(exp.id, value);
   }
 
@@ -874,7 +866,7 @@ export default class FluentParser {
     return new AST.StringLiteral(raw, value);
   }
 
-  maybeGetLiteral(ps) {
+  getLiteral(ps) {
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
     }
@@ -883,6 +875,6 @@ export default class FluentParser {
       return this.getString(ps);
     }
 
-    return null;
+    throw new ParseError("E0014");
   }
 }
