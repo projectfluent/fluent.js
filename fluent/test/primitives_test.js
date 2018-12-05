@@ -25,15 +25,13 @@ suite('Primitives', function() {
     });
 
     test('can be used in a placeable', function(){
-      const msg = bundle.getMessage('one');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('one', args, errs);
       assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
 
     test('can be used as a selector', function(){
-      const msg = bundle.getMessage('select');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('select', args, errs);
       assert.equal(val, 'One');
       assert.equal(errs.length, 0);
     });

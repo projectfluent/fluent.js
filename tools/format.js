@@ -27,6 +27,7 @@ function color(str, col) {
 };
 
 function printError(err) {
+  console.log(err);
   return console.log(
     color(err.name + ': ' + err.message, 'red')
   );
@@ -55,12 +56,14 @@ function print(err, data) {
 
   parseErrors.forEach(printError);
 
-  for (let [id, message] of bundle.messages) {
+  for (let id of bundle._messages.keys()) {
     const formatErrors = [];
-    printEntry(id, bundle.format(message, ext, formatErrors));
+    printEntry(id, bundle.format(id, ext, formatErrors));
+    let message = bundle._messages.get(id);
     if (message && message.attrs) {
-      for (let [name, attr] of Object.entries(message.attrs)) {
-        printEntry(`    .${name}`, bundle.format(attr, ext, formatErrors));
+      for (let name of Object.keys(message.attrs)) {
+        let path = `${id}.${name}`;
+        printEntry(`    .${name}`, bundle.format(path, ext, formatErrors));
       }
     }
     formatErrors.forEach(printError);

@@ -192,25 +192,17 @@ export default class FluentBundle {
    * @returns {?string}
    */
 
-   /* 
-   * FluentBundle.format(path: str, args: object?): string?
-   * 
-   * format would 
-   * take a message identifier (foo) or an attribute path (foo.title) and 
-   * return the formatted translation as a string, or null if the translation doesn't exist. 
-   * 
-   */
   format(path, args, errors) {
 
     var parts = path.split(".");
     var message_id = parts[0];
-    var message = this.getMessage(message_id);
+    var message = this._messages.get(message_id);
 
     // optimize entities with null values
-    if (message === null || message.value === null) {
+    if (message.value === null) {
+      errors.push(`Message has no value: "${message_id}"`);
       return null;
-    }
-    else if (parts.length === 1) {
+    } else if (parts.length === 1) {
       // optimize entities which are simple strings with no attributes
       if (typeof message === "string") {
         return this._transform(message);
@@ -219,55 +211,39 @@ export default class FluentBundle {
       if (typeof message.value === "string") {
         return this._transform(message.value);
       }
-    }
-    else if (parts.length === 2) {
-      var attr;
-      for (attr in message.attributes) {
-        if (attr.id.name === parts[1]) {
-          return resolve(this, args, attr, errors);
-        }
+
+      return resolve(this, args, message, errors);
+    } else if (parts.length === 2) {
+      if (message.attrs === null) {
+        errors.push(`Message has no attributes: "${message_id}"`);
+        return null;
       }
+
+      let attr = message.attrs[parts[1]];
+
+      if (attr === null){
+        errors.push(`No attribute called: "${parts[1]}"`);
+        return null;
+      }
+
+      return resolve(this, args, attr, errors);
     }
 
-    return resolve(this, args, message, errors);
+    errors.push(`Invalid path: "${path}"`);
+    return null;
   }
 
-  /*
-  * Build an object of {value, attributes}. AKA compound object. 
-  * 
-  * The main use-case for this method are bindings, like fluent-dom and fluent-react. 
-  * There, it's useful to ask fluent for all translations for a given element or component. 
-  * Some bindings will prefer to just ask for all attributes and iterate over what they get 
-  * (that's what fluent-dom currently does), 
-  * while others ask for individual attributes based on what the component allows 
-  * (that's what fluent-react does). 
-  * To support both of these use-cases, FluentBundle.compound returns an object of 
-  * {value: string, attributes: Map}. 
-  * The Map interface provides both the iteration (Map.entries()) and lookup (Map.get()).
-  * 
-  * If, in the future, there's a concern about the performance of FluentBundle.compound() 
-  * related to a high number of attributes which are formatted only to be thrown away by the bindings, 
-  * we can swap the Map for a custom object which implements the same methods, 
-  * but lazily. I.e. attributes.get(name) would only format the name attribute when it's called. 
-  * For now, however, let's just use a regular eager Map.
-  */
+  compound(id) {
+    var message = this._messages.get(message_id);
 
-  /* 
-  * FluentBundle.compound(id: str, args: object?): {value: string, attributes: Map {name: string, value: string}}?
-  * 
-  * 
-  * 
-  */
-  compound(id, args, errors) {
-    var compoundShape = {value, attributes: new Map()};
-
-    var message = this.getMessage(id);
-
-    compoundShape.value = this._transform(message);
+    var compoundShape = {
+      value: this._transform(message),
+      attributes: new Map()
+    };
 
     var attr;
     for (attr in message.attributes) {
-      compoundShape.attributes.set(attr.id.name, this._transform(attr))
+      compoundShape.attributes.set(attr.id.name, this._transform(attr));
     }
 
     return compoundShape;
