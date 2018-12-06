@@ -237,12 +237,12 @@ export default class FluentBundle {
     var message = this._messages.get(id);
 
     if (message.attrs === null) {
-        errors.push(`Message has no attributes: "${id}"`);
-        return null;
+      errors.push(`Message has no attributes: "${id}"`);
+      return null;
     }
 
     var compoundShape = {
-      value: resolve(this, args, id, erros),
+      value: resolve(this, args, id, errors),
       attributes: new Map()
     };
 
