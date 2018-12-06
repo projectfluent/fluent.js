@@ -233,17 +233,19 @@ export default class FluentBundle {
     return null;
   }
 
-  compound(id) {
-    var message = this._messages.get(message_id);
+  compound(id, args, errors) {
+    var message = this._messages.get(id);
 
     var compoundShape = {
-      value: this._transform(message),
+      value: id,
       attributes: new Map()
     };
 
-    var attr;
-    for (attr in message.attributes) {
-      compoundShape.attributes.set(attr.id.name, this._transform(attr));
+    for (let attr of Object.keys(message.attrs)) {
+      compoundShape.attributes.set(
+        attr.id.name,
+        resolve(this, args, attr, errors)
+      );
     }
 
     return compoundShape;
