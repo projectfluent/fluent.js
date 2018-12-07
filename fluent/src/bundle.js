@@ -237,7 +237,7 @@ export default class FluentBundle {
     var message = this._messages.get(id);
 
     let message_value = resolve(this, args, message, errors);
-    
+
     if (message_value === "???") {
       errors.push(`Message has no value: "${id}"`);
       return null;
@@ -253,7 +253,7 @@ export default class FluentBundle {
       // return null;
 
       return compoundShape;
-    } 
+    }
 
     // var message = this._messages.get(id);
     for (let attr of Object.keys(message.attrs)) {
