@@ -32,6 +32,16 @@ function print(err, data) {
   console.log(bundle.compound('foo', ext, formatErrors));
 
   console.log(bundle.compound('bar', ext, formatErrors));
+
+  console.log(bundle.compound('baz', ext, formatErrors)); 
+  console.log(bundle.format('baz', ext, formatErrors));
+  console.log(bundle.format('baz.snake', ext, formatErrors));
+  console.log(bundle.format('baz.elephant', ext, formatErrors));  
+
+  console.log(bundle.format('xxx', ext, formatErrors));
+  console.log(bundle.compound('xxx', ext, formatErrors));
+
+  // console.log(formatErrors);
 };
 
 if (program.args.length) {

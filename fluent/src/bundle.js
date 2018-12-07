@@ -195,14 +195,16 @@ export default class FluentBundle {
   format(path, args, errors) {
 
     var parts = path.split(".");
-    var message_id = parts[0];
-    var message = this._messages.get(message_id);
+    var id = parts[0];
+    var message = this._messages.get(id);
+
+    if (!this._messages.has(id)) {
+      errors.push(`Message not found: "${id}"`);
+      return null;
+    }
 
     // optimize entities with null values
-    if (message.value === null) {
-      errors.push(`Message has no value: "${message_id}"`);
-      return null;
-    } else if (parts.length === 1) {
+    if (parts.length === 1) {
       // optimize entities which are simple strings with no attributes
       if (typeof message === "string") {
         return this._transform(message);
@@ -212,16 +214,22 @@ export default class FluentBundle {
         return this._transform(message.value);
       }
 
+      if (message.value === null) {
+        return null;
+      }
+
       return resolve(this, args, message, errors);
-    } else if (parts.length === 2) {
+    }
+
+    if (parts.length === 2) {
       if (message.attrs === null) {
-        errors.push(`Message has no attributes: "${message_id}"`);
+        errors.push(`Message has no attributes: "${id}"`);
         return null;
       }
 
       let attr = message.attrs[parts[1]];
 
-      if (attr === null){
+      if (attr === undefined){
         errors.push(`No attribute called: "${parts[1]}"`);
         return null;
       }
@@ -234,28 +242,29 @@ export default class FluentBundle {
   }
 
   compound(id, args, errors) {
-    var message = this._messages.get(id);
 
-    let message_value = resolve(this, args, message, errors);
-
-    if (message_value === "???") {
-      errors.push(`Message has no value: "${id}"`);
+    if (!this._messages.has(id)) {
+      errors.push(`Message not found: "${id}"`);
       return null;
     }
 
+    let message = this._messages.get(id);
+
+    if (message.value !== null) {
+      var message_value = resolve(this, args, message, errors);
+    } else {
+      message_value = null;
+    }
+
     var compoundShape = {
-      value: resolve(this, args, message, errors),
+      value: message_value,
       attributes: new Map()
     };
 
     if (message.attrs === undefined) {
-      // errors.push(`Message has no attributes: "${id}"`);
-      // return null;
-
       return compoundShape;
     }
 
-    // var message = this._messages.get(id);
     for (let attr of Object.keys(message.attrs)) {
       compoundShape.attributes.set(
         attr,
