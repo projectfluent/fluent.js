@@ -1,5 +1,9 @@
 # Changelog
 
+## fluent-react 0.8.3 (December 13, 2018)
+
+  - Accept `fluent` 0.10.x as a peer dependency.
+
 ## fluent-react 0.8.2 (October 25, 2018)
 
   - Allow `<Localized>` with no children elements. (#230)
