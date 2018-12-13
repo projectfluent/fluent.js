@@ -1,5 +1,57 @@
 # Changelog
 
+## fluent 0.10.0 (December 13, 2018)
+
+This release of `fluent` brings support for version 0.8 of the Fluent Syntax
+spec. The `FluentBundle` API remains unchanged. Files written in valid Syntax
+0.7 may parse differently in this release. See the compatibility note below.
+
+  - Implement Fluent Syntax 0.8. (#303)
+
+    This is only a quick summary of the spec changes in Syntax 0.8. Consult the
+    full [changelog][chlog0.8] for details.
+
+    [chlog0.8]: https://github.com/projectfluent/fluent/releases/tag/v0.8.0
+
+    In multiline `Patterns`, all common indent is now removed from each
+    indented line in the final value of the pattern.
+
+    ```properties
+    multiline =
+        This message has 2 spaces of indent
+          on the second line of its value.
+    ```
+
+    `Terms` can now be parameterized via the call expression syntax. Only
+    variables defined between the parentheses in the message a term is used in
+    will be available inside of it.
+
+    ```properties
+    # A parametrized Term with a Pattern as a value.
+    -thing = { $article ->
+       *[definite] the thing
+        [indefinite] a thing
+    }
+
+    this = This is { -thing(article: "indefinite") }.
+    ```
+
+    `VariantLists` are now deprecated and will be removed from the Syntax
+    before version 1.0.
+
+    All escapes sequences can only be used in `StringLiterals` now (see below).
+    `\UHHHHHH` is a new escape sequence format suitable for codepoints above
+    U+FFFF, e.g. `{"\U01F602"}`.
+
+### Backward-incompatible changes:
+
+  - The backslash character (`\`) is now considered a regular character in
+    `TextElements`. It's no longer possible to use escape sequences in
+    `TextElements`. Please use `StringLiterals` instead, e.g. `{"\u00A0"}`.
+  - The closing curly brace character (`}`) is not allowed in `TextElements`
+    now. Please use `StringLiterals` instead: `{"}"}`.
+
+
 ## fluent 0.9.1 (October 23, 2018)
 
   - Forbid messages with `null` values and no attributes. (#299)
