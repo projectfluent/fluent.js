@@ -320,7 +320,6 @@ export default class FluentParser {
       }
       ps.next();
       defaultIndex = true;
-      hasDefault = true;
     }
 
     ps.expectChar("[");
