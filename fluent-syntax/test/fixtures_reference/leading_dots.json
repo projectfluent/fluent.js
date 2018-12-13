@@ -50,6 +50,7 @@
                         "type": "Placeable",
                         "expression": {
                             "type": "StringLiteral",
+                            "raw": ".",
                             "value": "."
                         }
                     },
@@ -75,6 +76,7 @@
                         "type": "Placeable",
                         "expression": {
                             "type": "StringLiteral",
+                            "raw": ".",
                             "value": "."
                         }
                     },
@@ -104,6 +106,7 @@
                         "type": "Placeable",
                         "expression": {
                             "type": "StringLiteral",
+                            "raw": ".",
                             "value": "."
                         }
                     },
@@ -133,6 +136,7 @@
                         "type": "Placeable",
                         "expression": {
                             "type": "StringLiteral",
+                            "raw": ".",
                             "value": "."
                         }
                     },
@@ -169,7 +173,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "    .Continued\n"
+            "content": "    .Continued\n\n"
         },
         {
             "type": "Comment",
@@ -178,7 +182,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "key08 =\n    .Value\n"
+            "content": "key08 =\n    .Value\n\n"
         },
         {
             "type": "Comment",
@@ -187,7 +191,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "key09 =\n    .Value\n    Continued\n"
+            "content": "key09 =\n    .Value\n    Continued\n\n"
         },
         {
             "type": "Message",
@@ -229,6 +233,7 @@
                         "type": "Placeable",
                         "expression": {
                             "type": "StringLiteral",
+                            "raw": ".",
                             "value": "."
                         }
                     },
@@ -316,6 +321,7 @@
                                 "type": "Placeable",
                                 "expression": {
                                     "type": "StringLiteral",
+                                    "raw": ".",
                                     "value": "."
                                 }
                             },
@@ -377,6 +383,7 @@
                                                 "type": "Placeable",
                                                 "expression": {
                                                     "type": "StringLiteral",
+                                                    "raw": ".",
                                                     "value": "."
                                                 }
                                             },
@@ -403,7 +410,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "key16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n"
+            "content": "key16 =\n    { 1 ->\n       *[one]\n           .Value\n    }\n\n"
         },
         {
             "type": "Comment",
@@ -412,7 +419,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "key17 =\n    { 1 ->\n       *[one] Value\n           .Continued\n    }\n"
+            "content": "key17 =\n    { 1 ->\n       *[one] Value\n           .Continued\n    }\n\n"
         },
         {
             "type": "Comment",
@@ -421,7 +428,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "key18 =\n.Value\n"
+            "content": "key18 =\n.Value\n\n"
         },
         {
             "type": "Message",
@@ -463,6 +470,7 @@
                         "type": "Placeable",
                         "expression": {
                             "type": "StringLiteral",
+                            "raw": ".",
                             "value": "."
                         }
                     },

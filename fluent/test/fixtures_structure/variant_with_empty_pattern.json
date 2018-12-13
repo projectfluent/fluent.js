@@ -9,9 +9,7 @@
             "variants": [
                 {
                     "key": "one",
-                    "value": [
-                        ""
-                    ]
+                    "value": []
                 }
             ],
             "star": 0

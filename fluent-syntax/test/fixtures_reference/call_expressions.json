@@ -2,6 +2,10 @@
     "type": "Resource",
     "body": [
         {
+            "type": "GroupComment",
+            "content": "Arguments"
+        },
+        {
             "type": "Message",
             "id": {
                 "type": "Identifier",
@@ -15,8 +19,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -25,6 +32,7 @@
                                 },
                                 {
                                     "type": "StringLiteral",
+                                    "raw": "a",
                                     "value": "a"
                                 },
                                 {
@@ -57,8 +65,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": [
@@ -81,6 +92,7 @@
                                     },
                                     "value": {
                                         "type": "StringLiteral",
+                                        "raw": "Y",
                                         "value": "Y"
                                     }
                                 }
@@ -106,8 +118,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": [
@@ -130,6 +145,7 @@
                                     },
                                     "value": {
                                         "type": "StringLiteral",
+                                        "raw": "Y",
                                         "value": "Y"
                                     }
                                 }
@@ -155,8 +171,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -165,6 +184,7 @@
                                 },
                                 {
                                     "type": "StringLiteral",
+                                    "raw": "a",
                                     "value": "a"
                                 },
                                 {
@@ -195,6 +215,7 @@
                                     },
                                     "value": {
                                         "type": "StringLiteral",
+                                        "raw": "Y",
                                         "value": "Y"
                                     }
                                 }
@@ -213,7 +234,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "shuffled-args = {FUN(1, x: 1, \"a\", y: \"Y\", msg)}\n"
+            "content": "shuffled-args = {FUN(1, x: 1, \"a\", y: \"Y\", msg)}\n\n"
         },
         {
             "type": "Comment",
@@ -222,7 +243,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "duplicate-named-args = {FUN(x: 1, x: \"X\")}\n"
+            "content": "duplicate-named-args = {FUN(x: 1, x: \"X\")}\n\n\n"
         },
         {
             "type": "GroupComment",
@@ -242,12 +263,16 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
                                     "type": "StringLiteral",
+                                    "raw": "a",
                                     "value": "a"
                                 },
                                 {
@@ -292,8 +317,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": []
@@ -318,12 +346,16 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
                                     "type": "StringLiteral",
+                                    "raw": "a",
                                     "value": "a"
                                 },
                                 {
@@ -368,12 +400,16 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
                                     "type": "StringLiteral",
+                                    "raw": "a",
                                     "value": "a"
                                 },
                                 {
@@ -418,8 +454,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": []
@@ -444,8 +483,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -475,12 +517,16 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
                                     "type": "StringLiteral",
+                                    "raw": "a",
                                     "value": "a"
                                 }
                             ],
@@ -506,8 +552,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -540,15 +589,18 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
                                     "type": "TermReference",
                                     "id": {
                                         "type": "Identifier",
-                                        "name": "-msg"
+                                        "name": "msg"
                                     }
                                 }
                             ],
@@ -574,8 +626,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -608,15 +663,21 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
                                     "type": "CallExpression",
                                     "callee": {
-                                        "type": "Function",
-                                        "name": "OTHER"
+                                        "type": "FunctionReference",
+                                        "id": {
+                                            "type": "Identifier",
+                                            "name": "OTHER"
+                                        }
                                     },
                                     "positional": [],
                                     "named": []
@@ -644,8 +705,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": [
@@ -682,8 +746,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -720,8 +787,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -751,8 +821,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -790,8 +863,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -829,8 +905,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -864,8 +943,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [
                                 {
@@ -892,7 +974,17 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "one-argument = {FUN(1,,)}\nmissing-arg = {FUN(,)}\nmissing-sparse-arg = {FUN(   ,   )}\n"
+            "content": "one-argument = {FUN(1,,)}\n"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "missing-arg = {FUN(,)}\n"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "missing-sparse-arg = {FUN(   ,   )}\n\n\n"
         },
         {
             "type": "GroupComment",
@@ -912,8 +1004,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": [
@@ -972,8 +1067,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": [
@@ -1010,8 +1108,11 @@
                         "expression": {
                             "type": "CallExpression",
                             "callee": {
-                                "type": "Function",
-                                "name": "FUN"
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FUN"
+                                }
                             },
                             "positional": [],
                             "named": [

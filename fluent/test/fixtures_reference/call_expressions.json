@@ -1,31 +1,32 @@
 {
     "positional-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
                     "value": "1"
                 },
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "named-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -38,18 +39,19 @@
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 }
             ]
         }
     ],
     "dense-named-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -62,27 +64,33 @@
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 }
             ]
         }
     ],
     "mixed-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
                     "value": "1"
                 },
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -95,18 +103,19 @@
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 }
             ]
         }
     ],
     "shuffled-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -120,26 +129,32 @@
                         "value": "1"
                     }
                 },
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "narg",
                     "name": "y",
-                    "value": "Y"
+                    "value": {
+                        "type": "str",
+                        "value": "Y"
+                    }
                 },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "duplicate-named-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -152,23 +167,29 @@
                 {
                     "type": "narg",
                     "name": "x",
-                    "value": "X"
+                    "value": {
+                        "type": "str",
+                        "value": "X"
+                    }
                 }
             ]
         }
     ],
     "sparse-inline-call": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -183,26 +204,27 @@
     ],
     "empty-inline-call": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": []
         }
     ],
     "multiline-call": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -217,16 +239,19 @@
     ],
     "sparse-multiline-call": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
-                "a",
+                {
+                    "type": "str",
+                    "value": "a"
+                },
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 },
                 {
                     "type": "narg",
@@ -241,21 +266,17 @@
     ],
     "empty-multiline-call": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": []
         }
     ],
     "unindented-arg-number": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -266,75 +287,72 @@
     ],
     "unindented-arg-string": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
-                "a"
+                {
+                    "type": "str",
+                    "value": "a"
+                }
             ]
         }
     ],
     "unindented-arg-msg-ref": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "ref",
-                    "name": "msg"
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "unindented-arg-term-ref": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
-                    "type": "ref",
-                    "name": "-msg"
+                    "type": "term",
+                    "name": "msg",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "unindented-arg-var-ref": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "var",
-                    "name": "var"
+                    "name": "var",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "unindented-arg-call": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
-                    "type": "call",
-                    "callee": {
-                        "type": "func",
-                        "name": "OTHER"
-                    },
+                    "type": "ref",
+                    "name": "OTHER",
+                    "attr": null,
                     "args": []
                 }
             ]
@@ -342,11 +360,9 @@
     ],
     "unindented-named-arg": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -361,26 +377,24 @@
     ],
     "unindented-closing-paren": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "ref",
-                    "name": "x"
+                    "name": "x",
+                    "attr": null,
+                    "args": null
                 }
             ]
         }
     ],
     "one-argument": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -391,11 +405,9 @@
     ],
     "many-arguments": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -414,11 +426,9 @@
     ],
     "inline-sparse-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -437,11 +447,9 @@
     ],
     "mulitline-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -456,11 +464,9 @@
     ],
     "mulitline-sparse-args": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "num",
@@ -475,11 +481,9 @@
     ],
     "sparse-named-arg": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -510,11 +514,9 @@
     ],
     "unindented-colon": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",
@@ -529,11 +531,9 @@
     ],
     "unindented-value": [
         {
-            "type": "call",
-            "callee": {
-                "type": "func",
-                "name": "FUN"
-            },
+            "type": "ref",
+            "name": "FUN",
+            "attr": null,
             "args": [
                 {
                     "type": "narg",

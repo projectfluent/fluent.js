@@ -3,7 +3,9 @@
         "A multiline message with a ",
         {
             "type": "ref",
-            "name": "placeable"
+            "name": "placeable",
+            "attr": null,
+            "args": null
         },
         "\n",
         "at the end of line.  The message should",
@@ -14,14 +16,18 @@
         "A multiline message with a ",
         {
             "type": "ref",
-            "name": "placeable"
+            "name": "placeable",
+            "attr": null,
+            "args": null
         }
     ],
     "key3": [
         "A singleline message with a ",
         {
             "type": "ref",
-            "name": "placeable"
+            "name": "placeable",
+            "attr": null,
+            "args": null
         }
     ]
 }

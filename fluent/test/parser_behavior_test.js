@@ -47,8 +47,8 @@ readdir(ftlFixtures, function(err, filenames) {
           if (expected.attributes) {
             assert(hasAttrs(entry), `Expected ${id} to have attributes`);
             assert.deepEqual(
-              Object.keys(expected.attributes),
-              Object.keys(entry.attrs)
+              Object.keys(entry.attrs),
+              Object.keys(expected.attributes)
             );
           } else {
             assert(!hasAttrs(entry), `Expected ${id} to have zero attributes`);

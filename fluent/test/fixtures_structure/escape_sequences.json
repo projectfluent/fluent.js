@@ -1,25 +1,37 @@
 {
-    "backslash": [
-        "Value with ",
-        "\\",
-        " (an escaped backslash)"
+    "text-backslash-one": "Value with \\ a backslash",
+    "text-backslash-two": "Value with \\\\ two backslashes",
+    "text-backslash-brace": [
+        "Value with \\",
+        {
+            "type": "ref",
+            "name": "placeable",
+            "attr": null,
+            "args": null
+        }
     ],
-    "closing-brace": [
-        "Value with ",
-        "{",
-        " (an opening brace)"
-    ],
-    "unicode-escape": [
-        "A"
-    ],
-    "escaped-unicode": [
-        "\\",
-        "u0041"
-    ],
+    "text-backslash-u": "\\u0041",
+    "text-backslash-backslash-u": "\\\\u0041",
     "quote-in-string": [
         "\""
     ],
     "backslash-in-string": [
         "\\"
+    ],
+    "string-unicode-sequence": [
+        "A"
+    ],
+    "string-escaped-unicode": [
+        "\\u0041"
+    ],
+    "brace-open": [
+        "An opening ",
+        "{",
+        " brace."
+    ],
+    "brace-close": [
+        "A closing ",
+        "}",
+        " brace."
     ]
 }

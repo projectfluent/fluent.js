@@ -47,6 +47,7 @@
                         "type": "Placeable",
                         "expression": {
                           "type": "StringLiteral",
+                          "raw": "",
                           "value": "",
                           "span": {
                             "type": "Span",
@@ -77,7 +78,7 @@
               ],
               "span": {
                 "type": "Span",
-                "start": 12,
+                "start": 13,
                 "end": 41
               }
             },
@@ -90,7 +91,7 @@
         ],
         "span": {
           "type": "Span",
-          "start": 11,
+          "start": 7,
           "end": 42
         }
       },

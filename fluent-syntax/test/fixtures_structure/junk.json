@@ -212,9 +212,9 @@
       "annotations": [
         {
           "type": "Annotation",
-          "code": "E0014",
+          "code": "E0028",
           "args": [],
-          "message": "Expected literal",
+          "message": "Expected an inline expression",
           "span": {
             "type": "Span",
             "start": 153,

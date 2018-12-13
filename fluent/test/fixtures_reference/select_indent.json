@@ -4,7 +4,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -20,7 +22,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -36,7 +40,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -52,7 +58,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -68,7 +76,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -84,7 +94,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -100,7 +112,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -116,7 +130,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -132,7 +148,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -148,7 +166,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -168,7 +188,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -196,7 +218,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -216,7 +240,9 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector"
+                "name": "selector",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -229,7 +255,6 @@
                 }
             ],
             "star": 0
-        },
-        ""
+        }
     ]
 }

@@ -3,11 +3,9 @@
         {
             "type": "select",
             "selector": {
-                "type": "call",
-                "callee": {
-                    "type": "func",
-                    "name": "BUILTIN"
-                },
+                "type": "ref",
+                "name": "BUILTIN",
+                "attr": null,
                 "args": []
             },
             "variants": [
@@ -21,7 +19,6 @@
                 {
                     "key": "other",
                     "value": [
-                        "",
                         "Other"
                     ]
                 }
@@ -29,16 +26,14 @@
             "star": 1
         }
     ],
-    "valid-selector": [
+    "valid-selector-term-attribute": [
         {
             "type": "select",
             "selector": {
-                "type": "getattr",
-                "ref": {
-                    "type": "ref",
-                    "name": "-term"
-                },
-                "name": "case"
+                "type": "term",
+                "name": "term",
+                "attr": "case",
+                "args": null
             },
             "variants": [
                 {
@@ -49,16 +44,58 @@
             "star": 0
         }
     ],
-    "invalid-selector": [
+    "invalid-selector-term-value": [
         {
             "type": "select",
             "selector": {
-                "type": "getvar",
-                "ref": {
-                    "type": "ref",
-                    "name": "-term"
-                },
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": null
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "invalid-selector-term-variant": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
                 "selector": "case"
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "invalid-selector-term-call": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "case",
+                        "value": {
+                            "type": "str",
+                            "value": "nominative"
+                        }
+                    }
+                ]
             },
             "variants": [
                 {
@@ -79,9 +116,7 @@
             "variants": [
                 {
                     "key": "one",
-                    "value": [
-                        ""
-                    ]
+                    "value": []
                 }
             ],
             "star": 0
