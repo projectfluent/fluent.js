@@ -47,65 +47,54 @@ suite('Referencing values', function(){
   });
 
   test('references the value', function(){
-    const msg = bundle.getMessage('ref1');
-    const val = bundle.format(msg, args, errs);
+    const val = bundle.format('ref1', args, errs);
     assert.equal(val, 'Value 1');
     assert.equal(errs.length, 0);
   });
 
   test('references the default variant', function(){
-    const msg = bundle.getMessage('ref2');
-    const val = bundle.format(msg, args, errs);
+    const val = bundle.format('ref2', args, errs);
     assert.equal(val, 'B2');
     assert.equal(errs.length, 0);
   });
 
   test('references the value if it is a pattern', function(){
-    const msg = bundle.getMessage('ref3');
-    const val = bundle.format(msg, args, errs);
+    const val = bundle.format('ref3', args, errs);
     assert.equal(val, 'Value 3');
     assert.equal(errs.length, 0);
   });
 
   test('references the default variant if it is a pattern', function(){
-    const msg = bundle.getMessage('ref4');
-    const val = bundle.format(msg, args, errs);
+    const val = bundle.format('ref4', args, errs);
     assert.equal(val, 'B4');
     assert.equal(errs.length, 0);
   });
 
   test('uses ??? if there is no value', function(){
-    const msg = bundle.getMessage('ref5');
-    const val = bundle.format(msg, args, errs);
+    const val = bundle.format('ref5', args, errs);
     assert.strictEqual(val, '???');
     assert.ok(errs[0] instanceof RangeError); // no default
   });
 
   test('references the variants', function(){
-    const msg_a = bundle.getMessage('ref6');
-    const msg_b = bundle.getMessage('ref7');
-    const val_a = bundle.format(msg_a, args, errs)
-    const val_b = bundle.format(msg_b, args, errs)
+    const val_a = bundle.format('ref6', args, errs)
+    const val_b = bundle.format('ref7', args, errs)
     assert.strictEqual(val_a, 'A2');
     assert.strictEqual(val_b, 'B2');
     assert.equal(errs.length, 0);
   });
 
   test('references the variants which are patterns', function(){
-    const msg_a = bundle.getMessage('ref8');
-    const msg_b = bundle.getMessage('ref9');
-    const val_a = bundle.format(msg_a, args, errs)
-    const val_b = bundle.format(msg_b, args, errs)
+    const val_a = bundle.format('ref8', args, errs)
+    const val_b = bundle.format('ref9', args, errs)
     assert.strictEqual(val_a, 'A4');
     assert.strictEqual(val_b, 'B4');
     assert.equal(errs.length, 0);
   });
 
   test('references the attributes', function(){
-    const msg_a = bundle.getMessage('ref10');
-    const msg_b = bundle.getMessage('ref11');
-    const val_a = bundle.format(msg_a, args, errs)
-    const val_b = bundle.format(msg_b, args, errs)
+    const val_a = bundle.format('ref10', args, errs)
+    const val_b = bundle.format('ref11', args, errs)
     assert.strictEqual(val_a, 'A5');
     assert.strictEqual(val_b, 'B5');
     assert.equal(errs.length, 0);

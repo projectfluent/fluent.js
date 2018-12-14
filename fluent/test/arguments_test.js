@@ -28,29 +28,25 @@ suite('Variables', function() {
     });
 
     test('can be used in the message value', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { num: 3 }, errs);
+      const val = bundle.format('foo', { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in the message value which is referenced', function() {
-      const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, { num: 3 }, errs);
+      const val = bundle.format('bar', { num: 3 }, errs);
       assert.equal(val, 'Foo 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in an attribute', function() {
-      const msg = bundle.getMessage('baz').attrs.attr;
-      const val = bundle.format(msg, { num: 3 }, errs);
+      const val = bundle.format('baz.attr', { num: 3 }, errs);
       assert.equal(val, 'Baz Attribute 3');
       assert.equal(errs.length, 0);
     });
 
     test('can be used in a variant', function() {
-      const msg = bundle.getMessage('qux');
-      const val = bundle.format(msg, { num: 3 }, errs);
+      const val = bundle.format('qux', { num: 3 }, errs);
       assert.equal(val, 'Baz Variant A 3');
       assert.equal(errs.length, 0);
     });
@@ -67,8 +63,7 @@ suite('Variables', function() {
     });
 
     test('can be used as a selector', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { num: 3 }, errs);
+      const val = bundle.format('foo', { num: 3 }, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
@@ -83,8 +78,7 @@ suite('Variables', function() {
     });
 
     test('can be a positional argument', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { num: 3 }, errs);
+      const val = bundle.format('foo', { num: 3 }, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });
@@ -99,50 +93,43 @@ suite('Variables', function() {
     });
 
     test('falls back to argument\'s name if it\'s missing', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, {}, errs);
+      const val = bundle.format('foo', {}, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
     test('cannot be arrays', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { arg: [1, 2, 3] }, errs);
+      const val = bundle.format('foo', { arg: [1, 2, 3] }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a dict-like object', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { arg: { prop: 1 } }, errs);
+      const val = bundle.format('foo', { arg: { prop: 1 } }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a boolean', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { arg: true }, errs);
+      const val = bundle.format('foo', { arg: true }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be undefined', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { arg: undefined }, errs);
+      const val = bundle.format('foo', { arg: undefined }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be null', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { arg: null }, errs);
+      const val = bundle.format('foo', { arg: null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a function', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, { arg: () => null }, errs);
+      const val = bundle.format('foo', { arg: () => null }, errs);
       assert.equal(val, 'arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
@@ -162,8 +149,7 @@ suite('Variables', function() {
     });
 
     test('can be a string', function(){
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'Argument');
       assert.equal(errs.length, 0);
     });
@@ -183,8 +169,7 @@ suite('Variables', function() {
     });
 
     test('can be a number', function(){
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, '1');
       assert.equal(errs.length, 0);
     });
@@ -205,8 +190,7 @@ suite('Variables', function() {
     });
 
     test('can be a date', function(){
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       // format the date argument to account for the testrunner's timezone
       assert.equal(val, dtf.format(args.arg));
       assert.equal(errs.length, 0);
@@ -235,15 +219,13 @@ suite('Variables', function() {
       };
 
       test('interpolation', function () {
-        const msg = bundle.getMessage('foo');
-        const value = bundle.format(msg, args, errs);
+        const value = bundle.format('foo', args, errs);
         assert.equal(value, 'CUSTOM');
         assert.equal(errs.length, 0);
       });
 
       test('nested interpolation', function () {
-        const msg = bundle.getMessage('bar');
-        const value = bundle.format(msg, args, errs);
+        const value = bundle.format('bar', args, errs);
         assert.equal(value, 'CUSTOM');
         assert.equal(errs.length, 0);
       });

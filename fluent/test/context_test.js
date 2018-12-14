@@ -64,8 +64,7 @@ suite('Bundle', function() {
 
       assert.equal(bundle._messages.size, 2);
 
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });

@@ -28,8 +28,7 @@ suite('Runtime-specific functions', function() {
     });
 
     test('works for strings', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'FooBar');
       assert.equal(errs.length, 0);
     });
@@ -37,8 +36,7 @@ suite('Runtime-specific functions', function() {
     // XXX When they are passed as variables, convert JS types to FTL types
     // https://bugzil.la/1307116
     it.skip('works for numbers', function() {
-      const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('bar', args, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });

@@ -24,8 +24,7 @@ suite('Select expressions', function() {
     });
 
     test('selects the variant matching the selector', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
@@ -43,8 +42,7 @@ suite('Select expressions', function() {
     });
 
     test('selects the default variant', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
@@ -62,8 +60,7 @@ suite('Select expressions', function() {
     });
 
     test('selects the default variant', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown variable
@@ -87,14 +84,12 @@ suite('Select expressions', function() {
     });
 
     test('selects the right variant', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'B');
     });
 
     test('selects the default variant', function() {
-      const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('bar', args, errs);
       assert.equal(val, 'A');
     });
   });
@@ -116,14 +111,12 @@ suite('Select expressions', function() {
     });
 
     test('selects the right category', function() {
-      const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('foo', args, errs);
       assert.equal(val, 'A');
     });
 
     test('selects the exact match', function() {
-      const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.format('bar', args, errs);
       assert.equal(val, 'A');
     });
   });
