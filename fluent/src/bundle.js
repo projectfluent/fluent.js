@@ -47,7 +47,7 @@ export default class FluentBundle {
    *   - `allowOverrides` - boolean specifying whether it's allowed to override
    *                      an existing message or term with a new value.
    *                      Default: false
-   * 
+   *
    *   - `transform` - a function used to transform string parts of patterns.
    *
    * @param   {string|Array<string>} locales - Locale or locales of the bundle
@@ -151,13 +151,13 @@ export default class FluentBundle {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
-        if (this._allowOverrides == false && this._terms.has(id)) {
+        if (this._allowOverrides === false && this._terms.has(id)) {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
         this._terms.set(id, value);
       } else {
-        if (this._allowOverrides == false && this._messages.has(id)) {
+        if (this._allowOverrides === false && this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
