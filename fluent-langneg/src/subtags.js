@@ -11,7 +11,7 @@ import Locale from "./locale";
  */
 const likelySubtagsMin = {
   "ar": "ar-arab-eg",
-  "az-arab": "az-arab-ir",
+  "az-arab": "az-Arab-ir",
   "az-ir": "az-arab-ir",
   "be": "be-cyrl-by",
   "da": "da-latn-dk",
@@ -27,6 +27,8 @@ const likelySubtagsMin = {
   "ta": "ta-taml-in",
   "uk": "uk-cyrl-ua",
   "zh": "zh-hans-cn",
+  "zh-hant": "zh-Hant-TW",
+  "zh-hk": "zh-hant-hk",
   "zh-gb": "zh-hant-gb",
   "zh-us": "zh-hant-us",
 };
@@ -55,8 +57,7 @@ export function getLikelySubtagsMin(loc) {
   }
   const locale = new Locale(loc);
   if (regionMatchingLangs.includes(locale.language)) {
-    locale.region = locale.language;
-    locale.string = `${locale.language}-${locale.region}`;
+    locale.region = locale.language.toUpperCase();
     return locale;
   }
   return null;

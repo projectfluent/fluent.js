@@ -76,10 +76,17 @@ import Locale from "./locale";
 export default function filterMatches(
   requestedLocales, availableLocales, strategy
 ) {
+  /* eslint complexity: ["error", 31]*/
   const supportedLocales = new Set();
 
-  const availLocales =
-    new Set(availableLocales.map(locale => new Locale(locale, true)));
+  const availLocales = new Map();
+
+  for (let locale of availableLocales) {
+    let newLocale = new Locale(locale);
+    if (newLocale.isWellFormed) {
+      availLocales.set(locale, new Locale(locale));
+    }
+  }
 
   outer:
   for (const reqLocStr of requestedLocales) {
@@ -90,17 +97,12 @@ export default function filterMatches(
       continue;
     }
 
-    // Attempt to make an exact match
+    // 1) Attempt to make an exact match
     // Example: `en-US` === `en-US`
-    for (const availableLocale of availableLocales) {
-      if (reqLocStrLC === availableLocale.toLowerCase()) {
-        supportedLocales.add(availableLocale);
-        for (const loc of availLocales) {
-          if (loc.isEqual(requestedLocale)) {
-            availLocales.delete(loc);
-            break;
-          }
-        }
+    for (const key of availLocales.keys()) {
+      if (reqLocStrLC === key.toLowerCase()) {
+        supportedLocales.add(key);
+        availLocales.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
@@ -112,13 +114,13 @@ export default function filterMatches(
     }
 
 
-    // Attempt to match against the available range
+    // 2) Attempt to match against the available range
     // This turns `en` into `en-*-*-*` and `en-US` into `en-*-US-*`
     // Example: ['en-US'] * ['en'] = ['en']
-    for (const availableLocale of availLocales) {
-      if (requestedLocale.matches(availableLocale)) {
-        supportedLocales.add(availableLocale.string);
-        availLocales.delete(availableLocale);
+    for (const [key, availableLocale] of availLocales.entries()) {
+      if (availableLocale.matches(requestedLocale, true, false)) {
+        supportedLocales.add(key);
+        availLocales.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
@@ -129,15 +131,15 @@ export default function filterMatches(
       }
     }
 
-    // Attempt to retrieve a maximal version of the requested locale ID
+    // 3) Attempt to retrieve a maximal version of the requested locale ID
     // If data is available, it'll expand `en` into `en-Latn-US` and
     // `zh` into `zh-Hans-CN`.
     // Example: ['en'] * ['en-GB', 'en-US'] = ['en-US']
     if (requestedLocale.addLikelySubtags()) {
-      for (const availableLocale of availLocales) {
-        if (requestedLocale.matches(availableLocale)) {
-          supportedLocales.add(availableLocale.string);
-          availLocales.delete(availableLocale);
+      for (const [key, availableLocale] of availLocales.entries()) {
+        if (availableLocale.matches(requestedLocale, true, false)) {
+          supportedLocales.add(key);
+          availLocales.delete(key);
           if (strategy === "lookup") {
             return Array.from(supportedLocales);
           } else if (strategy === "filtering") {
@@ -149,14 +151,14 @@ export default function filterMatches(
       }
     }
 
-    // Attempt to look up for a different variant for the same locale ID
+    // 4) Attempt to look up for a different variant for the same locale ID
     // Example: ['en-US-mac'] * ['en-US-win'] = ['en-US-win']
-    requestedLocale.setVariantRange();
+    requestedLocale.clearVariants();
 
-    for (const availableLocale of availLocales) {
-      if (requestedLocale.matches(availableLocale)) {
-        supportedLocales.add(availableLocale.string);
-        availLocales.delete(availableLocale);
+    for (const [key, availableLocale] of availLocales.entries()) {
+      if (availableLocale.matches(requestedLocale, true, true)) {
+        supportedLocales.add(key);
+        availLocales.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
@@ -167,14 +169,38 @@ export default function filterMatches(
       }
     }
 
-    // Attempt to look up for a different region for the same locale ID
-    // Example: ['en-US'] * ['en-AU'] = ['en-AU']
-    requestedLocale.setRegionRange();
+    // 5) Attempt to match against the likely subtag without region
+    // In the example below, addLikelySubtags will turn
+    // `zh-Hant` into `zh-Hant-TW` giving `zh-TW` priority match
+    // over `zh-CN`.
+    //
+    // Example: ['zh-Hant-HK'] * ['zh-TW', 'zh-CN'] = ['zh-TW']
+    requestedLocale.clearRegion();
 
-    for (const availableLocale of availLocales) {
-      if (requestedLocale.matches(availableLocale)) {
-        supportedLocales.add(availableLocale.string);
-        availLocales.delete(availableLocale);
+    if (requestedLocale.addLikelySubtags()) {
+      for (const [key, availableLocale] of availLocales.entries()) {
+        if (availableLocale.matches(requestedLocale, true, false)) {
+          supportedLocales.add(key);
+          availLocales.delete(key);
+          if (strategy === "lookup") {
+            return Array.from(supportedLocales);
+          } else if (strategy === "filtering") {
+            continue;
+          } else {
+            continue outer;
+          }
+        }
+      }
+    }
+
+    // 6) Attempt to look up for a different region for the same locale ID
+    // Example: ['en-US'] * ['en-AU'] = ['en-AU']
+    requestedLocale.clearRegion();
+
+    for (const [key, availableLocale] of availLocales.entries()) {
+      if (availableLocale.matches(requestedLocale, true, true)) {
+        supportedLocales.add(key);
+        availLocales.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
