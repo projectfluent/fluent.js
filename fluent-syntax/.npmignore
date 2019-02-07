@@ -3,5 +3,3 @@ coverage
 docs
 test
 makefile
-FluentSyntax.jsm
-xpcom_config.js
