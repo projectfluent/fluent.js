@@ -79,12 +79,12 @@ export default function filterMatches(
   /* eslint complexity: ["error", 31]*/
   const supportedLocales = new Set();
 
-  const availLocales = new Map();
+  const availableLocalesMap = new Map();
 
   for (let locale of availableLocales) {
     let newLocale = new Locale(locale);
     if (newLocale.isWellFormed) {
-      availLocales.set(locale, new Locale(locale));
+      availableLocalesMap.set(locale, new Locale(locale));
     }
   }
 
@@ -99,10 +99,10 @@ export default function filterMatches(
 
     // 1) Attempt to make an exact match
     // Example: `en-US` === `en-US`
-    for (const key of availLocales.keys()) {
+    for (const key of availableLocalesMap.keys()) {
       if (reqLocStrLC === key.toLowerCase()) {
         supportedLocales.add(key);
-        availLocales.delete(key);
+        availableLocalesMap.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
@@ -117,10 +117,10 @@ export default function filterMatches(
     // 2) Attempt to match against the available range
     // This turns `en` into `en-*-*-*` and `en-US` into `en-*-US-*`
     // Example: ['en-US'] * ['en'] = ['en']
-    for (const [key, availableLocale] of availLocales.entries()) {
+    for (const [key, availableLocale] of availableLocalesMap.entries()) {
       if (availableLocale.matches(requestedLocale, true, false)) {
         supportedLocales.add(key);
-        availLocales.delete(key);
+        availableLocalesMap.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
@@ -136,10 +136,10 @@ export default function filterMatches(
     // `zh` into `zh-Hans-CN`.
     // Example: ['en'] * ['en-GB', 'en-US'] = ['en-US']
     if (requestedLocale.addLikelySubtags()) {
-      for (const [key, availableLocale] of availLocales.entries()) {
+      for (const [key, availableLocale] of availableLocalesMap.entries()) {
         if (availableLocale.matches(requestedLocale, true, false)) {
           supportedLocales.add(key);
-          availLocales.delete(key);
+          availableLocalesMap.delete(key);
           if (strategy === "lookup") {
             return Array.from(supportedLocales);
           } else if (strategy === "filtering") {
@@ -155,10 +155,10 @@ export default function filterMatches(
     // Example: ['en-US-mac'] * ['en-US-win'] = ['en-US-win']
     requestedLocale.clearVariants();
 
-    for (const [key, availableLocale] of availLocales.entries()) {
+    for (const [key, availableLocale] of availableLocalesMap.entries()) {
       if (availableLocale.matches(requestedLocale, true, true)) {
         supportedLocales.add(key);
-        availLocales.delete(key);
+        availableLocalesMap.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {
@@ -178,10 +178,10 @@ export default function filterMatches(
     requestedLocale.clearRegion();
 
     if (requestedLocale.addLikelySubtags()) {
-      for (const [key, availableLocale] of availLocales.entries()) {
+      for (const [key, availableLocale] of availableLocalesMap.entries()) {
         if (availableLocale.matches(requestedLocale, true, false)) {
           supportedLocales.add(key);
-          availLocales.delete(key);
+          availableLocalesMap.delete(key);
           if (strategy === "lookup") {
             return Array.from(supportedLocales);
           } else if (strategy === "filtering") {
@@ -197,10 +197,10 @@ export default function filterMatches(
     // Example: ['en-US'] * ['en-AU'] = ['en-AU']
     requestedLocale.clearRegion();
 
-    for (const [key, availableLocale] of availLocales.entries()) {
+    for (const [key, availableLocale] of availableLocalesMap.entries()) {
       if (availableLocale.matches(requestedLocale, true, true)) {
         supportedLocales.add(key);
-        availLocales.delete(key);
+        availableLocalesMap.delete(key);
         if (strategy === "lookup") {
           return Array.from(supportedLocales);
         } else if (strategy === "filtering") {

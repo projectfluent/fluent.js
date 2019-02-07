@@ -11,7 +11,7 @@ import Locale from "./locale";
  */
 const likelySubtagsMin = {
   "ar": "ar-arab-eg",
-  "az-arab": "az-Arab-ir",
+  "az-arab": "az-arab-ir",
   "az-ir": "az-arab-ir",
   "be": "be-cyrl-by",
   "da": "da-latn-dk",
@@ -27,7 +27,7 @@ const likelySubtagsMin = {
   "ta": "ta-taml-in",
   "uk": "uk-cyrl-ua",
   "zh": "zh-hans-cn",
-  "zh-hant": "zh-Hant-TW",
+  "zh-hant": "zh-hant-tw",
   "zh-hk": "zh-hant-hk",
   "zh-gb": "zh-hant-gb",
   "zh-us": "zh-hant-us",

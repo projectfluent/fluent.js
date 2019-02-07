@@ -41,16 +41,13 @@ export default class Locale {
       return;
     }
 
-    const language = result[1] || undefined;
-    const script = result[2] || undefined;
-    const region = result[3] || undefined;
-    const variant = result[4] || undefined;
+    let [, language, script, region, variant] = result;
 
     if (language) {
       this.language = language.toLowerCase();
     }
     if (script) {
-      this.script = script[0].toUpperCase() + script.substr(1);
+      this.script = script[0].toUpperCase() + script.slice(1);
     }
     if (region) {
       this.region = region.toUpperCase();
