@@ -34,53 +34,60 @@ export default class Locale {
    * It also allows skipping the script section of the id, so `en-US` is
    * properly parsed as `en-*-US-*`.
    */
-  constructor(locale, range = false) {
+  constructor(locale) {
     const result = localeRe.exec(locale.replace(/_/g, "-"));
     if (!result) {
+      this.isWellFormed = false;
       return;
     }
 
-    const missing = range ? "*" : undefined;
+    let [, language, script, region, variant] = result;
 
-    const language = result[1] || missing;
-    const script = result[2] || missing;
-    const region = result[3] || missing;
-    const variant = result[4] || missing;
-
-    this.language = language;
-    this.script = script;
-    this.region = region;
+    if (language) {
+      this.language = language.toLowerCase();
+    }
+    if (script) {
+      this.script = script[0].toUpperCase() + script.slice(1);
+    }
+    if (region) {
+      this.region = region.toUpperCase();
+    }
     this.variant = variant;
-    this.string = locale;
+    this.isWellFormed = true;
   }
 
   isEqual(locale) {
     return localeParts.every(part => this[part] === locale[part]);
   }
 
-  matches(locale) {
+  matches(locale, thisRange = false, otherRange = false) {
     return localeParts.every(part => {
-      return this[part] === "*" || locale[part] === "*" ||
-        (this[part] === undefined && locale[part] === undefined) ||
-        (this[part] !== undefined && locale[part] !== undefined &&
-        this[part].toLowerCase() === locale[part].toLowerCase());
+      return ((thisRange && this[part] === undefined) ||
+              (otherRange && locale[part] === undefined) ||
+              this[part] === locale[part]);
     });
   }
 
-  setVariantRange() {
-    this.variant = "*";
+  toString() {
+    return localeParts
+      .map(part => this[part])
+      .filter(part => part !== undefined)
+      .join("-");
   }
 
-  setRegionRange() {
-    this.region = "*";
+  clearVariants() {
+    this.variant = undefined;
+  }
+
+  clearRegion() {
+    this.region = undefined;
   }
 
   addLikelySubtags() {
-    const newLocale = getLikelySubtagsMin(this.string.toLowerCase());
+    const newLocale = getLikelySubtagsMin(this.toString().toLowerCase());
 
     if (newLocale) {
       localeParts.forEach(part => this[part] = newLocale[part]);
-      this.string = newLocale.string;
       return true;
     }
     return false;
