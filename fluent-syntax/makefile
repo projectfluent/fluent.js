@@ -14,6 +14,12 @@ $(PACKAGE).js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
+FluentSyntax.jsm: $(SOURCES)
+	@rollup \
+	    --config ./xpcom_config.js \
+	    --output.file $@
+	@echo -e " $(OK) $@ built"
+
 compat.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 	    --config $(ROOT)/compat_config.js \
@@ -24,7 +30,7 @@ compat.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 clean:
-	@rm -f $(PACKAGE).js compat.js
+	@rm -f $(PACKAGE).js FluentSyntax.jsm compat.js
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
 
