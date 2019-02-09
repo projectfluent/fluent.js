@@ -70,11 +70,6 @@ suite('Primitives', function() {
       assert.equal(errs.length, 0);
     });
 
-    test('is detected to be non-complex', function(){
-      const msg = bundle.format('foo');
-      assert.equal(typeof msg, 'string');
-    });
-
     test('can be used in a placeable', function(){
       const val = bundle.format('placeable-literal', args, errs);
       assert.equal(val, 'Foo Bar');
@@ -137,11 +132,6 @@ suite('Primitives', function() {
       const val = bundle.format('bar', args, errs);
       assert.equal(val, 'FooBar');
       assert.equal(errs.length, 0);
-    });
-
-    test('is detected to be complex', function(){
-      const msg = bundle.getMessage('bar');
-      assert(Array.isArray('bar'));
     });
 
     test('can be a value of a message referenced in a placeable', function(){

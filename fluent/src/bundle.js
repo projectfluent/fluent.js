@@ -83,19 +83,6 @@ export default class FluentBundle {
     return this._messages.has(id);
   }
 
-  /*
-   * Return the internal representation of a message.
-   *
-   * The internal representation should only be used as an argument to
-   * `FluentBundle.format`.
-   *
-   * @param {string} id - The identifier of the message to check.
-   * @returns {Any}
-   */
-  getMessage(id) {
-    return this._messages.get(id);
-  }
-
   /**
    * Add a translation resource to the bundle.
    *
@@ -194,22 +181,23 @@ export default class FluentBundle {
 
   format(path, args, errors) {
 
-    var parts = path.split(".");
-    var id = parts[0];
-    var message = this._messages.get(id);
+    let var parts = path.split(".");
+    let var id = parts[0];
+    let var message = this._messages.get(id);
 
     if (!this._messages.has(id)) {
       errors.push(`Message not found: "${id}"`);
       return null;
     }
 
-    // optimize entities with null values
+    // Optimize entities with null values.
+    // Resolve the value of the message.
     if (parts.length === 1) {
-      // optimize entities which are simple strings with no attributes
+      // Optimize entities which are simple strings with no attributes.
       if (typeof message === "string") {
         return this._transform(message);
       }
-      // optimize simple-string entities with attributes
+      // Optimize simple-string entities with attributes.
       if (typeof message.value === "string") {
         return this._transform(message.value);
       }
@@ -221,6 +209,7 @@ export default class FluentBundle {
       return resolve(this, args, message, errors);
     }
 
+    // Resolve an attribute of the message.
     if (parts.length === 2) {
       if (message.attrs === null) {
         errors.push(`Message has no attributes: "${id}"`);
@@ -267,7 +256,7 @@ export default class FluentBundle {
 
     for (let attr of Object.keys(message.attrs)) {
       compoundShape.attributes.set(
-        attr,
+        resolve(this, args, attr, errors),
         message.attrs[attr]
       );
     }
