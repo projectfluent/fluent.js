@@ -114,7 +114,7 @@ export default class FluentBundle {
    *     bundle.getMessage('bar');
    *
    *     // Returns a raw representation of the 'bar' message: Newbar.
-   * 
+   *
    * Parsed entities should be formatted with the `format` method in case they
    * contain logic (references, select expressions etc.).
    *
@@ -128,8 +128,7 @@ export default class FluentBundle {
    * @param   {Object} [options]
    * @returns {Array<Error>}
    */
-  addMessages(source, options = {}) {
-    const { allowOverrides = false } = options;
+  addMessages(source, options) {
     const res = FluentResource.fromString(source);
     return this.addResource(res, options);
   }
