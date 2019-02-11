@@ -42,6 +42,7 @@ export default class FluentBundle {
    *
    *   - `useIsolating` - boolean specifying whether to use Unicode isolation
    *                    marks (FSI, PDI) for bidi interpolations.
+   *                    Default: true
    *
    *   - `transform` - a function used to transform string parts of patterns.
    *
@@ -108,15 +109,28 @@ export default class FluentBundle {
    *
    *     // Returns a raw representation of the 'foo' message.
    *
+   *     bundle.addMessages('bar = Bar');
+   *     bundle.addMessages('bar = Newbar', { allowOverrides: true });
+   *     bundle.getMessage('bar');
+   *
+   *     // Returns a raw representation of the 'bar' message: Newbar.
+   *
    * Parsed entities should be formatted with the `format` method in case they
    * contain logic (references, select expressions etc.).
    *
+   * Available options:
+   *
+   *   - `allowOverrides` - boolean specifying whether it's allowed to override
+   *                      an existing message or term with a new value.
+   *                      Default: false
+   *
    * @param   {string} source - Text resource with translations.
+   * @param   {Object} [options]
    * @returns {Array<Error>}
    */
-  addMessages(source) {
+  addMessages(source, options) {
     const res = FluentResource.fromString(source);
-    return this.addResource(res);
+    return this.addResource(res, options);
   }
 
   /**
@@ -131,26 +145,43 @@ export default class FluentBundle {
    *
    *     // Returns a raw representation of the 'foo' message.
    *
+   *     let res = FluentResource.fromString("bar = Bar");
+   *     bundle.addResource(res);
+   *     res = FluentResource.fromString("bar = Newbar");
+   *     bundle.addResource(res, { allowOverrides: true });
+   *     bundle.getMessage('bar');
+   *
+   *     // Returns a raw representation of the 'bar' message: Newbar.
+   *
    * Parsed entities should be formatted with the `format` method in case they
    * contain logic (references, select expressions etc.).
    *
+   * Available options:
+   *
+   *   - `allowOverrides` - boolean specifying whether it's allowed to override
+   *                      an existing message or term with a new value.
+   *                      Default: false
+   *
    * @param   {FluentResource} res - FluentResource object.
+   * @param   {Object} [options]
    * @returns {Array<Error>}
    */
-  addResource(res) {
+  addResource(res, {
+    allowOverrides = false
+  } = {}) {
     const errors = [];
 
     for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
-        if (this._terms.has(id)) {
+        if (allowOverrides === false && this._terms.has(id)) {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
         this._terms.set(id, value);
       } else {
-        if (this._messages.has(id)) {
+        if (allowOverrides === false && this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
