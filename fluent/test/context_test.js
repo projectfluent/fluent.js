@@ -109,11 +109,11 @@ suite('Bundle', function() {
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       let resource1 = FluentResource.fromString('key = Foo');
-      let resource2 = FluentResource.fromString('key = Bar');
       bundle.addResource(resource1);
     });
 
     test('addResource allowOverrides is false', function() {
+      let resource2 = FluentResource.fromString('key = Bar');
       let errors = bundle.addResource(resource2);
       assert.equal(errors.length, 1);
       let msg = bundle.getMessage('key');
@@ -121,6 +121,7 @@ suite('Bundle', function() {
     });
 
     test('addResource allowOverrides is true', function() {
+      let resource2 = FluentResource.fromString('key = Bar');
       let errors = bundle.addResource(resource2, { allowOverrides: true });
       assert.equal(errors.length, 0);
       let msg = bundle.getMessage('key');
