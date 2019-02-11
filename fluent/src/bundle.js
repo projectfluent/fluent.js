@@ -109,8 +109,8 @@ export default class FluentBundle {
    *
    *     // Returns a raw representation of the 'foo' message.
    *
-   *     bundle.addMessages('bar = Bar', { allowOverrides: true });
-   *     bundle.addMessages('bar = Newbar');
+   *     bundle.addMessages('bar = Bar');
+   *     bundle.addMessages('bar = Newbar', { allowOverrides: true });
    *     bundle.getMessage('bar');
    *
    *     // Returns a raw representation of the 'bar' message: Newbar.
@@ -146,9 +146,9 @@ export default class FluentBundle {
    *     // Returns a raw representation of the 'foo' message.
    *
    *     let res = FluentResource.fromString("bar = Bar");
-   *     bundle.addResource(res, { allowOverrides: true });
-   *     res = FluentResource.fromString("bar = Newbar");
    *     bundle.addResource(res);
+   *     res = FluentResource.fromString("bar = Newbar");
+   *     bundle.addResource(res, { allowOverrides: true });
    *     bundle.getMessage('bar');
    *
    *     // Returns a raw representation of the 'bar' message: Newbar.

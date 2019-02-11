@@ -69,6 +69,22 @@ suite('Bundle', function() {
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
+
+    test('overwrites existing messages if the ids are the same and allowOverrides is true', function() {
+      const errors = bundle.addMessages(ftl`
+        foo = New Foo
+      `, { allowOverrides: true });
+
+      // No overwrite errors reported
+      assert.equal(errors.length, 0);
+
+      assert.equal(bundle._messages.size, 2);
+
+      const msg = bundle.getMessage('foo');
+      const val = bundle.format(msg, args, errs);
+      assert.equal(val, 'New Foo');
+      assert.equal(errs.length, 0);
+    });
   });
 
   suite('addResource', function(){
@@ -86,6 +102,29 @@ suite('Bundle', function() {
       assert.equal(bundle._terms.has('foo'), false);
       assert.equal(bundle._messages.has('-bar'), false);
       assert.equal(bundle._terms.has('-bar'), true);
+    });
+  });
+
+  suite('allowOverrides', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      let resource1 = FluentResource.fromString('key = Foo');
+      let resource2 = FluentResource.fromString('key = Bar');
+      bundle.addResource(resource1);
+    });
+
+    test('addResource allowOverrides is false', function() {
+      let errors = bundle.addResource(resource2);
+      assert.equal(errors.length, 1);
+      let msg = bundle.getMessage('key');
+      assert.equal(bundle.format(msg), 'Foo');
+    });
+
+    test('addResource allowOverrides is true', function() {
+      let errors = bundle.addResource(resource2, { allowOverrides: true });
+      assert.equal(errors.length, 0);
+      let msg = bundle.getMessage('key');
+      assert.equal(bundle.format(msg), 'Bar');
     });
   });
 
