@@ -6,9 +6,10 @@ export default Object.assign({}, bundleConfig, {
   context: 'this',
   output: {
     format: 'es',
-    banner: `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */
+    banner: `\
+/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */
 
-/* Copyright 2017 Mozilla Foundation and others
+/* Copyright 2019 Mozilla Foundation and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +22,9 @@ export default Object.assign({}, bundleConfig, {
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */\n\n`,
+ */
+
+`,
   },
   plugins: [
     nodeResolve(),
