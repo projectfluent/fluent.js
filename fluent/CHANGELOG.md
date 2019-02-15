@@ -1,5 +1,15 @@
 # Changelog
 
+## fluent 0.11.0 (February 15, 2019)
+
+  - Add the `allowOverrides` option to `FluentBundle.addResource`. (#332)
+
+    `FluentBundle.addResource` and `FluentBundle.addMessages` now both accept
+    an `options` object as the last argument. The `allowOverrides` option may
+    be used to control whether it's allowed to override existing mesages or
+    terms with new values. The default is `false`.
+
+
 ## fluent 0.10.0 (December 13, 2018)
 
 This release of `fluent` brings support for version 0.8 of the Fluent Syntax
