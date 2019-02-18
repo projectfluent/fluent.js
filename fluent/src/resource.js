@@ -271,13 +271,6 @@ export default class FluentResource extends Map {
     function parsePlaceable() {
       consumeToken(TOKEN_BRACE_OPEN, FluentError);
 
-      // VariantLists are parsed as selector-less SelectExpressions.
-      let onlyVariants = parseVariants();
-      if (onlyVariants) {
-        consumeToken(TOKEN_BRACE_CLOSE, FluentError);
-        return {type: "select", selector: null, ...onlyVariants};
-      }
-
       let selector = parseInlineExpression();
       if (consumeToken(TOKEN_BRACE_CLOSE)) {
         return selector;
@@ -301,11 +294,6 @@ export default class FluentResource extends Map {
       if (test(RE_REFERENCE)) {
         let [, sigil, name, attr = null] = match(RE_REFERENCE);
         let type = {"$": "var", "-": "term"}[sigil] || "ref";
-
-        if (source[cursor] === "[") {
-          // DEPRECATED VariantExpressions will be removed before 1.0.
-          return {type, name, selector: parseVariantKey()};
-        }
 
         if (consumeToken(TOKEN_PAREN_OPEN)) {
           return {type, name, attr, args: parseArguments()};

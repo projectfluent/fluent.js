@@ -3,7 +3,12 @@
         "value": [
             {
                 "type": "select",
-                "selector": null,
+                "selector": {
+                    "type": "var",
+                    "name": "case",
+                    "attr": null,
+                    "args": null
+                },
                 "variants": [
                     {
                         "key": "nominative",
@@ -26,7 +31,17 @@
         {
             "type": "term",
             "name": "brand-name",
-            "selector": "accusative"
+            "attr": null,
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "case",
+                    "value": {
+                        "type": "str",
+                        "value": "accusative"
+                    }
+                }
+            ]
         },
         "."
     ],

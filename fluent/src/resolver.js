@@ -208,7 +208,7 @@ function MessageReference(env, {name, attr}) {
 }
 
 // Resolve a call to a Term with key-value arguments.
-function TermReference(env, {name, attr, selector, args}) {
+function TermReference(env, {name, attr, args}) {
   const {bundle, errors} = env;
 
   const id = `-${name}`;
@@ -232,22 +232,7 @@ function TermReference(env, {name, attr, selector, args}) {
     return Type(local, term);
   }
 
-  const variantList = getVariantList(term);
-  if (selector && variantList) {
-    return SelectExpression(local, {...variantList, selector});
-  }
-
   return Type(local, term);
-}
-
-// Helper: convert a value into a variant list, if possible.
-function getVariantList(term) {
-  const value = term.value || term;
-  return Array.isArray(value)
-    && value[0].type === "select"
-    && value[0].selector === null
-    ? value[0]
-    : null;
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
@@ -277,10 +262,6 @@ function FunctionReference(env, {name, args}) {
 
 // Resolve a select expression to the member object.
 function SelectExpression(env, {selector, variants, star}) {
-  if (selector === null) {
-    return getDefault(env, variants, star);
-  }
-
   let sel = Type(env, selector);
   if (sel instanceof FluentNone) {
     const variant = getDefault(env, variants, star);

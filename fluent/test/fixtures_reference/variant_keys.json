@@ -1,8 +1,13 @@
 {
-    "-simple-identifier": [
+    "simple-identifier": [
         {
             "type": "select",
-            "selector": null,
+            "selector": {
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
+            },
             "variants": [
                 {
                     "key": "key",
@@ -12,10 +17,15 @@
             "star": 0
         }
     ],
-    "-identifier-surrounded-by-whitespace": [
+    "identifier-surrounded-by-whitespace": [
         {
             "type": "select",
-            "selector": null,
+            "selector": {
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
+            },
             "variants": [
                 {
                     "key": "key",
@@ -25,10 +35,15 @@
             "star": 0
         }
     ],
-    "-int-number": [
+    "int-number": [
         {
             "type": "select",
-            "selector": null,
+            "selector": {
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
+            },
             "variants": [
                 {
                     "key": {
@@ -41,10 +56,15 @@
             "star": 0
         }
     ],
-    "-float-number": [
+    "float-number": [
         {
             "type": "select",
-            "selector": null,
+            "selector": {
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
+            },
             "variants": [
                 {
                     "key": {

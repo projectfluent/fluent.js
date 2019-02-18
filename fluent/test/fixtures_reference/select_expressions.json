@@ -68,23 +68,6 @@
             "selector": {
                 "type": "term",
                 "name": "term",
-                "selector": "case"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "invalid-selector-term-call": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
                 "attr": null,
                 "args": [
                     {
@@ -110,12 +93,14 @@
         {
             "type": "select",
             "selector": {
-                "type": "num",
-                "value": "1"
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
-                    "key": "one",
+                    "key": "key",
                     "value": []
                 }
             ],
@@ -126,8 +111,10 @@
         {
             "type": "select",
             "selector": {
-                "type": "num",
-                "value": "1"
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
             },
             "variants": [
                 {
@@ -136,37 +123,11 @@
                         {
                             "type": "select",
                             "selector": {
-                                "type": "num",
-                                "value": "2"
+                                "type": "var",
+                                "name": "sel",
+                                "attr": null,
+                                "args": null
                             },
-                            "variants": [
-                                {
-                                    "key": "two",
-                                    "value": "Value"
-                                }
-                            ],
-                            "star": 0
-                        }
-                    ]
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "nested-variant-list": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "num",
-                "value": "1"
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": [
-                        {
-                            "type": "select",
-                            "selector": null,
                             "variants": [
                                 {
                                     "key": "two",
