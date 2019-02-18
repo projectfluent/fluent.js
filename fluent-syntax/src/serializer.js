@@ -99,7 +99,7 @@ function serializeMessage(message) {
   parts.push(`${message.id.name} =`);
 
   if (message.value) {
-    parts.push(serializeValue(message.value));
+    parts.push(serializePattern(message.value));
   }
 
   for (const attribute of message.attributes) {
@@ -119,7 +119,7 @@ function serializeTerm(term) {
   }
 
   parts.push(`-${term.id.name} =`);
-  parts.push(serializeValue(term.value));
+  parts.push(serializePattern(term.value));
 
   for (const attribute of term.attributes) {
     parts.push(serializeAttribute(attribute));
@@ -131,20 +131,8 @@ function serializeTerm(term) {
 
 
 function serializeAttribute(attribute) {
-  const value = indent(serializeValue(attribute.value));
+  const value = indent(serializePattern(attribute.value));
   return `\n    .${attribute.id.name} =${value}`;
-}
-
-
-function serializeValue(value) {
-  switch (value.type) {
-    case "Pattern":
-      return serializePattern(value);
-    case "VariantList":
-      return serializeVariantList(value);
-    default:
-      throw new Error(`Unknown value type: ${value.type}`);
-  }
 }
 
 
@@ -159,24 +147,6 @@ function serializePattern(pattern) {
   }
 
   return ` ${content}`;
-}
-
-
-function serializeVariantList(varlist) {
-  const content = varlist.variants.map(serializeVariant).join("");
-  return `\n    {${indent(content)}\n    }`;
-}
-
-
-function serializeVariant(variant) {
-  const key = serializeVariantKey(variant.key);
-  const value = indent(serializeValue(variant.value));
-
-  if (variant.default) {
-    return `\n   *[${key}]${value}`;
-  }
-
-  return `\n    [${key}]${value}`;
 }
 
 
@@ -223,8 +193,6 @@ function serializeExpression(expr) {
       return `$${expr.id.name}`;
     case "AttributeExpression":
       return serializeAttributeExpression(expr);
-    case "VariantExpression":
-      return serializeVariantExpression(expr);
     case "CallExpression":
       return serializeCallExpression(expr);
     case "SelectExpression":
@@ -251,16 +219,21 @@ function serializeSelectExpression(expr) {
 }
 
 
-function serializeAttributeExpression(expr) {
-  const ref = serializeExpression(expr.ref);
-  return `${ref}.${expr.name.name}`;
+function serializeVariant(variant) {
+  const key = serializeVariantKey(variant.key);
+  const value = indent(serializePattern(variant.value));
+
+  if (variant.default) {
+    return `\n   *[${key}]${value}`;
+  }
+
+  return `\n    [${key}]${value}`;
 }
 
 
-function serializeVariantExpression(expr) {
+function serializeAttributeExpression(expr) {
   const ref = serializeExpression(expr.ref);
-  const key = serializeVariantKey(expr.key);
-  return `${ref}[${key}]`;
+  return `${ref}.${expr.name.name}`;
 }
 
 

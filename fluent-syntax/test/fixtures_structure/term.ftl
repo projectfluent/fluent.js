@@ -1,12 +1,12 @@
 -brand-name =
-    {
+    { $case ->
        *[nominative] Firefox
         [accusative] Firefoxa
     }
     .gender = masculine
 
 update-command =
-    Zaktualizuj { -brand-name[accusative] }.
+    Zaktualizuj { -brand-name(case: "accusative") }.
 
 update-successful =
     { -brand-name.gender ->

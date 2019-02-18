@@ -110,13 +110,6 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), input);
   });
 
-  test("variant expression", function() {
-    const input = ftl`
-      foo = Foo { -bar[baz] }
-    `;
-    assert.equal(pretty(input), input);
-  });
-
   test("attribute expression", function() {
     const input = ftl`
       foo = Foo { bar.baz }
@@ -220,17 +213,6 @@ suite("Serialize resource", function() {
           Continued
           .attr-a = Foo Attr A
           .attr-b = Foo Attr B
-    `;
-    assert.equal(pretty(input), input);
-  });
-
-  test("variant list", function() {
-    const input = ftl`
-      -foo =
-          {
-             *[a] A
-              [b] B
-          }
     `;
     assert.equal(pretty(input), input);
   });
@@ -546,13 +528,6 @@ suite("Serialize expression", function() {
       foo = { msg.attr }
     `;
     assert.equal(pretty(input), "msg.attr");
-  });
-
-  test("variant expression", function() {
-    const input = ftl`
-      foo = { -msg[variant] }
-    `;
-    assert.equal(pretty(input), "-msg[variant]");
   });
 
   test("call expression", function() {

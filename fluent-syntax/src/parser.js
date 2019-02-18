@@ -39,10 +39,9 @@ export default class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getVariant", "getNumber", "getPattern", "getVariantList",
-      "getTextElement", "getPlaceable", "getExpression",
-      "getInlineExpression", "getCallArgument", "getString",
-      "getSimpleExpression", "getLiteral"
+      "getVariant", "getNumber", "getPattern", "getTextElement",
+      "getPlaceable", "getExpression", "getInlineExpression",
+      "getCallArgument", "getString", "getSimpleExpression", "getLiteral"
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -245,9 +244,7 @@ export default class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    // Syntax 0.8 compat: VariantLists are supported but deprecated. They can
-    // only be found as values of Terms. Nested VariantLists are not allowed.
-    const value = this.maybeGetVariantList(ps) || this.maybeGetPattern(ps);
+    const value = this.maybeGetPattern(ps);
     if (value === null) {
       throw new ParseError("E0006", id.name);
     }
@@ -421,36 +418,6 @@ export default class FluentParser {
     }
 
     return null;
-  }
-
-  // Deprecated in Syntax 0.8. VariantLists are only allowed as values of Terms.
-  // Values of Messages, Attributes and Variants must be Patterns. This method
-  // is only used in getTerm.
-  maybeGetVariantList(ps) {
-    ps.peekBlank();
-    if (ps.currentPeek === "{") {
-      const start = ps.peekOffset;
-      ps.peek();
-      ps.peekBlankInline();
-      if (ps.currentPeek === EOL) {
-        ps.peekBlank();
-        if (ps.isVariantStart()) {
-          ps.resetPeek(start);
-          ps.skipToPeek();
-          return this.getVariantList(ps);
-        }
-      }
-    }
-
-    ps.resetPeek();
-    return null;
-  }
-
-  getVariantList(ps) {
-    ps.expectChar("{");
-    var variants = this.getVariants(ps);
-    ps.expectChar("}");
-    return new AST.VariantList(variants);
   }
 
   getPattern(ps, {isBlock}) {
@@ -657,8 +624,7 @@ export default class FluentParser {
         throw new ParseError("E0018");
       }
 
-      if (selector.type === "TermReference"
-          || selector.type === "VariantExpression") {
+      if (selector.type === "TermReference") {
         throw new ParseError("E0017");
       }
 
@@ -724,13 +690,6 @@ export default class FluentParser {
         return expr;
       }
       case "TermReference": {
-        if (ps.currentChar === "[") {
-          ps.next();
-          const key = this.getVariantKey(ps);
-          ps.expectChar("]");
-          return new AST.VariantExpression(expr, key);
-        }
-
         if (ps.currentChar === ".") {
           ps.next();
           const attr = this.getIdentifier(ps);

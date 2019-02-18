@@ -32,15 +32,13 @@ key6 = { $sel ->
 
     }
 
--key7 = {    
-
-         *[one] One
-
-    }
-
--key8 =
+key8 =
 
   {
+
+      $sel
+
+      ->
 
          *[one] One
 

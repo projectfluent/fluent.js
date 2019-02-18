@@ -13,87 +13,122 @@
         }
       },
       "value": {
-        "type": "VariantList",
-        "variants": [
+        "type": "Pattern",
+        "elements": [
           {
-            "type": "Variant",
-            "key": {
-              "type": "Identifier",
-              "name": "nominative",
-              "span": {
-                "type": "Span",
-                "start": 29,
-                "end": 39
-              }
-            },
-            "value": {
-              "type": "Pattern",
-              "elements": [
-                {
-                  "type": "TextElement",
-                  "value": "Firefox",
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "selector": {
+                "type": "VariableReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "case",
                   "span": {
                     "type": "Span",
-                    "start": 41,
-                    "end": 48
+                    "start": 21,
+                    "end": 25
+                  }
+                },
+                "span": {
+                  "type": "Span",
+                  "start": 20,
+                  "end": 25
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "nominative",
+                    "span": {
+                      "type": "Span",
+                      "start": 38,
+                      "end": 48
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "Firefox",
+                        "span": {
+                          "type": "Span",
+                          "start": 50,
+                          "end": 57
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 50,
+                      "end": 57
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 36,
+                    "end": 57
+                  }
+                },
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "accusative",
+                    "span": {
+                      "type": "Span",
+                      "start": 67,
+                      "end": 77
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "Firefoxa",
+                        "span": {
+                          "type": "Span",
+                          "start": 79,
+                          "end": 87
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 79,
+                      "end": 87
+                    }
+                  },
+                  "default": false,
+                  "span": {
+                    "type": "Span",
+                    "start": 66,
+                    "end": 87
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 41,
-                "end": 48
+                "start": 20,
+                "end": 92
               }
             },
-            "default": true,
             "span": {
               "type": "Span",
-              "start": 27,
-              "end": 48
-            }
-          },
-          {
-            "type": "Variant",
-            "key": {
-              "type": "Identifier",
-              "name": "accusative",
-              "span": {
-                "type": "Span",
-                "start": 58,
-                "end": 68
-              }
-            },
-            "value": {
-              "type": "Pattern",
-              "elements": [
-                {
-                  "type": "TextElement",
-                  "value": "Firefoxa",
-                  "span": {
-                    "type": "Span",
-                    "start": 70,
-                    "end": 78
-                  }
-                }
-              ],
-              "span": {
-                "type": "Span",
-                "start": 70,
-                "end": 78
-              }
-            },
-            "default": false,
-            "span": {
-              "type": "Span",
-              "start": 57,
-              "end": 78
+              "start": 18,
+              "end": 93
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 18,
-          "end": 84
+          "start": 14,
+          "end": 93
         }
       },
       "attributes": [
@@ -104,8 +139,8 @@
             "name": "gender",
             "span": {
               "type": "Span",
-              "start": 90,
-              "end": 96
+              "start": 99,
+              "end": 105
             }
           },
           "value": {
@@ -116,21 +151,21 @@
                 "value": "masculine",
                 "span": {
                   "type": "Span",
-                  "start": 99,
-                  "end": 108
+                  "start": 108,
+                  "end": 117
                 }
               }
             ],
             "span": {
               "type": "Span",
-              "start": 99,
-              "end": 108
+              "start": 108,
+              "end": 117
             }
           },
           "span": {
             "type": "Span",
-            "start": 89,
-            "end": 108
+            "start": 98,
+            "end": 117
           }
         }
       ],
@@ -138,7 +173,7 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 108
+        "end": 117
       }
     },
     {
@@ -148,8 +183,8 @@
         "name": "update-command",
         "span": {
           "type": "Span",
-          "start": 110,
-          "end": 124
+          "start": 119,
+          "end": 133
         }
       },
       "value": {
@@ -160,50 +195,71 @@
             "value": "Zaktualizuj ",
             "span": {
               "type": "Span",
-              "start": 131,
-              "end": 143
+              "start": 140,
+              "end": 152
             }
           },
           {
             "type": "Placeable",
             "expression": {
-              "type": "VariantExpression",
-              "ref": {
+              "type": "CallExpression",
+              "callee": {
                 "type": "TermReference",
                 "id": {
                   "type": "Identifier",
                   "name": "brand-name",
                   "span": {
                     "type": "Span",
-                    "start": 146,
-                    "end": 156
+                    "start": 155,
+                    "end": 165
                   }
                 },
                 "span": {
                   "type": "Span",
-                  "start": 145,
-                  "end": 156
+                  "start": 154,
+                  "end": 165
                 }
               },
-              "key": {
-                "type": "Identifier",
-                "name": "accusative",
-                "span": {
-                  "type": "Span",
-                  "start": 157,
-                  "end": 167
+              "positional": [],
+              "named": [
+                {
+                  "type": "NamedArgument",
+                  "name": {
+                    "type": "Identifier",
+                    "name": "case",
+                    "span": {
+                      "type": "Span",
+                      "start": 166,
+                      "end": 170
+                    }
+                  },
+                  "value": {
+                    "type": "StringLiteral",
+                    "raw": "accusative",
+                    "value": "accusative",
+                    "span": {
+                      "type": "Span",
+                      "start": 172,
+                      "end": 184
+                    }
+                  },
+                  "span": {
+                    "type": "Span",
+                    "start": 166,
+                    "end": 184
+                  }
                 }
-              },
+              ],
               "span": {
                 "type": "Span",
-                "start": 145,
-                "end": 168
+                "start": 154,
+                "end": 185
               }
             },
             "span": {
               "type": "Span",
-              "start": 143,
-              "end": 170
+              "start": 152,
+              "end": 187
             }
           },
           {
@@ -211,23 +267,23 @@
             "value": ".",
             "span": {
               "type": "Span",
-              "start": 170,
-              "end": 171
+              "start": 187,
+              "end": 188
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 127,
-          "end": 171
+          "start": 136,
+          "end": 188
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 110,
-        "end": 171
+        "start": 119,
+        "end": 188
       }
     },
     {
@@ -237,8 +293,8 @@
         "name": "update-successful",
         "span": {
           "type": "Span",
-          "start": 173,
-          "end": 190
+          "start": 190,
+          "end": 207
         }
       },
       "value": {
@@ -257,14 +313,14 @@
                     "name": "brand-name",
                     "span": {
                       "type": "Span",
-                      "start": 200,
-                      "end": 210
+                      "start": 217,
+                      "end": 227
                     }
                   },
                   "span": {
                     "type": "Span",
-                    "start": 199,
-                    "end": 210
+                    "start": 216,
+                    "end": 227
                   }
                 },
                 "name": {
@@ -272,14 +328,14 @@
                   "name": "gender",
                   "span": {
                     "type": "Span",
-                    "start": 211,
-                    "end": 217
+                    "start": 228,
+                    "end": 234
                   }
                 },
                 "span": {
                   "type": "Span",
-                  "start": 199,
-                  "end": 217
+                  "start": 216,
+                  "end": 234
                 }
               },
               "variants": [
@@ -290,8 +346,8 @@
                     "name": "masculine",
                     "span": {
                       "type": "Span",
-                      "start": 230,
-                      "end": 239
+                      "start": 247,
+                      "end": 256
                     }
                   },
                   "value": {
@@ -306,20 +362,20 @@
                             "name": "brand-name",
                             "span": {
                               "type": "Span",
-                              "start": 244,
-                              "end": 254
+                              "start": 261,
+                              "end": 271
                             }
                           },
                           "span": {
                             "type": "Span",
-                            "start": 243,
-                            "end": 254
+                            "start": 260,
+                            "end": 271
                           }
                         },
                         "span": {
                           "type": "Span",
-                          "start": 241,
-                          "end": 256
+                          "start": 258,
+                          "end": 273
                         }
                       },
                       {
@@ -327,22 +383,22 @@
                         "value": " został pomyślnie zaktualizowany.",
                         "span": {
                           "type": "Span",
-                          "start": 256,
-                          "end": 289
+                          "start": 273,
+                          "end": 306
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 241,
-                      "end": 289
+                      "start": 258,
+                      "end": 306
                     }
                   },
                   "default": false,
                   "span": {
                     "type": "Span",
-                    "start": 229,
-                    "end": 289
+                    "start": 246,
+                    "end": 306
                   }
                 },
                 {
@@ -352,8 +408,8 @@
                     "name": "feminine",
                     "span": {
                       "type": "Span",
-                      "start": 299,
-                      "end": 307
+                      "start": 316,
+                      "end": 324
                     }
                   },
                   "value": {
@@ -368,20 +424,20 @@
                             "name": "brand-name",
                             "span": {
                               "type": "Span",
-                              "start": 312,
-                              "end": 322
+                              "start": 329,
+                              "end": 339
                             }
                           },
                           "span": {
                             "type": "Span",
-                            "start": 311,
-                            "end": 322
+                            "start": 328,
+                            "end": 339
                           }
                         },
                         "span": {
                           "type": "Span",
-                          "start": 309,
-                          "end": 324
+                          "start": 326,
+                          "end": 341
                         }
                       },
                       {
@@ -389,22 +445,22 @@
                         "value": " została pomyślnie zaktualizowana.",
                         "span": {
                           "type": "Span",
-                          "start": 324,
-                          "end": 358
+                          "start": 341,
+                          "end": 375
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 309,
-                      "end": 358
+                      "start": 326,
+                      "end": 375
                     }
                   },
                   "default": false,
                   "span": {
                     "type": "Span",
-                    "start": 298,
-                    "end": 358
+                    "start": 315,
+                    "end": 375
                   }
                 },
                 {
@@ -414,8 +470,8 @@
                     "name": "other",
                     "span": {
                       "type": "Span",
-                      "start": 368,
-                      "end": 373
+                      "start": 385,
+                      "end": 390
                     }
                   },
                   "value": {
@@ -426,8 +482,8 @@
                         "value": "Program ",
                         "span": {
                           "type": "Span",
-                          "start": 375,
-                          "end": 383
+                          "start": 392,
+                          "end": 400
                         }
                       },
                       {
@@ -439,20 +495,20 @@
                             "name": "brand-name",
                             "span": {
                               "type": "Span",
-                              "start": 386,
-                              "end": 396
+                              "start": 403,
+                              "end": 413
                             }
                           },
                           "span": {
                             "type": "Span",
-                            "start": 385,
-                            "end": 396
+                            "start": 402,
+                            "end": 413
                           }
                         },
                         "span": {
                           "type": "Span",
-                          "start": 383,
-                          "end": 398
+                          "start": 400,
+                          "end": 415
                         }
                       },
                       {
@@ -460,56 +516,56 @@
                         "value": " został pomyślnie zaktualizowany.",
                         "span": {
                           "type": "Span",
-                          "start": 398,
-                          "end": 431
+                          "start": 415,
+                          "end": 448
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 375,
-                      "end": 431
+                      "start": 392,
+                      "end": 448
                     }
                   },
                   "default": true,
                   "span": {
                     "type": "Span",
-                    "start": 366,
-                    "end": 431
+                    "start": 383,
+                    "end": 448
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 199,
-                "end": 436
+                "start": 216,
+                "end": 453
               }
             },
             "span": {
               "type": "Span",
-              "start": 197,
-              "end": 437
+              "start": 214,
+              "end": 454
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 193,
-          "end": 437
+          "start": 210,
+          "end": 454
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 173,
-        "end": 437
+        "start": 190,
+        "end": 454
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 438
+    "end": 455
   }
 }
