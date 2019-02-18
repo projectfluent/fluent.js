@@ -41,7 +41,7 @@ export default class FluentParser {
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
       "getVariant", "getNumber", "getPattern", "getTextElement",
       "getPlaceable", "getExpression", "getInlineExpression",
-      "getCallArgument", "getString", "getSimpleExpression", "getLiteral"
+      "getCallArgument", "getCallArguments", "getString", "getLiteral",
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -616,20 +616,14 @@ export default class FluentParser {
       }
 
       if (selector.type === "MessageReference") {
-        throw new ParseError("E0016");
+        if (selector.attribute === null) {
+          throw new ParseError("E0016");
+        } else {
+          throw new ParseError("E0018");
+        }
       }
 
-      if (selector.type === "AttributeExpression"
-          && selector.ref.type === "MessageReference") {
-        throw new ParseError("E0018");
-      }
-
-      if (selector.type === "TermReference") {
-        throw new ParseError("E0017");
-      }
-
-      if (selector.type === "CallExpression"
-          && selector.callee.type === "TermReference") {
+      if (selector.type === "TermReference" && selector.attribute === null) {
         throw new ParseError("E0017");
       }
 
@@ -643,13 +637,7 @@ export default class FluentParser {
       return new AST.SelectExpression(selector, variants);
     }
 
-    if (selector.type === "AttributeExpression"
-        && selector.ref.type === "TermReference") {
-      throw new ParseError("E0019");
-    }
-
-    if (selector.type === "CallExpression"
-        && selector.callee.type === "AttributeExpression") {
+    if (selector.type === "TermReference" && selector.attribute !== null) {
       throw new ParseError("E0019");
     }
 
@@ -661,53 +649,6 @@ export default class FluentParser {
       return this.getPlaceable(ps);
     }
 
-    let expr = this.getSimpleExpression(ps);
-    switch (expr.type) {
-      case "NumberLiteral":
-      case "StringLiteral":
-      case "VariableReference":
-        return expr;
-      case "MessageReference": {
-        if (ps.currentChar === ".") {
-          ps.next();
-          const attr = this.getIdentifier(ps);
-          return new AST.AttributeExpression(expr, attr);
-        }
-
-        if (ps.currentChar === "(") {
-          // It's a Function. Ensure it's all upper-case.
-          if (!/^[A-Z][A-Z_?-]*$/.test(expr.id.name)) {
-            throw new ParseError("E0008");
-          }
-
-          const func = new AST.FunctionReference(expr.id);
-          if (this.withSpans) {
-            func.addSpan(expr.span.start, expr.span.end);
-          }
-          return new AST.CallExpression(func, ...this.getCallArguments(ps));
-        }
-
-        return expr;
-      }
-      case "TermReference": {
-        if (ps.currentChar === ".") {
-          ps.next();
-          const attr = this.getIdentifier(ps);
-          expr = new AST.AttributeExpression(expr, attr);
-        }
-
-        if (ps.currentChar === "(") {
-          return new AST.CallExpression(expr, ...this.getCallArguments(ps));
-        }
-
-        return expr;
-      }
-      default:
-        throw new ParseError("E0028");
-    }
-  }
-
-  getSimpleExpression(ps) {
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
     }
@@ -725,13 +666,43 @@ export default class FluentParser {
     if (ps.currentChar === "-") {
       ps.next();
       const id = this.getIdentifier(ps);
-      return new AST.TermReference(id);
+
+      let attr;
+      if (ps.currentChar === ".") {
+        ps.next();
+        attr = this.getIdentifier(ps);
+      }
+
+      let args;
+      if (ps.currentChar === "(") {
+        args = this.getCallArguments(ps);
+      }
+
+      return new AST.TermReference(id, attr, args);
     }
 
     if (ps.isIdentifierStart()) {
       const id = this.getIdentifier(ps);
-      return new AST.MessageReference(id);
+
+      if (ps.currentChar === "(") {
+        // It's a Function. Ensure it's all upper-case.
+        if (!/^[A-Z][A-Z_?-]*$/.test(id.name)) {
+          throw new ParseError("E0008");
+        }
+
+        let args = this.getCallArguments(ps);
+        return new AST.FunctionReference(id, args);
+      }
+
+      let attr;
+      if (ps.currentChar === ".") {
+        ps.next();
+        attr = this.getIdentifier(ps);
+      }
+
+      return new AST.MessageReference(id, attr);
     }
+
 
     throw new ParseError("E0028");
   }
@@ -745,15 +716,15 @@ export default class FluentParser {
       return exp;
     }
 
-    if (exp.type !== "MessageReference") {
-      throw new ParseError("E0009");
+    if (exp.type === "MessageReference" && exp.attribute === null) {
+      ps.next();
+      ps.skipBlank();
+
+      const value = this.getLiteral(ps);
+      return new AST.NamedArgument(exp.id, value);
     }
 
-    ps.next();
-    ps.skipBlank();
-
-    const value = this.getLiteral(ps);
-    return new AST.NamedArgument(exp.id, value);
+    throw new ParseError("E0009");
   }
 
   getCallArguments(ps) {
@@ -794,7 +765,7 @@ export default class FluentParser {
     }
 
     ps.expectChar(")");
-    return [positional, named];
+    return new AST.CallArguments(positional, named);
   }
 
   getString(ps) {

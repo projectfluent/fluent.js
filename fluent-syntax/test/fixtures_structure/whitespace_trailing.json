@@ -129,6 +129,7 @@
                   "end": 134
                 }
               },
+              "attribute": null,
               "span": {
                 "type": "Span",
                 "start": 125,

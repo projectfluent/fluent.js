@@ -184,17 +184,15 @@ function serializeExpression(expr) {
       return `"${expr.raw}"`;
     case "NumberLiteral":
       return expr.value;
-    case "MessageReference":
-    case "FunctionReference":
-      return expr.id.name;
-    case "TermReference":
-      return `-${expr.id.name}`;
     case "VariableReference":
       return `$${expr.id.name}`;
-    case "AttributeExpression":
-      return serializeAttributeExpression(expr);
-    case "CallExpression":
-      return serializeCallExpression(expr);
+    case "TermReference":
+      let term = {...expr, id: {name: `-${expr.id.name}`}};
+      return serializeReferenceExpression(term);
+    case "MessageReference":
+      return serializeReferenceExpression(expr);
+    case "FunctionReference":
+      return serializeReferenceExpression(expr);
     case "SelectExpression":
       return serializeSelectExpression(expr);
     case "Placeable":
@@ -202,6 +200,18 @@ function serializeExpression(expr) {
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
+}
+
+
+function serializeReferenceExpression(expr) {
+  let parts = [expr.id.name];
+  if (expr.attribute) {
+    parts.push(`.${expr.attribute.name}`);
+  }
+  if (expr.args) {
+    parts.push(serializeCallArguments(expr.args));
+  }
+  return parts.join("");
 }
 
 
@@ -231,20 +241,13 @@ function serializeVariant(variant) {
 }
 
 
-function serializeAttributeExpression(expr) {
-  const ref = serializeExpression(expr.ref);
-  return `${ref}.${expr.name.name}`;
-}
-
-
-function serializeCallExpression(expr) {
-  const callee = serializeExpression(expr.callee);
+function serializeCallArguments(expr) {
   const positional = expr.positional.map(serializeExpression).join(", ");
   const named = expr.named.map(serializeNamedArgument).join(", ");
   if (expr.positional.length > 0 && expr.named.length > 0) {
-    return `${callee}(${positional}, ${named})`;
+    return `(${positional}, ${named})`;
   }
-  return `${callee}(${positional || named})`;
+  return `(${positional || named})`;
 }
 
 

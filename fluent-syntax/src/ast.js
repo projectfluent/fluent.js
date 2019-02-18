@@ -105,18 +105,21 @@ export class NumberLiteral extends Expression {
 }
 
 export class MessageReference extends Expression {
-  constructor(id) {
+  constructor(id, attribute = null) {
     super();
     this.type = "MessageReference";
     this.id = id;
+    this.attribute = attribute;
   }
 }
 
 export class TermReference extends Expression {
-  constructor(id) {
+  constructor(id, attribute = null, args = null) {
     super();
     this.type = "TermReference";
     this.id = id;
+    this.attribute = attribute;
+    this.args = args;
   }
 }
 
@@ -129,10 +132,11 @@ export class VariableReference extends Expression {
 }
 
 export class FunctionReference extends Expression {
-  constructor(id) {
+  constructor(id, args) {
     super();
     this.type = "FunctionReference";
     this.id = id;
+    this.args = args;
   }
 }
 
@@ -145,20 +149,10 @@ export class SelectExpression extends Expression {
   }
 }
 
-export class AttributeExpression extends Expression {
-  constructor(ref, name) {
+export class CallArguments extends SyntaxNode {
+  constructor(positional = [], named = []) {
     super();
-    this.type = "AttributeExpression";
-    this.ref = ref;
-    this.name = name;
-  }
-}
-
-export class CallExpression extends Expression {
-  constructor(callee, positional = [], named = []) {
-    super();
-    this.type = "CallExpression";
-    this.callee = callee;
+    this.type = "CallArguments";
     this.positional = positional;
     this.named = named;
   }

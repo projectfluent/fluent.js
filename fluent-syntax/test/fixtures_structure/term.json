@@ -202,54 +202,55 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "CallExpression",
-              "callee": {
-                "type": "TermReference",
-                "id": {
-                  "type": "Identifier",
-                  "name": "brand-name",
-                  "span": {
-                    "type": "Span",
-                    "start": 155,
-                    "end": 165
-                  }
-                },
+              "type": "TermReference",
+              "id": {
+                "type": "Identifier",
+                "name": "brand-name",
                 "span": {
                   "type": "Span",
-                  "start": 154,
+                  "start": 155,
                   "end": 165
                 }
               },
-              "positional": [],
-              "named": [
-                {
-                  "type": "NamedArgument",
-                  "name": {
-                    "type": "Identifier",
-                    "name": "case",
+              "attribute": null,
+              "args": {
+                "type": "CallArguments",
+                "positional": [],
+                "named": [
+                  {
+                    "type": "NamedArgument",
+                    "name": {
+                      "type": "Identifier",
+                      "name": "case",
+                      "span": {
+                        "type": "Span",
+                        "start": 166,
+                        "end": 170
+                      }
+                    },
+                    "value": {
+                      "type": "StringLiteral",
+                      "raw": "accusative",
+                      "value": "accusative",
+                      "span": {
+                        "type": "Span",
+                        "start": 172,
+                        "end": 184
+                      }
+                    },
                     "span": {
                       "type": "Span",
                       "start": 166,
-                      "end": 170
-                    }
-                  },
-                  "value": {
-                    "type": "StringLiteral",
-                    "raw": "accusative",
-                    "value": "accusative",
-                    "span": {
-                      "type": "Span",
-                      "start": 172,
                       "end": 184
                     }
-                  },
-                  "span": {
-                    "type": "Span",
-                    "start": 166,
-                    "end": 184
                   }
+                ],
+                "span": {
+                  "type": "Span",
+                  "start": 165,
+                  "end": 185
                 }
-              ],
+              },
               "span": {
                 "type": "Span",
                 "start": 154,
@@ -305,25 +306,17 @@
             "expression": {
               "type": "SelectExpression",
               "selector": {
-                "type": "AttributeExpression",
-                "ref": {
-                  "type": "TermReference",
-                  "id": {
-                    "type": "Identifier",
-                    "name": "brand-name",
-                    "span": {
-                      "type": "Span",
-                      "start": 217,
-                      "end": 227
-                    }
-                  },
+                "type": "TermReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "brand-name",
                   "span": {
                     "type": "Span",
-                    "start": 216,
+                    "start": 217,
                     "end": 227
                   }
                 },
-                "name": {
+                "attribute": {
                   "type": "Identifier",
                   "name": "gender",
                   "span": {
@@ -332,6 +325,7 @@
                     "end": 234
                   }
                 },
+                "args": null,
                 "span": {
                   "type": "Span",
                   "start": 216,
@@ -366,6 +360,8 @@
                               "end": 271
                             }
                           },
+                          "attribute": null,
+                          "args": null,
                           "span": {
                             "type": "Span",
                             "start": 260,
@@ -428,6 +424,8 @@
                               "end": 339
                             }
                           },
+                          "attribute": null,
+                          "args": null,
                           "span": {
                             "type": "Span",
                             "start": 328,
@@ -499,6 +497,8 @@
                               "end": 413
                             }
                           },
+                          "attribute": null,
+                          "args": null,
                           "span": {
                             "type": "Span",
                             "start": 402,
