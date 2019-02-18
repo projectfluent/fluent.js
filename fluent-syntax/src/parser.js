@@ -380,22 +380,24 @@ export default class FluentParser {
   }
 
   getNumber(ps) {
-    let num = "";
+    let integer = "";
+    let fraction = "";
 
     if (ps.currentChar === "-") {
-      num += "-";
       ps.next();
+      integer = `-${this.getDigits(ps)}`;
+    } else {
+      integer = this.getDigits(ps);
     }
-
-    num = `${num}${this.getDigits(ps)}`;
 
     if (ps.currentChar === ".") {
-      num += ".";
       ps.next();
-      num = `${num}${this.getDigits(ps)}`;
+      fraction = this.getDigits(ps);
     }
 
-    return new AST.NumberLiteral(num);
+    let value = parseFloat(`${integer}.${fraction}`);
+    let precision = fraction.length;
+    return new AST.NumberLiteral(value, precision);
   }
 
   // maybeGetPattern distinguishes between patterns which start on the same line
