@@ -9,7 +9,7 @@ const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */mg;
 const RE_ATTRIBUTE_START = /\.([a-zA-Z][\w-]*) *= */y;
 const RE_VARIANT_START = /\*?\[/y;
 
-const RE_NUMBER_LITERAL = /(-?[0-9]+(\.[0-9]+)?)/y;
+const RE_NUMBER_LITERAL = /(-?[0-9]+(?:\.([0-9]+))?)/y;
 const RE_IDENTIFIER = /([a-zA-Z][\w-]*)/y;
 const RE_REFERENCE = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y;
 
@@ -388,7 +388,9 @@ export default class FluentResource extends Map {
     }
 
     function parseNumberLiteral() {
-      return {type: "num", value: match1(RE_NUMBER_LITERAL)};
+      let [, value, fraction = ""] = match(RE_NUMBER_LITERAL);
+      let precision = fraction.length;
+      return {type: "num", value: parseFloat(value), precision};
     }
 
     function parseStringLiteral() {

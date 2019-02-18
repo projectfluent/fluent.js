@@ -12,7 +12,8 @@
                 {
                     "key": {
                         "type": "num",
-                        "value": "0"
+                        "value": 0,
+                        "precision": 0
                     },
                     "value": "Zero"
                 },

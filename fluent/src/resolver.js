@@ -54,6 +54,7 @@ function match(bundle, selector, key) {
     return true;
   }
 
+  // XXX Consider comparing options too, e.g. minimumFractionDigits.
   if (key instanceof FluentNumber
     && selector instanceof FluentNumber
     && key.value === selector.value) {
@@ -125,7 +126,9 @@ function Type(env, expr) {
     case "str":
       return expr.value;
     case "num":
-      return new FluentNumber(expr.value);
+      return new FluentNumber(expr.value, {
+        minimumFractionDigits: expr.precision,
+      });
     case "var":
       return VariableReference(env, expr);
     case "term":
