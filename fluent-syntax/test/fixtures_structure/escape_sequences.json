@@ -344,7 +344,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "}"
           ],
           "message": "Expected token: \"}\"",
@@ -377,7 +377,7 @@
         {
           "type": "Annotation",
           "code": "E0025",
-          "args": [
+          "arguments": [
             "x"
           ],
           "message": "Unknown escape sequence: \\x.",

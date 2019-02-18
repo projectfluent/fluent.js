@@ -334,7 +334,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",
@@ -367,7 +367,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",
@@ -400,7 +400,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",
@@ -884,7 +884,7 @@
         {
           "type": "Annotation",
           "code": "E0012",
-          "args": [],
+          "arguments": [],
           "message": "Expected value",
           "span": {
             "type": "Span",
@@ -915,7 +915,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "}"
           ],
           "message": "Expected token: \"}\"",

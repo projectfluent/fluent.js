@@ -208,8 +208,8 @@ function serializeReferenceExpression(expr) {
   if (expr.attribute) {
     parts.push(`.${expr.attribute.name}`);
   }
-  if (expr.args) {
-    parts.push(serializeCallArguments(expr.args));
+  if (expr.arguments) {
+    parts.push(serializeCallArguments(expr.arguments));
   }
   return parts.join("");
 }

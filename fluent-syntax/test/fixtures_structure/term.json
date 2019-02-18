@@ -213,7 +213,7 @@
                 }
               },
               "attribute": null,
-              "args": {
+              "arguments": {
                 "type": "CallArguments",
                 "positional": [],
                 "named": [
@@ -325,7 +325,7 @@
                     "end": 234
                   }
                 },
-                "args": null,
+                "arguments": null,
                 "span": {
                   "type": "Span",
                   "start": 216,
@@ -361,7 +361,7 @@
                             }
                           },
                           "attribute": null,
-                          "args": null,
+                          "arguments": null,
                           "span": {
                             "type": "Span",
                             "start": 260,
@@ -425,7 +425,7 @@
                             }
                           },
                           "attribute": null,
-                          "args": null,
+                          "arguments": null,
                           "span": {
                             "type": "Span",
                             "start": 328,
@@ -498,7 +498,7 @@
                             }
                           },
                           "attribute": null,
-                          "args": null,
+                          "arguments": null,
                           "span": {
                             "type": "Span",
                             "start": 402,

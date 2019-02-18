@@ -28,7 +28,7 @@
                   "end": 11
                 }
               },
-              "args": {
+              "arguments": {
                 "type": "CallArguments",
                 "positional": [],
                 "named": [

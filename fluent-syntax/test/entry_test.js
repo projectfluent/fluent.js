@@ -72,7 +72,7 @@ suite("Parse entry", function() {
       "content": "junk\n",
       "annotations": [
         {
-          "args": ["="],
+          "arguments": ["="],
           "code": "E0003",
           "message": "Expected token: \"=\"",
           "span": {
@@ -129,7 +129,7 @@ suite("Parse entry", function() {
       "content": "##Invalid Comment\n",
       "annotations": [
         {
-          "args": [" "],
+          "arguments": [" "],
           "code": "E0003",
           "message": "Expected token: \" \"",
           "span": {

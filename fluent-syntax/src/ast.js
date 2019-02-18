@@ -120,7 +120,7 @@ export class TermReference extends Expression {
     this.type = "TermReference";
     this.id = id;
     this.attribute = attribute;
-    this.args = args;
+    this.arguments = args;
   }
 }
 
@@ -137,7 +137,7 @@ export class FunctionReference extends Expression {
     super();
     this.type = "FunctionReference";
     this.id = id;
-    this.args = args;
+    this.arguments = args;
   }
 }
 
@@ -250,7 +250,7 @@ export class Annotation extends SyntaxNode {
     super();
     this.type = "Annotation";
     this.code = code;
-    this.args = args;
+    this.arguments = args;
     this.message = message;
   }
 }

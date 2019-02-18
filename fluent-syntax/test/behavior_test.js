@@ -31,7 +31,7 @@ function getCodeName(code) {
 }
 
 export function serializeAnnotation(annot) {
-  const { code, args, span: { start, end } } = annot;
+  const { code, arguments: args, span: { start, end } } = annot;
   const parts = [getCodeName(code)];
 
   if (start === end) {
