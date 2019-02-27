@@ -33,19 +33,12 @@ export class BaseNode {
         if (thisVal.length !== otherVal.length) {
           return false;
         }
-        // Sort elements of order-agnostic fields to ensure the
-        // comparison is order-agnostic as well. Annotations should be
-        // here too but they don't have sorting keys.
-        if (["attributes", "variants"].indexOf(fieldName) >= 0) {
-          thisVal.sort(sorting_key_compare);
-          otherVal.sort(sorting_key_compare);
-        }
-        for (let i = 0, ii = thisVal.length; i < ii; ++i) {
-          if (!scalars_equal(thisVal[i], otherVal[i], ignoredFields)) {
+        for (let i = 0; i < thisVal.length; ++i) {
+          if (!scalarsEqual(thisVal[i], otherVal[i], ignoredFields)) {
             return false;
           }
         }
-      } else if (!scalars_equal(thisVal, otherVal, ignoredFields)) {
+      } else if (!scalarsEqual(thisVal, otherVal, ignoredFields)) {
         return false;
       }
     }
@@ -62,7 +55,7 @@ export class BaseNode {
       }
       return value;
     }
-    const clone = Object.create(this);
+    const clone = Object.create(this.constructor.prototype);
     for (const prop of Object.keys(this)) {
       clone[prop] = visit(this[prop]);
     }
@@ -70,21 +63,11 @@ export class BaseNode {
   }
 }
 
-function scalars_equal(thisVal, otherVal, ignoredFields) {
+function scalarsEqual(thisVal, otherVal, ignoredFields) {
   if (thisVal instanceof BaseNode) {
     return thisVal.equals(otherVal, ignoredFields);
   }
   return thisVal === otherVal;
-}
-
-function sorting_key_compare(left, right) {
-  if (left.sorting_key < right.sorting_key) {
-    return -1;
-  }
-  if (left.sorting_key === right.sorting_key) {
-    return 0;
-  }
-  return 1;
 }
 
 /*
@@ -267,7 +250,7 @@ export class Attribute extends SyntaxNode {
     this.value = value;
   }
 
-  get sorting_key() {
+  get sortingKey() {
     return this.id.name;
   }
 }
@@ -281,7 +264,7 @@ export class Variant extends SyntaxNode {
     this.default = def;
   }
 
-  get sorting_key() {
+  get sortingKey() {
     if (this.key instanceof NumberLiteral) {
       return this.key.value;
     }

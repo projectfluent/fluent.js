@@ -12,12 +12,11 @@ export class Visitor {
     if (!(node instanceof BaseNode)) {
       return;
     }
-    const nodename = node.type;
-    const visit = this[`visit_${nodename}`] || this.generic_visit;
+    const visit = this[`visit${node.type}`] || this.genericVisit;
     visit.call(this, node);
   }
 
-  generic_visit(node) {
+  genericVisit(node) {
     for (const propname of Object.keys(node)) {
       this.visit(node[propname]);
     }
@@ -32,12 +31,11 @@ export class Transformer extends Visitor {
     if (!(node instanceof BaseNode)) {
       return node;
     }
-    const nodename = node.type;
-    const visit = this[`visit_${nodename}`] || this.generic_visit;
+    const visit = this[`visit${node.type}`] || this.genericVisit;
     return visit.call(this, node);
   }
 
-  generic_visit(node) {
+  genericVisit(node) {
     for (const propname of Object.keys(node)) {
       const propvalue = node[propname];
       if (Array.isArray(propvalue)) {

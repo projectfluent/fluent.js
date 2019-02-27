@@ -22,16 +22,16 @@ suite("Visitor", function() {
         this.calls = {};
         this.pattern_calls = 0;
       }
-      generic_visit(node) {
+      genericVisit(node) {
         const nodename = node.type;
         if (nodename in this.calls) {
           this.calls[nodename]++;
         } else {
           this.calls[nodename] = 1;
         }
-        super.generic_visit(node);
+        super.genericVisit(node);
       }
-      visit_Pattern(node) {
+      visitPattern(node) {
         this.pattern_calls++;
       }
     }
@@ -56,16 +56,16 @@ suite("Visitor", function() {
         super();
         this.word_count = 0;
       }
-      generic_visit(node) {
+      genericVisit(node) {
         switch (node.type) {
           case 'Span':
           case 'Annotation':            
             break;
           default:
-            super.generic_visit(node);
+            super.genericVisit(node);
         }
       }
-      visit_TextElement(node) {
+      visitTextElement(node) {
         this.word_count += node.value.split(/\s+/).length;
       }
     }
@@ -93,17 +93,17 @@ suite("Transformer", function() {
         this.before = before;
         this.after = after;
       }
-      generic_visit(node) {
+      genericVisit(node) {
         switch (node.type) {
           case 'Span':
           case 'Annotation':
             return node;
             break;
           default:
-            return super.generic_visit(node);
+            return super.genericVisit(node);
         }
       }
-      visit_TextElement(node) {
+      visitTextElement(node) {
         node.value = node.value.replace(this.before, this.after);
         return node;
       }

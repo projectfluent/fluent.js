@@ -12,6 +12,7 @@ suite("BaseNode.equals", function() {
   test("Identifier.equals", function() {
     const thisNode = new AST.Identifier("name");
     const otherNode = new AST.Identifier("name");
+    assert.ok(thisNode.clone() instanceof AST.Identifier);
     assert.strictEqual(thisNode.equals(otherNode), true);
     assert.strictEqual(thisNode.equals(thisNode.clone()), true);
     assert.notStrictEqual(thisNode, thisNode.clone());
@@ -34,7 +35,7 @@ suite("BaseNode.equals", function() {
     ]);
     assert.strictEqual(thisNode.equals(otherNode), true);
   });
-  test("Variants", function() {
+  test("Variant order matters", function() {
       const thisRes = this.parser.parse(ftl`
           msg = { $val ->
               [few] things
@@ -43,7 +44,6 @@ suite("BaseNode.equals", function() {
             }
       `);
       const otherRes = this.parser.parse(ftl`
-          # a comment
           msg = { $val ->
               [few] things
              *[other] default
@@ -53,13 +53,10 @@ suite("BaseNode.equals", function() {
       const thisNode = thisRes.body[0];
       const otherNode = otherRes.body[0];
       assert.strictEqual(thisNode.equals(otherNode), false);
-      assert.strictEqual(thisNode.equals(otherNode, ['span', 'comment']), true);
-      assert.strictEqual(thisNode.value.equals(otherNode.value), true);
-      assert.strictEqual(thisNode.value.equals(otherNode.value, []), false);
       assert.strictEqual(thisRes.equals(thisRes.clone(), []), true);
       assert.notStrictEqual(thisRes, thisRes.clone());
   });
-  test("Attributes without order", function() {
+  test("Attribute order matters", function() {
       const thisRes = this.parser.parse(ftl`
           msg =
             .attr1 = one
@@ -72,6 +69,6 @@ suite("BaseNode.equals", function() {
       `);
       const thisNode = thisRes.body[0];
       const otherNode = otherRes.body[0];
-      assert.strictEqual(thisNode.equals(otherNode), true);
+      assert.strictEqual(thisNode.equals(otherNode), false);
   });
 });
