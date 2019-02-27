@@ -51,6 +51,23 @@ class BaseNode {
     }
     return true;
   }
+
+  clone() {
+    function visit(value) {
+      if (value instanceof BaseNode) {
+        return value.clone();
+      }
+      if (Array.isArray(value)) {
+        return value.map(visit);
+      }
+      return value;
+    }
+    const clone = Object.create(this);
+    for (const prop of Object.keys(this)) {
+      clone[prop] = visit(this[prop]);
+    }
+    return clone;
+  }
 }
 
 function scalars_equal(thisVal, otherVal, ignoredFields) {

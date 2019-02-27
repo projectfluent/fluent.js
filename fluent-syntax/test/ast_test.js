@@ -13,6 +13,8 @@ suite("BaseNode.equals", function() {
     const thisNode = new AST.Identifier("name");
     const otherNode = new AST.Identifier("name");
     assert.strictEqual(thisNode.equals(otherNode), true);
+    assert.strictEqual(thisNode.equals(thisNode.clone()), true);
+    assert.notStrictEqual(thisNode, thisNode.clone());
   });
   test("Node.type", function() {
     const thisNode = new AST.Identifier("name");
@@ -54,6 +56,8 @@ suite("BaseNode.equals", function() {
       assert.strictEqual(thisNode.equals(otherNode, ['span', 'comment']), true);
       assert.strictEqual(thisNode.value.equals(otherNode.value), true);
       assert.strictEqual(thisNode.value.equals(otherNode.value, []), false);
+      assert.strictEqual(thisRes.equals(thisRes.clone(), []), true);
+      assert.notStrictEqual(thisRes, thisRes.clone());
   });
   test("Attributes without order", function() {
       const thisRes = this.parser.parse(ftl`
