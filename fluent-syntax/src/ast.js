@@ -5,7 +5,7 @@
  * Annotation.
  *
  */
-class BaseNode {
+export class BaseNode {
   constructor() {}
 
   equals(other, ignoredFields = ["span"]) {

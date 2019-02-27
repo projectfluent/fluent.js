@@ -3,6 +3,7 @@ import FluentSerializer from "./serializer";
 
 export * from "./ast";
 export { FluentParser, FluentSerializer };
+export * from "./visitor";
 
 export function parse(source, opts) {
   const parser = new FluentParser(opts);
