@@ -688,7 +688,7 @@ export default class FluentParser {
 
       if (ps.currentChar === "(") {
         // It's a Function. Ensure it's all upper-case.
-        if (!/^[A-Z][A-Z_?-]*$/.test(id.name)) {
+        if (!/^[A-Z][A-Z0-9_-]*$/.test(id.name)) {
           throw new ParseError("E0008");
         }
 
