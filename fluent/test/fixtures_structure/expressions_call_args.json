@@ -1,9 +1,8 @@
 {
     "key": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FOO",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",

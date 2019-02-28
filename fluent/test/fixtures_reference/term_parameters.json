@@ -4,9 +4,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "arg",
-                "attr": null,
-                "args": null
+                "name": "arg"
             },
             "variants": [
                 {
@@ -22,7 +20,7 @@
             "type": "term",
             "name": "term",
             "attr": null,
-            "args": null
+            "args": []
         }
     ],
     "key02": [

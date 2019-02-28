@@ -15,9 +15,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "sel",
-                "attr": null,
-                "args": null
+                "name": "sel"
             }
         }
     ]

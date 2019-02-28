@@ -89,13 +89,11 @@ function getArguments(env, args) {
   const positional = [];
   const named = {};
 
-  if (args) {
-    for (const arg of args) {
-      if (arg.type === "narg") {
-        named[arg.name] = Type(env, arg.value);
-      } else {
-        positional.push(Type(env, arg));
-      }
+  for (const arg of args) {
+    if (arg.type === "narg") {
+      named[arg.name] = Type(env, arg.value);
+    } else {
+      positional.push(Type(env, arg));
     }
   }
 
@@ -131,12 +129,12 @@ function Type(env, expr) {
       });
     case "var":
       return VariableReference(env, expr);
+    case "mesg":
+      return MessageReference(env, expr);
     case "term":
-      return TermReference({...env, args: {}}, expr);
-    case "ref":
-      return expr.args
-        ? FunctionReference(env, expr)
-        : MessageReference(env, expr);
+      return TermReference(env, expr);
+    case "func":
+      return FunctionReference(env, expr);
     case "select":
       return SelectExpression(env, expr);
     case undefined: {

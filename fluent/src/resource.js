@@ -12,6 +12,7 @@ const RE_VARIANT_START = /\*?\[/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(?:\.([0-9]+))?)/y;
 const RE_IDENTIFIER = /([a-zA-Z][\w-]*)/y;
 const RE_REFERENCE = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y;
+const RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;
 
 // A "run" is a sequence of text or string literal characters which don't
 // require any special handling. For TextElements such special characters are: {
@@ -293,13 +294,32 @@ export default class FluentResource extends Map {
 
       if (test(RE_REFERENCE)) {
         let [, sigil, name, attr = null] = match(RE_REFERENCE);
-        let type = {"$": "var", "-": "term"}[sigil] || "ref";
 
-        if (consumeToken(TOKEN_PAREN_OPEN)) {
-          return {type, name, attr, args: parseArguments()};
+        if (sigil === "$") {
+          return {type: "var", name};
         }
 
-        return {type, name, attr, args: null};
+        if (consumeToken(TOKEN_PAREN_OPEN)) {
+          let args = parseArguments();
+
+          if (sigil === "-") {
+            // A parameterized term: -term(...).
+            return {type: "term", name, attr, args};
+          }
+
+          if (RE_FUNCTION_NAME.test(name)) {
+            return {type: "func", name, args};
+          }
+
+          throw new FluentError("Function names must be all upper-case");
+        }
+
+        if (sigil === "-") {
+          // A non-parameterized term: -term.
+          return {type: "term", name, attr, args: []};
+        }
+
+        return {type: "mesg", name, attr};
       }
 
       return parseLiteral();
@@ -323,18 +343,18 @@ export default class FluentResource extends Map {
     }
 
     function parseArgument() {
-      let ref = parseInlineExpression();
-      if (ref.type !== "ref") {
-        return ref;
+      let expr = parseInlineExpression();
+      if (expr.type !== "mesg") {
+        return expr;
       }
 
       if (consumeToken(TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
-        return {type: "narg", name: ref.name, value: parseLiteral()};
+        return {type: "narg", name: expr.name, value: parseLiteral()};
       }
 
       // It's a regular message reference.
-      return ref;
+      return expr;
     }
 
     function parseVariants() {

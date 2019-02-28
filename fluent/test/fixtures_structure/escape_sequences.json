@@ -4,10 +4,9 @@
     "text-backslash-brace": [
         "Value with \\",
         {
-            "type": "ref",
+            "type": "mesg",
             "name": "placeable",
-            "attr": null,
-            "args": null
+            "attr": null
         }
     ],
     "text-backslash-u": "\\u0041",

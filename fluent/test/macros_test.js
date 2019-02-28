@@ -18,20 +18,10 @@ suite("Macros", function() {
         useIsolating: false,
       });
       bundle.addMessages(ftl`
-        foo = Foo
-        message-call = {foo()}
-
         -bar = Bar
         term-ref = {-bar}
         term-call = {-bar()}
       `);
-    });
-
-    test("messages cannot be parameterized", function() {
-      const msg = bundle.getMessage("message-call");
-      const val = bundle.format(msg, {}, errs);
-      assert.equal(val, "foo()");
-      assert.equal(errs.length, 1);
     });
 
     test("terms can be referenced without parens", function() {

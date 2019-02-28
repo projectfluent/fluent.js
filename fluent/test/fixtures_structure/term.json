@@ -5,9 +5,7 @@
                 "type": "select",
                 "selector": {
                     "type": "var",
-                    "name": "case",
-                    "attr": null,
-                    "args": null
+                    "name": "case"
                 },
                 "variants": [
                     {
@@ -52,7 +50,7 @@
                 "type": "term",
                 "name": "brand-name",
                 "attr": "gender",
-                "args": null
+                "args": []
             },
             "variants": [
                 {
@@ -62,7 +60,7 @@
                             "type": "term",
                             "name": "brand-name",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
                         " został pomyślnie zaktualizowany."
                     ]
@@ -74,7 +72,7 @@
                             "type": "term",
                             "name": "brand-name",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
                         " została pomyślnie zaktualizowana."
                     ]
@@ -87,7 +85,7 @@
                             "type": "term",
                             "name": "brand-name",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
                         " został pomyślnie zaktualizowany."
                     ]

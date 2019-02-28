@@ -1,10 +1,9 @@
 {
     "message-reference-placeable": [
         {
-            "type": "ref",
+            "type": "mesg",
             "name": "msg",
-            "attr": null,
-            "args": null
+            "attr": null
         }
     ],
     "term-reference-placeable": [
@@ -12,23 +11,20 @@
             "type": "term",
             "name": "term",
             "attr": null,
-            "args": null
+            "args": []
         }
     ],
     "variable-reference-placeable": [
         {
             "type": "var",
-            "name": "var",
-            "attr": null,
-            "args": null
+            "name": "var"
         }
     ],
     "function-reference-placeable": [
         {
-            "type": "ref",
+            "type": "mesg",
             "name": "FUN",
-            "attr": null,
-            "args": null
+            "attr": null
         }
     ],
     "variable-reference-selector": [
@@ -36,9 +32,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "var",
-                "attr": null,
-                "args": null
+                "name": "var"
             },
             "variants": [
                 {
@@ -53,10 +47,9 @@
         {
             "type": "select",
             "selector": {
-                "type": "ref",
+                "type": "mesg",
                 "name": "msg",
-                "attr": null,
-                "args": null
+                "attr": null
             },
             "variants": [
                 {
@@ -74,7 +67,7 @@
                 "type": "term",
                 "name": "term",
                 "attr": null,
-                "args": null
+                "args": []
             },
             "variants": [
                 {
@@ -89,10 +82,9 @@
         {
             "type": "select",
             "selector": {
-                "type": "ref",
+                "type": "mesg",
                 "name": "FUN",
-                "attr": null,
-                "args": null
+                "attr": null
             },
             "variants": [
                 {

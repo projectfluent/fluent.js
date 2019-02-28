@@ -3,9 +3,8 @@
         {
             "type": "select",
             "selector": {
-                "type": "ref",
+                "type": "func",
                 "name": "BUILTIN",
-                "attr": null,
                 "args": []
             },
             "variants": [
@@ -34,7 +33,7 @@
                 "type": "term",
                 "name": "term",
                 "attr": "case",
-                "args": null
+                "args": []
             },
             "variants": [
                 {
@@ -52,7 +51,7 @@
                 "type": "term",
                 "name": "term",
                 "attr": null,
-                "args": null
+                "args": []
             },
             "variants": [
                 {
@@ -95,9 +94,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "sel",
-                "attr": null,
-                "args": null
+                "name": "sel"
             },
             "variants": [
                 {
@@ -113,9 +110,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "sel",
-                "attr": null,
-                "args": null
+                "name": "sel"
             },
             "variants": [
                 {
@@ -125,9 +120,7 @@
                             "type": "select",
                             "selector": {
                                 "type": "var",
-                                "name": "sel",
-                                "attr": null,
-                                "args": null
+                                "name": "sel"
                             },
                             "variants": [
                                 {
