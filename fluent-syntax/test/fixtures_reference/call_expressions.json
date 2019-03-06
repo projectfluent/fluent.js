@@ -154,12 +154,10 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     },
                                     {
                                         "type": "StringLiteral",
-                                        "raw": "a",
                                         "value": "a"
                                     },
                                     {
@@ -209,8 +207,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     },
                                     {
@@ -221,7 +218,6 @@
                                         },
                                         "value": {
                                             "type": "StringLiteral",
-                                            "raw": "Y",
                                             "value": "Y"
                                         }
                                     }
@@ -263,8 +259,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     },
                                     {
@@ -275,7 +270,6 @@
                                         },
                                         "value": {
                                             "type": "StringLiteral",
-                                            "raw": "Y",
                                             "value": "Y"
                                         }
                                     }
@@ -310,12 +304,10 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     },
                                     {
                                         "type": "StringLiteral",
-                                        "raw": "a",
                                         "value": "a"
                                     },
                                     {
@@ -336,8 +328,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     },
                                     {
@@ -348,7 +339,6 @@
                                         },
                                         "value": {
                                             "type": "StringLiteral",
-                                            "raw": "Y",
                                             "value": "Y"
                                         }
                                     }
@@ -405,7 +395,6 @@
                                 "positional": [
                                     {
                                         "type": "StringLiteral",
-                                        "raw": "a",
                                         "value": "a"
                                     },
                                     {
@@ -426,8 +415,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     }
                                 ]
@@ -490,7 +478,6 @@
                                 "positional": [
                                     {
                                         "type": "StringLiteral",
-                                        "raw": "a",
                                         "value": "a"
                                     },
                                     {
@@ -511,8 +498,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     }
                                 ]
@@ -546,7 +532,6 @@
                                 "positional": [
                                     {
                                         "type": "StringLiteral",
-                                        "raw": "a",
                                         "value": "a"
                                     },
                                     {
@@ -567,8 +552,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     }
                                 ]
@@ -631,8 +615,7 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     }
                                 ],
                                 "named": []
@@ -666,7 +649,6 @@
                                 "positional": [
                                     {
                                         "type": "StringLiteral",
-                                        "raw": "a",
                                         "value": "a"
                                     }
                                 ],
@@ -864,8 +846,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     }
                                 ]
@@ -941,8 +922,7 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     }
                                 ],
                                 "named": []
@@ -976,18 +956,15 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     },
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 2,
-                                        "precision": 0
+                                        "value": "2"
                                     },
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 3,
-                                        "precision": 0
+                                        "value": "3"
                                     }
                                 ],
                                 "named": []
@@ -1021,18 +998,15 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     },
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 2,
-                                        "precision": 0
+                                        "value": "2"
                                     },
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 3,
-                                        "precision": 0
+                                        "value": "3"
                                     }
                                 ],
                                 "named": []
@@ -1066,13 +1040,11 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     },
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 2,
-                                        "precision": 0
+                                        "value": "2"
                                     }
                                 ],
                                 "named": []
@@ -1106,13 +1078,11 @@
                                 "positional": [
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 1,
-                                        "precision": 0
+                                        "value": "1"
                                     },
                                     {
                                         "type": "NumberLiteral",
-                                        "value": 2,
-                                        "precision": 0
+                                        "value": "2"
                                     }
                                 ],
                                 "named": []
@@ -1176,8 +1146,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     },
                                     {
@@ -1188,8 +1157,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 2,
-                                            "precision": 0
+                                            "value": "2"
                                         }
                                     },
                                     {
@@ -1200,8 +1168,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 3,
-                                            "precision": 0
+                                            "value": "3"
                                         }
                                     }
                                 ]
@@ -1242,8 +1209,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     }
                                 ]
@@ -1284,8 +1250,7 @@
                                         },
                                         "value": {
                                             "type": "NumberLiteral",
-                                            "value": 1,
-                                            "precision": 0
+                                            "value": "1"
                                         }
                                     }
                                 ]

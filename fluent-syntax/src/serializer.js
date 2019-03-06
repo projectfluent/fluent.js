@@ -181,7 +181,7 @@ function serializePlaceable(placeable) {
 function serializeExpression(expr) {
   switch (expr.type) {
     case "StringLiteral":
-      return `"${expr.raw}"`;
+      return `"${expr.value}"`;
     case "NumberLiteral":
       return expr.value;
     case "VariableReference":

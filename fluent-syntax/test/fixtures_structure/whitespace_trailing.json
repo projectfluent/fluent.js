@@ -192,9 +192,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": "           ",
               "value": "           ",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 150,

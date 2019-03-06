@@ -380,24 +380,21 @@ export default class FluentParser {
   }
 
   getNumber(ps) {
-    let integer = "";
-    let fraction = "";
+    let value = "";
 
     if (ps.currentChar === "-") {
       ps.next();
-      integer = `-${this.getDigits(ps)}`;
+      value += `-${this.getDigits(ps)}`;
     } else {
-      integer = this.getDigits(ps);
+      value += this.getDigits(ps);
     }
 
     if (ps.currentChar === ".") {
       ps.next();
-      fraction = this.getDigits(ps);
+      value += `.${this.getDigits(ps)}`;
     }
 
-    let value = parseFloat(`${integer}.${fraction}`);
-    let precision = fraction.length;
-    return new AST.NumberLiteral(value, precision);
+    return new AST.NumberLiteral(value);
   }
 
   // maybeGetPattern distinguishes between patterns which start on the same line
@@ -563,7 +560,7 @@ export default class FluentParser {
       case "\\":
       case "\"":
         ps.next();
-        return [`\\${next}`, next];
+        return `\\${next}`;
       case "u":
         return this.getUnicodeEscapeSequence(ps, next, 4);
       case "U":
@@ -588,15 +585,7 @@ export default class FluentParser {
       sequence += ch;
     }
 
-    const codepoint = parseInt(sequence, 16);
-    const unescaped = codepoint <= 0xD7FF || 0xE000 <= codepoint
-      // It's a Unicode scalar value.
-      ? String.fromCodePoint(codepoint)
-      // Escape sequences reresenting surrogate code points are well-formed
-      // but invalid in Fluent. Replace them with U+FFFD REPLACEMENT
-      // CHARACTER.
-      : "�";
-    return [`\\${u}${sequence}`, unescaped];
+    return `\\${u}${sequence}`;
   }
 
   getPlaceable(ps) {
@@ -771,19 +760,14 @@ export default class FluentParser {
   }
 
   getString(ps) {
-    let raw = "";
-    let value = "";
-
     ps.expectChar("\"");
+    let value = "";
 
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
-        const [sequence, unescaped] = this.getEscapeSequence(ps);
-        raw += sequence;
-        value += unescaped;
+        value += this.getEscapeSequence(ps);
       } else {
-        raw += ch;
         value += ch;
       }
     }
@@ -794,7 +778,7 @@ export default class FluentParser {
 
     ps.expectChar("\"");
 
-    return new AST.StringLiteral(raw, value);
+    return new AST.StringLiteral(value);
   }
 
   getLiteral(ps) {

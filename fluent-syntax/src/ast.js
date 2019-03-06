@@ -87,21 +87,68 @@ export class Placeable extends PatternElement {
  */
 export class Expression extends SyntaxNode {}
 
-export class StringLiteral extends Expression {
-  constructor(raw, value) {
+// An abstract base class for Literals.
+export class Literal extends Expression {
+  constructor(value) {
     super();
-    this.type = "StringLiteral";
-    this.raw = raw;
+    // The "value" field contains the exact contents of the literal,
+    // character-for-character.
     this.value = value;
+  }
+
+  parse() {
+    return {value: this.value};
   }
 }
 
-export class NumberLiteral extends Expression {
-  constructor(value, precision) {
-    super();
+export class StringLiteral extends Literal {
+  constructor(value) {
+    super(value);
+    this.type = "StringLiteral";
+  }
+
+  parse() {
+    // Backslash backslash, backslash double quote, uHHHH, UHHHHHH.
+    const KNOWN_ESCAPES =
+      /(?:\\\\|\\"|\\u([0-9a-fA-F]{4})|\\U([0-9a-fA-F]{6}))/g;
+
+    function from_escape_sequence(match, codepoint4, codepoint6) {
+      switch (match) {
+        case "\\\\":
+          return "\\";
+        case "\\\"":
+          return "\"";
+        default:
+          let codepoint = parseInt(codepoint4 || codepoint6, 16);
+          if (codepoint <= 0xD7FF || 0xE000 <= codepoint) {
+            // It's a Unicode scalar value.
+            return String.fromCodePoint(codepoint);
+          }
+          // Escape sequences reresenting surrogate code points are
+          // well-formed but invalid in Fluent. Replace them with U+FFFD
+          // REPLACEMENT CHARACTER.
+          return "�";
+      }
+    }
+
+    let value = this.value.replace(KNOWN_ESCAPES, from_escape_sequence);
+    return {value};
+  }
+}
+
+export class NumberLiteral extends Literal {
+  constructor(value) {
+    super(value);
     this.type = "NumberLiteral";
-    this.value = value;
-    this.precision = precision;
+  }
+
+  parse() {
+    let value = parseFloat(this.value);
+    let decimal_position = this.value.indexOf(".");
+    let precision = decimal_position > 0
+      ? this.value.length - decimal_position - 1
+      : 0;
+    return {value, precision};
   }
 }
 

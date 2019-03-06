@@ -229,9 +229,8 @@
                       }
                     },
                     "value": {
-                      "type": "StringLiteral",
-                      "raw": "accusative",
                       "value": "accusative",
+                      "type": "StringLiteral",
                       "span": {
                         "type": "Span",
                         "start": 172,
