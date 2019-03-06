@@ -1,7 +1,7 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast";
-import { FTLParserStream } from "./ftlstream";
+import { EOF, EOL, FluentParserStream } from "./stream";
 import { ParseError } from "./errors";
 
 
@@ -14,16 +14,16 @@ function withSpan(fn) {
       return fn.call(this, ps, ...args);
     }
 
-    const start = ps.getIndex();
+    const start = ps.index;
     const node = fn.call(this, ps, ...args);
 
-    // Don't re-add the span if the node already has it.  This may happen when
+    // Don't re-add the span if the node already has it. This may happen when
     // one decorated function calls another decorated function.
     if (node.span) {
       return node;
     }
 
-    const end = ps.getIndex();
+    const end = ps.index;
     node.addSpan(start, end);
     return node;
   };
@@ -39,10 +39,10 @@ export default class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getTermIdentifier", "getVariant", "getVariantName", "getNumber",
-      "getValue", "getPattern", "getVariantList", "getTextElement",
-      "getPlaceable", "getExpression", "getSelectorExpression", "getCallArg",
-      "getString", "getLiteral"
+      "getVariant", "getNumber", "getPattern", "getVariantList",
+      "getTextElement", "getPlaceable", "getExpression",
+      "getInlineExpression", "getCallArgument", "getString",
+      "getSimpleExpression", "getLiteral"
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -50,22 +50,24 @@ export default class FluentParser {
   }
 
   parse(source) {
-    const ps = new FTLParserStream(source);
-    ps.skipBlankLines();
+    const ps = new FluentParserStream(source);
+    ps.skipBlankBlock();
 
     const entries = [];
     let lastComment = null;
 
-    while (ps.current()) {
+    while (ps.currentChar) {
       const entry = this.getEntryOrJunk(ps);
-      const blankLines = ps.skipBlankLines();
+      const blankLines = ps.skipBlankBlock();
 
       // Regular Comments require special logic. Comments may be attached to
       // Messages or Terms if they are followed immediately by them. However
       // they should parse as standalone when they're followed by Junk.
       // Consequently, we only attach Comments once we know that the Message
       // or the Term parsed successfully.
-      if (entry.type === "Comment" && blankLines === 0 && ps.current()) {
+      if (entry.type === "Comment"
+          && blankLines.length === 0
+          && ps.currentChar) {
         // Stash the comment and decide what to do with it in the next pass.
         lastComment = entry;
         continue;
@@ -91,7 +93,7 @@ export default class FluentParser {
     const res = new AST.Resource(entries);
 
     if (this.withSpans) {
-      res.addSpan(0, ps.getIndex());
+      res.addSpan(0, ps.index);
     }
 
     return res;
@@ -107,23 +109,23 @@ export default class FluentParser {
    * themselves, in which case Junk for the invalid comment is returned.
    */
   parseEntry(source) {
-    const ps = new FTLParserStream(source);
-    ps.skipBlankLines();
+    const ps = new FluentParserStream(source);
+    ps.skipBlankBlock();
 
-    while (ps.currentIs("#")) {
+    while (ps.currentChar === "#") {
       const skipped = this.getEntryOrJunk(ps);
       if (skipped.type === "Junk") {
         // Don't skip Junk comments.
         return skipped;
       }
-      ps.skipBlankLines();
+      ps.skipBlankBlock();
     }
 
     return this.getEntryOrJunk(ps);
   }
 
   getEntryOrJunk(ps) {
-    const entryStartPos = ps.getIndex();
+    const entryStartPos = ps.index;
 
     try {
       const entry = this.getEntry(ps);
@@ -134,12 +136,16 @@ export default class FluentParser {
         throw err;
       }
 
-      const errorIndex = ps.getIndex();
-      ps.skipToNextEntryStart();
-      const nextEntryStart = ps.getIndex();
+      let errorIndex = ps.index;
+      ps.skipToNextEntryStart(entryStartPos);
+      const nextEntryStart = ps.index;
+      if (nextEntryStart < errorIndex) {
+        // The position of the error must be inside of the Junk's span.
+        errorIndex = nextEntryStart;
+      }
 
       // Create a Junk instance
-      const slice = ps.getSlice(entryStartPos, nextEntryStart);
+      const slice = ps.string.substring(entryStartPos, nextEntryStart);
       const junk = new AST.Junk(slice);
       if (this.withSpans) {
         junk.addSpan(entryStartPos, nextEntryStart);
@@ -152,11 +158,11 @@ export default class FluentParser {
   }
 
   getEntry(ps) {
-    if (ps.currentIs("#")) {
+    if (ps.currentChar === "#") {
       return this.getComment(ps);
     }
 
-    if (ps.currentIs("-")) {
+    if (ps.currentChar === "-") {
       return this.getTerm(ps);
     }
 
@@ -176,7 +182,7 @@ export default class FluentParser {
 
     while (true) {
       let i = -1;
-      while (ps.currentIs("#") && (i < (level === -1 ? 2 : level))) {
+      while (ps.currentChar === "#" && (i < (level === -1 ? 2 : level))) {
         ps.next();
         i++;
       }
@@ -185,16 +191,16 @@ export default class FluentParser {
         level = i;
       }
 
-      if (!ps.currentIs("\n")) {
+      if (ps.currentChar !== EOL) {
         ps.expectChar(" ");
         let ch;
-        while ((ch = ps.takeChar(x => x !== "\n"))) {
+        while ((ch = ps.takeChar(x => x !== EOL))) {
           content += ch;
         }
       }
 
-      if (ps.isPeekNextLineComment(level)) {
-        content += ps.current();
+      if (ps.isNextLineComment(level)) {
+        content += ps.currentChar;
         ps.next();
       } else {
         break;
@@ -219,44 +225,34 @@ export default class FluentParser {
   getMessage(ps) {
     const id = this.getIdentifier(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isPeekValueStart()) {
-      ps.skipIndent();
-      var pattern = this.getPattern(ps);
-    } else {
-      ps.skipInlineWS();
-    }
+    const value = this.maybeGetPattern(ps);
+    const attrs = this.getAttributes(ps);
 
-    if (ps.isPeekNextLineAttributeStart()) {
-      var attrs = this.getAttributes(ps);
-    }
-
-    if (pattern === undefined && attrs === undefined) {
+    if (value === null && attrs.length === 0) {
       throw new ParseError("E0005", id.name);
     }
 
-    return new AST.Message(id, pattern, attrs);
+    return new AST.Message(id, value, attrs);
   }
 
   getTerm(ps) {
-    const id = this.getTermIdentifier(ps);
+    ps.expectChar("-");
+    const id = this.getIdentifier(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isPeekValueStart()) {
-      ps.skipIndent();
-      var value = this.getValue(ps);
-    } else {
+    // Syntax 0.8 compat: VariantLists are supported but deprecated. They can
+    // only be found as values of Terms. Nested VariantLists are not allowed.
+    const value = this.maybeGetVariantList(ps) || this.maybeGetPattern(ps);
+    if (value === null) {
       throw new ParseError("E0006", id.name);
     }
 
-    if (ps.isPeekNextLineAttributeStart()) {
-      var attrs = this.getAttributes(ps);
-    }
-
+    const attrs = this.getAttributes(ps);
     return new AST.Term(id, value, attrs);
   }
 
@@ -265,29 +261,25 @@ export default class FluentParser {
 
     const key = this.getIdentifier(ps);
 
-    ps.skipInlineWS();
+    ps.skipBlankInline();
     ps.expectChar("=");
 
-    if (ps.isPeekValueStart()) {
-      ps.skipIndent();
-      const value = this.getPattern(ps);
-      return new AST.Attribute(key, value);
+    const value = this.maybeGetPattern(ps);
+    if (value === null) {
+      throw new ParseError("E0012");
     }
 
-    throw new ParseError("E0012");
+    return new AST.Attribute(key, value);
   }
 
   getAttributes(ps) {
     const attrs = [];
-
-    while (true) {
-      ps.expectIndent();
+    ps.peekBlank();
+    while (ps.isAttributeStart()) {
+      ps.skipToPeek();
       const attr = this.getAttribute(ps);
       attrs.push(attr);
-
-      if (!ps.isPeekNextLineAttributeStart()) {
-        break;
-      }
+      ps.peekBlank();
     }
     return attrs;
   }
@@ -303,17 +295,10 @@ export default class FluentParser {
     return new AST.Identifier(name);
   }
 
-  getTermIdentifier(ps) {
-    ps.expectChar("-");
-    const id = this.getIdentifier(ps);
-    return new AST.Identifier(`-${id.name}`);
-
-  }
-
   getVariantKey(ps) {
-    const ch = ps.current();
+    const ch = ps.currentChar;
 
-    if (!ch) {
+    if (ch === EOF) {
       throw new ParseError("E0013");
     }
 
@@ -323,53 +308,56 @@ export default class FluentParser {
       return this.getNumber(ps);
     }
 
-    return this.getVariantName(ps);
+    return this.getIdentifier(ps);
   }
 
-  getVariant(ps, hasDefault) {
+  getVariant(ps, {hasDefault}) {
     let defaultIndex = false;
 
-    if (ps.currentIs("*")) {
+    if (ps.currentChar === "*") {
       if (hasDefault) {
         throw new ParseError("E0015");
       }
       ps.next();
       defaultIndex = true;
-      hasDefault = true;
     }
 
     ps.expectChar("[");
 
+    ps.skipBlank();
+
     const key = this.getVariantKey(ps);
 
+    ps.skipBlank();
     ps.expectChar("]");
 
-    if (ps.isPeekValueStart()) {
-      ps.skipIndent();
-      const value = this.getValue(ps);
-      return new AST.Variant(key, value, defaultIndex);
+    const value = this.maybeGetPattern(ps);
+    if (value === null) {
+      throw new ParseError("E0012");
     }
 
-    throw new ParseError("E0012");
+    return new AST.Variant(key, value, defaultIndex);
   }
 
   getVariants(ps) {
     const variants = [];
     let hasDefault = false;
 
-    while (true) {
-      ps.expectIndent();
-      const variant = this.getVariant(ps, hasDefault);
+    ps.skipBlank();
+    while (ps.isVariantStart()) {
+      const variant = this.getVariant(ps, {hasDefault});
 
       if (variant.default) {
         hasDefault = true;
       }
 
       variants.push(variant);
+      ps.expectLineEnd();
+      ps.skipBlank();
+    }
 
-      if (!ps.isPeekNextLineVariantStart()) {
-        break;
-      }
+    if (variants.length === 0) {
+      throw new ParseError("E0011");
     }
 
     if (!hasDefault) {
@@ -377,21 +365,6 @@ export default class FluentParser {
     }
 
     return variants;
-  }
-
-  getVariantName(ps) {
-    let name = ps.takeIDStart();
-
-    while (true) {
-      const ch = ps.takeVariantNameChar();
-      if (ch) {
-        name += ch;
-      } else {
-        break;
-      }
-    }
-
-    return new AST.VariantName(name.replace(trailingWSRe, ""));
   }
 
   getDigits(ps) {
@@ -412,14 +385,14 @@ export default class FluentParser {
   getNumber(ps) {
     let num = "";
 
-    if (ps.currentIs("-")) {
+    if (ps.currentChar === "-") {
       num += "-";
       ps.next();
     }
 
     num = `${num}${this.getDigits(ps)}`;
 
-    if (ps.currentIs(".")) {
+    if (ps.currentChar === ".") {
       num += ".";
       ps.next();
       num = `${num}${this.getDigits(ps)}`;
@@ -428,138 +401,249 @@ export default class FluentParser {
     return new AST.NumberLiteral(num);
   }
 
-  getValue(ps) {
-    if (ps.currentIs("{")) {
+  // maybeGetPattern distinguishes between patterns which start on the same line
+  // as the identifier (a.k.a. inline signleline patterns and inline multiline
+  // patterns) and patterns which start on a new line (a.k.a. block multiline
+  // patterns). The distinction is important for the dedentation logic: the
+  // indent of the first line of a block pattern must be taken into account when
+  // calculating the maximum common indent.
+  maybeGetPattern(ps) {
+    ps.peekBlankInline();
+    if (ps.isValueStart()) {
+      ps.skipToPeek();
+      return this.getPattern(ps, {isBlock: false});
+    }
+
+    ps.peekBlankBlock();
+    if (ps.isValueContinuation()) {
+      ps.skipToPeek();
+      return this.getPattern(ps, {isBlock: true});
+    }
+
+    return null;
+  }
+
+  // Deprecated in Syntax 0.8. VariantLists are only allowed as values of Terms.
+  // Values of Messages, Attributes and Variants must be Patterns. This method
+  // is only used in getTerm.
+  maybeGetVariantList(ps) {
+    ps.peekBlank();
+    if (ps.currentPeek === "{") {
+      const start = ps.peekOffset;
       ps.peek();
-      ps.peekInlineWS();
-      if (ps.isPeekNextLineVariantStart()) {
-        return this.getVariantList(ps);
+      ps.peekBlankInline();
+      if (ps.currentPeek === EOL) {
+        ps.peekBlank();
+        if (ps.isVariantStart()) {
+          ps.resetPeek(start);
+          ps.skipToPeek();
+          return this.getVariantList(ps);
+        }
       }
     }
 
-    return this.getPattern(ps);
+    ps.resetPeek();
+    return null;
   }
 
   getVariantList(ps) {
     ps.expectChar("{");
-    ps.skipInlineWS();
-    const variants = this.getVariants(ps);
-    ps.expectIndent();
+    var variants = this.getVariants(ps);
     ps.expectChar("}");
     return new AST.VariantList(variants);
   }
 
-  getPattern(ps) {
+  getPattern(ps, {isBlock}) {
     const elements = [];
-    ps.skipInlineWS();
+    if (isBlock) {
+      // A block pattern is a pattern which starts on a new line. Store and
+      // measure the indent of this first line for the dedentation logic.
+      const blankStart = ps.index;
+      const firstIndent = ps.skipBlankInline();
+      elements.push(this.getIndent(ps, firstIndent, blankStart));
+      var commonIndentLength = firstIndent.length;
+    } else {
+      var commonIndentLength = Infinity;
+    }
 
     let ch;
-    while ((ch = ps.current())) {
+    elements: while ((ch = ps.currentChar)) {
+      switch (ch) {
+        case EOL: {
+          const blankStart = ps.index;
+          const blankLines = ps.peekBlankBlock();
+          if (ps.isValueContinuation()) {
+            ps.skipToPeek();
+            const indent = ps.skipBlankInline();
+            commonIndentLength = Math.min(commonIndentLength, indent.length);
+            elements.push(this.getIndent(ps, blankLines + indent, blankStart));
+            continue elements;
+          }
 
-      // The end condition for getPattern's while loop is a newline
-      // which is not followed by a valid pattern continuation.
-      if (ch === "\n" && !ps.isPeekNextLineValue()) {
-        break;
-      }
-
-      if (ch === "{") {
-        const element = this.getPlaceable(ps);
-        elements.push(element);
-      } else {
-        const element = this.getTextElement(ps);
-        elements.push(element);
+          // The end condition for getPattern's while loop is a newline
+          // which is not followed by a valid pattern continuation.
+          ps.resetPeek();
+          break elements;
+        }
+        case "{":
+          elements.push(this.getPlaceable(ps));
+          continue elements;
+        case "}":
+          throw new ParseError("E0027");
+        default:
+          const element = this.getTextElement(ps);
+          elements.push(element);
       }
     }
 
-    // Trim trailing whitespace.
-    const lastElement = elements[elements.length - 1];
+    const dedented = this.dedent(elements, commonIndentLength);
+    return new AST.Pattern(dedented);
+  }
+
+  // Create a token representing an indent. It's not part of the AST and it will
+  // be trimmed and merged into adjacent TextElements, or turned into a new
+  // TextElement, if it's surrounded by two Placeables.
+  getIndent(ps, value, start) {
+    return {
+      type: "Indent",
+      span: {start, end: ps.index},
+      value,
+    };
+  }
+
+  // Dedent a list of elements by removing the maximum common indent from the
+  // beginning of text lines. The common indent is calculated in getPattern.
+  dedent(elements, commonIndent) {
+    const trimmed = [];
+
+    for (let element of elements) {
+      if (element.type === "Placeable") {
+        trimmed.push(element);
+        continue;
+      }
+
+      if (element.type === "Indent") {
+        // Strip common indent.
+        element.value = element.value.slice(
+          0, element.value.length - commonIndent);
+        if (element.value.length === 0) {
+          continue;
+        }
+      }
+
+      let prev = trimmed[trimmed.length - 1];
+      if (prev && prev.type === "TextElement") {
+        // Join adjacent TextElements by replacing them with their sum.
+        const sum = new AST.TextElement(prev.value + element.value);
+        if (this.withSpans) {
+          sum.addSpan(prev.span.start, element.span.end);
+        }
+        trimmed[trimmed.length - 1] = sum;
+        continue;
+      }
+
+      if (element.type === "Indent") {
+        // If the indent hasn't been merged into a preceding TextElement,
+        // convert it into a new TextElement.
+        const textElement = new AST.TextElement(element.value);
+        if (this.withSpans) {
+          textElement.addSpan(element.span.start, element.span.end);
+        }
+        element = textElement;
+      }
+
+      trimmed.push(element);
+    }
+
+    // Trim trailing whitespace from the Pattern.
+    const lastElement = trimmed[trimmed.length - 1];
     if (lastElement.type === "TextElement") {
       lastElement.value = lastElement.value.replace(trailingWSRe, "");
+      if (lastElement.value.length === 0) {
+        trimmed.pop();
+      }
     }
 
-    return new AST.Pattern(elements);
+    return trimmed;
   }
 
   getTextElement(ps) {
     let buffer = "";
 
     let ch;
-    while ((ch = ps.current())) {
-      if (ch === "{") {
+    while ((ch = ps.currentChar)) {
+      if (ch === "{" || ch === "}") {
         return new AST.TextElement(buffer);
       }
 
-      if (ch === "\n") {
-        if (!ps.isPeekNextLineValue()) {
-          return new AST.TextElement(buffer);
-        }
-
-        ps.next();
-        ps.skipInlineWS();
-
-        // Add the new line to the buffer
-        buffer += ch;
-        continue;
+      if (ch === EOL) {
+        return new AST.TextElement(buffer);
       }
 
-      if (ch === "\\") {
-        ps.next();
-        buffer += this.getEscapeSequence(ps);
-      } else {
-        buffer += ch;
-        ps.next();
-      }
+      buffer += ch;
+      ps.next();
     }
 
     return new AST.TextElement(buffer);
   }
 
-  getEscapeSequence(ps, specials = ["{", "\\"]) {
-    const next = ps.current();
+  getEscapeSequence(ps) {
+    const next = ps.currentChar;
 
-    if (specials.includes(next)) {
-      ps.next();
-      return `\\${next}`;
+    switch (next) {
+      case "\\":
+      case "\"":
+        ps.next();
+        return [`\\${next}`, next];
+      case "u":
+        return this.getUnicodeEscapeSequence(ps, next, 4);
+      case "U":
+        return this.getUnicodeEscapeSequence(ps, next, 6);
+      default:
+        throw new ParseError("E0025", next);
     }
+  }
 
-    if (next === "u") {
-      let sequence = "";
-      ps.next();
+  getUnicodeEscapeSequence(ps, u, digits) {
+    ps.expectChar(u);
 
-      for (let i = 0; i < 4; i++) {
-        const ch = ps.takeHexDigit();
+    let sequence = "";
+    for (let i = 0; i < digits; i++) {
+      const ch = ps.takeHexDigit();
 
-        if (ch === undefined) {
-          throw new ParseError("E0026", sequence + ps.current());
-        }
-
-        sequence += ch;
+      if (!ch) {
+        throw new ParseError(
+          "E0026", `\\${u}${sequence}${ps.currentChar}`);
       }
 
-      return `\\u${sequence}`;
+      sequence += ch;
     }
 
-    throw new ParseError("E0025", next);
+    const codepoint = parseInt(sequence, 16);
+    const unescaped = codepoint <= 0xD7FF || 0xE000 <= codepoint
+      // It's a Unicode scalar value.
+      ? String.fromCodePoint(codepoint)
+      // Escape sequences reresenting surrogate code points are well-formed
+      // but invalid in Fluent. Replace them with U+FFFD REPLACEMENT
+      // CHARACTER.
+      : "�";
+    return [`\\${u}${sequence}`, unescaped];
   }
 
   getPlaceable(ps) {
     ps.expectChar("{");
+    ps.skipBlank();
     const expression = this.getExpression(ps);
     ps.expectChar("}");
     return new AST.Placeable(expression);
   }
 
   getExpression(ps) {
-    ps.skipInlineWS();
+    const selector = this.getInlineExpression(ps);
+    ps.skipBlank();
 
-    const selector = this.getSelectorExpression(ps);
-
-    ps.skipInlineWS();
-
-    if (ps.currentIs("-")) {
-      ps.peek();
-
-      if (!ps.currentPeekIs(">")) {
+    if (ps.currentChar === "-") {
+      if (ps.peek() !== ">") {
         ps.resetPeek();
         return selector;
       }
@@ -568,108 +652,137 @@ export default class FluentParser {
         throw new ParseError("E0016");
       }
 
-      if (selector.type === "AttributeExpression" &&
-          selector.ref.type === "MessageReference") {
+      if (selector.type === "AttributeExpression"
+          && selector.ref.type === "MessageReference") {
         throw new ParseError("E0018");
       }
 
-      if (selector.type === "VariantExpression") {
+      if (selector.type === "TermReference"
+          || selector.type === "VariantExpression") {
+        throw new ParseError("E0017");
+      }
+
+      if (selector.type === "CallExpression"
+          && selector.callee.type === "TermReference") {
         throw new ParseError("E0017");
       }
 
       ps.next();
       ps.next();
 
-      ps.skipInlineWS();
+      ps.skipBlankInline();
+      ps.expectLineEnd();
 
       const variants = this.getVariants(ps);
-
-      if (variants.length === 0) {
-        throw new ParseError("E0011");
-      }
-
-      // VariantLists are only allowed in other VariantLists.
-      if (variants.some(v => v.value.type === "VariantList")) {
-        throw new ParseError("E0023");
-      }
-
-      ps.expectIndent();
-
       return new AST.SelectExpression(selector, variants);
-    } else if (selector.type === "AttributeExpression" &&
-               selector.ref.type === "TermReference") {
+    }
+
+    if (selector.type === "AttributeExpression"
+        && selector.ref.type === "TermReference") {
+      throw new ParseError("E0019");
+    }
+
+    if (selector.type === "CallExpression"
+        && selector.callee.type === "AttributeExpression") {
       throw new ParseError("E0019");
     }
 
     return selector;
   }
 
-  getSelectorExpression(ps) {
-    if (ps.currentIs("{")) {
+  getInlineExpression(ps) {
+    if (ps.currentChar === "{") {
       return this.getPlaceable(ps);
     }
-    const literal = this.getLiteral(ps);
 
-    if (literal.type !== "MessageReference"
-      && literal.type !== "TermReference") {
-      return literal;
-    }
+    let expr = this.getSimpleExpression(ps);
+    switch (expr.type) {
+      case "NumberLiteral":
+      case "StringLiteral":
+      case "VariableReference":
+        return expr;
+      case "MessageReference": {
+        if (ps.currentChar === ".") {
+          ps.next();
+          const attr = this.getIdentifier(ps);
+          return new AST.AttributeExpression(expr, attr);
+        }
 
-    const ch = ps.current();
+        if (ps.currentChar === "(") {
+          // It's a Function. Ensure it's all upper-case.
+          if (!/^[A-Z][A-Z_?-]*$/.test(expr.id.name)) {
+            throw new ParseError("E0008");
+          }
 
-    if (ch === ".") {
-      ps.next();
+          const func = new AST.FunctionReference(expr.id);
+          if (this.withSpans) {
+            func.addSpan(expr.span.start, expr.span.end);
+          }
+          return new AST.CallExpression(func, ...this.getCallArguments(ps));
+        }
 
-      const attr = this.getIdentifier(ps);
-      return new AST.AttributeExpression(literal, attr);
-    }
-
-    if (ch === "[") {
-      ps.next();
-
-      if (literal.type === "MessageReference") {
-        throw new ParseError("E0024");
+        return expr;
       }
+      case "TermReference": {
+        if (ps.currentChar === "[") {
+          ps.next();
+          const key = this.getVariantKey(ps);
+          ps.expectChar("]");
+          return new AST.VariantExpression(expr, key);
+        }
 
-      const key = this.getVariantKey(ps);
+        if (ps.currentChar === ".") {
+          ps.next();
+          const attr = this.getIdentifier(ps);
+          expr = new AST.AttributeExpression(expr, attr);
+        }
 
-      ps.expectChar("]");
+        if (ps.currentChar === "(") {
+          return new AST.CallExpression(expr, ...this.getCallArguments(ps));
+        }
 
-      return new AST.VariantExpression(literal, key);
-    }
-
-    if (ch === "(") {
-      ps.next();
-
-      if (!/^[A-Z][A-Z_?-]*$/.test(literal.id.name)) {
-        throw new ParseError("E0008");
+        return expr;
       }
-
-      const args = this.getCallArgs(ps);
-
-      ps.expectChar(")");
-
-      const func = new AST.Function(literal.id.name);
-      if (this.withSpans) {
-        func.addSpan(literal.span.start, literal.span.end);
-      }
-
-      return new AST.CallExpression(
-        func,
-        args.positional,
-        args.named,
-      );
+      default:
+        throw new ParseError("E0028");
     }
-
-    return literal;
   }
 
-  getCallArg(ps) {
-    const exp = this.getSelectorExpression(ps);
+  getSimpleExpression(ps) {
+    if (ps.isNumberStart()) {
+      return this.getNumber(ps);
+    }
 
-    ps.skipInlineWS();
+    if (ps.currentChar === '"') {
+      return this.getString(ps);
+    }
 
-    if (ps.current() !== ":") {
+    if (ps.currentChar === "$") {
+      ps.next();
+      const id = this.getIdentifier(ps);
+      return new AST.VariableReference(id);
+    }
+
+    if (ps.currentChar === "-") {
+      ps.next();
+      const id = this.getIdentifier(ps);
+      return new AST.TermReference(id);
+    }
+
+    if (ps.isIdentifierStart()) {
+      const id = this.getIdentifier(ps);
+      return new AST.MessageReference(id);
+    }
+
+    throw new ParseError("E0028");
+  }
+
+  getCallArgument(ps) {
+    const exp = this.getInlineExpression(ps);
+
+    ps.skipBlank();
+
+    if (ps.currentChar !== ":") {
       return exp;
     }
 
@@ -678,27 +791,26 @@ export default class FluentParser {
     }
 
     ps.next();
-    ps.skipInlineWS();
+    ps.skipBlank();
 
-    const val = this.getArgVal(ps);
-
-    return new AST.NamedArgument(exp.id, val);
+    const value = this.getLiteral(ps);
+    return new AST.NamedArgument(exp.id, value);
   }
 
-  getCallArgs(ps) {
+  getCallArguments(ps) {
     const positional = [];
     const named = [];
     const argumentNames = new Set();
 
-    ps.skipInlineWS();
-    ps.skipIndent();
+    ps.expectChar("(");
+    ps.skipBlank();
 
     while (true) {
-      if (ps.current() === ")") {
+      if (ps.currentChar === ")") {
         break;
       }
 
-      const arg = this.getCallArg(ps);
+      const arg = this.getCallArgument(ps);
       if (arg.type === "NamedArgument") {
         if (argumentNames.has(arg.name.name)) {
           throw new ParseError("E0022");
@@ -711,85 +823,54 @@ export default class FluentParser {
         positional.push(arg);
       }
 
-      ps.skipInlineWS();
-      ps.skipIndent();
+      ps.skipBlank();
 
-      if (ps.current() === ",") {
+      if (ps.currentChar === ",") {
         ps.next();
-        ps.skipInlineWS();
-        ps.skipIndent();
+        ps.skipBlank();
         continue;
-      } else {
-        break;
       }
-    }
-    return {
-      positional,
-      named
-    };
-  }
 
-  getArgVal(ps) {
-    if (ps.isNumberStart()) {
-      return this.getNumber(ps);
-    } else if (ps.currentIs('"')) {
-      return this.getString(ps);
+      break;
     }
-    throw new ParseError("E0012");
+
+    ps.expectChar(")");
+    return [positional, named];
   }
 
   getString(ps) {
-    let val = "";
+    let raw = "";
+    let value = "";
 
-    ps.expectChar('"');
+    ps.expectChar("\"");
 
     let ch;
-    while ((ch = ps.takeChar(x => x !== '"' && x !== "\n"))) {
+    while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
-        val += this.getEscapeSequence(ps, ["{", "\\", "\""]);
+        const [sequence, unescaped] = this.getEscapeSequence(ps);
+        raw += sequence;
+        value += unescaped;
       } else {
-        val += ch;
+        raw += ch;
+        value += ch;
       }
     }
 
-    if (ps.currentIs("\n")) {
+    if (ps.currentChar === EOL) {
       throw new ParseError("E0020");
     }
 
-    ps.next();
+    ps.expectChar("\"");
 
-    return new AST.StringLiteral(val);
-
+    return new AST.StringLiteral(raw, value);
   }
 
   getLiteral(ps) {
-    const ch = ps.current();
-
-    if (!ch) {
-      throw new ParseError("E0014");
-    }
-
-    if (ch === "$") {
-      ps.next();
-      const id = this.getIdentifier(ps);
-      return new AST.VariableReference(id);
-    }
-
-    if (ps.isIdentifierStart()) {
-      const id = this.getIdentifier(ps);
-      return new AST.MessageReference(id);
-    }
-
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
     }
 
-    if (ch === "-") {
-      const id = this.getTermIdentifier(ps);
-      return new AST.TermReference(id);
-    }
-
-    if (ch === '"') {
+    if (ps.currentChar === '"') {
       return this.getString(ps);
     }
 

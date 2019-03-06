@@ -1,5 +1,142 @@
 # Changelog
 
+## fluent 0.11.0 (February 15, 2019)
+
+  - Add the `allowOverrides` option to `FluentBundle.addResource`. (#332)
+
+    `FluentBundle.addResource` and `FluentBundle.addMessages` now both accept
+    an `options` object as the last argument. The `allowOverrides` option may
+    be used to control whether it's allowed to override existing mesages or
+    terms with new values. The default is `false`.
+
+
+## fluent 0.10.0 (December 13, 2018)
+
+This release of `fluent` brings support for version 0.8 of the Fluent Syntax
+spec. The `FluentBundle` API remains unchanged. Files written in valid Syntax
+0.7 may parse differently in this release. See the compatibility note below.
+
+  - Implement Fluent Syntax 0.8. (#303)
+
+    This is only a quick summary of the spec changes in Syntax 0.8. Consult the
+    full [changelog][chlog0.8] for details.
+
+    [chlog0.8]: https://github.com/projectfluent/fluent/releases/tag/v0.8.0
+
+    In multiline `Patterns`, all common indent is now removed from each
+    indented line in the final value of the pattern.
+
+    ```properties
+    multiline =
+        This message has 2 spaces of indent
+          on the second line of its value.
+    ```
+
+    `Terms` can now be parameterized via the call expression syntax. Only
+    variables defined between the parentheses in the message a term is used in
+    will be available inside of it.
+
+    ```properties
+    # A parametrized Term with a Pattern as a value.
+    -thing = { $article ->
+       *[definite] the thing
+        [indefinite] a thing
+    }
+
+    this = This is { -thing(article: "indefinite") }.
+    ```
+
+    `VariantLists` are now deprecated and will be removed from the Syntax
+    before version 1.0.
+
+    All escapes sequences can only be used in `StringLiterals` now (see below).
+    `\UHHHHHH` is a new escape sequence format suitable for codepoints above
+    U+FFFF, e.g. `{"\U01F602"}`.
+
+### Backward-incompatible changes:
+
+  - The backslash character (`\`) is now considered a regular character in
+    `TextElements`. It's no longer possible to use escape sequences in
+    `TextElements`. Please use `StringLiterals` instead, e.g. `{"\u00A0"}`.
+  - The closing curly brace character (`}`) is not allowed in `TextElements`
+    now. Please use `StringLiterals` instead: `{"}"}`.
+
+
+## fluent 0.9.1 (October 23, 2018)
+
+  - Forbid messages with `null` values and no attributes. (#299)
+
+    Fix a parser behavior which caused it to parse messages without values
+    nor attributes as `"message-id": null`. This skewed the return values of
+    `FluentBundle.hasMessage` which would report `true` for messages which
+    were `null`. This, in turn, would break code which assumed
+    `FluentBundle.getMessage` would always return non-`null` values if it was
+    guarded by a call to `hasMessage` first.
+
+
+## fluent 0.9.0 (October 23, 2018)
+
+This release of `fluent` brings support for version 0.7 of the Fluent Syntax
+spec. The `FluentBundle` API remains unchanged. Files written in valid Syntax
+0.6 may parse differently in this release. See the compatibility note below.
+
+  - Implement Fluent Syntax 0.7. (#287)
+
+    The major new feature of Syntax 0.7 is the relaxation of the indentation
+    requirement for all non-text elements of patterns. It's finally possible
+    to leave the closing brace of select expressions unindented:
+
+        emails = { $unread_email_count ->
+            [one] You have one unread email.
+           *[other] You have { $unread_email_count } unread emails.
+        }
+
+    Consult the [changelog](https://github.com/projectfluent/fluent/releases/tag/v0.7.0)
+    to learn about other changes in Syntax 0.7.
+
+  - Re-write the runtime parser. (#289)
+
+    Syntax 0.7 was an opportunity to completely re-write the runtime parser,
+    which was originally created in the pre-0.1 era of Fluent. It's now less
+    than a half of the code size of the old parser and also slightly faster.
+
+    The parser takes an optimistic approach to parsing. It focuses on
+    minimizing the number of false negatives at the expense of increasing the
+    risk of false positives. In other words, it aims at parsing valid Fluent
+    messages with a success rate of 100%, but it may also parse a few invalid
+    messages which the reference parser would reject. The parser doesn't
+    perform strict validation of the all productions of the Fluent grammar.
+    It may thus produce entries which wouldn't make sense in the real world.
+    For best results users are advised to validate translations with the
+    `fluent-syntax` parser pre-runtime (e.g. by using Pontoon or
+    `compare-locales`).
+
+### Backward-incompatible changes
+
+  - Variant keys can now be either numbers (as previously) or identifiers.
+    Variant keys with spaces in them produce syntax errors, e.g. `[New York]`.
+  - `CR` is not a valid EOL character anymore. Please use `LF` or `CRLF`.
+  - `Tab` is not recognized as syntax whitespace. It can only be used in
+    translation content.
+
+
+## fluent 0.8.1 (September 27, 2018)
+
+  - Expose `FluentResource` as an export. (#286)
+
+  `FluentResource` is a data structure representing a parsed Fluent document.
+  It can be used to cache resources which can then be added to `FluentBundle`
+  via the `addResource` method. To create a `FluentResource` given a string
+  of Fluent translations, use the static `FluentResource.fromString` method.
+
+  ```js
+  let resource = FluentResource.fromString(text);
+  bundle.addResource(resource);
+  ```
+
+  The undocumented `_parse` export was also removed in favor of
+  `FluentResource.fromString`.
+
 ## fluent 0.8.0 (August 20, 2018)
 
   - Rename `MessageContext` to `FluentBundle`. (#222)

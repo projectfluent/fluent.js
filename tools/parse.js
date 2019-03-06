@@ -35,13 +35,9 @@ function print(err, data) {
 }
 
 function printRuntime(data) {
-  const parse = require('../fluent/src/parser').default;
-  const [res, errors] = parse(data.toString());
-  console.log(JSON.stringify(res, null, 2));
-
-  if (!program.silent) {
-    errors.map(e => console.error(e.message));
-  }
+  const FluentResource = require('../fluent/src/resource').default;
+  const res = FluentResource.fromString(data.toString());
+  console.log(JSON.stringify(toObject(res), null, 4));
 }
 
 function printResource(data) {
@@ -71,7 +67,7 @@ function printAnnotations(source, junk) {
 
 function printAnnotation(source, span, annot) {
   const { code, message, span: { start } } = annot;
-  const slice = source.substring(span.start, span.end).trimRight();
+  const slice = source.substring(span.start, span.end);
   const lineNumber = FluentSyntax.lineOffset(source, start) + 1;
   const columnOffset = FluentSyntax.columnOffset(source, start);
   const showLines = lineNumber - FluentSyntax.lineOffset(source, span.start);
@@ -88,4 +84,12 @@ function printAnnotation(source, span, annot) {
 
 function indent(spaces) {
   return new Array(spaces + 1).join(' ');
+}
+
+function toObject(map) {
+  let obj = {};
+  for (let [k, v] of map.entries()) {
+    obj[k] = v;
+  }
+  return obj;
 }

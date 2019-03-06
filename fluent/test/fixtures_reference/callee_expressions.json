@@ -1,0 +1,184 @@
+{
+    "function-callee-placeable": [
+        {
+            "type": "ref",
+            "name": "FUNCTION",
+            "attr": null,
+            "args": []
+        }
+    ],
+    "term-callee-placeable": [
+        {
+            "type": "term",
+            "name": "term",
+            "attr": null,
+            "args": []
+        }
+    ],
+    "message-callee-placeable": [
+        {
+            "type": "ref",
+            "name": "message",
+            "attr": null,
+            "args": []
+        }
+    ],
+    "mixed-case-callee-placeable": [
+        {
+            "type": "ref",
+            "name": "Function",
+            "attr": null,
+            "args": []
+        }
+    ],
+    "message-attr-callee-placeable": [
+        {
+            "type": "ref",
+            "name": "message",
+            "attr": "attr",
+            "args": []
+        }
+    ],
+    "term-attr-callee-placeable": [
+        {
+            "type": "term",
+            "name": "term",
+            "attr": "attr",
+            "args": []
+        }
+    ],
+    "variable-callee-placeable": [
+        {
+            "type": "var",
+            "name": "variable",
+            "attr": null,
+            "args": []
+        }
+    ],
+    "function-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "FUNCTION",
+                "attr": null,
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "term-attr-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
+                "attr": "attr",
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "message-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "message",
+                "attr": null,
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "mixed-case-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "Function",
+                "attr": null,
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "message-attr-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "ref",
+                "name": "message",
+                "attr": "attr",
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "term-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "variable-callee-selector": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "variable",
+                "attr": null,
+                "args": []
+            },
+            "variants": [
+                {
+                    "key": "key",
+                    "value": "Value"
+                }
+            ],
+            "star": 0
+        }
+    ]
+}

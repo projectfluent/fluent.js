@@ -27,6 +27,8 @@ const likelySubtagsMin = {
   "ta": "ta-taml-in",
   "uk": "uk-cyrl-ua",
   "zh": "zh-hans-cn",
+  "zh-hant": "zh-hant-tw",
+  "zh-hk": "zh-hant-hk",
   "zh-gb": "zh-hant-gb",
   "zh-us": "zh-hant-us",
 };
@@ -55,8 +57,7 @@ export function getLikelySubtagsMin(loc) {
   }
   const locale = new Locale(loc);
   if (regionMatchingLangs.includes(locale.language)) {
-    locale.region = locale.language;
-    locale.string = `${locale.language}-${locale.region}`;
+    locale.region = locale.language.toUpperCase();
     return locale;
   }
   return null;

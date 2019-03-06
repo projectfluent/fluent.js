@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import { FluentBundle } from '../src/context';
+import FluentBundle from '../src/bundle';
 import { FluentType } from '../src/types';
 import { ftl } from '../src/util';
 
@@ -101,49 +101,49 @@ suite('Variables', function() {
     test('falls back to argument\'s name if it\'s missing', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, {}, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
     test('cannot be arrays', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, { arg: [1, 2, 3] }, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a dict-like object', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, { arg: { prop: 1 } }, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a boolean', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, { arg: true }, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be undefined', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, { arg: undefined }, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be null', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, { arg: null }, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
     test('cannot be a function', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, { arg: () => null }, errs);
-      assert.equal(val, 'arg');
+      assert.equal(val, '$arg');
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
   });

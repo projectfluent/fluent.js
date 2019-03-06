@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## fluent-dom 0.4.1
+
+  - Package dist files.
+
 ## fluent-dom 0.4.0
 
   - Drop support for IE and old evergreen browsers. (#133)

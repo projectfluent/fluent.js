@@ -1,79 +1,74 @@
 {
-  "key": "Value",
-  "key2": {
-    "attrs": {
-      "attr": "Attribute"
-    }
-  },
-  "key3": {
-    "val": "Value\nValue2\n\n\nValue 4\nValue3",
-    "attrs": {
-      "attr2": "Attr 2"
-    }
-  },
-  "key5": "Value 5",
-  "key6": {
-    "val": [
-      {
-        "type": "sel",
-        "exp": {
-          "type": "var",
-          "name": "sel"
-        },
-        "vars": [
-          {
-            "key": {
-              "type": "varname",
-              "name": "one"
-            },
-            "val": "One"
-          },
-          {
-            "key": {
-              "type": "varname",
-              "name": "two"
-            },
-            "val": "Two"
-          }
+    "key": [
+        "Value"
+    ],
+    "key2": {
+        "value": null,
+        "attrs": {
+            "attr": "Attribute"
+        }
+    },
+    "key3": {
+        "value": [
+            "Value",
+            "\n",
+            "Value2",
+            "\n\n\n",
+            "Value 4",
+            "\n",
+            "Value3"
         ],
-        "def": 1
-      }
-    ]
-  },
-  "-key7": {
-    "val": [
-      {
-        "type": "sel",
-        "exp": null,
-        "vars": [
-          {
-            "key": {
-              "type": "varname",
-              "name": "one"
+        "attrs": {
+            "attr2": "Attr 2"
+        }
+    },
+    "key5": "Value 5",
+    "key6": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
             },
-            "val": "One"
-          }
-        ],
-        "def": 0
-      }
+            "variants": [
+                {
+                    "key": "one",
+                    "value": "One"
+                },
+                {
+                    "key": "two",
+                    "value": "Two"
+                }
+            ],
+            "star": 1
+        }
+    ],
+    "-key7": [
+        {
+            "type": "select",
+            "selector": null,
+            "variants": [
+                {
+                    "key": "one",
+                    "value": "One"
+                }
+            ],
+            "star": 0
+        }
+    ],
+    "-key8": [
+        {
+            "type": "select",
+            "selector": null,
+            "variants": [
+                {
+                    "key": "one",
+                    "value": "One"
+                }
+            ],
+            "star": 0
+        }
     ]
-  },
-  "-key8": {
-    "val": [
-      {
-        "type": "sel",
-        "exp": null,
-        "vars": [
-          {
-            "key": {
-              "type": "varname",
-              "name": "one"
-            },
-            "val": "One"
-          }
-        ],
-        "def": 0
-      }
-    ]
-  }
 }

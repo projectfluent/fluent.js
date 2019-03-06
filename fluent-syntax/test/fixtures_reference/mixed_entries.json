@@ -13,7 +13,7 @@
             "type": "Term",
             "id": {
                 "type": "Identifier",
-                "name": "-brand-name"
+                "name": "brand-name"
             },
             "value": {
                 "type": "Pattern",
@@ -61,7 +61,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "ą=Invalid identifier\nć=Another one\n"
+            "content": "ą=Invalid identifier\nć=Another one\n\n"
         },
         {
             "type": "Message",
@@ -91,7 +91,46 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "    .attr = Dangling attribute\n"
+            "content": "    .attr = Dangling attribute\n\n"
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "key03"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "TextElement",
+                        "value": "Value 03"
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": {
+                "type": "Comment",
+                "content": "There are 5 spaces on the line between key03 and key04."
+            }
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "key04"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "TextElement",
+                        "value": "Value 04"
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
         }
     ]
 }

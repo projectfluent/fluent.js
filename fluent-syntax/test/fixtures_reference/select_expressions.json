@@ -17,8 +17,11 @@
                             "selector": {
                                 "type": "CallExpression",
                                 "callee": {
-                                    "type": "Function",
-                                    "name": "BUILTIN"
+                                    "type": "FunctionReference",
+                                    "id": {
+                                        "type": "Identifier",
+                                        "name": "BUILTIN"
+                                    }
                                 },
                                 "positional": [],
                                 "named": []
@@ -44,7 +47,7 @@
                                 {
                                     "type": "Variant",
                                     "key": {
-                                        "type": "VariantName",
+                                        "type": "Identifier",
                                         "name": "other"
                                     },
                                     "value": {
@@ -54,6 +57,7 @@
                                                 "type": "Placeable",
                                                 "expression": {
                                                     "type": "StringLiteral",
+                                                    "raw": "",
                                                     "value": ""
                                                 }
                                             },
@@ -77,7 +81,7 @@
             "type": "Message",
             "id": {
                 "type": "Identifier",
-                "name": "valid-selector"
+                "name": "valid-selector-term-attribute"
             },
             "value": {
                 "type": "Pattern",
@@ -92,7 +96,7 @@
                                     "type": "TermReference",
                                     "id": {
                                         "type": "Identifier",
-                                        "name": "-term"
+                                        "name": "term"
                                     }
                                 },
                                 "name": {
@@ -104,8 +108,8 @@
                                 {
                                     "type": "Variant",
                                     "key": {
-                                        "type": "VariantName",
-                                        "name": "many     words"
+                                        "type": "Identifier",
+                                        "name": "key"
                                     },
                                     "value": {
                                         "type": "Pattern",
@@ -133,7 +137,25 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "invalid-selector =\n    { -term[case] ->\n       *[key] value\n    }\n"
+            "content": "invalid-selector-term-value =\n    { -term ->\n       *[key] value\n    }\n\n"
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "invalid-selector-term-variant =\n    { -term[case] ->\n       *[key] value\n    }\n\n"
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "invalid-selector-term-call =\n    { -term(case: \"nominative\") ->\n       *[key] value\n    }\n\n"
         },
         {
             "type": "Message",
@@ -156,7 +178,7 @@
                                 {
                                     "type": "Variant",
                                     "key": {
-                                        "type": "VariantName",
+                                        "type": "Identifier",
                                         "name": "one"
                                     },
                                     "value": {
@@ -166,6 +188,7 @@
                                                 "type": "Placeable",
                                                 "expression": {
                                                     "type": "StringLiteral",
+                                                    "raw": "",
                                                     "value": ""
                                                 }
                                             }
@@ -202,7 +225,7 @@
                                 {
                                     "type": "Variant",
                                     "key": {
-                                        "type": "VariantName",
+                                        "type": "Identifier",
                                         "name": "one"
                                     },
                                     "value": {
@@ -220,7 +243,7 @@
                                                         {
                                                             "type": "Variant",
                                                             "key": {
-                                                                "type": "VariantName",
+                                                                "type": "Identifier",
                                                                 "name": "two"
                                                             },
                                                             "value": {
@@ -251,12 +274,21 @@
         },
         {
             "type": "Comment",
-            "content": "ERROR VariantLists cannot appear in SelectExpressions"
+            "content": "ERROR VariantLists cannot be Variant values."
         },
         {
             "type": "Junk",
             "annotations": [],
-            "content": "nested-variant-list =\n    { 1 ->\n       *[one] {\n          *[two] Value\n       }\n    }\n"
+            "content": "nested-variant-list =\n    { 1 ->\n       *[one] {\n          *[two] Value\n       }\n    }\n\n"
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR Missing line end after variant list"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "missing-line-end =\n    { 1 ->\n        *[one] One}\n"
         }
     ]
 }

@@ -1,0 +1,154 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 10,
+            "end": 10
+          }
+        }
+      ],
+      "content": "err01 = {\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 10
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 10,
+          "end": 15
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 02",
+            "span": {
+              "type": "Span",
+              "start": 18,
+              "end": 26
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 18,
+          "end": 26
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 10,
+        "end": 26
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0021",
+          "args": [],
+          "message": "Positional arguments must not follow named arguments",
+          "span": {
+            "type": "Span",
+            "start": 70,
+            "end": 70
+          }
+        }
+      ],
+      "content": "err03 = {\nFUNC(\narg\n,\nnamedArg: \"Value\"\n,\n",
+      "span": {
+        "type": "Span",
+        "start": 28,
+        "end": 70
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key04",
+        "span": {
+          "type": "Span",
+          "start": 70,
+          "end": 75
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 04",
+            "span": {
+              "type": "Span",
+              "start": 78,
+              "end": 86
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 78,
+          "end": 86
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 70,
+        "end": 86
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0002",
+          "args": [],
+          "message": "Expected an entry start",
+          "span": {
+            "type": "Span",
+            "start": 87,
+            "end": 87
+          }
+        }
+      ],
+      "content": ")\n}\n",
+      "span": {
+        "type": "Span",
+        "start": 87,
+        "end": 91
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 91
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Comment",
+      "content": "ERROR No blanks are allowed between * and [.",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0011",
+          "args": [],
+          "message": "Expected at least one variant after \"->\"",
+          "span": {
+            "type": "Span",
+            "start": 69,
+            "end": 69
+          }
+        }
+      ],
+      "content": "err01 = { $sel ->\n    *  [key] Value\n}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 47,
+        "end": 87
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Missing default variant.",
+      "span": {
+        "type": "Span",
+        "start": 87,
+        "end": 119
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0010",
+          "args": [],
+          "message": "Expected one of the variants to be marked as default (*)",
+          "span": {
+            "type": "Span",
+            "start": 154,
+            "end": 154
+          }
+        }
+      ],
+      "content": "err02 = { $sel ->\n    [key] Value\n}\n",
+      "span": {
+        "type": "Span",
+        "start": 120,
+        "end": 156
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 156
+  }
+}

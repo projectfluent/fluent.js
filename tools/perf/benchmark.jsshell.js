@@ -16,7 +16,7 @@ var resource = FluentSyntax.parse(ftlCode);
 times.ftlParseEnd = dateNow();
 
 times.ftlEntriesParseStart = dateNow();
-var [entries] = Fluent._parse(ftlCode);
+var resource = Fluent.FluentResource.fromString(ftlCode);
 times.ftlEntriesParseEnd = dateNow();
 
 var bundle = new Fluent.FluentBundle('en-US');

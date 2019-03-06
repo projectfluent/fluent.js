@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import { FluentBundle } from '../src/context';
+import FluentBundle from '../src/bundle';
 import { ftl } from '../src/util';
 
 suite('Referencing values', function(){
@@ -12,12 +12,12 @@ suite('Referencing values', function(){
     bundle = new FluentBundle('en-US', { useIsolating: false });
     bundle.addMessages(ftl`
       key1 = Value 1
-      key2 = {
+      -key2 = {
           [a] A2
          *[b] B2
       }
       key3 = Value { 3 }
-      key4 = {
+      -key4 = {
           [a] A{ 4 }
          *[b] B{ 4 }
       }
@@ -26,16 +26,16 @@ suite('Referencing values', function(){
           .b = B5
 
       ref1 = { key1 }
-      ref2 = { key2 }
+      ref2 = { -key2 }
       ref3 = { key3 }
-      ref4 = { key4 }
+      ref4 = { -key4 }
       ref5 = { key5 }
 
-      ref6 = { key2[a] }
-      ref7 = { key2[b] }
+      ref6 = { -key2[a] }
+      ref7 = { -key2[b] }
 
-      ref8 = { key4[a] }
-      ref9 = { key4[b] }
+      ref8 = { -key4[a] }
+      ref9 = { -key4[b] }
 
       ref10 = { key5.a }
       ref11 = { key5.b }

@@ -44,8 +44,9 @@ export default class FluentSerializer {
   serializeEntry(entry, state = 0) {
     switch (entry.type) {
       case "Message":
-      case "Term":
         return serializeMessage(entry);
+      case "Term":
+        return serializeTerm(entry);
       case "Comment":
         if (state & HAS_ENTRIES) {
           return `\n${serializeComment(entry, "#")}\n`;
@@ -95,8 +96,7 @@ function serializeMessage(message) {
     parts.push(serializeComment(message.comment));
   }
 
-  parts.push(serializeIdentifier(message.id));
-  parts.push(" =");
+  parts.push(`${message.id.name} =`);
 
   if (message.value) {
     parts.push(serializeValue(message.value));
@@ -111,10 +111,28 @@ function serializeMessage(message) {
 }
 
 
+function serializeTerm(term) {
+  const parts = [];
+
+  if (term.comment) {
+    parts.push(serializeComment(term.comment));
+  }
+
+  parts.push(`-${term.id.name} =`);
+  parts.push(serializeValue(term.value));
+
+  for (const attribute of term.attributes) {
+    parts.push(serializeAttribute(attribute));
+  }
+
+  parts.push("\n");
+  return parts.join("");
+}
+
+
 function serializeAttribute(attribute) {
-  const id = serializeIdentifier(attribute.id);
   const value = indent(serializeValue(attribute.value));
-  return `\n    .${id} =${value}`;
+  return `\n    .${attribute.id.name} =${value}`;
 }
 
 
@@ -165,17 +183,12 @@ function serializeVariant(variant) {
 function serializeElement(element) {
   switch (element.type) {
     case "TextElement":
-      return serializeTextElement(element);
+      return element.value;
     case "Placeable":
       return serializePlaceable(element);
     default:
       throw new Error(`Unknown element type: ${element.type}`);
   }
-}
-
-
-function serializeTextElement(text) {
-  return text.value;
 }
 
 
@@ -198,14 +211,16 @@ function serializePlaceable(placeable) {
 function serializeExpression(expr) {
   switch (expr.type) {
     case "StringLiteral":
-      return serializeStringLiteral(expr);
+      return `"${expr.raw}"`;
     case "NumberLiteral":
-      return serializeNumberLiteral(expr);
+      return expr.value;
     case "MessageReference":
+    case "FunctionReference":
+      return expr.id.name;
     case "TermReference":
-      return serializeMessageReference(expr);
+      return `-${expr.id.name}`;
     case "VariableReference":
-      return serializeVariableReference(expr);
+      return `$${expr.id.name}`;
     case "AttributeExpression":
       return serializeAttributeExpression(expr);
     case "VariantExpression":
@@ -219,26 +234,6 @@ function serializeExpression(expr) {
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
-}
-
-
-function serializeStringLiteral(expr) {
-  return `"${expr.value}"`;
-}
-
-
-function serializeNumberLiteral(expr) {
-  return expr.value;
-}
-
-
-function serializeMessageReference(expr) {
-  return serializeIdentifier(expr.id);
-}
-
-
-function serializeVariableReference(expr) {
-  return `$${serializeIdentifier(expr.id)}`;
 }
 
 
@@ -258,8 +253,7 @@ function serializeSelectExpression(expr) {
 
 function serializeAttributeExpression(expr) {
   const ref = serializeExpression(expr.ref);
-  const name = serializeIdentifier(expr.name);
-  return `${ref}.${name}`;
+  return `${ref}.${expr.name.name}`;
 }
 
 
@@ -271,57 +265,27 @@ function serializeVariantExpression(expr) {
 
 
 function serializeCallExpression(expr) {
-  const fun = serializeFunction(expr.callee);
+  const callee = serializeExpression(expr.callee);
   const positional = expr.positional.map(serializeExpression).join(", ");
   const named = expr.named.map(serializeNamedArgument).join(", ");
   if (expr.positional.length > 0 && expr.named.length > 0) {
-    return `${fun}(${positional}, ${named})`;
+    return `${callee}(${positional}, ${named})`;
   }
-  return `${fun}(${positional || named})`;
+  return `${callee}(${positional || named})`;
 }
 
 
 function serializeNamedArgument(arg) {
-  const name = serializeIdentifier(arg.name);
-  const value = serializeArgumentValue(arg.value);
-  return `${name}: ${value}`;
-}
-
-
-function serializeArgumentValue(argval) {
-  switch (argval.type) {
-    case "StringLiteral":
-      return serializeStringLiteral(argval);
-    case "NumberLiteral":
-      return serializeNumberLiteral(argval);
-    default:
-      throw new Error(`Unknown argument type: ${argval.type}`);
-  }
-}
-
-
-function serializeIdentifier(identifier) {
-  return identifier.name;
-}
-
-
-function serializeVariantName(VariantName) {
-  return VariantName.name;
+  const value = serializeExpression(arg.value);
+  return `${arg.name.name}: ${value}`;
 }
 
 
 function serializeVariantKey(key) {
   switch (key.type) {
-    case "VariantName":
-      return serializeVariantName(key);
-    case "NumberLiteral":
-      return serializeNumberLiteral(key);
+    case "Identifier":
+      return key.name;
     default:
-      throw new Error(`Unknown variant key type: ${key.type}`);
+      return serializeExpression(key);
   }
-}
-
-
-function serializeFunction(fun) {
-  return fun.name;
 }

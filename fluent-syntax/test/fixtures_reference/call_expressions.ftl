@@ -1,3 +1,5 @@
+## Arguments
+
 positional-args = {FUN(1, "a", msg)}
 named-args = {FUN(x: 1, y: "Y")}
 dense-named-args = {FUN(x:1, y:"Y")}
@@ -29,8 +31,6 @@ empty-multiline-call = {FUN(
 
     )}
 
-
-## Syntax errors for multiline call expressions
 
 unindented-arg-number = {FUN(
 1)}
@@ -94,8 +94,6 @@ sparse-named-arg = {FUN(
         3
     )}
 
-
-## Syntax errors for named arguments
 
 unindented-colon = {FUN(
         x
