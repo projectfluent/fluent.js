@@ -67,20 +67,6 @@ export class FluentNumber extends FluentType {
       return this.value;
     }
   }
-
-  /**
-   * Compare the object with another instance of a FluentType.
-   *
-   * @param   {FluentBundle} bundle
-   * @param   {FluentType}     other
-   * @returns {bool}
-   */
-  match(bundle, other) {
-    if (other instanceof FluentNumber) {
-      return this.value === other.value;
-    }
-    return false;
-  }
 }
 
 export class FluentDateTime extends FluentType {
@@ -98,32 +84,5 @@ export class FluentDateTime extends FluentType {
       // XXX Report the error.
       return this.value;
     }
-  }
-}
-
-export class FluentSymbol extends FluentType {
-  toString() {
-    return this.value;
-  }
-
-  /**
-   * Compare the object with another instance of a FluentType.
-   *
-   * @param   {FluentBundle} bundle
-   * @param   {FluentType}     other
-   * @returns {bool}
-   */
-  match(bundle, other) {
-    if (other instanceof FluentSymbol) {
-      return this.value === other.value;
-    } else if (typeof other === "string") {
-      return this.value === other;
-    } else if (other instanceof FluentNumber) {
-      const pr = bundle._memoizeIntlObject(
-        Intl.PluralRules, other.opts
-      );
-      return this.value === pr.select(other.value);
-    }
-    return false;
   }
 }

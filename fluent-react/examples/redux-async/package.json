@@ -19,7 +19,6 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "parcel-bundler": "^1.9.7"
   },
   "engines": {

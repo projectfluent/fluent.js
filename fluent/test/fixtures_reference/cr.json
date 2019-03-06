@@ -1,0 +1,26 @@
+{
+    "err01": "Value 01",
+    "err02": "Value 02",
+    "err03": {
+        "value": [
+            "\r\r",
+            "Value 03",
+            "\r",
+            "Continued"
+        ],
+        "attrs": {
+            "title": "Title"
+        }
+    },
+    "err05": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "sel",
+                "attr": null,
+                "args": null
+            }
+        }
+    ]
+}

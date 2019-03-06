@@ -11,7 +11,7 @@
  * `FluentType`.  Functions must return `FluentType` objects as well.
  */
 
-import { FluentNumber, FluentDateTime } from "./types";
+import { FluentNumber, FluentDateTime } from "./types.js";
 
 export default {
   "NUMBER": ([arg], opts) =>

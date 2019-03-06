@@ -3,7 +3,7 @@
 import assert from 'assert';
 import sinon from 'sinon';
 
-import { FluentBundle } from '../src/context';
+import FluentBundle from '../src/bundle';
 import { ftl } from '../src/util';
 
 suite('FluentBundle constructor', function() {

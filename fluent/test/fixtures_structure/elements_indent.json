@@ -1,9 +1,15 @@
 {
-  "foo": "Foo",
-  "bar": {
-    "val": "Bar",
-    "attrs": {
-      "attr1": "Bar Attr 1"
+    "foo": {
+        "value": "Foo",
+        "attrs": {
+            "attr": "Foo Attr"
+        }
+    },
+    "bar": {
+        "value": "Bar",
+        "attrs": {
+            "attr1": "Bar Attr 1",
+            "attr2": "Bar Attr 2"
+        }
     }
-  }
 }

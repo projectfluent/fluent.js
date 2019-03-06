@@ -96,9 +96,10 @@ export class Placeable extends PatternElement {
 export class Expression extends SyntaxNode {}
 
 export class StringLiteral extends Expression {
-  constructor(value) {
+  constructor(raw, value) {
     super();
     this.type = "StringLiteral";
+    this.raw = raw;
     this.value = value;
   }
 }
@@ -131,6 +132,14 @@ export class VariableReference extends Expression {
   constructor(id) {
     super();
     this.type = "VariableReference";
+    this.id = id;
+  }
+}
+
+export class FunctionReference extends Expression {
+  constructor(id) {
+    super();
+    this.type = "FunctionReference";
     this.id = id;
   }
 }
@@ -208,13 +217,6 @@ export class Identifier extends SyntaxNode {
   }
 }
 
-export class VariantName extends Identifier {
-  constructor(name) {
-    super(name);
-    this.type = "VariantName";
-  }
-}
-
 export class BaseComment extends Entry {
   constructor(content) {
     super();
@@ -240,13 +242,6 @@ export class ResourceComment extends BaseComment {
   constructor(content) {
     super(content);
     this.type = "ResourceComment";
-  }
-}
-
-export class Function extends Identifier {
-  constructor(name) {
-    super(name);
-    this.type = "Function";
   }
 }
 

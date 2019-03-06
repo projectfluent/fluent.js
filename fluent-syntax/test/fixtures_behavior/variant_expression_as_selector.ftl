@@ -3,7 +3,7 @@ err1 =
        *[1] One
         [2] Two
     }
-# ~ERROR E0024, pos 17
+# ~ERROR E0003, pos 16, args "}"
 
 err2 =
     { -foo[bar] ->

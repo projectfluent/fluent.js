@@ -1,5 +1,93 @@
 # Changelog
 
+## fluent-syntax 0.10.0 (December 13, 2018)
+
+This release of `fluent-syntax` brings support for version 0.8 of the
+Fluent Syntax spec. The API remains unchanged. Files written in valid
+Syntax 0.7 may not parse correctly in this release. See the summary of
+backwards-incompatible changes below.
+
+  - Implement Fluent Syntax 0.8. (#303)
+
+    This is only a quick summary of the spec changes in Syntax 0.8. Consult the
+    full [changelog][chlog0.8] for details.
+
+    [chlog0.8]: https://github.com/projectfluent/fluent/releases/tag/v0.8.0
+
+    In multiline `Patterns`, all common indent is now removed from each
+    indented line in the final value of the pattern.
+
+    ```properties
+    multiline =
+        This message has 2 spaces of indent
+          on the second line of its value.
+    ```
+
+    `Terms` can now be parameterized via the call expression syntax.
+
+    ```properties
+    # A parametrized Term with a Pattern as a value.
+    -thing = { $article ->
+       *[definite] the thing
+        [indefinite] a thing
+    }
+
+    this = This is { -thing(article: "indefinite") }.
+    ```
+
+    `VariantLists` are now deprecated and will be removed from the Syntax
+    before version 1.0.
+
+    All escapes sequences can only be used in `StringLiterals` now (see below).
+    `\UHHHHHH` is a new escape sequence format suitable for codepoints above
+    U+FFFF, e.g. `{"\U01F602"}`.
+
+### Backward-incompatible changes:
+
+  - The backslash character (`\`) is now considered a regular character in
+    `TextElements`. It's no longer possible to use escape sequences in
+    `TextElements`. Please use `StringLiterals` instead, e.g. `{"\u00A0"}`.
+  - The closing curly brace character (`}`) is not allowed in `TextElements`
+    now. Please use `StringLiterals` instead: `{"}"}`.
+  - `StringLiteral.value` was changed to store the unescaped ("cooked") value.
+    `StringLiteral.raw` has been added to store the raw value.
+  - The AST of `CallExpressions` was changed to better accommodate the
+    introduction of parameterized `Terms`. The `Function` AST node has been
+    replaced by the `FunctionReference` node.
+  - The leading dash (`-`) is no longer part of the `Identifier` node in
+    `Terms` and `TermReferences`.
+
+
+## fluent-syntax 0.9.0 (October 23, 2018)
+
+This release of `fluent-syntax` brings support for version 0.7 of the
+Fluent Syntax spec. The API remains unchanged. Files written in valid
+Syntax 0.6 may not parse correctly in this release. See the summary of
+backwards-incompatible changes below.
+
+  - Implement Fluent Syntax 0.7. (#287)
+
+    The major new feature of Syntax 0.7 is the relaxation of the indentation
+    requirement for all non-text elements of patterns. It's finally possible
+    to leave the closing brace of select expressions unindented:
+
+        emails = { $unread_email_count ->
+            [one] You have one unread email.
+           *[other] You have { $unread_email_count } unread emails.
+        }
+
+    Consult the [changelog](https://github.com/projectfluent/fluent/releases/tag/v0.7.0)
+    to learn about other changes in Syntax 0.7.
+
+### Backward-incompatible changes:
+
+  - Variant keys can now be either `NumberLiterals` (as previously) or
+    `Identifiers`. The `VariantName` node class has been removed. Variant
+    keys with spaces in them produce syntax errors, e.g. `[New York]`.
+  - `CR` is not a valid EOL character anymore. Please use `LF` or `CRLF`.
+  - `Tab` is not recognized as syntax whitespace. It can only be used in
+    translation content.
+
 ## fluent-syntax 0.8.1 (August 1, 2018)
 
 ### Bug fixes

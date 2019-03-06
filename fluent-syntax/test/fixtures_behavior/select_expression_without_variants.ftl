@@ -3,4 +3,4 @@ key = { $foo -> }
 
 key = { $foo ->
     }
-# ~ERROR E0003, pos 39, args "["
+# ~ERROR E0011, pos 39

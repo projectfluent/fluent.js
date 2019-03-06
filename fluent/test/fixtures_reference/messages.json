@@ -1,0 +1,31 @@
+{
+    "key01": "Value",
+    "key02": {
+        "value": "Value",
+        "attrs": {
+            "attr1": "Attribute 1",
+            "attr2": "Attribute 2"
+        }
+    },
+    "key03": {
+        "value": null,
+        "attrs": {
+            "attr": "Attribute"
+        }
+    },
+    "key04": {
+        "value": null,
+        "attrs": {
+            "attr1": "Attribute 1",
+            "attr2": "Attribute 2"
+        }
+    },
+    "key05": {
+        "value": null,
+        "attrs": {
+            "attr1": "Attribute 1"
+        }
+    },
+    "key06": [],
+    "KEY09": "Value 09"
+}

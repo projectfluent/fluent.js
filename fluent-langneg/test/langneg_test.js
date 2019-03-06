@@ -30,19 +30,10 @@ const data = {
       [["sr", "ru"], ["sr-Latn", "ru"], ["ru"]],
       [["sr-RU"], ["sr-Latn-RO", "sr-Cyrl"], ["sr-Latn-RO"]],
     ],
-    "should match on a requested locale as a range": [
-      [["en-*-US"], ["en-US"], ["en-US"]],
-      [["en-Latn-US-*"], ["en-Latn-US"], ["en-Latn-US"]],
-      [["en-*-US-*"], ["en-US"], ["en-US"]],
-      [["*"], ["de", "pl", "it", "fr", "ru"], ["de", "pl", "it", "fr", "ru"]]
-    ],
     "should match cross-region": [
       [["en"], ["en-US"], ["en-US"]],
       [["en-US"], ["en-GB"], ["en-GB"]],
       [["en-Latn-US"], ["en-Latn-GB"], ["en-Latn-GB"]],
-      // This is a cross-region check, because the requested Locale
-      // is really lang: en, script: *, region: undefined
-      [["en-*"], ["en-US"], ["en-US"]],
     ],
     "should match cross-variant": [
       [["en-US-mac"], ["en-US-win"], ["en-US-win"]],
@@ -61,6 +52,7 @@ const data = {
     ],
     "should prioritize properly (extra tests)": [
       [["en-US"], ["en-GB", "en"], ["en", "en-GB"]],
+      [["zh-HK"], ["zh-CN", "zh-TW"], ["zh-TW", "zh-CN"]],
     ],
     "should handle default locale properly": [
       [["fr"], ["de", "it"], []],
@@ -100,11 +92,6 @@ const data = {
         ["fr", "en"],
         ["en-US", "fr-FR", "en", "fr"], undefined,
         "matching", ["fr", "en"]
-      ],
-      [
-        ["*"],
-        ["fr", "de", "it", "ru", "pl"], undefined,
-        "matching", ["fr"]
       ],
     ],
   },

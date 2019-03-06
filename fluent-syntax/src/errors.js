@@ -28,12 +28,12 @@ function getErrorMessage(code, args) {
     }
     case "E0006": {
       const [id] = args;
-      return `Expected term "${id}" to have a value`;
+      return `Expected term "-${id}" to have a value`;
     }
     case "E0007":
       return "Keyword cannot end with a whitespace";
     case "E0008":
-      return "The callee has to be a simple, upper-case identifier";
+      return "The callee has to be an upper-case identifier or a term";
     case "E0009":
       return "The key has to be a simple identifier";
     case "E0010":
@@ -51,7 +51,7 @@ function getErrorMessage(code, args) {
     case "E0016":
       return "Message references cannot be used as selectors";
     case "E0017":
-      return "Variants cannot be used as selectors";
+      return "Terms cannot be used as selectors";
     case "E0018":
       return "Attributes of messages cannot be used as selectors";
     case "E0019":
@@ -62,8 +62,6 @@ function getErrorMessage(code, args) {
       return "Positional arguments must not follow named arguments";
     case "E0022":
       return "Named arguments must be unique";
-    case "E0023":
-      return "VariantLists are only allowed inside of other VariantLists.";
     case "E0024":
       return "Cannot access variants of a message.";
     case "E0025": {
@@ -71,9 +69,13 @@ function getErrorMessage(code, args) {
       return `Unknown escape sequence: \\${char}.`;
     }
     case "E0026": {
-      const [char] = args;
-      return `Invalid Unicode escape sequence: \\u${char}.`;
+      const [sequence] = args;
+      return `Invalid Unicode escape sequence: ${sequence}.`;
     }
+    case "E0027":
+      return "Unbalanced closing brace in TextElement.";
+    case "E0028":
+      return "Expected an inline expression";
     default:
       return code;
   }

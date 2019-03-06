@@ -20,7 +20,7 @@ var resource = FluentSyntax.parse(ftlCode);
 cumulative.ftlParseEnd = process.hrtime(start);
 
 cumulative.ftlEntriesParseStart = process.hrtime(start);
-var [entries] = Fluent._parse(ftlCode);
+var resource = Fluent.FluentResource.fromString(ftlCode);
 cumulative.ftlEntriesParseEnd = process.hrtime(start);
 
 var bundle = new Fluent.FluentBundle('en-US');

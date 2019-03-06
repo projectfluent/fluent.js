@@ -277,16 +277,6 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), output);
   });
 
-  test("variant key words", function() {
-    const input = ftl`
-      foo =
-          { $sel ->
-             *[a b c] A B C
-          }
-    `;
-    assert.equal(pretty(input), input);
-  });
-
   test("variant key number", function() {
     const input = ftl`
       foo =
@@ -460,6 +450,13 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), input);
   });
 
+  test("macro call", function() {
+    const input = ftl`
+      foo = { -term() }
+    `;
+    assert.equal(pretty(input), input);
+  });
+
   test("nested placeables", function() {
     const input = ftl`
       foo = {{ FOO() }}
@@ -467,9 +464,9 @@ suite("Serialize resource", function() {
     assert.equal(pretty(input), input);
   });
 
-  test("Escaped special char in TextElement", function() {
+  test("Backslash in TextElement", function() {
     const input = ftl`
-      foo = \\{Escaped}
+      foo = \\{ placeable }
     `;
     assert.equal(pretty(input), input);
   });
@@ -483,7 +480,7 @@ suite("Serialize resource", function() {
 
   test("Unicode escape sequence", function() {
     const input = ftl`
-      foo = \\u0065
+      foo = { "\\u0065" }
     `;
     assert.equal(pretty(input), input);
   });

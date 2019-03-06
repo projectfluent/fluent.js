@@ -7,9 +7,9 @@
  *
  */
 
-export { default as _parse } from "./parser";
+export { default as FluentBundle } from "./bundle.js";
+export { default as FluentResource } from "./resource.js";
+export { default as FluentError } from "./error.js";
+export { FluentType, FluentNumber, FluentDateTime } from "./types.js";
 
-export { FluentBundle } from "./context";
-export { FluentType, FluentNumber, FluentDateTime } from "./types";
-
-export { ftl } from "./util";
+export { ftl } from "./util.js";

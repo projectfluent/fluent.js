@@ -1,5 +1,5 @@
-import resolve from "./resolver";
-import FluentResource from "./resource";
+import resolve from "./resolver.js";
+import FluentResource from "./resource.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -7,20 +7,20 @@ import FluentResource from "./resource";
  * format translation units (entities) to strings.
  *
  * Always use `FluentBundle.format` to retrieve translation units from a
- * context. Translations can contain references to other entities or variables,
+ * bundle. Translations can contain references to other entities or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
  * `Intl` formatters to format numbers, dates, lists and more into the
- * context's language. See the documentation of the Fluent syntax for more
+ * bundle's language. See the documentation of the Fluent syntax for more
  * information.
  */
-export class FluentBundle {
+export default class FluentBundle {
 
   /**
    * Create an instance of `FluentBundle`.
    *
    * The `locales` argument is used to instantiate `Intl` formatters used by
-   * translations.  The `options` object can be used to configure the context.
+   * translations.  The `options` object can be used to configure the bundle.
    *
    * Examples:
    *
@@ -42,10 +42,11 @@ export class FluentBundle {
    *
    *   - `useIsolating` - boolean specifying whether to use Unicode isolation
    *                    marks (FSI, PDI) for bidi interpolations.
+   *                    Default: true
    *
    *   - `transform` - a function used to transform string parts of patterns.
    *
-   * @param   {string|Array<string>} locales - Locale or locales of the context
+   * @param   {string|Array<string>} locales - Locale or locales of the bundle
    * @param   {Object} [options]
    * @returns {FluentBundle}
    */
@@ -74,7 +75,7 @@ export class FluentBundle {
   }
 
   /*
-   * Check if a message is present in the context.
+   * Check if a message is present in the bundle.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {bool}
@@ -97,59 +98,90 @@ export class FluentBundle {
   }
 
   /**
-   * Add a translation resource to the context.
+   * Add a translation resource to the bundle.
    *
    * The translation resource must use the Fluent syntax.  It will be parsed by
-   * the context and each translation unit (message) will be available in the
-   * context by its identifier.
+   * the bundle and each translation unit (message) will be available in the
+   * bundle by its identifier.
    *
    *     bundle.addMessages('foo = Foo');
    *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
+   *     bundle.addMessages('bar = Bar');
+   *     bundle.addMessages('bar = Newbar', { allowOverrides: true });
+   *     bundle.getMessage('bar');
+   *
+   *     // Returns a raw representation of the 'bar' message: Newbar.
+   *
    * Parsed entities should be formatted with the `format` method in case they
    * contain logic (references, select expressions etc.).
    *
+   * Available options:
+   *
+   *   - `allowOverrides` - boolean specifying whether it's allowed to override
+   *                      an existing message or term with a new value.
+   *                      Default: false
+   *
    * @param   {string} source - Text resource with translations.
+   * @param   {Object} [options]
    * @returns {Array<Error>}
    */
-  addMessages(source) {
+  addMessages(source, options) {
     const res = FluentResource.fromString(source);
-    return this.addResource(res);
+    return this.addResource(res, options);
   }
 
   /**
-   * Add a translation resource to the context.
+   * Add a translation resource to the bundle.
    *
-   * The translation resource must be a proper FluentResource
-   * parsed by `FluentBundle.parseResource`.
+   * The translation resource must be an instance of FluentResource,
+   * e.g. parsed by `FluentResource.fromString`.
    *
-   *     let res = FluentBundle.parseResource("foo = Foo");
+   *     let res = FluentResource.fromString("foo = Foo");
    *     bundle.addResource(res);
    *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
+   *     let res = FluentResource.fromString("bar = Bar");
+   *     bundle.addResource(res);
+   *     res = FluentResource.fromString("bar = Newbar");
+   *     bundle.addResource(res, { allowOverrides: true });
+   *     bundle.getMessage('bar');
+   *
+   *     // Returns a raw representation of the 'bar' message: Newbar.
+   *
    * Parsed entities should be formatted with the `format` method in case they
    * contain logic (references, select expressions etc.).
    *
+   * Available options:
+   *
+   *   - `allowOverrides` - boolean specifying whether it's allowed to override
+   *                      an existing message or term with a new value.
+   *                      Default: false
+   *
    * @param   {FluentResource} res - FluentResource object.
+   * @param   {Object} [options]
    * @returns {Array<Error>}
    */
-  addResource(res) {
-    const errors = res.errors.slice();
+  addResource(res, {
+    allowOverrides = false
+  } = {}) {
+    const errors = [];
+
     for (const [id, value] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
-        if (this._terms.has(id)) {
+        if (allowOverrides === false && this._terms.has(id)) {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
         this._terms.set(id, value);
       } else {
-        if (this._messages.has(id)) {
+        if (allowOverrides === false && this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
@@ -163,7 +195,7 @@ export class FluentBundle {
   /**
    * Format a message to a string or null.
    *
-   * Format a raw `message` from the context into a string (or a null if it has
+   * Format a raw `message` from the bundle into a string (or a null if it has
    * a null value).  `args` will be used to resolve references to variables
    * passed as arguments to the translation.
    *
@@ -196,14 +228,14 @@ export class FluentBundle {
       return this._transform(message);
     }
 
-    // optimize simple-string entities with attributes
-    if (typeof message.val === "string") {
-      return this._transform(message.val);
+    // optimize entities with null values
+    if (message === null || message.value === null) {
+      return null;
     }
 
-    // optimize entities with null values
-    if (message.val === undefined) {
-      return null;
+    // optimize simple-string entities with attributes
+    if (typeof message.value === "string") {
+      return this._transform(message.value);
     }
 
     return resolve(this, args, message, errors);

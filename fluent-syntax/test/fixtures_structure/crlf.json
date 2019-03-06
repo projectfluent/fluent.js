@@ -1,0 +1,187 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 2,
+          "end": 7
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 01",
+            "span": {
+              "type": "Span",
+              "start": 10,
+              "end": 18
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 10,
+          "end": 18
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 2,
+        "end": 18
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 20,
+          "end": 25
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value 02\nContinued",
+            "span": {
+              "type": "Span",
+              "start": 35,
+              "end": 58
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 31,
+          "end": 58
+        }
+      },
+      "attributes": [
+        {
+          "type": "Attribute",
+          "id": {
+            "type": "Identifier",
+            "name": "title",
+            "span": {
+              "type": "Span",
+              "start": 67,
+              "end": 72
+            }
+          },
+          "value": {
+            "type": "Pattern",
+            "elements": [
+              {
+                "type": "TextElement",
+                "value": "Title",
+                "span": {
+                  "type": "Span",
+                  "start": 75,
+                  "end": 80
+                }
+              }
+            ],
+            "span": {
+              "type": "Span",
+              "start": 75,
+              "end": 80
+            }
+          },
+          "span": {
+            "type": "Span",
+            "start": 66,
+            "end": 80
+          }
+        }
+      ],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 20,
+        "end": 80
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Unclosed StringLiteral",
+      "span": {
+        "type": "Span",
+        "start": 84,
+        "end": 114
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0020",
+          "args": [],
+          "message": "Unterminated string expression",
+          "span": {
+            "type": "Span",
+            "start": 130,
+            "end": 130
+          }
+        }
+      ],
+      "content": "err03 = { \"str\r\n\r\n",
+      "span": {
+        "type": "Span",
+        "start": 116,
+        "end": 134
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Missing newline after ->.",
+      "span": {
+        "type": "Span",
+        "start": 134,
+        "end": 167
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "args": [
+            "␤"
+          ],
+          "message": "Expected token: \"␤\"",
+          "span": {
+            "type": "Span",
+            "start": 187,
+            "end": 187
+          }
+        }
+      ],
+      "content": "err04 = { $sel -> }\r\n",
+      "span": {
+        "type": "Span",
+        "start": 169,
+        "end": 190
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 190
+  }
+}

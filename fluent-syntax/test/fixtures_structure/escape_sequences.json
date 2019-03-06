@@ -2,52 +2,23 @@
   "type": "Resource",
   "body": [
     {
-      "type": "Message",
-      "id": {
-        "type": "Identifier",
-        "name": "backslash",
-        "span": {
-          "type": "Span",
-          "start": 0,
-          "end": 9
-        }
-      },
-      "value": {
-        "type": "Pattern",
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Value with \\\\ (an escaped backslash)",
-            "span": {
-              "type": "Span",
-              "start": 12,
-              "end": 48
-            }
-          }
-        ],
-        "span": {
-          "type": "Span",
-          "start": 12,
-          "end": 48
-        }
-      },
-      "attributes": [],
-      "comment": null,
+      "type": "GroupComment",
+      "content": "Literal text",
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 48
+        "end": 15
       }
     },
     {
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "closing-brace",
+        "name": "text-backslash-one",
         "span": {
           "type": "Span",
-          "start": 49,
-          "end": 62
+          "start": 16,
+          "end": 34
         }
       },
       "value": {
@@ -55,37 +26,138 @@
         "elements": [
           {
             "type": "TextElement",
-            "value": "Value with \\{ (an opening brace)",
+            "value": "Value with \\ a backslash",
             "span": {
               "type": "Span",
-              "start": 65,
-              "end": 97
+              "start": 37,
+              "end": 61
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 65,
-          "end": 97
+          "start": 37,
+          "end": 61
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 49,
-        "end": 97
+        "start": 16,
+        "end": 61
       }
     },
     {
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "unicode-escape",
+        "name": "text-backslash-two",
         "span": {
           "type": "Span",
-          "start": 98,
+          "start": 62,
+          "end": 80
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value with \\\\ two backslashes",
+            "span": {
+              "type": "Span",
+              "start": 83,
+              "end": 112
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 83,
           "end": 112
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 62,
+        "end": 112
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "text-backslash-brace",
+        "span": {
+          "type": "Span",
+          "start": 113,
+          "end": 133
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Value with \\",
+            "span": {
+              "type": "Span",
+              "start": 136,
+              "end": 148
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "MessageReference",
+              "id": {
+                "type": "Identifier",
+                "name": "placeable",
+                "span": {
+                  "type": "Span",
+                  "start": 149,
+                  "end": 158
+                }
+              },
+              "span": {
+                "type": "Span",
+                "start": 149,
+                "end": 158
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 148,
+              "end": 159
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 136,
+          "end": 159
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 113,
+        "end": 159
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "text-backslash-u",
+        "span": {
+          "type": "Span",
+          "start": 160,
+          "end": 176
         }
       },
       "value": {
@@ -96,34 +168,34 @@
             "value": "\\u0041",
             "span": {
               "type": "Span",
-              "start": 115,
-              "end": 121
+              "start": 179,
+              "end": 185
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 115,
-          "end": 121
+          "start": 179,
+          "end": 185
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 98,
-        "end": 121
+        "start": 160,
+        "end": 185
       }
     },
     {
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "escaped-unicode",
+        "name": "text-backslash-backslash-u",
         "span": {
           "type": "Span",
-          "start": 122,
-          "end": 137
+          "start": 186,
+          "end": 212
         }
       },
       "value": {
@@ -134,32 +206,32 @@
             "value": "\\\\u0041",
             "span": {
               "type": "Span",
-              "start": 140,
-              "end": 147
+              "start": 215,
+              "end": 222
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 140,
-          "end": 147
+          "start": 215,
+          "end": 222
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 122,
-        "end": 147
+        "start": 186,
+        "end": 222
       }
     },
     {
       "type": "GroupComment",
-      "content": "String Expressions",
+      "content": "String literals",
       "span": {
         "type": "Span",
-        "start": 149,
-        "end": 170
+        "start": 224,
+        "end": 242
       }
     },
     {
@@ -169,8 +241,8 @@
         "name": "quote-in-string",
         "span": {
           "type": "Span",
-          "start": 171,
-          "end": 186
+          "start": 243,
+          "end": 258
         }
       },
       "value": {
@@ -180,32 +252,33 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
-              "value": "\\\"",
+              "raw": "\\\"",
+              "value": "\"",
               "span": {
                 "type": "Span",
-                "start": 190,
-                "end": 194
+                "start": 262,
+                "end": 266
               }
             },
             "span": {
               "type": "Span",
-              "start": 189,
-              "end": 195
+              "start": 261,
+              "end": 267
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 189,
-          "end": 195
+          "start": 261,
+          "end": 267
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 171,
-        "end": 195
+        "start": 243,
+        "end": 267
       }
     },
     {
@@ -215,8 +288,8 @@
         "name": "backslash-in-string",
         "span": {
           "type": "Span",
-          "start": 196,
-          "end": 215
+          "start": 268,
+          "end": 287
         }
       },
       "value": {
@@ -226,32 +299,42 @@
             "type": "Placeable",
             "expression": {
               "type": "StringLiteral",
-              "value": "\\\\",
+              "raw": "\\\\",
+              "value": "\\",
               "span": {
                 "type": "Span",
-                "start": 219,
-                "end": 223
+                "start": 291,
+                "end": 295
               }
             },
             "span": {
               "type": "Span",
-              "start": 218,
-              "end": 224
+              "start": 290,
+              "end": 296
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 218,
-          "end": 224
+          "start": 290,
+          "end": 296
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 196,
-        "end": 224
+        "start": 268,
+        "end": 296
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Mismatched quote",
+      "span": {
+        "type": "Span",
+        "start": 297,
+        "end": 321
       }
     },
     {
@@ -266,22 +349,297 @@
           "message": "Expected token: \"}\"",
           "span": {
             "type": "Span",
-            "start": 249,
-            "end": 249
+            "start": 346,
+            "end": 346
           }
         }
       ],
       "content": "mismatched-quote = {\"\\\\\"\"}\n",
       "span": {
         "type": "Span",
-        "start": 225,
-        "end": 252
+        "start": 322,
+        "end": 349
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "ERROR Unknown escape",
+      "span": {
+        "type": "Span",
+        "start": 349,
+        "end": 371
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0025",
+          "args": [
+            "x"
+          ],
+          "message": "Unknown escape sequence: \\x.",
+          "span": {
+            "type": "Span",
+            "start": 392,
+            "end": 392
+          }
+        }
+      ],
+      "content": "unknown-escape = {\"\\x\"}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 372,
+        "end": 397
+      }
+    },
+    {
+      "type": "GroupComment",
+      "content": "Unicode escapes",
+      "span": {
+        "type": "Span",
+        "start": 397,
+        "end": 415
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "string-unicode-sequence",
+        "span": {
+          "type": "Span",
+          "start": 416,
+          "end": 439
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "raw": "\\u0041",
+              "value": "A",
+              "span": {
+                "type": "Span",
+                "start": 443,
+                "end": 451
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 442,
+              "end": 452
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 442,
+          "end": 452
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 416,
+        "end": 452
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "string-escaped-unicode",
+        "span": {
+          "type": "Span",
+          "start": 453,
+          "end": 475
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "raw": "\\\\u0041",
+              "value": "\\u0041",
+              "span": {
+                "type": "Span",
+                "start": 479,
+                "end": 488
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 478,
+              "end": 489
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 478,
+          "end": 489
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 453,
+        "end": 489
+      }
+    },
+    {
+      "type": "GroupComment",
+      "content": "Literal braces",
+      "span": {
+        "type": "Span",
+        "start": 491,
+        "end": 508
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "brace-open",
+        "span": {
+          "type": "Span",
+          "start": 509,
+          "end": 519
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "An opening ",
+            "span": {
+              "type": "Span",
+              "start": 522,
+              "end": 533
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "raw": "{",
+              "value": "{",
+              "span": {
+                "type": "Span",
+                "start": 534,
+                "end": 537
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 533,
+              "end": 538
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": " brace.",
+            "span": {
+              "type": "Span",
+              "start": 538,
+              "end": 545
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 522,
+          "end": 545
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 509,
+        "end": 545
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "brace-close",
+        "span": {
+          "type": "Span",
+          "start": 546,
+          "end": 557
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "A closing ",
+            "span": {
+              "type": "Span",
+              "start": 560,
+              "end": 570
+            }
+          },
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "StringLiteral",
+              "raw": "}",
+              "value": "}",
+              "span": {
+                "type": "Span",
+                "start": 571,
+                "end": 574
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 570,
+              "end": 575
+            }
+          },
+          {
+            "type": "TextElement",
+            "value": " brace.",
+            "span": {
+              "type": "Span",
+              "start": 575,
+              "end": 582
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 560,
+          "end": 582
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 546,
+        "end": 582
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 252
+    "end": 583
   }
 }

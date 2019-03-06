@@ -23,6 +23,7 @@
     "gh-pages": "^1.1.0",
     "jsdoc": "^3.5.5",
     "mocha": "^4.1.0",
+    "nyc": "^13.0.1",
     "prettyjson": "^1.2.1",
     "rollup": "^0.59.1",
     "rollup-plugin-babel": "^4.0.0-beta.4",

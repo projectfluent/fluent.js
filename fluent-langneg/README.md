@@ -30,7 +30,7 @@ const supportedLocales = negotiateLanguages(
 ```
 
 The API reference is available at
-http://projectfluent.org/fluent.js/fluent-langneg.
+https://projectfluent.org/fluent.js/fluent-langneg.
 
 ## Strategies
 
@@ -96,6 +96,6 @@ documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
 
-[projectfluent.org]: http://projectfluent.org
-[FTL]: http://projectfluent.org/fluent/guide/
+[projectfluent.org]: https://projectfluent.org
+[FTL]: https://projectfluent.org/fluent/guide/
 [Intl.Locale]: https://github.com/tc39/proposal-intl-locale

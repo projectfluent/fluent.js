@@ -20,8 +20,16 @@
             "expression": {
               "type": "CallExpression",
               "callee": {
-                "type": "Function",
-                "name": "FOO",
+                "type": "FunctionReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "FOO",
+                  "span": {
+                    "type": "Span",
+                    "start": 8,
+                    "end": 11
+                  }
+                },
                 "span": {
                   "type": "Span",
                   "start": 8,
