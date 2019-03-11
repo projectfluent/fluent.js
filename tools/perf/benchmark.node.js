@@ -8,10 +8,10 @@ const env = {
   readFile: (path) => {
     return fs.readFileSync(`${__dirname}/${path}`).toString();
   },
-  ms: (nanoseconds) => {
-    return Number(nanoseconds / 1000000n);
-  },
-  now: process.hrtime.bigint,
+	ms: ([seconds, nanoseconds]) => {
+		return Math.round((seconds * 1e9 + nanoseconds) / 1e3) / 1e3;
+	},
+  now: process.hrtime,
   FluentSyntax,
   Fluent,
 };
