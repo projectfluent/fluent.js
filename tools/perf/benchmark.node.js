@@ -8,9 +8,9 @@ const env = {
   readFile: (path) => {
     return fs.readFileSync(`${__dirname}/${path}`).toString();
   },
-	ms: ([seconds, nanoseconds]) => {
-		return Math.round((seconds * 1e9 + nanoseconds) / 1e3) / 1e3;
-	},
+  ms: ([seconds, nanoseconds]) => {
+    return seconds * 1e3 + nanoseconds / 1e6;
+  },
   now: process.hrtime,
   FluentSyntax,
   Fluent,

@@ -17,9 +17,9 @@ function runTest(env, name, args, fncs, results) {
 
   {
     const testName = "parse-syntax";
-    const start = env.now();
+    let start = env.now();
     const ast = env.FluentSyntax.parse(ftlCode);
-    const end = env.now();
+    let end = env.now();
 
     if (ast.body.some(elem => elem.type == "Junk")) {
       throw Error("Junk in syntax parser result!");
@@ -28,11 +28,12 @@ function runTest(env, name, args, fncs, results) {
     results[`${testName}/"${name}"`] = env.ms(end) - env.ms(start);
   }
 
+  let resource;
   {
     const testName = "parse-runtime";
-    const start = env.now();
-    const resource = env.Fluent.FluentResource.fromString(ftlCode);
-    const end = env.now();
+    let start = env.now();
+    resource = env.Fluent.FluentResource.fromString(ftlCode);
+    let end = env.now();
 
     // we don't report any runtime parser errors, so
     // we'll rely on the syntax parser to verify that
@@ -43,18 +44,17 @@ function runTest(env, name, args, fncs, results) {
 
   {
     const testName = "resolve-runtime";
-    const resource = env.Fluent.FluentResource.fromString(ftlCode);
     const functions = {};
     for (let fnName in fncs) {
       let body = fncs[fnName];
       functions[fnName] = new Function(body);
     }
     const bundle = new env.Fluent.FluentBundle('en-US', {
-      functions 
+      functions
     });
     const errors = bundle.addResource(resource);
 
-    const start = env.now();
+    let start = env.now();
     for (const [id, message] of bundle.messages) {
       bundle.format(message, args, errors);
       if (message.attrs) {
@@ -63,7 +63,7 @@ function runTest(env, name, args, fncs, results) {
         }
       }
     }
-    const end = env.now();
+    let end = env.now();
 
     if (errors.length > 0) {
       throw new Error(`Errors accumulated while resolving ${name}.`);

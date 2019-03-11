@@ -6,8 +6,8 @@ const env = {
   readFile: (path) => {
     return read(path);
   },
-  ms: (nanoseconds) => {
-    return Math.round(nanoseconds * 1e3) / 1e3;
+  ms: (milliseconds) => {
+    return milliseconds;
   },
   now: performance.now,
   FluentSyntax,
