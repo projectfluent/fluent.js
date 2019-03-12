@@ -1,6 +1,6 @@
 
 function runTests(env) {
-  const testData = JSON.parse(env.readFile("data.json"));
+  const testData = JSON.parse(env.readFile("./fixtures/benchmarks.json"));
 
   const results = {};
 
@@ -13,7 +13,7 @@ function runTests(env) {
 }
 
 function runTest(env, name, args, fncs, results) {
-  const ftlCode = env.readFile(`${name}.ftl`);
+  const ftlCode = env.readFile(`./fixtures/${name}.ftl`);
 
   {
     const testName = "parse-syntax";
