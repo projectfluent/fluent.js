@@ -1,0 +1,18 @@
+{
+    "-term": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "sel"
+            },
+            "variants": [
+                {
+                    "key": "one",
+                    "value": "Foo"
+                }
+            ],
+            "star": 0
+        }
+    ]
+}

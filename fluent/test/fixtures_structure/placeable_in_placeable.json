@@ -1,0 +1,23 @@
+{
+    "key1": [
+        {
+            "type": "mesg",
+            "name": "foo",
+            "attr": null
+        }
+    ],
+    "key2": [
+        {
+            "type": "mesg",
+            "name": "foo",
+            "attr": null
+        }
+    ],
+    "key3": [
+        {
+            "type": "mesg",
+            "name": "foo",
+            "attr": null
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "err01": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "foo"
+            }
+        }
+    ],
+    "err02": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "foo"
+            }
+        }
+    ]
+}
