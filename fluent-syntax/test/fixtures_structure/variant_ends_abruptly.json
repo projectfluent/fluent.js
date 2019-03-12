@@ -1,0 +1,43 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 23,
+            "end": 23
+          }
+        }
+      ],
+      "content": "key = { $foo ->\n    *[\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 23
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "~ERROR E0013, pos 23",
+      "span": {
+        "type": "Span",
+        "start": 23,
+        "end": 45
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 46
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "arguments": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 14,
+            "end": 14
+          }
+        }
+      ],
+      "content": "err01 = { -2.4.5 }\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 19
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "arguments": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 33,
+            "end": 33
+          }
+        }
+      ],
+      "content": "err02 = { -2.4. }\n",
+      "span": {
+        "type": "Span",
+        "start": 19,
+        "end": 37
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 48,
+            "end": 48
+          }
+        }
+      ],
+      "content": "err03 = { -.4 }\n",
+      "span": {
+        "type": "Span",
+        "start": 37,
+        "end": 53
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "0-9"
+          ],
+          "message": "Expected a character from range: \"0-9\"",
+          "span": {
+            "type": "Span",
+            "start": 66,
+            "end": 66
+          }
+        }
+      ],
+      "content": "err04 = { -2..4 }\n",
+      "span": {
+        "type": "Span",
+        "start": 53,
+        "end": 71
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "arguments": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 83,
+            "end": 83
+          }
+        }
+      ],
+      "content": "err05 = { 24d }\n",
+      "span": {
+        "type": "Span",
+        "start": 71,
+        "end": 87
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 87
+  }
+}

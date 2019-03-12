@@ -2,14 +2,14 @@
   "type": "Resource",
   "body": [
     {
-      "type": "Message",
+      "type": "Term",
       "id": {
         "type": "Identifier",
-        "name": "key1",
+        "name": "term",
         "span": {
           "type": "Span",
-          "start": 0,
-          "end": 4
+          "start": 1,
+          "end": 5
         }
       },
       "value": {
@@ -20,11 +20,19 @@
             "expression": {
               "type": "SelectExpression",
               "selector": {
-                "value": "1",
-                "type": "NumberLiteral",
+                "type": "VariableReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "sel",
+                  "span": {
+                    "type": "Span",
+                    "start": 11,
+                    "end": 14
+                  }
+                },
                 "span": {
                   "type": "Span",
-                  "start": 13,
+                  "start": 10,
                   "end": 14
                 }
               },
@@ -32,11 +40,11 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "type": "Identifier",
-                    "name": "one",
+                    "value": "-2",
+                    "type": "NumberLiteral",
                     "span": {
                       "type": "Span",
-                      "start": 27,
+                      "start": 28,
                       "end": 30
                     }
                   },
@@ -44,54 +52,46 @@
                     "type": "Pattern",
                     "elements": [
                       {
-                        "type": "Placeable",
-                        "expression": {
-                          "value": "",
-                          "type": "StringLiteral",
-                          "span": {
-                            "type": "Span",
-                            "start": 33,
-                            "end": 35
-                          }
-                        },
+                        "type": "TextElement",
+                        "value": "Foo",
                         "span": {
                           "type": "Span",
                           "start": 32,
-                          "end": 36
+                          "end": 35
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
                       "start": 32,
-                      "end": 36
+                      "end": 35
                     }
                   },
                   "default": true,
                   "span": {
                     "type": "Span",
-                    "start": 25,
-                    "end": 36
+                    "start": 26,
+                    "end": 35
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 13,
-                "end": 41
+                "start": 10,
+                "end": 40
               }
             },
             "span": {
               "type": "Span",
-              "start": 11,
-              "end": 42
+              "start": 8,
+              "end": 41
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 7,
-          "end": 42
+          "start": 8,
+          "end": 41
         }
       },
       "attributes": [],
@@ -99,35 +99,13 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 42
-      }
-    },
-    {
-      "type": "Junk",
-      "annotations": [
-        {
-          "type": "Annotation",
-          "code": "E0012",
-          "arguments": [],
-          "message": "Expected value",
-          "span": {
-            "type": "Span",
-            "start": 78,
-            "end": 78
-          }
-        }
-      ],
-      "content": "err2 =\n    { $sel ->\n       *[one]\n    }\n",
-      "span": {
-        "type": "Span",
-        "start": 44,
-        "end": 85
+        "end": 41
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 85
+    "end": 42
   }
 }

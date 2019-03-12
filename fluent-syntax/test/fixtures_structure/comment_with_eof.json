@@ -1,0 +1,19 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Comment",
+      "content": "This is a comment with no new line",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 36
+  }
+}
