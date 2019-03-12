@@ -4,9 +4,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -22,9 +20,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -40,9 +36,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -58,9 +52,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -76,9 +68,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -94,9 +84,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -112,9 +100,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -130,9 +116,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -148,9 +132,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -166,9 +148,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -188,9 +168,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -218,9 +196,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {
@@ -240,9 +216,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "selector",
-                "attr": null,
-                "args": null
+                "name": "selector"
             },
             "variants": [
                 {

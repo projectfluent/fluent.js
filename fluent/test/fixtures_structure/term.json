@@ -3,7 +3,10 @@
         "value": [
             {
                 "type": "select",
-                "selector": null,
+                "selector": {
+                    "type": "var",
+                    "name": "case"
+                },
                 "variants": [
                     {
                         "key": "nominative",
@@ -26,7 +29,17 @@
         {
             "type": "term",
             "name": "brand-name",
-            "selector": "accusative"
+            "attr": null,
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "case",
+                    "value": {
+                        "type": "str",
+                        "value": "accusative"
+                    }
+                }
+            ]
         },
         "."
     ],
@@ -37,7 +50,7 @@
                 "type": "term",
                 "name": "brand-name",
                 "attr": "gender",
-                "args": null
+                "args": []
             },
             "variants": [
                 {
@@ -47,7 +60,7 @@
                             "type": "term",
                             "name": "brand-name",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
                         " został pomyślnie zaktualizowany."
                     ]
@@ -59,7 +72,7 @@
                             "type": "term",
                             "name": "brand-name",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
                         " została pomyślnie zaktualizowana."
                     ]
@@ -72,7 +85,7 @@
                             "type": "term",
                             "name": "brand-name",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
                         " został pomyślnie zaktualizowany."
                     ]

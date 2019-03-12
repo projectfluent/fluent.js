@@ -94,9 +94,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": ".",
               "value": ".",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 39,
@@ -150,9 +149,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": ".",
               "value": ".",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 62,
@@ -215,9 +213,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": ".",
               "value": ".",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 92,
@@ -280,9 +277,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": ".",
               "value": ".",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 127,
@@ -334,7 +330,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",
@@ -367,7 +363,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",
@@ -400,7 +396,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",
@@ -492,9 +488,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": ".",
               "value": ".",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 429,
@@ -675,9 +670,8 @@
               {
                 "type": "Placeable",
                 "expression": {
-                  "type": "StringLiteral",
-                  "raw": ".",
                   "value": ".",
+                  "type": "StringLiteral",
                   "span": {
                     "type": "Span",
                     "start": 590,
@@ -739,8 +733,8 @@
             "expression": {
               "type": "SelectExpression",
               "selector": {
-                "type": "NumberLiteral",
                 "value": "1",
+                "type": "NumberLiteral",
                 "span": {
                   "type": "Span",
                   "start": 615,
@@ -802,9 +796,8 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "StringLiteral",
-                          "raw": ".",
                           "value": ".",
+                          "type": "StringLiteral",
                           "span": {
                             "type": "Span",
                             "start": 670,
@@ -883,7 +876,7 @@
         {
           "type": "Annotation",
           "code": "E0012",
-          "args": [],
+          "arguments": [],
           "message": "Expected value",
           "span": {
             "type": "Span",
@@ -914,7 +907,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "}"
           ],
           "message": "Expected token: \"}\"",

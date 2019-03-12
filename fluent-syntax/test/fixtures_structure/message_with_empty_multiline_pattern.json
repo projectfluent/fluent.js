@@ -16,7 +16,7 @@
         {
           "type": "Annotation",
           "code": "E0005",
-          "args": [
+          "arguments": [
             "key1"
           ],
           "message": "Expected message \"key1\" to have a value or attributes",
@@ -40,7 +40,7 @@
         {
           "type": "Annotation",
           "code": "E0005",
-          "args": [
+          "arguments": [
             "key2"
           ],
           "message": "Expected message \"key2\" to have a value or attributes",

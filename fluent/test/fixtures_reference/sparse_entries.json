@@ -28,7 +28,8 @@
             "type": "select",
             "selector": {
                 "type": "num",
-                "value": "1"
+                "value": 1,
+                "precision": 0
             },
             "variants": [
                 {

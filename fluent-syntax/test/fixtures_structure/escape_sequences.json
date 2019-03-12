@@ -122,6 +122,7 @@
                   "end": 158
                 }
               },
+              "attribute": null,
               "span": {
                 "type": "Span",
                 "start": 149,
@@ -251,9 +252,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\\"",
               "type": "StringLiteral",
-              "raw": "\\\"",
-              "value": "\"",
               "span": {
                 "type": "Span",
                 "start": 262,
@@ -298,9 +298,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\\\",
               "type": "StringLiteral",
-              "raw": "\\\\",
-              "value": "\\",
               "span": {
                 "type": "Span",
                 "start": 291,
@@ -343,7 +342,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "}"
           ],
           "message": "Expected token: \"}\"",
@@ -376,7 +375,7 @@
         {
           "type": "Annotation",
           "code": "E0025",
-          "args": [
+          "arguments": [
             "x"
           ],
           "message": "Unknown escape sequence: \\x.",
@@ -420,9 +419,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\u0041",
               "type": "StringLiteral",
-              "raw": "\\u0041",
-              "value": "A",
               "span": {
                 "type": "Span",
                 "start": 443,
@@ -467,9 +465,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\\\u0041",
               "type": "StringLiteral",
-              "raw": "\\\\u0041",
-              "value": "\\u0041",
               "span": {
                 "type": "Span",
                 "start": 479,
@@ -532,9 +529,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": "{",
               "value": "{",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 534,
@@ -597,9 +593,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": "}",
               "value": "}",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 571,

@@ -2,19 +2,22 @@
     "nested-placeable": [
         {
             "type": "num",
-            "value": "1"
+            "value": 1,
+            "precision": 0
         }
     ],
     "padded-placeable": [
         {
             "type": "num",
-            "value": "1"
+            "value": 1,
+            "precision": 0
         }
     ],
     "sparse-placeable": [
         {
             "type": "num",
-            "value": "1"
+            "value": 1,
+            "precision": 0
         }
     ]
 }

@@ -1,16 +1,16 @@
 {
     "key": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FOO",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "arg1",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -18,7 +18,8 @@
                     "name": "arg2",
                     "value": {
                         "type": "num",
-                        "value": "2"
+                        "value": 2,
+                        "precision": 0
                     }
                 }
             ]

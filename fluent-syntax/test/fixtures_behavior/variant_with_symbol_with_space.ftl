@@ -1,4 +1,4 @@
-# ~ERROR E0003, pos 24, args "]"
--term = {
+# ~ERROR E0003, pos 32, args "]"
+-term = { $sel ->
         *[New York] Nowy Jork
     }

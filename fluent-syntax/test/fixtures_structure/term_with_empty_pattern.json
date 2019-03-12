@@ -7,7 +7,7 @@
         {
           "type": "Annotation",
           "code": "E0006",
-          "args": [
+          "arguments": [
             "foo"
           ],
           "message": "Expected term \"-foo\" to have a value",
@@ -31,7 +31,7 @@
         {
           "type": "Annotation",
           "code": "E0006",
-          "args": [
+          "arguments": [
             "bar"
           ],
           "message": "Expected term \"-bar\" to have a value",
@@ -55,7 +55,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "="
           ],
           "message": "Expected token: \"=\"",

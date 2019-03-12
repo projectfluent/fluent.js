@@ -20,8 +20,8 @@
             "expression": {
               "type": "SelectExpression",
               "selector": {
-                "type": "NumberLiteral",
                 "value": "1",
+                "type": "NumberLiteral",
                 "span": {
                   "type": "Span",
                   "start": 13,
@@ -46,9 +46,8 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "StringLiteral",
-                          "raw": "",
                           "value": "",
+                          "type": "StringLiteral",
                           "span": {
                             "type": "Span",
                             "start": 33,

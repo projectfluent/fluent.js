@@ -53,14 +53,6 @@ export class Term extends Entry {
   }
 }
 
-export class VariantList extends SyntaxNode {
-  constructor(variants) {
-    super();
-    this.type = "VariantList";
-    this.variants = variants;
-  }
-}
-
 export class Pattern extends SyntaxNode {
   constructor(elements) {
     super();
@@ -95,36 +87,87 @@ export class Placeable extends PatternElement {
  */
 export class Expression extends SyntaxNode {}
 
-export class StringLiteral extends Expression {
-  constructor(raw, value) {
+// An abstract base class for Literals.
+export class Literal extends Expression {
+  constructor(value) {
     super();
-    this.type = "StringLiteral";
-    this.raw = raw;
+    // The "value" field contains the exact contents of the literal,
+    // character-for-character.
     this.value = value;
+  }
+
+  parse() {
+    return {value: this.value};
   }
 }
 
-export class NumberLiteral extends Expression {
+export class StringLiteral extends Literal {
   constructor(value) {
-    super();
+    super(value);
+    this.type = "StringLiteral";
+  }
+
+  parse() {
+    // Backslash backslash, backslash double quote, uHHHH, UHHHHHH.
+    const KNOWN_ESCAPES =
+      /(?:\\\\|\\"|\\u([0-9a-fA-F]{4})|\\U([0-9a-fA-F]{6}))/g;
+
+    function from_escape_sequence(match, codepoint4, codepoint6) {
+      switch (match) {
+        case "\\\\":
+          return "\\";
+        case "\\\"":
+          return "\"";
+        default:
+          let codepoint = parseInt(codepoint4 || codepoint6, 16);
+          if (codepoint <= 0xD7FF || 0xE000 <= codepoint) {
+            // It's a Unicode scalar value.
+            return String.fromCodePoint(codepoint);
+          }
+          // Escape sequences reresenting surrogate code points are
+          // well-formed but invalid in Fluent. Replace them with U+FFFD
+          // REPLACEMENT CHARACTER.
+          return "�";
+      }
+    }
+
+    let value = this.value.replace(KNOWN_ESCAPES, from_escape_sequence);
+    return {value};
+  }
+}
+
+export class NumberLiteral extends Literal {
+  constructor(value) {
+    super(value);
     this.type = "NumberLiteral";
-    this.value = value;
+  }
+
+  parse() {
+    let value = parseFloat(this.value);
+    let decimal_position = this.value.indexOf(".");
+    let precision = decimal_position > 0
+      ? this.value.length - decimal_position - 1
+      : 0;
+    return {value, precision};
   }
 }
 
 export class MessageReference extends Expression {
-  constructor(id) {
+  constructor(id, attribute = null) {
     super();
     this.type = "MessageReference";
     this.id = id;
+    this.attribute = attribute;
   }
 }
 
 export class TermReference extends Expression {
-  constructor(id) {
+  constructor(id, attribute = null, args = null) {
     super();
     this.type = "TermReference";
     this.id = id;
+    this.attribute = attribute;
+    this.arguments = args;
   }
 }
 
@@ -137,10 +180,11 @@ export class VariableReference extends Expression {
 }
 
 export class FunctionReference extends Expression {
-  constructor(id) {
+  constructor(id, args) {
     super();
     this.type = "FunctionReference";
     this.id = id;
+    this.arguments = args;
   }
 }
 
@@ -153,29 +197,10 @@ export class SelectExpression extends Expression {
   }
 }
 
-export class AttributeExpression extends Expression {
-  constructor(ref, name) {
+export class CallArguments extends SyntaxNode {
+  constructor(positional = [], named = []) {
     super();
-    this.type = "AttributeExpression";
-    this.ref = ref;
-    this.name = name;
-  }
-}
-
-export class VariantExpression extends Expression {
-  constructor(ref, key) {
-    super();
-    this.type = "VariantExpression";
-    this.ref = ref;
-    this.key = key;
-  }
-}
-
-export class CallExpression extends Expression {
-  constructor(callee, positional = [], named = []) {
-    super();
-    this.type = "CallExpression";
-    this.callee = callee;
+    this.type = "CallArguments";
     this.positional = positional;
     this.named = named;
   }
@@ -272,7 +297,7 @@ export class Annotation extends SyntaxNode {
     super();
     this.type = "Annotation";
     this.code = code;
-    this.args = args;
+    this.arguments = args;
     this.message = message;
   }
 }
