@@ -24,7 +24,9 @@ program
   .parse(process.argv);
 
 var commands = {
-  node: "node --harmony-async-iteration benchmark.node.js",
+  node: process.version.startsWith("v8") ? 
+    "node --harmony-async-iteration benchmark.node.js" :
+    "node benchmark.node.js",
   jsshell: "js benchmark.jsshell.js",
   d8: "d8 benchmark.d8.js",
 };

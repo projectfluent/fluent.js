@@ -1,45 +1,21 @@
-var fs = require('fs');
+const fs = require('fs');
 
-require('../../fluent-intl-polyfill');
-var Fluent = require('../../fluent');
-var FluentSyntax = require('../../fluent-syntax');
+const Fluent = require('../../fluent');
+const FluentSyntax = require('../../fluent-syntax');
+const { runTest, runTests } = require('./benchmark.common');
 
-var ftlCode = fs.readFileSync(__dirname + '/workload-low.ftl').toString();
-
-var args = {};
-
-function ms([seconds, nanoseconds]) {
-  return Math.round((seconds * 1e9 + nanoseconds) / 1e3) / 1e3;
-}
-
-var cumulative = {};
-var start = process.hrtime();
-
-cumulative.ftlParseStart = process.hrtime(start);
-var resource = FluentSyntax.parse(ftlCode);
-cumulative.ftlParseEnd = process.hrtime(start);
-
-cumulative.ftlEntriesParseStart = process.hrtime(start);
-var resource = Fluent.FluentResource.fromString(ftlCode);
-cumulative.ftlEntriesParseEnd = process.hrtime(start);
-
-var bundle = new Fluent.FluentBundle('en-US');
-var errors = bundle.addMessages(ftlCode);
-
-cumulative.format = process.hrtime(start);
-for (const [id, message] of bundle.messages) {
-  bundle.format(message, args, errors);
-  if (message.attrs) {
-    for (const name in message.attrs) {
-      bundle.format(message.attrs[name], args, errors)
-    }
-  }
-}
-cumulative.formatEnd = process.hrtime(start);
-
-var results = {
-  "parse full AST (ms)": ms(cumulative.ftlParseEnd) - ms(cumulative.ftlParseStart),
-  "parse runtime AST (ms)": ms(cumulative.ftlEntriesParseEnd) - ms(cumulative.ftlEntriesParseStart),
-  "format (ms)": ms(cumulative.formatEnd) - ms(cumulative.format),
+const env = {
+  readFile: (path) => {
+    return fs.readFileSync(`${__dirname}/${path}`).toString();
+  },
+  ms: ([seconds, nanoseconds]) => {
+    return seconds * 1e3 + nanoseconds / 1e6;
+  },
+  now: process.hrtime,
+  FluentSyntax,
+  Fluent,
 };
+
+const results = runTests(env);
+
 console.log(JSON.stringify(results));
