@@ -9,11 +9,12 @@ const env = {
   ms: (milliseconds) => {
     return milliseconds;
   },
+  benchmarkName: scriptArgs[0],
   now: performance.now,
   FluentSyntax,
   Fluent,
 };
 
-const results = runTests(env);
+const results = runTest(env);
 
 print(JSON.stringify(results));

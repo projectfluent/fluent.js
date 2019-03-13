@@ -2,7 +2,8 @@ const fs = require('fs');
 
 const Fluent = require('../../fluent');
 const FluentSyntax = require('../../fluent-syntax');
-const { runTest, runTests } = require('./benchmark.common');
+const { runTest } = require('./benchmark.common');
+require('intl-pluralrules');
 
 const env = {
   readFile: (path) => {
@@ -11,11 +12,12 @@ const env = {
   ms: ([seconds, nanoseconds]) => {
     return seconds * 1e3 + nanoseconds / 1e6;
   },
+  benchmarkName: process.argv[2],
   now: process.hrtime,
   FluentSyntax,
   Fluent,
 };
 
-const results = runTests(env);
+const results = runTest(env);
 
 console.log(JSON.stringify(results));

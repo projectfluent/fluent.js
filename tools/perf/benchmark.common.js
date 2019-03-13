@@ -1,19 +1,8 @@
-
-function runTests(env) {
-  const testData = JSON.parse(env.readFile("./fixtures/benchmarks.json"));
-
+function runTest(env) {
   const results = {};
-
-  for (let testName in testData) {
-    let test = testData[testName];
-    runTest(env, testName, test.args, test.functions, results);
-  }
-
-  return results;
-}
-
-function runTest(env, name, args, fncs, results) {
-  const ftlCode = env.readFile(`./fixtures/${name}.ftl`);
+  const testData = JSON.parse(env.readFile("./fixtures/benchmarks.json"));
+  const {args, functions} = testData[env.benchmarkName];
+  const ftlCode = env.readFile(`./fixtures/${env.benchmarkName}.ftl`);
 
   {
     const testName = "parse-syntax";
@@ -25,7 +14,7 @@ function runTest(env, name, args, fncs, results) {
       throw Error("Junk in syntax parser result!");
     }
 
-    results[`${testName}/"${name}"`] = env.ms(end) - env.ms(start);
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
   let resource;
@@ -39,18 +28,18 @@ function runTest(env, name, args, fncs, results) {
     // we'll rely on the syntax parser to verify that
     // the sample test syntax is correct.
 
-    results[`${testName}/"${name}"`] = env.ms(end) - env.ms(start);
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
   {
     const testName = "resolve-runtime";
-    const functions = {};
-    for (let fnName in fncs) {
-      let body = fncs[fnName];
-      functions[fnName] = new Function(body);
+    const fncs = {};
+    for (let fnName in functions) {
+      let body = functions[fnName];
+      fncs[fnName] = new Function(body);
     }
     const bundle = new env.Fluent.FluentBundle('en-US', {
-      functions
+      functions: fncs
     });
     const errors = bundle.addResource(resource);
 
@@ -69,11 +58,12 @@ function runTest(env, name, args, fncs, results) {
       throw new Error(`Errors accumulated while resolving ${name}.`);
     }
 
-    results[`${testName}/"${name}"`] = env.ms(end) - env.ms(start);
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
+
+  return results;
 }
 
 if (typeof exports !== "undefined") {
   exports.runTest = runTest;
-  exports.runTests = runTests;
 }

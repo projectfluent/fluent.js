@@ -28,7 +28,7 @@ var commands = {
     "node --harmony-async-iteration benchmark.node.js" :
     "node benchmark.node.js",
   jsshell: "js benchmark.jsshell.js",
-  d8: "d8 benchmark.d8.js",
+  d8: "d8 benchmark.d8.js -- ",
 };
 
 var command = program.args.length ?
@@ -47,47 +47,63 @@ function color(str, col) {
   return str;
 }
 
-function runAll(sample, callback) {
-  var results = {};
-  var times = {};
-  // run is recursive and thus sequential so that node doesn't spawn all the 
-  // processes at once
-  run();
+runAll(parseInt(program.sample)).then(printResults);
 
-  function run() {
-    exec(command, { cwd: __dirname }, function (error, stdout, stderr) {
-      if (!program.raw && program.progress) {
-        process.stdout.write(color('.', INDICATOR));
-      }
-      if (error) {
-        console.log(error.toString());
-      }
-      var data = JSON.parse(stdout);
-      for (var scenario in data) {
-        if (!times[scenario]) {
-          times[scenario] = [];
-        }
-        times[scenario].push(data[scenario]);
-      }
-      if (times[scenario].length !== sample) {
-        run();
-      } else {
-        for (scenario in times) {
-          var mean = util.mean(times[scenario]);
-          results[scenario] = {
-            mean: mean,
-            stdev: util.stdev(times[scenario], mean),
-            sample: sample
-          };
-        }
-        callback(results);
-      }
-    });
+async function runAll(sample) {
+  const results = {};
+
+  const testData = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/benchmarks.json`).toString());
+  for (let benchmarkName in testData) {
+    if (!program.raw && program.progress) {
+      process.stdout.write(color(`\n${benchmarkName}: `, INDICATOR));
+    }
+    await runBenchmark(benchmarkName, sample, results);
   }
+  return results;
 }
 
-runAll(parseInt(program.sample), function(res) {
+function runBenchmark(benchmarkName, sample, results) {
+  return new Promise((resolve, reject) => {
+    const times = {};
+    const execCommand = `${command} ${benchmarkName}`;
+    // run is recursive and thus sequential so that node doesn't spawn all the
+    // processes at once
+    run();
 
+    function run() {
+      exec(execCommand, { cwd: __dirname }, function (error, stdout, stderr) {
+        if (!program.raw && program.progress) {
+          process.stdout.write(color('.', INDICATOR));
+        }
+        if (error) {
+          console.log(error.toString());
+        }
+        var data = JSON.parse(stdout);
+        for (var scenario in data) {
+          if (!times[scenario]) {
+            times[scenario] = [];
+          }
+          times[scenario].push(data[scenario]);
+        }
+        if (times[scenario].length !== sample) {
+          run();
+        } else {
+          for (scenario in times) {
+            var mean = util.mean(times[scenario]);
+            results[scenario] = {
+              mean: mean,
+              stdev: util.stdev(times[scenario], mean),
+              sample: sample
+            };
+          }
+          resolve(results);
+        }
+      });
+    }
+  });
+}
+
+function printResults(res) {
   for (var scenario in res) {
     if (program.compare) {
       var ref = JSON.parse(fs.readFileSync(program.compare).toString());
@@ -123,4 +139,4 @@ runAll(parseInt(program.sample), function(res) {
       dashColor: 'cyan',
     }));
   }
-});
+}
