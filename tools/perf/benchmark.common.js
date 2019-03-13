@@ -1,8 +1,8 @@
 function runTest(env) {
   const results = {};
   const testData = JSON.parse(env.readFile("./fixtures/benchmarks.json"));
-  const {args, functions} = testData[env.sampleName];
-  const ftlCode = env.readFile(`./fixtures/${env.sampleName}.ftl`);
+  const {args, functions} = testData[env.benchmarkName];
+  const ftlCode = env.readFile(`./fixtures/${env.benchmarkName}.ftl`);
 
   {
     const testName = "parse-syntax";
@@ -14,7 +14,7 @@ function runTest(env) {
       throw Error("Junk in syntax parser result!");
     }
 
-    results[`${testName}/"${env.sampleName}"`] = env.ms(end) - env.ms(start);
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
   let resource;
@@ -28,7 +28,7 @@ function runTest(env) {
     // we'll rely on the syntax parser to verify that
     // the sample test syntax is correct.
 
-    results[`${testName}/"${env.sampleName}"`] = env.ms(end) - env.ms(start);
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
   {
@@ -58,7 +58,7 @@ function runTest(env) {
       throw new Error(`Errors accumulated while resolving ${name}.`);
     }
 
-    results[`${testName}/"${env.sampleName}"`] = env.ms(end) - env.ms(start);
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
   return results;

@@ -12,7 +12,7 @@ const env = {
   ms: ([seconds, nanoseconds]) => {
     return seconds * 1e3 + nanoseconds / 1e6;
   },
-  sampleName: process.argv[2],
+  benchmarkName: process.argv[2],
   now: process.hrtime,
   FluentSyntax,
   Fluent,

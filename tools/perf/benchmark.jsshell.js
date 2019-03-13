@@ -9,7 +9,7 @@ const env = {
   ms: (milliseconds) => {
     return milliseconds;
   },
-  sampleName: scriptArgs[0],
+  benchmarkName: scriptArgs[0],
   now: performance.now,
   FluentSyntax,
   Fluent,

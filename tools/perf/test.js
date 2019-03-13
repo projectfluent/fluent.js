@@ -14,7 +14,7 @@ program
   .usage('[options] [command]')
   .option('-e, --engine <string>', 'Engine to test: node, jsshell, d8 [node]',
           'node')
-  .option('-s, --sampleSize <int>', 'Sample size [30]', 30)
+  .option('-s, --sample <int>', 'Sample size [30]', 30)
   .option('-p, --progress', 'Show progress')
   .option('-n, --no-color', 'Print without color')
   .option('-r, --raw', 'Print raw JSON')
@@ -47,25 +47,25 @@ function color(str, col) {
   return str;
 }
 
-runAll(parseInt(program.sampleSize)).then(printResults);
+runAll(parseInt(program.sample)).then(printResults);
 
-async function runAll(sampleSize) {
+async function runAll(sample) {
   const results = {};
 
   const testData = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/benchmarks.json`).toString());
-  for (let sampleName in testData) {
+  for (let benchmarkName in testData) {
     if (!program.raw && program.progress) {
-      process.stdout.write(color(`\n${sampleName}: `, INDICATOR));
+      process.stdout.write(color(`\n${benchmarkName}: `, INDICATOR));
     }
-    await runSample(sampleName, sampleSize, results);
+    await runBenchmark(benchmarkName, sample, results);
   }
   return results;
 }
 
-function runSample(sampleName, sampleSize, results) {
+function runBenchmark(benchmarkName, sample, results) {
   return new Promise((resolve, reject) => {
     const times = {};
-    const execCommand = `${command} ${sampleName}`;
+    const execCommand = `${command} ${benchmarkName}`;
     // run is recursive and thus sequential so that node doesn't spawn all the
     // processes at once
     run();
@@ -85,7 +85,7 @@ function runSample(sampleName, sampleSize, results) {
           }
           times[scenario].push(data[scenario]);
         }
-        if (times[scenario].length !== sampleSize) {
+        if (times[scenario].length !== sample) {
           run();
         } else {
           for (scenario in times) {
@@ -93,7 +93,7 @@ function runSample(sampleName, sampleSize, results) {
             results[scenario] = {
               mean: mean,
               stdev: util.stdev(times[scenario], mean),
-              sampleSize: sampleSize
+              sample: sample
             };
           }
           resolve(results);
