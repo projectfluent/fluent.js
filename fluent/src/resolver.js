@@ -157,7 +157,9 @@ function VariableReference(env, {name}) {
   const { args, errors } = env;
 
   if (!args || !args.hasOwnProperty(name)) {
-    errors.push(new ReferenceError(`Unknown variable: ${name}`));
+    if (env.insideTermReference === false) {
+      errors.push(new ReferenceError(`Unknown variable: ${name}`));
+    }
     return new FluentNone(`$${name}`);
   }
 
@@ -222,7 +224,7 @@ function TermReference(env, {name, attr, args}) {
 
   // Every TermReference has its own args.
   const [, keyargs] = getArguments(env, args);
-  const local = {...env, args: keyargs};
+  const local = {...env, args: keyargs, insideTermReference: true};
 
   if (attr) {
     const attribute = term.attrs && term.attrs[attr];
@@ -348,7 +350,9 @@ function Pattern(env, ptn) {
  */
 export default function resolve(bundle, args, message, errors = []) {
   const env = {
-    bundle, args, errors, dirty: new WeakSet()
+    bundle, args, errors, dirty: new WeakSet(),
+    // TermReferences are resolved in a new scope by creating a fresh env.
+    insideTermReference: false,
   };
   return Type(env, message).toString(bundle);
 }
