@@ -57,8 +57,7 @@ suite('Referencing values', function(){
     const msg = bundle.getMessage('ref2');
     const val = bundle.format(msg, args, errs);
     assert.equal(val, 'B2');
-    // XXX Not an error; selectors may be missing in parameterized Terms.
-    assert.equal(errs.length, 1);
+    assert.equal(errs.length, 0);
   });
 
   test('references the value if it is a pattern', function(){
@@ -72,8 +71,7 @@ suite('Referencing values', function(){
     const msg = bundle.getMessage('ref4');
     const val = bundle.format(msg, args, errs);
     assert.equal(val, 'B4');
-    // XXX Not an error; selectors may be missing in parameterized Terms.
-    assert.equal(errs.length, 1);
+    assert.equal(errs.length, 0);
   });
 
   test('uses ??? if there is no value', function(){
