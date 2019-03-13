@@ -5,11 +5,11 @@
       "type": "Term",
       "id": {
         "type": "Identifier",
-        "name": "brand-name",
+        "name": "term",
         "span": {
           "type": "Span",
           "start": 1,
-          "end": 11
+          "end": 5
         }
       },
       "value": {
@@ -26,14 +26,14 @@
                   "name": "case",
                   "span": {
                     "type": "Span",
-                    "start": 21,
-                    "end": 25
+                    "start": 15,
+                    "end": 19
                   }
                 },
                 "span": {
                   "type": "Span",
-                  "start": 20,
-                  "end": 25
+                  "start": 14,
+                  "end": 19
                 }
               },
               "variants": [
@@ -41,11 +41,11 @@
                   "type": "Variant",
                   "key": {
                     "type": "Identifier",
-                    "name": "nominative",
+                    "name": "uppercase",
                     "span": {
                       "type": "Span",
-                      "start": 38,
-                      "end": 48
+                      "start": 32,
+                      "end": 41
                     }
                   },
                   "value": {
@@ -53,36 +53,36 @@
                     "elements": [
                       {
                         "type": "TextElement",
-                        "value": "Firefox",
+                        "value": "Term",
                         "span": {
                           "type": "Span",
-                          "start": 50,
-                          "end": 57
+                          "start": 43,
+                          "end": 47
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 50,
-                      "end": 57
+                      "start": 43,
+                      "end": 47
                     }
                   },
                   "default": true,
                   "span": {
                     "type": "Span",
-                    "start": 36,
-                    "end": 57
+                    "start": 30,
+                    "end": 47
                   }
                 },
                 {
                   "type": "Variant",
                   "key": {
                     "type": "Identifier",
-                    "name": "accusative",
+                    "name": "lowercase",
                     "span": {
                       "type": "Span",
-                      "start": 67,
-                      "end": 77
+                      "start": 57,
+                      "end": 66
                     }
                   },
                   "value": {
@@ -90,45 +90,45 @@
                     "elements": [
                       {
                         "type": "TextElement",
-                        "value": "Firefoxa",
+                        "value": "term",
                         "span": {
                           "type": "Span",
-                          "start": 79,
-                          "end": 87
+                          "start": 68,
+                          "end": 72
                         }
                       }
                     ],
                     "span": {
                       "type": "Span",
-                      "start": 79,
-                      "end": 87
+                      "start": 68,
+                      "end": 72
                     }
                   },
                   "default": false,
                   "span": {
                     "type": "Span",
-                    "start": 66,
-                    "end": 87
+                    "start": 56,
+                    "end": 72
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 20,
-                "end": 92
+                "start": 14,
+                "end": 77
               }
             },
             "span": {
               "type": "Span",
-              "start": 18,
-              "end": 93
+              "start": 12,
+              "end": 78
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 14,
-          "end": 93
+          "start": 8,
+          "end": 78
         }
       },
       "attributes": [
@@ -136,11 +136,11 @@
           "type": "Attribute",
           "id": {
             "type": "Identifier",
-            "name": "gender",
+            "name": "attr",
             "span": {
               "type": "Span",
-              "start": 99,
-              "end": 105
+              "start": 84,
+              "end": 88
             }
           },
           "value": {
@@ -148,24 +148,24 @@
             "elements": [
               {
                 "type": "TextElement",
-                "value": "masculine",
+                "value": "a",
                 "span": {
                   "type": "Span",
-                  "start": 108,
-                  "end": 117
+                  "start": 91,
+                  "end": 92
                 }
               }
             ],
             "span": {
               "type": "Span",
-              "start": 108,
-              "end": 117
+              "start": 91,
+              "end": 92
             }
           },
           "span": {
             "type": "Span",
-            "start": 98,
-            "end": 117
+            "start": 83,
+            "end": 92
           }
         }
       ],
@@ -173,17 +173,138 @@
       "span": {
         "type": "Span",
         "start": 0,
-        "end": 117
+        "end": 92
       }
     },
     {
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "update-command",
+        "name": "key01",
         "span": {
           "type": "Span",
-          "start": 119,
+          "start": 94,
+          "end": 99
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "TermReference",
+              "id": {
+                "type": "Identifier",
+                "name": "term",
+                "span": {
+                  "type": "Span",
+                  "start": 104,
+                  "end": 108
+                }
+              },
+              "attribute": null,
+              "arguments": null,
+              "span": {
+                "type": "Span",
+                "start": 103,
+                "end": 108
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 102,
+              "end": 109
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 102,
+          "end": 109
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 94,
+        "end": 109
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key02",
+        "span": {
+          "type": "Span",
+          "start": 110,
+          "end": 115
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "TermReference",
+              "id": {
+                "type": "Identifier",
+                "name": "term",
+                "span": {
+                  "type": "Span",
+                  "start": 120,
+                  "end": 124
+                }
+              },
+              "attribute": null,
+              "arguments": {
+                "type": "CallArguments",
+                "positional": [],
+                "named": [],
+                "span": {
+                  "type": "Span",
+                  "start": 124,
+                  "end": 126
+                }
+              },
+              "span": {
+                "type": "Span",
+                "start": 119,
+                "end": 126
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 118,
+              "end": 127
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 118,
+          "end": 127
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 110,
+        "end": 127
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key03",
+        "span": {
+          "type": "Span",
+          "start": 128,
           "end": 133
         }
       },
@@ -191,25 +312,16 @@
         "type": "Pattern",
         "elements": [
           {
-            "type": "TextElement",
-            "value": "Zaktualizuj ",
-            "span": {
-              "type": "Span",
-              "start": 140,
-              "end": 152
-            }
-          },
-          {
             "type": "Placeable",
             "expression": {
               "type": "TermReference",
               "id": {
                 "type": "Identifier",
-                "name": "brand-name",
+                "name": "term",
                 "span": {
                   "type": "Span",
-                  "start": 155,
-                  "end": 165
+                  "start": 138,
+                  "end": 142
                 }
               },
               "attribute": null,
@@ -224,77 +336,68 @@
                       "name": "case",
                       "span": {
                         "type": "Span",
-                        "start": 166,
-                        "end": 170
+                        "start": 143,
+                        "end": 147
                       }
                     },
                     "value": {
-                      "value": "accusative",
+                      "value": "uppercase",
                       "type": "StringLiteral",
                       "span": {
                         "type": "Span",
-                        "start": 172,
-                        "end": 184
+                        "start": 149,
+                        "end": 160
                       }
                     },
                     "span": {
                       "type": "Span",
-                      "start": 166,
-                      "end": 184
+                      "start": 143,
+                      "end": 160
                     }
                   }
                 ],
                 "span": {
                   "type": "Span",
-                  "start": 165,
-                  "end": 185
+                  "start": 142,
+                  "end": 161
                 }
               },
               "span": {
                 "type": "Span",
-                "start": 154,
-                "end": 185
+                "start": 137,
+                "end": 161
               }
             },
             "span": {
               "type": "Span",
-              "start": 152,
-              "end": 187
-            }
-          },
-          {
-            "type": "TextElement",
-            "value": ".",
-            "span": {
-              "type": "Span",
-              "start": 187,
-              "end": 188
+              "start": 136,
+              "end": 162
             }
           }
         ],
         "span": {
           "type": "Span",
           "start": 136,
-          "end": 188
+          "end": 162
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 119,
-        "end": 188
+        "start": 128,
+        "end": 162
       }
     },
     {
       "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "update-successful",
+        "name": "key04",
         "span": {
           "type": "Span",
-          "start": 190,
-          "end": 207
+          "start": 165,
+          "end": 170
         }
       },
       "value": {
@@ -308,27 +411,27 @@
                 "type": "TermReference",
                 "id": {
                   "type": "Identifier",
-                  "name": "brand-name",
+                  "name": "term",
                   "span": {
                     "type": "Span",
-                    "start": 217,
-                    "end": 227
+                    "start": 180,
+                    "end": 184
                   }
                 },
                 "attribute": {
                   "type": "Identifier",
-                  "name": "gender",
+                  "name": "attr",
                   "span": {
                     "type": "Span",
-                    "start": 228,
-                    "end": 234
+                    "start": 185,
+                    "end": 189
                   }
                 },
                 "arguments": null,
                 "span": {
                   "type": "Span",
-                  "start": 216,
-                  "end": 234
+                  "start": 179,
+                  "end": 189
                 }
               },
               "variants": [
@@ -336,235 +439,304 @@
                   "type": "Variant",
                   "key": {
                     "type": "Identifier",
-                    "name": "masculine",
+                    "name": "a",
                     "span": {
                       "type": "Span",
-                      "start": 247,
+                      "start": 202,
+                      "end": 203
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "Placeable",
+                        "expression": {
+                          "type": "TermReference",
+                          "id": {
+                            "type": "Identifier",
+                            "name": "term",
+                            "span": {
+                              "type": "Span",
+                              "start": 208,
+                              "end": 212
+                            }
+                          },
+                          "attribute": null,
+                          "arguments": null,
+                          "span": {
+                            "type": "Span",
+                            "start": 207,
+                            "end": 212
+                          }
+                        },
+                        "span": {
+                          "type": "Span",
+                          "start": 205,
+                          "end": 214
+                        }
+                      },
+                      {
+                        "type": "TextElement",
+                        "value": " A",
+                        "span": {
+                          "type": "Span",
+                          "start": 214,
+                          "end": 216
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 205,
+                      "end": 216
+                    }
+                  },
+                  "default": false,
+                  "span": {
+                    "type": "Span",
+                    "start": 201,
+                    "end": 216
+                  }
+                },
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "b",
+                    "span": {
+                      "type": "Span",
+                      "start": 226,
+                      "end": 227
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "Placeable",
+                        "expression": {
+                          "type": "TermReference",
+                          "id": {
+                            "type": "Identifier",
+                            "name": "term",
+                            "span": {
+                              "type": "Span",
+                              "start": 232,
+                              "end": 236
+                            }
+                          },
+                          "attribute": null,
+                          "arguments": {
+                            "type": "CallArguments",
+                            "positional": [],
+                            "named": [],
+                            "span": {
+                              "type": "Span",
+                              "start": 236,
+                              "end": 238
+                            }
+                          },
+                          "span": {
+                            "type": "Span",
+                            "start": 231,
+                            "end": 238
+                          }
+                        },
+                        "span": {
+                          "type": "Span",
+                          "start": 229,
+                          "end": 240
+                        }
+                      },
+                      {
+                        "type": "TextElement",
+                        "value": " B",
+                        "span": {
+                          "type": "Span",
+                          "start": 240,
+                          "end": 242
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 229,
+                      "end": 242
+                    }
+                  },
+                  "default": false,
+                  "span": {
+                    "type": "Span",
+                    "start": 225,
+                    "end": 242
+                  }
+                },
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "x",
+                    "span": {
+                      "type": "Span",
+                      "start": 252,
+                      "end": 253
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "X",
+                        "span": {
+                          "type": "Span",
+                          "start": 255,
+                          "end": 256
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 255,
                       "end": 256
-                    }
-                  },
-                  "value": {
-                    "type": "Pattern",
-                    "elements": [
-                      {
-                        "type": "Placeable",
-                        "expression": {
-                          "type": "TermReference",
-                          "id": {
-                            "type": "Identifier",
-                            "name": "brand-name",
-                            "span": {
-                              "type": "Span",
-                              "start": 261,
-                              "end": 271
-                            }
-                          },
-                          "attribute": null,
-                          "arguments": null,
-                          "span": {
-                            "type": "Span",
-                            "start": 260,
-                            "end": 271
-                          }
-                        },
-                        "span": {
-                          "type": "Span",
-                          "start": 258,
-                          "end": 273
-                        }
-                      },
-                      {
-                        "type": "TextElement",
-                        "value": " został pomyślnie zaktualizowany.",
-                        "span": {
-                          "type": "Span",
-                          "start": 273,
-                          "end": 306
-                        }
-                      }
-                    ],
-                    "span": {
-                      "type": "Span",
-                      "start": 258,
-                      "end": 306
-                    }
-                  },
-                  "default": false,
-                  "span": {
-                    "type": "Span",
-                    "start": 246,
-                    "end": 306
-                  }
-                },
-                {
-                  "type": "Variant",
-                  "key": {
-                    "type": "Identifier",
-                    "name": "feminine",
-                    "span": {
-                      "type": "Span",
-                      "start": 316,
-                      "end": 324
-                    }
-                  },
-                  "value": {
-                    "type": "Pattern",
-                    "elements": [
-                      {
-                        "type": "Placeable",
-                        "expression": {
-                          "type": "TermReference",
-                          "id": {
-                            "type": "Identifier",
-                            "name": "brand-name",
-                            "span": {
-                              "type": "Span",
-                              "start": 329,
-                              "end": 339
-                            }
-                          },
-                          "attribute": null,
-                          "arguments": null,
-                          "span": {
-                            "type": "Span",
-                            "start": 328,
-                            "end": 339
-                          }
-                        },
-                        "span": {
-                          "type": "Span",
-                          "start": 326,
-                          "end": 341
-                        }
-                      },
-                      {
-                        "type": "TextElement",
-                        "value": " została pomyślnie zaktualizowana.",
-                        "span": {
-                          "type": "Span",
-                          "start": 341,
-                          "end": 375
-                        }
-                      }
-                    ],
-                    "span": {
-                      "type": "Span",
-                      "start": 326,
-                      "end": 375
-                    }
-                  },
-                  "default": false,
-                  "span": {
-                    "type": "Span",
-                    "start": 315,
-                    "end": 375
-                  }
-                },
-                {
-                  "type": "Variant",
-                  "key": {
-                    "type": "Identifier",
-                    "name": "other",
-                    "span": {
-                      "type": "Span",
-                      "start": 385,
-                      "end": 390
-                    }
-                  },
-                  "value": {
-                    "type": "Pattern",
-                    "elements": [
-                      {
-                        "type": "TextElement",
-                        "value": "Program ",
-                        "span": {
-                          "type": "Span",
-                          "start": 392,
-                          "end": 400
-                        }
-                      },
-                      {
-                        "type": "Placeable",
-                        "expression": {
-                          "type": "TermReference",
-                          "id": {
-                            "type": "Identifier",
-                            "name": "brand-name",
-                            "span": {
-                              "type": "Span",
-                              "start": 403,
-                              "end": 413
-                            }
-                          },
-                          "attribute": null,
-                          "arguments": null,
-                          "span": {
-                            "type": "Span",
-                            "start": 402,
-                            "end": 413
-                          }
-                        },
-                        "span": {
-                          "type": "Span",
-                          "start": 400,
-                          "end": 415
-                        }
-                      },
-                      {
-                        "type": "TextElement",
-                        "value": " został pomyślnie zaktualizowany.",
-                        "span": {
-                          "type": "Span",
-                          "start": 415,
-                          "end": 448
-                        }
-                      }
-                    ],
-                    "span": {
-                      "type": "Span",
-                      "start": 392,
-                      "end": 448
                     }
                   },
                   "default": true,
                   "span": {
                     "type": "Span",
-                    "start": 383,
-                    "end": 448
+                    "start": 250,
+                    "end": 256
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 216,
-                "end": 453
+                "start": 179,
+                "end": 261
               }
             },
             "span": {
               "type": "Span",
-              "start": 214,
-              "end": 454
+              "start": 177,
+              "end": 262
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 210,
-          "end": 454
+          "start": 173,
+          "end": 262
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 190,
-        "end": 454
+        "start": 165,
+        "end": 262
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "arguments": [
+            "err1"
+          ],
+          "message": "Expected term \"-err1\" to have a value",
+          "span": {
+            "type": "Span",
+            "start": 271,
+            "end": 271
+          }
+        }
+      ],
+      "content": "-err1 =\n",
+      "span": {
+        "type": "Span",
+        "start": 264,
+        "end": 272
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0006",
+          "arguments": [
+            "err2"
+          ],
+          "message": "Expected term \"-err2\" to have a value",
+          "span": {
+            "type": "Span",
+            "start": 279,
+            "end": 279
+          }
+        }
+      ],
+      "content": "-err2 =\n    .attr = Attribute\n",
+      "span": {
+        "type": "Span",
+        "start": 272,
+        "end": 302
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 303,
+            "end": 303
+          }
+        }
+      ],
+      "content": "--err3 = Error\n",
+      "span": {
+        "type": "Span",
+        "start": 302,
+        "end": 317
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 327,
+            "end": 327
+          }
+        }
+      ],
+      "content": "err4 = { --err4 }\n",
+      "span": {
+        "type": "Span",
+        "start": 317,
+        "end": 335
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 455
+    "end": 335
   }
 }

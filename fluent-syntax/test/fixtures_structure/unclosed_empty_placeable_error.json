@@ -1,0 +1,94 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "arguments": [
+            "}"
+          ],
+          "message": "Expected token: \"}\"",
+          "span": {
+            "type": "Span",
+            "start": 10,
+            "end": 10
+          }
+        }
+      ],
+      "content": "err01 = {\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 10
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key01",
+        "span": {
+          "type": "Span",
+          "start": 10,
+          "end": 15
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "TextElement",
+            "value": "Bar",
+            "span": {
+              "type": "Span",
+              "start": 18,
+              "end": 21
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 18,
+          "end": 21
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 10,
+        "end": 21
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0028",
+          "arguments": [],
+          "message": "Expected an inline expression",
+          "span": {
+            "type": "Span",
+            "start": 32,
+            "end": 32
+          }
+        }
+      ],
+      "content": "err02 = {\n",
+      "span": {
+        "type": "Span",
+        "start": 22,
+        "end": 32
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 32
+  }
+}

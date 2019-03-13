@@ -1,0 +1,32 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0002",
+          "arguments": [],
+          "message": "Expected an entry start",
+          "span": {
+            "type": "Span",
+            "start": 1,
+            "end": 1
+          }
+        }
+      ],
+      "content": "8err = Foo\n",
+      "span": {
+        "type": "Span",
+        "start": 1,
+        "end": 12
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 12
+  }
+}

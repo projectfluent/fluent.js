@@ -1,0 +1,205 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0002",
+          "arguments": [],
+          "message": "Expected an entry start",
+          "span": {
+            "type": "Span",
+            "start": 0,
+            "end": 0
+          }
+        }
+      ],
+      "content": "  err01 = A\n\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 13
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key2",
+        "span": {
+          "type": "Span",
+          "start": 13,
+          "end": 17
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "MessageReference",
+              "id": {
+                "type": "Identifier",
+                "name": "a",
+                "span": {
+                  "type": "Span",
+                  "start": 22,
+                  "end": 23
+                }
+              },
+              "attribute": null,
+              "span": {
+                "type": "Span",
+                "start": 22,
+                "end": 23
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 20,
+              "end": 25
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 20,
+          "end": 25
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 13,
+        "end": 25
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key3",
+        "span": {
+          "type": "Span",
+          "start": 27,
+          "end": 31
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "MessageReference",
+              "id": {
+                "type": "Identifier",
+                "name": "a",
+                "span": {
+                  "type": "Span",
+                  "start": 36,
+                  "end": 37
+                }
+              },
+              "attribute": null,
+              "span": {
+                "type": "Span",
+                "start": 36,
+                "end": 37
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 34,
+              "end": 39
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 34,
+          "end": 39
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 27,
+        "end": 39
+      }
+    },
+    {
+      "type": "Message",
+      "id": {
+        "type": "Identifier",
+        "name": "key4",
+        "span": {
+          "type": "Span",
+          "start": 41,
+          "end": 45
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "Placeable",
+              "expression": {
+                "type": "MessageReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "a",
+                  "span": {
+                    "type": "Span",
+                    "start": 52,
+                    "end": 53
+                  }
+                },
+                "attribute": null,
+                "span": {
+                  "type": "Span",
+                  "start": 52,
+                  "end": 53
+                }
+              },
+              "span": {
+                "type": "Span",
+                "start": 50,
+                "end": 55
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 48,
+              "end": 56
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 48,
+          "end": 56
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 41,
+        "end": 56
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 57
+  }
+}

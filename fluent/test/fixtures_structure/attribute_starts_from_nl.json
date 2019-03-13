@@ -1,0 +1,8 @@
+{
+    "foo": {
+        "value": "Value",
+        "attrs": {
+            "attr": "Value 2"
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "arguments": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 3,
+            "end": 3
+          }
+        }
+      ],
+      "content": "foo\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 4
+      }
+    },
+    {
+      "type": "Comment",
+      "content": "~ERROR E0003, pos 3, args \"=\"",
+      "span": {
+        "type": "Span",
+        "start": 4,
+        "end": 35
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 36
+  }
+}
