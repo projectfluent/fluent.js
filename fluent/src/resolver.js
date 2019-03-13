@@ -79,8 +79,7 @@ function getDefault(scope, variants, star) {
     return Type(scope, variants[star]);
   }
 
-  const { errors } = scope;
-  errors.push(new RangeError("No default"));
+  scope.errors.push(new RangeError("No default"));
   return new FluentNone();
 }
 
@@ -143,8 +142,7 @@ function Type(scope, expr) {
         return Type(scope, expr.value);
       }
 
-      const { errors } = scope;
-      errors.push(new RangeError("No value"));
+      scope.errors.push(new RangeError("No value"));
       return new FluentNone();
     }
     default:
@@ -154,16 +152,14 @@ function Type(scope, expr) {
 
 // Resolve a reference to a variable.
 function VariableReference(scope, {name}) {
-  const { args, errors } = scope;
-
-  if (!args || !args.hasOwnProperty(name)) {
+  if (!scope.args || !scope.args.hasOwnProperty(name)) {
     if (scope.insideTermReference === false) {
-      errors.push(new ReferenceError(`Unknown variable: ${name}`));
+      scope.errors.push(new ReferenceError(`Unknown variable: ${name}`));
     }
     return new FluentNone(`$${name}`);
   }
 
-  const arg = args[name];
+  const arg = scope.args[name];
 
   // Return early if the argument already is an instance of FluentType.
   if (arg instanceof FluentType) {
@@ -181,7 +177,7 @@ function VariableReference(scope, {name}) {
         return new FluentDateTime(arg);
       }
     default:
-      errors.push(
+      scope.errors.push(
         new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
       return new FluentNone(`$${name}`);
@@ -190,11 +186,10 @@ function VariableReference(scope, {name}) {
 
 // Resolve a reference to another message.
 function MessageReference(scope, {name, attr}) {
-  const {bundle, errors} = scope;
-  const message = bundle._messages.get(name);
+  const message = scope.bundle._messages.get(name);
   if (!message) {
     const err = new ReferenceError(`Unknown message: ${name}`);
-    errors.push(err);
+    scope.errors.push(err);
     return new FluentNone(name);
   }
 
@@ -203,7 +198,7 @@ function MessageReference(scope, {name, attr}) {
     if (attribute) {
       return Type(scope, attribute);
     }
-    errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return Type(scope, message);
   }
 
@@ -212,13 +207,11 @@ function MessageReference(scope, {name, attr}) {
 
 // Resolve a call to a Term with key-value arguments.
 function TermReference(scope, {name, attr, args}) {
-  const {bundle, errors} = scope;
-
   const id = `-${name}`;
-  const term = bundle._terms.get(id);
+  const term = scope.bundle._terms.get(id);
   if (!term) {
     const err = new ReferenceError(`Unknown term: ${id}`);
-    errors.push(err);
+    scope.errors.push(err);
     return new FluentNone(id);
   }
 
@@ -231,7 +224,7 @@ function TermReference(scope, {name, attr, args}) {
     if (attribute) {
       return Type(local, attribute);
     }
-    errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return Type(local, term);
   }
 
@@ -242,16 +235,14 @@ function TermReference(scope, {name, attr, args}) {
 function FunctionReference(scope, {name, args}) {
   // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
-  const {bundle: {_functions}, errors} = scope;
-  const func = _functions[name] || builtins[name];
-
+  const func = scope.bundle._functions[name] || builtins[name];
   if (!func) {
-    errors.push(new ReferenceError(`Unknown function: ${name}()`));
+    scope.errors.push(new ReferenceError(`Unknown function: ${name}()`));
     return new FluentNone(`${name}()`);
   }
 
   if (typeof func !== "function") {
-    errors.push(new TypeError(`Function ${name}() is not callable`));
+    scope.errors.push(new TypeError(`Function ${name}() is not callable`));
     return new FluentNone(`${name}()`);
   }
 
@@ -285,35 +276,33 @@ function SelectExpression(scope, {selector, variants, star}) {
 
 // Resolve a pattern (a complex string with placeables).
 function Pattern(scope, ptn) {
-  const { bundle, dirty, errors } = scope;
-
-  if (dirty.has(ptn)) {
-    errors.push(new RangeError("Cyclic reference"));
+  if (scope.dirty.has(ptn)) {
+    scope.errors.push(new RangeError("Cyclic reference"));
     return new FluentNone();
   }
 
   // Tag the pattern as dirty for the purpose of the current resolution.
-  dirty.add(ptn);
+  scope.dirty.add(ptn);
   const result = [];
 
   // Wrap interpolations with Directional Isolate Formatting characters
   // only when the pattern has more than one element.
-  const useIsolating = bundle._useIsolating && ptn.length > 1;
+  const useIsolating = scope.bundle._useIsolating && ptn.length > 1;
 
   for (const elem of ptn) {
     if (typeof elem === "string") {
-      result.push(bundle._transform(elem));
+      result.push(scope.bundle._transform(elem));
       continue;
     }
 
-    const part = Type(scope, elem).toString(bundle);
+    const part = Type(scope, elem).toString(scope.bundle);
 
     if (useIsolating) {
       result.push(FSI);
     }
 
     if (part.length > MAX_PLACEABLE_LENGTH) {
-      errors.push(
+      scope.errors.push(
         new RangeError(
           "Too many characters in placeable " +
           `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
@@ -329,7 +318,7 @@ function Pattern(scope, ptn) {
     }
   }
 
-  dirty.delete(ptn);
+  scope.dirty.delete(ptn);
   return result.join("");
 }
 
