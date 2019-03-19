@@ -249,10 +249,6 @@ export class Attribute extends SyntaxNode {
     this.id = id;
     this.value = value;
   }
-
-  get sortingKey() {
-    return this.id.name;
-  }
 }
 
 export class Variant extends SyntaxNode {
@@ -262,13 +258,6 @@ export class Variant extends SyntaxNode {
     this.key = key;
     this.value = value;
     this.default = def;
-  }
-
-  get sortingKey() {
-    if (this.key instanceof NumberLiteral) {
-      return this.key.value;
-    }
-    return this.key.name;
   }
 }
 
