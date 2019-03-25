@@ -164,14 +164,13 @@ function serializeElement(element) {
 
 function serializePlaceable(placeable) {
   const expr = placeable.expression;
-
   switch (expr.type) {
     case "Placeable":
       return `{${serializePlaceable(expr)}}`;
     case "SelectExpression":
       // Special-case select expression to control the whitespace around the
       // opening and the closing brace.
-      return `{ ${serializeSelectExpression(expr)}}`;
+      return `{ ${serializeExpression(expr)}}`;
     default:
       return `{ ${serializeExpression(expr)} }`;
   }
@@ -186,46 +185,37 @@ function serializeExpression(expr) {
       return expr.value;
     case "VariableReference":
       return `$${expr.id.name}`;
-    case "TermReference":
-      let term = {...expr, id: {name: `-${expr.id.name}`}};
-      return serializeReferenceExpression(term);
-    case "MessageReference":
-      return serializeReferenceExpression(expr);
+    case "TermReference": {
+      let out = `-${expr.id.name}`;
+      if (expr.attribute) {
+        out += `.${expr.attribute.name}`;
+      }
+      if (expr.arguments) {
+        out += serializeCallArguments(expr.arguments);
+      }
+      return out;
+    }
+    case "MessageReference": {
+      let out = expr.id.name;
+      if (expr.attribute) {
+        out += `.${expr.attribute.name}`;
+      }
+      return out;
+    }
     case "FunctionReference":
-      return serializeReferenceExpression(expr);
-    case "SelectExpression":
-      return serializeSelectExpression(expr);
+      return `${expr.id.name}${serializeCallArguments(expr.arguments)}`;
+    case "SelectExpression": {
+      let out = `${serializeExpression(expr.selector)} ->`;
+      for (let variant of expr.variants) {
+        out += serializeVariant(variant);
+      }
+      return `${out}\n`;
+    }
     case "Placeable":
       return serializePlaceable(expr);
     default:
       throw new Error(`Unknown expression type: ${expr.type}`);
   }
-}
-
-
-function serializeReferenceExpression(expr) {
-  let parts = [expr.id.name];
-  if (expr.attribute) {
-    parts.push(`.${expr.attribute.name}`);
-  }
-  if (expr.arguments) {
-    parts.push(serializeCallArguments(expr.arguments));
-  }
-  return parts.join("");
-}
-
-
-function serializeSelectExpression(expr) {
-  const parts = [];
-  const selector = `${serializeExpression(expr.selector)} ->`;
-  parts.push(selector);
-
-  for (const variant of expr.variants) {
-    parts.push(serializeVariant(variant));
-  }
-
-  parts.push("\n");
-  return parts.join("");
 }
 
 
