@@ -1,7 +1,9 @@
 import assert from "assert";
 import { ftl } from "./util";
 
-import { FluentParser, FluentSerializer } from "../src";
+import {
+  FluentParser, FluentSerializer, serializeExpression, serializeVariantKey
+} from "../src";
 
 
 suite("Serialize resource", function() {
@@ -486,29 +488,25 @@ suite("Serialize resource", function() {
   });
 });
 
-suite("Serialize expression", function() {
+suite("serializeExpression", function() {
   let pretty;
 
   setup(function() {
     const parser = new FluentParser();
-    const serializer = new FluentSerializer({
-      withJunk: false
-    });
 
     pretty = function pretty(text) {
       const {value: {elements: [placeable]}} = parser.parseEntry(text);
-      return serializer.serializeExpression(placeable.expression);
+      return serializeExpression(placeable.expression);
     }
   });
 
   test("invalid expression", function() {
-    const serializer = new FluentSerializer();
     assert.throws(
-      () => serializer.serializeExpression(null),
+      () => serializeExpression(null),
       /Cannot read property 'type'/
     );
     assert.throws(
-      () => serializer.serializeExpression({}),
+      () => serializeExpression({}),
       /Unknown expression type/
     );
   });
@@ -630,5 +628,56 @@ suite("Serialize padding around comments", function() {
     `;
     assert.equal(pretty(input), input);
     assert.equal(pretty(input), input);
+  });
+});
+
+suite("serializeVariantKey", function() {
+  let prettyVariantKey;
+
+  setup(function() {
+    let parser = new FluentParser();
+
+    prettyVariantKey = function(text, index) {
+      let pattern = parser.parseEntry(text).value;
+      let variants = pattern.elements[0].expression.variants;
+      return serializeVariantKey(variants[index].key);
+    }
+  });
+
+  test("invalid expression", function() {
+    assert.throws(
+      () => serializeVariantKey(null),
+      /Cannot read property 'type'/
+    );
+    assert.throws(
+      () => serializeVariantKey({}),
+      /Unknown variant key type/
+    );
+  });
+
+  test("identifiers", function() {
+    const input = ftl`
+      foo = { $num ->
+          [one] One
+         *[other] Other
+      }
+    `;
+    assert.equal(prettyVariantKey(input, 0), "one");
+    assert.equal(prettyVariantKey(input, 1), "other");
+  });
+
+  test("number literals", function() {
+    const input = ftl`
+      foo = { $num ->
+          [-123456789] Minus a lot
+          [0] Zero
+         *[3.14] Pi
+          [007] James
+      }
+    `;
+    assert.equal(prettyVariantKey(input, 0), "-123456789");
+    assert.equal(prettyVariantKey(input, 1), "0");
+    assert.equal(prettyVariantKey(input, 2), "3.14");
+    assert.equal(prettyVariantKey(input, 3), "007");
   });
 });
