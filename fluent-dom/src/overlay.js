@@ -1,3 +1,15 @@
+const { localizeElement } = require("../../../fluent-domoverlays-js/src/index");
+const { JSDOM } = require("jsdom");
+
+function parseDOM(s) {
+  return JSDOM.fragment(s);
+}
+
+global.Node = {
+  ELEMENT_NODE: 1,
+  TEXT_NODE: 3,
+}
+
 /* eslint no-console: ["error", {allow: ["warn"]}] */
 /* global console */
 
@@ -62,27 +74,7 @@ const LOCALIZABLE_ATTRIBUTES = {
  * @private
  */
 export default function translateElement(element, translation) {
-  const {value} = translation;
-
-  if (typeof value === "string") {
-    if (!reOverlay.test(value)) {
-      // If the translation doesn't contain any markup skip the overlay logic.
-      element.textContent = value;
-    } else {
-      // Else parse the translation's HTML using an inert template element,
-      // sanitize it and replace the element's content.
-      const templateElement = element.ownerDocument.createElementNS(
-        "http://www.w3.org/1999/xhtml", "template"
-      );
-      templateElement.innerHTML = value;
-      overlayChildNodes(templateElement.content, element);
-    }
-  }
-
-  // Even if the translation doesn't define any localizable attributes, run
-  // overlayAttributes to remove any localizable attributes set by previous
-  // translations.
-  overlayAttributes(translation, element);
+  localizeElement(element, translation);
 }
 
 /**

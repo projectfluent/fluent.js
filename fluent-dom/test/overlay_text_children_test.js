@@ -14,7 +14,7 @@ suite('Text-semantic argument elements', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      '<em title="FOO">FOO</em>'
+      '<em class="bar" title="FOO">FOO</em>'
     );
   });
 
@@ -29,7 +29,7 @@ suite('Text-semantic argument elements', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'FOO'
+      'FOO<button data-l10n-name="foo"></button>'
     );
   });
 

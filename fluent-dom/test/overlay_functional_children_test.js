@@ -14,7 +14,7 @@ suite('Child without name', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'FOO'
+      'FOO<button>Foo</button>'
     );
   });
 
@@ -43,7 +43,7 @@ suite('Child without name', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'FOO'
+      '<button>FOO</button>'
     );
   });
 });
@@ -60,7 +60,7 @@ suite('Child with name', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'FOO'
+      '<button data-l10n-name="foo">FOO</button>'
     );
   });
 
@@ -75,7 +75,7 @@ suite('Child with name', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'FOO'
+      'FOO<button>Foo</button>'
     );
   });
 
@@ -120,7 +120,7 @@ suite('Child with name', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'BAR'
+      'BAR<button data-l10n-name="foo">Foo</button>'
     );
   });
 
@@ -135,7 +135,7 @@ suite('Child with name', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      'FOO'
+      'FOO<button data-l10n-name="foo">Foo</button>'
     );
   });
 
@@ -220,7 +220,7 @@ suite('Two named children', function() {
     translateElement(element, translation);
     assert.equal(
       element.innerHTML,
-      '<div data-l10n-name="foo">FOO 1 BAR FOO 2</div>'
+      '<div data-l10n-name="foo">FOO 1 BAR FOO 2</div><div data-l10n-name="bar">Bar</div>'
     );
   });
 });

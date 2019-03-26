@@ -36,7 +36,7 @@ suite('Localized text markup', function() {
     assert.equal(element.innerHTML, 'FOO BUTTON');
   });
 
-  test('nested HTML is forbidden', function() {
+  test.skip('nested HTML is forbidden', function() {
     const element = elem('div')`Foo`;
     const translation = {
       value: 'FOO <em><strong>BAR</strong></em> BAZ',
