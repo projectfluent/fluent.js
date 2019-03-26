@@ -1,0 +1,31 @@
+{
+  "simple": {
+    "args": {},
+    "functions": {}
+  },
+  "preferences": {
+    "args": {
+      "name": "John",
+      "tabCount": 5,
+      "count": 3,
+      "version": "65.0",
+      "path": "/tmp",
+      "num": 4,
+      "email": "john@doe.com",
+      "value": 4.5,
+      "unit": "mb",
+      "service-name": "Mozilla Disk"
+    },
+    "functions": {
+      "PLATFORM": "return 'linux';"
+    }
+  },
+  "menubar": {
+    "args": {},
+    "functions": {}
+  },
+  "workload-low": {
+    "args": {},
+    "functions": {}
+  }
+}

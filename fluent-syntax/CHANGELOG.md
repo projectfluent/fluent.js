@@ -1,5 +1,23 @@
 # Changelog
 
+## fluent-syntax 0.11.0 (March 25, 2019)
+
+  - Add `BaseNode.equals` and `BaseNode.clone`. (#172)
+
+    The new `BaseNode` methods can be used to compare two nodes and to create
+    a deep copy of an AST node.
+
+  - Add `Visitor` and `Transformer`. (#172)
+
+    Add two new exports: `Visitor` for read-only iteration over AST trees,
+    and `Transformer` for in-place mutation of AST trees.
+
+  - Export `serializeExpression` and `serializeVariantKey`. (#350)
+
+    The `FluentSerializer.serializeExpression` method has been removed in
+    favor of a module-wide stateless function `serializeExpression`.
+
+
 ## fluent-syntax 0.10.0 (December 13, 2018)
 
 This release of `fluent-syntax` brings support for version 0.8 of the

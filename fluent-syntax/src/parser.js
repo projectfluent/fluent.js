@@ -30,7 +30,8 @@ function withSpan(fn) {
 }
 
 
-export default class FluentParser {
+export
+class FluentParser {
   constructor({
     withSpans = true,
   } = {}) {

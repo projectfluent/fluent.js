@@ -13,10 +13,12 @@ function isSelectExpr(elem) {
     && elem.expression.type === "SelectExpression";
 }
 
+export
 // Bit masks representing the state of the serializer.
-export const HAS_ENTRIES = 1;
+const HAS_ENTRIES = 1;
 
-export default class FluentSerializer {
+export
+class FluentSerializer {
   constructor({ withJunk = false } = {}) {
     this.withJunk = withJunk;
   }
@@ -67,10 +69,6 @@ export default class FluentSerializer {
       default :
         throw new Error(`Unknown entry type: ${entry.type}`);
     }
-  }
-
-  serializeExpression(expr) {
-    return serializeExpression(expr);
   }
 }
 
@@ -177,6 +175,7 @@ function serializePlaceable(placeable) {
 }
 
 
+export
 function serializeExpression(expr) {
   switch (expr.type) {
     case "StringLiteral":
@@ -247,11 +246,14 @@ function serializeNamedArgument(arg) {
 }
 
 
+export
 function serializeVariantKey(key) {
   switch (key.type) {
     case "Identifier":
       return key.name;
+    case "NumberLiteral":
+      return key.value;
     default:
-      return serializeExpression(key);
+      throw new Error(`Unknown variant key type: ${key.type}`);
   }
 }
