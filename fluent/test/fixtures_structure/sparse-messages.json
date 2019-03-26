@@ -28,9 +28,7 @@
             "type": "select",
             "selector": {
                 "type": "var",
-                "name": "sel",
-                "attr": null,
-                "args": null
+                "name": "sel"
             },
             "variants": [
                 {
@@ -45,23 +43,13 @@
             "star": 1
         }
     ],
-    "-key7": [
+    "key8": [
         {
             "type": "select",
-            "selector": null,
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "One"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "-key8": [
-        {
-            "type": "select",
-            "selector": null,
+            "selector": {
+                "type": "var",
+                "name": "sel"
+            },
             "variants": [
                 {
                     "key": "one",

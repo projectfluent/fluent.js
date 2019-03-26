@@ -12,12 +12,12 @@ suite('Referencing values', function(){
     bundle = new FluentBundle('en-US', { useIsolating: false });
     bundle.addMessages(ftl`
       key1 = Value 1
-      -key2 = {
+      -key2 = { $sel ->
           [a] A2
          *[b] B2
       }
       key3 = Value { 3 }
-      -key4 = {
+      -key4 = { $sel ->
           [a] A{ 4 }
          *[b] B{ 4 }
       }
@@ -31,11 +31,11 @@ suite('Referencing values', function(){
       ref4 = { -key4 }
       ref5 = { key5 }
 
-      ref6 = { -key2[a] }
-      ref7 = { -key2[b] }
+      ref6 = { -key2(sel: "a") }
+      ref7 = { -key2(sel: "b") }
 
-      ref8 = { -key4[a] }
-      ref9 = { -key4[b] }
+      ref8 = { -key4(sel: "a") }
+      ref9 = { -key4(sel: "b") }
 
       ref10 = { key5.a }
       ref11 = { key5.b }

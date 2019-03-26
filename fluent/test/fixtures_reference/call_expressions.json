@@ -1,39 +1,59 @@
 {
+    "valid-func-name-01": [
+        {
+            "type": "func",
+            "name": "FUN1",
+            "args": []
+        }
+    ],
+    "valid-func-name-02": [
+        {
+            "type": "func",
+            "name": "FUN_FUN",
+            "args": []
+        }
+    ],
+    "valid-func-name-03": [
+        {
+            "type": "func",
+            "name": "FUN-FUN",
+            "args": []
+        }
+    ],
     "positional-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "str",
                     "value": "a"
                 },
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 }
             ]
         }
     ],
     "named-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -49,16 +69,16 @@
     ],
     "dense-named-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -74,30 +94,30 @@
     ],
     "mixed-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "str",
                     "value": "a"
                 },
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 },
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -113,20 +133,21 @@
     ],
     "shuffled-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -142,26 +163,25 @@
                     }
                 },
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 }
             ]
         }
     ],
     "duplicate-named-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -177,26 +197,25 @@
     ],
     "sparse-inline-call": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "str",
                     "value": "a"
                 },
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 },
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 }
             ]
@@ -204,34 +223,32 @@
     ],
     "empty-inline-call": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": []
         }
     ],
     "multiline-call": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "str",
                     "value": "a"
                 },
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 },
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 }
             ]
@@ -239,26 +256,25 @@
     ],
     "sparse-multiline-call": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "str",
                     "value": "a"
                 },
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 },
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 }
             ]
@@ -266,30 +282,28 @@
     ],
     "empty-multiline-call": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": []
         }
     ],
     "unindented-arg-number": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 }
             ]
         }
     ],
     "unindented-arg-string": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "str",
@@ -300,59 +314,51 @@
     ],
     "unindented-arg-msg-ref": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "msg",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 }
             ]
         }
     ],
     "unindented-arg-term-ref": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "term",
                     "name": "msg",
                     "attr": null,
-                    "args": null
+                    "args": []
                 }
             ]
         }
     ],
     "unindented-arg-var-ref": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "var",
-                    "name": "var",
-                    "attr": null,
-                    "args": null
+                    "name": "var"
                 }
             ]
         }
     ],
     "unindented-arg-call": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
-                    "type": "ref",
+                    "type": "func",
                     "name": "OTHER",
-                    "attr": null,
                     "args": []
                 }
             ]
@@ -360,16 +366,16 @@
     ],
     "unindented-named-arg": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 }
             ]
@@ -377,120 +383,124 @@
     ],
     "unindented-closing-paren": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
-                    "type": "ref",
+                    "type": "mesg",
                     "name": "x",
-                    "attr": null,
-                    "args": null
+                    "attr": null
                 }
             ]
         }
     ],
     "one-argument": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 }
             ]
         }
     ],
     "many-arguments": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "num",
-                    "value": "2"
+                    "value": 2,
+                    "precision": 0
                 },
                 {
                     "type": "num",
-                    "value": "3"
+                    "value": 3,
+                    "precision": 0
                 }
             ]
         }
     ],
     "inline-sparse-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "num",
-                    "value": "2"
+                    "value": 2,
+                    "precision": 0
                 },
                 {
                     "type": "num",
-                    "value": "3"
+                    "value": 3,
+                    "precision": 0
                 }
             ]
         }
     ],
     "mulitline-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "num",
-                    "value": "2"
+                    "value": 2,
+                    "precision": 0
                 }
             ]
         }
     ],
     "mulitline-sparse-args": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "num",
-                    "value": "1"
+                    "value": 1,
+                    "precision": 0
                 },
                 {
                     "type": "num",
-                    "value": "2"
+                    "value": 2,
+                    "precision": 0
                 }
             ]
         }
     ],
     "sparse-named-arg": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 },
                 {
@@ -498,7 +508,8 @@
                     "name": "y",
                     "value": {
                         "type": "num",
-                        "value": "2"
+                        "value": 2,
+                        "precision": 0
                     }
                 },
                 {
@@ -506,7 +517,8 @@
                     "name": "z",
                     "value": {
                         "type": "num",
-                        "value": "3"
+                        "value": 3,
+                        "precision": 0
                     }
                 }
             ]
@@ -514,16 +526,16 @@
     ],
     "unindented-colon": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 }
             ]
@@ -531,16 +543,16 @@
     ],
     "unindented-value": [
         {
-            "type": "ref",
+            "type": "func",
             "name": "FUN",
-            "attr": null,
             "args": [
                 {
                     "type": "narg",
                     "name": "x",
                     "value": {
                         "type": "num",
-                        "value": "1"
+                        "value": 1,
+                        "precision": 0
                     }
                 }
             ]

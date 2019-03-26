@@ -348,61 +348,96 @@
       }
     },
     {
-      "type": "Term",
+      "type": "Message",
       "id": {
         "type": "Identifier",
-        "name": "key7",
+        "name": "key8",
         "span": {
           "type": "Span",
-          "start": 212,
-          "end": 216
+          "start": 211,
+          "end": 215
         }
       },
       "value": {
-        "type": "VariantList",
-        "variants": [
+        "type": "Pattern",
+        "elements": [
           {
-            "type": "Variant",
-            "key": {
-              "type": "Identifier",
-              "name": "one",
-              "span": {
-                "type": "Span",
-                "start": 237,
-                "end": 240
-              }
-            },
-            "value": {
-              "type": "Pattern",
-              "elements": [
-                {
-                  "type": "TextElement",
-                  "value": "One",
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "selector": {
+                "type": "VariableReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "sel",
                   "span": {
                     "type": "Span",
-                    "start": 242,
-                    "end": 245
+                    "start": 231,
+                    "end": 234
+                  }
+                },
+                "span": {
+                  "type": "Span",
+                  "start": 230,
+                  "end": 234
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "one",
+                    "span": {
+                      "type": "Span",
+                      "start": 257,
+                      "end": 260
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "One",
+                        "span": {
+                          "type": "Span",
+                          "start": 262,
+                          "end": 265
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 262,
+                      "end": 265
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 255,
+                    "end": 265
                   }
                 }
               ],
               "span": {
                 "type": "Span",
-                "start": 242,
-                "end": 245
+                "start": 230,
+                "end": 271
               }
             },
-            "default": true,
             "span": {
               "type": "Span",
-              "start": 235,
-              "end": 245
+              "start": 221,
+              "end": 272
             }
           }
         ],
         "span": {
           "type": "Span",
           "start": 219,
-          "end": 252
+          "end": 272
         }
       },
       "attributes": [],
@@ -410,79 +445,13 @@
       "span": {
         "type": "Span",
         "start": 211,
-        "end": 252
-      }
-    },
-    {
-      "type": "Term",
-      "id": {
-        "type": "Identifier",
-        "name": "key8",
-        "span": {
-          "type": "Span",
-          "start": 255,
-          "end": 259
-        }
-      },
-      "value": {
-        "type": "VariantList",
-        "variants": [
-          {
-            "type": "Variant",
-            "key": {
-              "type": "Identifier",
-              "name": "one",
-              "span": {
-                "type": "Span",
-                "start": 279,
-                "end": 282
-              }
-            },
-            "value": {
-              "type": "Pattern",
-              "elements": [
-                {
-                  "type": "TextElement",
-                  "value": "One",
-                  "span": {
-                    "type": "Span",
-                    "start": 284,
-                    "end": 287
-                  }
-                }
-              ],
-              "span": {
-                "type": "Span",
-                "start": 284,
-                "end": 287
-              }
-            },
-            "default": true,
-            "span": {
-              "type": "Span",
-              "start": 277,
-              "end": 287
-            }
-          }
-        ],
-        "span": {
-          "type": "Span",
-          "start": 265,
-          "end": 294
-        }
-      },
-      "attributes": [],
-      "comment": null,
-      "span": {
-        "type": "Span",
-        "start": 254,
-        "end": 294
+        "end": 272
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 295
+    "end": 273
   }
 }

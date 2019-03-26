@@ -27,5 +27,9 @@
         }
     },
     "key06": [],
-    "KEY09": "Value 09"
+    "KEY09": "Value 09",
+    "key-10": "Value 10",
+    "key_11": "Value 11",
+    "key-12-": "Value 12",
+    "key_13_": "Value 13"
 }

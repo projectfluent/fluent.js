@@ -1,0 +1,22 @@
+{
+    "-err01": [
+        {
+            "type": "select",
+            "selector": {
+                "type": "var",
+                "name": "sel"
+            },
+            "variants": [
+                {
+                    "key": "one",
+                    "value": "Foo"
+                },
+                {
+                    "key": "two",
+                    "value": "Two"
+                }
+            ],
+            "star": 1
+        }
+    ]
+}

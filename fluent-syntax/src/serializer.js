@@ -97,7 +97,7 @@ function serializeMessage(message) {
   parts.push(`${message.id.name} =`);
 
   if (message.value) {
-    parts.push(serializeValue(message.value));
+    parts.push(serializePattern(message.value));
   }
 
   for (const attribute of message.attributes) {
@@ -117,7 +117,7 @@ function serializeTerm(term) {
   }
 
   parts.push(`-${term.id.name} =`);
-  parts.push(serializeValue(term.value));
+  parts.push(serializePattern(term.value));
 
   for (const attribute of term.attributes) {
     parts.push(serializeAttribute(attribute));
@@ -129,20 +129,8 @@ function serializeTerm(term) {
 
 
 function serializeAttribute(attribute) {
-  const value = indent(serializeValue(attribute.value));
+  const value = indent(serializePattern(attribute.value));
   return `\n    .${attribute.id.name} =${value}`;
-}
-
-
-function serializeValue(value) {
-  switch (value.type) {
-    case "Pattern":
-      return serializePattern(value);
-    case "VariantList":
-      return serializeVariantList(value);
-    default:
-      throw new Error(`Unknown value type: ${value.type}`);
-  }
 }
 
 
@@ -160,24 +148,6 @@ function serializePattern(pattern) {
 }
 
 
-function serializeVariantList(varlist) {
-  const content = varlist.variants.map(serializeVariant).join("");
-  return `\n    {${indent(content)}\n    }`;
-}
-
-
-function serializeVariant(variant) {
-  const key = serializeVariantKey(variant.key);
-  const value = indent(serializeValue(variant.value));
-
-  if (variant.default) {
-    return `\n   *[${key}]${value}`;
-  }
-
-  return `\n    [${key}]${value}`;
-}
-
-
 function serializeElement(element) {
   switch (element.type) {
     case "TextElement":
@@ -192,14 +162,13 @@ function serializeElement(element) {
 
 function serializePlaceable(placeable) {
   const expr = placeable.expression;
-
   switch (expr.type) {
     case "Placeable":
       return `{${serializePlaceable(expr)}}`;
     case "SelectExpression":
       // Special-case select expression to control the whitespace around the
       // opening and the closing brace.
-      return `{ ${serializeSelectExpression(expr)}}`;
+      return `{ ${serializeExpression(expr)}}`;
     default:
       return `{ ${serializeExpression(expr)} }`;
   }
@@ -210,24 +179,37 @@ export
 function serializeExpression(expr) {
   switch (expr.type) {
     case "StringLiteral":
-      return `"${expr.raw}"`;
+      return `"${expr.value}"`;
     case "NumberLiteral":
       return expr.value;
-    case "MessageReference":
-    case "FunctionReference":
-      return expr.id.name;
-    case "TermReference":
-      return `-${expr.id.name}`;
     case "VariableReference":
       return `$${expr.id.name}`;
-    case "AttributeExpression":
-      return serializeAttributeExpression(expr);
-    case "VariantExpression":
-      return serializeVariantExpression(expr);
-    case "CallExpression":
-      return serializeCallExpression(expr);
-    case "SelectExpression":
-      return serializeSelectExpression(expr);
+    case "TermReference": {
+      let out = `-${expr.id.name}`;
+      if (expr.attribute) {
+        out += `.${expr.attribute.name}`;
+      }
+      if (expr.arguments) {
+        out += serializeCallArguments(expr.arguments);
+      }
+      return out;
+    }
+    case "MessageReference": {
+      let out = expr.id.name;
+      if (expr.attribute) {
+        out += `.${expr.attribute.name}`;
+      }
+      return out;
+    }
+    case "FunctionReference":
+      return `${expr.id.name}${serializeCallArguments(expr.arguments)}`;
+    case "SelectExpression": {
+      let out = `${serializeExpression(expr.selector)} ->`;
+      for (let variant of expr.variants) {
+        out += serializeVariant(variant);
+      }
+      return `${out}\n`;
+    }
     case "Placeable":
       return serializePlaceable(expr);
     default:
@@ -236,41 +218,25 @@ function serializeExpression(expr) {
 }
 
 
-function serializeSelectExpression(expr) {
-  const parts = [];
-  const selector = `${serializeExpression(expr.selector)} ->`;
-  parts.push(selector);
+function serializeVariant(variant) {
+  const key = serializeVariantKey(variant.key);
+  const value = indent(serializePattern(variant.value));
 
-  for (const variant of expr.variants) {
-    parts.push(serializeVariant(variant));
+  if (variant.default) {
+    return `\n   *[${key}]${value}`;
   }
 
-  parts.push("\n");
-  return parts.join("");
+  return `\n    [${key}]${value}`;
 }
 
 
-function serializeAttributeExpression(expr) {
-  const ref = serializeExpression(expr.ref);
-  return `${ref}.${expr.name.name}`;
-}
-
-
-function serializeVariantExpression(expr) {
-  const ref = serializeExpression(expr.ref);
-  const key = serializeVariantKey(expr.key);
-  return `${ref}[${key}]`;
-}
-
-
-function serializeCallExpression(expr) {
-  const callee = serializeExpression(expr.callee);
+function serializeCallArguments(expr) {
   const positional = expr.positional.map(serializeExpression).join(", ");
   const named = expr.named.map(serializeNamedArgument).join(", ");
   if (expr.positional.length > 0 && expr.named.length > 0) {
-    return `${callee}(${positional}, ${named})`;
+    return `(${positional}, ${named})`;
   }
-  return `${callee}(${positional || named})`;
+  return `(${positional || named})`;
 }
 
 

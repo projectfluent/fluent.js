@@ -1,84 +1,108 @@
 {
-    "-brand-name": {
+    "-term": {
         "value": [
             {
                 "type": "select",
-                "selector": null,
+                "selector": {
+                    "type": "var",
+                    "name": "case"
+                },
                 "variants": [
                     {
-                        "key": "nominative",
-                        "value": "Firefox"
+                        "key": "uppercase",
+                        "value": "Term"
                     },
                     {
-                        "key": "accusative",
-                        "value": "Firefoxa"
+                        "key": "lowercase",
+                        "value": "term"
                     }
                 ],
                 "star": 0
             }
         ],
         "attrs": {
-            "gender": "masculine"
+            "attr": "a"
         }
     },
-    "update-command": [
-        "Zaktualizuj ",
+    "key01": [
         {
             "type": "term",
-            "name": "brand-name",
-            "selector": "accusative"
-        },
-        "."
+            "name": "term",
+            "attr": null,
+            "args": []
+        }
     ],
-    "update-successful": [
+    "key02": [
+        {
+            "type": "term",
+            "name": "term",
+            "attr": null,
+            "args": []
+        }
+    ],
+    "key03": [
+        {
+            "type": "term",
+            "name": "term",
+            "attr": null,
+            "args": [
+                {
+                    "type": "narg",
+                    "name": "case",
+                    "value": {
+                        "type": "str",
+                        "value": "uppercase"
+                    }
+                }
+            ]
+        }
+    ],
+    "key04": [
         {
             "type": "select",
             "selector": {
                 "type": "term",
-                "name": "brand-name",
-                "attr": "gender",
-                "args": null
+                "name": "term",
+                "attr": "attr",
+                "args": []
             },
             "variants": [
                 {
-                    "key": "masculine",
+                    "key": "a",
                     "value": [
                         {
                             "type": "term",
-                            "name": "brand-name",
+                            "name": "term",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
-                        " został pomyślnie zaktualizowany."
+                        " A"
                     ]
                 },
                 {
-                    "key": "feminine",
+                    "key": "b",
                     "value": [
                         {
                             "type": "term",
-                            "name": "brand-name",
+                            "name": "term",
                             "attr": null,
-                            "args": null
+                            "args": []
                         },
-                        " została pomyślnie zaktualizowana."
+                        " B"
                     ]
                 },
                 {
-                    "key": "other",
-                    "value": [
-                        "Program ",
-                        {
-                            "type": "term",
-                            "name": "brand-name",
-                            "attr": null,
-                            "args": null
-                        },
-                        " został pomyślnie zaktualizowany."
-                    ]
+                    "key": "x",
+                    "value": "X"
                 }
             ],
             "star": 2
         }
-    ]
+    ],
+    "-err2": {
+        "value": null,
+        "attrs": {
+            "attr": "Attribute"
+        }
+    }
 }

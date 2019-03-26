@@ -49,9 +49,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": ".",
-                            "value": "."
+                            "value": ".",
+                            "type": "StringLiteral"
                         }
                     },
                     {
@@ -75,9 +74,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": ".",
-                            "value": "."
+                            "value": ".",
+                            "type": "StringLiteral"
                         }
                     },
                     {
@@ -105,9 +103,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": ".",
-                            "value": "."
+                            "value": ".",
+                            "type": "StringLiteral"
                         }
                     },
                     {
@@ -135,9 +132,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": ".",
-                            "value": "."
+                            "value": ".",
+                            "type": "StringLiteral"
                         }
                     },
                     {
@@ -232,9 +228,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": ".",
-                            "value": "."
+                            "value": ".",
+                            "type": "StringLiteral"
                         }
                     },
                     {
@@ -320,9 +315,8 @@
                             {
                                 "type": "Placeable",
                                 "expression": {
-                                    "type": "StringLiteral",
-                                    "raw": ".",
-                                    "value": "."
+                                    "value": ".",
+                                    "type": "StringLiteral"
                                 }
                             },
                             {
@@ -349,8 +343,8 @@
                         "expression": {
                             "type": "SelectExpression",
                             "selector": {
-                                "type": "NumberLiteral",
-                                "value": "1"
+                                "value": "1",
+                                "type": "NumberLiteral"
                             },
                             "variants": [
                                 {
@@ -382,9 +376,8 @@
                                             {
                                                 "type": "Placeable",
                                                 "expression": {
-                                                    "type": "StringLiteral",
-                                                    "raw": ".",
-                                                    "value": "."
+                                                    "value": ".",
+                                                    "type": "StringLiteral"
                                                 }
                                             },
                                             {
@@ -469,9 +462,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": ".",
-                            "value": "."
+                            "value": ".",
+                            "type": "StringLiteral"
                         }
                     },
                     {

@@ -20,7 +20,7 @@
  * All expressions resolve to an instance of `FluentType`. The caller should
  * use the `toString` method to convert the instance to a native value.
  *
- * All functions in this file pass around a special object called `env`.
+ * All functions in this file pass around a special object called `scope`.
  * This object stores a set of elements used by all resolve functions:
  *
  *  * {FluentBundle} bundle
@@ -54,6 +54,7 @@ function match(bundle, selector, key) {
     return true;
   }
 
+  // XXX Consider comparing options too, e.g. minimumFractionDigits.
   if (key instanceof FluentNumber
     && selector instanceof FluentNumber
     && key.value === selector.value) {
@@ -73,28 +74,25 @@ function match(bundle, selector, key) {
 }
 
 // Helper: resolve the default variant from a list of variants.
-function getDefault(env, variants, star) {
+function getDefault(scope, variants, star) {
   if (variants[star]) {
-    return Type(env, variants[star]);
+    return Type(scope, variants[star]);
   }
 
-  const { errors } = env;
-  errors.push(new RangeError("No default"));
+  scope.errors.push(new RangeError("No default"));
   return new FluentNone();
 }
 
 // Helper: resolve arguments to a call expression.
-function getArguments(env, args) {
+function getArguments(scope, args) {
   const positional = [];
   const named = {};
 
-  if (args) {
-    for (const arg of args) {
-      if (arg.type === "narg") {
-        named[arg.name] = Type(env, arg.value);
-      } else {
-        positional.push(Type(env, arg));
-      }
+  for (const arg of args) {
+    if (arg.type === "narg") {
+      named[arg.name] = Type(scope, arg.value);
+    } else {
+      positional.push(Type(scope, arg));
     }
   }
 
@@ -102,12 +100,12 @@ function getArguments(env, args) {
 }
 
 // Resolve an expression to a Fluent type.
-function Type(env, expr) {
+function Type(scope, expr) {
   // A fast-path for strings which are the most common case. Since they
   // natively have the `toString` method they can be used as if they were
   // a FluentType instance without incurring the cost of creating one.
   if (typeof expr === "string") {
-    return env.bundle._transform(expr);
+    return scope.bundle._transform(expr);
   }
 
   // A fast-path for `FluentNone` which doesn't require any additional logic.
@@ -118,32 +116,33 @@ function Type(env, expr) {
   // The Runtime AST (Entries) encodes patterns (complex strings with
   // placeables) as Arrays.
   if (Array.isArray(expr)) {
-    return Pattern(env, expr);
+    return Pattern(scope, expr);
   }
 
   switch (expr.type) {
     case "str":
       return expr.value;
     case "num":
-      return new FluentNumber(expr.value);
+      return new FluentNumber(expr.value, {
+        minimumFractionDigits: expr.precision,
+      });
     case "var":
-      return VariableReference(env, expr);
+      return VariableReference(scope, expr);
+    case "mesg":
+      return MessageReference(scope, expr);
     case "term":
-      return TermReference({...env, args: {}}, expr);
-    case "ref":
-      return expr.args
-        ? FunctionReference(env, expr)
-        : MessageReference(env, expr);
+      return TermReference(scope, expr);
+    case "func":
+      return FunctionReference(scope, expr);
     case "select":
-      return SelectExpression(env, expr);
+      return SelectExpression(scope, expr);
     case undefined: {
       // If it's a node with a value, resolve the value.
       if (expr.value !== null && expr.value !== undefined) {
-        return Type(env, expr.value);
+        return Type(scope, expr.value);
       }
 
-      const { errors } = env;
-      errors.push(new RangeError("No value"));
+      scope.errors.push(new RangeError("No value"));
       return new FluentNone();
     }
     default:
@@ -152,15 +151,15 @@ function Type(env, expr) {
 }
 
 // Resolve a reference to a variable.
-function VariableReference(env, {name}) {
-  const { args, errors } = env;
-
-  if (!args || !args.hasOwnProperty(name)) {
-    errors.push(new ReferenceError(`Unknown variable: ${name}`));
+function VariableReference(scope, {name}) {
+  if (!scope.args || !scope.args.hasOwnProperty(name)) {
+    if (scope.insideTermReference === false) {
+      scope.errors.push(new ReferenceError(`Unknown variable: ${name}`));
+    }
     return new FluentNone(`$${name}`);
   }
 
-  const arg = args[name];
+  const arg = scope.args[name];
 
   // Return early if the argument already is an instance of FluentType.
   if (arg instanceof FluentType) {
@@ -178,7 +177,7 @@ function VariableReference(env, {name}) {
         return new FluentDateTime(arg);
       }
     default:
-      errors.push(
+      scope.errors.push(
         new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
       return new FluentNone(`$${name}`);
@@ -186,89 +185,69 @@ function VariableReference(env, {name}) {
 }
 
 // Resolve a reference to another message.
-function MessageReference(env, {name, attr}) {
-  const {bundle, errors} = env;
-  const message = bundle._messages.get(name);
+function MessageReference(scope, {name, attr}) {
+  const message = scope.bundle._messages.get(name);
   if (!message) {
     const err = new ReferenceError(`Unknown message: ${name}`);
-    errors.push(err);
+    scope.errors.push(err);
     return new FluentNone(name);
   }
 
   if (attr) {
     const attribute = message.attrs && message.attrs[attr];
     if (attribute) {
-      return Type(env, attribute);
+      return Type(scope, attribute);
     }
-    errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return Type(env, message);
+    scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    return Type(scope, message);
   }
 
-  return Type(env, message);
+  return Type(scope, message);
 }
 
 // Resolve a call to a Term with key-value arguments.
-function TermReference(env, {name, attr, selector, args}) {
-  const {bundle, errors} = env;
-
+function TermReference(scope, {name, attr, args}) {
   const id = `-${name}`;
-  const term = bundle._terms.get(id);
+  const term = scope.bundle._terms.get(id);
   if (!term) {
     const err = new ReferenceError(`Unknown term: ${id}`);
-    errors.push(err);
+    scope.errors.push(err);
     return new FluentNone(id);
   }
 
   // Every TermReference has its own args.
-  const [, keyargs] = getArguments(env, args);
-  const local = {...env, args: keyargs};
+  const [, keyargs] = getArguments(scope, args);
+  const local = {...scope, args: keyargs, insideTermReference: true};
 
   if (attr) {
     const attribute = term.attrs && term.attrs[attr];
     if (attribute) {
       return Type(local, attribute);
     }
-    errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return Type(local, term);
-  }
-
-  const variantList = getVariantList(term);
-  if (selector && variantList) {
-    return SelectExpression(local, {...variantList, selector});
   }
 
   return Type(local, term);
 }
 
-// Helper: convert a value into a variant list, if possible.
-function getVariantList(term) {
-  const value = term.value || term;
-  return Array.isArray(value)
-    && value[0].type === "select"
-    && value[0].selector === null
-    ? value[0]
-    : null;
-}
-
 // Resolve a call to a Function with positional and key-value arguments.
-function FunctionReference(env, {name, args}) {
+function FunctionReference(scope, {name, args}) {
   // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
-  const {bundle: {_functions}, errors} = env;
-  const func = _functions[name] || builtins[name];
-
+  const func = scope.bundle._functions[name] || builtins[name];
   if (!func) {
-    errors.push(new ReferenceError(`Unknown function: ${name}()`));
+    scope.errors.push(new ReferenceError(`Unknown function: ${name}()`));
     return new FluentNone(`${name}()`);
   }
 
   if (typeof func !== "function") {
-    errors.push(new TypeError(`Function ${name}() is not callable`));
+    scope.errors.push(new TypeError(`Function ${name}() is not callable`));
     return new FluentNone(`${name}()`);
   }
 
   try {
-    return func(...getArguments(env, args));
+    return func(...getArguments(scope, args));
   } catch (e) {
     // XXX Report errors.
     return new FluentNone();
@@ -276,60 +255,54 @@ function FunctionReference(env, {name, args}) {
 }
 
 // Resolve a select expression to the member object.
-function SelectExpression(env, {selector, variants, star}) {
-  if (selector === null) {
-    return getDefault(env, variants, star);
-  }
-
-  let sel = Type(env, selector);
+function SelectExpression(scope, {selector, variants, star}) {
+  let sel = Type(scope, selector);
   if (sel instanceof FluentNone) {
-    const variant = getDefault(env, variants, star);
-    return Type(env, variant);
+    const variant = getDefault(scope, variants, star);
+    return Type(scope, variant);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of variants) {
-    const key = Type(env, variant.key);
-    if (match(env.bundle, sel, key)) {
-      return Type(env, variant);
+    const key = Type(scope, variant.key);
+    if (match(scope.bundle, sel, key)) {
+      return Type(scope, variant);
     }
   }
 
-  const variant = getDefault(env, variants, star);
-  return Type(env, variant);
+  const variant = getDefault(scope, variants, star);
+  return Type(scope, variant);
 }
 
 // Resolve a pattern (a complex string with placeables).
-function Pattern(env, ptn) {
-  const { bundle, dirty, errors } = env;
-
-  if (dirty.has(ptn)) {
-    errors.push(new RangeError("Cyclic reference"));
+function Pattern(scope, ptn) {
+  if (scope.dirty.has(ptn)) {
+    scope.errors.push(new RangeError("Cyclic reference"));
     return new FluentNone();
   }
 
   // Tag the pattern as dirty for the purpose of the current resolution.
-  dirty.add(ptn);
+  scope.dirty.add(ptn);
   const result = [];
 
   // Wrap interpolations with Directional Isolate Formatting characters
   // only when the pattern has more than one element.
-  const useIsolating = bundle._useIsolating && ptn.length > 1;
+  const useIsolating = scope.bundle._useIsolating && ptn.length > 1;
 
   for (const elem of ptn) {
     if (typeof elem === "string") {
-      result.push(bundle._transform(elem));
+      result.push(scope.bundle._transform(elem));
       continue;
     }
 
-    const part = Type(env, elem).toString(bundle);
+    const part = Type(scope, elem).toString(scope.bundle);
 
     if (useIsolating) {
       result.push(FSI);
     }
 
     if (part.length > MAX_PLACEABLE_LENGTH) {
-      errors.push(
+      scope.errors.push(
         new RangeError(
           "Too many characters in placeable " +
           `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
@@ -345,7 +318,7 @@ function Pattern(env, ptn) {
     }
   }
 
-  dirty.delete(ptn);
+  scope.dirty.delete(ptn);
   return result.join("");
 }
 
@@ -365,8 +338,10 @@ function Pattern(env, ptn) {
  * @returns {FluentType}
  */
 export default function resolve(bundle, args, message, errors = []) {
-  const env = {
-    bundle, args, errors, dirty: new WeakSet()
+  const scope = {
+    bundle, args, errors, dirty: new WeakSet(),
+    // TermReferences are resolved in a new scope.
+    insideTermReference: false,
   };
-  return Type(env, message).toString(bundle);
+  return Type(scope, message).toString(bundle);
 }

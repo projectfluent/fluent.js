@@ -1,0 +1,58 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 13,
+            "end": 13
+          }
+        }
+      ],
+      "content": "err1 = { foo.23 }\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 18
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 31,
+            "end": 31
+          }
+        }
+      ],
+      "content": "err2 = { foo. }\n",
+      "span": {
+        "type": "Span",
+        "start": 18,
+        "end": 34
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 34
+  }
+}

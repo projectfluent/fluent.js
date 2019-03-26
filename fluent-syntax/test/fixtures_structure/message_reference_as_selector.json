@@ -1,0 +1,32 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0016",
+          "arguments": [],
+          "message": "Message references cannot be used as selectors",
+          "span": {
+            "type": "Span",
+            "start": 17,
+            "end": 17
+          }
+        }
+      ],
+      "content": "err1 =\n    { foo ->\n       *[1] One\n    }\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 42
+  }
+}

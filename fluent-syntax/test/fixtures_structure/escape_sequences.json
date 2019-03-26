@@ -122,6 +122,7 @@
                   "end": 158
                 }
               },
+              "attribute": null,
               "span": {
                 "type": "Span",
                 "start": 149,
@@ -251,9 +252,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\\"",
               "type": "StringLiteral",
-              "raw": "\\\"",
-              "value": "\"",
               "span": {
                 "type": "Span",
                 "start": 262,
@@ -298,9 +298,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\\\",
               "type": "StringLiteral",
-              "raw": "\\\\",
-              "value": "\\",
               "span": {
                 "type": "Span",
                 "start": 291,
@@ -343,7 +342,7 @@
         {
           "type": "Annotation",
           "code": "E0003",
-          "args": [
+          "arguments": [
             "}"
           ],
           "message": "Expected token: \"}\"",
@@ -376,7 +375,7 @@
         {
           "type": "Annotation",
           "code": "E0025",
-          "args": [
+          "arguments": [
             "x"
           ],
           "message": "Unknown escape sequence: \\x.",
@@ -420,9 +419,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\u0041",
               "type": "StringLiteral",
-              "raw": "\\u0041",
-              "value": "A",
               "span": {
                 "type": "Span",
                 "start": 443,
@@ -467,9 +465,8 @@
           {
             "type": "Placeable",
             "expression": {
+              "value": "\\\\u0041",
               "type": "StringLiteral",
-              "raw": "\\\\u0041",
-              "value": "\\u0041",
               "span": {
                 "type": "Span",
                 "start": 479,
@@ -498,12 +495,45 @@
       }
     },
     {
+      "type": "Comment",
+      "content": "ERROR Unknown escape",
+      "span": {
+        "type": "Span",
+        "start": 490,
+        "end": 512
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0026",
+          "arguments": [
+            "\\u000z"
+          ],
+          "message": "Invalid Unicode escape sequence: \\u000z.",
+          "span": {
+            "type": "Span",
+            "start": 538,
+            "end": 538
+          }
+        }
+      ],
+      "content": "unknown-unicode = {\"\\u000z\"}\n\n",
+      "span": {
+        "type": "Span",
+        "start": 513,
+        "end": 543
+      }
+    },
+    {
       "type": "GroupComment",
       "content": "Literal braces",
       "span": {
         "type": "Span",
-        "start": 491,
-        "end": 508
+        "start": 543,
+        "end": 560
       }
     },
     {
@@ -513,8 +543,8 @@
         "name": "brace-open",
         "span": {
           "type": "Span",
-          "start": 509,
-          "end": 519
+          "start": 561,
+          "end": 571
         }
       },
       "value": {
@@ -525,26 +555,25 @@
             "value": "An opening ",
             "span": {
               "type": "Span",
-              "start": 522,
-              "end": 533
+              "start": 574,
+              "end": 585
             }
           },
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": "{",
               "value": "{",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
-                "start": 534,
-                "end": 537
+                "start": 586,
+                "end": 589
               }
             },
             "span": {
               "type": "Span",
-              "start": 533,
-              "end": 538
+              "start": 585,
+              "end": 590
             }
           },
           {
@@ -552,23 +581,23 @@
             "value": " brace.",
             "span": {
               "type": "Span",
-              "start": 538,
-              "end": 545
+              "start": 590,
+              "end": 597
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 522,
-          "end": 545
+          "start": 574,
+          "end": 597
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 509,
-        "end": 545
+        "start": 561,
+        "end": 597
       }
     },
     {
@@ -578,8 +607,8 @@
         "name": "brace-close",
         "span": {
           "type": "Span",
-          "start": 546,
-          "end": 557
+          "start": 598,
+          "end": 609
         }
       },
       "value": {
@@ -590,26 +619,25 @@
             "value": "A closing ",
             "span": {
               "type": "Span",
-              "start": 560,
-              "end": 570
+              "start": 612,
+              "end": 622
             }
           },
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": "}",
               "value": "}",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
-                "start": 571,
-                "end": 574
+                "start": 623,
+                "end": 626
               }
             },
             "span": {
               "type": "Span",
-              "start": 570,
-              "end": 575
+              "start": 622,
+              "end": 627
             }
           },
           {
@@ -617,29 +645,29 @@
             "value": " brace.",
             "span": {
               "type": "Span",
-              "start": 575,
-              "end": 582
+              "start": 627,
+              "end": 634
             }
           }
         ],
         "span": {
           "type": "Span",
-          "start": 560,
-          "end": 582
+          "start": 612,
+          "end": 634
         }
       },
       "attributes": [],
       "comment": null,
       "span": {
         "type": "Span",
-        "start": 546,
-        "end": 582
+        "start": 598,
+        "end": 634
       }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 583
+    "end": 635
   }
 }

@@ -1,0 +1,10 @@
+{
+    "err1": [
+        {
+            "type": "term",
+            "name": "brand",
+            "attr": "gender",
+            "args": []
+        }
+    ]
+}

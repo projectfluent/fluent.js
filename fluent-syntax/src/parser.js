@@ -40,10 +40,9 @@ class FluentParser {
     // Poor man's decorators.
     const methodNames = [
       "getComment", "getMessage", "getTerm", "getAttribute", "getIdentifier",
-      "getVariant", "getNumber", "getPattern", "getVariantList",
-      "getTextElement", "getPlaceable", "getExpression",
-      "getInlineExpression", "getCallArgument", "getString",
-      "getSimpleExpression", "getLiteral",
+      "getVariant", "getNumber", "getPattern", "getTextElement",
+      "getPlaceable", "getExpression", "getInlineExpression",
+      "getCallArgument", "getCallArguments", "getString", "getLiteral",
     ];
     for (const name of methodNames) {
       this[name] = withSpan(this[name]);
@@ -246,9 +245,7 @@ class FluentParser {
     ps.skipBlankInline();
     ps.expectChar("=");
 
-    // Syntax 0.8 compat: VariantLists are supported but deprecated. They can
-    // only be found as values of Terms. Nested VariantLists are not allowed.
-    const value = this.maybeGetVariantList(ps) || this.maybeGetPattern(ps);
+    const value = this.maybeGetPattern(ps);
     if (value === null) {
       throw new ParseError("E0006", id.name);
     }
@@ -384,22 +381,21 @@ class FluentParser {
   }
 
   getNumber(ps) {
-    let num = "";
+    let value = "";
 
     if (ps.currentChar === "-") {
-      num += "-";
       ps.next();
+      value += `-${this.getDigits(ps)}`;
+    } else {
+      value += this.getDigits(ps);
     }
-
-    num = `${num}${this.getDigits(ps)}`;
 
     if (ps.currentChar === ".") {
-      num += ".";
       ps.next();
-      num = `${num}${this.getDigits(ps)}`;
+      value += `.${this.getDigits(ps)}`;
     }
 
-    return new AST.NumberLiteral(num);
+    return new AST.NumberLiteral(value);
   }
 
   // maybeGetPattern distinguishes between patterns which start on the same line
@@ -422,36 +418,6 @@ class FluentParser {
     }
 
     return null;
-  }
-
-  // Deprecated in Syntax 0.8. VariantLists are only allowed as values of Terms.
-  // Values of Messages, Attributes and Variants must be Patterns. This method
-  // is only used in getTerm.
-  maybeGetVariantList(ps) {
-    ps.peekBlank();
-    if (ps.currentPeek === "{") {
-      const start = ps.peekOffset;
-      ps.peek();
-      ps.peekBlankInline();
-      if (ps.currentPeek === EOL) {
-        ps.peekBlank();
-        if (ps.isVariantStart()) {
-          ps.resetPeek(start);
-          ps.skipToPeek();
-          return this.getVariantList(ps);
-        }
-      }
-    }
-
-    ps.resetPeek();
-    return null;
-  }
-
-  getVariantList(ps) {
-    ps.expectChar("{");
-    var variants = this.getVariants(ps);
-    ps.expectChar("}");
-    return new AST.VariantList(variants);
   }
 
   getPattern(ps, {isBlock}) {
@@ -595,7 +561,7 @@ class FluentParser {
       case "\\":
       case "\"":
         ps.next();
-        return [`\\${next}`, next];
+        return `\\${next}`;
       case "u":
         return this.getUnicodeEscapeSequence(ps, next, 4);
       case "U":
@@ -620,15 +586,7 @@ class FluentParser {
       sequence += ch;
     }
 
-    const codepoint = parseInt(sequence, 16);
-    const unescaped = codepoint <= 0xD7FF || 0xE000 <= codepoint
-      // It's a Unicode scalar value.
-      ? String.fromCodePoint(codepoint)
-      // Escape sequences reresenting surrogate code points are well-formed
-      // but invalid in Fluent. Replace them with U+FFFD REPLACEMENT
-      // CHARACTER.
-      : "�";
-    return [`\\${u}${sequence}`, unescaped];
+    return `\\${u}${sequence}`;
   }
 
   getPlaceable(ps) {
@@ -650,21 +608,14 @@ class FluentParser {
       }
 
       if (selector.type === "MessageReference") {
-        throw new ParseError("E0016");
+        if (selector.attribute === null) {
+          throw new ParseError("E0016");
+        } else {
+          throw new ParseError("E0018");
+        }
       }
 
-      if (selector.type === "AttributeExpression"
-          && selector.ref.type === "MessageReference") {
-        throw new ParseError("E0018");
-      }
-
-      if (selector.type === "TermReference"
-          || selector.type === "VariantExpression") {
-        throw new ParseError("E0017");
-      }
-
-      if (selector.type === "CallExpression"
-          && selector.callee.type === "TermReference") {
+      if (selector.type === "TermReference" && selector.attribute === null) {
         throw new ParseError("E0017");
       }
 
@@ -678,13 +629,7 @@ class FluentParser {
       return new AST.SelectExpression(selector, variants);
     }
 
-    if (selector.type === "AttributeExpression"
-        && selector.ref.type === "TermReference") {
-      throw new ParseError("E0019");
-    }
-
-    if (selector.type === "CallExpression"
-        && selector.callee.type === "AttributeExpression") {
+    if (selector.type === "TermReference" && selector.attribute !== null) {
       throw new ParseError("E0019");
     }
 
@@ -696,60 +641,6 @@ class FluentParser {
       return this.getPlaceable(ps);
     }
 
-    let expr = this.getSimpleExpression(ps);
-    switch (expr.type) {
-      case "NumberLiteral":
-      case "StringLiteral":
-      case "VariableReference":
-        return expr;
-      case "MessageReference": {
-        if (ps.currentChar === ".") {
-          ps.next();
-          const attr = this.getIdentifier(ps);
-          return new AST.AttributeExpression(expr, attr);
-        }
-
-        if (ps.currentChar === "(") {
-          // It's a Function. Ensure it's all upper-case.
-          if (!/^[A-Z][A-Z_?-]*$/.test(expr.id.name)) {
-            throw new ParseError("E0008");
-          }
-
-          const func = new AST.FunctionReference(expr.id);
-          if (this.withSpans) {
-            func.addSpan(expr.span.start, expr.span.end);
-          }
-          return new AST.CallExpression(func, ...this.getCallArguments(ps));
-        }
-
-        return expr;
-      }
-      case "TermReference": {
-        if (ps.currentChar === "[") {
-          ps.next();
-          const key = this.getVariantKey(ps);
-          ps.expectChar("]");
-          return new AST.VariantExpression(expr, key);
-        }
-
-        if (ps.currentChar === ".") {
-          ps.next();
-          const attr = this.getIdentifier(ps);
-          expr = new AST.AttributeExpression(expr, attr);
-        }
-
-        if (ps.currentChar === "(") {
-          return new AST.CallExpression(expr, ...this.getCallArguments(ps));
-        }
-
-        return expr;
-      }
-      default:
-        throw new ParseError("E0028");
-    }
-  }
-
-  getSimpleExpression(ps) {
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
     }
@@ -767,13 +658,43 @@ class FluentParser {
     if (ps.currentChar === "-") {
       ps.next();
       const id = this.getIdentifier(ps);
-      return new AST.TermReference(id);
+
+      let attr;
+      if (ps.currentChar === ".") {
+        ps.next();
+        attr = this.getIdentifier(ps);
+      }
+
+      let args;
+      if (ps.currentChar === "(") {
+        args = this.getCallArguments(ps);
+      }
+
+      return new AST.TermReference(id, attr, args);
     }
 
     if (ps.isIdentifierStart()) {
       const id = this.getIdentifier(ps);
-      return new AST.MessageReference(id);
+
+      if (ps.currentChar === "(") {
+        // It's a Function. Ensure it's all upper-case.
+        if (!/^[A-Z][A-Z0-9_-]*$/.test(id.name)) {
+          throw new ParseError("E0008");
+        }
+
+        let args = this.getCallArguments(ps);
+        return new AST.FunctionReference(id, args);
+      }
+
+      let attr;
+      if (ps.currentChar === ".") {
+        ps.next();
+        attr = this.getIdentifier(ps);
+      }
+
+      return new AST.MessageReference(id, attr);
     }
+
 
     throw new ParseError("E0028");
   }
@@ -787,15 +708,15 @@ class FluentParser {
       return exp;
     }
 
-    if (exp.type !== "MessageReference") {
-      throw new ParseError("E0009");
+    if (exp.type === "MessageReference" && exp.attribute === null) {
+      ps.next();
+      ps.skipBlank();
+
+      const value = this.getLiteral(ps);
+      return new AST.NamedArgument(exp.id, value);
     }
 
-    ps.next();
-    ps.skipBlank();
-
-    const value = this.getLiteral(ps);
-    return new AST.NamedArgument(exp.id, value);
+    throw new ParseError("E0009");
   }
 
   getCallArguments(ps) {
@@ -836,23 +757,18 @@ class FluentParser {
     }
 
     ps.expectChar(")");
-    return [positional, named];
+    return new AST.CallArguments(positional, named);
   }
 
   getString(ps) {
-    let raw = "";
-    let value = "";
-
     ps.expectChar("\"");
+    let value = "";
 
     let ch;
     while ((ch = ps.takeChar(x => x !== '"' && x !== EOL))) {
       if (ch === "\\") {
-        const [sequence, unescaped] = this.getEscapeSequence(ps);
-        raw += sequence;
-        value += unescaped;
+        value += this.getEscapeSequence(ps);
       } else {
-        raw += ch;
         value += ch;
       }
     }
@@ -863,7 +779,7 @@ class FluentParser {
 
     ps.expectChar("\"");
 
-    return new AST.StringLiteral(raw, value);
+    return new AST.StringLiteral(value);
   }
 
   getLiteral(ps) {

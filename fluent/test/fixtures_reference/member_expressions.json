@@ -1,24 +1,9 @@
 {
     "message-attribute-expression-placeable": [
         {
-            "type": "ref",
+            "type": "mesg",
             "name": "msg",
-            "attr": "attr",
-            "args": null
-        }
-    ],
-    "term-variant-expression-placeable": [
-        {
-            "type": "term",
-            "name": "term",
-            "selector": "case"
-        }
-    ],
-    "message-variant-expression-placeable": [
-        {
-            "type": "ref",
-            "name": "msg",
-            "selector": "case"
+            "attr": "attr"
         }
     ],
     "term-attribute-expression-placeable": [
@@ -26,7 +11,7 @@
             "type": "term",
             "name": "term",
             "attr": "attr",
-            "args": null
+            "args": []
         }
     ],
     "term-attribute-expression-selector": [
@@ -36,7 +21,7 @@
                 "type": "term",
                 "name": "term",
                 "attr": "attr",
-                "args": null
+                "args": []
             },
             "variants": [
                 {
@@ -51,44 +36,9 @@
         {
             "type": "select",
             "selector": {
-                "type": "ref",
+                "type": "mesg",
                 "name": "msg",
-                "attr": "attr",
-                "args": null
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "term-variant-expression-selector": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
-                "selector": "case"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "message-variant-expression-selector": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "ref",
-                "name": "msg",
-                "selector": "case"
+                "attr": "attr"
             },
             "variants": [
                 {

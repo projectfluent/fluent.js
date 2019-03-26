@@ -16,7 +16,7 @@
         {
           "type": "Annotation",
           "code": "E0011",
-          "args": [],
+          "arguments": [],
           "message": "Expected at least one variant after \"->\"",
           "span": {
             "type": "Span",
@@ -47,7 +47,7 @@
         {
           "type": "Annotation",
           "code": "E0010",
-          "args": [],
+          "arguments": [],
           "message": "Expected one of the variants to be marked as default (*)",
           "span": {
             "type": "Span",

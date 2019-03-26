@@ -16,7 +16,7 @@
         {
           "type": "Annotation",
           "code": "E0004",
-          "args": [
+          "arguments": [
             "a-zA-Z"
           ],
           "message": "Expected a character from range: \"a-zA-Z\"",

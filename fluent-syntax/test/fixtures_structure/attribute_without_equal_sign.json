@@ -1,0 +1,34 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0003",
+          "arguments": [
+            "="
+          ],
+          "message": "Expected token: \"=\"",
+          "span": {
+            "type": "Span",
+            "start": 22,
+            "end": 22
+          }
+        }
+      ],
+      "content": "key = Value\n    .label\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 23
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 23
+  }
+}

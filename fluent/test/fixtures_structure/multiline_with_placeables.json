@@ -1,0 +1,12 @@
+{
+    "key": [
+        "Foo ",
+        {
+            "type": "mesg",
+            "name": "bar",
+            "attr": null
+        },
+        "\n",
+        "Baz"
+    ]
+}
