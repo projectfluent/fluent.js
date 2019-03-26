@@ -1,5 +1,30 @@
 # Changelog
 
+## fluent 0.12.0 (March 26, 2019)
+
+This release of `fluent` brings support for version 0.9 of the Fluent Syntax
+spec. The `FluentBundle` API remains unchanged. Files written in valid Syntax
+0.8 may parse differently in this release. See the compatibility note below.
+
+  - Implement Fluent Syntax 0.9.
+
+    Most of the changes introduced in Syntax 0.9 affect the full tooling AST
+    and thus do not apply to the `fluent` package which uses a different data
+    structure for the result of the parsing, optimized for the runtime
+    performance.
+
+    Syntax features deprecated in Syntax 0.8 have been removed in Syntax 0.9.
+    The support for them have been removed in this release of `fluent` too.
+
+    Consult the full Syntax 0.9 [changelog][chlog0.9] for details.
+
+    [chlog0.9]: https://github.com/projectfluent/fluent/releases/tag/v0.9.0
+
+### Backward-incompatible changes:
+
+- `VariantLists` are no longer valid syntax.
+
+
 ## fluent 0.11.0 (February 15, 2019)
 
   - Add the `allowOverrides` option to `FluentBundle.addResource`. (#332)
