@@ -430,7 +430,7 @@ class FluentParser {
       elements.push(this.getIndent(ps, firstIndent, blankStart));
       var commonIndentLength = firstIndent.length;
     } else {
-      var commonIndentLength = Infinity;
+      commonIndentLength = Infinity;
     }
 
     let ch;

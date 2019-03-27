@@ -1,5 +1,4 @@
 /* eslint object-shorthand: "off",
-          no-redeclare: "off",
           comma-dangle: "off",
           no-labels: "off" */
 

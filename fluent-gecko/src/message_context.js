@@ -1,5 +1,3 @@
-/* eslint no-redeclare: "off" */
-
 import {
   FluentBundle,
   FluentResource,
