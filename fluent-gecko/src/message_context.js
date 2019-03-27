@@ -1,4 +1,21 @@
-import { FluentBundle } from "../../fluent/src/index";
+/* eslint no-redeclare: "off" */
 
-this.FluentBundle = FluentBundle;
-this.EXPORTED_SYMBOLS = ["FluentBundle"];
+import {
+  FluentBundle,
+  FluentResource,
+  FluentError,
+  FluentType,
+  FluentNumber,
+  FluentDateTime,
+} from "../../fluent/src/index";
+
+this.EXPORTED_SYMBOLS = [
+  ...Object.keys({
+    FluentBundle,
+    FluentResource,
+    FluentError,
+    FluentType,
+    FluentNumber,
+    FluentDateTime,
+  }),
+];
