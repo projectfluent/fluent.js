@@ -9,7 +9,7 @@ version = $(1)@$(shell node -e "\
 build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js
 
 Fluent.jsm: $(SOURCES)
-	@rollup $(CURDIR)/src/message_context.js \
+	@rollup $(CURDIR)/src/fluent.js \
 	    --config ./xpcom_config.js \
 	    --output.intro "/* $(call version,fluent) */" \
 	    --output.file ./dist/$@

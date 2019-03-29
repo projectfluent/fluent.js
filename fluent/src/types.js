@@ -8,7 +8,6 @@
  * `Intl` formatter.
  */
 export class FluentType {
-
   /**
    * Create an `FluentType` instance.
    *

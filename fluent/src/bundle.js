@@ -15,7 +15,6 @@ import FluentResource from "./resource.js";
  * information.
  */
 export default class FluentBundle {
-
   /**
    * Create an instance of `FluentBundle`.
    *
@@ -53,7 +52,7 @@ export default class FluentBundle {
   constructor(locales, {
     functions = {},
     useIsolating = true,
-    transform = v => v
+    transform = v => v,
   } = {}) {
     this.locales = Array.isArray(locales) ? locales : [locales];
 
@@ -167,7 +166,7 @@ export default class FluentBundle {
    * @returns {Array<Error>}
    */
   addResource(res, {
-    allowOverrides = false
+    allowOverrides = false,
   } = {}) {
     const errors = [];
 
