@@ -1,5 +1,9 @@
 # Changelog
 
+## fluent-react 0.8.4 (March 29, 2019)
+
+  - Accept `fluent` 0.11.x and 0.12.x as a peer dependency.
+
 ## fluent-react 0.8.3 (December 13, 2018)
 
   - Accept `fluent` 0.10.x as a peer dependency.
