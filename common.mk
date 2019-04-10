@@ -33,10 +33,11 @@ else
 	    test/**/*_test.js
 endif
 
-html: $(SOURCES)
-	@jsdoc -c $(ROOT)/.jsdoc.json -R README.md \
-	    -d $(ROOT)/html/$(PACKAGE) $(SOURCES)
+html:
+ifneq (,$(wildcard ./.esdoc.json))
+	@esdoc
 	@echo -e " $(OK) $@ built"
+endif
 
 deps:
 	@npm install
