@@ -52,7 +52,7 @@ suite('Functions', function() {
 
     // XXX Gracefully handle wrong argument types passed into FTL Functions
     // https://bugzil.la/1307124
-    it.skip('falls back when arguments don\'t match the arity', function() {
+    test.skip('falls back when arguments don\'t match the arity', function() {
       const msg = bundle.getMessage('pass-nothing');
       const val = bundle.format(msg, args, errs);
       assert.equal(val, 'IDENTITY()');
@@ -83,7 +83,7 @@ suite('Functions', function() {
 
     // XXX Accept complex types (e.g. attributes) as arguments to FTL Functions
     // https://bugzil.la/1307120
-    it.skip('accepts attributes', function() {
+    test.skip('accepts attributes', function() {
       const msg = bundle.getMessage('pass-attr');
       const val = bundle.format(msg, args, errs);
       assert.equal(val, 'Attribute');
