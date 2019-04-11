@@ -1,0 +1,16 @@
+{
+    "source": "./src",
+    "destination": "../html/fluent-syntax",
+    "plugins": [
+        {
+            "name": "esdoc-standard-plugin"
+        },
+        {
+            "name": "esdoc-ecmascript-proposal-plugin",
+            "option": {
+                "objectRestSpread": true,
+                "asyncGenerators": true
+            }
+        }
+    ]
+}
