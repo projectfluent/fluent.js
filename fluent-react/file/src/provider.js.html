@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/provider.js | fluent-react</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Fluent bindings for React"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fluent-react"><meta property="twitter:description" content="Fluent bindings for React"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~ReactLocalization.html">ReactLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localized.js~Localized.html">Localized</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/provider.js~LocalizationProvider.html">LocalizationProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isReactLocalization">isReactLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createParseMarkup">createParseMarkup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withLocalization">withLocalization</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/provider.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Component, Children } from &quot;react&quot;;
+import PropTypes from &quot;prop-types&quot;;
+import ReactLocalization, { isReactLocalization} from &quot;./localization&quot;;
+import createParseMarkup from &quot;./markup&quot;;
+
+/*
+ * The Provider component for the `ReactLocalization` class.
+ *
+ * Exposes a `ReactLocalization` instance to all descendants via React&apos;s
+ * context feature.  It makes translations available to all localizable
+ * elements in the descendant&apos;s render tree without the need to pass them
+ * explicitly.
+ *
+ *     &lt;LocalizationProvider bundles={&#x2026;}&gt;
+ *         &#x2026;
+ *     &lt;/LocalizationProvider&gt;
+ *
+ * The `LocalizationProvider` component takes one prop: `bundles`.  It should
+ * be an iterable of `FluentBundle` instances in order of the user&apos;s
+ * preferred languages.  The `FluentBundle` instances will be used by
+ * `ReactLocalization` to format translations.  If a translation is missing in
+ * one instance, `ReactLocalization` will fall back to the next one.
+ */
+export default class LocalizationProvider extends Component {
+  constructor(props) {
+    super(props);
+    const {bundles, parseMarkup} = props;
+
+    if (bundles === undefined) {
+      throw new Error(&quot;LocalizationProvider must receive the bundles prop.&quot;);
+    }
+
+    if (!bundles[Symbol.iterator]) {
+      throw new Error(&quot;The bundles prop must be an iterable.&quot;);
+    }
+
+    this.l10n = new ReactLocalization(bundles);
+    this.parseMarkup = parseMarkup || createParseMarkup();
+  }
+
+  getChildContext() {
+    return {
+      l10n: this.l10n,
+      parseMarkup: this.parseMarkup,
+    };
+  }
+
+  componentWillReceiveProps(next) {
+    const { bundles } = next;
+
+    if (bundles !== this.props.bundles) {
+      this.l10n.setBundles(bundles);
+    }
+  }
+
+  render() {
+    return Children.only(this.props.children);
+  }
+}
+
+LocalizationProvider.childContextTypes = {
+  l10n: isReactLocalization,
+  parseMarkup: PropTypes.func,
+};
+
+LocalizationProvider.propTypes = {
+  children: PropTypes.element.isRequired,
+  bundles: isIterable,
+  parseMarkup: PropTypes.func,
+};
+
+function isIterable(props, propName, componentName) {
+  const prop = props[propName];
+
+  if (Symbol.iterator in Object(prop)) {
+    return null;
+  }
+
+  return new Error(
+    `The ${propName} prop supplied to ${componentName} must be an iterable.`
+  );
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

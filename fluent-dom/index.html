@@ -1,77 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | fluent-dom</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Fluent bindings for DOM"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fluent-dom"><meta property="twitter:description" content="Fluent bindings for DOM"></head>
+<body class="layout-container" data-ice="rootContainer">
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
 
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Home</h1>
-
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
     
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dom_localization.js~DOMLocalization.html">DOMLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~Localization.html">Localization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-translateElement">translateElement</a></span></span></li>
+</ul>
+</div>
+</nav>
 
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-    <section>
-        <article><h1>fluent-dom</h1><p><code>fluent-dom</code> provides DOM bindings for Project Fluent, a localization
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="fluent-dom">fluent-dom</h1><p><code>fluent-dom</code> provides DOM bindings for Project Fluent, a localization
 framework designed to unleash the expressive power of the natural language.</p>
-<h2>Installation</h2><p><code>fluent-dom</code> can be used both on the client-side and the server-side.  You
+<h2 id="installation">Installation</h2><p><code>fluent-dom</code> can be used both on the client-side and the server-side.  You
 can install it from the npm registry or use it as a standalone script (as the
 <code>FluentDOM</code> global).</p>
-<pre class="prettyprint source"><code>npm install fluent-dom</code></pre><h2>How to use</h2><p>The <code>DOMLocalization</code> constructor provides the core functionality of
+<pre><code><code class="source-code prettyprint">npm install fluent-dom</code>
+</code></pre><h2 id="how-to-use">How to use</h2><p>The <code>DOMLocalization</code> constructor provides the core functionality of
 full-fallback ready message formatting. It uses a lazy-resolved
 <code>FluentBundle</code> objects from the <code>fluent</code> package to format messages.</p>
 <p>On top of that, <code>DOMLocalization</code> can localize any DOMFragment by
 identifying localizable elements with <code>data-l10n-id</code> and translating them.</p>
-<pre class="prettyprint source lang-javascript"><code>import { DOMLocalization } from 'fluent-dom'
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import { DOMLocalization } from &apos;fluent-dom&apos;
 
 const l10n = new DOMLocalization(MutationObserver, [
-  '/browser/main.ftl',
-  '/toolkit/menu.ftl'
+  &apos;/browser/main.ftl&apos;,
+  &apos;/toolkit/menu.ftl&apos;
 ], generateBundles);
 
 l10n.connectRoot(document.documentElement);
 
 l10n.translateDocument();
 
-const h1 = document.querySelector('h1');
+const h1 = document.querySelector(&apos;h1&apos;);
 
 // Sets `data-l10n-id` and `data-l10n-args` which triggers
 // the `MutationObserver` from `DOMLocalization` and translates the
 // element.
-l10n.setAttributes(h1, 'welcome', { user: 'Anna' });</code></pre><p>For imperative uses straight from the JS code, there's also a <code>Localization</code>
+l10n.setAttributes(h1, &apos;welcome&apos;, { user: &apos;Anna&apos; });</code>
+</code></pre>
+<p>For imperative uses straight from the JS code, there&apos;s also a <code>Localization</code>
 class that provides just the API needed to format messages in the running code.</p>
-<pre class="prettyprint source lang-javascript"><code>import { Localization } from 'fluent-dom'
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import { Localization } from &apos;fluent-dom&apos;
 
 function *generateBundles() {
   // Some lazy logic for yielding FluentBundles.
@@ -79,36 +75,31 @@ function *generateBundles() {
 }
 
 const l10n = new Localization(document, [
-  '/browser/main.ftl',
-  '/toolkit/menu.ftl'
+  &apos;/browser/main.ftl&apos;,
+  &apos;/toolkit/menu.ftl&apos;
 ], generateBundles);
 
 async function main() {
-  const msg = await l10n.formatValue('welcome', { name: 'Anna' });
-  // → 'Welcome, Anna!'
-}</code></pre><h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.org">projectfluent.org</a>, including
+  const msg = await l10n.formatValue(&apos;welcome&apos;, { name: &apos;Anna&apos; });
+  // &#x2192; &apos;Welcome, Anna!&apos;
+}</code>
+</code></pre>
+<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.org">projectfluent.org</a>, including
 documentation of the Fluent file format (<a href="http://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p></article>
-    </section>
-
-
-
-
-
-
+implementations, and information about how to get involved.</p>
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#connectRoot">connectRoot</a></li><li><a href="global.html#disconnectRoot">disconnectRoot</a></li><li><a href="global.html#formatValue">formatValue</a></li><li><a href="global.html#formatValues">formatValues</a></li><li><a href="global.html#getAttributes">getAttributes</a></li><li><a href="global.html#onChange">onChange</a></li><li><a href="global.html#setAttributes">setAttributes</a></li><li><a href="global.html#TEXT_LEVEL_ELEMENTS">TEXT_LEVEL_ELEMENTS</a></li><li><a href="global.html#translateElements">translateElements</a></li><li><a href="global.html#translateFragment">translateFragment</a></li><li><a href="global.html#translateRoots">translateRoots</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:31 GMT+0200 (DST)
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
 </body>
 </html>

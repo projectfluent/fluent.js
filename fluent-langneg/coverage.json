@@ -1,0 +1,57 @@
+{
+  "coverage": "19.23%",
+  "expectCount": 26,
+  "actualCount": 5,
+  "files": {
+    "src/accepted_languages.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/locale.js": {
+      "expectCount": 19,
+      "actualCount": 2,
+      "undocumentLines": [
+        5,
+        6,
+        7,
+        8,
+        25,
+        27,
+        40,
+        47,
+        50,
+        53,
+        55,
+        59,
+        63,
+        71,
+        78,
+        82,
+        86
+      ]
+    },
+    "src/matches.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/negotiate_languages.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        3
+      ]
+    },
+    "src/subtags.js": {
+      "expectCount": 3,
+      "actualCount": 1,
+      "undocumentLines": [
+        36,
+        54
+      ]
+    }
+  }
+}

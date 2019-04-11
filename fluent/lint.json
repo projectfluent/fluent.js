@@ -1,0 +1,56 @@
+[
+  {
+    "name": "FluentType#toString",
+    "filePath": "src/types.js",
+    "lines": [
+      {
+        "lineNumber": 31,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 32,
+        "line": "   * Format this instance of `FluentType` to a string."
+      },
+      {
+        "lineNumber": 33,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 34,
+        "line": "   * Formatted values are suitable for use outside of the `FluentBundle`."
+      },
+      {
+        "lineNumber": 35,
+        "line": "   * This method can use `Intl` formatters memoized by the `FluentBundle`"
+      },
+      {
+        "lineNumber": 36,
+        "line": "   * instance passed as an argument."
+      },
+      {
+        "lineNumber": 37,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 38,
+        "line": "   * @param   {FluentBundle} [bundle]"
+      },
+      {
+        "lineNumber": 39,
+        "line": "   * @returns {string}"
+      },
+      {
+        "lineNumber": 40,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 41,
+        "line": "  toString() {"
+      }
+    ],
+    "codeParams": [],
+    "docParams": [
+      "bundle"
+    ]
+  }
+]

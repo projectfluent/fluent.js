@@ -1,56 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | fluent-sequence</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Manage ordered sequences of FluentBundles"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fluent-sequence"><meta property="twitter:description" content="Manage ordered sequences of FluentBundles"></head>
+<body class="layout-container" data-ice="rootContainer">
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
 
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Home</h1>
-
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
     
+  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapBundleAsync">mapBundleAsync</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapBundleSync">mapBundleSync</a></span></span></li>
+</ul>
+</div>
+</nav>
 
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-    <section>
-        <article><h1>fluent-sequence</h1><p><code>fluent-sequence</code> provides mapping functions from string identifiers to
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="fluent-sequence">fluent-sequence</h1><p><code>fluent-sequence</code> provides mapping functions from string identifiers to
 <code>FluentBundle</code> instances taken from synchronous or asynchronous sequences.
-It's part of Project Fluent, a localization framework designed to unleash the
+It&apos;s part of Project Fluent, a localization framework designed to unleash the
 expressive power of the natural language.</p>
-<h2>Installation</h2><p><code>fluent-sequence</code> can be used both on the client-side and the server-side.
+<h2 id="installation">Installation</h2><p><code>fluent-sequence</code> can be used both on the client-side and the server-side.
 You can install it from the npm registry or use it as a standalone script (as
 the <code>FluentSequence</code> global).</p>
-<pre class="prettyprint source"><code>npm install fluent-sequence</code></pre><h2>How to use</h2><p>An ordered iterable of <code>FluentBundle</code> instances can represent the current
+<pre><code><code class="source-code prettyprint">npm install fluent-sequence</code>
+</code></pre><h2 id="how-to-use">How to use</h2><p>An ordered iterable of <code>FluentBundle</code> instances can represent the current
 negotiated fallback chain of languages. This iterable can be used to find the
 best existing translation for a given identifier.</p>
 <p><code>fluent-sequence</code> provides two mapping functions: <code>mapBundleSync</code>, and
@@ -60,7 +53,7 @@ the iterable is ordered according to the result of a language negotiation the
 returned <code>FluentBundle</code> contains the best available translation.</p>
 <p>A simple function which formats translations based on the identifier might
 be implemented as follows:</p>
-<pre class="prettyprint source lang-js"><code>import {mapBundleSync} from &quot;fluent-sequence&quot;;
+<pre><code class="lang-js"><code class="source-code prettyprint">import {mapBundleSync} from &quot;fluent-sequence&quot;;
 
 function formatString(id, args) {
     // contexts is a negotiated iterable of FluentBundle instances.
@@ -72,34 +65,29 @@ function formatString(id, args) {
 
     let msg = ctx.getMessage(id);
     return ctx.format(msg, args);
-}</code></pre><p>When passing a synchronous iterator to <code>mapBundleSync</code>, wrap it in
+}</code>
+</code></pre>
+<p>When passing a synchronous iterator to <code>mapBundleSync</code>, wrap it in
 <code>CachedSyncIterable</code> from the <a href="https://www.npmjs.com/package/cached-iterable"><code>cached-iterable</code></a> package. When passing an
 asynchronous iterator to <code>mapBundleAsync</code>, wrap it in <code>CachedAsyncIterable</code>.
 This allows multiple calls to <code>mapContext*</code> without advancing and eventually
 depleting the iterator.</p>
-<h2>Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
+<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
 documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p></article>
-    </section>
-
-
-
-
-
-
+implementations, and information about how to get involved.</p>
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:33 GMT+0200 (DST)
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
 </body>
 </html>

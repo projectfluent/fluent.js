@@ -1,113 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | fluent-langneg</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Language Negotiation API for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fluent-langneg"><meta property="twitter:description" content="Language Negotiation API for Fluent"></head>
+<body class="layout-container" data-ice="rootContainer">
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
 
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Home</h1>
-
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
     
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/locale.js~Locale.html">Locale</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-acceptedLanguages">acceptedLanguages</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filterMatches">filterMatches</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-negotiateLanguages">negotiateLanguages</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLikelySubtagsMin">getLikelySubtagsMin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-localeParts">localeParts</a></span></span></li>
+</ul>
+</div>
+</nav>
 
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-    <section>
-        <article><h1>fluent-langneg</h1><p><code>fluent-langneg</code> is an API for negotiating languages. It's part of
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="fluent-langneg">fluent-langneg</h1><p><code>fluent-langneg</code> is an API for negotiating languages. It&apos;s part of
 Project Fluent, a localization framework designed to unleash 
 the expressive power of the natural language.</p>
-<p>It's main function is to provide functionality around the
+<p>It&apos;s main function is to provide functionality around the
 <a href="https://github.com/tc39/proposal-intl-locale">Intl.Locale</a> API with a focus
 on language negotiation, matching and selection.</p>
-<h2>Installation</h2><p><code>fluent-langneg</code> can be used both on the client-side and the server-side.
+<h2 id="installation">Installation</h2><p><code>fluent-langneg</code> can be used both on the client-side and the server-side.
 You can install it from the npm registry or use it as a standalone script.</p>
-<pre class="prettyprint source"><code>npm install fluent-langneg</code></pre><h2>How to use</h2><pre class="prettyprint source lang-javascript"><code>import { negotiateLanguages } from 'fluent-langneg';
+<pre><code><code class="source-code prettyprint">npm install fluent-langneg</code>
+</code></pre><h2 id="how-to-use">How to use</h2><pre><code class="lang-javascript"><code class="source-code prettyprint">import { negotiateLanguages } from &apos;fluent-langneg&apos;;
 
 const supportedLocales = negotiateLanguages(
   navigator.languages,       // requested locales
-  ['de', 'en-US', 'pl'],     // available locales
-  { defaultLocale: 'en-US' }
-);</code></pre><p>The API reference is available at
-http://projectfluent.org/fluent.js/fluent-langneg.</p>
-<h2>Strategies</h2><p>The API supports three negotiation strategies:</p>
-<h3>filtering (default)</h3><p>In this strategy the algorithm will look for the best matching available
+  [&apos;de&apos;, &apos;en-US&apos;, &apos;pl&apos;],     // available locales
+  { defaultLocale: &apos;en-US&apos; }
+);</code>
+</code></pre>
+<p>The API reference is available at
+<a href="https://projectfluent.org/fluent.js/fluent-langneg">https://projectfluent.org/fluent.js/fluent-langneg</a>.</p>
+<h2 id="strategies">Strategies</h2><p>The API supports three negotiation strategies:</p>
+<h3 id="filtering--default-">filtering (default)</h3><p>In this strategy the algorithm will look for the best matching available
 locale for each requested locale.</p>
 <p>Example:</p>
-<p>requested: ['de-DE', 'fr-FR']
-available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']</p>
-<p>supported: ['de-DE', 'fr']</p>
-<h3>matching</h3><p>In this strategy the algorithm will try to match as many available locales
+<p>requested: [&apos;de-DE&apos;, &apos;fr-FR&apos;]
+available: [&apos;it&apos;, &apos;de&apos;, &apos;en-US&apos;, &apos;fr-CA&apos;, &apos;de-DE&apos;, &apos;fr&apos;, &apos;de-AU&apos;]</p>
+<p>supported: [&apos;de-DE&apos;, &apos;fr&apos;]</p>
+<h3 id="matching">matching</h3><p>In this strategy the algorithm will try to match as many available locales
 as possible for each of the requested locale.</p>
 <p>Example:</p>
-<p>requested: ['de-DE', 'fr-FR']
-available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']</p>
-<p>supported: ['de-DE', 'de', 'fr', 'fr-CA']</p>
-<h3>lookup</h3><p>In this strategy the algorithm will try to find the single best locale
+<p>requested: [&apos;de-DE&apos;, &apos;fr-FR&apos;]
+available: [&apos;it&apos;, &apos;de&apos;, &apos;en-US&apos;, &apos;fr-CA&apos;, &apos;de-DE&apos;, &apos;fr&apos;, &apos;de-AU&apos;]</p>
+<p>supported: [&apos;de-DE&apos;, &apos;de&apos;, &apos;fr&apos;, &apos;fr-CA&apos;]</p>
+<h3 id="lookup">lookup</h3><p>In this strategy the algorithm will try to find the single best locale
 for the requested locale list among the available locales.</p>
 <p>Example:</p>
-<p>requested: ['de-DE', 'fr-FR']
-available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']</p>
-<p>supported: ['de-DE']</p>
-<h3>API use:</h3><pre class="prettyprint source lang-javascript"><code>let supported = negotiateLanguages(requested, available, {
-  strategy: 'matching',
-});</code></pre><h2>Likely subtags</h2><p>Fluent Language Negotiation module carries its own minimal list of likely
+<p>requested: [&apos;de-DE&apos;, &apos;fr-FR&apos;]
+available: [&apos;it&apos;, &apos;de&apos;, &apos;en-US&apos;, &apos;fr-CA&apos;, &apos;de-DE&apos;, &apos;fr&apos;, &apos;de-AU&apos;]</p>
+<p>supported: [&apos;de-DE&apos;]</p>
+<h3 id="api-use-">API use:</h3><pre><code class="lang-javascript"><code class="source-code prettyprint">let supported = negotiateLanguages(requested, available, {
+  strategy: &apos;matching&apos;,
+});</code>
+</code></pre>
+<h2 id="likely-subtags">Likely subtags</h2><p>Fluent Language Negotiation module carries its own minimal list of likely
 subtags data, which is useful in finding most likely available locales
 in case the requested locale is too generic.</p>
 <p>An example of that scenario is when the user requests <code>en</code> locale, and
 the application supportes <code>en-GB</code> and <code>en-US</code>.</p>
-<h2>Learn more</h2><p>Find out more about Project Fluent at <a href="http://projectfluent.org">projectfluent.org</a>, including
-documentation of the Fluent file format (<a href="http://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p></article>
-    </section>
-
-
-
-
-
-
+<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
+documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
+implementations, and information about how to get involved.</p>
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#likelySubtagsMin">likelySubtagsMin</a></li><li><a href="global.html#localeRe">localeRe</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 16:59:28 GMT+0200 (DST)
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
 </body>
 </html>

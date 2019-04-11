@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/resolver.js | fluent</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Localization library for expressive translations."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="fluent"><meta property="twitter:description" content="Localization library for expressive translations."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bundle.js~FluentBundle.html">FluentBundle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/error.js~FluentError.html">FluentError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/resource.js~FluentResource.html">FluentResource</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentDateTime.html">FluentDateTime</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentNone.html">FluentNone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentNumber.html">FluentNumber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentType.html">FluentType</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resolve">resolve</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ftl">ftl</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/resolver.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global Intl */
+
+/**
+ * @overview
+ *
+ * The role of the Fluent resolver is to format a translation object to an
+ * instance of `FluentType` or an array of instances.
+ *
+ * Translations can contain references to other messages or variables,
+ * conditional logic in form of select expressions, traits which describe their
+ * grammatical features, and can use Fluent builtins which make use of the
+ * `Intl` formatters to format numbers, dates, lists and more into the
+ * bundle&apos;s language. See the documentation of the Fluent syntax for more
+ * information.
+ *
+ * In case of errors the resolver will try to salvage as much of the
+ * translation as possible.  In rare situations where the resolver didn&apos;t know
+ * how to recover from an error it will return an instance of `FluentNone`.
+ *
+ * All expressions resolve to an instance of `FluentType`. The caller should
+ * use the `toString` method to convert the instance to a native value.
+ *
+ * All functions in this file pass around a special object called `scope`.
+ * This object stores a set of elements used by all resolve functions:
+ *
+ *  * {FluentBundle} bundle
+ *      bundle for which the given resolution is happening
+ *  * {Object} args
+ *      list of developer provided arguments that can be used
+ *  * {Array} errors
+ *      list of errors collected while resolving
+ *  * {WeakSet} dirty
+ *      Set of patterns already encountered during this resolution.
+ *      This is used to prevent cyclic resolutions.
+ */
+
+
+import { FluentType, FluentNone, FluentNumber, FluentDateTime }
+  from &quot;./types.js&quot;;
+import builtins from &quot;./builtins.js&quot;;
+
+// Prevent expansion of too long placeables.
+const MAX_PLACEABLE_LENGTH = 2500;
+
+// Unicode bidi isolation characters.
+const FSI = &quot;\u2068&quot;;
+const PDI = &quot;\u2069&quot;;
+
+
+// Helper: match a variant key to the given selector.
+function match(bundle, selector, key) {
+  if (key === selector) {
+    // Both are strings.
+    return true;
+  }
+
+  // XXX Consider comparing options too, e.g. minimumFractionDigits.
+  if (key instanceof FluentNumber
+    &amp;&amp; selector instanceof FluentNumber
+    &amp;&amp; key.value === selector.value) {
+    return true;
+  }
+
+  if (selector instanceof FluentNumber &amp;&amp; typeof key === &quot;string&quot;) {
+    let category = bundle
+      ._memoizeIntlObject(Intl.PluralRules, selector.opts)
+      .select(selector.value);
+    if (key === category) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Helper: resolve the default variant from a list of variants.
+function getDefault(scope, variants, star) {
+  if (variants[star]) {
+    return Type(scope, variants[star]);
+  }
+
+  scope.errors.push(new RangeError(&quot;No default&quot;));
+  return new FluentNone();
+}
+
+// Helper: resolve arguments to a call expression.
+function getArguments(scope, args) {
+  const positional = [];
+  const named = {};
+
+  for (const arg of args) {
+    if (arg.type === &quot;narg&quot;) {
+      named[arg.name] = Type(scope, arg.value);
+    } else {
+      positional.push(Type(scope, arg));
+    }
+  }
+
+  return [positional, named];
+}
+
+// Resolve an expression to a Fluent type.
+function Type(scope, expr) {
+  // A fast-path for strings which are the most common case. Since they
+  // natively have the `toString` method they can be used as if they were
+  // a FluentType instance without incurring the cost of creating one.
+  if (typeof expr === &quot;string&quot;) {
+    return scope.bundle._transform(expr);
+  }
+
+  // A fast-path for `FluentNone` which doesn&apos;t require any additional logic.
+  if (expr instanceof FluentNone) {
+    return expr;
+  }
+
+  // The Runtime AST (Entries) encodes patterns (complex strings with
+  // placeables) as Arrays.
+  if (Array.isArray(expr)) {
+    return Pattern(scope, expr);
+  }
+
+  switch (expr.type) {
+    case &quot;str&quot;:
+      return expr.value;
+    case &quot;num&quot;:
+      return new FluentNumber(expr.value, {
+        minimumFractionDigits: expr.precision,
+      });
+    case &quot;var&quot;:
+      return VariableReference(scope, expr);
+    case &quot;mesg&quot;:
+      return MessageReference(scope, expr);
+    case &quot;term&quot;:
+      return TermReference(scope, expr);
+    case &quot;func&quot;:
+      return FunctionReference(scope, expr);
+    case &quot;select&quot;:
+      return SelectExpression(scope, expr);
+    case undefined: {
+      // If it&apos;s a node with a value, resolve the value.
+      if (expr.value !== null &amp;&amp; expr.value !== undefined) {
+        return Type(scope, expr.value);
+      }
+
+      scope.errors.push(new RangeError(&quot;No value&quot;));
+      return new FluentNone();
+    }
+    default:
+      return new FluentNone();
+  }
+}
+
+// Resolve a reference to a variable.
+function VariableReference(scope, {name}) {
+  if (!scope.args || !scope.args.hasOwnProperty(name)) {
+    if (scope.insideTermReference === false) {
+      scope.errors.push(new ReferenceError(`Unknown variable: ${name}`));
+    }
+    return new FluentNone(`$${name}`);
+  }
+
+  const arg = scope.args[name];
+
+  // Return early if the argument already is an instance of FluentType.
+  if (arg instanceof FluentType) {
+    return arg;
+  }
+
+  // Convert the argument to a Fluent type.
+  switch (typeof arg) {
+    case &quot;string&quot;:
+      return arg;
+    case &quot;number&quot;:
+      return new FluentNumber(arg);
+    case &quot;object&quot;:
+      if (arg instanceof Date) {
+        return new FluentDateTime(arg);
+      }
+    default:
+      scope.errors.push(
+        new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
+      );
+      return new FluentNone(`$${name}`);
+  }
+}
+
+// Resolve a reference to another message.
+function MessageReference(scope, {name, attr}) {
+  const message = scope.bundle._messages.get(name);
+  if (!message) {
+    const err = new ReferenceError(`Unknown message: ${name}`);
+    scope.errors.push(err);
+    return new FluentNone(name);
+  }
+
+  if (attr) {
+    const attribute = message.attrs &amp;&amp; message.attrs[attr];
+    if (attribute) {
+      return Type(scope, attribute);
+    }
+    scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    return Type(scope, message);
+  }
+
+  return Type(scope, message);
+}
+
+// Resolve a call to a Term with key-value arguments.
+function TermReference(scope, {name, attr, args}) {
+  const id = `-${name}`;
+  const term = scope.bundle._terms.get(id);
+  if (!term) {
+    const err = new ReferenceError(`Unknown term: ${id}`);
+    scope.errors.push(err);
+    return new FluentNone(id);
+  }
+
+  // Every TermReference has its own args.
+  const [, keyargs] = getArguments(scope, args);
+  const local = {...scope, args: keyargs, insideTermReference: true};
+
+  if (attr) {
+    const attribute = term.attrs &amp;&amp; term.attrs[attr];
+    if (attribute) {
+      return Type(local, attribute);
+    }
+    scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
+    return Type(local, term);
+  }
+
+  return Type(local, term);
+}
+
+// Resolve a call to a Function with positional and key-value arguments.
+function FunctionReference(scope, {name, args}) {
+  // Some functions are built-in. Others may be provided by the runtime via
+  // the `FluentBundle` constructor.
+  const func = scope.bundle._functions[name] || builtins[name];
+  if (!func) {
+    scope.errors.push(new ReferenceError(`Unknown function: ${name}()`));
+    return new FluentNone(`${name}()`);
+  }
+
+  if (typeof func !== &quot;function&quot;) {
+    scope.errors.push(new TypeError(`Function ${name}() is not callable`));
+    return new FluentNone(`${name}()`);
+  }
+
+  try {
+    return func(...getArguments(scope, args));
+  } catch (e) {
+    // XXX Report errors.
+    return new FluentNone();
+  }
+}
+
+// Resolve a select expression to the member object.
+function SelectExpression(scope, {selector, variants, star}) {
+  let sel = Type(scope, selector);
+  if (sel instanceof FluentNone) {
+    const variant = getDefault(scope, variants, star);
+    return Type(scope, variant);
+  }
+
+  // Match the selector against keys of each variant, in order.
+  for (const variant of variants) {
+    const key = Type(scope, variant.key);
+    if (match(scope.bundle, sel, key)) {
+      return Type(scope, variant);
+    }
+  }
+
+  const variant = getDefault(scope, variants, star);
+  return Type(scope, variant);
+}
+
+// Resolve a pattern (a complex string with placeables).
+function Pattern(scope, ptn) {
+  if (scope.dirty.has(ptn)) {
+    scope.errors.push(new RangeError(&quot;Cyclic reference&quot;));
+    return new FluentNone();
+  }
+
+  // Tag the pattern as dirty for the purpose of the current resolution.
+  scope.dirty.add(ptn);
+  const result = [];
+
+  // Wrap interpolations with Directional Isolate Formatting characters
+  // only when the pattern has more than one element.
+  const useIsolating = scope.bundle._useIsolating &amp;&amp; ptn.length &gt; 1;
+
+  for (const elem of ptn) {
+    if (typeof elem === &quot;string&quot;) {
+      result.push(scope.bundle._transform(elem));
+      continue;
+    }
+
+    const part = Type(scope, elem).toString(scope.bundle);
+
+    if (useIsolating) {
+      result.push(FSI);
+    }
+
+    if (part.length &gt; MAX_PLACEABLE_LENGTH) {
+      scope.errors.push(
+        new RangeError(
+          &quot;Too many characters in placeable &quot; +
+          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        )
+      );
+      result.push(part.slice(MAX_PLACEABLE_LENGTH));
+    } else {
+      result.push(part);
+    }
+
+    if (useIsolating) {
+      result.push(PDI);
+    }
+  }
+
+  scope.dirty.delete(ptn);
+  return result.join(&quot;&quot;);
+}
+
+/**
+ * Format a translation into a string.
+ *
+ * @param   {FluentBundle} bundle
+ *    A FluentBundle instance which will be used to resolve the
+ *    contextual information of the message.
+ * @param   {Object}         args
+ *    List of arguments provided by the developer which can be accessed
+ *    from the message.
+ * @param   {Object}         message
+ *    An object with the Message to be resolved.
+ * @param   {Array}          errors
+ *    An error array that any encountered errors will be appended to.
+ * @returns {FluentType}
+ */
+export default function resolve(bundle, args, message, errors = []) {
+  const scope = {
+    bundle, args, errors, dirty: new WeakSet(),
+    // TermReferences are resolved in a new scope.
+    insideTermReference: false,
+  };
+  return Type(scope, message).toString(bundle);
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
