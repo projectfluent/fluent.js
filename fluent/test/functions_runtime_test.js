@@ -36,7 +36,7 @@ suite('Runtime-specific functions', function() {
 
     // XXX When they are passed as variables, convert JS types to FTL types
     // https://bugzil.la/1307116
-    it.skip('works for numbers', function() {
+    test.skip('works for numbers', function() {
       const msg = bundle.getMessage('bar');
       const val = bundle.format(msg, args, errs);
       assert.equal(val, '3');

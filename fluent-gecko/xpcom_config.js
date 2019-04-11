@@ -2,10 +2,10 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import bundleConfig from '../bundle_config';
 
 export default Object.assign({}, bundleConfig, {
-  preferConst: true,
   context: 'this',
   output: {
     format: 'es',
+    preferConst: true,
     banner: `\
 /* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */
 
