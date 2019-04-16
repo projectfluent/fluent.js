@@ -23,7 +23,7 @@ const TEXT_LEVEL_ELEMENTS = {
 
 const LOCALIZABLE_ATTRIBUTES = {
   "http://www.w3.org/1999/xhtml": {
-    global: ["title", "aria-label", "aria-valuetext", "aria-moz-hint"],
+    global: ["title", "aria-label", "aria-valuetext"],
     a: ["download"],
     area: ["download", "alt"],
     // value is special-cased in isAttrNameLocalizable
@@ -39,11 +39,13 @@ const LOCALIZABLE_ATTRIBUTES = {
   },
   "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul": {
     global: [
-      "accesskey", "aria-label", "aria-valuetext", "aria-moz-hint", "label"
+      "accesskey", "aria-label", "aria-valuetext", "label",
+      "title", "tooltiptext"
     ],
+    description: ["value"],
     key: ["key", "keycode"],
-    textbox: ["placeholder"],
-    toolbarbutton: ["tooltiptext"],
+    label: ["value"],
+    textbox: ["placeholder", "value"],
   }
 };
 
@@ -103,13 +105,13 @@ function overlayChildNodes(fromFragment, toElement) {
     }
 
     if (childNode.hasAttribute("data-l10n-name")) {
-      const sanitized = namedChildFrom(toElement, childNode);
+      const sanitized = getNodeForNamedElement(toElement, childNode);
       fromFragment.replaceChild(sanitized, childNode);
       continue;
     }
 
     if (isElementAllowed(childNode)) {
-      const sanitized = allowedChild(childNode);
+      const sanitized = createSanitizedElement(childNode);
       fromFragment.replaceChild(sanitized, childNode);
       continue;
     }
@@ -121,7 +123,7 @@ function overlayChildNodes(fromFragment, toElement) {
     );
 
     // If all else fails, replace the element with its text content.
-    fromFragment.replaceChild(textNode(childNode), childNode);
+    fromFragment.replaceChild(createTextNodeFromTextContent(childNode), childNode);
   }
 
   toElement.textContent = "";
@@ -193,7 +195,7 @@ function overlayAttributes(fromElement, toElement) {
  * @returns {Element}
  * @private
  */
-function namedChildFrom(sourceElement, translatedChild) {
+function getNodeForNamedElement(sourceElement, translatedChild) {
   const childName = translatedChild.getAttribute("data-l10n-name");
   const sourceChild = sourceElement.querySelector(
     `[data-l10n-name="${childName}"]`
@@ -203,7 +205,7 @@ function namedChildFrom(sourceElement, translatedChild) {
     console.warn(
       `An element named "${childName}" wasn't found in the source.`
     );
-    return textNode(translatedChild);
+    return createTextNodeFromTextContent(translatedChild);
   }
 
   if (sourceChild.localName !== translatedChild.localName) {
@@ -212,7 +214,7 @@ function namedChildFrom(sourceElement, translatedChild) {
       `but its type ${translatedChild.localName} didn't match the ` +
       `element found in the source (${sourceChild.localName}).`
     );
-    return textNode(translatedChild);
+    return createTextNodeFromTextContent(translatedChild);
   }
 
   // Remove it from sourceElement so that the translation cannot use
@@ -239,7 +241,7 @@ function namedChildFrom(sourceElement, translatedChild) {
  * @returns {Element}
  * @private
  */
-function allowedChild(element) {
+function createSanitizedElement(element) {
   // Start with an empty element of the same type to remove nested children
   // and non-localizable attributes defined by the translation.
   const clone = element.ownerDocument.createElement(element.localName);
@@ -253,7 +255,7 @@ function allowedChild(element) {
  * @returns {Node}
  * @private
  */
-function textNode(element) {
+function createTextNodeFromTextContent(element) {
   return element.ownerDocument.createTextNode(element.textContent);
 }
 
