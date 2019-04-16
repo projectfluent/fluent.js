@@ -123,7 +123,8 @@ function overlayChildNodes(fromFragment, toElement) {
     );
 
     // If all else fails, replace the element with its text content.
-    fromFragment.replaceChild(createTextNodeFromTextContent(childNode), childNode);
+    fromFragment.replaceChild(
+      createTextNodeFromTextContent(childNode), childNode);
   }
 
   toElement.textContent = "";
