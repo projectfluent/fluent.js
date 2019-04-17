@@ -1,5 +1,12 @@
 # Changelog
 
+## fluent-syntax 0.13.0 (April 17, 2019)
+
+  - Support Fluent Syntax 1.0.
+
+    Fluent Syntax 1.0 has been published today. There are no changes to the
+    grammar nor the AST compared to the Syntax 0.9.
+
 ## fluent-syntax 0.12.0 (March 26, 2019)
 
 This release of `fluent-syntax` brings support for version 0.9 of the Fluent
