@@ -108,11 +108,6 @@ function Type(scope, expr) {
     return scope.bundle._transform(expr);
   }
 
-  // A fast-path for `FluentNone` which doesn't require any additional logic.
-  if (expr instanceof FluentNone) {
-    return expr;
-  }
-
   // The Runtime AST (Entries) encodes patterns (complex strings with
   // placeables) as Arrays.
   if (Array.isArray(expr)) {
