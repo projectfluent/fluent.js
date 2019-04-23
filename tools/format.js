@@ -38,11 +38,8 @@ function singleline(str) {
     .trim();
 }
 
-function printEntry(id, val) {
-  console.log(
-    color(id, 'cyan'),
-    color(singleline(val))
-  );
+function printValue(id, val) {
+  console.log(color(id, 'cyan'), color(singleline(val)));
 }
 
 function print(err, data) {
@@ -57,12 +54,14 @@ function print(err, data) {
 
   for (let id of bundle._messages.keys()) {
     const formatErrors = [];
-    printEntry(id, bundle.format(id, ext, formatErrors));
-    let message = bundle._messages.get(id);
-    if (message) {
-      for (let name of Object.keys(message.attrs)) {
-        printEntry(`    .${name}`, bundle.compound(name, ext, formatErrors));
-      }
+    const message = bundle.compound(id, ext, formatErrors);
+    if (message.value) {
+      printValue(id, message.value);
+    } else {
+      console.log(color(`${id} (no value)`, 'cyan'));
+    }
+    for (let [name, attr] of message.attributes) {
+      printValue(`    .${name}`, attr);
     }
     formatErrors.forEach(printError);
   }

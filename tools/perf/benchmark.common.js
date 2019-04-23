@@ -59,18 +59,14 @@ function runTest(env) {
     const testName = "resolve-runtime";
     const errors = [];
     let start = env.now();
-    for (const [id, message] of bundle.messages) {
-      bundle.format(message, args, errors);
-      if (message.attrs) {
-        for (const attrName in message.attrs) {
-          bundle.format(message.attrs[attrName], args, errors)
-        }
-      }
+    for (const id of bundle._messages.keys()) {
+      bundle.compound(id, args, errors);
     }
     let end = env.now();
 
     if (errors.length > 0) {
-      throw new Error(`Errors accumulated while resolving ${name}.`);
+      throw new Error(
+        `Errors accumulated while resolving ${env.benchmarkName}.`);
     }
 
     results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
