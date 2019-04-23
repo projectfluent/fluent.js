@@ -184,8 +184,15 @@ export default class FluentBundle {
    * Find a message or an attribute by `path` in the bundle and format it into
    * a string (or a null if it is a message and has a null value). `path` may
    * be a simple message identifier (`foo`) or a path to an attribute using
-   * a dot as the separator (`foo.bar`). `args` will be used to resolve
-   * references to variables passed as arguments to the translation.
+   * a dot as the separator (`foo.bar`).
+   *
+   * If the `path` is a simple identifier and the message is not found in the
+   * bundle, this method returns `undefined`. If the `path` is an attribute
+   * path and the message doesn't have any attributes or the requested
+   * attribute is not found, it returns `undefined` too.
+   *
+   * `args` can be an object or `null`. If it's an object, it will be used to
+   * resolve references to variables passed as arguments to the translation.
    *
    * In case of errors `format` will try to salvage as much of the translation
    * as possible and will still return a string.  For performance reasons, the
@@ -222,7 +229,7 @@ export default class FluentBundle {
 
     if (!this._messages.has(id)) {
       errors.push(`Message not found: "${id}"`);
-      return null;
+      return undefined;
     }
 
     // Resolve the value of the message.
@@ -234,18 +241,18 @@ export default class FluentBundle {
     if (parts.length === 2) {
       if (message.attrs === null) {
         errors.push(`Message has no attributes: "${id}"`);
-        return null;
+        return undefined;
       }
       let attribute = message.attrs[parts[1]];
       if (attribute === undefined){
         errors.push(`No attribute called: "${parts[1]}"`);
-        return null;
+        return undefined;
       }
       return formatAttribute(this, args, attribute, errors);
     }
 
     errors.push(`Invalid path: "${path}"`);
-    return null;
+    return undefined;
   }
 
   /**
@@ -254,8 +261,13 @@ export default class FluentBundle {
    * Find a message by `id` in the bundle and format it and its attributes into
    * a {value, attributes} object. The `value` field will be a string or
    * `null`, if the message doesn't have a value. The `attributes` field will
-   * be a `Map` of attribute names to strings. `args` will be used to resolve
-   * references to variables passed as arguments to the translation.
+   * be a `Map` of attribute names to strings.
+   *
+   * If the message is not found in the bundle, this method returns
+   * `undefined`.
+   *
+   * `args` can be an object or `null`. If it's an object, it will be used to
+   * resolve references to variables passed as arguments to the translation.
    *
    * In case of errors `compound` will try to salvage as much of the
    * translation as possible and will still return a string.  For performance
@@ -283,7 +295,7 @@ export default class FluentBundle {
   compound(id, args, errors) {
     if (!this._messages.has(id)) {
       errors.push(`Message not found: "${id}"`);
-      return null;
+      return undefined;
     }
 
     let message = this._messages.get(id);
