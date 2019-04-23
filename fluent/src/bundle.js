@@ -181,34 +181,40 @@ export default class FluentBundle {
   /**
    * Format a message to a string or null.
    *
-   * Format a raw `message` from the bundle into a string (or a null if it has
-   * a null value).  `args` will be used to resolve references to variables
-   * passed as arguments to the translation.
+   * Find a message or an attribute by `path` in the bundle and format it into
+   * a string (or a null if it is a message and has a null value). `path` may
+   * be a simple message identifier (`foo`) or a path to an attribute using
+   * a dot as the separator (`foo.bar`). `args` will be used to resolve
+   * references to variables passed as arguments to the translation.
    *
    * In case of errors `format` will try to salvage as much of the translation
    * as possible and will still return a string.  For performance reasons, the
    * encountered errors are not returned but instead are appended to the
    * `errors` array passed as the third argument.
    *
-   *     const errors = [];
-   *     bundle.addMessages('hello = Hello, { $name }!');
-   *     const hello = bundle.getMessage('hello');
-   *     bundle.format(hello, { name: 'Jane' }, errors);
+   *     let errors = [];
+   *     bundle.addMessages('hello = Hello, {$name}!');
    *
-   *     // Returns 'Hello, Jane!' and `errors` is empty.
+   *     bundle.format('hello', {name: 'Jane'}, errors);
+   *     // → 'Hello, Jane!' and `errors` is empty.
    *
-   *     bundle.format(hello, undefined, errors);
+   *     bundle.format('hello', undefined, errors);
+   *     // → 'Hello, name!' and `errors` is now:
+   *     // [<ReferenceError: Unknown variable: name>]
    *
-   *     // Returns 'Hello, name!' and `errors` is now:
+   *     errors.length = 0;
+   *     bundle.addMessages(`
+   *     email-input =
+   *         .placeholder = Your e-mail
+   *     `);
+   *     bundle.format('email-input.placeholder', null, errors);
+   *     // → 'Your e-mail' and `errors` is empty:
    *
-   *     [<ReferenceError: Unknown variable: name>]
-   *
-   * @param   {Object | string}    message
-   * @param   {Object | undefined} args
-   * @param   {Array}              errors
+   * @param   {string} path
+   * @param   {?Object} args
+   * @param   {?Array} errors
    * @returns {?string}
    */
-
   format(path, args, errors) {
     let parts = path.split(".");
     let id = parts[0];
@@ -219,23 +225,9 @@ export default class FluentBundle {
       return null;
     }
 
-    // Optimize entities with null values.
     // Resolve the value of the message.
     if (parts.length === 1) {
-      // Optimize entities which are simple strings with no attributes.
-      if (typeof message === "string") {
-        return this._transform(message);
-      }
-      // Optimize simple-string entities with attributes.
-      if (typeof message.value === "string") {
-        return this._transform(message.value);
-      }
-
-      if (message.value === null) {
-        return null;
-      }
-
-      return resolve(this, args, message, errors);
+      return formatMessage(this, args, message, errors);
     }
 
     // Resolve an attribute of the message.
@@ -244,53 +236,74 @@ export default class FluentBundle {
         errors.push(`Message has no attributes: "${id}"`);
         return null;
       }
-
-      let attr = message.attrs[parts[1]];
-
-      if (attr === undefined){
+      let attribute = message.attrs[parts[1]];
+      if (attribute === undefined){
         errors.push(`No attribute called: "${parts[1]}"`);
         return null;
       }
-
-      return resolve(this, args, attr, errors);
+      return formatAttribute(this, args, attribute, errors);
     }
 
     errors.push(`Invalid path: "${path}"`);
     return null;
   }
 
+  /**
+   * Format a message and its attributes to a {value, attributes} object.
+   *
+   * Find a message by `id` in the bundle and format it and its attributes into
+   * a {value, attributes} object. The `value` field will be a string or
+   * `null`, if the message doesn't have a value. The `attributes` field will
+   * be a `Map` of attribute names to strings. `args` will be used to resolve
+   * references to variables passed as arguments to the translation.
+   *
+   * In case of errors `compound` will try to salvage as much of the
+   * translation as possible and will still return a string.  For performance
+   * reasons, the encountered errors are not returned but instead are appended
+   * to the `errors` array passed as the third argument.
+   *
+   *     let errors = [];
+   *     bundle.addMessages(`
+   *     hello = Hello, {$name}!
+   *     email-input =
+   *         .placeholder = Your e-mail
+   *     `);
+   *
+   *     bundle.compound('hello', {name: 'Jane'}, errors);
+   *     // → {value: 'Hello, Jane!', attributes: Map {}}
+   *
+   *     bundle.compound('email-input', {name: 'Jane'}, errors);
+   *     // → {value: null, attributes: Map {placeholder ⇒ 'Your e-mail'}}
+   *
+   * @param   {string} id
+   * @param   {?Object} args
+   * @param   {?Array} errors
+   * @returns {?{value: string, attributes: Map}}
+   */
   compound(id, args, errors) {
-
     if (!this._messages.has(id)) {
       errors.push(`Message not found: "${id}"`);
       return null;
     }
 
     let message = this._messages.get(id);
-
-    if (message.value !== null) {
-      var message_value = resolve(this, args, message, errors);
-    } else {
-      message_value = null;
-    }
-
-    var compoundShape = {
-      value: message_value,
+    let shape = {
+      value: formatMessage(this, args, message, errors),
       attributes: new Map()
     };
 
     if (message.attrs === undefined) {
-      return compoundShape;
+      return shape;
     }
 
-    for (let attr of Object.keys(message.attrs)) {
-      compoundShape.attributes.set(
-        resolve(this, args, attr, errors),
-        message.attrs[attr]
+    for (let [name, attribute] of Object.entries(message.attrs)) {
+      shape.attributes.set(
+        name,
+        formatAttribute(this, args, attribute, errors),
       );
     }
 
-    return compoundShape;
+    return shape;
   }
 
   _memoizeIntlObject(ctor, opts) {
@@ -304,4 +317,30 @@ export default class FluentBundle {
 
     return cache[id];
   }
+}
+
+function formatMessage(bundle, args, message, errors) {
+  // Optimize messages which are simple strings with no attributes.
+  if (typeof message === "string") {
+    return bundle._transform(message);
+  }
+  // Optimize messages with null values.
+  if (message.value === null) {
+    return null;
+  }
+  // Optimize simple-string messages with attributes.
+  if (typeof message.value === "string") {
+    return bundle._transform(message.value);
+  }
+  // Resolve the complex value of the message.
+  return resolve(bundle, args, message, errors);
+}
+
+function formatAttribute(bundle, args, attribute, errors) {
+  // Optimize attributes which are simple text.
+  if (typeof attribute === "string") {
+    return bundle._transform(attribute);
+  }
+  // Resolve the complex value of the attribute.
+  return resolve(bundle, args, attribute, errors);
 }
