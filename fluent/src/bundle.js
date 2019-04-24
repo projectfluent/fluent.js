@@ -1,5 +1,6 @@
 import resolve from "./resolver.js";
 import FluentResource from "./resource.js";
+import FluentMessage from "./message.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -72,6 +73,10 @@ export default class FluentBundle {
    */
   hasMessage(id) {
     return this._messages.has(id);
+  }
+
+  getMessage(id) {
+      return this._messages.get(id);
   }
 
   /**
@@ -162,7 +167,7 @@ export default class FluentBundle {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
-        this._messages.set(id, value);
+        this._messages.set(id, new FluentMessage(this, id, value));
       }
     }
 

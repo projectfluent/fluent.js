@@ -189,15 +189,15 @@ function MessageReference(scope, {name, attr}) {
   }
 
   if (attr) {
-    const attribute = message.attrs && message.attrs[attr];
+    const attribute = message.attribute(attr, scope.args, scope.errors);
     if (attribute) {
-      return Type(scope, attribute);
+      return attribute;
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return Type(scope, message);
+    return message;
   }
 
-  return Type(scope, message);
+  return message.value(scope.args, scope.errors);
 }
 
 // Resolve a call to a Term with key-value arguments.
