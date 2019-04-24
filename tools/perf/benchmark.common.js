@@ -31,18 +31,33 @@ function runTest(env) {
     results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
+  let bundle;
   {
-    const testName = "resolve-runtime";
+    const testName = "create-runtime";
     const fncs = {};
     for (let fnName in functions) {
       let body = functions[fnName];
       fncs[fnName] = new Function(body);
     }
-    const bundle = new env.Fluent.FluentBundle('en-US', {
+
+    let start = env.now();
+    bundle = new env.Fluent.FluentBundle('en-US', {
       functions: fncs
     });
     const errors = bundle.addResource(resource);
+    let end = env.now();
 
+    if (errors.length > 0) {
+      throw new Error(
+        `Errors accumulated while creating ${env.benchmarkName}.`);
+    }
+
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
+  }
+
+  {
+    const testName = "resolve-runtime";
+    const errors = [];
     let start = env.now();
     for (const [id, message] of bundle.messages) {
       bundle.format(message, args, errors);
