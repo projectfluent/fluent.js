@@ -76,7 +76,7 @@ function match(bundle, selector, key) {
 // Helper: resolve the default variant from a list of variants.
 function getDefault(scope, variants, star) {
   if (variants[star]) {
-    return Type(scope, variants[star]);
+    return Type(scope, variants[star].value);
   }
 
   scope.errors.push(new RangeError("No default"));
@@ -131,15 +131,6 @@ function Type(scope, expr) {
       return FunctionReference(scope, expr);
     case "select":
       return SelectExpression(scope, expr);
-    case undefined: {
-      // If it's a node with a value, resolve the value.
-      if (expr.value !== null && expr.value !== undefined) {
-        return Type(scope, expr.value);
-      }
-
-      scope.errors.push(new RangeError("No value"));
-      return new FluentNone();
-    }
     default:
       return new FluentNone();
   }
@@ -223,7 +214,7 @@ function TermReference(scope, {name, attr, args}) {
     return Type(local, term);
   }
 
-  return Type(local, term);
+  return Type(local, term["*"]);
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
@@ -253,20 +244,18 @@ function FunctionReference(scope, {name, args}) {
 function SelectExpression(scope, {selector, variants, star}) {
   let sel = Type(scope, selector);
   if (sel instanceof FluentNone) {
-    const variant = getDefault(scope, variants, star);
-    return Type(scope, variant);
+    return getDefault(scope, variants, star);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of variants) {
     const key = Type(scope, variant.key);
     if (match(scope.bundle, sel, key)) {
-      return Type(scope, variant);
+      return Type(scope, variant.value);
     }
   }
 
-  const variant = getDefault(scope, variants, star);
-  return Type(scope, variant);
+  return getDefault(scope, variants, star);
 }
 
 // Resolve a pattern (a complex string with placeables).
@@ -322,21 +311,31 @@ function Pattern(scope, ptn) {
  *
  * @param   {FluentBundle} bundle
  *    A FluentBundle instance which will be used to resolve the
- *    contextual information of the message.
+ *    contextual information of the value.
  * @param   {Object}         args
  *    List of arguments provided by the developer which can be accessed
- *    from the message.
- * @param   {Object}         message
- *    An object with the Message to be resolved.
+ *    from the value.
+ * @param   {any}         value
+ *    The value to be resovled. Can be null, a string, an array, or an object.
  * @param   {Array}          errors
  *    An error array that any encountered errors will be appended to.
  * @returns {FluentType}
  */
-export default function resolve(bundle, args, message, errors = []) {
+export default function resolve(bundle, args, value, errors = []) {
+  // Optimize patterns which are simple text.
+  if (typeof value === "string") {
+    return value;
+  }
+
+  // Optimize null values.
+  if (value === null) {
+    return null;
+  }
+
   const scope = {
     bundle, args, errors, dirty: new WeakSet(),
     // TermReferences are resolved in a new scope.
     insideTermReference: false,
   };
-  return Type(scope, message).toString(bundle);
+  return Type(scope, value).toString(bundle);
 }
