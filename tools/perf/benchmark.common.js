@@ -61,9 +61,9 @@ function runTest(env) {
     let start = env.now();
     for (const id of bundle._messages.keys()) {
         let message = bundle.getMessage(id);
-        message.value(args, errors);
+        message.value(bundle, args, errors);
         for (let attr of message.attributes) {
-            message.attribute(attr, args, errors);
+            message.attribute(bundle, attr, args, errors);
         }
     }
     let end = env.now();

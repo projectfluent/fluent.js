@@ -180,7 +180,7 @@ function MessageReference(scope, {name, attr}) {
   }
 
   if (attr) {
-    const attribute = message.attribute(attr, scope.args, scope.errors);
+    const attribute = message.attribute(scope.bundle, attr, scope.args, scope.errors);
     if (attribute) {
       return attribute;
     }
@@ -188,7 +188,7 @@ function MessageReference(scope, {name, attr}) {
     return new FluentNone(`${name}.${attr}`);
   }
 
-  return message.value(scope.args, scope.errors);
+  return message.value(scope.bundle, scope.args, scope.errors);
 }
 
 // Resolve a call to a Term with key-value arguments.
@@ -206,15 +206,15 @@ function TermReference(scope, {name, attr, args}) {
   const local = {...scope, args: keyargs, insideTermReference: true};
 
   if (attr) {
-    const attribute = term[attr];
+    const attribute = term.attribute(scope.bundle, attr, scope.args, scope.errors);
     if (attribute) {
-      return Type(local, attribute);
+      return attribute;
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${name}.${attr}`);
   }
 
-  return Type(local, term["*"]);
+  return term.value(scope.bundle, scope.args, scope.errors);
 }
 
 // Resolve a call to a Function with positional and key-value arguments.

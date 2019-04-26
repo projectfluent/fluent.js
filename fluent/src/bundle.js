@@ -1,6 +1,5 @@
 import resolve from "./resolver.js";
 import FluentResource from "./resource.js";
-import FluentMessage from "./message.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -153,7 +152,7 @@ export default class FluentBundle {
   } = {}) {
     const errors = [];
 
-    for (const [id, value] of res) {
+    for (const [id, entry] of res) {
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
@@ -161,13 +160,13 @@ export default class FluentBundle {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
-        this._terms.set(id, value);
+        this._terms.set(id, entry);
       } else {
         if (allowOverrides === false && this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
-        this._messages.set(id, new FluentMessage(this, id, value));
+        this._messages.set(id, entry);
       }
     }
 

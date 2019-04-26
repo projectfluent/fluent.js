@@ -2,23 +2,22 @@ import resolve from "./resolver.js";
 
 export default
 class FluentMessage {
-    constructor(bundle, id, values) {
-        this.bundle = bundle;
-        this.id = id;
-        ({"*": this._value = null, ...this._attributes} = values);
-        this.attributes = Object.keys(this._attributes);
+    constructor(value, attributes) {
+        this._value = value;
+        this._attributes = attributes;
+        this.attributes = Object.keys(attributes);
     }
 
-    value(args, errors = []) {
-        return resolve(this.bundle, args, this._value, errors);
+    value(bundle, args, errors = []) {
+        return resolve(bundle, args, this._value, errors);
     }
 
-    attribute(name, args, errors = []) {
+    attribute(bundle, name, args, errors = []) {
         let attribute = this._attributes[name];
         if (attribute === undefined){
             errors.push(`No attribute called "${name}"`);
             return undefined;
         }
-        return resolve(this.bundle, args, attribute, errors);
+        return resolve(bundle, args, attribute, errors);
     }
 }
