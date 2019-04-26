@@ -1,23 +1,29 @@
-import resolve from "./resolver.js";
+import {FluentNone} from "./types.js";
+import Type from "./resolver.js";
 
 export default
 class FluentMessage {
-    constructor(value, attributes) {
+    constructor(id, value, attributes) {
+        this.id = id;
+        this.attributes = Object.keys(attributes);
         this._value = value;
         this._attributes = attributes;
-        this.attributes = Object.keys(attributes);
     }
 
-    value(bundle, args, errors = []) {
-        return resolve(bundle, args, this._value, errors);
+    resolveValue(scope) {
+        // Handle messages with null values.
+        if (this._value === null) {
+          return new FluentNone(this.id);
+        }
+        return Type(scope, this._value);
     }
 
-    attribute(bundle, name, args, errors = []) {
+    resolveAttribute(scope, name) {
         let attribute = this._attributes[name];
         if (attribute === undefined){
-            errors.push(`No attribute called "${name}"`);
-            return undefined;
+            scope.errors.push(`No attribute called "${name}"`);
+            return new FluentNone(`${this.id}.${name}`);
         }
-        return resolve(bundle, args, attribute, errors);
+        return Type(scope, attribute);
     }
 }

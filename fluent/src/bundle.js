@@ -217,100 +217,41 @@ export default class FluentBundle {
    * @param   {?Array} errors
    * @returns {?string}
    */
-  format(path, args, errors) {
-    let parts = path.split(".");
-    let id = parts[0];
-    let message = this._messages.get(id);
-
+  format(id, args, errors) {
     if (!this._messages.has(id)) {
       errors.push(`Message not found: "${id}"`);
       return undefined;
     }
 
-    // Resolve the value of the message.
-    if (parts.length === 1) {
-      return formatMessage(this, args, message, errors);
-    }
-
-    // Resolve an attribute of the message.
-    if (parts.length === 2) {
-      if (message.attrs === null) {
-        errors.push(`Message has no attributes: "${id}"`);
-        return undefined;
-      }
-      let attribute = message.attrs[parts[1]];
-      if (attribute === undefined){
-        errors.push(`No attribute called: "${parts[1]}"`);
-        return undefined;
-      }
-      return formatAttribute(this, args, attribute, errors);
-    }
-
-    errors.push(`Invalid path: "${path}"`);
-    return undefined;
+    let scope = this._createScope(args, errors);
+    let message = this._messages.get(id);
+    return message.resolveValue(scope).toString(this);
   }
 
-  /**
-   * Format a message and its attributes to a {value, attributes} object.
-   *
-   * Find a message by `id` in the bundle and format it and its attributes into
-   * a {value, attributes} object. The `value` field will be a string or
-   * `null`, if the message doesn't have a value. The `attributes` field will
-   * be a `Map` of attribute names to strings.
-   *
-   * If the message is not found in the bundle, this method returns
-   * `undefined`.
-   *
-   * `args` can be an object or `null`. If it's an object, it will be used to
-   * resolve references to variables passed as arguments to the translation.
-   *
-   * In case of errors `compound` will try to salvage as much of the
-   * translation as possible and will still return a string.  For performance
-   * reasons, the encountered errors are not returned but instead are appended
-   * to the `errors` array passed as the third argument.
-   *
-   *     let errors = [];
-   *     bundle.addMessages(`
-   *     hello = Hello, {$name}!
-   *     email-input =
-   *         .placeholder = Your e-mail
-   *     `);
-   *
-   *     bundle.compound('hello', {name: 'Jane'}, errors);
-   *     // → {value: 'Hello, Jane!', attributes: Map {}}
-   *
-   *     bundle.compound('email-input', {name: 'Jane'}, errors);
-   *     // → {value: null, attributes: Map {placeholder ⇒ 'Your e-mail'}}
-   *
-   * @param   {string} id
-   * @param   {?Object} args
-   * @param   {?Array} errors
-   * @returns {?{value: string, attributes: Map}}
-   */
-  compound(id, args, errors) {
-    if (!this._messages.has(id)) {
-      errors.push(`Message not found: "${id}"`);
-      return undefined;
-    }
+  formatValue(message, args, errors) {
+      if (typeof message._value === "string") {
+          return message._value;
+      }
+    let scope = this._createScope(args, errors);
+    return message.resolveValue(scope).toString(this);
+  }
 
-    let message = this._messages.get(id);
-    let shape = {
-      value: formatMessage(this, args, message, errors),
-      attributes: new Map()
+  formatAttribute(message, name, args, errors) {
+      if (typeof message._attributes[name] === "string") {
+          return message._attributes[name];
+      }
+    let scope = this._createScope(args, errors);
+    return message.resolveAttribute(scope, name).toString(this);
+  }
+
+  _createScope(args, errors = []) {
+    return {
+      args, errors,
+      bundle: this,
+      dirty: new WeakSet(),
+      // TermReferences are resolved in a new scope.
+      insideTermReference: false,
     };
-
-    if (message.attrs === undefined) {
-      return shape;
-    }
-
-    for (let [name, attribute] of Object.entries(message.attrs)) {
-      shape.attributes.set(
-        name,
-        formatAttribute(this, args, attribute, errors),
-      );
-    }
-
-    return shape;
   }
 
   _memoizeIntlObject(ctor, opts) {
@@ -324,30 +265,4 @@ export default class FluentBundle {
 
     return cache[id];
   }
-}
-
-function formatMessage(bundle, args, message, errors) {
-  // Optimize messages which are simple strings with no attributes.
-  if (typeof message === "string") {
-    return bundle._transform(message);
-  }
-  // Optimize messages with null values.
-  if (message.value === null) {
-    return null;
-  }
-  // Optimize simple-string messages with attributes.
-  if (typeof message.value === "string") {
-    return bundle._transform(message.value);
-  }
-  // Resolve the complex value of the message.
-  return resolve(bundle, args, message, errors);
-}
-
-function formatAttribute(bundle, args, attribute, errors) {
-  // Optimize attributes which are simple text.
-  if (typeof attribute === "string") {
-    return bundle._transform(attribute);
-  }
-  // Resolve the complex value of the attribute.
-  return resolve(bundle, args, attribute, errors);
 }

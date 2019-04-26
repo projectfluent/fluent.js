@@ -76,7 +76,8 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.set(next[1], parseMessage());
+        let id = next[1];
+        resource.set(id, parseMessage(id));
       } catch (err) {
         if (err instanceof FluentError) {
           // Don't report any Fluent syntax errors. Skip directly to the
@@ -151,17 +152,17 @@ export default class FluentResource extends Map {
       return match(re)[1];
     }
 
-    function parseMessage() {
+    function parseMessage(id) {
       let value = parsePattern();
       let attrs = parseAttributes();
 
       if (value === null) {
         if (Object.keys(attrs) === 0)
           throw new FluentError("Expected message value or attributes");
-        return new FluentMessage(null, attrs);
+        return new FluentMessage(id, null, attrs);
       }
 
-      return new FluentMessage(value, attrs);
+      return new FluentMessage(id, value, attrs);
     }
 
     function parseAttributes() {

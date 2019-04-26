@@ -54,15 +54,15 @@ function print(err, data) {
 
   for (let id of bundle._messages.keys()) {
     const formatErrors = [];
-    const message = bundle.compound(id, ext, formatErrors);
-    if (message.value) {
-      printValue(id, message.value);
-    } else {
-      console.log(color(`${id} (no value)`, 'cyan'));
+
+    let message = bundle.getMessage(id);
+    let value = bundle.formatValue(message, ext, formatErrors);
+    printValue(id, value);
+    for (let name of message.attributes) {
+      let attribute = bundle.formatAttribute(message, name, ext, formatErrors);
+      printValue(`    .${name}`, attribute);
     }
-    for (let [name, attr] of message.attributes) {
-      printValue(`    .${name}`, attr);
-    }
+
     formatErrors.forEach(printError);
   }
 }
