@@ -152,7 +152,8 @@ export default class FluentBundle {
   } = {}) {
     const errors = [];
 
-    for (const [id, entry] of res) {
+    for (const entry of res) {
+      let id = entry.id;
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.

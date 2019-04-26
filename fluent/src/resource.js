@@ -56,7 +56,7 @@ const MAX_PLACEABLES = 100;
 /**
  * Fluent Resource is a structure storing a map of parsed localization entries.
  */
-export default class FluentResource extends Map {
+export default class FluentResource extends Set {
   /**
    * Create a new FluentResource from Fluent code.
    */
@@ -76,8 +76,7 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        let id = next[1];
-        resource.set(id, parseMessage(id));
+        resource.add(parseMessage(next[1]));
       } catch (err) {
         if (err instanceof FluentError) {
           // Don't report any Fluent syntax errors. Skip directly to the
