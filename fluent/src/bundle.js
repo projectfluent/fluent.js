@@ -63,6 +63,7 @@ export default class FluentBundle {
     this._useIsolating = useIsolating;
     this._transform = transform;
     this._intls = new WeakMap();
+    this._dirty = new WeakSet();
   }
 
   /*
@@ -246,7 +247,7 @@ export default class FluentBundle {
     return {
       args, errors,
       bundle: this,
-      dirty: new WeakSet(),
+      dirty: this._dirty,
       // TermReferences are resolved in a new scope.
       insideTermReference: false,
     };
