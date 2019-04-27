@@ -1,5 +1,6 @@
-import resolve from "./resolver.js";
 import FluentResource from "./resource.js";
+import resolve from "./resolver.js";
+import {FluentNone} from "./types.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -230,19 +231,15 @@ export default class FluentBundle {
   }
 
   formatValue(message, args, errors) {
-      if (typeof message._value === "string") {
-          return message._value;
-      }
     let scope = this._createScope(args, errors);
-    return message.resolveValue(scope).toString(this);
+    let value = message.resolveValue(scope);
+    return (value instanceof FluentNone) ? null : value;
   }
 
   formatAttribute(message, name, args, errors) {
-      if (typeof message._attributes[name] === "string") {
-          return message._attributes[name];
-      }
     let scope = this._createScope(args, errors);
-    return message.resolveAttribute(scope, name).toString(this);
+    let attribute = message.resolveAttribute(scope, name);
+    return (attribute instanceof FluentNone) ? undefined : attribute;
   }
 
   _createScope(args, errors = []) {
