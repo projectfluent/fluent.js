@@ -5,7 +5,7 @@ the ECMA 402 standard required by the `fluent` package.  Project Fluent is
 a localization framework designed to unleash the expressive power of the
 natural language.
 
-Currenly the polyfill provides implementations for the following proposals:
+Currently, the polyfill provides implementations for the following proposals:
 
   - [Intl.PluralRules][], as implemented by [intl-pluralrules][]
 
