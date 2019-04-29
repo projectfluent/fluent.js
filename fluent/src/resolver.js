@@ -178,16 +178,9 @@ function MessageReference(scope, {name, attr}) {
     scope.errors.push(err);
     return new FluentNone(name);
   }
-
-  if (attr) {
-    const attribute = message.resolveAttribute(scope, attr);
-    if (attribute instanceof FluentNone) {
-      scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    }
-    return attribute;
-  }
-
-  return message.resolveValue(scope);
+  return attr ?
+    message.resolveAttribute(scope, attr) :
+    message.resolveValue(scope);
 }
 
 // Resolve a call to a Term with key-value arguments.
@@ -203,16 +196,9 @@ function TermReference(scope, {name, attr, args}) {
   // Every TermReference has its own args.
   const [, keyargs] = getArguments(scope, args);
   const local = {...scope, args: keyargs, insideTermReference: true};
-
-  if (attr) {
-    const attribute = term.resolveAttribute(local, attr);
-    if (attribute instanceof FluentNone) {
-      scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    }
-    return attribute;
-  }
-
-  return term.resolveValue(local);
+  return attr ?
+    term.resolveAttribute(local, attr) :
+    term.resolveValue(local);
 }
 
 // Resolve a call to a Function with positional and key-value arguments.

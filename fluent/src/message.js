@@ -13,6 +13,7 @@ class FluentMessage {
   resolveValue(scope) {
     // Handle messages with null values.
     if (this._value === null) {
+      scope.errors.push(new RangeError("No value"));
       return new FluentNone(this.id);
     }
     return Type(scope, this._value);
@@ -21,7 +22,7 @@ class FluentMessage {
   resolveAttribute(scope, name) {
     let attribute = this._attributes[name];
     if (attribute === undefined){
-      scope.errors.push(`No attribute called "${name}"`);
+      scope.errors.push(new ReferenceError(`Unknown attribute: ${name}`));
       return new FluentNone(`${this.id}.${name}`);
     }
     return Type(scope, attribute);
