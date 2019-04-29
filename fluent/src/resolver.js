@@ -205,14 +205,14 @@ function TermReference(scope, {name, attr, args}) {
   const local = {...scope, args: keyargs, insideTermReference: true};
 
   if (attr) {
-    const attribute = term.resolveAttribute(scope, attr);
+    const attribute = term.resolveAttribute(local, attr);
     if (attribute instanceof FluentNone) {
       scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     }
     return attribute;
   }
 
-  return term.resolveValue(scope);
+  return term.resolveValue(local);
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
