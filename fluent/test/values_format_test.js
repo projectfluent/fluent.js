@@ -58,14 +58,7 @@ suite('Formatting values', function(){
   test('returns null if there is no value', function(){
     const val = bundle.format('key5', args, errs);
     assert.strictEqual(val, null);
-    assert.equal(errs.length, 0);
+    assert.equal(errs.length, 1);
   });
-
-  test('allows to pass traits directly to bundle.format', function(){
-    assert.strictEqual(bundle.format('key5.a', args, errs), 'A5');
-    assert.strictEqual(bundle.format('key5.b', args, errs), 'B5');
-    assert.equal(errs.length, 0);
-  });
-
 
 });

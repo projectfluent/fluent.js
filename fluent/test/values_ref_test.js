@@ -72,7 +72,7 @@ suite('Referencing values', function(){
 
   test('uses ??? if there is no value', function(){
     const val = bundle.format('ref5', args, errs);
-    assert.strictEqual(val, '???');
+    assert.strictEqual(val, 'key5');
     assert.ok(errs[0] instanceof RangeError); // no default
   });
 

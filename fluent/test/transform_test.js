@@ -23,8 +23,9 @@ suite('Transformations', function(){
   });
 
   test('transforms strings', function(){
-    const val = bundle.format('foo', {}, errs);
-    const attr = bundle.format('foo.bar', {foo: "arg"}, errs);
+    const msg = bundle.getMessage('foo');
+    const val = bundle.formatValue(msg, {}, errs);
+    const attr = bundle.formatAttribute(msg, 'bar', {foo: "arg"}, errs);
     assert(val.includes("FAA"));
     assert(attr.includes("BAr"));
     assert(attr.includes("BAz"));

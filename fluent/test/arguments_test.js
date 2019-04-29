@@ -40,7 +40,8 @@ suite('Variables', function() {
     });
 
     test('can be used in an attribute', function() {
-      const val = bundle.format('baz.attr', { num: 3 }, errs);
+      const message = bundle.getMessage('baz');
+      const val = bundle.formatAttribute(message, 'attr', { num: 3 }, errs);
       assert.equal(val, 'Baz Attribute 3');
       assert.equal(errs.length, 0);
     });

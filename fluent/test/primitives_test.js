@@ -89,7 +89,8 @@ suite('Primitives', function() {
     });
 
     test('can be used as an attribute value', function(){
-      const val = bundle.format('bar.attr', args, errs);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
@@ -141,7 +142,8 @@ suite('Primitives', function() {
     });
 
     test('can be used as an attribute value', function(){
-      const val = bundle.format('baz.attr', args, errs);
+      const msg = bundle.getMessage('baz');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'FooBarBazAttribute');
       assert.equal(errs.length, 0);
     });

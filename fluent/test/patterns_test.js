@@ -82,11 +82,12 @@ suite('Patterns', function(){
     test('returns the null value', function(){
       const val = bundle.format('foo', args, errs);
       assert.strictEqual(val, null);
-      assert.equal(errs.length, 0);
+      assert.equal(errs.length, 1);
     });
 
     test('formats the attribute', function(){
-      const val = bundle.format('foo.attr', args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.strictEqual(val, 'Foo Attr');
       assert.equal(errs.length, 0);
     });
@@ -94,7 +95,7 @@ suite('Patterns', function(){
     test('formats ??? when the referenced message has no value and no default',
        function(){
       const val = bundle.format('bar', args, errs);
-      assert.strictEqual(val, '??? Bar');
+      assert.strictEqual(val, 'foo Bar');
       assert.ok(errs[0] instanceof RangeError); // no default
     });
   });

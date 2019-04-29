@@ -30,30 +30,30 @@ suite('Attributes', function() {
       `);
     });
 
-    test('falls back gracefully for entities with string values and no attributes', function() {
+    test('falls back to id for entities with string values and no attributes', function() {
       const val = bundle.format('ref-foo', args, errs);
-      assert.equal(val, 'Foo');
+      assert.equal(val, 'foo.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('falls back gracefully for entities with string values and other attributes', function() {
+    test('falls back to id for entities with string values and other attributes', function() {
       const val = bundle.format('ref-bar', args, errs);
-      assert.equal(val, 'Bar');
+      assert.equal(val, 'bar.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('falls back gracefully for entities with pattern values and no attributes', function() {
+    test('falls back to id for entities with pattern values and no attributes', function() {
       const val = bundle.format('ref-baz', args, errs);
-      assert.equal(val, 'Foo Baz');
+      assert.equal(val, 'baz.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('falls back gracefully for entities with pattern values and other attributes', function() {
+    test('falls back to id for entities with pattern values and other attributes', function() {
       const val = bundle.format('ref-qux', args, errs);
-      assert.equal(val, 'Foo Qux');
+      assert.equal(val, 'qux.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
@@ -80,7 +80,8 @@ suite('Attributes', function() {
     });
 
     test('can be formatted directly for entities with string values', function() {
-      const val = bundle.format('foo.attr', args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
@@ -92,7 +93,8 @@ suite('Attributes', function() {
     });
 
     test('can be formatted directly for entities with pattern values', function() {
-      const val = bundle.format('bar.attr', args, errs);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'Bar Attribute');
       assert.equal(errs.length, 0);
     });
@@ -123,7 +125,8 @@ suite('Attributes', function() {
     });
 
     test('can be formatted directly for entities with string values', function() {
-      const val = bundle.format('bar.attr', args, errs);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
@@ -135,7 +138,8 @@ suite('Attributes', function() {
     });
 
     test('can be formatted directly for entities with simple pattern values', function() {
-      const val = bundle.format('baz.attr', args, errs);
+      const msg = bundle.getMessage('baz');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'Foo Attribute');
       assert.equal(errs.length, 0);
     });
@@ -147,7 +151,8 @@ suite('Attributes', function() {
     });
 
     test('can be formatted directly when it uses a self-reference', function() {
-      const val = bundle.format('qux.attr', args, errs);
+      const msg = bundle.getMessage('qux');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'Qux Attribute');
       assert.equal(errs.length, 0);
     });
@@ -174,7 +179,8 @@ suite('Attributes', function() {
     });
 
     test('can be formatted directly', function() {
-      const val = bundle.format('foo.attr', args, errs);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatAttribute(msg, 'attr', args, errs);
       assert.equal(val, 'A');
       assert.equal(errs.length, 0);
     });
