@@ -219,7 +219,7 @@ export default class FluentBundle {
    * @param   {?Array} errors
    * @returns {?string}
    */
-  format(id, args, errors) {
+  format(id, args, errors = []) {
     if (!this._messages.has(id)) {
       errors.push(`Message not found: "${id}"`);
       return undefined;
@@ -227,7 +227,8 @@ export default class FluentBundle {
 
     let scope = this._createScope(args, errors);
     let message = this._messages.get(id);
-    return message.resolveValue(scope).toString(this);
+    let value = message.resolveValue(scope);
+    return (value instanceof FluentNone) ? null : value;
   }
 
   formatValue(message, args, errors) {
