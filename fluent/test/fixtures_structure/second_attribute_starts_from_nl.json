@@ -1,9 +1,14 @@
-{
-    "key": {
-        "value": "Value",
-        "attrs": {
+[
+    {
+        "id": "key",
+        "attributes": [
+            "label",
+            "accesskey"
+        ],
+        "_value": "Value",
+        "_attributes": {
             "label": "Value",
             "accesskey": "K"
         }
     }
-}
+]

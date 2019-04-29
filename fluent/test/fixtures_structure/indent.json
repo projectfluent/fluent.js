@@ -1,23 +1,38 @@
-{
-    "key2": [
-        {
-            "type": "mesg",
-            "name": "a",
-            "attr": null
-        }
-    ],
-    "key3": [
-        {
-            "type": "mesg",
-            "name": "a",
-            "attr": null
-        }
-    ],
-    "key4": [
-        {
-            "type": "mesg",
-            "name": "a",
-            "attr": null
-        }
-    ]
-}
+[
+    {
+        "id": "key2",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "mesg",
+                "name": "a",
+                "attr": null
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key3",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "mesg",
+                "name": "a",
+                "attr": null
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key4",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "mesg",
+                "name": "a",
+                "attr": null
+            }
+        ],
+        "_attributes": {}
+    }
+]

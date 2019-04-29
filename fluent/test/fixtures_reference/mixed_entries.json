@@ -1,12 +1,36 @@
-{
-    "-brand-name": "Aurora",
-    "key01": {
-        "value": null,
-        "attrs": {
+[
+    {
+        "id": "-brand-name",
+        "attributes": [],
+        "_value": "Aurora",
+        "_attributes": {}
+    },
+    {
+        "id": "key01",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "key02": "Value",
-    "key03": "Value 03",
-    "key04": "Value 04"
-}
+    {
+        "id": "key02",
+        "attributes": [],
+        "_value": "Value",
+        "_attributes": {}
+    },
+    {
+        "id": "key03",
+        "attributes": [],
+        "_value": "Value 03",
+        "_attributes": {}
+    },
+    {
+        "id": "key04",
+        "attributes": [],
+        "_value": "Value 04",
+        "_attributes": {}
+    }
+]

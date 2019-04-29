@@ -1,36 +1,91 @@
-{
-    "text-backslash-one": "Value with \\ a backslash",
-    "text-backslash-two": "Value with \\\\ two backslashes",
-    "text-backslash-brace": [
-        "Value with \\",
-        {
-            "type": "mesg",
-            "name": "placeable",
-            "attr": null
-        }
-    ],
-    "text-backslash-u": "\\u0041",
-    "text-backslash-backslash-u": "\\\\u0041",
-    "quote-in-string": [
-        "\""
-    ],
-    "backslash-in-string": [
-        "\\"
-    ],
-    "string-unicode-sequence": [
-        "A"
-    ],
-    "string-escaped-unicode": [
-        "\\u0041"
-    ],
-    "brace-open": [
-        "An opening ",
-        "{",
-        " brace."
-    ],
-    "brace-close": [
-        "A closing ",
-        "}",
-        " brace."
-    ]
-}
+[
+    {
+        "id": "text-backslash-one",
+        "attributes": [],
+        "_value": "Value with \\ a backslash",
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-two",
+        "attributes": [],
+        "_value": "Value with \\\\ two backslashes",
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-brace",
+        "attributes": [],
+        "_value": [
+            "Value with \\",
+            {
+                "type": "mesg",
+                "name": "placeable",
+                "attr": null
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-u",
+        "attributes": [],
+        "_value": "\\u0041",
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-backslash-u",
+        "attributes": [],
+        "_value": "\\\\u0041",
+        "_attributes": {}
+    },
+    {
+        "id": "quote-in-string",
+        "attributes": [],
+        "_value": [
+            "\""
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "backslash-in-string",
+        "attributes": [],
+        "_value": [
+            "\\"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "string-unicode-sequence",
+        "attributes": [],
+        "_value": [
+            "A"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "string-escaped-unicode",
+        "attributes": [],
+        "_value": [
+            "\\u0041"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "brace-open",
+        "attributes": [],
+        "_value": [
+            "An opening ",
+            "{",
+            " brace."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "brace-close",
+        "attributes": [],
+        "_value": [
+            "A closing ",
+            "}",
+            " brace."
+        ],
+        "_attributes": {}
+    }
+]

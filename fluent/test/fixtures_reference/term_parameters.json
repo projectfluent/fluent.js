@@ -1,83 +1,108 @@
-{
-    "-term": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "arg"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "key01": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "key02": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "key03": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "arg",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    }
-                }
-            ]
-        }
-    ],
-    "key04": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": [
-                {
-                    "type": "str",
-                    "value": "positional"
+[
+    {
+        "id": "-term",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "arg"
                 },
-                {
-                    "type": "narg",
-                    "name": "narg1",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
                     }
-                },
-                {
-                    "type": "narg",
-                    "name": "narg2",
-                    "value": {
-                        "type": "num",
-                        "value": 2,
-                        "precision": 0
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key02",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key03",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "arg",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
                     }
-                }
-            ]
-        }
-    ]
-}
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key04",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": [
+                    {
+                        "type": "str",
+                        "value": "positional"
+                    },
+                    {
+                        "type": "narg",
+                        "name": "narg1",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "narg2",
+                        "value": {
+                            "type": "num",
+                            "value": 2,
+                            "precision": 0
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    }
+]

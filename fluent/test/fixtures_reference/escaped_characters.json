@@ -1,48 +1,123 @@
-{
-    "text-backslash-one": "Value with \\ a backslash",
-    "text-backslash-two": "Value with \\\\ two backslashes",
-    "text-backslash-brace": [
-        "Value with \\",
-        {
-            "type": "mesg",
-            "name": "placeable",
-            "attr": null
-        }
-    ],
-    "text-backslash-u": "\\u0041",
-    "text-backslash-backslash-u": "\\\\u0041",
-    "quote-in-string": [
-        "\""
-    ],
-    "backslash-in-string": [
-        "\\"
-    ],
-    "string-unicode-4digits": [
-        "A"
-    ],
-    "escape-unicode-4digits": [
-        "\\u0041"
-    ],
-    "string-unicode-6digits": [
-        "😂"
-    ],
-    "escape-unicode-6digits": [
-        "\\U01F602"
-    ],
-    "string-too-many-4digits": [
-        "A00"
-    ],
-    "string-too-many-6digits": [
-        "😂00"
-    ],
-    "brace-open": [
-        "An opening ",
-        "{",
-        " brace."
-    ],
-    "brace-close": [
-        "A closing ",
-        "}",
-        " brace."
-    ]
-}
+[
+    {
+        "id": "text-backslash-one",
+        "attributes": [],
+        "_value": "Value with \\ a backslash",
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-two",
+        "attributes": [],
+        "_value": "Value with \\\\ two backslashes",
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-brace",
+        "attributes": [],
+        "_value": [
+            "Value with \\",
+            {
+                "type": "mesg",
+                "name": "placeable",
+                "attr": null
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-u",
+        "attributes": [],
+        "_value": "\\u0041",
+        "_attributes": {}
+    },
+    {
+        "id": "text-backslash-backslash-u",
+        "attributes": [],
+        "_value": "\\\\u0041",
+        "_attributes": {}
+    },
+    {
+        "id": "quote-in-string",
+        "attributes": [],
+        "_value": [
+            "\""
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "backslash-in-string",
+        "attributes": [],
+        "_value": [
+            "\\"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "string-unicode-4digits",
+        "attributes": [],
+        "_value": [
+            "A"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "escape-unicode-4digits",
+        "attributes": [],
+        "_value": [
+            "\\u0041"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "string-unicode-6digits",
+        "attributes": [],
+        "_value": [
+            "😂"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "escape-unicode-6digits",
+        "attributes": [],
+        "_value": [
+            "\\U01F602"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "string-too-many-4digits",
+        "attributes": [],
+        "_value": [
+            "A00"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "string-too-many-6digits",
+        "attributes": [],
+        "_value": [
+            "😂00"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "brace-open",
+        "attributes": [],
+        "_value": [
+            "An opening ",
+            "{",
+            " brace."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "brace-close",
+        "attributes": [],
+        "_value": [
+            "A closing ",
+            "}",
+            " brace."
+        ],
+        "_attributes": {}
+    }
+]

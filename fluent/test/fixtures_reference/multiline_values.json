@@ -1,19 +1,33 @@
-{
-    "key01": [
-        "A multiline value",
-        "\n",
-        "continued on the next line",
-        "\n\n",
-        "and also down here."
-    ],
-    "key02": [
-        "A multiline value starting",
-        "\n",
-        "on a new line."
-    ],
-    "key03": {
-        "value": null,
-        "attrs": {
+[
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": [
+            "A multiline value",
+            "\n",
+            "continued on the next line",
+            "\n\n",
+            "and also down here."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key02",
+        "attributes": [],
+        "_value": [
+            "A multiline value starting",
+            "\n",
+            "on a new line."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key03",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": [
                 "A multiline attribute value",
                 "\n",
@@ -23,9 +37,13 @@
             ]
         }
     },
-    "key04": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "key04",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": [
                 "A multiline attribute value",
                 "\n",
@@ -33,61 +51,106 @@
             ]
         }
     },
-    "key05": [
-        "A multiline value with non-standard",
-        "\n\n    ",
-        "indentation."
-    ],
-    "key06": [
-        "A multiline value with ",
-        "placeables",
-        "\n",
-        "at",
-        " the beginning and the end",
-        "\n",
-        "of lines",
-        "."
-    ],
-    "key07": [
-        "A multiline value",
-        " starting and ending ",
-        "with a placeable"
-    ],
-    "key08": "Leading and trailing whitespace.",
-    "key09": [
-        "zero",
-        "\n   ",
-        "three",
-        "\n  ",
-        "two",
-        "\n ",
-        "one",
-        "\n",
-        "zero"
-    ],
-    "key10": [
-        "  ",
-        "two",
-        "\n",
-        "zero",
-        "\n    ",
-        "four"
-    ],
-    "key11": [
-        "  ",
-        "two",
-        "\n",
-        "zero"
-    ],
-    "key12": [
-        ".",
-        "\n    ",
-        "four"
-    ],
-    "key13": [
-        "    ",
-        "four",
-        "\n",
-        "."
-    ]
-}
+    {
+        "id": "key05",
+        "attributes": [],
+        "_value": [
+            "A multiline value with non-standard",
+            "\n\n    ",
+            "indentation."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key06",
+        "attributes": [],
+        "_value": [
+            "A multiline value with ",
+            "placeables",
+            "\n",
+            "at",
+            " the beginning and the end",
+            "\n",
+            "of lines",
+            "."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key07",
+        "attributes": [],
+        "_value": [
+            "A multiline value",
+            " starting and ending ",
+            "with a placeable"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key08",
+        "attributes": [],
+        "_value": "Leading and trailing whitespace.",
+        "_attributes": {}
+    },
+    {
+        "id": "key09",
+        "attributes": [],
+        "_value": [
+            "zero",
+            "\n   ",
+            "three",
+            "\n  ",
+            "two",
+            "\n ",
+            "one",
+            "\n",
+            "zero"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key10",
+        "attributes": [],
+        "_value": [
+            "  ",
+            "two",
+            "\n",
+            "zero",
+            "\n    ",
+            "four"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key11",
+        "attributes": [],
+        "_value": [
+            "  ",
+            "two",
+            "\n",
+            "zero"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key12",
+        "attributes": [],
+        "_value": [
+            ".",
+            "\n    ",
+            "four"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key13",
+        "attributes": [],
+        "_value": [
+            "    ",
+            "four",
+            "\n",
+            "."
+        ],
+        "_attributes": {}
+    }
+]

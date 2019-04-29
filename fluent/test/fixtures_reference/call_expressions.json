@@ -1,561 +1,711 @@
-{
-    "valid-func-name-01": [
-        {
-            "type": "func",
-            "name": "FUN1",
-            "args": []
-        }
-    ],
-    "valid-func-name-02": [
-        {
-            "type": "func",
-            "name": "FUN_FUN",
-            "args": []
-        }
-    ],
-    "valid-func-name-03": [
-        {
-            "type": "func",
-            "name": "FUN-FUN",
-            "args": []
-        }
-    ],
-    "positional-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "str",
-                    "value": "a"
-                },
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                }
-            ]
-        }
-    ],
-    "named-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+[
+    {
+        "id": "valid-func-name-01",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN1",
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "valid-func-name-02",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN_FUN",
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "valid-func-name-03",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN-FUN",
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "positional-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "y",
-                    "value": {
+                    },
+                    {
                         "type": "str",
-                        "value": "Y"
+                        "value": "a"
+                    },
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
                     }
-                }
-            ]
-        }
-    ],
-    "dense-named-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "named-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "y",
+                        "value": {
+                            "type": "str",
+                            "value": "Y"
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "dense-named-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "y",
+                        "value": {
+                            "type": "str",
+                            "value": "Y"
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "mixed-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "y",
-                    "value": {
+                    },
+                    {
                         "type": "str",
-                        "value": "Y"
+                        "value": "a"
+                    },
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
+                    },
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "y",
+                        "value": {
+                            "type": "str",
+                            "value": "Y"
+                        }
                     }
-                }
-            ]
-        }
-    ],
-    "mixed-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "str",
-                    "value": "a"
-                },
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                },
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "shuffled-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "y",
-                    "value": {
+                    },
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
                         "type": "str",
-                        "value": "Y"
+                        "value": "a"
+                    },
+                    {
+                        "type": "narg",
+                        "name": "y",
+                        "value": {
+                            "type": "str",
+                            "value": "Y"
+                        }
+                    },
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
                     }
-                }
-            ]
-        }
-    ],
-    "shuffled-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "duplicate-named-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "str",
+                            "value": "X"
+                        }
                     }
-                },
-                {
-                    "type": "str",
-                    "value": "a"
-                },
-                {
-                    "type": "narg",
-                    "name": "y",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "sparse-inline-call",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "str",
-                        "value": "Y"
+                        "value": "a"
+                    },
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
+                    },
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
                     }
-                },
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                }
-            ]
-        }
-    ],
-    "duplicate-named-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "empty-inline-call",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "multiline-call",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "str",
-                        "value": "X"
+                        "value": "a"
+                    },
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
+                    },
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
                     }
-                }
-            ]
-        }
-    ],
-    "sparse-inline-call": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "str",
-                    "value": "a"
-                },
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                },
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "sparse-multiline-call",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "str",
+                        "value": "a"
+                    },
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
+                    },
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "empty-multiline-call",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-arg-number",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
                     }
-                }
-            ]
-        }
-    ],
-    "empty-inline-call": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": []
-        }
-    ],
-    "multiline-call": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "str",
-                    "value": "a"
-                },
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                },
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-arg-string",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "str",
+                        "value": "a"
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-arg-msg-ref",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-arg-term-ref",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "term",
+                        "name": "msg",
+                        "attr": null,
+                        "args": []
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-arg-var-ref",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "var",
+                        "name": "var"
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-arg-call",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "func",
+                        "name": "OTHER",
+                        "args": []
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-named-arg",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-closing-paren",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "mesg",
+                        "name": "x",
+                        "attr": null
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "one-argument",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
                     }
-                }
-            ]
-        }
-    ],
-    "sparse-multiline-call": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "str",
-                    "value": "a"
-                },
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                },
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "many-arguments",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
-                    }
-                }
-            ]
-        }
-    ],
-    "empty-multiline-call": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": []
-        }
-    ],
-    "unindented-arg-number": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                }
-            ]
-        }
-    ],
-    "unindented-arg-string": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "str",
-                    "value": "a"
-                }
-            ]
-        }
-    ],
-    "unindented-arg-msg-ref": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": null
-                }
-            ]
-        }
-    ],
-    "unindented-arg-term-ref": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "term",
-                    "name": "msg",
-                    "attr": null,
-                    "args": []
-                }
-            ]
-        }
-    ],
-    "unindented-arg-var-ref": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "var",
-                    "name": "var"
-                }
-            ]
-        }
-    ],
-    "unindented-arg-call": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "func",
-                    "name": "OTHER",
-                    "args": []
-                }
-            ]
-        }
-    ],
-    "unindented-named-arg": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    }
-                }
-            ]
-        }
-    ],
-    "unindented-closing-paren": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "mesg",
-                    "name": "x",
-                    "attr": null
-                }
-            ]
-        }
-    ],
-    "one-argument": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                }
-            ]
-        }
-    ],
-    "many-arguments": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "num",
-                    "value": 2,
-                    "precision": 0
-                },
-                {
-                    "type": "num",
-                    "value": 3,
-                    "precision": 0
-                }
-            ]
-        }
-    ],
-    "inline-sparse-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "num",
-                    "value": 2,
-                    "precision": 0
-                },
-                {
-                    "type": "num",
-                    "value": 3,
-                    "precision": 0
-                }
-            ]
-        }
-    ],
-    "mulitline-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "num",
-                    "value": 2,
-                    "precision": 0
-                }
-            ]
-        }
-    ],
-    "mulitline-sparse-args": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "num",
-                    "value": 1,
-                    "precision": 0
-                },
-                {
-                    "type": "num",
-                    "value": 2,
-                    "precision": 0
-                }
-            ]
-        }
-    ],
-    "sparse-named-arg": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "y",
-                    "value": {
+                    },
+                    {
                         "type": "num",
                         "value": 2,
                         "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "z",
-                    "value": {
+                    },
+                    {
                         "type": "num",
                         "value": 3,
                         "precision": 0
                     }
-                }
-            ]
-        }
-    ],
-    "unindented-colon": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "inline-sparse-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
+                    },
+                    {
+                        "type": "num",
+                        "value": 2,
+                        "precision": 0
+                    },
+                    {
+                        "type": "num",
+                        "value": 3,
+                        "precision": 0
                     }
-                }
-            ]
-        }
-    ],
-    "unindented-value": [
-        {
-            "type": "func",
-            "name": "FUN",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "x",
-                    "value": {
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "mulitline-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
                         "type": "num",
                         "value": 1,
                         "precision": 0
+                    },
+                    {
+                        "type": "num",
+                        "value": 2,
+                        "precision": 0
                     }
-                }
-            ]
-        }
-    ]
-}
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "mulitline-sparse-args",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "num",
+                        "value": 1,
+                        "precision": 0
+                    },
+                    {
+                        "type": "num",
+                        "value": 2,
+                        "precision": 0
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "sparse-named-arg",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "y",
+                        "value": {
+                            "type": "num",
+                            "value": 2,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "z",
+                        "value": {
+                            "type": "num",
+                            "value": 3,
+                            "precision": 0
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-colon",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "unindented-value",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "func",
+                "name": "FUN",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "x",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    }
+]

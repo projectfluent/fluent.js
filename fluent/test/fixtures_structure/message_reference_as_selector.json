@@ -1,23 +1,28 @@
-{
-    "err1": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "mesg",
-                "name": "foo",
-                "attr": null
-            },
-            "variants": [
-                {
-                    "key": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    },
-                    "value": "One"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+[
+    {
+        "id": "err1",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "mesg",
+                    "name": "foo",
+                    "attr": null
+                },
+                "variants": [
+                    {
+                        "key": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        },
+                        "value": "One"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]

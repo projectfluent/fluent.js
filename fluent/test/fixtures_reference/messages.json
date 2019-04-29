@@ -1,35 +1,98 @@
-{
-    "key01": "Value",
-    "key02": {
-        "value": "Value",
-        "attrs": {
-            "attr1": "Attribute 1",
-            "attr2": "Attribute 2"
-        }
+[
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": "Value",
+        "_attributes": {}
     },
-    "key03": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "key02",
+        "attributes": [
+            "attr"
+        ],
+        "_value": "Value",
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "key04": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "key02",
+        "attributes": [
+            "attr1",
+            "attr2"
+        ],
+        "_value": "Value",
+        "_attributes": {
             "attr1": "Attribute 1",
             "attr2": "Attribute 2"
         }
     },
-    "key05": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "key03",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
+            "attr": "Attribute"
+        }
+    },
+    {
+        "id": "key04",
+        "attributes": [
+            "attr1",
+            "attr2"
+        ],
+        "_value": null,
+        "_attributes": {
+            "attr1": "Attribute 1",
+            "attr2": "Attribute 2"
+        }
+    },
+    {
+        "id": "key05",
+        "attributes": [
+            "attr1"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr1": "Attribute 1"
         }
     },
-    "key06": [],
-    "KEY09": "Value 09",
-    "key-10": "Value 10",
-    "key_11": "Value 11",
-    "key-12-": "Value 12",
-    "key_13_": "Value 13"
-}
+    {
+        "id": "key06",
+        "attributes": [],
+        "_value": [],
+        "_attributes": {}
+    },
+    {
+        "id": "KEY09",
+        "attributes": [],
+        "_value": "Value 09",
+        "_attributes": {}
+    },
+    {
+        "id": "key-10",
+        "attributes": [],
+        "_value": "Value 10",
+        "_attributes": {}
+    },
+    {
+        "id": "key_11",
+        "attributes": [],
+        "_value": "Value 11",
+        "_attributes": {}
+    },
+    {
+        "id": "key-12-",
+        "attributes": [],
+        "_value": "Value 12",
+        "_attributes": {}
+    },
+    {
+        "id": "key_13_",
+        "attributes": [],
+        "_value": "Value 13",
+        "_attributes": {}
+    }
+]

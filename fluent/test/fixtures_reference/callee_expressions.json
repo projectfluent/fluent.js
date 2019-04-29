@@ -1,78 +1,108 @@
-{
-    "function-callee-placeable": [
-        {
-            "type": "func",
-            "name": "FUNCTION",
-            "args": []
-        }
-    ],
-    "term-callee-placeable": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "term-attr-callee-placeable": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": "attr",
-            "args": []
-        }
-    ],
-    "function-callee-selector": [
-        {
-            "type": "select",
-            "selector": {
+[
+    {
+        "id": "function-callee-placeable",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "func",
                 "name": "FUNCTION",
                 "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "term-attr-callee-selector": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
-                "attr": "attr",
-                "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "term-callee-selector": [
-        {
-            "type": "select",
-            "selector": {
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-callee-placeable",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "term",
                 "name": "term",
                 "attr": null,
                 "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-attr-callee-placeable",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": "attr",
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "function-callee-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "func",
+                    "name": "FUNCTION",
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-attr-callee-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": "attr",
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-callee-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]

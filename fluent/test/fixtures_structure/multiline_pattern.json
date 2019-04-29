@@ -1,18 +1,38 @@
-{
-    "key01": [
-        "Value",
-        "\n",
-        "Continued here."
-    ],
-    "key02": [
-        "Value",
-        "\n",
-        "Continued here."
-    ],
-    "key03": [
-        "Value"
-    ],
-    "key04": [
-        "Value"
-    ]
-}
+[
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": [
+            "Value",
+            "\n",
+            "Continued here."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key02",
+        "attributes": [],
+        "_value": [
+            "Value",
+            "\n",
+            "Continued here."
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key03",
+        "attributes": [],
+        "_value": [
+            "Value"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key04",
+        "attributes": [],
+        "_value": [
+            "Value"
+        ],
+        "_attributes": {}
+    }
+]

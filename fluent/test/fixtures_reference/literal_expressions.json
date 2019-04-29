@@ -1,12 +1,34 @@
-{
-    "string-expression": [
-        "abc"
-    ],
-    "number-expression": [
-        {
-            "type": "num",
-            "value": -3.14,
-            "precision": 2
-        }
-    ]
-}
+[
+    {
+        "id": "string-expression",
+        "attributes": [],
+        "_value": [
+            "abc"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "number-expression",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "num",
+                "value": 123,
+                "precision": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "number-expression",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "num",
+                "value": -3.14,
+                "precision": 2
+            }
+        ],
+        "_attributes": {}
+    }
+]

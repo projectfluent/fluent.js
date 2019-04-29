@@ -1,26 +1,46 @@
-{
-    "key01": [
-        {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "key02": [
-        {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "key03": [
-        {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "key04": [
-        {
-            "type": "var",
-            "name": "var"
-        }
-    ]
-}
+[
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "var",
+                "name": "var"
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key02",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "var",
+                "name": "var"
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key03",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "var",
+                "name": "var"
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key04",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "var",
+                "name": "var"
+            }
+        ],
+        "_attributes": {}
+    }
+]

@@ -1,7 +1,12 @@
-{
-    "key": [
-        "first line",
-        "\n\n\n\n\n\n\n",
-        "last line"
-    ]
-}
+[
+    {
+        "id": "key",
+        "attributes": [],
+        "_value": [
+            "first line",
+            "\n\n\n\n\n\n\n",
+            "last line"
+        ],
+        "_attributes": {}
+    }
+]

@@ -1,139 +1,169 @@
-{
-    "new-messages": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "func",
-                "name": "BUILTIN",
-                "args": []
-            },
-            "variants": [
-                {
-                    "key": {
-                        "type": "num",
-                        "value": 0,
-                        "precision": 0
-                    },
-                    "value": "Zero"
+[
+    {
+        "id": "new-messages",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "func",
+                    "name": "BUILTIN",
+                    "args": []
                 },
-                {
-                    "key": "other",
-                    "value": [
-                        "Other"
-                    ]
-                }
-            ],
-            "star": 1
-        }
-    ],
-    "valid-selector-term-attribute": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
-                "attr": "case",
-                "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "invalid-selector-term-value": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "invalid-selector-term-variant": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": [
+                "variants": [
                     {
-                        "type": "narg",
-                        "name": "case",
-                        "value": {
-                            "type": "str",
-                            "value": "nominative"
-                        }
+                        "key": {
+                            "type": "num",
+                            "value": 0,
+                            "precision": 0
+                        },
+                        "value": "Zero"
+                    },
+                    {
+                        "key": "other",
+                        "value": [
+                            "Other"
+                        ]
                     }
-                ]
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "empty-variant": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": []
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "nested-select": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": [
+                ],
+                "star": 1
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "valid-selector-term-attribute",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": "case",
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "invalid-selector-term-value",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "invalid-selector-term-variant",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": [
                         {
-                            "type": "select",
-                            "selector": {
-                                "type": "var",
-                                "name": "sel"
-                            },
-                            "variants": [
-                                {
-                                    "key": "two",
-                                    "value": "Value"
-                                }
-                            ],
-                            "star": 0
+                            "type": "narg",
+                            "name": "case",
+                            "value": {
+                                "type": "str",
+                                "value": "nominative"
+                            }
                         }
                     ]
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "empty-variant",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": []
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "nested-select",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": [
+                            {
+                                "type": "select",
+                                "selector": {
+                                    "type": "var",
+                                    "name": "sel"
+                                },
+                                "variants": [
+                                    {
+                                        "key": "two",
+                                        "value": "Value"
+                                    }
+                                ],
+                                "star": 0
+                            }
+                        ]
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]

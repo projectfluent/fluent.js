@@ -1,12 +1,17 @@
-{
-    "key": [
-        "Foo ",
-        {
-            "type": "mesg",
-            "name": "bar",
-            "attr": null
-        },
-        "\n",
-        "Baz"
-    ]
-}
+[
+    {
+        "id": "key",
+        "attributes": [],
+        "_value": [
+            "Foo ",
+            {
+                "type": "mesg",
+                "name": "bar",
+                "attr": null
+            },
+            "\n",
+            "Baz"
+        ],
+        "_attributes": {}
+    }
+]

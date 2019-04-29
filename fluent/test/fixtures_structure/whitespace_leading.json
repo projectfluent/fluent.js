@@ -1,11 +1,31 @@
-{
-    "key1": "Value",
-    "key2": "    Value",
-    "key3": [
-        "         Value"
-    ],
-    "key4": [
-        "         ",
-        "Value"
-    ]
-}
+[
+    {
+        "id": "key1",
+        "attributes": [],
+        "_value": "Value",
+        "_attributes": {}
+    },
+    {
+        "id": "key2",
+        "attributes": [],
+        "_value": "    Value",
+        "_attributes": {}
+    },
+    {
+        "id": "key3",
+        "attributes": [],
+        "_value": [
+            "         Value"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key4",
+        "attributes": [],
+        "_value": [
+            "         ",
+            "Value"
+        ],
+        "_attributes": {}
+    }
+]

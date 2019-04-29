@@ -1,74 +1,94 @@
-{
-    "simple-identifier": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "identifier-surrounded-by-whitespace": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "int-number": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    },
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "float-number": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": {
-                        "type": "num",
-                        "value": 3.14,
-                        "precision": 2
-                    },
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+[
+    {
+        "id": "simple-identifier",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "identifier-surrounded-by-whitespace",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "int-number",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        },
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "float-number",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": {
+                            "type": "num",
+                            "value": 3.14,
+                            "precision": 2
+                        },
+                        "value": "value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]

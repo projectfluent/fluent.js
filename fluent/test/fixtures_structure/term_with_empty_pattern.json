@@ -1,8 +1,12 @@
-{
-    "-foo": {
-        "value": null,
-        "attrs": {
+[
+    {
+        "id": "-foo",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attribute"
         }
     }
-}
+]

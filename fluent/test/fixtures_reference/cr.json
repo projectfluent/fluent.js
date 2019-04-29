@@ -1,24 +1,43 @@
-{
-    "err01": "Value 01",
-    "err02": "Value 02",
-    "err03": {
-        "value": [
+[
+    {
+        "id": "err01",
+        "attributes": [],
+        "_value": "Value 01",
+        "_attributes": {}
+    },
+    {
+        "id": "err02",
+        "attributes": [],
+        "_value": "Value 02",
+        "_attributes": {}
+    },
+    {
+        "id": "err03",
+        "attributes": [
+            "title"
+        ],
+        "_value": [
             "\r\r",
             "Value 03",
             "\r",
             "Continued"
         ],
-        "attrs": {
+        "_attributes": {
             "title": "Title"
         }
     },
-    "err05": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
+    {
+        "id": "err05",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                }
             }
-        }
-    ]
-}
+        ],
+        "_attributes": {}
+    }
+]

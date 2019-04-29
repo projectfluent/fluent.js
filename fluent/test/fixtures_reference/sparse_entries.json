@@ -1,15 +1,28 @@
-{
-    "key01": [
-        "Value"
-    ],
-    "key02": {
-        "value": null,
-        "attrs": {
+[
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": [
+            "Value"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key02",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "key03": {
-        "value": [
+    {
+        "id": "key03",
+        "attributes": [
+            "attr"
+        ],
+        "_value": [
             "Value",
             "\n",
             "Continued",
@@ -18,30 +31,40 @@
             "\n",
             "Lines"
         ],
-        "attrs": {
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "key05": "Value",
-    "key06": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "num",
-                "value": 1,
-                "precision": 0
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "One"
+    {
+        "id": "key05",
+        "attributes": [],
+        "_value": "Value",
+        "_attributes": {}
+    },
+    {
+        "id": "key06",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
                 },
-                {
-                    "key": "two",
-                    "value": "Two"
-                }
-            ],
-            "star": 1
-        }
-    ]
-}
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": "One"
+                    },
+                    {
+                        "key": "two",
+                        "value": "Two"
+                    }
+                ],
+                "star": 1
+            }
+        ],
+        "_attributes": {}
+    }
+]

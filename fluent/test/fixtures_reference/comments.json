@@ -1,4 +1,14 @@
-{
-    "foo": "Foo",
-    "-term": "Term"
-}
+[
+    {
+        "id": "foo",
+        "attributes": [],
+        "_value": "Foo",
+        "_attributes": {}
+    },
+    {
+        "id": "-term",
+        "attributes": [],
+        "_value": "Term",
+        "_attributes": {}
+    }
+]

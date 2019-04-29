@@ -1,21 +1,38 @@
-{
-    "-term01": {
-        "value": "Value",
-        "attrs": {
+[
+    {
+        "id": "-term01",
+        "attributes": [
+            "attr"
+        ],
+        "_value": "Value",
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "-term02": [],
-    "-term03": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "-term02",
+        "attributes": [],
+        "_value": [],
+        "_attributes": {}
+    },
+    {
+        "id": "-term03",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "-term04": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "-term04",
+        "attributes": [
+            "attr1"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr1": "Attribute 1"
         }
     }
-}
+]

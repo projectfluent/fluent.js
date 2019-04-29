@@ -1,6 +1,10 @@
-{
-    "-term": {
-        "value": [
+[
+    {
+        "id": "-term",
+        "attributes": [
+            "attr"
+        ],
+        "_value": [
             {
                 "type": "select",
                 "selector": {
@@ -20,89 +24,113 @@
                 "star": 0
             }
         ],
-        "attrs": {
+        "_attributes": {
             "attr": "a"
         }
     },
-    "key01": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "key02": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "key03": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "case",
-                    "value": {
-                        "type": "str",
-                        "value": "uppercase"
-                    }
-                }
-            ]
-        }
-    ],
-    "key04": [
-        {
-            "type": "select",
-            "selector": {
+    {
+        "id": "key01",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "term",
                 "name": "term",
-                "attr": "attr",
+                "attr": null,
                 "args": []
-            },
-            "variants": [
-                {
-                    "key": "a",
-                    "value": [
-                        {
-                            "type": "term",
-                            "name": "term",
-                            "attr": null,
-                            "args": []
-                        },
-                        " A"
-                    ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key02",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": []
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key03",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "term",
+                "name": "term",
+                "attr": null,
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "case",
+                        "value": {
+                            "type": "str",
+                            "value": "uppercase"
+                        }
+                    }
+                ]
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key04",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": "attr",
+                    "args": []
                 },
-                {
-                    "key": "b",
-                    "value": [
-                        {
-                            "type": "term",
-                            "name": "term",
-                            "attr": null,
-                            "args": []
-                        },
-                        " B"
-                    ]
-                },
-                {
-                    "key": "x",
-                    "value": "X"
-                }
-            ],
-            "star": 2
-        }
-    ],
-    "-err2": {
-        "value": null,
-        "attrs": {
+                "variants": [
+                    {
+                        "key": "a",
+                        "value": [
+                            {
+                                "type": "term",
+                                "name": "term",
+                                "attr": null,
+                                "args": []
+                            },
+                            " A"
+                        ]
+                    },
+                    {
+                        "key": "b",
+                        "value": [
+                            {
+                                "type": "term",
+                                "name": "term",
+                                "attr": null,
+                                "args": []
+                            },
+                            " B"
+                        ]
+                    },
+                    {
+                        "key": "x",
+                        "value": "X"
+                    }
+                ],
+                "star": 2
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "-err2",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attribute"
         }
     }
-}
+]

@@ -1,8 +1,12 @@
-{
-    "k": {
-        "value": "Value",
-        "attrs": {
+[
+    {
+        "id": "k",
+        "attributes": [
+            "l"
+        ],
+        "_value": "Value",
+        "_attributes": {
             "l": "Foo"
         }
     }
-}
+]

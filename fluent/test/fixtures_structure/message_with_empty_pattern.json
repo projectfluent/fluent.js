@@ -1,14 +1,22 @@
-{
-    "key3": {
-        "value": null,
-        "attrs": {
+[
+    {
+        "id": "key3",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attr"
         }
     },
-    "key4": {
-        "value": null,
-        "attrs": {
+    {
+        "id": "key4",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attr"
         }
     }
-}
+]

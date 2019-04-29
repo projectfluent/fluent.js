@@ -1,15 +1,28 @@
-{
-    "key": [
-        "Value"
-    ],
-    "key2": {
-        "value": null,
-        "attrs": {
+[
+    {
+        "id": "key",
+        "attributes": [],
+        "_value": [
+            "Value"
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key2",
+        "attributes": [
+            "attr"
+        ],
+        "_value": null,
+        "_attributes": {
             "attr": "Attribute"
         }
     },
-    "key3": {
-        "value": [
+    {
+        "id": "key3",
+        "attributes": [
+            "attr2"
+        ],
+        "_value": [
             "Value",
             "\n",
             "Value2",
@@ -18,45 +31,60 @@
             "\n",
             "Value3"
         ],
-        "attrs": {
+        "_attributes": {
             "attr2": "Attr 2"
         }
     },
-    "key5": "Value 5",
-    "key6": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "One"
+    {
+        "id": "key5",
+        "attributes": [],
+        "_value": "Value 5",
+        "_attributes": {}
+    },
+    {
+        "id": "key6",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
                 },
-                {
-                    "key": "two",
-                    "value": "Two"
-                }
-            ],
-            "star": 1
-        }
-    ],
-    "key8": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "One"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": "One"
+                    },
+                    {
+                        "key": "two",
+                        "value": "Two"
+                    }
+                ],
+                "star": 1
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "key8",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": "One"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]

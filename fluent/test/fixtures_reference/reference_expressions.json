@@ -1,98 +1,138 @@
-{
-    "message-reference-placeable": [
-        {
-            "type": "mesg",
-            "name": "msg",
-            "attr": null
-        }
-    ],
-    "term-reference-placeable": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "variable-reference-placeable": [
-        {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "function-reference-placeable": [
-        {
-            "type": "mesg",
-            "name": "FUN",
-            "attr": null
-        }
-    ],
-    "variable-reference-selector": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "var"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "message-reference-selector": [
-        {
-            "type": "select",
-            "selector": {
+[
+    {
+        "id": "message-reference-placeable",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "mesg",
                 "name": "msg",
                 "attr": null
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "term-reference-selector": [
-        {
-            "type": "select",
-            "selector": {
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-reference-placeable",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "term",
                 "name": "term",
                 "attr": null,
                 "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "function-expression-selector": [
-        {
-            "type": "select",
-            "selector": {
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "variable-reference-placeable",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "var",
+                "name": "var"
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "function-reference-placeable",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "mesg",
                 "name": "FUN",
                 "attr": null
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "variable-reference-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "var"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "message-reference-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "mesg",
+                    "name": "msg",
+                    "attr": null
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-reference-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "function-expression-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "mesg",
+                    "name": "FUN",
+                    "attr": null
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]

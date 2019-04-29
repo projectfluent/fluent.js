@@ -1,52 +1,72 @@
-{
-    "message-attribute-expression-placeable": [
-        {
-            "type": "mesg",
-            "name": "msg",
-            "attr": "attr"
-        }
-    ],
-    "term-attribute-expression-placeable": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": "attr",
-            "args": []
-        }
-    ],
-    "term-attribute-expression-selector": [
-        {
-            "type": "select",
-            "selector": {
+[
+    {
+        "id": "message-attribute-expression-placeable",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "mesg",
+                "name": "msg",
+                "attr": "attr"
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-attribute-expression-placeable",
+        "attributes": [],
+        "_value": [
+            {
                 "type": "term",
                 "name": "term",
                 "attr": "attr",
                 "args": []
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "message-attribute-expression-selector": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "mesg",
-                "name": "msg",
-                "attr": "attr"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "term-attribute-expression-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "term",
+                    "name": "term",
+                    "attr": "attr",
+                    "args": []
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    },
+    {
+        "id": "message-attribute-expression-selector",
+        "attributes": [],
+        "_value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "mesg",
+                    "name": "msg",
+                    "attr": "attr"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "_attributes": {}
+    }
+]
