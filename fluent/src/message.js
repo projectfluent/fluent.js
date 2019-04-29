@@ -5,7 +5,9 @@ export default
 class FluentMessage {
   constructor(id, value, attributes) {
     this.id = id;
-    this.attributes = Object.keys(attributes);
+    this.hasValue = value !== null;
+    this.attributeNames = Object.keys(attributes);
+
     this._value = value;
     this._attributes = attributes;
   }

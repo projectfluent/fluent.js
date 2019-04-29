@@ -58,7 +58,7 @@ function print(err, data) {
     let message = bundle.getMessage(id);
     let value = bundle.formatValue(message, ext, formatErrors);
     printValue(id, value);
-    for (let name of message.attributes) {
+    for (let name of message.attributeNames) {
       let attribute = bundle.formatAttribute(message, name, ext, formatErrors);
       printValue(`    .${name}`, attribute);
     }
