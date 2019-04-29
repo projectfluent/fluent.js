@@ -1,5 +1,5 @@
 import FluentError from "./error.js";
-import FluentMessage from "./message.js"
+import FluentMessage from "./message.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
 // With the /m flag, the ^ matches at the beginning of every line.
@@ -156,8 +156,9 @@ export default class FluentResource extends Set {
       let attrs = parseAttributes();
 
       if (value === null) {
-        if (Object.keys(attrs) === 0)
+        if (Object.keys(attrs).length === 0) {
           throw new FluentError("Expected message value or attributes");
+        }
         return new FluentMessage(id, null, attrs);
       }
 

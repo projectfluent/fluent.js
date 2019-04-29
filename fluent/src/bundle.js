@@ -1,5 +1,4 @@
 import FluentResource from "./resource.js";
-import resolve from "./resolver.js";
 import {FluentNone} from "./types.js";
 
 /**
@@ -77,7 +76,7 @@ export default class FluentBundle {
   }
 
   getMessage(id) {
-      return this._messages.get(id);
+    return this._messages.get(id);
   }
 
   /**
