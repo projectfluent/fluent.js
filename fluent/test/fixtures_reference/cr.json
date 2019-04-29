@@ -1,19 +1,22 @@
 [
     {
         "id": "err01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 01",
         "_attributes": {}
     },
     {
         "id": "err02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 02",
         "_attributes": {}
     },
     {
         "id": "err03",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "title"
         ],
         "_value": [
@@ -28,7 +31,8 @@
     },
     {
         "id": "err05",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

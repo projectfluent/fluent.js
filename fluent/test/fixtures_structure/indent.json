@@ -1,7 +1,8 @@
 [
     {
         "id": "key2",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "mesg",
@@ -13,7 +14,8 @@
     },
     {
         "id": "key3",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "mesg",
@@ -25,7 +27,8 @@
     },
     {
         "id": "key4",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "mesg",

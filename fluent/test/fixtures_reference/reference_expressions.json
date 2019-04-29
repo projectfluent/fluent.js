@@ -1,7 +1,8 @@
 [
     {
         "id": "message-reference-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "mesg",
@@ -13,7 +14,8 @@
     },
     {
         "id": "term-reference-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -26,7 +28,8 @@
     },
     {
         "id": "variable-reference-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "var",
@@ -37,7 +40,8 @@
     },
     {
         "id": "function-reference-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "mesg",
@@ -49,7 +53,8 @@
     },
     {
         "id": "variable-reference-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -70,7 +75,8 @@
     },
     {
         "id": "message-reference-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -92,7 +98,8 @@
     },
     {
         "id": "term-reference-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -115,7 +122,8 @@
     },
     {
         "id": "function-expression-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

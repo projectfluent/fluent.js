@@ -1,7 +1,8 @@
 [
     {
         "id": "nested-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -13,7 +14,8 @@
     },
     {
         "id": "padded-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -25,7 +27,8 @@
     },
     {
         "id": "sparse-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",

@@ -1,13 +1,15 @@
 [
     {
         "id": "-brand-name",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Aurora",
         "_attributes": {}
     },
     {
         "id": "key01",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,
@@ -17,19 +19,22 @@
     },
     {
         "id": "key02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value",
         "_attributes": {}
     },
     {
         "id": "key03",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 03",
         "_attributes": {}
     },
     {
         "id": "key04",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 04",
         "_attributes": {}
     }

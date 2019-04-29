@@ -1,7 +1,8 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value",
             "\n",
@@ -11,7 +12,8 @@
     },
     {
         "id": "key02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value",
             "\n",
@@ -21,7 +23,8 @@
     },
     {
         "id": "key03",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value"
         ],
@@ -29,7 +32,8 @@
     },
     {
         "id": "key04",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value"
         ],

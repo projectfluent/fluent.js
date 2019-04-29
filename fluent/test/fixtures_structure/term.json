@@ -1,7 +1,8 @@
 [
     {
         "id": "-term",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "attr"
         ],
         "_value": [
@@ -30,7 +31,8 @@
     },
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -43,7 +45,8 @@
     },
     {
         "id": "key02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -56,7 +59,8 @@
     },
     {
         "id": "key03",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -78,7 +82,8 @@
     },
     {
         "id": "key04",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -125,7 +130,8 @@
     },
     {
         "id": "-err2",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,

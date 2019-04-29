@@ -1,7 +1,8 @@
 [
     {
         "id": "key1",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline message with a ",
             {
@@ -18,7 +19,8 @@
     },
     {
         "id": "key2",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline message with a ",
             {
@@ -31,7 +33,8 @@
     },
     {
         "id": "key3",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A singleline message with a ",
             {

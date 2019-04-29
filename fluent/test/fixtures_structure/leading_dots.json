@@ -1,19 +1,22 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": ".Value",
         "_attributes": {}
     },
     {
         "id": "key02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "…Value",
         "_attributes": {}
     },
     {
         "id": "key03",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             ".",
             "Value"
@@ -22,7 +25,8 @@
     },
     {
         "id": "key04",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             ".",
             "Value"
@@ -31,7 +35,8 @@
     },
     {
         "id": "key05",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value",
             "\n",
@@ -42,7 +47,8 @@
     },
     {
         "id": "key06",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             ".Value",
             "\n",
@@ -53,13 +59,15 @@
     },
     {
         "id": "key07",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value",
         "_attributes": {}
     },
     {
         "id": "key10",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "Value"
         ],
         "_value": null,
@@ -73,7 +81,8 @@
     },
     {
         "id": "key11",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             ".",
             "Value = which looks like an attribute",
@@ -84,7 +93,8 @@
     },
     {
         "id": "key12",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "accesskey"
         ],
         "_value": null,
@@ -96,7 +106,8 @@
     },
     {
         "id": "key13",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attribute"
         ],
         "_value": null,
@@ -106,7 +117,8 @@
     },
     {
         "id": "key14",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attribute"
         ],
         "_value": null,
@@ -119,7 +131,8 @@
     },
     {
         "id": "key15",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

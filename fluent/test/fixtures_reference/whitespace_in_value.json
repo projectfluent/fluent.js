@@ -1,7 +1,8 @@
 [
     {
         "id": "key",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "first line",
             "\n\n\n\n\n\n\n",

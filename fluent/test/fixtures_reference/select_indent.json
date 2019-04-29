@@ -1,7 +1,8 @@
 [
     {
         "id": "select-1tbs-inline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -22,7 +23,8 @@
     },
     {
         "id": "select-1tbs-newline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -43,7 +45,8 @@
     },
     {
         "id": "select-1tbs-indent",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -64,7 +67,8 @@
     },
     {
         "id": "select-allman-inline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -85,7 +89,8 @@
     },
     {
         "id": "select-allman-newline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -106,7 +111,8 @@
     },
     {
         "id": "select-allman-indent",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -127,7 +133,8 @@
     },
     {
         "id": "select-gnu-inline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -148,7 +155,8 @@
     },
     {
         "id": "select-gnu-newline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -169,7 +177,8 @@
     },
     {
         "id": "select-gnu-indent",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -190,7 +199,8 @@
     },
     {
         "id": "select-no-indent",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -215,7 +225,8 @@
     },
     {
         "id": "select-no-indent-multiline",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -248,7 +259,8 @@
     },
     {
         "id": "select-flat",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -273,7 +285,8 @@
     },
     {
         "id": "select-flat-with-trailing-spaces",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

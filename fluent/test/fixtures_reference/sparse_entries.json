@@ -1,7 +1,8 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value"
         ],
@@ -9,7 +10,8 @@
     },
     {
         "id": "key02",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,
@@ -19,7 +21,8 @@
     },
     {
         "id": "key03",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "attr"
         ],
         "_value": [
@@ -37,13 +40,15 @@
     },
     {
         "id": "key05",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value",
         "_attributes": {}
     },
     {
         "id": "key06",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

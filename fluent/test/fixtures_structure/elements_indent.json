@@ -1,7 +1,8 @@
 [
     {
         "id": "foo",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "attr"
         ],
         "_value": "Foo",
@@ -11,7 +12,8 @@
     },
     {
         "id": "bar",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "attr1",
             "attr2"
         ],

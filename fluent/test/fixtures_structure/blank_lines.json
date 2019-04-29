@@ -1,19 +1,22 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 01",
         "_attributes": {}
     },
     {
         "id": "key02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 02",
         "_attributes": {}
     },
     {
         "id": "key03",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value 03",
             "\n\n",
@@ -23,7 +26,8 @@
     },
     {
         "id": "key04",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value 04",
             "\n\n",
@@ -33,7 +37,8 @@
     },
     {
         "id": "key05",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value 05"
         ],
@@ -41,7 +46,8 @@
     },
     {
         "id": "key06",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 06",
         "_attributes": {}
     }

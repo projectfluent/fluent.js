@@ -1,7 +1,8 @@
 [
     {
         "id": "k",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "l"
         ],
         "_value": "Value",

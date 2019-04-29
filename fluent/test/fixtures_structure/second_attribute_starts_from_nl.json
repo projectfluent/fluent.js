@@ -1,7 +1,8 @@
 [
     {
         "id": "key",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "label",
             "accesskey"
         ],

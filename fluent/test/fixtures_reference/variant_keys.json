@@ -1,7 +1,8 @@
 [
     {
         "id": "simple-identifier",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -22,7 +23,8 @@
     },
     {
         "id": "identifier-surrounded-by-whitespace",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -43,7 +45,8 @@
     },
     {
         "id": "int-number",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -68,7 +71,8 @@
     },
     {
         "id": "float-number",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

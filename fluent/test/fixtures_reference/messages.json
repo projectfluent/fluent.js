@@ -1,13 +1,15 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value",
         "_attributes": {}
     },
     {
         "id": "key02",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "attr"
         ],
         "_value": "Value",
@@ -17,7 +19,8 @@
     },
     {
         "id": "key02",
-        "attributes": [
+        "hasValue": true,
+        "attributeNames": [
             "attr1",
             "attr2"
         ],
@@ -29,7 +32,8 @@
     },
     {
         "id": "key03",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,
@@ -39,7 +43,8 @@
     },
     {
         "id": "key04",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr1",
             "attr2"
         ],
@@ -51,7 +56,8 @@
     },
     {
         "id": "key05",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr1"
         ],
         "_value": null,
@@ -61,37 +67,43 @@
     },
     {
         "id": "key06",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [],
         "_attributes": {}
     },
     {
         "id": "KEY09",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 09",
         "_attributes": {}
     },
     {
         "id": "key-10",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 10",
         "_attributes": {}
     },
     {
         "id": "key_11",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 11",
         "_attributes": {}
     },
     {
         "id": "key-12-",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 12",
         "_attributes": {}
     },
     {
         "id": "key_13_",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value 13",
         "_attributes": {}
     }

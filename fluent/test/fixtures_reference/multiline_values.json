@@ -1,7 +1,8 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline value",
             "\n",
@@ -13,7 +14,8 @@
     },
     {
         "id": "key02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline value starting",
             "\n",
@@ -23,7 +25,8 @@
     },
     {
         "id": "key03",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,
@@ -39,7 +42,8 @@
     },
     {
         "id": "key04",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,
@@ -53,7 +57,8 @@
     },
     {
         "id": "key05",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline value with non-standard",
             "\n\n    ",
@@ -63,7 +68,8 @@
     },
     {
         "id": "key06",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline value with ",
             "placeables",
@@ -78,7 +84,8 @@
     },
     {
         "id": "key07",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A multiline value",
             " starting and ending ",
@@ -88,13 +95,15 @@
     },
     {
         "id": "key08",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Leading and trailing whitespace.",
         "_attributes": {}
     },
     {
         "id": "key09",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "zero",
             "\n   ",
@@ -110,7 +119,8 @@
     },
     {
         "id": "key10",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "  ",
             "two",
@@ -123,7 +133,8 @@
     },
     {
         "id": "key11",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "  ",
             "two",
@@ -134,7 +145,8 @@
     },
     {
         "id": "key12",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             ".",
             "\n    ",
@@ -144,7 +156,8 @@
     },
     {
         "id": "key13",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "    ",
             "four",

@@ -1,19 +1,22 @@
 [
     {
         "id": "text-backslash-one",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value with \\ a backslash",
         "_attributes": {}
     },
     {
         "id": "text-backslash-two",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value with \\\\ two backslashes",
         "_attributes": {}
     },
     {
         "id": "text-backslash-brace",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "Value with \\",
             {
@@ -26,19 +29,22 @@
     },
     {
         "id": "text-backslash-u",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "\\u0041",
         "_attributes": {}
     },
     {
         "id": "text-backslash-backslash-u",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "\\\\u0041",
         "_attributes": {}
     },
     {
         "id": "quote-in-string",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "\""
         ],
@@ -46,7 +52,8 @@
     },
     {
         "id": "backslash-in-string",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "\\"
         ],
@@ -54,7 +61,8 @@
     },
     {
         "id": "string-unicode-sequence",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A"
         ],
@@ -62,7 +70,8 @@
     },
     {
         "id": "string-escaped-unicode",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "\\u0041"
         ],
@@ -70,7 +79,8 @@
     },
     {
         "id": "brace-open",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "An opening ",
             "{",
@@ -80,7 +90,8 @@
     },
     {
         "id": "brace-close",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A closing ",
             "}",

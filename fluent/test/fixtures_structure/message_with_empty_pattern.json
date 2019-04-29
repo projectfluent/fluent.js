@@ -1,7 +1,8 @@
 [
     {
         "id": "key3",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,
@@ -11,7 +12,8 @@
     },
     {
         "id": "key4",
-        "attributes": [
+        "hasValue": false,
+        "attributeNames": [
             "attr"
         ],
         "_value": null,

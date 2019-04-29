@@ -1,7 +1,8 @@
 [
     {
         "id": "message-attribute-expression-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "mesg",
@@ -13,7 +14,8 @@
     },
     {
         "id": "term-attribute-expression-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -26,7 +28,8 @@
     },
     {
         "id": "term-attribute-expression-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -49,7 +52,8 @@
     },
     {
         "id": "message-attribute-expression-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

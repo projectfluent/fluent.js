@@ -1,7 +1,8 @@
 [
     {
         "id": "new-messages",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -33,7 +34,8 @@
     },
     {
         "id": "valid-selector-term-attribute",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -56,7 +58,8 @@
     },
     {
         "id": "invalid-selector-term-value",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -79,7 +82,8 @@
     },
     {
         "id": "invalid-selector-term-variant",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -111,7 +115,8 @@
     },
     {
         "id": "empty-variant",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -132,7 +137,8 @@
     },
     {
         "id": "nested-select",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

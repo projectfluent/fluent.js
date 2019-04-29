@@ -1,7 +1,8 @@
 [
     {
         "id": "function-callee-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -13,7 +14,8 @@
     },
     {
         "id": "term-callee-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -26,7 +28,8 @@
     },
     {
         "id": "term-attr-callee-placeable",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "term",
@@ -39,7 +42,8 @@
     },
     {
         "id": "function-callee-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -61,7 +65,8 @@
     },
     {
         "id": "term-attr-callee-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",
@@ -84,7 +89,8 @@
     },
     {
         "id": "term-callee-selector",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "select",

@@ -1,25 +1,29 @@
 [
     {
         "id": "face-with-tears-of-joy",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "😂",
         "_attributes": {}
     },
     {
         "id": "tetragram-for-centre",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "𝌆",
         "_attributes": {}
     },
     {
         "id": "surrogates-in-text",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "\\uD83D\\uDE02",
         "_attributes": {}
     },
     {
         "id": "surrogates-in-string",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "��"
         ],
@@ -27,7 +31,8 @@
     },
     {
         "id": "surrogates-in-adjacent-strings",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "�",
             "�"
@@ -36,13 +41,15 @@
     },
     {
         "id": "emoji-in-text",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "A face 😂 with tears of joy.",
         "_attributes": {}
     },
     {
         "id": "emoji-in-string",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "A face 😂 with tears of joy."
         ],

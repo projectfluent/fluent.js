@@ -1,7 +1,8 @@
 [
     {
         "id": "int-zero",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -13,7 +14,8 @@
     },
     {
         "id": "int-positive",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -25,7 +27,8 @@
     },
     {
         "id": "int-negative",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -37,7 +40,8 @@
     },
     {
         "id": "int-negative-zero",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -49,7 +53,8 @@
     },
     {
         "id": "int-positive-padded",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -61,7 +66,8 @@
     },
     {
         "id": "int-negative-padded",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -73,7 +79,8 @@
     },
     {
         "id": "int-zero-padded",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -85,7 +92,8 @@
     },
     {
         "id": "int-negative-zero-padded",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -97,7 +105,8 @@
     },
     {
         "id": "float-zero",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -109,7 +118,8 @@
     },
     {
         "id": "float-positive",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -121,7 +131,8 @@
     },
     {
         "id": "float-positive-one",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -133,7 +144,8 @@
     },
     {
         "id": "float-positive-without-fraction",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -145,7 +157,8 @@
     },
     {
         "id": "float-negative",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -157,7 +170,8 @@
     },
     {
         "id": "float-negative-one",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -169,7 +183,8 @@
     },
     {
         "id": "float-negative-zero",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -181,7 +196,8 @@
     },
     {
         "id": "float-negative-without-fraction",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -193,7 +209,8 @@
     },
     {
         "id": "float-positive-padded-left",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -205,7 +222,8 @@
     },
     {
         "id": "float-positive-padded-right",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -217,7 +235,8 @@
     },
     {
         "id": "float-positive-padded-both",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -229,7 +248,8 @@
     },
     {
         "id": "float-negative-padded-left",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -241,7 +261,8 @@
     },
     {
         "id": "float-negative-padded-right",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",
@@ -253,7 +274,8 @@
     },
     {
         "id": "float-negative-padded-both",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "num",

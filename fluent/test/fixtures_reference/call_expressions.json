@@ -1,7 +1,8 @@
 [
     {
         "id": "valid-func-name-01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -13,7 +14,8 @@
     },
     {
         "id": "valid-func-name-02",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -25,7 +27,8 @@
     },
     {
         "id": "valid-func-name-03",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -37,7 +40,8 @@
     },
     {
         "id": "positional-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -64,7 +68,8 @@
     },
     {
         "id": "named-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -94,7 +99,8 @@
     },
     {
         "id": "dense-named-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -124,7 +130,8 @@
     },
     {
         "id": "mixed-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -168,7 +175,8 @@
     },
     {
         "id": "shuffled-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -212,7 +220,8 @@
     },
     {
         "id": "duplicate-named-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -242,7 +251,8 @@
     },
     {
         "id": "sparse-inline-call",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -273,7 +283,8 @@
     },
     {
         "id": "empty-inline-call",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -285,7 +296,8 @@
     },
     {
         "id": "multiline-call",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -316,7 +328,8 @@
     },
     {
         "id": "sparse-multiline-call",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -347,7 +360,8 @@
     },
     {
         "id": "empty-multiline-call",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -359,7 +373,8 @@
     },
     {
         "id": "unindented-arg-number",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -377,7 +392,8 @@
     },
     {
         "id": "unindented-arg-string",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -394,7 +410,8 @@
     },
     {
         "id": "unindented-arg-msg-ref",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -412,7 +429,8 @@
     },
     {
         "id": "unindented-arg-term-ref",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -431,7 +449,8 @@
     },
     {
         "id": "unindented-arg-var-ref",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -448,7 +467,8 @@
     },
     {
         "id": "unindented-arg-call",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -466,7 +486,8 @@
     },
     {
         "id": "unindented-named-arg",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -488,7 +509,8 @@
     },
     {
         "id": "unindented-closing-paren",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -506,7 +528,8 @@
     },
     {
         "id": "one-argument",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -524,7 +547,8 @@
     },
     {
         "id": "many-arguments",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -552,7 +576,8 @@
     },
     {
         "id": "inline-sparse-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -580,7 +605,8 @@
     },
     {
         "id": "mulitline-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -603,7 +629,8 @@
     },
     {
         "id": "mulitline-sparse-args",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -626,7 +653,8 @@
     },
     {
         "id": "sparse-named-arg",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -666,7 +694,8 @@
     },
     {
         "id": "unindented-colon",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",
@@ -688,7 +717,8 @@
     },
     {
         "id": "unindented-value",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             {
                 "type": "func",

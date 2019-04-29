@@ -1,13 +1,15 @@
 [
     {
         "id": "key01",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "\tValue 01",
         "_attributes": {}
     },
     {
         "id": "key04",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "This line is indented by 4 spaces,"
         ],

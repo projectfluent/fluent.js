@@ -1,19 +1,22 @@
 [
     {
         "id": "control0",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "abc\u0007def",
         "_attributes": {}
     },
     {
         "id": "delete",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "abcdef",
         "_attributes": {}
     },
     {
         "id": "control1",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "abcdef",
         "_attributes": {}
     }

@@ -1,19 +1,22 @@
 [
     {
         "id": "key1",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Value",
         "_attributes": {}
     },
     {
         "id": "key2",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "    Value",
         "_attributes": {}
     },
     {
         "id": "key3",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "         Value"
         ],
@@ -21,7 +24,8 @@
     },
     {
         "id": "key4",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": [
             "         ",
             "Value"

@@ -1,13 +1,15 @@
 [
     {
         "id": "foo",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Foo",
         "_attributes": {}
     },
     {
         "id": "-term",
-        "attributes": [],
+        "hasValue": true,
+        "attributeNames": [],
         "_value": "Term",
         "_attributes": {}
     }
