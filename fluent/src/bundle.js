@@ -176,17 +176,10 @@ export default class FluentBundle {
   }
 
   /**
-   * Format a message to a string or null.
+   * Format a message to a string.
    *
-   * Find a message or an attribute by `path` in the bundle and format it into
-   * a string (or a null if it is a message and has a null value). `path` may
-   * be a simple message identifier (`foo`) or a path to an attribute using
-   * a dot as the separator (`foo.bar`).
-   *
-   * If the `path` is a simple identifier and the message is not found in the
-   * bundle, this method returns `undefined`. If the `path` is an attribute
-   * path and the message doesn't have any attributes or the requested
-   * attribute is not found, it returns `undefined` too.
+   * Find a message by `id` in the bundle and format it into a string.  If the
+   * message has no value, return null.
    *
    * `args` can be an object or `null`. If it's an object, it will be used to
    * resolve references to variables passed as arguments to the translation.
@@ -197,24 +190,16 @@ export default class FluentBundle {
    * `errors` array passed as the third argument.
    *
    *     let errors = [];
-   *     bundle.addMessages('hello = Hello, {$name}!');
+   *     bundle.addMessages("hello = Hello, {$name}!");
    *
-   *     bundle.format('hello', {name: 'Jane'}, errors);
-   *     // → 'Hello, Jane!' and `errors` is empty.
+   *     bundle.format("hello", {name: "Jane"}, errors);
+   *     // → "Hello, Jane!" and `errors` is empty.
    *
-   *     bundle.format('hello', undefined, errors);
-   *     // → 'Hello, name!' and `errors` is now:
+   *     bundle.format("hello", undefined, errors);
+   *     // → "Hello, name!" and `errors` is now:
    *     // [<ReferenceError: Unknown variable: name>]
    *
-   *     errors.length = 0;
-   *     bundle.addMessages(`
-   *     email-input =
-   *         .placeholder = Your e-mail
-   *     `);
-   *     bundle.format('email-input.placeholder', null, errors);
-   *     // → 'Your e-mail' and `errors` is empty:
-   *
-   * @param   {string} path
+   * @param   {string} id
    * @param   {?Object} args
    * @param   {?Array} errors
    * @returns {?string}
@@ -231,12 +216,47 @@ export default class FluentBundle {
     return (value instanceof FluentNone) ? null : value;
   }
 
+  /**
+   * Format the value of a message to a string. If the message has no value,
+   * return null.
+   *
+   *     let errors = [];
+   *     bundle.addMessages("hello = Hello, {$name}!");
+   *
+   *     let message = bundle.getMessage("hello");
+   *     bundle.formatValue(message, {name: "Jane"}, errors);
+   *     // → "Hello, Jane!" and `errors` is empty.
+   *
+   * @param   {FluentMessage} message
+   * @param   {?Object} args
+   * @param   {?Array} errors
+   * @returns {?string}
+   */
   formatValue(message, args, errors) {
     let scope = this._createScope(args, errors);
     let value = message.resolveValue(scope);
     return (value instanceof FluentNone) ? null : value;
   }
 
+  /**
+   * Format an attribute of a message to a string. If the attribute does not
+   * exist, return undefined.
+   *
+   *     let errors = [];
+   *     bundle.addMessages(`
+   *     your-email =
+   *         .placeholder = Type your e-mail
+   *     `);
+   *
+   *     let message = bundle.getMessage("your-email");
+   *     bundle.formatAttribute(message, "placeholder", null, errors);
+   *     // → "Type your e-mail" and `errors` is empty.
+   *
+   * @param   {FluentMessage} message
+   * @param   {?Object} args
+   * @param   {?Array} errors
+   * @returns {?string}
+   */
   formatAttribute(message, name, args, errors) {
     let scope = this._createScope(args, errors);
     let attribute = message.resolveAttribute(scope, name);
