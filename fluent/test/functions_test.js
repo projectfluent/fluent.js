@@ -23,7 +23,7 @@ suite('Functions', function() {
     test('falls back to the name of the function', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'MISSING()');
+      assert.equal(val, '{MISSING()}');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown function
     });

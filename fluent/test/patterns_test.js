@@ -62,14 +62,14 @@ suite('Patterns', function(){
     test('returns the id if a message reference is missing', function(){
       const msg = bundle.getMessage('ref-missing-message');
       const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, 'missing');
+      assert.strictEqual(val, '{missing}');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
     test('returns the id if a term reference is missing', function(){
       const msg = bundle.getMessage('ref-missing-term');
       const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, '-missing');
+      assert.strictEqual(val, '{-missing}');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
   });
@@ -102,7 +102,7 @@ suite('Patterns', function(){
        function(){
       const msg = bundle.getMessage('bar');
       const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, '??? Bar');
+      assert.strictEqual(val, '{???} Bar');
       assert.ok(errs[0] instanceof RangeError); // no default
     });
   });
@@ -119,7 +119,7 @@ suite('Patterns', function(){
     test('returns ???', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -135,7 +135,7 @@ suite('Patterns', function(){
     test('returns the raw string', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -156,7 +156,7 @@ suite('Patterns', function(){
     test('returns ???', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.format(msg, {sel: 'a'}, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
