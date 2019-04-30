@@ -16,35 +16,26 @@ suite('ftl dedent helper', function() {
     test('start with EOL, no indent, end without EOL', function() {
       assert.equal(
         ftl`
-  foo = Foo`,
-        'foo = Foo'
+foo = Foo`,
+        '\nfoo = Foo'
       );
     });
 
     test('start with EOL, no indent, end with EOL', function() {
       assert.equal(
         ftl`
-  foo = Foo
-  `,
-        'foo = Foo'
+foo = Foo
+`,
+        '\nfoo = Foo\n'
       );
     });
 
-    test('start with EOL, no indent, end with EOL and smaller indent', function() {
+    test('start with EOL, no indent, end with EOL and indent', function() {
       assert.equal(
         ftl`
-  foo = Foo
-        `,
-        'foo = Foo'
-      );
-    });
-
-    test('start with EOL, no indent, end with EOL and same indent', function() {
-      assert.equal(
-        ftl`
-  foo = Foo
-          `,
-        'foo = Foo'
+foo = Foo
+    `,
+        '\nfoo = Foo\n    '
       );
     });
 
@@ -52,7 +43,7 @@ suite('ftl dedent helper', function() {
       assert.equal(
         ftl`
           foo = Foo`,
-        'foo = Foo'
+        '\nfoo = Foo'
       );
     });
 
@@ -60,8 +51,8 @@ suite('ftl dedent helper', function() {
       assert.equal(
         ftl`
           foo = Foo
-  `,
-        'foo = Foo'
+`,
+        '\nfoo = Foo\n'
       );
     });
 
@@ -69,8 +60,8 @@ suite('ftl dedent helper', function() {
       assert.equal(
         ftl`
           foo = Foo
-        `,
-        'foo = Foo'
+    `,
+        '\nfoo = Foo\n'
       );
     });
 
@@ -79,7 +70,16 @@ suite('ftl dedent helper', function() {
         ftl`
           foo = Foo
           `,
-        'foo = Foo'
+        '\nfoo = Foo\n'
+      );
+    });
+
+    test('start with EOL, indent, end with EOL and larger indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+              `,
+        '\nfoo = Foo\n    '
       );
     });
   });
@@ -91,7 +91,7 @@ suite('ftl dedent helper', function() {
           foo = Foo
           bar = Bar
         `,
-        'foo = Foo\nbar = Bar'
+        '\nfoo = Foo\nbar = Bar\n'
       );
     });
 
@@ -101,7 +101,7 @@ suite('ftl dedent helper', function() {
           foo = Foo
       bar = Bar
         `,
-        '    foo = Foo\nbar = Bar'
+        '\n    foo = Foo\nbar = Bar\n  '
       );
     });
 
@@ -112,7 +112,7 @@ suite('ftl dedent helper', function() {
               Foo
               Bar
         `,
-        'foo =\n    Foo\n    Bar'
+        '\nfoo =\n    Foo\n    Bar\n'
       );
     });
 
@@ -124,7 +124,7 @@ suite('ftl dedent helper', function() {
              *[other] Other
           }
         `,
-        'foo = { $num ->\n    [one] One\n   *[other] Other\n}'
+        '\nfoo = { $num ->\n    [one] One\n   *[other] Other\n}\n'
       );
     });
 
@@ -137,7 +137,137 @@ suite('ftl dedent helper', function() {
                  *[other] Other
               }
         `,
-        'foo =\n    { $num ->\n        [one] One\n       *[other] Other\n    }'
+        '\nfoo =\n    { $num ->\n        [one] One\n       *[other] Other\n    }\n'
+      );
+    });
+  });
+
+  suite('leading blank lines', function() {
+    test('empty', function() {
+      assert.equal(
+        ftl`
+
+          foo = Foo
+        `,
+        '\n\nfoo = Foo\n'
+      );
+    });
+
+    test('smaller indent', function() {
+      assert.equal(
+        ftl`
+    
+          foo = Foo
+        `,
+        '\n\nfoo = Foo\n'
+      );
+    });
+
+    test('same indent', function() {
+      assert.equal(
+        ftl`
+          
+          foo = Foo
+        `,
+        '\n\nfoo = Foo\n'
+      );
+    });
+
+    test('larger indent', function() {
+      assert.equal(
+        ftl`
+              
+          foo = Foo
+        `,
+        '\n    \nfoo = Foo\n'
+      );
+    });
+  });
+
+  suite('middle blank lines', function() {
+    test('empty', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+
+          bar = Bar
+        `,
+        '\nfoo = Foo\n\nbar = Bar\n'
+      );
+    });
+
+    test('smaller indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+    
+          bar = Bar
+        `,
+        '\nfoo = Foo\n\nbar = Bar\n'
+      );
+    });
+
+    test('same indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+          
+          bar = Bar
+        `,
+        '\nfoo = Foo\n\nbar = Bar\n'
+      );
+    });
+
+    test('larger indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+              
+          bar = Bar
+        `,
+        '\nfoo = Foo\n    \nbar = Bar\n'
+      );
+    });
+  });
+
+  suite('trailing blank lines', function() {
+    test('empty', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+
+        `,
+        '\nfoo = Foo\n\n'
+      );
+    });
+
+    test('smaller indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+    
+        `,
+        '\nfoo = Foo\n\n'
+      );
+    });
+
+    test('same indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+          
+        `,
+        '\nfoo = Foo\n\n'
+      );
+    });
+
+    test('larger indent', function() {
+      assert.equal(
+        ftl`
+          foo = Foo
+              
+        `,
+        '\nfoo = Foo\n    \n'
       );
     });
   });
