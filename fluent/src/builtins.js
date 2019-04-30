@@ -11,14 +11,7 @@
  * `FluentType`.  Functions must return `FluentType` objects as well.
  */
 
-import { FluentNumber, FluentDateTime } from "./types.js";
-
-export default {
-  "NUMBER": ([arg], opts) =>
-    new FluentNumber(arg.valueOf(), merge(arg.opts, opts)),
-  "DATETIME": ([arg], opts) =>
-    new FluentDateTime(arg.valueOf(), merge(arg.opts, opts)),
-};
+import { FluentNone, FluentNumber, FluentDateTime } from "./types.js";
 
 function merge(argopts, opts) {
   return Object.assign({}, argopts, values(opts));
@@ -30,4 +23,26 @@ function values(opts) {
     unwrapped[name] = opt.valueOf();
   }
   return unwrapped;
+}
+
+export
+function NUMBER([arg], opts) {
+  if (arg instanceof FluentNone) {
+    return arg;
+  }
+  if (arg instanceof FluentNumber) {
+    return new FluentNumber(arg.valueOf(), merge(arg.opts, opts));
+  }
+  return new FluentNone("NUMBER()");
+}
+
+export
+function DATETIME([arg], opts) {
+  if (arg instanceof FluentNone) {
+    return arg;
+  }
+  if (arg instanceof FluentDateTime) {
+    return new FluentDateTime(arg.valueOf(), merge(arg.opts, opts));
+  }
+  return new FluentNone("DATETIME()");
 }
