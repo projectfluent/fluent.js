@@ -45,8 +45,12 @@ export class FluentType {
 }
 
 export class FluentNone extends FluentType {
+  valueOf() {
+    return null;
+  }
+
   toString() {
-    return this.value || "???";
+    return `{${this.value || "???"}}`;
   }
 }
 
