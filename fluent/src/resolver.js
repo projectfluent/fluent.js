@@ -199,7 +199,7 @@ function MessageReference(scope, {name, attr}) {
       return Type(scope, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return Type(scope, message);
+    return new FluentNone(`${name}.${attr}`);
   }
 
   return Type(scope, message);
@@ -225,7 +225,7 @@ function TermReference(scope, {name, attr, args}) {
       return Type(local, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return Type(local, term);
+    return new FluentNone(`${id}.${attr}`);
   }
 
   return Type(local, term);
@@ -250,7 +250,7 @@ function FunctionReference(scope, {name, args}) {
     return func(...getArguments(scope, args));
   } catch (e) {
     // XXX Report errors.
-    return new FluentNone();
+    return new FluentNone(`${name}()`);
   }
 }
 
