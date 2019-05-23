@@ -41,7 +41,7 @@ let messages = ftl`
   welcome = Welcome, {$userName}!
     `;
 
-// → RangeError("Insufficient indentation in line 1.")
+// → RangeError("Insufficient indentation in line 2.")
 ```
 
 Content must start on a new line and must end on a line of its own. The

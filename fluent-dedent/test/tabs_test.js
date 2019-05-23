@@ -27,7 +27,7 @@ suite("tab indent", function() {
       () => ftl`
 \tfoo
 \t\t`,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 
@@ -36,7 +36,7 @@ suite("tab indent", function() {
       () => ftl`
 \t\tfoo
         `,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 
@@ -45,7 +45,7 @@ suite("tab indent", function() {
       () => ftl`
         foo
 \t\t`,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 
@@ -54,7 +54,7 @@ suite("tab indent", function() {
       () => ftl`
 \t\tfoo
   `,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 
@@ -63,7 +63,7 @@ suite("tab indent", function() {
       () => ftl`
   foo
 \t\t`,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 });

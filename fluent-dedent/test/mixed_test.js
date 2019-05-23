@@ -27,7 +27,7 @@ suite("mixed indent", function() {
       () => ftl`
 \tfoo
 \t    `,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 });

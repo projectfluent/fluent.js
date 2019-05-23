@@ -50,7 +50,7 @@ bar
           foo
         bar
           `,
-      /Insufficient indentation in line 1/
+      /Insufficient indentation in line 2/
     );
   });
 });

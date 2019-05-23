@@ -49,7 +49,7 @@ suite("blank lines", function() {
       () => ftl`
   
       `,
-      /Insufficient indentation in line 0/
+      /Insufficient indentation in line 1/
     );
   });
 

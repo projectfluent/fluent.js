@@ -35,7 +35,7 @@ export default function ftl(strings, ...values) {
     }
     if (lineIndent !== commonIndent) {
       // The indentation of the line must match commonIndent exacty.
-      throw new RangeError(`Insufficient indentation in line ${idx}.`);
+      throw new RangeError(`Insufficient indentation in line ${idx + 1}.`);
     }
     // Strip commonIndent.
     return line.slice(commonIndent.length);
