@@ -10,10 +10,12 @@ const RE_BLANK = /^[ \t]*$/;
  * next line.
  *
  * @param {Array<string>} strings
+ * @param {...any} values
  * @returns string
  */
-export default function ftl(strings) {
-  let lines = strings[0].split("\n");
+export default function ftl(strings, ...values) {
+  let code = strings.reduce((acc, cur) => acc + values.shift() + cur);
+  let lines = code.split("\n");
   let [first, last] = [lines.shift(), lines.pop()];
 
   if (!RE_BLANK.test(first)) {
