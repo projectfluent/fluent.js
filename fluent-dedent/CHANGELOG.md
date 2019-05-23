@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## @fluent/dedent 0.1.0 (May 23, 2019)
 
 This is the first release of `@fluent/dedent` as an independent package. It's
 based on the `ftl` template tag from the `fluent` package, but the behavior
