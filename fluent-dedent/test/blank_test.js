@@ -34,4 +34,31 @@ suite("blank lines", function() {
       "foo\n"
     );
   });
+
+  test("containing the same amount of spaces as the common indent", function() {
+    assert.equal(
+      ftl`
+      
+      `,
+      ""
+    );
+  });
+
+  test("containing too few spaces", function() {
+    assert.throws(
+      () => ftl`
+  
+      `,
+      /Insufficient indentation in line 0/
+    );
+  });
+
+  test("containing too many spaces", function() {
+    assert.equal(
+      ftl`
+        
+      `,
+      "  "
+    );
+  });
 });
