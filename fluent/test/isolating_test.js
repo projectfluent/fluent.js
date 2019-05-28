@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 // Unicode bidi isolation characters.
 const FSI = '\u2068';
@@ -19,7 +19,7 @@ suite('Isolating interpolations', function(){
       bar = { foo } Bar
       baz = { $arg } Baz
       qux = { bar } { baz }
-    `);
+      `);
   });
 
   setup(function() {
@@ -77,7 +77,7 @@ suite('Skip isolation cases', function(){
     bundle.addMessages(ftl`
       -brand-short-name = Amaya
       foo = { -brand-short-name }
-    `);
+      `);
   });
 
   setup(function() {

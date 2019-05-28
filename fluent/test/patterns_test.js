@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Patterns', function(){
   let bundle, args, errs;
@@ -17,7 +17,7 @@ suite('Patterns', function(){
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = Foo
-      `);
+        `);
     });
 
     test('returns the value', function(){
@@ -42,7 +42,7 @@ suite('Patterns', function(){
         ref-missing-term = { -missing }
 
         ref-malformed = { malformed
-      `);
+        `);
     });
 
     test('resolves the reference to a message', function(){
@@ -81,7 +81,7 @@ suite('Patterns', function(){
         foo =
             .attr = Foo Attr
         bar = { foo } Bar
-      `);
+        `);
     });
 
     test('returns the null value', function(){
@@ -113,7 +113,7 @@ suite('Patterns', function(){
       bundle.addMessages(ftl`
         foo = { bar }
         bar = { foo }
-      `);
+        `);
     });
 
     test('returns ???', function(){
@@ -129,7 +129,7 @@ suite('Patterns', function(){
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { foo }
-      `);
+        `);
     });
 
     test('returns the raw string', function(){
@@ -150,7 +150,7 @@ suite('Patterns', function(){
                 [b] Bar
             }
         bar = { foo }
-      `);
+        `);
     });
 
     test('returns ???', function(){
@@ -180,7 +180,7 @@ suite('Patterns', function(){
             .attr = { -foo }
 
         foo = { -foo }
-      `);
+        `);
     });
 
     test('returns the default variant', function(){
@@ -209,7 +209,7 @@ suite('Patterns', function(){
 
         foo = { -foo }
         bar = { -bar }
-      `);
+        `);
     });
 
     test('returns the default variant', function(){

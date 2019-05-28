@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Primitives', function() {
   let bundle, args, errs;
@@ -21,7 +21,7 @@ suite('Primitives', function() {
            *[0] Zero
             [1] One
         }
-      `);
+        `);
     });
 
     test('can be used in a placeable', function(){
@@ -63,7 +63,7 @@ suite('Primitives', function() {
         selector-attr    = { -baz.attr ->
            *[BazAttribute] Member 3
         }
-      `);
+        `);
     });
 
     test('can be used as a value', function(){
@@ -139,7 +139,7 @@ suite('Primitives', function() {
             [FooBarBazAttribute] FooBarBaz
            *[other] Other
         }
-      `);
+        `);
     });
 
     test('can be used as a value', function(){

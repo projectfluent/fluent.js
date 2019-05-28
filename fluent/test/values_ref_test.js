@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Referencing values', function(){
   let bundle, args, errs;
@@ -48,7 +48,7 @@ suite('Referencing values', function(){
       ref16 = { -key6.a ->
           *[a] A
       }
-    `);
+      `);
   });
 
   setup(function() {
