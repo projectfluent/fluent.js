@@ -59,12 +59,13 @@ function runTest(env) {
     const testName = "resolve-runtime";
     const errors = [];
     let start = env.now();
-    for (const [id, message] of bundle.messages) {
-      bundle.format(message, args, errors);
-      if (message.attrs) {
-        for (const attrName in message.attrs) {
-          bundle.format(message.attrs[attrName], args, errors)
-        }
+    for (const id of bundle._messages.keys()) {
+      let message = bundle.getMessage(id);
+      if (message.value) {
+          bundle.formatPattern(message.value, args, errors);
+      }
+      for (const attrName in message.attributes) {
+        bundle.formatPattern(message.attributes[attrName], args, errors)
       }
     }
     let end = env.now();

@@ -76,7 +76,7 @@ function match(bundle, selector, key) {
 // Helper: resolve the default variant from a list of variants.
 function getDefault(scope, variants, star) {
   if (variants[star]) {
-    return Type(scope, variants[star]);
+    return Type(scope, variants[star].value);
   }
 
   scope.errors.push(new RangeError("No default"));
@@ -100,17 +100,12 @@ function getArguments(scope, args) {
 }
 
 // Resolve an expression to a Fluent type.
-function Type(scope, expr) {
+export default function Type(scope, expr) {
   // A fast-path for strings which are the most common case. Since they
   // natively have the `toString` method they can be used as if they were
   // a FluentType instance without incurring the cost of creating one.
   if (typeof expr === "string") {
     return scope.bundle._transform(expr);
-  }
-
-  // A fast-path for `FluentNone` which doesn't require any additional logic.
-  if (expr instanceof FluentNone) {
-    return expr;
   }
 
   // The Runtime AST (Entries) encodes patterns (complex strings with
@@ -136,15 +131,6 @@ function Type(scope, expr) {
       return FunctionReference(scope, expr);
     case "select":
       return SelectExpression(scope, expr);
-    case undefined: {
-      // If it's a node with a value, resolve the value.
-      if (expr.value !== null && expr.value !== undefined) {
-        return Type(scope, expr.value);
-      }
-
-      scope.errors.push(new RangeError("No value"));
-      return new FluentNone();
-    }
     default:
       return new FluentNone();
   }
@@ -194,15 +180,18 @@ function MessageReference(scope, {name, attr}) {
   }
 
   if (attr) {
-    const attribute = message.attrs && message.attrs[attr];
+    const attribute = message.attributes[attr];
     if (attribute) {
       return Type(scope, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return Type(scope, message);
   }
-
-  return Type(scope, message);
+  if (message.value) {
+    return Type(scope, message.value);
+  } else {
+    scope.errors.push(new RangeError(`No value: ${name}`));
+    return new FluentNone(name);
+  }
 }
 
 // Resolve a call to a Term with key-value arguments.
@@ -220,15 +209,15 @@ function TermReference(scope, {name, attr, args}) {
   const local = {...scope, args: keyargs, insideTermReference: true};
 
   if (attr) {
-    const attribute = term.attrs && term.attrs[attr];
+    const attribute = term.attributes[attr];
     if (attribute) {
       return Type(local, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return Type(local, term);
+    return new FluentNone(`${name}.${attr}`);
+  } else {
+    return Type(local, term.value);
   }
-
-  return Type(local, term);
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
@@ -258,20 +247,18 @@ function FunctionReference(scope, {name, args}) {
 function SelectExpression(scope, {selector, variants, star}) {
   let sel = Type(scope, selector);
   if (sel instanceof FluentNone) {
-    const variant = getDefault(scope, variants, star);
-    return Type(scope, variant);
+    return getDefault(scope, variants, star);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of variants) {
     const key = Type(scope, variant.key);
     if (match(scope.bundle, sel, key)) {
-      return Type(scope, variant);
+      return Type(scope, variant.value);
     }
   }
 
-  const variant = getDefault(scope, variants, star);
-  return Type(scope, variant);
+  return getDefault(scope, variants, star);
 }
 
 // Resolve a pattern (a complex string with placeables).
@@ -320,28 +307,4 @@ function Pattern(scope, ptn) {
 
   scope.dirty.delete(ptn);
   return result.join("");
-}
-
-/**
- * Format a translation into a string.
- *
- * @param   {FluentBundle} bundle
- *    A FluentBundle instance which will be used to resolve the
- *    contextual information of the message.
- * @param   {Object}         args
- *    List of arguments provided by the developer which can be accessed
- *    from the message.
- * @param   {Object}         message
- *    An object with the Message to be resolved.
- * @param   {Array}          errors
- *    An error array that any encountered errors will be appended to.
- * @returns {FluentType}
- */
-export default function resolve(bundle, args, message, errors = []) {
-  const scope = {
-    bundle, args, errors, dirty: new WeakSet(),
-    // TermReferences are resolved in a new scope.
-    insideTermReference: false,
-  };
-  return Type(scope, message).toString(bundle);
 }

@@ -1,4 +1,4 @@
-import resolve from "./resolver.js";
+import Type from "./resolver.js";
 import FluentResource from "./resource.js";
 
 /**
@@ -62,6 +62,7 @@ export default class FluentBundle {
     this._useIsolating = useIsolating;
     this._transform = transform;
     this._intls = new WeakMap();
+    this._dirty = new WeakSet();
   }
 
   /*
@@ -170,7 +171,8 @@ export default class FluentBundle {
   } = {}) {
     const errors = [];
 
-    for (const [id, value] of res) {
+    for (const entry of res) {
+      let id = entry.id;
       if (id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
@@ -178,17 +180,27 @@ export default class FluentBundle {
           errors.push(`Attempt to override an existing term: "${id}"`);
           continue;
         }
-        this._terms.set(id, value);
+        this._terms.set(id, entry);
       } else {
         if (allowOverrides === false && this._messages.has(id)) {
           errors.push(`Attempt to override an existing message: "${id}"`);
           continue;
         }
-        this._messages.set(id, value);
+        this._messages.set(id, entry);
       }
     }
 
     return errors;
+  }
+
+  _createScope(args, errors = []) {
+    return {
+      args, errors,
+      bundle: this,
+      dirty: this._dirty,
+      // TermReferences are resolved in a new scope.
+      insideTermReference: false,
+    };
   }
 
   /**
@@ -216,28 +228,17 @@ export default class FluentBundle {
    *
    *     [<ReferenceError: Unknown variable: name>]
    *
-   * @param   {Object | string}    message
-   * @param   {Object | undefined} args
-   * @param   {Array}              errors
+   * @param   {Object} pattern
+   * @param   {?Object} args
+   * @param   {Array} errors
    * @returns {?string}
    */
-  format(message, args, errors) {
-    // optimize entities which are simple strings with no attributes
-    if (typeof message === "string") {
-      return this._transform(message);
-    }
-
-    // optimize entities with null values
-    if (message === null || message.value === null) {
-      return null;
-    }
-
-    // optimize simple-string entities with attributes
-    if (typeof message.value === "string") {
-      return this._transform(message.value);
-    }
-
-    return resolve(this, args, message, errors);
+  formatPattern(pattern, args, errors) {
+    let scope = this._createScope(args, errors);
+    let value = Type(scope, pattern);
+    // No need to call toString(scope); Patterns can only resolve to
+    // FluentString, and FluentStrings are represented as primitive JS strings.
+    return value;
   }
 
   _memoizeIntlObject(ctor, opts) {
