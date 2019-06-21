@@ -1,22 +1,31 @@
-{
-    "key01": "Value 01",
-    "key02": {
+[
+    {
+        "id": "key01",
+        "value": "Value 01",
+        "attributes": {}
+    },
+    {
+        "id": "key02",
         "value": [
             "Value 02",
             "\n",
             "Continued"
         ],
-        "attrs": {
+        "attributes": {
             "title": "Title"
         }
     },
-    "err04": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
+    {
+        "id": "err04",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                }
             }
-        }
-    ]
-}
+        ],
+        "attributes": {}
+    }
+]

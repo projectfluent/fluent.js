@@ -1,3 +1,7 @@
-{
-    "no-eol": "No EOL"
-}
+[
+    {
+        "id": "no-eol",
+        "value": "No EOL",
+        "attributes": {}
+    }
+]

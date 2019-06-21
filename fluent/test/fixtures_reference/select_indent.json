@@ -1,234 +1,286 @@
-{
-    "select-1tbs-inline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-1tbs-newline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-1tbs-indent": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-allman-inline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-allman-newline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-allman-indent": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-gnu-inline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-gnu-newline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-gnu-indent": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-no-indent": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
+[
+    {
+        "id": "select-1tbs-inline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
                 },
-                {
-                    "key": "other",
-                    "value": "Other"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-no-indent-multiline": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": [
-                        "Value",
-                        "\n",
-                        "Continued"
-                    ]
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-1tbs-newline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
                 },
-                {
-                    "key": "other",
-                    "value": [
-                        "Other",
-                        "\n",
-                        "Multiline"
-                    ]
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-flat": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-1tbs-indent",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
                 },
-                {
-                    "key": "other",
-                    "value": "Other"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "select-flat-with-trailing-spaces": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-allman-inline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
                 },
-                {
-                    "key": "other",
-                    "value": "Other"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-allman-newline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-allman-indent",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-gnu-inline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-gnu-newline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-gnu-indent",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-no-indent",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    },
+                    {
+                        "key": "other",
+                        "value": "Other"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-no-indent-multiline",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": [
+                            "Value",
+                            "\n",
+                            "Continued"
+                        ]
+                    },
+                    {
+                        "key": "other",
+                        "value": [
+                            "Other",
+                            "\n",
+                            "Multiline"
+                        ]
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-flat",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    },
+                    {
+                        "key": "other",
+                        "value": "Other"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "select-flat-with-trailing-spaces",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "selector"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    },
+                    {
+                        "key": "other",
+                        "value": "Other"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    }
+]

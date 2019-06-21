@@ -1,14 +1,20 @@
-{
-    "key01": [
-        "Value"
-    ],
-    "key02": {
+[
+    {
+        "id": "key01",
+        "value": [
+            "Value"
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key02",
         "value": null,
-        "attrs": {
+        "attributes": {
             "attr": "Attribute"
         }
     },
-    "key03": {
+    {
+        "id": "key03",
         "value": [
             "Value",
             "\n",
@@ -18,30 +24,38 @@
             "\n",
             "Lines"
         ],
-        "attrs": {
+        "attributes": {
             "attr": "Attribute"
         }
     },
-    "key05": "Value",
-    "key06": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "num",
-                "value": 1,
-                "precision": 0
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "One"
+    {
+        "id": "key05",
+        "value": "Value",
+        "attributes": {}
+    },
+    {
+        "id": "key06",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
                 },
-                {
-                    "key": "two",
-                    "value": "Two"
-                }
-            ],
-            "star": 1
-        }
-    ]
-}
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": "One"
+                    },
+                    {
+                        "key": "two",
+                        "value": "Two"
+                    }
+                ],
+                "star": 1
+            }
+        ],
+        "attributes": {}
+    }
+]

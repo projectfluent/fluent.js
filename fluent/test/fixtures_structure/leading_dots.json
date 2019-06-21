@@ -1,30 +1,59 @@
-{
-    "key01": ".Value",
-    "key02": "…Value",
-    "key03": [
-        ".",
-        "Value"
-    ],
-    "key04": [
-        ".",
-        "Value"
-    ],
-    "key05": [
-        "Value",
-        "\n",
-        ".",
-        "Continued"
-    ],
-    "key06": [
-        ".Value",
-        "\n",
-        ".",
-        "Continued"
-    ],
-    "key07": "Value",
-    "key10": {
+[
+    {
+        "id": "key01",
+        "value": ".Value",
+        "attributes": {}
+    },
+    {
+        "id": "key02",
+        "value": "…Value",
+        "attributes": {}
+    },
+    {
+        "id": "key03",
+        "value": [
+            ".",
+            "Value"
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key04",
+        "value": [
+            ".",
+            "Value"
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key05",
+        "value": [
+            "Value",
+            "\n",
+            ".",
+            "Continued"
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key06",
+        "value": [
+            ".Value",
+            "\n",
+            ".",
+            "Continued"
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key07",
+        "value": "Value",
+        "attributes": {}
+    },
+    {
+        "id": "key10",
         "value": null,
-        "attrs": {
+        "attributes": {
             "Value": [
                 "which looks like an attribute",
                 "\n",
@@ -32,57 +61,68 @@
             ]
         }
     },
-    "key11": [
-        ".",
-        "Value = which looks like an attribute",
-        "\n",
-        "Continued"
-    ],
-    "key12": {
+    {
+        "id": "key11",
+        "value": [
+            ".",
+            "Value = which looks like an attribute",
+            "\n",
+            "Continued"
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key12",
         "value": null,
-        "attrs": {
+        "attributes": {
             "accesskey": [
                 "A"
             ]
         }
     },
-    "key13": {
+    {
+        "id": "key13",
         "value": null,
-        "attrs": {
+        "attributes": {
             "attribute": ".Value"
         }
     },
-    "key14": {
+    {
+        "id": "key14",
         "value": null,
-        "attrs": {
+        "attributes": {
             "attribute": [
                 ".",
                 "Value"
             ]
         }
     },
-    "key15": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "num",
-                "value": 1,
-                "precision": 0
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": ".Value"
+    {
+        "id": "key15",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
                 },
-                {
-                    "key": "other",
-                    "value": [
-                        ".",
-                        "Value"
-                    ]
-                }
-            ],
-            "star": 1
-        }
-    ]
-}
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": ".Value"
+                    },
+                    {
+                        "key": "other",
+                        "value": [
+                            ".",
+                            "Value"
+                        ]
+                    }
+                ],
+                "star": 1
+            }
+        ],
+        "attributes": {}
+    }
+]

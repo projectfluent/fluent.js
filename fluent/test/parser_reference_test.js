@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { join } from 'path';
 import { readdir } from 'fs';
-import { readfile, toObject } from './index';
+import { readfile } from './index';
 
 import FluentResource from '../src/resource';
 
@@ -30,8 +30,7 @@ readdir(ftlFixtures, function(err, filenames) {
         );
         const resource = FluentResource.fromString(ftl);
         assert.deepEqual(
-          toObject(resource), JSON.parse(expected),
-          'Actual Annotations don\'t match the expected ones'
+          Array.from(resource), JSON.parse(expected)
         );
       });
     }

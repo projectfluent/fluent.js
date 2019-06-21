@@ -1,4 +1,12 @@
-{
-    "key02": "Value 02",
-    "key04": "Value 04"
-}
+[
+    {
+        "id": "key02",
+        "value": "Value 02",
+        "attributes": {}
+    },
+    {
+        "id": "key04",
+        "value": "Value 04",
+        "attributes": {}
+    }
+]

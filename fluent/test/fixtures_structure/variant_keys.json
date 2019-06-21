@@ -1,36 +1,44 @@
-{
-    "key01": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "key02": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": [
-                        "Value"
-                    ]
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+[
+    {
+        "id": "key01",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    },
+    {
+        "id": "key02",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "key",
+                        "value": [
+                            "Value"
+                        ]
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    }
+]

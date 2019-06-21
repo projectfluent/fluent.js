@@ -1,5 +1,17 @@
-{
-    "control0": "abc\u0007def",
-    "delete": "abcdef",
-    "control1": "abcdef"
-}
+[
+    {
+        "id": "control0",
+        "value": "abc\u0007def",
+        "attributes": {}
+    },
+    {
+        "id": "delete",
+        "value": "abcdef",
+        "attributes": {}
+    },
+    {
+        "id": "control1",
+        "value": "abcdef",
+        "attributes": {}
+    }
+]

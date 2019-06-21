@@ -1,12 +1,29 @@
-{
-    "-brand-name": "Aurora",
-    "key01": {
+[
+    {
+        "id": "-brand-name",
+        "value": "Aurora",
+        "attributes": {}
+    },
+    {
+        "id": "key01",
         "value": null,
-        "attrs": {
+        "attributes": {
             "attr": "Attribute"
         }
     },
-    "key02": "Value",
-    "key03": "Value 03",
-    "key04": "Value 04"
-}
+    {
+        "id": "key02",
+        "value": "Value",
+        "attributes": {}
+    },
+    {
+        "id": "key03",
+        "value": "Value 03",
+        "attributes": {}
+    },
+    {
+        "id": "key04",
+        "value": "Value 04",
+        "attributes": {}
+    }
+]
