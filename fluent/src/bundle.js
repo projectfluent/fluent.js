@@ -236,9 +236,7 @@ export default class FluentBundle {
   formatPattern(pattern, args, errors) {
     let scope = this._createScope(args, errors);
     let value = Type(scope, pattern);
-    // No need to call toString(scope); Patterns can only resolve to
-    // FluentString, and FluentStrings are represented as primitive JS strings.
-    return value;
+    return value.toString(scope);
   }
 
   _memoizeIntlObject(ctor, opts) {
