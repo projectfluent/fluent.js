@@ -6,7 +6,7 @@ import FluentResource from "./resource.js";
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
- * Always use `FluentBundle.format` to retrieve translation units from a
+ * Always use `FluentBundle.formatPattern` to retrieve translation units from a
  * bundle. Translations can contain references to other entities or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
@@ -192,42 +192,33 @@ export default class FluentBundle {
     return errors;
   }
 
-  _createScope(args, errors = []) {
-    return {
-      args, errors,
-      bundle: this,
-      dirty: new WeakSet(),
-      // TermReferences are resolved in a new scope.
-      insideTermReference: false,
-    };
-  }
-
   /**
-   * Format a message to a string or null.
+   * Format a Pattern to a string.
    *
-   * Format a raw `message` from the bundle into a string (or a null if it has
-   * a null value).  `args` will be used to resolve references to variables
-   * passed as arguments to the translation.
+   * Format a raw `Pattern` into a string. `args` will be used to resolve
+   * references to variables passed as arguments to the translation.
    *
-   * In case of errors `format` will try to salvage as much of the translation
-   * as possible and will still return a string.  For performance reasons, the
-   * encountered errors are not returned but instead are appended to the
-   * `errors` array passed as the third argument.
+   * In case of errors `formatPattern` will try to salvage as much of the
+   * translation as possible and will still return a string. For performance
+   * reasons, the encountered errors are not returned but instead are appended
+   * to the `errors` array passed as the third argument.
    *
    *     const errors = [];
    *     bundle.addMessages('hello = Hello, { $name }!');
    *     const hello = bundle.getMessage('hello');
-   *     bundle.format(hello, { name: 'Jane' }, errors);
+   *     if (hello.value) {
+   *         bundle.formatPattern(hello.value, { name: 'Jane' }, errors);
+   *     }
    *
    *     // Returns 'Hello, Jane!' and `errors` is empty.
    *
-   *     bundle.format(hello, undefined, errors);
+   *     bundle.formatPattern(hello.value, undefined, errors);
    *
-   *     // Returns 'Hello, name!' and `errors` is now:
+   *     // Returns 'Hello, $name!' and `errors` is now:
    *
    *     [<ReferenceError: Unknown variable: name>]
    *
-   * @param   {Object} pattern
+   * @param   {string|Array} pattern
    * @param   {?Object} args
    * @param   {Array} errors
    * @returns {?string}
@@ -236,6 +227,16 @@ export default class FluentBundle {
     let scope = this._createScope(args, errors);
     let value = Type(scope, pattern);
     return value.toString(scope);
+  }
+
+  _createScope(args, errors = []) {
+    return {
+      args, errors,
+      bundle: this,
+      dirty: new WeakSet(),
+      // TermReferences are resolved in a new scope.
+      insideTermReference: false,
+    };
   }
 
   _memoizeIntlObject(ctor, opts) {
