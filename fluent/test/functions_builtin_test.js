@@ -22,13 +22,13 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.equal(bundle.format(msg), 'NaN');
+      assert.equal(bundle.formatPattern(msg.value), 'NaN');
 
       msg = bundle.getMessage('num-percent');
-      assert.equal(bundle.format(msg), 'NaN');
+      assert.equal(bundle.formatPattern(msg.value), 'NaN');
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.equal(bundle.format(msg), 'NaN');
+      assert.equal(bundle.formatPattern(msg.value), 'NaN');
     });
 
     test('number argument', function() {
@@ -36,13 +36,13 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.equal(bundle.format(msg, args), '1');
+      assert.equal(bundle.formatPattern(msg.value, args), '1');
 
       msg = bundle.getMessage('num-percent');
-      assert.equal(bundle.format(msg, args), '100%');
+      assert.equal(bundle.formatPattern(msg.value, args), '100%');
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.equal(bundle.format(msg, args), '1');
+      assert.equal(bundle.formatPattern(msg.value, args), '1');
     });
 
     test('string argument', function() {
@@ -50,13 +50,13 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.equal(bundle.format(msg, args), 'NaN');
+      assert.equal(bundle.formatPattern(msg.value, args), 'NaN');
 
       msg = bundle.getMessage('num-percent');
-      assert.equal(bundle.format(msg, args), 'NaN');
+      assert.equal(bundle.formatPattern(msg.value, args), 'NaN');
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.equal(bundle.format(msg, args), 'NaN');
+      assert.equal(bundle.formatPattern(msg.value, args), 'NaN');
     });
   });
 
@@ -74,13 +74,13 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.equal(bundle.format(msg), 'Invalid Date');
+      assert.equal(bundle.formatPattern(msg.value), 'Invalid Date');
 
       msg = bundle.getMessage('dt-month');
-      assert.equal(bundle.format(msg), 'Invalid Date');
+      assert.equal(bundle.formatPattern(msg.value), 'Invalid Date');
 
       msg = bundle.getMessage('dt-bad-opt');
-      assert.equal(bundle.format(msg), 'Invalid Date');
+      assert.equal(bundle.formatPattern(msg.value), 'Invalid Date');
     });
 
     test('Date argument', function () {
@@ -95,17 +95,17 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.equal(bundle.format(msg, args), expectedDefault);
+      assert.equal(bundle.formatPattern(msg.value, args), expectedDefault);
 
       msg = bundle.getMessage('dt-month');
-      assert.equal(bundle.format(msg, args), expectedMonth);
+      assert.equal(bundle.formatPattern(msg.value, args), expectedMonth);
 
       msg = bundle.getMessage('dt-bad-opt');
       // The argument value will be coerced into a string by the join operation
       // in FluentBundle.format.  The result looks something like this; it
       // may vary depending on the TZ:
       //     Thu Sep 29 2016 02:00:00 GMT+0200 (CEST)
-      assert.equal(bundle.format(msg, args), date.toString());
+      assert.equal(bundle.formatPattern(msg.value, args), date.toString());
     });
   });
 });

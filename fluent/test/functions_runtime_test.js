@@ -29,7 +29,7 @@ suite('Runtime-specific functions', function() {
 
     test('works for strings', function() {
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.equal(val, 'FooBar');
       assert.equal(errs.length, 0);
     });
@@ -38,7 +38,7 @@ suite('Runtime-specific functions', function() {
     // https://bugzil.la/1307116
     test.skip('works for numbers', function() {
       const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.equal(val, '3');
       assert.equal(errs.length, 0);
     });

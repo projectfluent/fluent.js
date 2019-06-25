@@ -23,7 +23,7 @@ suite('FluentBundle constructor', function() {
     `);
 
     const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.formatPattern(msg.value, null, errs);
 
     assert.equal(val, 'Foo 1');
     assert.equal(errs.length, 0);
@@ -40,7 +40,7 @@ suite('FluentBundle constructor', function() {
     `);
 
     const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.formatPattern(msg.value, null, errs);
 
     assert.equal(val, 'Foo 1');
     assert.equal(errs.length, 0);
