@@ -65,15 +65,6 @@ export default class FluentBundle {
   }
 
   /*
-   * Return an iterator over public `[id, message]` pairs.
-   *
-   * @returns {Iterator}
-   */
-  get messages() {
-    return this._messages[Symbol.iterator]();
-  }
-
-  /*
    * Check if a message is present in the bundle.
    *
    * @param {string} id - The identifier of the message to check.

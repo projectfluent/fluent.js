@@ -55,7 +55,7 @@ function print(err, data) {
 
   parseErrors.forEach(printError);
 
-  for (let [id, message] of bundle.messages) {
+  for (let [id, message] of bundle._messages) {
     const formatErrors = [];
     if (message.value) {
       printEntry(id, bundle.formatPattern(message.value, ext, formatErrors));
