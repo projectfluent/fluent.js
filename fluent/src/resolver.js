@@ -108,8 +108,7 @@ export default function Type(scope, expr) {
     return scope.bundle._transform(expr);
   }
 
-  // The Runtime AST (Entries) encodes patterns (complex strings with
-  // placeables) as Arrays.
+  // The Runtime AST stores Patterns as Arrays.
   if (Array.isArray(expr)) {
     return Pattern(scope, expr);
   }
@@ -174,12 +173,9 @@ function VariableReference(scope, {name}) {
 function MessageReference(scope, {name, attr}) {
   const message = scope.bundle._messages.get(name);
   if (!message) {
-    const err = new ReferenceError(`Unknown message: ${name}`);
-    scope.errors.push(err);
+    scope.errors.push(new ReferenceError(`Unknown message: ${name}`));
     return new FluentNone(name);
-  }
-
-  if (attr) {
+  } else if (attr) {
     const attribute = message.attributes[attr];
     if (attribute) {
       return Type(scope, attribute);
