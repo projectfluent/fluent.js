@@ -221,12 +221,16 @@ export default class FluentBundle {
    * @param   {string|Array} pattern
    * @param   {?Object} args
    * @param   {Array} errors
-   * @returns {?string}
+   * @returns {string}
    */
   formatPattern(pattern, args, errors) {
-    let scope = this._createScope(args, errors);
-    let value = Type(scope, pattern);
-    return value.toString(scope);
+    if (typeof pattern === "string" || Array.isArray(pattern)) {
+      let scope = this._createScope(args, errors);
+      let value = Type(scope, pattern);
+      return value.toString(scope);
+    } else {
+      throw new TypeError(`Invalid Pattern type: ${typeof pattern}.`);
+    }
   }
 
   _createScope(args, errors = []) {

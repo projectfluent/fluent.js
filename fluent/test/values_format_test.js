@@ -59,11 +59,12 @@ suite('Formatting values', function(){
     assert.equal(errs.length, 1);
   });
 
-  test('returns null if there is no value', function(){
+  test('throws when trying to format a null value', function(){
     const msg = bundle.getMessage('key5');
-    const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, null);
-    assert.equal(errs.length, 0);
+    assert.throws(
+      () => bundle.formatPattern(msg.value, args, errs),
+      "Invalid Pattern type"
+    );
   });
 
   test('allows to pass traits directly to bundle.formatPattern', function(){
