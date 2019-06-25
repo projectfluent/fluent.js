@@ -282,7 +282,7 @@ function Pattern(scope, ptn) {
       continue;
     }
 
-    const part = Type(scope, elem).toString(scope.bundle);
+    const part = Type(scope, elem).toString(scope);
 
     if (useIsolating) {
       result.push(FSI);
