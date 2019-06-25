@@ -30,34 +30,34 @@ suite('Attributes', function() {
       `);
     });
 
-    test('falls back gracefully for entities with string values and no attributes', function() {
+    test('falls back to id.attr for entities with string values and no attributes', function() {
       const msg = bundle.getMessage('ref-foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'Foo');
+      assert.equal(val, 'foo.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('falls back gracefully for entities with string values and other attributes', function() {
+    test('falls back to id.attr for entities with string values and other attributes', function() {
       const msg = bundle.getMessage('ref-bar');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'Bar');
+      assert.equal(val, 'bar.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('falls back gracefully for entities with pattern values and no attributes', function() {
+    test('falls back to id.attr for entities with pattern values and no attributes', function() {
       const msg = bundle.getMessage('ref-baz');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'Foo Baz');
+      assert.equal(val, 'baz.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('falls back gracefully for entities with pattern values and other attributes', function() {
+    test('falls back to id.attr for entities with pattern values and other attributes', function() {
       const msg = bundle.getMessage('ref-qux');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'Foo Qux');
+      assert.equal(val, 'qux.missing');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });

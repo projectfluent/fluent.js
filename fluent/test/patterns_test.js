@@ -102,7 +102,7 @@ suite('Patterns', function(){
       const msg = bundle.getMessage('bar');
       const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'foo Bar');
-      assert.ok(errs[0] instanceof RangeError); // no default
+      assert.ok(errs[0] instanceof ReferenceError); // no value
     });
   });
 

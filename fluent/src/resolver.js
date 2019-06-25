@@ -185,11 +185,11 @@ function MessageReference(scope, {name, attr}) {
       return Type(scope, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-  }
-  if (message.value) {
+    return new FluentNone(`${name}.${attr}`);
+  } else if (message.value) {
     return Type(scope, message.value);
   } else {
-    scope.errors.push(new RangeError(`No value: ${name}`));
+    scope.errors.push(new ReferenceError(`No value: ${name}`));
     return new FluentNone(name);
   }
 }

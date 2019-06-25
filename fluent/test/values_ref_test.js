@@ -78,7 +78,7 @@ suite('Referencing values', function(){
     const msg = bundle.getMessage('ref5');
     const val = bundle.formatPattern(msg.value, args, errs);
     assert.strictEqual(val, 'key5');
-    assert.ok(errs[0] instanceof RangeError); // no default
+    assert.ok(errs[0] instanceof ReferenceError); // no value
   });
 
   test('references the variants', function(){
