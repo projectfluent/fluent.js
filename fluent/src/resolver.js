@@ -76,7 +76,7 @@ function match(bundle, selector, key) {
 // Helper: resolve the default variant from a list of variants.
 function getDefault(scope, variants, star) {
   if (variants[star]) {
-    return Type(scope, variants[star].value);
+    return resolve(scope, variants[star].value);
   }
 
   scope.errors.push(new RangeError("No default"));
@@ -90,17 +90,17 @@ function getArguments(scope, args) {
 
   for (const arg of args) {
     if (arg.type === "narg") {
-      named[arg.name] = Type(scope, arg.value);
+      named[arg.name] = resolve(scope, arg.value);
     } else {
-      positional.push(Type(scope, arg));
+      positional.push(resolve(scope, arg));
     }
   }
 
   return [positional, named];
 }
 
-// Resolve an expression to a Fluent type.
-export default function Type(scope, expr) {
+// Resolve a Pattern or an expression to a Fluent type.
+export default function resolve(scope, expr) {
   // A fast-path for strings which are the most common case. Since they
   // natively have the `toString` method they can be used as if they were
   // a FluentType instance without incurring the cost of creating one.
@@ -178,12 +178,12 @@ function MessageReference(scope, {name, attr}) {
   } else if (attr) {
     const attribute = message.attributes[attr];
     if (attribute) {
-      return Type(scope, attribute);
+      return resolve(scope, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${name}.${attr}`);
   } else if (message.value) {
-    return Type(scope, message.value);
+    return resolve(scope, message.value);
   } else {
     scope.errors.push(new ReferenceError(`No value: ${name}`));
     return new FluentNone(name);
@@ -207,12 +207,12 @@ function TermReference(scope, {name, attr, args}) {
   if (attr) {
     const attribute = term.attributes[attr];
     if (attribute) {
-      return Type(local, attribute);
+      return resolve(local, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${name}.${attr}`);
   } else {
-    return Type(local, term.value);
+    return resolve(local, term.value);
   }
 }
 
@@ -241,16 +241,16 @@ function FunctionReference(scope, {name, args}) {
 
 // Resolve a select expression to the member object.
 function SelectExpression(scope, {selector, variants, star}) {
-  let sel = Type(scope, selector);
+  let sel = resolve(scope, selector);
   if (sel instanceof FluentNone) {
     return getDefault(scope, variants, star);
   }
 
   // Match the selector against keys of each variant, in order.
   for (const variant of variants) {
-    const key = Type(scope, variant.key);
+    const key = resolve(scope, variant.key);
     if (match(scope.bundle, sel, key)) {
-      return Type(scope, variant.value);
+      return resolve(scope, variant.value);
     }
   }
 
@@ -278,7 +278,7 @@ function Pattern(scope, ptn) {
       continue;
     }
 
-    const part = Type(scope, elem).toString(scope);
+    const part = resolve(scope, elem).toString(scope);
 
     if (useIsolating) {
       result.push(FSI);

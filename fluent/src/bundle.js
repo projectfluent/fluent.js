@@ -1,4 +1,4 @@
-import Type from "./resolver.js";
+import resolve from "./resolver.js";
 import FluentResource from "./resource.js";
 
 /**
@@ -226,7 +226,7 @@ export default class FluentBundle {
   formatPattern(pattern, args, errors) {
     if (typeof pattern === "string" || Array.isArray(pattern)) {
       let scope = this._createScope(args, errors);
-      let value = Type(scope, pattern);
+      let value = resolve(scope, pattern);
       return value.toString(scope);
     } else {
       throw new TypeError(`Invalid Pattern type: ${typeof pattern}.`);
