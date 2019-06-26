@@ -161,22 +161,22 @@ export default class FluentBundle {
   } = {}) {
     const errors = [];
 
-    for (const entry of res) {
-      let id = entry.id;
-      if (id.startsWith("-")) {
+    for (let i = 0; i < res.length; i++) {
+      let entry = res[i];
+      if (entry.id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
-        if (allowOverrides === false && this._terms.has(id)) {
-          errors.push(`Attempt to override an existing term: "${id}"`);
+        if (allowOverrides === false && this._terms.has(entry.id)) {
+          errors.push(`Attempt to override an existing term: "${entry.id}"`);
           continue;
         }
-        this._terms.set(id, entry);
+        this._terms.set(entry.id, entry);
       } else {
-        if (allowOverrides === false && this._messages.has(id)) {
-          errors.push(`Attempt to override an existing message: "${id}"`);
+        if (allowOverrides === false && this._messages.has(entry.id)) {
+          errors.push(`Attempt to override an existing message: "${entry.id}"`);
           continue;
         }
-        this._messages.set(id, entry);
+        this._messages.set(entry.id, entry);
       }
     }
 
