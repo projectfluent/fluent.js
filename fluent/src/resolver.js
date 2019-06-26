@@ -175,19 +175,23 @@ function MessageReference(scope, {name, attr}) {
   if (!message) {
     scope.errors.push(new ReferenceError(`Unknown message: ${name}`));
     return new FluentNone(name);
-  } else if (attr) {
+  }
+
+  if (attr) {
     const attribute = message.attributes[attr];
     if (attribute) {
       return resolve(scope, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${name}.${attr}`);
-  } else if (message.value) {
-    return resolve(scope, message.value);
-  } else {
-    scope.errors.push(new ReferenceError(`No value: ${name}`));
-    return new FluentNone(name);
   }
+
+  if (message.value) {
+    return resolve(scope, message.value);
+  }
+
+  scope.errors.push(new ReferenceError(`No value: ${name}`));
+  return new FluentNone(name);
 }
 
 // Resolve a call to a Term with key-value arguments.
@@ -211,9 +215,9 @@ function TermReference(scope, {name, attr, args}) {
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${name}.${attr}`);
-  } else {
-    return resolve(local, term.value);
   }
+
+  return resolve(local, term.value);
 }
 
 // Resolve a call to a Function with positional and key-value arguments.

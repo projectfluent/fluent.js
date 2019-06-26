@@ -217,13 +217,15 @@ export default class FluentBundle {
   formatPattern(pattern, args, errors) {
     if (typeof pattern === "string") {
       return this._transform(pattern);
-    } else if (Array.isArray(pattern)) {
+    }
+
+    if (Array.isArray(pattern)) {
       let scope = this._createScope(args, errors);
       let value = resolve(scope, pattern);
       return value.toString(scope);
-    } else {
-      throw new TypeError(`Invalid Pattern type: ${typeof pattern}.`);
     }
+
+    throw new TypeError(`Invalid Pattern type: ${typeof pattern}.`);
   }
 
   _createScope(args, errors = []) {
