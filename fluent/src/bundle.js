@@ -215,7 +215,9 @@ export default class FluentBundle {
    * @returns {string}
    */
   formatPattern(pattern, args, errors) {
-    if (typeof pattern === "string" || Array.isArray(pattern)) {
+    if (typeof pattern === "string") {
+      return this._transform(pattern);
+    } else if (Array.isArray(pattern)) {
       let scope = this._createScope(args, errors);
       let value = resolve(scope, pattern);
       return value.toString(scope);
