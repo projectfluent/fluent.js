@@ -7,16 +7,16 @@ const data = {
       [["en"], ["en"], ["en"]],
       [["en-US"], ["en-US"], ["en-US"]],
       [["en-Latn-US"], ["en-Latn-US"], ["en-Latn-US"]],
-      [["en-Latn-US-mac"], ["en-Latn-US-mac"], ["en-Latn-US-mac"]],
+      [["en-Latn-US-macos"], ["en-Latn-US-macos"], ["en-Latn-US-macos"]],
       [["fr-FR"], ["de", "it", "fr-FR"], ["fr-FR"]],
       [["fr", "pl", "de-DE"], ["pl", "en-US", "de-DE"], ["pl", "de-DE"]],
     ],
     "available as range": [
       [["en-US"], ["en"], ["en"]],
       [["en-Latn-US"], ["en-US"], ["en-US"]],
-      [["en-US-mac"], ["en-US"], ["en-US"]],
+      [["en-US-macos"], ["en-US"], ["en-US"]],
       [["fr-CA", "de-DE"], ["fr", "it", "de"], ["fr", "de"]],
-      [["ja-JP-mac"], ["ja"], ["ja"]],
+      [["ja-JP-macos"], ["ja"], ["ja"]],
       [["en-Latn-GB", "en-Latn-IN"], ["en-IN", "en-GB"], ["en-GB", "en-IN"]],
     ],
     "should match on likely subtag": [
@@ -36,19 +36,19 @@ const data = {
       [["en-Latn-US"], ["en-Latn-GB"], ["en-Latn-GB"]],
     ],
     "should match cross-variant": [
-      [["en-US-mac"], ["en-US-win"], ["en-US-win"]],
+      [["en-US-macos"], ["en-US-windows"], ["en-US-windows"]],
     ],
     "should prioritize properly": [
       // exact match first
-      [["en-US"], ["en-US-mac", "en", "en-US"], ["en-US", "en", "en-US-mac"]],
+      [["en-US"], ["en-US-macos", "en", "en-US"], ["en-US", "en", "en-US-macos"]],
       // available as range second
       [["en-Latn-US"], ["en-GB", "en-US"], ["en-US", "en-GB"]],
       // likely subtags third
       [["en"], ["en-Cyrl-US", "en-Latn-US"], ["en-Latn-US"]],
       // variant range fourth
-      [["en-US-mac"], ["en-US-win", "en-GB-mac"], ["en-US-win", "en-GB-mac"]],
+      [["en-US-macos"], ["en-US-windows", "en-GB-macos"], ["en-US-windows", "en-GB-macos"]],
       // regional range fifth
-      [["en-US-mac"], ["en-GB-win"], ["en-GB-win"]],
+      [["en-US-macos"], ["en-GB-windows"], ["en-GB-windows"]],
     ],
     "should prioritize properly (extra tests)": [
       [["en-US"], ["en-GB", "en"], ["en", "en-GB"]],
@@ -61,7 +61,7 @@ const data = {
       [["fr", "de-DE"], ["de-DE", "fr-CA"], "en-US", ["fr-CA", "de-DE", "en-US"]],
     ],
     "should handle all matches on the 1st higher than any on the 2nd": [
-      [["fr-CA-mac", "de-DE"], ["de-DE", "fr-FR-win"], ["fr-FR-win", "de-DE"]],
+      [["fr-CA-macos", "de-DE"], ["de-DE", "fr-FR-windows"], ["fr-FR-windows", "de-DE"]],
     ],
     "should handle cases and underscores": [
       [["fr_FR"], ["fr-FR"], ["fr-FR"]],
@@ -70,7 +70,7 @@ const data = {
       [["fr_lAtN_fr"], ["fr-Latn-FR"], ["fr-Latn-FR"]],
       [["fr_FR"], ["fr_FR"], ["fr_FR"]],
       [["fr-FR"], ["fr_FR"], ["fr_FR"]],
-      [["fr_Cyrl_FR_mac"], ["fr_Cyrl_fr-mac"], ["fr_Cyrl_fr-mac"]],
+      [["fr_Cyrl_FR_macos"], ["fr_Cyrl_fr-macos"], ["fr_Cyrl_fr-macos"]],
     ],
     "should not crash on invalid input": [
       [null, ["fr-FR"], []],
