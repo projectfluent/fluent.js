@@ -8,6 +8,8 @@ const data = {
       [["en-US"], ["en-US"], ["en-US"]],
       [["en-Latn-US"], ["en-Latn-US"], ["en-Latn-US"]],
       [["en-Latn-US-macos"], ["en-Latn-US-macos"], ["en-Latn-US-macos"]],
+      [["rm-surmiran"], ["rm-surmiran"], ["rm-surmiran"]],
+      [["de-1996"], ["de-1996"], ["de-1996"]],
       [["fr-FR"], ["de", "it", "fr-FR"], ["fr-FR"]],
       [["fr", "pl", "de-DE"], ["pl", "en-US", "de-DE"], ["pl", "de-DE"]],
     ],
