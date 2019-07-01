@@ -5,17 +5,17 @@ import { getLikelySubtagsMin } from "./subtags";
 const languageCodeRe = "([a-z]{2,3}|\\*)";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
 const regionCodeRe = "(?:-([a-z]{2}|\\*))";
-const variantCodeRe = "(?:-([a-z]{3}|\\*))";
+const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
 
 /**
  * Regular expression splitting locale id into four pieces:
  *
- * Example: `en-Latn-US-mac`
+ * Example: `en-Latn-US-macos`
  *
  * language: en
  * script:   Latn
  * region:   US
- * variant:  mac
+ * variant:  macos
  *
  * It can also accept a range `*` character on any position.
  */
