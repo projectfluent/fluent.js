@@ -110,6 +110,7 @@ foo = FOO
     newBundle.addMessages('foo = BAR');
     l10n.setBundles([newBundle]);
 
+    wrapper.update();
     assert.equal(wrapper.text(), 'BAR');
   })
 });
