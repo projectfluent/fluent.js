@@ -79,7 +79,7 @@ export default class Localized extends Component {
 
   render() {
     const { l10n, parseMarkup } = this.context;
-    const { id, attrs, children: elem } = this.props;
+    const { id, attrs, children: elem = null } = this.props;
 
     // Validate that the child element isn't an array
     if (Array.isArray(elem)) {
