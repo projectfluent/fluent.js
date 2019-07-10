@@ -37,7 +37,7 @@
 
 import { FluentType, FluentNone, FluentNumber, FluentDateTime }
   from "./types.js";
-import builtins from "./builtins.js";
+import * as builtins from "./builtins.js";
 
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
@@ -214,7 +214,7 @@ function TermReference(scope, {name, attr, args}) {
       return resolve(local, attribute);
     }
     scope.errors.push(new ReferenceError(`Unknown attribute: ${attr}`));
-    return new FluentNone(`${name}.${attr}`);
+    return new FluentNone(`${id}.${attr}`);
   }
 
   return resolve(local, term.value);
@@ -239,7 +239,7 @@ function FunctionReference(scope, {name, args}) {
     return func(...getArguments(scope, args));
   } catch (e) {
     // XXX Report errors.
-    return new FluentNone();
+    return new FluentNone(`${name}()`);
   }
 }
 

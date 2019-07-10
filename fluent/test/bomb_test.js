@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Reference bombs', function() {
   let bundle, args, errs;
@@ -27,7 +27,7 @@ suite('Reference bombs', function() {
         lol8 = {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7}
         lol9 = {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8}
         lolz = {lol9}
-      `);
+        `);
     });
 
     // XXX Protect the FTL Resolver against the billion laughs attack

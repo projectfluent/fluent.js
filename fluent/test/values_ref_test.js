@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Referencing values', function(){
   let bundle, args, errs;
@@ -39,7 +39,16 @@ suite('Referencing values', function(){
 
       ref10 = { key5.a }
       ref11 = { key5.b }
-    `);
+      ref12 = { key5.c }
+
+      ref13 = { key6 }
+      ref14 = { key6.a }
+
+      ref15 = { -key6 }
+      ref16 = { -key6.a ->
+          *[a] A
+      }
+      `);
   });
 
   setup(function() {
@@ -77,7 +86,7 @@ suite('Referencing values', function(){
   test('falls back to id if there is no value', function(){
     const msg = bundle.getMessage('ref5');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, 'key5');
+    assert.strictEqual(val, '{key5}');
     assert.ok(errs[0] instanceof ReferenceError); // no value
   });
 
@@ -104,11 +113,34 @@ suite('Referencing values', function(){
   test('references the attributes', function(){
     const msg_a = bundle.getMessage('ref10');
     const msg_b = bundle.getMessage('ref11');
+    const msg_c = bundle.getMessage('ref12');
     const val_a = bundle.formatPattern(msg_a.value, args, errs)
     const val_b = bundle.formatPattern(msg_b.value, args, errs)
+    const val_c = bundle.formatPattern(msg_c.value, args, errs)
     assert.strictEqual(val_a, 'A5');
     assert.strictEqual(val_b, 'B5');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val_c, '{key5.c}');
+    assert.equal(errs.length, 1);
+  });
+
+  test('missing message reference', function(){
+    const msg_a = bundle.getMessage('ref13');
+    const msg_b = bundle.getMessage('ref14');
+    const val_a = bundle.formatPattern(msg_a.value, args, errs)
+    const val_b = bundle.formatPattern(msg_b.value, args, errs)
+    assert.strictEqual(val_a, '{key6}');
+    assert.strictEqual(val_b, '{key6}');
+    assert.equal(errs.length, 2);
+  });
+
+  test('missing term reference', function(){
+    const msg_a = bundle.getMessage('ref15');
+    const msg_b = bundle.getMessage('ref16');
+    const val_a = bundle.formatPattern(msg_a.value, args, errs)
+    const val_b = bundle.formatPattern(msg_b.value, args, errs)
+    assert.strictEqual(val_a, '{-key6}');
+    assert.strictEqual(val_b, 'A');
+    assert.equal(errs.length, 2);
   });
 
 });

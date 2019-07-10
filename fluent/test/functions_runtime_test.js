@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Runtime-specific functions', function() {
   let bundle, args, errs;
@@ -24,7 +24,7 @@ suite('Runtime-specific functions', function() {
       bundle.addMessages(ftl`
         foo = { CONCAT("Foo", "Bar") }
         bar = { SUM(1, 2) }
-      `);
+        `);
     });
 
     test('works for strings', function() {

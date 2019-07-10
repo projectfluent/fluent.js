@@ -1,15 +1,11 @@
 {
-  "name": "fluent-langneg",
-  "description": "Language Negotiation API for Fluent",
-  "version": "0.2.0",
+  "name": "@fluent/dedent",
+  "description": "A template literal tag for dedenting Fluent code",
+  "version": "0.1.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
   "contributors": [
-    {
-      "name": "Zibi Braniecki",
-      "email": "zbraniecki@mozilla.com"
-    },
     {
       "name": "Staś Małolepszy",
       "email": "stas@mozilla.com"
@@ -18,20 +14,16 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-langneg.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
   },
   "keywords": [
-    "localization",
-    "l10n",
-    "internationalization",
-    "i18n",
-    "locale",
-    "language",
-    "language-negotiation"
+    "dedent",
+    "fluent",
+    "ftl"
   ],
   "engines": {
     "node": ">=8.9.0"

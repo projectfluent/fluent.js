@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import { ftl } from "./util";
+import ftl from "@fluent/dedent";
 import { FluentParser } from "../src";
 import * as AST from "../src/ast";
 
@@ -42,14 +42,14 @@ suite("BaseNode.equals", function() {
               [1] one
              *[other] default
             }
-      `);
+          `);
       const otherRes = this.parser.parse(ftl`
           msg = { $val ->
               [few] things
              *[other] default
               [1] one
             }
-      `);
+          `);
       const thisNode = thisRes.body[0];
       const otherNode = otherRes.body[0];
       assert.strictEqual(thisNode.equals(otherNode), false);
@@ -61,12 +61,12 @@ suite("BaseNode.equals", function() {
           msg =
             .attr1 = one
             .attr2 = two
-      `);
+          `);
       const otherRes = this.parser.parse(ftl`
           msg =
             .attr2 = two
             .attr1 = one
-      `);
+          `);
       const thisNode = thisRes.body[0];
       const otherNode = otherRes.body[0];
       assert.strictEqual(thisNode.equals(otherNode), false);

@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Patterns', function(){
   let bundle, args, errs;
@@ -17,7 +17,7 @@ suite('Patterns', function(){
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = Foo
-      `);
+        `);
     });
 
     test('returns the value', function(){
@@ -42,7 +42,7 @@ suite('Patterns', function(){
         ref-missing-term = { -missing }
 
         ref-malformed = { malformed
-      `);
+        `);
     });
 
     test('resolves the reference to a message', function(){
@@ -62,14 +62,14 @@ suite('Patterns', function(){
     test('returns the id if a message reference is missing', function(){
       const msg = bundle.getMessage('ref-missing-message');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, 'missing');
+      assert.strictEqual(val, '{missing}');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
     test('returns the id if a term reference is missing', function(){
       const msg = bundle.getMessage('ref-missing-term');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, '-missing');
+      assert.strictEqual(val, '{-missing}');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
   });
@@ -81,7 +81,7 @@ suite('Patterns', function(){
         foo =
             .attr = Foo Attr
         bar = { foo } Bar
-      `);
+        `);
     });
 
     test('throws when trying to format a null value', function(){
@@ -102,7 +102,7 @@ suite('Patterns', function(){
     test('falls back to id when the referenced message has no value', function(){
       const msg = bundle.getMessage('bar');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, 'foo Bar');
+      assert.strictEqual(val, '{foo} Bar');
       assert.ok(errs[0] instanceof ReferenceError); // no value
     });
   });
@@ -113,13 +113,13 @@ suite('Patterns', function(){
       bundle.addMessages(ftl`
         foo = { bar }
         bar = { foo }
-      `);
+        `);
     });
 
     test('returns ???', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -129,13 +129,13 @@ suite('Patterns', function(){
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { foo }
-      `);
+        `);
     });
 
-    test('returns the raw string', function(){
+    test('returns ???', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -150,13 +150,13 @@ suite('Patterns', function(){
                 [b] Bar
             }
         bar = { foo }
-      `);
+        `);
     });
 
     test('returns ???', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, {sel: 'a'}, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
@@ -180,7 +180,7 @@ suite('Patterns', function(){
             .attr = { -foo }
 
         foo = { -foo }
-      `);
+        `);
     });
 
     test('returns the default variant', function(){
@@ -209,7 +209,7 @@ suite('Patterns', function(){
 
         foo = { -foo }
         bar = { -bar }
-      `);
+        `);
     });
 
     test('returns the default variant', function(){

@@ -1,7 +1,8 @@
 "use strict";
 import assert from "assert";
+import ftl from "@fluent/dedent";
+
 import FluentBundle from "../src/bundle";
-import {ftl} from "../src/util";
 
 suite('Literals as selectors', function() {
   let bundle, errs;
@@ -17,7 +18,7 @@ suite('Literals as selectors', function() {
           [a] A
          *[b] B
       }
-    `);
+      `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.equal(val, 'A');
@@ -30,7 +31,7 @@ suite('Literals as selectors', function() {
           [a] A
          *[b] B
       }
-    `);
+      `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.equal(val, 'B');
@@ -43,7 +44,7 @@ suite('Literals as selectors', function() {
           [0] A
          *[1] B
       }
-    `);
+      `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.equal(val, 'A');
@@ -56,7 +57,7 @@ suite('Literals as selectors', function() {
           [0] A
          *[1] B
       }
-    `);
+      `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.equal(val, 'B');
@@ -69,7 +70,7 @@ suite('Literals as selectors', function() {
           [one] A
          *[other] B
       }
-    `);
+      `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.equal(val, 'A');

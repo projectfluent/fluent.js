@@ -1,7 +1,8 @@
 "use strict";
 import assert from "assert";
+import ftl from "@fluent/dedent";
+
 import FluentBundle from "../src/bundle";
-import {ftl} from "../src/util";
 
 suite("Select expressions", function() {
   let bundle, errs;
@@ -17,7 +18,7 @@ suite("Select expressions", function() {
           [a] A
          *[b] B
       }
-    `);
+      `);
     const msg = bundle.getMessage("select");
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.equal(val, "B");
@@ -32,7 +33,7 @@ suite("Select expressions", function() {
             [a] A
            *[b] B
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "a"}, errs);
       assert.equal(val, "A");
@@ -45,7 +46,7 @@ suite("Select expressions", function() {
             [a] A
            *[b] B
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "c"}, errs);
       assert.equal(val, "B");
@@ -60,7 +61,7 @@ suite("Select expressions", function() {
             [0] A
            *[1] B
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 0}, errs);
       assert.equal(val, "A");
@@ -73,7 +74,7 @@ suite("Select expressions", function() {
             [0] A
            *[1] B
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 2}, errs);
       assert.equal(val, "B");
@@ -88,7 +89,7 @@ suite("Select expressions", function() {
             [one] A
            *[other] B
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 1}, errs);
       assert.equal(val, "A");
@@ -101,7 +102,7 @@ suite("Select expressions", function() {
             [one] A
            *[other] B
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "one"}, errs);
       assert.equal(val, "A");
@@ -114,7 +115,7 @@ suite("Select expressions", function() {
             [one] A
            *[default] D
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 2}, errs);
       assert.equal(val, "D");
@@ -127,7 +128,7 @@ suite("Select expressions", function() {
             [one] A
            *[default] D
         }
-      `);
+        `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "other"}, errs);
       assert.equal(val, "D");

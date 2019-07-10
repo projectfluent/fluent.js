@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Transformations', function(){
   let bundle, errs;
@@ -15,7 +15,7 @@ suite('Transformations', function(){
     bundle.addMessages(ftl`
       foo = Faa
           .bar = Bar { $foo } Baz
-    `);
+      `);
   });
 
   setup(function() {

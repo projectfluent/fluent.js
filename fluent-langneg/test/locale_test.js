@@ -44,18 +44,18 @@ suite('Parses simple locales', () => {
   });
 
   test('variant part', () => {
-    assert.ok(isLocaleEqual('en-Latn-US-mac', {
+    assert.ok(isLocaleEqual('en-Latn-US-macos', {
       language: 'en',
       script: 'Latn',
       region: 'US',
-      variant: 'mac'
+      variant: 'macos'
     }));
 
-    assert.ok(isLocaleEqual('lij-Arab-FA-lin', {
+    assert.ok(isLocaleEqual('lij-Arab-FA-linux', {
       language: 'lij',
       script: 'Arab',
       region: 'FA',
-      variant: 'lin'
+      variant: 'linux'
     }));
   });
 
@@ -65,10 +65,10 @@ suite('Parses simple locales', () => {
       region: 'US',
     }));
 
-    assert.ok(isLocaleEqual('lij-FA-lin', {
+    assert.ok(isLocaleEqual('lij-FA-linux', {
       language: 'lij',
       region: 'FA',
-      variant: 'lin'
+      variant: 'linux'
     }));
   });
 
@@ -78,10 +78,10 @@ suite('Parses simple locales', () => {
       region: 'US',
     }));
 
-    assert.ok(isLocaleEqual('lij-FA-lin', {
+    assert.ok(isLocaleEqual('lij-FA-linux', {
       language: 'lij',
       region: 'FA',
-      variant: 'lin'
+      variant: 'linux'
     }));
   });
 });

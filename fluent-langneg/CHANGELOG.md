@@ -1,15 +1,17 @@
 # Changelog
 
-## Unreleased
+## fluent-langneg 0.2.0 (July 1, 2019)
+
+  - Accept language variant tags as defined by UTS35. (#381)
+
+## fluent-langneg 0.1.1 (February 7, 2019)
+
+  - Align the algorithm with C++/Rust implementations to fix the `zh-HK` scenario (#335)
 
   - Drop support for IE and old evergreen browsers. (#133)
 
     Currently supported are: Firefox 52+, Chrome 55+, Edge 15+, Safari 10.1+,
     iOS Safari 10.3+ and node 8.9+.
-
-## fluent-langneg 0.1.1 (February 7, 2019)
-
-  - Align the algorithm with C++/Rust implementations to fix the `zh-HK` scenario (#335)
 
 ## fluent-langneg 0.1.0 (August 17, 2017)
 

@@ -1,9 +1,9 @@
 "use strict";
 
 import assert from "assert";
+import ftl from "@fluent/dedent";
 
 import FluentBundle from "../src/bundle";
-import { ftl } from "../src/util";
 
 suite("Macros", function() {
   let bundle, errs;
@@ -21,7 +21,7 @@ suite("Macros", function() {
         -bar = Bar
         term-ref = {-bar}
         term-call = {-bar()}
-      `);
+        `);
     });
 
     test("terms can be referenced without parens", function() {
@@ -51,34 +51,34 @@ suite("Macros", function() {
         call-foo-no-args = {-foo()}
         call-foo-with-expected-arg = {-foo(arg: 1)}
         call-foo-with-other-arg = {-foo(other: 3)}
-      `);
+        `);
     });
 
     test("Not parameterized, no externals", function() {
       const msg = bundle.getMessage("ref-foo");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("Not parameterized but with externals", function() {
       const msg = bundle.getMessage("ref-foo");
       const val = bundle.formatPattern(msg.value, {arg: 1}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, no externals", function() {
       const msg = bundle.getMessage("call-foo-no-args");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, but with externals", function() {
       const msg = bundle.getMessage("call-foo-no-args");
       const val = bundle.formatPattern(msg.value, {arg: 1}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
@@ -99,14 +99,14 @@ suite("Macros", function() {
     test("With other args, no externals", function() {
       const msg = bundle.getMessage("call-foo-with-other-arg");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("With other args, and with externals", function() {
       const msg = bundle.getMessage("call-foo-with-other-arg");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
   });
@@ -122,34 +122,34 @@ suite("Macros", function() {
         ref-bar = {-bar}
         call-bar = {-bar()}
         call-bar-with-arg = {-bar(arg: 1)}
-      `);
+        `);
     });
 
     test("No parameterization, no externals", function() {
       const msg = bundle.getMessage("ref-bar");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No parameterization, but with externals", function() {
       const msg = bundle.getMessage("ref-bar");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, no externals", function() {
       const msg = bundle.getMessage("call-bar");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, but with externals", function() {
       const msg = bundle.getMessage("call-bar");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
@@ -191,34 +191,34 @@ suite("Macros", function() {
         call-baz-with-arg = {-baz(arg: 2)}
         call-qux-with-arg = {-qux(arg: 2)}
         call-qux-with-other = {-qux(other: 3)}
-      `);
+        `);
     });
 
     test("No parameterization, no parameterization, no externals", function() {
       const msg = bundle.getMessage("ref-bar");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No parameterization, no parameterization, with externals", function() {
       const msg = bundle.getMessage("ref-bar");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No parameterization, no arguments, no externals", function() {
       const msg = bundle.getMessage("ref-baz");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No parameterization, no arguments, with externals", function() {
       const msg = bundle.getMessage("ref-baz");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
@@ -239,28 +239,28 @@ suite("Macros", function() {
     test("No arguments, no parameterization, no externals", function() {
       const msg = bundle.getMessage("call-bar-no-args");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, no parameterization, with externals", function() {
       const msg = bundle.getMessage("call-bar-no-args");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, no arguments, no externals", function() {
       const msg = bundle.getMessage("call-baz-no-args");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("No arguments, no arguments, with externals", function() {
       const msg = bundle.getMessage("call-baz-no-args");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
@@ -281,28 +281,28 @@ suite("Macros", function() {
     test("With arguments, no parameterization, no externals", function() {
       const msg = bundle.getMessage("call-bar-with-arg");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("With arguments, no parameterization, with externals", function() {
       const msg = bundle.getMessage("call-bar-with-arg");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("With arguments, no arguments, no externals", function() {
       const msg = bundle.getMessage("call-baz-with-arg");
       const val = bundle.formatPattern(msg.value, {}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
     test("With arguments, no arguments, with externals", function() {
       const msg = bundle.getMessage("call-baz-with-arg");
       const val = bundle.formatPattern(msg.value, {arg: 5}, errs);
-      assert.equal(val, "Foo $arg");
+      assert.equal(val, "Foo {$arg}");
       assert.equal(errs.length, 0);
     });
 
@@ -367,7 +367,7 @@ suite("Macros", function() {
             [feminine] She
             [neuter] It
         }
-      `);
+        `);
     });
 
     test("Not parameterized, no externals", function() {

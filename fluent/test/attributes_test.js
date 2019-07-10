@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Attributes', function() {
   let bundle, args, errs;
@@ -27,13 +27,13 @@ suite('Attributes', function() {
         ref-bar = { bar.missing }
         ref-baz = { baz.missing }
         ref-qux = { qux.missing }
-      `);
+        `);
     });
 
     test('falls back to id.attr for entities with string values and no attributes', function() {
       const msg = bundle.getMessage('ref-foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'foo.missing');
+      assert.equal(val, '{foo.missing}');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
@@ -41,7 +41,7 @@ suite('Attributes', function() {
     test('falls back to id.attr for entities with string values and other attributes', function() {
       const msg = bundle.getMessage('ref-bar');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'bar.missing');
+      assert.equal(val, '{bar.missing}');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
@@ -49,7 +49,7 @@ suite('Attributes', function() {
     test('falls back to id.attr for entities with pattern values and no attributes', function() {
       const msg = bundle.getMessage('ref-baz');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'baz.missing');
+      assert.equal(val, '{baz.missing}');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
@@ -57,7 +57,7 @@ suite('Attributes', function() {
     test('falls back to id.attr for entities with pattern values and other attributes', function() {
       const msg = bundle.getMessage('ref-qux');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'qux.missing');
+      assert.equal(val, '{qux.missing}');
       assert.equal(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
@@ -74,7 +74,7 @@ suite('Attributes', function() {
 
         ref-foo = { foo.attr }
         ref-bar = { bar.attr }
-      `);
+        `);
     });
 
     test('can be referenced for entities with string values', function() {
@@ -121,7 +121,7 @@ suite('Attributes', function() {
         ref-bar = { bar.attr }
         ref-baz = { baz.attr }
         ref-qux = { qux.attr }
-      `);
+        `);
     });
 
     test('can be referenced for entities with string values', function() {
@@ -178,7 +178,7 @@ suite('Attributes', function() {
                     }
 
         ref-foo = { foo.attr }
-      `);
+        `);
     });
 
     test('can be referenced', function() {

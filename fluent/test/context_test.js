@@ -1,10 +1,10 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
 import FluentResource from '../src/resource';
-import { ftl } from '../src/util';
 
 suite('Bundle', function() {
   let bundle, args, errs;
@@ -19,7 +19,7 @@ suite('Bundle', function() {
       bundle.addMessages(ftl`
         foo = Foo
         -bar = Private Bar
-      `);
+        `);
     });
 
     test('adds messages', function() {
@@ -32,7 +32,7 @@ suite('Bundle', function() {
     test('preserves existing messages when new are added', function() {
       bundle.addMessages(ftl`
         baz = Baz
-      `);
+        `);
 
       assert.equal(bundle._messages.has('foo'), true);
       assert.equal(bundle._terms.has('foo'), false);
@@ -46,7 +46,7 @@ suite('Bundle', function() {
     test('messages and terms can share the same name', function() {
       bundle.addMessages(ftl`
         -foo = Private Foo
-      `);
+        `);
       assert.equal(bundle._messages.has('foo'), true);
       assert.equal(bundle._terms.has('foo'), false);
       assert.equal(bundle._messages.has('-foo'), false);
@@ -57,7 +57,7 @@ suite('Bundle', function() {
     test('does not overwrite existing messages if the ids are the same', function() {
       const errors = bundle.addMessages(ftl`
         foo = New Foo
-      `);
+        `);
 
       // Attempt to overwrite error reported
       assert.equal(errors.length, 1);
@@ -73,7 +73,7 @@ suite('Bundle', function() {
     test('overwrites existing messages if the ids are the same and allowOverrides is true', function() {
       const errors = bundle.addMessages(ftl`
         foo = New Foo
-      `, { allowOverrides: true });
+        `, { allowOverrides: true });
 
       // No overwrite errors reported
       assert.equal(errors.length, 0);
@@ -93,7 +93,7 @@ suite('Bundle', function() {
       let resource = FluentResource.fromString(ftl`
         foo = Foo
         -bar = Bar
-      `);
+        `);
       bundle.addResource(resource);
     });
 
@@ -149,7 +149,7 @@ suite('Bundle', function() {
         err4 =
             .attr1 = Attr
             .attr2 = {}
-      `);
+        `);
     });
 
     test('returns true only for public messages', function() {
@@ -176,7 +176,7 @@ suite('Bundle', function() {
       bundle.addMessages(ftl`
         foo = Foo
         -bar = Bar
-      `);
+        `);
     });
 
     test('returns public messages', function() {
