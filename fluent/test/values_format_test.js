@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Formatting values', function(){
   let bundle, args, errs;
@@ -24,7 +24,7 @@ suite('Formatting values', function(){
       key5 =
           .a = A5
           .b = B5
-    `);
+      `);
   });
 
   setup(function() {

@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+  - Remove the `ftl` dedent helper.
+
+    The `ftl` dedent helper has moved to its own package, `@fluent/dedent`.
+    Note that its behavior has changed slightly, too. See the
+    [README][dedent-readme] for details.
+
+    [dedent-readme]: https://www.npmjs.com/package/@fluent/dedent
+
 ## fluent 0.12.0 (March 26, 2019)
 
 This release of `fluent` brings support for version 0.9 of the Fluent Syntax

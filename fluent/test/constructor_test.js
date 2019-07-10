@@ -2,9 +2,9 @@
 
 import assert from 'assert';
 import sinon from 'sinon';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('FluentBundle constructor', function() {
   setup(function() {
@@ -20,7 +20,7 @@ suite('FluentBundle constructor', function() {
     const bundle = new FluentBundle('en-US', { useIsolating: false });
     bundle.addMessages(ftl`
       foo = Foo { 1 }
-    `);
+      `);
 
     const msg = bundle.getMessage('foo');
     const val = bundle.format(msg, null, errs);
@@ -37,7 +37,7 @@ suite('FluentBundle constructor', function() {
     const bundle = new FluentBundle(['de', 'en-US'], { useIsolating: false });
     bundle.addMessages(ftl`
       foo = Foo { 1 }
-    `);
+      `);
 
     const msg = bundle.getMessage('foo');
     const val = bundle.format(msg, null, errs);

@@ -1,10 +1,10 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
 import { FluentType } from '../src/types';
-import { ftl } from '../src/util';
 
 suite('Variables', function() {
   let bundle, errs;
@@ -24,7 +24,7 @@ suite('Variables', function() {
         qux = { "a" ->
            *[a]     Baz Variant A { $num }
         }
-      `);
+        `);
     });
 
     test('can be used in the message value', function() {
@@ -63,7 +63,7 @@ suite('Variables', function() {
         foo = { $num -> 
            *[3] Foo
         }
-      `);
+        `);
     });
 
     test('can be used as a selector', function() {
@@ -79,7 +79,7 @@ suite('Variables', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { NUMBER($num) }
-      `);
+        `);
     });
 
     test('can be a positional argument', function() {
@@ -95,7 +95,7 @@ suite('Variables', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { $arg }
-      `);
+        `);
     });
 
     test('falls back to argument\'s name if it\'s missing', function() {
@@ -155,7 +155,7 @@ suite('Variables', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { $arg }
-      `);
+        `);
       args = {
         arg: 'Argument',
       };
@@ -176,7 +176,7 @@ suite('Variables', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { $arg }
-      `);
+        `);
       args = {
         arg: 1
       };
@@ -198,7 +198,7 @@ suite('Variables', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { $arg }
-      `);
+        `);
       args = {
         arg: new Date('2016-09-29')
       };
@@ -227,7 +227,7 @@ suite('Variables', function() {
       bundle.addMessages(ftl`
         foo = { $arg }
         bar = { foo }
-      `);
+        `);
 
       args = {
         // CustomType is a wrapper around the value

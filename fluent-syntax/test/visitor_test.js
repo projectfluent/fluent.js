@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import { ftl } from "./util";
+import ftl from "@fluent/dedent";
 import { FluentParser, Visitor, Transformer } from "../src";
 
 suite("Visitor", function() {
@@ -13,7 +13,7 @@ suite("Visitor", function() {
         two = Messages
         three = Messages with
             .an = Attribute
-    `);
+        `);
   });
   test("Mock Visitor", function() {
     class MockVisitor extends Visitor {
@@ -84,7 +84,7 @@ suite("Transformer", function() {
         two = Messages
         three = Messages with
             .an = Attribute
-    `);
+        `);
   });
   test("ReplaceTransformer", function() {
     class ReplaceTransformer extends Transformer {
@@ -98,7 +98,6 @@ suite("Transformer", function() {
           case 'Span':
           case 'Annotation':
             return node;
-            break;
           default:
             return super.genericVisit(node);
         }

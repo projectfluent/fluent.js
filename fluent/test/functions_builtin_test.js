@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Built-in functions', function() {
   let bundle;
@@ -15,7 +15,7 @@ suite('Built-in functions', function() {
         num-decimal = { NUMBER($arg) }
         num-percent = { NUMBER($arg, style: "percent") }
         num-bad-opt = { NUMBER($arg, style: "bad") }
-      `);
+        `);
     });
 
     test('missing argument', function() {
@@ -96,7 +96,7 @@ suite('Built-in functions', function() {
         dt-default = { DATETIME($arg) }
         dt-month = { DATETIME($arg, month: "long") }
         dt-bad-opt = { DATETIME($arg, month: "bad") }
-      `);
+        `);
     });
 
     test('missing argument', function() {

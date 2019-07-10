@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Functions', function() {
   let bundle, args, errs;
@@ -17,7 +17,7 @@ suite('Functions', function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
         foo = { MISSING("Foo") }
-      `);
+        `);
     });
 
     test('falls back to the name of the function', function() {
@@ -47,7 +47,7 @@ suite('Functions', function() {
         pass-attr          = { IDENTITY(foo.attr) }
         pass-variable      = { IDENTITY($var) }
         pass-function-call = { IDENTITY(IDENTITY(1)) }
-      `);
+        `);
     });
 
     // XXX Gracefully handle wrong argument types passed into FTL Functions

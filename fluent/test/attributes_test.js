@@ -1,9 +1,9 @@
 'use strict';
 
 import assert from 'assert';
+import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
-import { ftl } from '../src/util';
 
 suite('Attributes', function() {
   let bundle, args, errs;
@@ -27,7 +27,7 @@ suite('Attributes', function() {
         ref-bar = { bar.missing }
         ref-baz = { baz.missing }
         ref-qux = { qux.missing }
-      `);
+        `);
     });
 
     test('entities with string values and no attributes', function() {
@@ -74,7 +74,7 @@ suite('Attributes', function() {
 
         ref-foo = { foo.attr }
         ref-bar = { bar.attr }
-      `);
+        `);
     });
 
     test('can be referenced for entities with string values', function() {
@@ -121,7 +121,7 @@ suite('Attributes', function() {
         ref-bar = { bar.attr }
         ref-baz = { baz.attr }
         ref-qux = { qux.attr }
-      `);
+        `);
     });
 
     test('can be referenced for entities with string values', function() {
@@ -178,7 +178,7 @@ suite('Attributes', function() {
                     }
 
         ref-foo = { foo.attr }
-      `);
+        `);
     });
 
     test('can be referenced', function() {
