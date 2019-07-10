@@ -71,9 +71,9 @@ export default class Localization {
   /**
    * Format translations into {value, attributes} objects.
    *
-   * The fallback logic is the same as in `formatValues` but the argument type
-   * is stricter (an array of arrays) and it returns {value, attributes}
-   * objects which are suitable for the translation of DOM elements.
+   * The fallback logic is the same as in `formatValues` but it returns {value,
+   * attributes} objects which are suitable for the translation of DOM
+   * elements.
    *
    *     docL10n.formatMessages([
    *       {id: 'hello', args: { who: 'Mary' }},
@@ -101,8 +101,8 @@ export default class Localization {
   /**
    * Retrieve translations corresponding to the passed keys.
    *
-   * A generalized version of `DOMLocalization.formatValue`. Keys can
-   * either be simple string identifiers or `[id, args]` arrays.
+   * A generalized version of `DOMLocalization.formatValue`. Keys must
+   * be `{id, args}` objects.
    *
    *     docL10n.formatValues([
    *       {id: 'hello', args: { who: 'Mary' }},
@@ -164,26 +164,26 @@ export default class Localization {
 }
 
 /**
- * Format the value of a message into a string.
+ * Format the value of a message into a string or `null`.
  *
  * This function is passed as a method to `keysFromBundle` and resolve
  * a value of a single L10n Entity using provided `FluentBundle`.
  *
- * If the function fails to retrieve the entity, it will return an ID of it.
- * If formatting fails, it will return a partially resolved entity.
- *
- * In both cases, an error is being added to the errors array.
+ * If the message doesn't have a value, return `null`.
  *
  * @param   {FluentBundle} bundle
- * @param   {Array<Error>}   errors
- * @param   {string}         id
- * @param   {Object}         args
+ * @param   {Array<Error>} errors
+ * @param   {Object} message
+ * @param   {Object} args
  * @returns {string}
  * @private
  */
-function valueFromBundle(bundle, errors, id, args) {
-  const msg = bundle.getMessage(id);
-  return bundle.format(msg, args, errors);
+function valueFromBundle(bundle, errors, message, args) {
+  if (message.value) {
+    return bundle.formatPattern(message.value, args, errors);
+  }
+
+  return null;
 }
 
 /**
@@ -195,34 +195,28 @@ function valueFromBundle(bundle, errors, id, args) {
  * The function will return an object with a value and attributes of the
  * entity.
  *
- * If the function fails to retrieve the entity, the value is set to the ID of
- * an entity, and attributes to `null`. If formatting fails, it will return
- * a partially resolved value and attributes.
- *
- * In both cases, an error is being added to the errors array.
- *
  * @param   {FluentBundle} bundle
- * @param   {Array<Error>}   errors
- * @param   {String}         id
- * @param   {Object}         args
+ * @param   {Array<Error>} errors
+ * @param   {Object} message
+ * @param   {Object} args
  * @returns {Object}
  * @private
  */
-function messageFromBundle(bundle, errors, id, args) {
-  const msg = bundle.getMessage(id);
-
+function messageFromBundle(bundle, errors, message, args) {
   const formatted = {
-    value: bundle.format(msg, args, errors),
+    value: null,
     attributes: null,
   };
 
-  if (msg.attrs) {
+  if (message.value) {
+    formatted.value = bundle.formatPattern(message.value, args, errors);
+  }
+
+  if (message.attributes) {
     formatted.attributes = [];
-    for (const [name, attr] of Object.entries(msg.attrs)) {
-      const value = bundle.format(attr, args, errors);
-      if (value !== null) {
-        formatted.attributes.push({name, value});
-      }
+    for (const [name, attr] of Object.entries(message.attributes)) {
+      const value = bundle.formatPattern(attr, args, errors);
+      formatted.attributes.push({name, value});
     }
   }
 
@@ -270,9 +264,10 @@ function keysFromBundle(method, bundle, keys, translations) {
       return;
     }
 
-    if (bundle.hasMessage(id)) {
+    let message = bundle.getMessage(id);
+    if (message) {
       messageErrors.length = 0;
-      translations[i] = method(bundle, messageErrors, id, args);
+      translations[i] = method(bundle, messageErrors, message, args);
       // XXX: Report resolver errors
     } else {
       missingIds.add(id);
