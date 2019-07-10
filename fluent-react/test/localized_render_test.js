@@ -224,7 +224,7 @@ foo =
 
   test('$arg is passed to format the value', function() {
     const bundle = new FluentBundle();
-    const format = sinon.spy(bundle, 'format');
+    const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
     bundle.addMessages(`
@@ -238,13 +238,13 @@ foo = { $arg }
       { context: { l10n } }
     );
 
-    const { args } = format.getCall(0);
+    const { args } = formatPattern.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
   });
 
   test('$arg is passed to format the attributes', function() {
     const bundle = new FluentBundle();
-    const format = sinon.spy(bundle, 'format');
+    const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
     bundle.addMessages(`
@@ -259,7 +259,7 @@ foo = { $arg }
       { context: { l10n } }
     );
 
-    const { args } = format.getCall(0);
+    const { args } = formatPattern.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
   });
 

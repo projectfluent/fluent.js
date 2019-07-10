@@ -55,13 +55,14 @@ export default class ReactLocalization {
    */
   getString(id, args, fallback) {
     const bundle = this.getBundle(id);
-
-    if (bundle === null) {
-      return fallback || id;
+    if (bundle) {
+      const msg = bundle.getMessage(id);
+      if (msg && msg.value) {
+        return bundle.formatPattern(msg.value, args);
+      }
     }
 
-    const msg = bundle.getMessage(id);
-    return bundle.format(msg, args);
+    return fallback || id;
   }
 }
 

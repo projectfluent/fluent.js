@@ -101,7 +101,28 @@ export default class Localized extends Component {
 
     const msg = bundle.getMessage(id);
     const [args, elems] = toArguments(this.props);
-    const messageValue = bundle.format(msg, args);
+
+    // The default is to forbid all message attributes. If the attrs prop exists
+    // on the Localized instance, only set message attributes which have been
+    // explicitly allowed by the developer.
+    if (attrs && msg.attributes) {
+      var localizedProps = {};
+      for (const [name, allowed] of Object.entries(attrs)) {
+        if (allowed && name in msg.attributes) {
+          localizedProps[name] = bundle.formatPattern(
+            msg.attributes[name], args);
+        }
+      }
+    }
+
+    // If the message has a null value, we're only interested in its attributes.
+    // Do not pass the null value to cloneElement as it would nuke all children
+    // of the wrapped component.
+    if (msg.value === null) {
+      return cloneElement(elem, localizedProps);
+    }
+
+    const messageValue = bundle.formatPattern(msg.value, args);
 
     // Check if the fallback is a valid element -- if not then it's not
     // markup (e.g. nothing or a fallback string) so just use the
@@ -110,30 +131,11 @@ export default class Localized extends Component {
       return messageValue;
     }
 
-    // The default is to forbid all message attributes. If the attrs prop exists
-    // on the Localized instance, only set message attributes which have been
-    // explicitly allowed by the developer.
-    if (attrs && msg.attrs) {
-      var localizedProps = {};
-      for (const [name, allowed] of Object.entries(attrs)) {
-        if (allowed && msg.attrs.hasOwnProperty(name)) {
-          localizedProps[name] = bundle.format(msg.attrs[name], args);
-        }
-      }
-    }
-
     // If the wrapped component is a known void element, explicitly dismiss the
     // message value and do not pass it to cloneElement in order to avoid the
     // "void element tags must neither have `children` nor use
     // `dangerouslySetInnerHTML`" error.
     if (elem.type in VOID_ELEMENTS) {
-      return cloneElement(elem, localizedProps);
-    }
-
-    // If the message has a null value, we're only interested in its attributes.
-    // Do not pass the null value to cloneElement as it would nuke all children
-    // of the wrapped component.
-    if (messageValue === null) {
       return cloneElement(elem, localizedProps);
     }
 
