@@ -101,9 +101,8 @@ function getArguments(scope, args) {
 
 // Resolve an expression to a Fluent type.
 function resolveExpression(scope, expr) {
-  // A fast-path for strings which are the most common case. Since they
-  // natively have the `toString` method they can be used as if they were
-  // a FluentType instance without incurring the cost of creating one.
+  // A special case for VariantKeys.
+  // XXX Should not go through bundle._transform.
   if (typeof expr === "string") {
     return scope.bundle._transform(expr);
   }
