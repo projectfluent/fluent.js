@@ -63,7 +63,7 @@ suite('Formatting values', function(){
     const msg = bundle.getMessage('key5');
     assert.throws(
       () => bundle.formatPattern(msg.value, args, errs),
-      "Invalid Pattern type"
+      new TypeError("Invalid Pattern type")
     );
   });
 

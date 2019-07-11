@@ -217,9 +217,14 @@ export default class FluentBundle {
       return this._transform(pattern);
     }
 
-    let scope = this._createScope(args, errors);
-    let value = resolveComplexPattern(scope, pattern);
-    return value.toString(scope);
+    // Resolve a complex pattern.
+    if (Array.isArray(pattern)) {
+      let scope = this._createScope(args, errors);
+      let value = resolveComplexPattern(scope, pattern);
+      return value.toString(scope);
+    }
+
+    throw new TypeError("Invalid Pattern type");
   }
 
   _createScope(args, errors = []) {
