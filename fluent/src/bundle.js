@@ -199,19 +199,16 @@ export default class FluentBundle {
    *     const hello = bundle.getMessage('hello');
    *     if (hello.value) {
    *         bundle.formatPattern(hello.value, { name: 'Jane' }, errors);
+   *         // Returns 'Hello, Jane!' and `errors` is empty.
+   *
+   *         bundle.formatPattern(hello.value, undefined, errors);
+   *         // Returns 'Hello, {$name}!' and `errors` is now:
+   *         // [<ReferenceError: Unknown variable: name>]
    *     }
-   *
-   *     // Returns 'Hello, Jane!' and `errors` is empty.
-   *
-   *     bundle.formatPattern(hello.value, undefined, errors);
-   *
-   *     // Returns 'Hello, $name!' and `errors` is now:
-   *
-   *     [<ReferenceError: Unknown variable: name>]
    *
    * @param   {string|Array} pattern
    * @param   {?Object} args
-   * @param   {Array} errors
+   * @param   {?Array} errors
    * @returns {string}
    */
   formatPattern(pattern, args, errors) {
