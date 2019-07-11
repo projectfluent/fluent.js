@@ -188,9 +188,9 @@ suite('Bundle', function() {
     });
 
     test('returns undefined for terms and missing messages', function() {
-      assert.equal(bundle.getMessage('-bar'), undefined);
-      assert.equal(bundle.getMessage('baz'), undefined);
-      assert.equal(bundle.getMessage('-baz'), undefined);
+      assert.strictEqual(bundle.getMessage('-bar'), undefined);
+      assert.strictEqual(bundle.getMessage('baz'), undefined);
+      assert.strictEqual(bundle.getMessage('-baz'), undefined);
     });
   });
 
