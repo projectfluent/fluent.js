@@ -1,4 +1,4 @@
-import resolve from "./resolver.js";
+import {resolveComplexPattern} from "./resolver.js";
 import FluentResource from "./resource.js";
 
 /**
@@ -215,17 +215,14 @@ export default class FluentBundle {
    * @returns {string}
    */
   formatPattern(pattern, args, errors) {
+    // Resolve a simple pattern without creating a scope.
     if (typeof pattern === "string") {
       return this._transform(pattern);
     }
 
-    if (Array.isArray(pattern)) {
-      let scope = this._createScope(args, errors);
-      let value = resolve(scope, pattern);
-      return value.toString(scope);
-    }
-
-    throw new TypeError(`Invalid Pattern type: ${typeof pattern}.`);
+    let scope = this._createScope(args, errors);
+    let value = resolveComplexPattern(scope, pattern);
+    return value.toString(scope);
   }
 
   _createScope(args, errors = []) {
