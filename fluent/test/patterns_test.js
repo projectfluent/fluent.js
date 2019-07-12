@@ -88,7 +88,7 @@ suite('Patterns', function(){
       const msg = bundle.getMessage('foo');
       assert.throws(
         () => bundle.formatPattern(msg.value, args, errs),
-        new TypeError("Invalid Pattern type")
+        /Invalid Pattern type/
       );
     });
 
