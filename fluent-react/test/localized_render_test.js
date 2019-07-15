@@ -278,6 +278,25 @@ foo = { $arg }
     assert.equal(wrapper.text(), 'String fallback');
   });
 
+  test('render with a string fallback and no message value preserves the fallback',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo =
+    .attr = Attribute
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        String fallback
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), 'String fallback');
+  });
+
   test('render with a string fallback returns the message', function() {
     const mcx = new FluentBundle();
     const l10n = new ReactLocalization([mcx]);
@@ -293,6 +312,37 @@ foo = Test message
     );
 
     assert.equal(wrapper.text(), 'Test message');
+  });
+
+  test('render without a fallback and no message returns nothing',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), '');
+  });
+
+  test('render without a fallback and no message value returns nothing',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo =
+    .attr = Attribute
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), '');
   });
 
   test('render without a fallback returns the message', function() {
@@ -311,16 +361,4 @@ foo = Message
     assert.equal(wrapper.text(), 'Message');
   });
 
-  test('render without a fallback and no message returns nothing',
-  function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-
-    const wrapper = shallow(
-      <Localized id="foo" />,
-      { context: { l10n } }
-    );
-
-    assert.equal(wrapper.text(), '');
-  });
 });

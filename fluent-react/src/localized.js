@@ -79,28 +79,40 @@ export default class Localized extends Component {
 
   render() {
     const { l10n, parseMarkup } = this.context;
-    const { id, attrs, children: elem = null } = this.props;
+    const { id, attrs, children: child = null } = this.props;
 
     // Validate that the child element isn't an array
-    if (Array.isArray(elem)) {
+    if (Array.isArray(child)) {
       throw new Error("<Localized/> expected to receive a single " +
         "React node child");
     }
 
     if (!l10n) {
       // Use the wrapped component as fallback.
-      return elem;
+      return child;
     }
 
     const bundle = l10n.getBundle(id);
 
     if (bundle === null) {
       // Use the wrapped component as fallback.
-      return elem;
+      return child;
     }
 
     const msg = bundle.getMessage(id);
     const [args, elems] = toArguments(this.props);
+
+    // Check if the child inside <Localized> is a valid element -- if not, then
+    // it's either null or a simple fallback string. No need to localize the
+    // attributes.
+    if (!isValidElement(child)) {
+      if (msg.value) {
+        // Replace the fallback string with the message value;
+        return bundle.formatPattern(msg.value, args);
+      }
+
+      return child;
+    }
 
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been
@@ -115,34 +127,27 @@ export default class Localized extends Component {
       }
     }
 
-    // If the message has a null value, we're only interested in its attributes.
-    // Do not pass the null value to cloneElement as it would nuke all children
-    // of the wrapped component.
-    if (msg.value === null) {
-      return cloneElement(elem, localizedProps);
-    }
-
-    const messageValue = bundle.formatPattern(msg.value, args);
-
-    // Check if the fallback is a valid element -- if not then it's not
-    // markup (e.g. nothing or a fallback string) so just use the
-    // formatted message value
-    if (!isValidElement(elem)) {
-      return messageValue;
-    }
-
     // If the wrapped component is a known void element, explicitly dismiss the
     // message value and do not pass it to cloneElement in order to avoid the
     // "void element tags must neither have `children` nor use
     // `dangerouslySetInnerHTML`" error.
-    if (elem.type in VOID_ELEMENTS) {
-      return cloneElement(elem, localizedProps);
+    if (child.type in VOID_ELEMENTS) {
+      return cloneElement(child, localizedProps);
     }
+
+    // If the message has a null value, we're only interested in its attributes.
+    // Do not pass the null value to cloneElement as it would nuke all children
+    // of the wrapped component.
+    if (msg.value === null) {
+      return cloneElement(child, localizedProps);
+    }
+
+    const messageValue = bundle.formatPattern(msg.value, args);
 
     // If the message value doesn't contain any markup nor any HTML entities,
     // insert it as the only child of the wrapped component.
     if (!reMarkup.test(messageValue)) {
-      return cloneElement(elem, localizedProps, messageValue);
+      return cloneElement(child, localizedProps, messageValue);
     }
 
     // If the message contains markup, parse it and try to match the children
@@ -175,7 +180,7 @@ export default class Localized extends Component {
       return cloneElement(sourceChild, null, childNode.textContent);
     });
 
-    return cloneElement(elem, localizedProps, ...translatedChildren);
+    return cloneElement(child, localizedProps, ...translatedChildren);
   }
 }
 
