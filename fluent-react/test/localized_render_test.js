@@ -263,6 +263,134 @@ foo = { $arg }
     assert.deepEqual(args[1], { arg: 'ARG' });
   });
 
+  test('render with a fragment and no message preserves the fragment',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment>
+          <div>Fragment content</div>
+        </React.Fragment>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        <div>Fragment content</div>
+      </React.Fragment>
+    ));
+  });
+
+  test('render with a fragment and no message value preserves the fragment',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo =
+    .attr = Attribute
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment>
+          <div>Fragment content</div>
+        </React.Fragment>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        <div>Fragment content</div>
+      </React.Fragment>
+    ));
+  });
+
+  test('render with a fragment renders the message into the fragment', function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo = Test message
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment>
+          <div>Fragment content</div>
+        </React.Fragment>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        Test message
+      </React.Fragment>
+    ));
+  });
+
+  test('render with an empty fragment and no message preserves the fragment',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment/>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment/>
+    ));
+  });
+
+  test('render with an empty fragment and no message value preserves the fragment',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo =
+    .attr = Attribute
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment/>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment/>
+    ));
+  });
+
+  test('render with an empty fragment renders the message into the fragment', function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo = Test message
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment/>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        Test message
+      </React.Fragment>
+    ));
+  });
+
   test('render with a string fallback and no message returns the fallback',
   function() {
     const mcx = new FluentBundle();
