@@ -289,10 +289,11 @@ export function resolveComplexPattern(scope, ptn) {
           `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
         )
       );
-      result.push(part.slice(MAX_PLACEABLE_LENGTH));
-    } else {
-      result.push(part);
+      scope.dirty.delete(ptn);
+      return new FluentNone();
     }
+
+    result.push(part);
 
     if (useIsolating) {
       result.push(PDI);
