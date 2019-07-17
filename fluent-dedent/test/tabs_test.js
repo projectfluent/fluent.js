@@ -5,7 +5,7 @@ import ftl from "../src/index";
 
 suite("tab indent", function() {
   test("same amount", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
 \t\tfoo
 \t\t`,
@@ -14,7 +14,7 @@ suite("tab indent", function() {
   });
 
   test("larger than common", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
 \t\t\tfoo
 \t\t`,

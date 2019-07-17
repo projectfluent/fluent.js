@@ -5,7 +5,7 @@ import ftl from "../src/index";
 
 suite("content lines", function() {
   test("no indent", function () {
-    assert.equal(
+    assert.strictEqual(
       ftl`
 foo
 bar
@@ -15,7 +15,7 @@ bar
   });
 
   test("zero indent", function () {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo
     bar
@@ -25,7 +25,7 @@ bar
   });
 
   test("small indent", function () {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo
     bar
@@ -35,7 +35,7 @@ bar
   });
 
   test("same indent", function () {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo
         bar

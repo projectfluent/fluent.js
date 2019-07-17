@@ -21,8 +21,8 @@ suite('Literals as selectors', function() {
       `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
-    assert.equal(val, 'A');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'A');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('a non-matching string literal selector', function() {
@@ -34,8 +34,8 @@ suite('Literals as selectors', function() {
       `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
-    assert.equal(val, 'B');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'B');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('a matching number literal selector', function() {
@@ -47,8 +47,8 @@ suite('Literals as selectors', function() {
       `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
-    assert.equal(val, 'A');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'A');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('a non-matching number literal selector', function() {
@@ -60,8 +60,8 @@ suite('Literals as selectors', function() {
       `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
-    assert.equal(val, 'B');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'B');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('a number literal selector matching a plural category', function() {
@@ -73,7 +73,7 @@ suite('Literals as selectors', function() {
       `);
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
-    assert.equal(val, 'A');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'A');
+    assert.strictEqual(errs.length, 0);
   });
 });

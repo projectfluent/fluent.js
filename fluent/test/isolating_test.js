@@ -29,22 +29,22 @@ suite('Isolating interpolations', function(){
   test('isolates interpolated message references', function(){
     const msg = bundle.getMessage('bar');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, `${FSI}Foo${PDI} Bar`);
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, `${FSI}Foo${PDI} Bar`);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('isolates interpolated string-typed variables', function(){
     const msg = bundle.getMessage('baz');
     const val = bundle.formatPattern(msg.value, {arg: 'Arg'}, errs);
-    assert.equal(val, `${FSI}Arg${PDI} Baz`);
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, `${FSI}Arg${PDI} Baz`);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('isolates interpolated number-typed variables', function(){
     const msg = bundle.getMessage('baz');
     const val = bundle.formatPattern(msg.value, {arg: 1}, errs);
-    assert.equal(val, `${FSI}1${PDI} Baz`);
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, `${FSI}1${PDI} Baz`);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('isolates interpolated date-typed variables', function(){
@@ -54,8 +54,8 @@ suite('Isolating interpolations', function(){
     const msg = bundle.getMessage('baz');
     const val = bundle.formatPattern(msg.value, {arg}, errs);
     // format the date argument to account for the testrunner's timezone
-    assert.equal(val, `${FSI}${dtf.format(arg)}${PDI} Baz`);
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, `${FSI}${dtf.format(arg)}${PDI} Baz`);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('isolates complex interpolations', function(){
@@ -64,8 +64,8 @@ suite('Isolating interpolations', function(){
 
     const expected_bar = `${FSI}${FSI}Foo${PDI} Bar${PDI}`;
     const expected_baz = `${FSI}${FSI}Arg${PDI} Baz${PDI}`;
-    assert.equal(val, `${expected_bar} ${expected_baz}`);
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, `${expected_bar} ${expected_baz}`);
+    assert.strictEqual(errs.length, 0);
   });
 });
 
@@ -87,7 +87,7 @@ suite('Skip isolation cases', function(){
   test('skips isolation if the only element is a placeable', function(){
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, `Amaya`);
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, `Amaya`);
+    assert.strictEqual(errs.length, 0);
   });
 });

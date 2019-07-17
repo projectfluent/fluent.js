@@ -21,8 +21,8 @@ suite("Select expressions", function() {
       `);
     const msg = bundle.getMessage("select");
     const val = bundle.formatPattern(msg.value, null, errs);
-    assert.equal(val, "B");
-    assert.equal(errs.length, 1);
+    assert.strictEqual(val, "B");
+    assert.strictEqual(errs.length, 1);
     assert(errs[0] instanceof ReferenceError); // unknown variable
   });
 
@@ -36,8 +36,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "a"}, errs);
-      assert.equal(val, "A");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "A");
+      assert.strictEqual(errs.length, 0);
     });
 
     test("non-matching selector", function() {
@@ -49,8 +49,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "c"}, errs);
-      assert.equal(val, "B");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "B");
+      assert.strictEqual(errs.length, 0);
     });
   });
 
@@ -64,8 +64,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 0}, errs);
-      assert.equal(val, "A");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "A");
+      assert.strictEqual(errs.length, 0);
     });
 
     test("non-matching selector", function() {
@@ -77,8 +77,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 2}, errs);
-      assert.equal(val, "B");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "B");
+      assert.strictEqual(errs.length, 0);
     });
   });
 
@@ -92,8 +92,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 1}, errs);
-      assert.equal(val, "A");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "A");
+      assert.strictEqual(errs.length, 0);
     });
 
     test("matching string selector", function() {
@@ -105,8 +105,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "one"}, errs);
-      assert.equal(val, "A");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "A");
+      assert.strictEqual(errs.length, 0);
     });
 
     test("non-matching number selector", function() {
@@ -118,8 +118,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 2}, errs);
-      assert.equal(val, "D");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "D");
+      assert.strictEqual(errs.length, 0);
     });
 
     test("non-matching string selector", function() {
@@ -131,8 +131,8 @@ suite("Select expressions", function() {
         `);
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "other"}, errs);
-      assert.equal(val, "D");
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, "D");
+      assert.strictEqual(errs.length, 0);
     });
   });
 

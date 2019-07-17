@@ -20,30 +20,30 @@ suite('Async Fallback — single id', function() {
 
   test('eager iterable', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.strictEqual(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.strictEqual(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 
   test('eager iterable works more than once', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
-    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.strictEqual(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.strictEqual(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.strictEqual(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.strictEqual(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.strictEqual(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.strictEqual(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable works more than once', async function() {
     const bundles = new CachedAsyncIterable(generateBundles());
-    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
-    assert.equal(await mapBundleAsync(bundles, 'foo'), bundle2);
-    assert.equal(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.strictEqual(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.strictEqual(await mapBundleAsync(bundles, 'bar'), bundle1);
+    assert.strictEqual(await mapBundleAsync(bundles, 'foo'), bundle2);
+    assert.strictEqual(await mapBundleAsync(bundles, 'bar'), bundle1);
   });
 });
 

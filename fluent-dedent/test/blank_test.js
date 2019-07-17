@@ -5,7 +5,7 @@ import ftl from "../src/index";
 
 suite("blank lines", function() {
   test("leading", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
 
         foo
@@ -15,7 +15,7 @@ suite("blank lines", function() {
   });
 
   test("middle", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo
 
@@ -26,7 +26,7 @@ suite("blank lines", function() {
   });
 
   test("trailing", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo
 
@@ -36,7 +36,7 @@ suite("blank lines", function() {
   });
 
   test("containing the same amount of spaces as the common indent", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
       
       `,
@@ -54,7 +54,7 @@ suite("blank lines", function() {
   });
 
   test("containing too many spaces", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         
       `,

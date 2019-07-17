@@ -19,7 +19,7 @@ suite("translateFragment", function() {
 
     await domLoc.translateFragment(frag);
 
-    assert.equal(elem.textContent, "Key 1");
+    assert.strictEqual(elem.textContent, "Key 1");
   });
 
   test("does not inject content into a node with missing translation", async function() {
@@ -33,7 +33,7 @@ suite("translateFragment", function() {
 
     await domLoc.translateFragment(frag);
 
-    assert.equal(elem.textContent, "Original Value");
+    assert.strictEqual(elem.textContent, "Original Value");
   });
 
 });

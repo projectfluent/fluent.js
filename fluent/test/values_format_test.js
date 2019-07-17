@@ -34,29 +34,29 @@ suite('Formatting values', function(){
   test('returns the value', function(){
     const msg = bundle.getMessage('key1');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, 'Value 1');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Value 1');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('returns the default variant', function(){
     const msg = bundle.getMessage('key2');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, 'B2');
-    assert.equal(errs.length, 1);
+    assert.strictEqual(val, 'B2');
+    assert.strictEqual(errs.length, 1);
   });
 
   test('returns the value if it is a pattern', function(){
     const msg = bundle.getMessage('key3');
     const val = bundle.formatPattern(msg.value, args, errs)
     assert.strictEqual(val, 'Value 3');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('returns the default variant if it is a pattern', function(){
     const msg = bundle.getMessage('key4');
     const val = bundle.formatPattern(msg.value, args, errs)
     assert.strictEqual(val, 'B4');
-    assert.equal(errs.length, 1);
+    assert.strictEqual(errs.length, 1);
   });
 
   test('throws when trying to format a null value', function(){
@@ -71,7 +71,7 @@ suite('Formatting values', function(){
     const msg = bundle.getMessage('key5');
     assert.strictEqual(bundle.formatPattern(msg.attributes.a, args, errs), 'A5');
     assert.strictEqual(bundle.formatPattern(msg.attributes.b, args, errs), 'B5');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(errs.length, 0);
   });
 
 

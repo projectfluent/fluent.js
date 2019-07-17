@@ -16,16 +16,16 @@ suite('Sync Fallback — single id', function() {
 
   test('eager iterable', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
-    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
-    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.strictEqual(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.strictEqual(mapBundleSync(bundles, 'bar'), bundle1);
   });
 
   test('eager iterable works more than once', function() {
     const bundles = new CachedSyncIterable([bundle1, bundle2]);
-    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
-    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
-    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
-    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.strictEqual(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.strictEqual(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.strictEqual(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.strictEqual(mapBundleSync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable', function() {
@@ -34,8 +34,8 @@ suite('Sync Fallback — single id', function() {
     }
 
     const bundles = new CachedSyncIterable(generateBundles());
-    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
-    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.strictEqual(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.strictEqual(mapBundleSync(bundles, 'bar'), bundle1);
   });
 
   test('lazy iterable works more than once', function() {
@@ -44,10 +44,10 @@ suite('Sync Fallback — single id', function() {
     }
 
     const bundles = new CachedSyncIterable(generateBundles());
-    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
-    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
-    assert.equal(mapBundleSync(bundles, 'foo'), bundle2);
-    assert.equal(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.strictEqual(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.strictEqual(mapBundleSync(bundles, 'bar'), bundle1);
+    assert.strictEqual(mapBundleSync(bundles, 'foo'), bundle2);
+    assert.strictEqual(mapBundleSync(bundles, 'bar'), bundle1);
   });
 });
 

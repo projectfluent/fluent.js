@@ -23,8 +23,8 @@ suite('Patterns', function(){
     test('returns the value', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'Foo');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, 'Foo');
+      assert.strictEqual(errs.length, 0);
     });
   });
 
@@ -49,14 +49,14 @@ suite('Patterns', function(){
       const msg = bundle.getMessage('ref-message');
       const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Foo');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(errs.length, 0);
     });
 
     test('resolves the reference to a term', function(){
       const msg = bundle.getMessage('ref-term');
       const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Bar');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(errs.length, 0);
     });
 
     test('returns the id if a message reference is missing', function(){
@@ -96,7 +96,7 @@ suite('Patterns', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, 'Foo Attr');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(errs.length, 0);
     });
 
     test('falls back to id when the referenced message has no value', function(){
@@ -164,7 +164,7 @@ suite('Patterns', function(){
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, {sel: 'b'}, errs);
       assert.strictEqual(val, 'Bar');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(errs.length, 0);
     });
   });
 
@@ -223,7 +223,7 @@ suite('Patterns', function(){
       const msg = bundle.getMessage('bar');
       const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Bar');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(errs.length, 0);
     });
   });
 });

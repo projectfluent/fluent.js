@@ -29,6 +29,6 @@ suite('Transformations', function(){
     assert(val.includes("FAA"));
     assert(attr.includes("BAr"));
     assert(attr.includes("BAz"));
-    assert.equal(errs.length, 0);
+    assert.strictEqual(errs.length, 0);
   });
 });
