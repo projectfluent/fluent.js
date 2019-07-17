@@ -17,15 +17,24 @@
     {
         "id": "surrogates-in-string",
         "value": [
-            "��"
+            {
+                "type": "str",
+                "value": "��"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "surrogates-in-adjacent-strings",
         "value": [
-            "�",
-            "�"
+            {
+                "type": "str",
+                "value": "�"
+            },
+            {
+                "type": "str",
+                "value": "�"
+            }
         ],
         "attributes": {}
     },
@@ -37,7 +46,10 @@
     {
         "id": "emoji-in-string",
         "value": [
-            "A face 😂 with tears of joy."
+            {
+                "type": "str",
+                "value": "A face 😂 with tears of joy."
+            }
         ],
         "attributes": {}
     }

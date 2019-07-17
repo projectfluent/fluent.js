@@ -34,56 +34,80 @@
     {
         "id": "quote-in-string",
         "value": [
-            "\""
+            {
+                "type": "str",
+                "value": "\""
+            }
         ],
         "attributes": {}
     },
     {
         "id": "backslash-in-string",
         "value": [
-            "\\"
+            {
+                "type": "str",
+                "value": "\\"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "string-unicode-4digits",
         "value": [
-            "A"
+            {
+                "type": "str",
+                "value": "A"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "escape-unicode-4digits",
         "value": [
-            "\\u0041"
+            {
+                "type": "str",
+                "value": "\\u0041"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "string-unicode-6digits",
         "value": [
-            "😂"
+            {
+                "type": "str",
+                "value": "😂"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "escape-unicode-6digits",
         "value": [
-            "\\U01F602"
+            {
+                "type": "str",
+                "value": "\\U01F602"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "string-too-many-4digits",
         "value": [
-            "A00"
+            {
+                "type": "str",
+                "value": "A00"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "string-too-many-6digits",
         "value": [
-            "😂00"
+            {
+                "type": "str",
+                "value": "😂00"
+            }
         ],
         "attributes": {}
     },
@@ -91,7 +115,10 @@
         "id": "brace-open",
         "value": [
             "An opening ",
-            "{",
+            {
+                "type": "str",
+                "value": "{"
+            },
             " brace."
         ],
         "attributes": {}
@@ -100,7 +127,10 @@
         "id": "brace-close",
         "value": [
             "A closing ",
-            "}",
+            {
+                "type": "str",
+                "value": "}"
+            },
             " brace."
         ],
         "attributes": {}

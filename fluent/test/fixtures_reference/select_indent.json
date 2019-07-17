@@ -10,7 +10,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -30,7 +33,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -50,7 +56,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -70,7 +79,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -90,7 +102,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -110,7 +125,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -130,7 +148,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -150,7 +171,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -170,7 +194,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -190,11 +217,17 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     },
                     {
-                        "key": "other",
+                        "key": {
+                            "type": "str",
+                            "value": "other"
+                        },
                         "value": "Other"
                     }
                 ],
@@ -214,7 +247,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": [
                             "Value",
                             "\n",
@@ -222,7 +258,10 @@
                         ]
                     },
                     {
-                        "key": "other",
+                        "key": {
+                            "type": "str",
+                            "value": "other"
+                        },
                         "value": [
                             "Other",
                             "\n",
@@ -246,11 +285,17 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     },
                     {
-                        "key": "other",
+                        "key": {
+                            "type": "str",
+                            "value": "other"
+                        },
                         "value": "Other"
                     }
                 ],
@@ -270,11 +315,17 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     },
                     {
-                        "key": "other",
+                        "key": {
+                            "type": "str",
+                            "value": "other"
+                        },
                         "value": "Other"
                     }
                 ],

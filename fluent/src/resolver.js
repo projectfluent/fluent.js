@@ -101,12 +101,6 @@ function getArguments(scope, args) {
 
 // Resolve an expression to a Fluent type.
 function resolveExpression(scope, expr) {
-  // A special case for VariantKeys.
-  // XXX Should not go through bundle._transform.
-  if (typeof expr === "string") {
-    return scope.bundle._transform(expr);
-  }
-
   switch (expr.type) {
     case "str":
       return expr.value;

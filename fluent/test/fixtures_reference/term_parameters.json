@@ -10,7 +10,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],

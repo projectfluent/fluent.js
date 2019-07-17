@@ -19,8 +19,15 @@
                         "value": "Zero"
                     },
                     {
-                        "key": "other",
+                        "key": {
+                            "type": "str",
+                            "value": "other"
+                        },
                         "value": [
+                            {
+                                "type": "str",
+                                "value": ""
+                            },
                             "Other"
                         ]
                     }
@@ -43,7 +50,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "value"
                     }
                 ],
@@ -65,7 +75,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "value"
                     }
                 ],
@@ -96,7 +109,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "value"
                     }
                 ],
@@ -116,8 +132,16 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
-                        "value": []
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
+                        "value": [
+                            {
+                                "type": "str",
+                                "value": ""
+                            }
+                        ]
                     }
                 ],
                 "star": 0
@@ -136,7 +160,10 @@
                 },
                 "variants": [
                     {
-                        "key": "one",
+                        "key": {
+                            "type": "str",
+                            "value": "one"
+                        },
                         "value": [
                             {
                                 "type": "select",
@@ -146,7 +173,10 @@
                                 },
                                 "variants": [
                                     {
-                                        "key": "two",
+                                        "key": {
+                                            "type": "str",
+                                            "value": "two"
+                                        },
                                         "value": "Value"
                                     }
                                 ],

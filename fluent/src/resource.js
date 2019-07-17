@@ -255,9 +255,6 @@ export default class FluentResource extends Array {
         if (element.type === "indent") {
           // Dedent indented lines by the maximum common indent.
           element = element.value.slice(0, element.value.length - commonIndent);
-        } else if (element.type === "str") {
-          // Optimize StringLiterals into their value.
-          element = element.value;
         }
         if (element) {
           baked.push(element);
@@ -387,7 +384,7 @@ export default class FluentResource extends Array {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : match1(RE_IDENTIFIER);
+        : {type: "str", value: match1(RE_IDENTIFIER)};
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }

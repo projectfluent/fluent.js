@@ -11,8 +11,16 @@
                 },
                 "variants": [
                     {
-                        "key": "one",
-                        "value": []
+                        "key": {
+                            "type": "str",
+                            "value": "one"
+                        },
+                        "value": [
+                            {
+                                "type": "str",
+                                "value": ""
+                            }
+                        ]
                     }
                 ],
                 "star": 0

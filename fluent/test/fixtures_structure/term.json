@@ -10,11 +10,17 @@
                 },
                 "variants": [
                     {
-                        "key": "uppercase",
+                        "key": {
+                            "type": "str",
+                            "value": "uppercase"
+                        },
                         "value": "Term"
                     },
                     {
-                        "key": "lowercase",
+                        "key": {
+                            "type": "str",
+                            "value": "lowercase"
+                        },
                         "value": "term"
                     }
                 ],
@@ -83,7 +89,10 @@
                 },
                 "variants": [
                     {
-                        "key": "a",
+                        "key": {
+                            "type": "str",
+                            "value": "a"
+                        },
                         "value": [
                             {
                                 "type": "term",
@@ -95,7 +104,10 @@
                         ]
                     },
                     {
-                        "key": "b",
+                        "key": {
+                            "type": "str",
+                            "value": "b"
+                        },
                         "value": [
                             {
                                 "type": "term",
@@ -107,7 +119,10 @@
                         ]
                     },
                     {
-                        "key": "x",
+                        "key": {
+                            "type": "str",
+                            "value": "x"
+                        },
                         "value": "X"
                     }
                 ],

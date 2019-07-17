@@ -46,7 +46,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -68,7 +71,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],
@@ -90,7 +96,10 @@
                 },
                 "variants": [
                     {
-                        "key": "key",
+                        "key": {
+                            "type": "str",
+                            "value": "key"
+                        },
                         "value": "Value"
                     }
                 ],

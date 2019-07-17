@@ -34,28 +34,40 @@
     {
         "id": "quote-in-string",
         "value": [
-            "\""
+            {
+                "type": "str",
+                "value": "\""
+            }
         ],
         "attributes": {}
     },
     {
         "id": "backslash-in-string",
         "value": [
-            "\\"
+            {
+                "type": "str",
+                "value": "\\"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "string-unicode-sequence",
         "value": [
-            "A"
+            {
+                "type": "str",
+                "value": "A"
+            }
         ],
         "attributes": {}
     },
     {
         "id": "string-escaped-unicode",
         "value": [
-            "\\u0041"
+            {
+                "type": "str",
+                "value": "\\u0041"
+            }
         ],
         "attributes": {}
     },
@@ -63,7 +75,10 @@
         "id": "brace-open",
         "value": [
             "An opening ",
-            "{",
+            {
+                "type": "str",
+                "value": "{"
+            },
             " brace."
         ],
         "attributes": {}
@@ -72,7 +87,10 @@
         "id": "brace-close",
         "value": [
             "A closing ",
-            "}",
+            {
+                "type": "str",
+                "value": "}"
+            },
             " brace."
         ],
         "attributes": {}

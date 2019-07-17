@@ -45,11 +45,17 @@
                 },
                 "variants": [
                     {
-                        "key": "one",
+                        "key": {
+                            "type": "str",
+                            "value": "one"
+                        },
                         "value": "One"
                     },
                     {
-                        "key": "two",
+                        "key": {
+                            "type": "str",
+                            "value": "two"
+                        },
                         "value": "Two"
                     }
                 ],
