@@ -18,7 +18,7 @@ suite('withLocalization', function() {
         <EnhancedComponent />
       </LocalizationProvider>
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('render outside of a LocalizationProvider', function() {
@@ -27,7 +27,7 @@ suite('withLocalization', function() {
     const wrapper = shallow(
       <EnhancedComponent />,
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('getString with access to the l10n context', function() {
@@ -46,7 +46,7 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the translation.
-    assert.equal(getString('foo', {}), 'FOO');
+    assert.strictEqual(getString('foo', {}), 'FOO');
   });
 
   test('getString with access to the l10n context, with fallback value', function() {
@@ -65,7 +65,7 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the translation, even if fallback value provided.
-    assert.equal(getString('bar', {}, 'fallback'), 'fallback');
+    assert.strictEqual(getString('bar', {}, 'fallback'), 'fallback');
   });
 
   test('getString without access to the l10n context', function() {
@@ -77,7 +77,7 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the id if no fallback.
-    assert.equal(getString('foo', {arg: 1}), 'foo');
+    assert.strictEqual(getString('foo', {arg: 1}), 'foo');
   });
 
   test('getString without access to the l10n context, with fallback value', function() {
@@ -89,7 +89,7 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the fallback if provided.
-    assert.equal(getString('foo', {arg: 1}, 'fallback message'), 'fallback message');
+    assert.strictEqual(getString('foo', {arg: 1}, 'fallback message'), 'fallback message');
   });
 
   test('getString with access to the l10n context, with message changes', function() {
@@ -104,13 +104,13 @@ foo = FOO
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'FOO');
+    assert.strictEqual(wrapper.text(), 'FOO');
 
     const newBundle = new FluentBundle();
     newBundle.addMessages('foo = BAR');
     l10n.setBundles([newBundle]);
 
     wrapper.update();
-    assert.equal(wrapper.text(), 'BAR');
+    assert.strictEqual(wrapper.text(), 'BAR');
   })
 });

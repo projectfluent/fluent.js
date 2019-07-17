@@ -58,29 +58,29 @@ suite('Referencing values', function(){
   test('references the value', function(){
     const msg = bundle.getMessage('ref1');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, 'Value 1');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Value 1');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('references the default variant', function(){
     const msg = bundle.getMessage('ref2');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, 'B2');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'B2');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('references the value if it is a pattern', function(){
     const msg = bundle.getMessage('ref3');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, 'Value 3');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Value 3');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('references the default variant if it is a pattern', function(){
     const msg = bundle.getMessage('ref4');
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.equal(val, 'B4');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'B4');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('falls back to id if there is no value', function(){
@@ -97,7 +97,7 @@ suite('Referencing values', function(){
     const val_b = bundle.formatPattern(msg_b.value, args, errs)
     assert.strictEqual(val_a, 'A2');
     assert.strictEqual(val_b, 'B2');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('references the variants which are patterns', function(){
@@ -107,7 +107,7 @@ suite('Referencing values', function(){
     const val_b = bundle.formatPattern(msg_b.value, args, errs)
     assert.strictEqual(val_a, 'A4');
     assert.strictEqual(val_b, 'B4');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('references the attributes', function(){
@@ -120,7 +120,7 @@ suite('Referencing values', function(){
     assert.strictEqual(val_a, 'A5');
     assert.strictEqual(val_b, 'B5');
     assert.strictEqual(val_c, '{key5.c}');
-    assert.equal(errs.length, 1);
+    assert.strictEqual(errs.length, 1);
   });
 
   test('missing message reference', function(){
@@ -130,7 +130,7 @@ suite('Referencing values', function(){
     const val_b = bundle.formatPattern(msg_b.value, args, errs)
     assert.strictEqual(val_a, '{key6}');
     assert.strictEqual(val_b, '{key6}');
-    assert.equal(errs.length, 2);
+    assert.strictEqual(errs.length, 2);
   });
 
   test('missing term reference', function(){
@@ -140,7 +140,7 @@ suite('Referencing values', function(){
     const val_b = bundle.formatPattern(msg_b.value, args, errs)
     assert.strictEqual(val_a, '{-key6}');
     assert.strictEqual(val_b, 'A');
-    assert.equal(errs.length, 2);
+    assert.strictEqual(errs.length, 2);
   });
 
 });

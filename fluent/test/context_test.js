@@ -23,10 +23,10 @@ suite('Bundle', function() {
     });
 
     test('adds messages', function() {
-      assert.equal(bundle._messages.has('foo'), true);
-      assert.equal(bundle._terms.has('foo'), false);
-      assert.equal(bundle._messages.has('-bar'), false);
-      assert.equal(bundle._terms.has('-bar'), true);
+      assert.strictEqual(bundle._messages.has('foo'), true);
+      assert.strictEqual(bundle._terms.has('foo'), false);
+      assert.strictEqual(bundle._messages.has('-bar'), false);
+      assert.strictEqual(bundle._terms.has('-bar'), true);
     });
 
     test('preserves existing messages when new are added', function() {
@@ -34,23 +34,23 @@ suite('Bundle', function() {
         baz = Baz
         `);
 
-      assert.equal(bundle._messages.has('foo'), true);
-      assert.equal(bundle._terms.has('foo'), false);
-      assert.equal(bundle._messages.has('-bar'), false);
-      assert.equal(bundle._terms.has('-bar'), true);
+      assert.strictEqual(bundle._messages.has('foo'), true);
+      assert.strictEqual(bundle._terms.has('foo'), false);
+      assert.strictEqual(bundle._messages.has('-bar'), false);
+      assert.strictEqual(bundle._terms.has('-bar'), true);
 
-      assert.equal(bundle._messages.has('baz'), true);
-      assert.equal(bundle._terms.has('baz'), false);
+      assert.strictEqual(bundle._messages.has('baz'), true);
+      assert.strictEqual(bundle._terms.has('baz'), false);
     });
 
     test('messages and terms can share the same name', function() {
       bundle.addMessages(ftl`
         -foo = Private Foo
         `);
-      assert.equal(bundle._messages.has('foo'), true);
-      assert.equal(bundle._terms.has('foo'), false);
-      assert.equal(bundle._messages.has('-foo'), false);
-      assert.equal(bundle._terms.has('-foo'), true);
+      assert.strictEqual(bundle._messages.has('foo'), true);
+      assert.strictEqual(bundle._terms.has('foo'), false);
+      assert.strictEqual(bundle._messages.has('-foo'), false);
+      assert.strictEqual(bundle._terms.has('-foo'), true);
     });
 
 
@@ -60,14 +60,14 @@ suite('Bundle', function() {
         `);
 
       // Attempt to overwrite error reported
-      assert.equal(errors.length, 1);
+      assert.strictEqual(errors.length, 1);
 
-      assert.equal(bundle._messages.size, 2);
+      assert.strictEqual(bundle._messages.size, 2);
 
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'Foo');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, 'Foo');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('overwrites existing messages if the ids are the same and allowOverrides is true', function() {
@@ -76,14 +76,14 @@ suite('Bundle', function() {
         `, { allowOverrides: true });
 
       // No overwrite errors reported
-      assert.equal(errors.length, 0);
+      assert.strictEqual(errors.length, 0);
 
-      assert.equal(bundle._messages.size, 2);
+      assert.strictEqual(bundle._messages.size, 2);
 
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'New Foo');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, 'New Foo');
+      assert.strictEqual(errs.length, 0);
     });
   });
 
@@ -98,10 +98,10 @@ suite('Bundle', function() {
     });
 
     test('adds messages', function() {
-      assert.equal(bundle._messages.has('foo'), true);
-      assert.equal(bundle._terms.has('foo'), false);
-      assert.equal(bundle._messages.has('-bar'), false);
-      assert.equal(bundle._terms.has('-bar'), true);
+      assert.strictEqual(bundle._messages.has('foo'), true);
+      assert.strictEqual(bundle._terms.has('foo'), false);
+      assert.strictEqual(bundle._messages.has('-bar'), false);
+      assert.strictEqual(bundle._terms.has('-bar'), true);
     });
   });
 
@@ -115,17 +115,17 @@ suite('Bundle', function() {
     test('addResource allowOverrides is false', function() {
       let resource2 = FluentResource.fromString('key = Bar');
       let errors = bundle.addResource(resource2);
-      assert.equal(errors.length, 1);
+      assert.strictEqual(errors.length, 1);
       let msg = bundle.getMessage('key');
-      assert.equal(bundle.formatPattern(msg.value), 'Foo');
+      assert.strictEqual(bundle.formatPattern(msg.value), 'Foo');
     });
 
     test('addResource allowOverrides is true', function() {
       let resource2 = FluentResource.fromString('key = Bar');
       let errors = bundle.addResource(resource2, { allowOverrides: true });
-      assert.equal(errors.length, 0);
+      assert.strictEqual(errors.length, 0);
       let msg = bundle.getMessage('key');
-      assert.equal(bundle.formatPattern(msg.value), 'Bar');
+      assert.strictEqual(bundle.formatPattern(msg.value), 'Bar');
     });
   });
 
@@ -153,20 +153,20 @@ suite('Bundle', function() {
     });
 
     test('returns true only for public messages', function() {
-      assert.equal(bundle.hasMessage('foo'), true);
+      assert.strictEqual(bundle.hasMessage('foo'), true);
     });
 
     test('returns false for terms and missing messages', function() {
-      assert.equal(bundle.hasMessage('-term'), false);
-      assert.equal(bundle.hasMessage('missing'), false);
-      assert.equal(bundle.hasMessage('-missing'), false);
+      assert.strictEqual(bundle.hasMessage('-term'), false);
+      assert.strictEqual(bundle.hasMessage('missing'), false);
+      assert.strictEqual(bundle.hasMessage('-missing'), false);
     });
 
     test('returns false for broken messages', function() {
-      assert.equal(bundle.hasMessage('err1'), false);
-      assert.equal(bundle.hasMessage('err2'), false);
-      assert.equal(bundle.hasMessage('err3'), false);
-      assert.equal(bundle.hasMessage('err4'), false);
+      assert.strictEqual(bundle.hasMessage('err1'), false);
+      assert.strictEqual(bundle.hasMessage('err2'), false);
+      assert.strictEqual(bundle.hasMessage('err3'), false);
+      assert.strictEqual(bundle.hasMessage('err4'), false);
     });
   });
 

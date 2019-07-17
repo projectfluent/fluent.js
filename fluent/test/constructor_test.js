@@ -25,11 +25,11 @@ suite('FluentBundle constructor', function() {
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
 
-    assert.equal(val, 'Foo 1');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Foo 1');
+    assert.strictEqual(errs.length, 0);
     
     const locale = this.nf.getCall(0).args[0];
-    assert.equal(locale, 'en-US');
+    assert.deepEqual(locale, ['en-US']);
   });
 
   test('accepts an array of locales', function() {
@@ -42,8 +42,8 @@ suite('FluentBundle constructor', function() {
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
 
-    assert.equal(val, 'Foo 1');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Foo 1');
+    assert.strictEqual(errs.length, 0);
 
     const locales = this.nf.getCall(0).args[0];
     assert.deepEqual(locales, ['de', 'en-US']);

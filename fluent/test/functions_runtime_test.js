@@ -30,8 +30,8 @@ suite('Runtime-specific functions', function() {
     test('works for strings', function() {
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, 'FooBar');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, 'FooBar');
+      assert.strictEqual(errs.length, 0);
     });
 
     // XXX When they are passed as variables, convert JS types to FTL types
@@ -39,8 +39,8 @@ suite('Runtime-specific functions', function() {
     test.skip('works for numbers', function() {
       const msg = bundle.getMessage('bar');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.equal(val, '3');
-      assert.equal(errs.length, 0);
+      assert.strictEqual(val, '3');
+      assert.strictEqual(errs.length, 0);
     });
   });
 });

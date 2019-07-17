@@ -13,7 +13,7 @@ suite('Top-level attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.outerHTML,
+    assert.strictEqual(element.outerHTML,
       '<div title="FOO"></div>');
   });
 
@@ -27,7 +27,7 @@ suite('Top-level attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.outerHTML, '<input>');
+    assert.strictEqual(element.outerHTML, '<input>');
   });
 
   test('attributes do not leak on first translation', function() {
@@ -40,7 +40,7 @@ suite('Top-level attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.outerHTML,
+    assert.strictEqual(element.outerHTML,
       '<div>FOO</div>');
   });
 
@@ -58,10 +58,10 @@ suite('Top-level attributes', function() {
     };
 
     translateElement(element, translationA);
-    assert.equal(element.outerHTML,
+    assert.strictEqual(element.outerHTML,
       '<div title="TITLE A">FOO A</div>');
     translateElement(element, translationB);
-    assert.equal(element.outerHTML,
+    assert.strictEqual(element.outerHTML,
       '<div>FOO B</div>');
   });
 });

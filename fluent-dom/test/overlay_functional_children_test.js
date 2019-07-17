@@ -12,7 +12,7 @@ suite('Child without name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'FOO'
     );
@@ -26,7 +26,7 @@ suite('Child without name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'FOO'
     );
@@ -41,7 +41,7 @@ suite('Child without name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'FOO'
     );
@@ -58,7 +58,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'FOO'
     );
@@ -73,7 +73,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'FOO'
     );
@@ -88,7 +88,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<button data-l10n-name="foo">FOO</button>'
     );
@@ -103,7 +103,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<button data-l10n-name="foo"></button>'
     );
@@ -118,7 +118,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'BAR'
     );
@@ -133,7 +133,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       'FOO'
     );
@@ -148,7 +148,7 @@ suite('Child with name', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<button data-l10n-name="foo">FOO 1</button> FOO 2'
     );
@@ -166,7 +166,7 @@ suite('Two named children', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<button data-l10n-name="foo">FOO</button><button data-l10n-name="bar">BAR</button>'
     );
@@ -182,7 +182,7 @@ suite('Two named children', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<button data-l10n-name="bar">BAR</button><button data-l10n-name="foo">FOO</button>'
     );
@@ -201,7 +201,7 @@ suite('Two named children', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<button data-l10n-name="foo">FOO</button><button data-l10n-name="bar">BAR</button>'
     );
@@ -218,7 +218,7 @@ suite('Two named children', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(
+    assert.strictEqual(
       element.innerHTML,
       '<div data-l10n-name="foo">FOO 1 BAR FOO 2</div>'
     );
@@ -235,7 +235,7 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" class="foo">FOO</button>');
   });
 
@@ -248,7 +248,7 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo">FOO</button>');
   });
 
@@ -261,7 +261,7 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" class="foo">FOO</button>');
   });
 
@@ -274,7 +274,7 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo">FOO</button>');
   });
 
@@ -287,7 +287,7 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" title="FOO">FOO</button>');
   });
 
@@ -300,7 +300,7 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" title="BAR">FOO</button>');
   });
 
@@ -317,10 +317,10 @@ suite('Child attributes', function() {
     };
 
     translateElement(element, translationA);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" title="FOO A">FOO A</button>');
     translateElement(element, translationB);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo">FOO B</button>');
   });
 });
@@ -335,7 +335,7 @@ suite('Child attributes overrides', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" data-l10n-attrs="class" class="FOO">FOO</button>');
   });
 
@@ -348,7 +348,7 @@ suite('Child attributes overrides', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<button data-l10n-name="foo" class="foo">FOO</button>');
   });
 });

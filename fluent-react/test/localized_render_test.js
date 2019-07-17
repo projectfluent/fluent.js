@@ -403,7 +403,7 @@ foo = Test message
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'String fallback');
+    assert.strictEqual(wrapper.text(), 'String fallback');
   });
 
   test('render with a string fallback and no message value preserves the fallback',
@@ -422,7 +422,7 @@ foo =
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'String fallback');
+    assert.strictEqual(wrapper.text(), 'String fallback');
   });
 
   test('render with a string fallback returns the message', function() {
@@ -439,7 +439,7 @@ foo = Test message
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'Test message');
+    assert.strictEqual(wrapper.text(), 'Test message');
   });
 
   test('render without a fallback and no message returns nothing',
@@ -452,7 +452,7 @@ foo = Test message
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), '');
+    assert.strictEqual(wrapper.text(), '');
   });
 
   test('render without a fallback and no message value returns nothing',
@@ -470,7 +470,7 @@ foo =
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), '');
+    assert.strictEqual(wrapper.text(), '');
   });
 
   test('render without a fallback returns the message', function() {
@@ -486,7 +486,7 @@ foo = Message
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'Message');
+    assert.strictEqual(wrapper.text(), 'Message');
   });
 
 });
