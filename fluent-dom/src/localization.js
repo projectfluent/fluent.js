@@ -175,7 +175,7 @@ export default class Localization {
  * @param   {Array<Error>} errors
  * @param   {Object} message
  * @param   {Object} args
- * @returns {string}
+ * @returns {string|null}
  * @private
  */
 function valueFromBundle(bundle, errors, message, args) {
@@ -212,11 +212,12 @@ function messageFromBundle(bundle, errors, message, args) {
     formatted.value = bundle.formatPattern(message.value, args, errors);
   }
 
-  if (message.attributes) {
-    formatted.attributes = [];
-    for (const [name, attr] of Object.entries(message.attributes)) {
-      const value = bundle.formatPattern(attr, args, errors);
-      formatted.attributes.push({name, value});
+  let attrNames = Object.keys(message.attributes);
+  if (attrNames.length > 0) {
+    formatted.attributes = new Array(attrNames.length);
+    for (let [i, name] of attrNames.entries()) {
+      let value = bundle.formatPattern(message.attributes[name], args, errors);
+      formatted.attributes[i] = {name, value};
     }
   }
 
