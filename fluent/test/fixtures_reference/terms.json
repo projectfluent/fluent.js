@@ -8,7 +8,12 @@
     },
     {
         "id": "-term02",
-        "value": [],
+        "value": [
+            {
+                "type": "str",
+                "value": ""
+            }
+        ],
         "attributes": {}
     },
     {

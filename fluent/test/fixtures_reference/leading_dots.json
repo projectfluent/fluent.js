@@ -12,7 +12,10 @@
     {
         "id": "key03",
         "value": [
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "Value"
         ],
         "attributes": {}
@@ -20,7 +23,10 @@
     {
         "id": "key04",
         "value": [
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "Value"
         ],
         "attributes": {}
@@ -30,7 +36,10 @@
         "value": [
             "Value",
             "\n",
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "Continued"
         ],
         "attributes": {}
@@ -40,7 +49,10 @@
         "value": [
             ".Value",
             "\n",
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "Continued"
         ],
         "attributes": {}
@@ -64,7 +76,10 @@
     {
         "id": "key11",
         "value": [
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "Value = which looks like an attribute",
             "\n",
             "Continued"
@@ -92,7 +107,10 @@
         "value": null,
         "attributes": {
             "attribute": [
-                ".",
+                {
+                    "type": "str",
+                    "value": "."
+                },
                 "Value"
             ]
         }
@@ -109,13 +127,22 @@
                 },
                 "variants": [
                     {
-                        "key": "one",
+                        "key": {
+                            "type": "str",
+                            "value": "one"
+                        },
                         "value": ".Value"
                     },
                     {
-                        "key": "other",
+                        "key": {
+                            "type": "str",
+                            "value": "other"
+                        },
                         "value": [
-                            ".",
+                            {
+                                "type": "str",
+                                "value": "."
+                            },
                             "Value"
                         ]
                     }
@@ -139,7 +166,10 @@
     {
         "id": "key20",
         "value": [
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "Value"
         ],
         "attributes": {}

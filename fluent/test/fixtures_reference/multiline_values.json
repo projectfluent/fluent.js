@@ -56,22 +56,40 @@
         "id": "key06",
         "value": [
             "A multiline value with ",
-            "placeables",
+            {
+                "type": "str",
+                "value": "placeables"
+            },
             "\n",
-            "at",
+            {
+                "type": "str",
+                "value": "at"
+            },
             " the beginning and the end",
             "\n",
-            "of lines",
-            "."
+            {
+                "type": "str",
+                "value": "of lines"
+            },
+            {
+                "type": "str",
+                "value": "."
+            }
         ],
         "attributes": {}
     },
     {
         "id": "key07",
         "value": [
-            "A multiline value",
+            {
+                "type": "str",
+                "value": "A multiline value"
+            },
             " starting and ending ",
-            "with a placeable"
+            {
+                "type": "str",
+                "value": "with a placeable"
+            }
         ],
         "attributes": {}
     },
@@ -120,7 +138,10 @@
     {
         "id": "key12",
         "value": [
-            ".",
+            {
+                "type": "str",
+                "value": "."
+            },
             "\n    ",
             "four"
         ],
@@ -132,7 +153,10 @@
             "    ",
             "four",
             "\n",
-            "."
+            {
+                "type": "str",
+                "value": "."
+            }
         ],
         "attributes": {}
     }

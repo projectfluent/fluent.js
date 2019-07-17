@@ -26,7 +26,10 @@
         "id": "key4",
         "value": [
             "Value",
-            "           "
+            {
+                "type": "str",
+                "value": "           "
+            }
         ],
         "attributes": {}
     }

@@ -43,7 +43,12 @@
     },
     {
         "id": "key06",
-        "value": [],
+        "value": [
+            {
+                "type": "str",
+                "value": ""
+            }
+        ],
         "attributes": {}
     },
     {
