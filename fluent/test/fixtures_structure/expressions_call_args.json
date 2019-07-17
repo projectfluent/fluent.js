@@ -1,28 +1,32 @@
-{
-    "key": [
-        {
-            "type": "func",
-            "name": "FOO",
-            "args": [
-                {
-                    "type": "narg",
-                    "name": "arg1",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
+[
+    {
+        "id": "key",
+        "value": [
+            {
+                "type": "func",
+                "name": "FOO",
+                "args": [
+                    {
+                        "type": "narg",
+                        "name": "arg1",
+                        "value": {
+                            "type": "num",
+                            "value": 1,
+                            "precision": 0
+                        }
+                    },
+                    {
+                        "type": "narg",
+                        "name": "arg2",
+                        "value": {
+                            "type": "num",
+                            "value": 2,
+                            "precision": 0
+                        }
                     }
-                },
-                {
-                    "type": "narg",
-                    "name": "arg2",
-                    "value": {
-                        "type": "num",
-                        "value": 2,
-                        "precision": 0
-                    }
-                }
-            ]
-        }
-    ]
-}
+                ]
+            }
+        ],
+        "attributes": {}
+    }
+]

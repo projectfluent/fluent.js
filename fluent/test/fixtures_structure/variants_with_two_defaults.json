@@ -1,22 +1,26 @@
-{
-    "-err01": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "Foo"
+[
+    {
+        "id": "-err01",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
                 },
-                {
-                    "key": "two",
-                    "value": "Two"
-                }
-            ],
-            "star": 1
-        }
-    ]
-}
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": "Foo"
+                    },
+                    {
+                        "key": "two",
+                        "value": "Two"
+                    }
+                ],
+                "star": 1
+            }
+        ],
+        "attributes": {}
+    }
+]

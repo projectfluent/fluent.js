@@ -55,13 +55,15 @@ function print(err, data) {
 
   parseErrors.forEach(printError);
 
-  for (let [id, message] of bundle.messages) {
+  for (let [id, message] of bundle._messages) {
     const formatErrors = [];
-    printEntry(id, bundle.format(message, ext, formatErrors));
-    if (message && message.attrs) {
-      for (let [name, attr] of Object.entries(message.attrs)) {
-        printEntry(`    .${name}`, bundle.format(attr, ext, formatErrors));
-      }
+    if (message.value) {
+      printEntry(id, bundle.formatPattern(message.value, ext, formatErrors));
+    } else {
+      printEntry(id, "");
+    }
+    for (let [name, attr] of Object.entries(message.attributes)) {
+      printEntry(`    .${name}`, bundle.formatPattern(attr, ext, formatErrors));
     }
     formatErrors.forEach(printError);
   }

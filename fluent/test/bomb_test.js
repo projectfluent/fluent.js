@@ -34,7 +34,7 @@ suite('Reference bombs', function() {
     // https://bugzil.la/1307126
     test.skip('does not expand all placeables', function() {
       const msg = bundle.getMessage('lolz');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.equal(val, '???');
       assert.equal(errs.length, 1);
     });

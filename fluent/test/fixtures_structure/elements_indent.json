@@ -1,15 +1,17 @@
-{
-    "foo": {
+[
+    {
+        "id": "foo",
         "value": "Foo",
-        "attrs": {
+        "attributes": {
             "attr": "Foo Attr"
         }
     },
-    "bar": {
+    {
+        "id": "bar",
         "value": "Bar",
-        "attrs": {
+        "attributes": {
             "attr1": "Bar Attr 1",
             "attr2": "Bar Attr 2"
         }
     }
-}
+]

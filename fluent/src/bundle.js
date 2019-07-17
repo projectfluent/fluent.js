@@ -1,4 +1,4 @@
-import resolve from "./resolver.js";
+import {resolveComplexPattern} from "./resolver.js";
 import FluentResource from "./resource.js";
 
 /**
@@ -6,7 +6,7 @@ import FluentResource from "./resource.js";
  * responsible for parsing translation resources in the Fluent syntax and can
  * format translation units (entities) to strings.
  *
- * Always use `FluentBundle.format` to retrieve translation units from a
+ * Always use `FluentBundle.formatPattern` to retrieve translation units from a
  * bundle. Translations can contain references to other entities or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
@@ -62,15 +62,6 @@ export default class FluentBundle {
     this._useIsolating = useIsolating;
     this._transform = transform;
     this._intls = new WeakMap();
-  }
-
-  /*
-   * Return an iterator over public `[id, message]` pairs.
-   *
-   * @returns {Iterator}
-   */
-  get messages() {
-    return this._messages[Symbol.iterator]();
   }
 
   /*
@@ -170,21 +161,22 @@ export default class FluentBundle {
   } = {}) {
     const errors = [];
 
-    for (const [id, value] of res) {
-      if (id.startsWith("-")) {
+    for (let i = 0; i < res.length; i++) {
+      let entry = res[i];
+      if (entry.id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
-        if (allowOverrides === false && this._terms.has(id)) {
-          errors.push(`Attempt to override an existing term: "${id}"`);
+        if (allowOverrides === false && this._terms.has(entry.id)) {
+          errors.push(`Attempt to override an existing term: "${entry.id}"`);
           continue;
         }
-        this._terms.set(id, value);
+        this._terms.set(entry.id, entry);
       } else {
-        if (allowOverrides === false && this._messages.has(id)) {
-          errors.push(`Attempt to override an existing message: "${id}"`);
+        if (allowOverrides === false && this._messages.has(entry.id)) {
+          errors.push(`Attempt to override an existing message: "${entry.id}"`);
           continue;
         }
-        this._messages.set(id, value);
+        this._messages.set(entry.id, entry);
       }
     }
 
@@ -192,52 +184,57 @@ export default class FluentBundle {
   }
 
   /**
-   * Format a message to a string or null.
+   * Format a Pattern to a string.
    *
-   * Format a raw `message` from the bundle into a string (or a null if it has
-   * a null value).  `args` will be used to resolve references to variables
-   * passed as arguments to the translation.
+   * Format a raw `Pattern` into a string. `args` will be used to resolve
+   * references to variables passed as arguments to the translation.
    *
-   * In case of errors `format` will try to salvage as much of the translation
-   * as possible and will still return a string.  For performance reasons, the
-   * encountered errors are not returned but instead are appended to the
-   * `errors` array passed as the third argument.
+   * In case of errors `formatPattern` will try to salvage as much of the
+   * translation as possible and will still return a string. For performance
+   * reasons, the encountered errors are not returned but instead are appended
+   * to the `errors` array passed as the third argument.
    *
    *     const errors = [];
    *     bundle.addMessages('hello = Hello, { $name }!');
    *     const hello = bundle.getMessage('hello');
-   *     bundle.format(hello, { name: 'Jane' }, errors);
+   *     if (hello.value) {
+   *         bundle.formatPattern(hello.value, { name: 'Jane' }, errors);
+   *         // Returns 'Hello, Jane!' and `errors` is empty.
    *
-   *     // Returns 'Hello, Jane!' and `errors` is empty.
+   *         bundle.formatPattern(hello.value, undefined, errors);
+   *         // Returns 'Hello, {$name}!' and `errors` is now:
+   *         // [<ReferenceError: Unknown variable: name>]
+   *     }
    *
-   *     bundle.format(hello, undefined, errors);
-   *
-   *     // Returns 'Hello, name!' and `errors` is now:
-   *
-   *     [<ReferenceError: Unknown variable: name>]
-   *
-   * @param   {Object | string}    message
-   * @param   {Object | undefined} args
-   * @param   {Array}              errors
-   * @returns {?string}
+   * @param   {string|Array} pattern
+   * @param   {?Object} args
+   * @param   {?Array} errors
+   * @returns {string}
    */
-  format(message, args, errors) {
-    // optimize entities which are simple strings with no attributes
-    if (typeof message === "string") {
-      return this._transform(message);
+  formatPattern(pattern, args, errors) {
+    // Resolve a simple pattern without creating a scope.
+    if (typeof pattern === "string") {
+      return this._transform(pattern);
     }
 
-    // optimize entities with null values
-    if (message === null || message.value === null) {
-      return null;
+    // Resolve a complex pattern.
+    if (Array.isArray(pattern)) {
+      let scope = this._createScope(args, errors);
+      let value = resolveComplexPattern(scope, pattern);
+      return value.toString(scope);
     }
 
-    // optimize simple-string entities with attributes
-    if (typeof message.value === "string") {
-      return this._transform(message.value);
-    }
+    throw new TypeError("Invalid Pattern type");
+  }
 
-    return resolve(this, args, message, errors);
+  _createScope(args, errors = []) {
+    return {
+      args, errors,
+      bundle: this,
+      dirty: new WeakSet(),
+      // TermReferences are resolved in a new scope.
+      insideTermReference: false,
+    };
   }
 
   _memoizeIntlObject(ctor, opts) {

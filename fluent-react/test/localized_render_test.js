@@ -224,7 +224,7 @@ foo =
 
   test('$arg is passed to format the value', function() {
     const bundle = new FluentBundle();
-    const format = sinon.spy(bundle, 'format');
+    const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
     bundle.addMessages(`
@@ -238,13 +238,13 @@ foo = { $arg }
       { context: { l10n } }
     );
 
-    const { args } = format.getCall(0);
+    const { args } = formatPattern.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
   });
 
   test('$arg is passed to format the attributes', function() {
     const bundle = new FluentBundle();
-    const format = sinon.spy(bundle, 'format');
+    const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
     bundle.addMessages(`
@@ -259,7 +259,7 @@ foo = { $arg }
       { context: { l10n } }
     );
 
-    const { args } = format.getCall(0);
+    const { args } = formatPattern.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
   });
 
@@ -406,6 +406,25 @@ foo = Test message
     assert.equal(wrapper.text(), 'String fallback');
   });
 
+  test('render with a string fallback and no message value preserves the fallback',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+    mcx.addMessages(`
+foo =
+    .attr = Attribute
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        String fallback
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), 'String fallback');
+  });
+
   test('render with a string fallback returns the message', function() {
     const mcx = new FluentBundle();
     const l10n = new ReactLocalization([mcx]);
@@ -421,6 +440,37 @@ foo = Test message
     );
 
     assert.equal(wrapper.text(), 'Test message');
+  });
+
+  test('render without a fallback and no message returns nothing',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), '');
+  });
+
+  test('render without a fallback and no message value returns nothing',
+  function() {
+    const mcx = new FluentBundle();
+    const l10n = new ReactLocalization([mcx]);
+
+    mcx.addMessages(`
+foo =
+    .attr = Attribute
+`)
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.equal(wrapper.text(), '');
   });
 
   test('render without a fallback returns the message', function() {
@@ -439,16 +489,4 @@ foo = Message
     assert.equal(wrapper.text(), 'Message');
   });
 
-  test('render without a fallback and no message returns nothing',
-  function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-
-    const wrapper = shallow(
-      <Localized id="foo" />,
-      { context: { l10n } }
-    );
-
-    assert.equal(wrapper.text(), '');
-  });
 });

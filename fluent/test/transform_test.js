@@ -24,8 +24,8 @@ suite('Transformations', function(){
 
   test('transforms strings', function(){
     const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, {}, errs);
-    const attr = bundle.format(msg.attrs["bar"], {foo: "arg"}, errs);
+    const val = bundle.formatPattern(msg.value, {}, errs);
+    const attr = bundle.formatPattern(msg.attributes["bar"], {foo: "arg"}, errs);
     assert(val.includes("FAA"));
     assert(attr.includes("BAr"));
     assert(attr.includes("BAz"));

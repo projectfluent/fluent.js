@@ -1,8 +1,9 @@
-{
-    "-foo": {
+[
+    {
+        "id": "-foo",
         "value": null,
-        "attrs": {
+        "attributes": {
             "attr": "Attribute"
         }
     }
-}
+]

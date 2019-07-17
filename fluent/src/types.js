@@ -33,10 +33,10 @@ export class FluentType {
    * Format this instance of `FluentType` to a string.
    *
    * Formatted values are suitable for use outside of the `FluentBundle`.
-   * This method can use `Intl` formatters memoized by the `FluentBundle`
-   * instance passed as an argument.
+   * This method can use `Intl` formatters available through the `scope`
+   * argument.
    *
-   * @param   {FluentBundle} [bundle]
+   * @param   {?object} scope
    * @returns {string}
    */
   toString() {
@@ -59,9 +59,9 @@ export class FluentNumber extends FluentType {
     super(parseFloat(value), opts);
   }
 
-  toString(bundle) {
+  toString(scope) {
     try {
-      const nf = bundle._memoizeIntlObject(
+      const nf = scope.bundle._memoizeIntlObject(
         Intl.NumberFormat, this.opts
       );
       return nf.format(this.value);
@@ -77,9 +77,9 @@ export class FluentDateTime extends FluentType {
     super(new Date(value), opts);
   }
 
-  toString(bundle) {
+  toString(scope) {
     try {
-      const dtf = bundle._memoizeIntlObject(
+      const dtf = scope.bundle._memoizeIntlObject(
         Intl.DateTimeFormat, this.opts
       );
       return dtf.format(this.value);

@@ -34,8 +34,10 @@ if (errors.length) {
 
 const welcome = bundle.getMessage('welcome');
 
-bundle.format(welcome, { name: 'Anna' });
-// → 'Welcome, Anna, to Foo 3000!'
+if (welcome.value) {
+    bundle.formatPattern(welcome.value, { name: 'Anna' });
+    // → 'Welcome, Anna, to Foo 3000!'
+}
 ```
 
 The API reference is available at http://projectfluent.org/fluent.js/fluent.

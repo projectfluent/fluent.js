@@ -31,25 +31,41 @@ function runTest(env) {
     results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
   }
 
+  let bundle;
   {
-    const testName = "resolve-runtime";
+    const testName = "create-runtime";
     const fncs = {};
     for (let fnName in functions) {
       let body = functions[fnName];
       fncs[fnName] = new Function(body);
     }
-    const bundle = new env.Fluent.FluentBundle('en-US', {
+
+    let start = env.now();
+    bundle = new env.Fluent.FluentBundle('en-US', {
       functions: fncs
     });
     const errors = bundle.addResource(resource);
+    let end = env.now();
 
+    if (errors.length > 0) {
+      throw new Error(
+        `Errors accumulated while creating ${env.benchmarkName}.`);
+    }
+
+    results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
+  }
+
+  {
+    const testName = "resolve-runtime";
+    const errors = [];
     let start = env.now();
-    for (const [id, message] of bundle.messages) {
-      bundle.format(message, args, errors);
-      if (message.attrs) {
-        for (const attrName in message.attrs) {
-          bundle.format(message.attrs[attrName], args, errors)
-        }
+    for (const id of bundle._messages.keys()) {
+      let message = bundle.getMessage(id);
+      if (message.value) {
+          bundle.formatPattern(message.value, args, errors);
+      }
+      for (const attrName in message.attributes) {
+        bundle.formatPattern(message.attributes[attrName], args, errors)
       }
     }
     let end = env.now();

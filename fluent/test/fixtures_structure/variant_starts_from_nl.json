@@ -1,18 +1,22 @@
-{
-    "-term": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "one",
-                    "value": "Value"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+[
+    {
+        "id": "-term",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": "one",
+                        "value": "Value"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    }
+]

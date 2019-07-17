@@ -22,7 +22,7 @@ suite('Patterns', function(){
 
     test('returns the value', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.equal(val, 'Foo');
       assert.equal(errs.length, 0);
     });
@@ -47,28 +47,28 @@ suite('Patterns', function(){
 
     test('resolves the reference to a message', function(){
       const msg = bundle.getMessage('ref-message');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.equal(errs.length, 0);
     });
 
     test('resolves the reference to a term', function(){
       const msg = bundle.getMessage('ref-term');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
     });
 
     test('returns the id if a message reference is missing', function(){
       const msg = bundle.getMessage('ref-missing-message');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, '{missing}');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
     test('returns the id if a term reference is missing', function(){
       const msg = bundle.getMessage('ref-missing-term');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, '{-missing}');
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
@@ -84,26 +84,26 @@ suite('Patterns', function(){
         `);
     });
 
-    test('returns the null value', function(){
+    test('throws when trying to format a null value', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, null);
-      assert.equal(errs.length, 0);
+      assert.throws(
+        () => bundle.formatPattern(msg.value, args, errs),
+        /Invalid Pattern type/
+      );
     });
 
     test('formats the attribute', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg.attrs.attr, args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, 'Foo Attr');
       assert.equal(errs.length, 0);
     });
 
-    test('formats ??? when the referenced message has no value and no default',
-       function(){
+    test('falls back to id when the referenced message has no value', function(){
       const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
-      assert.strictEqual(val, '{???} Bar');
-      assert.ok(errs[0] instanceof RangeError); // no default
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '{foo} Bar');
+      assert.ok(errs[0] instanceof ReferenceError); // no value
     });
   });
 
@@ -118,7 +118,7 @@ suite('Patterns', function(){
 
     test('returns ???', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
@@ -132,9 +132,9 @@ suite('Patterns', function(){
         `);
     });
 
-    test('returns the raw string', function(){
+    test('returns ???', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
@@ -155,14 +155,14 @@ suite('Patterns', function(){
 
     test('returns ???', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, {sel: 'a'}, errs);
+      const val = bundle.formatPattern(msg.value, {sel: 'a'}, errs);
       assert.strictEqual(val, '{???}');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     test('returns the other member if requested', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, {sel: 'b'}, errs);
+      const val = bundle.formatPattern(msg.value, {sel: 'b'}, errs);
       assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
     });
@@ -185,7 +185,7 @@ suite('Patterns', function(){
 
     test('returns the default variant', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
@@ -214,14 +214,14 @@ suite('Patterns', function(){
 
     test('returns the default variant', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Foo');
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     test('can reference an attribute', function(){
       const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
+      const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, 'Bar');
       assert.equal(errs.length, 0);
     });

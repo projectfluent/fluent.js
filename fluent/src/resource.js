@@ -55,7 +55,7 @@ const MAX_PLACEABLES = 100;
 /**
  * Fluent Resource is a structure storing a map of parsed localization entries.
  */
-export default class FluentResource extends Map {
+export default class FluentResource extends Array {
   /**
    * Create a new FluentResource from Fluent code.
    */
@@ -75,7 +75,7 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.set(next[1], parseMessage());
+        resource.push(parseMessage(next[1]));
       } catch (err) {
         if (err instanceof FluentError) {
           // Don't report any Fluent syntax errors. Skip directly to the
@@ -150,22 +150,19 @@ export default class FluentResource extends Map {
       return match(re)[1];
     }
 
-    function parseMessage() {
+    function parseMessage(id) {
       let value = parsePattern();
-      let attrs = parseAttributes();
+      let attributes = parseAttributes();
 
-      if (attrs === null) {
-        if (value === null) {
-          throw new FluentError("Expected message value or attributes");
-        }
-        return value;
+      if (value === null && Object.keys(attributes).length === 0) {
+        throw new FluentError("Expected message value or attributes");
       }
 
-      return {value, attrs};
+      return {id, value, attributes};
     }
 
     function parseAttributes() {
-      let attrs = {};
+      let attrs = Object.create(null);
 
       while (test(RE_ATTRIBUTE_START)) {
         let name = match1(RE_ATTRIBUTE_START);
@@ -176,7 +173,7 @@ export default class FluentResource extends Map {
         attrs[name] = value;
       }
 
-      return Object.keys(attrs).length > 0 ? attrs : null;
+      return attrs;
     }
 
     function parsePattern() {

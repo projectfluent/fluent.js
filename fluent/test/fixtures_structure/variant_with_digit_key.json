@@ -1,22 +1,26 @@
-{
-    "-term": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": {
-                        "type": "num",
-                        "value": -2,
-                        "precision": 0
-                    },
-                    "value": "Foo"
-                }
-            ],
-            "star": 0
-        }
-    ]
-}
+[
+    {
+        "id": "-term",
+        "value": [
+            {
+                "type": "select",
+                "selector": {
+                    "type": "var",
+                    "name": "sel"
+                },
+                "variants": [
+                    {
+                        "key": {
+                            "type": "num",
+                            "value": -2,
+                            "precision": 0
+                        },
+                        "value": "Foo"
+                    }
+                ],
+                "star": 0
+            }
+        ],
+        "attributes": {}
+    }
+]
