@@ -47,16 +47,6 @@ const FSI = "\u2068";
 const PDI = "\u2069";
 
 
-// Helper: Report an error.
-function report(scope, error) {
-  if (scope.errors) {
-    scope.errors.push(error);
-  } else {
-    throw error;
-  }
-}
-
-
 // Helper: match a variant key to the given selector.
 function match(bundle, selector, key) {
   if (key === selector) {
@@ -89,7 +79,7 @@ function getDefault(scope, variants, star) {
     return resolvePattern(scope, variants[star].value);
   }
 
-  report(scope, new RangeError("No default"));
+  scope.reportError(new RangeError("No default"));
   return new FluentNone();
 }
 
@@ -137,7 +127,7 @@ function resolveExpression(scope, expr) {
 function VariableReference(scope, {name}) {
   if (!scope.args || !scope.args.hasOwnProperty(name)) {
     if (scope.insideTermReference === false) {
-      report(scope, new ReferenceError(`Unknown variable: ${name}`));
+      scope.reportError(new ReferenceError(`Unknown variable: ${name}`));
     }
     return new FluentNone(`$${name}`);
   }
@@ -160,7 +150,7 @@ function VariableReference(scope, {name}) {
         return new FluentDateTime(arg);
       }
     default:
-      report(scope,
+      scope.reportError(
         new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
       );
       return new FluentNone(`$${name}`);
@@ -171,7 +161,7 @@ function VariableReference(scope, {name}) {
 function MessageReference(scope, {name, attr}) {
   const message = scope.bundle._messages.get(name);
   if (!message) {
-    report(scope, new ReferenceError(`Unknown message: ${name}`));
+    scope.reportError(new ReferenceError(`Unknown message: ${name}`));
     return new FluentNone(name);
   }
 
@@ -180,7 +170,7 @@ function MessageReference(scope, {name, attr}) {
     if (attribute) {
       return resolvePattern(scope, attribute);
     }
-    report(scope, new ReferenceError(`Unknown attribute: ${attr}`));
+    scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${name}.${attr}`);
   }
 
@@ -188,7 +178,7 @@ function MessageReference(scope, {name, attr}) {
     return resolvePattern(scope, message.value);
   }
 
-  report(scope, new ReferenceError(`No value: ${name}`));
+  scope.reportError(new ReferenceError(`No value: ${name}`));
   return new FluentNone(name);
 }
 
@@ -197,20 +187,20 @@ function TermReference(scope, {name, attr, args}) {
   const id = `-${name}`;
   const term = scope.bundle._terms.get(id);
   if (!term) {
-    report(scope, new ReferenceError(`Unknown term: ${id}`));
+    scope.reportError(new ReferenceError(`Unknown term: ${id}`));
     return new FluentNone(id);
   }
 
   // Every TermReference has its own args.
   const [, keyargs] = getArguments(scope, args);
-  const local = {...scope, args: keyargs, insideTermReference: true};
+  const local = scope.clone(keyargs);
 
   if (attr) {
     const attribute = term.attributes[attr];
     if (attribute) {
       return resolvePattern(local, attribute);
     }
-    report(scope, new ReferenceError(`Unknown attribute: ${attr}`));
+    scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${id}.${attr}`);
   }
 
@@ -223,12 +213,12 @@ function FunctionReference(scope, {name, args}) {
   // the `FluentBundle` constructor.
   const func = scope.bundle._functions[name] || builtins[name];
   if (!func) {
-    report(scope, new ReferenceError(`Unknown function: ${name}()`));
+    scope.reportError(new ReferenceError(`Unknown function: ${name}()`));
     return new FluentNone(`${name}()`);
   }
 
   if (typeof func !== "function") {
-    report(scope, new TypeError(`Function ${name}() is not callable`));
+    scope.reportError(new TypeError(`Function ${name}() is not callable`));
     return new FluentNone(`${name}()`);
   }
 
@@ -261,7 +251,7 @@ function SelectExpression(scope, {selector, variants, star}) {
 // Resolve a pattern (a complex string with placeables).
 export function resolveComplexPattern(scope, ptn) {
   if (scope.dirty.has(ptn)) {
-    report(scope, new RangeError("Cyclic reference"));
+    scope.reportError(new RangeError("Cyclic reference"));
     return new FluentNone();
   }
 

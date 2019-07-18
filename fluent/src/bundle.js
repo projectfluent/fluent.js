@@ -1,6 +1,7 @@
 import {resolveComplexPattern} from "./resolver.js";
 import FluentResource from "./resource.js";
 import { FluentNone } from "./types.js";
+import Scope from "./scope.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -222,7 +223,7 @@ export default class FluentBundle {
     }
 
     // Resolve a complex pattern.
-    let scope = this._createScope(args, errors);
+    let scope = new Scope(this, errors, args);
     try {
       let value = resolveComplexPattern(scope, pattern);
       return value.toString(scope);
@@ -233,17 +234,6 @@ export default class FluentBundle {
       }
       throw err;
     }
-  }
-
-  _createScope(args, errors) {
-    return {
-      args,
-      errors,
-      bundle: this,
-      dirty: new WeakSet(),
-      // TermReferences are resolved in a new scope.
-      insideTermReference: false,
-    };
   }
 
   _memoizeIntlObject(ctor, opts) {
