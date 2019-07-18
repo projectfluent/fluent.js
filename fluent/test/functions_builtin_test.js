@@ -6,7 +6,11 @@ import ftl from "@fluent/dedent";
 import FluentBundle from '../src/bundle';
 
 suite('Built-in functions', function() {
-  let bundle;
+  let bundle, errors;
+
+  setup(function () {
+    errors = [];
+  });
 
   suite('NUMBER', function(){
     suiteSetup(function() {
@@ -22,13 +26,19 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof ReferenceError);
 
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof ReferenceError);
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof ReferenceError);
     });
 
     test('number argument', function() {
@@ -36,42 +46,53 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '1');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '100%');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '100%');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '1');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1');
+      assert.strictEqual(errors.length, 0);
     });
 
+    // XXX Functions should report errors.
     test('string argument', function() {
       const args = {arg: "Foo"};
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(errors.length, 0);
     });
 
+    // XXX Functions should report errors.
     test('date argument', function() {
       const date = new Date('2016-09-29');
       const args = {arg: date};
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(errors.length, 0);
     });
 
     test('invalid argument', function() {
@@ -79,13 +100,19 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof TypeError);
 
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof TypeError);
 
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof TypeError);
     });
   });
 
@@ -103,13 +130,19 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof ReferenceError);
 
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof ReferenceError);
 
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof ReferenceError);
     });
 
     test('Date argument', function () {
@@ -124,45 +157,56 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), expectedDefault);
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDefault);
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), expectedMonth);
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedMonth);
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-bad-opt');
       // The argument value will be coerced into a string by the join operation
       // in FluentBundle.format.  The result looks something like this; it
       // may vary depending on the TZ:
       //     Thu Sep 29 2016 02:00:00 GMT+0200 (CEST)
-      assert.strictEqual(bundle.formatPattern(msg.value, args), date.toString());
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), date.toString());
+      assert.strictEqual(errors.length, 0);
     });
 
+    // XXX Functions should report errors.
     test('number argument', function() {
       let args = {arg: 1};
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(errors.length, 0);
     });
 
+    // XXX Functions should report errors.
     test('string argument', function() {
       let args = {arg: 'Foo'};
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(errors.length, 0);
     });
 
     test('invalid argument', function() {
@@ -170,13 +214,19 @@ suite('Built-in functions', function() {
       let msg;
 
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof TypeError);
 
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof TypeError);
 
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args), '{$arg}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{$arg}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors.pop() instanceof TypeError);
     });
   });
 });

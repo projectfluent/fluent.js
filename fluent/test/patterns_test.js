@@ -84,12 +84,11 @@ suite('Patterns', function(){
         `);
     });
 
-    test('throws when trying to format a null value', function(){
+    test('returns {???} when trying to format a null value', function(){
       const msg = bundle.getMessage('foo');
-      assert.throws(
-        () => bundle.formatPattern(msg.value, args, errs),
-        /Invalid Pattern type/
-      );
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '{???}');
+      assert.strictEqual(errs.length, 1);
     });
 
     test('formats the attribute', function(){

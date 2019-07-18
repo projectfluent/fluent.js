@@ -207,30 +207,35 @@ export default class FluentBundle {
    *         // [<ReferenceError: Unknown variable: name>]
    *     }
    *
+   * If `errors` is omitted, the first encountered error will be thrown.
+   *
    * @param   {string|Array} pattern
    * @param   {?Object} args
    * @param   {?Array} errors
    * @returns {string}
    */
   formatPattern(pattern, args, errors) {
-    // Resolve a simple pattern without creating a scope.
+    // Resolve a simple pattern without creating a scope. No error handling is
+    // required; by definition simple patterns don't have placeables.
     if (typeof pattern === "string") {
       return this._transform(pattern);
     }
 
     // Resolve a complex pattern.
-    if (Array.isArray(pattern)) {
-      let scope = this._createScope(args, errors);
-      try {
-        let value = resolveComplexPattern(scope, pattern);
-        return value.toString(scope);
-      } catch (err) {
-        scope.errors.push(err);
-        return new FluentNone().toString(scope);
-      }
+    let scope = this._createScope(args, errors);
+    let value;
+    try {
+      value = resolveComplexPattern(scope, pattern).toString(scope);
+    } catch (err) {
+      scope.errors.push(err);
+      value = new FluentNone().toString(scope);
     }
 
-    throw new TypeError("Invalid Pattern type");
+    if (!errors && scope.errors.length > 0) {
+      throw scope.errors[0];
+    }
+
+    return value;
   }
 
   _createScope(args, errors = []) {
