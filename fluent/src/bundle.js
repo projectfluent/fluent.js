@@ -223,24 +223,22 @@ export default class FluentBundle {
 
     // Resolve a complex pattern.
     let scope = this._createScope(args, errors);
-    let value;
     try {
-      value = resolveComplexPattern(scope, pattern).toString(scope);
+      let value = resolveComplexPattern(scope, pattern);
+      return value.toString(scope);
     } catch (err) {
-      scope.errors.push(err);
-      value = new FluentNone().toString(scope);
+      if (scope.errors) {
+        scope.errors.push(err);
+        return new FluentNone().toString(scope);
+      }
+      throw err;
     }
-
-    if (!errors && scope.errors.length > 0) {
-      throw scope.errors[0];
-    }
-
-    return value;
   }
 
-  _createScope(args, errors = []) {
+  _createScope(args, errors) {
     return {
-      args, errors,
+      args,
+      errors,
       bundle: this,
       dirty: new WeakSet(),
       // TermReferences are resolved in a new scope.
