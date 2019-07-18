@@ -13,8 +13,6 @@ suite('Reference bombs', function() {
   });
 
   suite('Billion Laughs', function(){
-    this.timeout(10000);
-
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addMessages(ftl`
@@ -35,11 +33,8 @@ suite('Reference bombs', function() {
     test('does not expand all placeables', function() {
       const msg = bundle.getMessage('lolz');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(
-        val,
-        '{???} {???} {???} {???} {???} {???} {???} {???} {???} {???}'
-      );
-      assert.strictEqual(errs.length, 10010);
+      assert.strictEqual(val, '{???}');
+      assert.strictEqual(errs.length, 1);
     });
   });
 });

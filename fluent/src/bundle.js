@@ -1,5 +1,6 @@
 import {resolveComplexPattern} from "./resolver.js";
 import FluentResource from "./resource.js";
+import { FluentNone } from "./types.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -220,8 +221,13 @@ export default class FluentBundle {
     // Resolve a complex pattern.
     if (Array.isArray(pattern)) {
       let scope = this._createScope(args, errors);
-      let value = resolveComplexPattern(scope, pattern);
-      return value.toString(scope);
+      try {
+        let value = resolveComplexPattern(scope, pattern);
+        return value.toString(scope);
+      } catch (err) {
+        scope.errors.push(err);
+        return new FluentNone().toString(scope);
+      }
     }
 
     throw new TypeError("Invalid Pattern type");

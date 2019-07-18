@@ -283,14 +283,15 @@ export function resolveComplexPattern(scope, ptn) {
     }
 
     if (part.length > MAX_PLACEABLE_LENGTH) {
-      scope.errors.push(
-        new RangeError(
-          "Too many characters in placeable " +
-          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
-        )
-      );
       scope.dirty.delete(ptn);
-      return new FluentNone();
+      // This is a fatal error which causes the resolver to instantly bail out
+      // on this pattern. The length check protects against excessive memory
+      // usage, and throwing protects against eating up the CPU when long
+      // placeables are deeply nested.
+      throw new RangeError(
+        "Too many characters in placeable " +
+        `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+      );
     }
 
     result.push(part);
