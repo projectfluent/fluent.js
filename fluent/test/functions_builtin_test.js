@@ -59,6 +59,7 @@ suite('Built-in functions', function() {
     });
 
     // XXX Functions should report errors.
+    // https://github.com/projectfluent/fluent.js/issues/106
     test('string argument', function() {
       const args = {arg: "Foo"};
       let msg;
@@ -77,6 +78,7 @@ suite('Built-in functions', function() {
     });
 
     // XXX Functions should report errors.
+    // https://github.com/projectfluent/fluent.js/issues/106
     test('date argument', function() {
       const date = new Date('2016-09-29');
       const args = {arg: date};
@@ -174,6 +176,7 @@ suite('Built-in functions', function() {
     });
 
     // XXX Functions should report errors.
+    // https://github.com/projectfluent/fluent.js/issues/106
     test('number argument', function() {
       let args = {arg: 1};
       let msg;
@@ -192,6 +195,7 @@ suite('Built-in functions', function() {
     });
 
     // XXX Functions should report errors.
+    // https://github.com/projectfluent/fluent.js/issues/106
     test('string argument', function() {
       let args = {arg: 'Foo'};
       let msg;
