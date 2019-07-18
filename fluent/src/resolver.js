@@ -191,9 +191,9 @@ function TermReference(scope, {name, attr, args}) {
     return new FluentNone(id);
   }
 
-  // Every TermReference has its own args.
-  const [, keyargs] = getArguments(scope, args);
-  const local = scope.clone(keyargs);
+  // Every TermReference has its own variables.
+  const [, params] = getArguments(scope, args);
+  const local = scope.cloneForTermReference(params);
 
   if (attr) {
     const attribute = term.attributes[attr];
