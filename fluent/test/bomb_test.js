@@ -30,12 +30,10 @@ suite('Reference bombs', function() {
         `);
     });
 
-    // XXX Protect the FTL Resolver against the billion laughs attack
-    // https://bugzil.la/1307126
-    test.skip('does not expand all placeables', function() {
+    test('does not expand all placeables', function() {
       const msg = bundle.getMessage('lolz');
       const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, '???');
+      assert.strictEqual(val, '{???}');
       assert.strictEqual(errs.length, 1);
     });
   });
