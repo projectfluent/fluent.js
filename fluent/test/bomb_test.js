@@ -35,6 +35,16 @@ suite('Reference bombs', function() {
       const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, '{???}');
       assert.strictEqual(errs.length, 1);
+      assert.ok(errs[0] instanceof RangeError);
+    });
+
+    test('throws when errors are undefined', function() {
+      const msg = bundle.getMessage('lolz');
+      assert.throws(
+        () => bundle.formatPattern(msg.value),
+        RangeError,
+        "Too many characters in placeable"
+      );
     });
   });
 });
