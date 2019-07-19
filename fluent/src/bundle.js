@@ -1,6 +1,7 @@
 import {resolveComplexPattern} from "./resolver.js";
 import FluentResource from "./resource.js";
 import { FluentNone } from "./types.js";
+import Scope from "./scope.js";
 
 /**
  * Message bundles are single-language stores of translations.  They are
@@ -207,40 +208,32 @@ export default class FluentBundle {
    *         // [<ReferenceError: Unknown variable: name>]
    *     }
    *
+   * If `errors` is omitted, the first encountered error will be thrown.
+   *
    * @param   {string|Array} pattern
    * @param   {?Object} args
    * @param   {?Array} errors
    * @returns {string}
    */
   formatPattern(pattern, args, errors) {
-    // Resolve a simple pattern without creating a scope.
+    // Resolve a simple pattern without creating a scope. No error handling is
+    // required; by definition simple patterns don't have placeables.
     if (typeof pattern === "string") {
       return this._transform(pattern);
     }
 
     // Resolve a complex pattern.
-    if (Array.isArray(pattern)) {
-      let scope = this._createScope(args, errors);
-      try {
-        let value = resolveComplexPattern(scope, pattern);
-        return value.toString(scope);
-      } catch (err) {
+    let scope = new Scope(this, errors, args);
+    try {
+      let value = resolveComplexPattern(scope, pattern);
+      return value.toString(scope);
+    } catch (err) {
+      if (scope.errors) {
         scope.errors.push(err);
         return new FluentNone().toString(scope);
       }
+      throw err;
     }
-
-    throw new TypeError("Invalid Pattern type");
-  }
-
-  _createScope(args, errors = []) {
-    return {
-      args, errors,
-      bundle: this,
-      dirty: new WeakSet(),
-      // TermReferences are resolved in a new scope.
-      insideTermReference: false,
-    };
   }
 
   _memoizeIntlObject(ctor, opts) {
