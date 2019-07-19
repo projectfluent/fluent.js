@@ -61,9 +61,7 @@ export class FluentNumber extends FluentType {
 
   toString(scope) {
     try {
-      const nf = scope.bundle._memoizeIntlObject(
-        Intl.NumberFormat, this.opts
-      );
+      const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
       return nf.format(this.value);
     } catch (e) {
       // XXX Report the error.
@@ -79,9 +77,7 @@ export class FluentDateTime extends FluentType {
 
   toString(scope) {
     try {
-      const dtf = scope.bundle._memoizeIntlObject(
-        Intl.DateTimeFormat, this.opts
-      );
+      const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
       return dtf.format(this.value);
     } catch (e) {
       // XXX Report the error.

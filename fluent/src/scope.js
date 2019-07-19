@@ -26,4 +26,17 @@ export default class Scope {
     }
     this.errors.push(error);
   }
+
+  memoizeIntlObject(ctor, opts) {
+    let cache = this.bundle._intls.get(ctor);
+    if (!cache) {
+      cache = {};
+      this.bundle._intls.set(ctor, cache);
+    }
+    let id = JSON.stringify(opts);
+    if (!cache[id]) {
+      cache[id] = new ctor(this.bundle.locales, opts);
+    }
+    return cache[id];
+  }
 }

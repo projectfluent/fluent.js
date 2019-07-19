@@ -235,16 +235,4 @@ export default class FluentBundle {
       throw err;
     }
   }
-
-  _memoizeIntlObject(ctor, opts) {
-    const cache = this._intls.get(ctor) || {};
-    const id = JSON.stringify(opts);
-
-    if (!cache[id]) {
-      cache[id] = new ctor(this.locales, opts);
-      this._intls.set(ctor, cache);
-    }
-
-    return cache[id];
-  }
 }
