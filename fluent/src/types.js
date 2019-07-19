@@ -65,8 +65,8 @@ export class FluentNumber extends FluentType {
         Intl.NumberFormat, this.opts
       );
       return nf.format(this.value);
-    } catch (e) {
-      // XXX Report the error.
+    } catch (err) {
+      scope.reportError(err);
       return this.value;
     }
   }
@@ -83,8 +83,8 @@ export class FluentDateTime extends FluentType {
         Intl.DateTimeFormat, this.opts
       );
       return dtf.format(this.value);
-    } catch (e) {
-      // XXX Report the error.
+    } catch (err) {
+      scope.reportError(err);
       return this.value;
     }
   }

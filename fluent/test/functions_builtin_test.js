@@ -67,7 +67,8 @@ suite('Built-in functions', function() {
 
       msg = bundle.getMessage('num-bad-opt');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1');
-      assert.strictEqual(errors.length, 0);
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
 
     test('string argument', function() {
@@ -222,7 +223,8 @@ suite('Built-in functions', function() {
       // may vary depending on the TZ:
       //     Thu Sep 29 2016 02:00:00 GMT+0200 (CEST)
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), date.toString());
-      assert.strictEqual(errors.length, 0);
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
 
     test('number argument', function() {
