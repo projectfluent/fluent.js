@@ -127,7 +127,7 @@ function resolveExpression(scope, expr) {
 function VariableReference(scope, {name}) {
   if (!scope.args || !scope.args.hasOwnProperty(name)) {
     if (scope.insideTermReference === false) {
-      scope.reportError(new ReferenceError(`Unknown variable: ${name}`));
+      scope.reportError(new ReferenceError(`Unknown variable: $${name}`));
     }
     return new FluentNone(`$${name}`);
   }
@@ -151,7 +151,7 @@ function VariableReference(scope, {name}) {
       }
     default:
       scope.reportError(
-        new TypeError(`Unsupported variable type: ${name}, ${typeof arg}`)
+        new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)
       );
       return new FluentNone(`$${name}`);
   }
@@ -224,8 +224,8 @@ function FunctionReference(scope, {name, args}) {
 
   try {
     return func(...getArguments(scope, args));
-  } catch (e) {
-    // XXX Report errors.
+  } catch (err) {
+    scope.reportError(err);
     return new FluentNone(`${name}()`);
   }
 }
