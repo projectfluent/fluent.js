@@ -1,16 +1,18 @@
-[
-    {
-        "id": "key3",
-        "value": null,
-        "attributes": {
-            "attr": "Attr"
+{
+    "body": [
+        {
+            "id": "key3",
+            "value": null,
+            "attributes": {
+                "attr": "Attr"
+            }
+        },
+        {
+            "id": "key4",
+            "value": null,
+            "attributes": {
+                "attr": "Attr"
+            }
         }
-    },
-    {
-        "id": "key4",
-        "value": null,
-        "attributes": {
-            "attr": "Attr"
-        }
-    }
-]
+    ]
+}

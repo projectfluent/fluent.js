@@ -1,9 +1,11 @@
-[
-    {
-        "id": "-foo",
-        "value": null,
-        "attributes": {
-            "attr": "Attribute"
+{
+    "body": [
+        {
+            "id": "-foo",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
+            }
         }
-    }
-]
+    ]
+}

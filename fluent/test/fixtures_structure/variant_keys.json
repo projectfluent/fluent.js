@@ -1,50 +1,52 @@
-[
-    {
-        "id": "key01",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "var",
-                    "name": "sel"
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key02",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "var",
-                    "name": "sel"
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": [
-                            "Value"
-                        ]
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key01",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": [
+                                "Value"
+                            ]
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

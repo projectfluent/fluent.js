@@ -1,29 +1,31 @@
-[
-    {
-        "id": "-brand-name",
-        "value": "Aurora",
-        "attributes": {}
-    },
-    {
-        "id": "key01",
-        "value": null,
-        "attributes": {
-            "attr": "Attribute"
+{
+    "body": [
+        {
+            "id": "-brand-name",
+            "value": "Aurora",
+            "attributes": {}
+        },
+        {
+            "id": "key01",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "key02",
+            "value": "Value",
+            "attributes": {}
+        },
+        {
+            "id": "key03",
+            "value": "Value 03",
+            "attributes": {}
+        },
+        {
+            "id": "key04",
+            "value": "Value 04",
+            "attributes": {}
         }
-    },
-    {
-        "id": "key02",
-        "value": "Value",
-        "attributes": {}
-    },
-    {
-        "id": "key03",
-        "value": "Value 03",
-        "attributes": {}
-    },
-    {
-        "id": "key04",
-        "value": "Value 04",
-        "attributes": {}
-    }
-]
+    ]
+}

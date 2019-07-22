@@ -121,25 +121,24 @@ export default class FluentBundle {
    * @returns {Array<Error>}
    */
   addMessages(source, options) {
-    const res = FluentResource.fromString(source);
+    const res = new FluentResource(source);
     return this.addResource(res, options);
   }
 
   /**
    * Add a translation resource to the bundle.
    *
-   * The translation resource must be an instance of FluentResource,
-   * e.g. parsed by `FluentResource.fromString`.
+   * The translation resource must be an instance of `FluentResource`.
    *
-   *     let res = FluentResource.fromString("foo = Foo");
+   *     let res = new FluentResource("foo = Foo");
    *     bundle.addResource(res);
    *     bundle.getMessage('foo');
    *
    *     // Returns a raw representation of the 'foo' message.
    *
-   *     let res = FluentResource.fromString("bar = Bar");
+   *     let res = new FluentResource("bar = Bar");
    *     bundle.addResource(res);
-   *     res = FluentResource.fromString("bar = Newbar");
+   *     res = new FluentResource("bar = Newbar");
    *     bundle.addResource(res, { allowOverrides: true });
    *     bundle.getMessage('bar');
    *
@@ -163,8 +162,8 @@ export default class FluentBundle {
   } = {}) {
     const errors = [];
 
-    for (let i = 0; i < res.length; i++) {
-      let entry = res[i];
+    for (let i = 0; i < res.body.length; i++) {
+      let entry = res.body[i];
       if (entry.id.startsWith("-")) {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.

@@ -28,10 +28,8 @@ readdir(ftlFixtures, function(err, filenames) {
         const [ftl, expected] = await Promise.all(
           [ftlpath, jsonpath].map(readfile)
         );
-        const resource = FluentResource.fromString(ftl);
-        assert.deepEqual(
-          Array.from(resource), JSON.parse(expected)
-        );
+        const resource = new FluentResource(ftl);
+        assert.deepEqual(resource, JSON.parse(expected));
       });
     }
   });

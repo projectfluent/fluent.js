@@ -1,16 +1,18 @@
-[
-    {
-        "id": "key",
-        "value": [
-            "Foo ",
-            {
-                "type": "mesg",
-                "name": "bar",
-                "attr": null
-            },
-            "\n",
-            "Baz"
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key",
+            "value": [
+                "Foo ",
+                {
+                    "type": "mesg",
+                    "name": "bar",
+                    "attr": null
+                },
+                "\n",
+                "Baz"
+            ],
+            "attributes": {}
+        }
+    ]
+}

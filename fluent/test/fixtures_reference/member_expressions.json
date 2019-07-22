@@ -1,74 +1,76 @@
-[
-    {
-        "id": "message-attribute-expression-placeable",
-        "value": [
-            {
-                "type": "mesg",
-                "name": "msg",
-                "attr": "attr"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "term-attribute-expression-placeable",
-        "value": [
-            {
-                "type": "term",
-                "name": "term",
-                "attr": "attr",
-                "args": []
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "term-attribute-expression-selector",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
+{
+    "body": [
+        {
+            "id": "message-attribute-expression-placeable",
+            "value": [
+                {
+                    "type": "mesg",
+                    "name": "msg",
+                    "attr": "attr"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-attribute-expression-placeable",
+            "value": [
+                {
                     "type": "term",
                     "name": "term",
                     "attr": "attr",
                     "args": []
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "message-attribute-expression-selector",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "mesg",
-                    "name": "msg",
-                    "attr": "attr"
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    }
-]
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-attribute-expression-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "term",
+                        "name": "term",
+                        "attr": "attr",
+                        "args": []
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "message-attribute-expression-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": "attr"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

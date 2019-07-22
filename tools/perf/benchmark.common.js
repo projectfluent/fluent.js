@@ -21,7 +21,7 @@ function runTest(env) {
   {
     const testName = "parse-runtime";
     let start = env.now();
-    resource = env.Fluent.FluentResource.fromString(ftlCode);
+    resource = new env.Fluent.FluentResource(ftlCode);
     let end = env.now();
 
     // we don't report any runtime parser errors, so

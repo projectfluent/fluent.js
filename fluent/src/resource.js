@@ -53,16 +53,17 @@ const TOKEN_BLANK = /\s+/y;
 const MAX_PLACEABLES = 100;
 
 /**
- * Fluent Resource is a structure storing a map of parsed localization entries.
+ * Fluent Resource is a structure storing parsed localization entries.
  */
-export default class FluentResource extends Array {
-  /**
-   * Create a new FluentResource from Fluent code.
-   */
-  static fromString(source) {
+export default class FluentResource {
+  constructor(source) {
+    this.body = this.parse(source);
+  }
+
+  parse(source) {
     RE_MESSAGE_START.lastIndex = 0;
 
-    let resource = new this();
+    let resource = [];
     let cursor = 0;
 
     // Iterate over the beginnings of messages and terms to efficiently skip
@@ -88,7 +89,8 @@ export default class FluentResource extends Array {
 
     return resource;
 
-    // The parser implementation is inlined below for performance reasons.
+    // The parser implementation is inlined below for performance reasons,
+    // as well as for convenience of accessing `source` and `cursor`.
 
     // The parser focuses on minimizing the number of false negatives at the
     // expense of increasing the risk of false positives. In other words, it

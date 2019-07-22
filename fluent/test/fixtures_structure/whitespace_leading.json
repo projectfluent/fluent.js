@@ -1,34 +1,36 @@
-[
-    {
-        "id": "key1",
-        "value": "Value",
-        "attributes": {}
-    },
-    {
-        "id": "key2",
-        "value": "    Value",
-        "attributes": {}
-    },
-    {
-        "id": "key3",
-        "value": [
-            {
-                "type": "str",
-                "value": ""
-            },
-            "         Value"
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key4",
-        "value": [
-            {
-                "type": "str",
-                "value": "         "
-            },
-            "Value"
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key1",
+            "value": "Value",
+            "attributes": {}
+        },
+        {
+            "id": "key2",
+            "value": "    Value",
+            "attributes": {}
+        },
+        {
+            "id": "key3",
+            "value": [
+                {
+                    "type": "str",
+                    "value": ""
+                },
+                "         Value"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key4",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "         "
+                },
+                "Value"
+            ],
+            "attributes": {}
+        }
+    ]
+}

@@ -1,141 +1,143 @@
-[
-    {
-        "id": "-term",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "var",
-                    "name": "case"
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "uppercase"
-                        },
-                        "value": "Term"
+{
+    "body": [
+        {
+            "id": "-term",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "case"
                     },
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "lowercase"
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "uppercase"
+                            },
+                            "value": "Term"
                         },
-                        "value": "term"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {
-            "attr": "a"
-        }
-    },
-    {
-        "id": "key01",
-        "value": [
-            {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": []
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key02",
-        "value": [
-            {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": []
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key03",
-        "value": [
-            {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": [
-                    {
-                        "type": "narg",
-                        "name": "case",
-                        "value": {
-                            "type": "str",
-                            "value": "uppercase"
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "lowercase"
+                            },
+                            "value": "term"
                         }
-                    }
-                ]
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {
+                "attr": "a"
             }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key04",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
+        },
+        {
+            "id": "key01",
+            "value": [
+                {
                     "type": "term",
                     "name": "term",
-                    "attr": "attr",
+                    "attr": null,
                     "args": []
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "a"
-                        },
-                        "value": [
-                            {
-                                "type": "term",
-                                "name": "term",
-                                "attr": null,
-                                "args": []
-                            },
-                            " A"
-                        ]
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key03",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": [
+                        {
+                            "type": "narg",
+                            "name": "case",
+                            "value": {
+                                "type": "str",
+                                "value": "uppercase"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key04",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "term",
+                        "name": "term",
+                        "attr": "attr",
+                        "args": []
                     },
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "b"
-                        },
-                        "value": [
-                            {
-                                "type": "term",
-                                "name": "term",
-                                "attr": null,
-                                "args": []
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "a"
                             },
-                            " B"
-                        ]
-                    },
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "x"
+                            "value": [
+                                {
+                                    "type": "term",
+                                    "name": "term",
+                                    "attr": null,
+                                    "args": []
+                                },
+                                " A"
+                            ]
                         },
-                        "value": "X"
-                    }
-                ],
-                "star": 2
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "b"
+                            },
+                            "value": [
+                                {
+                                    "type": "term",
+                                    "name": "term",
+                                    "attr": null,
+                                    "args": []
+                                },
+                                " B"
+                            ]
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "x"
+                            },
+                            "value": "X"
+                        }
+                    ],
+                    "star": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "-err2",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
             }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "-err2",
-        "value": null,
-        "attributes": {
-            "attr": "Attribute"
         }
-    }
-]
+    ]
+}

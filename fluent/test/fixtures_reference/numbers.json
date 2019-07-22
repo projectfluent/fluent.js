@@ -1,244 +1,246 @@
-[
-    {
-        "id": "int-zero",
-        "value": [
-            {
-                "type": "num",
-                "value": 0,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-positive",
-        "value": [
-            {
-                "type": "num",
-                "value": 1,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-negative",
-        "value": [
-            {
-                "type": "num",
-                "value": -1,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-negative-zero",
-        "value": [
-            {
-                "type": "num",
-                "value": 0,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-positive-padded",
-        "value": [
-            {
-                "type": "num",
-                "value": 1,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-negative-padded",
-        "value": [
-            {
-                "type": "num",
-                "value": -1,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-zero-padded",
-        "value": [
-            {
-                "type": "num",
-                "value": 0,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "int-negative-zero-padded",
-        "value": [
-            {
-                "type": "num",
-                "value": 0,
-                "precision": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-zero",
-        "value": [
-            {
-                "type": "num",
-                "value": 0,
-                "precision": 1
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-positive",
-        "value": [
-            {
-                "type": "num",
-                "value": 0.01,
-                "precision": 2
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-positive-one",
-        "value": [
-            {
-                "type": "num",
-                "value": 1.03,
-                "precision": 2
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-positive-without-fraction",
-        "value": [
-            {
-                "type": "num",
-                "value": 1,
-                "precision": 3
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative",
-        "value": [
-            {
-                "type": "num",
-                "value": -0.01,
-                "precision": 2
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative-one",
-        "value": [
-            {
-                "type": "num",
-                "value": -1.03,
-                "precision": 2
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative-zero",
-        "value": [
-            {
-                "type": "num",
-                "value": 0,
-                "precision": 1
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative-without-fraction",
-        "value": [
-            {
-                "type": "num",
-                "value": -1,
-                "precision": 3
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-positive-padded-left",
-        "value": [
-            {
-                "type": "num",
-                "value": 1.03,
-                "precision": 2
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-positive-padded-right",
-        "value": [
-            {
-                "type": "num",
-                "value": 1.03,
-                "precision": 4
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-positive-padded-both",
-        "value": [
-            {
-                "type": "num",
-                "value": 1.03,
-                "precision": 4
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative-padded-left",
-        "value": [
-            {
-                "type": "num",
-                "value": -1.03,
-                "precision": 2
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative-padded-right",
-        "value": [
-            {
-                "type": "num",
-                "value": -1.03,
-                "precision": 4
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "float-negative-padded-both",
-        "value": [
-            {
-                "type": "num",
-                "value": -1.03,
-                "precision": 4
-            }
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "int-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-positive",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-negative",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-negative-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-positive-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-negative-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-zero-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "int-negative-zero-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 1
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-positive",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0.01,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-positive-one",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-positive-without-fraction",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 3
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -0.01,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative-one",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 1
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative-without-fraction",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1,
+                    "precision": 3
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-positive-padded-left",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-positive-padded-right",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-positive-padded-both",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative-padded-left",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative-padded-right",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-negative-padded-both",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

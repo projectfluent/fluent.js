@@ -90,7 +90,7 @@ suite('Bundle', function() {
   suite('addResource', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      let resource = FluentResource.fromString(ftl`
+      let resource = new FluentResource(ftl`
         foo = Foo
         -bar = Bar
         `);
@@ -108,12 +108,12 @@ suite('Bundle', function() {
   suite('allowOverrides', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      let resource1 = FluentResource.fromString('key = Foo');
+      let resource1 = new FluentResource('key = Foo');
       bundle.addResource(resource1);
     });
 
     test('addResource allowOverrides is false', function() {
-      let resource2 = FluentResource.fromString('key = Bar');
+      let resource2 = new FluentResource('key = Bar');
       let errors = bundle.addResource(resource2);
       assert.strictEqual(errors.length, 1);
       let msg = bundle.getMessage('key');
@@ -121,7 +121,7 @@ suite('Bundle', function() {
     });
 
     test('addResource allowOverrides is true', function() {
-      let resource2 = FluentResource.fromString('key = Bar');
+      let resource2 = new FluentResource('key = Bar');
       let errors = bundle.addResource(resource2, { allowOverrides: true });
       assert.strictEqual(errors.length, 0);
       let msg = bundle.getMessage('key');

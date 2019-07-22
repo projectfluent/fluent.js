@@ -1,42 +1,44 @@
-[
-    {
-        "id": "key01",
-        "value": "Value 01",
-        "attributes": {}
-    },
-    {
-        "id": "key02",
-        "value": "Value 02",
-        "attributes": {}
-    },
-    {
-        "id": "key03",
-        "value": [
-            "Value 03",
-            "\n\n",
-            "Continued"
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key04",
-        "value": [
-            "Value 04",
-            "\n\n",
-            "Continued"
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key05",
-        "value": [
-            "Value 05"
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "key06",
-        "value": "Value 06",
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key01",
+            "value": "Value 01",
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": "Value 02",
+            "attributes": {}
+        },
+        {
+            "id": "key03",
+            "value": [
+                "Value 03",
+                "\n\n",
+                "Continued"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key04",
+            "value": [
+                "Value 04",
+                "\n\n",
+                "Continued"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key05",
+            "value": [
+                "Value 05"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key06",
+            "value": "Value 06",
+            "attributes": {}
+        }
+    ]
+}

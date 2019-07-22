@@ -1,111 +1,113 @@
-[
-    {
-        "id": "function-callee-placeable",
-        "value": [
-            {
-                "type": "func",
-                "name": "FUNCTION",
-                "args": []
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "term-callee-placeable",
-        "value": [
-            {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": []
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "term-attr-callee-placeable",
-        "value": [
-            {
-                "type": "term",
-                "name": "term",
-                "attr": "attr",
-                "args": []
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "function-callee-selector",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
+{
+    "body": [
+        {
+            "id": "function-callee-placeable",
+            "value": [
+                {
                     "type": "func",
                     "name": "FUNCTION",
                     "args": []
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "term-attr-callee-selector",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "term",
-                    "name": "term",
-                    "attr": "attr",
-                    "args": []
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "term-callee-selector",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-callee-placeable",
+            "value": [
+                {
                     "type": "term",
                     "name": "term",
                     "attr": null,
                     "args": []
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "key"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    }
-]
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-attr-callee-placeable",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "term",
+                    "attr": "attr",
+                    "args": []
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "function-callee-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "func",
+                        "name": "FUNCTION",
+                        "args": []
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-attr-callee-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "term",
+                        "name": "term",
+                        "attr": "attr",
+                        "args": []
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-callee-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "term",
+                        "name": "term",
+                        "attr": null,
+                        "args": []
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}
