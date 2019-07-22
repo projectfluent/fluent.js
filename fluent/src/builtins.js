@@ -28,7 +28,7 @@ function values(opts) {
 export
 function NUMBER([arg], opts) {
   if (arg instanceof FluentNone) {
-    return new FluentNone("NUMBER()");
+    return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
 
   if (arg instanceof FluentNumber) {
@@ -41,7 +41,7 @@ function NUMBER([arg], opts) {
 export
 function DATETIME([arg], opts) {
   if (arg instanceof FluentNone) {
-    return new FluentNone("DATETIME()");
+    return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
   if (arg instanceof FluentDateTime) {

@@ -27,21 +27,21 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
 
       errors = [];
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
 
       errors = [];
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
@@ -124,21 +124,21 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Variable type not supported: $arg, object");
 
       errors = [];
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Variable type not supported: $arg, object");
 
       errors = [];
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Variable type not supported: $arg, object");
@@ -160,21 +160,21 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{DATETIME($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
 
       errors = [];
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{DATETIME($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
 
       errors = [];
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{DATETIME($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
@@ -267,21 +267,21 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Variable type not supported: $arg, object");
 
       errors = [];
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Variable type not supported: $arg, object");
 
       errors = [];
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Variable type not supported: $arg, object");
