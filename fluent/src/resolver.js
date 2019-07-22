@@ -48,7 +48,7 @@ const PDI = "\u2069";
 
 
 // Helper: match a variant key to the given selector.
-function match(bundle, selector, key) {
+function match(scope, selector, key) {
   if (key === selector) {
     // Both are strings.
     return true;
@@ -62,8 +62,8 @@ function match(bundle, selector, key) {
   }
 
   if (selector instanceof FluentNumber && typeof key === "string") {
-    let category = bundle
-      ._memoizeIntlObject(Intl.PluralRules, selector.opts)
+    let category = scope
+      .memoizeIntlObject(Intl.PluralRules, selector.opts)
       .select(selector.value);
     if (key === category) {
       return true;
@@ -240,7 +240,7 @@ function SelectExpression(scope, {selector, variants, star}) {
   // Match the selector against keys of each variant, in order.
   for (const variant of variants) {
     const key = resolveExpression(scope, variant.key);
-    if (match(scope.bundle, sel, key)) {
+    if (match(scope, sel, key)) {
       return resolvePattern(scope, variant.value);
     }
   }
