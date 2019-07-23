@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Attributes', function() {
   let bundle, args, errs;
@@ -15,7 +16,7 @@ suite('Attributes', function() {
   suite('missing', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         bar = Bar
             .attr = Bar Attribute
@@ -27,7 +28,7 @@ suite('Attributes', function() {
         ref-bar = { bar.missing }
         ref-baz = { baz.missing }
         ref-qux = { qux.missing }
-        `);
+        `));
     });
 
     test('falls back to id.attr for entities with string values and no attributes', function() {
@@ -66,7 +67,7 @@ suite('Attributes', function() {
   suite('with string values', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
             .attr = Foo Attribute
         bar = { foo } Bar
@@ -74,7 +75,7 @@ suite('Attributes', function() {
 
         ref-foo = { foo.attr }
         ref-bar = { bar.attr }
-        `);
+        `));
     });
 
     test('can be referenced for entities with string values', function() {
@@ -109,7 +110,7 @@ suite('Attributes', function() {
   suite('with simple pattern values', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         bar = Bar
             .attr = { foo } Attribute
@@ -121,7 +122,7 @@ suite('Attributes', function() {
         ref-bar = { bar.attr }
         ref-baz = { baz.attr }
         ref-qux = { qux.attr }
-        `);
+        `));
     });
 
     test('can be referenced for entities with string values', function() {
@@ -170,7 +171,7 @@ suite('Attributes', function() {
   suite('with values with select expressions', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
             .attr = { "a" ->
                         [a] A
@@ -178,7 +179,7 @@ suite('Attributes', function() {
                     }
 
         ref-foo = { foo.attr }
-        `);
+        `));
     });
 
     test('can be referenced', function() {

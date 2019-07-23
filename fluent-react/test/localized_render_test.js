@@ -2,7 +2,7 @@ import React from 'react';
 import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -11,9 +11,9 @@ suite('Localized - rendering', function() {
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -31,10 +31,10 @@ foo = FOO
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr: true}}>
@@ -52,11 +52,11 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr1 = ATTR 1
     .attr2 = ATTR 2
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr2: true}}>
@@ -74,10 +74,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr: false}}>
@@ -95,10 +95,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -116,10 +116,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr: true}}>
@@ -137,10 +137,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .existing = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{existing: true}}>
@@ -158,10 +158,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .existing = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{existing: false}}>
@@ -179,10 +179,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .existing = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -200,10 +200,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .title = TITLE
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{title: true}}>
@@ -227,9 +227,9 @@ foo =
     const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = { $arg }
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">
@@ -247,10 +247,10 @@ foo = { $arg }
     const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = { $arg }
     .attr = { $arg }
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">
@@ -265,8 +265,8 @@ foo = { $arg }
 
   test('render with a fragment and no message preserves the fragment',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -286,12 +286,12 @@ foo = { $arg }
 
   test('render with a fragment and no message value preserves the fragment',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = Attribute
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -310,11 +310,11 @@ foo =
   });
 
   test('render with a fragment renders the message into the fragment', function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo = Test message
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -334,8 +334,8 @@ foo = Test message
 
   test('render with an empty fragment and no message preserves the fragment',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -351,12 +351,12 @@ foo = Test message
 
   test('render with an empty fragment and no message value preserves the fragment',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = Attribute
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -371,11 +371,11 @@ foo =
   });
 
   test('render with an empty fragment renders the message into the fragment', function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo = Test message
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -393,8 +393,8 @@ foo = Test message
 
   test('render with a string fallback and no message returns the fallback',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -408,12 +408,12 @@ foo = Test message
 
   test('render with a string fallback and no message value preserves the fallback',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = Attribute
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -426,11 +426,11 @@ foo =
   });
 
   test('render with a string fallback returns the message', function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo = Test message
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -444,8 +444,8 @@ foo = Test message
 
   test('render without a fallback and no message returns nothing',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
     const wrapper = shallow(
       <Localized id="foo" />,
@@ -457,13 +457,13 @@ foo = Test message
 
   test('render without a fallback and no message value returns nothing',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = Attribute
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" />,
@@ -474,12 +474,12 @@ foo =
   });
 
   test('render without a fallback returns the message', function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
-    mcx.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = Message
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" />,

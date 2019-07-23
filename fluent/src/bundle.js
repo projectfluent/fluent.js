@@ -1,6 +1,5 @@
+import {FluentNone} from "./types.js";
 import {resolveComplexPattern} from "./resolver.js";
-import FluentResource from "./resource.js";
-import { FluentNone } from "./types.js";
 import Scope from "./scope.js";
 
 /**
@@ -92,42 +91,6 @@ export default class FluentBundle {
   /**
    * Add a translation resource to the bundle.
    *
-   * The translation resource must use the Fluent syntax.  It will be parsed by
-   * the bundle and each translation unit (message) will be available in the
-   * bundle by its identifier.
-   *
-   *     bundle.addMessages('foo = Foo');
-   *     bundle.getMessage('foo');
-   *
-   *     // Returns a raw representation of the 'foo' message.
-   *
-   *     bundle.addMessages('bar = Bar');
-   *     bundle.addMessages('bar = Newbar', { allowOverrides: true });
-   *     bundle.getMessage('bar');
-   *
-   *     // Returns a raw representation of the 'bar' message: Newbar.
-   *
-   * Parsed entities should be formatted with the `format` method in case they
-   * contain logic (references, select expressions etc.).
-   *
-   * Available options:
-   *
-   *   - `allowOverrides` - boolean specifying whether it's allowed to override
-   *                      an existing message or term with a new value.
-   *                      Default: false
-   *
-   * @param   {string} source - Text resource with translations.
-   * @param   {Object} [options]
-   * @returns {Array<Error>}
-   */
-  addMessages(source, options) {
-    const res = new FluentResource(source);
-    return this.addResource(res, options);
-  }
-
-  /**
-   * Add a translation resource to the bundle.
-   *
    * The translation resource must be an instance of `FluentResource`.
    *
    *     let res = new FluentResource("foo = Foo");
@@ -195,9 +158,11 @@ export default class FluentBundle {
    * reasons, the encountered errors are not returned but instead are appended
    * to the `errors` array passed as the third argument.
    *
-   *     const errors = [];
-   *     bundle.addMessages('hello = Hello, { $name }!');
-   *     const hello = bundle.getMessage('hello');
+   *     let errors = [];
+   *     bundle.addResource(
+   *         new FluentResource("hello = Hello, {$name}!"));
+   *
+   *     let hello = bundle.getMessage("hello");
    *     if (hello.value) {
    *         bundle.formatPattern(hello.value, { name: 'Jane' }, errors);
    *         // Returns 'Hello, Jane!' and `errors` is empty.

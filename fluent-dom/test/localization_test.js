@@ -1,10 +1,11 @@
 import assert from "assert";
-import { FluentBundle } from "../../fluent/src/index";
+import { FluentBundle, FluentResource } from "../../fluent/src/index";
 import Localization from "../src/localization";
 
 async function* mockGenerateMessages(resourceIds) {
   const bundle = new FluentBundle(["en-US"]);
-  bundle.addMessages("key1 = Key 1");
+  const resource = new FluentResource("key1 = Key 1");
+  bundle.addResource(resource);
   yield bundle;
 }
 

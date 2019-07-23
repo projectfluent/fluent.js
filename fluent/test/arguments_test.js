@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 import { FluentType } from '../src/types';
 
 suite('Variables', function() {
@@ -16,7 +17,7 @@ suite('Variables', function() {
   suite('in values', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo { $num }
         bar = { foo }
         baz =
@@ -24,7 +25,7 @@ suite('Variables', function() {
         qux = { "a" ->
            *[a]     Baz Variant A { $num }
         }
-        `);
+        `));
     });
 
     test('can be used in the message value', function() {
@@ -59,11 +60,11 @@ suite('Variables', function() {
   suite('in selectors', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { $num -> 
            *[3] Foo
         }
-        `);
+        `));
     });
 
     test('can be used as a selector', function() {
@@ -77,9 +78,9 @@ suite('Variables', function() {
   suite('in function calls', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { NUMBER($num) }
-        `);
+        `));
     });
 
     test('can be a positional argument', function() {
@@ -93,9 +94,9 @@ suite('Variables', function() {
   suite('simple errors', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
-        `);
+        `));
     });
 
     test('falls back to argument\'s name if it\'s missing', function() {
@@ -153,9 +154,9 @@ suite('Variables', function() {
 
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
-        `);
+        `));
       args = {
         arg: 'Argument',
       };
@@ -174,9 +175,9 @@ suite('Variables', function() {
 
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
-        `);
+        `));
       args = {
         arg: 1
       };
@@ -196,9 +197,9 @@ suite('Variables', function() {
     suiteSetup(function() {
       dtf = new Intl.DateTimeFormat('en-US');
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
-        `);
+        `));
       args = {
         arg: new Date('2016-09-29')
       };
@@ -224,10 +225,10 @@ suite('Variables', function() {
 
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
         bar = { foo }
-        `);
+        `));
 
       args = {
         // CustomType is a wrapper around the value

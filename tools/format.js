@@ -51,7 +51,8 @@ function print(err, data) {
   }
 
   const bundle = new Fluent.FluentBundle(program.lang);
-  const parseErrors = bundle.addMessages(data.toString());
+  const parseErrors = bundle.addResource(
+    new Fluent.FluentResource(data.toString()));
 
   parseErrors.forEach(printError);
 

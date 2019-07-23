@@ -3,6 +3,7 @@ import assert from "assert";
 import ftl from "@fluent/dedent";
 
 import FluentBundle from "../src/bundle";
+import FluentResource from '../src/resource';
 
 suite("Select expressions", function() {
   let bundle, errs;
@@ -13,12 +14,12 @@ suite("Select expressions", function() {
   });
 
   test("missing selector", function() {
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       select = {$none ->
           [a] A
          *[b] B
       }
-      `);
+      `));
     const msg = bundle.getMessage("select");
     const val = bundle.formatPattern(msg.value, null, errs);
     assert.strictEqual(val, "B");
@@ -28,12 +29,12 @@ suite("Select expressions", function() {
 
   suite("string selectors", function() {
     test("matching selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [a] A
            *[b] B
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "a"}, errs);
       assert.strictEqual(val, "A");
@@ -41,12 +42,12 @@ suite("Select expressions", function() {
     });
 
     test("non-matching selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [a] A
            *[b] B
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "c"}, errs);
       assert.strictEqual(val, "B");
@@ -56,12 +57,12 @@ suite("Select expressions", function() {
 
   suite("number selectors", function() {
     test("matching selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [0] A
            *[1] B
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 0}, errs);
       assert.strictEqual(val, "A");
@@ -69,12 +70,12 @@ suite("Select expressions", function() {
     });
 
     test("non-matching selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [0] A
            *[1] B
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 2}, errs);
       assert.strictEqual(val, "B");
@@ -84,12 +85,12 @@ suite("Select expressions", function() {
 
   suite("plural categories", function() {
     test("matching number selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [one] A
            *[other] B
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 1}, errs);
       assert.strictEqual(val, "A");
@@ -97,12 +98,12 @@ suite("Select expressions", function() {
     });
 
     test("matching string selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [one] A
            *[other] B
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "one"}, errs);
       assert.strictEqual(val, "A");
@@ -110,12 +111,12 @@ suite("Select expressions", function() {
     });
 
     test("non-matching number selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [one] A
            *[default] D
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: 2}, errs);
       assert.strictEqual(val, "D");
@@ -123,12 +124,12 @@ suite("Select expressions", function() {
     });
 
     test("non-matching string selector", function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         select = {$selector ->
             [one] A
            *[default] D
         }
-        `);
+        `));
       const msg = bundle.getMessage("select");
       const val = bundle.formatPattern(msg.value, {selector: "other"}, errs);
       assert.strictEqual(val, "D");

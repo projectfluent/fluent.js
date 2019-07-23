@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import createParseMarkup from '../src/markup';
 import { Localized } from '../src/index';
@@ -13,9 +13,9 @@ suite('Localized - overlay', function() {;
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 true = 0 < 3 is true.
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="true">
@@ -35,9 +35,9 @@ true = 0 < 3 is true.
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 megaman = Jumping & Shooting
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="megaman">
@@ -57,9 +57,9 @@ megaman = Jumping & Shooting
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 two = First &middot; Second
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="two">
@@ -79,9 +79,9 @@ two = First &middot; Second
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = Click <button>me</button>!
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" button={<button onClick={alert}></button>}>
@@ -101,9 +101,9 @@ foo = Click <button>me</button>!
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = Click <button>me</button>!
-`)
+`));
 
     // The Button prop is capitalized whereas the <button> element in the
     // translation is all lowercase. Since we're using DOM localNames, they
@@ -126,9 +126,9 @@ foo = Click <button>me</button>!
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo"
@@ -151,9 +151,9 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo"
@@ -175,9 +175,9 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = <confirm>Sign in</confirm>.
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo"
@@ -200,9 +200,9 @@ foo = <confirm>Sign in</confirm>.
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = Click <button className="foo">me</button>!
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" button={<button onClick={alert}></button>}>
@@ -222,9 +222,9 @@ foo = Click <button className="foo">me</button>!
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = Click <button><em>me</em></button>!
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" button={<button onClick={alert}></button>}>
@@ -244,9 +244,9 @@ foo = Click <button><em>me</em></button>!
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = <confirm>Sign in</confirm>.
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" confirm="Not a React element">
@@ -271,9 +271,9 @@ suite('Localized - overlay of void elements', function() {;
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <input/> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" input={<input type="text" />}>
@@ -293,9 +293,9 @@ foo = BEFORE <input/> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <input></input> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" input={<input type="text" />}>
@@ -315,9 +315,9 @@ foo = BEFORE <input></input> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <input>Foo</input> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" input={<input type="text" />}>
@@ -339,9 +339,9 @@ foo = BEFORE <input>Foo</input> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <input/> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" input={<span>Hardcoded</span>}>
@@ -361,9 +361,9 @@ foo = BEFORE <input/> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <input></input> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" input={<span>Hardcoded</span>}>
@@ -383,9 +383,9 @@ foo = BEFORE <input></input> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <input>Foo</input> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" input={<span>Hardcoded</span>}>
@@ -407,9 +407,9 @@ foo = BEFORE <input>Foo</input> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <span/> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" span={<input type="text" />}>
@@ -434,9 +434,9 @@ foo = BEFORE <span/> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <span></span> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" span={<input type="text" />}>
@@ -456,9 +456,9 @@ foo = BEFORE <span></span> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <span>Foo</span> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" span={<input type="text" />}>
@@ -478,9 +478,9 @@ foo = BEFORE <span>Foo</span> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <span/> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" span={<span>Hardcoded</span>}>
@@ -504,9 +504,9 @@ foo = BEFORE <span/> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <span></span> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" span={<span>Hardcoded</span>}>
@@ -526,9 +526,9 @@ foo = BEFORE <span></span> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <span>Foo</span> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" span={<span>Hardcoded</span>}>
@@ -548,9 +548,9 @@ foo = BEFORE <span>Foo</span> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <text-input/> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" text-input={<input type="text" />}>
@@ -575,9 +575,9 @@ foo = BEFORE <text-input/> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <text-input></text-input> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" text-input={<input type="text" />}>
@@ -597,9 +597,9 @@ foo = BEFORE <text-input></text-input> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <text-input>Foo</text-input> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" text-input={<input type="text" />}>
@@ -619,9 +619,9 @@ foo = BEFORE <text-input>Foo</text-input> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <text-elem/> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" text-elem={<span>Hardcoded</span>}>
@@ -646,9 +646,9 @@ foo = BEFORE <text-elem/> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <text-elem></text-elem> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" text-elem={<span>Hardcoded</span>}>
@@ -668,9 +668,9 @@ foo = BEFORE <text-elem></text-elem> AFTER
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = BEFORE <text-elem>Foo</text-elem> AFTER
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" text-elem={<span>Hardcoded</span>}>
@@ -698,10 +698,10 @@ suite('Localized - custom parseMarkup', function() {;
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 # We must use an HTML tag to trigger the overlay logic.
 foo = test <em>custom markup parser</em>
-`);
+`));
 
     shallow(
       <Localized id="foo">
@@ -727,10 +727,10 @@ foo = test <em>custom markup parser</em>
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 # We must use an HTML tag to trigger the overlay logic.
 foo = test <em>custom markup parser</em>
-`);
+`));
 
     const wrapper = shallow(
       <Localized id="foo">

@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Functions', function() {
   let bundle, args, errs;
@@ -15,9 +16,9 @@ suite('Functions', function() {
   suite('missing', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { MISSING("Foo") }
-        `);
+        `));
     });
 
     test('falls back to the name of the function', function() {
@@ -37,7 +38,7 @@ suite('Functions', function() {
           IDENTITY: args => args[0]
         }
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
             .attr = Attribute
         pass-nothing       = { IDENTITY() }
@@ -47,7 +48,7 @@ suite('Functions', function() {
         pass-attr          = { IDENTITY(foo.attr) }
         pass-variable      = { IDENTITY($var) }
         pass-function-call = { IDENTITY(IDENTITY(1)) }
-        `);
+        `));
     });
 
     // XXX Gracefully handle wrong argument types passed into FTL Functions

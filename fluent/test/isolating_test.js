@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 // Unicode bidi isolation characters.
 const FSI = '\u2068';
@@ -14,12 +15,12 @@ suite('Isolating interpolations', function(){
 
   suiteSetup(function() {
     bundle = new FluentBundle('en-US');
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       foo = Foo
       bar = { foo } Bar
       baz = { $arg } Baz
       qux = { bar } { baz }
-      `);
+      `));
   });
 
   setup(function() {
@@ -74,10 +75,10 @@ suite('Skip isolation cases', function(){
 
   suiteSetup(function() {
     bundle = new FluentBundle('en-US');
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       -brand-short-name = Amaya
       foo = { -brand-short-name }
-      `);
+      `));
   });
 
   setup(function() {
