@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Primitives', function() {
   let bundle, args, errs;
@@ -15,13 +16,13 @@ suite('Primitives', function() {
   suite('Numbers', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         one     = { 1 }
         select  = { 1 ->
            *[0] Zero
             [1] One
         }
-        `);
+        `));
     });
 
     test('can be used in a placeable', function(){
@@ -42,7 +43,7 @@ suite('Primitives', function() {
   suite('Simple string value', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo               = Foo
 
         placeable-literal = { "Foo" } Bar
@@ -63,7 +64,7 @@ suite('Primitives', function() {
         selector-attr    = { -baz.attr ->
            *[BazAttribute] Member 3
         }
-        `);
+        `));
     });
 
     test('can be used as a value', function(){
@@ -119,7 +120,7 @@ suite('Primitives', function() {
   suite('Complex string value', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo               = Foo
         bar               = { foo }Bar
 
@@ -134,7 +135,7 @@ suite('Primitives', function() {
             [FooBarBazAttribute] FooBarBaz
            *[other] Other
         }
-        `);
+        `));
     });
 
     test('can be used as a value', function(){

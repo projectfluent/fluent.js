@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Patterns', function(){
   let bundle, args, errs;
@@ -15,9 +16,9 @@ suite('Patterns', function(){
   suite('Simple string value', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
-        `);
+        `));
     });
 
     test('returns the value', function(){
@@ -31,7 +32,7 @@ suite('Patterns', function(){
   suite('Complex string value', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         -bar = Bar
 
@@ -42,7 +43,7 @@ suite('Patterns', function(){
         ref-missing-term = { -missing }
 
         ref-malformed = { malformed
-        `);
+        `));
     });
 
     test('resolves the reference to a message', function(){
@@ -77,11 +78,11 @@ suite('Patterns', function(){
   suite('Complex string referencing a message with null value', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo =
             .attr = Foo Attr
         bar = { foo } Bar
-        `);
+        `));
     });
 
     test('returns {???} when trying to format a null value', function(){
@@ -109,10 +110,10 @@ suite('Patterns', function(){
   suite('Cyclic reference', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { bar }
         bar = { foo }
-        `);
+        `));
     });
 
     test('returns ???', function(){
@@ -126,9 +127,9 @@ suite('Patterns', function(){
   suite('Cyclic self-reference', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { foo }
-        `);
+        `));
     });
 
     test('returns ???', function(){
@@ -142,14 +143,14 @@ suite('Patterns', function(){
   suite('Cyclic self-reference in a member', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo =
             { $sel ->
                *[a] { foo }
                 [b] Bar
             }
         bar = { foo }
-        `);
+        `));
     });
 
     test('returns ???', function(){
@@ -170,7 +171,7 @@ suite('Patterns', function(){
   suite('Cyclic reference in a selector', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -foo =
             { -bar.attr ->
                *[a] Foo
@@ -179,7 +180,7 @@ suite('Patterns', function(){
             .attr = { -foo }
 
         foo = { -foo }
-        `);
+        `));
     });
 
     test('returns the default variant', function(){
@@ -193,7 +194,7 @@ suite('Patterns', function(){
   suite('Cyclic self-reference in a selector', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -foo =
             { -bar.attr ->
                *[a] Foo
@@ -208,7 +209,7 @@ suite('Patterns', function(){
 
         foo = { -foo }
         bar = { -bar }
-        `);
+        `));
     });
 
     test('returns the default variant', function(){

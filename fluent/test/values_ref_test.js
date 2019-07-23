@@ -4,13 +4,14 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Referencing values', function(){
   let bundle, args, errs;
 
   suiteSetup(function() {
     bundle = new FluentBundle('en-US', { useIsolating: false });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       key1 = Value 1
       -key2 = { $sel ->
           [a] A2
@@ -48,7 +49,7 @@ suite('Referencing values', function(){
       ref16 = { -key6.a ->
           *[a] A
       }
-      `);
+      `));
   });
 
   setup(function() {

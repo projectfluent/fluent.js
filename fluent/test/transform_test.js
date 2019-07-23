@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Transformations', function(){
   let bundle, errs;
@@ -13,7 +14,7 @@ suite('Transformations', function(){
       transform: v => v.replace(/a/g, "A"),
       useIsolating: false,
     });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       foo = Faa
           .bar = Bar {foo} Baz
       bar = Bar {"Baz"}
@@ -22,7 +23,7 @@ suite('Transformations', function(){
          *[bar] Bar
       }
       arg = Faa {$arg}
-      `);
+      `));
   });
 
   setup(function() {

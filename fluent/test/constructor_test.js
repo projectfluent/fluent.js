@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('FluentBundle constructor', function() {
   setup(function() {
@@ -18,9 +19,9 @@ suite('FluentBundle constructor', function() {
   test('accepts a single locale string', function() {
     const errs = [];
     const bundle = new FluentBundle('en-US', { useIsolating: false });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       foo = Foo { 1 }
-      `);
+      `));
 
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
@@ -35,9 +36,9 @@ suite('FluentBundle constructor', function() {
   test('accepts an array of locales', function() {
     const errs = [];
     const bundle = new FluentBundle(['de', 'en-US'], { useIsolating: false });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       foo = Foo { 1 }
-      `);
+      `));
 
     const msg = bundle.getMessage('foo');
     const val = bundle.formatPattern(msg.value, null, errs);
