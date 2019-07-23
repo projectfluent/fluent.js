@@ -45,12 +45,12 @@ export class FluentType {
 }
 
 export class FluentNone extends FluentType {
-  valueOf() {
-    return null;
+  constructor(value = "???") {
+    super(value);
   }
 
   toString() {
-    return `{${this.value || "???"}}`;
+    return `{${this.value}}`;
   }
 }
 
@@ -63,8 +63,8 @@ export class FluentNumber extends FluentType {
     try {
       const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
       return nf.format(this.value);
-    } catch (e) {
-      // XXX Report the error.
+    } catch (err) {
+      scope.reportError(err);
       return this.value;
     }
   }
@@ -79,8 +79,8 @@ export class FluentDateTime extends FluentType {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
       return dtf.format(this.value);
-    } catch (e) {
-      // XXX Report the error.
+    } catch (err) {
+      scope.reportError(err);
       return this.value;
     }
   }

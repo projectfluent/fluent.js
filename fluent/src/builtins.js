@@ -28,21 +28,25 @@ function values(opts) {
 export
 function NUMBER([arg], opts) {
   if (arg instanceof FluentNone) {
-    return arg;
+    return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
+
   if (arg instanceof FluentNumber) {
     return new FluentNumber(arg.valueOf(), merge(arg.opts, opts));
   }
-  return new FluentNone("NUMBER()");
+
+  throw new TypeError("Invalid argument type to NUMBER");
 }
 
 export
 function DATETIME([arg], opts) {
   if (arg instanceof FluentNone) {
-    return arg;
+    return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
+
   if (arg instanceof FluentDateTime) {
     return new FluentDateTime(arg.valueOf(), merge(arg.opts, opts));
   }
-  return new FluentNone("DATETIME()");
+
+  throw new TypeError("Invalid argument type to DATETIME");
 }
