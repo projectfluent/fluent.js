@@ -1,25 +1,27 @@
-[
-    {
-        "id": "-term",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "var",
-                    "name": "sel"
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "str",
-                            "value": "one"
-                        },
-                        "value": "Value"
-                    }
-                ],
-                "star": 0
-            }
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "-term",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

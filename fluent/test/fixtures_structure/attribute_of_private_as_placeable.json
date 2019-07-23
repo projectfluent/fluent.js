@@ -1,14 +1,16 @@
-[
-    {
-        "id": "err1",
-        "value": [
-            {
-                "type": "term",
-                "name": "brand",
-                "attr": "gender",
-                "args": []
-            }
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "err1",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "brand",
+                    "attr": "gender",
+                    "args": []
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

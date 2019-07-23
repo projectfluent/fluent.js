@@ -1,12 +1,14 @@
-[
-    {
-        "id": "foo",
-        "value": "Foo",
-        "attributes": {}
-    },
-    {
-        "id": "-term",
-        "value": "Term",
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "foo",
+            "value": "Foo",
+            "attributes": {}
+        },
+        {
+            "id": "-term",
+            "value": "Term",
+            "attributes": {}
+        }
+    ]
+}

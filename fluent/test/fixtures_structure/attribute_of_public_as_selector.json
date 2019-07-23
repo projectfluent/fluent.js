@@ -1,35 +1,37 @@
-[
-    {
-        "id": "err1",
-        "value": [
-            {
-                "type": "select",
-                "selector": {
-                    "type": "mesg",
-                    "name": "foo",
-                    "attr": "bar"
-                },
-                "variants": [
-                    {
-                        "key": {
-                            "type": "num",
-                            "value": 1,
-                            "precision": 0
-                        },
-                        "value": "One"
+{
+    "body": [
+        {
+            "id": "err1",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "mesg",
+                        "name": "foo",
+                        "attr": "bar"
                     },
-                    {
-                        "key": {
-                            "type": "num",
-                            "value": 2,
-                            "precision": 0
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 1,
+                                "precision": 0
+                            },
+                            "value": "One"
                         },
-                        "value": "Two"
-                    }
-                ],
-                "star": 1
-            }
-        ],
-        "attributes": {}
-    }
-]
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 2,
+                                "precision": 0
+                            },
+                            "value": "Two"
+                        }
+                    ],
+                    "star": 1
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

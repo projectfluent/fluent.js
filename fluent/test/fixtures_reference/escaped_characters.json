@@ -1,138 +1,140 @@
-[
-    {
-        "id": "text-backslash-one",
-        "value": "Value with \\ a backslash",
-        "attributes": {}
-    },
-    {
-        "id": "text-backslash-two",
-        "value": "Value with \\\\ two backslashes",
-        "attributes": {}
-    },
-    {
-        "id": "text-backslash-brace",
-        "value": [
-            "Value with \\",
-            {
-                "type": "mesg",
-                "name": "placeable",
-                "attr": null
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "text-backslash-u",
-        "value": "\\u0041",
-        "attributes": {}
-    },
-    {
-        "id": "text-backslash-backslash-u",
-        "value": "\\\\u0041",
-        "attributes": {}
-    },
-    {
-        "id": "quote-in-string",
-        "value": [
-            {
-                "type": "str",
-                "value": "\""
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "backslash-in-string",
-        "value": [
-            {
-                "type": "str",
-                "value": "\\"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "string-unicode-4digits",
-        "value": [
-            {
-                "type": "str",
-                "value": "A"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "escape-unicode-4digits",
-        "value": [
-            {
-                "type": "str",
-                "value": "\\u0041"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "string-unicode-6digits",
-        "value": [
-            {
-                "type": "str",
-                "value": "😂"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "escape-unicode-6digits",
-        "value": [
-            {
-                "type": "str",
-                "value": "\\U01F602"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "string-too-many-4digits",
-        "value": [
-            {
-                "type": "str",
-                "value": "A00"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "string-too-many-6digits",
-        "value": [
-            {
-                "type": "str",
-                "value": "😂00"
-            }
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "brace-open",
-        "value": [
-            "An opening ",
-            {
-                "type": "str",
-                "value": "{"
-            },
-            " brace."
-        ],
-        "attributes": {}
-    },
-    {
-        "id": "brace-close",
-        "value": [
-            "A closing ",
-            {
-                "type": "str",
-                "value": "}"
-            },
-            " brace."
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "text-backslash-one",
+            "value": "Value with \\ a backslash",
+            "attributes": {}
+        },
+        {
+            "id": "text-backslash-two",
+            "value": "Value with \\\\ two backslashes",
+            "attributes": {}
+        },
+        {
+            "id": "text-backslash-brace",
+            "value": [
+                "Value with \\",
+                {
+                    "type": "mesg",
+                    "name": "placeable",
+                    "attr": null
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "text-backslash-u",
+            "value": "\\u0041",
+            "attributes": {}
+        },
+        {
+            "id": "text-backslash-backslash-u",
+            "value": "\\\\u0041",
+            "attributes": {}
+        },
+        {
+            "id": "quote-in-string",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "\""
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "backslash-in-string",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "\\"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "string-unicode-4digits",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "A"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "escape-unicode-4digits",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "\\u0041"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "string-unicode-6digits",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "😂"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "escape-unicode-6digits",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "\\U01F602"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "string-too-many-4digits",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "A00"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "string-too-many-6digits",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "😂00"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "brace-open",
+            "value": [
+                "An opening ",
+                {
+                    "type": "str",
+                    "value": "{"
+                },
+                " brace."
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "brace-close",
+            "value": [
+                "A closing ",
+                {
+                    "type": "str",
+                    "value": "}"
+                },
+                " brace."
+            ],
+            "attributes": {}
+        }
+    ]
+}

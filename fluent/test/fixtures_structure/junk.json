@@ -1,7 +1,9 @@
-[
-    {
-        "id": "key08",
-        "value": "Value",
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key08",
+            "value": "Value",
+            "attributes": {}
+        }
+    ]
+}

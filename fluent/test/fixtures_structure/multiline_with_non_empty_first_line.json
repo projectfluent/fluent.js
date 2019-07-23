@@ -1,11 +1,13 @@
-[
-    {
-        "id": "key",
-        "value": [
-            "Value",
-            "\n",
-            "Value 2"
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key",
+            "value": [
+                "Value",
+                "\n",
+                "Value 2"
+            ],
+            "attributes": {}
+        }
+    ]
+}

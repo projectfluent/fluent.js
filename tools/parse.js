@@ -36,7 +36,7 @@ function print(err, data) {
 
 function printRuntime(data) {
   const FluentResource = require('../fluent/src/resource').default;
-  const res = FluentResource.fromString(data.toString());
+  const res = new FluentResource(data.toString());
   console.log(JSON.stringify(res, null, 4));
 }
 

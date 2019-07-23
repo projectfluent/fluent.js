@@ -1,11 +1,13 @@
-[
-    {
-        "id": "key",
-        "value": [
-            "first line",
-            "\n\n\n\n\n\n\n",
-            "last line"
-        ],
-        "attributes": {}
-    }
-]
+{
+    "body": [
+        {
+            "id": "key",
+            "value": [
+                "first line",
+                "\n\n\n\n\n\n\n",
+                "last line"
+            ],
+            "attributes": {}
+        }
+    ]
+}
