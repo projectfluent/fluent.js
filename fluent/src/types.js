@@ -36,29 +36,45 @@ export class FluentType {
    * This method can use `Intl` formatters available through the `scope`
    * argument.
    *
-   * @param   {?object} scope
+   * @param   {Scope} scope
    * @returns {string}
    */
-  toString() {
+  toString(scope) { // eslint-disable-line no-unused-vars
     throw new Error("Subclasses of FluentType must implement toString.");
   }
 }
 
 export class FluentNone extends FluentType {
+  /**
+   * @param   {string} value - The fallback value of this FluentNone
+   * @returns {FluentType}
+   */
   constructor(value = "???") {
     super(value);
   }
 
+  /**
+   * @returns {string}
+   */
   toString() {
     return `{${this.value}}`;
   }
 }
 
 export class FluentNumber extends FluentType {
+  /**
+   * @param   {(number|string)} value
+   * @param   {Object} opts
+   * @returns {FluentType}
+   */
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
 
+  /**
+   * @param   {Scope} scope
+   * @returns {string}
+   */
   toString(scope) {
     try {
       const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
@@ -71,10 +87,19 @@ export class FluentNumber extends FluentType {
 }
 
 export class FluentDateTime extends FluentType {
+  /**
+   * @param   {(Date|number|string)} value
+   * @param   {Object} opts
+   * @returns {FluentType}
+   */
   constructor(value, opts) {
     super(new Date(value), opts);
   }
 
+  /**
+   * @param   {Scope} scope
+   * @returns {string}
+   */
   toString(scope) {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);

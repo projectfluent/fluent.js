@@ -3,8 +3,9 @@
 /**
  * @overview
  *
- * The role of the Fluent resolver is to format a translation object to an
- * instance of `FluentType` or an array of instances.
+ * The role of the Fluent resolver is to format a `Pattern` to an instance of
+ * `FluentType`. For performance reasons, primitive strings are considered such
+ * instances, too.
  *
  * Translations can contain references to other messages or variables,
  * conditional logic in form of select expressions, traits which describe their
@@ -14,24 +15,14 @@
  * information.
  *
  * In case of errors the resolver will try to salvage as much of the
- * translation as possible.  In rare situations where the resolver didn't know
+ * translation as possible. In rare situations where the resolver didn't know
  * how to recover from an error it will return an instance of `FluentNone`.
  *
  * All expressions resolve to an instance of `FluentType`. The caller should
  * use the `toString` method to convert the instance to a native value.
  *
- * All functions in this file pass around a special object called `scope`.
- * This object stores a set of elements used by all resolve functions:
- *
- *  * {FluentBundle} bundle
- *      bundle for which the given resolution is happening
- *  * {Object} args
- *      list of developer provided arguments that can be used
- *  * {Array} errors
- *      list of errors collected while resolving
- *  * {WeakSet} dirty
- *      Set of patterns already encountered during this resolution.
- *      This is used to prevent cyclic resolutions.
+ * Functions in this file pass around an instance of the `Scope` class, which
+ * stores the data required for successful resolution and error recovery.
  */
 
 

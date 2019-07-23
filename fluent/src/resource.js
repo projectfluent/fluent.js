@@ -57,10 +57,10 @@ const MAX_PLACEABLES = 100;
  */
 export default class FluentResource {
   constructor(source) {
-    this.body = this.parse(source);
+    this.body = this._parse(source);
   }
 
-  parse(source) {
+  _parse(source) {
     RE_MESSAGE_START.lastIndex = 0;
 
     let resource = [];
