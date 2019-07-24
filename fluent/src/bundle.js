@@ -55,7 +55,7 @@ export default class FluentBundle {
     this._intls = new WeakMap();
   }
 
-  /*
+  /**
    * Check if a message is present in the bundle.
    *
    * @param {string} id - The identifier of the message to check.
@@ -65,7 +65,7 @@ export default class FluentBundle {
     return this._messages.has(id);
   }
 
-  /*
+  /**
    * Return a raw unformatted message object from the bundle.
    *
    * Raw messages are `{value, attributes}` shapes containing translation units
