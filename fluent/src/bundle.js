@@ -1,6 +1,5 @@
 import {FluentNone} from "./types.js";
 import {resolveComplexPattern} from "./resolver.js";
-import FluentResource from "./resource.js";
 import Scope from "./scope.js";
 
 /**
@@ -88,31 +87,6 @@ export default class FluentBundle {
   /**
    * Add a translation resource to the bundle.
    *
-   * The translation resource must use the Fluent syntax. It will be parsed by
-   * the bundle and each message will be available in the bundle by its
-   * identifier.
-   *
-   *     bundle.addMessages("foo = Foo");
-   *     bundle.getMessage("foo");
-   *     // → {value: .., attributes: {..}}
-   *
-   * Available options:
-   *
-   *   - `allowOverrides` - boolean specifying whether it's allowed to override
-   *     an existing message or term with a new value. Default: `false`.
-   *
-   * @param   {string} source - Text resource with translations.
-   * @param   {Object} [options]
-   * @returns {Array.<FluentError>}
-   */
-  addMessages(source, options) {
-    const res = new FluentResource(source);
-    return this.addResource(res, options);
-  }
-
-  /**
-   * Add a translation resource to the bundle.
-   *
    * The translation resource must be an instance of `FluentResource`.
    *
    *     let res = new FluentResource("foo = Foo");
@@ -168,7 +142,8 @@ export default class FluentBundle {
    * to the `errors` array passed as the third argument.
    *
    *     let errors = [];
-   *     bundle.addMessages("hello = Hello, {$name}!");
+   *     bundle.addResource(
+   *         new FluentResource("hello = Hello, {$name}!"));
    *
    *     let hello = bundle.getMessage("hello");
    *     if (hello.value) {

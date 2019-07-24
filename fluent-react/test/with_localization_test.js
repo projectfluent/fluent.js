@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { mount, shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 
@@ -35,9 +35,9 @@ suite('withLocalization', function() {
     const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`);
+`));
 
     const wrapper = shallow(
       <EnhancedComponent />,
@@ -54,9 +54,9 @@ foo = FOO
     const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`);
+`));
 
     const wrapper = shallow(
       <EnhancedComponent />,
@@ -97,7 +97,7 @@ foo = FOO
     const l10n = new ReactLocalization([initialBundle]);
     const EnhancedComponent = withLocalization(({ getString }) => getString('foo'));
 
-    initialBundle.addMessages('foo = FOO');
+    initialBundle.addResource(new FluentResource('foo = FOO'));
 
     const wrapper = mount(
       <EnhancedComponent />,
@@ -107,7 +107,7 @@ foo = FOO
     assert.strictEqual(wrapper.text(), 'FOO');
 
     const newBundle = new FluentBundle();
-    newBundle.addMessages('foo = BAR');
+    newBundle.addResource(new FluentResource('foo = BAR'));
     l10n.setBundles([newBundle]);
 
     wrapper.update();

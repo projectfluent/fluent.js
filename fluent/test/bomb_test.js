@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Reference bombs', function() {
   let bundle, args, errs;
@@ -15,7 +16,7 @@ suite('Reference bombs', function() {
   suite('Billion Laughs', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         lol0 = LOL
         lol1 = {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0} {lol0}
         lol2 = {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1} {lol1}
@@ -27,7 +28,7 @@ suite('Reference bombs', function() {
         lol8 = {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7} {lol7}
         lol9 = {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8} {lol8}
         lolz = {lol9}
-        `);
+        `));
     });
 
     test('does not expand all placeables', function() {

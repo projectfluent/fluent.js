@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Runtime-specific functions', function() {
   let bundle, args, errs;
@@ -21,10 +22,10 @@ suite('Runtime-specific functions', function() {
           SUM: (args, kwargs) => args.reduce((a, b) => a + b, 0)
         }
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { CONCAT("Foo", "Bar") }
         bar = { SUM(1, 2) }
-        `);
+        `));
     });
 
     test('works for strings', function() {

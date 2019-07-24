@@ -19,16 +19,17 @@ The `FluentBundle` constructor provides the core functionality of formatting
 translations from FTL files.
 
 ```javascript
-import {FluentBundle} from "fluent";
+import {FluentBundle, FluentResource} from 'fluent';
 
-let bundle = new FluentBundle("en-US");
-let errors = bundle.addMessages(`
+let resource = new FluentResource(`
 -brand-name = Foo 3000
 welcome = Welcome, {$name}, to {-brand-name}!
 `);
 
+let bundle = new FluentBundle("en-US");
+let errors = bundle.addResource(resource);
 if (errors.length) {
-  // Syntax errors are per-message and don't break the whole resource
+    // Syntax errors are per-message and don't break the whole resource
 }
 
 let welcome = bundle.getMessage("welcome");

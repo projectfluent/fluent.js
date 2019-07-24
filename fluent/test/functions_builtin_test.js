@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Built-in functions', function() {
   let bundle, errors;
@@ -15,11 +16,11 @@ suite('Built-in functions', function() {
   suite('NUMBER', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         num-decimal = { NUMBER($arg) }
         num-percent = { NUMBER($arg, style: "percent") }
         num-bad-opt = { NUMBER($arg, style: "bad") }
-        `);
+        `));
     });
 
     test('missing argument', function() {
@@ -148,11 +149,11 @@ suite('Built-in functions', function() {
   suite('DATETIME', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         dt-default = { DATETIME($arg) }
         dt-month = { DATETIME($arg, month: "long") }
         dt-bad-opt = { DATETIME($arg, month: "bad") }
-        `);
+        `));
     });
 
     test('missing argument', function() {

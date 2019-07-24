@@ -4,6 +4,7 @@ import assert from "assert";
 import ftl from "@fluent/dedent";
 
 import FluentBundle from "../src/bundle";
+import FluentResource from '../src/resource';
 
 suite("Macros", function() {
   let bundle, errs;
@@ -17,11 +18,11 @@ suite("Macros", function() {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -bar = Bar
         term-ref = {-bar}
         term-call = {-bar()}
-        `);
+        `));
     });
 
     test("terms can be referenced without parens", function() {
@@ -44,14 +45,14 @@ suite("Macros", function() {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -foo = Foo {$arg}
 
         ref-foo = {-foo}
         call-foo-no-args = {-foo()}
         call-foo-with-expected-arg = {-foo(arg: 1)}
         call-foo-with-other-arg = {-foo(other: 3)}
-        `);
+        `));
     });
 
     test("Not parameterized, no externals", function() {
@@ -116,13 +117,13 @@ suite("Macros", function() {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo {$arg}
         -bar = {foo}
         ref-bar = {-bar}
         call-bar = {-bar()}
         call-bar-with-arg = {-bar(arg: 1)}
-        `);
+        `));
     });
 
     test("No parameterization, no externals", function() {
@@ -173,7 +174,7 @@ suite("Macros", function() {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -foo = Foo {$arg}
         -bar = {-foo}
         -baz = {-foo()}
@@ -191,7 +192,7 @@ suite("Macros", function() {
         call-baz-with-arg = {-baz(arg: 2)}
         call-qux-with-arg = {-qux(arg: 2)}
         call-qux-with-other = {-qux(other: 3)}
-        `);
+        `));
     });
 
     test("No parameterization, no parameterization, no externals", function() {
@@ -340,7 +341,7 @@ suite("Macros", function() {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -ship = Ship
             .gender = {$style ->
                *[traditional] neuter
@@ -367,7 +368,7 @@ suite("Macros", function() {
             [feminine] She
             [neuter] It
         }
-        `);
+        `));
     });
 
     test("Not parameterized, no externals", function() {

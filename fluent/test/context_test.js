@@ -7,19 +7,15 @@ import FluentBundle from '../src/bundle';
 import FluentResource from '../src/resource';
 
 suite('Bundle', function() {
-  let bundle, args, errs;
+  let bundle;
 
-  setup(function() {
-    errs = [];
-  });
-
-  suite('addMessages', function(){
+  suite('addResource', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
-        -bar = Private Bar
-        `);
+        -bar = Bar
+        `));
     });
 
     test('adds messages', function() {
@@ -30,9 +26,9 @@ suite('Bundle', function() {
     });
 
     test('preserves existing messages when new are added', function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         baz = Baz
-        `);
+        `));
 
       assert.strictEqual(bundle._messages.has('foo'), true);
       assert.strictEqual(bundle._terms.has('foo'), false);
@@ -44,64 +40,13 @@ suite('Bundle', function() {
     });
 
     test('messages and terms can share the same name', function() {
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         -foo = Private Foo
-        `);
+        `));
       assert.strictEqual(bundle._messages.has('foo'), true);
       assert.strictEqual(bundle._terms.has('foo'), false);
       assert.strictEqual(bundle._messages.has('-foo'), false);
       assert.strictEqual(bundle._terms.has('-foo'), true);
-    });
-
-
-    test('does not overwrite existing messages if the ids are the same', function() {
-      const errors = bundle.addMessages(ftl`
-        foo = New Foo
-        `);
-
-      // Attempt to overwrite error reported
-      assert.strictEqual(errors.length, 1);
-
-      assert.strictEqual(bundle._messages.size, 2);
-
-      const msg = bundle.getMessage('foo');
-      const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, 'Foo');
-      assert.strictEqual(errs.length, 0);
-    });
-
-    test('overwrites existing messages if the ids are the same and allowOverrides is true', function() {
-      const errors = bundle.addMessages(ftl`
-        foo = New Foo
-        `, { allowOverrides: true });
-
-      // No overwrite errors reported
-      assert.strictEqual(errors.length, 0);
-
-      assert.strictEqual(bundle._messages.size, 2);
-
-      const msg = bundle.getMessage('foo');
-      const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, 'New Foo');
-      assert.strictEqual(errs.length, 0);
-    });
-  });
-
-  suite('addResource', function(){
-    suiteSetup(function() {
-      bundle = new FluentBundle('en-US', { useIsolating: false });
-      let resource = new FluentResource(ftl`
-        foo = Foo
-        -bar = Bar
-        `);
-      bundle.addResource(resource);
-    });
-
-    test('adds messages', function() {
-      assert.strictEqual(bundle._messages.has('foo'), true);
-      assert.strictEqual(bundle._terms.has('foo'), false);
-      assert.strictEqual(bundle._messages.has('-bar'), false);
-      assert.strictEqual(bundle._terms.has('-bar'), true);
     });
   });
 
@@ -132,7 +77,7 @@ suite('Bundle', function() {
   suite('hasMessage', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         bar =
             .attr = Bar Attr
@@ -149,7 +94,7 @@ suite('Bundle', function() {
         err4 =
             .attr1 = Attr
             .attr2 = {}
-        `);
+        `));
     });
 
     test('returns true only for public messages', function() {
@@ -173,10 +118,10 @@ suite('Bundle', function() {
   suite('getMessage', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         -bar = Bar
-        `);
+        `));
     });
 
     test('returns public messages', function() {
