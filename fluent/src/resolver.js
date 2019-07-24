@@ -10,9 +10,8 @@
  * Translations can contain references to other messages or variables,
  * conditional logic in form of select expressions, traits which describe their
  * grammatical features, and can use Fluent builtins which make use of the
- * `Intl` formatters to format numbers, dates, lists and more into the
- * bundle's language. See the documentation of the Fluent syntax for more
- * information.
+ * `Intl` formatters to format numbers and dates into the bundle's languages.
+ * See the documentation of the Fluent syntax for more information.
  *
  * In case of errors the resolver will try to salvage as much of the
  * translation as possible. In rare situations where the resolver didn't know

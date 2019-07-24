@@ -70,21 +70,13 @@ export default class FluentBundle {
    * Return a raw unformatted message object from the bundle.
    *
    * Raw messages are `{value, attributes}` shapes containing translation units
-   * called `Patterns`. `Patterns` are implementation-specific and should be
-   * treated as black boxes.
+   * called `Patterns`. `Patterns` are implementation-specific; they should be
+   * treated as black boxes and formatted with `FluentBundle.formatPattern`.
    *
    *     interface RawMessage {
    *         value: Pattern | null;
    *         attributes: Record<string, Pattern>;
    *     }
-   *
-   * Always use `FluentBundle.formatPattern` to format patterns from a bundle.
-   * Translations can contain references to other entities or variables,
-   * conditional logic in form of select expressions, traits which describe
-   * their grammatical features, and can use Fluent builtins which make use of
-   * the `Intl` formatters to format numbers, dates, lists and more into the
-   * bundle's language. See the documentation of the Fluent syntax for more
-   * information.
    *
    * @param {string} id - The identifier of the message to check.
    * @returns {{value: ?Pattern, attributes: Object.<string, Pattern>}}
@@ -103,10 +95,6 @@ export default class FluentBundle {
    *     bundle.addMessages("foo = Foo");
    *     bundle.getMessage("foo");
    *     // → {value: .., attributes: {..}}
-   *
-   * Message values and attributes should always be formatted to strings with
-   * the `formatPattern` method in case they contain logic (references, select
-   * expressions etc.).
    *
    * Available options:
    *
@@ -131,10 +119,6 @@ export default class FluentBundle {
    *     bundle.addResource(res);
    *     bundle.getMessage("foo");
    *     // → {value: .., attributes: {..}}
-   *
-   * Message values and attributes should always be formatted to strings with
-   * the `formatPattern` method in case they contain logic (references, select
-   * expressions etc.).
    *
    * Available options:
    *

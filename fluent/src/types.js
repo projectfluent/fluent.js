@@ -9,14 +9,16 @@
  */
 export class FluentType {
   /**
-   * Create an `FluentType` instance.
+   * Create a `FluentType` instance.
    *
    * @param   {Any}    value - JavaScript value to wrap.
    * @param   {Object} opts  - Configuration.
    * @returns {FluentType}
    */
   constructor(value, opts) {
+    /** The wrapped native value. */
     this.value = value;
+    /** Options passed to the corresponding Intl formatter. */
     this.opts = opts;
   }
 
@@ -36,6 +38,7 @@ export class FluentType {
    * This method can use `Intl` formatters available through the `scope`
    * argument.
    *
+   * @abstract
    * @param   {Scope} scope
    * @returns {string}
    */
@@ -44,9 +47,13 @@ export class FluentType {
   }
 }
 
+/**
+ * A `FluentType` representing no correct value.
+ */
 export class FluentNone extends FluentType {
   /**
-   * @param   {string} value - The fallback value of this FluentNone
+   * Create an instance of `FluentNone` with an optional fallback value.
+   * @param   {string} value - The fallback value of this `FluentNone`.
    * @returns {FluentType}
    */
   constructor(value = "???") {
@@ -54,6 +61,7 @@ export class FluentNone extends FluentType {
   }
 
   /**
+   * Format this `FluentNone` to the fallback string.
    * @returns {string}
    */
   toString() {
@@ -61,10 +69,15 @@ export class FluentNone extends FluentType {
   }
 }
 
+/**
+ * A `FluentType` representing a number.
+ */
 export class FluentNumber extends FluentType {
   /**
+   * Create an instance of `FluentNumber` with options to the
+   * `Intl.NumberFormat` constructor.
    * @param   {(number|string)} value
-   * @param   {Object} opts
+   * @param   {Intl.NumberFormatOptions} opts
    * @returns {FluentType}
    */
   constructor(value, opts) {
@@ -72,6 +85,7 @@ export class FluentNumber extends FluentType {
   }
 
   /**
+   * Format this `FluentNumber` to a string.
    * @param   {Scope} scope
    * @returns {string}
    */
@@ -86,10 +100,15 @@ export class FluentNumber extends FluentType {
   }
 }
 
+/**
+ * A `FluentType` representing a date and time.
+ */
 export class FluentDateTime extends FluentType {
   /**
+   * Create an instance of `FluentDateTime` with options to the
+   * `Intl.DateTimeFormat` constructor.
    * @param   {(Date|number|string)} value
-   * @param   {Object} opts
+   * @param   {Intl.DateTimeFormatOptions} opts
    * @returns {FluentType}
    */
   constructor(value, opts) {
@@ -97,6 +116,7 @@ export class FluentDateTime extends FluentType {
   }
 
   /**
+   * Format this `FluentDateTime` to a string.
    * @param   {Scope} scope
    * @returns {string}
    */
