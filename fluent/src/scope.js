@@ -6,13 +6,17 @@ export default class Scope {
     insideTermReference = false,
     dirty = new WeakSet()
   ) {
+    /** The bundle for which the given resolution is happening. */
     this.bundle = bundle;
+    /** The list of errors collected while resolving. */
     this.errors = errors;
+    /** A dict of developer-provided variables. */
     this.args = args;
 
-    // Term references require different variable lookup logic.
+    /** Term references require different variable lookup logic. */
     this.insideTermReference = insideTermReference;
-    // Keeps track of visited Patterns. Used to detect cyclic references.
+    /** The Set of patterns already encountered during this resolution.
+      * Used to detect and prevent cyclic resolutions. */
     this.dirty = dirty;
   }
 

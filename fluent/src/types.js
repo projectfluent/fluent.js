@@ -9,14 +9,16 @@
  */
 export class FluentType {
   /**
-   * Create an `FluentType` instance.
+   * Create a `FluentType` instance.
    *
    * @param   {Any}    value - JavaScript value to wrap.
    * @param   {Object} opts  - Configuration.
    * @returns {FluentType}
    */
   constructor(value, opts) {
+    /** The wrapped native value. */
     this.value = value;
+    /** Options passed to the corresponding Intl formatter. */
     this.opts = opts;
   }
 
@@ -36,29 +38,57 @@ export class FluentType {
    * This method can use `Intl` formatters available through the `scope`
    * argument.
    *
-   * @param   {?object} scope
+   * @abstract
+   * @param   {Scope} scope
    * @returns {string}
    */
-  toString() {
+  toString(scope) { // eslint-disable-line no-unused-vars
     throw new Error("Subclasses of FluentType must implement toString.");
   }
 }
 
+/**
+ * A `FluentType` representing no correct value.
+ */
 export class FluentNone extends FluentType {
+  /**
+   * Create an instance of `FluentNone` with an optional fallback value.
+   * @param   {string} value - The fallback value of this `FluentNone`.
+   * @returns {FluentType}
+   */
   constructor(value = "???") {
     super(value);
   }
 
+  /**
+   * Format this `FluentNone` to the fallback string.
+   * @returns {string}
+   */
   toString() {
     return `{${this.value}}`;
   }
 }
 
+/**
+ * A `FluentType` representing a number.
+ */
 export class FluentNumber extends FluentType {
+  /**
+   * Create an instance of `FluentNumber` with options to the
+   * `Intl.NumberFormat` constructor.
+   * @param   {(number|string)} value
+   * @param   {Intl.NumberFormatOptions} opts
+   * @returns {FluentType}
+   */
   constructor(value, opts) {
     super(parseFloat(value), opts);
   }
 
+  /**
+   * Format this `FluentNumber` to a string.
+   * @param   {Scope} scope
+   * @returns {string}
+   */
   toString(scope) {
     try {
       const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
@@ -70,11 +100,26 @@ export class FluentNumber extends FluentType {
   }
 }
 
+/**
+ * A `FluentType` representing a date and time.
+ */
 export class FluentDateTime extends FluentType {
+  /**
+   * Create an instance of `FluentDateTime` with options to the
+   * `Intl.DateTimeFormat` constructor.
+   * @param   {(Date|number|string)} value
+   * @param   {Intl.DateTimeFormatOptions} opts
+   * @returns {FluentType}
+   */
   constructor(value, opts) {
     super(new Date(value), opts);
   }
 
+  /**
+   * Format this `FluentDateTime` to a string.
+   * @param   {Scope} scope
+   * @returns {string}
+   */
   toString(scope) {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
