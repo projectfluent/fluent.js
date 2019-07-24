@@ -1,6 +1,8 @@
-import { Component, Children } from "react";
+import { CachedSyncIterable } from "cached-iterable";
+import { createElement, useMemo } from "react";
 import PropTypes from "prop-types";
-import ReactLocalization, { isReactLocalization} from "./localization";
+import { mapBundleSync } from "fluent-sequence";
+import FluentContext from "./context";
 import createParseMarkup from "./markup";
 
 /*
@@ -21,47 +23,56 @@ import createParseMarkup from "./markup";
  * `ReactLocalization` to format translations.  If a translation is missing in
  * one instance, `ReactLocalization` will fall back to the next one.
  */
-export default class LocalizationProvider extends Component {
-  constructor(props) {
-    super(props);
-    const {bundles, parseMarkup} = props;
-
-    if (bundles === undefined) {
-      throw new Error("LocalizationProvider must receive the bundles prop.");
-    }
-
-    if (!bundles[Symbol.iterator]) {
-      throw new Error("The bundles prop must be an iterable.");
-    }
-
-    this.l10n = new ReactLocalization(bundles);
-    this.parseMarkup = parseMarkup || createParseMarkup();
+export default function LocalizationProvider(props) {
+  if (props.bundles === undefined) {
+    throw new Error("LocalizationProvider must receive the bundles prop.");
   }
 
-  getChildContext() {
-    return {
-      l10n: this.l10n,
-      parseMarkup: this.parseMarkup,
-    };
+  if (!props.bundles[Symbol.iterator]) {
+    throw new Error("The bundles prop must be an iterable.");
   }
 
-  componentWillReceiveProps(next) {
-    const { bundles } = next;
+  const bundles = useMemo(
+    () => CachedSyncIterable.from(props.bundles),
+    [props.bundles]
+  );
+  const parseMarkup = useMemo(
+    () => props.parseMarkup || createParseMarkup(),
+    [props.parseMarkup]
+  );
+  const value = useMemo(
+    () => ({
+      l10n: {
+        getBundle: id => mapBundleSync(bundles, id),
+        getString(id, args, fallback) {
+          const bundle = mapBundleSync(bundles, id);
 
-    if (bundles !== this.props.bundles) {
-      this.l10n.setBundles(bundles);
-    }
-  }
+          if (bundle) {
+            const msg = bundle.getMessage(id);
+            if (msg && msg.value) {
+              let errors = [];
+              let value = bundle.formatPattern(msg.value, args, errors);
+              for (let error of errors) {
+                this.reportError(error);
+              }
+              return value;
+            }
+          }
 
-  render() {
-    return Children.only(this.props.children);
-  }
+          return fallback || id;
+        }
+      },
+      parseMarkup
+    }),
+    [bundles, parseMarkup]
+  );
+
+  return createElement(
+    FluentContext.Provider,
+    {value},
+    props.children
+  );
 }
-
-LocalizationProvider.childContextTypes = {
-  l10n: isReactLocalization,
-  parseMarkup: PropTypes.func,
-};
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
