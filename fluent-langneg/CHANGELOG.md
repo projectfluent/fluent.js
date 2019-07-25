@@ -1,5 +1,9 @@
 # Changelog
 
+## fluent-langneg 0.3.0 (July 25, 2019)
+
+  - Deprecate `fluent-langneg` in favor of `@fluent/langneg`.
+
 ## fluent-langneg 0.2.0 (July 1, 2019)
 
   - Accept language variant tags as defined by UTS35. (#381)
