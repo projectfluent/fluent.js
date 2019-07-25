@@ -51,7 +51,7 @@
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {
-    "fluent": ">=0.8.0 <0.13.0",
+    "fluent": ">=0.8.0 <0.14.0",
     "react": "^0.14.9 || ^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
