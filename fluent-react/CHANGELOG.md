@@ -1,5 +1,9 @@
 # Changelog
 
+## fluent-react 0.9.0 (July 25, 2019)
+
+  - Deprecate `fluent-react` in favor of `@fluent/react`.
+
 ## fluent-react 0.8.5 (July 25, 2019)
 
   - Accept `fluent` 0.13.x as a peer dependency.

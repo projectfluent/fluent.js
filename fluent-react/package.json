@@ -1,7 +1,7 @@
 {
   "name": "fluent-react",
   "description": "Fluent bindings for React",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "homepage": "http://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
