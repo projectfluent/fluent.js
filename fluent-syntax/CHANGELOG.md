@@ -1,5 +1,9 @@
 # Changelog
 
+## fluent-syntax 0.14.0 (July 25, 2019)
+
+  - Deprecate fluent-syntax. Plase use @fluent/syntax from now on.
+
 ## fluent-syntax 0.13.0 (April 17, 2019)
 
   - Support Fluent Syntax 1.0.
