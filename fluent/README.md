@@ -1,16 +1,17 @@
-# fluent
+# @fluent/bundle
 
-`fluent` is a JavaScript implementation of Project Fluent, a localization
-framework designed to unleash the expressive power of the natural language.
+`@fluent/bundle` is a JavaScript implementation of Project Fluent, a
+localization framework designed to unleash the expressive power of the
+natural language.
 
 
 ## Installation
 
-`fluent` can be used both on the client-side and the server-side.  You can
-install it from the npm registry or use it as a standalone script (as the
-`Fluent` global).
+`@fluent/bundle` can be used both on the client-side and the server-side. You
+can install it from the npm registry or use it as a standalone script (as the
+`FluentBundle` global).
 
-    npm install fluent
+    npm install @fluent/bundle
 
 
 ## How to use
@@ -19,7 +20,7 @@ The `FluentBundle` constructor provides the core functionality of formatting
 translations from FTL files.
 
 ```javascript
-import { FluentBundle, ftl } from 'fluent';
+import { FluentBundle, ftl } from '@fluent/bundle';
 
 const bundle = new FluentBundle('en-US');
 
@@ -54,14 +55,14 @@ however, a polyfill will be required.  We recommend [intl-pluralrules][].
 
 ```javascript
 import 'intl-pluralrules';
-import { FluentBundle } from 'fluent';
+import { FluentBundle } from '@fluent/bundle';
 ```
 
 For legacy browsers, the `compat` build has been transpiled using Babel's [env
 preset][]. It requires the regenerator runtime provided by [babel-polyfill][].
 
 ```javascript
-import { FluentBundle } from 'fluent/compat';
+import { FluentBundle } from '@fluent/bundle/compat';
 ```
 
 

@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const Fluent = require('../../fluent');
+const FluentBundle = require('../../fluent');
 const FluentSyntax = require('../../fluent-syntax');
 const { runTest } = require('./benchmark.common');
 require('intl-pluralrules');
@@ -15,7 +15,7 @@ const env = {
   benchmarkName: process.argv[2],
   now: process.hrtime,
   FluentSyntax,
-  Fluent,
+  FluentBundle,
 };
 
 const results = runTest(env);

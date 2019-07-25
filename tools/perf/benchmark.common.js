@@ -21,7 +21,7 @@ function runTest(env) {
   {
     const testName = "parse-runtime";
     let start = env.now();
-    resource = env.Fluent.FluentResource.fromString(ftlCode);
+    resource = env.FluentBundle.FluentResource.fromString(ftlCode);
     let end = env.now();
 
     // we don't report any runtime parser errors, so
@@ -38,7 +38,7 @@ function runTest(env) {
       let body = functions[fnName];
       fncs[fnName] = new Function(body);
     }
-    const bundle = new env.Fluent.FluentBundle('en-US', {
+    const bundle = new env.FluentBundle.FluentBundle('en-US', {
       functions: fncs
     });
     const errors = bundle.addResource(resource);

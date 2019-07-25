@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/bundle 0.13.0 (July 25, 2019)
+
+  - Rename `fluent` to `@fluent/bundle`.
+
 ## fluent 0.13.0 (July 25, 2019)
 
   - Support Fluent Syntax 1.0.

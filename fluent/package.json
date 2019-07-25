@@ -1,5 +1,5 @@
 {
-  "name": "fluent",
+  "name": "@fluent/bundle",
   "description": "Localization library for expressive translations.",
   "version": "0.13.0",
   "homepage": "http://projectfluent.org",
@@ -18,7 +18,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",

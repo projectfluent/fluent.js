@@ -1,5 +1,5 @@
-load('../../fluent/fluent.js');
-load('../../fluent-syntax/fluent-syntax.js');
+load('../../fluent/index.js');
+load('../../fluent-syntax/index.js');
 load('./benchmark.common.js');
 
 const env = {
@@ -12,7 +12,7 @@ const env = {
   benchmarkName: arguments[0],
   now: Date.now,
   FluentSyntax,
-  Fluent,
+  FluentBundle,
 };
 
 const results = runTest(env);
