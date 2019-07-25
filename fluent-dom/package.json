@@ -1,6 +1,6 @@
 {
-  "name": "fluent-dom",
-  "version": "0.4.1",
+  "name": "@fluent/dom",
+  "version": "0.5.0",
   "description": "Fluent bindings for DOM",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-dom.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "keywords": [
     "localization",
@@ -39,7 +39,7 @@
     "node": ">=8.9.0"
   },
   "devDependencies": {
-    "jsdom": "^14.0.0"
+    "jsdom": "^15.1.0"
   },
   "dependencies": {
     "cached-iterable": "^0.3"

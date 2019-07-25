@@ -1,6 +1,6 @@
 {
     "source": "./src",
-    "destination": "../html/fluent-dom",
+    "destination": "../html/dom",
     "plugins": [
         {
             "name": "esdoc-standard-plugin"
