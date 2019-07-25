@@ -1,12 +1,12 @@
-PACKAGE := fluent-dom
+PACKAGE := @fluent/dom
 GLOBAL := FluentDOM
 DEPS    := cached-iterable:CachedIterable
 
 include ../common.mk
 
-build: $(PACKAGE).js compat.js
+build: index.js compat.js
 
-$(PACKAGE).js: $(SOURCES)
+index.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 		--config $(ROOT)/bundle_config.js \
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
@@ -27,6 +27,6 @@ compat.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 clean:
-	@rm -f $(PACKAGE).js compat.js
+	@rm -f index.js compat.js
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

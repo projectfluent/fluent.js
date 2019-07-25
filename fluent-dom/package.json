@@ -1,5 +1,5 @@
 {
-  "name": "fluent-dom",
+  "name": "@fluent/dom",
   "version": "0.5.0",
   "description": "Fluent bindings for DOM",
   "repository": {
@@ -21,7 +21,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-dom.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "keywords": [
     "localization",

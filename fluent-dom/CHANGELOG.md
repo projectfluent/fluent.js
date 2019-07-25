@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/dom 0.5.0 (July 25, 2019)
+
+  - Rename `fluent-dom` to `@fluent/dom`.
+
 ## fluent-dom 0.5.0 (July 25, 2019)
 
   - Deprecate `fluent-dom` in favor of `@fluent/dom`.
