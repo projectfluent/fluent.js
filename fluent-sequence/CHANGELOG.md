@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/sequence 0.4.0 (July 25, 2019)
+
+  - Rename the peer dependency to `@fluent/bundle`.
+
 ## @fluent/sequence 0.3.0 (July 25, 2019)
 
   - Rename `fluent-sequence` to `@fluent/sequence`.
