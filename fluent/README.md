@@ -50,11 +50,10 @@ The API reference is available at http://projectfluent.org/fluent.js/fluent.
   - `Intl.PluralRules` (standard, new in ECMAScript 2018)
 
 `Intl.PluralRules` may already be available in some engines.  In most cases,
-however, a polyfill will be required.  We recommend [fluent-intl-polyfill][]
-which uses [intl-pluralrules][].
+however, a polyfill will be required.  We recommend [intl-pluralrules][].
 
 ```javascript
-import 'fluent-intl-polyfill';
+import 'intl-pluralrules';
 import { FluentBundle } from 'fluent';
 ```
 
@@ -74,7 +73,6 @@ implementations, and information about how to get involved.
 
 
 [intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
-[fluent-intl-polyfill]: https://www.npmjs.com/package/fluent-intl-polyfill
 [babel-polyfill]: https://babeljs.io/docs/usage/polyfill/
 [Stage 3 proposal]:https://github.com/tc39/proposal-intl-plural-rules
 [env preset]: https://babeljs.io/docs/plugins/preset-env/

@@ -23,7 +23,7 @@ maximum flexibility, `fluent-react` expects the developer to write a little bit
 of a setup code related to language negotiation and translation fetching.  It
 makes `fluent-react` unopinionated and suitable for many different scenarios.
 You will likely also need to install a few other packages: `fluent`,
-`fluent-langneg` and `fluent-intl-polyfill`.
+`fluent-langneg` and `intl-pluralrules`.
 
 Consult the [wiki][] for documentation on how to set up and use `fluent-react`.
 
