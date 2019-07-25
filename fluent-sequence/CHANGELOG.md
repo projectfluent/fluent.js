@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/sequence 0.3.0 (July 25, 2019)
+
+  - Rename `fluent-sequence` to `@fluent/sequence`.
+
 ## fluent-sequence 0.3.0 (July 25, 2019)
 
   - Deprecate `fluent-sequence` in favor of `@fluent/sequence`.
