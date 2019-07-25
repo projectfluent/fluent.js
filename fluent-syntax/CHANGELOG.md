@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/syntax 0.14.0 (July 25, 2019)
+
+  - Rename `fluent-syntax` to `@fluent/syntax`.
+
 ## fluent-syntax 0.14.0 (July 25, 2019)
 
   - Deprecate fluent-syntax. Plase use @fluent/syntax from now on.

@@ -1,5 +1,5 @@
 {
-  "name": "fluent-syntax",
+  "name": "@fluent/syntax",
   "description": "AST and parser for Fluent",
   "version": "0.14.0",
   "homepage": "http://projectfluent.org",
@@ -18,7 +18,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-syntax.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
