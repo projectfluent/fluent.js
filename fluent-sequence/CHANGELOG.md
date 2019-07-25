@@ -1,5 +1,17 @@
 # Changelog
 
+## @fluent/sequence 0.4.0 (July 25, 2019)
+
+  - Rename the peer dependency to `@fluent/bundle`.
+
+## @fluent/sequence 0.3.0 (July 25, 2019)
+
+  - Rename `fluent-sequence` to `@fluent/sequence`.
+
+## fluent-sequence 0.3.0 (July 25, 2019)
+
+  - Deprecate `fluent-sequence` in favor of `@fluent/sequence`.
+
 ## fluent-sequence 0.2.0 (August 20, 2018)
 
   - Rename `mapContextSync` to `mapBundleSync`. (#276)

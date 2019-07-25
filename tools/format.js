@@ -7,7 +7,7 @@ const fs = require('fs');
 const program = require('commander');
 
 require = require('esm')(module);
-require('../fluent-intl-polyfill/src');
+require('intl-pluralrules');
 const Fluent = require('../fluent/src');
 
 program

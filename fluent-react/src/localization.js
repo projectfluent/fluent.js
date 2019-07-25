@@ -1,4 +1,4 @@
-import { mapBundleSync } from "fluent-sequence";
+import { mapBundleSync } from "@fluent/sequence";
 import { CachedSyncIterable } from "cached-iterable";
 
 /*

@@ -1,5 +1,20 @@
 # Changelog
 
+## @fluent/react 0.9.0 (July 25, 2019)
+
+  - Rename `fluent-react` to `@fluent/react`.
+  - Rename the runtime dependency to `@fluent/sequence`.
+  - Rename the peer dependency to  `@fluent/bundle`.
+
+## fluent-react 0.9.0 (July 25, 2019)
+
+  - Deprecate `fluent-react` in favor of `@fluent/react`.
+
+## fluent-react 0.8.5 (July 25, 2019)
+
+  - Accept `fluent` 0.13.x as a peer dependency.
+  - Fix the rendering of empty `<Localized/>`. (#378)
+
 ## fluent-react 0.8.4 (March 29, 2019)
 
   - Accept `fluent` 0.11.x and 0.12.x as a peer dependency.

@@ -1,7 +1,7 @@
 {
-  "name": "fluent-sequence",
+  "name": "@fluent/sequence",
   "description": "Manage ordered sequences of FluentBundles",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -18,7 +18,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-sequence.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
@@ -35,6 +35,6 @@
     "cached-iterable": "^0.2.1"
   },
   "peerDependencies": {
-    "fluent": ">= 0.4.0"
+    "@fluent/bundle": ">= 0.13.0"
   }
 }

@@ -1,6 +1,23 @@
 # Changelog
 
-## Unreleased
+## @fluent/bundle 0.13.0 (July 25, 2019)
+
+  - Rename `fluent` to `@fluent/bundle`.
+
+## fluent 0.13.0 (July 25, 2019)
+
+  - Support Fluent Syntax 1.0.
+
+    Syntax 1.0 is the same as Syntax 0.9, and the support for it in this
+    release continues to be the same as in `fluent` 0.12. This note is meant
+    to clearly indicate that `fluent` supports the first stable version of
+    the Syntax specification.
+
+  - Improve the fallback string in case of expression errors.
+
+    Unresolved expressions are now printed with braces around them, e.g.
+    `{missing}` rather than `missing` (#368). References to missing message
+    attributes now fall back to `{messageId.attributeName}` (#370).
 
   - Remove the `ftl` dedent helper.
 
@@ -9,6 +26,7 @@
     [README][dedent-readme] for details.
 
     [dedent-readme]: https://www.npmjs.com/package/@fluent/dedent
+
 
 ## fluent 0.12.0 (March 26, 2019)
 

@@ -1,12 +1,12 @@
-PACKAGE := fluent-react
+PACKAGE := @fluent/react
 GLOBAL  := FluentReact
-DEPS    := fluent-sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes
+DEPS    := @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes
 
 include ../common.mk
 
-build: $(PACKAGE).js compat.js
+build: index.js compat.js
 
-$(PACKAGE).js: $(SOURCES)
+index.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 	    --config $(ROOT)/bundle_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
@@ -22,11 +22,11 @@ compat.js: $(SOURCES)
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
-	    --globals fluent-sequence/compat:FluentSequence,cached-iterable/compat:CachedIterable,$(DEPS) \
+	    --globals @fluent/sequence/compat:FluentSequence,cached-iterable/compat:CachedIterable,$(DEPS) \
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
 clean:
-	@rm -f $(PACKAGE).js compat.js
+	@rm -f index.js compat.js
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

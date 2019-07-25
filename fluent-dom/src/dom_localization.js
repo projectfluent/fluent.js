@@ -34,7 +34,7 @@ export default class DOMLocalization extends Localization {
     this.mutationObserver = null;
 
     this.observerConfig = {
-      attribute: true,
+      attributes: true,
       characterData: false,
       childList: true,
       subtree: true,

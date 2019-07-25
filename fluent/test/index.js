@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-require('../../fluent-intl-polyfill/src');
+require('intl-pluralrules');
 
 exports.readfile = function readfile(path) {
   return new Promise(function(resolve, reject) {

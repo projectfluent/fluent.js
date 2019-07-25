@@ -1,16 +1,17 @@
-# fluent
+# @fluent/bundle
 
-`fluent` is a JavaScript implementation of Project Fluent, a localization
-framework designed to unleash the expressive power of the natural language.
+`@fluent/bundle` is a JavaScript implementation of Project Fluent, a
+localization framework designed to unleash the expressive power of the
+natural language.
 
 
 ## Installation
 
-`fluent` can be used both on the client-side and the server-side.  You can
-install it from the npm registry or use it as a standalone script (as the
-`Fluent` global).
+`@fluent/bundle` can be used both on the client-side and the server-side. You
+can install it from the npm registry or use it as a standalone script (as the
+`FluentBundle` global).
 
-    npm install fluent
+    npm install @fluent/bundle
 
 
 ## How to use
@@ -19,7 +20,7 @@ The `FluentBundle` constructor provides the core functionality of formatting
 translations from FTL files.
 
 ```javascript
-import {FluentBundle, FluentResource} from 'fluent';
+import {FluentBundle, FluentResource} from "@fluent/bundle";
 
 let resource = new FluentResource(`
 -brand-name = Foo 3000
@@ -51,19 +52,18 @@ The API reference is available at http://projectfluent.org/fluent.js/fluent.
   - `Intl.PluralRules` (standard, new in ECMAScript 2018)
 
 `Intl.PluralRules` may already be available in some engines.  In most cases,
-however, a polyfill will be required.  We recommend [fluent-intl-polyfill][]
-which uses [intl-pluralrules][].
+however, a polyfill will be required.  We recommend [intl-pluralrules][].
 
 ```javascript
-import "fluent-intl-polyfill";
-import {FluentBundle} from "fluent";
+import 'intl-pluralrules';
+import {FluentBundle} from '@fluent/bundle';
 ```
 
 For legacy browsers, the `compat` build has been transpiled using Babel's [env
 preset][]. It requires the regenerator runtime provided by [babel-polyfill][].
 
 ```javascript
-import {FluentBundle} from "fluent/compat";
+import {FluentBundle} from '@fluent/bundle/compat';
 ```
 
 
@@ -75,7 +75,6 @@ implementations, and information about how to get involved.
 
 
 [intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
-[fluent-intl-polyfill]: https://www.npmjs.com/package/fluent-intl-polyfill
 [babel-polyfill]: https://babeljs.io/docs/usage/polyfill/
 [Stage 3 proposal]:https://github.com/tc39/proposal-intl-plural-rules
 [env preset]: https://babeljs.io/docs/plugins/preset-env/

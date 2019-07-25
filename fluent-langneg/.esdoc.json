@@ -1,6 +1,6 @@
 {
     "source": "./src",
-    "destination": "../html/fluent-langneg",
+    "destination": "../html/langneg",
     "plugins": [
         {
             "name": "esdoc-standard-plugin"
