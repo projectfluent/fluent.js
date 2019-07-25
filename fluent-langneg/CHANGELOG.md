@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/langneg 0.3.0 (July 25, 2019)
+
+  - Rename `fluent-langneg` to `@fluent/langneg`.
+
 ## fluent-langneg 0.3.0 (July 25, 2019)
 
   - Deprecate `fluent-langneg` in favor of `@fluent/langneg`.

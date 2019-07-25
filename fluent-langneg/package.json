@@ -1,5 +1,5 @@
 {
-  "name": "fluent-langneg",
+  "name": "@fluent/langneg",
   "description": "Language Negotiation API for Fluent",
   "version": "0.3.0",
   "homepage": "https://projectfluent.org",
@@ -18,7 +18,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-langneg.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
