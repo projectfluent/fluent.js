@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## fluent-dom 0.4.2
+
+  - Minimize attribute churn when retranslating DOM Overlays (#354)
+  - Minor DOMOverlays alignments with the Gecko implementation.
+  - fix SyntaxError on Edge (#405)
+
 ## fluent-dom 0.4.1
 
   - Package dist files.
