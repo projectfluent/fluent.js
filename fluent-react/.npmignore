@@ -4,3 +4,4 @@ docs
 examples
 test
 makefile
+compat_config.js

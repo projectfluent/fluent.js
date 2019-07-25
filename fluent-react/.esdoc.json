@@ -1,6 +1,6 @@
 {
     "source": "./src",
-    "destination": "../html/fluent-react",
+    "destination": "../html/react",
     "plugins": [
         {
             "name": "esdoc-standard-plugin"

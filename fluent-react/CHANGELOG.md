@@ -1,5 +1,11 @@
 # Changelog
 
+## @fluent/react 0.9.0 (July 25, 2019)
+
+  - Rename `fluent-react` to `@fluent/react`.
+  - Rename the runtime dependency to `@fluent/sequence`.
+  - Rename the peer dependency to  `@fluent/bundle`.
+
 ## fluent-react 0.9.0 (July 25, 2019)
 
   - Deprecate `fluent-react` in favor of `@fluent/react`.
