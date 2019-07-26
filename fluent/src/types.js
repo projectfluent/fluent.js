@@ -106,7 +106,7 @@ export class FluentDateTime extends FluentType {
   /**
    * Create an instance of `FluentDateTime` with options to the
    * `Intl.DateTimeFormat` constructor.
-   * @param   {number} value
+   * @param   {number} value - timestamp in milliseconds
    * @param   {Intl.DateTimeFormatOptions} opts
    * @returns {FluentType}
    */

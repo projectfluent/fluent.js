@@ -31,7 +31,7 @@ function NUMBER([arg], opts) {
     return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
 
-  let value = parseFloat(arg.valueOf());
+  let value = Number(arg.valueOf());
   if (Number.isNaN(value)) {
     throw new TypeError("Invalid argument to NUMBER");
   }
@@ -45,7 +45,7 @@ function DATETIME([arg], opts) {
     return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
-  let value = parseFloat(arg.valueOf());
+  let value = Number(arg.valueOf());
   if (Number.isNaN(value)) {
     throw new TypeError("Invalid argument to DATETIME");
   }
