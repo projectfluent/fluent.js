@@ -75,21 +75,21 @@ suite('Built-in functions', function() {
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to NUMBER");
+      assert.strictEqual(errors[0].message, "Invalid argument to NUMBER");
 
       errors = [];
       msg = bundle.getMessage('num-percent');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to NUMBER");
+      assert.strictEqual(errors[0].message, "Invalid argument to NUMBER");
 
       errors = [];
       msg = bundle.getMessage('num-bad-opt');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to NUMBER");
+      assert.strictEqual(errors[0].message, "Invalid argument to NUMBER");
     });
 
     test('date argument', function() {
@@ -99,24 +99,19 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('num-decimal');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
-      assert.strictEqual(errors.length, 1);
-      assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to NUMBER");
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1,475,107,200,000');
+      assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage('num-percent');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
-      assert.strictEqual(errors.length, 1);
-      assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to NUMBER");
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '147,510,720,000,000%');
+      assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage('num-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{NUMBER()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1475107200000');
       assert.strictEqual(errors.length, 1);
-      assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to NUMBER");
+      assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
 
     test('invalid argument', function() {
@@ -182,18 +177,17 @@ suite('Built-in functions', function() {
     });
 
     test('Date argument', function () {
-      const date = new Date('2016-09-29');
-      // format the date argument to account for the testrunner's timezone
-      const expectedDefault =
-        (new Intl.DateTimeFormat('en-US')).format(date);
-      const expectedMonth =
-        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(date);
-
-      const args = {arg: date};
+      let args = {arg: new Date('2016-09-29')};
       let msg;
 
+      // Format the date argument to account for the testrunner's timezone.
+      let expectedDate =
+        (new Intl.DateTimeFormat('en-US')).format(args.arg);
+      let expectedMonth =
+        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(args.arg);
+
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDefault);
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDate);
       assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-month');
@@ -201,39 +195,36 @@ suite('Built-in functions', function() {
       assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-bad-opt');
-      // The argument value will be coerced into a string by the join operation
-      // in FluentBundle.format.  The result looks something like this; it
-      // may vary depending on the TZ:
-      //     Thu Sep 29 2016 02:00:00 GMT+0200 (CEST)
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), date.toString());
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '2016-09-29T00:00:00.000Z');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
 
     test('number argument', function() {
-      let args = {arg: 1};
+      let args = {arg: -1};
       let msg;
+
+      // Format the date argument to account for the testrunner's timezone.
+      let expectedDate =
+        (new Intl.DateTimeFormat('en-US')).format(args.arg);
+      let expectedMonth =
+        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(args.arg);
 
       errors = [];
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
-      assert.strictEqual(errors.length, 1);
-      assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to DATETIME");
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDate);
+      assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
-      assert.strictEqual(errors.length, 1);
-      assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to DATETIME");
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedMonth);
+      assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1969-12-31T23:59:59.999Z');
       assert.strictEqual(errors.length, 1);
-      assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to DATETIME");
+      assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
 
     test('string argument', function() {
@@ -245,21 +236,21 @@ suite('Built-in functions', function() {
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to DATETIME");
+      assert.strictEqual(errors[0].message, "Invalid argument to DATETIME");
 
       errors = [];
       msg = bundle.getMessage('dt-month');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to DATETIME");
+      assert.strictEqual(errors[0].message, "Invalid argument to DATETIME");
 
       errors = [];
       msg = bundle.getMessage('dt-bad-opt');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '{DATETIME()}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
-      assert.strictEqual(errors[0].message, "Invalid argument type to DATETIME");
+      assert.strictEqual(errors[0].message, "Invalid argument to DATETIME");
     });
 
     test('invalid argument', function() {

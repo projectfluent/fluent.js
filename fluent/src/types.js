@@ -11,15 +11,12 @@ export class FluentType {
   /**
    * Create a `FluentType` instance.
    *
-   * @param   {Any}    value - JavaScript value to wrap.
-   * @param   {Object} opts  - Configuration.
+   * @param   {Any} value - JavaScript value to wrap.
    * @returns {FluentType}
    */
-  constructor(value, opts) {
+  constructor(value) {
     /** The wrapped native value. */
     this.value = value;
-    /** Options passed to the corresponding Intl formatter. */
-    this.opts = opts;
   }
 
   /**
@@ -76,12 +73,14 @@ export class FluentNumber extends FluentType {
   /**
    * Create an instance of `FluentNumber` with options to the
    * `Intl.NumberFormat` constructor.
-   * @param   {(number|string)} value
+   * @param   {number} value
    * @param   {Intl.NumberFormatOptions} opts
    * @returns {FluentType}
    */
   constructor(value, opts) {
-    super(parseFloat(value), opts);
+    super(value);
+    /** Options passed to Intl.NumberFormat. */
+    this.opts = opts;
   }
 
   /**
@@ -95,7 +94,7 @@ export class FluentNumber extends FluentType {
       return nf.format(this.value);
     } catch (err) {
       scope.reportError(err);
-      return this.value;
+      return this.value.toString(10);
     }
   }
 }
@@ -107,12 +106,14 @@ export class FluentDateTime extends FluentType {
   /**
    * Create an instance of `FluentDateTime` with options to the
    * `Intl.DateTimeFormat` constructor.
-   * @param   {(Date|number|string)} value
+   * @param   {number} value - timestamp in milliseconds
    * @param   {Intl.DateTimeFormatOptions} opts
    * @returns {FluentType}
    */
   constructor(value, opts) {
-    super(new Date(value), opts);
+    super(value);
+    /** Options passed to Intl.DateTimeFormat. */
+    this.opts = opts;
   }
 
   /**
@@ -126,7 +127,7 @@ export class FluentDateTime extends FluentType {
       return dtf.format(this.value);
     } catch (err) {
       scope.reportError(err);
-      return this.value;
+      return (new Date(this.value)).toISOString();
     }
   }
 }
