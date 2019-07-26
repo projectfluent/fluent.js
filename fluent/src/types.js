@@ -11,15 +11,12 @@ export class FluentType {
   /**
    * Create a `FluentType` instance.
    *
-   * @param   {Any}    value - JavaScript value to wrap.
-   * @param   {Object} opts  - Configuration.
+   * @param   {Any} value - JavaScript value to wrap.
    * @returns {FluentType}
    */
-  constructor(value, opts) {
+  constructor(value) {
     /** The wrapped native value. */
     this.value = value;
-    /** Options passed to the corresponding Intl formatter. */
-    this.opts = opts;
   }
 
   /**
@@ -81,7 +78,9 @@ export class FluentNumber extends FluentType {
    * @returns {FluentType}
    */
   constructor(value, opts) {
-    super(value, opts);
+    super(value);
+    /** Options passed to Intl.NumberFormat. */
+    this.opts = opts;
   }
 
   /**
@@ -112,7 +111,9 @@ export class FluentDateTime extends FluentType {
    * @returns {FluentType}
    */
   constructor(value, opts) {
-    super(value, opts);
+    super(value);
+    /** Options passed to Intl.DateTimeFormat. */
+    this.opts = opts;
   }
 
   /**
