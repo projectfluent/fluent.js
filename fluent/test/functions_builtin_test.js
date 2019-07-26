@@ -177,18 +177,17 @@ suite('Built-in functions', function() {
     });
 
     test('Date argument', function () {
-      const date = new Date('2016-09-29');
-      // format the date argument to account for the testrunner's timezone
-      const expectedDefault =
-        (new Intl.DateTimeFormat('en-US')).format(date);
-      const expectedMonth =
-        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(date);
-
-      const args = {arg: date};
+      let args = {arg: new Date('2016-09-29')};
       let msg;
 
+      // Format the date argument to account for the testrunner's timezone.
+      let expectedDate =
+        (new Intl.DateTimeFormat('en-US')).format(args.arg);
+      let expectedMonth =
+        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(args.arg);
+
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDefault);
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDate);
       assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-month');
@@ -205,14 +204,20 @@ suite('Built-in functions', function() {
       let args = {arg: -1};
       let msg;
 
+      // Format the date argument to account for the testrunner's timezone.
+      let expectedDate =
+        (new Intl.DateTimeFormat('en-US')).format(args.arg);
+      let expectedMonth =
+        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(args.arg);
+
       errors = [];
       msg = bundle.getMessage('dt-default');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1/1/1970');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedDate);
       assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage('dt-month');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), 'January');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), expectedMonth);
       assert.strictEqual(errors.length, 0);
 
       errors = [];
