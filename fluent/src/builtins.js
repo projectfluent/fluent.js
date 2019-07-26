@@ -31,11 +31,12 @@ function NUMBER([arg], opts) {
     return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentNumber) {
-    return new FluentNumber(arg.valueOf(), merge(arg.opts, opts));
+  let value = parseFloat(arg.valueOf());
+  if (Number.isNaN(value)) {
+    throw new TypeError("Invalid argument to NUMBER");
   }
 
-  throw new TypeError("Invalid argument type to NUMBER");
+  return new FluentNumber(value, merge(arg.opts, opts));
 }
 
 export
@@ -44,9 +45,10 @@ function DATETIME([arg], opts) {
     return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentDateTime) {
-    return new FluentDateTime(arg.valueOf(), merge(arg.opts, opts));
+  let value = parseFloat(arg.valueOf());
+  if (Number.isNaN(value)) {
+    throw new TypeError("Invalid argument to DATETIME");
   }
 
-  throw new TypeError("Invalid argument type to DATETIME");
+  return new FluentDateTime(value, merge(arg.opts, opts));
 }

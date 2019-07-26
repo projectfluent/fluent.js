@@ -76,12 +76,12 @@ export class FluentNumber extends FluentType {
   /**
    * Create an instance of `FluentNumber` with options to the
    * `Intl.NumberFormat` constructor.
-   * @param   {(number|string)} value
+   * @param   {number} value
    * @param   {Intl.NumberFormatOptions} opts
    * @returns {FluentType}
    */
   constructor(value, opts) {
-    super(parseFloat(value), opts);
+    super(value, opts);
   }
 
   /**
@@ -107,12 +107,12 @@ export class FluentDateTime extends FluentType {
   /**
    * Create an instance of `FluentDateTime` with options to the
    * `Intl.DateTimeFormat` constructor.
-   * @param   {(Date|number|string)} value
+   * @param   {number} value
    * @param   {Intl.DateTimeFormatOptions} opts
    * @returns {FluentType}
    */
   constructor(value, opts) {
-    super(new Date(value), opts);
+    super(value, opts);
   }
 
   /**

@@ -134,10 +134,10 @@ function VariableReference(scope, {name}) {
     case "string":
       return arg;
     case "number":
-      return new FluentNumber(arg);
+      return new FluentNumber(parseFloat(arg));
     case "object":
       if (arg instanceof Date) {
-        return new FluentDateTime(arg);
+        return new FluentDateTime(arg.getTime());
       }
     default:
       scope.reportError(
