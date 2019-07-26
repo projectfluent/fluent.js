@@ -94,7 +94,7 @@ export class FluentNumber extends FluentType {
       return nf.format(this.value);
     } catch (err) {
       scope.reportError(err);
-      return this.value;
+      return this.value.toString(10);
     }
   }
 }
@@ -127,7 +127,7 @@ export class FluentDateTime extends FluentType {
       return dtf.format(this.value);
     } catch (err) {
       scope.reportError(err);
-      return this.value;
+      return (new Date(this.value)).toISOString();
     }
   }
 }

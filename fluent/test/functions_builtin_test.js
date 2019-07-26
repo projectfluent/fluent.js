@@ -195,7 +195,7 @@ suite('Built-in functions', function() {
       assert.strictEqual(errors.length, 0);
 
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1475107200000');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '2016-09-29T00:00:00.000Z');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
@@ -222,7 +222,7 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('dt-bad-opt');
-      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '-1');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1969-12-31T23:59:59.999Z');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof RangeError); // Invalid option value
     });
