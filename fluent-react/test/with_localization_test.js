@@ -31,12 +31,13 @@ suite('withLocalization', function() {
   });
 
   test('getString with access to the l10n context', function() {
-    const bundle = new FluentBundle();
+    const bundle = new FluentBundle("en", {useIsolating: false});
     const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
     bundle.addResource(new FluentResource(`
 foo = FOO
+bar = BAR {$arg}
 `));
 
     const wrapper = shallow(
@@ -47,15 +48,19 @@ foo = FOO
     const getString = wrapper.prop('getString');
     // Returns the translation.
     assert.strictEqual(getString('foo', {}), 'FOO');
+    assert.strictEqual(getString('bar', {arg: 'ARG'}), 'BAR ARG');
+    // Doesn't throw on formatting errors.
+    assert.strictEqual(getString('bar', {}), 'BAR {$arg}');
   });
 
   test('getString with access to the l10n context, with fallback value', function() {
-    const bundle = new FluentBundle();
+    const bundle = new FluentBundle("en", {useIsolating: false});
     const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
     bundle.addResource(new FluentResource(`
 foo = FOO
+bar = BAR {$arg}
 `));
 
     const wrapper = shallow(
@@ -65,7 +70,12 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the translation, even if fallback value provided.
-    assert.strictEqual(getString('bar', {}, 'fallback'), 'fallback');
+    assert.strictEqual(getString('foo', {}, 'fallback'), 'FOO');
+    // Returns the fallback.
+    assert.strictEqual(getString('missing', {}, 'fallback'), 'fallback');
+    assert.strictEqual(getString('bar', {arg: 'ARG'}), 'BAR ARG');
+    // Doesn't throw on formatting errors.
+    assert.strictEqual(getString('bar', {}), 'BAR {$arg}');
   });
 
   test('getString without access to the l10n context', function() {

@@ -223,7 +223,7 @@ foo =
 
 
   test('$arg is passed to format the value', function() {
-    const bundle = new FluentBundle();
+    const bundle = new FluentBundle("en", {useIsolating: false});
     const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
@@ -240,6 +240,10 @@ foo = { $arg }
 
     const { args } = formatPattern.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
+
+    assert.ok(wrapper.contains(
+      <div>ARG</div>
+    ));
   });
 
   test('$arg is passed to format the attributes', function() {
@@ -249,18 +253,45 @@ foo = { $arg }
 
     bundle.addResource(new FluentResource(`
 foo = { $arg }
-    .attr = { $arg }
+    .title = { $arg }
 `));
 
     const wrapper = shallow(
-      <Localized id="foo" $arg="ARG">
+      <Localized id="foo" attrs={{title: true}} $arg="ARG">
         <div />
       </Localized>,
       { context: { l10n } }
     );
 
-    const { args } = formatPattern.getCall(0);
-    assert.deepEqual(args[1], { arg: 'ARG' });
+    // The value.
+    assert.deepEqual(formatPattern.getCall(0).args[1], { arg: 'ARG' });
+    // The attribute.
+    assert.deepEqual(formatPattern.getCall(1).args[1], { arg: 'ARG' });
+
+    assert.ok(wrapper.contains(
+      <div title="ARG">ARG</div>
+    ));
+  });
+
+  test('A missing $arg does not break rendering', function() {
+    const bundle = new FluentBundle("en", {useIsolating: false});
+    const l10n = new ReactLocalization([bundle]);
+
+    bundle.addResource(new FluentResource(`
+foo = { $arg }
+    .title = { $arg }
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{title: true}}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div title="{$arg}">{"{$arg}"}</div>
+    ));
   });
 
   test('render with a fragment and no message preserves the fragment',

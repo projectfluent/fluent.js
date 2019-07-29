@@ -101,6 +101,7 @@ export default class Localized extends Component {
 
     const msg = bundle.getMessage(id);
     const [args, elems] = toArguments(this.props);
+    let errors = [];
 
     // Check if the child inside <Localized> is a valid element -- if not, then
     // it's either null or a simple fallback string. No need to localize the
@@ -108,22 +109,32 @@ export default class Localized extends Component {
     if (!isValidElement(child)) {
       if (msg.value) {
         // Replace the fallback string with the message value;
-        return bundle.formatPattern(msg.value, args);
+        let value = bundle.formatPattern(msg.value, args, errors);
+        for (let error of errors) {
+          l10n.reportError(error);
+        }
+        return value;
       }
 
       return child;
     }
 
+    let localizedProps;
+
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been
     // explicitly allowed by the developer.
     if (attrs && msg.attributes) {
-      var localizedProps = {};
+      localizedProps = {};
+      errors = [];
       for (const [name, allowed] of Object.entries(attrs)) {
         if (allowed && name in msg.attributes) {
           localizedProps[name] = bundle.formatPattern(
-            msg.attributes[name], args);
+            msg.attributes[name], args, errors);
         }
+      }
+      for (let error of errors) {
+        l10n.reportError(error);
       }
     }
 
@@ -142,7 +153,11 @@ export default class Localized extends Component {
       return cloneElement(child, localizedProps);
     }
 
-    const messageValue = bundle.formatPattern(msg.value, args);
+    errors = [];
+    const messageValue = bundle.formatPattern(msg.value, args, errors);
+    for (let error of errors) {
+      l10n.reportError(error);
+    }
 
     // If the message value doesn't contain any markup nor any HTML entities,
     // insert it as the only child of the wrapped component.
