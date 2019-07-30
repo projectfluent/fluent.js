@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from "prop-types";
 import assert from 'assert';
 import { render } from 'enzyme';
-import { FluentBundle, FluentResource } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import { LocalizationProvider, isReactLocalization } from '../src/index';
 
 

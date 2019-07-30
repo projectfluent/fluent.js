@@ -30,9 +30,13 @@ function fuzz(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const parse = program.runtime
-    ? require('../fluent/src/parser').default
-    : require('../fluent-syntax/src').parse;
+  let parse;
+  if (program.runtime) {
+    let {FluentResource} = require('../fluent-bundle/src');
+    parse = source => new FluentResource(source);
+  } else {
+    parse = require('../fluent-syntax/src').parse;
+  }
 
   const source = data.toString();
   const mutations = new Set();

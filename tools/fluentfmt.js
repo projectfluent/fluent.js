@@ -26,14 +26,15 @@ function print(err, data) {
     return console.error('File not found: ' + err.path);
   }
 
-  const res = FluentSyntax.parse(data.toString());
+  const source = data.toString();
+  const res = FluentSyntax.parse(source, {withSpans: true});
   const pretty = FluentSyntax.serialize(res);
   console.log(pretty);
 
   if (!program.silent) {
     res.body
       .filter(entry => entry.type === "Junk")
-      .map(entry => printAnnotations(res.source, entry));
+      .map(entry => printAnnotations(source, entry));
   }
 }
 
@@ -45,17 +46,17 @@ function printAnnotations(source, junk) {
 }
 
 function printAnnotation(source, span, annot) {
-  const { name, message, pos } = annot;
+  const { code, message, span: { start } } = annot;
   const slice = source.substring(span.start, span.end);
-  const lineNumber = FluentSyntax.lineOffset(source, pos) + 1;
-  const columnOffset = FluentSyntax.columnOffset(source, pos);
+  const lineNumber = FluentSyntax.lineOffset(source, start) + 1;
+  const columnOffset = FluentSyntax.columnOffset(source, start);
   const showLines = lineNumber - FluentSyntax.lineOffset(source, span.start);
   const lines = slice.split('\n');
   const head = lines.slice(0, showLines);
   const tail = lines.slice(showLines);
 
   console.log();
-  console.log(`! ${name} on line ${lineNumber}:`);
+  console.log(`! ${code} on line ${lineNumber}:`);
   console.log(head.map(line => `  | ${line}`).join('\n'));
   console.log(`  … ${indent(columnOffset)}^----- ${message}`);
   console.log(tail.map(line => `  | ${line}`).join('\n'));

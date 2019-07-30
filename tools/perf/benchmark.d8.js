@@ -1,4 +1,4 @@
-load('../../fluent/index.js');
+load('../../fluent-bundle/index.js');
 load('../../fluent-syntax/index.js');
 load('./benchmark.common.js');
 

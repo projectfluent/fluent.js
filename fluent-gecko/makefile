@@ -11,7 +11,7 @@ build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js 
 Fluent.jsm: $(SOURCES)
 	@rollup $(CURDIR)/src/fluent.js \
 	    --config ./xpcom_config.js \
-	    --output.intro "/* $(call version,fluent) */" \
+	    --output.intro "/* $(call version,fluent-bundle) */" \
 	    --output.file ./dist/$@
 	@echo -e " $(OK) $@ built"
 
