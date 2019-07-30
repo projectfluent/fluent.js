@@ -2,7 +2,7 @@ export SHELL := /bin/bash
 export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
 
 TARGETS  := all dist lint test build html deps depsclean
-PACKAGES := $(wildcard fluent*)
+PACKAGES := $(wildcard fluent-*)
 
 $(TARGETS): $(PACKAGES)
 

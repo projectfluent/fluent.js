@@ -1,5 +1,5 @@
 import assert from "assert";
-import { FluentBundle, FluentResource } from "../../fluent/src/index";
+import { FluentBundle, FluentResource } from "../../fluent-bundle/src/index";
 import DOMLocalization from "../src/dom_localization";
 
 async function* mockGenerateMessages(resourceIds) {

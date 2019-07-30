@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { mount, shallow } from 'enzyme';
-import { FluentBundle, FluentResource } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 

@@ -5,7 +5,7 @@ import {
   FluentType,
   FluentNumber,
   FluentDateTime,
-} from "../../fluent/src/index";
+} from "../../fluent-bundle/src/index";
 
 this.EXPORTED_SYMBOLS = [
   ...Object.keys({
