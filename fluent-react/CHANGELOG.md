@@ -1,5 +1,18 @@
 # Changelog
 
+## @fluent/react 0.10.0 (July 30, 2019)
+
+  - Update to `@fluent/bundle` 0.14.0.
+
+    This version of `@fluent/react` can be used with the new `FluentBundle`
+    API released in `@fluent/bundle` 0.14.0.
+
+  - Report formatting errors from `Localized` and `getString`. (#412)
+
+    Formatting errors are now printed to the console. In the future,
+    `@fluent/react` will allow finer-grained control over rpeorting errors.
+    See #411.
+
 ## @fluent/react 0.9.0 (July 25, 2019)
 
   - Rename `fluent-react` to `@fluent/react`.
