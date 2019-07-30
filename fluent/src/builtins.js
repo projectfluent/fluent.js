@@ -28,21 +28,27 @@ function values(opts) {
 export
 function NUMBER([arg], opts) {
   if (arg instanceof FluentNone) {
-    return arg;
+    return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
-  if (arg instanceof FluentNumber) {
-    return new FluentNumber(arg.valueOf(), merge(arg.opts, opts));
+
+  let value = Number(arg.valueOf());
+  if (Number.isNaN(value)) {
+    throw new TypeError("Invalid argument to NUMBER");
   }
-  return new FluentNone("NUMBER()");
+
+  return new FluentNumber(value, merge(arg.opts, opts));
 }
 
 export
 function DATETIME([arg], opts) {
   if (arg instanceof FluentNone) {
-    return arg;
+    return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
-  if (arg instanceof FluentDateTime) {
-    return new FluentDateTime(arg.valueOf(), merge(arg.opts, opts));
+
+  let value = Number(arg.valueOf());
+  if (Number.isNaN(value)) {
+    throw new TypeError("Invalid argument to DATETIME");
   }
-  return new FluentNone("DATETIME()");
+
+  return new FluentDateTime(value, merge(arg.opts, opts));
 }

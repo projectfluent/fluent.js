@@ -1,62 +1,91 @@
 {
-    "key": [
-        "Value"
-    ],
-    "key2": {
-        "value": null,
-        "attrs": {
-            "attr": "Attribute"
-        }
-    },
-    "key3": {
-        "value": [
-            "Value",
-            "\n",
-            "Value2",
-            "\n\n\n",
-            "Value 4",
-            "\n",
-            "Value3"
-        ],
-        "attrs": {
-            "attr2": "Attr 2"
-        }
-    },
-    "key5": "Value 5",
-    "key6": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "key",
+            "value": [
+                "Value"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key2",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "key3",
+            "value": [
+                "Value",
+                "\n",
+                "Value2",
+                "\n\n\n",
+                "Value 4",
+                "\n",
+                "Value3"
+            ],
+            "attributes": {
+                "attr2": "Attr 2"
+            }
+        },
+        {
+            "id": "key5",
+            "value": "Value 5",
+            "attributes": {}
+        },
+        {
+            "id": "key6",
+            "value": [
                 {
-                    "key": "one",
-                    "value": "One"
-                },
-                {
-                    "key": "two",
-                    "value": "Two"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "One"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "two"
+                            },
+                            "value": "Two"
+                        }
+                    ],
+                    "star": 1
                 }
             ],
-            "star": 1
-        }
-    ],
-    "key8": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "key8",
+            "value": [
                 {
-                    "key": "one",
-                    "value": "One"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "One"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
         }
     ]
 }

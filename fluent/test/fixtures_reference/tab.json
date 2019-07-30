@@ -1,6 +1,16 @@
 {
-    "key01": "\tValue 01",
-    "key04": [
-        "This line is indented by 4 spaces,"
+    "body": [
+        {
+            "id": "key01",
+            "value": "\tValue 01",
+            "attributes": {}
+        },
+        {
+            "id": "key04",
+            "value": [
+                "This line is indented by 4 spaces,"
+            ],
+            "attributes": {}
+        }
     ]
 }

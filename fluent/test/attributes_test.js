@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Attributes', function() {
   let bundle, args, errs;
@@ -15,7 +16,7 @@ suite('Attributes', function() {
   suite('missing', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         bar = Bar
             .attr = Bar Attribute
@@ -27,38 +28,38 @@ suite('Attributes', function() {
         ref-bar = { bar.missing }
         ref-baz = { baz.missing }
         ref-qux = { qux.missing }
-        `);
+        `));
     });
 
-    test('entities with string values and no attributes', function() {
+    test('falls back to id.attr for entities with string values and no attributes', function() {
       const msg = bundle.getMessage('ref-foo');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, '{foo.missing}');
-      assert.equal(errs.length, 1);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '{foo.missing}');
+      assert.strictEqual(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('entities with string values and other attributes', function() {
+    test('falls back to id.attr for entities with string values and other attributes', function() {
       const msg = bundle.getMessage('ref-bar');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, '{bar.missing}');
-      assert.equal(errs.length, 1);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '{bar.missing}');
+      assert.strictEqual(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('entities with pattern values and no attributes', function() {
+    test('falls back to id.attr for entities with pattern values and no attributes', function() {
       const msg = bundle.getMessage('ref-baz');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, '{baz.missing}');
-      assert.equal(errs.length, 1);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '{baz.missing}');
+      assert.strictEqual(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
 
-    test('entities with pattern values and other attributes', function() {
+    test('falls back to id.attr for entities with pattern values and other attributes', function() {
       const msg = bundle.getMessage('ref-qux');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, '{qux.missing}');
-      assert.equal(errs.length, 1);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '{qux.missing}');
+      assert.strictEqual(errs.length, 1);
       assert(errs[0] instanceof ReferenceError); // unknown attribute
     });
   });
@@ -66,7 +67,7 @@ suite('Attributes', function() {
   suite('with string values', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
             .attr = Foo Attribute
         bar = { foo } Bar
@@ -74,42 +75,42 @@ suite('Attributes', function() {
 
         ref-foo = { foo.attr }
         ref-bar = { bar.attr }
-        `);
+        `));
     });
 
     test('can be referenced for entities with string values', function() {
       const msg = bundle.getMessage('ref-foo');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Foo Attribute');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'Foo Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be formatted directly for entities with string values', function() {
-      const msg = bundle.getMessage('foo').attrs.attr;
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Foo Attribute');
-      assert.equal(errs.length, 0);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      assert.strictEqual(val, 'Foo Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be referenced for entities with pattern values', function() {
       const msg = bundle.getMessage('ref-bar');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Bar Attribute');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'Bar Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be formatted directly for entities with pattern values', function() {
-      const msg = bundle.getMessage('bar').attrs.attr;
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Bar Attribute');
-      assert.equal(errs.length, 0);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      assert.strictEqual(val, 'Bar Attribute');
+      assert.strictEqual(errs.length, 0);
     });
   });
 
   suite('with simple pattern values', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
         bar = Bar
             .attr = { foo } Attribute
@@ -121,56 +122,56 @@ suite('Attributes', function() {
         ref-bar = { bar.attr }
         ref-baz = { baz.attr }
         ref-qux = { qux.attr }
-        `);
+        `));
     });
 
     test('can be referenced for entities with string values', function() {
       const msg = bundle.getMessage('ref-bar');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Foo Attribute');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'Foo Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be formatted directly for entities with string values', function() {
-      const msg = bundle.getMessage('bar').attrs.attr;
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Foo Attribute');
-      assert.equal(errs.length, 0);
+      const msg = bundle.getMessage('bar');
+      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      assert.strictEqual(val, 'Foo Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be referenced for entities with simple pattern values', function() {
       const msg = bundle.getMessage('ref-baz');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Foo Attribute');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'Foo Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be formatted directly for entities with simple pattern values', function() {
-      const msg = bundle.getMessage('baz').attrs.attr;
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Foo Attribute');
-      assert.equal(errs.length, 0);
+      const msg = bundle.getMessage('baz');
+      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      assert.strictEqual(val, 'Foo Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('works with self-references', function() {
       const msg = bundle.getMessage('ref-qux');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Qux Attribute');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'Qux Attribute');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be formatted directly when it uses a self-reference', function() {
-      const msg = bundle.getMessage('qux').attrs.attr;
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'Qux Attribute');
-      assert.equal(errs.length, 0);
+      const msg = bundle.getMessage('qux');
+      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      assert.strictEqual(val, 'Qux Attribute');
+      assert.strictEqual(errs.length, 0);
     });
   });
 
   suite('with values with select expressions', function(){
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = Foo
             .attr = { "a" ->
                         [a] A
@@ -178,21 +179,21 @@ suite('Attributes', function() {
                     }
 
         ref-foo = { foo.attr }
-        `);
+        `));
     });
 
     test('can be referenced', function() {
       const msg = bundle.getMessage('ref-foo');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'A');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'A');
+      assert.strictEqual(errs.length, 0);
     });
 
     test('can be formatted directly', function() {
-      const msg = bundle.getMessage('foo').attrs.attr;
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'A');
-      assert.equal(errs.length, 0);
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      assert.strictEqual(val, 'A');
+      assert.strictEqual(errs.length, 0);
     });
   });
 });

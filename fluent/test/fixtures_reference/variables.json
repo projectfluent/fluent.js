@@ -1,26 +1,44 @@
 {
-    "key01": [
+    "body": [
         {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "key02": [
+            "id": "key01",
+            "value": [
+                {
+                    "type": "var",
+                    "name": "var"
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "key03": [
+            "id": "key02",
+            "value": [
+                {
+                    "type": "var",
+                    "name": "var"
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "key04": [
+            "id": "key03",
+            "value": [
+                {
+                    "type": "var",
+                    "name": "var"
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "var",
-            "name": "var"
+            "id": "key04",
+            "value": [
+                {
+                    "type": "var",
+                    "name": "var"
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

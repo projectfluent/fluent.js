@@ -28,7 +28,7 @@ suite("EOL at extremes", function () {
   });
 
   test("two EOLs", function () {
-    assert.equal(
+    assert.strictEqual(
       ftl`
       foo
       `,

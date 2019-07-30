@@ -1,88 +1,157 @@
 {
-    "key01": ".Value",
-    "key02": "…Value",
-    "key03": [
-        ".",
-        "Value"
-    ],
-    "key04": [
-        ".",
-        "Value"
-    ],
-    "key05": [
-        "Value",
-        "\n",
-        ".",
-        "Continued"
-    ],
-    "key06": [
-        ".Value",
-        "\n",
-        ".",
-        "Continued"
-    ],
-    "key07": "Value",
-    "key10": {
-        "value": null,
-        "attrs": {
-            "Value": [
-                "which looks like an attribute",
+    "body": [
+        {
+            "id": "key01",
+            "value": ".Value",
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": "…Value",
+            "attributes": {}
+        },
+        {
+            "id": "key03",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "."
+                },
+                "Value"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key04",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "."
+                },
+                "Value"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key05",
+            "value": [
+                "Value",
+                "\n",
+                {
+                    "type": "str",
+                    "value": "."
+                },
+                "Continued"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key06",
+            "value": [
+                ".Value",
+                "\n",
+                {
+                    "type": "str",
+                    "value": "."
+                },
+                "Continued"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key07",
+            "value": "Value",
+            "attributes": {}
+        },
+        {
+            "id": "key10",
+            "value": null,
+            "attributes": {
+                "Value": [
+                    "which looks like an attribute",
+                    "\n",
+                    "Continued"
+                ]
+            }
+        },
+        {
+            "id": "key11",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "."
+                },
+                "Value = which looks like an attribute",
                 "\n",
                 "Continued"
-            ]
-        }
-    },
-    "key11": [
-        ".",
-        "Value = which looks like an attribute",
-        "\n",
-        "Continued"
-    ],
-    "key12": {
-        "value": null,
-        "attrs": {
-            "accesskey": [
-                "A"
-            ]
-        }
-    },
-    "key13": {
-        "value": null,
-        "attrs": {
-            "attribute": ".Value"
-        }
-    },
-    "key14": {
-        "value": null,
-        "attrs": {
-            "attribute": [
-                ".",
-                "Value"
-            ]
-        }
-    },
-    "key15": [
+            ],
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "num",
-                "value": 1,
-                "precision": 0
-            },
-            "variants": [
+            "id": "key12",
+            "value": null,
+            "attributes": {
+                "accesskey": [
+                    "A"
+                ]
+            }
+        },
+        {
+            "id": "key13",
+            "value": null,
+            "attributes": {
+                "attribute": ".Value"
+            }
+        },
+        {
+            "id": "key14",
+            "value": null,
+            "attributes": {
+                "attribute": [
+                    {
+                        "type": "str",
+                        "value": "."
+                    },
+                    "Value"
+                ]
+            }
+        },
+        {
+            "id": "key15",
+            "value": [
                 {
-                    "key": "one",
-                    "value": ".Value"
-                },
-                {
-                    "key": "other",
-                    "value": [
-                        ".",
-                        "Value"
-                    ]
+                    "type": "select",
+                    "selector": {
+                        "type": "num",
+                        "value": 1,
+                        "precision": 0
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": ".Value"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "other"
+                            },
+                            "value": [
+                                {
+                                    "type": "str",
+                                    "value": "."
+                                },
+                                "Value"
+                            ]
+                        }
+                    ],
+                    "star": 1
                 }
             ],
-            "star": 1
+            "attributes": {}
         }
     ]
 }

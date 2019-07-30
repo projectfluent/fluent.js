@@ -1,36 +1,52 @@
 {
-    "key01": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "key01",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "key02": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "key02",
+            "value": [
                 {
-                    "key": "key",
-                    "value": [
-                        "Value"
-                    ]
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": [
+                                "Value"
+                            ]
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
         }
     ]
 }

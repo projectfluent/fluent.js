@@ -1,18 +1,27 @@
 {
-    "-term": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "-term",
+            "value": [
                 {
-                    "key": "one",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
         }
     ]
 }

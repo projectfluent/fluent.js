@@ -10,11 +10,3 @@ exports.readfile = function readfile(path) {
     });
   });
 };
-
-exports.toObject = function toObject(map) {
-  let obj = {};
-  for (let [k, v] of map.entries()) {
-    obj[k] = v;
-  }
-  return obj;
-};

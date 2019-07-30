@@ -19,7 +19,7 @@ suite('LocalizationProvider - validation', function() {
         <div />
       </LocalizationProvider>
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('without a child', function() {

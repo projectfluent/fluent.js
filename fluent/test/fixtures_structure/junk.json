@@ -1,3 +1,9 @@
 {
-    "key08": "Value"
+    "body": [
+        {
+            "id": "key08",
+            "value": "Value",
+            "attributes": {}
+        }
+    ]
 }

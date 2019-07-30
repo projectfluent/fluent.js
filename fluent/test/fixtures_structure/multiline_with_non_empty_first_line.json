@@ -1,7 +1,13 @@
 {
-    "key": [
-        "Value",
-        "\n",
-        "Value 2"
+    "body": [
+        {
+            "id": "key",
+            "value": [
+                "Value",
+                "\n",
+                "Value 2"
+            ],
+            "attributes": {}
+        }
     ]
 }

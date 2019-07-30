@@ -1,156 +1,246 @@
 {
-    "int-zero": [
+    "body": [
         {
-            "type": "num",
-            "value": 0,
-            "precision": 0
-        }
-    ],
-    "int-positive": [
+            "id": "int-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1,
-            "precision": 0
-        }
-    ],
-    "int-negative": [
+            "id": "int-positive",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1,
-            "precision": 0
-        }
-    ],
-    "int-negative-zero": [
+            "id": "int-negative",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 0,
-            "precision": 0
-        }
-    ],
-    "int-positive-padded": [
+            "id": "int-negative-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1,
-            "precision": 0
-        }
-    ],
-    "int-negative-padded": [
+            "id": "int-positive-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1,
-            "precision": 0
-        }
-    ],
-    "int-zero-padded": [
+            "id": "int-negative-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 0,
-            "precision": 0
-        }
-    ],
-    "int-negative-zero-padded": [
+            "id": "int-zero-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 0,
-            "precision": 0
-        }
-    ],
-    "float-zero": [
+            "id": "int-negative-zero-padded",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 0,
-            "precision": 1
-        }
-    ],
-    "float-positive": [
+            "id": "float-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 1
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 0.01,
-            "precision": 2
-        }
-    ],
-    "float-positive-one": [
+            "id": "float-positive",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0.01,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1.03,
-            "precision": 2
-        }
-    ],
-    "float-positive-without-fraction": [
+            "id": "float-positive-one",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1,
-            "precision": 3
-        }
-    ],
-    "float-negative": [
+            "id": "float-positive-without-fraction",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 3
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -0.01,
-            "precision": 2
-        }
-    ],
-    "float-negative-one": [
+            "id": "float-negative",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -0.01,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1.03,
-            "precision": 2
-        }
-    ],
-    "float-negative-zero": [
+            "id": "float-negative-one",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 0,
-            "precision": 1
-        }
-    ],
-    "float-negative-without-fraction": [
+            "id": "float-negative-zero",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 0,
+                    "precision": 1
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1,
-            "precision": 3
-        }
-    ],
-    "float-positive-padded-left": [
+            "id": "float-negative-without-fraction",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1,
+                    "precision": 3
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1.03,
-            "precision": 2
-        }
-    ],
-    "float-positive-padded-right": [
+            "id": "float-positive-padded-left",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1.03,
-            "precision": 4
-        }
-    ],
-    "float-positive-padded-both": [
+            "id": "float-positive-padded-right",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1.03,
-            "precision": 4
-        }
-    ],
-    "float-negative-padded-left": [
+            "id": "float-positive-padded-both",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1.03,
-            "precision": 2
-        }
-    ],
-    "float-negative-padded-right": [
+            "id": "float-negative-padded-left",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1.03,
-            "precision": 4
-        }
-    ],
-    "float-negative-padded-both": [
+            "id": "float-negative-padded-right",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": -1.03,
-            "precision": 4
+            "id": "float-negative-padded-both",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -1.03,
+                    "precision": 4
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

@@ -1,22 +1,28 @@
 {
-    "-term": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "-term",
+            "value": [
                 {
-                    "key": {
-                        "type": "num",
-                        "value": -2,
-                        "precision": 0
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
                     },
-                    "value": "Foo"
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": -2,
+                                "precision": 0
+                            },
+                            "value": "Foo"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
         }
     ]
 }

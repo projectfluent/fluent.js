@@ -1,23 +1,29 @@
 {
-    "err1": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "mesg",
-                "name": "foo",
-                "attr": null
-            },
-            "variants": [
+            "id": "err1",
+            "value": [
                 {
-                    "key": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
+                    "type": "select",
+                    "selector": {
+                        "type": "mesg",
+                        "name": "foo",
+                        "attr": null
                     },
-                    "value": "One"
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 1,
+                                "precision": 0
+                            },
+                            "value": "One"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
         }
     ]
 }

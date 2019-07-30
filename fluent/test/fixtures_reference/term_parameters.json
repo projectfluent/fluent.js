@@ -1,83 +1,108 @@
 {
-    "-term": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "arg"
-            },
-            "variants": [
+            "id": "-term",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "arg"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "key01": [
+            "attributes": {}
+        },
         {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "key02": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "key03": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": [
+            "id": "key01",
+            "value": [
                 {
-                    "type": "narg",
-                    "name": "arg",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    }
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
                 }
-            ]
-        }
-    ],
-    "key04": [
+            ],
+            "attributes": {}
+        },
         {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": [
+            "id": "key02",
+            "value": [
                 {
-                    "type": "str",
-                    "value": "positional"
-                },
-                {
-                    "type": "narg",
-                    "name": "narg1",
-                    "value": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
-                    }
-                },
-                {
-                    "type": "narg",
-                    "name": "narg2",
-                    "value": {
-                        "type": "num",
-                        "value": 2,
-                        "precision": 0
-                    }
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
                 }
-            ]
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key03",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": [
+                        {
+                            "type": "narg",
+                            "name": "arg",
+                            "value": {
+                                "type": "num",
+                                "value": 1,
+                                "precision": 0
+                            }
+                        }
+                    ]
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key04",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": [
+                        {
+                            "type": "str",
+                            "value": "positional"
+                        },
+                        {
+                            "type": "narg",
+                            "name": "narg1",
+                            "value": {
+                                "type": "num",
+                                "value": 1,
+                                "precision": 0
+                            }
+                        },
+                        {
+                            "type": "narg",
+                            "name": "narg2",
+                            "value": {
+                                "type": "num",
+                                "value": 2,
+                                "precision": 0
+                            }
+                        }
+                    ]
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

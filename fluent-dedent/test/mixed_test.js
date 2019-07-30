@@ -5,7 +5,7 @@ import ftl from "../src/index";
 
 suite("mixed indent", function() {
   test("same amount", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
 \t    foo
 \t    `,
@@ -14,7 +14,7 @@ suite("mixed indent", function() {
   });
 
   test("larger than common", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
 \t        foo
 \t    `,

@@ -1,22 +1,34 @@
 {
-    "-err01": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "-err01",
+            "value": [
                 {
-                    "key": "one",
-                    "value": "Foo"
-                },
-                {
-                    "key": "two",
-                    "value": "Two"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "Foo"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "two"
+                            },
+                            "value": "Two"
+                        }
+                    ],
+                    "star": 1
                 }
             ],
-            "star": 1
+            "attributes": {}
         }
     ]
 }

@@ -1,3 +1,9 @@
 {
-    "foo": "Foo"
+    "body": [
+        {
+            "id": "foo",
+            "value": "Foo",
+            "attributes": {}
+        }
+    ]
 }

@@ -11,7 +11,7 @@ suite('Localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML, 'FOO <em>BAR</em> BAZ');
+    assert.strictEqual(element.innerHTML, 'FOO <em>BAR</em> BAZ');
   });
 
   test('forbidden element', function() {
@@ -22,7 +22,7 @@ suite('Localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML, 'FOO ');
+    assert.strictEqual(element.innerHTML, 'FOO ');
   });
 
   test('forbidden element with text', function() {
@@ -33,7 +33,7 @@ suite('Localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML, 'FOO BUTTON');
+    assert.strictEqual(element.innerHTML, 'FOO BUTTON');
   });
 
   test('nested HTML is forbidden', function() {
@@ -44,7 +44,7 @@ suite('Localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML, 'FOO <em>BAR</em> BAZ');
+    assert.strictEqual(element.innerHTML, 'FOO <em>BAR</em> BAZ');
   });
 });
 
@@ -57,7 +57,7 @@ suite('Attributes of localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       'FOO <em title="BAR">BAR</em>');
   });
 
@@ -69,7 +69,7 @@ suite('Attributes of localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       'FOO <em title="BAR">BAR</em>');
   });
 
@@ -82,7 +82,7 @@ suite('Attributes of localized text markup', function() {
     };
 
     translateElement(element, translation);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<em>FOO</em>');
   });
 
@@ -98,10 +98,10 @@ suite('Attributes of localized text markup', function() {
     };
 
     translateElement(element, translationA);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<em title="FOO A">FOO A</em>');
     translateElement(element, translationB);
-    assert.equal(element.innerHTML,
+    assert.strictEqual(element.innerHTML,
       '<em>FOO B</em>');
   });
 });

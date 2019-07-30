@@ -1,24 +1,39 @@
 {
-    "err01": "Value 01",
-    "err02": "Value 02",
-    "err03": {
-        "value": [
-            "\r\r",
-            "Value 03",
-            "\r",
-            "Continued"
-        ],
-        "attrs": {
-            "title": "Title"
-        }
-    },
-    "err05": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
+            "id": "err01",
+            "value": "Value 01",
+            "attributes": {}
+        },
+        {
+            "id": "err02",
+            "value": "Value 02",
+            "attributes": {}
+        },
+        {
+            "id": "err03",
+            "value": [
+                "\r\r",
+                "Value 03",
+                "\r",
+                "Continued"
+            ],
+            "attributes": {
+                "title": "Title"
             }
+        },
+        {
+            "id": "err05",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    }
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

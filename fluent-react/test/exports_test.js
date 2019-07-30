@@ -7,22 +7,22 @@ import ReactLocalization, { isReactLocalization } from '../src/localization';
 
 suite('Exports', () => {
   test('LocalizationProvider', () => {
-    assert.equal(FluentReact.LocalizationProvider, LocalizationProvider);
+    assert.strictEqual(FluentReact.LocalizationProvider, LocalizationProvider);
   });
 
   test('Localized', () => {
-    assert.equal(FluentReact.Localized, Localized);
+    assert.strictEqual(FluentReact.Localized, Localized);
   });
 
   test('withLocalization', () => {
-    assert.equal(FluentReact.withLocalization, withLocalization);
+    assert.strictEqual(FluentReact.withLocalization, withLocalization);
   });
 
   test('ReactLocalization', () => {
-    assert.equal(FluentReact.ReactLocalization, ReactLocalization);
+    assert.strictEqual(FluentReact.ReactLocalization, ReactLocalization);
   });
 
   test('isReactLocalization', () => {
-    assert.equal(FluentReact.isReactLocalization, isReactLocalization);
+    assert.strictEqual(FluentReact.isReactLocalization, isReactLocalization);
   });
 });

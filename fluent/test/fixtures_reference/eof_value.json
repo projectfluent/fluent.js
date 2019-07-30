@@ -1,3 +1,9 @@
 {
-    "no-eol": "No EOL"
+    "body": [
+        {
+            "id": "no-eol",
+            "value": "No EOL",
+            "attributes": {}
+        }
+    ]
 }

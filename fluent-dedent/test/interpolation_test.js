@@ -5,7 +5,7 @@ import ftl from "../src/index";
 
 suite("interpolation", function() {
   test("single", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo ${"bar"}
         `,
@@ -14,7 +14,7 @@ suite("interpolation", function() {
   });
 
   test("multiple", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         foo ${"bar"}${"baz"}
         `,
@@ -23,7 +23,7 @@ suite("interpolation", function() {
   });
 
   test("on separate lines", function() {
-    assert.equal(
+    assert.strictEqual(
       ftl`
         ${"foo"}
           ${"bar"}

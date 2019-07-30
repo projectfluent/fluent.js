@@ -1,3 +1,9 @@
 {
-    "err01": "Value"
+    "body": [
+        {
+            "id": "err01",
+            "value": "Value",
+            "attributes": {}
+        }
+    ]
 }

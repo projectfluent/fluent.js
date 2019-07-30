@@ -1,74 +1,98 @@
 {
-    "simple-identifier": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "simple-identifier",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "identifier-surrounded-by-whitespace": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": "key",
-                    "value": "value"
-                }
-            ],
-            "star": 0
-        }
-    ],
-    "int-number": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
-                {
-                    "key": {
-                        "type": "num",
-                        "value": 1,
-                        "precision": 0
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
                     },
-                    "value": "value"
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "float-number": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "sel"
-            },
-            "variants": [
+            "id": "identifier-surrounded-by-whitespace",
+            "value": [
                 {
-                    "key": {
-                        "type": "num",
-                        "value": 3.14,
-                        "precision": 2
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
                     },
-                    "value": "value"
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
+        },
+        {
+            "id": "int-number",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 1,
+                                "precision": 0
+                            },
+                            "value": "value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "float-number",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 3.14,
+                                "precision": 2
+                            },
+                            "value": "value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

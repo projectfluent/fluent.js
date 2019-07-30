@@ -1,23 +1,37 @@
 {
-    "nested-placeable": [
+    "body": [
         {
-            "type": "num",
-            "value": 1,
-            "precision": 0
-        }
-    ],
-    "padded-placeable": [
+            "id": "nested-placeable",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1,
-            "precision": 0
-        }
-    ],
-    "sparse-placeable": [
+            "id": "padded-placeable",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "num",
-            "value": 1,
-            "precision": 0
+            "id": "sparse-placeable",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

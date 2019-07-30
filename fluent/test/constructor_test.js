@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('FluentBundle constructor', function() {
   setup(function() {
@@ -18,32 +19,32 @@ suite('FluentBundle constructor', function() {
   test('accepts a single locale string', function() {
     const errs = [];
     const bundle = new FluentBundle('en-US', { useIsolating: false });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       foo = Foo { 1 }
-      `);
+      `));
 
     const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.formatPattern(msg.value, null, errs);
 
-    assert.equal(val, 'Foo 1');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Foo 1');
+    assert.strictEqual(errs.length, 0);
     
     const locale = this.nf.getCall(0).args[0];
-    assert.equal(locale, 'en-US');
+    assert.deepEqual(locale, ['en-US']);
   });
 
   test('accepts an array of locales', function() {
     const errs = [];
     const bundle = new FluentBundle(['de', 'en-US'], { useIsolating: false });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       foo = Foo { 1 }
-      `);
+      `));
 
     const msg = bundle.getMessage('foo');
-    const val = bundle.format(msg, null, errs);
+    const val = bundle.formatPattern(msg.value, null, errs);
 
-    assert.equal(val, 'Foo 1');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(val, 'Foo 1');
+    assert.strictEqual(errs.length, 0);
 
     const locales = this.nf.getCall(0).args[0];
     assert.deepEqual(locales, ['de', 'en-US']);

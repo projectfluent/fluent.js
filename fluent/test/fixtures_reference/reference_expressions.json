@@ -1,98 +1,144 @@
 {
-    "message-reference-placeable": [
+    "body": [
         {
-            "type": "mesg",
-            "name": "msg",
-            "attr": null
-        }
-    ],
-    "term-reference-placeable": [
-        {
-            "type": "term",
-            "name": "term",
-            "attr": null,
-            "args": []
-        }
-    ],
-    "variable-reference-placeable": [
-        {
-            "type": "var",
-            "name": "var"
-        }
-    ],
-    "function-reference-placeable": [
-        {
-            "type": "mesg",
-            "name": "FUN",
-            "attr": null
-        }
-    ],
-    "variable-reference-selector": [
-        {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "var"
-            },
-            "variants": [
+            "id": "message-reference-placeable",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "mesg",
+                    "name": "msg",
+                    "attr": null
                 }
             ],
-            "star": 0
-        }
-    ],
-    "message-reference-selector": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "mesg",
-                "name": "msg",
-                "attr": null
-            },
-            "variants": [
+            "id": "term-reference-placeable",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": []
                 }
             ],
-            "star": 0
-        }
-    ],
-    "term-reference-selector": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "term",
-                "name": "term",
-                "attr": null,
-                "args": []
-            },
-            "variants": [
+            "id": "variable-reference-placeable",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "var",
+                    "name": "var"
                 }
             ],
-            "star": 0
-        }
-    ],
-    "function-expression-selector": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "mesg",
-                "name": "FUN",
-                "attr": null
-            },
-            "variants": [
+            "id": "function-reference-placeable",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "mesg",
+                    "name": "FUN",
+                    "attr": null
                 }
             ],
-            "star": 0
+            "attributes": {}
+        },
+        {
+            "id": "variable-reference-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "var"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "message-reference-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "mesg",
+                        "name": "msg",
+                        "attr": null
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "term-reference-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "term",
+                        "name": "term",
+                        "attr": null,
+                        "args": []
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "function-expression-selector",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "mesg",
+                        "name": "FUN",
+                        "attr": null
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

@@ -53,16 +53,17 @@ const TOKEN_BLANK = /\s+/y;
 const MAX_PLACEABLES = 100;
 
 /**
- * Fluent Resource is a structure storing a map of parsed localization entries.
+ * Fluent Resource is a structure storing parsed localization entries.
  */
-export default class FluentResource extends Map {
-  /**
-   * Create a new FluentResource from Fluent code.
-   */
-  static fromString(source) {
+export default class FluentResource {
+  constructor(source) {
+    this.body = this._parse(source);
+  }
+
+  _parse(source) {
     RE_MESSAGE_START.lastIndex = 0;
 
-    let resource = new this();
+    let resource = [];
     let cursor = 0;
 
     // Iterate over the beginnings of messages and terms to efficiently skip
@@ -75,7 +76,7 @@ export default class FluentResource extends Map {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.set(next[1], parseMessage());
+        resource.push(parseMessage(next[1]));
       } catch (err) {
         if (err instanceof FluentError) {
           // Don't report any Fluent syntax errors. Skip directly to the
@@ -88,7 +89,8 @@ export default class FluentResource extends Map {
 
     return resource;
 
-    // The parser implementation is inlined below for performance reasons.
+    // The parser implementation is inlined below for performance reasons,
+    // as well as for convenience of accessing `source` and `cursor`.
 
     // The parser focuses on minimizing the number of false negatives at the
     // expense of increasing the risk of false positives. In other words, it
@@ -150,22 +152,19 @@ export default class FluentResource extends Map {
       return match(re)[1];
     }
 
-    function parseMessage() {
+    function parseMessage(id) {
       let value = parsePattern();
-      let attrs = parseAttributes();
+      let attributes = parseAttributes();
 
-      if (attrs === null) {
-        if (value === null) {
-          throw new FluentError("Expected message value or attributes");
-        }
-        return value;
+      if (value === null && Object.keys(attributes).length === 0) {
+        throw new FluentError("Expected message value or attributes");
       }
 
-      return {value, attrs};
+      return {id, value, attributes};
     }
 
     function parseAttributes() {
-      let attrs = {};
+      let attrs = Object.create(null);
 
       while (test(RE_ATTRIBUTE_START)) {
         let name = match1(RE_ATTRIBUTE_START);
@@ -176,7 +175,7 @@ export default class FluentResource extends Map {
         attrs[name] = value;
       }
 
-      return Object.keys(attrs).length > 0 ? attrs : null;
+      return attrs;
     }
 
     function parsePattern() {
@@ -258,9 +257,6 @@ export default class FluentResource extends Map {
         if (element.type === "indent") {
           // Dedent indented lines by the maximum common indent.
           element = element.value.slice(0, element.value.length - commonIndent);
-        } else if (element.type === "str") {
-          // Optimize StringLiterals into their value.
-          element = element.value;
         }
         if (element) {
           baked.push(element);
@@ -390,7 +386,7 @@ export default class FluentResource extends Map {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : match1(RE_IDENTIFIER);
+        : {type: "str", value: match1(RE_IDENTIFIER)};
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }

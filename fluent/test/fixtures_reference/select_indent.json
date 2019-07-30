@@ -1,234 +1,339 @@
 {
-    "select-1tbs-inline": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-1tbs-inline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-1tbs-newline": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-1tbs-newline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-1tbs-indent": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-1tbs-indent",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-allman-inline": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-allman-inline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-allman-newline": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-allman-newline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-allman-indent": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-allman-indent",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-gnu-inline": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-gnu-inline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-gnu-newline": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-gnu-newline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-gnu-indent": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-gnu-indent",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-no-indent": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-no-indent",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
-                },
-                {
-                    "key": "other",
-                    "value": "Other"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "other"
+                            },
+                            "value": "Other"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-no-indent-multiline": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-no-indent-multiline",
+            "value": [
                 {
-                    "key": "key",
-                    "value": [
-                        "Value",
-                        "\n",
-                        "Continued"
-                    ]
-                },
-                {
-                    "key": "other",
-                    "value": [
-                        "Other",
-                        "\n",
-                        "Multiline"
-                    ]
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": [
+                                "Value",
+                                "\n",
+                                "Continued"
+                            ]
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "other"
+                            },
+                            "value": [
+                                "Other",
+                                "\n",
+                                "Multiline"
+                            ]
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-flat": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-flat",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
-                },
-                {
-                    "key": "other",
-                    "value": "Other"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "other"
+                            },
+                            "value": "Other"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
-        }
-    ],
-    "select-flat-with-trailing-spaces": [
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "selector"
-            },
-            "variants": [
+            "id": "select-flat-with-trailing-spaces",
+            "value": [
                 {
-                    "key": "key",
-                    "value": "Value"
-                },
-                {
-                    "key": "other",
-                    "value": "Other"
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "selector"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "Value"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "other"
+                            },
+                            "value": "Other"
+                        }
+                    ],
+                    "star": 0
                 }
             ],
-            "star": 0
+            "attributes": {}
         }
     ]
 }

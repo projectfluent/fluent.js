@@ -20,23 +20,24 @@ The `FluentBundle` constructor provides the core functionality of formatting
 translations from FTL files.
 
 ```javascript
-import { FluentBundle, ftl } from '@fluent/bundle';
+import {FluentBundle, FluentResource} from "@fluent/bundle";
 
-const bundle = new FluentBundle('en-US');
-
-const errors = bundle.addMessages(ftl`
-    -brand-name = Foo 3000
-    welcome = Welcome, { $name }, to { -brand-name }!
+let resource = new FluentResource(`
+-brand-name = Foo 3000
+welcome = Welcome, {$name}, to {-brand-name}!
 `);
 
+let bundle = new FluentBundle("en-US");
+let errors = bundle.addResource(resource);
 if (errors.length) {
-  // syntax errors are per-message and don't break the whole resource
+    // Syntax errors are per-message and don't break the whole resource
 }
 
-const welcome = bundle.getMessage('welcome');
-
-bundle.format(welcome, { name: 'Anna' });
-// → 'Welcome, Anna, to Foo 3000!'
+let welcome = bundle.getMessage("welcome");
+if (welcome.value) {
+    bundle.formatPattern(welcome.value, {name: "Anna"});
+    // → "Welcome, Anna, to Foo 3000!"
+}
 ```
 
 The API reference is available at http://projectfluent.org/fluent.js/fluent.
@@ -55,14 +56,14 @@ however, a polyfill will be required.  We recommend [intl-pluralrules][].
 
 ```javascript
 import 'intl-pluralrules';
-import { FluentBundle } from '@fluent/bundle';
+import {FluentBundle} from '@fluent/bundle';
 ```
 
 For legacy browsers, the `compat` build has been transpiled using Babel's [env
 preset][]. It requires the regenerator runtime provided by [babel-polyfill][].
 
 ```javascript
-import { FluentBundle } from '@fluent/bundle/compat';
+import {FluentBundle} from '@fluent/bundle/compat';
 ```
 
 

@@ -1,8 +1,11 @@
 {
-    "k": {
-        "value": "Value",
-        "attrs": {
-            "l": "Foo"
+    "body": [
+        {
+            "id": "k",
+            "value": "Value",
+            "attributes": {
+                "l": "Foo"
+            }
         }
-    }
+    ]
 }

@@ -4,6 +4,7 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Runtime-specific functions', function() {
   let bundle, args, errs;
@@ -21,26 +22,26 @@ suite('Runtime-specific functions', function() {
           SUM: (args, kwargs) => args.reduce((a, b) => a + b, 0)
         }
       });
-      bundle.addMessages(ftl`
+      bundle.addResource(new FluentResource(ftl`
         foo = { CONCAT("Foo", "Bar") }
         bar = { SUM(1, 2) }
-        `);
+        `));
     });
 
     test('works for strings', function() {
       const msg = bundle.getMessage('foo');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, 'FooBar');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, 'FooBar');
+      assert.strictEqual(errs.length, 0);
     });
 
     // XXX When they are passed as variables, convert JS types to FTL types
     // https://bugzil.la/1307116
     test.skip('works for numbers', function() {
       const msg = bundle.getMessage('bar');
-      const val = bundle.format(msg, args, errs);
-      assert.equal(val, '3');
-      assert.equal(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '3');
+      assert.strictEqual(errs.length, 0);
     });
   });
 });

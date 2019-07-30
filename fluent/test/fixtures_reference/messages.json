@@ -1,35 +1,81 @@
 {
-    "key01": "Value",
-    "key02": {
-        "value": "Value",
-        "attrs": {
-            "attr1": "Attribute 1",
-            "attr2": "Attribute 2"
+    "body": [
+        {
+            "id": "key01",
+            "value": "Value",
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": "Value",
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "key02",
+            "value": "Value",
+            "attributes": {
+                "attr1": "Attribute 1",
+                "attr2": "Attribute 2"
+            }
+        },
+        {
+            "id": "key03",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "key04",
+            "value": null,
+            "attributes": {
+                "attr1": "Attribute 1",
+                "attr2": "Attribute 2"
+            }
+        },
+        {
+            "id": "key05",
+            "value": null,
+            "attributes": {
+                "attr1": "Attribute 1"
+            }
+        },
+        {
+            "id": "key06",
+            "value": [
+                {
+                    "type": "str",
+                    "value": ""
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "KEY09",
+            "value": "Value 09",
+            "attributes": {}
+        },
+        {
+            "id": "key-10",
+            "value": "Value 10",
+            "attributes": {}
+        },
+        {
+            "id": "key_11",
+            "value": "Value 11",
+            "attributes": {}
+        },
+        {
+            "id": "key-12-",
+            "value": "Value 12",
+            "attributes": {}
+        },
+        {
+            "id": "key_13_",
+            "value": "Value 13",
+            "attributes": {}
         }
-    },
-    "key03": {
-        "value": null,
-        "attrs": {
-            "attr": "Attribute"
-        }
-    },
-    "key04": {
-        "value": null,
-        "attrs": {
-            "attr1": "Attribute 1",
-            "attr2": "Attribute 2"
-        }
-    },
-    "key05": {
-        "value": null,
-        "attrs": {
-            "attr1": "Attribute 1"
-        }
-    },
-    "key06": [],
-    "KEY09": "Value 09",
-    "key-10": "Value 10",
-    "key_11": "Value 11",
-    "key-12-": "Value 12",
-    "key_13_": "Value 13"
+    ]
 }

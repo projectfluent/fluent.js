@@ -4,13 +4,14 @@ import assert from 'assert';
 import ftl from "@fluent/dedent";
 
 import FluentBundle from '../src/bundle';
+import FluentResource from '../src/resource';
 
 suite('Formatting values', function(){
   let bundle, args, errs;
 
   suiteSetup(function() {
     bundle = new FluentBundle('en-US', { useIsolating: false });
-    bundle.addMessages(ftl`
+    bundle.addResource(new FluentResource(ftl`
       key1 = Value 1
       key2 = { $sel ->
           [a] A2
@@ -24,7 +25,7 @@ suite('Formatting values', function(){
       key5 =
           .a = A5
           .b = B5
-      `);
+      `));
   });
 
   setup(function() {
@@ -33,44 +34,44 @@ suite('Formatting values', function(){
 
   test('returns the value', function(){
     const msg = bundle.getMessage('key1');
-    const val = bundle.format(msg, args, errs);
-    assert.equal(val, 'Value 1');
-    assert.equal(errs.length, 0);
+    const val = bundle.formatPattern(msg.value, args, errs);
+    assert.strictEqual(val, 'Value 1');
+    assert.strictEqual(errs.length, 0);
   });
 
   test('returns the default variant', function(){
     const msg = bundle.getMessage('key2');
-    const val = bundle.format(msg, args, errs);
-    assert.equal(val, 'B2');
-    assert.equal(errs.length, 1);
+    const val = bundle.formatPattern(msg.value, args, errs);
+    assert.strictEqual(val, 'B2');
+    assert.strictEqual(errs.length, 1);
   });
 
   test('returns the value if it is a pattern', function(){
     const msg = bundle.getMessage('key3');
-    const val = bundle.format(msg, args, errs)
+    const val = bundle.formatPattern(msg.value, args, errs)
     assert.strictEqual(val, 'Value 3');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(errs.length, 0);
   });
 
   test('returns the default variant if it is a pattern', function(){
     const msg = bundle.getMessage('key4');
-    const val = bundle.format(msg, args, errs)
+    const val = bundle.formatPattern(msg.value, args, errs)
     assert.strictEqual(val, 'B4');
-    assert.equal(errs.length, 1);
+    assert.strictEqual(errs.length, 1);
   });
 
-  test('returns null if there is no value', function(){
+  test('returns {???} when trying to format a null value', function(){
     const msg = bundle.getMessage('key5');
-    const val = bundle.format(msg, args, errs);
-    assert.strictEqual(val, null);
-    assert.equal(errs.length, 0);
+    const val = bundle.formatPattern(msg.value, args, errs);
+    assert.strictEqual(val, '{???}');
+    assert.strictEqual(errs.length, 1);
   });
 
-  test('allows to pass traits directly to bundle.format', function(){
+  test('allows to pass traits directly to bundle.formatPattern', function(){
     const msg = bundle.getMessage('key5');
-    assert.strictEqual(bundle.format(msg.attrs.a, args, errs), 'A5');
-    assert.strictEqual(bundle.format(msg.attrs.b, args, errs), 'B5');
-    assert.equal(errs.length, 0);
+    assert.strictEqual(bundle.formatPattern(msg.attributes.a, args, errs), 'A5');
+    assert.strictEqual(bundle.formatPattern(msg.attributes.b, args, errs), 'B5');
+    assert.strictEqual(errs.length, 0);
   });
 
 

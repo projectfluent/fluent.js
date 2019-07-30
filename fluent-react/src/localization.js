@@ -55,13 +55,27 @@ export default class ReactLocalization {
    */
   getString(id, args, fallback) {
     const bundle = this.getBundle(id);
-
-    if (bundle === null) {
-      return fallback || id;
+    if (bundle) {
+      const msg = bundle.getMessage(id);
+      if (msg && msg.value) {
+        let errors = [];
+        let value = bundle.formatPattern(msg.value, args, errors);
+        for (let error of errors) {
+          this.reportError(error);
+        }
+        return value;
+      }
     }
 
-    const msg = bundle.getMessage(id);
-    return bundle.format(msg, args);
+    return fallback || id;
+  }
+
+  // XXX Control this via a prop passed to the LocalizationProvider.
+  // See https://github.com/projectfluent/fluent.js/issues/411.
+  reportError(error) {
+    /* global console */
+    // eslint-disable-next-line no-console
+    console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
   }
 }
 

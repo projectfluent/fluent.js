@@ -1,20 +1,30 @@
 {
-    "err01": [
+    "body": [
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "foo"
-            }
-        }
-    ],
-    "err02": [
+            "id": "err01",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "foo"
+                    }
+                }
+            ],
+            "attributes": {}
+        },
         {
-            "type": "select",
-            "selector": {
-                "type": "var",
-                "name": "foo"
-            }
+            "id": "err02",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "foo"
+                    }
+                }
+            ],
+            "attributes": {}
         }
     ]
 }
