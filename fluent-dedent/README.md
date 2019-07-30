@@ -94,5 +94,5 @@ implementations, and information about how to get involved.
 
 
 [env preset]: https://babeljs.io/docs/plugins/preset-env/
-[projectfluent.org]: http://projectfluent.org
-[FTL]: http://projectfluent.org/fluent/guide/
+[projectfluent.org]: https://projectfluent.org
+[FTL]: https://projectfluent.org/fluent/guide/

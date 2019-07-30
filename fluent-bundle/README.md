@@ -78,5 +78,5 @@ implementations, and information about how to get involved.
 [babel-polyfill]: https://babeljs.io/docs/usage/polyfill/
 [Stage 3 proposal]:https://github.com/tc39/proposal-intl-plural-rules
 [env preset]: https://babeljs.io/docs/plugins/preset-env/
-[projectfluent.org]: http://projectfluent.org
-[FTL]: http://projectfluent.org/fluent/guide/
+[projectfluent.org]: https://projectfluent.org
+[FTL]: https://projectfluent.org/fluent/guide/

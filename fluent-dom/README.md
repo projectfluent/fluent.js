@@ -70,5 +70,5 @@ documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
 
-[projectfluent.org]: http://projectfluent.org
-[FTL]: http://projectfluent.org/fluent/guide/
+[projectfluent.org]: https://projectfluent.org
+[FTL]: https://projectfluent.org/fluent/guide/
