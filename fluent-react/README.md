@@ -25,9 +25,12 @@ It makes `@fluent/react` unopinionated and suitable for many different
 scenarios. You will likely also need to install a few other packages:
 `@fluent/bundle`, `@fluent/langneg` and `intl-pluralrules`.
 
-Consult the [wiki][] for documentation on how to set up and use `@fluent/react`.
+Consult the [wiki][] for documentation on how to set up and use
+`@fluent/react`.
 
 [wiki]: https://github.com/projectfluent/fluent.js/wiki/React-Bindings
+
+The API reference is available at https://projectfluent.org/fluent.js/react.
 
 
 ## Compatibility

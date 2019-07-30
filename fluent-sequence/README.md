@@ -52,6 +52,9 @@ asynchronous iterator to `mapBundleAsync`, wrap it in `CachedAsyncIterable`.
 This allows multiple calls to `mapContext*` without advancing and eventually
 depleting the iterator.
 
+The API reference is available at
+https://projectfluent.org/fluent.js/sequence.
+
 
 ## Learn more
 

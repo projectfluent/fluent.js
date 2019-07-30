@@ -40,7 +40,7 @@ if (welcome.value) {
 }
 ```
 
-The API reference is available at http://projectfluent.org/fluent.js/fluent.
+The API reference is available at https://projectfluent.org/fluent.js/bundle.
 
 
 ## Compatibility

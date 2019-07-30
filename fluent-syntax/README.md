@@ -27,8 +27,7 @@ welcome = Welcome, {$name}, to {-brand-name}!
 assert(res instanceof Resource);
 ```
 
-The API reference is available at
-http://projectfluent.org/fluent.js/syntax.
+The API reference is available at https://projectfluent.org/fluent.js/syntax.
 
 
 ## Compatibility
