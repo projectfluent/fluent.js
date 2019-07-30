@@ -1,5 +1,113 @@
 # Changelog
 
+## @fluent/bundle 0.14.0 (July 30, 2019)
+
+### `FluentBundle` API
+
+  - Remove `FluentBundle.addMessages`.
+
+    Use `FluentBundle.addResource` instead, combined with a `FluentResource`
+    instance.
+
+  - Remove `FluentBundle.messages`.
+
+    The list of messages in the bundle should not be inspected. If you need
+    to do it, please use the tooling parser from `@fluent/syntax`.
+
+  - Change the shape returned by `FluentBundle.getMessage`.
+
+    The method now returns the following shape:
+
+        {value: Pattern | null, attributes: Record<string, Pattern>}
+
+  - The internal representtion of `Pattern` is private.
+
+    Raw messages returned from `getMessage` have their values and attributes
+    stored in a `Pattern` type. The internal representation of this type is
+    private and implementation-specific. It should not be inspected nor used
+    for any purposes. The implementation may change without a warning in
+    future releases. `Patterns` are black boxes and are meant to be used as
+    arguments to `formatPattern`.
+
+  - Rename `FluentBundle.format` to `formatPattern`.
+
+    `formatPattern` only accepts valid `Patterns` as the first argument. In
+    practice, you'll want to first retrieve a raw message from the bundle via
+    `getMessage`, and then format the value (if present) and the attributes
+    separately.
+
+    ```js
+    let message = bundle.getMessage("hello");
+    if (message.value) {
+        bundle.formatPattern(message.value, {userName: "Alex"});
+    }
+    ```
+
+    The list of all attributes defined in the message can be obtained with
+    `Object.keys(message.attributes)`.
+
+  - Throw from `formatPattern` when `errors` are not passed as an argument.
+
+    The old `format()` method would silence all errors if the thrid argument,
+    the `errors` array was not given. `formatPattern` changes this behavior
+    to throwing on the first encountered error and interrupting the
+    formatting.
+
+    ```js
+    try {
+        bundle.formatPattern(message.value, args);
+    } catch (err) {
+        // Handle the error yourself.
+    }
+    ```
+
+    It's still possible to pass the `errors` array as the third argument to
+    `formatPattern`. All errors encountered during the formatting will be
+    then appended to the array. In this scenario, `formatPattern` is
+    guaranteed to never throw because of errors in the translation.
+
+    ```js
+    let errorrs = [];
+    bundle.formatPattern(message.value, args, errors);
+    for (let error of errors) {
+        // Report errors.
+    }
+    ```
+
+### `FluentResource` API
+
+  - Remove the static `FluentResource.fromString` method.
+
+    Parse resources by using the constructor: `new FluentResource(text)`.
+
+  - Do not extend `Map`.
+
+    `FluentResources` are now instances of their own class only.
+
+  - Add `FluentResource.body`.
+
+    The `body` field is an array storing the resource's parsed messages and
+    terms.
+
+### `FluentType` API
+
+  - `FluentNumber` must be instantiated with a number.
+
+    The constructor doesn't call `parseFloat` on the passed value anymore.
+
+  - `FluentDateTime` must be instantiated with a number.
+
+    The constructor doesn't call `new Date()` on the passed value anymore.
+    The date is stored as the numerical timestamp, in milliseconds since the
+    epoch.
+
+### Formatting Changes
+
+  - Report errors from instantiating Intl objects used for formatting.
+  - Report errors from functions, including built-in functions.
+  - Format numbers and dates to safe defaults in case or errors. (#410)
+  - When a transform function is given, transform only `TextElements`.
+
 ## @fluent/bundle 0.13.0 (July 25, 2019)
 
   - Rename `fluent` to `@fluent/bundle`.
