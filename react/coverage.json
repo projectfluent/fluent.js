@@ -1,0 +1,66 @@
+{
+  "coverage": "0%",
+  "expectCount": 29,
+  "actualCount": 0,
+  "files": {
+    "src/localization.js": {
+      "expectCount": 11,
+      "actualCount": 0,
+      "undocumentLines": [
+        19,
+        20,
+        21,
+        22,
+        28,
+        35,
+        42,
+        49,
+        56,
+        75,
+        82
+      ]
+    },
+    "src/localized.js": {
+      "expectCount": 7,
+      "actualCount": 0,
+      "undocumentLines": [
+        8,
+        13,
+        54,
+        55,
+        63,
+        74,
+        80
+      ]
+    },
+    "src/markup.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        9
+      ]
+    },
+    "src/provider.js": {
+      "expectCount": 8,
+      "actualCount": 0,
+      "undocumentLines": [
+        24,
+        25,
+        37,
+        38,
+        41,
+        48,
+        56,
+        72
+      ]
+    },
+    "src/with_localization.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        5,
+        66
+      ]
+    }
+  }
+}

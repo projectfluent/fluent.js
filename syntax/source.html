@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href>
+  <title data-ice="title">Source | @fluent/syntax</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="AST and parser for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/syntax"><meta property="twitter:description" content="AST and parser for Fluent"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Annotation.html">Annotation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Attribute.html">Attribute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~BaseComment.html">BaseComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~BaseNode.html">BaseNode</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~CallArguments.html">CallArguments</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Comment.html">Comment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Entry.html">Entry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Expression.html">Expression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~FunctionReference.html">FunctionReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~GroupComment.html">GroupComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Identifier.html">Identifier</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Junk.html">Junk</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Literal.html">Literal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Message.html">Message</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~MessageReference.html">MessageReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~NamedArgument.html">NamedArgument</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~NumberLiteral.html">NumberLiteral</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Pattern.html">Pattern</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~PatternElement.html">PatternElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Placeable.html">Placeable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Resource.html">Resource</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~ResourceComment.html">ResourceComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~SelectExpression.html">SelectExpression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Span.html">Span</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~StringLiteral.html">StringLiteral</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~SyntaxNode.html">SyntaxNode</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Term.html">Term</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~TermReference.html">TermReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~TextElement.html">TextElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~VariableReference.html">VariableReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Variant.html">Variant</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/errors.js~ParseError.html">ParseError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/parser.js~FluentParser.html">FluentParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/serializer.js~FluentSerializer.html">FluentSerializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/stream.js~FluentParserStream.html">FluentParserStream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/stream.js~ParserStream.html">ParserStream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/visitor.js~Transformer.html">Transformer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/visitor.js~Visitor.html">Visitor</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-columnOffset">columnOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lineOffset">lineOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parse">parse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serialize">serialize</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serializeExpression">serializeExpression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serializeVariantKey">serializeVariantKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-includes">includes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HAS_ENTRIES">HAS_ENTRIES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EOF">EOF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EOL">EOL</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">0/247</span></h1>
+
+<table class="files-summary" data-ice="files" data-use-coverage="true">
+  <thead>
+    <tr>
+      <td>File</td>
+      <td>Identifier</td>
+      <td class="coverage">Document</td>
+      <td style="display: none;">Size</td>
+      <td style="display: none;">Lines</td>
+      <td style="display: none;">Updated</td>
+    </tr>
+  </thead>
+  <tbody>
+    
+  <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/ast.js.html#errorLines=100,101,102,106,107,109,11,110,111,112,113,117,118,120,121,128,130,131,133,134,138,139,141,142,149,152,153,157,160,165,166,168,171,200,201,203,206,216,217,219,220,221,225,226,228,229,230,231,235,236,238,239,243,244,246,247,248,252,253,255,256,257,261,262,264,265,266,270,271,273,274,275,279,280,282,283,284,285,289,290,292,293,294,298,299,301,302,306,307,309,310,314,315,317,321,322,324,327,328,330,334,335,337,338,339,342,347,348,350,351,352,356,357,359,360,361,362,48,66,76,77,78,8,82,83,85,86,9,93,95,96,98,99">src/ast.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/src/ast.js~Annotation.html">Annotation</a></span>
+<span><a href="class/src/ast.js~Attribute.html">Attribute</a></span>
+<span><a href="class/src/ast.js~BaseComment.html">BaseComment</a></span>
+<span><a href="class/src/ast.js~BaseNode.html">BaseNode</a></span>
+<span><a href="class/src/ast.js~CallArguments.html">CallArguments</a></span>
+<span><a href="class/src/ast.js~Comment.html">Comment</a></span>
+<span><a href="class/src/ast.js~Entry.html">Entry</a></span>
+<span><a href="class/src/ast.js~Expression.html">Expression</a></span>
+<span><a href="class/src/ast.js~FunctionReference.html">FunctionReference</a></span>
+<span><a href="class/src/ast.js~GroupComment.html">GroupComment</a></span>
+<span><a href="class/src/ast.js~Identifier.html">Identifier</a></span>
+<span><a href="class/src/ast.js~Junk.html">Junk</a></span>
+<span><a href="class/src/ast.js~Literal.html">Literal</a></span>
+<span><a href="class/src/ast.js~Message.html">Message</a></span>
+<span><a href="class/src/ast.js~MessageReference.html">MessageReference</a></span>
+<span><a href="class/src/ast.js~NamedArgument.html">NamedArgument</a></span>
+<span><a href="class/src/ast.js~NumberLiteral.html">NumberLiteral</a></span>
+<span><a href="class/src/ast.js~Pattern.html">Pattern</a></span>
+<span><a href="class/src/ast.js~PatternElement.html">PatternElement</a></span>
+<span><a href="class/src/ast.js~Placeable.html">Placeable</a></span>
+<span><a href="class/src/ast.js~Resource.html">Resource</a></span>
+<span><a href="class/src/ast.js~ResourceComment.html">ResourceComment</a></span>
+<span><a href="class/src/ast.js~SelectExpression.html">SelectExpression</a></span>
+<span><a href="class/src/ast.js~Span.html">Span</a></span>
+<span><a href="class/src/ast.js~StringLiteral.html">StringLiteral</a></span>
+<span><a href="class/src/ast.js~SyntaxNode.html">SyntaxNode</a></span>
+<span><a href="class/src/ast.js~Term.html">Term</a></span>
+<span><a href="class/src/ast.js~TermReference.html">TermReference</a></span>
+<span><a href="class/src/ast.js~TextElement.html">TextElement</a></span>
+<span><a href="class/src/ast.js~VariableReference.html">VariableReference</a></span>
+<span><a href="class/src/ast.js~Variant.html">Variant</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/133</span></td>
+      <td style="display: none;" data-ice="size">8065 byte</td>
+      <td style="display: none;" data-ice="lines">364</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/errors.js.html#errorLines=1,11,2,4,5,6">src/errors.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/src/errors.js~ParseError.html">ParseError</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/6</span></td>
+      <td style="display: none;" data-ice="size">2467 byte</td>
+      <td style="display: none;" data-ice="lines">82</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/index.js.html#errorLines=14,19,24,9">src/index.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-columnOffset">columnOffset</a></span>
+<span><a href="function/index.html#static-function-lineOffset">lineOffset</a></span>
+<span><a href="function/index.html#static-function-parse">parse</a></span>
+<span><a href="function/index.html#static-function-serialize">serialize</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/4</span></td>
+      <td style="display: none;" data-ice="size">1118 byte</td>
+      <td style="display: none;" data-ice="lines">38</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/parser.js.html#errorLines=11,111,127,160,176,225,241,257,273,285,296,312,34,340,35,368,38,383,407,423,473,48,483,52,537,557,574,592,600,639,702,722,763,785,8">src/parser.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/src/parser.js~FluentParser.html">FluentParser</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/35</span></td>
+      <td style="display: none;" data-ice="size">18626 byte</td>
+      <td style="display: none;" data-ice="lines">796</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/serializer.js.html#errorLines=11,112,131,137,151,163,179,18,21,22,221,23,233,243,250,26,3,46,7,76,85,90">src/serializer.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/src/serializer.js~FluentSerializer.html">FluentSerializer</a></span>
+<span><a href="variable/index.html#static-variable-HAS_ENTRIES">HAS_ENTRIES</a></span>
+<span><a href="function/index.html#static-function-serializeExpression">serializeExpression</a></span>
+<span><a href="function/index.html#static-function-serializeVariantKey">serializeVariantKey</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/22</span></td>
+      <td style="display: none;" data-ice="size">6146 byte</td>
+      <td style="display: none;" data-ice="lines">259</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/stream.js.html#errorLines=10,104,110,116,121,13,130,145,157,167,171,187,195,201,226,255,26,268,272,277,294,30,304,316,325,34,45,55,59,6,65,66,67,69,7,70,78,8,84,9">src/stream.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="variable/index.html#static-variable-EOF">EOF</a></span>
+<span><a href="variable/index.html#static-variable-EOL">EOL</a></span>
+<span><a href="class/src/stream.js~FluentParserStream.html">FluentParserStream</a></span>
+<span><a href="class/src/stream.js~ParserStream.html">ParserStream</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/40</span></td>
+      <td style="display: none;" data-ice="size">7322 byte</td>
+      <td style="display: none;" data-ice="lines">335</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/util.js.html#errorLines=1">src/util.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-includes">includes</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">73 byte</td>
+      <td style="display: none;" data-ice="lines">3</td>
+      <td style="display: none;" data-ice="updated">2018-04-04 15:35:42 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/visitor.js.html#errorLines=19,29,30,38,6,7">src/visitor.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/src/visitor.js~Transformer.html">Transformer</a></span>
+<span><a href="class/src/visitor.js~Visitor.html">Visitor</a></span></td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/6</span></td>
+      <td style="display: none;" data-ice="size">1335 byte</td>
+      <td style="display: none;" data-ice="lines">58</td>
+      <td style="display: none;" data-ice="updated">2019-04-03 12:25:24 (UTC)</td>
+    </tr>
+</tbody>
+</table>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

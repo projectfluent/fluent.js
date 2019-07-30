@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/locale.js | @fluent/langneg</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Language Negotiation API for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/langneg"><meta property="twitter:description" content="Language Negotiation API for Fluent"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/locale.js~Locale.html">Locale</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-acceptedLanguages">acceptedLanguages</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filterMatches">filterMatches</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-negotiateLanguages">negotiateLanguages</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLikelySubtagsMin">getLikelySubtagsMin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-localeParts">localeParts</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/locale.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint no-magic-numbers: 0 */
+
+import { getLikelySubtagsMin } from &quot;./subtags&quot;;
+
+const languageCodeRe = &quot;([a-z]{2,3}|\\*)&quot;;
+const scriptCodeRe = &quot;(?:-([a-z]{4}|\\*))&quot;;
+const regionCodeRe = &quot;(?:-([a-z]{2}|\\*))&quot;;
+const variantCodeRe = &quot;(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))&quot;;
+
+/**
+ * Regular expression splitting locale id into four pieces:
+ *
+ * Example: `en-Latn-US-macos`
+ *
+ * language: en
+ * script:   Latn
+ * region:   US
+ * variant:  macos
+ *
+ * It can also accept a range `*` character on any position.
+ */
+const localeRe = new RegExp(
+  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`, &quot;i&quot;);
+
+export const localeParts = [&quot;language&quot;, &quot;script&quot;, &quot;region&quot;, &quot;variant&quot;];
+
+export default class Locale {
+  /**
+   * Parses a locale id using the localeRe into an array with four elements.
+   *
+   * If the second argument `range` is set to true, it places range `*` char
+   * in place of any missing piece.
+   *
+   * It also allows skipping the script section of the id, so `en-US` is
+   * properly parsed as `en-*-US-*`.
+   */
+  constructor(locale) {
+    const result = localeRe.exec(locale.replace(/_/g, &quot;-&quot;));
+    if (!result) {
+      this.isWellFormed = false;
+      return;
+    }
+
+    let [, language, script, region, variant] = result;
+
+    if (language) {
+      this.language = language.toLowerCase();
+    }
+    if (script) {
+      this.script = script[0].toUpperCase() + script.slice(1);
+    }
+    if (region) {
+      this.region = region.toUpperCase();
+    }
+    this.variant = variant;
+    this.isWellFormed = true;
+  }
+
+  isEqual(locale) {
+    return localeParts.every(part =&gt; this[part] === locale[part]);
+  }
+
+  matches(locale, thisRange = false, otherRange = false) {
+    return localeParts.every(part =&gt; {
+      return ((thisRange &amp;&amp; this[part] === undefined) ||
+              (otherRange &amp;&amp; locale[part] === undefined) ||
+              this[part] === locale[part]);
+    });
+  }
+
+  toString() {
+    return localeParts
+      .map(part =&gt; this[part])
+      .filter(part =&gt; part !== undefined)
+      .join(&quot;-&quot;);
+  }
+
+  clearVariants() {
+    this.variant = undefined;
+  }
+
+  clearRegion() {
+    this.region = undefined;
+  }
+
+  addLikelySubtags() {
+    const newLocale = getLikelySubtagsMin(this.toString().toLowerCase());
+
+    if (newLocale) {
+      localeParts.forEach(part =&gt; this[part] = newLocale[part]);
+      return true;
+    }
+    return false;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

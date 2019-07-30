@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/stream.js | @fluent/syntax</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="AST and parser for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/syntax"><meta property="twitter:description" content="AST and parser for Fluent"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Annotation.html">Annotation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Attribute.html">Attribute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~BaseComment.html">BaseComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~BaseNode.html">BaseNode</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~CallArguments.html">CallArguments</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Comment.html">Comment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Entry.html">Entry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Expression.html">Expression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~FunctionReference.html">FunctionReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~GroupComment.html">GroupComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Identifier.html">Identifier</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Junk.html">Junk</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Literal.html">Literal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Message.html">Message</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~MessageReference.html">MessageReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~NamedArgument.html">NamedArgument</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~NumberLiteral.html">NumberLiteral</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Pattern.html">Pattern</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~PatternElement.html">PatternElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Placeable.html">Placeable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Resource.html">Resource</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~ResourceComment.html">ResourceComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~SelectExpression.html">SelectExpression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Span.html">Span</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~StringLiteral.html">StringLiteral</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~SyntaxNode.html">SyntaxNode</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Term.html">Term</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~TermReference.html">TermReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~TextElement.html">TextElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~VariableReference.html">VariableReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Variant.html">Variant</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/errors.js~ParseError.html">ParseError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/parser.js~FluentParser.html">FluentParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/serializer.js~FluentSerializer.html">FluentSerializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/stream.js~FluentParserStream.html">FluentParserStream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/stream.js~ParserStream.html">ParserStream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/visitor.js~Transformer.html">Transformer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/visitor.js~Visitor.html">Visitor</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-columnOffset">columnOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lineOffset">lineOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parse">parse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serialize">serialize</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serializeExpression">serializeExpression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serializeVariantKey">serializeVariantKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-includes">includes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HAS_ENTRIES">HAS_ENTRIES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EOF">EOF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EOL">EOL</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/stream.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint no-magic-numbers: &quot;off&quot; */
+
+import { ParseError } from &quot;./errors&quot;;
+import { includes } from &quot;./util&quot;;
+
+export class ParserStream {
+  constructor(string) {
+    this.string = string;
+    this.index = 0;
+    this.peekOffset = 0;
+  }
+
+  charAt(offset) {
+    // When the cursor is at CRLF, return LF but don&apos;t move the cursor.
+    // The cursor still points to the EOL position, which in this case is the
+    // beginning of the compound CRLF sequence. This ensures slices of
+    // [inclusive, exclusive) continue to work properly.
+    if (this.string[offset] === &quot;\r&quot;
+        &amp;&amp; this.string[offset + 1] === &quot;\n&quot;) {
+      return &quot;\n&quot;;
+    }
+
+    return this.string[offset];
+  }
+
+  get currentChar() {
+    return this.charAt(this.index);
+  }
+
+  get currentPeek() {
+    return this.charAt(this.index + this.peekOffset);
+  }
+
+  next() {
+    this.peekOffset = 0;
+    // Skip over the CRLF as if it was a single character.
+    if (this.string[this.index] === &quot;\r&quot;
+        &amp;&amp; this.string[this.index + 1] === &quot;\n&quot;) {
+      this.index++;
+    }
+    this.index++;
+    return this.string[this.index];
+  }
+
+  peek() {
+    // Skip over the CRLF as if it was a single character.
+    if (this.string[this.index + this.peekOffset] === &quot;\r&quot;
+        &amp;&amp; this.string[this.index + this.peekOffset + 1] === &quot;\n&quot;) {
+      this.peekOffset++;
+    }
+    this.peekOffset++;
+    return this.string[this.index + this.peekOffset];
+  }
+
+  resetPeek(offset = 0) {
+    this.peekOffset = offset;
+  }
+
+  skipToPeek() {
+    this.index += this.peekOffset;
+    this.peekOffset = 0;
+  }
+}
+
+export const EOL = &quot;\n&quot;;
+export const EOF = undefined;
+const SPECIAL_LINE_START_CHARS = [&quot;}&quot;, &quot;.&quot;, &quot;[&quot;, &quot;*&quot;];
+
+export class FluentParserStream extends ParserStream {
+  peekBlankInline() {
+    const start = this.index + this.peekOffset;
+    while (this.currentPeek === &quot; &quot;) {
+      this.peek();
+    }
+    return this.string.slice(start, this.index + this.peekOffset);
+  }
+
+  skipBlankInline() {
+    const blank = this.peekBlankInline();
+    this.skipToPeek();
+    return blank;
+  }
+
+  peekBlankBlock() {
+    let blank = &quot;&quot;;
+    while (true) {
+      const lineStart = this.peekOffset;
+      this.peekBlankInline();
+      if (this.currentPeek === EOL) {
+        blank += EOL;
+        this.peek();
+        continue;
+      }
+      if (this.currentPeek === EOF) {
+        // Treat the blank line at EOF as a blank block.
+        return blank;
+      }
+      // Any other char; reset to column 1 on this line.
+      this.resetPeek(lineStart);
+      return blank;
+    }
+  }
+
+  skipBlankBlock() {
+    const blank = this.peekBlankBlock();
+    this.skipToPeek();
+    return blank;
+  }
+
+  peekBlank() {
+    while (this.currentPeek === &quot; &quot; || this.currentPeek === EOL) {
+      this.peek();
+    }
+  }
+
+  skipBlank() {
+    this.peekBlank();
+    this.skipToPeek();
+  }
+
+  expectChar(ch) {
+    if (this.currentChar === ch) {
+      this.next();
+      return true;
+    }
+
+    throw new ParseError(&quot;E0003&quot;, ch);
+  }
+
+  expectLineEnd() {
+    if (this.currentChar === EOF) {
+      // EOF is a valid line end in Fluent.
+      return true;
+    }
+
+    if (this.currentChar === EOL) {
+      this.next();
+      return true;
+    }
+
+    // Unicode Character &apos;SYMBOL FOR NEWLINE&apos; (U+2424)
+    throw new ParseError(&quot;E0003&quot;, &quot;\u2424&quot;);
+  }
+
+  takeChar(f) {
+    const ch = this.currentChar;
+    if (ch === EOF) {
+      return EOF;
+    }
+    if (f(ch)) {
+      this.next();
+      return ch;
+    }
+    return null;
+  }
+
+  isCharIdStart(ch) {
+    if (ch === EOF) {
+      return false;
+    }
+
+    const cc = ch.charCodeAt(0);
+    return (cc &gt;= 97 &amp;&amp; cc &lt;= 122) || // a-z
+           (cc &gt;= 65 &amp;&amp; cc &lt;= 90); // A-Z
+  }
+
+  isIdentifierStart() {
+    return this.isCharIdStart(this.currentPeek);
+  }
+
+  isNumberStart() {
+    const ch = this.currentChar === &quot;-&quot;
+      ? this.peek()
+      : this.currentChar;
+
+    if (ch === EOF) {
+      this.resetPeek();
+      return false;
+    }
+
+    const cc = ch.charCodeAt(0);
+    const isDigit = cc &gt;= 48 &amp;&amp; cc &lt;= 57; // 0-9
+    this.resetPeek();
+    return isDigit;
+  }
+
+  isCharPatternContinuation(ch) {
+    if (ch === EOF) {
+      return false;
+    }
+
+    return !includes(SPECIAL_LINE_START_CHARS, ch);
+  }
+
+  isValueStart() {
+    // Inline Patterns may start with any char.
+    const ch = this.currentPeek;
+    return ch !== EOL &amp;&amp; ch !== EOF;
+  }
+
+  isValueContinuation() {
+    const column1 = this.peekOffset;
+    this.peekBlankInline();
+
+    if (this.currentPeek === &quot;{&quot;) {
+      this.resetPeek(column1);
+      return true;
+    }
+
+    if (this.peekOffset - column1 === 0) {
+      return false;
+    }
+
+    if (this.isCharPatternContinuation(this.currentPeek)) {
+      this.resetPeek(column1);
+      return true;
+    }
+
+    return false;
+  }
+
+  // -1 - any
+  //  0 - comment
+  //  1 - group comment
+  //  2 - resource comment
+  isNextLineComment(level = -1) {
+    if (this.currentChar !== EOL) {
+      return false;
+    }
+
+    let i = 0;
+
+    while (i &lt;= level || (level === -1 &amp;&amp; i &lt; 3)) {
+      if (this.peek() !== &quot;#&quot;) {
+        if (i &lt;= level &amp;&amp; level !== -1) {
+          this.resetPeek();
+          return false;
+        }
+        break;
+      }
+      i++;
+    }
+
+    // The first char after #, ## or ###.
+    const ch = this.peek();
+    if (ch === &quot; &quot; || ch === EOL) {
+      this.resetPeek();
+      return true;
+    }
+
+    this.resetPeek();
+    return false;
+  }
+
+  isVariantStart() {
+    const currentPeekOffset = this.peekOffset;
+    if (this.currentPeek === &quot;*&quot;) {
+      this.peek();
+    }
+    if (this.currentPeek === &quot;[&quot;) {
+      this.resetPeek(currentPeekOffset);
+      return true;
+    }
+    this.resetPeek(currentPeekOffset);
+    return false;
+  }
+
+  isAttributeStart() {
+    return this.currentPeek === &quot;.&quot;;
+  }
+
+  skipToNextEntryStart(junkStart) {
+    let lastNewline = this.string.lastIndexOf(EOL, this.index);
+    if (junkStart &lt; lastNewline) {
+      // Last seen newline is _after_ the junk start. It&apos;s safe to rewind
+      // without the risk of resuming at the same broken entry.
+      this.index = lastNewline;
+    }
+    while (this.currentChar) {
+      // We&apos;re only interested in beginnings of line.
+      if (this.currentChar !== EOL) {
+        this.next();
+        continue;
+      }
+
+      // Break if the first char in this line looks like an entry start.
+      const first = this.next();
+      if (this.isCharIdStart(first) || first === &quot;-&quot; || first === &quot;#&quot;) {
+        break;
+      }
+    }
+  }
+
+  takeIDStart() {
+    if (this.isCharIdStart(this.currentChar)) {
+      const ret = this.currentChar;
+      this.next();
+      return ret;
+    }
+
+    throw new ParseError(&quot;E0004&quot;, &quot;a-zA-Z&quot;);
+  }
+
+  takeIDChar() {
+    const closure = ch =&gt; {
+      const cc = ch.charCodeAt(0);
+      return ((cc &gt;= 97 &amp;&amp; cc &lt;= 122) || // a-z
+              (cc &gt;= 65 &amp;&amp; cc &lt;= 90) || // A-Z
+              (cc &gt;= 48 &amp;&amp; cc &lt;= 57) || // 0-9
+               cc === 95 || cc === 45); // _-
+    };
+
+    return this.takeChar(closure);
+  }
+
+  takeDigit() {
+    const closure = ch =&gt; {
+      const cc = ch.charCodeAt(0);
+      return (cc &gt;= 48 &amp;&amp; cc &lt;= 57); // 0-9
+    };
+
+    return this.takeChar(closure);
+  }
+
+  takeHexDigit() {
+    const closure = ch =&gt; {
+      const cc = ch.charCodeAt(0);
+      return (cc &gt;= 48 &amp;&amp; cc &lt;= 57) // 0-9
+        || (cc &gt;= 65 &amp;&amp; cc &lt;= 70) // A-F
+        || (cc &gt;= 97 &amp;&amp; cc &lt;= 102); // a-f
+    };
+
+    return this.takeChar(closure);
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

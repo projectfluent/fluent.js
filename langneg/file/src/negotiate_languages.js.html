@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/negotiate_languages.js | @fluent/langneg</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Language Negotiation API for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/langneg"><meta property="twitter:description" content="Language Negotiation API for Fluent"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/locale.js~Locale.html">Locale</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-acceptedLanguages">acceptedLanguages</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filterMatches">filterMatches</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-negotiateLanguages">negotiateLanguages</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLikelySubtagsMin">getLikelySubtagsMin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-localeParts">localeParts</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/negotiate_languages.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import filterMatches from &quot;./matches&quot;;
+
+function GetOption(options, property, type, values, fallback) {
+  let value = options[property];
+
+  if (value !== undefined) {
+    if (type === &quot;boolean&quot;) {
+      value = new Boolean(value);
+    } else if (type === &quot;string&quot;) {
+      value = String(value);
+    }
+
+    if (values !== undefined &amp;&amp; values.indexOf(value) === -1) {
+      throw new Error(&quot;Invalid option value&quot;);
+    }
+
+    return value;
+  }
+
+  return fallback;
+}
+
+/**
+ * Negotiates the languages between the list of requested locales against
+ * a list of available locales.
+ *
+ * It accepts three arguments:
+ *
+ *   requestedLocales:
+ *     an Array of strings with BCP47 locale IDs sorted
+ *     according to user preferences.
+ *
+ *   availableLocales:
+ *     an Array of strings with BCP47 locale IDs of locale for which
+ *     resources are available. Unsorted.
+ *
+ *   options:
+ *     An object with the following, optional keys:
+ *
+ *       strategy: &apos;filtering&apos; (default) | &apos;matching&apos; | &apos;lookup&apos;
+ *
+ *       defaultLocale:
+ *         a string with BCP47 locale ID to be used
+ *         as a last resort locale.
+ *
+ *
+ * It returns an Array of strings with BCP47 locale IDs sorted according to the
+ * user preferences.
+ *
+ * The exact list will be selected differently depending on the strategy:
+ *
+ *   &apos;filtering&apos;: (default)
+ *     In the filtering strategy, the algorithm will attempt to match
+ *     as many keys in the available locales in order of the requested locales.
+ *
+ *   &apos;matching&apos;:
+ *     In the matching strategy, the algorithm will attempt to find the
+ *     best possible match for each element of the requestedLocales list.
+ *
+ *   &apos;lookup&apos;:
+ *     In the lookup strategy, the algorithm will attempt to find a single
+ *     best available locale based on the requested locales list.
+ *
+ *     This strategy requires defaultLocale option to be set.
+ */
+export default function negotiateLanguages(
+  requestedLocales,
+  availableLocales,
+  options = {}
+) {
+
+  const defaultLocale = GetOption(options, &quot;defaultLocale&quot;, &quot;string&quot;);
+  const strategy = GetOption(options, &quot;strategy&quot;, &quot;string&quot;,
+    [&quot;filtering&quot;, &quot;matching&quot;, &quot;lookup&quot;], &quot;filtering&quot;);
+
+  if (strategy === &quot;lookup&quot; &amp;&amp; !defaultLocale) {
+    throw new Error(&quot;defaultLocale cannot be undefined for strategy `lookup`&quot;);
+  }
+
+  const resolvedReqLoc = Array.from(Object(requestedLocales)).map(loc =&gt; {
+    return String(loc);
+  });
+  const resolvedAvailLoc = Array.from(Object(availableLocales)).map(loc =&gt; {
+    return String(loc);
+  });
+
+  const supportedLocales = filterMatches(
+    resolvedReqLoc,
+    resolvedAvailLoc, strategy
+  );
+
+  if (strategy === &quot;lookup&quot;) {
+    if (supportedLocales.length === 0) {
+      supportedLocales.push(defaultLocale);
+    }
+  } else if (defaultLocale &amp;&amp; !supportedLocales.includes(defaultLocale)) {
+    supportedLocales.push(defaultLocale);
+  }
+  return supportedLocales;
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

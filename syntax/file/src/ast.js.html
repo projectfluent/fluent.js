@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/ast.js | @fluent/syntax</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="AST and parser for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/syntax"><meta property="twitter:description" content="AST and parser for Fluent"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Annotation.html">Annotation</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Attribute.html">Attribute</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~BaseComment.html">BaseComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~BaseNode.html">BaseNode</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~CallArguments.html">CallArguments</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Comment.html">Comment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Entry.html">Entry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Expression.html">Expression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~FunctionReference.html">FunctionReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~GroupComment.html">GroupComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Identifier.html">Identifier</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Junk.html">Junk</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Literal.html">Literal</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Message.html">Message</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~MessageReference.html">MessageReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~NamedArgument.html">NamedArgument</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~NumberLiteral.html">NumberLiteral</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Pattern.html">Pattern</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~PatternElement.html">PatternElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Placeable.html">Placeable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Resource.html">Resource</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~ResourceComment.html">ResourceComment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~SelectExpression.html">SelectExpression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Span.html">Span</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~StringLiteral.html">StringLiteral</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~SyntaxNode.html">SyntaxNode</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Term.html">Term</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~TermReference.html">TermReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~TextElement.html">TextElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~VariableReference.html">VariableReference</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/ast.js~Variant.html">Variant</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/errors.js~ParseError.html">ParseError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/parser.js~FluentParser.html">FluentParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/serializer.js~FluentSerializer.html">FluentSerializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/stream.js~FluentParserStream.html">FluentParserStream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/stream.js~ParserStream.html">ParserStream</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/visitor.js~Transformer.html">Transformer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/visitor.js~Visitor.html">Visitor</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-columnOffset">columnOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lineOffset">lineOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parse">parse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serialize">serialize</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serializeExpression">serializeExpression</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-serializeVariantKey">serializeVariantKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-includes">includes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-HAS_ENTRIES">HAS_ENTRIES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EOF">EOF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EOL">EOL</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/ast.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/*
+ * Base class for all Fluent AST nodes.
+ *
+ * All productions described in the ASDL subclass BaseNode, including Span and
+ * Annotation.
+ *
+ */
+export class BaseNode {
+  constructor() {}
+
+  equals(other, ignoredFields = [&quot;span&quot;]) {
+    const thisKeys = new Set(Object.keys(this));
+    const otherKeys = new Set(Object.keys(other));
+    if (ignoredFields) {
+      for (const fieldName of ignoredFields) {
+        thisKeys.delete(fieldName);
+        otherKeys.delete(fieldName);
+      }
+    }
+    if (thisKeys.size !== otherKeys.size) {
+      return false;
+    }
+    for (const fieldName of thisKeys) {
+      if (!otherKeys.has(fieldName)) {
+        return false;
+      }
+      const thisVal = this[fieldName];
+      const otherVal = other[fieldName];
+      if (typeof thisVal !== typeof otherVal) {
+        return false;
+      }
+      if (thisVal instanceof Array) {
+        if (thisVal.length !== otherVal.length) {
+          return false;
+        }
+        for (let i = 0; i &lt; thisVal.length; ++i) {
+          if (!scalarsEqual(thisVal[i], otherVal[i], ignoredFields)) {
+            return false;
+          }
+        }
+      } else if (!scalarsEqual(thisVal, otherVal, ignoredFields)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  clone() {
+    function visit(value) {
+      if (value instanceof BaseNode) {
+        return value.clone();
+      }
+      if (Array.isArray(value)) {
+        return value.map(visit);
+      }
+      return value;
+    }
+    const clone = Object.create(this.constructor.prototype);
+    for (const prop of Object.keys(this)) {
+      clone[prop] = visit(this[prop]);
+    }
+    return clone;
+  }
+}
+
+function scalarsEqual(thisVal, otherVal, ignoredFields) {
+  if (thisVal instanceof BaseNode) {
+    return thisVal.equals(otherVal, ignoredFields);
+  }
+  return thisVal === otherVal;
+}
+
+/*
+ * Base class for AST nodes which can have Spans.
+ */
+class SyntaxNode extends BaseNode {
+  addSpan(start, end) {
+    this.span = new Span(start, end);
+  }
+}
+
+export class Resource extends SyntaxNode {
+  constructor(body = []) {
+    super();
+    this.type = &quot;Resource&quot;;
+    this.body = body;
+  }
+}
+
+/*
+ * An abstract base class for useful elements of Resource.body.
+ */
+export class Entry extends SyntaxNode {}
+
+export class Message extends Entry {
+  constructor(id, value = null, attributes = [], comment = null) {
+    super();
+    this.type = &quot;Message&quot;;
+    this.id = id;
+    this.value = value;
+    this.attributes = attributes;
+    this.comment = comment;
+  }
+}
+
+export class Term extends Entry {
+  constructor(id, value, attributes = [], comment = null) {
+    super();
+    this.type = &quot;Term&quot;;
+    this.id = id;
+    this.value = value;
+    this.attributes = attributes;
+    this.comment = comment;
+  }
+}
+
+export class Pattern extends SyntaxNode {
+  constructor(elements) {
+    super();
+    this.type = &quot;Pattern&quot;;
+    this.elements = elements;
+  }
+}
+
+/*
+ * An abstract base class for elements of Patterns.
+ */
+export class PatternElement extends SyntaxNode {}
+
+export class TextElement extends PatternElement {
+  constructor(value) {
+    super();
+    this.type = &quot;TextElement&quot;;
+    this.value = value;
+  }
+}
+
+export class Placeable extends PatternElement {
+  constructor(expression) {
+    super();
+    this.type = &quot;Placeable&quot;;
+    this.expression = expression;
+  }
+}
+
+/*
+ * An abstract base class for expressions.
+ */
+export class Expression extends SyntaxNode {}
+
+// An abstract base class for Literals.
+export class Literal extends Expression {
+  constructor(value) {
+    super();
+    // The &quot;value&quot; field contains the exact contents of the literal,
+    // character-for-character.
+    this.value = value;
+  }
+
+  parse() {
+    return {value: this.value};
+  }
+}
+
+export class StringLiteral extends Literal {
+  constructor(value) {
+    super(value);
+    this.type = &quot;StringLiteral&quot;;
+  }
+
+  parse() {
+    // Backslash backslash, backslash double quote, uHHHH, UHHHHHH.
+    const KNOWN_ESCAPES =
+      /(?:\\\\|\\&quot;|\\u([0-9a-fA-F]{4})|\\U([0-9a-fA-F]{6}))/g;
+
+    function from_escape_sequence(match, codepoint4, codepoint6) {
+      switch (match) {
+        case &quot;\\\\&quot;:
+          return &quot;\\&quot;;
+        case &quot;\\\&quot;&quot;:
+          return &quot;\&quot;&quot;;
+        default:
+          let codepoint = parseInt(codepoint4 || codepoint6, 16);
+          if (codepoint &lt;= 0xD7FF || 0xE000 &lt;= codepoint) {
+            // It&apos;s a Unicode scalar value.
+            return String.fromCodePoint(codepoint);
+          }
+          // Escape sequences reresenting surrogate code points are
+          // well-formed but invalid in Fluent. Replace them with U+FFFD
+          // REPLACEMENT CHARACTER.
+          return &quot;&#xFFFD;&quot;;
+      }
+    }
+
+    let value = this.value.replace(KNOWN_ESCAPES, from_escape_sequence);
+    return {value};
+  }
+}
+
+export class NumberLiteral extends Literal {
+  constructor(value) {
+    super(value);
+    this.type = &quot;NumberLiteral&quot;;
+  }
+
+  parse() {
+    let value = parseFloat(this.value);
+    let decimal_position = this.value.indexOf(&quot;.&quot;);
+    let precision = decimal_position &gt; 0
+      ? this.value.length - decimal_position - 1
+      : 0;
+    return {value, precision};
+  }
+}
+
+export class MessageReference extends Expression {
+  constructor(id, attribute = null) {
+    super();
+    this.type = &quot;MessageReference&quot;;
+    this.id = id;
+    this.attribute = attribute;
+  }
+}
+
+export class TermReference extends Expression {
+  constructor(id, attribute = null, args = null) {
+    super();
+    this.type = &quot;TermReference&quot;;
+    this.id = id;
+    this.attribute = attribute;
+    this.arguments = args;
+  }
+}
+
+export class VariableReference extends Expression {
+  constructor(id) {
+    super();
+    this.type = &quot;VariableReference&quot;;
+    this.id = id;
+  }
+}
+
+export class FunctionReference extends Expression {
+  constructor(id, args) {
+    super();
+    this.type = &quot;FunctionReference&quot;;
+    this.id = id;
+    this.arguments = args;
+  }
+}
+
+export class SelectExpression extends Expression {
+  constructor(selector, variants) {
+    super();
+    this.type = &quot;SelectExpression&quot;;
+    this.selector = selector;
+    this.variants = variants;
+  }
+}
+
+export class CallArguments extends SyntaxNode {
+  constructor(positional = [], named = []) {
+    super();
+    this.type = &quot;CallArguments&quot;;
+    this.positional = positional;
+    this.named = named;
+  }
+}
+
+export class Attribute extends SyntaxNode {
+  constructor(id, value) {
+    super();
+    this.type = &quot;Attribute&quot;;
+    this.id = id;
+    this.value = value;
+  }
+}
+
+export class Variant extends SyntaxNode {
+  constructor(key, value, def = false) {
+    super();
+    this.type = &quot;Variant&quot;;
+    this.key = key;
+    this.value = value;
+    this.default = def;
+  }
+}
+
+export class NamedArgument extends SyntaxNode {
+  constructor(name, value) {
+    super();
+    this.type = &quot;NamedArgument&quot;;
+    this.name = name;
+    this.value = value;
+  }
+}
+
+export class Identifier extends SyntaxNode {
+  constructor(name) {
+    super();
+    this.type = &quot;Identifier&quot;;
+    this.name = name;
+  }
+}
+
+export class BaseComment extends Entry {
+  constructor(content) {
+    super();
+    this.type = &quot;BaseComment&quot;;
+    this.content = content;
+  }
+}
+
+export class Comment extends BaseComment {
+  constructor(content) {
+    super(content);
+    this.type = &quot;Comment&quot;;
+  }
+}
+
+export class GroupComment extends BaseComment {
+  constructor(content) {
+    super(content);
+    this.type = &quot;GroupComment&quot;;
+  }
+}
+export class ResourceComment extends BaseComment {
+  constructor(content) {
+    super(content);
+    this.type = &quot;ResourceComment&quot;;
+  }
+}
+
+export class Junk extends SyntaxNode {
+  constructor(content) {
+    super();
+    this.type = &quot;Junk&quot;;
+    this.annotations = [];
+    this.content = content;
+  }
+
+  addAnnotation(annot) {
+    this.annotations.push(annot);
+  }
+}
+
+export class Span extends BaseNode {
+  constructor(start, end) {
+    super();
+    this.type = &quot;Span&quot;;
+    this.start = start;
+    this.end = end;
+  }
+}
+
+export class Annotation extends SyntaxNode {
+  constructor(code, args = [], message) {
+    super();
+    this.type = &quot;Annotation&quot;;
+    this.code = code;
+    this.arguments = args;
+    this.message = message;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

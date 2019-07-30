@@ -1,0 +1,1302 @@
+[
+  {
+    "__docId__": 1,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Infinity",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 2,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~NaN",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 3,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~undefined",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 4,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~null",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 5,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Object",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 6,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~object",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 7,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Function",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 8,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~function",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 9,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Boolean",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 10,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~boolean",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 11,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Symbol",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 12,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Error",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 13,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~EvalError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 14,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~InternalError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 15,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~RangeError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 16,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~ReferenceError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 17,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~SyntaxError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 18,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~TypeError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 19,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~URIError",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 20,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Number",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 21,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~number",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 22,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Date",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 23,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~String",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 24,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~string",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 25,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~RegExp",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 26,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 27,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Int8Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 28,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Uint8Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 29,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Uint8ClampedArray",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 30,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Int16Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 31,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Uint16Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 32,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Int32Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 33,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Uint32Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 34,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Float32Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 35,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Float64Array",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 36,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Map",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 37,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Set",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 38,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~WeakMap",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 39,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~WeakSet",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 40,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~ArrayBuffer",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 41,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~DataView",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 42,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~JSON",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 43,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Promise",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 44,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Generator",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 45,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~GeneratorFunction",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 46,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Reflect",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 47,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "src/.external-ecmascript.js",
+    "static": true,
+    "longname": "src/.external-ecmascript.js~Proxy",
+    "access": "public",
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 48,
+    "kind": "file",
+    "name": "src/index.js",
+    "content": "/*\n * @module fluent-react\n * @overview\n *\n\n * `fluent-react` provides React bindings for Fluent.  It takes advantage of\n * React's Components system and the virtual DOM.  Translations are exposed to\n * components via the provider pattern.\n *\n *     <LocalizationProvider bundles={…}>\n *         <Localized id=\"hello-world\">\n *             <p>{'Hello, world!'}</p>\n *         </Localized>\n *     </LocalizationProvider>\n *\n * Consult the documentation of the `LocalizationProvider` and the `Localized`\n * components for more information.\n */\n\nexport { default as LocalizationProvider } from \"./provider\";\nexport { default as withLocalization } from \"./with_localization\";\nexport { default as Localized } from \"./localized\";\nexport { default as ReactLocalization, isReactLocalization }\n  from \"./localization\";\n",
+    "static": true,
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/src/index.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 49,
+    "kind": "file",
+    "name": "src/localization.js",
+    "content": "import { mapBundleSync } from \"@fluent/sequence\";\nimport { CachedSyncIterable } from \"cached-iterable\";\n\n/*\n * `ReactLocalization` handles translation formatting and fallback.\n *\n * The current negotiated fallback chain of languages is stored in the\n * `ReactLocalization` instance in form of an iterable of `FluentBundle`\n * instances.  This iterable is used to find the best existing translation for\n * a given identifier.\n *\n * `Localized` components must subscribe to the changes of the\n * `ReactLocalization`'s fallback chain.  When the fallback chain changes (the\n * `bundles` iterable is set anew), all subscribed compontent must relocalize.\n *\n * The `ReactLocalization` class instances are exposed to `Localized` elements\n * via the `LocalizationProvider` component.\n */\nexport default class ReactLocalization {\n  constructor(bundles) {\n    this.bundles = CachedSyncIterable.from(bundles);\n    this.subs = new Set();\n  }\n\n  /*\n   * Subscribe a `Localized` component to changes of `bundles`.\n   */\n  subscribe(comp) {\n    this.subs.add(comp);\n  }\n\n  /*\n   * Unsubscribe a `Localized` component from `bundles` changes.\n   */\n  unsubscribe(comp) {\n    this.subs.delete(comp);\n  }\n\n  /*\n   * Set a new `bundles` iterable and trigger the retranslation.\n   */\n  setBundles(bundles) {\n    this.bundles = CachedSyncIterable.from(bundles);\n\n    // Update all subscribed Localized components.\n    this.subs.forEach(comp => comp.relocalize());\n  }\n\n  getBundle(id) {\n    return mapBundleSync(this.bundles, id);\n  }\n\n  /*\n   * Find a translation by `id` and format it to a string using `args`.\n   */\n  getString(id, args, fallback) {\n    const bundle = this.getBundle(id);\n    if (bundle) {\n      const msg = bundle.getMessage(id);\n      if (msg && msg.value) {\n        let errors = [];\n        let value = bundle.formatPattern(msg.value, args, errors);\n        for (let error of errors) {\n          this.reportError(error);\n        }\n        return value;\n      }\n    }\n\n    return fallback || id;\n  }\n\n  // XXX Control this via a prop passed to the LocalizationProvider.\n  // See https://github.com/projectfluent/fluent.js/issues/411.\n  reportError(error) {\n    /* global console */\n    // eslint-disable-next-line no-console\n    console.warn(`[@fluent/react] ${error.name}: ${error.message}`);\n  }\n}\n\nexport function isReactLocalization(props, propName) {\n  const prop = props[propName];\n\n  if (prop instanceof ReactLocalization) {\n    return null;\n  }\n\n  return new Error(\n    `The ${propName} context field must be an instance of ReactLocalization.`\n  );\n}\n",
+    "static": true,
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/src/localization.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 50,
+    "kind": "class",
+    "name": "ReactLocalization",
+    "memberof": "src/localization.js",
+    "static": true,
+    "longname": "src/localization.js~ReactLocalization",
+    "access": "public",
+    "export": true,
+    "importPath": "@fluent/react/src/localization.js",
+    "importStyle": "ReactLocalization",
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 51,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true
+  },
+  {
+    "__docId__": 52,
+    "kind": "member",
+    "name": "bundles",
+    "memberof": "src/localization.js~ReactLocalization",
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#bundles",
+    "access": "public",
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "member",
+    "name": "subs",
+    "memberof": "src/localization.js~ReactLocalization",
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#subs",
+    "access": "public",
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "method",
+    "name": "subscribe",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#subscribe",
+    "access": "public",
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "params": [
+      {
+        "name": "comp",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 55,
+    "kind": "method",
+    "name": "unsubscribe",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#unsubscribe",
+    "access": "public",
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "params": [
+      {
+        "name": "comp",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 56,
+    "kind": "method",
+    "name": "setBundles",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#setBundles",
+    "access": "public",
+    "description": null,
+    "lineNumber": 42,
+    "undocument": true,
+    "params": [
+      {
+        "name": "bundles",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 58,
+    "kind": "method",
+    "name": "getBundle",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#getBundle",
+    "access": "public",
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [
+      {
+        "name": "id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 59,
+    "kind": "method",
+    "name": "getString",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#getString",
+    "access": "public",
+    "description": null,
+    "lineNumber": 56,
+    "undocument": true,
+    "params": [
+      {
+        "name": "id",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "args",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "fallback",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 60,
+    "kind": "method",
+    "name": "reportError",
+    "memberof": "src/localization.js~ReactLocalization",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localization.js~ReactLocalization#reportError",
+    "access": "public",
+    "description": null,
+    "lineNumber": 75,
+    "undocument": true,
+    "params": [
+      {
+        "name": "error",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 61,
+    "kind": "function",
+    "name": "isReactLocalization",
+    "memberof": "src/localization.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/localization.js~isReactLocalization",
+    "access": "public",
+    "export": true,
+    "importPath": "@fluent/react/src/localization.js",
+    "importStyle": "{isReactLocalization}",
+    "description": null,
+    "lineNumber": 82,
+    "undocument": true,
+    "params": [
+      {
+        "name": "props",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "propName",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 62,
+    "kind": "file",
+    "name": "src/localized.js",
+    "content": "import { isValidElement, cloneElement, Component } from \"react\";\nimport PropTypes from \"prop-types\";\nimport { isReactLocalization } from \"./localization\";\nimport VOID_ELEMENTS from \"../vendor/voidElementTags\";\n\n// Match the opening angle bracket (<) in HTML tags, and HTML entities like\n// &amp;, &#0038;, &#x0026;.\nconst reMarkup = /<|&#?\\w+;/;\n\n/*\n * Prepare props passed to `Localized` for formatting.\n */\nfunction toArguments(props) {\n  const args = {};\n  const elems = {};\n\n  for (const [propname, propval] of Object.entries(props)) {\n    if (propname.startsWith(\"$\")) {\n      const name = propname.substr(1);\n      args[name] = propval;\n    } else if (isValidElement(propval)) {\n      // We'll try to match localNames of elements found in the translation with\n      // names of elements passed as props. localNames are always lowercase.\n      const name = propname.toLowerCase();\n      elems[name] = propval;\n    }\n  }\n\n  return [args, elems];\n}\n\n/*\n * The `Localized` class renders its child with translated props and children.\n *\n *     <Localized id=\"hello-world\">\n *         <p>{'Hello, world!'}</p>\n *     </Localized>\n *\n * The `id` prop should be the unique identifier of the translation.  Any\n * attributes found in the translation will be applied to the wrapped element.\n *\n * Arguments to the translation can be passed as `$`-prefixed props on\n * `Localized`.\n *\n *     <Localized id=\"hello-world\" $username={name}>\n *         <p>{'Hello, { $username }!'}</p>\n *     </Localized>\n *\n *  It's recommended that the contents of the wrapped component be a string\n *  expression.  The string will be used as the ultimate fallback if no\n *  translation is available.  It also makes it easy to grep for strings in the\n *  source code.\n */\nexport default class Localized extends Component {\n  componentDidMount() {\n    const { l10n } = this.context;\n\n    if (l10n) {\n      l10n.subscribe(this);\n    }\n  }\n\n  componentWillUnmount() {\n    const { l10n } = this.context;\n\n    if (l10n) {\n      l10n.unsubscribe(this);\n    }\n  }\n\n  /*\n   * Rerender this component in a new language.\n   */\n  relocalize() {\n    // When the `ReactLocalization`'s fallback chain changes, update the\n    // component.\n    this.forceUpdate();\n  }\n\n  render() {\n    const { l10n, parseMarkup } = this.context;\n    const { id, attrs, children: child = null } = this.props;\n\n    // Validate that the child element isn't an array\n    if (Array.isArray(child)) {\n      throw new Error(\"<Localized/> expected to receive a single \" +\n        \"React node child\");\n    }\n\n    if (!l10n) {\n      // Use the wrapped component as fallback.\n      return child;\n    }\n\n    const bundle = l10n.getBundle(id);\n\n    if (bundle === null) {\n      // Use the wrapped component as fallback.\n      return child;\n    }\n\n    const msg = bundle.getMessage(id);\n    const [args, elems] = toArguments(this.props);\n    let errors = [];\n\n    // Check if the child inside <Localized> is a valid element -- if not, then\n    // it's either null or a simple fallback string. No need to localize the\n    // attributes.\n    if (!isValidElement(child)) {\n      if (msg.value) {\n        // Replace the fallback string with the message value;\n        let value = bundle.formatPattern(msg.value, args, errors);\n        for (let error of errors) {\n          l10n.reportError(error);\n        }\n        return value;\n      }\n\n      return child;\n    }\n\n    let localizedProps;\n\n    // The default is to forbid all message attributes. If the attrs prop exists\n    // on the Localized instance, only set message attributes which have been\n    // explicitly allowed by the developer.\n    if (attrs && msg.attributes) {\n      localizedProps = {};\n      errors = [];\n      for (const [name, allowed] of Object.entries(attrs)) {\n        if (allowed && name in msg.attributes) {\n          localizedProps[name] = bundle.formatPattern(\n            msg.attributes[name], args, errors);\n        }\n      }\n      for (let error of errors) {\n        l10n.reportError(error);\n      }\n    }\n\n    // If the wrapped component is a known void element, explicitly dismiss the\n    // message value and do not pass it to cloneElement in order to avoid the\n    // \"void element tags must neither have `children` nor use\n    // `dangerouslySetInnerHTML`\" error.\n    if (child.type in VOID_ELEMENTS) {\n      return cloneElement(child, localizedProps);\n    }\n\n    // If the message has a null value, we're only interested in its attributes.\n    // Do not pass the null value to cloneElement as it would nuke all children\n    // of the wrapped component.\n    if (msg.value === null) {\n      return cloneElement(child, localizedProps);\n    }\n\n    errors = [];\n    const messageValue = bundle.formatPattern(msg.value, args, errors);\n    for (let error of errors) {\n      l10n.reportError(error);\n    }\n\n    // If the message value doesn't contain any markup nor any HTML entities,\n    // insert it as the only child of the wrapped component.\n    if (!reMarkup.test(messageValue)) {\n      return cloneElement(child, localizedProps, messageValue);\n    }\n\n    // If the message contains markup, parse it and try to match the children\n    // found in the translation with the props passed to this Localized.\n    const translationNodes = parseMarkup(messageValue);\n    const translatedChildren = translationNodes.map(childNode => {\n      if (childNode.nodeType === childNode.TEXT_NODE) {\n        return childNode.textContent;\n      }\n\n      // If the child is not expected just take its textContent.\n      if (!elems.hasOwnProperty(childNode.localName)) {\n        return childNode.textContent;\n      }\n\n      const sourceChild = elems[childNode.localName];\n\n      // If the element passed as a prop to <Localized> is a known void element,\n      // explicitly dismiss any textContent which might have accidentally been\n      // defined in the translation to prevent the \"void element tags must not\n      // have children\" error.\n      if (sourceChild.type in VOID_ELEMENTS) {\n        return sourceChild;\n      }\n\n      // TODO Protect contents of elements wrapped in <Localized>\n      // https://github.com/projectfluent/fluent.js/issues/184\n      // TODO  Control localizable attributes on elements passed as props\n      // https://github.com/projectfluent/fluent.js/issues/185\n      return cloneElement(sourceChild, null, childNode.textContent);\n    });\n\n    return cloneElement(child, localizedProps, ...translatedChildren);\n  }\n}\n\nLocalized.contextTypes = {\n  l10n: isReactLocalization,\n  parseMarkup: PropTypes.func,\n};\n\nLocalized.propTypes = {\n  children: PropTypes.node\n};\n",
+    "static": true,
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/src/localized.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 63,
+    "kind": "variable",
+    "name": "reMarkup",
+    "memberof": "src/localized.js",
+    "static": true,
+    "longname": "src/localized.js~reMarkup",
+    "access": "public",
+    "export": false,
+    "importPath": "@fluent/react/src/localized.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 64,
+    "kind": "function",
+    "name": "toArguments",
+    "memberof": "src/localized.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/localized.js~toArguments",
+    "access": "public",
+    "export": false,
+    "importPath": "@fluent/react/src/localized.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [
+      {
+        "name": "props",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "undefined[]"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 65,
+    "kind": "class",
+    "name": "Localized",
+    "memberof": "src/localized.js",
+    "static": true,
+    "longname": "src/localized.js~Localized",
+    "access": "public",
+    "export": true,
+    "importPath": "@fluent/react/src/localized.js",
+    "importStyle": "Localized",
+    "description": null,
+    "lineNumber": 54,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "react~Component"
+    ]
+  },
+  {
+    "__docId__": 66,
+    "kind": "method",
+    "name": "componentDidMount",
+    "memberof": "src/localized.js~Localized",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localized.js~Localized#componentDidMount",
+    "access": "public",
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 67,
+    "kind": "method",
+    "name": "componentWillUnmount",
+    "memberof": "src/localized.js~Localized",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localized.js~Localized#componentWillUnmount",
+    "access": "public",
+    "description": null,
+    "lineNumber": 63,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 68,
+    "kind": "method",
+    "name": "relocalize",
+    "memberof": "src/localized.js~Localized",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localized.js~Localized#relocalize",
+    "access": "public",
+    "description": null,
+    "lineNumber": 74,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 69,
+    "kind": "method",
+    "name": "render",
+    "memberof": "src/localized.js~Localized",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/localized.js~Localized#render",
+    "access": "public",
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 70,
+    "kind": "file",
+    "name": "src/markup.js",
+    "content": "/* eslint-env browser */\n\nlet cachedParseMarkup;\n\n// We use a function creator to make the reference to `document` lazy. At the\n// same time, it's eager enough to throw in <LocalizationProvider> as soon as\n// it's first mounted which reduces the risk of this error making it to the\n// runtime without developers noticing it in development.\nexport default function createParseMarkup() {\n  if (typeof(document) === \"undefined\") {\n    // We can't use <template> to sanitize translations.\n    throw new Error(\n      \"`document` is undefined. Without it, translations cannot \" +\n      \"be safely sanitized. Consult the documentation at \" +\n      \"https://github.com/projectfluent/fluent.js/wiki/React-Overlays.\"\n    );\n  }\n\n  if (!cachedParseMarkup) {\n    const template = document.createElement(\"template\");\n    cachedParseMarkup = function parseMarkup(str) {\n      template.innerHTML = str;\n      return Array.from(template.content.childNodes);\n    };\n  }\n\n  return cachedParseMarkup;\n}\n",
+    "static": true,
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/src/markup.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 71,
+    "kind": "function",
+    "name": "createParseMarkup",
+    "memberof": "src/markup.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/markup.js~createParseMarkup",
+    "access": "public",
+    "export": true,
+    "importPath": "@fluent/react/src/markup.js",
+    "importStyle": "createParseMarkup",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 72,
+    "kind": "file",
+    "name": "src/provider.js",
+    "content": "import { Component, Children } from \"react\";\nimport PropTypes from \"prop-types\";\nimport ReactLocalization, { isReactLocalization} from \"./localization\";\nimport createParseMarkup from \"./markup\";\n\n/*\n * The Provider component for the `ReactLocalization` class.\n *\n * Exposes a `ReactLocalization` instance to all descendants via React's\n * context feature.  It makes translations available to all localizable\n * elements in the descendant's render tree without the need to pass them\n * explicitly.\n *\n *     <LocalizationProvider bundles={…}>\n *         …\n *     </LocalizationProvider>\n *\n * The `LocalizationProvider` component takes one prop: `bundles`.  It should\n * be an iterable of `FluentBundle` instances in order of the user's\n * preferred languages.  The `FluentBundle` instances will be used by\n * `ReactLocalization` to format translations.  If a translation is missing in\n * one instance, `ReactLocalization` will fall back to the next one.\n */\nexport default class LocalizationProvider extends Component {\n  constructor(props) {\n    super(props);\n    const {bundles, parseMarkup} = props;\n\n    if (bundles === undefined) {\n      throw new Error(\"LocalizationProvider must receive the bundles prop.\");\n    }\n\n    if (!bundles[Symbol.iterator]) {\n      throw new Error(\"The bundles prop must be an iterable.\");\n    }\n\n    this.l10n = new ReactLocalization(bundles);\n    this.parseMarkup = parseMarkup || createParseMarkup();\n  }\n\n  getChildContext() {\n    return {\n      l10n: this.l10n,\n      parseMarkup: this.parseMarkup,\n    };\n  }\n\n  componentWillReceiveProps(next) {\n    const { bundles } = next;\n\n    if (bundles !== this.props.bundles) {\n      this.l10n.setBundles(bundles);\n    }\n  }\n\n  render() {\n    return Children.only(this.props.children);\n  }\n}\n\nLocalizationProvider.childContextTypes = {\n  l10n: isReactLocalization,\n  parseMarkup: PropTypes.func,\n};\n\nLocalizationProvider.propTypes = {\n  children: PropTypes.element.isRequired,\n  bundles: isIterable,\n  parseMarkup: PropTypes.func,\n};\n\nfunction isIterable(props, propName, componentName) {\n  const prop = props[propName];\n\n  if (Symbol.iterator in Object(prop)) {\n    return null;\n  }\n\n  return new Error(\n    `The ${propName} prop supplied to ${componentName} must be an iterable.`\n  );\n}\n",
+    "static": true,
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/src/provider.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 73,
+    "kind": "class",
+    "name": "LocalizationProvider",
+    "memberof": "src/provider.js",
+    "static": true,
+    "longname": "src/provider.js~LocalizationProvider",
+    "access": "public",
+    "export": true,
+    "importPath": "@fluent/react/src/provider.js",
+    "importStyle": "LocalizationProvider",
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "react~Component"
+    ]
+  },
+  {
+    "__docId__": 74,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/provider.js~LocalizationProvider",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/provider.js~LocalizationProvider#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true
+  },
+  {
+    "__docId__": 75,
+    "kind": "member",
+    "name": "l10n",
+    "memberof": "src/provider.js~LocalizationProvider",
+    "static": false,
+    "longname": "src/provider.js~LocalizationProvider#l10n",
+    "access": "public",
+    "description": null,
+    "lineNumber": 37,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 76,
+    "kind": "member",
+    "name": "parseMarkup",
+    "memberof": "src/provider.js~LocalizationProvider",
+    "static": false,
+    "longname": "src/provider.js~LocalizationProvider#parseMarkup",
+    "access": "public",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 77,
+    "kind": "method",
+    "name": "getChildContext",
+    "memberof": "src/provider.js~LocalizationProvider",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/provider.js~LocalizationProvider#getChildContext",
+    "access": "public",
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "{\"l10n\": *, \"parseMarkup\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 78,
+    "kind": "method",
+    "name": "componentWillReceiveProps",
+    "memberof": "src/provider.js~LocalizationProvider",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/provider.js~LocalizationProvider#componentWillReceiveProps",
+    "access": "public",
+    "description": null,
+    "lineNumber": 48,
+    "undocument": true,
+    "params": [
+      {
+        "name": "next",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 79,
+    "kind": "method",
+    "name": "render",
+    "memberof": "src/provider.js~LocalizationProvider",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/provider.js~LocalizationProvider#render",
+    "access": "public",
+    "description": null,
+    "lineNumber": 56,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 80,
+    "kind": "function",
+    "name": "isIterable",
+    "memberof": "src/provider.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/provider.js~isIterable",
+    "access": "public",
+    "export": false,
+    "importPath": "@fluent/react/src/provider.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 72,
+    "undocument": true,
+    "params": [
+      {
+        "name": "props",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "propName",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "componentName",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 81,
+    "kind": "file",
+    "name": "src/with_localization.js",
+    "content": "import { createElement, Component } from \"react\";\n\nimport { isReactLocalization } from \"./localization\";\n\nexport default function withLocalization(Inner) {\n  class WithLocalization extends Component {\n    componentDidMount() {\n      const { l10n } = this.context;\n\n      if (l10n) {\n        l10n.subscribe(this);\n      }\n    }\n\n    componentWillUnmount() {\n      const { l10n } = this.context;\n\n      if (l10n) {\n        l10n.unsubscribe(this);\n      }\n    }\n\n    /*\n     * Rerender this component in a new language.\n     */\n    relocalize() {\n      // When the `ReactLocalization`'s fallback chain changes, update the\n      // component.\n      this.forceUpdate();\n    }\n\n    /*\n     * Find a translation by `id` and format it to a string using `args`.\n     */\n    getString(id, args, fallback) {\n      const { l10n } = this.context;\n\n      if (!l10n) {\n        return fallback || id;\n      }\n\n      return l10n.getString(id, args, fallback);\n    }\n\n    render() {\n      return createElement(\n        Inner,\n        Object.assign(\n          // getString needs to be re-bound on updates to trigger a re-render\n          { getString: (...args) => this.getString(...args) },\n          this.props\n        )\n      );\n    }\n  }\n\n  WithLocalization.displayName = `WithLocalization(${displayName(Inner)})`;\n\n  WithLocalization.contextTypes = {\n    l10n: isReactLocalization\n  };\n\n  return WithLocalization;\n}\n\nfunction displayName(component) {\n  return component.displayName || component.name || \"Component\";\n}\n",
+    "static": true,
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/src/with_localization.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 82,
+    "kind": "function",
+    "name": "withLocalization",
+    "memberof": "src/with_localization.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/with_localization.js~withLocalization",
+    "access": "public",
+    "export": true,
+    "importPath": "@fluent/react/src/with_localization.js",
+    "importStyle": "withLocalization",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Inner",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 83,
+    "kind": "function",
+    "name": "displayName",
+    "memberof": "src/with_localization.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/with_localization.js~displayName",
+    "access": "public",
+    "export": false,
+    "importPath": "@fluent/react/src/with_localization.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 66,
+    "undocument": true,
+    "params": [
+      {
+        "name": "component",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "kind": "index",
+    "content": "# @fluent/react\n\n`@fluent/react` provides React bindings for Project Fluent, a localization\nframework designed to unleash the expressive power of the natural language.\n\n\n## Installation\n\n`@fluent/react` can be used both on the client-side and the server-side. You\ncan install it from the npm registry or use it as a standalone script (as the\n`FluentReact` global).\n\n    npm install @fluent/react\n\n\n# Integrating with React apps\n\n`@fluent/react` takes advantage of React's Components system and the virtual\nDOM. Translations are exposed to components via the _provider_ pattern.\n\nThere are many approaches to fetching and storing translations. To allow\nmaximum flexibility, `@fluent/react` expects the developer to write a little\nbit of a setup code related to language negotiation and translation fetching.\nIt makes `@fluent/react` unopinionated and suitable for many different\nscenarios. You will likely also need to install a few other packages:\n`@fluent/bundle`, `@fluent/langneg` and `intl-pluralrules`.\n\nConsult the [wiki][] for documentation on how to set up and use `@fluent/react`.\n\n[wiki]: https://github.com/projectfluent/fluent.js/wiki/React-Bindings\n\n\n## Compatibility\n\nFor legacy browsers, the `compat` build has been transpiled using Babel's [env\npreset][]:\n\n```javascript\nimport \"@fluent/react/compat\";\n```\n\nIn some cases, using the `compat` build may be needed even if you target\nmodern browsers. For instance, the [`create-react-app` boilerplate uses\nUglifyJS to minify its files][create-react-app-minify]. As of November 2017,\nUglifyJS doesn't support some of the new JavaScript syntax features. By using\nthe `compat` build of all `@fluent` packages you can ensure that the\nminifiction works properly.\n\n\n[create-react-app-minify]: https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-build-fails-to-minify\n\n\n## Learn more\n\nFind out more about Project Fluent at [projectfluent.org][], including\ndocumentation of the Fluent file format ([FTL][]), links to other packages and\nimplementations, and information about how to get involved.\n\n\n[env preset]: https://babeljs.io/docs/plugins/preset-env/\n[projectfluent.org]: http://projectfluent.org\n[FTL]: http://projectfluent.org/fluent/guide/\n",
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/README.md",
+    "name": "./README.md",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "packageJSON",
+    "content": "{\n  \"name\": \"@fluent/react\",\n  \"description\": \"Fluent bindings for React\",\n  \"version\": \"0.10.0\",\n  \"homepage\": \"https://projectfluent.org\",\n  \"author\": \"Mozilla <l10n-drivers@mozilla.org>\",\n  \"license\": \"Apache-2.0\",\n  \"contributors\": [\n    {\n      \"name\": \"Zibi Braniecki\",\n      \"email\": \"zbraniecki@mozilla.com\"\n    },\n    {\n      \"name\": \"Staś Małolepszy\",\n      \"email\": \"stas@mozilla.com\"\n    }\n  ],\n  \"directories\": {\n    \"lib\": \"./src\"\n  },\n  \"main\": \"./index.js\",\n  \"module\": \"./src/index.js\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/projectfluent/fluent.js.git\"\n  },\n  \"keywords\": [\n    \"localization\",\n    \"l10n\",\n    \"internationalization\",\n    \"i18n\",\n    \"ftl\",\n    \"plural\",\n    \"gender\",\n    \"locale\",\n    \"language\",\n    \"formatting\",\n    \"translate\",\n    \"translation\",\n    \"format\",\n    \"parser\",\n    \"react\",\n    \"reactjs\"\n  ],\n  \"engines\": {\n    \"node\": \">=8.9.0\"\n  },\n  \"dependencies\": {\n    \"cached-iterable\": \"^0.2.1\",\n    \"@fluent/sequence\": \"0.4.0\",\n    \"prop-types\": \"^15.6.0\"\n  },\n  \"peerDependencies\": {\n    \"@fluent/bundle\": \">=0.14.0 <0.15.0\",\n    \"react\": \"^0.14.9 || ^15.0.0 || ^16.0.0\"\n  },\n  \"devDependencies\": {\n    \"@babel/preset-react\": \"^7.0.0-beta.47\",\n    \"babel-plugin-transform-rename-import\": \"^2.2.0\",\n    \"enzyme\": \"^3.3.0\",\n    \"enzyme-adapter-react-16\": \"^1.1.1\",\n    \"jsdom\": \"^11.12.0\",\n    \"react\": \"^16.2.0\",\n    \"react-dom\": \"^16.2.0\",\n    \"sinon\": \"^4.2.2\"\n  }\n}\n",
+    "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-react/package.json",
+    "name": "package.json",
+    "static": true,
+    "access": "public"
+  }
+]

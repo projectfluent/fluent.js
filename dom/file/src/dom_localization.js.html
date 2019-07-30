@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/dom_localization.js | @fluent/dom</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Fluent bindings for DOM"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/dom"><meta property="twitter:description" content="Fluent bindings for DOM"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dom_localization.js~DOMLocalization.html">DOMLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~Localization.html">Localization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-translateElement">translateElement</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/dom_localization.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import translateElement from &quot;./overlay&quot;;
+import Localization from &quot;./localization&quot;;
+
+const L10NID_ATTR_NAME = &quot;data-l10n-id&quot;;
+const L10NARGS_ATTR_NAME = &quot;data-l10n-args&quot;;
+
+const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
+
+/**
+ * The `DOMLocalization` class is responsible for fetching resources and
+ * formatting translations.
+ *
+ * It implements the fallback strategy in case of errors encountered during the
+ * formatting of translations and methods for observing DOM
+ * trees with a `MutationObserver`.
+ */
+export default class DOMLocalization extends Localization {
+  /**
+   * @param {Array&lt;String&gt;}    resourceIds     - List of resource IDs
+   * @param {Function}         generateBundles - Function that returns a
+   *                                             generator over FluentBundles
+   * @returns {DOMLocalization}
+   */
+  constructor(resourceIds, generateBundles) {
+    super(resourceIds, generateBundles);
+
+    // A Set of DOM trees observed by the `MutationObserver`.
+    this.roots = new Set();
+    // requestAnimationFrame handler.
+    this.pendingrAF = null;
+    // list of elements pending for translation.
+    this.pendingElements = new Set();
+    this.windowElement = null;
+    this.mutationObserver = null;
+
+    this.observerConfig = {
+      attributes: true,
+      characterData: false,
+      childList: true,
+      subtree: true,
+      attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME]
+    };
+  }
+
+  onChange() {
+    super.onChange();
+    this.translateRoots();
+  }
+
+  /**
+   * Set the `data-l10n-id` and `data-l10n-args` attributes on DOM elements.
+   * FluentDOM makes use of mutation observers to detect changes
+   * to `data-l10n-*` attributes and translate elements asynchronously.
+   * `setAttributes` is a convenience method which allows to translate
+   * DOM elements declaratively.
+   *
+   * You should always prefer to use `data-l10n-id` on elements (statically in
+   * HTML or dynamically via `setAttributes`) over manually retrieving
+   * translations with `format`.  The use of attributes ensures that the
+   * elements can be retranslated when the user changes their language
+   * preferences.
+   *
+   * ```javascript
+   * localization.setAttributes(
+   *   document.querySelector(&apos;#welcome&apos;), &apos;hello&apos;, { who: &apos;world&apos; }
+   * );
+   * ```
+   *
+   * This will set the following attributes on the `#welcome` element.
+   * The MutationObserver will pick up this change and will localize the element
+   * asynchronously.
+   *
+   * ```html
+   * &lt;p id=&apos;welcome&apos;
+   *   data-l10n-id=&apos;hello&apos;
+   *   data-l10n-args=&apos;{&quot;who&quot;: &quot;world&quot;}&apos;&gt;
+   * &lt;/p&gt;
+   * ```
+   *
+   * @param {Element}                element - Element to set attributes on
+   * @param {string}                 id      - l10n-id string
+   * @param {Object&lt;string, string&gt;} args    - KVP list of l10n arguments
+   * @returns {Element}
+   */
+  setAttributes(element, id, args) {
+    element.setAttribute(L10NID_ATTR_NAME, id);
+    if (args) {
+      element.setAttribute(L10NARGS_ATTR_NAME, JSON.stringify(args));
+    } else {
+      element.removeAttribute(L10NARGS_ATTR_NAME);
+    }
+    return element;
+  }
+
+  /**
+   * Get the `data-l10n-*` attributes from DOM elements.
+   *
+   * ```javascript
+   * localization.getAttributes(
+   *   document.querySelector(&apos;#welcome&apos;)
+   * );
+   * // -&gt; { id: &apos;hello&apos;, args: { who: &apos;world&apos; } }
+   * ```
+   *
+   * @param   {Element}  element - HTML element
+   * @returns {{id: string, args: Object}}
+   */
+  getAttributes(element) {
+    return {
+      id: element.getAttribute(L10NID_ATTR_NAME),
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
+    };
+  }
+
+  /**
+   * Add `newRoot` to the list of roots managed by this `DOMLocalization`.
+   *
+   * Additionally, if this `DOMLocalization` has an observer, start observing
+   * `newRoot` in order to translate mutations in it.
+   *
+   * @param {Element}      newRoot - Root to observe.
+   */
+  connectRoot(newRoot) {
+    for (const root of this.roots) {
+      if (root === newRoot ||
+          root.contains(newRoot) ||
+          newRoot.contains(root)) {
+        throw new Error(&quot;Cannot add a root that overlaps with existing root.&quot;);
+      }
+    }
+
+    if (this.windowElement) {
+      if (this.windowElement !== newRoot.ownerDocument.defaultView) {
+        throw new Error(`Cannot connect a root:
+          DOMLocalization already has a root from a different window.`);
+      }
+    } else {
+      this.windowElement = newRoot.ownerDocument.defaultView;
+      this.mutationObserver = new this.windowElement.MutationObserver(
+        mutations =&gt; this.translateMutations(mutations)
+      );
+    }
+
+
+    this.roots.add(newRoot);
+    this.mutationObserver.observe(newRoot, this.observerConfig);
+  }
+
+  /**
+   * Remove `root` from the list of roots managed by this `DOMLocalization`.
+   *
+   * Additionally, if this `DOMLocalization` has an observer, stop observing
+   * `root`.
+   *
+   * Returns `true` if the root was the last one managed by this
+   * `DOMLocalization`.
+   *
+   * @param   {Element} root - Root to disconnect.
+   * @returns {boolean}
+   */
+  disconnectRoot(root) {
+    this.roots.delete(root);
+    // Pause the mutation observer to stop observing `root`.
+    this.pauseObserving();
+
+    if (this.roots.size === 0) {
+      this.mutationObserver = null;
+      this.windowElement = null;
+      this.pendingrAF = null;
+      this.pendingElements.clear();
+      return true;
+    }
+
+    // Resume observing all other roots.
+    this.resumeObserving();
+    return false;
+  }
+
+  /**
+   * Translate all roots associated with this `DOMLocalization`.
+   *
+   * @returns {Promise}
+   */
+  translateRoots() {
+    const roots = Array.from(this.roots);
+    return Promise.all(
+      roots.map(root =&gt; this.translateFragment(root))
+    );
+  }
+
+  /**
+   * Pauses the `MutationObserver`.
+   *
+   * @private
+   */
+  pauseObserving() {
+    if (!this.mutationObserver) {
+      return;
+    }
+
+    this.translateMutations(this.mutationObserver.takeRecords());
+    this.mutationObserver.disconnect();
+  }
+
+  /**
+   * Resumes the `MutationObserver`.
+   *
+   * @private
+   */
+  resumeObserving() {
+    if (!this.mutationObserver) {
+      return;
+    }
+
+    for (const root of this.roots) {
+      this.mutationObserver.observe(root, this.observerConfig);
+    }
+  }
+
+  /**
+   * Translate mutations detected by the `MutationObserver`.
+   *
+   * @private
+   */
+  translateMutations(mutations) {
+    for (const mutation of mutations) {
+      switch (mutation.type) {
+        case &quot;attributes&quot;:
+          if (mutation.target.hasAttribute(&quot;data-l10n-id&quot;)) {
+            this.pendingElements.add(mutation.target);
+          }
+          break;
+        case &quot;childList&quot;:
+          for (const addedNode of mutation.addedNodes) {
+            if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
+              if (addedNode.childElementCount) {
+                for (const element of this.getTranslatables(addedNode)) {
+                  this.pendingElements.add(element);
+                }
+              } else if (addedNode.hasAttribute(L10NID_ATTR_NAME)) {
+                this.pendingElements.add(addedNode);
+              }
+            }
+          }
+          break;
+      }
+    }
+
+    // This fragment allows us to coalesce all pending translations
+    // into a single requestAnimationFrame.
+    if (this.pendingElements.size &gt; 0) {
+      if (this.pendingrAF === null) {
+        this.pendingrAF = this.windowElement.requestAnimationFrame(() =&gt; {
+          this.translateElements(Array.from(this.pendingElements));
+          this.pendingElements.clear();
+          this.pendingrAF = null;
+        });
+      }
+    }
+  }
+
+  /**
+   * Translate a DOM element or fragment asynchronously using this
+   * `DOMLocalization` object.
+   *
+   * Manually trigger the translation (or re-translation) of a DOM fragment.
+   * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
+   * with information about which translations to use.
+   *
+   * Returns a `Promise` that gets resolved once the translation is complete.
+   *
+   * @param   {DOMFragment} frag - Element or DocumentFragment to be translated
+   * @returns {Promise}
+   */
+  translateFragment(frag) {
+    return this.translateElements(this.getTranslatables(frag));
+  }
+
+  /**
+   * Translate a list of DOM elements asynchronously using this
+   * `DOMLocalization` object.
+   *
+   * Manually trigger the translation (or re-translation) of a list of elements.
+   * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
+   * with information about which translations to use.
+   *
+   * Returns a `Promise` that gets resolved once the translation is complete.
+   *
+   * @param   {Array&lt;Element&gt;} elements - List of elements to be translated
+   * @returns {Promise}
+   */
+  async translateElements(elements) {
+    if (!elements.length) {
+      return undefined;
+    }
+
+    const keys = elements.map(this.getKeysForElement);
+    const translations = await this.formatMessages(keys);
+    return this.applyTranslations(elements, translations);
+  }
+
+  /**
+   * Applies translations onto elements.
+   *
+   * @param {Array&lt;Element&gt;} elements
+   * @param {Array&lt;Object&gt;}  translations
+   * @private
+   */
+  applyTranslations(elements, translations) {
+    this.pauseObserving();
+
+    for (let i = 0; i &lt; elements.length; i++) {
+      if (translations[i] !== undefined) {
+        translateElement(elements[i], translations[i]);
+      }
+    }
+
+    this.resumeObserving();
+  }
+
+  /**
+   * Collects all translatable child elements of the element.
+   *
+   * @param {Element} element
+   * @returns {Array&lt;Element&gt;}
+   * @private
+   */
+  getTranslatables(element) {
+    const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
+
+    if (typeof element.hasAttribute === &quot;function&quot; &amp;&amp;
+        element.hasAttribute(L10NID_ATTR_NAME)) {
+      nodes.push(element);
+    }
+
+    return nodes;
+  }
+
+  /**
+   * Get the `data-l10n-*` attributes from DOM elements as a two-element
+   * array.
+   *
+   * @param {Element} element
+   * @returns {Object}
+   * @private
+   */
+  getKeysForElement(element) {
+    return {
+      id: element.getAttribute(L10NID_ATTR_NAME),
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
+    };
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

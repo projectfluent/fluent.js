@@ -1,0 +1,107 @@
+{
+  "coverage": "32.18%",
+  "expectCount": 87,
+  "actualCount": 28,
+  "files": {
+    "src/builtins.js": {
+      "expectCount": 4,
+      "actualCount": 0,
+      "undocumentLines": [
+        16,
+        20,
+        29,
+        43
+      ]
+    },
+    "src/bundle.js": {
+      "expectCount": 13,
+      "actualCount": 6,
+      "undocumentLines": [
+        48,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ]
+    },
+    "src/error.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/resolver.js": {
+      "expectCount": 14,
+      "actualCount": 0,
+      "undocumentLines": [
+        33,
+        36,
+        37,
+        41,
+        67,
+        77,
+        93,
+        117,
+        151,
+        176,
+        201,
+        224,
+        242,
+        293
+      ]
+    },
+    "src/resource.js": {
+      "expectCount": 29,
+      "actualCount": 1,
+      "undocumentLines": [
+        5,
+        9,
+        10,
+        12,
+        13,
+        14,
+        15,
+        23,
+        24,
+        27,
+        28,
+        31,
+        32,
+        34,
+        36,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        48,
+        49,
+        53,
+        59,
+        60,
+        63
+      ]
+    },
+    "src/scope.js": {
+      "expectCount": 10,
+      "actualCount": 5,
+      "undocumentLines": [
+        1,
+        2,
+        23,
+        27,
+        34
+      ]
+    },
+    "src/types.js": {
+      "expectCount": 16,
+      "actualCount": 16,
+      "undocumentLines": []
+    }
+  }
+}

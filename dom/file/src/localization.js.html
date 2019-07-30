@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/localization.js | @fluent/dom</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Fluent bindings for DOM"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/dom"><meta property="twitter:description" content="Fluent bindings for DOM"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/dom_localization.js~DOMLocalization.html">DOMLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~Localization.html">Localization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-translateElement">translateElement</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/localization.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint no-console: [&quot;error&quot;, { allow: [&quot;warn&quot;, &quot;error&quot;] }] */
+/* global console */
+
+import { CachedAsyncIterable } from &quot;cached-iterable&quot;;
+
+/**
+ * The `Localization` class is a central high-level API for vanilla
+ * JavaScript use of Fluent.
+ * It combines language negotiation, FluentBundle and I/O to
+ * provide a scriptable API to format translations.
+ */
+export default class Localization {
+  /**
+   * @param {Array&lt;String&gt;} resourceIds     - List of resource IDs
+   * @param {Function}      generateBundles - Function that returns a
+   *                                          generator over FluentBundles
+   *
+   * @returns {Localization}
+   */
+  constructor(resourceIds = [], generateBundles) {
+    this.resourceIds = resourceIds;
+    this.generateBundles = generateBundles;
+    this.bundles = CachedAsyncIterable.from(
+      this.generateBundles(this.resourceIds));
+  }
+
+  addResourceIds(resourceIds) {
+    this.resourceIds.push(...resourceIds);
+    this.onChange();
+    return this.resourceIds.length;
+  }
+
+  removeResourceIds(resourceIds) {
+    this.resourceIds = this.resourceIds.filter(r =&gt; !resourceIds.includes(r));
+    this.onChange();
+    return this.resourceIds.length;
+  }
+
+  /**
+   * Format translations and handle fallback if needed.
+   *
+   * Format translations for `keys` from `FluentBundle` instances on this
+   * DOMLocalization. In case of errors, fetch the next context in the
+   * fallback chain.
+   *
+   * @param   {Array&lt;Object&gt;}         keys    - Translation keys to format.
+   * @param   {Function}              method  - Formatting function.
+   * @returns {Promise&lt;Array&lt;string|Object&gt;&gt;}
+   * @private
+   */
+  async formatWithFallback(keys, method) {
+    const translations = [];
+
+    for await (const bundle of this.bundles) {
+      const missingIds = keysFromBundle(method, bundle, keys, translations);
+
+      if (missingIds.size === 0) {
+        break;
+      }
+
+      if (typeof console !== &quot;undefined&quot;) {
+        const locale = bundle.locales[0];
+        const ids = Array.from(missingIds).join(&quot;, &quot;);
+        console.warn(`Missing translations in ${locale}: ${ids}`);
+      }
+    }
+
+    return translations;
+  }
+
+  /**
+   * Format translations into {value, attributes} objects.
+   *
+   * The fallback logic is the same as in `formatValues` but it returns {value,
+   * attributes} objects which are suitable for the translation of DOM
+   * elements.
+   *
+   *     docL10n.formatMessages([
+   *       {id: &apos;hello&apos;, args: { who: &apos;Mary&apos; }},
+   *       {id: &apos;welcome&apos;}
+   *     ]).then(console.log);
+   *
+   *     // [
+   *     //   { value: &apos;Hello, Mary!&apos;, attributes: null },
+   *     //   {
+   *     //     value: &apos;Welcome!&apos;,
+   *     //     attributes: [ { name: &quot;title&quot;, value: &apos;Hello&apos; } ]
+   *     //   }
+   *     // ]
+   *
+   * Returns a Promise resolving to an array of the translation strings.
+   *
+   * @param   {Array&lt;Object&gt;} keys
+   * @returns {Promise&lt;Array&lt;{value: string, attributes: Object}&gt;&gt;}
+   * @private
+   */
+  formatMessages(keys) {
+    return this.formatWithFallback(keys, messageFromBundle);
+  }
+
+  /**
+   * Retrieve translations corresponding to the passed keys.
+   *
+   * A generalized version of `DOMLocalization.formatValue`. Keys must
+   * be `{id, args}` objects.
+   *
+   *     docL10n.formatValues([
+   *       {id: &apos;hello&apos;, args: { who: &apos;Mary&apos; }},
+   *       {id: &apos;hello&apos;, args: { who: &apos;John&apos; }},
+   *       {id: &apos;welcome&apos;}
+   *     ]).then(console.log);
+   *
+   *     // [&apos;Hello, Mary!&apos;, &apos;Hello, John!&apos;, &apos;Welcome!&apos;]
+   *
+   * Returns a Promise resolving to an array of the translation strings.
+   *
+   * @param   {Array&lt;Object&gt;} keys
+   * @returns {Promise&lt;Array&lt;string&gt;&gt;}
+   */
+  formatValues(keys) {
+    return this.formatWithFallback(keys, valueFromBundle);
+  }
+
+  /**
+   * Retrieve the translation corresponding to the `id` identifier.
+   *
+   * If passed, `args` is a simple hash object with a list of variables that
+   * will be interpolated in the value of the translation.
+   *
+   *     docL10n.formatValue(
+   *       &apos;hello&apos;, { who: &apos;world&apos; }
+   *     ).then(console.log);
+   *
+   *     // &apos;Hello, world!&apos;
+   *
+   * Returns a Promise resolving to the translation string.
+   *
+   * Use this sparingly for one-off messages which don&apos;t need to be
+   * retranslated when the user changes their language preferences, e.g. in
+   * notifications.
+   *
+   * @param   {string}  id     - Identifier of the translation to format
+   * @param   {Object}  [args] - Optional external arguments
+   * @returns {Promise&lt;string&gt;}
+   */
+  async formatValue(id, args) {
+    const [val] = await this.formatValues([{id, args}]);
+    return val;
+  }
+
+  handleEvent() {
+    this.onChange();
+  }
+
+  /**
+   * This method should be called when there&apos;s a reason to believe
+   * that language negotiation or available resources changed.
+   */
+  onChange() {
+    this.bundles = CachedAsyncIterable.from(
+      this.generateBundles(this.resourceIds));
+    this.bundles.touchNext(2);
+  }
+}
+
+/**
+ * Format the value of a message into a string or `null`.
+ *
+ * This function is passed as a method to `keysFromBundle` and resolve
+ * a value of a single L10n Entity using provided `FluentBundle`.
+ *
+ * If the message doesn&apos;t have a value, return `null`.
+ *
+ * @param   {FluentBundle} bundle
+ * @param   {Array&lt;Error&gt;} errors
+ * @param   {Object} message
+ * @param   {Object} args
+ * @returns {string|null}
+ * @private
+ */
+function valueFromBundle(bundle, errors, message, args) {
+  if (message.value) {
+    return bundle.formatPattern(message.value, args, errors);
+  }
+
+  return null;
+}
+
+/**
+ * Format all public values of a message into a {value, attributes} object.
+ *
+ * This function is passed as a method to `keysFromBundle` and resolve
+ * a single L10n Entity using provided `FluentBundle`.
+ *
+ * The function will return an object with a value and attributes of the
+ * entity.
+ *
+ * @param   {FluentBundle} bundle
+ * @param   {Array&lt;Error&gt;} errors
+ * @param   {Object} message
+ * @param   {Object} args
+ * @returns {Object}
+ * @private
+ */
+function messageFromBundle(bundle, errors, message, args) {
+  const formatted = {
+    value: null,
+    attributes: null,
+  };
+
+  if (message.value) {
+    formatted.value = bundle.formatPattern(message.value, args, errors);
+  }
+
+  let attrNames = Object.keys(message.attributes);
+  if (attrNames.length &gt; 0) {
+    formatted.attributes = new Array(attrNames.length);
+    for (let [i, name] of attrNames.entries()) {
+      let value = bundle.formatPattern(message.attributes[name], args, errors);
+      formatted.attributes[i] = {name, value};
+    }
+  }
+
+  return formatted;
+}
+
+/**
+ * This function is an inner function for `Localization.formatWithFallback`.
+ *
+ * It takes a `FluentBundle`, list of l10n-ids and a method to be used for
+ * key resolution (either `valueFromBundle` or `messageFromBundle`) and
+ * optionally a value returned from `keysFromBundle` executed against
+ * another `FluentBundle`.
+ *
+ * The idea here is that if the previous `FluentBundle` did not resolve
+ * all keys, we&apos;re calling this function with the next context to resolve
+ * the remaining ones.
+ *
+ * In the function, we loop over `keys` and check if we have the `prev`
+ * passed and if it has an error entry for the position we&apos;re in.
+ *
+ * If it doesn&apos;t, it means that we have a good translation for this key and
+ * we return it. If it does, we&apos;ll try to resolve the key using the passed
+ * `FluentBundle`.
+ *
+ * In the end, we fill the translations array, and return the Set with
+ * missing ids.
+ *
+ * See `Localization.formatWithFallback` for more info on how this is used.
+ *
+ * @param {Function}       method
+ * @param {FluentBundle} bundle
+ * @param {Array&lt;string&gt;}  keys
+ * @param {{Array&lt;{value: string, attributes: Object}&gt;}} translations
+ *
+ * @returns {Set&lt;string&gt;}
+ * @private
+ */
+function keysFromBundle(method, bundle, keys, translations) {
+  const messageErrors = [];
+  const missingIds = new Set();
+
+  keys.forEach(({id, args}, i) =&gt; {
+    if (translations[i] !== undefined) {
+      return;
+    }
+
+    let message = bundle.getMessage(id);
+    if (message) {
+      messageErrors.length = 0;
+      translations[i] = method(bundle, messageErrors, message, args);
+      // XXX: Report resolver errors
+    } else {
+      missingIds.add(id);
+    }
+  });
+
+  return missingIds;
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
