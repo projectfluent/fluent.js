@@ -6,7 +6,7 @@ include ../common.mk
 version = $(1)@$(shell node -e "\
 	console.log(require('../$(1)/package.json').version)")
 
-build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js
+build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
 
 Fluent.jsm: $(SOURCES)
 	@rollup $(CURDIR)/src/fluent.js \
@@ -41,6 +41,13 @@ DOMLocalization.jsm: $(SOURCES)
 l10n.js: $(SOURCES)
 	@rollup $(CURDIR)/src/l10n.js \
 	    --output.format es \
+	    --output.file ./dist/$@
+	@echo -e " $(OK) $@ built"
+
+fluent-react.js: $(SOURCES)
+	@rollup $(CURDIR)/src/fluent-react.js \
+	    --config ./vendor_config.js \
+	    --output.intro "/* $(call version,fluent-react) */" \
 	    --output.file ./dist/$@
 	@echo -e " $(OK) $@ built"
 
