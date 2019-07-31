@@ -52,7 +52,7 @@ function toArguments(props) {
  *  source code.
  */
 function Localized(props) {
-  const { id, attrs, children: elem = null } = props;
+  const { id, attrs, children: child = null } = props;
   const { l10n, parseMarkup } = useContext(FluentContext);
 
   if (l10n == null) {
@@ -80,7 +80,7 @@ function Localized(props) {
   }
 
   const msg = bundle.getMessage(id);
-  const [args, elems] = toArguments(this.props);
+  const [args, elems] = toArguments(props);
   let errors = [];
 
   // Check if the child inside <Localized> is a valid element -- if not, then
