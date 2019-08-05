@@ -76,6 +76,8 @@ function getErrorMessage(code, args) {
       return "Unbalanced closing brace in TextElement.";
     case "E0028":
       return "Expected an inline expression";
+    case "E0029":
+      return "Expected simple expression as selector";
     default:
       return code;
   }
