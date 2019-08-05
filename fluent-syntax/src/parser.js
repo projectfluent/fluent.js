@@ -607,16 +607,26 @@ class FluentParser {
         return selector;
       }
 
-      if (selector.type === "MessageReference") {
-        if (selector.attribute === null) {
-          throw new ParseError("E0016");
-        } else {
-          throw new ParseError("E0018");
-        }
-      }
-
-      if (selector.type === "TermReference" && selector.attribute === null) {
-        throw new ParseError("E0017");
+      // Validate selector expression according to
+      // abstract.js in the Fluent specification
+      switch (selector.type) {
+        case "MessageReference":
+          if (selector.attribute === null) {
+            throw new ParseError("E0016");
+          } else {
+            throw new ParseError("E0018");
+          }
+        case "TermReference":
+          if (selector.attribute === null) {
+            throw new ParseError("E0017");
+          }
+        case "StringLiteral":
+        case "NumberLiteral":
+        case "VariableReference":
+        case "FunctionReference":
+          break;
+        default:
+          throw new ParseError("E0029");
       }
 
       ps.next();

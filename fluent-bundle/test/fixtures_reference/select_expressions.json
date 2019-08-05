@@ -123,6 +123,66 @@
             "attributes": {}
         },
         {
+            "id": "invalid-selector-select-expression",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "num",
+                        "value": 3,
+                        "precision": 0
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "default"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "invalid-selector-nested-expression",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "select",
+                        "selector": {
+                            "type": "var",
+                            "name": "sel"
+                        },
+                        "variants": [
+                            {
+                                "key": {
+                                    "type": "str",
+                                    "value": "key"
+                                },
+                                "value": "value"
+                            }
+                        ],
+                        "star": 0
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": "default"
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
             "id": "empty-variant",
             "value": [
                 {
