@@ -87,6 +87,12 @@ LocalizationProvider.propTypes = {
 function isIterable(props, propName, componentName) {
   const prop = props[propName];
 
+  if (!prop) {
+    return new Error(
+      `The ${propName} prop supplied to ${componentName} is required.`
+    )
+  }
+
   if (Symbol.iterator in Object(prop)) {
     return null;
   }

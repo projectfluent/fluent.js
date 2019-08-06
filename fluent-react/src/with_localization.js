@@ -1,35 +1,26 @@
-import { createElement, Component } from "react";
+import { createElement, useContext } from "react";
+import FluentContext from "./context";
 
 export default function withLocalization(Inner) {
-  class WithLocalization extends Component {
-    /*
-     * Find a translation by `id` and format it to a string using `args`.
-     */
-    getString(id, args, fallback) {
-      const { l10n } = this.context;
-
-      if (!l10n) {
-        return fallback || id;
-      }
-
-      return l10n.getString(id, args, fallback);
-    }
-
-    render() {
-      return createElement(
-        Inner,
-        Object.assign(
-          // getString needs to be re-bound on updates to trigger a re-render
-          { getString: (...args) => this.getString(...args) },
-          this.props
-        )
-      );
-    }
+  function WithDisplay(props) {
+    const { l10n } = useContext(FluentContext);
+    return createElement(
+      Inner,
+      // getString needs to be re-bound on updates to trigger a re-render
+      {
+        getString: (id, args, fallback) => (
+          l10n
+            ? l10n.getString(id, args, fallback)
+            : fallback || id
+        ),
+        ...props
+      },
+    );
   }
 
-  WithLocalization.displayName = `WithLocalization(${displayName(Inner)})`;
+  WithDisplay.displayName = `WithLocalization(${displayName(Inner)})`;
 
-  return WithLocalization;
+  return WithDisplay;
 }
 
 function displayName(component) {
