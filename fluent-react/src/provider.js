@@ -38,7 +38,7 @@ export default function LocalizationProvider(props) {
   const parseMarkup = useMemo(() => props.parseMarkup || createParseMarkup(), [
     props.parseMarkup
   ]);
-  const value = useMemo(
+  const contextValue = useMemo(
     () => {
       const l10n = {
         getBundle: id => mapBundleSync(bundles, id),
@@ -75,7 +75,11 @@ export default function LocalizationProvider(props) {
     [bundles, parseMarkup]
   );
 
-  return createElement(FluentContext.Provider, { value }, props.children);
+  return createElement(
+    FluentContext.Provider,
+    { value: contextValue },
+    props.children
+  );
 }
 
 LocalizationProvider.propTypes = {
@@ -90,7 +94,7 @@ function isIterable(props, propName, componentName) {
   if (!prop) {
     return new Error(
       `The ${propName} prop supplied to ${componentName} is required.`
-    )
+    );
   }
 
   if (Symbol.iterator in Object(prop)) {
