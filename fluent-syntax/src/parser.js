@@ -676,7 +676,9 @@ class FluentParser {
       }
 
       let args;
-      if (ps.currentChar === "(") {
+      ps.peekBlank();
+      if (ps.currentPeek === "(") {
+        ps.skipToPeek();
         args = this.getCallArguments(ps);
       }
 
@@ -685,13 +687,15 @@ class FluentParser {
 
     if (ps.isIdentifierStart()) {
       const id = this.getIdentifier(ps);
+      ps.peekBlank();
 
-      if (ps.currentChar === "(") {
+      if (ps.currentPeek === "(") {
         // It's a Function. Ensure it's all upper-case.
         if (!/^[A-Z][A-Z0-9_-]*$/.test(id.name)) {
           throw new ParseError("E0008");
         }
 
+        ps.skipToPeek();
         let args = this.getCallArguments(ps);
         return new AST.FunctionReference(id, args);
       }
