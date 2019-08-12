@@ -6,6 +6,12 @@ include ../common.mk
 version = $(1)@$(shell node -e "\
 	console.log(require('../$(1)/package.json').version)")
 
+test:
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
+	    --require $(ROOT)/mocha_setup \
+	    test/**/*_test.js
+
 build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
 
 Fluent.jsm: $(SOURCES)

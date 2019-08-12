@@ -6,6 +6,9 @@ include ../common.mk
 
 build: index.js compat.js
 
+test:
+	./node_modules/.bin/jest --collect-coverage
+
 index.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 	    --config $(ROOT)/bundle_config.js \
