@@ -20,13 +20,12 @@ export default class Localization {
   constructor(resourceIds = [], generateBundles) {
     this.resourceIds = resourceIds;
     this.generateBundles = generateBundles;
-    this.bundles = CachedAsyncIterable.from(
-      this.generateBundles(this.resourceIds));
+    this.onChange(true);
   }
 
-  addResourceIds(resourceIds) {
+  addResourceIds(resourceIds, eager = false) {
     this.resourceIds.push(...resourceIds);
-    this.onChange();
+    this.onChange(eager);
     return this.resourceIds.length;
   }
 
@@ -50,8 +49,10 @@ export default class Localization {
    */
   async formatWithFallback(keys, method) {
     const translations = [];
+    let hasAtLeastOneBundle = false;
 
     for await (const bundle of this.bundles) {
+      hasAtLeastOneBundle = true;
       const missingIds = keysFromBundle(method, bundle, keys, translations);
 
       if (missingIds.size === 0) {
@@ -61,8 +62,15 @@ export default class Localization {
       if (typeof console !== "undefined") {
         const locale = bundle.locales[0];
         const ids = Array.from(missingIds).join(", ");
-        console.warn(`Missing translations in ${locale}: ${ids}`);
+        console.warn(`[fluent] Missing translations in ${locale}: ${ids}`);
       }
+    }
+
+    if (!hasAtLeastOneBundle && typeof console !== "undefined") {
+      // eslint-disable-next-line max-len
+      console.warn(`[fluent] Request for keys failed because no resource bundles got generated.
+  keys: ${JSON.stringify(keys)}.
+  resourceIds: ${JSON.stringify(this.resourceIds)}.`);
     }
 
     return translations;
@@ -156,10 +164,12 @@ export default class Localization {
    * This method should be called when there's a reason to believe
    * that language negotiation or available resources changed.
    */
-  onChange() {
+  onChange(eager = false) {
     this.bundles = CachedAsyncIterable.from(
       this.generateBundles(this.resourceIds));
-    this.bundles.touchNext(2);
+    if (eager) {
+      this.bundles.touchNext(2);
+    }
   }
 }
 
@@ -269,7 +279,12 @@ function keysFromBundle(method, bundle, keys, translations) {
     if (message) {
       messageErrors.length = 0;
       translations[i] = method(bundle, messageErrors, message, args);
-      // XXX: Report resolver errors
+      if (messageErrors.length > 0 && typeof console !== "undefined") {
+        const locale = bundle.locales[0];
+        const errors = messageErrors.join(", ");
+        // eslint-disable-next-line max-len
+        console.warn(`[fluent][resolver] errors in ${locale}/${id}: ${errors}.`);
+      }
     } else {
       missingIds.add(id);
     }
