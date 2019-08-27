@@ -43,6 +43,20 @@
             }
         },
         {
+            "id": "no-whitespace",
+            "value": "Value",
+            "attributes": {
+                "attr1": "Attribute 1"
+            }
+        },
+        {
+            "id": "extra-whitespace",
+            "value": "Value",
+            "attributes": {
+                "attr1": "Attribute 1"
+            }
+        },
+        {
             "id": "key06",
             "value": [
                 {

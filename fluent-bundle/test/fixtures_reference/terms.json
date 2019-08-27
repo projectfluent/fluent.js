@@ -30,6 +30,20 @@
             "attributes": {
                 "attr1": "Attribute 1"
             }
+        },
+        {
+            "id": "-term08",
+            "value": "Value",
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "-term09",
+            "value": "Value",
+            "attributes": {
+                "attr": "Attribute"
+            }
         }
     ]
 }
