@@ -85,6 +85,13 @@
                                 "value": "key"
                             },
                             "value": "Value"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "other"
+                            },
+                            "value": "Other"
                         }
                     ],
                     "star": 0

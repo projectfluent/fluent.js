@@ -123,7 +123,7 @@
             "attributes": {}
         },
         {
-            "id": "invalid-selector-select-expression",
+            "id": "invalid-selector-nested-expression",
             "value": [
                 {
                     "type": "select",
@@ -147,7 +147,7 @@
             "attributes": {}
         },
         {
-            "id": "invalid-selector-nested-expression",
+            "id": "invalid-selector-select-expression",
             "value": [
                 {
                     "type": "select",
@@ -190,6 +190,35 @@
                     "selector": {
                         "type": "var",
                         "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "key"
+                            },
+                            "value": [
+                                {
+                                    "type": "str",
+                                    "value": ""
+                                }
+                            ]
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "reduced-whitespace",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "func",
+                        "name": "FOO",
+                        "args": []
                     },
                     "variants": [
                         {
