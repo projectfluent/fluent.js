@@ -1,4 +1,5 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 import bundleConfig from '../bundle_config';
 
 export default Object.assign({}, bundleConfig, {
@@ -30,5 +31,10 @@ export default Object.assign({}, bundleConfig, {
   ],
   plugins: [
     nodeResolve(),
+    commonjs({
+      namedExports: {
+        "hoist-non-react-statics": [ "hoistNonReactStatics" ]
+      }
+    })
   ]
 });
