@@ -2,6 +2,8 @@ import { createElement, Component } from "react";
 
 import { isReactLocalization } from "./localization";
 
+import hoistNonReactStatics from "hoist-non-react-statics";
+
 export default function withLocalization(Inner) {
   class WithLocalization extends Component {
     componentDidMount() {
@@ -60,7 +62,7 @@ export default function withLocalization(Inner) {
     l10n: isReactLocalization
   };
 
-  return WithLocalization;
+  return hoistNonReactStatics(WithLocalization, Inner);
 }
 
 function displayName(component) {
