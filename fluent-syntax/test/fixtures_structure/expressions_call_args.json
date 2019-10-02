@@ -18,79 +18,79 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "CallExpression",
-              "callee": {
-                "type": "FunctionReference",
-                "id": {
-                  "type": "Identifier",
-                  "name": "FOO",
-                  "span": {
-                    "type": "Span",
-                    "start": 8,
-                    "end": 11
-                  }
-                },
+              "type": "FunctionReference",
+              "id": {
+                "type": "Identifier",
+                "name": "FOO",
                 "span": {
                   "type": "Span",
                   "start": 8,
                   "end": 11
                 }
               },
-              "positional": [],
-              "named": [
-                {
-                  "type": "NamedArgument",
-                  "name": {
-                    "type": "Identifier",
-                    "name": "arg1",
+              "arguments": {
+                "type": "CallArguments",
+                "positional": [],
+                "named": [
+                  {
+                    "type": "NamedArgument",
+                    "name": {
+                      "type": "Identifier",
+                      "name": "arg1",
+                      "span": {
+                        "type": "Span",
+                        "start": 12,
+                        "end": 16
+                      }
+                    },
+                    "value": {
+                      "value": "1",
+                      "type": "NumberLiteral",
+                      "span": {
+                        "type": "Span",
+                        "start": 18,
+                        "end": 19
+                      }
+                    },
                     "span": {
                       "type": "Span",
                       "start": 12,
-                      "end": 16
-                    }
-                  },
-                  "value": {
-                    "type": "NumberLiteral",
-                    "value": "1",
-                    "span": {
-                      "type": "Span",
-                      "start": 18,
                       "end": 19
                     }
                   },
-                  "span": {
-                    "type": "Span",
-                    "start": 12,
-                    "end": 19
-                  }
-                },
-                {
-                  "type": "NamedArgument",
-                  "name": {
-                    "type": "Identifier",
-                    "name": "arg2",
+                  {
+                    "type": "NamedArgument",
+                    "name": {
+                      "type": "Identifier",
+                      "name": "arg2",
+                      "span": {
+                        "type": "Span",
+                        "start": 33,
+                        "end": 37
+                      }
+                    },
+                    "value": {
+                      "value": "2",
+                      "type": "NumberLiteral",
+                      "span": {
+                        "type": "Span",
+                        "start": 39,
+                        "end": 40
+                      }
+                    },
                     "span": {
                       "type": "Span",
                       "start": 33,
-                      "end": 37
-                    }
-                  },
-                  "value": {
-                    "type": "NumberLiteral",
-                    "value": "2",
-                    "span": {
-                      "type": "Span",
-                      "start": 39,
                       "end": 40
                     }
-                  },
-                  "span": {
-                    "type": "Span",
-                    "start": 33,
-                    "end": 40
                   }
+                ],
+                "span": {
+                  "type": "Span",
+                  "start": 11,
+                  "end": 41
                 }
-              ],
+              },
               "span": {
                 "type": "Span",
                 "start": 8,

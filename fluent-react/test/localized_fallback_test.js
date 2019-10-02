@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -10,9 +10,9 @@ suite('Localized - fallback', function() {
     const bundle1 = new FluentBundle();
     const l10n = new ReactLocalization([bundle1]);
 
-    bundle1.addMessages(`
+    bundle1.addResource(new FluentResource(`
 foo = FOO
-`);
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -31,12 +31,12 @@ foo = FOO
     const bundle2 = new FluentBundle();
     const l10n = new ReactLocalization([bundle1, bundle2]);
 
-    bundle1.addMessages(`
+    bundle1.addResource(new FluentResource(`
 not-foo = NOT FOO
-`);
-    bundle2.addMessages(`
+`));
+    bundle2.addResource(new FluentResource(`
 foo = FOO
-`);
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -54,9 +54,9 @@ foo = FOO
     const bundle1 = new FluentBundle();
     const l10n = new ReactLocalization([bundle1]);
 
-    bundle1.addMessages(`
+    bundle1.addResource(new FluentResource(`
 not-foo = NOT FOO
-`);
+`));
 
     const wrapper = shallow(
       <Localized id="foo">

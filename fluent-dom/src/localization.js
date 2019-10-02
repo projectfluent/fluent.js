@@ -20,13 +20,12 @@ export default class Localization {
   constructor(resourceIds = [], generateBundles) {
     this.resourceIds = resourceIds;
     this.generateBundles = generateBundles;
-    this.bundles = CachedAsyncIterable.from(
-      this.generateBundles(this.resourceIds));
+    this.onChange(true);
   }
 
-  addResourceIds(resourceIds) {
+  addResourceIds(resourceIds, eager = false) {
     this.resourceIds.push(...resourceIds);
-    this.onChange();
+    this.onChange(eager);
     return this.resourceIds.length;
   }
 
@@ -50,8 +49,10 @@ export default class Localization {
    */
   async formatWithFallback(keys, method) {
     const translations = [];
+    let hasAtLeastOneBundle = false;
 
     for await (const bundle of this.bundles) {
+      hasAtLeastOneBundle = true;
       const missingIds = keysFromBundle(method, bundle, keys, translations);
 
       if (missingIds.size === 0) {
@@ -61,8 +62,15 @@ export default class Localization {
       if (typeof console !== "undefined") {
         const locale = bundle.locales[0];
         const ids = Array.from(missingIds).join(", ");
-        console.warn(`Missing translations in ${locale}: ${ids}`);
+        console.warn(`[fluent] Missing translations in ${locale}: ${ids}`);
       }
+    }
+
+    if (!hasAtLeastOneBundle && typeof console !== "undefined") {
+      // eslint-disable-next-line max-len
+      console.warn(`[fluent] Request for keys failed because no resource bundles got generated.
+  keys: ${JSON.stringify(keys)}.
+  resourceIds: ${JSON.stringify(this.resourceIds)}.`);
     }
 
     return translations;
@@ -71,9 +79,9 @@ export default class Localization {
   /**
    * Format translations into {value, attributes} objects.
    *
-   * The fallback logic is the same as in `formatValues` but the argument type
-   * is stricter (an array of arrays) and it returns {value, attributes}
-   * objects which are suitable for the translation of DOM elements.
+   * The fallback logic is the same as in `formatValues` but it returns {value,
+   * attributes} objects which are suitable for the translation of DOM
+   * elements.
    *
    *     docL10n.formatMessages([
    *       {id: 'hello', args: { who: 'Mary' }},
@@ -101,8 +109,8 @@ export default class Localization {
   /**
    * Retrieve translations corresponding to the passed keys.
    *
-   * A generalized version of `DOMLocalization.formatValue`. Keys can
-   * either be simple string identifiers or `[id, args]` arrays.
+   * A generalized version of `DOMLocalization.formatValue`. Keys must
+   * be `{id, args}` objects.
    *
    *     docL10n.formatValues([
    *       {id: 'hello', args: { who: 'Mary' }},
@@ -156,34 +164,36 @@ export default class Localization {
    * This method should be called when there's a reason to believe
    * that language negotiation or available resources changed.
    */
-  onChange() {
+  onChange(eager = false) {
     this.bundles = CachedAsyncIterable.from(
       this.generateBundles(this.resourceIds));
-    this.bundles.touchNext(2);
+    if (eager) {
+      this.bundles.touchNext(2);
+    }
   }
 }
 
 /**
- * Format the value of a message into a string.
+ * Format the value of a message into a string or `null`.
  *
  * This function is passed as a method to `keysFromBundle` and resolve
  * a value of a single L10n Entity using provided `FluentBundle`.
  *
- * If the function fails to retrieve the entity, it will return an ID of it.
- * If formatting fails, it will return a partially resolved entity.
- *
- * In both cases, an error is being added to the errors array.
+ * If the message doesn't have a value, return `null`.
  *
  * @param   {FluentBundle} bundle
- * @param   {Array<Error>}   errors
- * @param   {string}         id
- * @param   {Object}         args
- * @returns {string}
+ * @param   {Array<Error>} errors
+ * @param   {Object} message
+ * @param   {Object} args
+ * @returns {string|null}
  * @private
  */
-function valueFromBundle(bundle, errors, id, args) {
-  const msg = bundle.getMessage(id);
-  return bundle.format(msg, args, errors);
+function valueFromBundle(bundle, errors, message, args) {
+  if (message.value) {
+    return bundle.formatPattern(message.value, args, errors);
+  }
+
+  return null;
 }
 
 /**
@@ -195,34 +205,29 @@ function valueFromBundle(bundle, errors, id, args) {
  * The function will return an object with a value and attributes of the
  * entity.
  *
- * If the function fails to retrieve the entity, the value is set to the ID of
- * an entity, and attributes to `null`. If formatting fails, it will return
- * a partially resolved value and attributes.
- *
- * In both cases, an error is being added to the errors array.
- *
  * @param   {FluentBundle} bundle
- * @param   {Array<Error>}   errors
- * @param   {String}         id
- * @param   {Object}         args
+ * @param   {Array<Error>} errors
+ * @param   {Object} message
+ * @param   {Object} args
  * @returns {Object}
  * @private
  */
-function messageFromBundle(bundle, errors, id, args) {
-  const msg = bundle.getMessage(id);
-
+function messageFromBundle(bundle, errors, message, args) {
   const formatted = {
-    value: bundle.format(msg, args, errors),
+    value: null,
     attributes: null,
   };
 
-  if (msg.attrs) {
-    formatted.attributes = [];
-    for (const [name, attr] of Object.entries(msg.attrs)) {
-      const value = bundle.format(attr, args, errors);
-      if (value !== null) {
-        formatted.attributes.push({name, value});
-      }
+  if (message.value) {
+    formatted.value = bundle.formatPattern(message.value, args, errors);
+  }
+
+  let attrNames = Object.keys(message.attributes);
+  if (attrNames.length > 0) {
+    formatted.attributes = new Array(attrNames.length);
+    for (let [i, name] of attrNames.entries()) {
+      let value = bundle.formatPattern(message.attributes[name], args, errors);
+      formatted.attributes[i] = {name, value};
     }
   }
 
@@ -270,10 +275,16 @@ function keysFromBundle(method, bundle, keys, translations) {
       return;
     }
 
-    if (bundle.hasMessage(id)) {
+    let message = bundle.getMessage(id);
+    if (message) {
       messageErrors.length = 0;
-      translations[i] = method(bundle, messageErrors, id, args);
-      // XXX: Report resolver errors
+      translations[i] = method(bundle, messageErrors, message, args);
+      if (messageErrors.length > 0 && typeof console !== "undefined") {
+        const locale = bundle.locales[0];
+        const errors = messageErrors.join(", ");
+        // eslint-disable-next-line max-len
+        console.warn(`[fluent][resolver] errors in ${locale}/${id}: ${errors}.`);
+      }
     } else {
       missingIds.add(id);
     }

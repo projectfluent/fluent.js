@@ -61,7 +61,8 @@
                             "id": {
                                 "type": "Identifier",
                                 "name": "placeable"
-                            }
+                            },
+                            "attribute": null
                         }
                     }
                 ]
@@ -121,9 +122,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\\"",
-                            "value": "\""
+                            "value": "\\\"",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -143,9 +143,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\\\",
-                            "value": "\\"
+                            "value": "\\\\",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -169,7 +168,16 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "unknown-escape = {\"\\x\"}\n\n"
+            "content": "unknown-escape = {\"\\x\"}\n"
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR Multiline literal"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "invalid-multiline-literal = {\"\n \"}\n\n"
         },
         {
             "type": "GroupComment",
@@ -187,9 +195,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\u0041",
-                            "value": "A"
+                            "value": "\\u0041",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -209,9 +216,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\\\u0041",
-                            "value": "\\u0041"
+                            "value": "\\\\u0041",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -231,9 +237,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\U01F602",
-                            "value": "😂"
+                            "value": "\\U01F602",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -253,9 +258,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\\\U01F602",
-                            "value": "\\U01F602"
+                            "value": "\\\\U01F602",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -275,9 +279,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\u004100",
-                            "value": "A00"
+                            "value": "\\u004100",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -300,9 +303,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "\\U01F60200",
-                            "value": "😂00"
+                            "value": "\\U01F60200",
+                            "type": "StringLiteral"
                         }
                     }
                 ]
@@ -351,9 +353,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "{",
-                            "value": "{"
+                            "value": "{",
+                            "type": "StringLiteral"
                         }
                     },
                     {
@@ -381,9 +382,8 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "StringLiteral",
-                            "raw": "}",
-                            "value": "}"
+                            "value": "}",
+                            "type": "StringLiteral"
                         }
                     },
                     {

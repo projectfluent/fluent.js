@@ -1,0 +1,44 @@
+{
+    "body": [
+        {
+            "id": "key1",
+            "value": [
+                "A multiline message with a ",
+                {
+                    "type": "mesg",
+                    "name": "placeable",
+                    "attr": null
+                },
+                "\n",
+                "at the end of line.  The message should",
+                "\n",
+                "consist of three lines of text."
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key2",
+            "value": [
+                "A multiline message with a ",
+                {
+                    "type": "mesg",
+                    "name": "placeable",
+                    "attr": null
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key3",
+            "value": [
+                "A singleline message with a ",
+                {
+                    "type": "mesg",
+                    "name": "placeable",
+                    "attr": null
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

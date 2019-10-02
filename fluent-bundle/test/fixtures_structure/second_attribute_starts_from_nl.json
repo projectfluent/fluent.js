@@ -1,0 +1,12 @@
+{
+    "body": [
+        {
+            "id": "key",
+            "value": "Value",
+            "attributes": {
+                "label": "Value",
+                "accesskey": "K"
+            }
+        }
+    ]
+}

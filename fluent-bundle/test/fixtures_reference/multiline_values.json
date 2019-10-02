@@ -1,0 +1,165 @@
+{
+    "body": [
+        {
+            "id": "key01",
+            "value": [
+                "A multiline value",
+                "\n",
+                "continued on the next line",
+                "\n\n",
+                "and also down here."
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": [
+                "A multiline value starting",
+                "\n",
+                "on a new line."
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key03",
+            "value": null,
+            "attributes": {
+                "attr": [
+                    "A multiline attribute value",
+                    "\n",
+                    "continued on the next line",
+                    "\n\n",
+                    "and also down here."
+                ]
+            }
+        },
+        {
+            "id": "key04",
+            "value": null,
+            "attributes": {
+                "attr": [
+                    "A multiline attribute value",
+                    "\n",
+                    "staring on a new line"
+                ]
+            }
+        },
+        {
+            "id": "key05",
+            "value": [
+                "A multiline value with non-standard",
+                "\n\n    ",
+                "indentation."
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key06",
+            "value": [
+                "A multiline value with ",
+                {
+                    "type": "str",
+                    "value": "placeables"
+                },
+                "\n",
+                {
+                    "type": "str",
+                    "value": "at"
+                },
+                " the beginning and the end",
+                "\n",
+                {
+                    "type": "str",
+                    "value": "of lines"
+                },
+                {
+                    "type": "str",
+                    "value": "."
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key07",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "A multiline value"
+                },
+                " starting and ending ",
+                {
+                    "type": "str",
+                    "value": "with a placeable"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key08",
+            "value": "Leading and trailing whitespace.",
+            "attributes": {}
+        },
+        {
+            "id": "key09",
+            "value": [
+                "zero",
+                "\n   ",
+                "three",
+                "\n  ",
+                "two",
+                "\n ",
+                "one",
+                "\n",
+                "zero"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key10",
+            "value": [
+                "  ",
+                "two",
+                "\n",
+                "zero",
+                "\n    ",
+                "four"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key11",
+            "value": [
+                "  ",
+                "two",
+                "\n",
+                "zero"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key12",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "."
+                },
+                "\n    ",
+                "four"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key13",
+            "value": [
+                "    ",
+                "four",
+                "\n",
+                {
+                    "type": "str",
+                    "value": "."
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

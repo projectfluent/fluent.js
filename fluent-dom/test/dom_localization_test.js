@@ -1,10 +1,11 @@
 import assert from "assert";
-import { FluentBundle } from "../../fluent/src/index";
+import { FluentBundle, FluentResource } from "../../fluent-bundle/src/index";
 import DOMLocalization from "../src/dom_localization";
 
 async function* mockGenerateMessages(resourceIds) {
   const bundle = new FluentBundle(["en-US"]);
-  bundle.addMessages("key1 = Key 1");
+  const resource = new FluentResource("key1 = Key 1");
+  bundle.addResource(resource);
   yield bundle;
 }
 
@@ -19,7 +20,7 @@ suite("translateFragment", function() {
 
     await domLoc.translateFragment(frag);
 
-    assert.equal(elem.textContent, "Key 1");
+    assert.strictEqual(elem.textContent, "Key 1");
   });
 
   test("does not inject content into a node with missing translation", async function() {
@@ -33,7 +34,7 @@ suite("translateFragment", function() {
 
     await domLoc.translateFragment(frag);
 
-    assert.equal(elem.textContent, "Original Value");
+    assert.strictEqual(elem.textContent, "Original Value");
   });
 
 });

@@ -1,34 +1,33 @@
-# fluent-syntax
+# @fluent/syntax
 
-`fluent-syntax` is a parser for Fluent translation files, FTL.  Project Fluent
-is a localization framework designed to unleash the expressive power of the
-natural language.
+`@fluent/syntax` is a parser for Fluent translation files, FTL. Project
+Fluent is a localization framework designed to unleash the expressive power
+of the natural language.
 
 
 ## Installation
 
-`fluent-syntax` can be used both on the client-side and the server-side.  You
+`@fluent/syntax` can be used both on the client-side and the server-side. You
 can install it from the npm registry or use it as a standalone script (as the
 `FluentSyntax` global).
 
-    npm install fluent-syntax
+    npm install @fluent/syntax
 
 
 ## How to use
 
 ```javascript
-import { parse, Resource } from 'fluent-syntax';
+import {parse, Resource} from "@fluent/syntax";
 
 const res = parse(`
-brand-name = Foo 3000
-welcome    = Welcome, { $name }, to { brand-name }!
+-brand-name = Foo 3000
+welcome = Welcome, {$name}, to {-brand-name}!
 `);
 
 assert(res instanceof Resource);
 ```
 
-The API reference is available at
-http://projectfluent.org/fluent.js/fluent-syntax.
+The API reference is available at https://projectfluent.org/fluent.js/syntax.
 
 
 ## Compatibility
@@ -37,7 +36,7 @@ For legacy browsers, the `compat` build has been transpiled using Babel's [env
 preset][]:
 
 ```javascript
-import 'fluent-syntax/compat';
+import "@fluent/syntax/compat";
 ```
 
 
@@ -49,5 +48,5 @@ implementations, and information about how to get involved.
 
 
 [env preset]: https://babeljs.io/docs/plugins/preset-env/
-[projectfluent.org]: http://projectfluent.org
-[FTL]: http://projectfluent.org/fluent/guide/
+[projectfluent.org]: https://projectfluent.org
+[FTL]: https://projectfluent.org/fluent/guide/

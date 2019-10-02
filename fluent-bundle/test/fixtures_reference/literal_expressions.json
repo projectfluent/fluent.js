@@ -1,0 +1,36 @@
+{
+    "body": [
+        {
+            "id": "string-expression",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "abc"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "number-expression",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 123,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "number-expression",
+            "value": [
+                {
+                    "type": "num",
+                    "value": -3.14,
+                    "precision": 2
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

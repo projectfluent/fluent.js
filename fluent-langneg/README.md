@@ -1,26 +1,25 @@
-# fluent-langneg
+# @fluent/langneg
 
-`fluent-langneg` is an API for negotiating languages. It's part of
-Project Fluent, a localization framework designed to unleash 
-the expressive power of the natural language.
+`@fluent/langneg` is an API for negotiating languages. It's part of Project
+Fluent, a localization framework designed to unleash the expressive power of
+the natural language.
 
-It's main function is to provide functionality around the
-[Intl.Locale][] API with a focus
-on language negotiation, matching and selection.
+It's main function is to provide functionality around the [Intl.Locale][] API
+with a focus on language negotiation, matching and selection.
 
 
 ## Installation
 
-`fluent-langneg` can be used both on the client-side and the server-side.
+`@fluent/langneg` can be used both on the client-side and the server-side.
 You can install it from the npm registry or use it as a standalone script.
 
-    npm install fluent-langneg
+    npm install @fluent/langneg
 
 
 ## How to use
 
 ```javascript
-import { negotiateLanguages } from 'fluent-langneg';
+import { negotiateLanguages } from '@fluent/langneg';
 
 const supportedLocales = negotiateLanguages(
   navigator.languages,       // requested locales
@@ -30,7 +29,7 @@ const supportedLocales = negotiateLanguages(
 ```
 
 The API reference is available at
-https://projectfluent.org/fluent.js/fluent-langneg.
+https://projectfluent.org/fluent.js/langneg.
 
 ## Strategies
 

@@ -1,0 +1,33 @@
+{
+    "body": [
+        {
+            "id": "key1",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "num",
+                        "value": 1,
+                        "precision": 0
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": [
+                                {
+                                    "type": "str",
+                                    "value": ""
+                                }
+                            ]
+                        }
+                    ],
+                    "star": 0
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

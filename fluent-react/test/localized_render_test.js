@@ -2,7 +2,7 @@ import React from 'react';
 import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -11,9 +11,9 @@ suite('Localized - rendering', function() {
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -31,10 +31,10 @@ foo = FOO
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr: true}}>
@@ -52,11 +52,11 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr1 = ATTR 1
     .attr2 = ATTR 2
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr2: true}}>
@@ -74,10 +74,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr: false}}>
@@ -95,10 +95,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -116,10 +116,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .attr = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{attr: true}}>
@@ -137,10 +137,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .existing = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{existing: true}}>
@@ -158,10 +158,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .existing = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{existing: false}}>
@@ -179,10 +179,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .existing = ATTR
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -200,10 +200,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .title = TITLE
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{title: true}}>
@@ -223,13 +223,13 @@ foo =
 
 
   test('$arg is passed to format the value', function() {
-    const bundle = new FluentBundle();
-    const format = sinon.spy(bundle, 'format');
+    const bundle = new FluentBundle("en", {useIsolating: false});
+    const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = { $arg }
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" $arg="ARG">
@@ -238,35 +238,194 @@ foo = { $arg }
       { context: { l10n } }
     );
 
-    const { args } = format.getCall(0);
+    const { args } = formatPattern.getCall(0);
     assert.deepEqual(args[1], { arg: 'ARG' });
+
+    assert.ok(wrapper.contains(
+      <div>ARG</div>
+    ));
   });
 
   test('$arg is passed to format the attributes', function() {
     const bundle = new FluentBundle();
-    const format = sinon.spy(bundle, 'format');
+    const formatPattern = sinon.spy(bundle, 'formatPattern');
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = { $arg }
-    .attr = { $arg }
-`)
+    .title = { $arg }
+`));
 
     const wrapper = shallow(
-      <Localized id="foo" $arg="ARG">
+      <Localized id="foo" attrs={{title: true}} $arg="ARG">
         <div />
       </Localized>,
       { context: { l10n } }
     );
 
-    const { args } = format.getCall(0);
-    assert.deepEqual(args[1], { arg: 'ARG' });
+    // The value.
+    assert.deepEqual(formatPattern.getCall(0).args[1], { arg: 'ARG' });
+    // The attribute.
+    assert.deepEqual(formatPattern.getCall(1).args[1], { arg: 'ARG' });
+
+    assert.ok(wrapper.contains(
+      <div title="ARG">ARG</div>
+    ));
+  });
+
+  test('A missing $arg does not break rendering', function() {
+    const bundle = new FluentBundle("en", {useIsolating: false});
+    const l10n = new ReactLocalization([bundle]);
+
+    bundle.addResource(new FluentResource(`
+foo = { $arg }
+    .title = { $arg }
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo" attrs={{title: true}}>
+        <div />
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.contains(
+      <div title="{$arg}">{"{$arg}"}</div>
+    ));
+  });
+
+  test('render with a fragment and no message preserves the fragment',
+  function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment>
+          <div>Fragment content</div>
+        </React.Fragment>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        <div>Fragment content</div>
+      </React.Fragment>
+    ));
+  });
+
+  test('render with a fragment and no message value preserves the fragment',
+  function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
+foo =
+    .attr = Attribute
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment>
+          <div>Fragment content</div>
+        </React.Fragment>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        <div>Fragment content</div>
+      </React.Fragment>
+    ));
+  });
+
+  test('render with a fragment renders the message into the fragment', function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
+foo = Test message
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment>
+          <div>Fragment content</div>
+        </React.Fragment>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        Test message
+      </React.Fragment>
+    ));
+  });
+
+  test('render with an empty fragment and no message preserves the fragment',
+  function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment/>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment/>
+    ));
+  });
+
+  test('render with an empty fragment and no message value preserves the fragment',
+  function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
+foo =
+    .attr = Attribute
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment/>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment/>
+    ));
+  });
+
+  test('render with an empty fragment renders the message into the fragment', function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
+foo = Test message
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        <React.Fragment/>
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.ok(wrapper.equals(
+      <React.Fragment>
+        Test message
+      </React.Fragment>
+    ));
   });
 
   test('render with a string fallback and no message returns the fallback',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -275,15 +434,34 @@ foo = { $arg }
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'String fallback');
+    assert.strictEqual(wrapper.text(), 'String fallback');
+  });
+
+  test('render with a string fallback and no message value preserves the fallback',
+  function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
+foo =
+    .attr = Attribute
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo">
+        String fallback
+      </Localized>,
+      { context: { l10n } }
+    );
+
+    assert.strictEqual(wrapper.text(), 'String fallback');
   });
 
   test('render with a string fallback returns the message', function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-    mcx.addMessages(`
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+    bundle.addResource(new FluentResource(`
 foo = Test message
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -292,35 +470,54 @@ foo = Test message
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'Test message');
-  });
-
-  test('render without a fallback returns the message', function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
-
-    mcx.addMessages(`
-foo = Message
-`)
-
-    const wrapper = shallow(
-      <Localized id="foo" />,
-      { context: { l10n } }
-    );
-
-    assert.equal(wrapper.text(), 'Message');
+    assert.strictEqual(wrapper.text(), 'Test message');
   });
 
   test('render without a fallback and no message returns nothing',
   function() {
-    const mcx = new FluentBundle();
-    const l10n = new ReactLocalization([mcx]);
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
 
     const wrapper = shallow(
       <Localized id="foo" />,
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), '');
+    assert.strictEqual(wrapper.text(), '');
   });
+
+  test('render without a fallback and no message value returns nothing',
+  function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+
+    bundle.addResource(new FluentResource(`
+foo =
+    .attr = Attribute
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.strictEqual(wrapper.text(), '');
+  });
+
+  test('render without a fallback returns the message', function() {
+    const bundle = new FluentBundle();
+    const l10n = new ReactLocalization([bundle]);
+
+    bundle.addResource(new FluentResource(`
+foo = Message
+`));
+
+    const wrapper = shallow(
+      <Localized id="foo" />,
+      { context: { l10n } }
+    );
+
+    assert.strictEqual(wrapper.text(), 'Message');
+  });
+
 });

@@ -23,5 +23,5 @@ implementations, and information about how to get involved.
 
 
 [README]: ../fluent/README.md
-[projectfluent.org]: http://projectfluent.org
-[FTL]: http://projectfluent.org/fluent/guide/
+[projectfluent.org]: https://projectfluent.org
+[FTL]: https://projectfluent.org/fluent/guide/

@@ -1,0 +1,33 @@
+{
+    "body": [
+        {
+            "id": "key01",
+            "value": "Value 01",
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": [
+                "Value 02",
+                "\n",
+                "Continued"
+            ],
+            "attributes": {
+                "title": "Title"
+            }
+        },
+        {
+            "id": "err04",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    }
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "body": [
+        {
+            "id": "key1",
+            "value": "Value",
+            "attributes": {}
+        },
+        {
+            "id": "key2",
+            "value": "Value    ",
+            "attributes": {}
+        },
+        {
+            "id": "key3",
+            "value": [
+                "Value              ",
+                {
+                    "type": "mesg",
+                    "name": "placeable",
+                    "attr": null
+                },
+                "."
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key4",
+            "value": [
+                "Value",
+                {
+                    "type": "str",
+                    "value": "           "
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

@@ -1,0 +1,111 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Term",
+      "id": {
+        "type": "Identifier",
+        "name": "term",
+        "span": {
+          "type": "Span",
+          "start": 1,
+          "end": 5
+        }
+      },
+      "value": {
+        "type": "Pattern",
+        "elements": [
+          {
+            "type": "Placeable",
+            "expression": {
+              "type": "SelectExpression",
+              "selector": {
+                "type": "VariableReference",
+                "id": {
+                  "type": "Identifier",
+                  "name": "sel",
+                  "span": {
+                    "type": "Span",
+                    "start": 11,
+                    "end": 14
+                  }
+                },
+                "span": {
+                  "type": "Span",
+                  "start": 10,
+                  "end": 14
+                }
+              },
+              "variants": [
+                {
+                  "type": "Variant",
+                  "key": {
+                    "type": "Identifier",
+                    "name": "one",
+                    "span": {
+                      "type": "Span",
+                      "start": 20,
+                      "end": 23
+                    }
+                  },
+                  "value": {
+                    "type": "Pattern",
+                    "elements": [
+                      {
+                        "type": "TextElement",
+                        "value": "Value",
+                        "span": {
+                          "type": "Span",
+                          "start": 25,
+                          "end": 30
+                        }
+                      }
+                    ],
+                    "span": {
+                      "type": "Span",
+                      "start": 25,
+                      "end": 30
+                    }
+                  },
+                  "default": true,
+                  "span": {
+                    "type": "Span",
+                    "start": 18,
+                    "end": 30
+                  }
+                }
+              ],
+              "span": {
+                "type": "Span",
+                "start": 10,
+                "end": 35
+              }
+            },
+            "span": {
+              "type": "Span",
+              "start": 8,
+              "end": 36
+            }
+          }
+        ],
+        "span": {
+          "type": "Span",
+          "start": 8,
+          "end": 36
+        }
+      },
+      "attributes": [],
+      "comment": null,
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 37
+  }
+}

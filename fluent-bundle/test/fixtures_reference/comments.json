@@ -1,0 +1,14 @@
+{
+    "body": [
+        {
+            "id": "foo",
+            "value": "Foo",
+            "attributes": {}
+        },
+        {
+            "id": "-term",
+            "value": "Term",
+            "attributes": {}
+        }
+    ]
+}

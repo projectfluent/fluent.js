@@ -19,11 +19,13 @@ Packages
 Fluent.js consists of a set of packages which have different use-cases and can
 be installed independently of each other.
 
-  - [fluent](https://github.com/projectfluent/fluent.js/tree/master/fluent)
-  - [fluent-syntax](https://github.com/projectfluent/fluent.js/tree/master/fluent-syntax)
-  - [fluent-intl-polyfill](https://github.com/projectfluent/fluent.js/tree/master/fluent-intl-polyfill)
-  - [fluent-langneg](https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg)
-  - [fluent-react](https://github.com/projectfluent/fluent.js/tree/master/fluent-react)
+  - [@fluent/bundle](https://github.com/projectfluent/fluent.js/tree/master/fluent-bundle)
+  - [@fluent/dedent](https://github.com/projectfluent/fluent.js/tree/master/fluent-dedent)
+  - [@fluent/dom](https://github.com/projectfluent/fluent.js/tree/master/fluent-dom)
+  - [@fluent/langneg](https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg)
+  - [@fluent/react](https://github.com/projectfluent/fluent.js/tree/master/fluent-react)
+  - [@fluent/sequence](https://github.com/projectfluent/fluent.js/tree/master/fluent-sequence)
+  - [@fluent/syntax](https://github.com/projectfluent/fluent.js/tree/master/fluent-syntax)
 
 You can install each of the above packages via `npm`, e.g. `npm install
 fluent-react`.  See the end of this `README` for instructions on how to build
@@ -45,7 +47,7 @@ and others.
 [Read the Fluent Syntax Guide][] in order to learn more about the syntax.  If
 you're a tool author you may be interested in the formal [EBNF grammar][].
 
-[Read the Fluent Syntax Guide]: http://projectfluent.org/fluent/guide/
+[Read the Fluent Syntax Guide]: https://projectfluent.org/fluent/guide/
 [EBNF grammar]: https://github.com/projectfluent/fluent/tree/master/spec
 
 

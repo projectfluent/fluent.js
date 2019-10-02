@@ -1,0 +1,76 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0008",
+          "arguments": [],
+          "message": "The callee has to be an upper-case identifier or a term",
+          "span": {
+            "type": "Span",
+            "start": 22,
+            "end": 22
+          }
+        }
+      ],
+      "content": "err01 = { no-caps-name() }\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0009",
+          "arguments": [],
+          "message": "The argument name has to be a simple identifier",
+          "span": {
+            "type": "Span",
+            "start": 46,
+            "end": 46
+          }
+        }
+      ],
+      "content": "err02 = { BUILTIN(2: \"foo\") }\n",
+      "span": {
+        "type": "Span",
+        "start": 27,
+        "end": 57
+      }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0014",
+          "arguments": [],
+          "message": "Expected literal",
+          "span": {
+            "type": "Span",
+            "start": 80,
+            "end": 80
+          }
+        }
+      ],
+      "content": "err03 = { BUILTIN(key: foo) }\n",
+      "span": {
+        "type": "Span",
+        "start": 57,
+        "end": 87
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 87
+  }
+}

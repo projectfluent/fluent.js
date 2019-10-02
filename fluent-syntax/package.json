@@ -1,8 +1,8 @@
 {
-  "name": "fluent-syntax",
+  "name": "@fluent/syntax",
   "description": "AST and parser for Fluent",
-  "version": "0.10.0",
-  "homepage": "http://projectfluent.org",
+  "version": "0.14.0",
+  "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
   "contributors": [
@@ -18,7 +18,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-syntax.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
@@ -44,5 +44,8 @@
   ],
   "engines": {
     "node": ">=8.9.0"
+  },
+  "devDependencies": {
+    "@fluent/dedent": "^0.1.0"
   }
 }

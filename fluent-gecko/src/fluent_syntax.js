@@ -1,11 +1,17 @@
-/* eslint no-unused-vars: 0 */
+/* eslint object-shorthand: "off",
+          comma-dangle: "off",
+          no-labels: "off" */
 
-import FluentParser from "../../fluent-syntax/src/parser";
-import FluentSerializer from "../../fluent-syntax/src/serializer";
+import {FluentParser} from "../../fluent-syntax/src/parser";
+import {FluentSerializer} from "../../fluent-syntax/src/serializer";
 import * as ast from "../../fluent-syntax/src/ast";
+import * as visitor from "../../fluent-syntax/src/visitor";
 
-let EXPORTED_SYMBOLS = [
-  "FluentParser",
-  "FluentSerializer",
-  ...Object.keys(ast)
+this.EXPORTED_SYMBOLS = [
+  ...Object.keys({
+    FluentParser,
+    FluentSerializer,
+  }),
+  ...Object.keys(ast),
+  ...Object.keys(visitor),
 ];

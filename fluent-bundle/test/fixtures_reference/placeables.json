@@ -1,0 +1,37 @@
+{
+    "body": [
+        {
+            "id": "nested-placeable",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "padded-placeable",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "sparse-placeable",
+            "value": [
+                {
+                    "type": "num",
+                    "value": 1,
+                    "precision": 0
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

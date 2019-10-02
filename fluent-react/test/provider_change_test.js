@@ -16,7 +16,7 @@ suite('LocalizationProvider - changing props', function() {
     wrapper.setProps({ bundles: [] });
     const newL10n = wrapper.instance().l10n;
 
-    assert.equal(oldL10n, newL10n);
+    assert.strictEqual(oldL10n, newL10n);
   });
 
   test('calls the ReactLocalization\'s setBundles method', function() {

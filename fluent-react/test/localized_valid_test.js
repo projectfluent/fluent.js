@@ -22,7 +22,7 @@ suite('Localized - validation', function() {
         </Localized>
       </LocalizationProvider>
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('outside of a LocalizationProvider', function() {
@@ -31,7 +31,7 @@ suite('Localized - validation', function() {
         <div />
       </Localized>
     );
-    assert.equal(wrapper.find('div').length, 1);
+    assert.strictEqual(wrapper.find('div').length, 1);
   });
 
   test('with a manually set context', function() {
@@ -41,7 +41,7 @@ suite('Localized - validation', function() {
       </Localized>,
       { context: { l10n: new ReactLocalization([]) } }
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('without a child', function() {
@@ -49,7 +49,7 @@ suite('Localized - validation', function() {
       <Localized />,
       { context: { l10n: new ReactLocalization([]) } }
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('with multiple children', function() {

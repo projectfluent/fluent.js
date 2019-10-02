@@ -1,0 +1,34 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0004",
+          "arguments": [
+            "a-zA-Z"
+          ],
+          "message": "Expected a character from range: \"a-zA-Z\"",
+          "span": {
+            "type": "Span",
+            "start": 19,
+            "end": 19
+          }
+        }
+      ],
+      "content": "err01 = Value\n    .2 = Foo\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 27
+  }
+}

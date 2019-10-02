@@ -1,0 +1,58 @@
+{
+    "body": [
+        {
+            "id": "face-with-tears-of-joy",
+            "value": "😂",
+            "attributes": {}
+        },
+        {
+            "id": "tetragram-for-centre",
+            "value": "𝌆",
+            "attributes": {}
+        },
+        {
+            "id": "surrogates-in-text",
+            "value": "\\uD83D\\uDE02",
+            "attributes": {}
+        },
+        {
+            "id": "surrogates-in-string",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "��"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "surrogates-in-adjacent-strings",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "�"
+                },
+                {
+                    "type": "str",
+                    "value": "�"
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "emoji-in-text",
+            "value": "A face 😂 with tears of joy.",
+            "attributes": {}
+        },
+        {
+            "id": "emoji-in-string",
+            "value": [
+                {
+                    "type": "str",
+                    "value": "A face 😂 with tears of joy."
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

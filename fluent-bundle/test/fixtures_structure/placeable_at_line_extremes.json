@@ -1,0 +1,39 @@
+{
+    "body": [
+        {
+            "id": "key1",
+            "value": [
+                {
+                    "type": "mesg",
+                    "name": "foo",
+                    "attr": null
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key2",
+            "value": [
+                "Foo ",
+                {
+                    "type": "mesg",
+                    "name": "foo",
+                    "attr": null
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key3",
+            "value": [
+                {
+                    "type": "mesg",
+                    "name": "foo",
+                    "attr": null
+                },
+                " Foo"
+            ],
+            "attributes": {}
+        }
+    ]
+}

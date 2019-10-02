@@ -1,0 +1,11 @@
+{
+    "body": [
+        {
+            "id": "foo",
+            "value": "Value",
+            "attributes": {
+                "attr": "Value 2"
+            }
+        }
+    ]
+}

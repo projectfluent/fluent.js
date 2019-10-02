@@ -1,0 +1,50 @@
+{
+  "name": "@fluent/bundle",
+  "description": "Localization library for expressive translations.",
+  "version": "0.14.0",
+  "homepage": "https://projectfluent.org",
+  "author": "Mozilla <l10n-drivers@mozilla.org>",
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Zibi Braniecki",
+      "email": "zbraniecki@mozilla.com"
+    },
+    {
+      "name": "Staś Małolepszy",
+      "email": "stas@mozilla.com"
+    }
+  ],
+  "directories": {
+    "lib": "./src"
+  },
+  "main": "./index.js",
+  "module": "./src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/projectfluent/fluent.js.git"
+  },
+  "keywords": [
+    "localization",
+    "l10n",
+    "internationalization",
+    "i18n",
+    "ftl",
+    "plural",
+    "gender",
+    "locale",
+    "language",
+    "formatting",
+    "translate",
+    "translation",
+    "format",
+    "parser"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "devDependencies": {
+    "@fluent/dedent": "^0.1.0",
+    "sinon": "^4.2.2"
+  }
+}

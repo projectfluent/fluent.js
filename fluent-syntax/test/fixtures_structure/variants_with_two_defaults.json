@@ -1,0 +1,32 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0015",
+          "arguments": [],
+          "message": "Only one variant can be marked as default (*)",
+          "span": {
+            "type": "Span",
+            "start": 38,
+            "end": 38
+          }
+        }
+      ],
+      "content": "-err01 = { $sel ->\n    *[one] Foo\n    *[two] Two\n    }\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 55
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 55
+  }
+}

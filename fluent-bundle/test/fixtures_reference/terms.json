@@ -1,0 +1,49 @@
+{
+    "body": [
+        {
+            "id": "-term01",
+            "value": "Value",
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "-term02",
+            "value": [
+                {
+                    "type": "str",
+                    "value": ""
+                }
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "-term03",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "-term04",
+            "value": null,
+            "attributes": {
+                "attr1": "Attribute 1"
+            }
+        },
+        {
+            "id": "-term08",
+            "value": "Value",
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "-term09",
+            "value": "Value",
+            "attributes": {
+                "attr": "Attribute"
+            }
+        }
+    ]
+}

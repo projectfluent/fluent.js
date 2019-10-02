@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 
@@ -10,9 +10,9 @@ suite('Localized - void elements', function() {
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo">
@@ -30,10 +30,10 @@ foo = FOO
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo =
     .title = TITLE
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{title: true}}>
@@ -51,10 +51,10 @@ foo =
     const bundle = new FluentBundle();
     const l10n = new ReactLocalization([bundle]);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
     .title = TITLE
-`)
+`));
 
     const wrapper = shallow(
       <Localized id="foo" attrs={{title: true}}>

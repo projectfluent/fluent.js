@@ -1,8 +1,10 @@
-import FluentParser from "./parser";
-import FluentSerializer from "./serializer";
+import {FluentParser} from "./parser";
+import {FluentSerializer} from "./serializer";
 
 export * from "./ast";
-export { FluentParser, FluentSerializer };
+export * from "./parser";
+export * from "./serializer";
+export * from "./visitor";
 
 export function parse(source, opts) {
   const parser = new FluentParser(opts);

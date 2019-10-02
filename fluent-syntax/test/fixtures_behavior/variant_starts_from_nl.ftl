@@ -1,3 +1,0 @@
--term = {
-*[one] Value
-    }

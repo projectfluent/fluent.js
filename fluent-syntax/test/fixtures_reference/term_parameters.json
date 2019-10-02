@@ -63,7 +63,9 @@
                             "id": {
                                 "type": "Identifier",
                                 "name": "term"
-                            }
+                            },
+                            "attribute": null,
+                            "arguments": null
                         }
                     }
                 ]
@@ -83,16 +85,17 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "CallExpression",
-                            "callee": {
-                                "type": "TermReference",
-                                "id": {
-                                    "type": "Identifier",
-                                    "name": "term"
-                                }
+                            "type": "TermReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "term"
                             },
-                            "positional": [],
-                            "named": []
+                            "attribute": null,
+                            "arguments": {
+                                "type": "CallArguments",
+                                "positional": [],
+                                "named": []
+                            }
                         }
                     }
                 ]
@@ -112,28 +115,29 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "CallExpression",
-                            "callee": {
-                                "type": "TermReference",
-                                "id": {
-                                    "type": "Identifier",
-                                    "name": "term"
-                                }
+                            "type": "TermReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "term"
                             },
-                            "positional": [],
-                            "named": [
-                                {
-                                    "type": "NamedArgument",
-                                    "name": {
-                                        "type": "Identifier",
-                                        "name": "arg"
-                                    },
-                                    "value": {
-                                        "type": "NumberLiteral",
-                                        "value": "1"
+                            "attribute": null,
+                            "arguments": {
+                                "type": "CallArguments",
+                                "positional": [],
+                                "named": [
+                                    {
+                                        "type": "NamedArgument",
+                                        "name": {
+                                            "type": "Identifier",
+                                            "name": "arg"
+                                        },
+                                        "value": {
+                                            "value": "1",
+                                            "type": "NumberLiteral"
+                                        }
                                     }
-                                }
-                            ]
+                                ]
+                            }
                         }
                     }
                 ]
@@ -153,45 +157,45 @@
                     {
                         "type": "Placeable",
                         "expression": {
-                            "type": "CallExpression",
-                            "callee": {
-                                "type": "TermReference",
-                                "id": {
-                                    "type": "Identifier",
-                                    "name": "term"
-                                }
+                            "type": "TermReference",
+                            "id": {
+                                "type": "Identifier",
+                                "name": "term"
                             },
-                            "positional": [
-                                {
-                                    "type": "StringLiteral",
-                                    "raw": "positional",
-                                    "value": "positional"
-                                }
-                            ],
-                            "named": [
-                                {
-                                    "type": "NamedArgument",
-                                    "name": {
-                                        "type": "Identifier",
-                                        "name": "narg1"
-                                    },
-                                    "value": {
-                                        "type": "NumberLiteral",
-                                        "value": "1"
+                            "attribute": null,
+                            "arguments": {
+                                "type": "CallArguments",
+                                "positional": [
+                                    {
+                                        "value": "positional",
+                                        "type": "StringLiteral"
                                     }
-                                },
-                                {
-                                    "type": "NamedArgument",
-                                    "name": {
-                                        "type": "Identifier",
-                                        "name": "narg2"
+                                ],
+                                "named": [
+                                    {
+                                        "type": "NamedArgument",
+                                        "name": {
+                                            "type": "Identifier",
+                                            "name": "narg1"
+                                        },
+                                        "value": {
+                                            "value": "1",
+                                            "type": "NumberLiteral"
+                                        }
                                     },
-                                    "value": {
-                                        "type": "NumberLiteral",
-                                        "value": "2"
+                                    {
+                                        "type": "NamedArgument",
+                                        "name": {
+                                            "type": "Identifier",
+                                            "name": "narg2"
+                                        },
+                                        "value": {
+                                            "value": "2",
+                                            "type": "NumberLiteral"
+                                        }
                                     }
-                                }
-                            ]
+                                ]
+                            }
                         }
                     }
                 ]

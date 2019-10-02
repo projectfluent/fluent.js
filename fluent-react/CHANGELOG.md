@@ -1,5 +1,37 @@
 # Changelog
 
+## @fluent/react 0.10.0 (July 30, 2019)
+
+  - Update to `@fluent/bundle` 0.14.0.
+
+    This version of `@fluent/react` can be used with the new `FluentBundle`
+    API released in `@fluent/bundle` 0.14.0.
+
+  - Report formatting errors from `Localized` and `getString`. (#412)
+
+    Formatting errors are now printed to the console. In the future,
+    `@fluent/react` will allow finer-grained control over rpeorting errors.
+    See #411.
+
+## @fluent/react 0.9.0 (July 25, 2019)
+
+  - Rename `fluent-react` to `@fluent/react`.
+  - Rename the runtime dependency to `@fluent/sequence`.
+  - Rename the peer dependency to  `@fluent/bundle`.
+
+## fluent-react 0.9.0 (July 25, 2019)
+
+  - Deprecate `fluent-react` in favor of `@fluent/react`.
+
+## fluent-react 0.8.5 (July 25, 2019)
+
+  - Accept `fluent` 0.13.x as a peer dependency.
+  - Fix the rendering of empty `<Localized/>`. (#378)
+
+## fluent-react 0.8.4 (March 29, 2019)
+
+  - Accept `fluent` 0.11.x and 0.12.x as a peer dependency.
+
 ## fluent-react 0.8.3 (December 13, 2018)
 
   - Accept `fluent` 0.10.x as a peer dependency.

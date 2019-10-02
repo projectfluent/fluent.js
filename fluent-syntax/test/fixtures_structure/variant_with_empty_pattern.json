@@ -20,8 +20,8 @@
             "expression": {
               "type": "SelectExpression",
               "selector": {
-                "type": "NumberLiteral",
                 "value": "1",
+                "type": "NumberLiteral",
                 "span": {
                   "type": "Span",
                   "start": 13,
@@ -46,9 +46,8 @@
                       {
                         "type": "Placeable",
                         "expression": {
-                          "type": "StringLiteral",
-                          "raw": "",
                           "value": "",
+                          "type": "StringLiteral",
                           "span": {
                             "type": "Span",
                             "start": 33,
@@ -102,11 +101,33 @@
         "start": 0,
         "end": 42
       }
+    },
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0012",
+          "arguments": [],
+          "message": "Expected value",
+          "span": {
+            "type": "Span",
+            "start": 78,
+            "end": 78
+          }
+        }
+      ],
+      "content": "err2 =\n    { $sel ->\n       *[one]\n    }\n",
+      "span": {
+        "type": "Span",
+        "start": 44,
+        "end": 85
+      }
     }
   ],
   "span": {
     "type": "Span",
     "start": 0,
-    "end": 43
+    "end": 85
   }
 }

@@ -1,0 +1,19 @@
+{
+    "source": "./src",
+    "destination": "../html/react",
+    "plugins": [
+        {
+            "name": "esdoc-standard-plugin"
+        },
+        {
+            "name": "esdoc-jsx-plugin"
+        },
+        {
+            "name": "esdoc-ecmascript-proposal-plugin",
+            "option": {
+                "objectRestSpread": true,
+                "asyncGenerators": true
+            }
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "body": [
+        {
+            "id": "control0",
+            "value": "abc\u0007def",
+            "attributes": {}
+        },
+        {
+            "id": "delete",
+            "value": "abcdef",
+            "attributes": {}
+        },
+        {
+            "id": "control1",
+            "value": "abcdef",
+            "attributes": {}
+        }
+    ]
+}

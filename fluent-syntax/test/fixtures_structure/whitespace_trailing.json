@@ -129,6 +129,7 @@
                   "end": 134
                 }
               },
+              "attribute": null,
               "span": {
                 "type": "Span",
                 "start": 125,
@@ -191,9 +192,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "type": "StringLiteral",
-              "raw": "           ",
               "value": "           ",
+              "type": "StringLiteral",
               "span": {
                 "type": "Span",
                 "start": 150,

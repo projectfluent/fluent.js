@@ -15,23 +15,23 @@
                         "expression": {
                             "type": "SelectExpression",
                             "selector": {
-                                "type": "CallExpression",
-                                "callee": {
-                                    "type": "FunctionReference",
-                                    "id": {
-                                        "type": "Identifier",
-                                        "name": "BUILTIN"
-                                    }
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "BUILTIN"
                                 },
-                                "positional": [],
-                                "named": []
+                                "arguments": {
+                                    "type": "CallArguments",
+                                    "positional": [],
+                                    "named": []
+                                }
                             },
                             "variants": [
                                 {
                                     "type": "Variant",
                                     "key": {
-                                        "type": "NumberLiteral",
-                                        "value": "0"
+                                        "value": "0",
+                                        "type": "NumberLiteral"
                                     },
                                     "value": {
                                         "type": "Pattern",
@@ -56,9 +56,8 @@
                                             {
                                                 "type": "Placeable",
                                                 "expression": {
-                                                    "type": "StringLiteral",
-                                                    "raw": "",
-                                                    "value": ""
+                                                    "value": "",
+                                                    "type": "StringLiteral"
                                                 }
                                             },
                                             {
@@ -91,18 +90,16 @@
                         "expression": {
                             "type": "SelectExpression",
                             "selector": {
-                                "type": "AttributeExpression",
-                                "ref": {
-                                    "type": "TermReference",
-                                    "id": {
-                                        "type": "Identifier",
-                                        "name": "term"
-                                    }
+                                "type": "TermReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "term"
                                 },
-                                "name": {
+                                "attribute": {
                                     "type": "Identifier",
                                     "name": "case"
-                                }
+                                },
+                                "arguments": null
                             },
                             "variants": [
                                 {
@@ -132,7 +129,7 @@
         },
         {
             "type": "Comment",
-            "content": "ERROR"
+            "content": "ERROR Term values are not valid selectors"
         },
         {
             "type": "Junk",
@@ -141,21 +138,30 @@
         },
         {
             "type": "Comment",
-            "content": "ERROR"
+            "content": "ERROR CallExpressions on Terms are similar to TermReferences"
         },
         {
             "type": "Junk",
             "annotations": [],
-            "content": "invalid-selector-term-variant =\n    { -term[case] ->\n       *[key] value\n    }\n\n"
+            "content": "invalid-selector-term-variant =\n    { -term(case: \"nominative\") ->\n       *[key] value\n    }\n\n"
         },
         {
             "type": "Comment",
-            "content": "ERROR"
+            "content": "ERROR Nested expressions are not valid selectors"
         },
         {
             "type": "Junk",
             "annotations": [],
-            "content": "invalid-selector-term-call =\n    { -term(case: \"nominative\") ->\n       *[key] value\n    }\n\n"
+            "content": "invalid-selector-nested-expression =\n    { { 3 } ->\n        *[key] default\n    }\n\n"
+        },
+        {
+            "type": "Comment",
+            "content": "ERROR Select expressions are not valid selectors"
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "invalid-selector-select-expression =\n    { { $sel ->\n        *[key] value\n        } ->\n        *[key] default\n    }\n\n"
         },
         {
             "type": "Message",
@@ -171,15 +177,18 @@
                         "expression": {
                             "type": "SelectExpression",
                             "selector": {
-                                "type": "NumberLiteral",
-                                "value": "1"
+                                "type": "VariableReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "sel"
+                                }
                             },
                             "variants": [
                                 {
                                     "type": "Variant",
                                     "key": {
                                         "type": "Identifier",
-                                        "name": "one"
+                                        "name": "key"
                                     },
                                     "value": {
                                         "type": "Pattern",
@@ -187,9 +196,62 @@
                                             {
                                                 "type": "Placeable",
                                                 "expression": {
-                                                    "type": "StringLiteral",
-                                                    "raw": "",
-                                                    "value": ""
+                                                    "value": "",
+                                                    "type": "StringLiteral"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "default": true
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "attributes": [],
+            "comment": null
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "reduced-whitespace"
+            },
+            "value": {
+                "type": "Pattern",
+                "elements": [
+                    {
+                        "type": "Placeable",
+                        "expression": {
+                            "type": "SelectExpression",
+                            "selector": {
+                                "type": "FunctionReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "FOO"
+                                },
+                                "arguments": {
+                                    "type": "CallArguments",
+                                    "positional": [],
+                                    "named": []
+                                }
+                            },
+                            "variants": [
+                                {
+                                    "type": "Variant",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "key"
+                                    },
+                                    "value": {
+                                        "type": "Pattern",
+                                        "elements": [
+                                            {
+                                                "type": "Placeable",
+                                                "expression": {
+                                                    "value": "",
+                                                    "type": "StringLiteral"
                                                 }
                                             }
                                         ]
@@ -218,8 +280,11 @@
                         "expression": {
                             "type": "SelectExpression",
                             "selector": {
-                                "type": "NumberLiteral",
-                                "value": "1"
+                                "type": "VariableReference",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "sel"
+                                }
                             },
                             "variants": [
                                 {
@@ -236,8 +301,11 @@
                                                 "expression": {
                                                     "type": "SelectExpression",
                                                     "selector": {
-                                                        "type": "NumberLiteral",
-                                                        "value": "2"
+                                                        "type": "VariableReference",
+                                                        "id": {
+                                                            "type": "Identifier",
+                                                            "name": "sel"
+                                                        }
                                                     },
                                                     "variants": [
                                                         {
@@ -274,12 +342,12 @@
         },
         {
             "type": "Comment",
-            "content": "ERROR VariantLists cannot be Variant values."
+            "content": "ERROR Missing selector"
         },
         {
             "type": "Junk",
             "annotations": [],
-            "content": "nested-variant-list =\n    { 1 ->\n       *[one] {\n          *[two] Value\n       }\n    }\n\n"
+            "content": "missing-selector =\n    {\n       *[key] Value\n    }\n\n"
         },
         {
             "type": "Comment",
@@ -288,7 +356,7 @@
         {
             "type": "Junk",
             "annotations": [],
-            "content": "missing-line-end =\n    { 1 ->\n        *[one] One}\n"
+            "content": "missing-line-end =\n    { $sel ->\n        *[key] Value}\n"
         }
     ]
 }

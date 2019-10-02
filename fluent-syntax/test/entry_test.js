@@ -1,5 +1,5 @@
 import assert from "assert";
-import { ftl } from "./util";
+import ftl from "@fluent/dedent";
 
 import { FluentParser, FluentSerializer } from "../src";
 
@@ -11,7 +11,7 @@ suite("Parse entry", function() {
   test("simple message", function() {
     const input = ftl`
       foo = Foo
-    `;
+      `;
     const output = {
       "comment": null,
       "value": {
@@ -39,7 +39,7 @@ suite("Parse entry", function() {
     const input = ftl`
       # Attached Comment
       foo = Foo
-    `;
+      `;
     const output = {
       "comment": null,
       "value": {
@@ -67,12 +67,12 @@ suite("Parse entry", function() {
     const input = ftl`
       # Attached Comment
       junk
-    `;
+      `;
     const output = {
-      "content": "junk\n",
+      "content": "junk",
       "annotations": [
         {
-          "args": ["="],
+          "arguments": ["="],
           "code": "E0003",
           "message": "Expected token: \"=\"",
           "span": {
@@ -96,7 +96,7 @@ suite("Parse entry", function() {
       ## Group Comment
       ### Resource Comment
       foo = Foo
-    `;
+      `;
     const output = {
       "comment": null,
       "value": {
@@ -124,12 +124,12 @@ suite("Parse entry", function() {
     const input = ftl`
       # Attached Comment
       ##Invalid Comment
-    `;
+      `;
     const output = {
-      "content": "##Invalid Comment\n",
+      "content": "##Invalid Comment",
       "annotations": [
         {
-          "args": [" "],
+          "arguments": [" "],
           "code": "E0003",
           "message": "Expected token: \" \"",
           "span": {
@@ -175,7 +175,8 @@ suite("Serialize entry", function() {
     };
     const output = ftl`
       foo = Foo
-    `;
+
+      `;
 
     const message = this.serializer.serializeEntry(input)
     assert.deepEqual(message, output)

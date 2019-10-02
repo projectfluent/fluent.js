@@ -1,6 +1,22 @@
 # Changelog
 
-## Unreleased
+## @fluent/dom 0.6.0 (August 21, 2019)
+
+  - Update `@fluent/dom` to work with `@fluent/bundle` 0.14
+
+## @fluent/dom 0.5.0 (July 25, 2019)
+
+  - Rename `fluent-dom` to `@fluent/dom`.
+
+## fluent-dom 0.5.0 (July 25, 2019)
+
+  - Deprecate `fluent-dom` in favor of `@fluent/dom`.
+
+## fluent-dom 0.4.2
+
+  - Minimize attribute churn when retranslating DOM Overlays (#354)
+  - Minor DOMOverlays alignments with the Gecko implementation.
+  - fix SyntaxError on Edge (#405)
 
 ## fluent-dom 0.4.1
 

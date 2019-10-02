@@ -1,8 +1,8 @@
 {
-  "name": "fluent-react",
+  "name": "@fluent/react",
   "description": "Fluent bindings for React",
-  "version": "0.8.3",
-  "homepage": "http://projectfluent.org",
+  "version": "0.10.0",
+  "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
   "contributors": [
@@ -18,7 +18,7 @@
   "directories": {
     "lib": "./src"
   },
-  "main": "./fluent-react.js",
+  "main": "./index.js",
   "module": "./src/index.js",
   "repository": {
     "type": "git",
@@ -47,11 +47,11 @@
   },
   "dependencies": {
     "cached-iterable": "^0.2.1",
-    "fluent-sequence": "^0.2.0",
+    "@fluent/sequence": "0.4.0",
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {
-    "fluent": "0.8.x || 0.9.x || 0.10.x",
+    "@fluent/bundle": ">=0.14.0 <0.15.0",
     "react": "^0.14.9 || ^15.0.0 || ^16.0.0"
   },
   "devDependencies": {

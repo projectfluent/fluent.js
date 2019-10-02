@@ -1,0 +1,69 @@
+{
+    "body": [
+        {
+            "id": "key01",
+            "value": [
+                "Value"
+            ],
+            "attributes": {}
+        },
+        {
+            "id": "key02",
+            "value": null,
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "key03",
+            "value": [
+                "Value",
+                "\n",
+                "Continued",
+                "\n\n\n",
+                "Over multiple",
+                "\n",
+                "Lines"
+            ],
+            "attributes": {
+                "attr": "Attribute"
+            }
+        },
+        {
+            "id": "key05",
+            "value": "Value",
+            "attributes": {}
+        },
+        {
+            "id": "key06",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "num",
+                        "value": 1,
+                        "precision": 0
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "One"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "two"
+                            },
+                            "value": "Two"
+                        }
+                    ],
+                    "star": 1
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

@@ -35,7 +35,7 @@ function getErrorMessage(code, args) {
     case "E0008":
       return "The callee has to be an upper-case identifier or a term";
     case "E0009":
-      return "The key has to be a simple identifier";
+      return "The argument name has to be a simple identifier";
     case "E0010":
       return "Expected one of the variants to be marked as default (*)";
     case "E0011":
@@ -76,6 +76,8 @@ function getErrorMessage(code, args) {
       return "Unbalanced closing brace in TextElement.";
     case "E0028":
       return "Expected an inline expression";
+    case "E0029":
+      return "Expected simple expression as selector";
     default:
       return code;
   }

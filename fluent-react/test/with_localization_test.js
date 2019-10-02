@@ -1,7 +1,7 @@
 import React from 'react';
 import assert from 'assert';
 import { mount, shallow } from 'enzyme';
-import { FluentBundle } from '../../fluent/src';
+import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 
@@ -18,7 +18,7 @@ suite('withLocalization', function() {
         <EnhancedComponent />
       </LocalizationProvider>
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('render outside of a LocalizationProvider', function() {
@@ -27,17 +27,18 @@ suite('withLocalization', function() {
     const wrapper = shallow(
       <EnhancedComponent />,
     );
-    assert.equal(wrapper.length, 1);
+    assert.strictEqual(wrapper.length, 1);
   });
 
   test('getString with access to the l10n context', function() {
-    const bundle = new FluentBundle();
+    const bundle = new FluentBundle("en", {useIsolating: false});
     const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`);
+bar = BAR {$arg}
+`));
 
     const wrapper = shallow(
       <EnhancedComponent />,
@@ -46,17 +47,21 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the translation.
-    assert.equal(getString('foo', {}), 'FOO');
+    assert.strictEqual(getString('foo', {}), 'FOO');
+    assert.strictEqual(getString('bar', {arg: 'ARG'}), 'BAR ARG');
+    // Doesn't throw on formatting errors.
+    assert.strictEqual(getString('bar', {}), 'BAR {$arg}');
   });
 
   test('getString with access to the l10n context, with fallback value', function() {
-    const bundle = new FluentBundle();
+    const bundle = new FluentBundle("en", {useIsolating: false});
     const l10n = new ReactLocalization([bundle]);
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    bundle.addMessages(`
+    bundle.addResource(new FluentResource(`
 foo = FOO
-`);
+bar = BAR {$arg}
+`));
 
     const wrapper = shallow(
       <EnhancedComponent />,
@@ -65,7 +70,12 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the translation, even if fallback value provided.
-    assert.equal(getString('bar', {}, 'fallback'), 'fallback');
+    assert.strictEqual(getString('foo', {}, 'fallback'), 'FOO');
+    // Returns the fallback.
+    assert.strictEqual(getString('missing', {}, 'fallback'), 'fallback');
+    assert.strictEqual(getString('bar', {arg: 'ARG'}), 'BAR ARG');
+    // Doesn't throw on formatting errors.
+    assert.strictEqual(getString('bar', {}), 'BAR {$arg}');
   });
 
   test('getString without access to the l10n context', function() {
@@ -77,7 +87,7 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the id if no fallback.
-    assert.equal(getString('foo', {arg: 1}), 'foo');
+    assert.strictEqual(getString('foo', {arg: 1}), 'foo');
   });
 
   test('getString without access to the l10n context, with fallback value', function() {
@@ -89,7 +99,7 @@ foo = FOO
 
     const getString = wrapper.prop('getString');
     // Returns the fallback if provided.
-    assert.equal(getString('foo', {arg: 1}, 'fallback message'), 'fallback message');
+    assert.strictEqual(getString('foo', {arg: 1}, 'fallback message'), 'fallback message');
   });
 
   test('getString with access to the l10n context, with message changes', function() {
@@ -97,19 +107,20 @@ foo = FOO
     const l10n = new ReactLocalization([initialBundle]);
     const EnhancedComponent = withLocalization(({ getString }) => getString('foo'));
 
-    initialBundle.addMessages('foo = FOO');
+    initialBundle.addResource(new FluentResource('foo = FOO'));
 
     const wrapper = mount(
       <EnhancedComponent />,
       { context: { l10n } }
     );
 
-    assert.equal(wrapper.text(), 'FOO');
+    assert.strictEqual(wrapper.text(), 'FOO');
 
     const newBundle = new FluentBundle();
-    newBundle.addMessages('foo = BAR');
+    newBundle.addResource(new FluentResource('foo = BAR'));
     l10n.setBundles([newBundle]);
 
-    assert.equal(wrapper.text(), 'BAR');
+    wrapper.update();
+    assert.strictEqual(wrapper.text(), 'BAR');
   })
 });

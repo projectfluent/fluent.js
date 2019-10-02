@@ -1,5 +1,86 @@
 # Changelog
 
+## @fluent/syntax 0.14.0 (July 25, 2019)
+
+  - Rename `fluent-syntax` to `@fluent/syntax`.
+
+## fluent-syntax 0.14.0 (July 25, 2019)
+
+  - Deprecate fluent-syntax. Plase use @fluent/syntax from now on.
+
+## fluent-syntax 0.13.0 (April 17, 2019)
+
+  - Support Fluent Syntax 1.0.
+
+    Fluent Syntax 1.0 has been published today. There are no changes to the
+    grammar nor the AST compared to the Syntax 0.9.
+
+## fluent-syntax 0.12.0 (March 26, 2019)
+
+This release of `fluent-syntax` brings support for version 0.9 of the Fluent
+Syntax spec. The API remains unchanged. Files written in valid Syntax 0.8 may
+parse differently in this release. See the compatibility note below. Consult
+the full Syntax 0.9 [changelog][chlog0.9] for details.
+
+[chlog0.9]: https://github.com/projectfluent/fluent/releases/tag/v0.9.0
+
+  - Flatten complex reference expressions.
+
+    Reference expressions which may take complex forms, such as a reference
+    to a message's attribute, or a parameterized reference to an attribute of
+    a term, are now stored in a simplified manner. Instead of nesting
+    multiple expression nodes (e.g. `CallExpression` of an
+    `AttributeExpression` of a `TermReference`), all information is available
+    directly in the reference expression.
+
+    This change affects the following AST nodes:
+
+    -  `MessageReference` now has an optional `attribute` field,
+    - `FunctionReference` now has a required `arguments` field,
+    - `TermReference` now has an optional `attribute` field and an optional
+      `arguments` field.
+
+  - Remove `VariantLists`.
+
+    The `VariantLists` and the `VariantExpression` syntax and AST nodes were
+    deprecated in Syntax 0.9 and have now been removed.
+
+  - Rename `StringLiteral.raw` to `value`.
+
+    `StringLiteral.value` contains the exact contents of the string literal,
+    character-for-character. Escape sequences are stored verbatim without
+    processing. A new method, `Literal.parse`, can be used to process the raw
+    value of the literal into an unescaped form.
+
+  - Rename `args` to `arguments`.
+
+    The `args` field of `MessageReference`, `TermReference`,
+    `FunctionReference`, and `Annotation` has been renamed to `arguments`.
+
+### Backward-incompatible changes:
+
+  - `VariantLists` are no longer valid syntax. A syntax error is reported
+    when a `VariantList` or a `VariantExpression` is found in the parsed file.
+
+
+## fluent-syntax 0.11.0 (March 25, 2019)
+
+  - Add `BaseNode.equals` and `BaseNode.clone`. (#172)
+
+    The new `BaseNode` methods can be used to compare two nodes and to create
+    a deep copy of an AST node.
+
+  - Add `Visitor` and `Transformer`. (#172)
+
+    Add two new exports: `Visitor` for read-only iteration over AST trees,
+    and `Transformer` for in-place mutation of AST trees.
+
+  - Export `serializeExpression` and `serializeVariantKey`. (#350)
+
+    The `FluentSerializer.serializeExpression` method has been removed in
+    favor of a module-wide stateless function `serializeExpression`.
+
+
 ## fluent-syntax 0.10.0 (December 13, 2018)
 
 This release of `fluent-syntax` brings support for version 0.8 of the

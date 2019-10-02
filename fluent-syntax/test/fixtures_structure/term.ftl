@@ -1,16 +1,24 @@
--brand-name =
-    {
-       *[nominative] Firefox
-        [accusative] Firefoxa
+-term =
+    { $case ->
+       *[uppercase] Term
+        [lowercase] term
     }
-    .gender = masculine
+    .attr = a
 
-update-command =
-    Zaktualizuj { -brand-name[accusative] }.
+key01 = {-term}
+key02 = {-term()}
+key03 = {-term(case: "uppercase")}
 
-update-successful =
-    { -brand-name.gender ->
-        [masculine] { -brand-name } został pomyślnie zaktualizowany.
-        [feminine] { -brand-name } została pomyślnie zaktualizowana.
-       *[other] Program { -brand-name } został pomyślnie zaktualizowany.
+
+key04 =
+    { -term.attr ->
+        [a] { -term } A
+        [b] { -term() } B
+       *[x] X
     }
+
+-err1 =
+-err2 =
+    .attr = Attribute
+--err3 = Error
+err4 = { --err4 }

@@ -1,0 +1,34 @@
+{
+    "body": [
+        {
+            "id": "-err01",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "var",
+                        "name": "sel"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "one"
+                            },
+                            "value": "Foo"
+                        },
+                        {
+                            "key": {
+                                "type": "str",
+                                "value": "two"
+                            },
+                            "value": "Two"
+                        }
+                    ],
+                    "star": 1
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

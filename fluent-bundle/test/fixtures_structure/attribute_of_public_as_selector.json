@@ -1,0 +1,37 @@
+{
+    "body": [
+        {
+            "id": "err1",
+            "value": [
+                {
+                    "type": "select",
+                    "selector": {
+                        "type": "mesg",
+                        "name": "foo",
+                        "attr": "bar"
+                    },
+                    "variants": [
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 1,
+                                "precision": 0
+                            },
+                            "value": "One"
+                        },
+                        {
+                            "key": {
+                                "type": "num",
+                                "value": 2,
+                                "precision": 0
+                            },
+                            "value": "Two"
+                        }
+                    ],
+                    "star": 1
+                }
+            ],
+            "attributes": {}
+        }
+    ]
+}

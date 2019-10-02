@@ -1,0 +1,32 @@
+{
+  "type": "Resource",
+  "body": [
+    {
+      "type": "Junk",
+      "annotations": [
+        {
+          "type": "Annotation",
+          "code": "E0020",
+          "arguments": [],
+          "message": "Unterminated string expression",
+          "span": {
+            "type": "Span",
+            "start": 24,
+            "end": 24
+          }
+        }
+      ],
+      "content": "err01 = { BUILTIN(key: \"\n text\n    \") }\n",
+      "span": {
+        "type": "Span",
+        "start": 0,
+        "end": 40
+      }
+    }
+  ],
+  "span": {
+    "type": "Span",
+    "start": 0,
+    "end": 40
+  }
+}

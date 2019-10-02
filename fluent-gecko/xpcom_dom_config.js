@@ -7,6 +7,7 @@ export default Object.assign({}, bundleConfig, {
   ],
   output: {
     format: 'es',
+    preferConst: true,
     banner: `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */
 
 /* Copyright 2017 Mozilla Foundation and others
@@ -24,6 +25,5 @@ export default Object.assign({}, bundleConfig, {
  * limitations under the License.
  */\n\n`,
   },
-  preferConst: true,
   context: 'this'
 });
