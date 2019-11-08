@@ -57,10 +57,8 @@ Discuss
 We'd love to hear your thoughts on Project Fluent!  Whether you're a localizer looking 
 for a better way to express yourself in your language, or a developer trying to 
 make your app localizable and multilingual, or a hacker looking for a project 
-to contribute to, please do get in touch on the mailing list and the IRC 
-channel.
+to contribute to, please do get in touch!
 
- - mailing list: https://lists.mozilla.org/listinfo/tools-l10n
  - Discourse: https://discourse.mozilla.org/c/fluent
 
 
