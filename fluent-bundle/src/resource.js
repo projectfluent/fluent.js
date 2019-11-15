@@ -1,17 +1,68 @@
 import FluentError from "./error.js";
 
+let isStickyRegexpSupported = false;
+try {
+  new RegExp(".", "y");
+  isStickyRegexpSupported = true;
+// eslint-disable-next-line no-empty
+} catch (_) {}
+
+/**
+ * Weak "sticky" RegExp polyfill. Given a RegExp re, return an object that
+ * implements only the following properties of the "stickiy" regexp that would
+ * be obtained by `new RegExp(re.source, 'y')`:
+ *
+ * - RegExp.prototype.test()
+ * - RegExp.prototype.exec()
+ * - RegExp.lastIndex
+ *
+ * @param {*} re
+ */
+function sticky(original) {
+  if (isStickyRegexpSupported) {
+    return new RegExp(original.source, "y");
+  }
+
+  if (original.source[0] === "^") {
+    throw new Error("Sticky RegExp with ^ not implemented.");
+  }
+  // Create a new regexp that matches only at the beginning of the string. We'll
+  // use to mimick "sticky" behavior by executing it against the input sliced at
+  // `lastIndex`
+  const re = new RegExp(`^${original.source}`);
+  const wrapped = {
+    test(str) {
+      return !!this.exec(str);
+    },
+    exec(str) {
+      const result = re.exec(str.slice(this.lastIndex));
+      if (result) {
+        this.lastIndex += result[0].length;
+      } else {
+        this.lastIndex = 0;
+      }
+      return result;
+    },
+    lastIndex: 0,
+    original: original
+  };
+  return wrapped;
+}
+
 // This regex is used to iterate through the beginnings of messages and terms.
 // With the /m flag, the ^ matches at the beginning of every line.
 const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */mg;
 
 // Both Attributes and Variants are parsed in while loops. These regexes are
 // used to break out of them.
-const RE_ATTRIBUTE_START = /\.([a-zA-Z][\w-]*) *= */y;
-const RE_VARIANT_START = /\*?\[/y;
+const STICKY_RE_ATTRIBUTE_START = sticky(/\.([a-zA-Z][\w-]*) *= */);
+const STICKY_RE_VARIANT_START = sticky(/\*?\[/);
 
-const RE_NUMBER_LITERAL = /(-?[0-9]+(?:\.([0-9]+))?)/y;
-const RE_IDENTIFIER = /([a-zA-Z][\w-]*)/y;
-const RE_REFERENCE = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y;
+const STICKY_RE_NUMBER_LITERAL = sticky(/(-?[0-9]+(?:\.([0-9]+))?)/);
+const STICKY_RE_IDENTIFIER = sticky(/([a-zA-Z][\w-]*)/);
+const STICKY_RE_REFERENCE = sticky(
+  /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/
+);
 const RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;
 
 // A "run" is a sequence of text or string literal characters which don't
@@ -20,12 +71,14 @@ const RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;
 // if the next line is indented. For StringLiterals they are: \ (starts an
 // escape sequence), " (ends the literal), and line breaks which are not allowed
 // in StringLiterals. Note that string runs may be empty; text runs may not.
-const RE_TEXT_RUN = /([^{}\n\r]+)/y;
-const RE_STRING_RUN = /([^\\"\n\r]*)/y;
+const STICKY_RE_TEXT_RUN = sticky(/([^{}\n\r]+)/);
+const STICKY_RE_STRING_RUN = sticky(/([^\\"\n\r]*)/);
 
 // Escape sequences.
-const RE_STRING_ESCAPE = /\\([\\"])/y;
-const RE_UNICODE_ESCAPE = /\\u([a-fA-F0-9]{4})|\\U([a-fA-F0-9]{6})/y;
+const STICKY_RE_STRING_ESCAPE = sticky(/\\([\\"])/);
+const STICKY_RE_UNICODE_ESCAPE = sticky(
+  /\\u([a-fA-F0-9]{4})|\\U([a-fA-F0-9]{6})/
+);
 
 // Used for trimming TextElements and indents.
 const RE_LEADING_NEWLINES = /^\n+/;
@@ -36,17 +89,17 @@ const RE_BLANK_LINES = / *\r?\n/g;
 const RE_INDENT = /( *)$/;
 
 // Common tokens.
-const TOKEN_BRACE_OPEN = /{\s*/y;
-const TOKEN_BRACE_CLOSE = /\s*}/y;
-const TOKEN_BRACKET_OPEN = /\[\s*/y;
-const TOKEN_BRACKET_CLOSE = /\s*] */y;
-const TOKEN_PAREN_OPEN = /\s*\(\s*/y;
-const TOKEN_ARROW = /\s*->\s*/y;
-const TOKEN_COLON = /\s*:\s*/y;
+const STICKY_TOKEN_BRACE_OPEN = sticky(/{\s*/);
+const STICKY_TOKEN_BRACE_CLOSE = sticky(/\s*}/);
+const STICKY_TOKEN_BRACKET_OPEN = sticky(/\[\s*/);
+const STICKY_TOKEN_BRACKET_CLOSE = sticky(/\s*] */);
+const STICKY_TOKEN_PAREN_OPEN = sticky(/\s*\(\s*/);
+const STICKY_TOKEN_ARROW = sticky(/\s*->\s*/);
+const STICKY_TOKEN_COLON = sticky(/\s*:\s*/);
 // Note the optional comma. As a deviation from the Fluent EBNF, the parser
 // doesn't enforce commas between call arguments.
-const TOKEN_COMMA = /\s*,?\s*/y;
-const TOKEN_BLANK = /\s+/y;
+const STICKY_TOKEN_COMMA = sticky(/\s*,?\s*/);
+const STICKY_TOKEN_BLANK = sticky(/\s+/);
 
 // Maximum number of placeables in a single Pattern to protect against Quadratic
 // Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
@@ -166,8 +219,8 @@ export default class FluentResource {
     function parseAttributes() {
       let attrs = Object.create(null);
 
-      while (test(RE_ATTRIBUTE_START)) {
-        let name = match1(RE_ATTRIBUTE_START);
+      while (test(STICKY_RE_ATTRIBUTE_START)) {
+        let name = match1(STICKY_RE_ATTRIBUTE_START);
         let value = parsePattern();
         if (value === null) {
           throw new FluentError("Expected attribute value");
@@ -180,8 +233,8 @@ export default class FluentResource {
 
     function parsePattern() {
       // First try to parse any simple text on the same line as the id.
-      if (test(RE_TEXT_RUN)) {
-        var first = match1(RE_TEXT_RUN);
+      if (test(STICKY_RE_TEXT_RUN)) {
+        var first = match1(STICKY_RE_TEXT_RUN);
       }
 
       // If there's a placeable on the first line, parse a complex pattern.
@@ -219,8 +272,8 @@ export default class FluentResource {
       let placeableCount = 0;
 
       while (true) {
-        if (test(RE_TEXT_RUN)) {
-          elements.push(match1(RE_TEXT_RUN));
+        if (test(STICKY_RE_TEXT_RUN)) {
+          elements.push(match1(STICKY_RE_TEXT_RUN));
           continue;
         }
 
@@ -266,16 +319,16 @@ export default class FluentResource {
     }
 
     function parsePlaceable() {
-      consumeToken(TOKEN_BRACE_OPEN, FluentError);
+      consumeToken(STICKY_TOKEN_BRACE_OPEN, FluentError);
 
       let selector = parseInlineExpression();
-      if (consumeToken(TOKEN_BRACE_CLOSE)) {
+      if (consumeToken(STICKY_TOKEN_BRACE_CLOSE)) {
         return selector;
       }
 
-      if (consumeToken(TOKEN_ARROW)) {
+      if (consumeToken(STICKY_TOKEN_ARROW)) {
         let variants = parseVariants();
-        consumeToken(TOKEN_BRACE_CLOSE, FluentError);
+        consumeToken(STICKY_TOKEN_BRACE_CLOSE, FluentError);
         return {type: "select", selector, ...variants};
       }
 
@@ -288,14 +341,14 @@ export default class FluentResource {
         return parsePlaceable();
       }
 
-      if (test(RE_REFERENCE)) {
-        let [, sigil, name, attr = null] = match(RE_REFERENCE);
+      if (test(STICKY_RE_REFERENCE)) {
+        let [, sigil, name, attr = null] = match(STICKY_RE_REFERENCE);
 
         if (sigil === "$") {
           return {type: "var", name};
         }
 
-        if (consumeToken(TOKEN_PAREN_OPEN)) {
+        if (consumeToken(STICKY_TOKEN_PAREN_OPEN)) {
           let args = parseArguments();
 
           if (sigil === "-") {
@@ -334,7 +387,7 @@ export default class FluentResource {
 
         args.push(parseArgument());
         // Commas between arguments are treated as whitespace.
-        consumeToken(TOKEN_COMMA);
+        consumeToken(STICKY_TOKEN_COMMA);
       }
     }
 
@@ -344,7 +397,7 @@ export default class FluentResource {
         return expr;
       }
 
-      if (consumeToken(TOKEN_COLON)) {
+      if (consumeToken(STICKY_TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
         return {type: "narg", name: expr.name, value: parseLiteral()};
       }
@@ -358,7 +411,7 @@ export default class FluentResource {
       let count = 0;
       let star;
 
-      while (test(RE_VARIANT_START)) {
+      while (test(STICKY_RE_VARIANT_START)) {
         if (consumeChar("*")) {
           star = count;
         }
@@ -383,16 +436,16 @@ export default class FluentResource {
     }
 
     function parseVariantKey() {
-      consumeToken(TOKEN_BRACKET_OPEN, FluentError);
-      let key = test(RE_NUMBER_LITERAL)
+      consumeToken(STICKY_TOKEN_BRACKET_OPEN, FluentError);
+      let key = test(STICKY_RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : {type: "str", value: match1(RE_IDENTIFIER)};
-      consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
+        : {type: "str", value: match1(STICKY_RE_IDENTIFIER)};
+      consumeToken(STICKY_TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
 
     function parseLiteral() {
-      if (test(RE_NUMBER_LITERAL)) {
+      if (test(STICKY_RE_NUMBER_LITERAL)) {
         return parseNumberLiteral();
       }
 
@@ -404,7 +457,7 @@ export default class FluentResource {
     }
 
     function parseNumberLiteral() {
-      let [, value, fraction = ""] = match(RE_NUMBER_LITERAL);
+      let [, value, fraction = ""] = match(STICKY_RE_NUMBER_LITERAL);
       let precision = fraction.length;
       return {type: "num", value: parseFloat(value), precision};
     }
@@ -413,7 +466,7 @@ export default class FluentResource {
       consumeChar("\"", FluentError);
       let value = "";
       while (true) {
-        value += match1(RE_STRING_RUN);
+        value += match1(STICKY_RE_STRING_RUN);
 
         if (source[cursor] === "\\") {
           value += parseEscapeSequence();
@@ -431,12 +484,12 @@ export default class FluentResource {
 
     // Unescape known escape sequences.
     function parseEscapeSequence() {
-      if (test(RE_STRING_ESCAPE)) {
-        return match1(RE_STRING_ESCAPE);
+      if (test(STICKY_RE_STRING_ESCAPE)) {
+        return match1(STICKY_RE_STRING_ESCAPE);
       }
 
-      if (test(RE_UNICODE_ESCAPE)) {
-        let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);
+      if (test(STICKY_RE_UNICODE_ESCAPE)) {
+        let [, codepoint4, codepoint6] = match(STICKY_RE_UNICODE_ESCAPE);
         let codepoint = parseInt(codepoint4 || codepoint6, 16);
         return codepoint <= 0xD7FF || 0xE000 <= codepoint
           // It's a Unicode scalar value.
@@ -453,7 +506,7 @@ export default class FluentResource {
     // line. Skip it othwerwise.
     function parseIndent() {
       let start = cursor;
-      consumeToken(TOKEN_BLANK);
+      consumeToken(STICKY_TOKEN_BLANK);
 
       // Check the first non-blank character after the indent.
       switch (source[cursor]) {
