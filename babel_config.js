@@ -1,9 +1,14 @@
 export default {
   babelrc: false,
+  exclude: [
+    /\/core-js\//
+  ],
   presets: [
     ["@babel/preset-env", {
       // Cf. https://github.com/rollup/rollup-plugin-babel#modules
       modules: false,
+      useBuiltIns: "usage",
+      corejs: 3,
       targets: {
         browsers: [
           "ie >= 11",
