@@ -21,5 +21,6 @@ export default {
         "transform-regenerator"
       ],
     }]
-  ]
+  ],
+  plugins: []
 };
