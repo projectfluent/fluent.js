@@ -21,7 +21,7 @@
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-jsx-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
-    "eslint": "^5.16.0",
+    "eslint": "^6.6.0",
     "eslint-plugin-compat": "^3.3.0",
     "eslint-plugin-mocha": "^5.3.0",
     "esm": "^3.2.22",
