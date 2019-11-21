@@ -11,9 +11,14 @@
  * `FluentType`.  Functions must return `FluentType` objects as well.
  */
 
-import { FluentNone, FluentNumber, FluentDateTime, FluentType } from "./types";
+import {
+  FluentNone,
+  FluentNumber,
+  FluentDateTime,
+  FluentTypeOrString
+} from "./types";
 
-function values(opts: Record<string, FluentType>) {
+function values(opts: Record<string, FluentTypeOrString>) {
   const unwrapped: Record<string, any> = {};
   for (const [name, opt] of Object.entries(opts)) {
     unwrapped[name] = opt.valueOf();
@@ -22,8 +27,8 @@ function values(opts: Record<string, FluentType>) {
 }
 
 export function NUMBER(
-  [arg]: Array<FluentType>,
-  opts: Record<string, FluentType>
+  [arg]: Array<FluentTypeOrString>,
+  opts: Record<string, FluentTypeOrString>
 ) {
   if (arg instanceof FluentNone) {
     return new FluentNone(`NUMBER(${arg.valueOf()})`);
@@ -41,8 +46,8 @@ export function NUMBER(
 }
 
 export function DATETIME(
-  [arg]: Array<FluentType>,
-  opts: Record<string, FluentType>
+  [arg]: Array<FluentTypeOrString>,
+  opts: Record<string, FluentTypeOrString>
 ) {
   if (arg instanceof FluentNone) {
     return new FluentNone(`DATETIME(${arg.valueOf()})`);

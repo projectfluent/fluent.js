@@ -2,10 +2,13 @@ import { resolveComplexPattern } from "./resolver";
 import { Scope } from "./scope";
 import { FluentError } from "./error";
 import { FluentResource } from ".";
-import { FluentNone } from "./types";
+import { FluentNone, FluentType, FluentTypeOrString } from "./types";
 
-type AnyFunc = (positional: any, named: any) => any;
-type AnyTransform = (text: string) => string;
+type CustomFunction = (
+  positional: Array<FluentTypeOrString>,
+  named: Record<string, FluentTypeOrString>
+) => any;
+type CustomTransform = (text: string) => string;
 
 /**
  * Message bundles are single-language stores of translation resources. They are
@@ -16,9 +19,9 @@ export class FluentBundle {
 
   public _terms: Map<string, any> = new Map();
   public _messages: Map<string, any> = new Map();
-  public _functions: Record<string, AnyFunc>;
+  public _functions: Record<string, CustomFunction>;
   public _useIsolating: boolean;
-  public _transform: AnyTransform;
+  public _transform: CustomTransform;
   public _intls: WeakMap<any, any> = new WeakMap();
 
   /**
@@ -57,9 +60,9 @@ export class FluentBundle {
       useIsolating = true,
       transform = v => v
     }: {
-      functions?: Record<string, AnyFunc>;
+      functions?: Record<string, CustomFunction>;
       useIsolating?: boolean;
-      transform?: AnyTransform;
+      transform?: CustomTransform;
     } = {}
   ) {
     this.locales = Array.isArray(locales) ? locales : [locales];
