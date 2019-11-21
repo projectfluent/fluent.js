@@ -1,6 +1,6 @@
 import { resolveComplexPattern } from "./resolver";
-import Scope from "./scope";
-import FluentError from "./error";
+import { Scope } from "./scope";
+import { FluentError } from "./error";
 import { FluentResource } from ".";
 import { FluentNone } from "./types";
 
@@ -11,7 +11,7 @@ type AnyTransform = (text: string) => string;
  * Message bundles are single-language stores of translation resources. They are
  * responsible for formatting message values and attributes to strings.
  */
-export default class FluentBundle {
+export class FluentBundle {
   public locales: Array<string>;
 
   public _terms: Map<string, any> = new Map();

@@ -1,4 +1,4 @@
-import FluentError from "./error";
+import { FluentError } from "./error";
 import {
   RuntimeMessage,
   RuntimePattern,
@@ -68,7 +68,7 @@ const MAX_PLACEABLES = 100;
 /**
  * Fluent Resource is a structure storing parsed localization entries.
  */
-export default class FluentResource {
+export class FluentResource {
   public body: Array<RuntimeMessage>;
 
   constructor(source: string) {

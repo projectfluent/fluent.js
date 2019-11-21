@@ -32,7 +32,7 @@ import {
   FluentTypeOrString
 } from "./types.js";
 import { NUMBER, DATETIME } from "./builtins.js";
-import Scope from "./scope.js";
+import { Scope } from "./scope.js";
 import {
   RuntimeVariant,
   RuntimeExpression,

@@ -1,7 +1,7 @@
-import FluentBundle from "./bundle";
-import FluentError from "./error";
+import { FluentBundle } from "./bundle";
+import { FluentError } from "./error";
 
-export default class Scope {
+export class Scope {
   /** The bundle for which the given resolution is happening. */
   public bundle: FluentBundle;
   /** The list of errors collected while resolving. */
