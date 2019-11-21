@@ -2,7 +2,7 @@ import { Scope } from "./scope";
 
 /* global Intl */
 
-export type FluentTypeOrString = FluentType | string;
+export type FluentType = FluentBaseType | string;
 
 /**
  * The `FluentType` class is the base of Fluent's type system.
@@ -11,7 +11,7 @@ export type FluentTypeOrString = FluentType | string;
  * them, which can then be used in the `toString` method together with a proper
  * `Intl` formatter.
  */
-export class FluentType {
+export class FluentBaseType {
   /** The wrapped native value. */
   public value: any;
 
@@ -49,7 +49,7 @@ export class FluentType {
 /**
  * A `FluentType` representing no correct value.
  */
-export class FluentNone extends FluentType {
+export class FluentNone extends FluentBaseType {
   /**
    * Create an instance of `FluentNone` with an optional fallback value.
    * @param   value - The fallback value of this `FluentNone`.
@@ -69,7 +69,7 @@ export class FluentNone extends FluentType {
 /**
  * A `FluentType` representing a number.
  */
-export class FluentNumber extends FluentType {
+export class FluentNumber extends FluentBaseType {
   /** Options passed to Intl.NumberFormat. */
   public opts: Intl.NumberFormatOptions;
 
@@ -99,7 +99,7 @@ export class FluentNumber extends FluentType {
 /**
  * A `FluentType` representing a date and time.
  */
-export class FluentDateTime extends FluentType {
+export class FluentDateTime extends FluentBaseType {
   /** Options passed to Intl.DateTimeFormat. */
   public opts: Intl.DateTimeFormatOptions;
 

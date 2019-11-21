@@ -2,11 +2,11 @@ import { resolveComplexPattern } from "./resolver";
 import { Scope } from "./scope";
 import { FluentError } from "./error";
 import { FluentResource } from ".";
-import { FluentNone, FluentType, FluentTypeOrString } from "./types";
+import { FluentNone, FluentType } from "./types";
 
 type CustomFunction = (
-  positional: Array<FluentTypeOrString>,
-  named: Record<string, FluentTypeOrString>
+  positional: Array<FluentType>,
+  named: Record<string, FluentType>
 ) => any;
 type CustomTransform = (text: string) => string;
 

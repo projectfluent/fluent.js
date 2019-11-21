@@ -10,4 +10,9 @@
 export { FluentBundle } from "./bundle";
 export { FluentResource } from "./resource";
 export { FluentError } from "./error";
-export { FluentType, FluentNumber, FluentDateTime } from "./types";
+export {
+  FluentType,
+  FluentBaseType,
+  FluentNumber,
+  FluentDateTime
+} from "./types";

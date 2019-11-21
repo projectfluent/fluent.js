@@ -25,11 +25,11 @@
  */
 
 import {
-  FluentType,
+  FluentBaseType,
   FluentNone,
   FluentNumber,
   FluentDateTime,
-  FluentTypeOrString
+  FluentType
 } from "./types.js";
 import { NUMBER, DATETIME } from "./builtins.js";
 import { Scope } from "./scope.js";
@@ -54,11 +54,7 @@ const FSI = "\u2068";
 const PDI = "\u2069";
 
 // Helper: match a variant key to the given selector.
-function match(
-  scope: Scope,
-  selector: FluentTypeOrString,
-  key: FluentTypeOrString
-) {
+function match(scope: Scope, selector: FluentType, key: FluentType) {
   if (key === selector) {
     // Both are strings.
     return true;
@@ -99,18 +95,15 @@ function getDefault(
   return new FluentNone();
 }
 
-type Arguments = [
-  Array<FluentTypeOrString>,
-  Record<string, FluentTypeOrString>
-];
+type Arguments = [Array<FluentType>, Record<string, FluentType>];
 
 // Helper: resolve arguments to a call expression.
 function getArguments(
   scope: Scope,
   args: Array<RuntimeExpression | RuntimeNamedArgument>
 ) {
-  const positional: Array<FluentTypeOrString> = [];
-  const named: Record<string, FluentTypeOrString> = {};
+  const positional: Array<FluentType> = [];
+  const named: Record<string, FluentType> = {};
 
   for (const arg of args) {
     if (arg.type === "narg") {
@@ -124,10 +117,7 @@ function getArguments(
 }
 
 // Resolve an expression to a Fluent type.
-function resolveExpression(
-  scope: Scope,
-  expr: RuntimeExpression
-): FluentTypeOrString {
+function resolveExpression(scope: Scope, expr: RuntimeExpression): FluentType {
   switch (expr.type) {
     case "str":
       return expr.value;
@@ -161,8 +151,8 @@ function VariableReference(scope: Scope, { name }: RuntimeVariableReference) {
 
   const arg = scope.args[name];
 
-  // Return early if the argument already is an instance of FluentType.
-  if (arg instanceof FluentType) {
+  // Return early if the argument already is an instance of FluentBaseType.
+  if (arg instanceof FluentBaseType) {
     return arg;
   }
 
