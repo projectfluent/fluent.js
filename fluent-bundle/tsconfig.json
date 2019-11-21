@@ -7,7 +7,7 @@
         "noImplicitAny": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "importHelpers": true,
+        "noEmitHelpers": true,
         "outDir": "./esm",
     },
     "include": [

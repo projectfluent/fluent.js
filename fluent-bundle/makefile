@@ -6,7 +6,7 @@ include ../common.mk
 build: index.js compat.js
 
 index.js: $(SOURCES)
-	@rollup $(CURDIR)/src/index.js \
+	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/bundle_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
@@ -15,7 +15,7 @@ index.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 compat.js: $(SOURCES)
-	@rollup $(CURDIR)/src/index.js \
+	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/compat_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
