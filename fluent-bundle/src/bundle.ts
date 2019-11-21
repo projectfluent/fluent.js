@@ -3,6 +3,7 @@ import { Scope } from "./scope";
 import { FluentError } from "./error";
 import { FluentResource } from ".";
 import { FluentNone, FluentType } from "./types";
+import { RuntimeComplexPattern } from "./ast";
 
 type CustomFunction = (
   positional: Array<FluentType>,
@@ -172,7 +173,7 @@ export class FluentBundle {
    * If `errors` is omitted, the first encountered error will be thrown.
    */
   formatPattern(
-    pattern: any,
+    pattern: RuntimeComplexPattern,
     args: Record<string, any>,
     errors: Array<FluentError>
   ) {

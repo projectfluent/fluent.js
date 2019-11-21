@@ -1,7 +1,7 @@
 import { FluentError } from "./error";
 import {
   RuntimeMessage,
-  RuntimePattern,
+  RuntimeComplexPattern,
   RuntimeElement,
   RuntimeIndent,
   RuntimeInlineExpression,
@@ -10,7 +10,7 @@ import {
   RuntimeVariant,
   RuntimeNamedArgument,
   RuntimeExpression,
-  RuntimeValue
+  RuntimePattern
 } from "./ast.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
@@ -179,7 +179,7 @@ export class FluentResource {
     }
 
     function parseAttributes() {
-      let attrs: Record<string, RuntimeValue> = Object.create(null);
+      let attrs: Record<string, RuntimePattern> = Object.create(null);
 
       while (test(RE_ATTRIBUTE_START)) {
         let name = match1(RE_ATTRIBUTE_START);
@@ -193,7 +193,7 @@ export class FluentResource {
       return attrs;
     }
 
-    function parsePattern(): RuntimeValue | null {
+    function parsePattern(): RuntimePattern | null {
       let first = undefined;
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_RUN)) {

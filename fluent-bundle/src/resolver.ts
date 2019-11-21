@@ -42,8 +42,8 @@ import {
   RuntimeTermReference,
   RuntimeFunctionReference,
   RuntimeSelectExpression,
-  RuntimePattern,
-  RuntimeValue
+  RuntimeComplexPattern,
+  RuntimePattern
 } from "./ast.js";
 
 // Prevent expansion of too long placeables.
@@ -287,7 +287,10 @@ function SelectExpression(
 }
 
 // Resolve a pattern (a complex string with placeables).
-export function resolveComplexPattern(scope: Scope, ptn: RuntimePattern) {
+export function resolveComplexPattern(
+  scope: Scope,
+  ptn: RuntimeComplexPattern
+) {
   if (scope.dirty.has(ptn)) {
     scope.reportError(new RangeError("Cyclic reference"));
     return new FluentNone();
@@ -338,7 +341,7 @@ export function resolveComplexPattern(scope: Scope, ptn: RuntimePattern) {
 
 // Resolve a simple or a complex Pattern to a FluentString (which is really the
 // string primitive).
-function resolvePattern(scope: Scope, value: RuntimeValue) {
+function resolvePattern(scope: Scope, value: RuntimePattern) {
   // Resolve a simple pattern.
   if (typeof value === "string") {
     return scope.bundle._transform(value);

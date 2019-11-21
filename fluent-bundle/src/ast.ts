@@ -1,23 +1,23 @@
 export type RuntimeMessage =
   | {
       id: string;
-      value: RuntimePattern;
-      attributes: Record<string, RuntimeValue>;
+      value: RuntimeComplexPattern;
+      attributes: Record<string, RuntimePattern>;
     }
   | {
       id: string;
-      value: RuntimeValue;
+      value: RuntimePattern;
       attributes: null;
     }
   | {
       id: string;
       value: null;
-      attributes: Record<string, RuntimeValue>;
+      attributes: Record<string, RuntimePattern>;
     };
 
-export type RuntimeValue = string | RuntimePattern;
+export type RuntimePattern = string | RuntimeComplexPattern;
 
-export type RuntimePattern = Array<RuntimeElement>;
+export type RuntimeComplexPattern = Array<RuntimeElement>;
 
 export type RuntimeElement = string | RuntimeExpression;
 
@@ -71,7 +71,7 @@ export type RuntimeFunctionReference = {
 
 export type RuntimeVariant = {
   key: RuntimeLiteral;
-  value: RuntimeValue;
+  value: RuntimePattern;
 };
 
 export type RuntimeNamedArgument = {
