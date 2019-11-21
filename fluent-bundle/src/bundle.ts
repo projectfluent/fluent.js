@@ -174,7 +174,7 @@ export class FluentBundle {
    */
   formatPattern(
     pattern: RuntimeComplexPattern,
-    args: Record<string, any>,
+    args: Record<string, unknown>,
     errors: Array<FluentError>
   ) {
     // Resolve a simple pattern without creating a scope. No error handling is

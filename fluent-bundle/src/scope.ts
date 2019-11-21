@@ -8,7 +8,7 @@ export class Scope {
   /** The list of errors collected while resolving. */
   public errors: Array<FluentError>;
   /** A dict of developer-provided variables. */
-  public args: Record<string, any>;
+  public args: Record<string, unknown>;
   /** Term references require different variable lookup logic. */
   public insideTermReference: boolean;
   /** The Set of patterns already encountered during this resolution.
@@ -18,7 +18,7 @@ export class Scope {
   constructor(
     bundle: FluentBundle,
     errors: Array<FluentError>,
-    args: Record<string, any>,
+    args: Record<string, unknown>,
     insideTermReference = false,
     dirty: WeakSet<RuntimeComplexPattern> = new WeakSet()
   ) {
@@ -29,7 +29,7 @@ export class Scope {
     this.dirty = dirty;
   }
 
-  cloneForTermReference(args: Record<string, any>) {
+  cloneForTermReference(args: Record<string, unknown>) {
     return new Scope(this.bundle, this.errors, args, true, this.dirty);
   }
 
