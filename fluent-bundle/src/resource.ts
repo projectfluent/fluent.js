@@ -1,8 +1,21 @@
-import FluentError from "./error.js";
+import FluentError from "./error";
+import {
+  RuntimeMessage,
+  RuntimePattern,
+  RuntimeElement,
+  RuntimeIndent,
+  RuntimeInlineExpression,
+  RuntimeLiteral,
+  RuntimeSelectExpression,
+  RuntimeVariant,
+  RuntimeNamedArgument,
+  RuntimeExpression,
+  RuntimeValue
+} from "./ast.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
 // With the /m flag, the ^ matches at the beginning of every line.
-const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */mg;
+const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */gm;
 
 // Both Attributes and Variants are parsed in while loops. These regexes are
 // used to break out of them.
@@ -56,11 +69,13 @@ const MAX_PLACEABLES = 100;
  * Fluent Resource is a structure storing parsed localization entries.
  */
 export default class FluentResource {
-  constructor(source) {
+  public body: Array<RuntimeMessage>;
+
+  constructor(source: string) {
     this.body = this._parse(source);
   }
 
-  _parse(source) {
+  _parse(source: string) {
     RE_MESSAGE_START.lastIndex = 0;
 
     let resource = [];
@@ -105,14 +120,14 @@ export default class FluentResource {
     // to any offset of the source string without slicing it. Errors are thrown
     // to bail out of parsing of ill-formed messages.
 
-    function test(re) {
+    function test(re: RegExp) {
       re.lastIndex = cursor;
       return re.test(source);
     }
 
     // Advance the cursor by the char if it matches. May be used as a predicate
     // (was the match found?) or, if errorClass is passed, as an assertion.
-    function consumeChar(char, errorClass) {
+    function consumeChar(char: string, errorClass?: typeof FluentError) {
       if (source[cursor] === char) {
         cursor++;
         return true;
@@ -125,7 +140,7 @@ export default class FluentResource {
 
     // Advance the cursor by the token if it matches. May be used as a predicate
     // (was the match found?) or, if errorClass is passed, as an assertion.
-    function consumeToken(re, errorClass) {
+    function consumeToken(re: RegExp, errorClass?: typeof FluentError) {
       if (test(re)) {
         cursor = re.lastIndex;
         return true;
@@ -137,7 +152,7 @@ export default class FluentResource {
     }
 
     // Execute a regex, advance the cursor, and return all capture groups.
-    function match(re) {
+    function match(re: RegExp) {
       re.lastIndex = cursor;
       let result = re.exec(source);
       if (result === null) {
@@ -148,11 +163,11 @@ export default class FluentResource {
     }
 
     // Execute a regex, advance the cursor, and return the capture group.
-    function match1(re) {
+    function match1(re: RegExp) {
       return match(re)[1];
     }
 
-    function parseMessage(id) {
+    function parseMessage(id: string) {
       let value = parsePattern();
       let attributes = parseAttributes();
 
@@ -160,11 +175,11 @@ export default class FluentResource {
         throw new FluentError("Expected message value or attributes");
       }
 
-      return {id, value, attributes};
+      return <RuntimeMessage>{ id, value, attributes };
     }
 
     function parseAttributes() {
-      let attrs = Object.create(null);
+      let attrs: Record<string, RuntimeValue> = Object.create(null);
 
       while (test(RE_ATTRIBUTE_START)) {
         let name = match1(RE_ATTRIBUTE_START);
@@ -178,10 +193,11 @@ export default class FluentResource {
       return attrs;
     }
 
-    function parsePattern() {
+    function parsePattern(): RuntimeValue | null {
+      let first = undefined;
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_RUN)) {
-        var first = match1(RE_TEXT_RUN);
+        first = match1(RE_TEXT_RUN);
       }
 
       // If there's a placeable on the first line, parse a complex pattern.
@@ -215,7 +231,10 @@ export default class FluentResource {
     }
 
     // Parse a complex pattern as an array of elements.
-    function parsePatternElements(elements = [], commonIndent) {
+    function parsePatternElements(
+      elements: Array<RuntimeElement | RuntimeIndent> = [],
+      commonIndent: number
+    ) {
       let placeableCount = 0;
 
       while (true) {
@@ -247,25 +266,26 @@ export default class FluentResource {
       }
 
       let lastIndex = elements.length - 1;
+      let lastElement = elements[lastIndex];
       // Trim the trailing spaces in the last element if it's a TextElement.
-      if (typeof elements[lastIndex] === "string") {
-        elements[lastIndex] = trim(elements[lastIndex], RE_TRAILING_SPACES);
+      if (typeof lastElement === "string") {
+        elements[lastIndex] = trim(lastElement, RE_TRAILING_SPACES);
       }
 
-      let baked = [];
+      let baked: Array<RuntimeElement> = [];
       for (let element of elements) {
-        if (element.type === "indent") {
+        if (typeof element !== "string" && element.type === "indent") {
           // Dedent indented lines by the maximum common indent.
           element = element.value.slice(0, element.value.length - commonIndent);
         }
         if (element) {
-          baked.push(element);
+          baked.push(<RuntimeElement>element);
         }
       }
       return baked;
     }
 
-    function parsePlaceable() {
+    function parsePlaceable(): RuntimeExpression {
       consumeToken(TOKEN_BRACE_OPEN, FluentError);
 
       let selector = parseInlineExpression();
@@ -276,7 +296,11 @@ export default class FluentResource {
       if (consumeToken(TOKEN_ARROW)) {
         let variants = parseVariants();
         consumeToken(TOKEN_BRACE_CLOSE, FluentError);
-        return {type: "select", selector, ...variants};
+        return <RuntimeSelectExpression>{
+          type: "select",
+          selector,
+          ...variants
+        };
       }
 
       throw new FluentError("Unclosed placeable");
@@ -292,7 +316,7 @@ export default class FluentResource {
         let [, sigil, name, attr = null] = match(RE_REFERENCE);
 
         if (sigil === "$") {
-          return {type: "var", name};
+          return <RuntimeInlineExpression>{ type: "var", name };
         }
 
         if (consumeToken(TOKEN_PAREN_OPEN)) {
@@ -300,11 +324,11 @@ export default class FluentResource {
 
           if (sigil === "-") {
             // A parameterized term: -term(...).
-            return {type: "term", name, attr, args};
+            return <RuntimeInlineExpression>{ type: "term", name, attr, args };
           }
 
           if (RE_FUNCTION_NAME.test(name)) {
-            return {type: "func", name, args};
+            return <RuntimeInlineExpression>{ type: "func", name, args };
           }
 
           throw new FluentError("Function names must be all upper-case");
@@ -312,17 +336,22 @@ export default class FluentResource {
 
         if (sigil === "-") {
           // A non-parameterized term: -term.
-          return {type: "term", name, attr, args: []};
+          return <RuntimeInlineExpression>{
+            type: "term",
+            name,
+            attr,
+            args: []
+          };
         }
 
-        return {type: "mesg", name, attr};
+        return <RuntimeInlineExpression>{ type: "mesg", name, attr };
       }
 
       return parseLiteral();
     }
 
     function parseArguments() {
-      let args = [];
+      let args: Array<RuntimeExpression | RuntimeNamedArgument> = [];
       while (true) {
         switch (source[cursor]) {
           case ")": // End of the argument list.
@@ -346,7 +375,11 @@ export default class FluentResource {
 
       if (consumeToken(TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
-        return {type: "narg", name: expr.name, value: parseLiteral()};
+        return <RuntimeNamedArgument>{
+          type: "narg",
+          name: expr.name,
+          value: parseLiteral()
+        };
       }
 
       // It's a regular message reference.
@@ -354,7 +387,7 @@ export default class FluentResource {
     }
 
     function parseVariants() {
-      let variants = [];
+      let variants: Array<RuntimeVariant> = [];
       let count = 0;
       let star;
 
@@ -368,7 +401,7 @@ export default class FluentResource {
         if (value === null) {
           throw new FluentError("Expected variant value");
         }
-        variants[count++] = {key, value};
+        variants[count++] = { key, value };
       }
 
       if (count === 0) {
@@ -379,14 +412,14 @@ export default class FluentResource {
         throw new FluentError("Expected default variant");
       }
 
-      return {variants, star};
+      return { variants, star };
     }
 
     function parseVariantKey() {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : {type: "str", value: match1(RE_IDENTIFIER)};
+        : <RuntimeLiteral>{ type: "str", value: match1(RE_IDENTIFIER) };
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
@@ -396,7 +429,7 @@ export default class FluentResource {
         return parseNumberLiteral();
       }
 
-      if (source[cursor] === "\"") {
+      if (source[cursor] === '"') {
         return parseStringLiteral();
       }
 
@@ -406,11 +439,15 @@ export default class FluentResource {
     function parseNumberLiteral() {
       let [, value, fraction = ""] = match(RE_NUMBER_LITERAL);
       let precision = fraction.length;
-      return {type: "num", value: parseFloat(value), precision};
+      return <RuntimeLiteral>{
+        type: "num",
+        value: parseFloat(value),
+        precision
+      };
     }
 
     function parseStringLiteral() {
-      consumeChar("\"", FluentError);
+      consumeChar('"', FluentError);
       let value = "";
       while (true) {
         value += match1(RE_STRING_RUN);
@@ -420,8 +457,8 @@ export default class FluentResource {
           continue;
         }
 
-        if (consumeChar("\"")) {
-          return {type: "str", value};
+        if (consumeChar('"')) {
+          return <RuntimeLiteral>{ type: "str", value };
         }
 
         // We've reached an EOL of EOF.
@@ -438,12 +475,12 @@ export default class FluentResource {
       if (test(RE_UNICODE_ESCAPE)) {
         let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);
         let codepoint = parseInt(codepoint4 || codepoint6, 16);
-        return codepoint <= 0xD7FF || 0xE000 <= codepoint
-          // It's a Unicode scalar value.
-          ? String.fromCodePoint(codepoint)
-          // Lonely surrogates can cause trouble when the parsing result is
-          // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
-          : "�";
+        return codepoint <= 0xd7ff || 0xe000 <= codepoint
+          ? // It's a Unicode scalar value.
+            String.fromCodePoint(codepoint)
+          : // Lonely surrogates can cause trouble when the parsing result is
+            // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
+            "�";
       }
 
       throw new FluentError("Unknown escape sequence");
@@ -485,15 +522,15 @@ export default class FluentResource {
     }
 
     // Trim blanks in text according to the given regex.
-    function trim(text, re) {
+    function trim(text: string, re: RegExp) {
       return text.replace(re, "");
     }
 
     // Normalize a blank block and extract the indent details.
-    function makeIndent(blank) {
+    function makeIndent(blank: string) {
       let value = blank.replace(RE_BLANK_LINES, "\n");
-      let length = RE_INDENT.exec(blank)[1].length;
-      return {type: "indent", value, length};
+      let length = RE_INDENT.exec(blank)![1].length;
+      return <RuntimeIndent>{ type: "indent", value, length };
     }
   }
 }

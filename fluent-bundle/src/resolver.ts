@@ -24,10 +24,27 @@
  * stores the data required for successful resolution and error recovery.
  */
 
-
-import { FluentType, FluentNone, FluentNumber, FluentDateTime }
-  from "./types.js";
-import * as builtins from "./builtins.js";
+import {
+  FluentType,
+  FluentNone,
+  FluentNumber,
+  FluentDateTime,
+  FluentTypeOrString
+} from "./types.js";
+import { NUMBER, DATETIME } from "./builtins.js";
+import Scope from "./scope.js";
+import {
+  RuntimeVariant,
+  RuntimeExpression,
+  RuntimeNamedArgument,
+  RuntimeVariableReference,
+  RuntimeMessageReference,
+  RuntimeTermReference,
+  RuntimeFunctionReference,
+  RuntimeSelectExpression,
+  RuntimePattern,
+  RuntimeValue
+} from "./ast.js";
 
 // Prevent expansion of too long placeables.
 const MAX_PLACEABLE_LENGTH = 2500;
@@ -36,18 +53,23 @@ const MAX_PLACEABLE_LENGTH = 2500;
 const FSI = "\u2068";
 const PDI = "\u2069";
 
-
 // Helper: match a variant key to the given selector.
-function match(scope, selector, key) {
+function match(
+  scope: Scope,
+  selector: FluentTypeOrString,
+  key: FluentTypeOrString
+) {
   if (key === selector) {
     // Both are strings.
     return true;
   }
 
   // XXX Consider comparing options too, e.g. minimumFractionDigits.
-  if (key instanceof FluentNumber
-    && selector instanceof FluentNumber
-    && key.value === selector.value) {
+  if (
+    key instanceof FluentNumber &&
+    selector instanceof FluentNumber &&
+    key.value === selector.value
+  ) {
     return true;
   }
 
@@ -64,7 +86,11 @@ function match(scope, selector, key) {
 }
 
 // Helper: resolve the default variant from a list of variants.
-function getDefault(scope, variants, star) {
+function getDefault(
+  scope: Scope,
+  variants: Array<RuntimeVariant>,
+  star: number
+) {
   if (variants[star]) {
     return resolvePattern(scope, variants[star].value);
   }
@@ -73,10 +99,18 @@ function getDefault(scope, variants, star) {
   return new FluentNone();
 }
 
+type Arguments = [
+  Array<FluentTypeOrString>,
+  Record<string, FluentTypeOrString>
+];
+
 // Helper: resolve arguments to a call expression.
-function getArguments(scope, args) {
-  const positional = [];
-  const named = {};
+function getArguments(
+  scope: Scope,
+  args: Array<RuntimeExpression | RuntimeNamedArgument>
+) {
+  const positional: Array<FluentTypeOrString> = [];
+  const named: Record<string, FluentTypeOrString> = {};
 
   for (const arg of args) {
     if (arg.type === "narg") {
@@ -86,17 +120,20 @@ function getArguments(scope, args) {
     }
   }
 
-  return [positional, named];
+  return <Arguments>[positional, named];
 }
 
 // Resolve an expression to a Fluent type.
-function resolveExpression(scope, expr) {
+function resolveExpression(
+  scope: Scope,
+  expr: RuntimeExpression
+): FluentTypeOrString {
   switch (expr.type) {
     case "str":
       return expr.value;
     case "num":
       return new FluentNumber(expr.value, {
-        minimumFractionDigits: expr.precision,
+        minimumFractionDigits: expr.precision
       });
     case "var":
       return VariableReference(scope, expr);
@@ -114,7 +151,7 @@ function resolveExpression(scope, expr) {
 }
 
 // Resolve a reference to a variable.
-function VariableReference(scope, {name}) {
+function VariableReference(scope: Scope, { name }: RuntimeVariableReference) {
   if (!scope.args || !scope.args.hasOwnProperty(name)) {
     if (scope.insideTermReference === false) {
       scope.reportError(new ReferenceError(`Unknown variable: $${name}`));
@@ -148,7 +185,10 @@ function VariableReference(scope, {name}) {
 }
 
 // Resolve a reference to another message.
-function MessageReference(scope, {name, attr}) {
+function MessageReference(
+  scope: Scope,
+  { name, attr }: RuntimeMessageReference
+) {
   const message = scope.bundle._messages.get(name);
   if (!message) {
     scope.reportError(new ReferenceError(`Unknown message: ${name}`));
@@ -173,7 +213,10 @@ function MessageReference(scope, {name, attr}) {
 }
 
 // Resolve a call to a Term with key-value arguments.
-function TermReference(scope, {name, attr, args}) {
+function TermReference(
+  scope: Scope,
+  { name, attr, args }: RuntimeTermReference
+) {
   const id = `-${name}`;
   const term = scope.bundle._terms.get(id);
   if (!term) {
@@ -198,13 +241,25 @@ function TermReference(scope, {name, attr, args}) {
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
-function FunctionReference(scope, {name, args}) {
+function FunctionReference(
+  scope: Scope,
+  { name, args }: RuntimeFunctionReference
+) {
   // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
-  const func = scope.bundle._functions[name] || builtins[name];
+  let func = scope.bundle._functions[name];
   if (!func) {
-    scope.reportError(new ReferenceError(`Unknown function: ${name}()`));
-    return new FluentNone(`${name}()`);
+    switch (name) {
+      case "NUMBER":
+        func = NUMBER;
+        break;
+      case "DATETIME":
+        func = DATETIME;
+        break;
+      default:
+        scope.reportError(new ReferenceError(`Unknown function: ${name}()`));
+        return new FluentNone(`${name}()`);
+    }
   }
 
   if (typeof func !== "function") {
@@ -221,7 +276,10 @@ function FunctionReference(scope, {name, args}) {
 }
 
 // Resolve a select expression to the member object.
-function SelectExpression(scope, {selector, variants, star}) {
+function SelectExpression(
+  scope: Scope,
+  { selector, variants, star }: RuntimeSelectExpression
+) {
   let sel = resolveExpression(scope, selector);
   if (sel instanceof FluentNone) {
     return getDefault(scope, variants, star);
@@ -239,7 +297,7 @@ function SelectExpression(scope, {selector, variants, star}) {
 }
 
 // Resolve a pattern (a complex string with placeables).
-export function resolveComplexPattern(scope, ptn) {
+export function resolveComplexPattern(scope: Scope, ptn: RuntimePattern) {
   if (scope.dirty.has(ptn)) {
     scope.reportError(new RangeError("Cyclic reference"));
     return new FluentNone();
@@ -273,7 +331,7 @@ export function resolveComplexPattern(scope, ptn) {
       // placeables are deeply nested.
       throw new RangeError(
         "Too many characters in placeable " +
-        `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
       );
     }
 
@@ -290,11 +348,11 @@ export function resolveComplexPattern(scope, ptn) {
 
 // Resolve a simple or a complex Pattern to a FluentString (which is really the
 // string primitive).
-function resolvePattern(scope, node) {
+function resolvePattern(scope: Scope, value: RuntimeValue) {
   // Resolve a simple pattern.
-  if (typeof node === "string") {
-    return scope.bundle._transform(node);
+  if (typeof value === "string") {
+    return scope.bundle._transform(value);
   }
 
-  return resolveComplexPattern(scope, node);
+  return resolveComplexPattern(scope, value);
 }

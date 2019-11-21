@@ -1,12 +1,26 @@
-import {FluentNone} from "./types.js";
-import {resolveComplexPattern} from "./resolver.js";
-import Scope from "./scope.js";
+import { resolveComplexPattern } from "./resolver";
+import Scope from "./scope";
+import FluentError from "./error";
+import { FluentResource } from ".";
+import { FluentNone } from "./types";
+
+type AnyFunc = (positional: any, named: any) => any;
+type AnyTransform = (text: string) => string;
 
 /**
  * Message bundles are single-language stores of translation resources. They are
  * responsible for formatting message values and attributes to strings.
  */
 export default class FluentBundle {
+  public locales: Array<string>;
+
+  public _terms: Map<string, any> = new Map();
+  public _messages: Map<string, any> = new Map();
+  public _functions: Record<string, AnyFunc>;
+  public _useIsolating: boolean;
+  public _transform: AnyTransform;
+  public _intls: WeakMap<any, any> = new WeakMap();
+
   /**
    * Create an instance of `FluentBundle`.
    *
@@ -35,33 +49,31 @@ export default class FluentBundle {
    *     marks (FSI, PDI) for bidi interpolations. Default: `true`.
    *
    *   - `transform` - a function used to transform string parts of patterns.
-   *
-   * @param   {(string|Array.<string>)} locales - The locales of the bundle
-   * @param   {Object} [options]
-   * @returns {FluentBundle}
    */
-  constructor(locales, {
-    functions = {},
-    useIsolating = true,
-    transform = v => v,
-  } = {}) {
+  constructor(
+    locales: string | Array<string>,
+    {
+      functions = {},
+      useIsolating = true,
+      transform = v => v
+    }: {
+      functions?: Record<string, AnyFunc>;
+      useIsolating?: boolean;
+      transform?: AnyTransform;
+    } = {}
+  ) {
     this.locales = Array.isArray(locales) ? locales : [locales];
-
-    this._terms = new Map();
-    this._messages = new Map();
     this._functions = functions;
     this._useIsolating = useIsolating;
     this._transform = transform;
-    this._intls = new WeakMap();
   }
 
   /**
    * Check if a message is present in the bundle.
    *
-   * @param {string} id - The identifier of the message to check.
-   * @returns {bool}
+   * @param id - The identifier of the message to check.
    */
-  hasMessage(id) {
+  hasMessage(id: string) {
     return this._messages.has(id);
   }
 
@@ -77,10 +89,9 @@ export default class FluentBundle {
    *         attributes: Record<string, Pattern>;
    *     }
    *
-   * @param {string} id - The identifier of the message to check.
-   * @returns {{value: ?Pattern, attributes: Object.<string, Pattern>}}
+   * @param id - The identifier of the message to check.
    */
-  getMessage(id) {
+  getMessage(id: string) {
     return this._messages.get(id);
   }
 
@@ -99,13 +110,13 @@ export default class FluentBundle {
    *   - `allowOverrides` - boolean specifying whether it's allowed to override
    *     an existing message or term with a new value. Default: `false`.
    *
-   * @param   {FluentResource} res - FluentResource object.
-   * @param   {Object} [options]
-   * @returns {Array.<FluentError>}
+   * @param   res - FluentResource object.
+   * @param   options
    */
-  addResource(res, {
-    allowOverrides = false,
-  } = {}) {
+  addResource(
+    res: FluentResource,
+    { allowOverrides = false }: { allowOverrides?: boolean } = {}
+  ) {
     const errors = [];
 
     for (let i = 0; i < res.body.length; i++) {
@@ -156,13 +167,12 @@ export default class FluentBundle {
    *     }
    *
    * If `errors` is omitted, the first encountered error will be thrown.
-   *
-   * @param   {Pattern} pattern
-   * @param   {?Object} args
-   * @param   {?Array.<Error>} errors
-   * @returns {string}
    */
-  formatPattern(pattern, args, errors) {
+  formatPattern(
+    pattern: any,
+    args: Record<string, any>,
+    errors: Array<FluentError>
+  ) {
     // Resolve a simple pattern without creating a scope. No error handling is
     // required; by definition simple patterns don't have placeables.
     if (typeof pattern === "string") {

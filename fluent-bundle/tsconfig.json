@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es2019",
+        "module": "es2015",
+        "strict": true,
+        "allowJs": false,
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "outDir": "./esm",
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
