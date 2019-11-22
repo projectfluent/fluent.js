@@ -3,12 +3,12 @@ import { Scope } from "./scope";
 import { FluentError } from "./error";
 import { FluentResource } from ".";
 import { FluentNone, FluentType } from "./types";
-import { RuntimeComplexPattern } from "./ast";
+import { RuntimeComplexPattern, RuntimeMessage, RuntimeTerm } from "./ast";
 
 type CustomFunction = (
   positional: Array<FluentType>,
   named: Record<string, FluentType>
-) => any;
+) => FluentType;
 type CustomTransform = (text: string) => string;
 
 /**
