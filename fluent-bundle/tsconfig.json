@@ -8,6 +8,7 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "noEmitHelpers": true,
+        "declaration": true,
         "outDir": "./esm",
     },
     "include": [
