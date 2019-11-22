@@ -2,7 +2,7 @@ import { Scope } from "./scope";
 
 /* global Intl */
 
-export type FluentType = FluentBaseType | string;
+export type FluentType = FluentBaseType<unknown> | string;
 
 /**
  * The `FluentType` class is the base of Fluent's type system.
@@ -11,16 +11,16 @@ export type FluentType = FluentBaseType | string;
  * them, which can then be used in the `toString` method together with a proper
  * `Intl` formatter.
  */
-export class FluentBaseType {
+export class FluentBaseType<T> {
   /** The wrapped native value. */
-  public value: any;
+  public value: T;
 
   /**
    * Create a `FluentType` instance.
    *
    * @param   value - JavaScript value to wrap.
    */
-  constructor(value: any) {
+  constructor(value: T) {
     this.value = value;
   }
 
@@ -49,7 +49,7 @@ export class FluentBaseType {
 /**
  * A `FluentType` representing no correct value.
  */
-export class FluentNone extends FluentBaseType {
+export class FluentNone extends FluentBaseType<string> {
   /**
    * Create an instance of `FluentNone` with an optional fallback value.
    * @param   value - The fallback value of this `FluentNone`.
@@ -69,7 +69,7 @@ export class FluentNone extends FluentBaseType {
 /**
  * A `FluentType` representing a number.
  */
-export class FluentNumber extends FluentBaseType {
+export class FluentNumber extends FluentBaseType<number> {
   /** Options passed to Intl.NumberFormat. */
   public opts: Intl.NumberFormatOptions;
 
@@ -99,7 +99,7 @@ export class FluentNumber extends FluentBaseType {
 /**
  * A `FluentType` representing a date and time.
  */
-export class FluentDateTime extends FluentBaseType {
+export class FluentDateTime extends FluentBaseType<number> {
   /** Options passed to Intl.DateTimeFormat. */
   public opts: Intl.DateTimeFormatOptions;
 

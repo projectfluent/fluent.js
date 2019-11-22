@@ -14,7 +14,7 @@
 import { FluentNone, FluentNumber, FluentDateTime, FluentType } from "./types";
 
 function values(opts: Record<string, FluentType>) {
-  const unwrapped: Record<string, any> = {};
+  const unwrapped: Record<string, unknown> = {};
   for (const [name, opt] of Object.entries(opts)) {
     unwrapped[name] = opt.valueOf();
   }
