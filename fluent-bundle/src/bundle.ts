@@ -5,11 +5,14 @@ import { FluentResource } from ".";
 import { FluentNone, FluentType } from "./types";
 import { RuntimeComplexPattern, RuntimeMessage, RuntimeTerm } from "./ast";
 
-type CustomFunction = (
+export type CustomFunction = (
   positional: Array<FluentType>,
   named: Record<string, FluentType>
 ) => FluentType;
-type CustomTransform = (text: string) => string;
+
+export type CustomTransform = (text: string) => string;
+
+export type FluentArgument = string | number | Date | FluentType;
 
 /**
  * Message bundles are single-language stores of translation resources. They are
@@ -174,7 +177,7 @@ export class FluentBundle {
    */
   formatPattern(
     pattern: RuntimeComplexPattern,
-    args: Record<string, unknown>,
+    args: Record<string, FluentArgument>,
     errors: Array<FluentError>
   ) {
     // Resolve a simple pattern without creating a scope. No error handling is

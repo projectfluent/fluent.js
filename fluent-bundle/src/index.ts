@@ -7,7 +7,12 @@
  *
  */
 
-export { FluentBundle } from "./bundle";
+export {
+  FluentBundle,
+  FluentArgument,
+  CustomFunction,
+  CustomTransform
+} from "./bundle";
 export { FluentResource } from "./resource";
 export { FluentError } from "./error";
 export {
