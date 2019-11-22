@@ -18,8 +18,8 @@ type CustomTransform = (text: string) => string;
 export class FluentBundle {
   public locales: Array<string>;
 
-  public _terms: Map<string, any> = new Map();
-  public _messages: Map<string, any> = new Map();
+  public _terms: Map<string, RuntimeTerm> = new Map();
+  public _messages: Map<string, RuntimeMessage> = new Map();
   public _functions: Record<string, CustomFunction>;
   public _useIsolating: boolean;
   public _transform: CustomTransform;
@@ -132,7 +132,7 @@ export class FluentBundle {
           errors.push(`Attempt to override an existing term: "${entry.id}"`);
           continue;
         }
-        this._terms.set(entry.id, entry);
+        this._terms.set(entry.id, entry as RuntimeTerm);
       } else {
         if (allowOverrides === false && this._messages.has(entry.id)) {
           errors.push(`Attempt to override an existing message: "${entry.id}"`);

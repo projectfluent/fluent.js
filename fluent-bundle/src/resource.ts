@@ -13,7 +13,8 @@ import {
   RuntimeVariableReference,
   RuntimeTermReference,
   RuntimeFunctionReference,
-  RuntimeMessageReference
+  RuntimeMessageReference,
+  RuntimeTerm
 } from "./ast.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
@@ -72,7 +73,7 @@ const MAX_PLACEABLES = 100;
  * Fluent Resource is a structure storing parsed localization entries.
  */
 export class FluentResource {
-  public body: Array<RuntimeMessage>;
+  public body: Array<RuntimeMessage | RuntimeTerm>;
 
   constructor(source: string) {
     this.body = this._parse(source);

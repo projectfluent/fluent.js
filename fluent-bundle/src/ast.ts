@@ -4,6 +4,12 @@ export type RuntimeMessage = {
   attributes: Record<string, RuntimePattern>;
 };
 
+export type RuntimeTerm = {
+  id: string;
+  value: RuntimeComplexPattern;
+  attributes: Record<string, RuntimePattern>;
+};
+
 export type RuntimePattern = string | RuntimeComplexPattern;
 
 export type RuntimeComplexPattern = Array<RuntimeElement>;
