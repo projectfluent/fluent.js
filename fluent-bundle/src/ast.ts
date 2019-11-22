@@ -1,19 +1,8 @@
-export type RuntimeMessage =
-  | {
-      id: string;
-      value: RuntimeComplexPattern;
-      attributes: Record<string, RuntimePattern>;
-    }
-  | {
-      id: string;
-      value: RuntimePattern;
-      attributes: null;
-    }
-  | {
-      id: string;
-      value: null;
-      attributes: Record<string, RuntimePattern>;
-    };
+export type RuntimeMessage = {
+  id: string;
+  value: RuntimeComplexPattern | null;
+  attributes: Record<string, RuntimePattern>;
+};
 
 export type RuntimePattern = string | RuntimeComplexPattern;
 
