@@ -141,7 +141,10 @@ function resolveExpression(scope: Scope, expr: RuntimeExpression): FluentType {
 }
 
 // Resolve a reference to a variable.
-function VariableReference(scope: Scope, { name }: RuntimeVariableReference) {
+function VariableReference(
+  scope: Scope,
+  { name }: RuntimeVariableReference
+): FluentType {
   if (!scope.args || !scope.args.hasOwnProperty(name)) {
     if (scope.insideTermReference === false) {
       scope.reportError(new ReferenceError(`Unknown variable: $${name}`));

@@ -29,21 +29,18 @@ export type RuntimeIndent = {
 
 export type RuntimeExpression =
   | RuntimeSelectExpression
-  | RuntimeInlineExpression;
-
-export type RuntimeSelectExpression = {
-  type: "select";
-  selector: RuntimeInlineExpression;
-  variants: Array<any>;
-  star: number;
-};
-
-export type RuntimeInlineExpression =
   | RuntimeVariableReference
   | RuntimeTermReference
   | RuntimeMessageReference
   | RuntimeFunctionReference
   | RuntimeLiteral;
+
+export type RuntimeSelectExpression = {
+  type: "select";
+  selector: RuntimeExpression;
+  variants: Array<RuntimeVariant>;
+  star: number;
+};
 
 export type RuntimeVariableReference = {
   type: "var";
@@ -53,20 +50,20 @@ export type RuntimeVariableReference = {
 export type RuntimeTermReference = {
   type: "term";
   name: string;
-  attr: any;
-  args: any;
+  attr: string | null;
+  args: Array<RuntimeExpression>;
 };
 
 export type RuntimeMessageReference = {
   type: "mesg";
   name: string;
-  attr: any;
+  attr: string | null;
 };
 
 export type RuntimeFunctionReference = {
   type: "func";
   name: string;
-  args: any;
+  args: Array<RuntimeExpression>;
 };
 
 export type RuntimeVariant = {

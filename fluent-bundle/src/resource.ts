@@ -4,13 +4,16 @@ import {
   RuntimeComplexPattern,
   RuntimeElement,
   RuntimeIndent,
-  RuntimeInlineExpression,
   RuntimeLiteral,
   RuntimeSelectExpression,
   RuntimeVariant,
   RuntimeNamedArgument,
   RuntimeExpression,
-  RuntimePattern
+  RuntimePattern,
+  RuntimeVariableReference,
+  RuntimeTermReference,
+  RuntimeFunctionReference,
+  RuntimeMessageReference
 } from "./ast.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
@@ -316,7 +319,7 @@ export class FluentResource {
         let [, sigil, name, attr = null] = match(RE_REFERENCE);
 
         if (sigil === "$") {
-          return <RuntimeInlineExpression>{ type: "var", name };
+          return <RuntimeVariableReference>{ type: "var", name };
         }
 
         if (consumeToken(TOKEN_PAREN_OPEN)) {
@@ -324,11 +327,11 @@ export class FluentResource {
 
           if (sigil === "-") {
             // A parameterized term: -term(...).
-            return <RuntimeInlineExpression>{ type: "term", name, attr, args };
+            return <RuntimeTermReference>{ type: "term", name, attr, args };
           }
 
           if (RE_FUNCTION_NAME.test(name)) {
-            return <RuntimeInlineExpression>{ type: "func", name, args };
+            return <RuntimeFunctionReference>{ type: "func", name, args };
           }
 
           throw new FluentError("Function names must be all upper-case");
@@ -336,7 +339,7 @@ export class FluentResource {
 
         if (sigil === "-") {
           // A non-parameterized term: -term.
-          return <RuntimeInlineExpression>{
+          return <RuntimeTermReference>{
             type: "term",
             name,
             attr,
@@ -344,7 +347,7 @@ export class FluentResource {
           };
         }
 
-        return <RuntimeInlineExpression>{ type: "mesg", name, attr };
+        return <RuntimeMessageReference>{ type: "mesg", name, attr };
       }
 
       return parseLiteral();
