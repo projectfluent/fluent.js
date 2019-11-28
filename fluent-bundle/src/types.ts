@@ -99,7 +99,7 @@ export class FluentNumber extends FluentBaseType<number> {
 /**
  * A `FluentType` representing a date and time.
  */
-export class FluentDateTime extends FluentBaseType<number> {
+export class FluentDateTime extends FluentNumber {
   /** Options passed to Intl.DateTimeFormat. */
   public opts: Intl.DateTimeFormatOptions;
 

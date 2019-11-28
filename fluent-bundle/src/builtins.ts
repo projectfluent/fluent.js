@@ -35,14 +35,10 @@ export function NUMBER(
   }
 
   if (arg instanceof FluentNumber) {
-    let value = Number(arg.valueOf());
-    if (Number.isNaN(value)) {
-      throw new TypeError("Invalid argument to NUMBER");
-    }
-    return new FluentNumber(value, { ...arg.opts, ...values(opts) });
+    return new FluentNumber(arg.valueOf(), { ...arg.opts, ...values(opts) });
   }
 
-  return new FluentNone("NUMBER(???)");
+  throw new TypeError("Invalid argument to NUMBER");
 }
 
 export function DATETIME(
@@ -53,14 +49,9 @@ export function DATETIME(
     return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentDateTime) {
-    let value = Number(arg.valueOf());
-    if (Number.isNaN(value)) {
-      throw new TypeError("Invalid argument to DATETIME");
-    }
-
-    return new FluentDateTime(value, { ...arg.opts, ...values(opts) });
+  if (arg instanceof FluentNumber) {
+    return new FluentDateTime(arg.valueOf(), { ...arg.opts, ...values(opts) });
   }
 
-  return new FluentNone("DATETIME(???)");
+  throw new TypeError("Invalid argument to DATETIME");
 }
