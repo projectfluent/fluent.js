@@ -12,12 +12,12 @@ export {
   FluentArgument,
   CustomFunction,
   CustomTransform
-} from "./bundle";
-export { FluentResource } from "./resource";
-export { FluentError } from "./error";
+} from "./bundle.js";
+export { FluentResource } from "./resource.js";
+export { FluentError } from "./error.js";
 export {
   FluentType,
   FluentBaseType,
   FluentNumber,
   FluentDateTime
-} from "./types";
+} from "./types.js";

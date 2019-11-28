@@ -11,7 +11,12 @@
  * `FluentType`.  Functions must return `FluentType` objects as well.
  */
 
-import { FluentNone, FluentNumber, FluentDateTime, FluentType } from "./types";
+import {
+  FluentNone,
+  FluentNumber,
+  FluentDateTime,
+  FluentType
+} from "./types.js";
 
 function values(opts: Record<string, FluentType>) {
   const unwrapped: Record<string, unknown> = {};

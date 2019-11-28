@@ -1,4 +1,4 @@
-import { FluentError } from "./error";
+import { FluentError } from "./error.js";
 import {
   RuntimeMessage,
   RuntimeComplexPattern,

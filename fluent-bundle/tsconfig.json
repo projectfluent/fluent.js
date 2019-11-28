@@ -12,6 +12,6 @@
         "outDir": "./esm",
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*.ts"
     ]
 }

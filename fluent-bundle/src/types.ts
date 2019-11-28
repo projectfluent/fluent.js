@@ -1,4 +1,4 @@
-import { Scope } from "./scope";
+import { Scope } from "./scope.js";
 
 /* global Intl */
 

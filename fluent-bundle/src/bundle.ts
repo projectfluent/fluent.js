@@ -1,9 +1,9 @@
-import { resolveComplexPattern } from "./resolver";
-import { Scope } from "./scope";
-import { FluentError } from "./error";
-import { FluentResource } from ".";
-import { FluentNone, FluentType } from "./types";
-import { RuntimeComplexPattern, RuntimeMessage, RuntimeTerm } from "./ast";
+import { resolveComplexPattern } from "./resolver.js";
+import { Scope } from "./scope.js";
+import { FluentError } from "./error.js";
+import { FluentResource } from "./resource.js";
+import { FluentNone, FluentType } from "./types.js";
+import { RuntimeMessage, RuntimeTerm, RuntimePattern } from "./ast.js";
 
 export type CustomFunction = (
   positional: Array<FluentType>,

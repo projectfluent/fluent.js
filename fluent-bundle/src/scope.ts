@@ -1,6 +1,6 @@
-import { FluentBundle, FluentArgument } from "./bundle";
-import { FluentError } from "./error";
-import { RuntimeComplexPattern } from "./ast";
+import { FluentBundle, FluentArgument } from "./bundle.js";
+import { FluentError } from "./error.js";
+import { RuntimeComplexPattern } from "./ast.js";
 
 export class Scope {
   /** The bundle for which the given resolution is happening. */
