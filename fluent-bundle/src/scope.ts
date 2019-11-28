@@ -6,9 +6,9 @@ export class Scope {
   /** The bundle for which the given resolution is happening. */
   public bundle: FluentBundle;
   /** The list of errors collected while resolving. */
-  public errors: Array<FluentError>;
+  public errors: Array<FluentError> | null;
   /** A dict of developer-provided variables. */
-  public args: Record<string, FluentArgument>;
+  public args: Record<string, FluentArgument> | null;
   /** Term references require different variable lookup logic. */
   public insideTermReference: boolean;
   /** The Set of patterns already encountered during this resolution.
@@ -17,8 +17,8 @@ export class Scope {
 
   constructor(
     bundle: FluentBundle,
-    errors: Array<FluentError>,
-    args: Record<string, FluentArgument>,
+    errors: Array<FluentError> | null,
+    args: Record<string, FluentArgument> | null,
     insideTermReference = false,
     dirty: WeakSet<RuntimeComplexPattern> = new WeakSet()
   ) {

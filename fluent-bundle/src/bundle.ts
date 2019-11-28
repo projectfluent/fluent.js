@@ -176,9 +176,9 @@ export class FluentBundle {
    * If `errors` is omitted, the first encountered error will be thrown.
    */
   formatPattern(
-    pattern: RuntimeComplexPattern,
-    args: Record<string, FluentArgument>,
-    errors: Array<FluentError>
+    pattern: RuntimePattern,
+    args: Record<string, FluentArgument> | null = null,
+    errors: Array<FluentError> | null = null
   ) {
     // Resolve a simple pattern without creating a scope. No error handling is
     // required; by definition simple patterns don't have placeables.
