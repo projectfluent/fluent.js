@@ -23,10 +23,10 @@ compat.js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
-clean:
-	@rm -f index.js compat.js
-	@rm -rf .nyc_output coverage
-	@echo -e " $(OK) clean"
+lint: _lint
+test: _test
+html: _html
+clean: _clean
 
 STRUCTURE_FTL := $(wildcard test/fixtures_structure/*.ftl)
 STRUCTURE_AST := $(STRUCTURE_FTL:.ftl=.json)

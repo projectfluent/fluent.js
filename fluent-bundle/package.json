@@ -18,6 +18,7 @@
   "directories": {
     "lib": "./src"
   },
+  "type": "commonjs",
   "main": "./index.js",
   "module": "./src/index.js",
   "repository": {

@@ -3,9 +3,18 @@ GLOBAL  := FluentBundle
 
 include ../common.mk
 
+lint:
+
+compile: esm/.compiled
+
+esm/.compiled: $(SOURCES)
+	@tsc
+	@touch $@
+	@echo -e " $(OK) esm/ compiled"
+
 build: index.js compat.js
 
-index.js: $(SOURCES)
+index.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/bundle_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
@@ -14,7 +23,7 @@ index.js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
-compat.js: $(SOURCES)
+compat.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/compat_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
@@ -23,18 +32,17 @@ compat.js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
-.PHONY: compile
-compile:
-	tsc
-
-.PHONY: t
-t: compile
+.PHONY: test
+test: esm/.compiled
 	@nyc --reporter=text --reporter=html mocha \
 	    --recursive --ui tdd \
 	    --require esm \
 	    test/**/*_test.js
 
+html:
+
 clean:
+	@rm -f esm/*.js esm/*.d.ts esm/.compiled
 	@rm -f index.js compat.js
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

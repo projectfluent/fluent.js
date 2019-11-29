@@ -55,3 +55,7 @@ clean:
 	@rm -rf dist
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
+
+lint: _lint
+test: _test
+html: _html
