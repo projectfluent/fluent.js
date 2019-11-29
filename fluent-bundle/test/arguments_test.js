@@ -3,9 +3,9 @@
 import assert from 'assert';
 import ftl from "@fluent/dedent";
 
-import FluentBundle from '../src/bundle';
-import FluentResource from '../src/resource';
-import { FluentType } from '../src/types';
+import {FluentBundle} from '../esm/bundle';
+import {FluentResource} from '../esm/resource';
+import {FluentBaseType} from '../esm/types';
 
 suite('Variables', function() {
   let bundle, errs;
@@ -217,7 +217,7 @@ suite('Variables', function() {
   suite('custom argument types', function(){
     let argval, args;
 
-    class CustomType extends FluentType {
+    class CustomType extends FluentBaseType {
       toString() {
         return 'CUSTOM';
       }

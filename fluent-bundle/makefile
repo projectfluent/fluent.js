@@ -23,6 +23,17 @@ compat.js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
+.PHONY: compile
+compile:
+	tsc
+
+.PHONY: t
+t: compile
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
+	    --require esm \
+	    test/**/*_test.js
+
 clean:
 	@rm -f index.js compat.js
 	@rm -rf .nyc_output coverage
