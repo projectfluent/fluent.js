@@ -4,7 +4,6 @@
         "module": "es2015",
         "strict": true,
         "allowJs": false,
-        "noImplicitAny": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
         "noEmitHelpers": true,
