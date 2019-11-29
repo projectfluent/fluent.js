@@ -2,7 +2,7 @@ import React from 'react';
 import assert from 'assert';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
+import { FluentBundle, FluentResource } from '@fluent/bundle';
 import ReactLocalization from '../src/localization';
 import { Localized } from '../src/index';
 

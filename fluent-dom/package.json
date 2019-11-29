@@ -39,6 +39,7 @@
     "node": ">=8.9.0"
   },
   "devDependencies": {
+    "@fluent/bundle": "^0.14.0",
     "jsdom": "^15.1.0"
   },
   "dependencies": {
