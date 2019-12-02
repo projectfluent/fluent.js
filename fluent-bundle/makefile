@@ -40,6 +40,14 @@ test: esm/.compiled
 	    test/**/*_test.js
 
 html:
+	@typedoc src \
+	    --out ../html/bundle \
+	    --mode file \
+	    --excludeNotExported \
+	    --excludePrivate \
+	    --logger none \
+	    --hideGenerator
+	@echo -e " $(OK) html build"
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
