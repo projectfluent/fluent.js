@@ -71,7 +71,10 @@ function match(scope: Scope, selector: FluentType, key: FluentType) {
 
   if (selector instanceof FluentNumber && typeof key === "string") {
     let category = scope
-      .memoizeIntlObject(Intl.PluralRules, selector.opts)
+      .memoizeIntlObject(
+        Intl.PluralRules,
+        selector.opts as Intl.PluralRulesOptions
+      )
       .select(selector.value);
     if (key === category) {
       return true;

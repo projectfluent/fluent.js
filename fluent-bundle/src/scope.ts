@@ -40,7 +40,10 @@ export class Scope {
     this.errors.push(error);
   }
 
-  memoizeIntlObject(ctor: any, opts: any) {
+  memoizeIntlObject<ObjectT, OptionsT>(
+    ctor: new (locales: Array<string>, opts: OptionsT) => ObjectT,
+    opts: OptionsT
+  ) {
     let cache = this.bundle._intls.get(ctor);
     if (!cache) {
       cache = {};
