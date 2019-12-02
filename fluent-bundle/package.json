@@ -15,12 +15,10 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "directories": {
-    "lib": "./src"
-  },
   "type": "commonjs",
   "main": "./index.js",
   "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
