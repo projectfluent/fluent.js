@@ -39,7 +39,7 @@ export function NUMBER(
     return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentNumber) {
+  if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
     return new FluentNumber(arg.valueOf(), { ...arg.opts, ...values(opts) });
   }
 
@@ -59,7 +59,7 @@ export function DATETIME(
     return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentNumber) {
+  if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
     return new FluentDateTime(arg.valueOf(), { ...arg.opts, ...values(opts) });
   }
 
