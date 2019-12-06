@@ -2,6 +2,12 @@ import assert from 'assert';
 import acceptedLanguages from '../src/accepted_languages';
 
 suite('parse headers', () => {
+  test('without an argument', () => {
+    assert.deepStrictEqual(
+      acceptedLanguages(), []
+    );
+  });
+
   test('without quality values', () => {
     assert.deepStrictEqual(
       acceptedLanguages('en-US, fr, pl'), [

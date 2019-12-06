@@ -1,4 +1,4 @@
-function parseAcceptLanguageEntry(entry, index) {
+function parseAcceptLanguageEntry(entry) {
   const langWithQ = entry.split(";").map(u => u.trim());
   let q = 1.0;
   if (langWithQ.length > 1) {
@@ -8,7 +8,7 @@ function parseAcceptLanguageEntry(entry, index) {
       q = isNaN(qn) ? 0.0 : qn;
     }
   }
-  return { index: index, lang: langWithQ[0], q };
+  return { lang: langWithQ[0], q };
 }
 
 export default function acceptedLanguages(acceptLanguageHeader = "") {
@@ -17,10 +17,9 @@ export default function acceptedLanguages(acceptLanguageHeader = "") {
   }
   const tokens = acceptLanguageHeader.split(",").map(t => t.trim())
     .filter(t => t !== "");
-  const langsWithQ = [];
-  tokens.forEach((t, index) =>
-    langsWithQ.push(parseAcceptLanguageEntry(t, index)));
+  const langsWithQ = Array.from(tokens.map(parseAcceptLanguageEntry).entries());
   // order by q descending, keeping the header order for equal weights
-  langsWithQ.sort((a, b) => a.q === b.q ? a.index - b.index : b.q - a.q);
-  return langsWithQ.map(t => t.lang);
+  langsWithQ.sort(([aidx, aval], [bidx, bval]) =>
+    aval.q === bval.q ? aidx - bidx : bval.q - aval.q);
+  return langsWithQ.map(([, val]) => val.lang);
 }
