@@ -14,7 +14,6 @@ export {
   CustomTransform
 } from "./bundle.js";
 export { FluentResource } from "./resource.js";
-export { FluentError } from "./error.js";
 export {
   FluentType,
   FluentBaseType,

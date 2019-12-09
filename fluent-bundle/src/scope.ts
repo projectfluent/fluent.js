@@ -1,12 +1,11 @@
 import { FluentBundle, FluentArgument } from "./bundle.js";
-import { FluentError } from "./error.js";
 import { RuntimeComplexPattern } from "./ast.js";
 
 export class Scope {
   /** The bundle for which the given resolution is happening. */
   public bundle: FluentBundle;
   /** The list of errors collected while resolving. */
-  public errors: Array<FluentError> | null;
+  public errors: Array<Error> | null;
   /** A dict of developer-provided variables. */
   public args: Record<string, FluentArgument> | null;
   /** Term references require different variable lookup logic. */
@@ -17,7 +16,7 @@ export class Scope {
 
   constructor(
     bundle: FluentBundle,
-    errors: Array<FluentError> | null,
+    errors: Array<Error> | null,
     args: Record<string, FluentArgument> | null,
     insideTermReference = false,
     dirty: WeakSet<RuntimeComplexPattern> = new WeakSet()
@@ -33,7 +32,7 @@ export class Scope {
     return new Scope(this.bundle, this.errors, args, true, this.dirty);
   }
 
-  reportError(error: FluentError): void {
+  reportError(error: Error): void {
     if (!this.errors) {
       throw error;
     }

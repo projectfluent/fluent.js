@@ -1,4 +1,3 @@
-import { FluentError } from "./error.js";
 import {
   RuntimeMessage,
   RuntimeElement,
@@ -99,7 +98,7 @@ export class FluentResource {
       try {
         resource.push(parseMessage(next[1]));
       } catch (err) {
-        if (err instanceof FluentError) {
+        if (err instanceof SyntaxError) {
           // Don't report any Fluent syntax errors. Skip directly to the
           // beginning of the next message or term.
           continue;
@@ -135,7 +134,7 @@ export class FluentResource {
     // (was the match found?) or, if errorClass is passed, as an assertion.
     function consumeChar(
       char: string,
-      errorClass?: typeof FluentError
+      errorClass?: typeof SyntaxError
     ): boolean {
       if (source[cursor] === char) {
         cursor++;
@@ -151,7 +150,7 @@ export class FluentResource {
     // (was the match found?) or, if errorClass is passed, as an assertion.
     function consumeToken(
       re: RegExp,
-      errorClass?: typeof FluentError
+      errorClass?: typeof SyntaxError
     ): boolean {
       if (test(re)) {
         cursor = re.lastIndex;
@@ -168,7 +167,7 @@ export class FluentResource {
       re.lastIndex = cursor;
       let result = re.exec(source);
       if (result === null) {
-        throw new FluentError(`Expected ${re.toString()}`);
+        throw new SyntaxError(`Expected ${re.toString()}`);
       }
       cursor = re.lastIndex;
       return result;
@@ -184,7 +183,7 @@ export class FluentResource {
       let attributes = parseAttributes();
 
       if (value === null && Object.keys(attributes).length === 0) {
-        throw new FluentError("Expected message value or attributes");
+        throw new SyntaxError("Expected message value or attributes");
       }
 
       return { id, value, attributes };
@@ -197,7 +196,7 @@ export class FluentResource {
         let name = match1(RE_ATTRIBUTE_START);
         let value = parsePattern();
         if (value === null) {
-          throw new FluentError("Expected attribute value");
+          throw new SyntaxError("Expected attribute value");
         }
         attrs[name] = value;
       }
@@ -257,14 +256,14 @@ export class FluentResource {
 
         if (source[cursor] === "{") {
           if (++placeableCount > MAX_PLACEABLES) {
-            throw new FluentError("Too many placeables");
+            throw new SyntaxError("Too many placeables");
           }
           elements.push(parsePlaceable());
           continue;
         }
 
         if (source[cursor] === "}") {
-          throw new FluentError("Unbalanced closing brace");
+          throw new SyntaxError("Unbalanced closing brace");
         }
 
         let indent = parseIndent();
@@ -298,7 +297,7 @@ export class FluentResource {
     }
 
     function parsePlaceable(): RuntimeExpression {
-      consumeToken(TOKEN_BRACE_OPEN, FluentError);
+      consumeToken(TOKEN_BRACE_OPEN, SyntaxError);
 
       let selector = parseInlineExpression();
       if (consumeToken(TOKEN_BRACE_CLOSE)) {
@@ -307,7 +306,7 @@ export class FluentResource {
 
       if (consumeToken(TOKEN_ARROW)) {
         let variants = parseVariants();
-        consumeToken(TOKEN_BRACE_CLOSE, FluentError);
+        consumeToken(TOKEN_BRACE_CLOSE, SyntaxError);
         return {
           type: "select",
           selector,
@@ -315,7 +314,7 @@ export class FluentResource {
         } as RuntimeSelectExpression;
       }
 
-      throw new FluentError("Unclosed placeable");
+      throw new SyntaxError("Unclosed placeable");
     }
 
     function parseInlineExpression(): RuntimeExpression {
@@ -343,7 +342,7 @@ export class FluentResource {
             return { type: "func", name, args } as RuntimeFunctionReference;
           }
 
-          throw new FluentError("Function names must be all upper-case");
+          throw new SyntaxError("Function names must be all upper-case");
         }
 
         if (sigil === "-") {
@@ -370,7 +369,7 @@ export class FluentResource {
             cursor++;
             return args;
           case undefined: // EOF
-            throw new FluentError("Unclosed argument list");
+            throw new SyntaxError("Unclosed argument list");
         }
 
         args.push(parseArgument());
@@ -414,7 +413,7 @@ export class FluentResource {
         let key = parseVariantKey();
         let value = parsePattern();
         if (value === null) {
-          throw new FluentError("Expected variant value");
+          throw new SyntaxError("Expected variant value");
         }
         variants[count++] = { key, value };
       }
@@ -424,14 +423,14 @@ export class FluentResource {
       }
 
       if (star === undefined) {
-        throw new FluentError("Expected default variant");
+        throw new SyntaxError("Expected default variant");
       }
 
       return { variants, star };
     }
 
     function parseVariantKey(): RuntimeLiteral {
-      consumeToken(TOKEN_BRACKET_OPEN, FluentError);
+      consumeToken(TOKEN_BRACKET_OPEN, SyntaxError);
       let key;
       if (test(RE_NUMBER_LITERAL)) {
         key = parseNumberLiteral();
@@ -441,7 +440,7 @@ export class FluentResource {
           value: match1(RE_IDENTIFIER)
         } as RuntimeStringLiteral;
       }
-      consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
+      consumeToken(TOKEN_BRACKET_CLOSE, SyntaxError);
       return key;
     }
 
@@ -454,7 +453,7 @@ export class FluentResource {
         return parseStringLiteral();
       }
 
-      throw new FluentError("Invalid expression");
+      throw new SyntaxError("Invalid expression");
     }
 
     function parseNumberLiteral(): RuntimeNumberLiteral {
@@ -468,7 +467,7 @@ export class FluentResource {
     }
 
     function parseStringLiteral(): RuntimeStringLiteral {
-      consumeChar('"', FluentError);
+      consumeChar('"', SyntaxError);
       let value = "";
       while (true) {
         value += match1(RE_STRING_RUN);
@@ -483,7 +482,7 @@ export class FluentResource {
         }
 
         // We've reached an EOL of EOF.
-        throw new FluentError("Unclosed string literal");
+        throw new SyntaxError("Unclosed string literal");
       }
     }
 
@@ -504,7 +503,7 @@ export class FluentResource {
           : "�";
       }
 
-      throw new FluentError("Unknown escape sequence");
+      throw new SyntaxError("Unknown escape sequence");
     }
 
     // Parse blank space. Return it if it looks like indent before a pattern

@@ -1,7 +1,6 @@
 import {
   FluentBundle,
   FluentResource,
-  FluentError,
   FluentBaseType,
   FluentNumber,
   FluentDateTime,
@@ -11,7 +10,6 @@ this.EXPORTED_SYMBOLS = [
   ...Object.keys({
     FluentBundle,
     FluentResource,
-    FluentError,
     FluentBaseType,
     FluentNumber,
     FluentDateTime,
