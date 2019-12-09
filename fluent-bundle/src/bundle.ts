@@ -61,7 +61,7 @@ export class FluentBundle {
     {
       functions = {},
       useIsolating = true,
-      transform = v => v
+      transform = (v: string): string => v
     }: {
       functions?: Record<string, CustomFunction>;
       useIsolating?: boolean;

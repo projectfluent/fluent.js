@@ -172,6 +172,7 @@ function VariableReference(
       if (arg instanceof Date) {
         return new FluentDateTime(arg.getTime());
       }
+    // eslint-disable-next-line no-fallthrough
     default:
       scope.reportError(
         new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)

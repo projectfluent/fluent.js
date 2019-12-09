@@ -40,7 +40,6 @@ export class FluentBaseType<T> {
    *
    * @abstract
    */
-  // eslint-disable-next-line no-unused-vars
   toString(scope: Scope): string {
     throw new Error("Subclasses of FluentType must implement toString.");
   }

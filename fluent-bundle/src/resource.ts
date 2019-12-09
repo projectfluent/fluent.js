@@ -206,7 +206,7 @@ export class FluentResource {
     }
 
     function parsePattern(): RuntimePattern | null {
-      let first = undefined;
+      let first;
       // First try to parse any simple text on the same line as the id.
       if (test(RE_TEXT_RUN)) {
         first = match1(RE_TEXT_RUN);
@@ -291,7 +291,7 @@ export class FluentResource {
           element = element.value.slice(0, element.value.length - commonIndent);
         }
         if (element) {
-          baked.push(<RuntimeElement>element);
+          baked.push(element);
         }
       }
       return baked;
@@ -308,11 +308,11 @@ export class FluentResource {
       if (consumeToken(TOKEN_ARROW)) {
         let variants = parseVariants();
         consumeToken(TOKEN_BRACE_CLOSE, FluentError);
-        return <RuntimeSelectExpression>{
+        return {
           type: "select",
           selector,
           ...variants
-        };
+        } as RuntimeSelectExpression;
       }
 
       throw new FluentError("Unclosed placeable");
@@ -328,7 +328,7 @@ export class FluentResource {
         let [, sigil, name, attr = null] = match(RE_REFERENCE);
 
         if (sigil === "$") {
-          return <RuntimeVariableReference>{ type: "var", name };
+          return { type: "var", name } as RuntimeVariableReference;
         }
 
         if (consumeToken(TOKEN_PAREN_OPEN)) {
@@ -336,11 +336,11 @@ export class FluentResource {
 
           if (sigil === "-") {
             // A parameterized term: -term(...).
-            return <RuntimeTermReference>{ type: "term", name, attr, args };
+            return { type: "term", name, attr, args } as RuntimeTermReference;
           }
 
           if (RE_FUNCTION_NAME.test(name)) {
-            return <RuntimeFunctionReference>{ type: "func", name, args };
+            return { type: "func", name, args } as RuntimeFunctionReference;
           }
 
           throw new FluentError("Function names must be all upper-case");
@@ -348,15 +348,15 @@ export class FluentResource {
 
         if (sigil === "-") {
           // A non-parameterized term: -term.
-          return <RuntimeTermReference>{
+          return {
             type: "term",
             name,
             attr,
             args: []
-          };
+          } as RuntimeTermReference;
         }
 
-        return <RuntimeMessageReference>{ type: "mesg", name, attr };
+        return { type: "mesg", name, attr } as RuntimeMessageReference;
       }
 
       return parseLiteral();
@@ -387,11 +387,11 @@ export class FluentResource {
 
       if (consumeToken(TOKEN_COLON)) {
         // The reference is the beginning of a named argument.
-        return <RuntimeNamedArgument>{
+        return {
           type: "narg",
           name: expr.name,
           value: parseLiteral()
-        };
+        } as RuntimeNamedArgument;
       }
 
       // It's a regular message reference.
@@ -432,9 +432,15 @@ export class FluentResource {
 
     function parseVariantKey(): RuntimeLiteral {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
-      let key = test(RE_NUMBER_LITERAL)
-        ? parseNumberLiteral()
-        : <RuntimeStringLiteral>{ type: "str", value: match1(RE_IDENTIFIER) };
+      let key;
+      if (test(RE_NUMBER_LITERAL)) {
+        key = parseNumberLiteral();
+      } else {
+        key = {
+          type: "str",
+          value: match1(RE_IDENTIFIER)
+        } as RuntimeStringLiteral;
+      }
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
@@ -454,11 +460,11 @@ export class FluentResource {
     function parseNumberLiteral(): RuntimeNumberLiteral {
       let [, value, fraction = ""] = match(RE_NUMBER_LITERAL);
       let precision = fraction.length;
-      return <RuntimeNumberLiteral>{
+      return {
         type: "num",
         value: parseFloat(value),
         precision
-      };
+      } as RuntimeNumberLiteral;
     }
 
     function parseStringLiteral(): RuntimeStringLiteral {
@@ -473,7 +479,7 @@ export class FluentResource {
         }
 
         if (consumeChar('"')) {
-          return <RuntimeStringLiteral>{ type: "str", value };
+          return { type: "str", value } as RuntimeStringLiteral;
         }
 
         // We've reached an EOL of EOF.
@@ -491,11 +497,11 @@ export class FluentResource {
         let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);
         let codepoint = parseInt(codepoint4 || codepoint6, 16);
         return codepoint <= 0xd7ff || 0xe000 <= codepoint
-          ? // It's a Unicode scalar value.
-            String.fromCodePoint(codepoint)
-          : // Lonely surrogates can cause trouble when the parsing result is
-            // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
-            "�";
+          // It's a Unicode scalar value.
+          ? String.fromCodePoint(codepoint)
+          // Lonely surrogates can cause trouble when the parsing result is
+          // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
+          : "�";
       }
 
       throw new FluentError("Unknown escape sequence");
@@ -544,6 +550,7 @@ export class FluentResource {
     // Normalize a blank block and extract the indent details.
     function makeIndent(blank: string): RuntimeIndent {
       let value = blank.replace(RE_BLANK_LINES, "\n");
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       let length = RE_INDENT.exec(blank)![1].length;
       return { type: "indent", value, length };
     }
