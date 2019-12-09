@@ -1,12 +1,12 @@
 export type RuntimeMessage = {
   id: string;
-  value: RuntimeComplexPattern | null;
+  value: RuntimePattern | null;
   attributes: Record<string, RuntimePattern>;
 };
 
 export type RuntimeTerm = {
   id: string;
-  value: RuntimeComplexPattern;
+  value: RuntimePattern;
   attributes: Record<string, RuntimePattern>;
 };
 
