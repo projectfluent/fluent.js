@@ -40,7 +40,7 @@ export class Scope {
     this.errors.push(error);
   }
 
-  memoizeIntlObject<ObjectT, OptionsT>(
+  memoizeIntlObject<ObjectT extends object, OptionsT>(
     ctor: new (locales: Array<string>, opts: OptionsT) => ObjectT,
     opts: OptionsT
   ): ObjectT {
@@ -53,6 +53,6 @@ export class Scope {
     if (!cache[id]) {
       cache[id] = new ctor(this.bundle.locales, opts);
     }
-    return cache[id];
+    return cache[id] as ObjectT;
   }
 }

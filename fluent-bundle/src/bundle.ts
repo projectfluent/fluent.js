@@ -25,7 +25,7 @@ export class FluentBundle {
   public _functions: Record<string, CustomFunction>;
   public _useIsolating: boolean;
   public _transform: CustomTransform;
-  public _intls: WeakMap<any, any> = new WeakMap();
+  public _intls: WeakMap<object, Record<string, object>> = new WeakMap();
 
   /**
    * Create an instance of `FluentBundle`.
