@@ -39,6 +39,7 @@ compat.js: esm/.compiled
 test: esm/.compiled
 	@nyc --reporter=text --reporter=html mocha \
 	    --recursive --ui tdd \
+	    --require intl-pluralrules \
 	    --require esm \
 	    test/**/*_test.js
 
