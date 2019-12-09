@@ -54,7 +54,7 @@ const FSI = "\u2068";
 const PDI = "\u2069";
 
 // Helper: match a variant key to the given selector.
-function match(scope: Scope, selector: FluentType, key: FluentType) {
+function match(scope: Scope, selector: FluentType, key: FluentType): boolean {
   if (key === selector) {
     // Both are strings.
     return true;
@@ -89,7 +89,7 @@ function getDefault(
   scope: Scope,
   variants: Array<RuntimeVariant>,
   star: number
-) {
+): FluentType {
   if (variants[star]) {
     return resolvePattern(scope, variants[star].value);
   }
@@ -104,7 +104,7 @@ type Arguments = [Array<FluentType>, Record<string, FluentType>];
 function getArguments(
   scope: Scope,
   args: Array<RuntimeExpression | RuntimeNamedArgument>
-) {
+): Arguments {
   const positional: Array<FluentType> = [];
   const named: Record<string, FluentType> = {};
 
@@ -116,7 +116,7 @@ function getArguments(
     }
   }
 
-  return <Arguments>[positional, named];
+  return [positional, named];
 }
 
 // Resolve an expression to a Fluent type.
@@ -184,7 +184,7 @@ function VariableReference(
 function MessageReference(
   scope: Scope,
   { name, attr }: RuntimeMessageReference
-) {
+): FluentType {
   const message = scope.bundle._messages.get(name);
   if (!message) {
     scope.reportError(new ReferenceError(`Unknown message: ${name}`));
@@ -212,7 +212,7 @@ function MessageReference(
 function TermReference(
   scope: Scope,
   { name, attr, args }: RuntimeTermReference
-) {
+): FluentType {
   const id = `-${name}`;
   const term = scope.bundle._terms.get(id);
   if (!term) {
@@ -240,7 +240,7 @@ function TermReference(
 function FunctionReference(
   scope: Scope,
   { name, args }: RuntimeFunctionReference
-) {
+): FluentType {
   // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
   let func = scope.bundle._functions[name];
@@ -275,7 +275,7 @@ function FunctionReference(
 function SelectExpression(
   scope: Scope,
   { selector, variants, star }: RuntimeSelectExpression
-) {
+): FluentType {
   let sel = resolveExpression(scope, selector);
   if (sel instanceof FluentNone) {
     return getDefault(scope, variants, star);
@@ -296,7 +296,7 @@ function SelectExpression(
 export function resolveComplexPattern(
   scope: Scope,
   ptn: RuntimeComplexPattern
-) {
+): FluentType {
   if (scope.dirty.has(ptn)) {
     scope.reportError(new RangeError("Cyclic reference"));
     return new FluentNone();
@@ -347,7 +347,7 @@ export function resolveComplexPattern(
 
 // Resolve a simple or a complex Pattern to a FluentString (which is really the
 // string primitive).
-function resolvePattern(scope: Scope, value: RuntimePattern) {
+function resolvePattern(scope: Scope, value: RuntimePattern): FluentType {
   // Resolve a simple pattern.
   if (typeof value === "string") {
     return scope.bundle._transform(value);

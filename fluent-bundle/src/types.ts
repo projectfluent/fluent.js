@@ -27,7 +27,7 @@ export class FluentBaseType<T> {
   /**
    * Unwrap the raw value stored by this `FluentType`.
    */
-  valueOf() {
+  valueOf(): T {
     return this.value;
   }
 
@@ -61,7 +61,7 @@ export class FluentNone extends FluentBaseType<string> {
   /**
    * Format this `FluentNone` to the fallback string.
    */
-  toString(scope: Scope) {
+  toString(scope: Scope): string {
     return `{${this.value}}`;
   }
 }
@@ -85,7 +85,7 @@ export class FluentNumber extends FluentBaseType<number> {
   /**
    * Format this `FluentNumber` to a string.
    */
-  toString(scope: Scope) {
+  toString(scope: Scope): string {
     try {
       const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
       return nf.format(this.value);
@@ -117,7 +117,7 @@ export class FluentDateTime extends FluentBaseType<number> {
   /**
    * Format this `FluentDateTime` to a string.
    */
-  toString(scope: Scope) {
+  toString(scope: Scope): string {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
       return dtf.format(this.value);

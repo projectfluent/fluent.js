@@ -18,7 +18,7 @@ import {
   FluentType
 } from "./types.js";
 
-function values(opts: Record<string, FluentType>) {
+function values(opts: Record<string, FluentType>): Record<string, unknown> {
   const unwrapped: Record<string, unknown> = {};
   for (const [name, opt] of Object.entries(opts)) {
     unwrapped[name] = opt.valueOf();
@@ -29,7 +29,7 @@ function values(opts: Record<string, FluentType>) {
 export function NUMBER(
   args: Array<FluentType>,
   opts: Record<string, FluentType>
-) {
+): FluentType {
   if (args.length !== 1) {
     throw new TypeError("NUMBER accepts exactly one argument");
   }
@@ -49,7 +49,7 @@ export function NUMBER(
 export function DATETIME(
   args: Array<FluentType>,
   opts: Record<string, FluentType>
-) {
+): FluentType {
   if (args.length !== 1) {
     throw new TypeError("DATETIME accepts exactly one argument");
   }

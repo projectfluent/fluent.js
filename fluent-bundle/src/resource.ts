@@ -1,7 +1,6 @@
 import { FluentError } from "./error.js";
 import {
   RuntimeMessage,
-  RuntimeComplexPattern,
   RuntimeElement,
   RuntimeIndent,
   RuntimeLiteral,
@@ -14,7 +13,10 @@ import {
   RuntimeTermReference,
   RuntimeFunctionReference,
   RuntimeMessageReference,
-  RuntimeTerm
+  RuntimeTerm,
+  RuntimeComplexPattern,
+  RuntimeNumberLiteral,
+  RuntimeStringLiteral
 } from "./ast.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
@@ -79,7 +81,7 @@ export class FluentResource {
     this.body = this._parse(source);
   }
 
-  _parse(source: string) {
+  _parse(source: string): Array<RuntimeMessage | RuntimeTerm> {
     RE_MESSAGE_START.lastIndex = 0;
 
     let resource = [];
@@ -124,14 +126,17 @@ export class FluentResource {
     // to any offset of the source string without slicing it. Errors are thrown
     // to bail out of parsing of ill-formed messages.
 
-    function test(re: RegExp) {
+    function test(re: RegExp): boolean {
       re.lastIndex = cursor;
       return re.test(source);
     }
 
     // Advance the cursor by the char if it matches. May be used as a predicate
     // (was the match found?) or, if errorClass is passed, as an assertion.
-    function consumeChar(char: string, errorClass?: typeof FluentError) {
+    function consumeChar(
+      char: string,
+      errorClass?: typeof FluentError
+    ): boolean {
       if (source[cursor] === char) {
         cursor++;
         return true;
@@ -144,7 +149,10 @@ export class FluentResource {
 
     // Advance the cursor by the token if it matches. May be used as a predicate
     // (was the match found?) or, if errorClass is passed, as an assertion.
-    function consumeToken(re: RegExp, errorClass?: typeof FluentError) {
+    function consumeToken(
+      re: RegExp,
+      errorClass?: typeof FluentError
+    ): boolean {
       if (test(re)) {
         cursor = re.lastIndex;
         return true;
@@ -156,7 +164,7 @@ export class FluentResource {
     }
 
     // Execute a regex, advance the cursor, and return all capture groups.
-    function match(re: RegExp) {
+    function match(re: RegExp): RegExpExecArray {
       re.lastIndex = cursor;
       let result = re.exec(source);
       if (result === null) {
@@ -167,11 +175,11 @@ export class FluentResource {
     }
 
     // Execute a regex, advance the cursor, and return the capture group.
-    function match1(re: RegExp) {
+    function match1(re: RegExp): string {
       return match(re)[1];
     }
 
-    function parseMessage(id: string) {
+    function parseMessage(id: string): RuntimeMessage {
       let value = parsePattern();
       let attributes = parseAttributes();
 
@@ -179,10 +187,10 @@ export class FluentResource {
         throw new FluentError("Expected message value or attributes");
       }
 
-      return <RuntimeMessage>{ id, value, attributes };
+      return { id, value, attributes };
     }
 
-    function parseAttributes() {
+    function parseAttributes(): Record<string, RuntimePattern> {
       let attrs: Record<string, RuntimePattern> = Object.create(null);
 
       while (test(RE_ATTRIBUTE_START)) {
@@ -238,7 +246,7 @@ export class FluentResource {
     function parsePatternElements(
       elements: Array<RuntimeElement | RuntimeIndent> = [],
       commonIndent: number
-    ) {
+    ): RuntimeComplexPattern {
       let placeableCount = 0;
 
       while (true) {
@@ -310,7 +318,7 @@ export class FluentResource {
       throw new FluentError("Unclosed placeable");
     }
 
-    function parseInlineExpression() {
+    function parseInlineExpression(): RuntimeExpression {
       if (source[cursor] === "{") {
         // It's a nested placeable.
         return parsePlaceable();
@@ -354,7 +362,7 @@ export class FluentResource {
       return parseLiteral();
     }
 
-    function parseArguments() {
+    function parseArguments(): Array<RuntimeExpression | RuntimeNamedArgument> {
       let args: Array<RuntimeExpression | RuntimeNamedArgument> = [];
       while (true) {
         switch (source[cursor]) {
@@ -371,7 +379,7 @@ export class FluentResource {
       }
     }
 
-    function parseArgument() {
+    function parseArgument(): RuntimeExpression | RuntimeNamedArgument {
       let expr = parseInlineExpression();
       if (expr.type !== "mesg") {
         return expr;
@@ -390,7 +398,10 @@ export class FluentResource {
       return expr;
     }
 
-    function parseVariants() {
+    function parseVariants(): {
+      variants: Array<RuntimeVariant>;
+      star: number;
+    } | null {
       let variants: Array<RuntimeVariant> = [];
       let count = 0;
       let star;
@@ -419,16 +430,16 @@ export class FluentResource {
       return { variants, star };
     }
 
-    function parseVariantKey() {
+    function parseVariantKey(): RuntimeLiteral {
       consumeToken(TOKEN_BRACKET_OPEN, FluentError);
       let key = test(RE_NUMBER_LITERAL)
         ? parseNumberLiteral()
-        : <RuntimeLiteral>{ type: "str", value: match1(RE_IDENTIFIER) };
+        : <RuntimeStringLiteral>{ type: "str", value: match1(RE_IDENTIFIER) };
       consumeToken(TOKEN_BRACKET_CLOSE, FluentError);
       return key;
     }
 
-    function parseLiteral() {
+    function parseLiteral(): RuntimeLiteral {
       if (test(RE_NUMBER_LITERAL)) {
         return parseNumberLiteral();
       }
@@ -440,17 +451,17 @@ export class FluentResource {
       throw new FluentError("Invalid expression");
     }
 
-    function parseNumberLiteral() {
+    function parseNumberLiteral(): RuntimeNumberLiteral {
       let [, value, fraction = ""] = match(RE_NUMBER_LITERAL);
       let precision = fraction.length;
-      return <RuntimeLiteral>{
+      return <RuntimeNumberLiteral>{
         type: "num",
         value: parseFloat(value),
         precision
       };
     }
 
-    function parseStringLiteral() {
+    function parseStringLiteral(): RuntimeStringLiteral {
       consumeChar('"', FluentError);
       let value = "";
       while (true) {
@@ -462,7 +473,7 @@ export class FluentResource {
         }
 
         if (consumeChar('"')) {
-          return <RuntimeLiteral>{ type: "str", value };
+          return <RuntimeStringLiteral>{ type: "str", value };
         }
 
         // We've reached an EOL of EOF.
@@ -471,7 +482,7 @@ export class FluentResource {
     }
 
     // Unescape known escape sequences.
-    function parseEscapeSequence() {
+    function parseEscapeSequence(): string {
       if (test(RE_STRING_ESCAPE)) {
         return match1(RE_STRING_ESCAPE);
       }
@@ -492,7 +503,7 @@ export class FluentResource {
 
     // Parse blank space. Return it if it looks like indent before a pattern
     // line. Skip it othwerwise.
-    function parseIndent() {
+    function parseIndent(): RuntimeIndent | false {
       let start = cursor;
       consumeToken(TOKEN_BLANK);
 
@@ -526,15 +537,15 @@ export class FluentResource {
     }
 
     // Trim blanks in text according to the given regex.
-    function trim(text: string, re: RegExp) {
+    function trim(text: string, re: RegExp): string {
       return text.replace(re, "");
     }
 
     // Normalize a blank block and extract the indent details.
-    function makeIndent(blank: string) {
+    function makeIndent(blank: string): RuntimeIndent {
       let value = blank.replace(RE_BLANK_LINES, "\n");
       let length = RE_INDENT.exec(blank)![1].length;
-      return <RuntimeIndent>{ type: "indent", value, length };
+      return { type: "indent", value, length };
     }
   }
 }

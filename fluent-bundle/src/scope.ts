@@ -29,11 +29,11 @@ export class Scope {
     this.dirty = dirty;
   }
 
-  cloneForTermReference(args: Record<string, FluentArgument>) {
+  cloneForTermReference(args: Record<string, FluentArgument>): Scope {
     return new Scope(this.bundle, this.errors, args, true, this.dirty);
   }
 
-  reportError(error: FluentError) {
+  reportError(error: FluentError): void {
     if (!this.errors) {
       throw error;
     }
@@ -43,7 +43,7 @@ export class Scope {
   memoizeIntlObject<ObjectT, OptionsT>(
     ctor: new (locales: Array<string>, opts: OptionsT) => ObjectT,
     opts: OptionsT
-  ) {
+  ): ObjectT {
     let cache = this.bundle._intls.get(ctor);
     if (!cache) {
       cache = {};

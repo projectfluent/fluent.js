@@ -1,6 +1,5 @@
 import { resolveComplexPattern } from "./resolver.js";
 import { Scope } from "./scope.js";
-import { FluentError } from "./error.js";
 import { FluentResource } from "./resource.js";
 import { FluentNone, FluentType } from "./types.js";
 import { RuntimeMessage, RuntimeTerm, RuntimePattern } from "./ast.js";
@@ -80,7 +79,7 @@ export class FluentBundle {
    *
    * @param id - The identifier of the message to check.
    */
-  hasMessage(id: string) {
+  hasMessage(id: string): boolean {
     return this._messages.has(id);
   }
 
@@ -91,14 +90,9 @@ export class FluentBundle {
    * called `Patterns`. `Patterns` are implementation-specific; they should be
    * treated as black boxes and formatted with `FluentBundle.formatPattern`.
    *
-   *     interface RawMessage {
-   *         value: Pattern | null;
-   *         attributes: Record<string, Pattern>;
-   *     }
-   *
    * @param id - The identifier of the message to check.
    */
-  getMessage(id: string) {
+  getMessage(id: string): RuntimeMessage | undefined {
     return this._messages.get(id);
   }
 
@@ -123,7 +117,7 @@ export class FluentBundle {
   addResource(
     res: FluentResource,
     { allowOverrides = false }: { allowOverrides?: boolean } = {}
-  ) {
+  ): Array<Error> {
     const errors = [];
 
     for (let i = 0; i < res.body.length; i++) {
@@ -132,13 +126,17 @@ export class FluentBundle {
         // Identifiers starting with a dash (-) define terms. Terms are private
         // and cannot be retrieved from FluentBundle.
         if (allowOverrides === false && this._terms.has(entry.id)) {
-          errors.push(`Attempt to override an existing term: "${entry.id}"`);
+          errors.push(
+            new Error(`Attempt to override an existing term: "${entry.id}"`)
+          );
           continue;
         }
         this._terms.set(entry.id, entry as RuntimeTerm);
       } else {
         if (allowOverrides === false && this._messages.has(entry.id)) {
-          errors.push(`Attempt to override an existing message: "${entry.id}"`);
+          errors.push(
+            new Error(`Attempt to override an existing message: "${entry.id}"`)
+          );
           continue;
         }
         this._messages.set(entry.id, entry);
@@ -178,8 +176,8 @@ export class FluentBundle {
   formatPattern(
     pattern: RuntimePattern,
     args: Record<string, FluentArgument> | null = null,
-    errors: Array<FluentError> | null = null
-  ) {
+    errors: Array<Error> | null = null
+  ): string {
     // Resolve a simple pattern without creating a scope. No error handling is
     // required; by definition simple patterns don't have placeables.
     if (typeof pattern === "string") {
