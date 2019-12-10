@@ -29,8 +29,10 @@ import { FluentType, FluentNone, FluentNumber, FluentDateTime }
   from "./types.js";
 import * as builtins from "./builtins.js";
 
-// Prevent expansion of too long placeables.
-const MAX_PLACEABLE_LENGTH = 2500;
+// The maximum number of placeables which can be expanded in a single call to
+// `formatPattern`. The limit protects against the Billion Laughs and Quadratic
+// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
+const MAX_PLACEABLES = 100;
 
 // Unicode bidi isolation characters.
 const FSI = "\u2068";
@@ -259,25 +261,24 @@ export function resolveComplexPattern(scope, ptn) {
       continue;
     }
 
-    const part = resolveExpression(scope, elem).toString(scope);
-
-    if (useIsolating) {
-      result.push(FSI);
-    }
-
-    if (part.length > MAX_PLACEABLE_LENGTH) {
+    scope.placeables++;
+    if (scope.placeables > MAX_PLACEABLES) {
       scope.dirty.delete(ptn);
       // This is a fatal error which causes the resolver to instantly bail out
       // on this pattern. The length check protects against excessive memory
       // usage, and throwing protects against eating up the CPU when long
       // placeables are deeply nested.
       throw new RangeError(
-        "Too many characters in placeable " +
-        `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        `Too many placeables expanded: ${scope.placeables}, ` +
+        `max allowed is ${MAX_PLACEABLES}`
       );
     }
 
-    result.push(part);
+    if (useIsolating) {
+      result.push(FSI);
+    }
+
+    result.push(resolveExpression(scope, elem).toString(scope));
 
     if (useIsolating) {
       result.push(PDI);

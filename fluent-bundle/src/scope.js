@@ -3,7 +3,6 @@ export default class Scope {
     bundle,
     errors,
     args,
-    insideTermReference = false,
     dirty = new WeakSet()
   ) {
     /** The bundle for which the given resolution is happening. */
@@ -13,15 +12,21 @@ export default class Scope {
     /** A dict of developer-provided variables. */
     this.args = args;
 
-    /** Term references require different variable lookup logic. */
-    this.insideTermReference = insideTermReference;
     /** The Set of patterns already encountered during this resolution.
       * Used to detect and prevent cyclic resolutions. */
     this.dirty = dirty;
+    /** Term references require different variable lookup logic. */
+    this.insideTermReference = false;
+    /** The running count of placeables resolved so far. Used to detect the
+      * Billion Laughs and Quadratic Blowup attacks. */
+    this.placeables = 0;
   }
 
   cloneForTermReference(args) {
-    return new Scope(this.bundle, this.errors, args, true, this.dirty);
+    let scope = new Scope(this.bundle, this.errors, args, this.dirty);
+    scope.insideTermReference = true;
+    scope.placeables = this.placeables;
+    return scope;
   }
 
   reportError(error) {
