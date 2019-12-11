@@ -1,5 +1,5 @@
 import React from "react";
-import TestRenderer from "react-test-renderer";
+import TestRenderer, {act} from "react-test-renderer";
 import { LocalizationProvider } from "../src/index";
 
 describe("LocalizationProvider - validation", () => {
@@ -42,5 +42,15 @@ describe("LocalizationProvider - validation", () => {
     expect(() => {
       TestRenderer.create(<LocalizationProvider bundles={0} />);
     }).toThrow(/must be an iterable/);
+  });
+
+  test("is memoized (no re-render) when props are the same", () => {
+    const bundles = [];
+    const spy = jest.spyOn(bundles, Symbol.iterator);
+    let renderer = TestRenderer.create(<LocalizationProvider bundles={bundles} />);
+    act(() => {
+      renderer = renderer.update(<LocalizationProvider bundles={bundles} />);
+    });
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
