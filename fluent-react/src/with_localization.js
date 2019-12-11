@@ -2,7 +2,7 @@ import { createElement, useContext } from "react";
 import FluentContext from "./context";
 
 export default function withLocalization(Inner) {
-  function WithDisplay(props) {
+  function WithLocalization(props) {
     const { l10n } = useContext(FluentContext);
     return createElement(
       Inner,
@@ -18,9 +18,9 @@ export default function withLocalization(Inner) {
     );
   }
 
-  WithDisplay.displayName = `WithLocalization(${displayName(Inner)})`;
+  WithLocalization.displayName = `WithLocalization(${displayName(Inner)})`;
 
-  return WithDisplay;
+  return WithLocalization;
 }
 
 function displayName(component) {
