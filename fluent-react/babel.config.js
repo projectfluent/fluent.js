@@ -11,6 +11,7 @@ module.exports = {
       "original": "fluent",
       "replacement": "fluent/compat"
     }],
-    "@babel/plugin-proposal-async-generator-functions"
+    "@babel/plugin-proposal-async-generator-functions",
+    "@babel/plugin-proposal-class-properties"
   ],
 };

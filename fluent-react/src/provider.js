@@ -1,8 +1,7 @@
-import { CachedSyncIterable } from "cached-iterable";
 import { createElement, memo } from "react";
 import PropTypes from "prop-types";
-import { mapBundleSync } from "@fluent/sequence";
 import FluentContext from "./context";
+import ReactLocalization from "./localization";
 import createParseMarkup from "./markup";
 
 /*
@@ -32,41 +31,11 @@ function LocalizationProvider(props) {
     throw new Error("The bundles prop must be an iterable.");
   }
 
-  const bundles = CachedSyncIterable.from(props.bundles);
-  const parseMarkup = props.parseMarkup || createParseMarkup();
-  const l10n = {
-    getBundle: id => mapBundleSync(bundles, id),
-    getString(id, args, fallback) {
-      const bundle = l10n.getBundle(id);
-
-      if (bundle) {
-        const msg = bundle.getMessage(id);
-        if (msg && msg.value) {
-          let errors = [];
-          let value = bundle.formatPattern(msg.value, args, errors);
-          for (let error of errors) {
-            l10n.reportError(error);
-          }
-          return value;
-        }
-      }
-
-      return fallback || id;
-    },
-    // XXX Control this via a prop passed to the LocalizationProvider.
-    // See https://github.com/projectfluent/fluent.js/issues/411.
-    reportError(error) {
-      /* global console */
-      // eslint-disable-next-line no-console
-      console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
-    }
-  };
-
   return createElement(
     FluentContext.Provider,
     { value: {
-      l10n,
-      parseMarkup
+      l10n: new ReactLocalization(props.bundles, props.parseMarkup),
+      parseMarkup: props.parseMarkup || createParseMarkup()
     } },
     props.children
   );
