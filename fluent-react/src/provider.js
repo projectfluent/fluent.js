@@ -45,10 +45,10 @@ export default class LocalizationProvider extends Component {
     };
   }
 
-  componentWillReceiveProps(next) {
-    const { bundles } = next;
+  componentDidUpdate(prevProps) {
+    const { bundles } = this.props;
 
-    if (bundles !== this.props.bundles) {
+    if (prevProps.bundles !== bundles) {
       this.l10n.setBundles(bundles);
     }
   }
