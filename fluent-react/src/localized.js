@@ -55,12 +55,6 @@ function Localized(props) {
   const { id, attrs, children: child = null } = props;
   const { l10n, parseMarkup } = useContext(FluentContext);
 
-  if (l10n === null) {
-    throw new Error(
-      "<Localized/> needs to have a <LocalizationProvider/> up in the tree"
-    );
-  }
-
   // Validate that the child element isn't an array
   if (Array.isArray(child)) {
     throw new Error("<Localized/> expected to receive a single " +
