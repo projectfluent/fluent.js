@@ -250,4 +250,235 @@ suite('Variables', function() {
       });
     });
   });
+
+  suite('Object.prototype.constructor', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$constructor}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$constructor}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {constructor: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.constructor = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite('Object.prototype.hasOwnProperty', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$hasOwnProperty}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$hasOwnProperty}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {hasOwnProperty: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.hasOwnProperty = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite('Object.prototype.isPrototypeOf', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$isPrototypeOf}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$isPrototypeOf}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {isPrototypeOf: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.isPrototypeOf = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite('Object.prototype.propertyIsEnumerable', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$propertyIsEnumerable}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$propertyIsEnumerable}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {propertyIsEnumerable: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.propertyIsEnumerable = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite('Object.prototype.toLocaleString', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$toLocaleString}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$toLocaleString}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {toLocaleString: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.toLocaleString = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite('Object.prototype.toString', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$toString}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$toString}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {toString: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.toString = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite('Object.prototype.valueOf', function(){
+    suiteSetup(function() {
+      bundle = new FluentBundle('en-US', { useIsolating: false });
+      bundle.addResource(new FluentResource(ftl`
+        test = {$valueOf}
+        `));
+    });
+
+    test('empty args', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {}, errs);
+      assert.strictEqual(val, '{$valueOf}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
+    });
+
+    test('args literal', function() {
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, {valueOf: 1}, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('args with null prototype', function() {
+      const args = Object.create(null);
+      args.valueOf = 1;
+      const msg = bundle.getMessage('test');
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+  });
 });
