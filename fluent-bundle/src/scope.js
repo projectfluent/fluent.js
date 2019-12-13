@@ -1,11 +1,5 @@
 export default class Scope {
-  constructor(
-    bundle,
-    errors,
-    args,
-    insideTermReference = false,
-    dirty = new WeakSet()
-  ) {
+  constructor(bundle, errors, args) {
     /** The bundle for which the given resolution is happening. */
     this.bundle = bundle;
     /** The list of errors collected while resolving. */
@@ -13,15 +7,14 @@ export default class Scope {
     /** A dict of developer-provided variables. */
     this.args = args;
 
-    /** Term references require different variable lookup logic. */
-    this.insideTermReference = insideTermReference;
     /** The Set of patterns already encountered during this resolution.
       * Used to detect and prevent cyclic resolutions. */
-    this.dirty = dirty;
-  }
-
-  cloneForTermReference(args) {
-    return new Scope(this.bundle, this.errors, args, true, this.dirty);
+    this.dirty = new WeakSet();
+    /** A dict of parameters passed to a TermReference. */
+    this.params = null;
+    /** The running count of placeables resolved so far. Used to detect the
+      * Billion Laughs and Quadratic Blowup attacks. */
+    this.placeables = 0;
   }
 
   reportError(error) {

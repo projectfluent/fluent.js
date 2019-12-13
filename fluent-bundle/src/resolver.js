@@ -29,8 +29,10 @@ import { FluentType, FluentNone, FluentNumber, FluentDateTime }
   from "./types.js";
 import * as builtins from "./builtins.js";
 
-// Prevent expansion of too long placeables.
-const MAX_PLACEABLE_LENGTH = 2500;
+// The maximum number of placeables which can be expanded in a single call to
+// `formatPattern`. The limit protects against the Billion Laughs and Quadratic
+// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
+const MAX_PLACEABLES = 100;
 
 // Unicode bidi isolation characters.
 const FSI = "\u2068";
@@ -86,7 +88,7 @@ function getArguments(scope, args) {
     }
   }
 
-  return [positional, named];
+  return {positional, named};
 }
 
 // Resolve an expression to a Fluent type.
@@ -115,14 +117,22 @@ function resolveExpression(scope, expr) {
 
 // Resolve a reference to a variable.
 function VariableReference(scope, {name}) {
-  if (!scope.args || !scope.args.hasOwnProperty(name)) {
-    if (scope.insideTermReference === false) {
-      scope.reportError(new ReferenceError(`Unknown variable: $${name}`));
+  let arg;
+  if (scope.params) {
+    // We're inside a TermReference. It's OK to reference undefined parameters.
+    if (scope.params.hasOwnProperty(name)) {
+      arg = scope.params[name];
+    } else {
+      return new FluentNone(`$${name}`);
     }
+  } else if (scope.args && scope.args.hasOwnProperty(name)) {
+    // We're in the top-level Pattern or inside a MessageReference. Missing
+    // variables references produce ReferenceErrors.
+    arg = scope.args[name];
+  } else {
+    scope.reportError(new ReferenceError(`Unknown variable: $${name}`));
     return new FluentNone(`$${name}`);
   }
-
-  const arg = scope.args[name];
 
   // Return early if the argument already is an instance of FluentType.
   if (arg instanceof FluentType) {
@@ -181,20 +191,23 @@ function TermReference(scope, {name, attr, args}) {
     return new FluentNone(id);
   }
 
-  // Every TermReference has its own variables.
-  const [, params] = getArguments(scope, args);
-  const local = scope.cloneForTermReference(params);
-
   if (attr) {
     const attribute = term.attributes[attr];
     if (attribute) {
-      return resolvePattern(local, attribute);
+      // Every TermReference has its own variables.
+      scope.params = getArguments(scope, args).named;
+      const resolved = resolvePattern(scope, attribute);
+      scope.params = null;
+      return resolved;
     }
     scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));
     return new FluentNone(`${id}.${attr}`);
   }
 
-  return resolvePattern(local, term.value);
+  scope.params = getArguments(scope, args).named;
+  const resolved = resolvePattern(scope, term.value);
+  scope.params = null;
+  return resolved;
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
@@ -213,7 +226,8 @@ function FunctionReference(scope, {name, args}) {
   }
 
   try {
-    return func(...getArguments(scope, args));
+    let resolved = getArguments(scope, args);
+    return func(resolved.positional, resolved.named);
   } catch (err) {
     scope.reportError(err);
     return new FluentNone(`${name}()`);
@@ -259,25 +273,24 @@ export function resolveComplexPattern(scope, ptn) {
       continue;
     }
 
-    const part = resolveExpression(scope, elem).toString(scope);
-
-    if (useIsolating) {
-      result.push(FSI);
-    }
-
-    if (part.length > MAX_PLACEABLE_LENGTH) {
+    scope.placeables++;
+    if (scope.placeables > MAX_PLACEABLES) {
       scope.dirty.delete(ptn);
       // This is a fatal error which causes the resolver to instantly bail out
       // on this pattern. The length check protects against excessive memory
       // usage, and throwing protects against eating up the CPU when long
       // placeables are deeply nested.
       throw new RangeError(
-        "Too many characters in placeable " +
-        `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        `Too many placeables expanded: ${scope.placeables}, ` +
+        `max allowed is ${MAX_PLACEABLES}`
       );
     }
 
-    result.push(part);
+    if (useIsolating) {
+      result.push(FSI);
+    }
+
+    result.push(resolveExpression(scope, elem).toString(scope));
 
     if (useIsolating) {
       result.push(PDI);
