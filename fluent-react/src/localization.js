@@ -17,7 +17,9 @@ export default class ReactLocalization {
     this.bundles = CachedSyncIterable.from(bundles);
   }
 
-  getBundle = id => mapBundleSync(this.bundles, id);
+  getBundle(id) {
+    return mapBundleSync(this.bundles, id);
+  }
 
   getString(id, args, fallback) {
     const bundle = this.getBundle(id);
