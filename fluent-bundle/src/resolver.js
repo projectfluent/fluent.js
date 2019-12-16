@@ -125,7 +125,10 @@ function VariableReference(scope, {name}) {
     } else {
       return new FluentNone(`$${name}`);
     }
-  } else if (scope.args && Object.prototype.hasOwnProperty.call(scope.args, name)) {
+  } else if (
+    scope.args
+    && Object.prototype.hasOwnProperty.call(scope.args, name)
+  ) {
     // We're in the top-level Pattern or inside a MessageReference. Missing
     // variables references produce ReferenceErrors.
     arg = scope.args[name];
