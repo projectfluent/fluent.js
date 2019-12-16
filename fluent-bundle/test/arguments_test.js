@@ -259,7 +259,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$constructor}');
@@ -267,18 +267,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null prototype', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {constructor: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$constructor}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.constructor = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {constructor: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
@@ -292,7 +291,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$hasOwnProperty}');
@@ -300,18 +299,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null prototype', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {hasOwnProperty: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$hasOwnProperty}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.hasOwnProperty = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {hasOwnProperty: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
@@ -325,7 +323,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$isPrototypeOf}');
@@ -333,18 +331,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null prototype', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {isPrototypeOf: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$isPrototypeOf}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.isPrototypeOf = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {isPrototypeOf: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
@@ -358,7 +355,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$propertyIsEnumerable}');
@@ -366,18 +363,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null prototype', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {propertyIsEnumerable: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$propertyIsEnumerable}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.propertyIsEnumerable = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {propertyIsEnumerable: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
@@ -391,7 +387,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$toLocaleString}');
@@ -399,18 +395,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null prototype', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {toLocaleString: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$toLocaleString}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.toLocaleString = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {toLocaleString: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
@@ -424,7 +419,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$toString}');
@@ -432,18 +427,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null prototype', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {toString: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$toString}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.toString = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {toString: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
@@ -457,7 +451,7 @@ suite('Variables', function() {
         `));
     });
 
-    test('empty args', function() {
+    test('empty args literal', function() {
       const msg = bundle.getMessage('test');
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, '{$valueOf}');
@@ -465,18 +459,17 @@ suite('Variables', function() {
       assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args literal', function() {
+    test('empty args with null property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, {valueOf: 1}, errs);
-      assert.strictEqual(val, '1');
-      assert.strictEqual(errs.length, 0);
+      const val = bundle.formatPattern(msg.value, Object.create(null), errs);
+      assert.strictEqual(val, '{$valueOf}');
+      assert.strictEqual(errs.length, 1);
+      assert(errs[0] instanceof ReferenceError); // unknown variable
     });
 
-    test('args with null prototype', function() {
-      const args = Object.create(null);
-      args.valueOf = 1;
+    test('own property', function() {
       const msg = bundle.getMessage('test');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {valueOf: 1}, errs);
       assert.strictEqual(val, '1');
       assert.strictEqual(errs.length, 0);
     });
