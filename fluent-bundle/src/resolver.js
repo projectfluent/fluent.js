@@ -78,7 +78,7 @@ function getDefault(scope, variants, star) {
 // Helper: resolve arguments to a call expression.
 function getArguments(scope, args) {
   const positional = [];
-  const named = {};
+  const named = Object.create(null);
 
   for (const arg of args) {
     if (arg.type === "narg") {
