@@ -30,9 +30,6 @@ export function NUMBER(
   args: Array<FluentType>,
   opts: Record<string, FluentType>
 ): FluentType {
-  if (args.length !== 1) {
-    throw new TypeError("NUMBER accepts exactly one argument");
-  }
   let arg = args[0];
 
   if (arg instanceof FluentNone) {
@@ -50,9 +47,6 @@ export function DATETIME(
   args: Array<FluentType>,
   opts: Record<string, FluentType>
 ): FluentType {
-  if (args.length !== 1) {
-    throw new TypeError("DATETIME accepts exactly one argument");
-  }
   let arg = args[0];
 
   if (arg instanceof FluentNone) {
