@@ -10,7 +10,7 @@
 export {
   FluentBundle,
   FluentArgument,
-  CustomTransform
+  TextTransform
 } from "./bundle.js";
 export { FluentResource } from "./resource.js";
 export {

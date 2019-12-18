@@ -4,7 +4,7 @@ import { FluentResource } from "./resource.js";
 import { FluentNone, FluentType, FluentFunction } from "./types.js";
 import { Message, Term, Pattern } from "./ast.js";
 
-export type CustomTransform = (text: string) => string;
+export type TextTransform = (text: string) => string;
 
 export type FluentArgument = string | number | Date | FluentType;
 
@@ -19,7 +19,7 @@ export class FluentBundle {
   public _messages: Map<string, Message> = new Map();
   public _functions: Record<string, FluentFunction>;
   public _useIsolating: boolean;
-  public _transform: CustomTransform;
+  public _transform: TextTransform;
   public _intls: WeakMap<object, Record<string, object>> = new WeakMap();
 
   /**
@@ -60,7 +60,7 @@ export class FluentBundle {
     }: {
       functions?: Record<string, FluentFunction>;
       useIsolating?: boolean;
-      transform?: CustomTransform;
+      transform?: TextTransform;
     } = {}
   ) {
     this.locales = Array.isArray(locales) ? locales : [locales];
