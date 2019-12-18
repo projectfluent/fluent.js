@@ -1,85 +1,85 @@
-export type RuntimeMessage = {
+export type Message = {
   id: string;
-  value: RuntimePattern | null;
-  attributes: Record<string, RuntimePattern>;
+  value: Pattern | null;
+  attributes: Record<string, Pattern>;
 };
 
-export type RuntimeTerm = {
+export type Term = {
   id: string;
-  value: RuntimePattern;
-  attributes: Record<string, RuntimePattern>;
+  value: Pattern;
+  attributes: Record<string, Pattern>;
 };
 
-export type RuntimePattern = string | RuntimeComplexPattern;
+export type Pattern = string | ComplexPattern;
 
-export type RuntimeComplexPattern = Array<RuntimeElement>;
+export type ComplexPattern = Array<PatternElement>;
 
-export type RuntimeElement = string | RuntimeExpression;
+export type PatternElement = string | Expression;
 
-export type RuntimeIndent = {
+export type Indent = {
   type: "indent";
   value: string;
   length: number;
 };
 
-export type RuntimeExpression =
-  | RuntimeSelectExpression
-  | RuntimeVariableReference
-  | RuntimeTermReference
-  | RuntimeMessageReference
-  | RuntimeFunctionReference
-  | RuntimeLiteral;
+export type Expression =
+  | SelectExpression
+  | VariableReference
+  | TermReference
+  | MessageReference
+  | FunctionReference
+  | Literal;
 
-export type RuntimeSelectExpression = {
+export type SelectExpression = {
   type: "select";
-  selector: RuntimeExpression;
-  variants: Array<RuntimeVariant>;
+  selector: Expression;
+  variants: Array<Variant>;
   star: number;
 };
 
-export type RuntimeVariableReference = {
+export type VariableReference = {
   type: "var";
   name: string;
 };
 
-export type RuntimeTermReference = {
+export type TermReference = {
   type: "term";
   name: string;
   attr: string | null;
-  args: Array<RuntimeExpression>;
+  args: Array<Expression>;
 };
 
-export type RuntimeMessageReference = {
+export type MessageReference = {
   type: "mesg";
   name: string;
   attr: string | null;
 };
 
-export type RuntimeFunctionReference = {
+export type FunctionReference = {
   type: "func";
   name: string;
-  args: Array<RuntimeExpression>;
+  args: Array<Expression>;
 };
 
-export type RuntimeVariant = {
-  key: RuntimeLiteral;
-  value: RuntimePattern;
+export type Variant = {
+  key: Literal;
+  value: Pattern;
 };
 
-export type RuntimeNamedArgument = {
+export type NamedArgument = {
   type: "narg";
   name: string;
-  value: RuntimeLiteral;
+  value: Literal;
 };
 
-export type RuntimeLiteral = RuntimeStringLiteral | RuntimeNumberLiteral;
+export type Literal = StringLiteral | NumberLiteral;
 
-export type RuntimeStringLiteral = {
+export type StringLiteral = {
   type: "str";
   value: string;
 };
 
-export type RuntimeNumberLiteral = {
+export type NumberLiteral = {
   type: "num";
   value: number;
   precision: number;

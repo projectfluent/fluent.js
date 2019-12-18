@@ -2,7 +2,7 @@ import { resolveComplexPattern } from "./resolver.js";
 import { Scope } from "./scope.js";
 import { FluentResource } from "./resource.js";
 import { FluentNone, FluentType } from "./types.js";
-import { RuntimeMessage, RuntimeTerm, RuntimePattern } from "./ast.js";
+import { Message, Term, Pattern } from "./ast.js";
 
 export type CustomFunction = (
   positional: Array<FluentType>,
@@ -20,8 +20,8 @@ export type FluentArgument = string | number | Date | FluentType;
 export class FluentBundle {
   public locales: Array<string>;
 
-  public _terms: Map<string, RuntimeTerm> = new Map();
-  public _messages: Map<string, RuntimeMessage> = new Map();
+  public _terms: Map<string, Term> = new Map();
+  public _messages: Map<string, Message> = new Map();
   public _functions: Record<string, CustomFunction>;
   public _useIsolating: boolean;
   public _transform: CustomTransform;
@@ -92,7 +92,7 @@ export class FluentBundle {
    *
    * @param id - The identifier of the message to check.
    */
-  getMessage(id: string): RuntimeMessage | undefined {
+  getMessage(id: string): Message | undefined {
     return this._messages.get(id);
   }
 
@@ -131,7 +131,7 @@ export class FluentBundle {
           );
           continue;
         }
-        this._terms.set(entry.id, entry as RuntimeTerm);
+        this._terms.set(entry.id, entry as Term);
       } else {
         if (allowOverrides === false && this._messages.has(entry.id)) {
           errors.push(
@@ -174,7 +174,7 @@ export class FluentBundle {
    * If `errors` is omitted, the first encountered error will be thrown.
    */
   formatPattern(
-    pattern: RuntimePattern,
+    pattern: Pattern,
     args: Record<string, FluentArgument> | null = null,
     errors: Array<Error> | null = null
   ): string {

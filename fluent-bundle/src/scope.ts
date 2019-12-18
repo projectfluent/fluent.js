@@ -1,5 +1,5 @@
 import { FluentBundle, FluentArgument } from "./bundle.js";
-import { RuntimeComplexPattern } from "./ast.js";
+import { ComplexPattern } from "./ast.js";
 
 export class Scope {
   /** The bundle for which the given resolution is happening. */
@@ -12,14 +12,14 @@ export class Scope {
   public insideTermReference: boolean;
   /** The Set of patterns already encountered during this resolution.
    * Used to detect and prevent cyclic resolutions. */
-  public dirty: WeakSet<RuntimeComplexPattern>;
+  public dirty: WeakSet<ComplexPattern>;
 
   constructor(
     bundle: FluentBundle,
     errors: Array<Error> | null,
     args: Record<string, FluentArgument> | null,
     insideTermReference = false,
-    dirty: WeakSet<RuntimeComplexPattern> = new WeakSet()
+    dirty: WeakSet<ComplexPattern> = new WeakSet()
   ) {
     this.bundle = bundle;
     this.errors = errors;

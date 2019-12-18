@@ -34,16 +34,16 @@ import {
 import { NUMBER, DATETIME } from "./builtins.js";
 import { Scope } from "./scope.js";
 import {
-  RuntimeVariant,
-  RuntimeExpression,
-  RuntimeNamedArgument,
-  RuntimeVariableReference,
-  RuntimeMessageReference,
-  RuntimeTermReference,
-  RuntimeFunctionReference,
-  RuntimeSelectExpression,
-  RuntimeComplexPattern,
-  RuntimePattern
+  Variant,
+  Expression,
+  NamedArgument,
+  VariableReference,
+  MessageReference,
+  TermReference,
+  FunctionReference,
+  SelectExpression,
+  ComplexPattern,
+  Pattern
 } from "./ast.js";
 
 // Prevent expansion of too long placeables.
@@ -87,7 +87,7 @@ function match(scope: Scope, selector: FluentType, key: FluentType): boolean {
 // Helper: resolve the default variant from a list of variants.
 function getDefault(
   scope: Scope,
-  variants: Array<RuntimeVariant>,
+  variants: Array<Variant>,
   star: number
 ): FluentType {
   if (variants[star]) {
@@ -103,7 +103,7 @@ type Arguments = [Array<FluentType>, Record<string, FluentType>];
 // Helper: resolve arguments to a call expression.
 function getArguments(
   scope: Scope,
-  args: Array<RuntimeExpression | RuntimeNamedArgument>
+  args: Array<Expression | NamedArgument>
 ): Arguments {
   const positional: Array<FluentType> = [];
   const named: Record<string, FluentType> = {};
@@ -120,7 +120,7 @@ function getArguments(
 }
 
 // Resolve an expression to a Fluent type.
-function resolveExpression(scope: Scope, expr: RuntimeExpression): FluentType {
+function resolveExpression(scope: Scope, expr: Expression): FluentType {
   switch (expr.type) {
     case "str":
       return expr.value;
@@ -146,7 +146,7 @@ function resolveExpression(scope: Scope, expr: RuntimeExpression): FluentType {
 // Resolve a reference to a variable.
 function resolveVariableReference(
   scope: Scope,
-  { name }: RuntimeVariableReference
+  { name }: VariableReference
 ): FluentType {
   if (!scope.args || !scope.args.hasOwnProperty(name)) {
     if (scope.insideTermReference === false) {
@@ -184,7 +184,7 @@ function resolveVariableReference(
 // Resolve a reference to another message.
 function resolveMessageReference(
   scope: Scope,
-  { name, attr }: RuntimeMessageReference
+  { name, attr }: MessageReference
 ): FluentType {
   const message = scope.bundle._messages.get(name);
   if (!message) {
@@ -212,7 +212,7 @@ function resolveMessageReference(
 // Resolve a call to a Term with key-value arguments.
 function resolveTermReference(
   scope: Scope,
-  { name, attr, args }: RuntimeTermReference
+  { name, attr, args }: TermReference
 ): FluentType {
   const id = `-${name}`;
   const term = scope.bundle._terms.get(id);
@@ -240,7 +240,7 @@ function resolveTermReference(
 // Resolve a call to a Function with positional and key-value arguments.
 function resolveFunctionReference(
   scope: Scope,
-  { name, args }: RuntimeFunctionReference
+  { name, args }: FunctionReference
 ): FluentType {
   // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
@@ -275,7 +275,7 @@ function resolveFunctionReference(
 // Resolve a select expression to the member object.
 function resolveSelectExpression(
   scope: Scope,
-  { selector, variants, star }: RuntimeSelectExpression
+  { selector, variants, star }: SelectExpression
 ): FluentType {
   let sel = resolveExpression(scope, selector);
   if (sel instanceof FluentNone) {
@@ -296,7 +296,7 @@ function resolveSelectExpression(
 // Resolve a pattern (a complex string with placeables).
 export function resolveComplexPattern(
   scope: Scope,
-  ptn: RuntimeComplexPattern
+  ptn: ComplexPattern
 ): FluentType {
   if (scope.dirty.has(ptn)) {
     scope.reportError(new RangeError("Cyclic reference"));
@@ -348,7 +348,7 @@ export function resolveComplexPattern(
 
 // Resolve a simple or a complex Pattern to a FluentString (which is really the
 // string primitive).
-function resolvePattern(scope: Scope, value: RuntimePattern): FluentType {
+function resolvePattern(scope: Scope, value: Pattern): FluentType {
   // Resolve a simple pattern.
   if (typeof value === "string") {
     return scope.bundle._transform(value);
