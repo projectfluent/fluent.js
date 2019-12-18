@@ -1,13 +1,8 @@
 import { resolveComplexPattern } from "./resolver.js";
 import { Scope } from "./scope.js";
 import { FluentResource } from "./resource.js";
-import { FluentNone, FluentType } from "./types.js";
+import { FluentNone, FluentType, FluentFunction } from "./types.js";
 import { Message, Term, Pattern } from "./ast.js";
-
-export type CustomFunction = (
-  positional: Array<FluentType>,
-  named: Record<string, FluentType>
-) => FluentType;
 
 export type CustomTransform = (text: string) => string;
 
@@ -22,7 +17,7 @@ export class FluentBundle {
 
   public _terms: Map<string, Term> = new Map();
   public _messages: Map<string, Message> = new Map();
-  public _functions: Record<string, CustomFunction>;
+  public _functions: Record<string, FluentFunction>;
   public _useIsolating: boolean;
   public _transform: CustomTransform;
   public _intls: WeakMap<object, Record<string, object>> = new WeakMap();
@@ -63,7 +58,7 @@ export class FluentBundle {
       useIsolating = true,
       transform = (v: string): string => v
     }: {
-      functions?: Record<string, CustomFunction>;
+      functions?: Record<string, FluentFunction>;
       useIsolating?: boolean;
       transform?: CustomTransform;
     } = {}

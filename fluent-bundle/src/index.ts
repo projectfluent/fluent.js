@@ -10,12 +10,12 @@
 export {
   FluentBundle,
   FluentArgument,
-  CustomFunction,
   CustomTransform
 } from "./bundle.js";
 export { FluentResource } from "./resource.js";
 export {
   FluentType,
+  FluentFunction,
   FluentBaseType,
   FluentNumber,
   FluentDateTime

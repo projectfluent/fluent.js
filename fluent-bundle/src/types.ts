@@ -4,6 +4,11 @@ import { Scope } from "./scope.js";
 
 export type FluentType = FluentBaseType<unknown> | string;
 
+export type FluentFunction = (
+  positional: Array<FluentType>,
+  named: Record<string, FluentType>
+) => FluentType;
+
 /**
  * The `FluentType` class is the base of Fluent's type system.
  *
