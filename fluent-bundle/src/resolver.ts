@@ -129,22 +129,22 @@ function resolveExpression(scope: Scope, expr: RuntimeExpression): FluentType {
         minimumFractionDigits: expr.precision
       });
     case "var":
-      return VariableReference(scope, expr);
+      return resolveVariableReference(scope, expr);
     case "mesg":
-      return MessageReference(scope, expr);
+      return resolveMessageReference(scope, expr);
     case "term":
-      return TermReference(scope, expr);
+      return resolveTermReference(scope, expr);
     case "func":
-      return FunctionReference(scope, expr);
+      return resolveFunctionReference(scope, expr);
     case "select":
-      return SelectExpression(scope, expr);
+      return resolveSelectExpression(scope, expr);
     default:
       return new FluentNone();
   }
 }
 
 // Resolve a reference to a variable.
-function VariableReference(
+function resolveVariableReference(
   scope: Scope,
   { name }: RuntimeVariableReference
 ): FluentType {
@@ -182,7 +182,7 @@ function VariableReference(
 }
 
 // Resolve a reference to another message.
-function MessageReference(
+function resolveMessageReference(
   scope: Scope,
   { name, attr }: RuntimeMessageReference
 ): FluentType {
@@ -210,7 +210,7 @@ function MessageReference(
 }
 
 // Resolve a call to a Term with key-value arguments.
-function TermReference(
+function resolveTermReference(
   scope: Scope,
   { name, attr, args }: RuntimeTermReference
 ): FluentType {
@@ -238,7 +238,7 @@ function TermReference(
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
-function FunctionReference(
+function resolveFunctionReference(
   scope: Scope,
   { name, args }: RuntimeFunctionReference
 ): FluentType {
@@ -273,7 +273,7 @@ function FunctionReference(
 }
 
 // Resolve a select expression to the member object.
-function SelectExpression(
+function resolveSelectExpression(
   scope: Scope,
   { selector, variants, star }: RuntimeSelectExpression
 ): FluentType {
@@ -331,7 +331,7 @@ export function resolveComplexPattern(
       // placeables are deeply nested.
       throw new RangeError(
         "Too many characters in placeable " +
-          `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
+        `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`
       );
     }
 
