@@ -1,5 +1,18 @@
 # Changelog
 
+## @fluent/bundle 0.14.1 (December 20, 2019)
+
+- Fix a big which made placeables which resolved to long strings format as
+  `{???}`. (#439)
+
+    Expressions which resolved to strings over 2500 characters long used to be
+    considered dangerous. This is no longer the case. Instead, there's a limit
+    on how many placeable can be resolved during a single call to
+    `formatPattern`, to protect from high CPU usage in deeply nested patterns.
+
+- Fix a bug which made it impossible to pass a variable called `hasOwnProperty`
+  to `formatPattern`. (#428)
+
 ## @fluent/bundle 0.14.0 (July 30, 2019)
 
 ### `FluentBundle` API
