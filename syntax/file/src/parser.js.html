@@ -691,16 +691,26 @@ class FluentParser {
         return selector;
       }
 
-      if (selector.type === &quot;MessageReference&quot;) {
-        if (selector.attribute === null) {
-          throw new ParseError(&quot;E0016&quot;);
-        } else {
-          throw new ParseError(&quot;E0018&quot;);
-        }
-      }
-
-      if (selector.type === &quot;TermReference&quot; &amp;&amp; selector.attribute === null) {
-        throw new ParseError(&quot;E0017&quot;);
+      // Validate selector expression according to
+      // abstract.js in the Fluent specification
+      switch (selector.type) {
+        case &quot;MessageReference&quot;:
+          if (selector.attribute === null) {
+            throw new ParseError(&quot;E0016&quot;);
+          } else {
+            throw new ParseError(&quot;E0018&quot;);
+          }
+        case &quot;TermReference&quot;:
+          if (selector.attribute === null) {
+            throw new ParseError(&quot;E0017&quot;);
+          }
+        case &quot;StringLiteral&quot;:
+        case &quot;NumberLiteral&quot;:
+        case &quot;VariableReference&quot;:
+        case &quot;FunctionReference&quot;:
+          break;
+        default:
+          throw new ParseError(&quot;E0029&quot;);
       }
 
       ps.next();
@@ -750,7 +760,9 @@ class FluentParser {
       }
 
       let args;
-      if (ps.currentChar === &quot;(&quot;) {
+      ps.peekBlank();
+      if (ps.currentPeek === &quot;(&quot;) {
+        ps.skipToPeek();
         args = this.getCallArguments(ps);
       }
 
@@ -759,13 +771,15 @@ class FluentParser {
 
     if (ps.isIdentifierStart()) {
       const id = this.getIdentifier(ps);
+      ps.peekBlank();
 
-      if (ps.currentChar === &quot;(&quot;) {
+      if (ps.currentPeek === &quot;(&quot;) {
         // It&apos;s a Function. Ensure it&apos;s all upper-case.
         if (!/^[A-Z][A-Z0-9_-]*$/.test(id.name)) {
           throw new ParseError(&quot;E0008&quot;);
         }
 
+        ps.skipToPeek();
         let args = this.getCallArguments(ps);
         return new AST.FunctionReference(id, args);
       }

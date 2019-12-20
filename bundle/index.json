@@ -1148,7 +1148,7 @@
     "__docId__": 70,
     "kind": "file",
     "name": "src/resolver.js",
-    "content": "/* global Intl */\n\n/**\n * @overview\n *\n * The role of the Fluent resolver is to format a `Pattern` to an instance of\n * `FluentType`. For performance reasons, primitive strings are considered such\n * instances, too.\n *\n * Translations can contain references to other messages or variables,\n * conditional logic in form of select expressions, traits which describe their\n * grammatical features, and can use Fluent builtins which make use of the\n * `Intl` formatters to format numbers and dates into the bundle's languages.\n * See the documentation of the Fluent syntax for more information.\n *\n * In case of errors the resolver will try to salvage as much of the\n * translation as possible. In rare situations where the resolver didn't know\n * how to recover from an error it will return an instance of `FluentNone`.\n *\n * All expressions resolve to an instance of `FluentType`. The caller should\n * use the `toString` method to convert the instance to a native value.\n *\n * Functions in this file pass around an instance of the `Scope` class, which\n * stores the data required for successful resolution and error recovery.\n */\n\n\nimport { FluentType, FluentNone, FluentNumber, FluentDateTime }\n  from \"./types.js\";\nimport * as builtins from \"./builtins.js\";\n\n// Prevent expansion of too long placeables.\nconst MAX_PLACEABLE_LENGTH = 2500;\n\n// Unicode bidi isolation characters.\nconst FSI = \"\\u2068\";\nconst PDI = \"\\u2069\";\n\n\n// Helper: match a variant key to the given selector.\nfunction match(scope, selector, key) {\n  if (key === selector) {\n    // Both are strings.\n    return true;\n  }\n\n  // XXX Consider comparing options too, e.g. minimumFractionDigits.\n  if (key instanceof FluentNumber\n    && selector instanceof FluentNumber\n    && key.value === selector.value) {\n    return true;\n  }\n\n  if (selector instanceof FluentNumber && typeof key === \"string\") {\n    let category = scope\n      .memoizeIntlObject(Intl.PluralRules, selector.opts)\n      .select(selector.value);\n    if (key === category) {\n      return true;\n    }\n  }\n\n  return false;\n}\n\n// Helper: resolve the default variant from a list of variants.\nfunction getDefault(scope, variants, star) {\n  if (variants[star]) {\n    return resolvePattern(scope, variants[star].value);\n  }\n\n  scope.reportError(new RangeError(\"No default\"));\n  return new FluentNone();\n}\n\n// Helper: resolve arguments to a call expression.\nfunction getArguments(scope, args) {\n  const positional = [];\n  const named = {};\n\n  for (const arg of args) {\n    if (arg.type === \"narg\") {\n      named[arg.name] = resolveExpression(scope, arg.value);\n    } else {\n      positional.push(resolveExpression(scope, arg));\n    }\n  }\n\n  return [positional, named];\n}\n\n// Resolve an expression to a Fluent type.\nfunction resolveExpression(scope, expr) {\n  switch (expr.type) {\n    case \"str\":\n      return expr.value;\n    case \"num\":\n      return new FluentNumber(expr.value, {\n        minimumFractionDigits: expr.precision,\n      });\n    case \"var\":\n      return VariableReference(scope, expr);\n    case \"mesg\":\n      return MessageReference(scope, expr);\n    case \"term\":\n      return TermReference(scope, expr);\n    case \"func\":\n      return FunctionReference(scope, expr);\n    case \"select\":\n      return SelectExpression(scope, expr);\n    default:\n      return new FluentNone();\n  }\n}\n\n// Resolve a reference to a variable.\nfunction VariableReference(scope, {name}) {\n  if (!scope.args || !scope.args.hasOwnProperty(name)) {\n    if (scope.insideTermReference === false) {\n      scope.reportError(new ReferenceError(`Unknown variable: $${name}`));\n    }\n    return new FluentNone(`$${name}`);\n  }\n\n  const arg = scope.args[name];\n\n  // Return early if the argument already is an instance of FluentType.\n  if (arg instanceof FluentType) {\n    return arg;\n  }\n\n  // Convert the argument to a Fluent type.\n  switch (typeof arg) {\n    case \"string\":\n      return arg;\n    case \"number\":\n      return new FluentNumber(arg);\n    case \"object\":\n      if (arg instanceof Date) {\n        return new FluentDateTime(arg.getTime());\n      }\n    default:\n      scope.reportError(\n        new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)\n      );\n      return new FluentNone(`$${name}`);\n  }\n}\n\n// Resolve a reference to another message.\nfunction MessageReference(scope, {name, attr}) {\n  const message = scope.bundle._messages.get(name);\n  if (!message) {\n    scope.reportError(new ReferenceError(`Unknown message: ${name}`));\n    return new FluentNone(name);\n  }\n\n  if (attr) {\n    const attribute = message.attributes[attr];\n    if (attribute) {\n      return resolvePattern(scope, attribute);\n    }\n    scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));\n    return new FluentNone(`${name}.${attr}`);\n  }\n\n  if (message.value) {\n    return resolvePattern(scope, message.value);\n  }\n\n  scope.reportError(new ReferenceError(`No value: ${name}`));\n  return new FluentNone(name);\n}\n\n// Resolve a call to a Term with key-value arguments.\nfunction TermReference(scope, {name, attr, args}) {\n  const id = `-${name}`;\n  const term = scope.bundle._terms.get(id);\n  if (!term) {\n    scope.reportError(new ReferenceError(`Unknown term: ${id}`));\n    return new FluentNone(id);\n  }\n\n  // Every TermReference has its own variables.\n  const [, params] = getArguments(scope, args);\n  const local = scope.cloneForTermReference(params);\n\n  if (attr) {\n    const attribute = term.attributes[attr];\n    if (attribute) {\n      return resolvePattern(local, attribute);\n    }\n    scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));\n    return new FluentNone(`${id}.${attr}`);\n  }\n\n  return resolvePattern(local, term.value);\n}\n\n// Resolve a call to a Function with positional and key-value arguments.\nfunction FunctionReference(scope, {name, args}) {\n  // Some functions are built-in. Others may be provided by the runtime via\n  // the `FluentBundle` constructor.\n  const func = scope.bundle._functions[name] || builtins[name];\n  if (!func) {\n    scope.reportError(new ReferenceError(`Unknown function: ${name}()`));\n    return new FluentNone(`${name}()`);\n  }\n\n  if (typeof func !== \"function\") {\n    scope.reportError(new TypeError(`Function ${name}() is not callable`));\n    return new FluentNone(`${name}()`);\n  }\n\n  try {\n    return func(...getArguments(scope, args));\n  } catch (err) {\n    scope.reportError(err);\n    return new FluentNone(`${name}()`);\n  }\n}\n\n// Resolve a select expression to the member object.\nfunction SelectExpression(scope, {selector, variants, star}) {\n  let sel = resolveExpression(scope, selector);\n  if (sel instanceof FluentNone) {\n    return getDefault(scope, variants, star);\n  }\n\n  // Match the selector against keys of each variant, in order.\n  for (const variant of variants) {\n    const key = resolveExpression(scope, variant.key);\n    if (match(scope, sel, key)) {\n      return resolvePattern(scope, variant.value);\n    }\n  }\n\n  return getDefault(scope, variants, star);\n}\n\n// Resolve a pattern (a complex string with placeables).\nexport function resolveComplexPattern(scope, ptn) {\n  if (scope.dirty.has(ptn)) {\n    scope.reportError(new RangeError(\"Cyclic reference\"));\n    return new FluentNone();\n  }\n\n  // Tag the pattern as dirty for the purpose of the current resolution.\n  scope.dirty.add(ptn);\n  const result = [];\n\n  // Wrap interpolations with Directional Isolate Formatting characters\n  // only when the pattern has more than one element.\n  const useIsolating = scope.bundle._useIsolating && ptn.length > 1;\n\n  for (const elem of ptn) {\n    if (typeof elem === \"string\") {\n      result.push(scope.bundle._transform(elem));\n      continue;\n    }\n\n    const part = resolveExpression(scope, elem).toString(scope);\n\n    if (useIsolating) {\n      result.push(FSI);\n    }\n\n    if (part.length > MAX_PLACEABLE_LENGTH) {\n      scope.dirty.delete(ptn);\n      // This is a fatal error which causes the resolver to instantly bail out\n      // on this pattern. The length check protects against excessive memory\n      // usage, and throwing protects against eating up the CPU when long\n      // placeables are deeply nested.\n      throw new RangeError(\n        \"Too many characters in placeable \" +\n        `(${part.length}, max allowed is ${MAX_PLACEABLE_LENGTH})`\n      );\n    }\n\n    result.push(part);\n\n    if (useIsolating) {\n      result.push(PDI);\n    }\n  }\n\n  scope.dirty.delete(ptn);\n  return result.join(\"\");\n}\n\n// Resolve a simple or a complex Pattern to a FluentString (which is really the\n// string primitive).\nfunction resolvePattern(scope, node) {\n  // Resolve a simple pattern.\n  if (typeof node === \"string\") {\n    return scope.bundle._transform(node);\n  }\n\n  return resolveComplexPattern(scope, node);\n}\n",
+    "content": "/* global Intl */\n\n/**\n * @overview\n *\n * The role of the Fluent resolver is to format a `Pattern` to an instance of\n * `FluentType`. For performance reasons, primitive strings are considered such\n * instances, too.\n *\n * Translations can contain references to other messages or variables,\n * conditional logic in form of select expressions, traits which describe their\n * grammatical features, and can use Fluent builtins which make use of the\n * `Intl` formatters to format numbers and dates into the bundle's languages.\n * See the documentation of the Fluent syntax for more information.\n *\n * In case of errors the resolver will try to salvage as much of the\n * translation as possible. In rare situations where the resolver didn't know\n * how to recover from an error it will return an instance of `FluentNone`.\n *\n * All expressions resolve to an instance of `FluentType`. The caller should\n * use the `toString` method to convert the instance to a native value.\n *\n * Functions in this file pass around an instance of the `Scope` class, which\n * stores the data required for successful resolution and error recovery.\n */\n\n\nimport { FluentType, FluentNone, FluentNumber, FluentDateTime }\n  from \"./types.js\";\nimport * as builtins from \"./builtins.js\";\n\n// The maximum number of placeables which can be expanded in a single call to\n// `formatPattern`. The limit protects against the Billion Laughs and Quadratic\n// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.\nconst MAX_PLACEABLES = 100;\n\n// Unicode bidi isolation characters.\nconst FSI = \"\\u2068\";\nconst PDI = \"\\u2069\";\n\n\n// Helper: match a variant key to the given selector.\nfunction match(scope, selector, key) {\n  if (key === selector) {\n    // Both are strings.\n    return true;\n  }\n\n  // XXX Consider comparing options too, e.g. minimumFractionDigits.\n  if (key instanceof FluentNumber\n    && selector instanceof FluentNumber\n    && key.value === selector.value) {\n    return true;\n  }\n\n  if (selector instanceof FluentNumber && typeof key === \"string\") {\n    let category = scope\n      .memoizeIntlObject(Intl.PluralRules, selector.opts)\n      .select(selector.value);\n    if (key === category) {\n      return true;\n    }\n  }\n\n  return false;\n}\n\n// Helper: resolve the default variant from a list of variants.\nfunction getDefault(scope, variants, star) {\n  if (variants[star]) {\n    return resolvePattern(scope, variants[star].value);\n  }\n\n  scope.reportError(new RangeError(\"No default\"));\n  return new FluentNone();\n}\n\n// Helper: resolve arguments to a call expression.\nfunction getArguments(scope, args) {\n  const positional = [];\n  const named = Object.create(null);\n\n  for (const arg of args) {\n    if (arg.type === \"narg\") {\n      named[arg.name] = resolveExpression(scope, arg.value);\n    } else {\n      positional.push(resolveExpression(scope, arg));\n    }\n  }\n\n  return {positional, named};\n}\n\n// Resolve an expression to a Fluent type.\nfunction resolveExpression(scope, expr) {\n  switch (expr.type) {\n    case \"str\":\n      return expr.value;\n    case \"num\":\n      return new FluentNumber(expr.value, {\n        minimumFractionDigits: expr.precision,\n      });\n    case \"var\":\n      return VariableReference(scope, expr);\n    case \"mesg\":\n      return MessageReference(scope, expr);\n    case \"term\":\n      return TermReference(scope, expr);\n    case \"func\":\n      return FunctionReference(scope, expr);\n    case \"select\":\n      return SelectExpression(scope, expr);\n    default:\n      return new FluentNone();\n  }\n}\n\n// Resolve a reference to a variable.\nfunction VariableReference(scope, {name}) {\n  let arg;\n  if (scope.params) {\n    // We're inside a TermReference. It's OK to reference undefined parameters.\n    if (Object.prototype.hasOwnProperty.call(scope.params, name)) {\n      arg = scope.params[name];\n    } else {\n      return new FluentNone(`$${name}`);\n    }\n  } else if (\n    scope.args\n    && Object.prototype.hasOwnProperty.call(scope.args, name)\n  ) {\n    // We're in the top-level Pattern or inside a MessageReference. Missing\n    // variables references produce ReferenceErrors.\n    arg = scope.args[name];\n  } else {\n    scope.reportError(new ReferenceError(`Unknown variable: $${name}`));\n    return new FluentNone(`$${name}`);\n  }\n\n  // Return early if the argument already is an instance of FluentType.\n  if (arg instanceof FluentType) {\n    return arg;\n  }\n\n  // Convert the argument to a Fluent type.\n  switch (typeof arg) {\n    case \"string\":\n      return arg;\n    case \"number\":\n      return new FluentNumber(arg);\n    case \"object\":\n      if (arg instanceof Date) {\n        return new FluentDateTime(arg.getTime());\n      }\n    default:\n      scope.reportError(\n        new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)\n      );\n      return new FluentNone(`$${name}`);\n  }\n}\n\n// Resolve a reference to another message.\nfunction MessageReference(scope, {name, attr}) {\n  const message = scope.bundle._messages.get(name);\n  if (!message) {\n    scope.reportError(new ReferenceError(`Unknown message: ${name}`));\n    return new FluentNone(name);\n  }\n\n  if (attr) {\n    const attribute = message.attributes[attr];\n    if (attribute) {\n      return resolvePattern(scope, attribute);\n    }\n    scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));\n    return new FluentNone(`${name}.${attr}`);\n  }\n\n  if (message.value) {\n    return resolvePattern(scope, message.value);\n  }\n\n  scope.reportError(new ReferenceError(`No value: ${name}`));\n  return new FluentNone(name);\n}\n\n// Resolve a call to a Term with key-value arguments.\nfunction TermReference(scope, {name, attr, args}) {\n  const id = `-${name}`;\n  const term = scope.bundle._terms.get(id);\n  if (!term) {\n    scope.reportError(new ReferenceError(`Unknown term: ${id}`));\n    return new FluentNone(id);\n  }\n\n  if (attr) {\n    const attribute = term.attributes[attr];\n    if (attribute) {\n      // Every TermReference has its own variables.\n      scope.params = getArguments(scope, args).named;\n      const resolved = resolvePattern(scope, attribute);\n      scope.params = null;\n      return resolved;\n    }\n    scope.reportError(new ReferenceError(`Unknown attribute: ${attr}`));\n    return new FluentNone(`${id}.${attr}`);\n  }\n\n  scope.params = getArguments(scope, args).named;\n  const resolved = resolvePattern(scope, term.value);\n  scope.params = null;\n  return resolved;\n}\n\n// Resolve a call to a Function with positional and key-value arguments.\nfunction FunctionReference(scope, {name, args}) {\n  // Some functions are built-in. Others may be provided by the runtime via\n  // the `FluentBundle` constructor.\n  const func = scope.bundle._functions[name] || builtins[name];\n  if (!func) {\n    scope.reportError(new ReferenceError(`Unknown function: ${name}()`));\n    return new FluentNone(`${name}()`);\n  }\n\n  if (typeof func !== \"function\") {\n    scope.reportError(new TypeError(`Function ${name}() is not callable`));\n    return new FluentNone(`${name}()`);\n  }\n\n  try {\n    let resolved = getArguments(scope, args);\n    return func(resolved.positional, resolved.named);\n  } catch (err) {\n    scope.reportError(err);\n    return new FluentNone(`${name}()`);\n  }\n}\n\n// Resolve a select expression to the member object.\nfunction SelectExpression(scope, {selector, variants, star}) {\n  let sel = resolveExpression(scope, selector);\n  if (sel instanceof FluentNone) {\n    return getDefault(scope, variants, star);\n  }\n\n  // Match the selector against keys of each variant, in order.\n  for (const variant of variants) {\n    const key = resolveExpression(scope, variant.key);\n    if (match(scope, sel, key)) {\n      return resolvePattern(scope, variant.value);\n    }\n  }\n\n  return getDefault(scope, variants, star);\n}\n\n// Resolve a pattern (a complex string with placeables).\nexport function resolveComplexPattern(scope, ptn) {\n  if (scope.dirty.has(ptn)) {\n    scope.reportError(new RangeError(\"Cyclic reference\"));\n    return new FluentNone();\n  }\n\n  // Tag the pattern as dirty for the purpose of the current resolution.\n  scope.dirty.add(ptn);\n  const result = [];\n\n  // Wrap interpolations with Directional Isolate Formatting characters\n  // only when the pattern has more than one element.\n  const useIsolating = scope.bundle._useIsolating && ptn.length > 1;\n\n  for (const elem of ptn) {\n    if (typeof elem === \"string\") {\n      result.push(scope.bundle._transform(elem));\n      continue;\n    }\n\n    scope.placeables++;\n    if (scope.placeables > MAX_PLACEABLES) {\n      scope.dirty.delete(ptn);\n      // This is a fatal error which causes the resolver to instantly bail out\n      // on this pattern. The length check protects against excessive memory\n      // usage, and throwing protects against eating up the CPU when long\n      // placeables are deeply nested.\n      throw new RangeError(\n        `Too many placeables expanded: ${scope.placeables}, ` +\n        `max allowed is ${MAX_PLACEABLES}`\n      );\n    }\n\n    if (useIsolating) {\n      result.push(FSI);\n    }\n\n    result.push(resolveExpression(scope, elem).toString(scope));\n\n    if (useIsolating) {\n      result.push(PDI);\n    }\n  }\n\n  scope.dirty.delete(ptn);\n  return result.join(\"\");\n}\n\n// Resolve a simple or a complex Pattern to a FluentString (which is really the\n// string primitive).\nfunction resolvePattern(scope, node) {\n  // Resolve a simple pattern.\n  if (typeof node === \"string\") {\n    return scope.bundle._transform(node);\n  }\n\n  return resolveComplexPattern(scope, node);\n}\n",
     "static": true,
     "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-bundle/src/resolver.js",
     "access": "public",
@@ -1158,16 +1158,16 @@
   {
     "__docId__": 71,
     "kind": "variable",
-    "name": "MAX_PLACEABLE_LENGTH",
+    "name": "MAX_PLACEABLES",
     "memberof": "src/resolver.js",
     "static": true,
-    "longname": "src/resolver.js~MAX_PLACEABLE_LENGTH",
+    "longname": "src/resolver.js~MAX_PLACEABLES",
     "access": "public",
     "export": false,
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -1188,7 +1188,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
@@ -1209,7 +1209,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 39,
     "undocument": true,
     "type": {
       "types": [
@@ -1232,7 +1232,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 43,
     "undocument": true,
     "params": [
       {
@@ -1275,7 +1275,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 69,
     "undocument": true,
     "params": [
       {
@@ -1318,7 +1318,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 77,
+    "lineNumber": 79,
     "undocument": true,
     "params": [
       {
@@ -1336,7 +1336,7 @@
     ],
     "return": {
       "types": [
-        "undefined[]"
+        "{\"positional\": *, \"named\": *}"
       ]
     },
     "ignore": true
@@ -1355,7 +1355,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 93,
+    "lineNumber": 95,
     "undocument": true,
     "params": [
       {
@@ -1392,7 +1392,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 117,
+    "lineNumber": 119,
     "undocument": true,
     "params": [
       {
@@ -1433,7 +1433,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 164,
     "undocument": true,
     "params": [
       {
@@ -1475,7 +1475,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 176,
+    "lineNumber": 189,
     "undocument": true,
     "params": [
       {
@@ -1518,7 +1518,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 201,
+    "lineNumber": 217,
     "undocument": true,
     "params": [
       {
@@ -1560,7 +1560,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 224,
+    "lineNumber": 241,
     "undocument": true,
     "params": [
       {
@@ -1603,7 +1603,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": "{resolveComplexPattern}",
     "description": null,
-    "lineNumber": 242,
+    "lineNumber": 259,
     "undocument": true,
     "params": [
       {
@@ -1639,7 +1639,7 @@
     "importPath": "@fluent/bundle/src/resolver.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 293,
+    "lineNumber": 309,
     "undocument": true,
     "params": [
       {
@@ -1666,7 +1666,7 @@
     "__docId__": 85,
     "kind": "file",
     "name": "src/resource.js",
-    "content": "import FluentError from \"./error.js\";\n\n// This regex is used to iterate through the beginnings of messages and terms.\n// With the /m flag, the ^ matches at the beginning of every line.\nconst RE_MESSAGE_START = /^(-?[a-zA-Z][\\w-]*) *= */mg;\n\n// Both Attributes and Variants are parsed in while loops. These regexes are\n// used to break out of them.\nconst RE_ATTRIBUTE_START = /\\.([a-zA-Z][\\w-]*) *= */y;\nconst RE_VARIANT_START = /\\*?\\[/y;\n\nconst RE_NUMBER_LITERAL = /(-?[0-9]+(?:\\.([0-9]+))?)/y;\nconst RE_IDENTIFIER = /([a-zA-Z][\\w-]*)/y;\nconst RE_REFERENCE = /([$-])?([a-zA-Z][\\w-]*)(?:\\.([a-zA-Z][\\w-]*))?/y;\nconst RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;\n\n// A \"run\" is a sequence of text or string literal characters which don't\n// require any special handling. For TextElements such special characters are: {\n// (starts a placeable), and line breaks which require additional logic to check\n// if the next line is indented. For StringLiterals they are: \\ (starts an\n// escape sequence), \" (ends the literal), and line breaks which are not allowed\n// in StringLiterals. Note that string runs may be empty; text runs may not.\nconst RE_TEXT_RUN = /([^{}\\n\\r]+)/y;\nconst RE_STRING_RUN = /([^\\\\\"\\n\\r]*)/y;\n\n// Escape sequences.\nconst RE_STRING_ESCAPE = /\\\\([\\\\\"])/y;\nconst RE_UNICODE_ESCAPE = /\\\\u([a-fA-F0-9]{4})|\\\\U([a-fA-F0-9]{6})/y;\n\n// Used for trimming TextElements and indents.\nconst RE_LEADING_NEWLINES = /^\\n+/;\nconst RE_TRAILING_SPACES = / +$/;\n// Used in makeIndent to strip spaces from blank lines and normalize CRLF to LF.\nconst RE_BLANK_LINES = / *\\r?\\n/g;\n// Used in makeIndent to measure the indentation.\nconst RE_INDENT = /( *)$/;\n\n// Common tokens.\nconst TOKEN_BRACE_OPEN = /{\\s*/y;\nconst TOKEN_BRACE_CLOSE = /\\s*}/y;\nconst TOKEN_BRACKET_OPEN = /\\[\\s*/y;\nconst TOKEN_BRACKET_CLOSE = /\\s*] */y;\nconst TOKEN_PAREN_OPEN = /\\s*\\(\\s*/y;\nconst TOKEN_ARROW = /\\s*->\\s*/y;\nconst TOKEN_COLON = /\\s*:\\s*/y;\n// Note the optional comma. As a deviation from the Fluent EBNF, the parser\n// doesn't enforce commas between call arguments.\nconst TOKEN_COMMA = /\\s*,?\\s*/y;\nconst TOKEN_BLANK = /\\s+/y;\n\n// Maximum number of placeables in a single Pattern to protect against Quadratic\n// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.\nconst MAX_PLACEABLES = 100;\n\n/**\n * Fluent Resource is a structure storing parsed localization entries.\n */\nexport default class FluentResource {\n  constructor(source) {\n    this.body = this._parse(source);\n  }\n\n  _parse(source) {\n    RE_MESSAGE_START.lastIndex = 0;\n\n    let resource = [];\n    let cursor = 0;\n\n    // Iterate over the beginnings of messages and terms to efficiently skip\n    // comments and recover from errors.\n    while (true) {\n      let next = RE_MESSAGE_START.exec(source);\n      if (next === null) {\n        break;\n      }\n\n      cursor = RE_MESSAGE_START.lastIndex;\n      try {\n        resource.push(parseMessage(next[1]));\n      } catch (err) {\n        if (err instanceof FluentError) {\n          // Don't report any Fluent syntax errors. Skip directly to the\n          // beginning of the next message or term.\n          continue;\n        }\n        throw err;\n      }\n    }\n\n    return resource;\n\n    // The parser implementation is inlined below for performance reasons,\n    // as well as for convenience of accessing `source` and `cursor`.\n\n    // The parser focuses on minimizing the number of false negatives at the\n    // expense of increasing the risk of false positives. In other words, it\n    // aims at parsing valid Fluent messages with a success rate of 100%, but it\n    // may also parse a few invalid messages which the reference parser would\n    // reject. The parser doesn't perform any validation and may produce entries\n    // which wouldn't make sense in the real world. For best results users are\n    // advised to validate translations with the fluent-syntax parser\n    // pre-runtime.\n\n    // The parser makes an extensive use of sticky regexes which can be anchored\n    // to any offset of the source string without slicing it. Errors are thrown\n    // to bail out of parsing of ill-formed messages.\n\n    function test(re) {\n      re.lastIndex = cursor;\n      return re.test(source);\n    }\n\n    // Advance the cursor by the char if it matches. May be used as a predicate\n    // (was the match found?) or, if errorClass is passed, as an assertion.\n    function consumeChar(char, errorClass) {\n      if (source[cursor] === char) {\n        cursor++;\n        return true;\n      }\n      if (errorClass) {\n        throw new errorClass(`Expected ${char}`);\n      }\n      return false;\n    }\n\n    // Advance the cursor by the token if it matches. May be used as a predicate\n    // (was the match found?) or, if errorClass is passed, as an assertion.\n    function consumeToken(re, errorClass) {\n      if (test(re)) {\n        cursor = re.lastIndex;\n        return true;\n      }\n      if (errorClass) {\n        throw new errorClass(`Expected ${re.toString()}`);\n      }\n      return false;\n    }\n\n    // Execute a regex, advance the cursor, and return all capture groups.\n    function match(re) {\n      re.lastIndex = cursor;\n      let result = re.exec(source);\n      if (result === null) {\n        throw new FluentError(`Expected ${re.toString()}`);\n      }\n      cursor = re.lastIndex;\n      return result;\n    }\n\n    // Execute a regex, advance the cursor, and return the capture group.\n    function match1(re) {\n      return match(re)[1];\n    }\n\n    function parseMessage(id) {\n      let value = parsePattern();\n      let attributes = parseAttributes();\n\n      if (value === null && Object.keys(attributes).length === 0) {\n        throw new FluentError(\"Expected message value or attributes\");\n      }\n\n      return {id, value, attributes};\n    }\n\n    function parseAttributes() {\n      let attrs = Object.create(null);\n\n      while (test(RE_ATTRIBUTE_START)) {\n        let name = match1(RE_ATTRIBUTE_START);\n        let value = parsePattern();\n        if (value === null) {\n          throw new FluentError(\"Expected attribute value\");\n        }\n        attrs[name] = value;\n      }\n\n      return attrs;\n    }\n\n    function parsePattern() {\n      // First try to parse any simple text on the same line as the id.\n      if (test(RE_TEXT_RUN)) {\n        var first = match1(RE_TEXT_RUN);\n      }\n\n      // If there's a placeable on the first line, parse a complex pattern.\n      if (source[cursor] === \"{\" || source[cursor] === \"}\") {\n        // Re-use the text parsed above, if possible.\n        return parsePatternElements(first ? [first] : [], Infinity);\n      }\n\n      // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if\n      // what comes after the newline is indented.\n      let indent = parseIndent();\n      if (indent) {\n        if (first) {\n          // If there's text on the first line, the blank block is part of the\n          // translation content in its entirety.\n          return parsePatternElements([first, indent], indent.length);\n        }\n        // Otherwise, we're dealing with a block pattern, i.e. a pattern which\n        // starts on a new line. Discrad the leading newlines but keep the\n        // inline indent; it will be used by the dedentation logic.\n        indent.value = trim(indent.value, RE_LEADING_NEWLINES);\n        return parsePatternElements([indent], indent.length);\n      }\n\n      if (first) {\n        // It was just a simple inline text after all.\n        return trim(first, RE_TRAILING_SPACES);\n      }\n\n      return null;\n    }\n\n    // Parse a complex pattern as an array of elements.\n    function parsePatternElements(elements = [], commonIndent) {\n      let placeableCount = 0;\n\n      while (true) {\n        if (test(RE_TEXT_RUN)) {\n          elements.push(match1(RE_TEXT_RUN));\n          continue;\n        }\n\n        if (source[cursor] === \"{\") {\n          if (++placeableCount > MAX_PLACEABLES) {\n            throw new FluentError(\"Too many placeables\");\n          }\n          elements.push(parsePlaceable());\n          continue;\n        }\n\n        if (source[cursor] === \"}\") {\n          throw new FluentError(\"Unbalanced closing brace\");\n        }\n\n        let indent = parseIndent();\n        if (indent) {\n          elements.push(indent);\n          commonIndent = Math.min(commonIndent, indent.length);\n          continue;\n        }\n\n        break;\n      }\n\n      let lastIndex = elements.length - 1;\n      // Trim the trailing spaces in the last element if it's a TextElement.\n      if (typeof elements[lastIndex] === \"string\") {\n        elements[lastIndex] = trim(elements[lastIndex], RE_TRAILING_SPACES);\n      }\n\n      let baked = [];\n      for (let element of elements) {\n        if (element.type === \"indent\") {\n          // Dedent indented lines by the maximum common indent.\n          element = element.value.slice(0, element.value.length - commonIndent);\n        }\n        if (element) {\n          baked.push(element);\n        }\n      }\n      return baked;\n    }\n\n    function parsePlaceable() {\n      consumeToken(TOKEN_BRACE_OPEN, FluentError);\n\n      let selector = parseInlineExpression();\n      if (consumeToken(TOKEN_BRACE_CLOSE)) {\n        return selector;\n      }\n\n      if (consumeToken(TOKEN_ARROW)) {\n        let variants = parseVariants();\n        consumeToken(TOKEN_BRACE_CLOSE, FluentError);\n        return {type: \"select\", selector, ...variants};\n      }\n\n      throw new FluentError(\"Unclosed placeable\");\n    }\n\n    function parseInlineExpression() {\n      if (source[cursor] === \"{\") {\n        // It's a nested placeable.\n        return parsePlaceable();\n      }\n\n      if (test(RE_REFERENCE)) {\n        let [, sigil, name, attr = null] = match(RE_REFERENCE);\n\n        if (sigil === \"$\") {\n          return {type: \"var\", name};\n        }\n\n        if (consumeToken(TOKEN_PAREN_OPEN)) {\n          let args = parseArguments();\n\n          if (sigil === \"-\") {\n            // A parameterized term: -term(...).\n            return {type: \"term\", name, attr, args};\n          }\n\n          if (RE_FUNCTION_NAME.test(name)) {\n            return {type: \"func\", name, args};\n          }\n\n          throw new FluentError(\"Function names must be all upper-case\");\n        }\n\n        if (sigil === \"-\") {\n          // A non-parameterized term: -term.\n          return {type: \"term\", name, attr, args: []};\n        }\n\n        return {type: \"mesg\", name, attr};\n      }\n\n      return parseLiteral();\n    }\n\n    function parseArguments() {\n      let args = [];\n      while (true) {\n        switch (source[cursor]) {\n          case \")\": // End of the argument list.\n            cursor++;\n            return args;\n          case undefined: // EOF\n            throw new FluentError(\"Unclosed argument list\");\n        }\n\n        args.push(parseArgument());\n        // Commas between arguments are treated as whitespace.\n        consumeToken(TOKEN_COMMA);\n      }\n    }\n\n    function parseArgument() {\n      let expr = parseInlineExpression();\n      if (expr.type !== \"mesg\") {\n        return expr;\n      }\n\n      if (consumeToken(TOKEN_COLON)) {\n        // The reference is the beginning of a named argument.\n        return {type: \"narg\", name: expr.name, value: parseLiteral()};\n      }\n\n      // It's a regular message reference.\n      return expr;\n    }\n\n    function parseVariants() {\n      let variants = [];\n      let count = 0;\n      let star;\n\n      while (test(RE_VARIANT_START)) {\n        if (consumeChar(\"*\")) {\n          star = count;\n        }\n\n        let key = parseVariantKey();\n        let value = parsePattern();\n        if (value === null) {\n          throw new FluentError(\"Expected variant value\");\n        }\n        variants[count++] = {key, value};\n      }\n\n      if (count === 0) {\n        return null;\n      }\n\n      if (star === undefined) {\n        throw new FluentError(\"Expected default variant\");\n      }\n\n      return {variants, star};\n    }\n\n    function parseVariantKey() {\n      consumeToken(TOKEN_BRACKET_OPEN, FluentError);\n      let key = test(RE_NUMBER_LITERAL)\n        ? parseNumberLiteral()\n        : {type: \"str\", value: match1(RE_IDENTIFIER)};\n      consumeToken(TOKEN_BRACKET_CLOSE, FluentError);\n      return key;\n    }\n\n    function parseLiteral() {\n      if (test(RE_NUMBER_LITERAL)) {\n        return parseNumberLiteral();\n      }\n\n      if (source[cursor] === \"\\\"\") {\n        return parseStringLiteral();\n      }\n\n      throw new FluentError(\"Invalid expression\");\n    }\n\n    function parseNumberLiteral() {\n      let [, value, fraction = \"\"] = match(RE_NUMBER_LITERAL);\n      let precision = fraction.length;\n      return {type: \"num\", value: parseFloat(value), precision};\n    }\n\n    function parseStringLiteral() {\n      consumeChar(\"\\\"\", FluentError);\n      let value = \"\";\n      while (true) {\n        value += match1(RE_STRING_RUN);\n\n        if (source[cursor] === \"\\\\\") {\n          value += parseEscapeSequence();\n          continue;\n        }\n\n        if (consumeChar(\"\\\"\")) {\n          return {type: \"str\", value};\n        }\n\n        // We've reached an EOL of EOF.\n        throw new FluentError(\"Unclosed string literal\");\n      }\n    }\n\n    // Unescape known escape sequences.\n    function parseEscapeSequence() {\n      if (test(RE_STRING_ESCAPE)) {\n        return match1(RE_STRING_ESCAPE);\n      }\n\n      if (test(RE_UNICODE_ESCAPE)) {\n        let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);\n        let codepoint = parseInt(codepoint4 || codepoint6, 16);\n        return codepoint <= 0xD7FF || 0xE000 <= codepoint\n          // It's a Unicode scalar value.\n          ? String.fromCodePoint(codepoint)\n          // Lonely surrogates can cause trouble when the parsing result is\n          // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.\n          : \"�\";\n      }\n\n      throw new FluentError(\"Unknown escape sequence\");\n    }\n\n    // Parse blank space. Return it if it looks like indent before a pattern\n    // line. Skip it othwerwise.\n    function parseIndent() {\n      let start = cursor;\n      consumeToken(TOKEN_BLANK);\n\n      // Check the first non-blank character after the indent.\n      switch (source[cursor]) {\n        case \".\":\n        case \"[\":\n        case \"*\":\n        case \"}\":\n        case undefined: // EOF\n          // A special character. End the Pattern.\n          return false;\n        case \"{\":\n          // Placeables don't require indentation (in EBNF: block-placeable).\n          // Continue the Pattern.\n          return makeIndent(source.slice(start, cursor));\n      }\n\n      // If the first character on the line is not one of the special characters\n      // listed above, it's a regular text character. Check if there's at least\n      // one space of indent before it.\n      if (source[cursor - 1] === \" \") {\n        // It's an indented text character (in EBNF: indented-char). Continue\n        // the Pattern.\n        return makeIndent(source.slice(start, cursor));\n      }\n\n      // A not-indented text character is likely the identifier of the next\n      // message. End the Pattern.\n      return false;\n    }\n\n    // Trim blanks in text according to the given regex.\n    function trim(text, re) {\n      return text.replace(re, \"\");\n    }\n\n    // Normalize a blank block and extract the indent details.\n    function makeIndent(blank) {\n      let value = blank.replace(RE_BLANK_LINES, \"\\n\");\n      let length = RE_INDENT.exec(blank)[1].length;\n      return {type: \"indent\", value, length};\n    }\n  }\n}\n",
+    "content": "import FluentError from \"./error.js\";\n\n// This regex is used to iterate through the beginnings of messages and terms.\n// With the /m flag, the ^ matches at the beginning of every line.\nconst RE_MESSAGE_START = /^(-?[a-zA-Z][\\w-]*) *= */mg;\n\n// Both Attributes and Variants are parsed in while loops. These regexes are\n// used to break out of them.\nconst RE_ATTRIBUTE_START = /\\.([a-zA-Z][\\w-]*) *= */y;\nconst RE_VARIANT_START = /\\*?\\[/y;\n\nconst RE_NUMBER_LITERAL = /(-?[0-9]+(?:\\.([0-9]+))?)/y;\nconst RE_IDENTIFIER = /([a-zA-Z][\\w-]*)/y;\nconst RE_REFERENCE = /([$-])?([a-zA-Z][\\w-]*)(?:\\.([a-zA-Z][\\w-]*))?/y;\nconst RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;\n\n// A \"run\" is a sequence of text or string literal characters which don't\n// require any special handling. For TextElements such special characters are: {\n// (starts a placeable), and line breaks which require additional logic to check\n// if the next line is indented. For StringLiterals they are: \\ (starts an\n// escape sequence), \" (ends the literal), and line breaks which are not allowed\n// in StringLiterals. Note that string runs may be empty; text runs may not.\nconst RE_TEXT_RUN = /([^{}\\n\\r]+)/y;\nconst RE_STRING_RUN = /([^\\\\\"\\n\\r]*)/y;\n\n// Escape sequences.\nconst RE_STRING_ESCAPE = /\\\\([\\\\\"])/y;\nconst RE_UNICODE_ESCAPE = /\\\\u([a-fA-F0-9]{4})|\\\\U([a-fA-F0-9]{6})/y;\n\n// Used for trimming TextElements and indents.\nconst RE_LEADING_NEWLINES = /^\\n+/;\nconst RE_TRAILING_SPACES = / +$/;\n// Used in makeIndent to strip spaces from blank lines and normalize CRLF to LF.\nconst RE_BLANK_LINES = / *\\r?\\n/g;\n// Used in makeIndent to measure the indentation.\nconst RE_INDENT = /( *)$/;\n\n// Common tokens.\nconst TOKEN_BRACE_OPEN = /{\\s*/y;\nconst TOKEN_BRACE_CLOSE = /\\s*}/y;\nconst TOKEN_BRACKET_OPEN = /\\[\\s*/y;\nconst TOKEN_BRACKET_CLOSE = /\\s*] */y;\nconst TOKEN_PAREN_OPEN = /\\s*\\(\\s*/y;\nconst TOKEN_ARROW = /\\s*->\\s*/y;\nconst TOKEN_COLON = /\\s*:\\s*/y;\n// Note the optional comma. As a deviation from the Fluent EBNF, the parser\n// doesn't enforce commas between call arguments.\nconst TOKEN_COMMA = /\\s*,?\\s*/y;\nconst TOKEN_BLANK = /\\s+/y;\n\n/**\n * Fluent Resource is a structure storing parsed localization entries.\n */\nexport default class FluentResource {\n  constructor(source) {\n    this.body = this._parse(source);\n  }\n\n  _parse(source) {\n    RE_MESSAGE_START.lastIndex = 0;\n\n    let resource = [];\n    let cursor = 0;\n\n    // Iterate over the beginnings of messages and terms to efficiently skip\n    // comments and recover from errors.\n    while (true) {\n      let next = RE_MESSAGE_START.exec(source);\n      if (next === null) {\n        break;\n      }\n\n      cursor = RE_MESSAGE_START.lastIndex;\n      try {\n        resource.push(parseMessage(next[1]));\n      } catch (err) {\n        if (err instanceof FluentError) {\n          // Don't report any Fluent syntax errors. Skip directly to the\n          // beginning of the next message or term.\n          continue;\n        }\n        throw err;\n      }\n    }\n\n    return resource;\n\n    // The parser implementation is inlined below for performance reasons,\n    // as well as for convenience of accessing `source` and `cursor`.\n\n    // The parser focuses on minimizing the number of false negatives at the\n    // expense of increasing the risk of false positives. In other words, it\n    // aims at parsing valid Fluent messages with a success rate of 100%, but it\n    // may also parse a few invalid messages which the reference parser would\n    // reject. The parser doesn't perform any validation and may produce entries\n    // which wouldn't make sense in the real world. For best results users are\n    // advised to validate translations with the fluent-syntax parser\n    // pre-runtime.\n\n    // The parser makes an extensive use of sticky regexes which can be anchored\n    // to any offset of the source string without slicing it. Errors are thrown\n    // to bail out of parsing of ill-formed messages.\n\n    function test(re) {\n      re.lastIndex = cursor;\n      return re.test(source);\n    }\n\n    // Advance the cursor by the char if it matches. May be used as a predicate\n    // (was the match found?) or, if errorClass is passed, as an assertion.\n    function consumeChar(char, errorClass) {\n      if (source[cursor] === char) {\n        cursor++;\n        return true;\n      }\n      if (errorClass) {\n        throw new errorClass(`Expected ${char}`);\n      }\n      return false;\n    }\n\n    // Advance the cursor by the token if it matches. May be used as a predicate\n    // (was the match found?) or, if errorClass is passed, as an assertion.\n    function consumeToken(re, errorClass) {\n      if (test(re)) {\n        cursor = re.lastIndex;\n        return true;\n      }\n      if (errorClass) {\n        throw new errorClass(`Expected ${re.toString()}`);\n      }\n      return false;\n    }\n\n    // Execute a regex, advance the cursor, and return all capture groups.\n    function match(re) {\n      re.lastIndex = cursor;\n      let result = re.exec(source);\n      if (result === null) {\n        throw new FluentError(`Expected ${re.toString()}`);\n      }\n      cursor = re.lastIndex;\n      return result;\n    }\n\n    // Execute a regex, advance the cursor, and return the capture group.\n    function match1(re) {\n      return match(re)[1];\n    }\n\n    function parseMessage(id) {\n      let value = parsePattern();\n      let attributes = parseAttributes();\n\n      if (value === null && Object.keys(attributes).length === 0) {\n        throw new FluentError(\"Expected message value or attributes\");\n      }\n\n      return {id, value, attributes};\n    }\n\n    function parseAttributes() {\n      let attrs = Object.create(null);\n\n      while (test(RE_ATTRIBUTE_START)) {\n        let name = match1(RE_ATTRIBUTE_START);\n        let value = parsePattern();\n        if (value === null) {\n          throw new FluentError(\"Expected attribute value\");\n        }\n        attrs[name] = value;\n      }\n\n      return attrs;\n    }\n\n    function parsePattern() {\n      // First try to parse any simple text on the same line as the id.\n      if (test(RE_TEXT_RUN)) {\n        var first = match1(RE_TEXT_RUN);\n      }\n\n      // If there's a placeable on the first line, parse a complex pattern.\n      if (source[cursor] === \"{\" || source[cursor] === \"}\") {\n        // Re-use the text parsed above, if possible.\n        return parsePatternElements(first ? [first] : [], Infinity);\n      }\n\n      // RE_TEXT_VALUE stops at newlines. Only continue parsing the pattern if\n      // what comes after the newline is indented.\n      let indent = parseIndent();\n      if (indent) {\n        if (first) {\n          // If there's text on the first line, the blank block is part of the\n          // translation content in its entirety.\n          return parsePatternElements([first, indent], indent.length);\n        }\n        // Otherwise, we're dealing with a block pattern, i.e. a pattern which\n        // starts on a new line. Discrad the leading newlines but keep the\n        // inline indent; it will be used by the dedentation logic.\n        indent.value = trim(indent.value, RE_LEADING_NEWLINES);\n        return parsePatternElements([indent], indent.length);\n      }\n\n      if (first) {\n        // It was just a simple inline text after all.\n        return trim(first, RE_TRAILING_SPACES);\n      }\n\n      return null;\n    }\n\n    // Parse a complex pattern as an array of elements.\n    function parsePatternElements(elements = [], commonIndent) {\n      while (true) {\n        if (test(RE_TEXT_RUN)) {\n          elements.push(match1(RE_TEXT_RUN));\n          continue;\n        }\n\n        if (source[cursor] === \"{\") {\n          elements.push(parsePlaceable());\n          continue;\n        }\n\n        if (source[cursor] === \"}\") {\n          throw new FluentError(\"Unbalanced closing brace\");\n        }\n\n        let indent = parseIndent();\n        if (indent) {\n          elements.push(indent);\n          commonIndent = Math.min(commonIndent, indent.length);\n          continue;\n        }\n\n        break;\n      }\n\n      let lastIndex = elements.length - 1;\n      // Trim the trailing spaces in the last element if it's a TextElement.\n      if (typeof elements[lastIndex] === \"string\") {\n        elements[lastIndex] = trim(elements[lastIndex], RE_TRAILING_SPACES);\n      }\n\n      let baked = [];\n      for (let element of elements) {\n        if (element.type === \"indent\") {\n          // Dedent indented lines by the maximum common indent.\n          element = element.value.slice(0, element.value.length - commonIndent);\n        }\n        if (element) {\n          baked.push(element);\n        }\n      }\n      return baked;\n    }\n\n    function parsePlaceable() {\n      consumeToken(TOKEN_BRACE_OPEN, FluentError);\n\n      let selector = parseInlineExpression();\n      if (consumeToken(TOKEN_BRACE_CLOSE)) {\n        return selector;\n      }\n\n      if (consumeToken(TOKEN_ARROW)) {\n        let variants = parseVariants();\n        consumeToken(TOKEN_BRACE_CLOSE, FluentError);\n        return {type: \"select\", selector, ...variants};\n      }\n\n      throw new FluentError(\"Unclosed placeable\");\n    }\n\n    function parseInlineExpression() {\n      if (source[cursor] === \"{\") {\n        // It's a nested placeable.\n        return parsePlaceable();\n      }\n\n      if (test(RE_REFERENCE)) {\n        let [, sigil, name, attr = null] = match(RE_REFERENCE);\n\n        if (sigil === \"$\") {\n          return {type: \"var\", name};\n        }\n\n        if (consumeToken(TOKEN_PAREN_OPEN)) {\n          let args = parseArguments();\n\n          if (sigil === \"-\") {\n            // A parameterized term: -term(...).\n            return {type: \"term\", name, attr, args};\n          }\n\n          if (RE_FUNCTION_NAME.test(name)) {\n            return {type: \"func\", name, args};\n          }\n\n          throw new FluentError(\"Function names must be all upper-case\");\n        }\n\n        if (sigil === \"-\") {\n          // A non-parameterized term: -term.\n          return {type: \"term\", name, attr, args: []};\n        }\n\n        return {type: \"mesg\", name, attr};\n      }\n\n      return parseLiteral();\n    }\n\n    function parseArguments() {\n      let args = [];\n      while (true) {\n        switch (source[cursor]) {\n          case \")\": // End of the argument list.\n            cursor++;\n            return args;\n          case undefined: // EOF\n            throw new FluentError(\"Unclosed argument list\");\n        }\n\n        args.push(parseArgument());\n        // Commas between arguments are treated as whitespace.\n        consumeToken(TOKEN_COMMA);\n      }\n    }\n\n    function parseArgument() {\n      let expr = parseInlineExpression();\n      if (expr.type !== \"mesg\") {\n        return expr;\n      }\n\n      if (consumeToken(TOKEN_COLON)) {\n        // The reference is the beginning of a named argument.\n        return {type: \"narg\", name: expr.name, value: parseLiteral()};\n      }\n\n      // It's a regular message reference.\n      return expr;\n    }\n\n    function parseVariants() {\n      let variants = [];\n      let count = 0;\n      let star;\n\n      while (test(RE_VARIANT_START)) {\n        if (consumeChar(\"*\")) {\n          star = count;\n        }\n\n        let key = parseVariantKey();\n        let value = parsePattern();\n        if (value === null) {\n          throw new FluentError(\"Expected variant value\");\n        }\n        variants[count++] = {key, value};\n      }\n\n      if (count === 0) {\n        return null;\n      }\n\n      if (star === undefined) {\n        throw new FluentError(\"Expected default variant\");\n      }\n\n      return {variants, star};\n    }\n\n    function parseVariantKey() {\n      consumeToken(TOKEN_BRACKET_OPEN, FluentError);\n      let key = test(RE_NUMBER_LITERAL)\n        ? parseNumberLiteral()\n        : {type: \"str\", value: match1(RE_IDENTIFIER)};\n      consumeToken(TOKEN_BRACKET_CLOSE, FluentError);\n      return key;\n    }\n\n    function parseLiteral() {\n      if (test(RE_NUMBER_LITERAL)) {\n        return parseNumberLiteral();\n      }\n\n      if (source[cursor] === \"\\\"\") {\n        return parseStringLiteral();\n      }\n\n      throw new FluentError(\"Invalid expression\");\n    }\n\n    function parseNumberLiteral() {\n      let [, value, fraction = \"\"] = match(RE_NUMBER_LITERAL);\n      let precision = fraction.length;\n      return {type: \"num\", value: parseFloat(value), precision};\n    }\n\n    function parseStringLiteral() {\n      consumeChar(\"\\\"\", FluentError);\n      let value = \"\";\n      while (true) {\n        value += match1(RE_STRING_RUN);\n\n        if (source[cursor] === \"\\\\\") {\n          value += parseEscapeSequence();\n          continue;\n        }\n\n        if (consumeChar(\"\\\"\")) {\n          return {type: \"str\", value};\n        }\n\n        // We've reached an EOL of EOF.\n        throw new FluentError(\"Unclosed string literal\");\n      }\n    }\n\n    // Unescape known escape sequences.\n    function parseEscapeSequence() {\n      if (test(RE_STRING_ESCAPE)) {\n        return match1(RE_STRING_ESCAPE);\n      }\n\n      if (test(RE_UNICODE_ESCAPE)) {\n        let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);\n        let codepoint = parseInt(codepoint4 || codepoint6, 16);\n        return codepoint <= 0xD7FF || 0xE000 <= codepoint\n          // It's a Unicode scalar value.\n          ? String.fromCodePoint(codepoint)\n          // Lonely surrogates can cause trouble when the parsing result is\n          // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.\n          : \"�\";\n      }\n\n      throw new FluentError(\"Unknown escape sequence\");\n    }\n\n    // Parse blank space. Return it if it looks like indent before a pattern\n    // line. Skip it othwerwise.\n    function parseIndent() {\n      let start = cursor;\n      consumeToken(TOKEN_BLANK);\n\n      // Check the first non-blank character after the indent.\n      switch (source[cursor]) {\n        case \".\":\n        case \"[\":\n        case \"*\":\n        case \"}\":\n        case undefined: // EOF\n          // A special character. End the Pattern.\n          return false;\n        case \"{\":\n          // Placeables don't require indentation (in EBNF: block-placeable).\n          // Continue the Pattern.\n          return makeIndent(source.slice(start, cursor));\n      }\n\n      // If the first character on the line is not one of the special characters\n      // listed above, it's a regular text character. Check if there's at least\n      // one space of indent before it.\n      if (source[cursor - 1] === \" \") {\n        // It's an indented text character (in EBNF: indented-char). Continue\n        // the Pattern.\n        return makeIndent(source.slice(start, cursor));\n      }\n\n      // A not-indented text character is likely the identifier of the next\n      // message. End the Pattern.\n      return false;\n    }\n\n    // Trim blanks in text according to the given regex.\n    function trim(text, re) {\n      return text.replace(re, \"\");\n    }\n\n    // Normalize a blank block and extract the indent details.\n    function makeIndent(blank) {\n      let value = blank.replace(RE_BLANK_LINES, \"\\n\");\n      let length = RE_INDENT.exec(blank)[1].length;\n      return {type: \"indent\", value, length};\n    }\n  }\n}\n",
     "static": true,
     "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-bundle/src/resource.js",
     "access": "public",
@@ -2179,27 +2179,6 @@
   },
   {
     "__docId__": 110,
-    "kind": "variable",
-    "name": "MAX_PLACEABLES",
-    "memberof": "src/resource.js",
-    "static": true,
-    "longname": "src/resource.js~MAX_PLACEABLES",
-    "access": "public",
-    "export": false,
-    "importPath": "@fluent/bundle/src/resource.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 53,
-    "undocument": true,
-    "type": {
-      "types": [
-        "number"
-      ]
-    },
-    "ignore": true
-  },
-  {
-    "__docId__": 111,
     "kind": "class",
     "name": "FluentResource",
     "memberof": "src/resource.js",
@@ -2210,11 +2189,11 @@
     "importPath": "@fluent/bundle/src/resource.js",
     "importStyle": "FluentResource",
     "description": "Fluent Resource is a structure storing parsed localization entries.",
-    "lineNumber": 58,
+    "lineNumber": 54,
     "interface": false
   },
   {
-    "__docId__": 112,
+    "__docId__": 111,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/resource.js~FluentResource",
@@ -2224,11 +2203,11 @@
     "longname": "src/resource.js~FluentResource#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 55,
     "undocument": true
   },
   {
-    "__docId__": 113,
+    "__docId__": 112,
     "kind": "member",
     "name": "body",
     "memberof": "src/resource.js~FluentResource",
@@ -2236,7 +2215,7 @@
     "longname": "src/resource.js~FluentResource#body",
     "access": "public",
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 56,
     "undocument": true,
     "type": {
       "types": [
@@ -2245,7 +2224,7 @@
     }
   },
   {
-    "__docId__": 114,
+    "__docId__": 113,
     "kind": "method",
     "name": "_parse",
     "memberof": "src/resource.js~FluentResource",
@@ -2255,7 +2234,7 @@
     "longname": "src/resource.js~FluentResource#_parse",
     "access": "private",
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 59,
     "undocument": true,
     "params": [
       {
@@ -2272,10 +2251,10 @@
     }
   },
   {
-    "__docId__": 115,
+    "__docId__": 114,
     "kind": "file",
     "name": "src/scope.js",
-    "content": "export default class Scope {\n  constructor(\n    bundle,\n    errors,\n    args,\n    insideTermReference = false,\n    dirty = new WeakSet()\n  ) {\n    /** The bundle for which the given resolution is happening. */\n    this.bundle = bundle;\n    /** The list of errors collected while resolving. */\n    this.errors = errors;\n    /** A dict of developer-provided variables. */\n    this.args = args;\n\n    /** Term references require different variable lookup logic. */\n    this.insideTermReference = insideTermReference;\n    /** The Set of patterns already encountered during this resolution.\n      * Used to detect and prevent cyclic resolutions. */\n    this.dirty = dirty;\n  }\n\n  cloneForTermReference(args) {\n    return new Scope(this.bundle, this.errors, args, true, this.dirty);\n  }\n\n  reportError(error) {\n    if (!this.errors) {\n      throw error;\n    }\n    this.errors.push(error);\n  }\n\n  memoizeIntlObject(ctor, opts) {\n    let cache = this.bundle._intls.get(ctor);\n    if (!cache) {\n      cache = {};\n      this.bundle._intls.set(ctor, cache);\n    }\n    let id = JSON.stringify(opts);\n    if (!cache[id]) {\n      cache[id] = new ctor(this.bundle.locales, opts);\n    }\n    return cache[id];\n  }\n}\n",
+    "content": "export default class Scope {\n  constructor(bundle, errors, args) {\n    /** The bundle for which the given resolution is happening. */\n    this.bundle = bundle;\n    /** The list of errors collected while resolving. */\n    this.errors = errors;\n    /** A dict of developer-provided variables. */\n    this.args = args;\n\n    /** The Set of patterns already encountered during this resolution.\n      * Used to detect and prevent cyclic resolutions. */\n    this.dirty = new WeakSet();\n    /** A dict of parameters passed to a TermReference. */\n    this.params = null;\n    /** The running count of placeables resolved so far. Used to detect the\n      * Billion Laughs and Quadratic Blowup attacks. */\n    this.placeables = 0;\n  }\n\n  reportError(error) {\n    if (!this.errors) {\n      throw error;\n    }\n    this.errors.push(error);\n  }\n\n  memoizeIntlObject(ctor, opts) {\n    let cache = this.bundle._intls.get(ctor);\n    if (!cache) {\n      cache = {};\n      this.bundle._intls.set(ctor, cache);\n    }\n    let id = JSON.stringify(opts);\n    if (!cache[id]) {\n      cache[id] = new ctor(this.bundle.locales, opts);\n    }\n    return cache[id];\n  }\n}\n",
     "static": true,
     "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-bundle/src/scope.js",
     "access": "public",
@@ -2283,7 +2262,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 116,
+    "__docId__": 115,
     "kind": "class",
     "name": "Scope",
     "memberof": "src/scope.js",
@@ -2299,7 +2278,7 @@
     "interface": false
   },
   {
-    "__docId__": 117,
+    "__docId__": 116,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/scope.js~Scope",
@@ -2313,7 +2292,7 @@
     "undocument": true
   },
   {
-    "__docId__": 118,
+    "__docId__": 117,
     "kind": "member",
     "name": "bundle",
     "memberof": "src/scope.js~Scope",
@@ -2321,7 +2300,23 @@
     "longname": "src/scope.js~Scope#bundle",
     "access": "public",
     "description": "The bundle for which the given resolution is happening.",
-    "lineNumber": 10,
+    "lineNumber": 4,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 118,
+    "kind": "member",
+    "name": "errors",
+    "memberof": "src/scope.js~Scope",
+    "static": false,
+    "longname": "src/scope.js~Scope#errors",
+    "access": "public",
+    "description": "The list of errors collected while resolving.",
+    "lineNumber": 6,
     "type": {
       "types": [
         "*"
@@ -2331,13 +2326,13 @@
   {
     "__docId__": 119,
     "kind": "member",
-    "name": "errors",
+    "name": "args",
     "memberof": "src/scope.js~Scope",
     "static": false,
-    "longname": "src/scope.js~Scope#errors",
+    "longname": "src/scope.js~Scope#args",
     "access": "public",
-    "description": "The list of errors collected while resolving.",
-    "lineNumber": 12,
+    "description": "A dict of developer-provided variables.",
+    "lineNumber": 8,
     "type": {
       "types": [
         "*"
@@ -2347,13 +2342,13 @@
   {
     "__docId__": 120,
     "kind": "member",
-    "name": "args",
+    "name": "dirty",
     "memberof": "src/scope.js~Scope",
     "static": false,
-    "longname": "src/scope.js~Scope#args",
+    "longname": "src/scope.js~Scope#dirty",
     "access": "public",
-    "description": "A dict of developer-provided variables.",
-    "lineNumber": 14,
+    "description": "The Set of patterns already encountered during this resolution.\nUsed to detect and prevent cyclic resolutions.",
+    "lineNumber": 12,
     "type": {
       "types": [
         "*"
@@ -2363,13 +2358,13 @@
   {
     "__docId__": 121,
     "kind": "member",
-    "name": "insideTermReference",
+    "name": "params",
     "memberof": "src/scope.js~Scope",
     "static": false,
-    "longname": "src/scope.js~Scope#insideTermReference",
+    "longname": "src/scope.js~Scope#params",
     "access": "public",
-    "description": "Term references require different variable lookup logic.",
-    "lineNumber": 17,
+    "description": "A dict of parameters passed to a TermReference.",
+    "lineNumber": 14,
     "type": {
       "types": [
         "*"
@@ -2379,48 +2374,21 @@
   {
     "__docId__": 122,
     "kind": "member",
-    "name": "dirty",
+    "name": "placeables",
     "memberof": "src/scope.js~Scope",
     "static": false,
-    "longname": "src/scope.js~Scope#dirty",
+    "longname": "src/scope.js~Scope#placeables",
     "access": "public",
-    "description": "The Set of patterns already encountered during this resolution.\nUsed to detect and prevent cyclic resolutions.",
-    "lineNumber": 20,
+    "description": "The running count of placeables resolved so far. Used to detect the\nBillion Laughs and Quadratic Blowup attacks.",
+    "lineNumber": 17,
     "type": {
       "types": [
-        "*"
+        "number"
       ]
     }
   },
   {
     "__docId__": 123,
-    "kind": "method",
-    "name": "cloneForTermReference",
-    "memberof": "src/scope.js~Scope",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/scope.js~Scope#cloneForTermReference",
-    "access": "public",
-    "description": null,
-    "lineNumber": 23,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 124,
     "kind": "method",
     "name": "reportError",
     "memberof": "src/scope.js~Scope",
@@ -2430,7 +2398,7 @@
     "longname": "src/scope.js~Scope#reportError",
     "access": "public",
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 20,
     "undocument": true,
     "params": [
       {
@@ -2443,7 +2411,7 @@
     "return": null
   },
   {
-    "__docId__": 125,
+    "__docId__": 124,
     "kind": "method",
     "name": "memoizeIntlObject",
     "memberof": "src/scope.js~Scope",
@@ -2453,7 +2421,7 @@
     "longname": "src/scope.js~Scope#memoizeIntlObject",
     "access": "public",
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 27,
     "undocument": true,
     "params": [
       {
@@ -2476,7 +2444,7 @@
     }
   },
   {
-    "__docId__": 126,
+    "__docId__": 125,
     "kind": "file",
     "name": "src/types.js",
     "content": "/* global Intl */\n\n/**\n * The `FluentType` class is the base of Fluent's type system.\n *\n * Fluent types wrap JavaScript values and store additional configuration for\n * them, which can then be used in the `toString` method together with a proper\n * `Intl` formatter.\n */\nexport class FluentType {\n  /**\n   * Create a `FluentType` instance.\n   *\n   * @param   {Any} value - JavaScript value to wrap.\n   * @returns {FluentType}\n   */\n  constructor(value) {\n    /** The wrapped native value. */\n    this.value = value;\n  }\n\n  /**\n   * Unwrap the raw value stored by this `FluentType`.\n   *\n   * @returns {Any}\n   */\n  valueOf() {\n    return this.value;\n  }\n\n  /**\n   * Format this instance of `FluentType` to a string.\n   *\n   * Formatted values are suitable for use outside of the `FluentBundle`.\n   * This method can use `Intl` formatters available through the `scope`\n   * argument.\n   *\n   * @abstract\n   * @param   {Scope} scope\n   * @returns {string}\n   */\n  toString(scope) { // eslint-disable-line no-unused-vars\n    throw new Error(\"Subclasses of FluentType must implement toString.\");\n  }\n}\n\n/**\n * A `FluentType` representing no correct value.\n */\nexport class FluentNone extends FluentType {\n  /**\n   * Create an instance of `FluentNone` with an optional fallback value.\n   * @param   {string} value - The fallback value of this `FluentNone`.\n   * @returns {FluentType}\n   */\n  constructor(value = \"???\") {\n    super(value);\n  }\n\n  /**\n   * Format this `FluentNone` to the fallback string.\n   * @returns {string}\n   */\n  toString() {\n    return `{${this.value}}`;\n  }\n}\n\n/**\n * A `FluentType` representing a number.\n */\nexport class FluentNumber extends FluentType {\n  /**\n   * Create an instance of `FluentNumber` with options to the\n   * `Intl.NumberFormat` constructor.\n   * @param   {number} value\n   * @param   {Intl.NumberFormatOptions} opts\n   * @returns {FluentType}\n   */\n  constructor(value, opts) {\n    super(value);\n    /** Options passed to Intl.NumberFormat. */\n    this.opts = opts;\n  }\n\n  /**\n   * Format this `FluentNumber` to a string.\n   * @param   {Scope} scope\n   * @returns {string}\n   */\n  toString(scope) {\n    try {\n      const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);\n      return nf.format(this.value);\n    } catch (err) {\n      scope.reportError(err);\n      return this.value.toString(10);\n    }\n  }\n}\n\n/**\n * A `FluentType` representing a date and time.\n */\nexport class FluentDateTime extends FluentType {\n  /**\n   * Create an instance of `FluentDateTime` with options to the\n   * `Intl.DateTimeFormat` constructor.\n   * @param   {number} value - timestamp in milliseconds\n   * @param   {Intl.DateTimeFormatOptions} opts\n   * @returns {FluentType}\n   */\n  constructor(value, opts) {\n    super(value);\n    /** Options passed to Intl.DateTimeFormat. */\n    this.opts = opts;\n  }\n\n  /**\n   * Format this `FluentDateTime` to a string.\n   * @param   {Scope} scope\n   * @returns {string}\n   */\n  toString(scope) {\n    try {\n      const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);\n      return dtf.format(this.value);\n    } catch (err) {\n      scope.reportError(err);\n      return (new Date(this.value)).toISOString();\n    }\n  }\n}\n",
@@ -2487,7 +2455,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 127,
+    "__docId__": 126,
     "kind": "class",
     "name": "FluentType",
     "memberof": "src/types.js",
@@ -2502,7 +2470,7 @@
     "interface": false
   },
   {
-    "__docId__": 128,
+    "__docId__": 127,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/types.js~FluentType",
@@ -2541,7 +2509,7 @@
     }
   },
   {
-    "__docId__": 129,
+    "__docId__": 128,
     "kind": "member",
     "name": "value",
     "memberof": "src/types.js~FluentType",
@@ -2557,7 +2525,7 @@
     }
   },
   {
-    "__docId__": 130,
+    "__docId__": 129,
     "kind": "method",
     "name": "valueOf",
     "memberof": "src/types.js~FluentType",
@@ -2585,7 +2553,7 @@
     "params": []
   },
   {
-    "__docId__": 131,
+    "__docId__": 130,
     "kind": "method",
     "name": "toString",
     "memberof": "src/types.js~FluentType",
@@ -2625,7 +2593,7 @@
     "abstract": true
   },
   {
-    "__docId__": 132,
+    "__docId__": 131,
     "kind": "class",
     "name": "FluentNone",
     "memberof": "src/types.js",
@@ -2643,7 +2611,7 @@
     ]
   },
   {
-    "__docId__": 133,
+    "__docId__": 132,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/types.js~FluentNone",
@@ -2682,7 +2650,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 133,
     "kind": "method",
     "name": "toString",
     "memberof": "src/types.js~FluentNone",
@@ -2710,7 +2678,7 @@
     "params": []
   },
   {
-    "__docId__": 135,
+    "__docId__": 134,
     "kind": "class",
     "name": "FluentNumber",
     "memberof": "src/types.js",
@@ -2728,7 +2696,7 @@
     ]
   },
   {
-    "__docId__": 136,
+    "__docId__": 135,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/types.js~FluentNumber",
@@ -2777,7 +2745,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 136,
     "kind": "member",
     "name": "opts",
     "memberof": "src/types.js~FluentNumber",
@@ -2793,7 +2761,7 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 137,
     "kind": "method",
     "name": "toString",
     "memberof": "src/types.js~FluentNumber",
@@ -2832,7 +2800,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 138,
     "kind": "class",
     "name": "FluentDateTime",
     "memberof": "src/types.js",
@@ -2850,7 +2818,7 @@
     ]
   },
   {
-    "__docId__": 140,
+    "__docId__": 139,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/types.js~FluentDateTime",
@@ -2899,7 +2867,7 @@
     }
   },
   {
-    "__docId__": 141,
+    "__docId__": 140,
     "kind": "member",
     "name": "opts",
     "memberof": "src/types.js~FluentDateTime",
@@ -2915,7 +2883,7 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 141,
     "kind": "method",
     "name": "toString",
     "memberof": "src/types.js~FluentDateTime",
@@ -2963,7 +2931,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@fluent/bundle\",\n  \"description\": \"Localization library for expressive translations.\",\n  \"version\": \"0.14.0\",\n  \"homepage\": \"https://projectfluent.org\",\n  \"author\": \"Mozilla <l10n-drivers@mozilla.org>\",\n  \"license\": \"Apache-2.0\",\n  \"contributors\": [\n    {\n      \"name\": \"Zibi Braniecki\",\n      \"email\": \"zbraniecki@mozilla.com\"\n    },\n    {\n      \"name\": \"Staś Małolepszy\",\n      \"email\": \"stas@mozilla.com\"\n    }\n  ],\n  \"directories\": {\n    \"lib\": \"./src\"\n  },\n  \"main\": \"./index.js\",\n  \"module\": \"./src/index.js\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/projectfluent/fluent.js.git\"\n  },\n  \"keywords\": [\n    \"localization\",\n    \"l10n\",\n    \"internationalization\",\n    \"i18n\",\n    \"ftl\",\n    \"plural\",\n    \"gender\",\n    \"locale\",\n    \"language\",\n    \"formatting\",\n    \"translate\",\n    \"translation\",\n    \"format\",\n    \"parser\"\n  ],\n  \"engines\": {\n    \"node\": \">=8.9.0\"\n  },\n  \"devDependencies\": {\n    \"@fluent/dedent\": \"^0.1.0\",\n    \"sinon\": \"^4.2.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@fluent/bundle\",\n  \"description\": \"Localization library for expressive translations.\",\n  \"version\": \"0.14.1\",\n  \"homepage\": \"https://projectfluent.org\",\n  \"author\": \"Mozilla <l10n-drivers@mozilla.org>\",\n  \"license\": \"Apache-2.0\",\n  \"contributors\": [\n    {\n      \"name\": \"Zibi Braniecki\",\n      \"email\": \"zbraniecki@mozilla.com\"\n    },\n    {\n      \"name\": \"Staś Małolepszy\",\n      \"email\": \"stas@mozilla.com\"\n    }\n  ],\n  \"directories\": {\n    \"lib\": \"./src\"\n  },\n  \"main\": \"./index.js\",\n  \"module\": \"./src/index.js\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/projectfluent/fluent.js.git\"\n  },\n  \"keywords\": [\n    \"localization\",\n    \"l10n\",\n    \"internationalization\",\n    \"i18n\",\n    \"ftl\",\n    \"plural\",\n    \"gender\",\n    \"locale\",\n    \"language\",\n    \"formatting\",\n    \"translate\",\n    \"translation\",\n    \"format\",\n    \"parser\"\n  ],\n  \"engines\": {\n    \"node\": \">=8.9.0\"\n  },\n  \"devDependencies\": {\n    \"@fluent/dedent\": \"^0.1.0\",\n    \"sinon\": \"^4.2.2\"\n  }\n}\n",
     "longname": "/c/Users/stas/Mozilla/fluent/fluent.js/fluent-bundle/package.json",
     "name": "package.json",
     "static": true,

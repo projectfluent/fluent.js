@@ -1,7 +1,7 @@
 {
-  "coverage": "32.18%",
-  "expectCount": 87,
-  "actualCount": 28,
+  "coverage": "33.72%",
+  "expectCount": 86,
+  "actualCount": 29,
   "files": {
     "src/builtins.js": {
       "expectCount": 4,
@@ -37,24 +37,24 @@
       "expectCount": 14,
       "actualCount": 0,
       "undocumentLines": [
-        33,
-        36,
-        37,
-        41,
-        67,
-        77,
-        93,
-        117,
-        151,
-        176,
-        201,
-        224,
-        242,
-        293
+        35,
+        38,
+        39,
+        43,
+        69,
+        79,
+        95,
+        119,
+        164,
+        189,
+        217,
+        241,
+        259,
+        309
       ]
     },
     "src/resource.js": {
-      "expectCount": 29,
+      "expectCount": 28,
       "actualCount": 1,
       "undocumentLines": [
         5,
@@ -81,21 +81,19 @@
         45,
         48,
         49,
-        53,
-        59,
-        60,
-        63
+        55,
+        56,
+        59
       ]
     },
     "src/scope.js": {
       "expectCount": 10,
-      "actualCount": 5,
+      "actualCount": 6,
       "undocumentLines": [
         1,
         2,
-        23,
-        27,
-        34
+        20,
+        27
       ]
     },
     "src/types.js": {

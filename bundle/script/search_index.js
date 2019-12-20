@@ -492,12 +492,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/scope.js~scope#clonefortermreference",
-    "class/src/scope.js~Scope.html#instance-method-cloneForTermReference",
-    "src/scope.js~Scope#cloneForTermReference",
-    "method"
-  ],
-  [
     "src/scope.js~scope#constructor",
     "class/src/scope.js~Scope.html#instance-constructor-constructor",
     "src/scope.js~Scope#constructor",
@@ -516,16 +510,22 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/scope.js~scope#insidetermreference",
-    "class/src/scope.js~Scope.html#instance-member-insideTermReference",
-    "src/scope.js~Scope#insideTermReference",
-    "member"
-  ],
-  [
     "src/scope.js~scope#memoizeintlobject",
     "class/src/scope.js~Scope.html#instance-method-memoizeIntlObject",
     "src/scope.js~Scope#memoizeIntlObject",
     "method"
+  ],
+  [
+    "src/scope.js~scope#params",
+    "class/src/scope.js~Scope.html#instance-member-params",
+    "src/scope.js~Scope#params",
+    "member"
+  ],
+  [
+    "src/scope.js~scope#placeables",
+    "class/src/scope.js~Scope.html#instance-member-placeables",
+    "src/scope.js~Scope#placeables",
+    "member"
   ],
   [
     "src/scope.js~scope#reporterror",
