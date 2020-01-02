@@ -1,7 +1,6 @@
 language: node_js
 script: make deps && make dist
 node_js:
-  - "8"
   - "10"
   - "12"
 cache:
