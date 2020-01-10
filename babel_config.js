@@ -14,7 +14,7 @@ export default {
           "Safari >= 10.1",
           "iOS >= 10.3",
         ],
-        node: "8.9",
+        node: "10.0.0",
       },
       exclude: [
         // Exclude regeneratorRuntime explicitly because babel-preset-env
