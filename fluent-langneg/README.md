@@ -86,7 +86,7 @@ subtags data, which is useful in finding most likely available locales
 in case the requested locale is too generic.
 
 An example of that scenario is when the user requests `en` locale, and
-the application supportes `en-GB` and `en-US`.
+the application supports `en-GB` and `en-US`.
 
 ## Learn more
 

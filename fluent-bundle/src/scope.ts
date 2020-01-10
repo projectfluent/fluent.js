@@ -8,28 +8,23 @@ export class Scope {
   public errors: Array<Error> | null;
   /** A dict of developer-provided variables. */
   public args: Record<string, FluentArgument> | null;
-  /** Term references require different variable lookup logic. */
-  public insideTermReference: boolean;
   /** The Set of patterns already encountered during this resolution.
    * Used to detect and prevent cyclic resolutions. */
-  public dirty: WeakSet<ComplexPattern>;
+  public dirty: WeakSet<ComplexPattern> = new WeakSet();
+  /** A dict of parameters passed to a TermReference. */
+  public params: Record<string, FluentArgument> | null = null;
+  /** The running count of placeables resolved so far. Used to detect the
+    * Billion Laughs and Quadratic Blowup attacks. */
+  public placeables: number = 0;
 
   constructor(
     bundle: FluentBundle,
     errors: Array<Error> | null,
     args: Record<string, FluentArgument> | null,
-    insideTermReference = false,
-    dirty: WeakSet<ComplexPattern> = new WeakSet()
   ) {
     this.bundle = bundle;
     this.errors = errors;
     this.args = args;
-    this.insideTermReference = insideTermReference;
-    this.dirty = dirty;
-  }
-
-  cloneForTermReference(args: Record<string, FluentArgument>): Scope {
-    return new Scope(this.bundle, this.errors, args, true, this.dirty);
   }
 
   reportError(error: Error): void {

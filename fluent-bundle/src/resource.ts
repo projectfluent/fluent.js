@@ -66,10 +66,6 @@ const TOKEN_COLON = /\s*:\s*/y;
 const TOKEN_COMMA = /\s*,?\s*/y;
 const TOKEN_BLANK = /\s+/y;
 
-// Maximum number of placeables in a single Pattern to protect against Quadratic
-// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
-const MAX_PLACEABLES = 100;
-
 /**
  * Fluent Resource is a structure storing parsed localization entries.
  */
@@ -246,8 +242,6 @@ export class FluentResource {
       elements: Array<PatternElement | Indent> = [],
       commonIndent: number
     ): ComplexPattern {
-      let placeableCount = 0;
-
       while (true) {
         if (test(RE_TEXT_RUN)) {
           elements.push(match1(RE_TEXT_RUN));
@@ -255,9 +249,6 @@ export class FluentResource {
         }
 
         if (source[cursor] === "{") {
-          if (++placeableCount > MAX_PLACEABLES) {
-            throw new SyntaxError("Too many placeables");
-          }
           elements.push(parsePlaceable());
           continue;
         }

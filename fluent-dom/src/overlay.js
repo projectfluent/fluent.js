@@ -67,7 +67,11 @@ export default function translateElement(element, translation) {
   const {value} = translation;
 
   if (typeof value === "string") {
-    if (!reOverlay.test(value)) {
+    if (element.localName === "title" &&
+        element.namespaceURI === "http://www.w3.org/1999/xhtml") {
+      // A special case for the HTML title element whose content must be text.
+      element.textContent = value;
+    } else if (!reOverlay.test(value)) {
       // If the translation doesn't contain any markup skip the overlay logic.
       element.textContent = value;
     } else {
