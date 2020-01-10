@@ -6,7 +6,7 @@ SOURCES := $(wildcard src/*)
 VERSION := $(shell node -pe "require('./package.json').version")
 
 export SHELL := /bin/bash
-export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
+export PATH  := $(CURDIR)/node_modules/.bin:$(ROOT)/node_modules/.bin:$(PATH)
 
 # The default target.
 all: lint test build

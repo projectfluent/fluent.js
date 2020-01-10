@@ -7,7 +7,7 @@ include ../common.mk
 build: index.js compat.js
 
 test:
-	jest --collect-coverage
+	@jest --collect-coverage
 
 index.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
