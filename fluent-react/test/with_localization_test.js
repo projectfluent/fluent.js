@@ -5,8 +5,14 @@ import { FluentBundle, FluentResource } from '../../fluent-bundle/src';
 import ReactLocalization from '../src/localization';
 import { withLocalization, LocalizationProvider } from '../src';
 
-function DummyComponent() {
-  return <div />;
+class DummyComponent extends React.Component {
+  static doStaticThing() {
+    return "done";
+  }
+
+  render() {
+    return <div />;
+  }
 }
 
 suite('withLocalization', function() {
@@ -122,5 +128,11 @@ bar = BAR {$arg}
 
     wrapper.update();
     assert.strictEqual(wrapper.text(), 'BAR');
+  })
+
+  test('static function is hoisted onto the wrapped component', function() {
+    const EnhancedComponent = withLocalization(DummyComponent);
+    const result = EnhancedComponent.doStaticThing();
+    assert.strictEqual(result, "done");
   })
 });
