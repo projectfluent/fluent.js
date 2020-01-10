@@ -9,7 +9,7 @@ version = $(1)@$(shell node -e "\
 test:
 	@nyc --reporter=text --reporter=html mocha \
 	    --recursive --ui tdd \
-	    --require $(ROOT)/mocha_setup \
+	    --require esm \
 	    test/**/*_test.js
 
 build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
