@@ -19,20 +19,6 @@ lint:
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) $@"
 
-test:
-ifneq (,$(wildcard ./test/index.js))
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require $(ROOT)/mocha_setup \
-	    --require ./test/index \
-	    test/**/*_test.js
-else
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require $(ROOT)/mocha_setup \
-	    test/**/*_test.js
-endif
-
 html:
 ifneq (,$(wildcard ./.esdoc.json))
 	@esdoc

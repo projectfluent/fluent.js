@@ -3,6 +3,12 @@ GLOBAL  := FluentSequence
 
 include ../common.mk
 
+test:
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
+	    --require $(ROOT)/mocha_setup \
+	    test/**/*_test.js
+
 build: index.js compat.js
 
 index.js: $(SOURCES)

@@ -1,6 +1,6 @@
-import { isValidElement, cloneElement, Component } from "react";
+import { isValidElement, cloneElement, useContext } from "react";
 import PropTypes from "prop-types";
-import { isReactLocalization } from "./localization";
+import FluentContext from "./context";
 import VOID_ELEMENTS from "../vendor/voidElementTags";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
@@ -51,158 +51,128 @@ function toArguments(props) {
  *  translation is available.  It also makes it easy to grep for strings in the
  *  source code.
  */
-export default class Localized extends Component {
-  componentDidMount() {
-    const { l10n } = this.context;
+function Localized(props) {
+  const { id, attrs, children: child = null } = props;
+  const { l10n, parseMarkup } = useContext(FluentContext);
 
-    if (l10n) {
-      l10n.subscribe(this);
-    }
+  // Validate that the child element isn't an array
+  if (Array.isArray(child)) {
+    throw new Error("<Localized/> expected to receive a single " +
+      "React node child");
   }
 
-  componentWillUnmount() {
-    const { l10n } = this.context;
-
-    if (l10n) {
-      l10n.unsubscribe(this);
-    }
+  if (!l10n) {
+    // Use the wrapped component as fallback.
+    return child;
   }
 
-  /*
-   * Rerender this component in a new language.
-   */
-  relocalize() {
-    // When the `ReactLocalization`'s fallback chain changes, update the
-    // component.
-    this.forceUpdate();
+  const bundle = l10n.getBundle(id);
+
+  if (bundle === null) {
+    // Use the wrapped component as fallback.
+    return child;
   }
 
-  render() {
-    const { l10n, parseMarkup } = this.context;
-    const { id, attrs, children: child = null } = this.props;
+  const msg = bundle.getMessage(id);
+  const [args, elems] = toArguments(props);
+  let errors = [];
 
-    // Validate that the child element isn't an array
-    if (Array.isArray(child)) {
-      throw new Error("<Localized/> expected to receive a single " +
-        "React node child");
-    }
-
-    if (!l10n) {
-      // Use the wrapped component as fallback.
-      return child;
-    }
-
-    const bundle = l10n.getBundle(id);
-
-    if (bundle === null) {
-      // Use the wrapped component as fallback.
-      return child;
-    }
-
-    const msg = bundle.getMessage(id);
-    const [args, elems] = toArguments(this.props);
-    let errors = [];
-
-    // Check if the child inside <Localized> is a valid element -- if not, then
-    // it's either null or a simple fallback string. No need to localize the
-    // attributes.
-    if (!isValidElement(child)) {
-      if (msg.value) {
-        // Replace the fallback string with the message value;
-        let value = bundle.formatPattern(msg.value, args, errors);
-        for (let error of errors) {
-          l10n.reportError(error);
-        }
-        return value;
-      }
-
-      return child;
-    }
-
-    let localizedProps;
-
-    // The default is to forbid all message attributes. If the attrs prop exists
-    // on the Localized instance, only set message attributes which have been
-    // explicitly allowed by the developer.
-    if (attrs && msg.attributes) {
-      localizedProps = {};
-      errors = [];
-      for (const [name, allowed] of Object.entries(attrs)) {
-        if (allowed && name in msg.attributes) {
-          localizedProps[name] = bundle.formatPattern(
-            msg.attributes[name], args, errors);
-        }
-      }
+  // Check if the child inside <Localized> is a valid element -- if not, then
+  // it's either null or a simple fallback string. No need to localize the
+  // attributes.
+  if (!isValidElement(child)) {
+    if (msg.value) {
+      // Replace the fallback string with the message value;
+      let value = bundle.formatPattern(msg.value, args, errors);
       for (let error of errors) {
         l10n.reportError(error);
       }
+      return value;
     }
 
-    // If the wrapped component is a known void element, explicitly dismiss the
-    // message value and do not pass it to cloneElement in order to avoid the
-    // "void element tags must neither have `children` nor use
-    // `dangerouslySetInnerHTML`" error.
-    if (child.type in VOID_ELEMENTS) {
-      return cloneElement(child, localizedProps);
-    }
+    return child;
+  }
 
-    // If the message has a null value, we're only interested in its attributes.
-    // Do not pass the null value to cloneElement as it would nuke all children
-    // of the wrapped component.
-    if (msg.value === null) {
-      return cloneElement(child, localizedProps);
-    }
+  let localizedProps;
 
+  // The default is to forbid all message attributes. If the attrs prop exists
+  // on the Localized instance, only set message attributes which have been
+  // explicitly allowed by the developer.
+  if (attrs && msg.attributes) {
+    localizedProps = {};
     errors = [];
-    const messageValue = bundle.formatPattern(msg.value, args, errors);
+    for (const [name, allowed] of Object.entries(attrs)) {
+      if (allowed && name in msg.attributes) {
+        localizedProps[name] = bundle.formatPattern(
+          msg.attributes[name], args, errors);
+      }
+    }
     for (let error of errors) {
       l10n.reportError(error);
     }
+  }
 
-    // If the message value doesn't contain any markup nor any HTML entities,
-    // insert it as the only child of the wrapped component.
-    if (!reMarkup.test(messageValue)) {
-      return cloneElement(child, localizedProps, messageValue);
+  // If the wrapped component is a known void element, explicitly dismiss the
+  // message value and do not pass it to cloneElement in order to avoid the
+  // "void element tags must neither have `children` nor use
+  // `dangerouslySetInnerHTML`" error.
+  if (child.type in VOID_ELEMENTS) {
+    return cloneElement(child, localizedProps);
+  }
+
+  // If the message has a null value, we're only interested in its attributes.
+  // Do not pass the null value to cloneElement as it would nuke all children
+  // of the wrapped component.
+  if (msg.value === null) {
+    return cloneElement(child, localizedProps);
+  }
+
+  errors = [];
+  const messageValue = bundle.formatPattern(msg.value, args, errors);
+  for (let error of errors) {
+    l10n.reportError(error);
+  }
+
+  // If the message value doesn't contain any markup nor any HTML entities,
+  // insert it as the only child of the wrapped component.
+  if (!reMarkup.test(messageValue)) {
+    return cloneElement(child, localizedProps, messageValue);
+  }
+
+  // If the message contains markup, parse it and try to match the children
+  // found in the translation with the props passed to this Localized.
+  const translationNodes = parseMarkup(messageValue);
+  const translatedChildren = translationNodes.map(childNode => {
+    if (childNode.nodeType === childNode.TEXT_NODE) {
+      return childNode.textContent;
     }
 
-    // If the message contains markup, parse it and try to match the children
-    // found in the translation with the props passed to this Localized.
-    const translationNodes = parseMarkup(messageValue);
-    const translatedChildren = translationNodes.map(childNode => {
-      if (childNode.nodeType === childNode.TEXT_NODE) {
-        return childNode.textContent;
-      }
+    // If the child is not expected just take its textContent.
+    if (!elems.hasOwnProperty(childNode.localName)) {
+      return childNode.textContent;
+    }
 
-      // If the child is not expected just take its textContent.
-      if (!elems.hasOwnProperty(childNode.localName)) {
-        return childNode.textContent;
-      }
+    const sourceChild = elems[childNode.localName];
 
-      const sourceChild = elems[childNode.localName];
+    // If the element passed as a prop to <Localized> is a known void element,
+    // explicitly dismiss any textContent which might have accidentally been
+    // defined in the translation to prevent the "void element tags must not
+    // have children" error.
+    if (sourceChild.type in VOID_ELEMENTS) {
+      return sourceChild;
+    }
 
-      // If the element passed as a prop to <Localized> is a known void element,
-      // explicitly dismiss any textContent which might have accidentally been
-      // defined in the translation to prevent the "void element tags must not
-      // have children" error.
-      if (sourceChild.type in VOID_ELEMENTS) {
-        return sourceChild;
-      }
+    // TODO Protect contents of elements wrapped in <Localized>
+    // https://github.com/projectfluent/fluent.js/issues/184
+    // TODO  Control localizable attributes on elements passed as props
+    // https://github.com/projectfluent/fluent.js/issues/185
+    return cloneElement(sourceChild, null, childNode.textContent);
+  });
 
-      // TODO Protect contents of elements wrapped in <Localized>
-      // https://github.com/projectfluent/fluent.js/issues/184
-      // TODO  Control localizable attributes on elements passed as props
-      // https://github.com/projectfluent/fluent.js/issues/185
-      return cloneElement(sourceChild, null, childNode.textContent);
-    });
-
-    return cloneElement(child, localizedProps, ...translatedChildren);
-  }
+  return cloneElement(child, localizedProps, ...translatedChildren);
 }
 
-Localized.contextTypes = {
-  l10n: isReactLocalization,
-  parseMarkup: PropTypes.func,
-};
+export default Localized;
 
 Localized.propTypes = {
   children: PropTypes.node
