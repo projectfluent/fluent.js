@@ -23,11 +23,5 @@ export default {
         "transform-regenerator"
       ],
     }]
-  ],
-  plugins: [
-    // Shipped in Firefox 57, Chrome 63
-    "@babel/plugin-proposal-async-generator-functions",
-    // Shipped in Firefox 55, Chrome 60
-    "@babel/plugin-proposal-object-rest-spread"
   ]
 };
