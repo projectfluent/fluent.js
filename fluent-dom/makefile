@@ -7,7 +7,7 @@ include ../common.mk
 test:
 	@nyc --reporter=text --reporter=html mocha \
 	    --recursive --ui tdd \
-	    --require $(ROOT)/mocha_setup \
+	    --require esm \
 	    --require ./test/index \
 	    test/**/*_test.js
 

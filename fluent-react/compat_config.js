@@ -9,7 +9,6 @@ export default {
     babel({
       ...babelConfig,
       plugins: [
-        ...babelConfig.plugins,
         ["babel-plugin-transform-rename-import", {
           replacements: [
             {
