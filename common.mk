@@ -6,7 +6,7 @@ SOURCES := $(wildcard src/*)
 VERSION := $(shell node -pe "require('./package.json').version")
 
 export SHELL := /bin/bash
-export PATH  := $(ROOT)/node_modules/.bin:$(PATH)
+export PATH  := $(CURDIR)/node_modules/.bin:$(ROOT)/node_modules/.bin:$(PATH)
 
 # The default target.
 all: lint test build
@@ -18,20 +18,6 @@ _lint:
 	@eslint --config $(ROOT)/eslint_src.json --max-warnings 0 src/
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
-
-_test:
-ifneq (,$(wildcard ./test/index.js))
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require $(ROOT)/mocha_setup \
-	    --require ./test/index \
-	    test/**/*_test.js
-else
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require $(ROOT)/mocha_setup \
-	    test/**/*_test.js
-endif
 
 _html:
 ifneq (,$(wildcard ./.esdoc.json))

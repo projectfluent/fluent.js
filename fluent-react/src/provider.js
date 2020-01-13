@@ -1,6 +1,7 @@
-import { Component, Children } from "react";
+import { createElement, memo } from "react";
 import PropTypes from "prop-types";
-import ReactLocalization, { isReactLocalization} from "./localization";
+import FluentContext from "./context";
+import ReactLocalization from "./localization";
 import createParseMarkup from "./markup";
 
 /*
@@ -21,56 +22,39 @@ import createParseMarkup from "./markup";
  * `ReactLocalization` to format translations.  If a translation is missing in
  * one instance, `ReactLocalization` will fall back to the next one.
  */
-export default class LocalizationProvider extends Component {
-  constructor(props) {
-    super(props);
-    const {bundles, parseMarkup} = props;
-
-    if (bundles === undefined) {
-      throw new Error("LocalizationProvider must receive the bundles prop.");
-    }
-
-    if (!bundles[Symbol.iterator]) {
-      throw new Error("The bundles prop must be an iterable.");
-    }
-
-    this.l10n = new ReactLocalization(bundles);
-    this.parseMarkup = parseMarkup || createParseMarkup();
+function LocalizationProvider(props) {
+  if (props.bundles === undefined) {
+    throw new Error("LocalizationProvider must receive the bundles prop.");
   }
 
-  getChildContext() {
-    return {
-      l10n: this.l10n,
-      parseMarkup: this.parseMarkup,
-    };
+  if (!props.bundles[Symbol.iterator]) {
+    throw new Error("The bundles prop must be an iterable.");
   }
 
-  componentWillReceiveProps(next) {
-    const { bundles } = next;
-
-    if (bundles !== this.props.bundles) {
-      this.l10n.setBundles(bundles);
-    }
-  }
-
-  render() {
-    return Children.only(this.props.children);
-  }
+  return createElement(
+    FluentContext.Provider,
+    { value: {
+      l10n: new ReactLocalization(props.bundles, props.parseMarkup),
+      parseMarkup: props.parseMarkup || createParseMarkup()
+    } },
+    props.children
+  );
 }
-
-LocalizationProvider.childContextTypes = {
-  l10n: isReactLocalization,
-  parseMarkup: PropTypes.func,
-};
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
   bundles: isIterable,
-  parseMarkup: PropTypes.func,
+  parseMarkup: PropTypes.func
 };
 
 function isIterable(props, propName, componentName) {
   const prop = props[propName];
+
+  if (!prop) {
+    return new Error(
+      `The ${propName} prop supplied to ${componentName} is required.`
+    );
+  }
 
   if (Symbol.iterator in Object(prop)) {
     return null;
@@ -80,3 +64,5 @@ function isIterable(props, propName, componentName) {
     `The ${propName} prop supplied to ${componentName} must be an iterable.`
   );
 }
+
+export default memo(LocalizationProvider);

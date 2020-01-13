@@ -4,6 +4,13 @@ DEPS    := cached-iterable:CachedIterable
 
 include ../common.mk
 
+test:
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
+	    --require esm \
+	    --require ./test/index \
+	    test/**/*_test.js
+
 build: index.js compat.js
 
 index.js: $(SOURCES)
@@ -27,6 +34,5 @@ compat.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 lint: _lint
-test: _test
 html: _html
 clean: _clean

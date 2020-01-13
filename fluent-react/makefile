@@ -6,6 +6,9 @@ include ../common.mk
 
 build: index.js compat.js
 
+test:
+	@jest --collect-coverage
+
 index.js: $(SOURCES)
 	@rollup $(CURDIR)/src/index.js \
 	    --config $(ROOT)/bundle_config.js \
@@ -27,6 +30,5 @@ compat.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 lint: _lint
-test: _test
 html: _html
 clean: _clean
