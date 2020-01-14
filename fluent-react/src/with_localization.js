@@ -3,7 +3,7 @@ import FluentContext from "./context";
 
 export default function withLocalization(Inner) {
   function WithLocalization(props) {
-    const { l10n } = useContext(FluentContext);
+    const l10n = useContext(FluentContext);
     return createElement(
       Inner,
       // getString needs to be re-bound on updates to trigger a re-render
