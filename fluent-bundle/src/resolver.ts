@@ -31,7 +31,6 @@ import {
   FluentNumber,
   FluentDateTime
 } from "./types.js";
-import { NUMBER, DATETIME } from "./builtins.js";
 import { Scope } from "./scope.js";
 import {
   Variant,
@@ -266,17 +265,8 @@ function resolveFunctionReference(
   // the `FluentBundle` constructor.
   let func = scope.bundle._functions[name];
   if (!func) {
-    switch (name) {
-      case "NUMBER":
-        func = NUMBER;
-        break;
-      case "DATETIME":
-        func = DATETIME;
-        break;
-      default:
-        scope.reportError(new ReferenceError(`Unknown function: ${name}()`));
-        return new FluentNone(`${name}()`);
-    }
+    scope.reportError(new ReferenceError(`Unknown function: ${name}()`));
+    return new FluentNone(`${name}()`);
   }
 
   if (typeof func !== "function") {

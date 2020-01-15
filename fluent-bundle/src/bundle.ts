@@ -3,6 +3,7 @@ import { Scope } from "./scope.js";
 import { FluentResource } from "./resource.js";
 import { FluentValue, FluentNone, FluentFunction } from "./types.js";
 import { Message, Term, Pattern } from "./ast.js";
+import { NUMBER, DATETIME } from "./builtins.js";
 
 export type TextTransform = (text: string) => string;
 
@@ -54,7 +55,7 @@ export class FluentBundle {
   constructor(
     locales: string | Array<string>,
     {
-      functions = {},
+      functions,
       useIsolating = true,
       transform = (v: string): string => v
     }: {
@@ -64,7 +65,11 @@ export class FluentBundle {
     } = {}
   ) {
     this.locales = Array.isArray(locales) ? locales : [locales];
-    this._functions = functions;
+    this._functions = {
+      NUMBER,
+      DATETIME,
+      ...functions
+    };
     this._useIsolating = useIsolating;
     this._transform = transform;
   }
