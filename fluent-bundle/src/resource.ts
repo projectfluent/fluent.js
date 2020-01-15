@@ -72,13 +72,9 @@ export class FluentResource {
   public body: Array<Message | Term>;
 
   constructor(source: string) {
-    this.body = this._parse(source);
-  }
+    this.body = [];
 
-  _parse(source: string): Array<Message | Term> {
     RE_MESSAGE_START.lastIndex = 0;
-
-    let resource = [];
     let cursor = 0;
 
     // Iterate over the beginnings of messages and terms to efficiently skip
@@ -91,7 +87,7 @@ export class FluentResource {
 
       cursor = RE_MESSAGE_START.lastIndex;
       try {
-        resource.push(parseMessage(next[1]));
+        this.body.push(parseMessage(next[1]));
       } catch (err) {
         if (err instanceof SyntaxError) {
           // Don't report any Fluent syntax errors. Skip directly to the
@@ -101,8 +97,6 @@ export class FluentResource {
         throw err;
       }
     }
-
-    return resource;
 
     // The parser implementation is inlined below for performance reasons,
     // as well as for convenience of accessing `source` and `cursor`.
