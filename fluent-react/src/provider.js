@@ -2,7 +2,6 @@ import { createElement, memo } from "react";
 import PropTypes from "prop-types";
 import FluentContext from "./context";
 import ReactLocalization from "./localization";
-import createParseMarkup from "./markup";
 
 /*
  * The Provider component for the `ReactLocalization` class.
@@ -33,10 +32,9 @@ function LocalizationProvider(props) {
 
   return createElement(
     FluentContext.Provider,
-    { value: {
-      l10n: new ReactLocalization(props.bundles, props.parseMarkup),
-      parseMarkup: props.parseMarkup || createParseMarkup()
-    } },
+    {
+      value: new ReactLocalization(props.bundles, props.parseMarkup),
+    },
     props.children
   );
 }

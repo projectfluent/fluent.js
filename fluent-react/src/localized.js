@@ -53,7 +53,7 @@ function toArguments(props) {
  */
 function Localized(props) {
   const { id, attrs, children: child = null } = props;
-  const { l10n, parseMarkup } = useContext(FluentContext);
+  const l10n = useContext(FluentContext);
 
   // Validate that the child element isn't an array
   if (Array.isArray(child)) {
@@ -141,7 +141,7 @@ function Localized(props) {
 
   // If the message contains markup, parse it and try to match the children
   // found in the translation with the props passed to this Localized.
-  const translationNodes = parseMarkup(messageValue);
+  const translationNodes = l10n.parseMarkup(messageValue);
   const translatedChildren = translationNodes.map(childNode => {
     if (childNode.nodeType === childNode.TEXT_NODE) {
       return childNode.textContent;

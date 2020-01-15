@@ -1,5 +1,6 @@
 import { mapBundleSync } from "@fluent/sequence";
 import { CachedSyncIterable } from "cached-iterable";
+import createParseMarkup from "./markup";
 
 /*
  * `ReactLocalization` handles translation formatting and fallback.
@@ -13,8 +14,9 @@ import { CachedSyncIterable } from "cached-iterable";
  * via the `LocalizationProvider` component.
  */
 export default class ReactLocalization {
-  constructor(bundles) {
+  constructor(bundles, parseMarkup = createParseMarkup()) {
     this.bundles = CachedSyncIterable.from(bundles);
+    this.parseMarkup = parseMarkup;
   }
 
   getBundle(id) {
