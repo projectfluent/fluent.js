@@ -7,7 +7,8 @@ import { NUMBER, DATETIME } from "./builtins.js";
 
 export type TextTransform = (text: string) => string;
 
-export type FluentArgument = string | number | Date | FluentValue;
+type NativeArgument = string | number | Date;
+export type FluentArgument = FluentValue | NativeArgument;
 
 /**
  * Message bundles are single-language stores of translation resources. They are
