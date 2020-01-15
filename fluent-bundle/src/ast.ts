@@ -46,7 +46,7 @@ export type TermReference = {
   type: "term";
   name: string;
   attr: string | null;
-  args: Array<Expression>;
+  args: Array<Expression | NamedArgument>;
 };
 
 export type MessageReference = {
@@ -58,7 +58,7 @@ export type MessageReference = {
 export type FunctionReference = {
   type: "func";
   name: string;
-  args: Array<Expression>;
+  args: Array<Expression | NamedArgument>;
 };
 
 export type Variant = {
