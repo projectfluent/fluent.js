@@ -1,7 +1,6 @@
 import {
   Message,
   PatternElement,
-  Indent,
   Literal,
   SelectExpression,
   Variant,
@@ -276,7 +275,7 @@ export class FluentResource {
 
       let baked: Array<PatternElement> = [];
       for (let element of elements) {
-        if (typeof element !== "string" && element.type === "indent") {
+        if (element instanceof Indent) {
           // Dedent indented lines by the maximum common indent.
           element = element.value.slice(0, element.value.length - commonIndent);
         }
@@ -542,7 +541,11 @@ export class FluentResource {
       let value = blank.replace(RE_BLANK_LINES, "\n");
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       let length = RE_INDENT.exec(blank)![1].length;
-      return { type: "indent", value, length };
+      return new Indent(value, length);
     }
   }
+}
+
+class Indent {
+  constructor(public value: string, public length: number) { }
 }

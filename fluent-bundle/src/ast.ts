@@ -16,12 +16,6 @@ export type ComplexPattern = Array<PatternElement>;
 
 export type PatternElement = string | Expression;
 
-export type Indent = {
-  type: "indent";
-  value: string;
-  length: number;
-};
-
 export type Expression =
   | SelectExpression
   | VariableReference
