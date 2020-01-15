@@ -1,12 +1,12 @@
 import { resolveComplexPattern } from "./resolver.js";
 import { Scope } from "./scope.js";
 import { FluentResource } from "./resource.js";
-import { FluentNone, FluentType, FluentFunction } from "./types.js";
+import { FluentValue, FluentNone, FluentFunction } from "./types.js";
 import { Message, Term, Pattern } from "./ast.js";
 
 export type TextTransform = (text: string) => string;
 
-export type FluentArgument = string | number | Date | FluentType;
+export type FluentArgument = string | number | Date | FluentValue;
 
 /**
  * Message bundles are single-language stores of translation resources. They are

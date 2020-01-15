@@ -8,17 +8,17 @@
  *   - opts - an object of key-value args
  *
  * Arguments to functions are guaranteed to already be instances of
- * `FluentType`.  Functions must return `FluentType` objects as well.
+ * `FluentValue`.  Functions must return `FluentValues` as well.
  */
 
 import {
+  FluentValue,
   FluentNone,
   FluentNumber,
-  FluentDateTime,
-  FluentType
+  FluentDateTime
 } from "./types.js";
 
-function values(opts: Record<string, FluentType>): Record<string, unknown> {
+function values(opts: Record<string, FluentValue>): Record<string, unknown> {
   const unwrapped: Record<string, unknown> = {};
   for (const [name, opt] of Object.entries(opts)) {
     unwrapped[name] = opt.valueOf();
@@ -27,9 +27,9 @@ function values(opts: Record<string, FluentType>): Record<string, unknown> {
 }
 
 export function NUMBER(
-  args: Array<FluentType>,
-  opts: Record<string, FluentType>
-): FluentType {
+  args: Array<FluentValue>,
+  opts: Record<string, FluentValue>
+): FluentValue {
   let arg = args[0];
 
   if (arg instanceof FluentNone) {
@@ -44,9 +44,9 @@ export function NUMBER(
 }
 
 export function DATETIME(
-  args: Array<FluentType>,
-  opts: Record<string, FluentType>
-): FluentType {
+  args: Array<FluentValue>,
+  opts: Record<string, FluentValue>
+): FluentValue {
   let arg = args[0];
 
   if (arg instanceof FluentNone) {

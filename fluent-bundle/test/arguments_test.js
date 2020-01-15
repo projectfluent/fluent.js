@@ -5,7 +5,7 @@ import ftl from "@fluent/dedent";
 
 import {FluentBundle} from '../esm/bundle';
 import {FluentResource} from '../esm/resource';
-import {FluentBaseType} from '../esm/types';
+import {FluentType} from '../esm/types';
 
 suite('Variables', function() {
   let bundle, errs;
@@ -217,7 +217,7 @@ suite('Variables', function() {
   suite('custom argument types', function(){
     let argval, args;
 
-    class CustomType extends FluentBaseType {
+    class CustomType extends FluentType {
       toString() {
         return 'CUSTOM';
       }

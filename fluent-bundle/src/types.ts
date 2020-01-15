@@ -2,12 +2,12 @@ import { Scope } from "./scope.js";
 
 /* global Intl */
 
-export type FluentType = FluentBaseType<unknown> | string;
+export type FluentValue = FluentType<unknown> | string;
 
 export type FluentFunction = (
-  positional: Array<FluentType>,
-  named: Record<string, FluentType>
-) => FluentType;
+  positional: Array<FluentValue>,
+  named: Record<string, FluentValue>
+) => FluentValue;
 
 /**
  * The `FluentType` class is the base of Fluent's type system.
@@ -16,7 +16,7 @@ export type FluentFunction = (
  * them, which can then be used in the `toString` method together with a proper
  * `Intl` formatter.
  */
-export class FluentBaseType<T> {
+export class FluentType<T> {
   /** The wrapped native value. */
   public value: T;
 
@@ -53,7 +53,7 @@ export class FluentBaseType<T> {
 /**
  * A `FluentType` representing no correct value.
  */
-export class FluentNone extends FluentBaseType<string> {
+export class FluentNone extends FluentType<string> {
   /**
    * Create an instance of `FluentNone` with an optional fallback value.
    * @param   value - The fallback value of this `FluentNone`.
@@ -73,7 +73,7 @@ export class FluentNone extends FluentBaseType<string> {
 /**
  * A `FluentType` representing a number.
  */
-export class FluentNumber extends FluentBaseType<number> {
+export class FluentNumber extends FluentType<number> {
   /** Options passed to Intl.NumberFormat. */
   public opts: Intl.NumberFormatOptions;
 
@@ -103,7 +103,7 @@ export class FluentNumber extends FluentBaseType<number> {
 /**
  * A `FluentType` representing a date and time.
  */
-export class FluentDateTime extends FluentBaseType<number> {
+export class FluentDateTime extends FluentType<number> {
   /** Options passed to Intl.DateTimeFormat. */
   public opts: Intl.DateTimeFormatOptions;
 

@@ -14,9 +14,9 @@ export {
 } from "./bundle.js";
 export { FluentResource } from "./resource.js";
 export {
+  FluentValue,
   FluentType,
   FluentFunction,
-  FluentBaseType,
   FluentNumber,
   FluentDateTime
 } from "./types.js";
