@@ -1,7 +1,7 @@
 import {
   FluentBundle,
   FluentResource,
-  FluentBaseType,
+  FluentType,
   FluentNumber,
   FluentDateTime,
 } from "../../fluent-bundle/esm/index.js";
@@ -10,7 +10,7 @@ this.EXPORTED_SYMBOLS = [
   ...Object.keys({
     FluentBundle,
     FluentResource,
-    FluentBaseType,
+    FluentType,
     FluentNumber,
     FluentDateTime,
   }),
