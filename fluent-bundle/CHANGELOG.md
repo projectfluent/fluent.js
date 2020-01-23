@@ -1,5 +1,21 @@
 # Changelog
 
+## @fluent/bundle 0.15.0 (January 23, 2019)
+
+  - Migrate to TypeScript. (#436)
+
+    The source code of `@fluent/bundle` has been ported to TypeScript. There
+    are no breaking changes to the public API.
+
+    A new export has been added for TS consumers: `FluentValue` which is a
+    union of the `FluentType` class and `string`. This reflects the
+    implementation detail of `@fluent/bundle` which treats primitive strings
+    as valid `FluentType` instances.
+
+    The ES module files are now published into the `esm` directory. It also
+    contains the type definitions for TS consumers. The `src` directory has
+    been removed from the published packages.
+
 ## @fluent/bundle 0.14.1 (December 20, 2019)
 
 - Fix a big which made placeables which resolved to long strings format as
