@@ -36,6 +36,7 @@ clean: _clean
 STRUCTURE_FTL := $(wildcard test/fixtures_structure/*.ftl)
 STRUCTURE_AST := $(STRUCTURE_FTL:.ftl=.json)
 
+.PHONY: fixtures
 fixtures: $(STRUCTURE_AST)
 
 .PHONY: $(STRUCTURE_AST)

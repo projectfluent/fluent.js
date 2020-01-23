@@ -8,6 +8,7 @@ lint:
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
+.PHONY: compile
 compile: esm/.compiled
 
 esm/.compiled: $(SOURCES)
@@ -65,6 +66,7 @@ BEHAVIOR_JSON := $(BEHAVIOR_FTL:../fluent-syntax/test/fixtures_behavior/%.ftl=te
 REFERENCE_JSON := $(REFERENCE_FTL:../fluent-syntax/test/fixtures_reference/%.ftl=test/fixtures_reference/%.json)
 STRUCTURE_JSON := $(STRUCTURE_FTL:../fluent-syntax/test/fixtures_structure/%.ftl=test/fixtures_structure/%.json)
 
+.PHONY: fixtures
 fixtures: $(BEHAVIOR_JSON) $(REFERENCE_JSON) $(STRUCTURE_JSON)
 
 .PHONY: $(BEHAVIOR_JSON)

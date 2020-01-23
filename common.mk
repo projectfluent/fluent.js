@@ -8,6 +8,9 @@ VERSION := $(shell node -pe "require('./package.json').version")
 export SHELL := /bin/bash
 export PATH  := $(CURDIR)/node_modules/.bin:$(ROOT)/node_modules/.bin:$(PATH)
 
+# Common maintenance tasks.
+.PHONY: clean lint test build html
+
 # The default target.
 all: lint test build
 
