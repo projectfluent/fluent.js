@@ -1,5 +1,25 @@
 # Changelog
 
+## @fluent/react 0.11.0 (January 23, 2020)
+
+  - Use the offical stable React Context API. (#406)
+
+    `@fluent/react` used to use the [legacy React Context
+    API](https://reactjs.org/docs/legacy-context.html). Thanks to @Gregoor,
+    we now use the official [React Context
+    API](https://reactjs.org/docs/context.html) instead.
+
+    `@fluent/react` bundle size is now around 15% smaller (1.5 KB minified
+    and gzipped).
+
+  - Require React 16.8+.
+
+    The switch to the new React Context API requires that we drop support for
+    old versions of React, like 0.14 and 15. Additionally, `@fluent/react`
+    uses hooks under the hood now, which require at least React 16.8.
+
+  - Accept `@fluent/bundle` 0.15 as peer dependency.
+
 ## @fluent/react 0.10.0 (July 30, 2019)
 
   - Update to `@fluent/bundle` 0.14.0.
