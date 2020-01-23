@@ -30,9 +30,7 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~ReactLocalization.html">ReactLocalization</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localized.js~Localized.html">Localized</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/provider.js~LocalizationProvider.html">LocalizationProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isReactLocalization">isReactLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Localized">Localized</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createParseMarkup">createParseMarkup</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withLocalization">withLocalization</a></span></span></li>
 </ul>
@@ -40,67 +38,23 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/with_localization.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createElement, Component } from &quot;react&quot;;
-
-import { isReactLocalization } from &quot;./localization&quot;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createElement, useContext } from &quot;react&quot;;
+import FluentContext from &quot;./context&quot;;
 
 export default function withLocalization(Inner) {
-  class WithLocalization extends Component {
-    componentDidMount() {
-      const { l10n } = this.context;
-
-      if (l10n) {
-        l10n.subscribe(this);
-      }
-    }
-
-    componentWillUnmount() {
-      const { l10n } = this.context;
-
-      if (l10n) {
-        l10n.unsubscribe(this);
-      }
-    }
-
-    /*
-     * Rerender this component in a new language.
-     */
-    relocalize() {
-      // When the `ReactLocalization`&apos;s fallback chain changes, update the
-      // component.
-      this.forceUpdate();
-    }
-
-    /*
-     * Find a translation by `id` and format it to a string using `args`.
-     */
-    getString(id, args, fallback) {
-      const { l10n } = this.context;
-
-      if (!l10n) {
-        return fallback || id;
-      }
-
-      return l10n.getString(id, args, fallback);
-    }
-
-    render() {
-      return createElement(
-        Inner,
-        Object.assign(
-          // getString needs to be re-bound on updates to trigger a re-render
-          { getString: (...args) =&gt; this.getString(...args) },
-          this.props
-        )
-      );
-    }
+  function WithLocalization(props) {
+    const l10n = useContext(FluentContext);
+    return createElement(
+      Inner,
+      {
+        // getString needs to be re-bound to trigger a re-render of Inner
+        getString: (id, args, fallback) =&gt; l10n.getString(id, args, fallback),
+        ...props
+      },
+    );
   }
 
   WithLocalization.displayName = `WithLocalization(${displayName(Inner)})`;
-
-  WithLocalization.contextTypes = {
-    l10n: isReactLocalization
-  };
 
   return WithLocalization;
 }

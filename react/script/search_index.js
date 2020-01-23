@@ -1,15 +1,9 @@
 window.esdocSearchIndex = [
   [
-    "@fluent/react/src/provider.js~localizationprovider",
-    "class/src/provider.js~LocalizationProvider.html",
-    "<span>LocalizationProvider</span> <span class=\"search-result-import-path\">@fluent/react/src/provider.js</span>",
-    "class"
-  ],
-  [
     "@fluent/react/src/localized.js~localized",
-    "class/src/localized.js~Localized.html",
+    "function/index.html#static-function-Localized",
     "<span>Localized</span> <span class=\"search-result-import-path\">@fluent/react/src/localized.js</span>",
-    "class"
+    "function"
   ],
   [
     "@fluent/react/src/localization.js~reactlocalization",
@@ -21,12 +15,6 @@ window.esdocSearchIndex = [
     "@fluent/react/src/markup.js~createparsemarkup",
     "function/index.html#static-function-createParseMarkup",
     "<span>createParseMarkup</span> <span class=\"search-result-import-path\">@fluent/react/src/markup.js</span>",
-    "function"
-  ],
-  [
-    "@fluent/react/src/localization.js~isreactlocalization",
-    "function/index.html#static-function-isReactLocalization",
-    "<span>isReactLocalization</span> <span class=\"search-result-import-path\">@fluent/react/src/localization.js</span>",
     "function"
   ],
   [
@@ -318,6 +306,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "src/context.js",
+    "file/src/context.js.html",
+    "src/context.js",
+    "file"
+  ],
+  [
     "src/index.js",
     "file/src/index.js.html",
     "src/index.js",
@@ -354,33 +348,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/localization.js~reactlocalization#reporterror",
-    "class/src/localization.js~ReactLocalization.html#instance-method-reportError",
-    "src/localization.js~ReactLocalization#reportError",
-    "method"
-  ],
-  [
-    "src/localization.js~reactlocalization#setbundles",
-    "class/src/localization.js~ReactLocalization.html#instance-method-setBundles",
-    "src/localization.js~ReactLocalization#setBundles",
-    "method"
-  ],
-  [
-    "src/localization.js~reactlocalization#subs",
-    "class/src/localization.js~ReactLocalization.html#instance-member-subs",
-    "src/localization.js~ReactLocalization#subs",
+    "src/localization.js~reactlocalization#parsemarkup",
+    "class/src/localization.js~ReactLocalization.html#instance-member-parseMarkup",
+    "src/localization.js~ReactLocalization#parseMarkup",
     "member"
   ],
   [
-    "src/localization.js~reactlocalization#subscribe",
-    "class/src/localization.js~ReactLocalization.html#instance-method-subscribe",
-    "src/localization.js~ReactLocalization#subscribe",
-    "method"
-  ],
-  [
-    "src/localization.js~reactlocalization#unsubscribe",
-    "class/src/localization.js~ReactLocalization.html#instance-method-unsubscribe",
-    "src/localization.js~ReactLocalization#unsubscribe",
+    "src/localization.js~reactlocalization#reporterror",
+    "class/src/localization.js~ReactLocalization.html#instance-method-reportError",
+    "src/localization.js~ReactLocalization#reportError",
     "method"
   ],
   [
@@ -388,30 +364,6 @@ window.esdocSearchIndex = [
     "file/src/localized.js.html",
     "src/localized.js",
     "file"
-  ],
-  [
-    "src/localized.js~localized#componentdidmount",
-    "class/src/localized.js~Localized.html#instance-method-componentDidMount",
-    "src/localized.js~Localized#componentDidMount",
-    "method"
-  ],
-  [
-    "src/localized.js~localized#componentwillunmount",
-    "class/src/localized.js~Localized.html#instance-method-componentWillUnmount",
-    "src/localized.js~Localized#componentWillUnmount",
-    "method"
-  ],
-  [
-    "src/localized.js~localized#relocalize",
-    "class/src/localized.js~Localized.html#instance-method-relocalize",
-    "src/localized.js~Localized#relocalize",
-    "method"
-  ],
-  [
-    "src/localized.js~localized#render",
-    "class/src/localized.js~Localized.html#instance-method-render",
-    "src/localized.js~Localized#render",
-    "method"
   ],
   [
     "src/markup.js",
@@ -424,42 +376,6 @@ window.esdocSearchIndex = [
     "file/src/provider.js.html",
     "src/provider.js",
     "file"
-  ],
-  [
-    "src/provider.js~localizationprovider#componentwillreceiveprops",
-    "class/src/provider.js~LocalizationProvider.html#instance-method-componentWillReceiveProps",
-    "src/provider.js~LocalizationProvider#componentWillReceiveProps",
-    "method"
-  ],
-  [
-    "src/provider.js~localizationprovider#constructor",
-    "class/src/provider.js~LocalizationProvider.html#instance-constructor-constructor",
-    "src/provider.js~LocalizationProvider#constructor",
-    "method"
-  ],
-  [
-    "src/provider.js~localizationprovider#getchildcontext",
-    "class/src/provider.js~LocalizationProvider.html#instance-method-getChildContext",
-    "src/provider.js~LocalizationProvider#getChildContext",
-    "method"
-  ],
-  [
-    "src/provider.js~localizationprovider#l10n",
-    "class/src/provider.js~LocalizationProvider.html#instance-member-l10n",
-    "src/provider.js~LocalizationProvider#l10n",
-    "member"
-  ],
-  [
-    "src/provider.js~localizationprovider#parsemarkup",
-    "class/src/provider.js~LocalizationProvider.html#instance-member-parseMarkup",
-    "src/provider.js~LocalizationProvider#parseMarkup",
-    "member"
-  ],
-  [
-    "src/provider.js~localizationprovider#render",
-    "class/src/provider.js~LocalizationProvider.html#instance-method-render",
-    "src/provider.js~LocalizationProvider#render",
-    "method"
   ],
   [
     "src/with_localization.js",

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Scope | @fluent/bundle</title>
+	<title>Scope | @fluent/bundle - v0.15.0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@fluent/bundle</a>
+					<a href="../index.html" class="title">@fluent/bundle - v0.15.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -89,13 +89,13 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="scope.html#bundle" class="tsd-kind-icon">bundle</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="scope.html#dirty" class="tsd-kind-icon">dirty</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="scope.html#errors" class="tsd-kind-icon">errors</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="scope.html#insidetermreference" class="tsd-kind-icon">inside<wbr>Term<wbr>Reference</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="scope.html#params" class="tsd-kind-icon">params</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="scope.html#placeables" class="tsd-kind-icon">placeables</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="scope.html#clonefortermreference" class="tsd-kind-icon">clone<wbr>For<wbr>Term<wbr>Reference</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="scope.html#memoizeintlobject" class="tsd-kind-icon">memoize<wbr>Intl<wbr>Object</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="scope.html#reporterror" class="tsd-kind-icon">report<wbr>Error</a></li>
 							</ul>
@@ -109,13 +109,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Scope<span class="tsd-signature-symbol">(</span>bundle<span class="tsd-signature-symbol">: </span><a href="fluentbundle.html" class="tsd-signature-type">FluentBundle</a>, errors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, insideTermReference<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, dirty<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">WeakSet</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#complexpattern" class="tsd-signature-type">ComplexPattern</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="scope.html" class="tsd-signature-type">Scope</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Scope<span class="tsd-signature-symbol">(</span>bundle<span class="tsd-signature-symbol">: </span><a href="fluentbundle.html" class="tsd-signature-type">FluentBundle</a>, errors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="scope.html" class="tsd-signature-type">Scope</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L15">scope.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L18">scope.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -128,12 +128,6 @@
 								</li>
 								<li>
 									<h5>args: <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> insideTermReference: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> dirty: <span class="tsd-signature-type">WeakSet</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#complexpattern" class="tsd-signature-type">ComplexPattern</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new WeakSet()</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="scope.html" class="tsd-signature-type">Scope</a></h4>
@@ -149,7 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L10">scope.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L10">scope.ts:10</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -164,7 +158,7 @@
 					<div class="tsd-signature tsd-kind-icon">bundle<span class="tsd-signature-symbol">:</span> <a href="fluentbundle.html" class="tsd-signature-type">FluentBundle</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L6">scope.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L6">scope.ts:6</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -176,10 +170,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="dirty" class="tsd-anchor"></a>
 					<h3>dirty</h3>
-					<div class="tsd-signature tsd-kind-icon">dirty<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WeakSet</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#complexpattern" class="tsd-signature-type">ComplexPattern</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">dirty<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WeakSet</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#complexpattern" class="tsd-signature-type">ComplexPattern</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new WeakSet()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L15">scope.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L13">scope.ts:13</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -195,7 +189,7 @@
 					<div class="tsd-signature tsd-kind-icon">errors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L8">scope.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L8">scope.ts:8</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -205,46 +199,39 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="insidetermreference" class="tsd-anchor"></a>
-					<h3>inside<wbr>Term<wbr>Reference</h3>
-					<div class="tsd-signature tsd-kind-icon">inside<wbr>Term<wbr>Reference<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="params" class="tsd-anchor"></a>
+					<h3>params</h3>
+					<div class="tsd-signature tsd-kind-icon">params<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L12">scope.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L15">scope.ts:15</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Term references require different variable lookup logic.</p>
+							<p>A dict of parameters passed to a TermReference.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="placeables" class="tsd-anchor"></a>
+					<h3>placeables</h3>
+					<div class="tsd-signature tsd-kind-icon">placeables<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L18">scope.ts:18</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The running count of placeables resolved so far. Used to detect the
+							Billion Laughs and Quadratic Blowup attacks.</p>
 						</div>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="clonefortermreference" class="tsd-anchor"></a>
-					<h3>clone<wbr>For<wbr>Term<wbr>Reference</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">clone<wbr>For<wbr>Term<wbr>Reference<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="scope.html" class="tsd-signature-type">Scope</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L31">scope.ts:31</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>args: <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../globals.html#fluentargument" class="tsd-signature-type">FluentArgument</a><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="scope.html" class="tsd-signature-type">Scope</a></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 					<a name="memoizeintlobject" class="tsd-anchor"></a>
 					<h3>memoize<wbr>Intl<wbr>Object</h3>
@@ -255,7 +242,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L42">scope.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L37">scope.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -292,7 +279,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/189a9968/fluent-bundle/src/scope.ts#L35">scope.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/e80044f3/fluent-bundle/src/scope.ts#L30">scope.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -317,9 +304,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="fluentbasetype.html" class="tsd-kind-icon">Fluent<wbr>Base<wbr>Type</a>
-					</li>
 					<li class=" tsd-kind-class">
 						<a href="fluentbundle.html" class="tsd-kind-icon">Fluent<wbr>Bundle</a>
 					</li>
@@ -334,6 +318,9 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="fluentresource.html" class="tsd-kind-icon">Fluent<wbr>Resource</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="fluenttype.html" class="tsd-kind-icon">Fluent<wbr>Type</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -356,10 +343,10 @@
 								<a href="scope.html#errors" class="tsd-kind-icon">errors</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="scope.html#insidetermreference" class="tsd-kind-icon">inside<wbr>Term<wbr>Reference</a>
+								<a href="scope.html#params" class="tsd-kind-icon">params</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="scope.html#clonefortermreference" class="tsd-kind-icon">clone<wbr>For<wbr>Term<wbr>Reference</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="scope.html#placeables" class="tsd-kind-icon">placeables</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="scope.html#memoizeintlobject" class="tsd-kind-icon">memoize<wbr>Intl<wbr>Object</a>
@@ -384,13 +371,10 @@
 						<a href="../globals.html#fluentfunction" class="tsd-kind-icon">Fluent<wbr>Function</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#fluenttype" class="tsd-kind-icon">Fluent<wbr>Type</a>
+						<a href="../globals.html#fluentvalue" class="tsd-kind-icon">Fluent<wbr>Value</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#functionreference" class="tsd-kind-icon">Function<wbr>Reference</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../globals.html#indent" class="tsd-kind-icon">Indent</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#literal" class="tsd-kind-icon">Literal</a>

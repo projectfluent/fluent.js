@@ -1,109 +1,295 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="default no-js">
 <head>
-  <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | @fluent/bundle</title>
-  <link type="text/css" rel="stylesheet" href="css/style.css">
-  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
-  <script src="script/prettify/prettify.js"></script>
-  <script src="script/manual.js"></script>
-<meta name="description" content="Localization library for expressive translations."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/bundle"><meta property="twitter:description" content="Localization library for expressive translations."></head>
-<body class="layout-container" data-ice="rootContainer">
-
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@fluent/bundle - v0.15.0</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
 <header>
-  <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
-  <a href="source.html">Source</a>
-  
-  <div class="search-box">
-  <span>
-    <img src="./image/search.png">
-    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
-  </span>
-    <ul class="search-result"></ul>
-  </div>
-<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@fluent/bundle - v0.15.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @fluent/bundle - v0.15.0</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#fluentbundle" id="fluentbundle" style="color: inherit; text-decoration: none;">
+					<h1>@fluent/bundle</h1>
+				</a>
+				<p><code>@fluent/bundle</code> is a JavaScript implementation of Project Fluent, a
+					localization framework designed to unleash the expressive power of the
+				natural language.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p><code>@fluent/bundle</code> can be used both on the client-side and the server-side. You
+					can install it from the npm registry or use it as a standalone script (as the
+				<code>FluentBundle</code> global).</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @fluent/bundle</code></pre>
+				<a href="#how-to-use" id="how-to-use" style="color: inherit; text-decoration: none;">
+					<h2>How to use</h2>
+				</a>
+				<p>The <code>FluentBundle</code> constructor provides the core functionality of formatting
+				translations from FTL files.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> {FluentBundle, FluentResource} <span class="hljs-keyword">from</span> <span class="hljs-string">"@fluent/bundle"</span>;
 
-<nav class="navigation" data-ice="nav"><div>
-  <ul>
-    
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bundle.js~FluentBundle.html">FluentBundle</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/error.js~FluentError.html">FluentError</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/resource.js~FluentResource.html">FluentResource</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/scope.js~Scope.html">Scope</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentDateTime.html">FluentDateTime</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentNone.html">FluentNone</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentNumber.html">FluentNumber</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/types.js~FluentType.html">FluentType</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DATETIME">DATETIME</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NUMBER">NUMBER</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resolveComplexPattern">resolveComplexPattern</a></span></span></li>
-</ul>
-</div>
-</nav>
-
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="-fluent-bundle">@fluent/bundle</h1><p><code>@fluent/bundle</code> is a JavaScript implementation of Project Fluent, a
-localization framework designed to unleash the expressive power of the
-natural language.</p>
-<h2 id="installation">Installation</h2><p><code>@fluent/bundle</code> can be used both on the client-side and the server-side. You
-can install it from the npm registry or use it as a standalone script (as the
-<code>FluentBundle</code> global).</p>
-<pre><code><code class="source-code prettyprint">npm install @fluent/bundle</code>
-</code></pre><h2 id="how-to-use">How to use</h2><p>The <code>FluentBundle</code> constructor provides the core functionality of formatting
-translations from FTL files.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {FluentBundle, FluentResource} from &quot;@fluent/bundle&quot;;
-
-let resource = new FluentResource(`
+<span class="hljs-keyword">let</span> resource = <span class="hljs-keyword">new</span> FluentResource(<span class="hljs-string">`
 -brand-name = Foo 3000
 welcome = Welcome, {$name}, to {-brand-name}!
-`);
+`</span>);
 
-let bundle = new FluentBundle(&quot;en-US&quot;);
-let errors = bundle.addResource(resource);
-if (errors.length) {
-    // Syntax errors are per-message and don&apos;t break the whole resource
+<span class="hljs-keyword">let</span> bundle = <span class="hljs-keyword">new</span> FluentBundle(<span class="hljs-string">"en-US"</span>);
+<span class="hljs-keyword">let</span> errors = bundle.addResource(resource);
+<span class="hljs-keyword">if</span> (errors.length) {
+    <span class="hljs-comment">// Syntax errors are per-message and don't break the whole resource</span>
 }
 
-let welcome = bundle.getMessage(&quot;welcome&quot;);
-if (welcome.value) {
-    bundle.formatPattern(welcome.value, {name: &quot;Anna&quot;});
-    // &#x2192; &quot;Welcome, Anna, to Foo 3000!&quot;
-}</code>
-</code></pre>
-<p>The API reference is available at <a href="https://projectfluent.org/fluent.js/bundle">https://projectfluent.org/fluent.js/bundle</a>.</p>
-<h2 id="compatibility">Compatibility</h2><p><code>fluent</code> requires the following <code>Intl</code> formatters:</p>
-<ul>
-<li><code>Intl.DateTimeFormat</code> (standard, well-supported)</li>
-<li><code>Intl.NumberFormat</code> (standard, well-supported)</li>
-<li><code>Intl.PluralRules</code> (standard, new in ECMAScript 2018)</li>
-</ul>
-<p><code>Intl.PluralRules</code> may already be available in some engines.  In most cases,
-however, a polyfill will be required.  We recommend <a href="https://www.npmjs.com/package/intl-pluralrules">intl-pluralrules</a>.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import &apos;intl-pluralrules&apos;;
-import {FluentBundle} from &apos;@fluent/bundle&apos;;</code>
-</code></pre>
-<p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&apos;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
-preset</a>. It requires the regenerator runtime provided by <a href="https://babeljs.io/docs/usage/polyfill/">babel-polyfill</a>.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {FluentBundle} from &apos;@fluent/bundle/compat&apos;;</code>
-</code></pre>
-<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
-documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p>
+<span class="hljs-keyword">let</span> welcome = bundle.getMessage(<span class="hljs-string">"welcome"</span>);
+<span class="hljs-keyword">if</span> (welcome.value) {
+    bundle.formatPattern(welcome.value, {<span class="hljs-attr">name</span>: <span class="hljs-string">"Anna"</span>});
+    <span class="hljs-comment">// → "Welcome, Anna, to Foo 3000!"</span>
+}</code></pre>
+				<p>The API reference is available at <a href="https://projectfluent.org/fluent.js/bundle">https://projectfluent.org/fluent.js/bundle</a>.</p>
+				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+					<h2>Compatibility</h2>
+				</a>
+				<p><code>fluent</code> requires the following <code>Intl</code> formatters:</p>
+				<ul>
+					<li><code>Intl.DateTimeFormat</code> (standard, well-supported)</li>
+					<li><code>Intl.NumberFormat</code> (standard, well-supported)</li>
+					<li><code>Intl.PluralRules</code> (standard, new in ECMAScript 2018)</li>
+				</ul>
+				<p><code>Intl.PluralRules</code> may already be available in some engines.  In most cases,
+				however, a polyfill will be required.  We recommend <a href="https://www.npmjs.com/package/intl-pluralrules">intl-pluralrules</a>.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> <span class="hljs-string">'intl-pluralrules'</span>;
+<span class="hljs-keyword">import</span> {FluentBundle} <span class="hljs-keyword">from</span> <span class="hljs-string">'@fluent/bundle'</span>;</code></pre>
+				<p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&#39;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
+				preset</a>. It requires the regenerator runtime provided by <a href="https://babeljs.io/docs/usage/polyfill/">babel-polyfill</a>.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> {FluentBundle} <span class="hljs-keyword">from</span> <span class="hljs-string">'@fluent/bundle/compat'</span>;</code></pre>
+				<a href="#learn-more" id="learn-more" style="color: inherit; text-decoration: none;">
+					<h2>Learn more</h2>
+				</a>
+				<p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
+					documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
+				implementations, and information about how to get involved.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/fluentbundle.html" class="tsd-kind-icon">Fluent<wbr>Bundle</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fluentdatetime.html" class="tsd-kind-icon">Fluent<wbr>Date<wbr>Time</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fluentnone.html" class="tsd-kind-icon">Fluent<wbr>None</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fluentnumber.html" class="tsd-kind-icon">Fluent<wbr>Number</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fluentresource.html" class="tsd-kind-icon">Fluent<wbr>Resource</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/fluenttype.html" class="tsd-kind-icon">Fluent<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/scope.html" class="tsd-kind-icon">Scope</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#complexpattern" class="tsd-kind-icon">Complex<wbr>Pattern</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#expression" class="tsd-kind-icon">Expression</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#fluentargument" class="tsd-kind-icon">Fluent<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#fluentfunction" class="tsd-kind-icon">Fluent<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#fluentvalue" class="tsd-kind-icon">Fluent<wbr>Value</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#functionreference" class="tsd-kind-icon">Function<wbr>Reference</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#literal" class="tsd-kind-icon">Literal</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#message" class="tsd-kind-icon">Message</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#messagereference" class="tsd-kind-icon">Message<wbr>Reference</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#namedargument" class="tsd-kind-icon">Named<wbr>Argument</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#numberliteral" class="tsd-kind-icon">Number<wbr>Literal</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#pattern" class="tsd-kind-icon">Pattern</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#patternelement" class="tsd-kind-icon">Pattern<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#selectexpression" class="tsd-kind-icon">Select<wbr>Expression</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#stringliteral" class="tsd-kind-icon">String<wbr>Literal</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#term" class="tsd-kind-icon">Term</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#termreference" class="tsd-kind-icon">Term<wbr>Reference</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#texttransform" class="tsd-kind-icon">Text<wbr>Transform</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#variablereference" class="tsd-kind-icon">Variable<wbr>Reference</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#variant" class="tsd-kind-icon">Variant</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#datetime" class="tsd-kind-icon">DATETIME</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#number" class="tsd-kind-icon">NUMBER</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#resolvecomplexpattern" class="tsd-kind-icon">resolve<wbr>Complex<wbr>Pattern</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
 </div>
-</div>
-
-<footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
 </footer>
-
-<script src="script/search_index.js"></script>
-<script src="script/search.js"></script>
-<script src="script/pretty-print.js"></script>
-<script src="script/inherited-summary.js"></script>
-<script src="script/test-summary.js"></script>
-<script src="script/inner-link.js"></script>
-<script src="script/patch-for-local.js"></script>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

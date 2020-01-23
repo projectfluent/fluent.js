@@ -30,9 +30,7 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~ReactLocalization.html">ReactLocalization</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localized.js~Localized.html">Localized</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/provider.js~LocalizationProvider.html">LocalizationProvider</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isReactLocalization">isReactLocalization</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Localized">Localized</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createParseMarkup">createParseMarkup</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withLocalization">withLocalization</a></span></span></li>
 </ul>
@@ -40,10 +38,10 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/provider.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Component, Children } from &quot;react&quot;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createElement, memo } from &quot;react&quot;;
 import PropTypes from &quot;prop-types&quot;;
-import ReactLocalization, { isReactLocalization} from &quot;./localization&quot;;
-import createParseMarkup from &quot;./markup&quot;;
+import FluentContext from &quot;./context&quot;;
+import ReactLocalization from &quot;./localization&quot;;
 
 /*
  * The Provider component for the `ReactLocalization` class.
@@ -63,56 +61,38 @@ import createParseMarkup from &quot;./markup&quot;;
  * `ReactLocalization` to format translations.  If a translation is missing in
  * one instance, `ReactLocalization` will fall back to the next one.
  */
-export default class LocalizationProvider extends Component {
-  constructor(props) {
-    super(props);
-    const {bundles, parseMarkup} = props;
-
-    if (bundles === undefined) {
-      throw new Error(&quot;LocalizationProvider must receive the bundles prop.&quot;);
-    }
-
-    if (!bundles[Symbol.iterator]) {
-      throw new Error(&quot;The bundles prop must be an iterable.&quot;);
-    }
-
-    this.l10n = new ReactLocalization(bundles);
-    this.parseMarkup = parseMarkup || createParseMarkup();
+function LocalizationProvider(props) {
+  if (props.bundles === undefined) {
+    throw new Error(&quot;LocalizationProvider must receive the bundles prop.&quot;);
   }
 
-  getChildContext() {
-    return {
-      l10n: this.l10n,
-      parseMarkup: this.parseMarkup,
-    };
+  if (!props.bundles[Symbol.iterator]) {
+    throw new Error(&quot;The bundles prop must be an iterable.&quot;);
   }
 
-  componentWillReceiveProps(next) {
-    const { bundles } = next;
-
-    if (bundles !== this.props.bundles) {
-      this.l10n.setBundles(bundles);
-    }
-  }
-
-  render() {
-    return Children.only(this.props.children);
-  }
+  return createElement(
+    FluentContext.Provider,
+    {
+      value: new ReactLocalization(props.bundles, props.parseMarkup),
+    },
+    props.children
+  );
 }
-
-LocalizationProvider.childContextTypes = {
-  l10n: isReactLocalization,
-  parseMarkup: PropTypes.func,
-};
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
   bundles: isIterable,
-  parseMarkup: PropTypes.func,
+  parseMarkup: PropTypes.func
 };
 
 function isIterable(props, propName, componentName) {
   const prop = props[propName];
+
+  if (!prop) {
+    return new Error(
+      `The ${propName} prop supplied to ${componentName} is required.`
+    );
+  }
 
   if (Symbol.iterator in Object(prop)) {
     return null;
@@ -122,6 +102,8 @@ function isIterable(props, propName, componentName) {
     `The ${propName} prop supplied to ${componentName} must be an iterable.`
   );
 }
+
+export default memo(LocalizationProvider);
 </code></pre>
 
 </div>

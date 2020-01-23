@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">src/localization.js | @fluent/react</title>
+  <title data-ice="title">src/context.js | @fluent/react</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -37,58 +37,11 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">src/localization.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { mapBundleSync } from &quot;@fluent/sequence&quot;;
-import { CachedSyncIterable } from &quot;cached-iterable&quot;;
-import createParseMarkup from &quot;./markup&quot;;
+<div class="content" data-ice="content"><h1 data-ice="title">src/context.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createContext } from &quot;react&quot;;
+import ReactLocalization from &quot;./localization&quot;;
 
-/*
- * `ReactLocalization` handles translation formatting and fallback.
- *
- * The current negotiated fallback chain of languages is stored in the
- * `ReactLocalization` instance in form of an iterable of `FluentBundle`
- * instances. This iterable is used to find the best existing translation for
- * a given identifier.
- *
- * The `ReactLocalization` class instances are exposed to `Localized` elements
- * via the `LocalizationProvider` component.
- */
-export default class ReactLocalization {
-  constructor(bundles, parseMarkup = createParseMarkup()) {
-    this.bundles = CachedSyncIterable.from(bundles);
-    this.parseMarkup = parseMarkup;
-  }
-
-  getBundle(id) {
-    return mapBundleSync(this.bundles, id);
-  }
-
-  getString(id, args, fallback) {
-    const bundle = this.getBundle(id);
-
-    if (bundle) {
-      const msg = bundle.getMessage(id);
-      if (msg &amp;&amp; msg.value) {
-        let errors = [];
-        let value = bundle.formatPattern(msg.value, args, errors);
-        for (let error of errors) {
-          this.reportError(error);
-        }
-        return value;
-      }
-    }
-
-    return fallback || id;
-  }
-
-  // XXX Control this via a prop passed to the LocalizationProvider.
-  // See https://github.com/projectfluent/fluent.js/issues/411.
-  reportError(error) {
-    /* global console */
-    // eslint-disable-next-line no-console
-    console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
-  }
-}
+export default createContext(new ReactLocalization([]));
 </code></pre>
 
 </div>
