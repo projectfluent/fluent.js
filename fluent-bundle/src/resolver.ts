@@ -4,8 +4,8 @@
  * @overview
  *
  * The role of the Fluent resolver is to format a `Pattern` to an instance of
- * `FluentType`. For performance reasons, primitive strings are considered such
- * instances, too.
+ * `FluentValue`. For performance reasons, primitive strings are considered
+ * such instances, too.
  *
  * Translations can contain references to other messages or variables,
  * conditional logic in form of select expressions, traits which describe their
@@ -17,17 +17,34 @@
  * translation as possible. In rare situations where the resolver didn't know
  * how to recover from an error it will return an instance of `FluentNone`.
  *
- * All expressions resolve to an instance of `FluentType`. The caller should
+ * All expressions resolve to an instance of `FluentValue`. The caller should
  * use the `toString` method to convert the instance to a native value.
  *
  * Functions in this file pass around an instance of the `Scope` class, which
  * stores the data required for successful resolution and error recovery.
  */
 
-
-import { FluentType, FluentNone, FluentNumber, FluentDateTime }
-  from "./types.js";
-import * as builtins from "./builtins.js";
+import {
+  FluentValue,
+  FluentType,
+  FluentNone,
+  FluentNumber,
+  FluentDateTime
+} from "./types.js";
+import { Scope } from "./scope.js";
+import {
+  Variant,
+  Expression,
+  NamedArgument,
+  VariableReference,
+  MessageReference,
+  TermReference,
+  FunctionReference,
+  SelectExpression,
+  ComplexPattern,
+  Pattern
+} from "./ast.js";
+import { FluentArgument } from "./bundle.js";
 
 // The maximum number of placeables which can be expanded in a single call to
 // `formatPattern`. The limit protects against the Billion Laughs and Quadratic
@@ -38,24 +55,28 @@ const MAX_PLACEABLES = 100;
 const FSI = "\u2068";
 const PDI = "\u2069";
 
-
 // Helper: match a variant key to the given selector.
-function match(scope, selector, key) {
+function match(scope: Scope, selector: FluentValue, key: FluentValue): boolean {
   if (key === selector) {
     // Both are strings.
     return true;
   }
 
   // XXX Consider comparing options too, e.g. minimumFractionDigits.
-  if (key instanceof FluentNumber
-    && selector instanceof FluentNumber
-    && key.value === selector.value) {
+  if (
+    key instanceof FluentNumber &&
+    selector instanceof FluentNumber &&
+    key.value === selector.value
+  ) {
     return true;
   }
 
   if (selector instanceof FluentNumber && typeof key === "string") {
     let category = scope
-      .memoizeIntlObject(Intl.PluralRules, selector.opts)
+      .memoizeIntlObject(
+        Intl.PluralRules,
+        selector.opts as Intl.PluralRulesOptions
+      )
       .select(selector.value);
     if (key === category) {
       return true;
@@ -66,7 +87,11 @@ function match(scope, selector, key) {
 }
 
 // Helper: resolve the default variant from a list of variants.
-function getDefault(scope, variants, star) {
+function getDefault(
+  scope: Scope,
+  variants: Array<Variant>,
+  star: number
+): FluentValue {
   if (variants[star]) {
     return resolvePattern(scope, variants[star].value);
   }
@@ -75,10 +100,18 @@ function getDefault(scope, variants, star) {
   return new FluentNone();
 }
 
+interface Arguments {
+  positional: Array<FluentValue>;
+  named: Record<string, FluentValue>;
+}
+
 // Helper: resolve arguments to a call expression.
-function getArguments(scope, args) {
-  const positional = [];
-  const named = Object.create(null);
+function getArguments(
+  scope: Scope,
+  args: Array<Expression | NamedArgument>
+): Arguments {
+  const positional: Array<FluentValue> = [];
+  const named: Record<string, FluentValue> = Object.create(null);
 
   for (const arg of args) {
     if (arg.type === "narg") {
@@ -88,36 +121,39 @@ function getArguments(scope, args) {
     }
   }
 
-  return {positional, named};
+  return { positional, named };
 }
 
 // Resolve an expression to a Fluent type.
-function resolveExpression(scope, expr) {
+function resolveExpression(scope: Scope, expr: Expression): FluentValue {
   switch (expr.type) {
     case "str":
       return expr.value;
     case "num":
       return new FluentNumber(expr.value, {
-        minimumFractionDigits: expr.precision,
+        minimumFractionDigits: expr.precision
       });
     case "var":
-      return VariableReference(scope, expr);
+      return resolveVariableReference(scope, expr);
     case "mesg":
-      return MessageReference(scope, expr);
+      return resolveMessageReference(scope, expr);
     case "term":
-      return TermReference(scope, expr);
+      return resolveTermReference(scope, expr);
     case "func":
-      return FunctionReference(scope, expr);
+      return resolveFunctionReference(scope, expr);
     case "select":
-      return SelectExpression(scope, expr);
+      return resolveSelectExpression(scope, expr);
     default:
       return new FluentNone();
   }
 }
 
 // Resolve a reference to a variable.
-function VariableReference(scope, {name}) {
-  let arg;
+function resolveVariableReference(
+  scope: Scope,
+  { name }: VariableReference
+): FluentValue {
+  let arg: FluentArgument;
   if (scope.params) {
     // We're inside a TermReference. It's OK to reference undefined parameters.
     if (Object.prototype.hasOwnProperty.call(scope.params, name)) {
@@ -152,6 +188,7 @@ function VariableReference(scope, {name}) {
       if (arg instanceof Date) {
         return new FluentDateTime(arg.getTime());
       }
+    // eslint-disable-next-line no-fallthrough
     default:
       scope.reportError(
         new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)
@@ -161,7 +198,10 @@ function VariableReference(scope, {name}) {
 }
 
 // Resolve a reference to another message.
-function MessageReference(scope, {name, attr}) {
+function resolveMessageReference(
+  scope: Scope,
+  { name, attr }: MessageReference
+): FluentValue {
   const message = scope.bundle._messages.get(name);
   if (!message) {
     scope.reportError(new ReferenceError(`Unknown message: ${name}`));
@@ -186,7 +226,10 @@ function MessageReference(scope, {name, attr}) {
 }
 
 // Resolve a call to a Term with key-value arguments.
-function TermReference(scope, {name, attr, args}) {
+function resolveTermReference(
+  scope: Scope,
+  { name, attr, args }: TermReference
+): FluentValue {
   const id = `-${name}`;
   const term = scope.bundle._terms.get(id);
   if (!term) {
@@ -214,10 +257,13 @@ function TermReference(scope, {name, attr, args}) {
 }
 
 // Resolve a call to a Function with positional and key-value arguments.
-function FunctionReference(scope, {name, args}) {
+function resolveFunctionReference(
+  scope: Scope,
+  { name, args }: FunctionReference
+): FluentValue {
   // Some functions are built-in. Others may be provided by the runtime via
   // the `FluentBundle` constructor.
-  const func = scope.bundle._functions[name] || builtins[name];
+  let func = scope.bundle._functions[name];
   if (!func) {
     scope.reportError(new ReferenceError(`Unknown function: ${name}()`));
     return new FluentNone(`${name}()`);
@@ -238,7 +284,10 @@ function FunctionReference(scope, {name, args}) {
 }
 
 // Resolve a select expression to the member object.
-function SelectExpression(scope, {selector, variants, star}) {
+function resolveSelectExpression(
+  scope: Scope,
+  { selector, variants, star }: SelectExpression
+): FluentValue {
   let sel = resolveExpression(scope, selector);
   if (sel instanceof FluentNone) {
     return getDefault(scope, variants, star);
@@ -256,7 +305,10 @@ function SelectExpression(scope, {selector, variants, star}) {
 }
 
 // Resolve a pattern (a complex string with placeables).
-export function resolveComplexPattern(scope, ptn) {
+export function resolveComplexPattern(
+  scope: Scope,
+  ptn: ComplexPattern
+): FluentValue {
   if (scope.dirty.has(ptn)) {
     scope.reportError(new RangeError("Cyclic reference"));
     return new FluentNone();
@@ -306,11 +358,11 @@ export function resolveComplexPattern(scope, ptn) {
 
 // Resolve a simple or a complex Pattern to a FluentString (which is really the
 // string primitive).
-function resolvePattern(scope, node) {
+function resolvePattern(scope: Scope, value: Pattern): FluentValue {
   // Resolve a simple pattern.
-  if (typeof node === "string") {
-    return scope.bundle._transform(node);
+  if (typeof value === "string") {
+    return scope.bundle._transform(value);
   }
 
-  return resolveComplexPattern(scope, node);
+  return resolveComplexPattern(scope, value);
 }

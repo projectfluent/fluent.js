@@ -3,9 +3,9 @@
 import assert from 'assert';
 import ftl from "@fluent/dedent";
 
-import FluentBundle from '../src/bundle';
-import FluentResource from '../src/resource';
-import { FluentType } from '../src/types';
+import {FluentBundle} from '../esm/bundle';
+import {FluentResource} from '../esm/resource';
+import {FluentType} from '../esm/types';
 
 suite('Variables', function() {
   let bundle, errs;

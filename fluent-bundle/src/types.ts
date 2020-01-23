@@ -1,4 +1,13 @@
+import { Scope } from "./scope.js";
+
 /* global Intl */
+
+export type FluentValue = FluentType<unknown> | string;
+
+export type FluentFunction = (
+  positional: Array<FluentValue>,
+  named: Record<string, FluentValue>
+) => FluentValue;
 
 /**
  * The `FluentType` class is the base of Fluent's type system.
@@ -7,24 +16,23 @@
  * them, which can then be used in the `toString` method together with a proper
  * `Intl` formatter.
  */
-export class FluentType {
+export class FluentType<T> {
+  /** The wrapped native value. */
+  public value: T;
+
   /**
    * Create a `FluentType` instance.
    *
-   * @param   {Any} value - JavaScript value to wrap.
-   * @returns {FluentType}
+   * @param   value - JavaScript value to wrap.
    */
-  constructor(value) {
-    /** The wrapped native value. */
+  constructor(value: T) {
     this.value = value;
   }
 
   /**
    * Unwrap the raw value stored by this `FluentType`.
-   *
-   * @returns {Any}
    */
-  valueOf() {
+  valueOf(): T {
     return this.value;
   }
 
@@ -36,10 +44,8 @@ export class FluentType {
    * argument.
    *
    * @abstract
-   * @param   {Scope} scope
-   * @returns {string}
    */
-  toString(scope) { // eslint-disable-line no-unused-vars
+  toString(scope: Scope): string {
     throw new Error("Subclasses of FluentType must implement toString.");
   }
 }
@@ -47,11 +53,10 @@ export class FluentType {
 /**
  * A `FluentType` representing no correct value.
  */
-export class FluentNone extends FluentType {
+export class FluentNone extends FluentType<string> {
   /**
    * Create an instance of `FluentNone` with an optional fallback value.
-   * @param   {string} value - The fallback value of this `FluentNone`.
-   * @returns {FluentType}
+   * @param   value - The fallback value of this `FluentNone`.
    */
   constructor(value = "???") {
     super(value);
@@ -59,9 +64,8 @@ export class FluentNone extends FluentType {
 
   /**
    * Format this `FluentNone` to the fallback string.
-   * @returns {string}
    */
-  toString() {
+  toString(scope: Scope): string {
     return `{${this.value}}`;
   }
 }
@@ -69,26 +73,23 @@ export class FluentNone extends FluentType {
 /**
  * A `FluentType` representing a number.
  */
-export class FluentNumber extends FluentType {
+export class FluentNumber extends FluentType<number> {
+  /** Options passed to Intl.NumberFormat. */
+  public opts: Intl.NumberFormatOptions;
+
   /**
    * Create an instance of `FluentNumber` with options to the
    * `Intl.NumberFormat` constructor.
-   * @param   {number} value
-   * @param   {Intl.NumberFormatOptions} opts
-   * @returns {FluentType}
    */
-  constructor(value, opts) {
+  constructor(value: number, opts: Intl.NumberFormatOptions = {}) {
     super(value);
-    /** Options passed to Intl.NumberFormat. */
     this.opts = opts;
   }
 
   /**
    * Format this `FluentNumber` to a string.
-   * @param   {Scope} scope
-   * @returns {string}
    */
-  toString(scope) {
+  toString(scope: Scope): string {
     try {
       const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
       return nf.format(this.value);
@@ -102,32 +103,31 @@ export class FluentNumber extends FluentType {
 /**
  * A `FluentType` representing a date and time.
  */
-export class FluentDateTime extends FluentType {
+export class FluentDateTime extends FluentType<number> {
+  /** Options passed to Intl.DateTimeFormat. */
+  public opts: Intl.DateTimeFormatOptions;
+
   /**
    * Create an instance of `FluentDateTime` with options to the
    * `Intl.DateTimeFormat` constructor.
-   * @param   {number} value - timestamp in milliseconds
-   * @param   {Intl.DateTimeFormatOptions} opts
-   * @returns {FluentType}
+   * @param   value - timestamp in milliseconds
+   * @param   opts
    */
-  constructor(value, opts) {
+  constructor(value: number, opts: Intl.DateTimeFormatOptions = {}) {
     super(value);
-    /** Options passed to Intl.DateTimeFormat. */
     this.opts = opts;
   }
 
   /**
    * Format this `FluentDateTime` to a string.
-   * @param   {Scope} scope
-   * @returns {string}
    */
-  toString(scope) {
+  toString(scope: Scope): string {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
       return dtf.format(this.value);
     } catch (err) {
       scope.reportError(err);
-      return (new Date(this.value)).toISOString();
+      return new Date(this.value).toISOString();
     }
   }
 }

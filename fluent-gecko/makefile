@@ -15,6 +15,7 @@ test:
 build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
 
 Fluent.jsm: $(SOURCES)
+	$(MAKE) -sC ../fluent-bundle compile
 	@rollup $(CURDIR)/src/fluent.js \
 	    --config ./xpcom_config.js \
 	    --output.intro "/* $(call version,fluent-bundle) */" \
@@ -61,3 +62,6 @@ clean:
 	@rm -rf dist
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
+
+lint: _lint
+html: _html

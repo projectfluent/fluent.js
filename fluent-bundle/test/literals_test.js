@@ -2,8 +2,8 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import FluentBundle from "../src/bundle";
-import FluentResource from '../src/resource';
+import {FluentBundle} from "../esm/bundle";
+import {FluentResource} from '../esm/resource';
 
 suite('Literals as selectors', function() {
   let bundle, errs;
