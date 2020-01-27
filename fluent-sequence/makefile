@@ -4,7 +4,7 @@ GLOBAL  := FluentSequence
 include ../common.mk
 
 lint:
-	@eslint --config ./eslint_src.json --max-warnings 0 src/*.ts
+	@eslint --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
