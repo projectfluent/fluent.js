@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import ftl from "../src/index";
+import ftl from "../esm/index";
 
 suite("mixed indent", function() {
   test("same amount", function() {
