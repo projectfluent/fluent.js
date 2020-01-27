@@ -16,6 +16,13 @@ esm/.compiled: $(SOURCES)
 	@touch $@
 	@echo -e " $(OK) esm/ compiled"
 
+.PHONY: test
+test: esm/.compiled
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
+	    --require esm \
+	    test/**/*_test.js
+
 build: index.js compat.js
 
 index.js: esm/.compiled
@@ -35,13 +42,6 @@ compat.js: esm/.compiled
 	    --name $(GLOBAL) \
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
-
-.PHONY: test
-test: esm/.compiled
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require esm \
-	    test/**/*_test.js
 
 html:
 	@typedoc src \

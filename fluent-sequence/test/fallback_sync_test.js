@@ -2,7 +2,7 @@ import assert from 'assert';
 
 import {CachedSyncIterable} from 'cached-iterable';
 import FluentBundle from './bundle_stub';
-import {mapBundleSync} from '../src/index';
+import {mapBundleSync} from '../esm/index';
 
 suite('Sync Fallback — single id', function() {
   let bundle1, bundle2;

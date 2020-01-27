@@ -1,31 +1,37 @@
+import { FluentBundle } from "@fluent/bundle";
+
 /*
  * Asynchronously map an identifier or an array of identifiers to the best
  * `FluentBundle` instance(s).
  *
- * @param {AsyncIterable} iterable
- * @param {string|Array<string>} ids
- * @returns {Promise<FluentBundle|Array<FluentBundle>>}
+ * @param bundles - An iterable of bundles to sift through.
+ * @param ids - An id or ids to map.
  */
-export default async function mapBundleAsync(iterable, ids) {
+export async function mapBundleAsync(
+  bundles: AsyncIterable<FluentBundle>,
+  ids: string | Array<string>
+): Promise<FluentBundle | null | Array<FluentBundle | null>> {
   if (!Array.isArray(ids)) {
-    for await (const bundle of iterable) {
+    for await (const bundle of bundles) {
       if (bundle.hasMessage(ids)) {
         return bundle;
       }
     }
+
+    return null;
   }
 
+  const foundBundles = new Array(ids.length).fill(null);
   let remainingCount = ids.length;
-  const foundBundles = new Array(remainingCount).fill(null);
 
-  for await (const bundle of iterable) {
+  for await (const bundle of bundles) {
     for (const [index, id] of ids.entries()) {
       if (!foundBundles[index] && bundle.hasMessage(id)) {
         foundBundles[index] = bundle;
         remainingCount--;
       }
 
-      // Return early when all ids have been mapped to contexts.
+      // Return early when all ids have been mapped to bundles.
       if (remainingCount === 0) {
         return foundBundles;
       }
