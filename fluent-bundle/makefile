@@ -4,7 +4,7 @@ GLOBAL  := FluentBundle
 include ../common.mk
 
 lint:
-	@eslint --config ./eslint_src.json --max-warnings 0 src/*.ts
+	@eslint --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
@@ -15,6 +15,13 @@ esm/.compiled: $(SOURCES)
 	@tsc
 	@touch $@
 	@echo -e " $(OK) esm/ compiled"
+
+.PHONY: test
+test: esm/.compiled
+	@nyc --reporter=text --reporter=html mocha \
+	    --recursive --ui tdd \
+	    --require esm \
+	    test/**/*_test.js
 
 build: index.js compat.js
 
@@ -35,13 +42,6 @@ compat.js: esm/.compiled
 	    --name $(GLOBAL) \
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
-
-.PHONY: test
-test: esm/.compiled
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require esm \
-	    test/**/*_test.js
 
 html:
 	@typedoc src \

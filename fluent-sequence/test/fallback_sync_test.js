@@ -1,17 +1,17 @@
 import assert from 'assert';
 
 import {CachedSyncIterable} from 'cached-iterable';
-import FluentBundle from './bundle_stub';
-import {mapBundleSync} from '../src/index';
+import {FluentBundle, FluentResource} from '@fluent/bundle';
+import {mapBundleSync} from '../esm/index';
 
 suite('Sync Fallback — single id', function() {
   let bundle1, bundle2;
 
   suiteSetup(function() {
     bundle1 = new FluentBundle();
-    bundle1._setMessages(['bar']);
+    bundle1.addResource(new FluentResource("bar=Bar"));
     bundle2 = new FluentBundle();
-    bundle2._setMessages(['foo', 'bar']);
+    bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar"));
   });
 
   test('eager iterable', function() {
@@ -56,9 +56,9 @@ suite('Sync Fallback — multiple ids', function() {
 
   suiteSetup(function() {
     bundle1 = new FluentBundle();
-    bundle1._setMessages(['foo', 'bar']);
+    bundle1.addResource(new FluentResource("foo=Foo\nbar=Bar"));
     bundle2 = new FluentBundle();
-    bundle2._setMessages(['foo', 'bar', 'baz']);
+    bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar\nbaz=Baz"));
   });
 
   test('existing translations', function() {

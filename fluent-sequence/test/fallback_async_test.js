@@ -1,17 +1,17 @@
 import assert from 'assert';
 
 import {CachedAsyncIterable} from 'cached-iterable';
-import FluentBundle from './bundle_stub';
-import {mapBundleAsync} from '../src/index';
+import {FluentBundle, FluentResource} from '@fluent/bundle';
+import {mapBundleAsync} from '../esm/index';
 
 suite('Async Fallback — single id', function() {
   let bundle1, bundle2, generateBundles;
 
   suiteSetup(function() {
     bundle1 = new FluentBundle();
-    bundle1._setMessages(['bar']);
+    bundle1.addResource(new FluentResource("bar=Bar"));
     bundle2 = new FluentBundle();
-    bundle2._setMessages(['foo', 'bar']);
+    bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar"));
 
     generateBundles = async function *generateBundles() {
       yield *[bundle1, bundle2];
@@ -52,9 +52,9 @@ suite('Async Fallback — multiple ids', async function() {
 
   suiteSetup(function() {
     bundle1 = new FluentBundle();
-    bundle1._setMessages(['foo', 'bar']);
+    bundle1.addResource(new FluentResource("foo=Foo\nbar=Bar"));
     bundle2 = new FluentBundle();
-    bundle2._setMessages(['foo', 'bar', 'baz']);
+    bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar\nbaz=Baz"));
 
     generateBundles = async function *generateBundles() {
       yield *[bundle1, bundle2];
@@ -91,9 +91,9 @@ suite('Async Fallback — early return', async function() {
 
   suiteSetup(function() {
     bundle1 = new FluentBundle();
-    bundle1._setMessages(['foo', 'bar']);
+    bundle1.addResource(new FluentResource("foo=Foo\nbar=Bar"));
     bundle2 = new FluentBundle();
-    bundle2._setMessages(['foo', 'bar', 'baz']);
+    bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar\nbaz=Baz"));
   });
 
   test('break early if possible', async function() {
