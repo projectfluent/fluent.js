@@ -1,5 +1,15 @@
 import { FluentBundle } from "@fluent/bundle";
 
+export function mapBundleSync(
+  bundles: Iterable<FluentBundle>,
+  ids: string
+): FluentBundle | null;
+
+export function mapBundleSync(
+  bundles: Iterable<FluentBundle>,
+  ids: Array<string>
+): Array<FluentBundle | null>;
+
 /*
  * Synchronously map an identifier or an array of identifiers to the best
  * `FluentBundle` instance(s).
