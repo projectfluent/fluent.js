@@ -1,5 +1,8 @@
 export class ParseError extends Error {
-  constructor(code, ...args) {
+  public code: string;
+  public args: Array<unknown>;
+
+  constructor(code: string, ...args: Array<unknown>) {
     super();
     this.code = code;
     this.args = args;
@@ -8,7 +11,7 @@ export class ParseError extends Error {
 }
 
 /* eslint-disable complexity */
-function getErrorMessage(code, args) {
+function getErrorMessage(code: string, args: Array<unknown>): string {
   switch (code) {
     case "E0001":
       return "Generic error";

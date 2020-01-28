@@ -1,9 +1,9 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import {
-  FluentParser, FluentSerializer, serializeExpression, serializeVariantKey
-} from "../src";
+import {FluentParser} from "../esm/parser.js";
+import {FluentSerializer, serializeExpression, serializeVariantKey}
+  from "../esm/serializer.js";
 
 
 suite("Serialize resource", function() {
@@ -688,7 +688,7 @@ suite("serializeVariantKey", function() {
   test("invalid expression", function() {
     assert.throws(
       () => serializeVariantKey(null),
-      /Cannot read property 'type'/
+      /Unknown variant key type/
     );
     assert.throws(
       () => serializeVariantKey({}),

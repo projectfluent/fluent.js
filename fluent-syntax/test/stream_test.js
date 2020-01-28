@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import { ParserStream } from "../src/stream";
+import { ParserStream } from "../esm/stream.js";
 
 suite("ParserStream", function() {
   test("next", function() {

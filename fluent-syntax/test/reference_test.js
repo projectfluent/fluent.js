@@ -2,7 +2,7 @@ import assert from "assert";
 import {join} from "path";
 import {readdir} from "fs";
 import {readfile} from "./util";
-import {FluentParser} from "../src";
+import {FluentParser} from "../esm/parser.js";
 
 const fixtures = join(__dirname, "fixtures_reference");
 

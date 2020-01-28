@@ -5,10 +5,11 @@
  * Annotation.
  *
  */
-export class BaseNode {
-  constructor() {}
+export abstract class BaseNode {
+  public type = "BaseNode";
+  [name: string]: unknown;
 
-  equals(other, ignoredFields = ["span"]) {
+  equals(other: BaseNode, ignoredFields: Array<string> = ["span"]): boolean {
     const thisKeys = new Set(Object.keys(this));
     const otherKeys = new Set(Object.keys(other));
     if (ignoredFields) {
@@ -29,7 +30,7 @@ export class BaseNode {
       if (typeof thisVal !== typeof otherVal) {
         return false;
       }
-      if (thisVal instanceof Array) {
+      if (thisVal instanceof Array && otherVal instanceof Array) {
         if (thisVal.length !== otherVal.length) {
           return false;
         }
@@ -45,8 +46,8 @@ export class BaseNode {
     return true;
   }
 
-  clone() {
-    function visit(value) {
+  clone(): BaseNode {
+    function visit(value: unknown): unknown {
       if (value instanceof BaseNode) {
         return value.clone();
       }
@@ -63,8 +64,12 @@ export class BaseNode {
   }
 }
 
-function scalarsEqual(thisVal, otherVal, ignoredFields) {
-  if (thisVal instanceof BaseNode) {
+function scalarsEqual(
+  thisVal: unknown,
+  otherVal: unknown,
+  ignoredFields: Array<string>
+): boolean {
+  if (thisVal instanceof BaseNode && otherVal instanceof BaseNode) {
     return thisVal.equals(otherVal, ignoredFields);
   }
   return thisVal === otherVal;
@@ -73,16 +78,20 @@ function scalarsEqual(thisVal, otherVal, ignoredFields) {
 /*
  * Base class for AST nodes which can have Spans.
  */
-class SyntaxNode extends BaseNode {
-  addSpan(start, end) {
+export abstract class SyntaxNode extends BaseNode {
+  public type = "SyntaxNode";
+  public span?: Span;
+
+  addSpan(start: number, end: number): void {
     this.span = new Span(start, end);
   }
 }
 
 export class Resource extends SyntaxNode {
-  constructor(body = []) {
+  public type = "Resource" as const;
+  public body: Array<Entry | Junk>;
+  constructor(body: Array<Entry | Junk> = []) {
     super();
-    this.type = "Resource";
     this.body = body;
   }
 }
@@ -90,12 +99,24 @@ export class Resource extends SyntaxNode {
 /*
  * An abstract base class for useful elements of Resource.body.
  */
-export class Entry extends SyntaxNode {}
+export abstract class Entry extends SyntaxNode {
+  public type = "Entry";
+}
 
 export class Message extends Entry {
-  constructor(id, value = null, attributes = [], comment = null) {
+  public type = "Message" as const;
+  public id: Identifier;
+  public value: Pattern | null;
+  public attributes: Array<Attribute>;
+  public comment: Comment | null;
+
+  constructor(
+    id: Identifier,
+    value: Pattern | null = null,
+    attributes: Array<Attribute> = [],
+    comment: Comment | null = null
+  ) {
     super();
-    this.type = "Message";
     this.id = id;
     this.value = value;
     this.attributes = attributes;
@@ -104,9 +125,19 @@ export class Message extends Entry {
 }
 
 export class Term extends Entry {
-  constructor(id, value, attributes = [], comment = null) {
+  public type = "Term" as const;
+  public id: Identifier;
+  public value: Pattern;
+  public attributes: Array<Attribute>;
+  public comment: Comment | null;
+
+  constructor(
+    id: Identifier,
+    value: Pattern,
+    attributes: Array<Attribute> = [],
+    comment: Comment | null = null
+  ) {
     super();
-    this.type = "Term";
     this.id = id;
     this.value = value;
     this.attributes = attributes;
@@ -115,9 +146,11 @@ export class Term extends Entry {
 }
 
 export class Pattern extends SyntaxNode {
-  constructor(elements) {
+  public type = "Pattern" as const;
+  public elements: Array<PatternElement>;
+
+  constructor(elements: Array<PatternElement>) {
     super();
-    this.type = "Pattern";
     this.elements = elements;
   }
 }
@@ -125,20 +158,26 @@ export class Pattern extends SyntaxNode {
 /*
  * An abstract base class for elements of Patterns.
  */
-export class PatternElement extends SyntaxNode {}
+export abstract class PatternElement extends SyntaxNode {
+  public type = "PatternElement";
+}
 
 export class TextElement extends PatternElement {
-  constructor(value) {
+  public type = "TextElement" as const;
+  public value: string;
+
+  constructor(value: string) {
     super();
-    this.type = "TextElement";
     this.value = value;
   }
 }
 
 export class Placeable extends PatternElement {
-  constructor(expression) {
+  public type = "Placeable" as const;
+  public expression: Expression;
+
+  constructor(expression: Expression) {
     super();
-    this.type = "Placeable";
     this.expression = expression;
   }
 }
@@ -146,40 +185,44 @@ export class Placeable extends PatternElement {
 /*
  * An abstract base class for expressions.
  */
-export class Expression extends SyntaxNode {}
+export abstract class Expression extends SyntaxNode {
+  public type = "Expression";
+}
 
 // An abstract base class for Literals.
-export class Literal extends Expression {
-  constructor(value) {
+export abstract class Literal extends Expression {
+  public type = "Literal";
+  public value: string;
+
+  constructor(value: string) {
     super();
     // The "value" field contains the exact contents of the literal,
     // character-for-character.
     this.value = value;
   }
 
-  parse() {
-    return {value: this.value};
-  }
+  abstract parse(): { value: unknown }
 }
 
 export class StringLiteral extends Literal {
-  constructor(value) {
-    super(value);
-    this.type = "StringLiteral";
-  }
+  public type = "StringLiteral" as const;
 
-  parse() {
+  parse(): { value: string } {
     // Backslash backslash, backslash double quote, uHHHH, UHHHHHH.
     const KNOWN_ESCAPES =
       /(?:\\\\|\\"|\\u([0-9a-fA-F]{4})|\\U([0-9a-fA-F]{6}))/g;
 
-    function from_escape_sequence(match, codepoint4, codepoint6) {
+    function fromEscapeSequence(
+      match: string,
+      codepoint4: string,
+      codepoint6: string
+    ): string {
       switch (match) {
         case "\\\\":
           return "\\";
         case "\\\"":
           return "\"";
-        default:
+        default: {
           let codepoint = parseInt(codepoint4 || codepoint6, 16);
           if (codepoint <= 0xD7FF || 0xE000 <= codepoint) {
             // It's a Unicode scalar value.
@@ -189,43 +232,52 @@ export class StringLiteral extends Literal {
           // well-formed but invalid in Fluent. Replace them with U+FFFD
           // REPLACEMENT CHARACTER.
           return "�";
+        }
       }
     }
 
-    let value = this.value.replace(KNOWN_ESCAPES, from_escape_sequence);
-    return {value};
+    let value = this.value.replace(KNOWN_ESCAPES, fromEscapeSequence);
+    return { value };
   }
 }
 
 export class NumberLiteral extends Literal {
-  constructor(value) {
-    super(value);
-    this.type = "NumberLiteral";
-  }
+  public type = "NumberLiteral" as const;
 
-  parse() {
+  parse(): { value: number; precision: number } {
     let value = parseFloat(this.value);
-    let decimal_position = this.value.indexOf(".");
-    let precision = decimal_position > 0
-      ? this.value.length - decimal_position - 1
+    let decimalPos = this.value.indexOf(".");
+    let precision = decimalPos > 0
+      ? this.value.length - decimalPos - 1
       : 0;
-    return {value, precision};
+    return { value, precision };
   }
 }
 
 export class MessageReference extends Expression {
-  constructor(id, attribute = null) {
+  public type = "MessageReference" as const;
+  public id: Identifier;
+  public attribute: Identifier | null;
+
+  constructor(id: Identifier, attribute: Identifier | null = null) {
     super();
-    this.type = "MessageReference";
     this.id = id;
     this.attribute = attribute;
   }
 }
 
 export class TermReference extends Expression {
-  constructor(id, attribute = null, args = null) {
+  public type = "TermReference" as const;
+  public id: Identifier;
+  public attribute: Identifier | null;
+  public arguments: CallArguments | null;
+
+  constructor(
+    id: Identifier,
+    attribute: Identifier | null = null,
+    args: CallArguments | null = null
+  ) {
     super();
-    this.type = "TermReference";
     this.id = id;
     this.attribute = attribute;
     this.arguments = args;
@@ -233,53 +285,74 @@ export class TermReference extends Expression {
 }
 
 export class VariableReference extends Expression {
-  constructor(id) {
+  public type = "VariableReference" as const;
+  public id: Identifier;
+
+  constructor(id: Identifier) {
     super();
-    this.type = "VariableReference";
     this.id = id;
   }
 }
 
 export class FunctionReference extends Expression {
-  constructor(id, args) {
+  public type = "FunctionReference" as const;
+  public id: Identifier;
+  public arguments: CallArguments;
+
+  constructor(id: Identifier, args: CallArguments) {
     super();
-    this.type = "FunctionReference";
     this.id = id;
     this.arguments = args;
   }
 }
 
 export class SelectExpression extends Expression {
-  constructor(selector, variants) {
+  public type = "SelectExpression" as const;
+  public selector: Expression;
+  public variants: Array<Variant>;
+
+  constructor(selector: Expression, variants: Array<Variant>) {
     super();
-    this.type = "SelectExpression";
     this.selector = selector;
     this.variants = variants;
   }
 }
 
 export class CallArguments extends SyntaxNode {
-  constructor(positional = [], named = []) {
+  public type = "CallArguments" as const;
+  public positional: Array<Expression>;
+  public named: Array<NamedArgument>;
+
+  constructor(
+    positional: Array<Expression> = [],
+    named: Array<NamedArgument> = []
+  ) {
     super();
-    this.type = "CallArguments";
     this.positional = positional;
     this.named = named;
   }
 }
 
 export class Attribute extends SyntaxNode {
-  constructor(id, value) {
+  public type = "Attribute" as const;
+  public id: Identifier;
+  public value: Pattern;
+
+  constructor(id: Identifier, value: Pattern) {
     super();
-    this.type = "Attribute";
     this.id = id;
     this.value = value;
   }
 }
 
 export class Variant extends SyntaxNode {
-  constructor(key, value, def = false) {
+  public type = "Variant" as const;
+  public key: Identifier | NumberLiteral;
+  public value: Pattern;
+  public default: boolean;
+
+  constructor(key: Identifier | NumberLiteral, value: Pattern, def: boolean) {
     super();
-    this.type = "Variant";
     this.key = key;
     this.value = value;
     this.default = def;
@@ -287,76 +360,83 @@ export class Variant extends SyntaxNode {
 }
 
 export class NamedArgument extends SyntaxNode {
-  constructor(name, value) {
+  public type = "NamedArgument" as const;
+  public name: Identifier;
+  public value: Literal;
+
+  constructor(name: Identifier, value: Literal) {
     super();
-    this.type = "NamedArgument";
     this.name = name;
     this.value = value;
   }
 }
 
 export class Identifier extends SyntaxNode {
-  constructor(name) {
+  public type = "Identifier" as const;
+  public name: string;
+
+  constructor(name: string) {
     super();
-    this.type = "Identifier";
     this.name = name;
   }
 }
 
 export class BaseComment extends Entry {
-  constructor(content) {
+  public type = "BaseComment";
+  public content: string;
+  constructor(content: string) {
     super();
-    this.type = "BaseComment";
     this.content = content;
   }
 }
 
 export class Comment extends BaseComment {
-  constructor(content) {
-    super(content);
-    this.type = "Comment";
-  }
+  public type = "Comment" as const;
 }
 
 export class GroupComment extends BaseComment {
-  constructor(content) {
-    super(content);
-    this.type = "GroupComment";
-  }
+  public type = "GroupComment" as const;
 }
 export class ResourceComment extends BaseComment {
-  constructor(content) {
-    super(content);
-    this.type = "ResourceComment";
-  }
+  public type = "ResourceComment" as const;
 }
 
 export class Junk extends SyntaxNode {
-  constructor(content) {
+  public type = "Junk" as const;
+  public annotations: Array<Annotation>;
+  public content: string;
+
+  constructor(content: string) {
     super();
-    this.type = "Junk";
     this.annotations = [];
     this.content = content;
   }
 
-  addAnnotation(annot) {
-    this.annotations.push(annot);
+  addAnnotation(annotation: Annotation): void {
+    this.annotations.push(annotation);
   }
 }
 
 export class Span extends BaseNode {
-  constructor(start, end) {
+  public type = "Span";
+  public start: number;
+  public end: number;
+
+  constructor(start: number, end: number) {
     super();
-    this.type = "Span";
     this.start = start;
     this.end = end;
   }
 }
 
 export class Annotation extends SyntaxNode {
-  constructor(code, args = [], message) {
+  public type = "Annotation";
+  public code: string;
+  public arguments: Array<unknown>;
+  public message: string;
+
+  constructor(code: string, args: Array<unknown> = [], message: string) {
     super();
-    this.type = "Annotation";
     this.code = code;
     this.arguments = args;
     this.message = message;

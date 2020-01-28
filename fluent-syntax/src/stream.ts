@@ -1,62 +1,65 @@
 /* eslint no-magic-numbers: "off" */
 
-import { ParseError } from "./errors";
-import { includes } from "./util";
+import { ParseError } from "./errors.js";
 
 export class ParserStream {
-  constructor(string) {
+  public string: string;
+  public index: number;
+  public peekOffset: number;
+
+  constructor(string: string) {
     this.string = string;
     this.index = 0;
     this.peekOffset = 0;
   }
 
-  charAt(offset) {
+  charAt(offset: number): string {
     // When the cursor is at CRLF, return LF but don't move the cursor.
     // The cursor still points to the EOL position, which in this case is the
     // beginning of the compound CRLF sequence. This ensures slices of
     // [inclusive, exclusive) continue to work properly.
     if (this.string[offset] === "\r"
-        && this.string[offset + 1] === "\n") {
+      && this.string[offset + 1] === "\n") {
       return "\n";
     }
 
     return this.string[offset];
   }
 
-  get currentChar() {
+  get currentChar(): string {
     return this.charAt(this.index);
   }
 
-  get currentPeek() {
+  get currentPeek(): string {
     return this.charAt(this.index + this.peekOffset);
   }
 
-  next() {
+  next(): string {
     this.peekOffset = 0;
     // Skip over the CRLF as if it was a single character.
     if (this.string[this.index] === "\r"
-        && this.string[this.index + 1] === "\n") {
+      && this.string[this.index + 1] === "\n") {
       this.index++;
     }
     this.index++;
     return this.string[this.index];
   }
 
-  peek() {
+  peek(): string {
     // Skip over the CRLF as if it was a single character.
     if (this.string[this.index + this.peekOffset] === "\r"
-        && this.string[this.index + this.peekOffset + 1] === "\n") {
+      && this.string[this.index + this.peekOffset + 1] === "\n") {
       this.peekOffset++;
     }
     this.peekOffset++;
     return this.string[this.index + this.peekOffset];
   }
 
-  resetPeek(offset = 0) {
+  resetPeek(offset: number = 0): void {
     this.peekOffset = offset;
   }
 
-  skipToPeek() {
+  skipToPeek(): void {
     this.index += this.peekOffset;
     this.peekOffset = 0;
   }
@@ -67,7 +70,7 @@ export const EOF = undefined;
 const SPECIAL_LINE_START_CHARS = ["}", ".", "[", "*"];
 
 export class FluentParserStream extends ParserStream {
-  peekBlankInline() {
+  peekBlankInline(): string {
     const start = this.index + this.peekOffset;
     while (this.currentPeek === " ") {
       this.peek();
@@ -75,13 +78,13 @@ export class FluentParserStream extends ParserStream {
     return this.string.slice(start, this.index + this.peekOffset);
   }
 
-  skipBlankInline() {
+  skipBlankInline(): string {
     const blank = this.peekBlankInline();
     this.skipToPeek();
     return blank;
   }
 
-  peekBlankBlock() {
+  peekBlankBlock(): string {
     let blank = "";
     while (true) {
       const lineStart = this.peekOffset;
@@ -101,48 +104,48 @@ export class FluentParserStream extends ParserStream {
     }
   }
 
-  skipBlankBlock() {
+  skipBlankBlock(): string {
     const blank = this.peekBlankBlock();
     this.skipToPeek();
     return blank;
   }
 
-  peekBlank() {
+  peekBlank(): void {
     while (this.currentPeek === " " || this.currentPeek === EOL) {
       this.peek();
     }
   }
 
-  skipBlank() {
+  skipBlank(): void {
     this.peekBlank();
     this.skipToPeek();
   }
 
-  expectChar(ch) {
+  expectChar(ch: string): void {
     if (this.currentChar === ch) {
       this.next();
-      return true;
+      return;
     }
 
     throw new ParseError("E0003", ch);
   }
 
-  expectLineEnd() {
+  expectLineEnd(): void {
     if (this.currentChar === EOF) {
       // EOF is a valid line end in Fluent.
-      return true;
+      return;
     }
 
     if (this.currentChar === EOL) {
       this.next();
-      return true;
+      return;
     }
 
     // Unicode Character 'SYMBOL FOR NEWLINE' (U+2424)
     throw new ParseError("E0003", "\u2424");
   }
 
-  takeChar(f) {
+  takeChar(f: (ch: string) => boolean): string | null | typeof EOF {
     const ch = this.currentChar;
     if (ch === EOF) {
       return EOF;
@@ -154,21 +157,21 @@ export class FluentParserStream extends ParserStream {
     return null;
   }
 
-  isCharIdStart(ch) {
+  isCharIdStart(ch: string): boolean {
     if (ch === EOF) {
       return false;
     }
 
     const cc = ch.charCodeAt(0);
     return (cc >= 97 && cc <= 122) || // a-z
-           (cc >= 65 && cc <= 90); // A-Z
+      (cc >= 65 && cc <= 90); // A-Z
   }
 
-  isIdentifierStart() {
+  isIdentifierStart(): boolean {
     return this.isCharIdStart(this.currentPeek);
   }
 
-  isNumberStart() {
+  isNumberStart(): boolean {
     const ch = this.currentChar === "-"
       ? this.peek()
       : this.currentChar;
@@ -184,21 +187,21 @@ export class FluentParserStream extends ParserStream {
     return isDigit;
   }
 
-  isCharPatternContinuation(ch) {
+  isCharPatternContinuation(ch: string): boolean {
     if (ch === EOF) {
       return false;
     }
 
-    return !includes(SPECIAL_LINE_START_CHARS, ch);
+    return !SPECIAL_LINE_START_CHARS.includes(ch);
   }
 
-  isValueStart() {
+  isValueStart(): boolean {
     // Inline Patterns may start with any char.
     const ch = this.currentPeek;
     return ch !== EOL && ch !== EOF;
   }
 
-  isValueContinuation() {
+  isValueContinuation(): boolean {
     const column1 = this.peekOffset;
     this.peekBlankInline();
 
@@ -223,7 +226,7 @@ export class FluentParserStream extends ParserStream {
   //  0 - comment
   //  1 - group comment
   //  2 - resource comment
-  isNextLineComment(level = -1) {
+  isNextLineComment(level: number = -1): boolean {
     if (this.currentChar !== EOL) {
       return false;
     }
@@ -252,7 +255,7 @@ export class FluentParserStream extends ParserStream {
     return false;
   }
 
-  isVariantStart() {
+  isVariantStart(): boolean {
     const currentPeekOffset = this.peekOffset;
     if (this.currentPeek === "*") {
       this.peek();
@@ -265,11 +268,11 @@ export class FluentParserStream extends ParserStream {
     return false;
   }
 
-  isAttributeStart() {
+  isAttributeStart(): boolean {
     return this.currentPeek === ".";
   }
 
-  skipToNextEntryStart(junkStart) {
+  skipToNextEntryStart(junkStart: number): void {
     let lastNewline = this.string.lastIndexOf(EOL, this.index);
     if (junkStart < lastNewline) {
       // Last seen newline is _after_ the junk start. It's safe to rewind
@@ -291,7 +294,7 @@ export class FluentParserStream extends ParserStream {
     }
   }
 
-  takeIDStart() {
+  takeIDStart(): string {
     if (this.isCharIdStart(this.currentChar)) {
       const ret = this.currentChar;
       this.next();
@@ -301,20 +304,20 @@ export class FluentParserStream extends ParserStream {
     throw new ParseError("E0004", "a-zA-Z");
   }
 
-  takeIDChar() {
-    const closure = ch => {
+  takeIDChar(): string | null | typeof EOF {
+    const closure = (ch: string): boolean => {
       const cc = ch.charCodeAt(0);
       return ((cc >= 97 && cc <= 122) || // a-z
-              (cc >= 65 && cc <= 90) || // A-Z
-              (cc >= 48 && cc <= 57) || // 0-9
-               cc === 95 || cc === 45); // _-
+        (cc >= 65 && cc <= 90) || // A-Z
+        (cc >= 48 && cc <= 57) || // 0-9
+        cc === 95 || cc === 45); // _-
     };
 
     return this.takeChar(closure);
   }
 
-  takeDigit() {
-    const closure = ch => {
+  takeDigit(): string | null | typeof EOF {
+    const closure = (ch: string): boolean => {
       const cc = ch.charCodeAt(0);
       return (cc >= 48 && cc <= 57); // 0-9
     };
@@ -322,8 +325,8 @@ export class FluentParserStream extends ParserStream {
     return this.takeChar(closure);
   }
 
-  takeHexDigit() {
-    const closure = ch => {
+  takeHexDigit(): string | null | typeof EOF {
+    const closure = (ch: string): boolean => {
       const cc = ch.charCodeAt(0);
       return (cc >= 48 && cc <= 57) // 0-9
         || (cc >= 65 && cc <= 70) // A-F

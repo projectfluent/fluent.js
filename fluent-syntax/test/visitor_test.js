@@ -2,7 +2,8 @@
 
 import assert from "assert";
 import ftl from "@fluent/dedent";
-import { FluentParser, Visitor, Transformer } from "../src";
+import { FluentParser } from "../esm/parser.js";
+import { Visitor, Transformer } from "../esm/visitor.js";
 
 suite("Visitor", function() {
   setup(function() {

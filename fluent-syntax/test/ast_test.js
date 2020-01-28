@@ -2,8 +2,8 @@
 
 import assert from "assert";
 import ftl from "@fluent/dedent";
-import { FluentParser } from "../src";
-import * as AST from "../src/ast";
+import * as AST from "../esm/ast.js";
+import { FluentParser } from "../esm/parser.js";
 
 suite("BaseNode.equals", function() {
   setup(function() {

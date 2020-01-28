@@ -1,7 +1,9 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentParser, FluentSerializer } from "../src";
+import * as AST from "../esm/ast.js";
+import { FluentParser } from "../esm/parser.js";
+import { FluentSerializer } from "../esm/serializer";
 
 suite("Parse entry", function() {
   setup(function() {
@@ -155,24 +157,12 @@ suite("Serialize entry", function() {
   });
 
   test("simple message", function() {
-    const input = {
-      "comment": null,
-      "value": {
-        "elements": [
-          {
-            "type": "TextElement",
-            "value": "Foo"
-          }
-        ],
-        "type": "Pattern"
-      },
-      "attributes": [],
-      "type": "Message",
-      "id": {
-        "type": "Identifier",
-        "name": "foo"
-      }
-    };
+    const input = new AST.Message(
+      new AST.Identifier("foo"),
+      new AST.Pattern([
+        new AST.TextElement("Foo")
+      ])
+    )
     const output = ftl`
       foo = Foo
 
