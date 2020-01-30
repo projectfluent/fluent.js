@@ -19,18 +19,18 @@ export default function ftl(
   let code = strings.reduce((acc, cur) => acc + values.shift() + cur);
   let lines = code.split("\n");
 
-  let first = lines.shift();
+  const first = lines.shift();
   if (first === undefined || !RE_BLANK.test(first)) {
     throw new RangeError("Content must start on a new line.");
   }
 
-  let commonIndent = lines.pop();
+  const commonIndent = lines.pop();
   if (commonIndent === undefined || !RE_BLANK.test(commonIndent)) {
     throw new RangeError("Closing delimiter must appear on a new line.");
   }
 
-  function dedent(line: string, idx: number): string {
-    let lineIndent = line.slice(0, (commonIndent as string).length);
+  return lines.map((line: string, idx: number): string => {
+    let lineIndent = line.slice(0, commonIndent.length);
     if (lineIndent.length === 0) {
       // Empty blank lines are preserved even if technically they are not
       // indented at all. This also short-circuits the dedentation logic when
@@ -43,7 +43,5 @@ export default function ftl(
     }
     // Strip commonIndent.
     return line.slice(commonIndent.length);
-  }
-
-  return lines.map(dedent).join("\n");
+  }).join("\n");
 }
