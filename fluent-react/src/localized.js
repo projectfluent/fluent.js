@@ -135,7 +135,7 @@ function Localized(props) {
 
   // If the message value doesn't contain any markup nor any HTML entities,
   // insert it as the only child of the wrapped component.
-  if (!reMarkup.test(messageValue)) {
+  if (!reMarkup.test(messageValue) || l10n.parseMarkup === null) {
     return cloneElement(child, localizedProps, messageValue);
   }
 

@@ -799,6 +799,27 @@ foo = BEFORE <text-elem>Foo</text-elem> AFTER
 });
 
 describe("Localized - custom parseMarkup", () => {
+  test("disables the overlay logic if null", () => {
+    const bundle = new FluentBundle();
+    bundle.addResource(new FluentResource(`
+foo = test <em>null markup parser</em>
+`));
+
+    const renderer = TestRenderer.create(
+      <LocalizationProvider bundles={[bundle]} parseMarkup={null}>
+        <Localized id="foo">
+          <div />
+        </Localized>
+      </LocalizationProvider>
+    );
+
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div>
+        test &lt;em&gt;null markup parser&lt;/em&gt;
+      </div>
+    `);
+  });
+
   test("is called if defined in the context", () => {
     let parseMarkupCalls = [];
 
