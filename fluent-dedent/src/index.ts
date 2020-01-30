@@ -19,29 +19,36 @@ export default function ftl(
   let code = strings.reduce((acc, cur) => acc + values.shift() + cur);
   let lines = code.split("\n");
 
-  const first = lines.shift();
+  let first = lines.shift();
   if (first === undefined || !RE_BLANK.test(first)) {
     throw new RangeError("Content must start on a new line.");
   }
 
-  const commonIndent = lines.pop();
+  let commonIndent = lines.pop();
   if (commonIndent === undefined || !RE_BLANK.test(commonIndent)) {
     throw new RangeError("Closing delimiter must appear on a new line.");
   }
 
-  return lines.map((line: string, idx: number): string => {
+  let dedented = [];
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
     let lineIndent = line.slice(0, commonIndent.length);
     if (lineIndent.length === 0) {
       // Empty blank lines are preserved even if technically they are not
       // indented at all. This also short-circuits the dedentation logic when
       // commonIndent.length is 0, i.e. when all indents should be kept.
-      return line;
+      dedented.push(line);
+      continue;
     }
+
     if (lineIndent !== commonIndent) {
       // The indentation of the line must match commonIndent exacty.
-      throw new RangeError(`Insufficient indentation in line ${idx + 1}.`);
+      throw new RangeError(`Insufficient indentation in line ${i + 1}.`);
     }
+
     // Strip commonIndent.
-    return line.slice(commonIndent.length);
-  }).join("\n");
+    dedented.push(line.slice(commonIndent.length));
+  }
+
+  return dedented.join("\n");
 }
