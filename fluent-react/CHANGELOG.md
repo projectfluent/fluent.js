@@ -1,5 +1,14 @@
 # Changelog
 
+## @fluent/react 0.11.1 (January 31, 2020)
+
+  - Don't call `createParseMarkup` too eagerly. (#453)
+
+    Fix a regression from 0.11.0 in which the default `FluentContext` value
+    was an empty `ReactLocalization` which would call `createParseMarkup` to
+    create its markup parser. In SSR, it's not desirable to call this
+    function as it uses the `document` global.
+
 ## @fluent/react 0.11.0 (January 23, 2020)
 
   - Use the offical stable React Context API. (#406)
