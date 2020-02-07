@@ -25,7 +25,7 @@ test: esm/.compiled
 
 build: index.js compat.js
 
-index.js: $(SOURCES)
+index.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/bundle_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
@@ -34,7 +34,7 @@ index.js: $(SOURCES)
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
-compat.js: $(SOURCES)
+compat.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/compat_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
@@ -45,13 +45,13 @@ compat.js: $(SOURCES)
 
 html:
 	@typedoc src \
-	    --out ../html/bundle \
+	    --out ../html/sequence \
 	    --mode file \
 	    --excludeNotExported \
 	    --excludePrivate \
 	    --logger none \
 	    --hideGenerator
-	@echo -e " $(OK) html build"
+	@echo -e " $(OK) html built"
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled

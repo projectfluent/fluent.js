@@ -51,7 +51,7 @@ html:
 	    --excludePrivate \
 	    --logger none \
 	    --hideGenerator
-	@echo -e " $(OK) html build"
+	@echo -e " $(OK) html built"
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
