@@ -27,9 +27,8 @@ be installed independently of each other.
   - [@fluent/sequence](https://github.com/projectfluent/fluent.js/tree/master/fluent-sequence)
   - [@fluent/syntax](https://github.com/projectfluent/fluent.js/tree/master/fluent-syntax)
 
-You can install each of the above packages via `npm`, e.g. `npm install
-fluent-react`.  See the end of this `README` for instructions on how to build
-`fluent.js` locally.
+You can install each of the above packages via `npm`, e.g. `npm install @fluent/react`.  
+See the end of this `README` for instructions on how to build `fluent.js` locally.
 
 
 Learn the FTL syntax
