@@ -110,8 +110,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "",
               "type": "StringLiteral",
+              "value": "",
               "span": {
                 "type": "Span",
                 "start": 94,
@@ -165,8 +165,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "         ",
               "type": "StringLiteral",
+              "value": "         ",
               "span": {
                 "type": "Span",
                 "start": 120,
