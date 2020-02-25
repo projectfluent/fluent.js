@@ -6,7 +6,7 @@ const fs = require('fs');
 const program = require('commander');
 
 require = require('esm')(module);
-const FluentSyntax = require('../fluent-syntax/index.js');
+const FluentSyntax = require('../fluent-syntax/esm/index.js');
 
 program
   .version('0.0.1')
@@ -35,7 +35,7 @@ function print(err, data) {
 }
 
 function printRuntime(data) {
-  const FluentResource = require('../fluent-bundle/src/resource').default;
+  const {FluentResource} = require('../fluent-bundle/esm/index.js');
   const res = new FluentResource(data.toString());
   console.log(JSON.stringify(res, null, 4));
 }

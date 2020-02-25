@@ -32,10 +32,10 @@ function fuzz(err, data) {
 
   let parse;
   if (program.runtime) {
-    let {FluentResource} = require('../fluent-bundle/src');
+    let {FluentResource} = require('../fluent-bundle/esm/index.js');
     parse = source => new FluentResource(source);
   } else {
-    parse = require('../fluent-syntax/src').parse;
+    parse = require('../fluent-syntax/esm/index.js').parse;
   }
 
   const source = data.toString();
