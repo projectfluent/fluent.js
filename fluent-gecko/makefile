@@ -23,6 +23,7 @@ Fluent.jsm: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 FluentSyntax.jsm: $(SOURCES)
+	$(MAKE) -sC ../fluent-syntax compile
 	@rollup $(CURDIR)/src/fluent_syntax.js \
 	    --config ./xpcom_config.js \
 	    --no-treeshake \

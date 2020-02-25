@@ -2,16 +2,17 @@
           comma-dangle: "off",
           no-labels: "off" */
 
-import {FluentParser} from "../../fluent-syntax/src/parser";
-import {FluentSerializer} from "../../fluent-syntax/src/serializer";
-import * as ast from "../../fluent-syntax/src/ast";
-import * as visitor from "../../fluent-syntax/src/visitor";
+import {FluentParser} from "../../fluent-syntax/esm/parser";
+import {FluentSerializer} from "../../fluent-syntax/esm/serializer";
+import {Visitor, Transformer} from "../../fluent-syntax/esm/visitor";
+import * as ast from "../../fluent-syntax/esm/ast";
 
 this.EXPORTED_SYMBOLS = [
+  ...Object.keys(ast),
   ...Object.keys({
     FluentParser,
     FluentSerializer,
+    Visitor,
+    Transformer
   }),
-  ...Object.keys(ast),
-  ...Object.keys(visitor),
 ];
