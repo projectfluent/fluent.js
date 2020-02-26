@@ -28,15 +28,15 @@ export class FluentSerializer {
   }
 
   serialize(resource: AST.Resource): string {
-    if (resource.type !== "Resource") {
-      throw new Error(`Unknown resource type: ${resource.type}`);
+    if (!(resource instanceof AST.Resource)) {
+      throw new Error(`Unknown resource type: ${resource}`);
     }
 
     let state = 0;
     const parts = [];
 
     for (const entry of resource.body) {
-      if (entry.type !== "Junk" || this.withJunk) {
+      if (!(entry instanceof AST.Junk) || this.withJunk) {
         parts.push(this.serializeEntry(entry, state));
         if (!(state & HAS_ENTRIES)) {
           state |= HAS_ENTRIES;
@@ -164,7 +164,7 @@ function serializeElement(element: AST.PatternElement): string {
     return serializePlaceable(element);
   }
 
-  throw new Error(`Unknown element type: ${element.type}`);
+  throw new Error(`Unknown element type: ${element}`);
 }
 
 
@@ -222,7 +222,7 @@ export function serializeExpression(expr: AST.Expression): string {
   if (expr instanceof AST.Placeable) {
     return serializePlaceable(expr);
   }
-  throw new Error(`Unknown expression type: ${expr.type}`);
+  throw new Error(`Unknown expression type: ${expr}`);
 }
 
 

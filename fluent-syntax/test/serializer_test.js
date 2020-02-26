@@ -24,8 +24,12 @@ suite("Serialize resource", function() {
   test("invalid resource", function() {
     const serializer = new FluentSerializer();
     assert.throws(
+      () => serializer.serialize(undefined),
+      /Unknown resource type/
+    );
+    assert.throws(
       () => serializer.serialize(null),
-      /Cannot read property 'type'/
+      /Unknown resource type/
     );
     assert.throws(
       () => serializer.serialize({}),
@@ -540,8 +544,12 @@ suite("serializeExpression", function() {
 
   test("invalid expression", function() {
     assert.throws(
+      () => serializeExpression(undefined),
+      /Unknown expression type/
+    );
+    assert.throws(
       () => serializeExpression(null),
-      /Cannot read property 'type'/
+      /Unknown expression type/
     );
     assert.throws(
       () => serializeExpression({}),
@@ -686,6 +694,10 @@ suite("serializeVariantKey", function() {
   });
 
   test("invalid expression", function() {
+    assert.throws(
+      () => serializeVariantKey(undefined),
+      /Unknown variant key type/
+    );
     assert.throws(
       () => serializeVariantKey(null),
       /Unknown variant key type/
