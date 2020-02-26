@@ -5,14 +5,12 @@
  * LICENSE file in this directory.
  */
 
-import omittedCloseTags from './omittedCloseTags';
+import { OMITTED_CLOSE_TAGS } from './omittedCloseTags';
 
 // For HTML, certain tags cannot have children. This has the same purpose as
 // `omittedCloseTags` except that `menuitem` should still have its closing tag.
 
-var voidElementTags = {
+export let VOID_ELEMENTS = {
   menuitem: true,
-  ...omittedCloseTags,
+  ...OMITTED_CLOSE_TAGS,
 };
-
-export default voidElementTags;

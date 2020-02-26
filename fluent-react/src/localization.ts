@@ -1,6 +1,7 @@
+import { FluentBundle, FluentArgument } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
 import { CachedSyncIterable } from "cached-iterable";
-import createParseMarkup from "./markup";
+import { createParseMarkup, MarkupParser } from "./markup";
 
 /*
  * `ReactLocalization` handles translation formatting and fallback.
@@ -13,23 +14,32 @@ import createParseMarkup from "./markup";
  * The `ReactLocalization` class instances are exposed to `Localized` elements
  * via the `LocalizationProvider` component.
  */
-export default class ReactLocalization {
-  constructor(bundles, parseMarkup = createParseMarkup()) {
+export class ReactLocalization {
+  public bundles: Iterable<FluentBundle>;
+  public parseMarkup: MarkupParser | null;
+
+  constructor(
+    bundles: Iterable<FluentBundle>,
+    parseMarkup: MarkupParser | null = createParseMarkup()
+  ) {
     this.bundles = CachedSyncIterable.from(bundles);
     this.parseMarkup = parseMarkup;
   }
 
-  getBundle(id) {
+  getBundle(id: string): FluentBundle | null {
     return mapBundleSync(this.bundles, id);
   }
 
-  getString(id, args, fallback) {
+  getString(
+    id: string,
+    args?: Record<string, FluentArgument> | null,
+    fallback?: string
+  ): string {
     const bundle = this.getBundle(id);
-
     if (bundle) {
       const msg = bundle.getMessage(id);
       if (msg && msg.value) {
-        let errors = [];
+        let errors: Array<Error> = [];
         let value = bundle.formatPattern(msg.value, args, errors);
         for (let error of errors) {
           this.reportError(error);
@@ -43,7 +53,7 @@ export default class ReactLocalization {
 
   // XXX Control this via a prop passed to the LocalizationProvider.
   // See https://github.com/projectfluent/fluent.js/issues/411.
-  reportError(error) {
+  reportError(error: Error): void {
     /* global console */
     // eslint-disable-next-line no-console
     console.warn(`[@fluent/react] ${error.name}: ${error.message}`);

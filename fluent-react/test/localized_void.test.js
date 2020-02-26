@@ -1,7 +1,7 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../src/index";
+import { LocalizationProvider, Localized } from "../esm/index";
 
 describe("Localized - void elements", function() {
   test("do not render the value in void elements", function() {

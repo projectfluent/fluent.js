@@ -1,7 +1,15 @@
-import { createElement, memo } from "react";
+import { createElement, memo, ReactNode, ReactElement } from "react";
 import PropTypes from "prop-types";
-import FluentContext from "./context";
-import ReactLocalization from "./localization";
+import { FluentBundle } from "@fluent/bundle";
+import { FluentContext } from "./context";
+import { ReactLocalization } from "./localization";
+import { MarkupParser } from "./markup";
+
+interface LocalizationProviderProps {
+  children?: ReactNode;
+  bundles?: Iterable<FluentBundle>;
+  parseMarkup?: MarkupParser | null;
+}
 
 /*
  * The Provider component for the `ReactLocalization` class.
@@ -15,13 +23,13 @@ import ReactLocalization from "./localization";
  *         …
  *     </LocalizationProvider>
  *
- * The `LocalizationProvider` component takes one prop: `bundles`.  It should
+ * The `LocalizationProvider` component takes `bundles` as a prop.  It should
  * be an iterable of `FluentBundle` instances in order of the user's
  * preferred languages.  The `FluentBundle` instances will be used by
  * `ReactLocalization` to format translations.  If a translation is missing in
  * one instance, `ReactLocalization` will fall back to the next one.
  */
-function LocalizationProvider(props) {
+function LocalizationProvider(props: LocalizationProviderProps): ReactElement {
   if (props.bundles === undefined) {
     throw new Error("LocalizationProvider must receive the bundles prop.");
   }
@@ -45,7 +53,11 @@ LocalizationProvider.propTypes = {
   parseMarkup: PropTypes.func
 };
 
-function isIterable(props, propName, componentName) {
+function isIterable(
+  props: Record<string, unknown>,
+  propName: string,
+  componentName: string
+): null | Error {
   const prop = props[propName];
 
   if (!prop) {
@@ -63,4 +75,4 @@ function isIterable(props, propName, componentName) {
   );
 }
 
-export default memo(LocalizationProvider);
+export let MemoLocalizationProvider = memo(LocalizationProvider);

@@ -1,7 +1,7 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../src/index";
+import { LocalizationProvider, Localized } from "../esm/index";
 
 test("uses message from 1st bundle", () => {
   const bundle1 = new FluentBundle();

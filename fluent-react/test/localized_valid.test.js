@@ -1,6 +1,6 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
-import { LocalizationProvider, Localized } from "../src/index";
+import { LocalizationProvider, Localized } from "../esm/index";
 
 describe("Localized - validation", () => {
   let consoleError = console.error;

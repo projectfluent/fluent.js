@@ -17,6 +17,6 @@
  * components for more information.
  */
 
-export { default as LocalizationProvider } from "./provider";
-export { default as withLocalization } from "./with_localization";
-export { default as Localized } from "./localized";
+export { MemoLocalizationProvider as LocalizationProvider } from "./provider";
+export { withLocalization } from "./with_localization";
+export { Localized } from "./localized";
