@@ -80,7 +80,7 @@ export class FluentParser {
     const entries: Array<EntryOrJunk> = [];
     let lastComment: AST.Comment | null = null;
 
-    while (ps.currentChar) {
+    while (ps.currentChar()) {
       const entry = this.getEntryOrJunk(ps);
       const blankLines = ps.skipBlankBlock();
 
@@ -91,7 +91,7 @@ export class FluentParser {
       // or the Term parsed successfully.
       if (entry.type === "Comment"
         && blankLines.length === 0
-        && ps.currentChar) {
+        && ps.currentChar()) {
         // Stash the comment and decide what to do with it in the next pass.
         lastComment = entry;
         continue;
@@ -137,7 +137,7 @@ export class FluentParser {
     const ps = new FluentParserStream(source);
     ps.skipBlankBlock();
 
-    while (ps.currentChar === "#") {
+    while (ps.currentChar() === "#") {
       const skipped = this.getEntryOrJunk(ps);
       if (skipped.type === "Junk") {
         // Don't skip Junk comments.
@@ -183,11 +183,11 @@ export class FluentParser {
   }
 
   getEntry(ps: FluentParserStream): Entry {
-    if (ps.currentChar === "#") {
+    if (ps.currentChar() === "#") {
       return this.getComment(ps);
     }
 
-    if (ps.currentChar === "-") {
+    if (ps.currentChar() === "-") {
       return this.getTerm(ps);
     }
 
@@ -207,7 +207,7 @@ export class FluentParser {
 
     while (true) {
       let i = -1;
-      while (ps.currentChar === "#" && (i < (level === -1 ? 2 : level))) {
+      while (ps.currentChar() === "#" && (i < (level === -1 ? 2 : level))) {
         ps.next();
         i++;
       }
@@ -216,7 +216,7 @@ export class FluentParser {
         level = i;
       }
 
-      if (ps.currentChar !== EOL) {
+      if (ps.currentChar() !== EOL) {
         ps.expectChar(" ");
         let ch;
         while ((ch = ps.takeChar(x => x !== EOL))) {
@@ -225,7 +225,7 @@ export class FluentParser {
       }
 
       if (ps.isNextLineComment(level)) {
-        content += ps.currentChar;
+        content += ps.currentChar();
         ps.next();
       } else {
         break;
@@ -318,7 +318,7 @@ export class FluentParser {
   }
 
   getVariantKey(ps: FluentParserStream): AST.Identifier | AST.NumberLiteral {
-    const ch = ps.currentChar;
+    const ch = ps.currentChar();
 
     if (ch === EOF) {
       throw new ParseError("E0013");
@@ -336,7 +336,7 @@ export class FluentParser {
   getVariant(ps: FluentParserStream, hasDefault: boolean = false): AST.Variant {
     let defaultIndex = false;
 
-    if (ps.currentChar === "*") {
+    if (ps.currentChar() === "*") {
       if (hasDefault) {
         throw new ParseError("E0015");
       }
@@ -407,14 +407,14 @@ export class FluentParser {
   getNumber(ps: FluentParserStream): AST.NumberLiteral {
     let value = "";
 
-    if (ps.currentChar === "-") {
+    if (ps.currentChar() === "-") {
       ps.next();
       value += `-${this.getDigits(ps)}`;
     } else {
       value += this.getDigits(ps);
     }
 
-    if (ps.currentChar === ".") {
+    if (ps.currentChar() === ".") {
       ps.next();
       value += `.${this.getDigits(ps)}`;
     }
@@ -459,7 +459,7 @@ export class FluentParser {
     }
 
     let ch;
-    elements: while ((ch = ps.currentChar)) {
+    elements: while ((ch = ps.currentChar())) {
       switch (ch) {
         case EOL: {
           const blankStart = ps.index;
@@ -562,7 +562,7 @@ export class FluentParser {
     let buffer = "";
 
     let ch;
-    while ((ch = ps.currentChar)) {
+    while ((ch = ps.currentChar())) {
       if (ch === "{" || ch === "}") {
         return new AST.TextElement(buffer);
       }
@@ -579,7 +579,7 @@ export class FluentParser {
   }
 
   getEscapeSequence(ps: FluentParserStream): string {
-    const next = ps.currentChar;
+    const next = ps.currentChar();
 
     switch (next) {
       case "\\":
@@ -608,7 +608,7 @@ export class FluentParser {
 
       if (!ch) {
         throw new ParseError(
-          "E0026", `\\${u}${sequence}${ps.currentChar}`);
+          "E0026", `\\${u}${sequence}${ps.currentChar()}`);
       }
 
       sequence += ch;
@@ -629,7 +629,7 @@ export class FluentParser {
     const selector = this.getInlineExpression(ps);
     ps.skipBlank();
 
-    if (ps.currentChar === "-") {
+    if (ps.currentChar() === "-") {
       if (ps.peek() !== ">") {
         ps.resetPeek();
         return selector;
@@ -676,7 +676,7 @@ export class FluentParser {
   }
 
   getInlineExpression(ps: FluentParserStream): AST.Expression {
-    if (ps.currentChar === "{") {
+    if (ps.currentChar() === "{") {
       return this.getPlaceable(ps);
     }
 
@@ -684,31 +684,29 @@ export class FluentParser {
       return this.getNumber(ps);
     }
 
-    if (ps.currentChar === '"') {
+    if (ps.currentChar() === '"') {
       return this.getString(ps);
     }
 
-    if (ps.currentChar === "$") {
+    if (ps.currentChar() === "$") {
       ps.next();
       const id = this.getIdentifier(ps);
       return new AST.VariableReference(id);
     }
 
-    if (ps.currentChar === "-") {
+    if (ps.currentChar() === "-") {
       ps.next();
       const id = this.getIdentifier(ps);
 
       let attr;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      if (ps.currentChar === ".") {
+      if (ps.currentChar() === ".") {
         ps.next();
         attr = this.getIdentifier(ps);
       }
 
       let args;
       ps.peekBlank();
-      if (ps.currentPeek === "(") {
+      if (ps.currentPeek() === "(") {
         ps.skipToPeek();
         args = this.getCallArguments(ps);
       }
@@ -720,7 +718,7 @@ export class FluentParser {
       const id = this.getIdentifier(ps);
       ps.peekBlank();
 
-      if (ps.currentPeek === "(") {
+      if (ps.currentPeek() === "(") {
         // It's a Function. Ensure it's all upper-case.
         if (!/^[A-Z][A-Z0-9_-]*$/.test(id.name)) {
           throw new ParseError("E0008");
@@ -732,7 +730,7 @@ export class FluentParser {
       }
 
       let attr;
-      if (ps.currentChar === ".") {
+      if (ps.currentChar() === ".") {
         ps.next();
         attr = this.getIdentifier(ps);
       }
@@ -749,7 +747,7 @@ export class FluentParser {
 
     ps.skipBlank();
 
-    if (ps.currentChar !== ":") {
+    if (ps.currentChar() !== ":") {
       return exp;
     }
 
@@ -773,7 +771,7 @@ export class FluentParser {
     ps.skipBlank();
 
     while (true) {
-      if (ps.currentChar === ")") {
+      if (ps.currentChar() === ")") {
         break;
       }
 
@@ -792,7 +790,7 @@ export class FluentParser {
 
       ps.skipBlank();
 
-      if (ps.currentChar === ",") {
+      if (ps.currentChar() === ",") {
         ps.next();
         ps.skipBlank();
         continue;
@@ -818,7 +816,7 @@ export class FluentParser {
       }
     }
 
-    if (ps.currentChar === EOL) {
+    if (ps.currentChar() === EOL) {
       throw new ParseError("E0020");
     }
 
@@ -832,7 +830,7 @@ export class FluentParser {
       return this.getNumber(ps);
     }
 
-    if (ps.currentChar === '"') {
+    if (ps.currentChar() === '"') {
       return this.getString(ps);
     }
 
