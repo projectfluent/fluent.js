@@ -89,7 +89,7 @@ export class FluentParser {
       // they should parse as standalone when they're followed by Junk.
       // Consequently, we only attach Comments once we know that the Message
       // or the Term parsed successfully.
-      if (entry.type === "Comment"
+      if (entry instanceof AST.Comment
         && blankLines.length === 0
         && ps.currentChar()) {
         // Stash the comment and decide what to do with it in the next pass.
@@ -98,7 +98,7 @@ export class FluentParser {
       }
 
       if (lastComment) {
-        if (entry.type === "Message" || entry.type === "Term") {
+        if (entry instanceof AST.Message || entry instanceof AST.Term) {
           entry.comment = lastComment;
           if (this.withSpans) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -139,7 +139,7 @@ export class FluentParser {
 
     while (ps.currentChar() === "#") {
       const skipped = this.getEntryOrJunk(ps);
-      if (skipped.type === "Junk") {
+      if (skipped instanceof AST.Junk) {
         // Don't skip Junk comments.
         return skipped;
       }
@@ -625,7 +625,7 @@ export class FluentParser {
     return new AST.Placeable(expression);
   }
 
-  getExpression(ps: FluentParserStream): AST.Expression {
+  getExpression(ps: FluentParserStream): AST.Expression | AST.Placeable {
     const selector = this.getInlineExpression(ps);
     ps.skipBlank();
 
@@ -637,25 +637,19 @@ export class FluentParser {
 
       // Validate selector expression according to
       // abstract.js in the Fluent specification
-      switch (selector.type) {
-        case "MessageReference":
-          if (selector.attribute === null) {
-            throw new ParseError("E0016");
-          } else {
-            throw new ParseError("E0018");
-          }
-        case "TermReference":
-          if (selector.attribute === null) {
-            throw new ParseError("E0017");
-          }
-        // eslint-disable-next-line no-fallthrough
-        case "StringLiteral":
-        case "NumberLiteral":
-        case "VariableReference":
-        case "FunctionReference":
-          break;
-        default:
-          throw new ParseError("E0029");
+
+      if (selector instanceof AST.MessageReference) {
+        if (selector.attribute === null) {
+          throw new ParseError("E0016");
+        } else {
+          throw new ParseError("E0018");
+        }
+      } else if (selector instanceof AST.TermReference) {
+        if (selector.attribute === null) {
+          throw new ParseError("E0017");
+        }
+      } else if (selector instanceof AST.Placeable) {
+        throw new ParseError("E0029");
       }
 
       ps.next();
@@ -668,14 +662,14 @@ export class FluentParser {
       return new AST.SelectExpression(selector, variants);
     }
 
-    if (selector.type === "TermReference" && selector.attribute !== null) {
+    if (selector instanceof AST.TermReference && selector.attribute !== null) {
       throw new ParseError("E0019");
     }
 
     return selector;
   }
 
-  getInlineExpression(ps: FluentParserStream): AST.Expression {
+  getInlineExpression(ps: FluentParserStream): AST.Expression | AST.Placeable {
     if (ps.currentChar() === "{") {
       return this.getPlaceable(ps);
     }
