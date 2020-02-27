@@ -1,12 +1,29 @@
 import { BaseNode } from "./ast.js";
 
+/**
+ * A read-only visitor.
+ *
+ * Subclasses can be used to gather information from an AST.
+ *
+ * To handle specific node types add methods like `visitPattern`.
+ * Then, to descend into children call `genericVisit`.
+ *
+ * Visiting methods must implement the following interface:
+ *
+ *     interface VisitingMethod {
+ *         (this: Visitor, node: BaseNode): void;
+ *     }
+ */
 export abstract class Visitor {
-  [method: string]: (this: Visitor, node: BaseNode) => void;
+  [prop: string]: unknown;
 
   visit(node: BaseNode): void {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    let visit = this[`visit${node.type}`] || this.genericVisit;
-    visit.call(this, node);
+    let visit = this[`visit${node.type}`];
+    if (typeof visit === "function") {
+      visit.call(this, node);
+    } else {
+      this.genericVisit(node);
+    }
   }
 
   genericVisit(node: BaseNode): void {
@@ -23,13 +40,33 @@ export abstract class Visitor {
   }
 }
 
+
+/**
+ * A read-and-write visitor.
+ *
+ * Subclasses can be used to modify an AST in-place.
+ *
+ * To handle specific node types add methods like `visitPattern`.
+ * Then, to descend into children call `genericVisit`.
+ *
+ * Visiting methods must implement the following interface:
+ *
+ *     interface TransformingMethod {
+ *         (this: Transformer, node: BaseNode): BaseNode | undefined;
+ *     }
+ *
+ * The returned node wili replace the original one in the AST. Return
+ * `undefined` to remove the node instead.
+ */
 export abstract class Transformer extends Visitor {
-  [method: string]: (this: Visitor, node: BaseNode) => BaseNode | undefined;
+  [prop: string]: unknown;
 
   visit(node: BaseNode): BaseNode | undefined {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const visit = this[`visit${node.type}`] || this.genericVisit;
-    return visit.call(this, node);
+    let visit = this[`visit${node.type}`];
+    if (typeof visit === "function") {
+      return visit.call(this, node);
+    }
+    return this.genericVisit(node);
   }
 
   genericVisit(node: BaseNode): BaseNode | undefined {
