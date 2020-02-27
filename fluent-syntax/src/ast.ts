@@ -381,7 +381,7 @@ export class Identifier extends SyntaxNode {
   }
 }
 
-export class BaseComment extends Entry {
+export abstract class BaseComment extends Entry {
   public type = "BaseComment";
   public content: string;
   constructor(content: string) {

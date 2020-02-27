@@ -38,8 +38,32 @@ export abstract class Visitor {
       }
     }
   }
-}
 
+  visitResource?(node: BaseNode): void;
+  visitMessage?(node: BaseNode): void;
+  visitTerm?(node: BaseNode): void;
+  visitPattern?(node: BaseNode): void;
+  visitTextElement?(node: BaseNode): void;
+  visitPlaceable?(node: BaseNode): void;
+  visitStringLiteral?(node: BaseNode): void;
+  visitNumberLiteral?(node: BaseNode): void;
+  visitMessageReference?(node: BaseNode): void;
+  visitTermReference?(node: BaseNode): void;
+  visitVariableReference?(node: BaseNode): void;
+  visitFunctionReference?(node: BaseNode): void;
+  visitSelectExpression?(node: BaseNode): void;
+  visitCallArguments?(node: BaseNode): void;
+  visitAttribute?(node: BaseNode): void;
+  visitVariant?(node: BaseNode): void;
+  visitNamedArgument?(node: BaseNode): void;
+  visitIdentifier?(node: BaseNode): void;
+  visitComment?(node: BaseNode): void;
+  visitGroupComment?(node: BaseNode): void;
+  visitResourceComment?(node: BaseNode): void;
+  visitJunk?(node: BaseNode): void;
+  visitSpan?(node: BaseNode): void;
+  visitAnnotation?(node: BaseNode): void;
+}
 
 /**
  * A read-and-write visitor.
@@ -92,4 +116,29 @@ export abstract class Transformer extends Visitor {
     }
     return node;
   }
+
+  visitResource?(node: BaseNode): BaseNode | undefined;
+  visitMessage?(node: BaseNode): BaseNode | undefined;
+  visitTerm?(node: BaseNode): BaseNode | undefined;
+  visitPattern?(node: BaseNode): BaseNode | undefined;
+  visitTextElement?(node: BaseNode): BaseNode | undefined;
+  visitPlaceable?(node: BaseNode): BaseNode | undefined;
+  visitStringLiteral?(node: BaseNode): BaseNode | undefined;
+  visitNumberLiteral?(node: BaseNode): BaseNode | undefined;
+  visitMessageReference?(node: BaseNode): BaseNode | undefined;
+  visitTermReference?(node: BaseNode): BaseNode | undefined;
+  visitVariableReference?(node: BaseNode): BaseNode | undefined;
+  visitFunctionReference?(node: BaseNode): BaseNode | undefined;
+  visitSelectExpression?(node: BaseNode): BaseNode | undefined;
+  visitCallArguments?(node: BaseNode): BaseNode | undefined;
+  visitAttribute?(node: BaseNode): BaseNode | undefined;
+  visitVariant?(node: BaseNode): BaseNode | undefined;
+  visitNamedArgument?(node: BaseNode): BaseNode | undefined;
+  visitIdentifier?(node: BaseNode): BaseNode | undefined;
+  visitComment?(node: BaseNode): BaseNode | undefined;
+  visitGroupComment?(node: BaseNode): BaseNode | undefined;
+  visitResourceComment?(node: BaseNode): BaseNode | undefined;
+  visitJunk?(node: BaseNode): BaseNode | undefined;
+  visitSpan?(node: BaseNode): BaseNode | undefined;
+  visitAnnotation?(node: BaseNode): BaseNode | undefined;
 }
