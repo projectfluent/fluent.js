@@ -1,5 +1,11 @@
 # Changelog
 
+## @fluent/sequence 0.5.0 (March 2, 2020)
+
+  - Migrate `@fluent/sequence` to TypeScript. (#450)
+
+    There are no functional nor API changes in this release.
+
 ## @fluent/sequence 0.4.0 (July 25, 2019)
 
   - Rename the peer dependency to `@fluent/bundle`.
