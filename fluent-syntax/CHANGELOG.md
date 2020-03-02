@@ -1,5 +1,13 @@
 # Changelog
 
+## @fluent/syntax 0.15.0 (March 2, 2020)
+
+  - Migrate `@fluent/syntax` to TypeScript. (#457)
+
+    - `FluentSerializer` now relies on `instanceof` checks rather than
+    `node.type` comparisons. Serializing a JSON dump of an AST is not
+    supported any more.
+
 ## @fluent/syntax 0.14.0 (July 25, 2019)
 
   - Rename `fluent-syntax` to `@fluent/syntax`.
