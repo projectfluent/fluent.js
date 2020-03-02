@@ -1,113 +1,220 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="default no-js">
 <head>
-  <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | @fluent/dedent</title>
-  <link type="text/css" rel="stylesheet" href="css/style.css">
-  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
-  <script src="script/prettify/prettify.js"></script>
-  <script src="script/manual.js"></script>
-<meta name="description" content="A template literal tag for dedenting Fluent code"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/dedent"><meta property="twitter:description" content="A template literal tag for dedenting Fluent code"></head>
-<body class="layout-container" data-ice="rootContainer">
-
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@fluent/dedent - v0.2.0</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
 <header>
-  <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
-  <a href="source.html">Source</a>
-  
-  <div class="search-box">
-  <span>
-    <img src="./image/search.png">
-    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
-  </span>
-    <ul class="search-result"></ul>
-  </div>
-<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@fluent/dedent - v0.2.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @fluent/dedent - v0.2.0</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#fluentdedent" id="fluentdedent" style="color: inherit; text-decoration: none;">
+					<h1>@fluent/dedent</h1>
+				</a>
+				<p><code>@fluent/dedent</code> provides a template literal tag to dedent Fluent code.
+					Fluent Syntax is indentation-sensitive, and <code>@fluent/dedent</code> offers a
+					convenient way to include Fluent snippets in source code keeping the current
+				level of indentation and without compromising the readability.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p><code>@fluent/dedent</code> can be used both on the client-side and the server-side.  You can
+					install it from the npm registry or use it as a standalone script (as the
+				<code>FluentDedent</code> global).</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @fluent/dedent</code></pre>
+				<a href="#how-to-use" id="how-to-use" style="color: inherit; text-decoration: none;">
+					<h2>How to use</h2>
+				</a>
+				<p><code>@fluent/dedent</code>&#39;s default export is meant to be used as a template literal
+				tag. By convention, the tag is often called <code>ftl</code>.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> ftl <span class="hljs-keyword">from</span> <span class="hljs-string">"@fluent/dedent"</span>;
 
-<nav class="navigation" data-ice="nav"><div>
-  <ul>
-    
-  <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ftl">ftl</a></span></span></li>
-</ul>
-</div>
-</nav>
-
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="-fluent-dedent">@fluent/dedent</h1><p><code>@fluent/dedent</code> provides a template literal tag to dedent Fluent code.
-Fluent Syntax is indentation-sensitive, and <code>@fluent/dedent</code> offers a
-convenient way to include Fluent snippets in source code keeping the current
-level of indentation and without compromising the readability.</p>
-<h2 id="installation">Installation</h2><p><code>@fluent/dedent</code> can be used both on the client-side and the server-side.  You can
-install it from the npm registry or use it as a standalone script (as the
-<code>FluentDedent</code> global).</p>
-<pre><code><code class="source-code prettyprint">npm install @fluent/dedent</code>
-</code></pre><h2 id="how-to-use">How to use</h2><p><code>@fluent/dedent</code>&apos;s default export is meant to be used as a template literal
-tag. By convention, the tag is often called <code>ftl</code>.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import ftl from &quot;@fluent/dedent&quot;;
-
-let messages = ftl`
+<span class="hljs-keyword">let</span> messages = ftl<span class="hljs-string">`
     hello = Hello, world!
     welcome = Welcome, {$userName}!
-    `;</code>
-</code></pre>
-<p>The position of the closing backtick defines how much indent will be removed
-from each line of the content. If the indentation is not sufficient in any of
-the non-blank lines of the content, a <code>RangeError</code> is thrown.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import ftl from &quot;@fluent/dedent&quot;;
+    `</span>;</code></pre>
+				<p>The position of the closing backtick defines how much indent will be removed
+					from each line of the content. If the indentation is not sufficient in any of
+				the non-blank lines of the content, a <code>RangeError</code> is thrown.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> ftl <span class="hljs-keyword">from</span> <span class="hljs-string">"@fluent/dedent"</span>;
 
-let messages = ftl`
+<span class="hljs-keyword">let</span> messages = ftl<span class="hljs-string">`
     hello = Hello, world!
   welcome = Welcome, {$userName}!
-    `;
+    `</span>;
 
-// &#x2192; RangeError(&quot;Insufficient indentation in line 2.&quot;)</code>
-</code></pre>
-<p>Content must start on a new line and must end on a line of its own. The
-closing delimiter must appear on a new line. The first and the last line of
-the input will be removed from the output. If any of them contains
-non-whitespace characters, a <code>RangeError</code> is thrown.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import ftl from &quot;@fluent/dedent&quot;;
+<span class="hljs-comment">// → RangeError("Insufficient indentation in line 2.")</span></code></pre>
+				<p>Content must start on a new line and must end on a line of its own. The
+					closing delimiter must appear on a new line. The first and the last line of
+					the input will be removed from the output. If any of them contains
+				non-whitespace characters, a <code>RangeError</code> is thrown.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> ftl <span class="hljs-keyword">from</span> <span class="hljs-string">"@fluent/dedent"</span>;
 
-let message1 = &quot;hello = Hello, world!&quot;;
-let message2 = ftl`
+<span class="hljs-keyword">let</span> message1 = <span class="hljs-string">"hello = Hello, world!"</span>;
+<span class="hljs-keyword">let</span> message2 = ftl<span class="hljs-string">`
     hello = Hello, world!
-    `;
+    `</span>;
 
-assert(message1 === message2);</code>
-</code></pre>
-<p>If you wish to include the leading or trailing line breaks in the output, put
-extra blank lines in the input.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import ftl from &quot;@fluent/dedent&quot;;
+assert(message1 === message2);</code></pre>
+				<p>If you wish to include the leading or trailing line breaks in the output, put
+				extra blank lines in the input.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> ftl <span class="hljs-keyword">from</span> <span class="hljs-string">"@fluent/dedent"</span>;
 
-let message = ftl`
+<span class="hljs-keyword">let</span> message = ftl<span class="hljs-string">`
 
     hello = Hello, world!
 
-    `;
+    `</span>;
 
-assert(message === &quot;\nhello = Hello, world!\n&quot;);</code>
-</code></pre>
-<h2 id="compatibility">Compatibility</h2><p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&apos;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
-preset</a>.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import ftl from &apos;@fluent/dedent/compat&apos;;</code>
-</code></pre>
-<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
-documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p>
+assert(message === <span class="hljs-string">"\nhello = Hello, world!\n"</span>);</code></pre>
+				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+					<h2>Compatibility</h2>
+				</a>
+				<p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&#39;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
+				preset</a>.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> ftl <span class="hljs-keyword">from</span> <span class="hljs-string">'@fluent/dedent/compat'</span>;</code></pre>
+				<a href="#learn-more" id="learn-more" style="color: inherit; text-decoration: none;">
+					<h2>Learn more</h2>
+				</a>
+				<p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
+					documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
+				implementations, and information about how to get involved.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-function">
+						<a href="globals.html#ftl" class="tsd-kind-icon">ftl</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
 </div>
-</div>
-
-<footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
 </footer>
-
-<script src="script/search_index.js"></script>
-<script src="script/search.js"></script>
-<script src="script/pretty-print.js"></script>
-<script src="script/inherited-summary.js"></script>
-<script src="script/test-summary.js"></script>
-<script src="script/inner-link.js"></script>
-<script src="script/patch-for-local.js"></script>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
