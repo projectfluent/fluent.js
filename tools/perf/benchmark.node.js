@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-const FluentBundle = require('../../fluent-bundle');
-const FluentSyntax = require('../../fluent-syntax');
+const FluentBundle = require('../../fluent-bundle/index.js');
+const FluentSyntax = require('../../fluent-syntax/index.js');
 const { runTest } = require('./benchmark.common');
 require('intl-pluralrules');
 

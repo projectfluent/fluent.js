@@ -1,5 +1,5 @@
 import assert from "assert";
-import {FluentParser} from "../src";
+import { FluentParser } from "../esm/parser.js";
 
 const parser = new FluentParser({withSpans: false});
 const parseLiteral = input => {

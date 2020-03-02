@@ -40,8 +40,8 @@
                 {
                   "type": "Variant",
                   "key": {
-                    "value": "-2",
                     "type": "NumberLiteral",
+                    "value": "-2",
                     "span": {
                       "type": "Span",
                       "start": 28,

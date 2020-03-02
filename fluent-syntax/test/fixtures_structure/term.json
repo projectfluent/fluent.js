@@ -341,8 +341,8 @@
                       }
                     },
                     "value": {
-                      "value": "uppercase",
                       "type": "StringLiteral",
+                      "value": "uppercase",
                       "span": {
                         "type": "Span",
                         "start": 149,

@@ -1,9 +1,9 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import {
-  FluentParser, FluentSerializer, serializeExpression, serializeVariantKey
-} from "../src";
+import {FluentParser} from "../esm/parser.js";
+import {FluentSerializer, serializeExpression, serializeVariantKey}
+  from "../esm/serializer.js";
 
 
 suite("Serialize resource", function() {
@@ -24,8 +24,12 @@ suite("Serialize resource", function() {
   test("invalid resource", function() {
     const serializer = new FluentSerializer();
     assert.throws(
+      () => serializer.serialize(undefined),
+      /Unknown resource type/
+    );
+    assert.throws(
       () => serializer.serialize(null),
-      /Cannot read property 'type'/
+      /Unknown resource type/
     );
     assert.throws(
       () => serializer.serialize({}),
@@ -540,8 +544,12 @@ suite("serializeExpression", function() {
 
   test("invalid expression", function() {
     assert.throws(
+      () => serializeExpression(undefined),
+      /Unknown expression type/
+    );
+    assert.throws(
       () => serializeExpression(null),
-      /Cannot read property 'type'/
+      /Unknown expression type/
     );
     assert.throws(
       () => serializeExpression({}),
@@ -687,8 +695,12 @@ suite("serializeVariantKey", function() {
 
   test("invalid expression", function() {
     assert.throws(
+      () => serializeVariantKey(undefined),
+      /Unknown variant key type/
+    );
+    assert.throws(
       () => serializeVariantKey(null),
-      /Cannot read property 'type'/
+      /Unknown variant key type/
     );
     assert.throws(
       () => serializeVariantKey({}),

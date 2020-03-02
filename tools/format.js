@@ -8,7 +8,7 @@ const program = require('commander');
 
 require = require('esm')(module);
 require('intl-pluralrules');
-const Fluent = require('../fluent-bundle/src');
+const Fluent = require('../fluent-bundle/esm/index.js');
 
 program
   .version('0.0.1')

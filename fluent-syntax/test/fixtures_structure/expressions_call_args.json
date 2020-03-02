@@ -44,8 +44,8 @@
                       }
                     },
                     "value": {
-                      "value": "1",
                       "type": "NumberLiteral",
+                      "value": "1",
                       "span": {
                         "type": "Span",
                         "start": 18,
@@ -70,8 +70,8 @@
                       }
                     },
                     "value": {
-                      "value": "2",
                       "type": "NumberLiteral",
+                      "value": "2",
                       "span": {
                         "type": "Span",
                         "start": 39,
