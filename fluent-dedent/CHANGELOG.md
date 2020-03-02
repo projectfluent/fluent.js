@@ -1,5 +1,11 @@
 # Changelog
 
+## @fluent/dedent 0.2.0 (March 2, 2020)
+
+  - Migrate `@fluent/dedent` to TypeScript. (#451)
+
+    There are no functional nor API changes in this release.
+
 ## @fluent/dedent 0.1.0 (May 23, 2019)
 
 This is the first release of `@fluent/dedent` as an independent package. It's
