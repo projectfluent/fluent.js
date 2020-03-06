@@ -1,5 +1,12 @@
-import { isValidElement, cloneElement, useContext, ReactNode, ReactElement }
-  from "react";
+import {
+  Fragment,
+  ReactElement,
+  ReactNode,
+  cloneElement,
+  createElement,
+  isValidElement,
+  useContext
+} from "react";
 import PropTypes from "prop-types";
 import { FluentContext } from "./context";
 import { VOID_ELEMENTS } from "./vendor/voidElementTags";
@@ -38,7 +45,7 @@ interface LocalizedProps {
  *  translation is available.  It also makes it easy to grep for strings in the
  *  source code.
  */
-export function Localized(props: LocalizedProps): ReactNode {
+export function Localized(props: LocalizedProps): ReactElement {
   const { id, attrs, vars, elems, children: child = null } = props;
   const l10n = useContext(FluentContext);
 
@@ -50,14 +57,14 @@ export function Localized(props: LocalizedProps): ReactNode {
 
   if (!l10n) {
     // Use the wrapped component as fallback.
-    return child;
+    return createElement(Fragment, null, child);
   }
 
   const bundle = l10n.getBundle(id);
 
   if (bundle === null) {
     // Use the wrapped component as fallback.
-    return child;
+    return createElement(Fragment, null, child);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -74,10 +81,10 @@ export function Localized(props: LocalizedProps): ReactNode {
       for (let error of errors) {
         l10n.reportError(error);
       }
-      return value;
+      return createElement(Fragment, null, value);
     }
 
-    return child;
+    return createElement(Fragment, null, child);
   }
 
   let localizedProps: Record<string, string> | undefined;
