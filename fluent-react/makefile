@@ -20,6 +20,9 @@ esm/.compiled: $(SOURCES)
 test: esm/.compiled
 	@jest --collect-coverage
 
+.PHONY: build
+build: index.js compat.js
+
 index.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
 	    --config $(ROOT)/bundle_config.js \

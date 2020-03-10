@@ -12,6 +12,7 @@ test:
 	    --require esm \
 	    test/**/*_test.js
 
+.PHONY: build
 build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
 
 Fluent.jsm: $(SOURCES)

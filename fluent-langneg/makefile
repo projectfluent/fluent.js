@@ -9,6 +9,7 @@ test:
 	    --require esm \
 	    test/**/*_test.js
 
+.PHONY: build
 build: index.js compat.js
 
 index.js: $(SOURCES)
