@@ -18,5 +18,5 @@
  */
 
 export { MemoLocalizationProvider as LocalizationProvider } from "./provider";
-export { withLocalization } from "./with_localization";
-export { Localized } from "./localized";
+export { withLocalization, WithLocalizationProps } from "./with_localization";
+export { Localized, LocalizedProps } from "./localized";

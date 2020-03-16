@@ -16,7 +16,7 @@ import { FluentArgument } from "@fluent/bundle";
 // &amp;, &#0038;, &#x0026;.
 const reMarkup = /<|&#?\w+;/;
 
-interface LocalizedProps {
+export interface LocalizedProps {
   id: string;
   attrs?: Record<string, boolean>;
   children?: ReactNode;
