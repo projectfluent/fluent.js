@@ -34,7 +34,7 @@ index.js: esm/.compiled
 	@echo -e " $(OK) $@ built"
 
 compat.js: esm/.compiled
-	@rollup $(CURDIR)/src/index.js \
+	@rollup $(CURDIR)/esm/index.js \
 	    --config $(CURDIR)/compat_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
