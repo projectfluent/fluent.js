@@ -9,14 +9,17 @@ export interface WithLocalizationProps {
     fallback?: string): string;
 }
 
+type WithoutLocalizationProps<P> = Omit<P, keyof WithLocalizationProps>
+  & Partial<WithLocalizationProps>;
+
 export function withLocalization<P extends WithLocalizationProps>(
   Inner: ComponentType<P>
-): (props: P) => ReactElement {
-  function WithLocalization(props: P): ReactElement {
+): ComponentType<WithoutLocalizationProps<P>> {
+  function WithLocalization(props: WithoutLocalizationProps<P>): ReactElement {
     const l10n = useContext(FluentContext);
     // Re-bind getString to trigger a re-render of Inner.
     const getString = l10n.getString.bind(l10n);
-    return createElement(Inner, { getString, ...props });
+    return createElement(Inner, { getString, ...props } as P);
   }
 
   WithLocalization.displayName = `WithLocalization(${displayName(Inner)})`;
