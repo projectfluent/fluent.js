@@ -855,8 +855,7 @@ foo = test <em>custom markup parser</em>
     function parseMarkup(str) {
       return [
         {
-          TEXT_NODE: 3,
-          nodeType: 3,
+          nodeName: "#text",
           textContent: str.toUpperCase()
         }
       ];

@@ -146,22 +146,18 @@ export function Localized(props: LocalizedProps): ReactElement {
   // found in the translation with the props passed to this Localized.
   const translationNodes = l10n.parseMarkup(messageValue);
   const translatedChildren = translationNodes.map(childNode => {
-    if (childNode.nodeType === childNode.TEXT_NODE) {
+    if (childNode.nodeName === "#text") {
       return childNode.textContent;
     }
 
-    if (!isElementNode(childNode)) {
-      // Ignore all other node types: CDATASection, ProcessingInstruction,
-      // Comment, Document, DocumentType, DocumentFragment.
-      return null;
-    }
+    const childName = childNode.nodeName.toLowerCase();
 
     // If the child is not expected just take its textContent.
-    if (!elemsLower || !elemsLower.hasOwnProperty(childNode.localName)) {
+    if (!elemsLower || !elemsLower.hasOwnProperty(childName)) {
       return childNode.textContent;
     }
 
-    const sourceChild = elemsLower[childNode.localName];
+    const sourceChild = elemsLower[childName];
 
     // Ignore elems which are not valid React elements.
     if (!isValidElement(sourceChild)) {
@@ -184,10 +180,6 @@ export function Localized(props: LocalizedProps): ReactElement {
   });
 
   return cloneElement(child, localizedProps, ...translatedChildren);
-}
-
-function isElementNode(node: Node): node is Element {
-  return node.nodeType === node.ELEMENT_NODE;
 }
 
 export default Localized;
