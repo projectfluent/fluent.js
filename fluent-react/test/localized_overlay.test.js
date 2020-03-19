@@ -99,7 +99,7 @@ foo = Click <button>me</button>!
             `);
   });
 
-  test("an element of different case is not matched", () => {
+  test("an element of different case is lowercased and matched", () => {
     const bundle = new FluentBundle();
 
     bundle.addResource(new FluentResource(`
@@ -119,7 +119,11 @@ foo = Click <button>me</button>!
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
                   <div>
                     Click 
-                    me
+                    <button
+                      onClick={[Function]}
+                    >
+                      me
+                    </button>
                     !
                   </div>
             `);

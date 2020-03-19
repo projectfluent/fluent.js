@@ -133,6 +133,15 @@ export function Localized(props: LocalizedProps): ReactElement {
     return cloneElement(child, localizedProps, messageValue);
   }
 
+  let elemsLower: Record<string, ReactElement>;
+  if (elems) {
+    elemsLower = {};
+    for (let [name, elem] of Object.entries(elems)) {
+      elemsLower[name.toLowerCase()] = elem;
+    }
+  }
+
+
   // If the message contains markup, parse it and try to match the children
   // found in the translation with the props passed to this Localized.
   const translationNodes = l10n.parseMarkup(messageValue);
@@ -141,21 +150,25 @@ export function Localized(props: LocalizedProps): ReactElement {
       return childNode.textContent;
     }
 
-    let childName = childNode.nodeName.toLowerCase();
+    if (!isElementNode(childNode)) {
+      // Ignore all other node types: CDATASection, ProcessingInstruction,
+      // Comment, Document, DocumentType, DocumentFragment.
+      return null;
+    }
 
     // If the child is not expected just take its textContent.
-    if (!elems || !elems.hasOwnProperty(childName)) {
+    if (!elemsLower || !elemsLower.hasOwnProperty(childNode.localName)) {
       return childNode.textContent;
     }
 
-    const sourceChild = elems[childName];
+    const sourceChild = elemsLower[childNode.localName];
 
-    // Ignore elem props which are not valid React elements.
+    // Ignore elems which are not valid React elements.
     if (!isValidElement(sourceChild)) {
       return childNode.textContent;
     }
 
-    // If the element passed as a prop to <Localized> is a known void element,
+    // If the element passed in the elems prop is a known void element,
     // explicitly dismiss any textContent which might have accidentally been
     // defined in the translation to prevent the "void element tags must not
     // have children" error.
@@ -171,6 +184,10 @@ export function Localized(props: LocalizedProps): ReactElement {
   });
 
   return cloneElement(child, localizedProps, ...translatedChildren);
+}
+
+function isElementNode(node: Node): node is Element {
+  return node.nodeType === node.ELEMENT_NODE;
 }
 
 export default Localized;

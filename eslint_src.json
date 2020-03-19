@@ -22,10 +22,6 @@
         "no-unreachable": 1,
         "no-unexpected-multiline": 2,
         "no-sparse-arrays": 2,
-        "complexity": [
-            1,
-            18
-        ],
         "dot-location": [
             2,
             "property"
