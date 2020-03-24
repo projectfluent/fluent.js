@@ -1,7 +1,8 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../esm/index";
+import { ReactLocalization, LocalizationProvider, Localized }
+  from "../esm/index";
 
 describe("Localized - rendering", () => {
   test("render the value", () => {
@@ -14,7 +15,7 @@ foo = FOO
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <div />
         </Localized>
@@ -39,7 +40,7 @@ foo =
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ attr: true }}>
           <div />
         </Localized>
@@ -65,7 +66,7 @@ foo =
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ attr2: true }}>
           <div />
         </Localized>
@@ -90,7 +91,7 @@ foo =
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ attr: false }}>
           <div />
         </Localized>
@@ -111,7 +112,7 @@ foo =
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <div />
         </Localized>
@@ -132,7 +133,7 @@ foo =
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ attr: true }}>
           <div existing={true} />
         </Localized>
@@ -158,7 +159,7 @@ foo =
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ existing: true }}>
           <div existing={true} />
         </Localized>
@@ -181,7 +182,7 @@ foo =
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ existing: false }}>
           <div existing={true} />
         </Localized>
@@ -204,7 +205,7 @@ foo =
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <div existing={true} />
         </Localized>
@@ -227,7 +228,7 @@ foo =
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ title: true }}>
           <select>
             <option>Option</option>
@@ -256,7 +257,7 @@ foo = { $arg }
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" vars={{arg: "ARG"}}>
           <div />
         </Localized>
@@ -284,7 +285,7 @@ foo = { $arg }
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ title: true }} vars={{arg: "ARG"}}>
           <div />
         </Localized>
@@ -313,7 +314,7 @@ foo = { $arg }
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <React.Fragment>
             <div>Fragment content</div>
@@ -340,7 +341,7 @@ foo = { $arg }
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ title: true }}>
           <div />
         </Localized>
@@ -364,7 +365,7 @@ foo =
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <React.Fragment>
             <div>Fragment content</div>
@@ -387,7 +388,7 @@ foo = Test message
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <React.Fragment>
             <div>Fragment content</div>
@@ -403,7 +404,7 @@ foo = Test message
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <React.Fragment />
         </Localized>
@@ -421,7 +422,7 @@ foo =
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <React.Fragment />
         </Localized>
@@ -438,7 +439,7 @@ foo = Test message
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <React.Fragment />
         </Localized>
@@ -452,7 +453,7 @@ foo = Test message
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">String fallback</Localized>
       </LocalizationProvider>
     );
@@ -467,7 +468,7 @@ foo = Test message
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">String fallback</Localized>
       </LocalizationProvider>
     );
@@ -483,7 +484,7 @@ foo = Message
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" />
       </LocalizationProvider>
     );
@@ -495,7 +496,7 @@ foo = Message
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" />
       </LocalizationProvider>
     );

@@ -1,14 +1,11 @@
-import { createElement, memo, ReactNode, ReactElement } from "react";
+import { createElement, ReactNode, ReactElement, memo } from "react";
 import PropTypes from "prop-types";
-import { FluentBundle } from "@fluent/bundle";
 import { FluentContext } from "./context";
 import { ReactLocalization } from "./localization";
-import { MarkupParser } from "./markup";
 
 interface LocalizationProviderProps {
   children?: ReactNode;
-  bundles?: Iterable<FluentBundle>;
-  parseMarkup?: MarkupParser | null;
+  l10n: ReactLocalization;
 }
 
 /*
@@ -19,29 +16,27 @@ interface LocalizationProviderProps {
  * elements in the descendant's render tree without the need to pass them
  * explicitly.
  *
- *     <LocalizationProvider bundles={…}>
+ *     <LocalizationProvider l10n={…}>
  *         …
  *     </LocalizationProvider>
  *
- * The `LocalizationProvider` component takes `bundles` as a prop.  It should
- * be an iterable of `FluentBundle` instances in order of the user's
- * preferred languages.  The `FluentBundle` instances will be used by
- * `ReactLocalization` to format translations.  If a translation is missing in
- * one instance, `ReactLocalization` will fall back to the next one.
+ * `LocalizationProvider` takes an instance of `ReactLocalization` in the
+ * `l10n` prop. This instance will be made available to `Localized` components
+ * under the provider.
  */
 function LocalizationProvider(props: LocalizationProviderProps): ReactElement {
-  if (props.bundles === undefined) {
-    throw new Error("LocalizationProvider must receive the bundles prop.");
+  if (props.l10n === undefined) {
+    throw new Error("LocalizationProvider must receive the l10n prop.");
   }
 
-  if (!props.bundles[Symbol.iterator]) {
+  if (!(props.l10n instanceof ReactLocalization)) {
     throw new Error("The bundles prop must be an iterable.");
   }
 
   return createElement(
     FluentContext.Provider,
     {
-      value: new ReactLocalization(props.bundles, props.parseMarkup),
+      value: props.l10n
     },
     props.children
   );
@@ -49,11 +44,10 @@ function LocalizationProvider(props: LocalizationProviderProps): ReactElement {
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  bundles: isIterable,
-  parseMarkup: PropTypes.func
+  l10n: isReactLocalization,
 };
 
-function isIterable(
+function isReactLocalization(
   props: Record<string, unknown>,
   propName: string,
   componentName: string
@@ -66,13 +60,14 @@ function isIterable(
     );
   }
 
-  if (Symbol.iterator in Object(prop)) {
+  if (prop instanceof ReactLocalization) {
     return null;
   }
 
   return new Error(
-    `The ${propName} prop supplied to ${componentName} must be an iterable.`
+    `The ${propName} prop supplied to ${componentName} must be an instance \
+of ReactLocalization.`
   );
 }
 
-export let MemoLocalizationProvider = memo(LocalizationProvider);
+export const MemoLocalizationProvider = memo(LocalizationProvider);

@@ -1,11 +1,12 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../esm/index";
+import { ReactLocalization, LocalizationProvider, Localized }
+  from "../esm/index";
 
 test("relocalizes", () => {
-  const Root = ({ bundle }) => (
-    <LocalizationProvider bundles={[bundle]}>
+  const Root = ({ l10n }) => (
+    <LocalizationProvider l10n={l10n}>
       <Localized id="foo">
         <div />
       </Localized>
@@ -16,7 +17,7 @@ test("relocalizes", () => {
   bundle1.addResource(new FluentResource(`
 foo = FOO
 `));
-  const renderer = TestRenderer.create(<Root bundle={bundle1} />);
+  const renderer = TestRenderer.create(<Root l10n={new ReactLocalization([bundle1])} />);
   expect(renderer.toJSON()).toMatchInlineSnapshot(`
     <div>
       FOO
@@ -27,7 +28,7 @@ foo = FOO
   bundle2.addResource(new FluentResource(`
 foo = BAR
 `));
-  renderer.update(<Root bundle={bundle2} />);
+  renderer.update(<Root l10n={new ReactLocalization([bundle2])} />);
   expect(renderer.toJSON()).toMatchInlineSnapshot(`
     <div>
       BAR

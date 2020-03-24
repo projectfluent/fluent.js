@@ -1,7 +1,7 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, withLocalization } from "../esm/index";
+import { ReactLocalization, LocalizationProvider, withLocalization } from "../esm/index";
 
 function DummyComponent() {
   return <div />;
@@ -12,7 +12,7 @@ describe("withLocalization", () => {
     const EnhancedComponent = withLocalization(DummyComponent);
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[]}>
+      <LocalizationProvider l10n={new ReactLocalization([])}>
         <EnhancedComponent />
       </LocalizationProvider>
     );
@@ -38,7 +38,7 @@ bar = BAR {$arg}
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <EnhancedComponent />
       </LocalizationProvider>
     );
@@ -63,7 +63,7 @@ bar = BAR {$arg}
     );
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <EnhancedComponent />
       </LocalizationProvider>
     );
@@ -107,7 +107,7 @@ bar = BAR {$arg}
     initialBundle.addResource(new FluentResource("foo = FOO"));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[initialBundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([initialBundle])}>
         <EnhancedComponent />
       </LocalizationProvider>
     );
@@ -118,7 +118,7 @@ bar = BAR {$arg}
     newBundle.addResource(new FluentResource("foo = BAR"));
 
     renderer.update(
-      <LocalizationProvider bundles={[newBundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([newBundle])}>
         <EnhancedComponent />
       </LocalizationProvider>
     );
