@@ -67,6 +67,8 @@ export function Localized(props: LocalizedProps): ReactElement {
     return createElement(Fragment, null, child);
   }
 
+  // l10n.getBundle makes the bundle.hasMessage check which ensures that
+  // bundle.getMessage returns an existing message.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const msg = bundle.getMessage(id)!;
   let errors: Array<Error> = [];
