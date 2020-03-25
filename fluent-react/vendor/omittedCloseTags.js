@@ -8,7 +8,7 @@
 // For HTML, certain tags should omit their close tag. We keep a whitelist for
 // those special-case tags.
 
-export const OMITTED_CLOSE_TAGS = {
+var omittedCloseTags = {
   area: true,
   base: true,
   br: true,
@@ -26,3 +26,5 @@ export const OMITTED_CLOSE_TAGS = {
   wbr: true,
   // NOTE: menuitem's close tag should be omitted, but that causes problems.
 };
+
+export default omittedCloseTags;

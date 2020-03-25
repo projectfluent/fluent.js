@@ -8,8 +8,8 @@ import {
   useContext
 } from "react";
 import PropTypes from "prop-types";
+import voidElementTags from "../vendor/voidElementTags";
 import { FluentContext } from "./context";
-import { VOID_ELEMENTS } from "./vendor/voidElementTags";
 import { FluentArgument } from "@fluent/bundle";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
@@ -112,7 +112,7 @@ export function Localized(props: LocalizedProps): ReactElement {
   // message value and do not pass it to cloneElement in order to avoid the
   // "void element tags must neither have `children` nor use
   // `dangerouslySetInnerHTML`" error.
-  if (child.type in VOID_ELEMENTS) {
+  if (child.type in voidElementTags) {
     return cloneElement(child, localizedProps);
   }
 
@@ -170,7 +170,7 @@ export function Localized(props: LocalizedProps): ReactElement {
     // explicitly dismiss any textContent which might have accidentally been
     // defined in the translation to prevent the "void element tags must not
     // have children" error.
-    if (sourceChild.type in VOID_ELEMENTS) {
+    if (sourceChild.type in voidElementTags) {
       return sourceChild;
     }
 
