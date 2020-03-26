@@ -1,7 +1,7 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../src/index";
+import { LocalizationProvider, Localized } from "../esm/index";
 
 describe("Localized - rendering", () => {
   test("render the value", () => {
@@ -257,7 +257,7 @@ foo = { $arg }
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" $arg="ARG">
+        <Localized id="foo" vars={{arg: "ARG"}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -285,7 +285,7 @@ foo = { $arg }
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" attrs={{ title: true }} $arg="ARG">
+        <Localized id="foo" attrs={{ title: true }} vars={{arg: "ARG"}}>
           <div />
         </Localized>
       </LocalizationProvider>

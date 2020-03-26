@@ -12,6 +12,7 @@ test:
 	    --require esm \
 	    test/**/*_test.js
 
+.PHONY: build
 build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
 
 Fluent.jsm: $(SOURCES)
@@ -53,6 +54,7 @@ l10n.js: $(SOURCES)
 	@echo -e " $(OK) $@ built"
 
 fluent-react.js: $(SOURCES)
+	$(MAKE) -sC ../fluent-react compile
 	@rollup $(CURDIR)/src/fluent-react.js \
 	    --config ./vendor_config.js \
 	    --output.intro "/* $(call version,fluent-react) */" \

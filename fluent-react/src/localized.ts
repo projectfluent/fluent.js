@@ -1,34 +1,28 @@
-import { isValidElement, cloneElement, useContext } from "react";
+import {
+  Fragment,
+  ReactElement,
+  ReactNode,
+  cloneElement,
+  createElement,
+  isValidElement,
+  useContext
+} from "react";
 import PropTypes from "prop-types";
-import FluentContext from "./context";
-import VOID_ELEMENTS from "../vendor/voidElementTags";
+import voidElementTags from "../vendor/voidElementTags";
+import { FluentContext } from "./context";
+import { FluentArgument } from "@fluent/bundle";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
 // &amp;, &#0038;, &#x0026;.
 const reMarkup = /<|&#?\w+;/;
 
-/*
- * Prepare props passed to `Localized` for formatting.
- */
-function toArguments(props) {
-  const args = {};
-  const elems = {};
-
-  for (const [propname, propval] of Object.entries(props)) {
-    if (propname.startsWith("$")) {
-      const name = propname.substr(1);
-      args[name] = propval;
-    } else if (isValidElement(propval)) {
-      // We'll try to match localNames of elements found in the translation with
-      // names of elements passed as props. localNames are always lowercase.
-      const name = propname.toLowerCase();
-      elems[name] = propval;
-    }
-  }
-
-  return [args, elems];
+export interface LocalizedProps {
+  id: string;
+  attrs?: Record<string, boolean>;
+  children?: ReactNode;
+  vars?: Record<string, FluentArgument>;
+  elems?: Record<string, ReactElement>;
 }
-
 /*
  * The `Localized` class renders its child with translated props and children.
  *
@@ -51,8 +45,8 @@ function toArguments(props) {
  *  translation is available.  It also makes it easy to grep for strings in the
  *  source code.
  */
-function Localized(props) {
-  const { id, attrs, children: child = null } = props;
+export function Localized(props: LocalizedProps): ReactElement {
+  const { id, attrs, vars, elems, children: child = null } = props;
   const l10n = useContext(FluentContext);
 
   // Validate that the child element isn't an array
@@ -63,19 +57,21 @@ function Localized(props) {
 
   if (!l10n) {
     // Use the wrapped component as fallback.
-    return child;
+    return createElement(Fragment, null, child);
   }
 
   const bundle = l10n.getBundle(id);
 
   if (bundle === null) {
     // Use the wrapped component as fallback.
-    return child;
+    return createElement(Fragment, null, child);
   }
 
-  const msg = bundle.getMessage(id);
-  const [args, elems] = toArguments(props);
-  let errors = [];
+  // l10n.getBundle makes the bundle.hasMessage check which ensures that
+  // bundle.getMessage returns an existing message.
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const msg = bundle.getMessage(id)!;
+  let errors: Array<Error> = [];
 
   // Check if the child inside <Localized> is a valid element -- if not, then
   // it's either null or a simple fallback string. No need to localize the
@@ -83,17 +79,17 @@ function Localized(props) {
   if (!isValidElement(child)) {
     if (msg.value) {
       // Replace the fallback string with the message value;
-      let value = bundle.formatPattern(msg.value, args, errors);
+      let value = bundle.formatPattern(msg.value, vars, errors);
       for (let error of errors) {
         l10n.reportError(error);
       }
-      return value;
+      return createElement(Fragment, null, value);
     }
 
-    return child;
+    return createElement(Fragment, null, child);
   }
 
-  let localizedProps;
+  let localizedProps: Record<string, string> | undefined;
 
   // The default is to forbid all message attributes. If the attrs prop exists
   // on the Localized instance, only set message attributes which have been
@@ -104,7 +100,7 @@ function Localized(props) {
     for (const [name, allowed] of Object.entries(attrs)) {
       if (allowed && name in msg.attributes) {
         localizedProps[name] = bundle.formatPattern(
-          msg.attributes[name], args, errors);
+          msg.attributes[name], vars, errors);
       }
     }
     for (let error of errors) {
@@ -116,7 +112,7 @@ function Localized(props) {
   // message value and do not pass it to cloneElement in order to avoid the
   // "void element tags must neither have `children` nor use
   // `dangerouslySetInnerHTML`" error.
-  if (child.type in VOID_ELEMENTS) {
+  if (child.type in voidElementTags) {
     return cloneElement(child, localizedProps);
   }
 
@@ -128,7 +124,7 @@ function Localized(props) {
   }
 
   errors = [];
-  const messageValue = bundle.formatPattern(msg.value, args, errors);
+  const messageValue = bundle.formatPattern(msg.value, vars, errors);
   for (let error of errors) {
     l10n.reportError(error);
   }
@@ -139,26 +135,42 @@ function Localized(props) {
     return cloneElement(child, localizedProps, messageValue);
   }
 
+  let elemsLower: Record<string, ReactElement>;
+  if (elems) {
+    elemsLower = {};
+    for (let [name, elem] of Object.entries(elems)) {
+      elemsLower[name.toLowerCase()] = elem;
+    }
+  }
+
+
   // If the message contains markup, parse it and try to match the children
   // found in the translation with the props passed to this Localized.
   const translationNodes = l10n.parseMarkup(messageValue);
   const translatedChildren = translationNodes.map(childNode => {
-    if (childNode.nodeType === childNode.TEXT_NODE) {
+    if (childNode.nodeName === "#text") {
       return childNode.textContent;
     }
+
+    const childName = childNode.nodeName.toLowerCase();
 
     // If the child is not expected just take its textContent.
-    if (!elems.hasOwnProperty(childNode.localName)) {
+    if (!elemsLower || !elemsLower.hasOwnProperty(childName)) {
       return childNode.textContent;
     }
 
-    const sourceChild = elems[childNode.localName];
+    const sourceChild = elemsLower[childName];
 
-    // If the element passed as a prop to <Localized> is a known void element,
+    // Ignore elems which are not valid React elements.
+    if (!isValidElement(sourceChild)) {
+      return childNode.textContent;
+    }
+
+    // If the element passed in the elems prop is a known void element,
     // explicitly dismiss any textContent which might have accidentally been
     // defined in the translation to prevent the "void element tags must not
     // have children" error.
-    if (sourceChild.type in VOID_ELEMENTS) {
+    if (sourceChild.type in voidElementTags) {
       return sourceChild;
     }
 
@@ -166,7 +178,7 @@ function Localized(props) {
     // https://github.com/projectfluent/fluent.js/issues/184
     // TODO  Control localizable attributes on elements passed as props
     // https://github.com/projectfluent/fluent.js/issues/185
-    return cloneElement(sourceChild, null, childNode.textContent);
+    return cloneElement(sourceChild, undefined, childNode.textContent);
   });
 
   return cloneElement(child, localizedProps, ...translatedChildren);

@@ -1,8 +1,8 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import createParseMarkup from "../src/markup";
-import { LocalizationProvider, Localized } from "../src/index";
+import { createParseMarkup } from "../esm/markup";
+import { LocalizationProvider, Localized } from "../esm/index";
 
 describe("Localized - overlay", () => {
   test("< in text", () => {
@@ -80,7 +80,7 @@ foo = Click <button>me</button>!
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" button={<button onClick={alert}></button>}>
+        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -99,7 +99,7 @@ foo = Click <button>me</button>!
             `);
   });
 
-  test("an element of different case is matched", () => {
+  test("an element of different case is lowercased and matched", () => {
     const bundle = new FluentBundle();
 
     bundle.addResource(new FluentResource(`
@@ -107,11 +107,10 @@ foo = Click <button>me</button>!
 `));
 
     // The Button prop is capitalized whereas the <button> element in the
-    // translation is all lowercase. Since we're using DOM localNames, they
-    // should still match.
+    // translation is lowercase.
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" Button={<button onClick={alert}></button>}>
+        <Localized id="foo" elems={{Button: <button onClick={alert}></button>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -141,8 +140,10 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
       <LocalizationProvider bundles={[bundle]}>
         <Localized
           id="foo"
-          confirm={<button className="confirm"></button>}
-          cancel={<button className="cancel"></button>}
+          elems={{
+            confirm: <button className="confirm"></button>,
+            cancel: <button className="cancel"></button>
+          }}
         >
           <div />
         </Localized>
@@ -176,7 +177,9 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" confirm={<button className="confirm"></button>}>
+        <Localized id="foo" elems={{
+            confirm: <button className="confirm"></button>
+        }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -207,8 +210,10 @@ foo = <confirm>Sign in</confirm>.
       <LocalizationProvider bundles={[bundle]}>
         <Localized
           id="foo"
-          confirm={<button className="confirm"></button>}
-          cancel={<button className="cancel"></button>}
+          elems={{
+            confirm: <button className="confirm"></button>,
+            cancel: <button className="cancel"></button>
+          }}
         >
           <div />
         </Localized>
@@ -236,7 +241,7 @@ foo = Click <button className="foo">me</button>!
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" button={<button onClick={alert}></button>}>
+        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -264,7 +269,7 @@ foo = Click <button><em>me</em></button>!
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" button={<button onClick={alert}></button>}>
+        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -292,7 +297,7 @@ foo = <confirm>Sign in</confirm>.
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" confirm="Not a React element">
+        <Localized id="foo" elems={{confirm: "Not a React element"}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -319,7 +324,7 @@ foo = BEFORE <input/> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" input={<input type="text" />}>
+        <Localized id="foo" elems={{input: <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -345,7 +350,7 @@ foo = BEFORE <input></input> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" input={<input type="text" />}>
+        <Localized id="foo" elems={{input: <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -371,7 +376,7 @@ foo = BEFORE <input>Foo</input> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" input={<input type="text" />}>
+        <Localized id="foo" elems={{input: <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -399,7 +404,7 @@ foo = BEFORE <input/> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" input={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{input: <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -425,7 +430,7 @@ foo = BEFORE <input></input> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" input={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{input: <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -451,7 +456,7 @@ foo = BEFORE <input>Foo</input> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" input={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{input: <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -479,7 +484,7 @@ foo = BEFORE <span/> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" span={<input type="text" />}>
+        <Localized id="foo" elems={{span: <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -509,7 +514,7 @@ foo = BEFORE <span></span> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" span={<input type="text" />}>
+        <Localized id="foo" elems={{span: <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -535,7 +540,7 @@ foo = BEFORE <span>Foo</span> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" span={<input type="text" />}>
+        <Localized id="foo" elems={{span: <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -561,7 +566,7 @@ foo = BEFORE <span/> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" span={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{span: <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -590,7 +595,7 @@ foo = BEFORE <span></span> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" span={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{span: <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -616,7 +621,7 @@ foo = BEFORE <span>Foo</span> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" span={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{span: <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -642,7 +647,7 @@ foo = BEFORE <text-input/> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" text-input={<input type="text" />}>
+        <Localized id="foo" elems={{"text-input": <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -672,7 +677,7 @@ foo = BEFORE <text-input></text-input> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" text-input={<input type="text" />}>
+        <Localized id="foo" elems={{"text-input": <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -698,7 +703,7 @@ foo = BEFORE <text-input>Foo</text-input> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" text-input={<input type="text" />}>
+        <Localized id="foo" elems={{"text-input": <input type="text" />}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -724,7 +729,7 @@ foo = BEFORE <text-elem/> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" text-elem={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{"text-elem": <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -754,7 +759,7 @@ foo = BEFORE <text-elem></text-elem> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" text-elem={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{"text-elem": <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -780,7 +785,7 @@ foo = BEFORE <text-elem>Foo</text-elem> AFTER
 
     const renderer = TestRenderer.create(
       <LocalizationProvider bundles={[bundle]}>
-        <Localized id="foo" text-elem={<span>Hardcoded</span>}>
+        <Localized id="foo" elems={{"text-elem": <span>Hardcoded</span>}}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -850,8 +855,7 @@ foo = test <em>custom markup parser</em>
     function parseMarkup(str) {
       return [
         {
-          TEXT_NODE: 3,
-          nodeType: 3,
+          nodeName: "#text",
           textContent: str.toUpperCase()
         }
       ];
