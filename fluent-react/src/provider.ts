@@ -25,14 +25,6 @@ interface LocalizationProviderProps {
  * under the provider.
  */
 function LocalizationProvider(props: LocalizationProviderProps): ReactElement {
-  if (props.l10n === undefined) {
-    throw new Error("LocalizationProvider must receive the l10n prop.");
-  }
-
-  if (!(props.l10n instanceof ReactLocalization)) {
-    throw new Error("The bundles prop must be an iterable.");
-  }
-
   return createElement(
     FluentContext.Provider,
     {
@@ -44,30 +36,7 @@ function LocalizationProvider(props: LocalizationProviderProps): ReactElement {
 
 LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  l10n: isReactLocalization,
+  l10n: PropTypes.instanceOf(ReactLocalization).isRequired,
 };
-
-function isReactLocalization(
-  props: Record<string, unknown>,
-  propName: string,
-  componentName: string
-): null | Error {
-  const prop = props[propName];
-
-  if (!prop) {
-    return new Error(
-      `The ${propName} prop supplied to ${componentName} is required.`
-    );
-  }
-
-  if (prop instanceof ReactLocalization) {
-    return null;
-  }
-
-  return new Error(
-    `The ${propName} prop supplied to ${componentName} must be an instance \
-of ReactLocalization.`
-  );
-}
 
 export const MemoLocalizationProvider = memo(LocalizationProvider);

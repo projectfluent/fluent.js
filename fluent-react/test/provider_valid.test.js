@@ -35,7 +35,7 @@ describe("LocalizationProvider - validation", () => {
   test("without the l10n prop", () => {
     expect(() => {
       TestRenderer.create(<LocalizationProvider />);
-    }).toThrow(/is required/);
+    }).toThrow(/marked as required/);
   });
 
   test("is memoized (no re-render) when props are the same", () => {
