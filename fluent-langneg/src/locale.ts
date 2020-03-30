@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: 0 */
 
-import { getLikelySubtagsMin } from "./subtags";
+import {getLikelySubtagsMin} from "./subtags";
 
 const languageCodeRe = "([a-z]{2,3}|\\*)";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
@@ -22,9 +22,13 @@ const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
 const localeRe = new RegExp(
   `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`, "i");
 
-export const localeParts = ["language", "script", "region", "variant"];
+export class Locale {
+  isWellFormed: boolean;
+  language?: string;
+  script?: string;
+  region?: string;
+  variant?: string;
 
-export default class Locale {
   /**
    * Parses a locale id using the localeRe into an array with four elements.
    *
@@ -34,7 +38,7 @@ export default class Locale {
    * It also allows skipping the script section of the id, so `en-US` is
    * properly parsed as `en-*-US-*`.
    */
-  constructor(locale) {
+  constructor(locale: string) {
     const result = localeRe.exec(locale.replace(/_/g, "-"));
     if (!result) {
       this.isWellFormed = false;
@@ -56,38 +60,49 @@ export default class Locale {
     this.isWellFormed = true;
   }
 
-  isEqual(locale) {
-    return localeParts.every(part => this[part] === locale[part]);
+  isEqual(other: Locale): boolean {
+    return this.language === other.language
+      && this.script === other.script
+      && this.region === other.region
+      && this.variant === other.variant;
   }
 
-  matches(locale, thisRange = false, otherRange = false) {
-    return localeParts.every(part => {
-      return ((thisRange && this[part] === undefined) ||
-              (otherRange && locale[part] === undefined) ||
-              this[part] === locale[part]);
-    });
+  matches(other: Locale, thisRange = false, otherRange = false): boolean {
+    return (this.language === other.language
+        || thisRange && this.language === undefined
+        || otherRange && other.language === undefined)
+      && (this.script === other.script
+        || thisRange && this.script === undefined
+        || otherRange && other.script === undefined)
+      && (this.region === other.region
+        || thisRange && this.region === undefined
+        || otherRange && other.region === undefined)
+      && (this.variant === other.variant
+        || thisRange && this.variant === undefined
+        || otherRange && other.variant === undefined);
   }
 
-  toString() {
-    return localeParts
-      .map(part => this[part])
+  toString(): string {
+    return [this.language, this.script, this.region, this.variant]
       .filter(part => part !== undefined)
       .join("-");
   }
 
-  clearVariants() {
+  clearVariants(): void {
     this.variant = undefined;
   }
 
-  clearRegion() {
+  clearRegion(): void {
     this.region = undefined;
   }
 
-  addLikelySubtags() {
+  addLikelySubtags(): boolean {
     const newLocale = getLikelySubtagsMin(this.toString().toLowerCase());
-
     if (newLocale) {
-      localeParts.forEach(part => this[part] = newLocale[part]);
+      this.language = newLocale.language;
+      this.script = newLocale.script;
+      this.region = newLocale.region;
+      this.variant = newLocale.variant;
       return true;
     }
     return false;

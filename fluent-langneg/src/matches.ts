@@ -1,7 +1,6 @@
 /* eslint no-magic-numbers: 0 */
-/* eslint complexity: ["error", { "max": 27 }] */
 
-import Locale from "./locale";
+import {Locale} from "./locale";
 
 /**
  * Negotiates the languages between the list of requested locales against
@@ -73,13 +72,13 @@ import Locale from "./locale";
  *    ignoring script ranges. That means that `sr-Cyrl` will never match
  *    against `sr-Latn`.
  */
-export default function filterMatches(
-  requestedLocales, availableLocales, strategy
-) {
-  /* eslint complexity: ["error", 31]*/
-  const supportedLocales = new Set();
-
-  const availableLocalesMap = new Map();
+export function filterMatches(
+  requestedLocales: Array<string>,
+  availableLocales: Array<string>,
+  strategy: string
+): Array<string> {
+  const supportedLocales: Set<string> = new Set();
+  const availableLocalesMap: Map<string, Locale> = new Map();
 
   for (let locale of availableLocales) {
     let newLocale = new Locale(locale);

@@ -1,4 +1,4 @@
-import Locale from "./locale";
+import {Locale} from "./locale";
 
 /**
  * Below is a manually a list of likely subtags corresponding to Unicode
@@ -9,7 +9,7 @@ import Locale from "./locale";
  *
  * This version of the list is based on CLDR 30.0.3.
  */
-const likelySubtagsMin = {
+const likelySubtagsMin: Record<string, string> = {
   "ar": "ar-arab-eg",
   "az-arab": "az-arab-ir",
   "az-ir": "az-arab-ir",
@@ -51,12 +51,12 @@ const regionMatchingLangs = [
   "ru",
 ];
 
-export function getLikelySubtagsMin(loc) {
+export function getLikelySubtagsMin(loc: string): Locale | null {
   if (likelySubtagsMin.hasOwnProperty(loc)) {
     return new Locale(likelySubtagsMin[loc]);
   }
   const locale = new Locale(loc);
-  if (regionMatchingLangs.includes(locale.language)) {
+  if (locale.language && regionMatchingLangs.includes(locale.language)) {
     locale.region = locale.language.toUpperCase();
     return locale;
   }

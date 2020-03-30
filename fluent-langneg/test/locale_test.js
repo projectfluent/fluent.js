@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Locale from '../src/locale';
+import {Locale} from '../esm/locale.js';
 
 function isLocaleEqual(str, ref) {
   const locale = new Locale(str);
