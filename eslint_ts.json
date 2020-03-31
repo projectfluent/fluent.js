@@ -16,6 +16,7 @@
         "./eslint_src.json"
     ],
     "rules": {
+        "complexity": "off",
         "prefer-const": "off",
         "no-unused-vars": ["error", {"args": "none"}],
         "@typescript-eslint/no-inferrable-types": "off",

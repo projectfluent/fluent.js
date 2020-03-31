@@ -1,5 +1,5 @@
 import assert from 'assert';
-import negotiateLanguages from '../src/negotiate_languages';
+import {negotiateLanguages} from '../esm/negotiate_languages.js';
 
 const data = {
   "filtering": {
@@ -111,11 +111,11 @@ const data = {
 const json = JSON.stringify;
 
 suite('Language Negotiation', () => {
+  for (const strategy in data) {
+    for (const groupName in data[strategy]) {
+      const group = data[strategy][groupName];
 
-  test('test suite matches', () => {
-    for (const strategy in data) {
-      for (const groupName in data[strategy]) {
-        const group = data[strategy][groupName];
+      test(`${strategy} - ${groupName}`, () => {
         for (const test of group) {
         const requested = test[0];
         const available = test[1];
@@ -134,7 +134,7 @@ suite('Language Negotiation', () => {
         assert.deepEqual(result, supported,
   `\nExpected ${json(requested)} * ${json(available)} = ${json(supported)}.\n`);         
         }
-      }
+      });
     }
-  });
+  }
 });

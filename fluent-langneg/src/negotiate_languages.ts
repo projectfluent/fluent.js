@@ -1,23 +1,8 @@
-import filterMatches from "./matches";
+import {filterMatches} from "./matches";
 
-function GetOption(options, property, type, values, fallback) {
-  let value = options[property];
-
-  if (value !== undefined) {
-    if (type === "boolean") {
-      value = new Boolean(value);
-    } else if (type === "string") {
-      value = String(value);
-    }
-
-    if (values !== undefined && values.indexOf(value) === -1) {
-      throw new Error("Invalid option value");
-    }
-
-    return value;
-  }
-
-  return fallback;
+interface NegotiateLanguagesOptions {
+  strategy?: "filtering" | "matching" | "lookup";
+  defaultLocale?: string;
 }
 
 /**
@@ -63,38 +48,32 @@ function GetOption(options, property, type, values, fallback) {
  *
  *     This strategy requires defaultLocale option to be set.
  */
-export default function negotiateLanguages(
-  requestedLocales,
-  availableLocales,
-  options = {}
-) {
-
-  const defaultLocale = GetOption(options, "defaultLocale", "string");
-  const strategy = GetOption(options, "strategy", "string",
-    ["filtering", "matching", "lookup"], "filtering");
-
-  if (strategy === "lookup" && !defaultLocale) {
-    throw new Error("defaultLocale cannot be undefined for strategy `lookup`");
-  }
-
-  const resolvedReqLoc = Array.from(Object(requestedLocales)).map(loc => {
-    return String(loc);
-  });
-  const resolvedAvailLoc = Array.from(Object(availableLocales)).map(loc => {
-    return String(loc);
-  });
+export function negotiateLanguages(
+  requestedLocales: Array<string>,
+  availableLocales: Array<string>,
+  {
+    strategy = "filtering",
+    defaultLocale,
+  }: NegotiateLanguagesOptions = {}
+): Array<string> {
 
   const supportedLocales = filterMatches(
-    resolvedReqLoc,
-    resolvedAvailLoc, strategy
+    Array.from(Object(requestedLocales)).map(String),
+    Array.from(Object(availableLocales)).map(String),
+    strategy
   );
 
   if (strategy === "lookup") {
+    if (defaultLocale === undefined) {
+      throw new Error(
+        "defaultLocale cannot be undefined for strategy `lookup`");
+    }
     if (supportedLocales.length === 0) {
       supportedLocales.push(defaultLocale);
     }
   } else if (defaultLocale && !supportedLocales.includes(defaultLocale)) {
     supportedLocales.push(defaultLocale);
   }
+
   return supportedLocales;
 }

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import acceptedLanguages from '../src/accepted_languages';
+import {acceptedLanguages} from '../esm/accepted_languages.js';
 
 suite('parse headers', () => {
   test('without quality values', () => {
