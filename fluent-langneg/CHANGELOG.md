@@ -1,5 +1,11 @@
 # Changelog
 
+## @fluent/langneg 0.4.0 (March 31, 2020)
+
+  - Migrate `@fluent/langneg` to TypeScript. (#462)
+
+    There are no functional nor API changes in this release.
+
 ## @fluent/langneg 0.3.0 (July 25, 2019)
 
   - Rename `fluent-langneg` to `@fluent/langneg`.
