@@ -18,10 +18,15 @@ import {
   FluentDateTime
 } from "./types.js";
 
-function values(opts: Record<string, FluentValue>): Record<string, unknown> {
+function values(
+  opts: Record<string, FluentValue>,
+  exclude?: string
+): Record<string, unknown> {
   const unwrapped: Record<string, unknown> = {};
   for (const [name, opt] of Object.entries(opts)) {
-    unwrapped[name] = opt.valueOf();
+    if (exclude === undefined || name !== exclude) {
+      unwrapped[name] = opt.valueOf();
+    }
   }
   return unwrapped;
 }
@@ -37,7 +42,10 @@ export function NUMBER(
   }
 
   if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
-    return new FluentNumber(arg.valueOf(), { ...arg.opts, ...values(opts) });
+    return new FluentNumber(arg.valueOf(), {
+      ...arg.opts,
+      ...values(opts, "currency")
+    });
   }
 
   throw new TypeError("Invalid argument to NUMBER");
