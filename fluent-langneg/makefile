@@ -46,7 +46,7 @@ compat.js: $(SOURCES)
 
 html:
 	@typedoc src \
-	    --out ../html/bundle \
+	    --out ../html/langneg \
 	    --mode file \
 	    --excludeNotExported \
 	    --excludePrivate \
