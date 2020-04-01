@@ -21,6 +21,7 @@ suite('Built-in functions', function() {
         num-decimal = { NUMBER($arg) }
         num-percent = { NUMBER($arg, style: "percent") }
         num-bad-opt = { NUMBER($arg, style: "bad") }
+        num-unknown = { NUMBER($arg, unknown: "unknown") }
         num-currency-style = { NUMBER($arg, style: "currency") }
         num-currency-currency = { NUMBER($arg, currency: "EUR") }
         num-currency-style-currency = { NUMBER($arg, style: "currency", currency: "JPY") }
@@ -46,6 +47,13 @@ suite('Built-in functions', function() {
 
       errors = [];
       msg = bundle.getMessage('num-bad-opt');
+      assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER($arg)}');
+      assert.strictEqual(errors.length, 1);
+      assert.ok(errors[0] instanceof ReferenceError);
+      assert.strictEqual(errors[0].message, "Unknown variable: $arg");
+
+      errors = [];
+      msg = bundle.getMessage('num-unknown');
       assert.strictEqual(bundle.formatPattern(msg.value, {}, errors), '{NUMBER($arg)}');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
@@ -92,6 +100,11 @@ suite('Built-in functions', function() {
       assert.ok(errors[0] instanceof RangeError); // Invalid option value
 
       errors = [];
+      msg = bundle.getMessage('num-unknown');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1,234');
+      assert.strictEqual(errors.length, 0);
+
+      errors = [];
       msg = bundle.getMessage('num-currency-style');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1234');
       assert.strictEqual(errors.length, 1);
@@ -120,6 +133,10 @@ suite('Built-in functions', function() {
 
       msg = bundle.getMessage('num-percent');
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '123,400.000%');
+      assert.strictEqual(errors.length, 0);
+
+      msg = bundle.getMessage('num-unknown');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1,234.000');
       assert.strictEqual(errors.length, 0);
 
       errors = [];
@@ -164,6 +181,11 @@ suite('Built-in functions', function() {
       assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '1234');
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof RangeError); // Invalid option value
+
+      errors = [];
+      msg = bundle.getMessage('num-unknown');
+      assert.strictEqual(bundle.formatPattern(msg.value, args, errors), '$1,234.00');
+      assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage('num-currency-style');
