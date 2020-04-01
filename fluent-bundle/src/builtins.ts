@@ -18,15 +18,10 @@ import {
   FluentDateTime
 } from "./types.js";
 
-function values(
-  opts: Record<string, FluentValue>,
-  exclude?: string
-): Record<string, unknown> {
+function values(opts: Record<string, FluentValue>): Record<string, unknown> {
   const unwrapped: Record<string, unknown> = {};
   for (const [name, opt] of Object.entries(opts)) {
-    if (exclude === undefined || name !== exclude) {
-      unwrapped[name] = opt.valueOf();
-    }
+    unwrapped[name] = opt.valueOf();
   }
   return unwrapped;
 }
@@ -42,9 +37,13 @@ export function NUMBER(
   }
 
   if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
+    if (Object.prototype.hasOwnProperty.call(opts, "currency")) {
+      throw new RangeError("Forbidden option to NUMBER: currency");
+    }
+
     return new FluentNumber(arg.valueOf(), {
       ...arg.opts,
-      ...values(opts, "currency")
+      ...values(opts)
     });
   }
 
@@ -62,7 +61,10 @@ export function DATETIME(
   }
 
   if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
-    return new FluentDateTime(arg.valueOf(), { ...arg.opts, ...values(opts) });
+    return new FluentDateTime(arg.valueOf(), {
+      ...arg.opts,
+      ...values(opts)
+    });
   }
 
   throw new TypeError("Invalid argument to DATETIME");
