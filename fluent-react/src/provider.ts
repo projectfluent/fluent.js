@@ -1,4 +1,4 @@
-import { createElement, ReactNode, ReactElement, memo } from "react";
+import { createElement, ReactNode, ReactElement } from "react";
 import PropTypes from "prop-types";
 import { FluentContext } from "./context";
 import { ReactLocalization } from "./localization";
@@ -24,7 +24,9 @@ interface LocalizationProviderProps {
  * `l10n` prop. This instance will be made available to `Localized` components
  * under the provider.
  */
-function LocalizationProvider(props: LocalizationProviderProps): ReactElement {
+export function LocalizationProvider(
+  props: LocalizationProviderProps
+): ReactElement {
   return createElement(
     FluentContext.Provider,
     {
@@ -38,5 +40,3 @@ LocalizationProvider.propTypes = {
   children: PropTypes.element.isRequired,
   l10n: PropTypes.instanceOf(ReactLocalization).isRequired,
 };
-
-export const MemoLocalizationProvider = memo(LocalizationProvider);

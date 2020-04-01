@@ -37,28 +37,4 @@ describe("LocalizationProvider - validation", () => {
       TestRenderer.create(<LocalizationProvider />);
     }).toThrow(/marked as required/);
   });
-
-  test("is memoized (no re-render) when props are the same", () => {
-    const l10n = new ReactLocalization([]);
-    const mockFn = jest.fn();
-
-    function MockComponent() {
-      mockFn();
-      return "A mock component";
-    }
-
-    let renderer = TestRenderer.create(
-      <LocalizationProvider l10n={l10n}>
-        <MockComponent />
-      </LocalizationProvider>
-    );
-    act(() => {
-      renderer = renderer.update(
-        <LocalizationProvider l10n={l10n}>
-          <MockComponent />
-        </LocalizationProvider>
-      );
-    });
-    expect(mockFn).toHaveBeenCalledTimes(1);
-  });
 });
