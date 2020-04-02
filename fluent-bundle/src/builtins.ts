@@ -18,13 +18,30 @@ import {
   FluentDateTime
 } from "./types.js";
 
-function values(opts: Record<string, FluentValue>): Record<string, unknown> {
-  const unwrapped: Record<string, unknown> = {};
+function values(
+  opts: Record<string, FluentValue>,
+  allowed: Array<string>
+): Record<string, unknown> {
+  const unwrapped: Record<string, unknown> = Object.create(null);
   for (const [name, opt] of Object.entries(opts)) {
-    unwrapped[name] = opt.valueOf();
+    if (allowed.includes(name)) {
+      unwrapped[name] = opt.valueOf();
+    }
   }
   return unwrapped;
 }
+
+const NUMBER_ALLOWED = [
+  "numberingSystem",
+  "unitDisplay",
+  "currencyDisplay",
+  "useGrouping",
+  "minimumIntegerDigits",
+  "minimumFractionDigits",
+  "maximumFractionDigits",
+  "minimumSignificantDigits",
+  "maximumSignificantDigits",
+];
 
 export function NUMBER(
   args: Array<FluentValue>,
@@ -37,18 +54,34 @@ export function NUMBER(
   }
 
   if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
-    if (Object.prototype.hasOwnProperty.call(opts, "currency")) {
-      throw new RangeError("Forbidden option to NUMBER: currency");
-    }
-
     return new FluentNumber(arg.valueOf(), {
       ...arg.opts,
-      ...values(opts)
+      ...values(opts, NUMBER_ALLOWED)
     });
   }
 
   throw new TypeError("Invalid argument to NUMBER");
 }
+
+const DATETIME_ALLOWED = [
+  "dateStyle",
+  "timeStyle",
+  "fractionalSecondDigits",
+  "calendar",
+  "dayPeriod",
+  "numberingSystem",
+  "hour12",
+  "hourCycle",
+  "weekday",
+  "era",
+  "year",
+  "month",
+  "day",
+  "hour",
+  "minute",
+  "second",
+  "timeZoneName",
+];
 
 export function DATETIME(
   args: Array<FluentValue>,
@@ -63,7 +96,7 @@ export function DATETIME(
   if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
     return new FluentDateTime(arg.valueOf(), {
       ...arg.opts,
-      ...values(opts)
+      ...values(opts, DATETIME_ALLOWED)
     });
   }
 
