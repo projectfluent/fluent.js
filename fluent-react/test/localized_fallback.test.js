@@ -1,17 +1,17 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../esm/index";
+import { ReactLocalization, LocalizationProvider, Localized }
+  from "../esm/index";
 
 test("uses message from 1st bundle", () => {
   const bundle1 = new FluentBundle();
-
   bundle1.addResource(new FluentResource(`
 foo = FOO
 `));
 
   const renderer = TestRenderer.create(
-    <LocalizationProvider bundles={[bundle1]}>
+    <LocalizationProvider l10n={new ReactLocalization([bundle1])}>
       <Localized id="foo">
         <div>Bar</div>
       </Localized>
@@ -37,7 +37,7 @@ foo = FOO
 `));
 
   const renderer = TestRenderer.create(
-    <LocalizationProvider bundles={[bundle1, bundle2]}>
+    <LocalizationProvider l10n={new ReactLocalization([bundle1, bundle2])}>
       <Localized id="foo">
         <div>Bar</div>
       </Localized>
@@ -53,13 +53,12 @@ foo = FOO
 
 test("falls back back for missing message", function() {
   const bundle1 = new FluentBundle();
-
   bundle1.addResource(new FluentResource(`
 not-foo = NOT FOO
 `));
 
   const renderer = TestRenderer.create(
-    <LocalizationProvider bundles={[bundle1]}>
+    <LocalizationProvider l10n={new ReactLocalization([bundle1])}>
       <Localized id="foo">
         <div>Bar</div>
       </Localized>

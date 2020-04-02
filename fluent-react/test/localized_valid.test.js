@@ -1,6 +1,6 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
-import { LocalizationProvider, Localized } from "../esm/index";
+import { ReactLocalization, LocalizationProvider, Localized } from "../esm/index";
 
 describe("Localized - validation", () => {
   let consoleError = console.error;
@@ -15,7 +15,7 @@ describe("Localized - validation", () => {
 
   test("inside of a LocalizationProvider", () => {
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[]}>
+      <LocalizationProvider l10n={new ReactLocalization([])}>
         <Localized>
           <div />
         </Localized>
@@ -27,23 +27,9 @@ describe("Localized - validation", () => {
 
   test("outside of a LocalizationProvider", () => {
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[]}>
-        <Localized>
-          <div />
-        </Localized>
-      </LocalizationProvider>
-    );
-
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
-  });
-
-  test("with a manually set context", () => {
-    const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[]}>
-        <Localized>
-          <div />
-        </Localized>
-      </LocalizationProvider>
+      <Localized>
+        <div />
+      </Localized>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
@@ -51,7 +37,7 @@ describe("Localized - validation", () => {
 
   test("without a child", () => {
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[]}>
+      <LocalizationProvider l10n={new ReactLocalization([])}>
         <Localized />
       </LocalizationProvider>
     );
@@ -62,7 +48,7 @@ describe("Localized - validation", () => {
   test("with multiple children", () => {
     expect(() => {
       TestRenderer.create(
-        <LocalizationProvider bundles={[]}>
+        <LocalizationProvider l10n={new ReactLocalization([])}>
           <Localized>
             <div />
             <div />
@@ -74,7 +60,7 @@ describe("Localized - validation", () => {
 
   test("without id", () => {
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[]}>
+      <LocalizationProvider l10n={new ReactLocalization([])}>
         <Localized>
           <div />
         </Localized>

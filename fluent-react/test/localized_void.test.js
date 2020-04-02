@@ -1,7 +1,8 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { LocalizationProvider, Localized } from "../esm/index";
+import { ReactLocalization, LocalizationProvider, Localized }
+  from "../esm/index";
 
 describe("Localized - void elements", function() {
   test("do not render the value in void elements", function() {
@@ -12,7 +13,7 @@ foo = FOO
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo">
           <input />
         </Localized>
@@ -31,7 +32,7 @@ foo =
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ title: true }}>
           <input />
         </Localized>
@@ -54,7 +55,7 @@ foo = FOO
 `));
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider bundles={[bundle]}>
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
         <Localized id="foo" attrs={{ title: true }}>
           <input />
         </Localized>
