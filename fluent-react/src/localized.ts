@@ -5,12 +5,12 @@ import {
   cloneElement,
   createElement,
   isValidElement,
-  useContext
 } from "react";
 import PropTypes from "prop-types";
 import voidElementTags from "../vendor/voidElementTags";
 import { FluentContext } from "./context";
 import { FluentArgument } from "@fluent/bundle";
+import { ReactLocalization } from "./localization";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
 // &amp;, &#0038;, &#x0026;.
@@ -46,14 +46,27 @@ export interface LocalizedProps {
  *  source code.
  */
 export function Localized(props: LocalizedProps): ReactElement {
-  const { id, attrs, vars, elems, children: child = null } = props;
-  const l10n = useContext(FluentContext);
-
   // Validate that the child element isn't an array
-  if (Array.isArray(child)) {
+  if (Array.isArray(props.children)) {
     throw new Error("<Localized/> expected to receive a single " +
       "React node child");
   }
+
+  return createElement(
+    FluentContext.Consumer,
+    null,
+    (l10n: ReactLocalization) => createElement(ConnectedLocalized, {
+      l10n, ...props
+    })
+  );
+}
+
+interface ConnectedLocalizedProps extends LocalizedProps {
+  l10n: ReactLocalization;
+}
+
+function ConnectedLocalized(props: ConnectedLocalizedProps): ReactElement {
+  const { l10n, id, attrs, vars, elems, children: child = null } = props;
 
   if (!l10n) {
     // Use the wrapped component as fallback.
