@@ -4,44 +4,8 @@ import { negotiateLanguages } from "@fluent/langneg";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import { ReactLocalization, LocalizationProvider } from "@fluent/react";
 
-const MESSAGES_ALL = {
-    "pl": `
-hello = Cześć { $userName }!
-hello-no-name = Witaj nieznajomy!
-type-name =
-    .placeholder = Twoje imię
-
-today-date = Dziś jest {$date}.
-current = Bieżący język: { $locale }
-change = Zmień na { $locale }
-
-sign-in-or-cancel = <signin>Zaloguj</signin> albo <cancel>anuluj</cancel>.
-clicked-sign-in = Brawo!
-clicked-cancel = OK, nieważne.
-`,
-    "en-US": `
-hello = Hello, { $userName }!
-hello-no-name = Hello, stranger!
-type-name =
-    .placeholder = Your name
-
-today-date = Today is {$date}.
-today-time = It's {$date}.
-change-locale = Change language: <select></select>
-
-sign-in-or-cancel = <signin>Sign in</signin> or <cancel>cancel</cancel>.
-clicked-sign-in = You are now signed in.
-clicked-cancel = OK, nevermind.
-`,
-};
-
-export function* generateBundles(currentLocales) {
-    for (let locale of currentLocales) {
-        let bundle = new FluentBundle(locale);
-        bundle.addResource(new FluentResource(MESSAGES_ALL[locale]));
-        yield bundle;
-    }
-}
+// Parcel decorates filenames with cache-busting hashes.
+import ftl from '../public/*.ftl';
 
 const DEFAULT_LOCALE = "en-US";
 const AVAILABLE_LOCALES = {
@@ -49,15 +13,30 @@ const AVAILABLE_LOCALES = {
     "pl": "Polish",
 };
 
+async function fetchMessages(locale) {
+    let response = await fetch(ftl[locale]);
+    let messages = await response.text();
+    return [locale, messages];
+}
+
+function* lazilyParsedBundles(fetchedMessages) {
+    for (let [locale, messages] of fetchedMessages) {
+        let resource = new FluentResource(messages);
+        let bundle = new FluentBundle(locale);
+        bundle.addResource(resource);
+        yield bundle;
+    }
+}
+
 export function AppLocalizationProvider(props) {
     let [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
-    let [l10n, setL10n] = useState(new ReactLocalization([]));
+    let [l10n, setL10n] = useState(null);
 
     useEffect(() => {
         changeLocales(navigator.languages);
     }, []);
 
-    function changeLocales(userLocales) {
+    async function changeLocales(userLocales) {
         let currentLocales = negotiateLanguages(
             userLocales,
             Object.keys(AVAILABLE_LOCALES),
@@ -65,8 +44,16 @@ export function AppLocalizationProvider(props) {
         );
         setCurrentLocales(currentLocales);
 
-        let bundles = generateBundles(currentLocales);
+        let fetchedMessages = await Promise.all(
+            currentLocales.map(fetchMessages)
+        );
+
+        let bundles = lazilyParsedBundles(fetchedMessages);
         setL10n(new ReactLocalization(bundles));
+    }
+
+    if (l10n === null) {
+        return <div>Loading…</div>;
     }
 
     return <LocalizationProvider l10n={l10n}>
