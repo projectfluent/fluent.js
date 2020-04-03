@@ -1,1 +1,0 @@
-title = Witaj świecie!
