@@ -5,7 +5,7 @@ import ftl from "@fluent/dedent";
 
 import {FluentBundle} from '../esm/bundle';
 import {FluentResource} from '../esm/resource';
-import {FluentType} from '../esm/types';
+import {FluentType, FluentNumber, FluentDateTime} from '../esm/types';
 
 suite('Variables', function() {
   let bundle, errs;
@@ -171,28 +171,31 @@ suite('Variables', function() {
   });
 
   suite('and numbers', function(){
-    let args;
-
     suiteSetup(function() {
       bundle = new FluentBundle('en-US', { useIsolating: false });
       bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
         `));
-      args = {
-        arg: 1
-      };
     });
 
     test('can be a number', function(){
       const msg = bundle.getMessage('foo');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {arg: 1}, errs);
       assert.strictEqual(val, '1');
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('can be a FluentNumber', function(){
+      const arg = new FluentNumber(1, {minimumFractionDigits: 2});
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatPattern(msg.value, {arg}, errs);
+      assert.strictEqual(val, '1.00');
       assert.strictEqual(errs.length, 0);
     });
   });
 
   suite('and dates', function(){
-    let args, dtf;
+    let dtf;
 
     suiteSetup(function() {
       dtf = new Intl.DateTimeFormat('en-US');
@@ -200,16 +203,22 @@ suite('Variables', function() {
       bundle.addResource(new FluentResource(ftl`
         foo = { $arg }
         `));
-      args = {
-        arg: new Date('2016-09-29')
-      };
     });
 
     test('can be a date', function(){
+      const arg = new Date('2016-09-29');
       const msg = bundle.getMessage('foo');
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, {arg}, errs);
       // format the date argument to account for the testrunner's timezone
-      assert.strictEqual(val, dtf.format(args.arg));
+      assert.strictEqual(val, dtf.format(arg));
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test('can be a FluentDateTime', function(){
+      const arg = new FluentDateTime(new Date('2016-09-29'), {weekday: "long"});
+      const msg = bundle.getMessage('foo');
+      const val = bundle.formatPattern(msg.value, {arg}, errs);
+      assert.strictEqual(val, 'Thursday');
       assert.strictEqual(errs.length, 0);
     });
   });
