@@ -9,7 +9,7 @@
   "dependencies": {
     "@fluent/bundle": "0.15.x",
     "@fluent/langneg": "0.4.x",
-    "@fluent/react": "file:../",
+    "@fluent/react": "file:fluent-react.tgz",
     "react": "16.8.x",
     "react-dom": "16.8.x"
   },
