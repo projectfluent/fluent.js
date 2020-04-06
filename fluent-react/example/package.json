@@ -1,0 +1,25 @@
+{
+  "name": "fluent-react-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "parcel serve public/index.html",
+    "build": "parcel build public/index.html"
+  },
+  "dependencies": {
+    "@fluent/bundle": "0.15.x",
+    "@fluent/langneg": "0.4.x",
+    "@fluent/react": "file:fluent-react.tgz",
+    "react": "16.8.x",
+    "react-dom": "16.8.x"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.32",
+    "@types/react-dom": "^16.9.6",
+    "parcel-bundler": "1.12.x"
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "browsers": "Firefox >= 57"
+  }
+}
