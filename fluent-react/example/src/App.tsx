@@ -1,10 +1,10 @@
-import React from "react";
+import React, { ReactNode, ReactElement } from "react";
 import { Localized } from "@fluent/react";
 import { FluentDateTime } from "@fluent/bundle";
 import { Hello } from "./Hello";
-import { LocalizedSignIn } from "./Prompt";
+import { LocalizedSignIn } from "./SignIn";
 
-export function App(props) {
+export function App() {
     let date = new Date();
     return <>
         <Hello />
@@ -12,7 +12,7 @@ export function App(props) {
         <Localized
             id="today-date"
             vars={{
-                date: new FluentDateTime(date, {
+                date: new FluentDateTime(date.getTime(), {
                     month: "long",
                     day: "numeric",
                 })
@@ -26,7 +26,7 @@ export function App(props) {
         <Localized
             id="today-time"
             vars={{
-                date: new FluentDateTime(date, {
+                date: new FluentDateTime(date.getTime(), {
                     hour: "numeric",
                     minute: "numeric",
                 })
@@ -38,9 +38,5 @@ export function App(props) {
         </Localized>
 
         <LocalizedSignIn />
-
-        <Localized id="change-locale" elems={{select: props.LocaleSelect}}>
-            <p>{"Change locale: <select></select>"}</p>
-        </Localized>
     </>;
 }

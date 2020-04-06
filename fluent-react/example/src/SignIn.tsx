@@ -1,8 +1,8 @@
 import React from "react";
-import { Localized, withLocalization } from "@fluent/react";
+import { Localized, withLocalization, WithLocalizationProps } from "@fluent/react";
 
-function SignIn(props) {
-  function showAlert(id) {
+function SignIn(props: WithLocalizationProps) {
+  function showAlert(id: string) {
     const { getString } = props;
     alert(getString(id));
   }

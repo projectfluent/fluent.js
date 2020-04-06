@@ -14,6 +14,8 @@
     "react-dom": "16.8.x"
   },
   "devDependencies": {
+    "@types/react": "^16.9.32",
+    "@types/react-dom": "^16.9.6",
     "parcel-bundler": "1.12.x"
   },
   "engines": {

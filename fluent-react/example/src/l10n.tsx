@@ -1,11 +1,11 @@
-import React, { Children, cloneElement, useEffect, useState } from "react";
+import React, { Children, useEffect, useState, ReactNode } from "react";
 
 import { negotiateLanguages } from "@fluent/langneg";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import { ReactLocalization, LocalizationProvider } from "@fluent/react";
 
 // Parcel decorates filenames with cache-busting hashes.
-import ftl from '../public/*.ftl';
+const ftl = require("../public/*.ftl");
 
 const DEFAULT_LOCALE = "en-US";
 const AVAILABLE_LOCALES = {
@@ -13,13 +13,13 @@ const AVAILABLE_LOCALES = {
     "pl": "Polish",
 };
 
-async function fetchMessages(locale) {
+async function fetchMessages(locale: string): Promise<[string, string]> {
     let response = await fetch(ftl[locale]);
     let messages = await response.text();
     return [locale, messages];
 }
 
-function* lazilyParsedBundles(fetchedMessages) {
+function* lazilyParsedBundles(fetchedMessages: Array<[string, string]>) {
     for (let [locale, messages] of fetchedMessages) {
         let resource = new FluentResource(messages);
         let bundle = new FluentBundle(locale);
@@ -28,15 +28,19 @@ function* lazilyParsedBundles(fetchedMessages) {
     }
 }
 
-export function AppLocalizationProvider(props) {
+interface AppLocalizationProviderProps {
+  children: ReactNode;
+}
+
+export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     let [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
-    let [l10n, setL10n] = useState(null);
+    let [l10n, setL10n] = useState<ReactLocalization | null>(null);
 
     useEffect(() => {
-        changeLocales(navigator.languages);
+        changeLocales(navigator.languages as Array<string>);
     }, []);
 
-    async function changeLocales(userLocales) {
+    async function changeLocales(userLocales: Array<string>) {
         let currentLocales = negotiateLanguages(
             userLocales,
             Object.keys(AVAILABLE_LOCALES),
@@ -56,22 +60,18 @@ export function AppLocalizationProvider(props) {
         return <div>Loading…</div>;
     }
 
-    return <LocalizationProvider l10n={l10n}>
-        { cloneElement(
-            Children.only(props.children),
-            {LocaleSelect: <LocaleSelect
-                currentLocales={currentLocales}
-                changeLocales={changeLocales} />}
-        )}
-    </LocalizationProvider>;
-}
+    return <>
+        <LocalizationProvider l10n={l10n}>
+            {Children.only(props.children)}
+        </LocalizationProvider>
 
-function LocaleSelect(props) {
-    return <select
-        onChange={event => props.changeLocales([event.target.value])}
-        value={props.currentLocales[0]}>
-        {Object.entries(AVAILABLE_LOCALES).map(
-            ([code, name]) => <option key={code} value={code}>{name}</option>
-        )}
-    </select>;
+        <hr />
+        <select
+            onChange={event => changeLocales([event.target.value])}
+            value={currentLocales[0]}>
+            {Object.entries(AVAILABLE_LOCALES).map(
+                ([code, name]) => <option key={code} value={code}>{name}</option>
+            )}
+        </select>
+    </>;
 }
