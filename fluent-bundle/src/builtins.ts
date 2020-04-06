@@ -32,7 +32,6 @@ function values(
 }
 
 const NUMBER_ALLOWED = [
-  "numberingSystem",
   "unitDisplay",
   "currencyDisplay",
   "useGrouping",
@@ -67,11 +66,8 @@ const DATETIME_ALLOWED = [
   "dateStyle",
   "timeStyle",
   "fractionalSecondDigits",
-  "calendar",
   "dayPeriod",
-  "numberingSystem",
   "hour12",
-  "hourCycle",
   "weekday",
   "era",
   "year",
