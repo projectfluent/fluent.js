@@ -42,6 +42,34 @@ const NUMBER_ALLOWED = [
   "maximumSignificantDigits",
 ];
 
+/**
+ * The implementation of the `NUMBER()` builtin available to translations.
+ *
+ * Translations may call the `NUMBER()` builtin in order to specify formatting
+ * options of a number. For example:
+ *
+ *     pi = The value of π is {NUMBER($pi, maximumFractionDigits: 2)}.
+ *
+ * The implementation expects an array of `FluentValues` representing the
+ * positional arguments, and an object of named `FluentValues` representing the
+ * named parameters.
+ *
+ * The following options are recognized:
+ *
+ *     unitDisplay
+ *     currencyDisplay
+ *     useGrouping
+ *     minimumIntegerDigits
+ *     minimumFractionDigits
+ *     maximumFractionDigits
+ *     minimumSignificantDigits
+ *     maximumSignificantDigits
+ *
+ * Other options are ignored.
+ *
+ * @param args The positional arguments passed to this `NUMBER()`.
+ * @param opts The named argments passed to this `NUMBER()`.
+ */
 export function NUMBER(
   args: Array<FluentValue>,
   opts: Record<string, FluentValue>
@@ -79,6 +107,40 @@ const DATETIME_ALLOWED = [
   "timeZoneName",
 ];
 
+/**
+ * The implementation of the `DATETIME()` builtin available to translations.
+ *
+ * Translations may call the `DATETIME()` builtin in order to specify
+ * formatting options of a number. For example:
+ *
+ *     now = It's {DATETIME($today, month: "long")}.
+ *
+ * The implementation expects an array of `FluentValues` representing the
+ * positional arguments, and an object of named `FluentValues` representing the
+ * named parameters.
+ *
+ * The following options are recognized:
+ *
+ *     dateStyle
+ *     timeStyle
+ *     fractionalSecondDigits
+ *     dayPeriod
+ *     hour12
+ *     weekday
+ *     era
+ *     year
+ *     month
+ *     day
+ *     hour
+ *     minute
+ *     second
+ *     timeZoneName
+ *
+ * Other options are ignored.
+ *
+ * @param args The positional arguments passed to this `DATETIME()`.
+ * @param opts The named argments passed to this `DATETIME()`.
+ */
 export function DATETIME(
   args: Array<FluentValue>,
   opts: Record<string, FluentValue>

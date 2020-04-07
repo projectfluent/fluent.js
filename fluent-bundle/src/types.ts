@@ -16,14 +16,14 @@ export type FluentFunction = (
  * them, which can then be used in the `toString` method together with a proper
  * `Intl` formatter.
  */
-export class FluentType<T> {
+export abstract class FluentType<T> {
   /** The wrapped native value. */
   public value: T;
 
   /**
    * Create a `FluentType` instance.
    *
-   * @param   value - JavaScript value to wrap.
+   * @param value The JavaScript value to wrap.
    */
   constructor(value: T) {
     this.value = value;
@@ -42,12 +42,8 @@ export class FluentType<T> {
    * Formatted values are suitable for use outside of the `FluentBundle`.
    * This method can use `Intl` formatters available through the `scope`
    * argument.
-   *
-   * @abstract
    */
-  toString(scope: Scope): string {
-    throw new Error("Subclasses of FluentType must implement toString.");
-  }
+  abstract toString(scope: Scope): string;
 }
 
 /**
@@ -56,7 +52,7 @@ export class FluentType<T> {
 export class FluentNone extends FluentType<string> {
   /**
    * Create an instance of `FluentNone` with an optional fallback value.
-   * @param   value - The fallback value of this `FluentNone`.
+   * @param value The fallback value of this `FluentNone`.
    */
   constructor(value = "???") {
     super(value);
@@ -72,14 +68,21 @@ export class FluentNone extends FluentType<string> {
 
 /**
  * A `FluentType` representing a number.
+ *
+ * A `FluentNumber` instance stores the number value of the number it
+ * represents. It may also store an option bag of options which will be passed
+ * to `Intl.NumerFormat` when the `FluentNumber` is formatted to a string.
  */
 export class FluentNumber extends FluentType<number> {
-  /** Options passed to Intl.NumberFormat. */
+  /** Options passed to `Intl.NumberFormat`. */
   public opts: Intl.NumberFormatOptions;
 
   /**
    * Create an instance of `FluentNumber` with options to the
    * `Intl.NumberFormat` constructor.
+   *
+   * @param value The number value of this `FluentNumber`.
+   * @param opts Options which will be passed to `Intl.NumberFormat`.
    */
   constructor(value: number, opts: Intl.NumberFormatOptions = {}) {
     super(value);
@@ -102,16 +105,22 @@ export class FluentNumber extends FluentType<number> {
 
 /**
  * A `FluentType` representing a date and time.
+ *
+ * A `FluentDateTime` instance stores the number value of the date it
+ * represents, as a numerical timestamp in milliseconds. It may also store an
+ * option bag of options which will be passed to `Intl.DateTimeFormat` when the
+ * `FluentDateTime` is formatted to a string.
  */
 export class FluentDateTime extends FluentType<number> {
-  /** Options passed to Intl.DateTimeFormat. */
+  /** Options passed to `Intl.DateTimeFormat`. */
   public opts: Intl.DateTimeFormatOptions;
 
   /**
    * Create an instance of `FluentDateTime` with options to the
    * `Intl.DateTimeFormat` constructor.
-   * @param   value - timestamp in milliseconds
-   * @param   opts
+   *
+   * @param value The number value of this `FluentDateTime`, in milliseconds.
+   * @param opts Options which will be passed to `Intl.DateTimeFormat`.
    */
   constructor(value: number, opts: Intl.DateTimeFormatOptions = {}) {
     super(value);
