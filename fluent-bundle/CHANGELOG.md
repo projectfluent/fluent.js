@@ -1,6 +1,45 @@
 # Changelog
 
-## @fluent/bundle 0.15.0 (January 23, 2019)
+## @fluent/bundle 0.15.1 (April 7, 2020)
+
+  - Allow only some formatting options to `NUMBER` and `DATETIME`. (#464)
+
+    The builtin functions available to translations were liberal in terms of
+    the options they accepted. This could lead to undesired results, e.g.
+    when for the same number value, a translation would specify a different
+    currency than the source language.
+
+    The `NUMBER` builtin now only recognizes the following options:
+
+        unitDisplay
+        currencyDisplay
+        useGrouping
+        minimumIntegerDigits
+        minimumFractionDigits
+        maximumFractionDigits
+        minimumSignificantDigits
+        maximumSignificantDigits
+
+    The `DATETIME` builtin now only recognizes the following options:
+
+        dateStyle
+        timeStyle
+        fractionalSecondDigits
+        dayPeriod
+        hour12
+        weekday
+        era
+        year
+        month
+        day
+        hour
+        minute
+        second
+        timeZoneName
+
+    All other options are ignored.
+
+## @fluent/bundle 0.15.0 (January 23, 2020)
 
   - Migrate to TypeScript. (#436)
 
