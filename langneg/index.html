@@ -1,106 +1,238 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="default no-js">
 <head>
-  <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | @fluent/langneg</title>
-  <link type="text/css" rel="stylesheet" href="css/style.css">
-  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
-  <script src="script/prettify/prettify.js"></script>
-  <script src="script/manual.js"></script>
-<meta name="description" content="Language Negotiation API for Fluent"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/langneg"><meta property="twitter:description" content="Language Negotiation API for Fluent"></head>
-<body class="layout-container" data-ice="rootContainer">
-
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@fluent/langneg - v0.4.0</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
 <header>
-  <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
-  <a href="source.html">Source</a>
-  
-  <div class="search-box">
-  <span>
-    <img src="./image/search.png">
-    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
-  </span>
-    <ul class="search-result"></ul>
-  </div>
-<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@fluent/langneg - v0.4.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @fluent/langneg - v0.4.0</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#fluentlangneg" id="fluentlangneg" style="color: inherit; text-decoration: none;">
+					<h1>@fluent/langneg</h1>
+				</a>
+				<p><code>@fluent/langneg</code> is an API for negotiating languages. It&#39;s part of Project
+					Fluent, a localization framework designed to unleash the expressive power of
+				the natural language.</p>
+				<p>It&#39;s main function is to provide functionality around the <a href="https://github.com/tc39/proposal-intl-locale">Intl.Locale</a> API
+				with a focus on language negotiation, matching and selection.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p><code>@fluent/langneg</code> can be used both on the client-side and the server-side.
+				You can install it from the npm registry or use it as a standalone script.</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @fluent/langneg</code></pre>
+				<a href="#how-to-use" id="how-to-use" style="color: inherit; text-decoration: none;">
+					<h2>How to use</h2>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { negotiateLanguages } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fluent/langneg'</span>;
 
-<nav class="navigation" data-ice="nav"><div>
-  <ul>
-    
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/locale.js~Locale.html">Locale</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-acceptedLanguages">acceptedLanguages</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-filterMatches">filterMatches</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-negotiateLanguages">negotiateLanguages</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLikelySubtagsMin">getLikelySubtagsMin</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-localeParts">localeParts</a></span></span></li>
-</ul>
+<span class="hljs-keyword">const</span> supportedLocales = negotiateLanguages(
+  navigator.languages,       <span class="hljs-comment">// requested locales</span>
+  [<span class="hljs-string">'de'</span>, <span class="hljs-string">'en-US'</span>, <span class="hljs-string">'pl'</span>],     <span class="hljs-comment">// available locales</span>
+  { <span class="hljs-attr">defaultLocale</span>: <span class="hljs-string">'en-US'</span> }
+);</code></pre>
+				<p>The API reference is available at
+				<a href="https://projectfluent.org/fluent.js/langneg">https://projectfluent.org/fluent.js/langneg</a>.</p>
+				<a href="#strategies" id="strategies" style="color: inherit; text-decoration: none;">
+					<h2>Strategies</h2>
+				</a>
+				<p>The API supports three negotiation strategies:</p>
+				<a href="#filtering-default" id="filtering-default" style="color: inherit; text-decoration: none;">
+					<h3>filtering (default)</h3>
+				</a>
+				<p>In this strategy the algorithm will look for the best matching available
+				locale for each requested locale.</p>
+				<p>Example:</p>
+				<p>requested: [&#39;de-DE&#39;, &#39;fr-FR&#39;]
+				available: [&#39;it&#39;, &#39;de&#39;, &#39;en-US&#39;, &#39;fr-CA&#39;, &#39;de-DE&#39;, &#39;fr&#39;, &#39;de-AU&#39;]</p>
+				<p>supported: [&#39;de-DE&#39;, &#39;fr&#39;]</p>
+				<a href="#matching" id="matching" style="color: inherit; text-decoration: none;">
+					<h3>matching</h3>
+				</a>
+				<p>In this strategy the algorithm will try to match as many available locales
+				as possible for each of the requested locale.</p>
+				<p>Example:</p>
+				<p>requested: [&#39;de-DE&#39;, &#39;fr-FR&#39;]
+				available: [&#39;it&#39;, &#39;de&#39;, &#39;en-US&#39;, &#39;fr-CA&#39;, &#39;de-DE&#39;, &#39;fr&#39;, &#39;de-AU&#39;]</p>
+				<p>supported: [&#39;de-DE&#39;, &#39;de&#39;, &#39;fr&#39;, &#39;fr-CA&#39;]</p>
+				<a href="#lookup" id="lookup" style="color: inherit; text-decoration: none;">
+					<h3>lookup</h3>
+				</a>
+				<p>In this strategy the algorithm will try to find the single best locale
+				for the requested locale list among the available locales.</p>
+				<p>Example:</p>
+				<p>requested: [&#39;de-DE&#39;, &#39;fr-FR&#39;]
+				available: [&#39;it&#39;, &#39;de&#39;, &#39;en-US&#39;, &#39;fr-CA&#39;, &#39;de-DE&#39;, &#39;fr&#39;, &#39;de-AU&#39;]</p>
+				<p>supported: [&#39;de-DE&#39;]</p>
+				<a href="#api-use" id="api-use" style="color: inherit; text-decoration: none;">
+					<h3>API use:</h3>
+				</a>
+				<pre><code class="language-javascript"><span class="hljs-keyword">let</span> supported = negotiateLanguages(requested, available, {
+  <span class="hljs-attr">strategy</span>: <span class="hljs-string">'matching'</span>,
+});</code></pre>
+				<a href="#likely-subtags" id="likely-subtags" style="color: inherit; text-decoration: none;">
+					<h2>Likely subtags</h2>
+				</a>
+				<p>Fluent Language Negotiation module carries its own minimal list of likely
+					subtags data, which is useful in finding most likely available locales
+				in case the requested locale is too generic.</p>
+				<p>An example of that scenario is when the user requests <code>en</code> locale, and
+				the application supports <code>en-GB</code> and <code>en-US</code>.</p>
+				<a href="#learn-more" id="learn-more" style="color: inherit; text-decoration: none;">
+					<h2>Learn more</h2>
+				</a>
+				<p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
+					documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
+				implementations, and information about how to get involved.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/locale.html" class="tsd-kind-icon">Locale</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#acceptedlanguages" class="tsd-kind-icon">accepted<wbr>Languages</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#filtermatches" class="tsd-kind-icon">filter<wbr>Matches</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getlikelysubtagsmin" class="tsd-kind-icon">get<wbr>Likely<wbr>Subtags<wbr>Min</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#negotiatelanguages" class="tsd-kind-icon">negotiate<wbr>Languages</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
 </div>
-</nav>
-
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="-fluent-langneg">@fluent/langneg</h1><p><code>@fluent/langneg</code> is an API for negotiating languages. It&apos;s part of Project
-Fluent, a localization framework designed to unleash the expressive power of
-the natural language.</p>
-<p>It&apos;s main function is to provide functionality around the <a href="https://github.com/tc39/proposal-intl-locale">Intl.Locale</a> API
-with a focus on language negotiation, matching and selection.</p>
-<h2 id="installation">Installation</h2><p><code>@fluent/langneg</code> can be used both on the client-side and the server-side.
-You can install it from the npm registry or use it as a standalone script.</p>
-<pre><code><code class="source-code prettyprint">npm install @fluent/langneg</code>
-</code></pre><h2 id="how-to-use">How to use</h2><pre><code class="lang-javascript"><code class="source-code prettyprint">import { negotiateLanguages } from &apos;@fluent/langneg&apos;;
-
-const supportedLocales = negotiateLanguages(
-  navigator.languages,       // requested locales
-  [&apos;de&apos;, &apos;en-US&apos;, &apos;pl&apos;],     // available locales
-  { defaultLocale: &apos;en-US&apos; }
-);</code>
-</code></pre>
-<p>The API reference is available at
-<a href="https://projectfluent.org/fluent.js/langneg">https://projectfluent.org/fluent.js/langneg</a>.</p>
-<h2 id="strategies">Strategies</h2><p>The API supports three negotiation strategies:</p>
-<h3 id="filtering--default-">filtering (default)</h3><p>In this strategy the algorithm will look for the best matching available
-locale for each requested locale.</p>
-<p>Example:</p>
-<p>requested: [&apos;de-DE&apos;, &apos;fr-FR&apos;]
-available: [&apos;it&apos;, &apos;de&apos;, &apos;en-US&apos;, &apos;fr-CA&apos;, &apos;de-DE&apos;, &apos;fr&apos;, &apos;de-AU&apos;]</p>
-<p>supported: [&apos;de-DE&apos;, &apos;fr&apos;]</p>
-<h3 id="matching">matching</h3><p>In this strategy the algorithm will try to match as many available locales
-as possible for each of the requested locale.</p>
-<p>Example:</p>
-<p>requested: [&apos;de-DE&apos;, &apos;fr-FR&apos;]
-available: [&apos;it&apos;, &apos;de&apos;, &apos;en-US&apos;, &apos;fr-CA&apos;, &apos;de-DE&apos;, &apos;fr&apos;, &apos;de-AU&apos;]</p>
-<p>supported: [&apos;de-DE&apos;, &apos;de&apos;, &apos;fr&apos;, &apos;fr-CA&apos;]</p>
-<h3 id="lookup">lookup</h3><p>In this strategy the algorithm will try to find the single best locale
-for the requested locale list among the available locales.</p>
-<p>Example:</p>
-<p>requested: [&apos;de-DE&apos;, &apos;fr-FR&apos;]
-available: [&apos;it&apos;, &apos;de&apos;, &apos;en-US&apos;, &apos;fr-CA&apos;, &apos;de-DE&apos;, &apos;fr&apos;, &apos;de-AU&apos;]</p>
-<p>supported: [&apos;de-DE&apos;]</p>
-<h3 id="api-use-">API use:</h3><pre><code class="lang-javascript"><code class="source-code prettyprint">let supported = negotiateLanguages(requested, available, {
-  strategy: &apos;matching&apos;,
-});</code>
-</code></pre>
-<h2 id="likely-subtags">Likely subtags</h2><p>Fluent Language Negotiation module carries its own minimal list of likely
-subtags data, which is useful in finding most likely available locales
-in case the requested locale is too generic.</p>
-<p>An example of that scenario is when the user requests <code>en</code> locale, and
-the application supports <code>en-GB</code> and <code>en-US</code>.</p>
-<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
-documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p>
-</div>
-</div>
-
-<footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
 </footer>
-
-<script src="script/search_index.js"></script>
-<script src="script/search.js"></script>
-<script src="script/pretty-print.js"></script>
-<script src="script/inherited-summary.js"></script>
-<script src="script/test-summary.js"></script>
-<script src="script/inner-link.js"></script>
-<script src="script/patch-for-local.js"></script>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

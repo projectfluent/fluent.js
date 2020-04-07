@@ -1,85 +1,217 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="default no-js">
 <head>
-  <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | @fluent/react</title>
-  <link type="text/css" rel="stylesheet" href="css/style.css">
-  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
-  <script src="script/prettify/prettify.js"></script>
-  <script src="script/manual.js"></script>
-<meta name="description" content="Fluent bindings for React"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@fluent/react"><meta property="twitter:description" content="Fluent bindings for React"></head>
-<body class="layout-container" data-ice="rootContainer">
-
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@fluent/react - v0.12.0</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
 <header>
-  <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
-  <a href="source.html">Source</a>
-  
-  <div class="search-box">
-  <span>
-    <img src="./image/search.png">
-    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
-  </span>
-    <ul class="search-result"></ul>
-  </div>
-<a style="position:relative; top:3px;" href="https://github.com/projectfluent/fluent.js.git"><img width="20px" src="./image/github.png"></a></header>
-
-<nav class="navigation" data-ice="nav"><div>
-  <ul>
-    
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/localization.js~ReactLocalization.html">ReactLocalization</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Localized">Localized</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createParseMarkup">createParseMarkup</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withLocalization">withLocalization</a></span></span></li>
-</ul>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@fluent/react - v0.12.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @fluent/react - v0.12.0</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#fluentreact" id="fluentreact" style="color: inherit; text-decoration: none;">
+					<h1>@fluent/react</h1>
+				</a>
+				<p><code>@fluent/react</code> provides React bindings for Project Fluent, a localization
+				framework designed to unleash the expressive power of the natural language.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p><code>@fluent/react</code> can be used both on the client-side and the server-side. You
+					can install it from the npm registry or use it as a standalone script (as the
+				<code>FluentReact</code> global).</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @fluent/react</code></pre>
+				<a href="#integrating-with-react-apps" id="integrating-with-react-apps" style="color: inherit; text-decoration: none;">
+					<h1>Integrating with React apps</h1>
+				</a>
+				<p><code>@fluent/react</code> takes advantage of React&#39;s Components system and the virtual
+				DOM. Translations are exposed to components via the <em>provider</em> pattern.</p>
+				<p>There are many approaches to fetching and storing translations. To allow
+					maximum flexibility, <code>@fluent/react</code> expects the developer to write a little
+					bit of a setup code related to language negotiation and translation fetching.
+					It makes <code>@fluent/react</code> unopinionated and suitable for many different
+					scenarios. You will likely also need to install a few other packages:
+				<code>@fluent/bundle</code>, <code>@fluent/langneg</code> and <code>intl-pluralrules</code>.</p>
+				<p>Consult the <a href="https://github.com/projectfluent/fluent.js/wiki/React-Bindings">wiki</a> for documentation on how to set up and use
+				<code>@fluent/react</code>.</p>
+				<p>The API reference is available at <a href="https://projectfluent.org/fluent.js/react">https://projectfluent.org/fluent.js/react</a>.</p>
+				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+					<h2>Compatibility</h2>
+				</a>
+				<p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&#39;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
+				preset</a>:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> <span class="hljs-string">"@fluent/react/compat"</span>;</code></pre>
+				<p>In some cases, using the <code>compat</code> build may be needed even if you target
+					modern browsers. For instance, the <a href="https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-build-fails-to-minify"><code>create-react-app</code> boilerplate uses
+					UglifyJS to minify its files</a>. As of November 2017,
+					UglifyJS doesn&#39;t support some of the new JavaScript syntax features. By using
+					the <code>compat</code> build of all <code>@fluent</code> packages you can ensure that the
+				minifiction works properly.</p>
+				<a href="#learn-more" id="learn-more" style="color: inherit; text-decoration: none;">
+					<h2>Learn more</h2>
+				</a>
+				<p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
+					documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
+				implementations, and information about how to get involved.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/reactlocalization.html" class="tsd-kind-icon">React<wbr>Localization</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/localizedprops.html" class="tsd-kind-icon">Localized<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/withlocalizationprops.html" class="tsd-kind-icon">With<wbr>Localization<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#markupparser" class="tsd-kind-icon">Markup<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#fluentcontext" class="tsd-kind-icon">Fluent<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#localizationprovider" class="tsd-kind-icon">Localization<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#localized" class="tsd-kind-icon">Localized</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#createparsemarkup" class="tsd-kind-icon">create<wbr>Parse<wbr>Markup</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#withlocalization" class="tsd-kind-icon">with<wbr>Localization</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
 </div>
-</nav>
-
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="-fluent-react">@fluent/react</h1><p><code>@fluent/react</code> provides React bindings for Project Fluent, a localization
-framework designed to unleash the expressive power of the natural language.</p>
-<h2 id="installation">Installation</h2><p><code>@fluent/react</code> can be used both on the client-side and the server-side. You
-can install it from the npm registry or use it as a standalone script (as the
-<code>FluentReact</code> global).</p>
-<pre><code><code class="source-code prettyprint">npm install @fluent/react</code>
-</code></pre><h1 id="integrating-with-react-apps">Integrating with React apps</h1><p><code>@fluent/react</code> takes advantage of React&apos;s Components system and the virtual
-DOM. Translations are exposed to components via the <em>provider</em> pattern.</p>
-<p>There are many approaches to fetching and storing translations. To allow
-maximum flexibility, <code>@fluent/react</code> expects the developer to write a little
-bit of a setup code related to language negotiation and translation fetching.
-It makes <code>@fluent/react</code> unopinionated and suitable for many different
-scenarios. You will likely also need to install a few other packages:
-<code>@fluent/bundle</code>, <code>@fluent/langneg</code> and <code>intl-pluralrules</code>.</p>
-<p>Consult the <a href="https://github.com/projectfluent/fluent.js/wiki/React-Bindings">wiki</a> for documentation on how to set up and use
-<code>@fluent/react</code>.</p>
-<p>The API reference is available at <a href="https://projectfluent.org/fluent.js/react">https://projectfluent.org/fluent.js/react</a>.</p>
-<h2 id="compatibility">Compatibility</h2><p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&apos;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
-preset</a>:</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import &quot;@fluent/react/compat&quot;;</code>
-</code></pre>
-<p>In some cases, using the <code>compat</code> build may be needed even if you target
-modern browsers. For instance, the <a href="https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-build-fails-to-minify"><code>create-react-app</code> boilerplate uses
-UglifyJS to minify its files</a>. As of November 2017,
-UglifyJS doesn&apos;t support some of the new JavaScript syntax features. By using
-the <code>compat</code> build of all <code>@fluent</code> packages you can ensure that the
-minifiction works properly.</p>
-<h2 id="learn-more">Learn more</h2><p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
-documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-implementations, and information about how to get involved.</p>
-</div>
-</div>
-
-<footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
 </footer>
-
-<script src="script/search_index.js"></script>
-<script src="script/search.js"></script>
-<script src="script/pretty-print.js"></script>
-<script src="script/inherited-summary.js"></script>
-<script src="script/test-summary.js"></script>
-<script src="script/inner-link.js"></script>
-<script src="script/patch-for-local.js"></script>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
