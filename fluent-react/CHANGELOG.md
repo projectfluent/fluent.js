@@ -1,5 +1,100 @@
 # Changelog
 
+## @fluent/react 0.12.0 (April 7, 2020)
+
+  - Migrate to TypeScript. (#458)
+
+    The source code of `@fluent/react` has been ported to TypeScript. The
+    rewrite required a number of breaking changes to the public API, which
+    are documented below.
+
+#### Breaking Changes
+
+  - `<LocalizationProvider>` now accepts a single prop called `l10n` which
+  must be an instance of a `ReactLocalization`. See [#461][] for the
+  rationale behind this change.
+
+    ```jsx
+    // The old API
+    <LocalizationProvider bundles={bundlesIterable}>
+        <App />
+    </LocalizationProvider>
+    ```
+
+    ↑ becomes ↓
+
+    ```jsx
+    // The new API
+    let l10n = new ReactLocalization(bundlesIterable);
+    <LocalizationProvider l10n={l10n}>
+        <App />
+    </LocalizationProvider>
+    ```
+
+    If you'd like to use a custom markup parser you can pass it as the second
+    argument to the `ReactLocalization` constructor:
+
+    ```js
+    let l10n = new ReactLocalization(bundlesIterable, parseMarkup);
+    ```
+
+  - The way variables and elements are passed to `<Localized>` has changed.
+  See [#458][] for more information.
+
+    Rather than pass variables as `$`-prefixed props, you must now pass them
+    explicitly as a dictionary to the `vars` prop.
+
+    ```jsx
+    // The old API
+    <Localized id="hello" $userName="Alice">
+        {"Hello, {$userName}!"}
+    </Localized>
+    ```
+
+    ↑ becomes ↓
+
+    ```jsx
+    // The new API
+    <Localized id="hello" vars={{userName: "Alice"}}>
+        {"Hello, {$userName}!"}
+    </Localized>
+    ```
+
+    Rather than pass elements for the [React Overlays][] logic as regular
+    props, you must now pass them explicitly as a dictionary to the `elems`
+    prop.
+
+    ```jsx
+    // The old API
+    <Localized id="privacy-policy" a={<a href="…" />}>
+        {"Read the <a>Privacy Policy</a>."}
+    </Localized>
+    ```
+
+    ↑ becomes ↓
+
+    ```jsx
+    // The new API
+    <Localized id="privacy-policy" elems={{a: <a href="…" />}}>
+        {"Read the <a>Privacy Policy</a>."}
+    </Localized>
+    ```
+
+#### API Additions
+
+  - The `ReactLocalization` class is now exported and must be initialized
+  manually for passing into `<LocalizationProvider>` (see above).
+
+  - The `LocalizedProps` interface describes the types of props passed to
+  `<Localized>`.
+
+  - The `WithLocalizationProps` interface describes the types of extra props
+  passed to components decorated with the `withLocalization` HOC.
+
+[#461]: https://github.com/projectfluent/fluent.js/pull/461
+[#458]: https://github.com/projectfluent/fluent.js/pull/458
+[React Overlays]: https://github.com/projectfluent/fluent.js/wiki/React-Overlays
+
 ## @fluent/react 0.11.1 (January 31, 2020)
 
   - Don't call `createParseMarkup` too eagerly. (#453)
