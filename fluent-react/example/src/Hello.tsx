@@ -1,29 +1,23 @@
 import React, { useState } from "react";
-import { Localized } from "@fluent/react";
+import { useTranslate } from "@fluent/react";
 
 export function Hello() {
     let [userName, setUserName] = useState("");
+    const { t, tAttributes } = useTranslate()
 
     return (
         <div>
             {userName ?
-                <Localized id="hello" vars={{ userName }}>
-                    <h1>{'Hello, { $userName }!'}</h1>
-                </Localized>
-                :
-                <Localized id="hello-no-name">
-                    <h1>Hello, stranger!</h1>
-                </Localized>
+                <h1>{t('hello', { userName })}</h1>
+                : <h1>{t('hello-no-name')}</h1>
             }
 
-            <Localized id="type-name" attrs={{ placeholder: true }}>
-                <input
-                    type="text"
-                    placeholder="Type your name"
-                    onChange={evt => setUserName(evt.target.value)}
-                    value={userName}
-                />
-            </Localized>
+            <input
+                type="text"
+                placeholder={tAttributes('type-name').placeholder}
+                onChange={evt => setUserName(evt.target.value)}
+                value={userName}
+            />
         </div>
     );
 }
