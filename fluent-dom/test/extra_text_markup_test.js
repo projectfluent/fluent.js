@@ -1,5 +1,5 @@
 import assert from 'assert';
-import translateElement from '../src/overlay';
+import translateElement from '../esm/overlay';
 import {elem} from './index';
 
 suite('Localized text markup', function() {
