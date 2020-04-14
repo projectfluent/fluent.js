@@ -5,7 +5,7 @@ DEPS    := cached-iterable:CachedIterable
 include ../common.mk
 
 lint:
-	@eslint --config $(ROOT)/eslint_src.json --max-warnings 0 src/
+	@eslint --config $(ROOT)/eslint_js.json --max-warnings 0 src/
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 

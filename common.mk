@@ -18,7 +18,7 @@ all: lint test build
 dist: clean lint test build html
 
 _lint:
-	@eslint --config $(ROOT)/eslint_src.json --max-warnings 0 src/
+	@eslint --config $(ROOT)/eslint_js.json --max-warnings 0 src/
 	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
