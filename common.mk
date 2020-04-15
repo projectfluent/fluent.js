@@ -17,22 +17,6 @@ all: lint test build
 # Used for pre-publishing.
 dist: clean lint test build html
 
-_lint:
-	@eslint --config $(ROOT)/eslint_src.json --max-warnings 0 src/
-	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
-	@echo -e " $(OK) lint"
-
-_html:
-ifneq (,$(wildcard ./.esdoc.json))
-	@esdoc
-	@echo -e " $(OK) html built"
-endif
-
-_clean:
-	@rm -f index.js compat.js
-	@rm -rf .nyc_output coverage
-	@echo -e " $(OK) clean"
-
 deps:
 	@npm install
 	@echo -e " $(OK) deps installed"

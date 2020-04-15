@@ -155,7 +155,10 @@ export function Localized(props: LocalizedProps): ReactElement {
     const childName = childNode.nodeName.toLowerCase();
 
     // If the child is not expected just take its textContent.
-    if (!elemsLower || !elemsLower.hasOwnProperty(childName)) {
+    if (
+      !elemsLower ||
+      !Object.prototype.hasOwnProperty.call(elemsLower, childName)
+    ) {
       return childNode.textContent;
     }
 

@@ -52,7 +52,7 @@ const regionMatchingLangs = [
 ];
 
 export function getLikelySubtagsMin(loc: string): Locale | null {
-  if (likelySubtagsMin.hasOwnProperty(loc)) {
+  if (Object.prototype.hasOwnProperty.call(likelySubtagsMin, loc)) {
     return new Locale(likelySubtagsMin[loc]);
   }
   const locale = new Locale(loc);

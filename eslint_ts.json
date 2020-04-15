@@ -13,7 +13,7 @@
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "./eslint_src.json"
+        "./eslint_js.json"
     ],
     "rules": {
         "complexity": "off",
