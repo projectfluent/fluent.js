@@ -6,6 +6,11 @@ include ../common.mk
 version = $(1)@$(shell node -e "\
 	console.log(require('../$(1)/package.json').version)")
 
+lint:
+	@eslint --config $(ROOT)/eslint_js.json --max-warnings 0 src/
+	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
+	@echo -e " $(OK) lint"
+
 test:
 	@nyc --reporter=text --reporter=html mocha \
 	    --recursive --ui tdd \
@@ -66,5 +71,4 @@ clean:
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
 
-lint: _lint
-html: _html
+html: ;
