@@ -8,53 +8,20 @@ version = $(1)@$(shell node -e "\
 
 lint:
 	@eslint --config $(ROOT)/eslint_js.json --max-warnings 0 src/
-	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
-test:
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require esm \
-	    test/**/*_test.js
+test: ;
 
 .PHONY: build
-build: Fluent.jsm FluentSyntax.jsm Localization.jsm DOMLocalization.jsm l10n.js fluent-react.js
-
-Fluent.jsm: $(SOURCES)
-	$(MAKE) -sC ../fluent-bundle compile
-	@rollup $(CURDIR)/src/fluent.js \
-	    --config ./xpcom_config.js \
-	    --output.intro "/* $(call version,fluent-bundle) */" \
-	    --output.file ./dist/$@
-	@echo -e " $(OK) $@ built"
+build: FluentSyntax.jsm fluent-react.js
 
 FluentSyntax.jsm: $(SOURCES)
 	$(MAKE) -sC ../fluent-syntax compile
-	@rollup $(CURDIR)/src/fluent_syntax.js \
+	@rollup $(CURDIR)/src/fluent-syntax.js \
 	    --config ./xpcom_config.js \
 	    --no-treeshake \
 	    --no-freeze \
 	    --output.intro "/* $(call version,fluent-syntax) */" \
-	    --output.file ./dist/$@
-	@echo -e " $(OK) $@ built"
-
-Localization.jsm: $(SOURCES)
-	@rollup $(CURDIR)/src/localization.js \
-	    --config ./xpcom_config.js \
-	    --output.intro "/* $(call version,fluent-dom) */" \
-	    --output.file ./dist/$@
-	@echo -e " $(OK) $@ built"
-
-DOMLocalization.jsm: $(SOURCES)
-	@rollup $(CURDIR)/src/dom_localization.js \
-	    --config ./xpcom_dom_config.js \
-	    --output.intro "/* $(call version,fluent-dom) */" \
-	    --output.file ./dist/$@
-	@echo -e " $(OK) $@ built"
-
-l10n.js: $(SOURCES)
-	@rollup $(CURDIR)/src/l10n.js \
-	    --output.format es \
 	    --output.file ./dist/$@
 	@echo -e " $(OK) $@ built"
 
