@@ -1,10 +1,11 @@
 import React from "react";
-import { Localized, withLocalization, WithLocalizationProps } from "@fluent/react";
+import { Localized, useTranslate } from "@fluent/react";
 
-function SignIn(props: WithLocalizationProps) {
+export function SignIn() {
+  const { l10n } = useTranslate()
+
   function showAlert(id: string) {
-    const { getString } = props;
-    alert(getString(id));
+    alert(l10n.getString(id));
   }
 
   return (
@@ -21,5 +22,3 @@ function SignIn(props: WithLocalizationProps) {
     </div>
   );
 }
-
-export const LocalizedSignIn = withLocalization(SignIn);
