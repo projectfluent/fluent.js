@@ -1,7 +1,6 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
-import bundleConfig from '../bundle_config';
 
-export default Object.assign({}, bundleConfig, {
+export default {
   context: 'this',
   output: {
     format: 'cjs',
@@ -31,4 +30,4 @@ export default Object.assign({}, bundleConfig, {
   plugins: [
     nodeResolve(),
   ]
-});
+};

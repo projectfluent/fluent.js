@@ -60,16 +60,10 @@
     "@types/react": "^16.9.22",
     "@types/react-dom": "^16.9.5",
     "babel-jest": "^24.8.0",
-    "babel-plugin-transform-rename-import": "^2.2.0",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-test-renderer": "^16.8.6"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(@fluent/sequence)/)"
-    ]
   }
 }
