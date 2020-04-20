@@ -16,9 +16,6 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "directories": {
-    "lib": "./src"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"

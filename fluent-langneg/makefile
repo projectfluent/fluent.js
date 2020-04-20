@@ -24,9 +24,9 @@ test: esm/.compiled
 	    test/**/*_test.js
 
 .PHONY: build
-build: index.js
+build: index.cjs
 
-index.js: $(SOURCES)
+index.cjs: $(SOURCES)
 	@rollup $(CURDIR)/esm/index.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
@@ -47,6 +47,6 @@ html:
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
-	@rm -f index.js
+	@rm -f index.cjs
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
