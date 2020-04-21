@@ -21,25 +21,15 @@ test: esm/.compiled
 	@jest --collect-coverage
 
 .PHONY: build
-build: index.js compat.js
+build: index.js
 
 index.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
-	    --config $(ROOT)/bundle_config.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
 	    --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes \
-	    --output.file $@
-	@echo -e " $(OK) $@ built"
-
-compat.js: esm/.compiled
-	@rollup $(CURDIR)/esm/index.js \
-	    --config $(CURDIR)/compat_config.js \
-	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --amd.id $(PACKAGE) \
-	    --name $(GLOBAL) \
-	    --globals @fluent/sequence/compat:FluentSequence,cached-iterable/compat:CachedIterable,react:React,prop-types:PropTypes \
+	    --output.format umd \
 	    --output.file $@
 	@echo -e " $(OK) $@ built"
 
@@ -55,6 +45,6 @@ html:
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
-	@rm -f index.js compat.js
+	@rm -f index.js
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

@@ -26,25 +26,15 @@ test: esm/.compiled
 	    test/**/*_test.js
 
 .PHONY: build
-build: index.js compat.js
+build: index.js
 
 index.js: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
-		--config $(ROOT)/bundle_config.js \
 		--banner "/* $(PACKAGE)@$(VERSION) */" \
 		--amd.id $(PACKAGE) \
 		--name $(GLOBAL) \
 		--globals $(DEPS) \
-		--output.file $@
-	@echo -e " $(OK) $@ built"
-
-compat.js: esm/.compiled
-	@rollup $(CURDIR)/esm/index.js \
-		--config $(ROOT)/compat_config.js \
-		--banner "/* $(PACKAGE)@$(VERSION) */" \
-		--amd.id $(PACKAGE) \
-		--name $(GLOBAL) \
-		--globals $(DEPS) \
+		--output.format umd \
 		--output.file $@
 	@echo -e " $(OK) $@ built"
 
@@ -60,6 +50,6 @@ html:
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
-	@rm -f index.js compat.js
+	@rm -f index.js
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

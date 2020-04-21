@@ -26,5 +26,8 @@
   "keywords": [
     "localization",
     "l10n"
-  ]
+  ],
+  "devDependencies": {
+    "rollup-plugin-node-resolve": "^4.2.2"
+  }
 }

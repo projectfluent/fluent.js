@@ -6,10 +6,4 @@ module.exports = {
       "targets": "node >= 10.0.0"
     }]
   ],
-  "plugins": [
-    ["babel-plugin-transform-rename-import", {
-      "original": "fluent",
-      "replacement": "fluent/compat"
-    }]
-  ],
 };
