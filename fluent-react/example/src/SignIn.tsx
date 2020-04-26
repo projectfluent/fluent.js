@@ -1,8 +1,8 @@
 import React from "react";
-import { Localized, useTranslate } from "@fluent/react";
+import { Localized, useLocalization } from "@fluent/react";
 
 export function SignIn() {
-  const { l10n } = useTranslate()
+  const { l10n } = useLocalization()
 
   function showAlert(id: string) {
     alert(l10n.getString(id));

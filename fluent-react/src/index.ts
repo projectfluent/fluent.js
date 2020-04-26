@@ -22,4 +22,4 @@ export { LocalizationProvider } from "./provider";
 export { withLocalization, WithLocalizationProps } from "./with_localization";
 export { Localized, LocalizedProps } from "./localized";
 export { MarkupParser } from "./markup";
-export { useTranslate } from "./useTranslate";
+export { useLocalization } from "./use_localization";

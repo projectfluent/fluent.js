@@ -3,13 +3,13 @@ import { FluentContext } from "./context";
 import { ReactLocalization } from "./localization";
 
 /*
-* The `useTranslate` hook returns the FluentContext
+* The `useLocalization` hook returns the FluentContext
 */
-type useTranslate = () => { l10n: ReactLocalization }
-export const useTranslate: useTranslate = () => {
+type useLocalization = () => { l10n: ReactLocalization }
+export const useLocalization: useLocalization = () => {
   const l10n = useContext(FluentContext);
 
   return { l10n };
 };
 
-export default useTranslate;
+export default useLocalization;
