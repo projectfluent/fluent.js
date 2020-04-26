@@ -11,5 +11,3 @@ export const useLocalization: useLocalization = () => {
 
   return { l10n };
 };
-
-export default useLocalization;
