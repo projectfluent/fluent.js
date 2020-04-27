@@ -34,7 +34,7 @@ describe("useLocalization", () => {
     `);
   });
 
-  test("useLocalization should exposes getString from ReactLocalization", () => {
+  test("useLocalization exposes getString from ReactLocalization", () => {
     const bundle = new FluentBundle("en", { useIsolating: false });
     bundle.addResource(
       new FluentResource(`
