@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Localized } from "@fluent/react";
 import { FluentDateTime } from "@fluent/bundle";
 import { Hello } from "./Hello";
-import { LocalizedSignIn } from "./SignIn";
+import { SignIn } from "./SignIn";
 
 export function App() {
     let [date] = useState(() => new Date());
@@ -36,6 +36,6 @@ export function App() {
             </p>
         </Localized>
 
-        <LocalizedSignIn />
+        <SignIn />
     </>;
 }
