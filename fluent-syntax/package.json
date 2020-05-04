@@ -18,7 +18,7 @@
   "type": "module",
   "main": "./index.cjs",
   "exports": {
-    "import": "./esm/index.js",
+    "import": "./wrapper.mjs",
     "require": "./index.cjs"
   },
   "module": "./esm/index.js",
