@@ -45,7 +45,7 @@ The API reference is available at https://projectfluent.org/fluent.js/bundle.
 
 ## Compatibility
 
-`fluent` requires the following `Intl` formatters:
+`@fluent/bundle` requires the following `Intl` formatters:
 
   - `Intl.DateTimeFormat` (standard, well-supported)
   - `Intl.NumberFormat` (standard, well-supported)
@@ -59,12 +59,10 @@ import 'intl-pluralrules';
 import {FluentBundle} from '@fluent/bundle';
 ```
 
-For legacy browsers, the `compat` build has been transpiled using Babel's [env
-preset][]. It requires the regenerator runtime provided by [babel-polyfill][].
+See also the [Compatibility][] article on the `fluent.js` wiki.
 
-```javascript
-import {FluentBundle} from '@fluent/bundle/compat';
-```
+[intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
+[Compatibility]: https://github.com/projectfluent/fluent.js/wiki/Compatibility
 
 
 ## Learn more
@@ -73,10 +71,5 @@ Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
-
-[intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
-[babel-polyfill]: https://babeljs.io/docs/usage/polyfill/
-[Stage 3 proposal]:https://github.com/tc39/proposal-intl-plural-rules
-[env preset]: https://babeljs.io/docs/plugins/preset-env/
 [projectfluent.org]: https://projectfluent.org
 [FTL]: https://projectfluent.org/fluent/guide/
