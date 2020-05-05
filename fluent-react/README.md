@@ -28,29 +28,9 @@ scenarios. You will likely also need to install a few other packages:
 Consult the [wiki][] for documentation on how to set up and use
 `@fluent/react`.
 
-[wiki]: https://github.com/projectfluent/fluent.js/wiki/React-Bindings
-
 The API reference is available at https://projectfluent.org/fluent.js/react.
 
-
-## Compatibility
-
-For legacy browsers, the `compat` build has been transpiled using Babel's [env
-preset][]:
-
-```javascript
-import "@fluent/react/compat";
-```
-
-In some cases, using the `compat` build may be needed even if you target
-modern browsers. For instance, the [`create-react-app` boilerplate uses
-UglifyJS to minify its files][create-react-app-minify]. As of November 2017,
-UglifyJS doesn't support some of the new JavaScript syntax features. By using
-the `compat` build of all `@fluent` packages you can ensure that the
-minifiction works properly.
-
-
-[create-react-app-minify]: https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-build-fails-to-minify
+[wiki]: https://github.com/projectfluent/fluent.js/wiki/React-Bindings
 
 
 ## Learn more
@@ -59,7 +39,5 @@ Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
-
-[env preset]: https://babeljs.io/docs/plugins/preset-env/
 [projectfluent.org]: https://projectfluent.org
 [FTL]: https://projectfluent.org/fluent/guide/

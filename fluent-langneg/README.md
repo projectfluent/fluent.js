@@ -7,6 +7,8 @@ the natural language.
 It's main function is to provide functionality around the [Intl.Locale][] API
 with a focus on language negotiation, matching and selection.
 
+[Intl.Locale]: https://github.com/tc39/proposal-intl-locale
+
 
 ## Installation
 
@@ -94,7 +96,5 @@ Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
-
 [projectfluent.org]: https://projectfluent.org
 [FTL]: https://projectfluent.org/fluent/guide/
-[Intl.Locale]: https://github.com/tc39/proposal-intl-locale

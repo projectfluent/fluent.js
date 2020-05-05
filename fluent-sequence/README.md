@@ -55,6 +55,8 @@ depleting the iterator.
 The API reference is available at
 https://projectfluent.org/fluent.js/sequence.
 
+[`cached-iterable`]: https://www.npmjs.com/package/cached-iterable
+
 
 ## Learn more
 
@@ -62,7 +64,5 @@ Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
-
-[`cached-iterable`]: https://www.npmjs.com/package/cached-iterable
 [projectfluent.org]: https://projectfluent.org
 [FTL]: https://projectfluent.org/fluent/guide/

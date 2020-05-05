@@ -76,23 +76,11 @@ assert(message === "\nhello = Hello, world!\n");
 ```
 
 
-## Compatibility
-
-For legacy browsers, the `compat` build has been transpiled using Babel's [env
-preset][].
-
-```javascript
-import ftl from '@fluent/dedent/compat';
-```
-
-
 ## Learn more
 
 Find out more about Project Fluent at [projectfluent.org][], including
 documentation of the Fluent file format ([FTL][]), links to other packages and
 implementations, and information about how to get involved.
 
-
-[env preset]: https://babeljs.io/docs/plugins/preset-env/
 [projectfluent.org]: https://projectfluent.org
 [FTL]: https://projectfluent.org/fluent/guide/
