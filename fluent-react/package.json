@@ -15,8 +15,12 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "type": "commonjs",
-  "main": "./index.js",
+  "type": "module",
+  "main": "./index.cjs",
+  "exports": {
+    "import": "./esm/index.js",
+    "require": "./index.cjs"
+  },
   "module": "./esm/index.js",
   "types": "./esm/index.d.ts",
   "repository": {

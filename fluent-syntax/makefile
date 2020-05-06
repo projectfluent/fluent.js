@@ -24,15 +24,19 @@ test: esm/.compiled
 	    test/**/*_test.js
 
 .PHONY: build
-build: index.js
+build: index.cjs wrapper.mjs
 
-index.js: esm/.compiled
+index.cjs: esm/.compiled
 	@rollup $(CURDIR)/esm/index.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
 	    --output.format umd \
 	    --output.file $@
+	@echo -e " $(OK) $@ built"
+
+wrapper.mjs: index.cjs
+	@node ../wrap_as_esm.cjs $< > $@
 	@echo -e " $(OK) $@ built"
 
 html:
@@ -47,7 +51,7 @@ html:
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
-	@rm -f index.js
+	@rm -f index.cjs
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
 
