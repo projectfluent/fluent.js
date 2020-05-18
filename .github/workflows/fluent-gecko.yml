@@ -17,6 +17,12 @@ jobs:
       - name: Install package dependencies
         working-directory: ./fluent-gecko
         run: npm ci
+      - name: Install @fluent/syntax packages dependencies
+        working-directory: ./fluent-syntax
+        run: npm ci
+      - name: Install @fluent/react packages dependencies
+        working-directory: ./fluent-react
+        run: npm ci
       - name: make dist
         working-directory: ./fluent-gecko
         run: make dist
