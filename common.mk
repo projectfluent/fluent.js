@@ -4,6 +4,7 @@
 ROOT := $(dir $(lastword $(MAKEFILE_LIST)))
 SOURCES := $(wildcard src/*)
 VERSION := $(shell node -pe "require('./package.json').version")
+DOC_DESTINATION := $(subst @fluent, ../html, $(PACKAGE))
 
 export SHELL := /bin/bash
 ESLINT ?= $(ROOT)node_modules/.bin/eslint
@@ -19,6 +20,15 @@ ROLLUP_CMD = $(ROLLUP) $(CURDIR)/esm/index.js \
 	--name $(GLOBAL) \
 	--output.format umd \
 	--output.file \
+	$(NULL)
+
+TYPEDOC_CMD = $(TYPEDOC) src \
+	--out $(DOC_DESTINATION) \
+	--mode file \
+	--excludeNotExported \
+	--excludePrivate \
+	--logger none \
+	--hideGenerator \
 	$(NULL)
 
 # Common maintenance tasks.

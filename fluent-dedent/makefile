@@ -28,13 +28,7 @@ index.js: esm/.compiled
 	@echo -e " $(OK) $@ built"
 
 html:
-	@$(TYPEDOC) src \
-	    --out ../html/dedent \
-	    --mode file \
-	    --excludeNotExported \
-	    --excludePrivate \
-	    --logger none \
-	    --hideGenerator
+	@$(TYPEDOC_CMD)
 	@echo -e " $(OK) html built"
 
 clean:

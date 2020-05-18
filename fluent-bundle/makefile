@@ -28,19 +28,13 @@ index.js: esm/.compiled
 	@echo -e " $(OK) $@ built"
 
 html:
-	@$(TYPEDOC) src \
-	    --out ../html/bundle \
-	    --mode file \
-	    --excludeNotExported \
-	    --excludePrivate \
-	    --logger none \
-	    --hideGenerator
+	@$(TYPEDOC_CMD)
 	@echo -e " $(OK) html built"
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
 	@rm -f index.js
-	@rm -rf ../html/bundle
+	@rm -rf $(DOC_DESTINATION)
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"
 
