@@ -1,12 +1,17 @@
 # This makefile is intended to be included by each package's makefile.  The
 # paths are relative to the package directory.
 
-ROOT := $(CURDIR)/..
+ROOT := $(dir $(lastword $(MAKEFILE_LIST)))
 SOURCES := $(wildcard src/*)
 VERSION := $(shell node -pe "require('./package.json').version")
 
 export SHELL := /bin/bash
-export PATH  := $(CURDIR)/node_modules/.bin:$(ROOT)/node_modules/.bin:$(PATH)
+ESLINT ?= $(ROOT)node_modules/.bin/eslint
+TSC ?= $(ROOT)node_modules/.bin/tsc
+NYC ?= $(ROOT)node_modules/.bin/nyc
+MOCHA ?= $(ROOT)node_modules/.bin/mocha
+ROLLUP ?= $(ROOT)node_modules/.bin/rollup
+TYPEDOC ?= $(ROOT)node_modules/.bin/typedoc
 
 # Common maintenance tasks.
 .PHONY: clean lint test build html
@@ -24,5 +29,14 @@ deps:
 depsclean:
 	@rm -rf node_modules
 	@echo -e " $(OK) deps clean"
+
+# Shared recipes
+.PHONY: mocha-test
+
+mocha-test:
+	@$(NYC) --reporter=text --reporter=html $(MOCHA) \
+	    --recursive --ui tdd \
+	    --require esm $(TEST_REQUIRES) \
+	    test/**/*_test.js
 
 OK := \033[32;01m✓\033[0m
