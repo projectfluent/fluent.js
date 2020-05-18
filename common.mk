@@ -13,6 +13,14 @@ MOCHA ?= $(ROOT)node_modules/.bin/mocha
 ROLLUP ?= $(ROOT)node_modules/.bin/rollup
 TYPEDOC ?= $(ROOT)node_modules/.bin/typedoc
 
+ROLLUP_CMD = $(ROLLUP) $(CURDIR)/esm/index.js \
+	--banner "/* $(PACKAGE)@$(VERSION) */" \
+	--amd.id $(PACKAGE) \
+	--name $(GLOBAL) \
+	--output.format umd \
+	--output.file \
+	$(NULL)
+
 # Common maintenance tasks.
 .PHONY: clean lint test build html
 

@@ -24,12 +24,7 @@ test: esm/.compiled
 build: index.js
 
 index.js: $(SOURCES)
-	@$(ROLLUP) $(CURDIR)/esm/index.js \
-	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --amd.id $(PACKAGE) \
-	    --name $(GLOBAL) \
-	    --output.format umd \
-	    --output.file $@
+	@$(ROLLUP_CMD) $@
 	@echo -e " $(OK) $@ built"
 
 html:
