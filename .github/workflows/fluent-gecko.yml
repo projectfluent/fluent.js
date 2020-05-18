@@ -1,5 +1,9 @@
 name: "@fluent/gecko"
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 jobs:
   dist:
     runs-on: ubuntu-latest
