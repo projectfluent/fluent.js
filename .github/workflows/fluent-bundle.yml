@@ -5,11 +5,41 @@ on:
   pull_request:
     branches: [master]
 jobs:
-  dist:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install build tools
+        run: npm ci
+      - name: lint
+        working-directory: ./fluent-bundle
+        run: make lint
+  esm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install build tools
+        run: npm ci
+      - name: compile
+        working-directory: ./fluent-bundle
+        run: make compile
+      - name: artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: esm
+          path: fluent-bundle/esm
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node: [10.x, 12.x, 14.x]
+    needs: esm
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{matrix.node}}
@@ -21,6 +51,34 @@ jobs:
       - name: Install package dependencies
         working-directory: ./fluent-bundle
         run: npm ci
-      - name: make dist
+      - uses: actions/download-artifact@v2
+        with:
+          name: esm
+          path: fluent-bundle/esm
+      - name: test
         working-directory: ./fluent-bundle
-        run: make dist
+        run: make test
+  pack:
+    runs-on: ubuntu-latest
+    needs: esm
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install build tools
+        run: npm ci
+      - uses: actions/download-artifact@v2
+        with:
+          name: esm
+          path: fluent-bundle/esm
+      - name: pack
+        working-directory: ./fluent-bundle
+        run: |
+          make index.js
+          npm pack
+      - name: artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: fluent-bundle/fluent-bundle-*.tgz
