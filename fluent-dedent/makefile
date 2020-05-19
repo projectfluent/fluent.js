@@ -4,45 +4,31 @@ GLOBAL  := FluentDedent
 include ../common.mk
 
 lint:
-	@eslint --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
-	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
+	@$(ESLINT) --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
+	@$(ESLINT) --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
 .PHONY: compile
 compile: esm/.compiled
 
 esm/.compiled: $(SOURCES)
-	@tsc
+	@$(TSC)
 	@touch $@
 	@echo -e " $(OK) esm/ compiled"
 
 .PHONY: test
 test: esm/.compiled
-	@nyc --reporter=text --reporter=html mocha \
-	    --recursive --ui tdd \
-	    --require esm \
-	    test/**/*_test.js
+	@$(MOCHA_CMD)
 
 .PHONY: build
 build: index.js
 
 index.js: esm/.compiled
-	@rollup $(CURDIR)/esm/index.js \
-	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --amd.id $(PACKAGE) \
-	    --name $(GLOBAL) \
-	    --output.format umd \
-	    --output.file $@
+	@$(ROLLUP_CMD) $@
 	@echo -e " $(OK) $@ built"
 
 html:
-	@typedoc src \
-	    --out ../html/dedent \
-	    --mode file \
-	    --excludeNotExported \
-	    --excludePrivate \
-	    --logger none \
-	    --hideGenerator
+	@$(TYPEDOC_CMD)
 	@echo -e " $(OK) html built"
 
 clean:

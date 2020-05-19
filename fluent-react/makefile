@@ -1,30 +1,31 @@
 PACKAGE := @fluent/react
 GLOBAL  := FluentReact
+JEST    ?= node_modules/.bin/jest
 
 include ../common.mk
 
 lint:
-	@eslint --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
-	@eslint --config $(ROOT)/eslint_test.json --max-warnings 0 test/
+	@$(ESLINT) --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
+	@$(ESLINT) --config $(ROOT)/eslint_test.json --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
 .PHONY: compile
 compile: esm/.compiled
 
 esm/.compiled: $(SOURCES)
-	@tsc
+	@$(TSC)
 	@touch $@
 	@echo -e " $(OK) esm/ compiled"
 
 .PHONY: test
 test: esm/.compiled
-	@jest --collect-coverage
+	@$(JEST) --collect-coverage
 
 .PHONY: build
 build: index.js
 
 index.js: esm/.compiled
-	@rollup $(CURDIR)/esm/index.js \
+	@$(ROLLUP) $(CURDIR)/esm/index.js \
 	    --banner "/* $(PACKAGE)@$(VERSION) */" \
 	    --amd.id $(PACKAGE) \
 	    --name $(GLOBAL) \
@@ -34,17 +35,12 @@ index.js: esm/.compiled
 	@echo -e " $(OK) $@ built"
 
 html:
-	@typedoc src \
-	    --out ../html/react \
-	    --mode file \
-	    --excludeNotExported \
-	    --excludePrivate \
-	    --logger none \
-	    --hideGenerator
+	@$(TYPEDOC_CMD)
 	@echo -e " $(OK) html built"
 
 clean:
 	@rm -f esm/*.js esm/*.d.ts esm/.compiled
 	@rm -f index.js
+	@rm -rf $(DOC_DESTINATION)
 	@rm -rf .nyc_output coverage
 	@echo -e " $(OK) clean"

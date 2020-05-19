@@ -1,5 +1,5 @@
 export SHELL := /bin/bash
-export PATH  := $(CURDIR)/node_modules/.bin:$(PATH)
+GH_PAGES ?= $(CURDIR)/node_modules/.bin/gh-pages
 
 TARGETS  := all dist lint test build html deps depsclean
 PACKAGES := $(wildcard fluent-*)
@@ -14,7 +14,7 @@ $(PACKAGES):
 .PHONY: $(TARGETS) $(PACKAGES)
 
 deploy-html:
-	gh-pages -d html
+	$(GH_PAGES) -d html
 
 clean: $(PACKAGES)
 	@echo

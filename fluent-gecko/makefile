@@ -7,7 +7,7 @@ version = $(1)@$(shell node -e "\
 	console.log(require('../$(1)/package.json').version)")
 
 lint:
-	@eslint --config $(ROOT)/eslint_js.json --max-warnings 0 src/
+	@$(ESLINT) --config $(ROOT)/eslint_js.json --max-warnings 0 src/
 	@echo -e " $(OK) lint"
 
 test: ;
@@ -17,7 +17,7 @@ build: FluentSyntax.jsm fluent-react.js
 
 FluentSyntax.jsm: $(SOURCES)
 	$(MAKE) -sC ../fluent-syntax compile
-	@rollup $(CURDIR)/src/fluent-syntax.js \
+	@$(ROLLUP) $(CURDIR)/src/fluent-syntax.js \
 	    --config ./xpcom_config.js \
 	    --no-treeshake \
 	    --no-freeze \
@@ -27,7 +27,7 @@ FluentSyntax.jsm: $(SOURCES)
 
 fluent-react.js: $(SOURCES)
 	$(MAKE) -sC ../fluent-react compile
-	@rollup $(CURDIR)/src/fluent-react.js \
+	@$(ROLLUP) $(CURDIR)/src/fluent-react.js \
 	    --config ./vendor_config.js \
 	    --output.intro "/* $(call version,fluent-react) */" \
 	    --output.file ./dist/$@
