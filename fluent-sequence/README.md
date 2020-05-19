@@ -1,4 +1,4 @@
-# @fluent/sequence
+# @fluent/sequence ![](https://github.com/projectfluent/fluent.js/workflows/.github/workflows/fluent-sequence.yml/badge.svg)
 
 `@fluent/sequence` provides mapping functions from string identifiers to
 `FluentBundle` instances taken from synchronous or asynchronous sequences.
