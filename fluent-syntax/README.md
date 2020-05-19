@@ -1,4 +1,4 @@
-# @fluent/syntax ![](https://github.com/projectfluent/fluent.js/workflows/.github/workflows/fluent-syntax.yml/badge.svg)
+# @fluent/syntax ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/syntax/badge.svg)
 
 `@fluent/syntax` is a parser for Fluent translation files, FTL. Project
 Fluent is a localization framework designed to unleash the expressive power

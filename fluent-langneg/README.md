@@ -1,4 +1,4 @@
-# @fluent/langneg ![](https://github.com/projectfluent/fluent.js/workflows/.github/workflows/fluent-langneg.yml/badge.svg)
+# @fluent/langneg ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/langneg/badge.svg)
 
 `@fluent/langneg` is an API for negotiating languages. It's part of Project
 Fluent, a localization framework designed to unleash the expressive power of

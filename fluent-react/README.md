@@ -1,4 +1,4 @@
-# @fluent/react ![](https://github.com/projectfluent/fluent.js/workflows/.github/workflows/fluent-react.yml/badge.svg)
+# @fluent/react ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/react/badge.svg)
 
 `@fluent/react` provides React bindings for Project Fluent, a localization
 framework designed to unleash the expressive power of the natural language.
