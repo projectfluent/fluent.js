@@ -1,4 +1,4 @@
-# @fluent/dedent
+# @fluent/dedent ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/dedent/badge.svg)
 
 `@fluent/dedent` provides a template literal tag to dedent Fluent code.
 Fluent Syntax is indentation-sensitive, and `@fluent/dedent` offers a

@@ -1,4 +1,4 @@
-# @fluent/dom
+# @fluent/dom ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/dom/badge.svg)
 
 `@fluent/dom` provides DOM bindings for Project Fluent, a localization
 framework designed to unleash the expressive power of the natural language.

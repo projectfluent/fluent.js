@@ -1,4 +1,4 @@
-# @fluent/bundle
+# @fluent/bundle ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/bundle/badge.svg)
 
 `@fluent/bundle` is a JavaScript implementation of Project Fluent, a
 localization framework designed to unleash the expressive power of the

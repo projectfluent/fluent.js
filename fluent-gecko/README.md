@@ -1,4 +1,4 @@
-# fluent-gecko
+# fluent-gecko ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/gecko/badge.svg)
 
 `fluent-gecko` is a Gecko-compatible distribution of Project Fluent,
 a localization framework designed to unleash the expressive power of the
