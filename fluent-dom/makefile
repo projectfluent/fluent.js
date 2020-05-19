@@ -18,8 +18,9 @@ esm/.compiled: $(SOURCES)
 	@echo -e " $(OK) esm/ compiled"
 
 .PHONY: test
+test: TEST_REQUIRES=--require ./test/index
 test: esm/.compiled
-	@$(MAKE) mocha-test TEST_REQUIRES="--require ./test/index"
+	@$(MOCHA_CMD)
 
 .PHONY: build
 build: index.js

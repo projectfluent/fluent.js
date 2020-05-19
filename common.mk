@@ -31,6 +31,12 @@ TYPEDOC_CMD = $(TYPEDOC) src \
 	--hideGenerator \
 	$(NULL)
 
+MOCHA_CMD =@$(NYC) --reporter=text --reporter=html $(MOCHA) \
+	--recursive --ui tdd \
+	--require esm $(TEST_REQUIRES) \
+	test/**/*_test.js \
+	$(NULL)
+
 # Common maintenance tasks.
 .PHONY: clean lint test build html
 
@@ -47,14 +53,5 @@ deps:
 depsclean:
 	@rm -rf node_modules
 	@echo -e " $(OK) deps clean"
-
-# Shared recipes
-.PHONY: mocha-test
-
-mocha-test:
-	@$(NYC) --reporter=text --reporter=html $(MOCHA) \
-	    --recursive --ui tdd \
-	    --require esm $(TEST_REQUIRES) \
-	    test/**/*_test.js
 
 OK := \033[32;01m✓\033[0m

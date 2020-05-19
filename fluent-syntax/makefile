@@ -18,7 +18,7 @@ esm/.compiled: $(SOURCES)
 
 .PHONY: test
 test: esm/.compiled
-	@$(MAKE) mocha-test
+	@$(MOCHA_CMD)
 
 .PHONY: build
 build: index.js
