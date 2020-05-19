@@ -33,7 +33,8 @@ TYPEDOC_CMD = $(TYPEDOC) src \
 
 MOCHA_CMD =@$(NYC) --reporter=text --reporter=html $(MOCHA) \
 	--recursive --ui tdd \
-	--require esm $(TEST_REQUIRES) \
+	--require esm \
+	$(MOCHA_EXTRA_ARGS) \
 	test/**/*_test.js \
 	$(NULL)
 
