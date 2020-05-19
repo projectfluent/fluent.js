@@ -1,12 +1,11 @@
 # @fluent/langneg ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/langneg/badge.svg)
 
-`@fluent/langneg` is an API for negotiating languages. It's part of Project
-Fluent, a localization framework designed to unleash the expressive power of
-the natural language.
+`@fluent/langneg` provides an API for negotiating languages. It's part of
+[Project Fluent][]. Its main function is to provide functionality around the
+[Intl.Locale][] API with a focus on language negotiation, matching and
+selection.
 
-It's main function is to provide functionality around the [Intl.Locale][] API
-with a focus on language negotiation, matching and selection.
-
+[Project Fluent]: https://projectfluent.org
 [Intl.Locale]: https://github.com/tc39/proposal-intl-locale
 
 
@@ -89,12 +88,3 @@ in case the requested locale is too generic.
 
 An example of that scenario is when the user requests `en` locale, and
 the application supports `en-GB` and `en-US`.
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/

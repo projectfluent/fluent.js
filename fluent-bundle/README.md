@@ -1,8 +1,9 @@
 # @fluent/bundle ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/bundle/badge.svg)
 
-`@fluent/bundle` is a JavaScript implementation of Project Fluent, a
-localization framework designed to unleash the expressive power of the
-natural language.
+`@fluent/bundle` is a JavaScript implementation of [Project Fluent][],
+optimized for runtime performance.
+
+[Project Fluent]: https://projectfluent.org
 
 
 ## Installation
@@ -63,13 +64,3 @@ See also the [Compatibility][] article on the `fluent.js` wiki.
 
 [intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
 [Compatibility]: https://github.com/projectfluent/fluent.js/wiki/Compatibility
-
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/

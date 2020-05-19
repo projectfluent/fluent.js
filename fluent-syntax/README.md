@@ -1,9 +1,9 @@
 # @fluent/syntax ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/syntax/badge.svg)
 
-`@fluent/syntax` is a parser for Fluent translation files, FTL. Project
-Fluent is a localization framework designed to unleash the expressive power
-of the natural language.
+`@fluent/syntax` is a tooling library for parsing, serializing, and working
+with the Fluent syntax. It's part of [Project Fluent][].
 
+[Project Fluent]: https://projectfluent.org
 
 ## Installation
 
@@ -28,13 +28,3 @@ assert(res instanceof Resource);
 ```
 
 The API reference is available at https://projectfluent.org/fluent.js/syntax.
-
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/

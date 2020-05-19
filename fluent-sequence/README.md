@@ -2,8 +2,9 @@
 
 `@fluent/sequence` provides mapping functions from string identifiers to
 `FluentBundle` instances taken from synchronous or asynchronous sequences.
-It's part of Project Fluent, a localization framework designed to unleash the
-expressive power of the natural language.
+It's part of [Project Fluent][].
+
+[Project Fluent]: https://projectfluent.org
 
 
 ## Installation
@@ -56,13 +57,3 @@ The API reference is available at
 https://projectfluent.org/fluent.js/sequence.
 
 [`cached-iterable`]: https://www.npmjs.com/package/cached-iterable
-
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/
