@@ -1,7 +1,9 @@
 # @fluent/dom ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/dom/badge.svg)
 
-`@fluent/dom` provides DOM bindings for Project Fluent, a localization
-framework designed to unleash the expressive power of the natural language.
+`@fluent/dom` provides the DOM bindings for [Project Fluent][].
+
+[Project Fluent]: https://projectfluent.org
+
 
 ## Installation
 
@@ -62,13 +64,3 @@ async function main() {
   // → 'Welcome, Anna!'
 }
 ```
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/

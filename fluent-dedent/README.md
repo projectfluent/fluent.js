@@ -1,9 +1,13 @@
 # @fluent/dedent ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/dedent/badge.svg)
 
-`@fluent/dedent` provides a template literal tag to dedent Fluent code.
+`@fluent/dedent` provides a template literal tag to dedent Fluent code. It's
+part of [Project Fluent][].
+
 Fluent Syntax is indentation-sensitive, and `@fluent/dedent` offers a
 convenient way to include Fluent snippets in source code keeping the current
 level of indentation and without compromising the readability.
+
+[Project Fluent]: https://projectfluent.org
 
 
 ## Installation
@@ -74,13 +78,3 @@ let message = ftl`
 
 assert(message === "\nhello = Hello, world!\n");
 ```
-
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/
