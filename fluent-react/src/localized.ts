@@ -10,7 +10,7 @@ import {
 import PropTypes from "prop-types";
 import voidElementTags from "../vendor/voidElementTags";
 import { FluentContext } from "./context";
-import { FluentArgument } from "@fluent/bundle";
+import { FluentVariable } from "@fluent/bundle";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like
 // &amp;, &#0038;, &#x0026;.
@@ -20,7 +20,7 @@ export interface LocalizedProps {
   id: string;
   attrs?: Record<string, boolean>;
   children?: ReactNode;
-  vars?: Record<string, FluentArgument>;
+  vars?: Record<string, FluentVariable>;
   elems?: Record<string, ReactElement>;
 }
 /*

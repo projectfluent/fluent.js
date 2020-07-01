@@ -1,11 +1,11 @@
 import { createElement, useContext, ComponentType, ReactElement } from "react";
 import { FluentContext } from "./context";
-import { FluentArgument } from "@fluent/bundle";
+import { FluentVariable } from "@fluent/bundle";
 
 export interface WithLocalizationProps {
   getString(
     id: string,
-    args?: Record<string, FluentArgument> | null,
+    args?: Record<string, FluentVariable> | null,
     fallback?: string): string;
 }
 

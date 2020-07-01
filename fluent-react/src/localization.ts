@@ -1,4 +1,4 @@
-import { FluentBundle, FluentArgument } from "@fluent/bundle";
+import { FluentBundle, FluentVariable } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
 import { CachedSyncIterable } from "cached-iterable";
 import { createParseMarkup, MarkupParser } from "./markup";
@@ -32,7 +32,7 @@ export class ReactLocalization {
 
   getString(
     id: string,
-    args?: Record<string, FluentArgument> | null,
+    args?: Record<string, FluentVariable> | null,
     fallback?: string
   ): string {
     const bundle = this.getBundle(id);
