@@ -44,7 +44,7 @@ import {
   ComplexPattern,
   Pattern
 } from "./ast.js";
-import { FluentArgument } from "./bundle.js";
+import { FluentVariable } from "./bundle.js";
 
 // The maximum number of placeables which can be expanded in a single call to
 // `formatPattern`. The limit protects against the Billion Laughs and Quadratic
@@ -153,7 +153,7 @@ function resolveVariableReference(
   scope: Scope,
   { name }: VariableReference
 ): FluentValue {
-  let arg: FluentArgument;
+  let arg: FluentVariable;
   if (scope.params) {
     // We're inside a TermReference. It's OK to reference undefined parameters.
     if (Object.prototype.hasOwnProperty.call(scope.params, name)) {

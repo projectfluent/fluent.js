@@ -7,11 +7,7 @@
  *
  */
 
-export {
-  FluentBundle,
-  FluentArgument,
-  TextTransform
-} from "./bundle.js";
+export { FluentBundle, FluentVariable, TextTransform } from "./bundle.js";
 export { FluentResource } from "./resource.js";
 export {
   FluentValue,

@@ -1,4 +1,4 @@
-import { FluentBundle, FluentArgument } from "./bundle.js";
+import { FluentBundle, FluentVariable } from "./bundle.js";
 import { ComplexPattern } from "./ast.js";
 
 export class Scope {
@@ -7,12 +7,12 @@ export class Scope {
   /** The list of errors collected while resolving. */
   public errors: Array<Error> | null;
   /** A dict of developer-provided variables. */
-  public args: Record<string, FluentArgument> | null;
+  public args: Record<string, FluentVariable> | null;
   /** The Set of patterns already encountered during this resolution.
    * Used to detect and prevent cyclic resolutions. */
   public dirty: WeakSet<ComplexPattern> = new WeakSet();
   /** A dict of parameters passed to a TermReference. */
-  public params: Record<string, FluentArgument> | null = null;
+  public params: Record<string, FluentVariable> | null = null;
   /** The running count of placeables resolved so far. Used to detect the
     * Billion Laughs and Quadratic Blowup attacks. */
   public placeables: number = 0;
@@ -20,7 +20,7 @@ export class Scope {
   constructor(
     bundle: FluentBundle,
     errors: Array<Error> | null,
-    args: Record<string, FluentArgument> | null,
+    args: Record<string, FluentVariable> | null,
   ) {
     this.bundle = bundle;
     this.errors = errors;
