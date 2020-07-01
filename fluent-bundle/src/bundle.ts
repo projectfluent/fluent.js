@@ -7,8 +7,8 @@ import { NUMBER, DATETIME } from "./builtins.js";
 
 export type TextTransform = (text: string) => string;
 
-type NativeArgument = string | number | Date;
-export type FluentArgument = FluentValue | NativeArgument;
+type NativeValue = string | number | Date;
+export type FluentVariable = FluentValue | NativeValue;
 
 /**
  * Message bundles are single-language stores of translation resources. They are
@@ -176,7 +176,7 @@ export class FluentBundle {
    */
   formatPattern(
     pattern: Pattern,
-    args: Record<string, FluentArgument> | null = null,
+    args: Record<string, FluentVariable> | null = null,
     errors: Array<Error> | null = null
   ): string {
     // Resolve a simple pattern without creating a scope. No error handling is
