@@ -1,5 +1,25 @@
 # Changelog
 
+## @fluent/bundle 0.16.0 (July 1, 2020)
+
+  - Rename `FluentArgument` to `FluentVariable`. (#499)
+
+    `FluentVariable` is a TypeScript-only type definition used to describe
+    value types which can be passed as variables to translations.
+
+  - Remove `compat.js` builds and compile everything to ES2018. (#472)
+
+    TypeScript source code is now compiled to ES2018 files in the `esm/`
+    directory. These files are then bundled into a single `index.js` UMD file
+    without any further transpilation.
+
+    The `compat.js` build (available as `@fluent/bundle/compat`) was removed.
+    Please use your own transpilation pipeline if ES2018 is too recent for
+    your project.
+
+    Refer to https://github.com/projectfluent/fluent.js/wiki/Compatibility
+    for more information.
+
 ## @fluent/bundle 0.15.1 (April 7, 2020)
 
   - Allow only some formatting options to `NUMBER` and `DATETIME`. (#464)
