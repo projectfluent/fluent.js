@@ -1,5 +1,35 @@
 # Changelog
 
+## @fluent/react 0.13.0 (July 2, 2020)
+
+  - Add the `useLocalization` hook. (#467, #475)
+
+    The hook can be used to get a reference to the current
+    `ReactLocalization` instance, for example in order to format a
+    translation with the imperative `getString` API.
+
+    ```js
+    let {l10n} = useLocalization();
+    alert(l10n.getString("hello"));
+    ```
+
+  - Remove `compat.js` builds and compile everything to ES2018. (#472)
+
+    TypeScript source code is now compiled to ES2018 files in the `esm/`
+    directory. These files are then bundled into a single `index.js` UMD file
+    without any further transpilation.
+
+    The `compat.js` build (available as `@fluent/bundle/compat`) was removed.
+    Please use your own transpilation pipeline if ES2018 is too recent for
+    your project.
+
+    Refer to https://github.com/projectfluent/fluent.js/wiki/Compatibility
+    for more information.
+
+  - Require `@fluent/bundle` 0.16.0 as peer dependency.
+
+    In `@fluent/bundle` 0.16.0 `FluentArgument` was renamed to `FluentVariable`.
+
 ## @fluent/react 0.12.0 (April 7, 2020)
 
   - Migrate to TypeScript. (#458)
