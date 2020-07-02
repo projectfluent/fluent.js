@@ -3,17 +3,17 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>FluentParserOptions | @fluent/syntax - v0.16.0</title>
+	<title>@fluent/dom - v0.7.0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 <header>
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@fluent/syntax - v0.16.0</a>
+					<a href="index.html" class="title">@fluent/dom - v0.7.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -51,76 +51,95 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
-				</li>
-				<li>
-					<a href="fluentparseroptions.html">FluentParserOptions</a>
+					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1>Interface FluentParserOptions</h1>
+			<h1> @fluent/dom - v0.7.0</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">FluentParserOptions</span>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fluentparseroptions.html#withspans" class="tsd-kind-icon">with<wbr>Spans</a></li>
+								<li class="tsd-kind-class"><a href="classes/domlocalization.html" class="tsd-kind-icon">DOMLocalization</a></li>
+								<li class="tsd-kind-class"><a href="classes/localization.html" class="tsd-kind-icon">Localization</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-is-private"><a href="globals.html#translateelement" class="tsd-kind-icon">translate<wbr>Element</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="withspans" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> with<wbr>Spans</h3>
-					<div class="tsd-signature tsd-kind-icon">with<wbr>Spans<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L45">fluent-syntax/src/parser.ts:45</a></li>
-						</ul>
-					</aside>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-is-private">
+					<a name="translateelement" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> translate<wbr>Element</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">translate<wbr>Element<span class="tsd-signature-symbol">(</span>element<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, translation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-dom/src/overlay.js#L66">overlay.js:66</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Translate an element.</p>
+								</div>
+								<p>Translate the element&#39;s text content and attributes. Some HTML markup is
+									allowed in the translation. The element&#39;s children with the data-l10n-name
+									attribute will be treated as arguments to the translation. If the
+									translation defines the same children, their attributes and text contents
+								will be used for translating the matching source child.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>element: <span class="tsd-signature-type">Element</span></h5>
+								</li>
+								<li>
+									<h5>translation: <span class="tsd-signature-type">Object</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class="globals current ">
+						<a href="globals.html"><em>Globals</em></a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="fluentparseroptions.html" class="tsd-kind-icon">Fluent<wbr>Parser<wbr>Options</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fluentparseroptions.html#withspans" class="tsd-kind-icon">with<wbr>Spans</a>
-							</li>
-						</ul>
+					<li class=" tsd-kind-class">
+						<a href="classes/domlocalization.html" class="tsd-kind-icon">DOMLocalization</a>
 					</li>
-				</ul>
-				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/localization.html" class="tsd-kind-icon">Localization</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private">
+						<a href="globals.html#translateelement" class="tsd-kind-icon">translate<wbr>Element</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -187,7 +206,7 @@
 	</div>
 </footer>
 <div class="overlay"></div>
-<script src="../assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

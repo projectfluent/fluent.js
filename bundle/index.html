@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@fluent/bundle - v0.15.1</title>
+	<title>@fluent/bundle - v0.16.0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">@fluent/bundle - v0.15.1</a>
+					<a href="index.html" class="title">@fluent/bundle - v0.16.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,7 +54,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> @fluent/bundle - v0.15.1</h1>
+			<h1> @fluent/bundle - v0.16.0</h1>
 		</div>
 	</div>
 </header>
@@ -62,12 +62,11 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#fluentbundle" id="fluentbundle" style="color: inherit; text-decoration: none;">
-					<h1>@fluent/bundle</h1>
+				<a href="#fluentbundle-" id="fluentbundle-" style="color: inherit; text-decoration: none;">
+					<h1>@fluent/bundle <img src="https://github.com/projectfluent/fluent.js/workflows/@fluent/bundle/badge.svg" alt=""></h1>
 				</a>
-				<p><code>@fluent/bundle</code> is a JavaScript implementation of Project Fluent, a
-					localization framework designed to unleash the expressive power of the
-				natural language.</p>
+				<p><code>@fluent/bundle</code> is a JavaScript implementation of <a href="https://projectfluent.org">Project Fluent</a>,
+				optimized for runtime performance.</p>
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h2>Installation</h2>
 				</a>
@@ -102,7 +101,7 @@ welcome = Welcome, {$name}, to {-brand-name}!
 				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
 					<h2>Compatibility</h2>
 				</a>
-				<p><code>fluent</code> requires the following <code>Intl</code> formatters:</p>
+				<p><code>@fluent/bundle</code> requires the following <code>Intl</code> formatters:</p>
 				<ul>
 					<li><code>Intl.DateTimeFormat</code> (standard, well-supported)</li>
 					<li><code>Intl.NumberFormat</code> (standard, well-supported)</li>
@@ -112,15 +111,7 @@ welcome = Welcome, {$name}, to {-brand-name}!
 				however, a polyfill will be required.  We recommend <a href="https://www.npmjs.com/package/intl-pluralrules">intl-pluralrules</a>.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> <span class="hljs-string">'intl-pluralrules'</span>;
 <span class="hljs-keyword">import</span> {FluentBundle} <span class="hljs-keyword">from</span> <span class="hljs-string">'@fluent/bundle'</span>;</code></pre>
-				<p>For legacy browsers, the <code>compat</code> build has been transpiled using Babel&#39;s <a href="https://babeljs.io/docs/plugins/preset-env/">env
-				preset</a>. It requires the regenerator runtime provided by <a href="https://babeljs.io/docs/usage/polyfill/">babel-polyfill</a>.</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> {FluentBundle} <span class="hljs-keyword">from</span> <span class="hljs-string">'@fluent/bundle/compat'</span>;</code></pre>
-				<a href="#learn-more" id="learn-more" style="color: inherit; text-decoration: none;">
-					<h2>Learn more</h2>
-				</a>
-				<p>Find out more about Project Fluent at <a href="https://projectfluent.org">projectfluent.org</a>, including
-					documentation of the Fluent file format (<a href="https://projectfluent.org/fluent/guide/">FTL</a>), links to other packages and
-				implementations, and information about how to get involved.</p>
+				<p>See also the <a href="https://github.com/projectfluent/fluent.js/wiki/Compatibility">Compatibility</a> article on the <code>fluent.js</code> wiki.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -161,13 +152,13 @@ welcome = Welcome, {$name}, to {-brand-name}!
 						<a href="globals.html#expression" class="tsd-kind-icon">Expression</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#fluentargument" class="tsd-kind-icon">Fluent<wbr>Argument</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#fluentfunction" class="tsd-kind-icon">Fluent<wbr>Function</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#fluentvalue" class="tsd-kind-icon">Fluent<wbr>Value</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#fluentvariable" class="tsd-kind-icon">Fluent<wbr>Variable</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#functionreference" class="tsd-kind-icon">Function<wbr>Reference</a>
