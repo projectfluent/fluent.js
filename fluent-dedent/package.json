@@ -1,7 +1,7 @@
 {
   "name": "@fluent/dedent",
   "description": "A template literal tag for dedenting Fluent code",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
