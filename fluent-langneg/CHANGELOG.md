@@ -1,5 +1,20 @@
 # Changelog
 
+## @fluent/langneg 0.5.0 (July 2, 2020)
+
+  - Remove the `compat.js` build and compile everything to ES2018. (#472)
+
+    TypeScript source code is now compiled to ES2018 files in the `esm/`
+    directory. These files are then bundled into a single `index.js` UMD file
+    without any further transpilation.
+
+    The `compat.js` build (available as `@fluent/langneg/compat`) was removed.
+    Please use your own transpilation pipeline if ES2018 is too recent for
+    your project.
+
+    Refer to https://github.com/projectfluent/fluent.js/wiki/Compatibility
+    for more information.
+
 ## @fluent/langneg 0.4.0 (March 31, 2020)
 
   - Migrate `@fluent/langneg` to TypeScript. (#462)
