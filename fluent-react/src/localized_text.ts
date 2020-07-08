@@ -35,6 +35,11 @@ export interface LocalizedTextProps {
 export function LocalizedText(props: LocalizedTextProps): ReactElement {
   const { id, vars, children: child = null } = props;
 
+  if (child !== null && typeof child !== "string") {
+    throw new Error("<LocalizedText> expected a single string-typed child " +
+      "or no children.");
+  }
+
   const l10n = useContext(FluentContext);
   if (!l10n) {
     // Use the child as fallback.

@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, createElement } from "react";
+import { ReactElement, ReactNode, createElement, isValidElement } from "react";
 import PropTypes from "prop-types";
 import { FluentVariable } from "@fluent/bundle";
 import { LocalizedElement } from "./localized_element";
@@ -22,9 +22,18 @@ export function Localized(props: LocalizedProps): ReactElement {
     return createElement(LocalizedText, props);
   }
 
-  // Redirect to LocalizedElement for element children. Only a single element
-  // child is supported; LocalizedElement enforces this requirement.
-  return createElement(LocalizedElement, props);
+  if (isValidElement(props.children)) {
+    // Redirect to LocalizedElement for element children. Only a single element
+    // child is supported; LocalizedElement enforces this requirement.
+    return createElement(LocalizedElement, props);
+  }
+
+  throw new Error(
+    "<Localized> can be used either similar to <LocalizedElement>, " +
+    "in which case it expects a single React element child, or similar to " +
+    "<LocalizedText>, in which case it expects a single string-typed child " +
+    "or no children at all."
+  );
 }
 
 Localized.propTypes = {

@@ -50,8 +50,7 @@ export function LocalizedElement(props: LocalizedElementProps): ReactElement {
 
   // Check if the child inside <LocalizedElement> is a valid element.
   if (!isValidElement(child)) {
-    throw new Error("<LocalizedElement/> expected to receive a single " +
-      "React element child");
+    throw new Error("<LocalizedElement> expected a single React element child");
   }
 
   const l10n = useContext(FluentContext);
