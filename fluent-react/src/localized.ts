@@ -47,7 +47,7 @@ export interface LocalizedProps {
  */
 export function Localized(props: LocalizedProps): ReactElement {
   const { id, attrs, vars, elems, children: child = null } = props;
-  const l10n = useContext(FluentContext);
+  const { l10n } = useContext(FluentContext);
 
   // Validate that the child element isn't an array
   if (Array.isArray(child)) {
