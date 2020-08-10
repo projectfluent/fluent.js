@@ -1,6 +1,6 @@
 import * as AST from "./ast.js";
 
-function indent(content: string): string {
+function indentExceptFirstLine(content: string): string {
   return content.split("\n").join("\n    ");
 }
 
@@ -136,19 +136,29 @@ function serializeTerm(term: AST.Term): string {
 
 
 function serializeAttribute(attribute: AST.Attribute): string {
-  const value = indent(serializePattern(attribute.value));
+  const value = indentExceptFirstLine(serializePattern(attribute.value));
   return `\n    .${attribute.id.name} =${value}`;
 }
 
 
 function serializePattern(pattern: AST.Pattern): string {
   const content = pattern.elements.map(serializeElement).join("");
-  const startOnNewLine =
+  const maybeStartOnNewLine =
     pattern.elements.some(isSelectExpr) ||
     pattern.elements.some(includesNewLine);
 
-  if (startOnNewLine) {
-    return `\n    ${indent(content)}`;
+  if (maybeStartOnNewLine) {
+    const firstElement = pattern.elements[0];
+    if (firstElement instanceof AST.TextElement) {
+      const firstChar = firstElement.value[0];
+      // Due to the indentation requirement these text characters may not appear
+      // as the first character on a new line.
+      if (firstChar === "[" || firstChar === "." || firstChar === "*") {
+        return ` ${indentExceptFirstLine(content)}`;
+      }
+    }
+
+    return `\n    ${indentExceptFirstLine(content)}`;
   }
 
   return ` ${content}`;
@@ -228,7 +238,7 @@ export function serializeExpression(expr: AST.Expression): string {
 
 function serializeVariant(variant: AST.Variant): string {
   const key = serializeVariantKey(variant.key);
-  const value = indent(serializePattern(variant.value));
+  const value = indentExceptFirstLine(serializePattern(variant.value));
 
   if (variant.default) {
     return `\n   *[${key}]${value}`;
