@@ -13,6 +13,29 @@ function isSelectExpr(elem: AST.PatternElement): boolean {
     && elem.expression instanceof AST.SelectExpression;
 }
 
+function shouldStartOnNewLine(pattern: AST.Pattern): boolean {
+  const isMultiline =
+    pattern.elements.some(isSelectExpr) ||
+    pattern.elements.some(includesNewLine);
+
+  if (isMultiline) {
+    const firstElement = pattern.elements[0];
+    if (firstElement instanceof AST.TextElement) {
+      const firstChar = firstElement.value[0];
+      // Due to the indentation requirement these text characters may not appear
+      // as the first character on a new line.
+      if (firstChar === "[" || firstChar === "." || firstChar === "*") {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+
 // Bit masks representing the state of the serializer.
 export const HAS_ENTRIES = 1;
 
@@ -143,25 +166,12 @@ function serializeAttribute(attribute: AST.Attribute): string {
 
 function serializePattern(pattern: AST.Pattern): string {
   const content = pattern.elements.map(serializeElement).join("");
-  const maybeStartOnNewLine =
-    pattern.elements.some(isSelectExpr) ||
-    pattern.elements.some(includesNewLine);
 
-  if (maybeStartOnNewLine) {
-    const firstElement = pattern.elements[0];
-    if (firstElement instanceof AST.TextElement) {
-      const firstChar = firstElement.value[0];
-      // Due to the indentation requirement these text characters may not appear
-      // as the first character on a new line.
-      if (firstChar === "[" || firstChar === "." || firstChar === "*") {
-        return ` ${indentExceptFirstLine(content)}`;
-      }
-    }
-
+  if (shouldStartOnNewLine(pattern)) {
     return `\n    ${indentExceptFirstLine(content)}`;
   }
 
-  return ` ${content}`;
+  return ` ${indentExceptFirstLine(content)}`;
 }
 
 
