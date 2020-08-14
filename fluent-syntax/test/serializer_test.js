@@ -188,6 +188,30 @@ suite("Serialize resource", function() {
     assert.strictEqual(pretty(input), input);
   });
 
+  test("multiline starting inline", function() {
+    const input = ftl`
+      foo = Foo
+          Bar
+
+      `;
+    const output = ftl`
+      foo =
+          Foo
+          Bar
+
+      `;
+    assert.strictEqual(pretty(input), output);
+  });
+
+  test("multiline starting inline with a special char", function() {
+    const input = ftl`
+      foo = *Foo
+          Bar
+
+      `;
+    assert.strictEqual(pretty(input), input);
+  });
+
   test("multiline with placeable", function() {
     const input = ftl`
       foo =
@@ -336,6 +360,17 @@ suite("Serialize resource", function() {
 
       `;
     assert.strictEqual(pretty(input), output);
+  });
+
+  test("select expression in inline value starting with a special char", function() {
+    const input = ftl`
+      foo = .Foo { $sel ->
+             *[a] A
+              [b] B
+          }
+
+      `;
+    assert.strictEqual(pretty(input), input);
   });
 
   test("select expression in multiline value", function() {
