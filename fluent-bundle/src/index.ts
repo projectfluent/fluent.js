@@ -13,6 +13,7 @@ export {
   FluentValue,
   FluentType,
   FluentFunction,
+  FluentNone,
   FluentNumber,
   FluentDateTime
 } from "./types.js";
