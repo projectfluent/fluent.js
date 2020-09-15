@@ -1,5 +1,41 @@
 # Changelog
 
+## @fluent/syntax 0.16.1 (September 15, 2020)
+
+  - Fix serialization of multiline patterns starting with special characters. (#512)
+
+    The built-in behavior of `FluentSerializer` is to serialize multiline
+    patterns starting on a new line:
+
+    ```properties
+    key =
+        Foo
+        Bar
+    ```
+
+    This used to lead to syntax errors if the pattern started with one of the
+    special characters in the Fluent Syntax: a curly brace, a period, an
+    asterisk, or a square bracket, and if it was originally written with the
+    first line on the same line as the identifier:
+
+    ```properties
+    key = *Foo
+        Bar
+    ```
+
+    Such a pattern must not be serialized as following, because the asterisk
+    has a special meaning if placed at the beginning of a line.
+
+    ```properties
+    # Syntax Error
+    key =
+        *Foo
+        Bar
+    ```
+
+    The fix preserves the original layout of the pattern, i.e. it is now
+    serialized starting inline with the identifier.
+
 ## @fluent/syntax 0.16.0 (July 2, 2020)
 
   - Remove the `compat.js` build and compile everything to ES2018. (#472)
