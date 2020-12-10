@@ -356,6 +356,7 @@ foo = { $arg }
   });
 
   test("A missing $arg does not break rendering", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
 
     bundle.addResource(
@@ -380,6 +381,16 @@ foo = { $arg }
               {$arg}
             </div>
         `);
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] ReferenceError: Unknown variable: $arg",
+        ],
+        Array [
+          "[@fluent/react] ReferenceError: Unknown variable: $arg",
+        ],
+      ]
+    `);
   });
 
   test("render with a fragment and no message value preserves the fragment", () => {
