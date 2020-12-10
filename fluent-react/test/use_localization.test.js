@@ -1,14 +1,16 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { ReactLocalization, LocalizationProvider, useLocalization } from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  useLocalization
+} from "../esm/index";
 
 function DummyComponent() {
   const { l10n } = useLocalization();
 
-  return (
-    <p>{l10n.getString('foo')}</p>
-  );
+  return <p>{l10n.getString("foo")}</p>;
 }
 
 describe("useLocalization", () => {

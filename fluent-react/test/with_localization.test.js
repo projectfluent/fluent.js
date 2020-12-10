@@ -1,7 +1,11 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { ReactLocalization, LocalizationProvider, withLocalization } from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  withLocalization
+} from "../esm/index";
 
 function DummyComponent() {
   return <div />;

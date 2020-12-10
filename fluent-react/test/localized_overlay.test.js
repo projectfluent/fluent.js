@@ -2,16 +2,21 @@ import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import { createParseMarkup } from "../esm/markup";
-import { ReactLocalization, LocalizationProvider, Localized }
-  from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  Localized
+} from "../esm/index";
 
 describe("Localized - overlay", () => {
   test("< in text", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 true = 0 < 3 is true.
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -31,9 +36,11 @@ true = 0 < 3 is true.
   test("& in text", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 megaman = Jumping & Shooting
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -53,9 +60,11 @@ megaman = Jumping & Shooting
   test("HTML entity", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 two = First &middot; Second
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -75,67 +84,79 @@ two = First &middot; Second
   test("one element is matched", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Click <button>me</button>!
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
+        <Localized
+          id="foo"
+          elems={{ button: <button onClick={alert}></button> }}
+        >
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    Click 
-                    <button
-                      onClick={[Function]}
-                    >
-                      me
-                    </button>
-                    !
-                  </div>
-            `);
+      <div>
+        Click 
+        <button
+          onClick={[Function]}
+        >
+          me
+        </button>
+        !
+      </div>
+    `);
   });
 
   test("an element of different case is lowercased and matched", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Click <button>me</button>!
-`));
+`)
+    );
 
     // The Button prop is capitalized whereas the <button> element in the
     // translation is lowercase.
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{Button: <button onClick={alert}></button>}}>
+        <Localized
+          id="foo"
+          elems={{ Button: <button onClick={alert}></button> }}
+        >
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    Click 
-                    <button
-                      onClick={[Function]}
-                    >
-                      me
-                    </button>
-                    !
-                  </div>
-            `);
+      <div>
+        Click 
+        <button
+          onClick={[Function]}
+        >
+          me
+        </button>
+        !
+      </div>
+    `);
   });
 
   test("two elements are matched", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -152,60 +173,67 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    <button
-                      className="confirm"
-                    >
-                      Sign in
-                    </button>
-                     or 
-                    <button
-                      className="cancel"
-                    >
-                      cancel
-                    </button>
-                    .
-                  </div>
-            `);
+      <div>
+        <button
+          className="confirm"
+        >
+          Sign in
+        </button>
+         or 
+        <button
+          className="cancel"
+        >
+          cancel
+        </button>
+        .
+      </div>
+    `);
   });
 
   test("unexpected child is reduced to text", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{
+        <Localized
+          id="foo"
+          elems={{
             confirm: <button className="confirm"></button>
-        }}>
+          }}
+        >
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-            <div>
-              <button
-                className="confirm"
-              >
-                Sign in
-              </button>
-               or 
-              cancel
-              .
-            </div>
-        `);
+      <div>
+        <button
+          className="confirm"
+        >
+          Sign in
+        </button>
+         or 
+        cancel
+        .
+      </div>
+    `);
   });
 
   test("element not found in the translation is removed", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = <confirm>Sign in</confirm>.
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -236,69 +264,81 @@ foo = <confirm>Sign in</confirm>.
   test("attributes on translated children are ignored", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Click <button className="foo">me</button>!
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
+        <Localized
+          id="foo"
+          elems={{ button: <button onClick={alert}></button> }}
+        >
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    Click 
-                    <button
-                      onClick={[Function]}
-                    >
-                      me
-                    </button>
-                    !
-                  </div>
-            `);
+      <div>
+        Click 
+        <button
+          onClick={[Function]}
+        >
+          me
+        </button>
+        !
+      </div>
+    `);
   });
 
   test("nested children are ignored", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Click <button><em>me</em></button>!
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
+        <Localized
+          id="foo"
+          elems={{ button: <button onClick={alert}></button> }}
+        >
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    Click 
-                    <button
-                      onClick={[Function]}
-                    >
-                      me
-                    </button>
-                    !
-                  </div>
-            `);
+      <div>
+        Click 
+        <button
+          onClick={[Function]}
+        >
+          me
+        </button>
+        !
+      </div>
+    `);
   });
 
   test("non-React element prop is used in markup", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = <confirm>Sign in</confirm>.
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{confirm: "Not a React element"}}>
+        <Localized id="foo" elems={{ confirm: "Not a React element" }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -319,65 +359,71 @@ describe("Localized - overlay of void elements", () => {
   test("void prop name, void prop value, void translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <input/> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{input: <input type="text" />}}>
+        <Localized id="foo" elems={{ input: <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+         AFTER
+      </div>
+    `);
   });
 
   test("void prop name, void prop value, empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <input></input> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{input: <input type="text" />}}>
+        <Localized id="foo" elems={{ input: <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+         AFTER
+      </div>
+    `);
   });
 
   test("void prop name, void prop value, non-empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <input>Foo</input> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{input: <input type="text" />}}>
+        <Localized id="foo" elems={{ input: <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -386,78 +432,84 @@ foo = BEFORE <input>Foo</input> AFTER
     // The opening <input> tag is parsed as an HTMLInputElement and the closing
     // </input> is ignored. "Foo" is then parsed as a regular text node.
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                    Foo AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+        Foo AFTER
+      </div>
+    `);
   });
 
   test("void prop name, non-empty prop value, void translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <input/> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{input: <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ input: <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      
-                    </span>
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          
+        </span>
+         AFTER
+      </div>
+    `);
   });
 
   test("void prop name, non-empty prop value, empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <input></input> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{input: <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ input: <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      
-                    </span>
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          
+        </span>
+         AFTER
+      </div>
+    `);
   });
 
   test("void prop name, non-empty prop value, non-empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <input>Foo</input> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{input: <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ input: <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -466,26 +518,28 @@ foo = BEFORE <input>Foo</input> AFTER
     // The opening <input> tag is parsed as an HTMLInputElement and the closing
     // </input> is ignored. "Foo" is then parsed as a regular text node.
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      
-                    </span>
-                    Foo AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          
+        </span>
+        Foo AFTER
+      </div>
+    `);
   });
 
   test("non-void prop name, void prop value, void translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <span/> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{span: <input type="text" />}}>
+        <Localized id="foo" elems={{ span: <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -497,77 +551,83 @@ foo = BEFORE <span/> AFTER
     // it becomes its children and is ignored because the <input> passed as a
     // prop is known to be void.
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+      </div>
+    `);
   });
 
   test("non-void prop name, void prop value, empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <span></span> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{span: <input type="text" />}}>
+        <Localized id="foo" elems={{ span: <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+         AFTER
+      </div>
+    `);
   });
 
   test("non-void prop name, void prop value, non-empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <span>Foo</span> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{span: <input type="text" />}}>
+        <Localized id="foo" elems={{ span: <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+         AFTER
+      </div>
+    `);
   });
 
   test("non-void prop name, non-empty prop value, void translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <span/> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{span: <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ span: <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -578,77 +638,83 @@ foo = BEFORE <span/> AFTER
     // <span/> is parsed as an unclosed <span> element. Everything that follows
     // it becomes its children and is inserted into the <span> passed as a prop.
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                       AFTER
-                    </span>
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+           AFTER
+        </span>
+      </div>
+    `);
   });
 
   test("non-void prop name, non-empty prop value, empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <span></span> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{span: <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ span: <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      
-                    </span>
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          
+        </span>
+         AFTER
+      </div>
+    `);
   });
 
   test("non-void prop name, non-empty prop value, non-empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <span>Foo</span> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{span: <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ span: <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      Foo
-                    </span>
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          Foo
+        </span>
+         AFTER
+      </div>
+    `);
   });
 
   test("custom prop name, void prop value, void translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <text-input/> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{"text-input": <input type="text" />}}>
+        <Localized id="foo" elems={{ "text-input": <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -660,77 +726,83 @@ foo = BEFORE <text-input/> AFTER
     // Everything that follows it becomes its children which are ignored because
     // the <input> passed as a prop is known to be void.
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+      </div>
+    `);
   });
 
   test("custom prop name, void prop value, empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <text-input></text-input> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{"text-input": <input type="text" />}}>
+        <Localized id="foo" elems={{ "text-input": <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+         AFTER
+      </div>
+    `);
   });
 
   test("custom prop name, void prop value, non-empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <text-input>Foo</text-input> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{"text-input": <input type="text" />}}>
+        <Localized id="foo" elems={{ "text-input": <input type="text" /> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <input
-                      type="text"
-                    />
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <input
+          type="text"
+        />
+         AFTER
+      </div>
+    `);
   });
 
   test("custom prop name, non-empty prop value, void translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <text-elem/> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{"text-elem": <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ "text-elem": <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -742,74 +814,80 @@ foo = BEFORE <text-elem/> AFTER
     // Everything that follows it becomes its children which are inserted into
     // the <span> passed as a prop.
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                       AFTER
-                    </span>
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+           AFTER
+        </span>
+      </div>
+    `);
   });
 
   test("custom prop name, non-empty prop value, empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <text-elem></text-elem> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{"text-elem": <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ "text-elem": <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      
-                    </span>
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          
+        </span>
+         AFTER
+      </div>
+    `);
   });
 
   test("custom prop name, non-empty prop value, non-empty translation", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = BEFORE <text-elem>Foo</text-elem> AFTER
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{"text-elem": <span>Hardcoded</span>}}>
+        <Localized id="foo" elems={{ "text-elem": <span>Hardcoded</span> }}>
           <div />
         </Localized>
       </LocalizationProvider>
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    BEFORE 
-                    <span>
-                      Foo
-                    </span>
-                     AFTER
-                  </div>
-            `);
+      <div>
+        BEFORE 
+        <span>
+          Foo
+        </span>
+         AFTER
+      </div>
+    `);
   });
 });
 
 describe("Localized - custom parseMarkup", () => {
   test("disables the overlay logic if null", () => {
     const bundle = new FluentBundle();
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = test <em>null markup parser</em>
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle], null)}>
@@ -836,10 +914,12 @@ foo = test <em>null markup parser</em>
 
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 # We must use an HTML tag to trigger the overlay logic.
 foo = test <em>custom markup parser</em>
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle], parseMarkup)}>
@@ -864,10 +944,12 @@ foo = test <em>custom markup parser</em>
 
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 # We must use an HTML tag to trigger the overlay logic.
 foo = test <em>custom markup parser</em>
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle], parseMarkup)}>

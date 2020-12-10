@@ -1,6 +1,10 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
-import { ReactLocalization, LocalizationProvider, Localized } from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  Localized
+} from "../esm/index";
 
 describe("Localized - validation", () => {
   let consoleError = console.error;
@@ -54,8 +58,8 @@ describe("Localized - validation", () => {
             <div />
           </Localized>
         </LocalizationProvider>
-      )
-    }).toThrow(/single/)
+      );
+    }).toThrow(/single/);
   });
 
   test("without id", () => {
