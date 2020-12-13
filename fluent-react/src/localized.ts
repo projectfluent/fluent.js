@@ -143,46 +143,66 @@ export function Localized(props: LocalizedProps): ReactElement {
     }
   }
 
+  function transformTranslatedNodes(nodes: Node[]): ReactNode[] {
+    return nodes.map(childNode => {
+      if (childNode.nodeName === "#text") {
+        return childNode.textContent;
+      }
+
+      const childName = childNode.nodeName.toLowerCase();
+
+      // If the child is not expected just take its textContent.
+      if (
+        !elemsLower ||
+        !Object.prototype.hasOwnProperty.call(elemsLower, childName)
+      ) {
+        return childNode.textContent;
+      }
+
+      const sourceChild = elemsLower[childName];
+
+      // Ignore elems which are not valid React elements.
+      if (!isValidElement(sourceChild)) {
+        return childNode.textContent;
+      }
+
+      // If the element passed in the elems prop is a known void element,
+      // explicitly dismiss any textContent which might have accidentally been
+      // defined in the translation to prevent the "void element tags must not
+      // have children" error.
+      if (sourceChild.type in voidElementTags) {
+        return sourceChild;
+      }
+
+      // If the element defines childNodes, then ignore any textContents that
+      // may have been accidentally defined, and instead traverse the children
+      // and recursively give them the same treatment. This is needed to handle
+      // a nested tree of markup tags.
+      if (
+        childNode.childNodes !== undefined &&
+        childNode.childNodes.length > 0
+      ) {
+        const childNodesArray = Array.from(childNode.childNodes);
+
+        if (childNodesArray.some(node => node.nodeName !== "#text")) {
+          const transformedChildren = transformTranslatedNodes(childNodesArray);
+
+          return cloneElement(sourceChild, undefined, ... transformedChildren);
+        }
+      }
+
+      // TODO Protect contents of elements wrapped in <Localized>
+      // https://github.com/projectfluent/fluent.js/issues/184
+      // TODO  Control localizable attributes on elements passed as props
+      // https://github.com/projectfluent/fluent.js/issues/185
+      return cloneElement(sourceChild, undefined, childNode.textContent);
+    });
+  }
 
   // If the message contains markup, parse it and try to match the children
   // found in the translation with the props passed to this Localized.
   const translationNodes = l10n.parseMarkup(messageValue);
-  const translatedChildren = translationNodes.map(childNode => {
-    if (childNode.nodeName === "#text") {
-      return childNode.textContent;
-    }
-
-    const childName = childNode.nodeName.toLowerCase();
-
-    // If the child is not expected just take its textContent.
-    if (
-      !elemsLower ||
-      !Object.prototype.hasOwnProperty.call(elemsLower, childName)
-    ) {
-      return childNode.textContent;
-    }
-
-    const sourceChild = elemsLower[childName];
-
-    // Ignore elems which are not valid React elements.
-    if (!isValidElement(sourceChild)) {
-      return childNode.textContent;
-    }
-
-    // If the element passed in the elems prop is a known void element,
-    // explicitly dismiss any textContent which might have accidentally been
-    // defined in the translation to prevent the "void element tags must not
-    // have children" error.
-    if (sourceChild.type in voidElementTags) {
-      return sourceChild;
-    }
-
-    // TODO Protect contents of elements wrapped in <Localized>
-    // https://github.com/projectfluent/fluent.js/issues/184
-    // TODO  Control localizable attributes on elements passed as props
-    // https://github.com/projectfluent/fluent.js/issues/185
-    return cloneElement(sourceChild, undefined, childNode.textContent);
-  });
+  const translatedChildren = transformTranslatedNodes(translationNodes);
 
   return cloneElement(child, localizedProps, ...translatedChildren);
 }
