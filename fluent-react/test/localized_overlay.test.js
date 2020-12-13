@@ -270,7 +270,10 @@ foo = Click <button><em>me</em></button>!
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" elems={{button: <button onClick={alert}></button>}}>
+        <Localized id="foo" elems={{
+          button: <button onClick={alert}></button>,
+          em: <em></em>
+        }}>
           <div />
         </Localized>
       </LocalizationProvider>
