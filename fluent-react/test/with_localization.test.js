@@ -1,7 +1,11 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { ReactLocalization, LocalizationProvider, withLocalization } from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  withLocalization
+} from "../esm/index";
 
 function DummyComponent() {
   return <div />;
@@ -27,6 +31,7 @@ describe("withLocalization", () => {
   });
 
   test("getString with access to the l10n context", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
     const EnhancedComponent = withLocalization(DummyComponent);
 
@@ -44,14 +49,24 @@ bar = BAR {$arg}
     );
 
     const { getString } = renderer.root.findByType(DummyComponent).props;
+
     // Returns the translation.
     expect(getString("foo", {})).toBe("FOO");
     expect(getString("bar", { arg: "ARG" })).toBe("BAR ARG");
-    // Doesn't throw on formatting errors.
+
+    // It reports an error on formatting errors, but doesn't throw.
     expect(getString("bar", {})).toBe("BAR {$arg}");
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] ReferenceError: Unknown variable: $arg",
+        ],
+      ]
+    `);
   });
 
   test("getString with access to the l10n context, with fallback value", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
     const EnhancedComponent = withLocalization(DummyComponent);
 
@@ -76,6 +91,13 @@ bar = BAR {$arg}
     expect(getString("bar", { arg: "ARG" })).toBe("BAR ARG");
     // Doesn't throw on formatting errors.
     expect(getString("bar", {})).toBe("BAR {$arg}");
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] ReferenceError: Unknown variable: $arg",
+        ],
+      ]
+    `);
   });
 
   test("getString without access to the l10n context", () => {

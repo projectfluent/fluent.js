@@ -1,8 +1,11 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { ReactLocalization, LocalizationProvider, Localized }
-  from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  Localized
+} from "../esm/index";
 
 describe("Localized - rendering", () => {
   test("render the value", () => {
@@ -176,10 +179,12 @@ foo =
   test("protect existing attributes if setting is forbidden", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo =
     .existing = ATTR
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -199,10 +204,12 @@ foo =
   test("protect existing attributes by default", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo =
     .existing = ATTR
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -222,10 +229,12 @@ foo =
   test("preserve children when translation value is null", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo =
     .title = TITLE
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -252,13 +261,15 @@ foo =
     const bundle = new FluentBundle("en", { useIsolating: false });
     const format = jest.spyOn(bundle, "formatPattern");
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = { $arg }
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" vars={{arg: "ARG"}}>
+        <Localized id="foo" vars={{ arg: "ARG" }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -270,7 +281,11 @@ foo = { $arg }
       </div>
     `);
 
-    expect(format).toHaveBeenCalledWith(expect.anything(), { arg: "ARG" }, expect.anything());
+    expect(format).toHaveBeenCalledWith(
+      expect.anything(),
+      { arg: "ARG" },
+      expect.anything()
+    );
   });
 
   test("$arg is passed to format the attributes", () => {
@@ -286,7 +301,7 @@ foo = { $arg }
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo" attrs={{ title: true }} vars={{arg: "ARG"}}>
+        <Localized id="foo" attrs={{ title: true }} vars={{ arg: "ARG" }}>
           <div />
         </Localized>
       </LocalizationProvider>
@@ -301,13 +316,23 @@ foo = { $arg }
     `);
 
     // The value.
-    expect(format).toHaveBeenNthCalledWith(1, expect.anything(), {
-      arg: "ARG"
-    }, expect.anything());
+    expect(format).toHaveBeenNthCalledWith(
+      1,
+      expect.anything(),
+      {
+        arg: "ARG"
+      },
+      expect.anything()
+    );
     // The attribute.
-    expect(format).toHaveBeenNthCalledWith(2, expect.anything(), {
-      arg: "ARG"
-    }, expect.anything());
+    expect(format).toHaveBeenNthCalledWith(
+      2,
+      expect.anything(),
+      {
+        arg: "ARG"
+      },
+      expect.anything()
+    );
   });
 
   test("render with a fragment and no message preserves the fragment", () => {
@@ -331,6 +356,7 @@ foo = { $arg }
   });
 
   test("A missing $arg does not break rendering", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
 
     bundle.addResource(
@@ -355,14 +381,26 @@ foo = { $arg }
               {$arg}
             </div>
         `);
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] ReferenceError: Unknown variable: $arg",
+        ],
+        Array [
+          "[@fluent/react] ReferenceError: Unknown variable: $arg",
+        ],
+      ]
+    `);
   });
 
   test("render with a fragment and no message value preserves the fragment", () => {
     const bundle = new FluentBundle();
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo =
     .attr = Attribute
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -383,9 +421,11 @@ foo =
 
   test("render with a fragment renders the message into the fragment", () => {
     const bundle = new FluentBundle();
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Test message
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -416,10 +456,12 @@ foo = Test message
 
   test("render with an empty fragment and no message value preserves the fragment", () => {
     const bundle = new FluentBundle();
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo =
     .attr = Attribute
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -434,9 +476,11 @@ foo =
 
   test("render with an empty fragment renders the message into the fragment", () => {
     const bundle = new FluentBundle();
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Test message
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -463,9 +507,11 @@ foo = Test message
 
   test("render with a string fallback returns the message", () => {
     const bundle = new FluentBundle();
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Test message
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -479,9 +525,11 @@ foo = Test message
   test("render without a fallback returns the message", () => {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = Message
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>

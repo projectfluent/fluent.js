@@ -1,16 +1,21 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { ReactLocalization, LocalizationProvider, Localized }
-  from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  Localized
+} from "../esm/index";
 
 describe("Localized - void elements", function() {
   test("do not render the value in void elements", function() {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = FOO
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -26,10 +31,12 @@ foo = FOO
   test("render attributes in void elements", function() {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo =
     .title = TITLE
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -49,10 +56,12 @@ foo =
   test("render attributes but not value in void elements", function() {
     const bundle = new FluentBundle();
 
-    bundle.addResource(new FluentResource(`
+    bundle.addResource(
+      new FluentResource(`
 foo = FOO
     .title = TITLE
-`));
+`)
+    );
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>

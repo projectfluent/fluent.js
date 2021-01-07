@@ -1,18 +1,12 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
-import { ReactLocalization, LocalizationProvider, Localized } from "../esm/index";
+import {
+  ReactLocalization,
+  LocalizationProvider,
+  Localized
+} from "../esm/index";
 
 describe("Localized - validation", () => {
-  let consoleError = console.error;
-
-  beforeAll(() => {
-    console.error = () => {};
-  });
-
-  afterAll(() => {
-    console.error = consoleError;
-  });
-
   test("inside of a LocalizationProvider", () => {
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([])}>
@@ -46,6 +40,9 @@ describe("Localized - validation", () => {
   });
 
   test("with multiple children", () => {
+    // React also does a console.error, ignore that here.
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
     expect(() => {
       TestRenderer.create(
         <LocalizationProvider l10n={new ReactLocalization([])}>
@@ -54,8 +51,10 @@ describe("Localized - validation", () => {
             <div />
           </Localized>
         </LocalizationProvider>
-      )
-    }).toThrow(/single/)
+      );
+    }).toThrow(/single/);
+
+    expect(console.error).toHaveBeenCalled();
   });
 
   test("without id", () => {
