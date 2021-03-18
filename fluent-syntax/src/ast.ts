@@ -46,7 +46,7 @@ export abstract class BaseNode {
     return true;
   }
 
-  clone(): BaseNode {
+  clone(): this {
     function visit(value: unknown): unknown {
       if (value instanceof BaseNode) {
         return value.clone();

@@ -79,7 +79,7 @@ export abstract class Visitor {
  *         (this: Transformer, node: BaseNode): BaseNode | undefined;
  *     }
  *
- * The returned node wili replace the original one in the AST. Return
+ * The returned node will replace the original one in the AST. Return
  * `undefined` to remove the node instead.
  */
 export abstract class Transformer extends Visitor {

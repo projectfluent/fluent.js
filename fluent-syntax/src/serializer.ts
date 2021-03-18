@@ -37,7 +37,7 @@ function shouldStartOnNewLine(pattern: AST.Pattern): boolean {
 
 
 // Bit masks representing the state of the serializer.
-export const HAS_ENTRIES = 1;
+const HAS_ENTRIES = 1;
 
 export interface FluentSerializerOptions {
   withJunk?: boolean;
@@ -202,7 +202,9 @@ function serializePlaceable(placeable: AST.Placeable): string {
 }
 
 
-export function serializeExpression(expr: AST.Expression): string {
+export function serializeExpression(
+  expr: AST.Expression | AST.Placeable
+): string {
   if (expr instanceof AST.StringLiteral) {
     return `"${expr.value}"`;
   }
