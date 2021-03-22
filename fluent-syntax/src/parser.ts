@@ -1,6 +1,8 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast.js";
+// eslint-disable-next-line no-duplicate-imports
+import type {Resource, Entry} from "./ast.js";
 import { EOF, EOL, FluentParserStream } from "./stream.js";
 import { ParseError } from "./errors.js";
 
@@ -11,10 +13,6 @@ const trailingWSRe = /[ \t\n\r]+$/;
 type ParseFn<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (this: FluentParser, ps: FluentParserStream, ...args: Array<any>) => T;
-
-type Comment = AST.Comment | AST.GroupComment | AST.ResourceComment
-type Entry = AST.Message | AST.Term | Comment;
-type EntryOrJunk = Entry | AST.Junk;
 
 function withSpan<T extends AST.SyntaxNode>(fn: ParseFn<T>): ParseFn<T> {
   return function (
@@ -73,11 +71,11 @@ export class FluentParser {
     /* eslint-enable @typescript-eslint/unbound-method */
   }
 
-  parse(source: string): AST.Resource {
+  parse(source: string): Resource {
     const ps = new FluentParserStream(source);
     ps.skipBlankBlock();
 
-    const entries: Array<EntryOrJunk> = [];
+    const entries: Array<AST.Entry> = [];
     let lastComment: AST.Comment | null = null;
 
     while (ps.currentChar()) {
@@ -133,7 +131,7 @@ export class FluentParser {
    * Preceding comments are ignored unless they contain syntax errors
    * themselves, in which case Junk for the invalid comment is returned.
    */
-  parseEntry(source: string): EntryOrJunk {
+  parseEntry(source: string): Entry {
     const ps = new FluentParserStream(source);
     ps.skipBlankBlock();
 
@@ -149,7 +147,7 @@ export class FluentParser {
     return this.getEntryOrJunk(ps);
   }
 
-  getEntryOrJunk(ps: FluentParserStream): EntryOrJunk {
+  getEntryOrJunk(ps: FluentParserStream): AST.Entry {
     const entryStartPos = ps.index;
 
     try {
@@ -182,7 +180,7 @@ export class FluentParser {
     }
   }
 
-  getEntry(ps: FluentParserStream): Entry {
+  getEntry(ps: FluentParserStream): AST.Entry {
     if (ps.currentChar() === "#") {
       return this.getComment(ps);
     }
@@ -198,7 +196,7 @@ export class FluentParser {
     throw new ParseError("E0002");
   }
 
-  getComment(ps: FluentParserStream): Comment {
+  getComment(ps: FluentParserStream): AST.Comments {
     // 0 - comment
     // 1 - group comment
     // 2 - resource comment
@@ -669,7 +667,9 @@ export class FluentParser {
     return selector;
   }
 
-  getInlineExpression(ps: FluentParserStream): AST.Expression | AST.Placeable {
+  getInlineExpression(
+    ps: FluentParserStream
+  ): AST.InlineExpression | AST.Placeable {
     if (ps.currentChar() === "{") {
       return this.getPlaceable(ps);
     }
@@ -736,7 +736,9 @@ export class FluentParser {
     throw new ParseError("E0028");
   }
 
-  getCallArgument(ps: FluentParserStream): AST.Expression | AST.NamedArgument {
+  getCallArgument(
+    ps: FluentParserStream
+  ): AST.InlineExpression | AST.NamedArgument {
     const exp = this.getInlineExpression(ps);
 
     ps.skipBlank();
@@ -757,7 +759,7 @@ export class FluentParser {
   }
 
   getCallArguments(ps: FluentParserStream): AST.CallArguments {
-    const positional: Array<AST.Expression> = [];
+    const positional: Array<AST.InlineExpression> = [];
     const named: Array<AST.NamedArgument> = [];
     const argumentNames: Set<string> = new Set();
 

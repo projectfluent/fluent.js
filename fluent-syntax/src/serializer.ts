@@ -1,4 +1,6 @@
 import * as AST from "./ast.js";
+// eslint-disable-next-line no-duplicate-imports
+import type {Resource, Entry, Expression, Placeable} from "./ast.js";
 
 function indentExceptFirstLine(content: string): string {
   return content.split("\n").join("\n    ");
@@ -50,7 +52,7 @@ export class FluentSerializer {
     this.withJunk = withJunk;
   }
 
-  serialize(resource: AST.Resource): string {
+  serialize(resource: Resource): string {
     if (!(resource instanceof AST.Resource)) {
       throw new Error(`Unknown resource type: ${resource}`);
     }
@@ -70,7 +72,7 @@ export class FluentSerializer {
     return parts.join("");
   }
 
-  serializeEntry(entry: AST.Entry | AST.Junk, state: number = 0): string {
+  serializeEntry(entry: Entry, state: number = 0): string {
     if (entry instanceof AST.Message) {
       return serializeMessage(entry);
     }
@@ -203,7 +205,7 @@ function serializePlaceable(placeable: AST.Placeable): string {
 
 
 export function serializeExpression(
-  expr: AST.Expression | AST.Placeable
+  expr: Expression | Placeable
 ): string {
   if (expr instanceof AST.StringLiteral) {
     return `"${expr.value}"`;
