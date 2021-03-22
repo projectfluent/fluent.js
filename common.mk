@@ -22,13 +22,11 @@ ROLLUP_CMD = $(ROLLUP) $(CURDIR)/esm/index.js \
 	--output.file \
 	$(NULL)
 
-TYPEDOC_CMD = $(TYPEDOC) src \
+TYPEDOC_CMD = $(TYPEDOC) src/index.?s \
 	--out $(DOC_DESTINATION) \
-	--mode file \
-	--excludeNotExported \
-	--excludePrivate \
 	--logger none \
 	--hideGenerator \
+	--includeVersion \
 	$(NULL)
 
 MOCHA_CMD =@$(NYC) --reporter=text --reporter=html $(MOCHA) \

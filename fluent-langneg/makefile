@@ -23,7 +23,7 @@ test: esm/.compiled
 .PHONY: build
 build: index.js
 
-index.js: $(SOURCES)
+index.js: esm/.compiled
 	@$(ROLLUP_CMD) $@
 	@echo -e " $(OK) $@ built"
 

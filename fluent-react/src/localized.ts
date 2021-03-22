@@ -112,7 +112,7 @@ export function Localized(props: LocalizedProps): ReactElement {
   // message value and do not pass it to cloneElement in order to avoid the
   // "void element tags must neither have `children` nor use
   // `dangerouslySetInnerHTML`" error.
-  if (child.type in voidElementTags) {
+  if (typeof child.type === "string" && child.type in voidElementTags) {
     return cloneElement(child, localizedProps);
   }
 
@@ -173,7 +173,8 @@ export function Localized(props: LocalizedProps): ReactElement {
     // explicitly dismiss any textContent which might have accidentally been
     // defined in the translation to prevent the "void element tags must not
     // have children" error.
-    if (sourceChild.type in voidElementTags) {
+    if (typeof sourceChild.type === "string"
+      && sourceChild.type in voidElementTags) {
       return sourceChild;
     }
 
