@@ -177,6 +177,25 @@ suite('Built-in functions', function() {
       assert.strictEqual(errors.length, 0);
     });
 
+    test('FluentDateTime argument', function () {
+      // NUMBER must ignore datetime options
+      let date = new Date('2016-09-29');
+      let arg = new FluentDateTime(date, {
+        month: "short",
+        day: "numeric",
+      });
+
+      errors = [];
+      msg = bundle.getMessage('num-bare');
+      assert.strictEqual(bundle.formatPattern(msg.value, {arg}, errors), '1,475,107,200,000');
+      assert.strictEqual(errors.length, 0);
+
+      errors = [];
+      msg = bundle.getMessage('num-fraction-valid');
+      assert.strictEqual(bundle.formatPattern(msg.value, {arg}, errors), '1,475,107,200,000.0');
+      assert.strictEqual(errors.length, 0);
+    });
+
     test('string argument', function() {
       let arg = "Foo";
 
@@ -427,6 +446,30 @@ suite('Built-in functions', function() {
       errors = [];
       msg = bundle.getMessage('dt-unknown');
       assert.strictEqual(bundle.formatPattern(msg.value, {arg}, errors), expectedMonthShort);
+      assert.strictEqual(errors.length, 0);
+    });
+
+    test('FluentNumber argument, minimumFractionDigits=3', function() {
+      // DATETIME must ignore number options
+      let date = new Date('2016-09-29');
+      let arg =  new FluentNumber(Number(date), {
+        minimumFractionDigits: 3
+      });
+
+      // Format the date argument to account for the testrunner's timezone.
+      let expectedDate =
+        (new Intl.DateTimeFormat('en-US')).format(date);
+      let expectedMonthLong =
+        (new Intl.DateTimeFormat('en-US', {month: 'long'})).format(date);
+
+      errors = [];
+      msg = bundle.getMessage('dt-bare');
+      assert.strictEqual(bundle.formatPattern(msg.value, {arg}, errors), expectedDate);
+      assert.strictEqual(errors.length, 0);
+
+      errors = [];
+      msg = bundle.getMessage('dt-month-valid');
+      assert.strictEqual(bundle.formatPattern(msg.value, {arg}, errors), expectedMonthLong);
       assert.strictEqual(errors.length, 0);
     });
 

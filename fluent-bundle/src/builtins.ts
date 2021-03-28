@@ -80,9 +80,15 @@ export function NUMBER(
     return new FluentNone(`NUMBER(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
+  if (arg instanceof FluentNumber) {
     return new FluentNumber(arg.valueOf(), {
       ...arg.opts,
+      ...values(opts, NUMBER_ALLOWED)
+    });
+  }
+
+  if (arg instanceof FluentDateTime) {
+    return new FluentNumber(arg.valueOf(), {
       ...values(opts, NUMBER_ALLOWED)
     });
   }
@@ -151,9 +157,15 @@ export function DATETIME(
     return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentNumber || arg instanceof FluentDateTime) {
+  if (arg instanceof FluentDateTime) {
     return new FluentDateTime(arg.valueOf(), {
       ...arg.opts,
+      ...values(opts, DATETIME_ALLOWED)
+    });
+  }
+
+  if (arg instanceof FluentNumber) {
+    return new FluentDateTime(arg.valueOf(), {
       ...values(opts, DATETIME_ALLOWED)
     });
   }
