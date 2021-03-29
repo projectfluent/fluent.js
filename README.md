@@ -1,8 +1,5 @@
-Project Fluent [![Build Status][travisimage]][travislink]
-=========================================================
-
-[travisimage]: https://travis-ci.org/projectfluent/fluent.js.svg?branch=master
-[travislink]: https://travis-ci.org/projectfluent/fluent.js
+Project Fluent
+==============
 
 Fluent.js is a JavaScript implementation of Project Fluent, a localization
 framework designed to unleash the expressive power of the natural language.
