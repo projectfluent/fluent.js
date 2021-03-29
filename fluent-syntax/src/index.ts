@@ -3,6 +3,7 @@ import { FluentParser, FluentParserOptions } from "./parser.js";
 import { FluentSerializer, FluentSerializerOptions } from "./serializer.js";
 
 export * from "./ast";
+export * from "./errors";
 export * from "./parser";
 export * from "./serializer";
 export * from "./visitor";
