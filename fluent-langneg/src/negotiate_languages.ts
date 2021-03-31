@@ -1,6 +1,6 @@
 import {filterMatches} from "./matches";
 
-interface NegotiateLanguagesOptions {
+export interface NegotiateLanguagesOptions {
   strategy?: "filtering" | "matching" | "lookup";
   defaultLocale?: string;
 }
