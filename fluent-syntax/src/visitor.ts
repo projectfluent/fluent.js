@@ -93,7 +93,7 @@ export abstract class Transformer extends Visitor {
     return this.genericVisit(node);
   }
 
-  genericVisit(node: AST.BaseNode): AST.BaseNode | undefined {
+  genericVisit(node: AST.BaseNode): AST.BaseNode {
     for (const key of Object.keys(node)) {
       let prop = node[key];
       if (prop instanceof AST.BaseNode) {

@@ -87,8 +87,8 @@ export abstract class SyntaxNode extends BaseNode {
 
 export class Resource extends SyntaxNode {
   public type = "Resource" as const;
-  public body: Array<Entry | Junk>;
-  constructor(body: Array<Entry | Junk> = []) {
+  public body: Array<Entry>;
+  constructor(body: Array<Entry> = []) {
     super();
     this.body = body;
   }
@@ -421,7 +421,7 @@ export class Junk extends SyntaxNode {
 }
 
 export class Span extends BaseNode {
-  public type = "Span";
+  public type = "Span" as const;
   public start: number;
   public end: number;
 
@@ -433,7 +433,7 @@ export class Span extends BaseNode {
 }
 
 export class Annotation extends SyntaxNode {
-  public type = "Annotation";
+  public type = "Annotation" as const;
   public code: string;
   public arguments: Array<unknown>;
   public message: string;
