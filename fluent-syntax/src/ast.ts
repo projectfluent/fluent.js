@@ -6,7 +6,6 @@
  *
  */
 export abstract class BaseNode {
-  public type = "BaseNode";
   [name: string]: unknown;
 
   equals(other: BaseNode, ignoredFields: Array<string> = ["span"]): boolean {
@@ -46,7 +45,7 @@ export abstract class BaseNode {
     return true;
   }
 
-  clone(): BaseNode {
+  clone(): this {
     function visit(value: unknown): unknown {
       if (value instanceof BaseNode) {
         return value.clone();
@@ -79,7 +78,6 @@ function scalarsEqual(
  * Base class for AST nodes which can have Spans.
  */
 export abstract class SyntaxNode extends BaseNode {
-  public type = "SyntaxNode";
   public span?: Span;
 
   addSpan(start: number, end: number): void {
@@ -89,21 +87,20 @@ export abstract class SyntaxNode extends BaseNode {
 
 export class Resource extends SyntaxNode {
   public type = "Resource" as const;
-  public body: Array<Entry | Junk>;
-  constructor(body: Array<Entry | Junk> = []) {
+  public body: Array<Entry>;
+  constructor(body: Array<Entry> = []) {
     super();
     this.body = body;
   }
 }
 
-/*
- * An abstract base class for useful elements of Resource.body.
- */
-export abstract class Entry extends SyntaxNode {
-  public type = "Entry";
-}
+export declare type Entry =
+  Message |
+  Term |
+  Comments |
+  Junk;
 
-export class Message extends Entry {
+export class Message extends SyntaxNode {
   public type = "Message" as const;
   public id: Identifier;
   public value: Pattern | null;
@@ -124,7 +121,7 @@ export class Message extends Entry {
   }
 }
 
-export class Term extends Entry {
+export class Term extends SyntaxNode {
   public type = "Term" as const;
   public id: Identifier;
   public value: Pattern;
@@ -155,14 +152,9 @@ export class Pattern extends SyntaxNode {
   }
 }
 
-/*
- * An abstract base class for elements of Patterns.
- */
-export abstract class PatternElement extends SyntaxNode {
-  public type = "PatternElement";
-}
+export declare type PatternElement = TextElement | Placeable;
 
-export class TextElement extends PatternElement {
+export class TextElement extends SyntaxNode {
   public type = "TextElement" as const;
   public value: string;
 
@@ -172,7 +164,7 @@ export class TextElement extends PatternElement {
   }
 }
 
-export class Placeable extends PatternElement {
+export class Placeable extends SyntaxNode {
   public type = "Placeable" as const;
   public expression: Expression;
 
@@ -182,16 +174,21 @@ export class Placeable extends PatternElement {
   }
 }
 
-/*
- * An abstract base class for expressions.
+/**
+ * A subset of expressions which can be used as outside of Placeables.
  */
-export abstract class Expression extends SyntaxNode {
-  public type = "Expression";
-}
+export type InlineExpression =
+  StringLiteral |
+  NumberLiteral |
+  FunctionReference |
+  MessageReference |
+  TermReference |
+  VariableReference |
+  Placeable;
+export declare type Expression = InlineExpression | SelectExpression;
 
 // An abstract base class for Literals.
-export abstract class Literal extends Expression {
-  public type = "Literal";
+export abstract class BaseLiteral extends SyntaxNode {
   public value: string;
 
   constructor(value: string) {
@@ -204,7 +201,7 @@ export abstract class Literal extends Expression {
   abstract parse(): { value: unknown }
 }
 
-export class StringLiteral extends Literal {
+export class StringLiteral extends BaseLiteral {
   public type = "StringLiteral" as const;
 
   parse(): { value: string } {
@@ -241,7 +238,7 @@ export class StringLiteral extends Literal {
   }
 }
 
-export class NumberLiteral extends Literal {
+export class NumberLiteral extends BaseLiteral {
   public type = "NumberLiteral" as const;
 
   parse(): { value: number; precision: number } {
@@ -254,7 +251,9 @@ export class NumberLiteral extends Literal {
   }
 }
 
-export class MessageReference extends Expression {
+export declare type Literal = StringLiteral | NumberLiteral;
+
+export class MessageReference extends SyntaxNode {
   public type = "MessageReference" as const;
   public id: Identifier;
   public attribute: Identifier | null;
@@ -266,7 +265,7 @@ export class MessageReference extends Expression {
   }
 }
 
-export class TermReference extends Expression {
+export class TermReference extends SyntaxNode {
   public type = "TermReference" as const;
   public id: Identifier;
   public attribute: Identifier | null;
@@ -284,7 +283,7 @@ export class TermReference extends Expression {
   }
 }
 
-export class VariableReference extends Expression {
+export class VariableReference extends SyntaxNode {
   public type = "VariableReference" as const;
   public id: Identifier;
 
@@ -294,7 +293,7 @@ export class VariableReference extends Expression {
   }
 }
 
-export class FunctionReference extends Expression {
+export class FunctionReference extends SyntaxNode {
   public type = "FunctionReference" as const;
   public id: Identifier;
   public arguments: CallArguments;
@@ -306,12 +305,12 @@ export class FunctionReference extends Expression {
   }
 }
 
-export class SelectExpression extends Expression {
+export class SelectExpression extends SyntaxNode {
   public type = "SelectExpression" as const;
-  public selector: Expression;
+  public selector: InlineExpression;
   public variants: Array<Variant>;
 
-  constructor(selector: Expression, variants: Array<Variant>) {
+  constructor(selector: InlineExpression, variants: Array<Variant>) {
     super();
     this.selector = selector;
     this.variants = variants;
@@ -320,11 +319,11 @@ export class SelectExpression extends Expression {
 
 export class CallArguments extends SyntaxNode {
   public type = "CallArguments" as const;
-  public positional: Array<Expression>;
+  public positional: Array<InlineExpression>;
   public named: Array<NamedArgument>;
 
   constructor(
-    positional: Array<Expression> = [],
+    positional: Array<InlineExpression> = [],
     named: Array<NamedArgument> = []
   ) {
     super();
@@ -381,8 +380,7 @@ export class Identifier extends SyntaxNode {
   }
 }
 
-export abstract class BaseComment extends Entry {
-  public type = "BaseComment";
+export abstract class BaseComment extends SyntaxNode {
   public content: string;
   constructor(content: string) {
     super();
@@ -401,6 +399,11 @@ export class ResourceComment extends BaseComment {
   public type = "ResourceComment" as const;
 }
 
+export declare type Comments =
+  Comment |
+  GroupComment |
+  ResourceComment;
+
 export class Junk extends SyntaxNode {
   public type = "Junk" as const;
   public annotations: Array<Annotation>;
@@ -418,7 +421,7 @@ export class Junk extends SyntaxNode {
 }
 
 export class Span extends BaseNode {
-  public type = "Span";
+  public type = "Span" as const;
   public start: number;
   public end: number;
 
@@ -430,7 +433,7 @@ export class Span extends BaseNode {
 }
 
 export class Annotation extends SyntaxNode {
-  public type = "Annotation";
+  public type = "Annotation" as const;
   public code: string;
   public arguments: Array<unknown>;
   public message: string;

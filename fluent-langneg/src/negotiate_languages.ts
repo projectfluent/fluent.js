@@ -1,6 +1,6 @@
 import {filterMatches} from "./matches";
 
-interface NegotiateLanguagesOptions {
+export interface NegotiateLanguagesOptions {
   strategy?: "filtering" | "matching" | "lookup";
   defaultLocale?: string;
 }
@@ -49,8 +49,8 @@ interface NegotiateLanguagesOptions {
  *     This strategy requires defaultLocale option to be set.
  */
 export function negotiateLanguages(
-  requestedLocales: Array<string>,
-  availableLocales: Array<string>,
+  requestedLocales: Readonly<Array<string>>,
+  availableLocales: Readonly<Array<string>>,
   {
     strategy = "filtering",
     defaultLocale,

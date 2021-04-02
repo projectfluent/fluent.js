@@ -566,10 +566,10 @@ suite("Serialize resource", function() {
 });
 
 suite("serializeExpression", function() {
-  let pretty;
+  let pretty, parser;
 
   setup(function() {
-    const parser = new FluentParser();
+    parser = new FluentParser();
 
     pretty = function pretty(text) {
       const {value: {elements: [placeable]}} = parser.parseEntry(text);
@@ -650,6 +650,11 @@ suite("serializeExpression", function() {
       `;
     assert.strictEqual(pretty(input), "$num ->\n   *[one] One\n");
   });
+
+  test("Placeable", function() {
+    const {value: {elements: [placeable]}} = parser.parseEntry("foo = {5}");
+    assert.strictEqual(serializeExpression(placeable), "{ 5 }");
+  })
 });
 
 suite("Serialize padding around comments", function() {

@@ -1,4 +1,4 @@
-import { BaseNode } from "./ast.js";
+import * as AST from "./ast.js";
 
 /**
  * A read-only visitor.
@@ -11,13 +11,13 @@ import { BaseNode } from "./ast.js";
  * Visiting methods must implement the following interface:
  *
  *     interface VisitingMethod {
- *         (this: Visitor, node: BaseNode): void;
+ *         (this: Visitor, node: AST.BaseNode): void;
  *     }
  */
 export abstract class Visitor {
   [prop: string]: unknown;
 
-  visit(node: BaseNode): void {
+  visit(node: AST.BaseNode): void {
     let visit = this[`visit${node.type}`];
     if (typeof visit === "function") {
       visit.call(this, node);
@@ -26,43 +26,43 @@ export abstract class Visitor {
     }
   }
 
-  genericVisit(node: BaseNode): void {
+  genericVisit(node: AST.BaseNode): void {
     for (const key of Object.keys(node)) {
       let prop = node[key];
-      if (prop instanceof BaseNode) {
+      if (prop instanceof AST.BaseNode) {
         this.visit(prop);
       } else if (Array.isArray(prop)) {
         for (let element of prop) {
-          this.visit(element as BaseNode);
+          this.visit(element as AST.BaseNode);
         }
       }
     }
   }
 
-  visitResource?(node: BaseNode): void;
-  visitMessage?(node: BaseNode): void;
-  visitTerm?(node: BaseNode): void;
-  visitPattern?(node: BaseNode): void;
-  visitTextElement?(node: BaseNode): void;
-  visitPlaceable?(node: BaseNode): void;
-  visitStringLiteral?(node: BaseNode): void;
-  visitNumberLiteral?(node: BaseNode): void;
-  visitMessageReference?(node: BaseNode): void;
-  visitTermReference?(node: BaseNode): void;
-  visitVariableReference?(node: BaseNode): void;
-  visitFunctionReference?(node: BaseNode): void;
-  visitSelectExpression?(node: BaseNode): void;
-  visitCallArguments?(node: BaseNode): void;
-  visitAttribute?(node: BaseNode): void;
-  visitVariant?(node: BaseNode): void;
-  visitNamedArgument?(node: BaseNode): void;
-  visitIdentifier?(node: BaseNode): void;
-  visitComment?(node: BaseNode): void;
-  visitGroupComment?(node: BaseNode): void;
-  visitResourceComment?(node: BaseNode): void;
-  visitJunk?(node: BaseNode): void;
-  visitSpan?(node: BaseNode): void;
-  visitAnnotation?(node: BaseNode): void;
+  visitResource?(node: AST.Resource): void;
+  visitMessage?(node: AST.Message): void;
+  visitTerm?(node: AST.Term): void;
+  visitPattern?(node: AST.Pattern): void;
+  visitTextElement?(node: AST.TextElement): void;
+  visitPlaceable?(node: AST.Placeable): void;
+  visitStringLiteral?(node: AST.StringLiteral): void;
+  visitNumberLiteral?(node: AST.NumberLiteral): void;
+  visitMessageReference?(node: AST.MessageReference): void;
+  visitTermReference?(node: AST.TermReference): void;
+  visitVariableReference?(node: AST.VariableReference): void;
+  visitFunctionReference?(node: AST.FunctionReference): void;
+  visitSelectExpression?(node: AST.SelectExpression): void;
+  visitCallArguments?(node: AST.CallArguments): void;
+  visitAttribute?(node: AST.Attribute): void;
+  visitVariant?(node: AST.Variant): void;
+  visitNamedArgument?(node: AST.NamedArgument): void;
+  visitIdentifier?(node: AST.Identifier): void;
+  visitComment?(node: AST.Comment): void;
+  visitGroupComment?(node: AST.GroupComment): void;
+  visitResourceComment?(node: AST.ResourceComment): void;
+  visitJunk?(node: AST.Junk): void;
+  visitSpan?(node: AST.Span): void;
+  visitAnnotation?(node: AST.Annotation): void;
 }
 
 /**
@@ -76,16 +76,16 @@ export abstract class Visitor {
  * Visiting methods must implement the following interface:
  *
  *     interface TransformingMethod {
- *         (this: Transformer, node: BaseNode): BaseNode | undefined;
+ *         (this: Transformer, node: AST.BaseNode): AST.BaseNode | undefined;
  *     }
  *
- * The returned node wili replace the original one in the AST. Return
+ * The returned node will replace the original one in the AST. Return
  * `undefined` to remove the node instead.
  */
 export abstract class Transformer extends Visitor {
   [prop: string]: unknown;
 
-  visit(node: BaseNode): BaseNode | undefined {
+  visit(node: AST.BaseNode): AST.BaseNode | undefined {
     let visit = this[`visit${node.type}`];
     if (typeof visit === "function") {
       return visit.call(this, node);
@@ -93,10 +93,10 @@ export abstract class Transformer extends Visitor {
     return this.genericVisit(node);
   }
 
-  genericVisit(node: BaseNode): BaseNode | undefined {
+  genericVisit(node: AST.BaseNode): AST.BaseNode {
     for (const key of Object.keys(node)) {
       let prop = node[key];
-      if (prop instanceof BaseNode) {
+      if (prop instanceof AST.BaseNode) {
         let newVal = this.visit(prop);
         if (newVal === undefined) {
           delete node[key];
@@ -104,7 +104,7 @@ export abstract class Transformer extends Visitor {
           node[key] = newVal;
         }
       } else if (Array.isArray(prop)) {
-        let newVals: Array<BaseNode> = [];
+        let newVals: Array<AST.BaseNode> = [];
         for (let element of prop) {
           let newVal = this.visit(element);
           if (newVal !== undefined) {
@@ -117,28 +117,30 @@ export abstract class Transformer extends Visitor {
     return node;
   }
 
-  visitResource?(node: BaseNode): BaseNode | undefined;
-  visitMessage?(node: BaseNode): BaseNode | undefined;
-  visitTerm?(node: BaseNode): BaseNode | undefined;
-  visitPattern?(node: BaseNode): BaseNode | undefined;
-  visitTextElement?(node: BaseNode): BaseNode | undefined;
-  visitPlaceable?(node: BaseNode): BaseNode | undefined;
-  visitStringLiteral?(node: BaseNode): BaseNode | undefined;
-  visitNumberLiteral?(node: BaseNode): BaseNode | undefined;
-  visitMessageReference?(node: BaseNode): BaseNode | undefined;
-  visitTermReference?(node: BaseNode): BaseNode | undefined;
-  visitVariableReference?(node: BaseNode): BaseNode | undefined;
-  visitFunctionReference?(node: BaseNode): BaseNode | undefined;
-  visitSelectExpression?(node: BaseNode): BaseNode | undefined;
-  visitCallArguments?(node: BaseNode): BaseNode | undefined;
-  visitAttribute?(node: BaseNode): BaseNode | undefined;
-  visitVariant?(node: BaseNode): BaseNode | undefined;
-  visitNamedArgument?(node: BaseNode): BaseNode | undefined;
-  visitIdentifier?(node: BaseNode): BaseNode | undefined;
-  visitComment?(node: BaseNode): BaseNode | undefined;
-  visitGroupComment?(node: BaseNode): BaseNode | undefined;
-  visitResourceComment?(node: BaseNode): BaseNode | undefined;
-  visitJunk?(node: BaseNode): BaseNode | undefined;
-  visitSpan?(node: BaseNode): BaseNode | undefined;
-  visitAnnotation?(node: BaseNode): BaseNode | undefined;
+  visitResource?(node: AST.Resource): AST.BaseNode | undefined;
+  visitMessage?(node: AST.Message): AST.BaseNode | undefined;
+  visitTerm?(node: AST.Term): AST.BaseNode | undefined;
+  visitPattern?(node: AST.Pattern): AST.BaseNode | undefined;
+  visitTextElement?(node: AST.TextElement): AST.BaseNode | undefined;
+  visitPlaceable?(node: AST.Placeable): AST.BaseNode | undefined;
+  visitStringLiteral?(node: AST.StringLiteral): AST.BaseNode | undefined;
+  visitNumberLiteral?(node: AST.NumberLiteral): AST.BaseNode | undefined;
+  visitMessageReference?(node: AST.MessageReference): AST.BaseNode | undefined;
+  visitTermReference?(node: AST.TermReference): AST.BaseNode | undefined;
+  visitVariableReference?(node: AST.VariableReference):
+  AST.BaseNode | undefined;
+  visitFunctionReference?(node: AST.FunctionReference):
+  AST.BaseNode | undefined;
+  visitSelectExpression?(node: AST.SelectExpression): AST.BaseNode | undefined;
+  visitCallArguments?(node: AST.CallArguments): AST.BaseNode | undefined;
+  visitAttribute?(node: AST.Attribute): AST.BaseNode | undefined;
+  visitVariant?(node: AST.Variant): AST.BaseNode | undefined;
+  visitNamedArgument?(node: AST.NamedArgument): AST.BaseNode | undefined;
+  visitIdentifier?(node: AST.Identifier): AST.BaseNode | undefined;
+  visitComment?(node: AST.Comment): AST.BaseNode | undefined;
+  visitGroupComment?(node: AST.GroupComment): AST.BaseNode | undefined;
+  visitResourceComment?(node: AST.ResourceComment): AST.BaseNode | undefined;
+  visitJunk?(node: AST.Junk): AST.BaseNode | undefined;
+  visitSpan?(node: AST.Span): AST.BaseNode | undefined;
+  visitAnnotation?(node: AST.Annotation): AST.BaseNode | undefined;
 }
