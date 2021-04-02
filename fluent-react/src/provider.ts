@@ -1,4 +1,4 @@
-import { createElement, ReactNode, ReactElement } from "react";
+import { createElement, ReactNode, ReactElement, useState } from "react";
 import PropTypes from "prop-types";
 import { FluentContext } from "./context";
 import { ReactLocalization } from "./localization";
@@ -6,6 +6,8 @@ import { ReactLocalization } from "./localization";
 interface LocalizationProviderProps {
   children?: ReactNode;
   l10n: ReactLocalization;
+  changeLocales: (locales: string[]) => void;
+  initialLocales: string[];
 }
 
 /*
@@ -27,10 +29,21 @@ interface LocalizationProviderProps {
 export function LocalizationProvider(
   props: LocalizationProviderProps
 ): ReactElement {
+  let [locales, setLocales] = useState(props.initialLocales);
+
+  function changeLocales(locales: string[]) {
+    props.changeLocales(locales);
+    setLocales(locales);
+  }
+
   return createElement(
     FluentContext.Provider,
     {
-      value: props.l10n
+      value: {
+        l10n: props.l10n,
+        changeLocales: changeLocales,
+        currentLocales: locales
+      }
     },
     props.children
   );

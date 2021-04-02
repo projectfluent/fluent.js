@@ -16,7 +16,7 @@ export function withLocalization<P extends WithLocalizationProps>(
   Inner: ComponentType<P>
 ): ComponentType<WithoutLocalizationProps<P>> {
   function WithLocalization(props: WithoutLocalizationProps<P>): ReactElement {
-    const l10n = useContext(FluentContext);
+    const { l10n } = useContext(FluentContext);
     // Re-bind getString to trigger a re-render of Inner.
     const getString = l10n.getString.bind(l10n);
     return createElement(Inner, { getString, ...props } as P);

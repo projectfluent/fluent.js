@@ -8,7 +8,7 @@ import { ReactLocalization, LocalizationProvider } from "@fluent/react";
 const ftl = require("../public/*.ftl");
 
 const DEFAULT_LOCALE = "en-US";
-const AVAILABLE_LOCALES = {
+export const AVAILABLE_LOCALES = {
     "en-US": "English",
     "pl": "Polish",
 };
@@ -33,7 +33,6 @@ interface AppLocalizationProviderProps {
 }
 
 export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
-    let [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
     let [l10n, setL10n] = useState<ReactLocalization | null>(null);
 
     useEffect(() => {
@@ -46,7 +45,6 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
             Object.keys(AVAILABLE_LOCALES),
             { defaultLocale: DEFAULT_LOCALE }
         );
-        setCurrentLocales(currentLocales);
 
         let fetchedMessages = await Promise.all(
             currentLocales.map(fetchMessages)
@@ -60,18 +58,9 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
         return <div>Loading…</div>;
     }
 
-    return <>
-        <LocalizationProvider l10n={l10n}>
+    return (
+        <LocalizationProvider l10n={l10n} changeLocales={changeLocales} initialLocales={navigator.languages}>
             {Children.only(props.children)}
         </LocalizationProvider>
-
-        <hr />
-        <select
-            onChange={event => changeLocales([event.target.value])}
-            value={currentLocales[0]}>
-            {Object.entries(AVAILABLE_LOCALES).map(
-                ([code, name]) => <option key={code} value={code}>{name}</option>
-            )}
-        </select>
-    </>;
+    );
 }
