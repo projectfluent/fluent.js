@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/bundle 0.16.1 (April 9, 2021)
+
+  - Separate FluentNumber/Datetime opts when used in DATETIME/NUMBER. (#526)
+
 ## @fluent/bundle 0.16.0 (July 1, 2020)
 
   - Rename `FluentArgument` to `FluentVariable`. (#499)
