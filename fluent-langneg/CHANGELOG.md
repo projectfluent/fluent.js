@@ -1,5 +1,12 @@
 # Changelog
 
+## @fluent/langneg 0.5.1 (April 9, 2021)
+
+  - Better TypeScript annotations. (#525)
+
+    Make array arguments read-only, and expose options type.
+
+
 ## @fluent/langneg 0.5.0 (July 2, 2020)
 
   - Remove the `compat.js` build and compile everything to ES2018. (#472)
