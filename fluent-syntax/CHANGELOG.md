@@ -1,5 +1,15 @@
 # Changelog
 
+## @fluent/syntax 0.17.0 (April 9, 2021)
+
+  - Align AST types with fluent-rs. (#525)
+
+    Use Union types instead of inheritance for `Entry`, `PatternElement`, `InlineExpression`, `Expression`, `Literal`, and `Comments`. The union types allow for type narrowing in TypeScript consumers.
+
+  - Use concrete argument types for `Visitor` and `Transformer`. (#525)
+
+  - Update TypeScript to 4.2 to support type imports and exports.
+
 ## @fluent/syntax 0.16.1 (September 15, 2020)
 
   - Fix serialization of multiline patterns starting with special characters. (#512)
