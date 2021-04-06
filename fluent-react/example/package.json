@@ -7,11 +7,13 @@
     "build": "parcel build public/index.html"
   },
   "dependencies": {
-    "@fluent/bundle": "0.15.x",
+    "@fluent/bundle": "0.16.x",
     "@fluent/langneg": "0.4.x",
-    "@fluent/react": "file:fluent-react.tgz",
-    "react": "16.8.x",
-    "react-dom": "16.8.x"
+    "@fluent/sequence": "0.5.0",
+    "cached-iterable": "^0.2.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.32",

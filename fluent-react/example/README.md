@@ -16,12 +16,16 @@ Then build and package `@fluent/react`:
     npm install
     make
     npm pack
-    mv fluent-react-*.tgz example/fluent-react.tgz
 
 Finally, change back to this directory, and build the example:
 
     cd fluent.js/fluent-react/example/
     npm install
+    npm install --no-save ../fluent-react-*.tgz
     npm start
 
 Open http://localhost:1234 to see the example running.
+
+Installing `@fluent/react` via `npm pack` allows to use the in-tree
+version of it without picking up the `devDependencies`, which likely
+bring a conflicting version of React.
