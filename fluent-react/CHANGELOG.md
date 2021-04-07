@@ -1,5 +1,10 @@
 # Changelog
 
+## @fluent/react 0.13.1 (Apr 7, 2021)
+
+  - Allow the Localized component to have an array with one element in its children
+    property (#541)
+
 ## @fluent/react 0.13.0 (July 2, 2020)
 
   - Add the `useLocalization` hook. (#467, #475)
