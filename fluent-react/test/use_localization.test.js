@@ -14,15 +14,22 @@ function DummyComponent() {
 }
 
 describe("useLocalization", () => {
+  function createBundle() {
+    const bundle = new FluentBundle("en", { useIsolating: false });
+    bundle.addResource(new FluentResource("foo = FOO\n"));
+    return bundle;
+  }
+
   test("render inside of a LocalizationProvider", () => {
+
     const renderer = TestRenderer.create(
-      <LocalizationProvider l10n={new ReactLocalization([])}>
+      <LocalizationProvider l10n={new ReactLocalization([createBundle()])}>
         <DummyComponent />
       </LocalizationProvider>
     );
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <p>
-        foo
+        FOO
       </p>
     `);
   });
@@ -41,15 +48,8 @@ describe("useLocalization", () => {
   });
 
   test("useLocalization exposes getString from ReactLocalization", () => {
-    const bundle = new FluentBundle("en", { useIsolating: false });
-    bundle.addResource(
-      new FluentResource(`
-foo = FOO
-`)
-    );
-
     const renderer = TestRenderer.create(
-      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
+      <LocalizationProvider l10n={new ReactLocalization([createBundle()])}>
         <DummyComponent />
       </LocalizationProvider>
     );
