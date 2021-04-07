@@ -57,6 +57,16 @@ describe("Localized - validation", () => {
     expect(console.error).toHaveBeenCalled();
   });
 
+  test("with single children inside an array", () => {
+    const renderer = TestRenderer.create(
+      <LocalizationProvider l10n={new ReactLocalization([])}>
+        <Localized children={[<div />]} />
+      </LocalizationProvider>
+    );
+
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
+  });
+
   test("without id", () => {
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([])}>

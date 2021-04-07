@@ -19,7 +19,7 @@ const reMarkup = /<|&#?\w+;/;
 export interface LocalizedProps {
   id: string;
   attrs?: Record<string, boolean>;
-  children?: ReactNode;
+  children?: ReactNode | Array<ReactNode>;
   vars?: Record<string, FluentVariable>;
   elems?: Record<string, ReactElement>;
 }
@@ -46,13 +46,23 @@ export interface LocalizedProps {
  *  source code.
  */
 export function Localized(props: LocalizedProps): ReactElement {
-  const { id, attrs, vars, elems, children: child = null } = props;
+  const { id, attrs, vars, elems, children = null } = props;
   const l10n = useContext(FluentContext);
+  let child: ReactNode | null;
 
-  // Validate that the child element isn't an array
-  if (Array.isArray(child)) {
-    throw new Error("<Localized/> expected to receive a single " +
-      "React node child");
+  // Validate that the child element isn't an array that contains multiple
+  // elements.
+  if (Array.isArray(children)) {
+    if (children.length > 1) {
+      throw new Error("<Localized/> expected to receive a single " +
+        "React node child");
+    }
+
+    // If it's an array with zero or one element, we can directly get the first
+    // one.
+    child = children[0];
+  } else {
+    child = children;
   }
 
   if (!l10n) {
