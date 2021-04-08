@@ -3,17 +3,18 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>FluentParser | @fluent/syntax - v0.16.0</title>
-	<meta name="description" content="">
+	<title>FluentParser | @fluent/syntax - v0.17.0</title>
+	<meta name="description" content="Documentation for @fluent/syntax - v0.17.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -22,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@fluent/syntax - v0.16.0</a>
+					<a href="../index.html" class="title">@fluent/syntax - v0.17.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -51,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">@fluent/syntax - v0.17.0</a>
 				</li>
 				<li>
 					<a href="fluentparser.html">FluentParser</a>
@@ -131,24 +132,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Fluent<wbr>Parser<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fluentparser.html" class="tsd-signature-type">FluentParser</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Fluent<wbr>Parser<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fluentparseroptions.html" class="tsd-signature-type" data-tsd-kind="Interface">FluentParserOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fluentparser.html" class="tsd-signature-type" data-tsd-kind="Class">FluentParser</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L49">fluent-syntax/src/parser.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L47">fluent-syntax/src/parser.ts:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> __namedParameters: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
-									<ul class="tsd-parameters">
-									</ul>
+									<h5>__namedParameters: <a href="../interfaces/fluentparseroptions.html" class="tsd-signature-type" data-tsd-kind="Interface">FluentParserOptions</a><span class="tsd-signature-symbol"> = ...</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="fluentparser.html" class="tsd-signature-type">FluentParser</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="fluentparser.html" class="tsd-signature-type" data-tsd-kind="Class">FluentParser</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -161,7 +160,7 @@
 					<div class="tsd-signature tsd-kind-icon">with<wbr>Spans<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L49">fluent-syntax/src/parser.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L47">fluent-syntax/src/parser.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,25 +171,25 @@
 					<a name="dedent" class="tsd-anchor"></a>
 					<h3>dedent</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">dedent<span class="tsd-signature-symbol">(</span>elements<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="patternelement.html" class="tsd-signature-type">PatternElement</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Indent</span><span class="tsd-signature-symbol">&gt;</span>, commonIndent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="patternelement.html" class="tsd-signature-type">PatternElement</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">dedent<span class="tsd-signature-symbol">(</span>elements<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><a href="../modules.html#patternelement" class="tsd-signature-type" data-tsd-kind="Type alias">PatternElement</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Indent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span>, commonIndent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#patternelement" class="tsd-signature-type" data-tsd-kind="Type alias">PatternElement</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L503">fluent-syntax/src/parser.ts:503</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L501">fluent-syntax/src/parser.ts:501</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>elements: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="patternelement.html" class="tsd-signature-type">PatternElement</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Indent</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>elements: <span class="tsd-signature-symbol">(</span><a href="../modules.html#patternelement" class="tsd-signature-type" data-tsd-kind="Type alias">PatternElement</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Indent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
 									<h5>commonIndent: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="patternelement.html" class="tsd-signature-type">PatternElement</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#patternelement" class="tsd-signature-type" data-tsd-kind="Type alias">PatternElement</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -198,22 +197,22 @@
 					<a name="getattribute" class="tsd-anchor"></a>
 					<h3>get<wbr>Attribute</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Attribute<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="attribute.html" class="tsd-signature-type">Attribute</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Attribute<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="attribute.html" class="tsd-signature-type" data-tsd-kind="Class">Attribute</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L281">fluent-syntax/src/parser.ts:281</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L279">fluent-syntax/src/parser.ts:279</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="attribute.html" class="tsd-signature-type">Attribute</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="attribute.html" class="tsd-signature-type" data-tsd-kind="Class">Attribute</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -221,22 +220,22 @@
 					<a name="getattributes" class="tsd-anchor"></a>
 					<h3>get<wbr>Attributes</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Attributes<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="attribute.html" class="tsd-signature-type">Attribute</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Attributes<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="attribute.html" class="tsd-signature-type" data-tsd-kind="Class">Attribute</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L297">fluent-syntax/src/parser.ts:297</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L295">fluent-syntax/src/parser.ts:295</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="attribute.html" class="tsd-signature-type">Attribute</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="attribute.html" class="tsd-signature-type" data-tsd-kind="Class">Attribute</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -244,25 +243,22 @@
 					<a name="getcallargument" class="tsd-anchor"></a>
 					<h3>get<wbr>Call<wbr>Argument</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Call<wbr>Argument<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="expression.html" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="namedargument.html" class="tsd-signature-type">NamedArgument</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Call<wbr>Argument<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#inlineexpression" class="tsd-signature-type" data-tsd-kind="Type alias">InlineExpression</a><span class="tsd-signature-symbol"> | </span><a href="namedargument.html" class="tsd-signature-type" data-tsd-kind="Class">NamedArgument</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L739">fluent-syntax/src/parser.ts:739</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L739">fluent-syntax/src/parser.ts:739</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="expression.html" class="tsd-signature-type">Expression</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<a href="namedargument.html" class="tsd-signature-type">NamedArgument</a>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#inlineexpression" class="tsd-signature-type" data-tsd-kind="Type alias">InlineExpression</a><span class="tsd-signature-symbol"> | </span><a href="namedargument.html" class="tsd-signature-type" data-tsd-kind="Class">NamedArgument</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -270,22 +266,22 @@
 					<a name="getcallarguments" class="tsd-anchor"></a>
 					<h3>get<wbr>Call<wbr>Arguments</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Call<wbr>Arguments<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="callarguments.html" class="tsd-signature-type">CallArguments</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Call<wbr>Arguments<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="callarguments.html" class="tsd-signature-type" data-tsd-kind="Class">CallArguments</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L759">fluent-syntax/src/parser.ts:759</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L761">fluent-syntax/src/parser.ts:761</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="callarguments.html" class="tsd-signature-type">CallArguments</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="callarguments.html" class="tsd-signature-type" data-tsd-kind="Class">CallArguments</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -293,22 +289,22 @@
 					<a name="getcomment" class="tsd-anchor"></a>
 					<h3>get<wbr>Comment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Comment<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="comment.html" class="tsd-signature-type">Comment</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Comment<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#comments" class="tsd-signature-type" data-tsd-kind="Type alias">Comments</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L201">fluent-syntax/src/parser.ts:201</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L199">fluent-syntax/src/parser.ts:199</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="comment.html" class="tsd-signature-type">Comment</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#comments" class="tsd-signature-type" data-tsd-kind="Type alias">Comments</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -316,19 +312,19 @@
 					<a name="getdigits" class="tsd-anchor"></a>
 					<h3>get<wbr>Digits</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Digits<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Digits<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L392">fluent-syntax/src/parser.ts:392</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L390">fluent-syntax/src/parser.ts:390</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -339,22 +335,22 @@
 					<a name="getentry" class="tsd-anchor"></a>
 					<h3>get<wbr>Entry</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Entry<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="entry.html" class="tsd-signature-type">Entry</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Entry<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#entry" class="tsd-signature-type" data-tsd-kind="Type alias">Entry</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L185">fluent-syntax/src/parser.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L183">fluent-syntax/src/parser.ts:183</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="entry.html" class="tsd-signature-type">Entry</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#entry" class="tsd-signature-type" data-tsd-kind="Type alias">Entry</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -362,22 +358,22 @@
 					<a name="getentryorjunk" class="tsd-anchor"></a>
 					<h3>get<wbr>Entry<wbr>OrJunk</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Entry<wbr>OrJunk<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">EntryOrJunk</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Entry<wbr>OrJunk<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#entry" class="tsd-signature-type" data-tsd-kind="Type alias">Entry</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L152">fluent-syntax/src/parser.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L150">fluent-syntax/src/parser.ts:150</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">EntryOrJunk</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#entry" class="tsd-signature-type" data-tsd-kind="Type alias">Entry</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -385,19 +381,19 @@
 					<a name="getescapesequence" class="tsd-anchor"></a>
 					<h3>get<wbr>Escape<wbr>Sequence</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Escape<wbr>Sequence<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Escape<wbr>Sequence<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L581">fluent-syntax/src/parser.ts:581</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L579">fluent-syntax/src/parser.ts:579</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -408,25 +404,22 @@
 					<a name="getexpression" class="tsd-anchor"></a>
 					<h3>get<wbr>Expression</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Expression<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="expression.html" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="placeable.html" class="tsd-signature-type">Placeable</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Expression<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#expression" class="tsd-signature-type" data-tsd-kind="Type alias">Expression</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L628">fluent-syntax/src/parser.ts:628</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L626">fluent-syntax/src/parser.ts:626</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="expression.html" class="tsd-signature-type">Expression</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<a href="placeable.html" class="tsd-signature-type">Placeable</a>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#expression" class="tsd-signature-type" data-tsd-kind="Type alias">Expression</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -434,22 +427,22 @@
 					<a name="getidentifier" class="tsd-anchor"></a>
 					<h3>get<wbr>Identifier</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Identifier<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="identifier.html" class="tsd-signature-type">Identifier</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Identifier<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="identifier.html" class="tsd-signature-type" data-tsd-kind="Class">Identifier</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L309">fluent-syntax/src/parser.ts:309</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L307">fluent-syntax/src/parser.ts:307</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="identifier.html" class="tsd-signature-type">Identifier</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="identifier.html" class="tsd-signature-type" data-tsd-kind="Class">Identifier</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -457,19 +450,19 @@
 					<a name="getindent" class="tsd-anchor"></a>
 					<h3>get<wbr>Indent</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Indent<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, start<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Indent</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Indent<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, start<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Indent</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L497">fluent-syntax/src/parser.ts:497</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L495">fluent-syntax/src/parser.ts:495</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 								<li>
 									<h5>value: <span class="tsd-signature-type">string</span></h5>
@@ -486,25 +479,22 @@
 					<a name="getinlineexpression" class="tsd-anchor"></a>
 					<h3>get<wbr>Inline<wbr>Expression</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Inline<wbr>Expression<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="expression.html" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="placeable.html" class="tsd-signature-type">Placeable</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Inline<wbr>Expression<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#inlineexpression" class="tsd-signature-type" data-tsd-kind="Type alias">InlineExpression</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L672">fluent-syntax/src/parser.ts:672</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L670">fluent-syntax/src/parser.ts:670</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="expression.html" class="tsd-signature-type">Expression</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<a href="placeable.html" class="tsd-signature-type">Placeable</a>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#inlineexpression" class="tsd-signature-type" data-tsd-kind="Type alias">InlineExpression</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -512,22 +502,22 @@
 					<a name="getliteral" class="tsd-anchor"></a>
 					<h3>get<wbr>Literal</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Literal<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="literal.html" class="tsd-signature-type">Literal</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Literal<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#literal" class="tsd-signature-type" data-tsd-kind="Type alias">Literal</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L822">fluent-syntax/src/parser.ts:822</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L824">fluent-syntax/src/parser.ts:824</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="literal.html" class="tsd-signature-type">Literal</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#literal" class="tsd-signature-type" data-tsd-kind="Type alias">Literal</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -535,22 +525,22 @@
 					<a name="getmessage" class="tsd-anchor"></a>
 					<h3>get<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Message<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="message.html" class="tsd-signature-type">Message</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Message<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L249">fluent-syntax/src/parser.ts:249</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L247">fluent-syntax/src/parser.ts:247</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="message.html" class="tsd-signature-type">Message</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -558,22 +548,22 @@
 					<a name="getnumber" class="tsd-anchor"></a>
 					<h3>get<wbr>Number</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Number<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="numberliteral.html" class="tsd-signature-type">NumberLiteral</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Number<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="numberliteral.html" class="tsd-signature-type" data-tsd-kind="Class">NumberLiteral</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L407">fluent-syntax/src/parser.ts:407</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L405">fluent-syntax/src/parser.ts:405</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="numberliteral.html" class="tsd-signature-type">NumberLiteral</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="numberliteral.html" class="tsd-signature-type" data-tsd-kind="Class">NumberLiteral</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -581,25 +571,25 @@
 					<a name="getpattern" class="tsd-anchor"></a>
 					<h3>get<wbr>Pattern</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Pattern<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a>, isBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pattern.html" class="tsd-signature-type">Pattern</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Pattern<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span>, isBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pattern.html" class="tsd-signature-type" data-tsd-kind="Class">Pattern</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L447">fluent-syntax/src/parser.ts:447</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L445">fluent-syntax/src/parser.ts:445</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 								<li>
 									<h5>isBlock: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="pattern.html" class="tsd-signature-type">Pattern</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="pattern.html" class="tsd-signature-type" data-tsd-kind="Class">Pattern</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -607,22 +597,22 @@
 					<a name="getplaceable" class="tsd-anchor"></a>
 					<h3>get<wbr>Placeable</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Placeable<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="placeable.html" class="tsd-signature-type">Placeable</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Placeable<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="placeable.html" class="tsd-signature-type" data-tsd-kind="Class">Placeable</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L620">fluent-syntax/src/parser.ts:620</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L618">fluent-syntax/src/parser.ts:618</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="placeable.html" class="tsd-signature-type">Placeable</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="placeable.html" class="tsd-signature-type" data-tsd-kind="Class">Placeable</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -630,22 +620,22 @@
 					<a name="getstring" class="tsd-anchor"></a>
 					<h3>get<wbr>String</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>String<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="stringliteral.html" class="tsd-signature-type">StringLiteral</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>String<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="stringliteral.html" class="tsd-signature-type" data-tsd-kind="Class">StringLiteral</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L800">fluent-syntax/src/parser.ts:800</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L802">fluent-syntax/src/parser.ts:802</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="stringliteral.html" class="tsd-signature-type">StringLiteral</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="stringliteral.html" class="tsd-signature-type" data-tsd-kind="Class">StringLiteral</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -653,22 +643,22 @@
 					<a name="getterm" class="tsd-anchor"></a>
 					<h3>get<wbr>Term</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Term<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="term.html" class="tsd-signature-type">Term</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Term<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="term.html" class="tsd-signature-type" data-tsd-kind="Class">Term</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L265">fluent-syntax/src/parser.ts:265</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L263">fluent-syntax/src/parser.ts:263</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="term.html" class="tsd-signature-type">Term</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="term.html" class="tsd-signature-type" data-tsd-kind="Class">Term</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -676,22 +666,22 @@
 					<a name="gettextelement" class="tsd-anchor"></a>
 					<h3>get<wbr>Text<wbr>Element</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Text<wbr>Element<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="textelement.html" class="tsd-signature-type">TextElement</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Text<wbr>Element<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="textelement.html" class="tsd-signature-type" data-tsd-kind="Class">TextElement</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L561">fluent-syntax/src/parser.ts:561</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L559">fluent-syntax/src/parser.ts:559</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="textelement.html" class="tsd-signature-type">TextElement</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="textelement.html" class="tsd-signature-type" data-tsd-kind="Class">TextElement</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -699,19 +689,19 @@
 					<a name="getunicodeescapesequence" class="tsd-anchor"></a>
 					<h3>get<wbr>Unicode<wbr>Escape<wbr>Sequence</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Unicode<wbr>Escape<wbr>Sequence<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a>, u<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, digits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Unicode<wbr>Escape<wbr>Sequence<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span>, u<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, digits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L598">fluent-syntax/src/parser.ts:598</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L596">fluent-syntax/src/parser.ts:596</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 								<li>
 									<h5>u: <span class="tsd-signature-type">string</span></h5>
@@ -728,25 +718,25 @@
 					<a name="getvariant" class="tsd-anchor"></a>
 					<h3>get<wbr>Variant</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Variant<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a>, hasDefault<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="variant.html" class="tsd-signature-type">Variant</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Variant<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span>, hasDefault<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="variant.html" class="tsd-signature-type" data-tsd-kind="Class">Variant</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L336">fluent-syntax/src/parser.ts:336</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L334">fluent-syntax/src/parser.ts:334</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> hasDefault: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5>hasDefault: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="variant.html" class="tsd-signature-type">Variant</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="variant.html" class="tsd-signature-type" data-tsd-kind="Class">Variant</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -754,25 +744,22 @@
 					<a name="getvariantkey" class="tsd-anchor"></a>
 					<h3>get<wbr>Variant<wbr>Key</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Variant<wbr>Key<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="numberliteral.html" class="tsd-signature-type">NumberLiteral</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Variant<wbr>Key<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="identifier.html" class="tsd-signature-type" data-tsd-kind="Class">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="numberliteral.html" class="tsd-signature-type" data-tsd-kind="Class">NumberLiteral</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L320">fluent-syntax/src/parser.ts:320</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L318">fluent-syntax/src/parser.ts:318</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="identifier.html" class="tsd-signature-type">Identifier</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<a href="numberliteral.html" class="tsd-signature-type">NumberLiteral</a>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="identifier.html" class="tsd-signature-type" data-tsd-kind="Class">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="numberliteral.html" class="tsd-signature-type" data-tsd-kind="Class">NumberLiteral</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -780,22 +767,22 @@
 					<a name="getvariants" class="tsd-anchor"></a>
 					<h3>get<wbr>Variants</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Variants<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="variant.html" class="tsd-signature-type">Variant</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Variants<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="variant.html" class="tsd-signature-type" data-tsd-kind="Class">Variant</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L364">fluent-syntax/src/parser.ts:364</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L362">fluent-syntax/src/parser.ts:362</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="variant.html" class="tsd-signature-type">Variant</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="variant.html" class="tsd-signature-type" data-tsd-kind="Class">Variant</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -803,25 +790,22 @@
 					<a name="maybegetpattern" class="tsd-anchor"></a>
 					<h3>maybe<wbr>Get<wbr>Pattern</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">maybe<wbr>Get<wbr>Pattern<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pattern.html" class="tsd-signature-type">Pattern</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+						<li class="tsd-signature tsd-kind-icon">maybe<wbr>Get<wbr>Pattern<span class="tsd-signature-symbol">(</span>ps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FluentParserStream</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="pattern.html" class="tsd-signature-type" data-tsd-kind="Class">Pattern</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L431">fluent-syntax/src/parser.ts:431</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L429">fluent-syntax/src/parser.ts:429</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ps: <a href="fluentparserstream.html" class="tsd-signature-type">FluentParserStream</a></h5>
+									<h5>ps: <span class="tsd-signature-type">FluentParserStream</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="pattern.html" class="tsd-signature-type">Pattern</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">null</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="pattern.html" class="tsd-signature-type" data-tsd-kind="Class">Pattern</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -829,13 +813,13 @@
 					<a name="parse" class="tsd-anchor"></a>
 					<h3>parse</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="resource.html" class="tsd-signature-type">Resource</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="resource.html" class="tsd-signature-type" data-tsd-kind="Class">Resource</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L76">fluent-syntax/src/parser.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L74">fluent-syntax/src/parser.ts:74</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -844,7 +828,7 @@
 									<h5>source: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="resource.html" class="tsd-signature-type">Resource</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="resource.html" class="tsd-signature-type" data-tsd-kind="Class">Resource</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -852,13 +836,13 @@
 					<a name="parseentry" class="tsd-anchor"></a>
 					<h3>parse<wbr>Entry</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>Entry<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">EntryOrJunk</span></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Entry<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#entry" class="tsd-signature-type" data-tsd-kind="Type alias">Entry</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/f41d910d/fluent-syntax/src/parser.ts#L136">fluent-syntax/src/parser.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/projectfluent/fluent.js/blob/b56f6a64/fluent-syntax/src/parser.ts#L134">fluent-syntax/src/parser.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -867,7 +851,7 @@
 									<h5>source: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">EntryOrJunk</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#entry" class="tsd-signature-type" data-tsd-kind="Type alias">Entry</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -876,8 +860,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
@@ -995,63 +979,22 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 		</div>
 	</div>
 </footer>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
