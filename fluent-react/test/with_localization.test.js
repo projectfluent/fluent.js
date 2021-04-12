@@ -23,11 +23,18 @@ describe("withLocalization", () => {
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
   });
 
-  test("render outside of a LocalizationProvider", () => {
+  test("thows an error when rendered outside of a LocalizationProvider", () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    const renderer = TestRenderer.create(<EnhancedComponent />);
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
+    expect(() => {
+      TestRenderer.create(<EnhancedComponent />);
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"withLocalization was used without wrapping it in a <LocalizationProvider />."`
+    );
+
+    // React also does a console.error.
+    expect(console.error).toHaveBeenCalled();
   });
 
   test("getString with access to the l10n context", () => {
@@ -100,7 +107,7 @@ bar = BAR {$arg}
     `);
   });
 
-  test("getString without access to the l10n context", () => {
+  test.skip("getString without access to the l10n context", () => {
     const EnhancedComponent = withLocalization(DummyComponent);
     const renderer = TestRenderer.create(<EnhancedComponent />);
 
@@ -109,7 +116,7 @@ bar = BAR {$arg}
     expect(getString("foo", { arg: 1 })).toBe("foo");
   });
 
-  test("getString without access to the l10n context, with fallback value", () => {
+  test.skip("getString without access to the l10n context, with fallback value", () => {
     const EnhancedComponent = withLocalization(DummyComponent);
     const renderer = TestRenderer.create(<EnhancedComponent />);
 

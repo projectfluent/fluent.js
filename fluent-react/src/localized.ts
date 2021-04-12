@@ -66,8 +66,9 @@ export function Localized(props: LocalizedProps): ReactElement {
   }
 
   if (!l10n) {
-    // Use the wrapped component as fallback.
-    return createElement(Fragment, null, child);
+    throw new Error(
+      "The <Localized /> component was not properly wrapped in a <LocalizationProvider />."
+    );
   }
 
   const bundle = l10n.getBundle(id);

@@ -27,13 +27,17 @@ describe("useLocalization", () => {
     `);
   });
 
-  test("render outside of a LocalizationProvider", () => {
-    const renderer = TestRenderer.create(<DummyComponent />);
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`
-      <p>
-        foo
-      </p>
-    `);
+  test("throws an error when rendered outside of a LocalizationProvider", () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    expect(() => {
+      TestRenderer.create(<DummyComponent />);
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"useLocalization was used without wrapping it in a <LocalizationProvider />."`
+    );
+
+    // React also does a console.error.
+    expect(console.error).toHaveBeenCalled();
   });
 
   test("useLocalization exposes getString from ReactLocalization", () => {

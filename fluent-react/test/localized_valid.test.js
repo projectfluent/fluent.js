@@ -19,14 +19,21 @@ describe("Localized - validation", () => {
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
   });
 
-  test("outside of a LocalizationProvider", () => {
-    const renderer = TestRenderer.create(
-      <Localized>
-        <div />
-      </Localized>
+  test("throws an error when placed outside of a LocalizationProvider", () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
+    expect(() => {
+      TestRenderer.create(
+        <Localized id="example-id">
+          <div />
+        </Localized>
+      );
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"The <Localized /> component was not properly wrapped in a <LocalizationProvider />."`
     );
 
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
+    // React also does a console.error.
+    expect(console.error).toHaveBeenCalled();
   });
 
   test("without a child", () => {
