@@ -38,18 +38,6 @@ The API supports three negotiation strategies:
 
 ### filtering (default)
 
-In this strategy the algorithm will look for the best matching available
-locale for each requested locale.
-
-Example:
-
-requested: ['de-DE', 'fr-FR']
-available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
-
-supported: ['de-DE', 'fr']
-
-### matching
-
 In this strategy the algorithm will try to match as many available locales
 as possible for each of the requested locale.
 
@@ -59,6 +47,18 @@ requested: ['de-DE', 'fr-FR']
 available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
 
 supported: ['de-DE', 'de', 'fr', 'fr-CA']
+
+### matching
+
+In this strategy the algorithm will look for the best matching available
+locale for each requested locale.
+
+Example:
+
+requested: ['de-DE', 'fr-FR']
+available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
+
+supported: ['de-DE', 'fr']
 
 ### lookup
 
