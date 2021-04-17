@@ -1,5 +1,9 @@
 # Changelog
 
+## @fluent/langneg 0.5.2 (April 17, 2021)
+
+  - Documentation fix. (#547)
+
 ## @fluent/langneg 0.5.1 (April 9, 2021)
 
   - Better TypeScript annotations. (#525)
