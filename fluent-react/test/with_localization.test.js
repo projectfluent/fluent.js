@@ -23,11 +23,18 @@ describe("withLocalization", () => {
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
   });
 
-  test("render outside of a LocalizationProvider", () => {
+  test("thows an error when rendered outside of a LocalizationProvider", () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
     const EnhancedComponent = withLocalization(DummyComponent);
 
-    const renderer = TestRenderer.create(<EnhancedComponent />);
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
+    expect(() => {
+      TestRenderer.create(<EnhancedComponent />);
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"withLocalization was used without wrapping it in a <LocalizationProvider />."`
+    );
+
+    // React also does a console.error.
+    expect(console.error).toHaveBeenCalled();
   });
 
   test("getString with access to the l10n context", () => {
@@ -94,30 +101,59 @@ bar = BAR {$arg}
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
+          "[@fluent/react] Error: The id \\"missing\\" did not match any messages in the localization bundles.",
+        ],
+        Array [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
       ]
     `);
   });
 
-  test("getString without access to the l10n context", () => {
+  test("getString with an empty bundle list", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const EnhancedComponent = withLocalization(DummyComponent);
-    const renderer = TestRenderer.create(<EnhancedComponent />);
+    const renderer = TestRenderer.create(
+      <LocalizationProvider l10n={new ReactLocalization([])}>
+        <EnhancedComponent />
+      </LocalizationProvider>
+    );
 
     const { getString } = renderer.root.findByType(DummyComponent).props;
     // Returns the id if no fallback.
     expect(getString("foo", { arg: 1 })).toBe("foo");
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] Error: Attempting to get a string when no localization bundles are present.",
+        ],
+      ]
+    `);
   });
 
-  test("getString without access to the l10n context, with fallback value", () => {
+  test("getString with an empty bundle list, with fallback value", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+
     const EnhancedComponent = withLocalization(DummyComponent);
-    const renderer = TestRenderer.create(<EnhancedComponent />);
+    const renderer = TestRenderer.create(
+      <LocalizationProvider l10n={new ReactLocalization([])}>
+        <EnhancedComponent />
+      </LocalizationProvider>
+    );
 
     const { getString } = renderer.root.findByType(DummyComponent).props;
     // Returns the fallback if provided.
     expect(getString("foo", { arg: 1 }, "fallback message")).toBe(
       "fallback message"
     );
+
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] Error: Attempting to get a string when no localization bundles are present.",
+        ],
+      ]
+    `);
   });
 
   test("getString with access to the l10n context, with message changes", () => {

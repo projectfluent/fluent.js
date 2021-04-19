@@ -336,11 +336,11 @@ foo = { $arg }
   });
 
   test("render with a fragment and no message preserves the fragment", () => {
-    const bundle = new FluentBundle();
+    jest.spyOn(console, "warn").mockImplementation(() => {});
 
     const renderer = TestRenderer.create(
-      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
-        <Localized id="foo">
+      <LocalizationProvider l10n={new ReactLocalization([])}>
+        <Localized id="non-matching-id">
           <React.Fragment>
             <div>Fragment content</div>
           </React.Fragment>
@@ -349,10 +349,11 @@ foo = { $arg }
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-                  <div>
-                    Fragment content
-                  </div>
-            `);
+      <div>
+        Fragment content
+      </div>
+    `);
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test("A missing $arg does not break rendering", () => {
@@ -442,6 +443,7 @@ foo = Test message
 
   test("render with an empty fragment and no message preserves the fragment", () => {
     const bundle = new FluentBundle();
+    jest.spyOn(console, "warn").mockImplementation(() => {});
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -452,6 +454,13 @@ foo = Test message
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`null`);
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+        ],
+      ]
+    `);
   });
 
   test("render with an empty fragment and no message value preserves the fragment", () => {
@@ -494,6 +503,7 @@ foo = Test message
   });
 
   test("render with a string fallback and no message returns the fallback", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
@@ -503,6 +513,13 @@ foo = Test message
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"String fallback"`);
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+        ],
+      ]
+    `);
   });
 
   test("render with a string fallback returns the message", () => {
@@ -541,6 +558,7 @@ foo = Message
   });
 
   test("render without a fallback and no message returns nothing", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
@@ -550,5 +568,12 @@ foo = Message
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`null`);
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+        ],
+      ]
+    `);
   });
 });

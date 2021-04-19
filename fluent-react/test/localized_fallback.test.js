@@ -61,6 +61,8 @@ foo = FOO
 });
 
 test("falls back back for missing message", function() {
+  jest.spyOn(console, "warn").mockImplementation(() => {});
+
   const bundle1 = new FluentBundle();
   bundle1.addResource(
     new FluentResource(`
@@ -80,5 +82,13 @@ not-foo = NOT FOO
     <div>
       Bar
     </div>
+  `);
+
+  expect(console.warn.mock.calls).toMatchInlineSnapshot(`
+    Array [
+      Array [
+        "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      ],
+    ]
   `);
 });

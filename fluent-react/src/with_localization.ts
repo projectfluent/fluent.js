@@ -17,6 +17,12 @@ export function withLocalization<P extends WithLocalizationProps>(
 ): ComponentType<WithoutLocalizationProps<P>> {
   function WithLocalization(props: WithoutLocalizationProps<P>): ReactElement {
     const l10n = useContext(FluentContext);
+    if (!l10n) {
+      throw new Error(
+        "withLocalization was used without wrapping it in a "
+          + "<LocalizationProvider />."
+      );
+    }
     // Re-bind getString to trigger a re-render of Inner.
     const getString = l10n.getString.bind(l10n);
     return createElement(Inner, { getString, ...props } as P);

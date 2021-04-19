@@ -30,6 +30,12 @@ export class ReactLocalization {
     return mapBundleSync(this.bundles, id);
   }
 
+  areBundlesEmpty(): boolean {
+    // Create an iterator and only peek at the first value to see if it contains
+    // anything.
+    return Boolean(this.bundles[Symbol.iterator]().next().done);
+  }
+
   getString(
     id: string,
     args?: Record<string, FluentVariable> | null,
@@ -45,6 +51,22 @@ export class ReactLocalization {
           this.reportError(error);
         }
         return value;
+      }
+    } else {
+      if (this.areBundlesEmpty()) {
+        this.reportError(
+          new Error(
+            "Attempting to get a string when no localization bundles are " +
+              "present."
+          )
+        );
+      } else {
+        this.reportError(
+          new Error(
+            `The id "${id}" did not match any messages in the localization `
+              + "bundles."
+          )
+        );
       }
     }
 
