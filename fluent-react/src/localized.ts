@@ -67,7 +67,8 @@ export function Localized(props: LocalizedProps): ReactElement {
 
   if (!l10n) {
     throw new Error(
-      "The <Localized /> component was not properly wrapped in a <LocalizationProvider />."
+      "The <Localized /> component was not properly wrapped in a "
+        + "<LocalizationProvider />."
     );
   }
 
@@ -80,9 +81,19 @@ export function Localized(props: LocalizedProps): ReactElement {
       );
     } else {
       if (l10n.areBundlesEmpty()) {
-        l10n.reportError(new Error(`A <Localized /> component was rendered when no localization bundles are present.`));
+        l10n.reportError(
+          new Error(
+            "A <Localized /> component was rendered when no localization "
+              + "bundles are present."
+          )
+        );
       } else {
-        l10n.reportError(new Error(`The id "${id}" did not match any messages in the localization bundles.`));
+        l10n.reportError(
+          new Error(
+            `The id "${id}" did not match any messages in the localization `
+              + "bundles."
+          )
+        );
       }
     }
     // Use the wrapped component as fallback.
