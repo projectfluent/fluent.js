@@ -1,4 +1,4 @@
-type IntlCache = WeakMap<
+export type IntlCache = Map<
     | typeof Intl.NumberFormat
     | typeof Intl.DateTimeFormat
     | typeof Intl.PluralRules,
@@ -11,7 +11,7 @@ export function getMemoizerForLocale(locales: string | string[]): IntlCache {
   const stringLocale = Array.isArray(locales) ? locales.join(" ") : locales;
   let memoizer = cache.get(stringLocale);
   if (memoizer === undefined) {
-    memoizer = new WeakMap();
+    memoizer = new Map();
     cache.set(stringLocale, memoizer);
   }
 
