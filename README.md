@@ -74,7 +74,7 @@ Hacking on `fluent.js` is easy! To quickly get started clone the repo:
     $ git clone https://github.com/projectfluent/fluent.js.git
     $ cd fluent.js
 
-You'll need at least Node.js 10 LTS. Older versions are not supported.
+You'll need at least Node.js 12 LTS. Older versions are not supported.
 
 Install the build tools used by all packages (Babel, Rollup, Mocha etc.):
 
