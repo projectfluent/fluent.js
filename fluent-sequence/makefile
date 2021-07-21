@@ -4,7 +4,7 @@ GLOBAL  := FluentSequence
 include ../common.mk
 
 lint:
-	@$(ESLINT) --config $(ROOT)/eslint_ts.yaml --max-warnings 0 src/*.ts
+	@$(ESLINT) --config $(ROOT)/eslint_ts.yaml src/*.ts # FIXME --max-warnings 0
 	@$(ESLINT) --config $(ROOT)/eslint_test.yaml --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 

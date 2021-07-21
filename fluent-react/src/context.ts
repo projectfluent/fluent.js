@@ -1,5 +1,5 @@
-import { createContext } from "react";
+import { Context, createContext } from "react";
 import { ReactLocalization } from "./localization.js";
 
 export let FluentContext =
-  createContext(null) as React.Context<ReactLocalization | null>;
+  createContext(null) as Context<ReactLocalization | null>;

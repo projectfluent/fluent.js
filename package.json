@@ -6,13 +6,13 @@
     "node": ">=12.0.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.10.0",
-    "@typescript-eslint/parser": "^2.10.0",
-    "babel-eslint": "^10.1.0",
+    "@babel/eslint-parser": "^7.14.7",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
     "colors": "^1.3.3",
     "commander": "^2.20",
-    "eslint": "6.8.x",
-    "eslint-plugin-mocha": "6.3.x",
+    "eslint": "^7.31.0",
+    "eslint-plugin-mocha": "^9.0.0",
     "esm": "^3.2.22",
     "fuzzer": "^0.2.1",
     "gh-pages": "^2.0.1",

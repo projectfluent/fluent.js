@@ -1,9 +1,6 @@
-parser: babel-eslint
+parser: "@babel/eslint-parser"
 parserOptions:
-  ecmaVersion: 9
-  sourceType: module
-  ecmaFeatures:
-    jsx: true
+  requireConfigFile: false
 
 env:
   es6: true
