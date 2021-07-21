@@ -1,6 +1,6 @@
 import assert from 'assert';
 import translateElement from '../esm/overlay.js';
-import {elem} from './index';
+import {elem} from './util.js';
 
 suite('Localized text markup', function() {
   test('allowed element', function() {
