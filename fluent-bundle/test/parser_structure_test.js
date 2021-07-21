@@ -1,9 +1,11 @@
 import assert from 'assert';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { readdirSync, readFileSync} from 'fs';
+import { fileURLToPath } from 'url';
 
 import {FluentResource} from '../esm/resource.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const ftlFixtures = join(
   __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_structure'
 );

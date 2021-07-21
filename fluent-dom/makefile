@@ -19,7 +19,7 @@ esm/.compiled: $(SOURCES)
 	@echo -e " $(OK) esm/ compiled"
 
 .PHONY: test
-test: MOCHA_EXTRA_ARGS=--require ./test/index
+test: MOCHA_EXTRA_ARGS=--require ./test/index.js
 test: esm/.compiled
 	@$(MOCHA_CMD)
 

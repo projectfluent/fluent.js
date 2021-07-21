@@ -1,6 +1,4 @@
-'use strict';
-
-const JSDOM = require('jsdom').JSDOM;
+import { JSDOM } from 'jsdom';
 
 global.window = new JSDOM('', {
   url: "http://localhost",
