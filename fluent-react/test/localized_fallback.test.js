@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized
-} from "../esm/index";
+} from "../esm/index.js";
 
 test("uses message from 1st bundle", () => {
   const bundle1 = new FluentBundle();

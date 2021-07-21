@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   useLocalization
-} from "../esm/index";
+} from "../esm/index.js";
 
 function DummyComponent() {
   const { l10n } = useLocalization();

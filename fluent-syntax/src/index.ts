@@ -2,11 +2,11 @@ import { Resource } from "./ast.js";
 import { FluentParser, FluentParserOptions } from "./parser.js";
 import { FluentSerializer, FluentSerializerOptions } from "./serializer.js";
 
-export * from "./ast";
-export * from "./errors";
-export * from "./parser";
-export * from "./serializer";
-export * from "./visitor";
+export * from "./ast.js";
+export * from "./errors.js";
+export * from "./parser.js";
+export * from "./serializer.js";
+export * from "./visitor.js";
 
 export function parse(source: string, opts: FluentParserOptions): Resource {
   const parser = new FluentParser(opts);

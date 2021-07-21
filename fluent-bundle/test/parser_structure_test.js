@@ -2,7 +2,7 @@ import assert from 'assert';
 import { join } from 'path';
 import { readdirSync, readFileSync} from 'fs';
 
-import {FluentResource} from '../esm/resource';
+import {FluentResource} from '../esm/resource.js';
 
 const ftlFixtures = join(
   __dirname, '..', '..', 'fluent-syntax', 'test', 'fixtures_structure'

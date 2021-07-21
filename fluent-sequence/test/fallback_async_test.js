@@ -2,7 +2,7 @@ import assert from 'assert';
 
 import {CachedAsyncIterable} from 'cached-iterable';
 import {FluentBundle, FluentResource} from '@fluent/bundle';
-import {mapBundleAsync} from '../esm/index';
+import {mapBundleAsync} from '../esm/index.js';
 
 suite('Async Fallback — single id', function() {
   let bundle1, bundle2, generateBundles;

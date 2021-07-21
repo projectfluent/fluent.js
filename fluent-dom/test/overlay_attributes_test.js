@@ -1,5 +1,5 @@
 import assert from 'assert';
-import translateElement from '../esm/overlay';
+import translateElement from '../esm/overlay.js';
 import {elem} from './index';
 
 suite('Top-level attributes', function() {

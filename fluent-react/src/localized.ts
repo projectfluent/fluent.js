@@ -8,8 +8,8 @@ import {
   useContext
 } from "react";
 import PropTypes from "prop-types";
-import voidElementTags from "../vendor/voidElementTags";
-import { FluentContext } from "./context";
+import voidElementTags from "../vendor/voidElementTags.js";
+import { FluentContext } from "./context.js";
 import { FluentVariable } from "@fluent/bundle";
 
 // Match the opening angle bracket (<) in HTML tags, and HTML entities like

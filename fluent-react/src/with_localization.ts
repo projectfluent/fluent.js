@@ -1,5 +1,5 @@
 import { createElement, useContext, ComponentType, ReactElement } from "react";
-import { FluentContext } from "./context";
+import { FluentContext } from "./context.js";
 import { FluentVariable } from "@fluent/bundle";
 
 export interface WithLocalizationProps {

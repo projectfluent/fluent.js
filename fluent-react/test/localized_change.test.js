@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized
-} from "../esm/index";
+} from "../esm/index.js";
 
 test("relocalizes", () => {
   const Root = ({ l10n }) => (

@@ -1,5 +1,5 @@
-import translateElement from "./overlay";
-import Localization from "./localization";
+import translateElement from "./overlay.js";
+import Localization from "./localization.js";
 
 const L10NID_ATTR_NAME = "data-l10n-id";
 const L10NARGS_ATTR_NAME = "data-l10n-args";

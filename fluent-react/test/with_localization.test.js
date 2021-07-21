@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   withLocalization
-} from "../esm/index";
+} from "../esm/index.js";
 
 function DummyComponent() {
   return <div />;

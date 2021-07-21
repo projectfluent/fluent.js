@@ -1,4 +1,4 @@
-import {filterMatches} from "./matches";
+import {filterMatches} from "./matches.js";
 
 export interface NegotiateLanguagesOptions {
   strategy?: "filtering" | "matching" | "lookup";

@@ -4,8 +4,8 @@ import assert from 'assert';
 import sinon from 'sinon';
 import ftl from "@fluent/dedent";
 
-import {FluentBundle} from '../esm/bundle';
-import {FluentResource} from '../esm/resource';
+import {FluentBundle} from '../esm/bundle.js';
+import {FluentResource} from '../esm/resource.js';
 
 suite('FluentBundle constructor', function() {
   setup(function() {

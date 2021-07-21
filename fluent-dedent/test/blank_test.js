@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import ftl from "../esm/index";
+import ftl from "../esm/index.js";
 
 suite("blank lines", function() {
   test("leading", function() {

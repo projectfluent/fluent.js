@@ -1,7 +1,7 @@
 import { createElement, ReactNode, ReactElement } from "react";
 import PropTypes from "prop-types";
-import { FluentContext } from "./context";
-import { ReactLocalization } from "./localization";
+import { FluentContext } from "./context.js";
+import { ReactLocalization } from "./localization.js";
 
 interface LocalizationProviderProps {
   children?: ReactNode;
