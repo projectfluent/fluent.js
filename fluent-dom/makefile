@@ -14,6 +14,7 @@ compile: esm/.compiled
 
 esm/.compiled: $(SOURCES)
 	@$(TSC)
+	@echo '{ "type": "module" }' > esm/package.json
 	@touch $@
 	@echo -e " $(OK) esm/ compiled"
 
