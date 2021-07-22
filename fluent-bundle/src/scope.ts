@@ -34,10 +34,27 @@ export class Scope {
     this.errors.push(error);
   }
 
-  memoizeIntlObject<ObjectT extends object, OptionsT>(
-    ctor: new (locales: Array<string>, opts: OptionsT) => ObjectT,
-    opts: OptionsT
-  ): ObjectT {
+  memoizeIntlObject(
+    ctor: typeof Intl.NumberFormat,
+    opts: Intl.NumberFormatOptions
+  ): Intl.NumberFormat;
+  memoizeIntlObject(
+    ctor: typeof Intl.DateTimeFormat,
+    opts: Intl.DateTimeFormatOptions
+  ): Intl.DateTimeFormat;
+  memoizeIntlObject(
+    ctor: typeof Intl.PluralRules,
+    opts: Intl.PluralRulesOptions
+  ): Intl.PluralRules;
+  memoizeIntlObject(
+    ctor:
+      | typeof Intl.NumberFormat
+      | typeof Intl.DateTimeFormat
+      | typeof Intl.PluralRules,
+    opts: Intl.NumberFormatOptions &
+      Intl.DateTimeFormatOptions &
+      Intl.PluralRulesOptions
+  ): Intl.NumberFormat | Intl.DateTimeFormat | Intl.PluralRules {
     let cache = this.bundle._intls.get(ctor);
     if (!cache) {
       cache = {};
@@ -47,6 +64,6 @@ export class Scope {
     if (!cache[id]) {
       cache[id] = new ctor(this.bundle.locales, opts);
     }
-    return cache[id] as ObjectT;
+    return cache[id];
   }
 }

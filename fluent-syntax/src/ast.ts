@@ -6,6 +6,8 @@
  *
  */
 export abstract class BaseNode {
+  abstract type: string
+
   [name: string]: unknown;
 
   equals(other: BaseNode, ignoredFields: Array<string> = ["span"]): boolean {
@@ -45,7 +47,7 @@ export abstract class BaseNode {
     return true;
   }
 
-  clone(): this {
+  clone(): BaseNode {
     function visit(value: unknown): unknown {
       if (value instanceof BaseNode) {
         return value.clone();
@@ -55,7 +57,7 @@ export abstract class BaseNode {
       }
       return value;
     }
-    const clone = Object.create(this.constructor.prototype);
+    const clone = Object.create(this.constructor.prototype) as BaseNode;
     for (const prop of Object.keys(this)) {
       clone[prop] = visit(this[prop]);
     }

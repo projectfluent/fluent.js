@@ -31,7 +31,7 @@ export async function mapBundleAsync(
     return null;
   }
 
-  const foundBundles = new Array(ids.length).fill(null);
+  const foundBundles = new Array<FluentBundle | null>(ids.length).fill(null);
   let remainingCount = ids.length;
 
   for await (const bundle of bundles) {

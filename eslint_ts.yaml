@@ -19,13 +19,7 @@ rules:
   no-undef: off
   no-unused-vars: [error, args: none]
   no-use-before-define: off
-  "@typescript-eslint/ban-types": warn # FIXME
   "@typescript-eslint/no-inferrable-types": off
   "@typescript-eslint/no-unused-vars": [error, args: none]
-  "@typescript-eslint/no-unsafe-assignment": warn # FIXME
-  "@typescript-eslint/no-unsafe-member-access": warn # FIXME
-  "@typescript-eslint/no-unsafe-return": warn # FIXME
   "@typescript-eslint/no-use-before-define": off
-  "@typescript-eslint/restrict-plus-operands": warn # FIXME
-  "@typescript-eslint/restrict-template-expressions": warn # FIXME
   "@typescript-eslint/explicit-function-return-type": error

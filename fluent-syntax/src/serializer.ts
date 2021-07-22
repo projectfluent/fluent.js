@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+
 import * as AST from "./ast.js";
-// eslint-disable-next-line no-duplicate-imports
-import type {Resource, Entry, Expression, Placeable} from "./ast.js";
+import type { Resource, Entry, Expression, Placeable } from "./ast.js";
 
 function indentExceptFirstLine(content: string): string {
   return content.split("\n").join("\n    ");

@@ -22,7 +22,12 @@ export class FluentBundle {
   public _functions: Record<string, FluentFunction>;
   public _useIsolating: boolean;
   public _transform: TextTransform;
-  public _intls: WeakMap<object, Record<string, object>> = new WeakMap();
+  public _intls = new WeakMap<
+    | typeof Intl.NumberFormat
+    | typeof Intl.DateTimeFormat
+    | typeof Intl.PluralRules,
+    Record<string, Intl.NumberFormat | Intl.DateTimeFormat | Intl.PluralRules>
+  >();
 
   /**
    * Create an instance of `FluentBundle`.
