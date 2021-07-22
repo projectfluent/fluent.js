@@ -4,8 +4,7 @@ GLOBAL  := FluentSyntax
 include ../common.mk
 
 lint:
-	@$(ESLINT) --config $(ROOT)/eslint_ts.yaml --max-warnings 0 src/*.ts
-	@$(ESLINT) --config $(ROOT)/eslint_test.yaml --max-warnings 0 test/
+	@$(ESLINT) --max-warnings 0 src/ test/
 	@echo -e " $(OK) lint"
 
 .PHONY: compile

@@ -7,7 +7,7 @@ version = $(1)@$(shell node -e "\
 	console.log(require('../$(1)/package.json').version)")
 
 lint:
-	@$(ESLINT) --config $(ROOT)/eslint_js.yaml --max-warnings 0 src/
+	@$(ESLINT) --max-warnings 0 src/
 	@echo -e " $(OK) lint"
 
 test: ;

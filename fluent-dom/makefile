@@ -5,8 +5,7 @@ DEPS    := cached-iterable:CachedIterable
 include ../common.mk
 
 lint:
-	@$(ESLINT) --config $(ROOT)/eslint_js.yaml --max-warnings 0 src/
-	@$(ESLINT) --config $(ROOT)/eslint_test.yaml --max-warnings 0 test/
+	@$(ESLINT) --max-warnings 0 src/ test/
 	@echo -e " $(OK) lint"
 
 .PHONY: compile
