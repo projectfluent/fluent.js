@@ -32,9 +32,9 @@ overrides:
       "@typescript-eslint/explicit-function-return-type": error
 
   - files: ["*/test/**"]
-    parser: "@babel/eslint-parser" # Required by JSX in fluent-react
     parserOptions:
-      requireConfigFile: false
+      ecmaVersion: 2020 # Required by import.meta
+      sourceType: module
     env:
       node: true
       mocha: true
