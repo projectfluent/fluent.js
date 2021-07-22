@@ -1,10 +1,12 @@
 import assert from "assert";
-import { join } from "path";
+import { dirname, join } from "path";
 import { readdir } from "fs";
-import { readfile } from "./util";
+import { fileURLToPath } from 'url';
+import { readfile } from "./util.js";
 
 import { parse } from "../esm/index.js";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "fixtures_structure");
 
 readdir(fixtures, function(err, filenames) {

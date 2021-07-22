@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: 0 */
 
-import {Locale} from "./locale";
+import {Locale} from "./locale.js";
 
 /**
  * Negotiates the languages between the list of requested locales against

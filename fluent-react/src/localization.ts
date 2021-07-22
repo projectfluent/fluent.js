@@ -1,7 +1,7 @@
 import { FluentBundle, FluentVariable } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
 import { CachedSyncIterable } from "cached-iterable";
-import { createParseMarkup, MarkupParser } from "./markup";
+import { createParseMarkup, MarkupParser } from "./markup.js";
 
 /*
  * `ReactLocalization` handles translation formatting and fallback.

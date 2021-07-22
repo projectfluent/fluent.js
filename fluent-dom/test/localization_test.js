@@ -1,6 +1,6 @@
 import assert from "assert";
-import { FluentBundle, FluentResource } from "@fluent/bundle/index";
-import Localization from "../esm/localization";
+import { FluentBundle, FluentResource } from "@fluent/bundle";
+import Localization from "../esm/localization.js";
 
 async function* mockGenerateMessages(resourceIds) {
   const bundle = new FluentBundle(["en-US"]);

@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { FluentContext } from "./context";
-import { ReactLocalization } from "./localization";
+import { FluentContext } from "./context.js";
+import { ReactLocalization } from "./localization.js";
 
 /*
 * The `useLocalization` hook returns the FluentContext

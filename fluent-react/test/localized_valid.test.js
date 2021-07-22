@@ -4,7 +4,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized
-} from "../esm/index";
+} from "../esm/index.js";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 
 describe("Localized - validation", () => {

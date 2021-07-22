@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized
-} from "../esm/index";
+} from "../esm/index.js";
 
 describe("Localized - rendering", () => {
   test("render the value", () => {
