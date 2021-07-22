@@ -1,3 +1,3 @@
 module.exports = {
-  extends: "../../eslint_test.json"
+  extends: "../../eslint_test.yaml"
 }

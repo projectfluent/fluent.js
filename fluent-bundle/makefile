@@ -4,8 +4,8 @@ GLOBAL  := FluentBundle
 include ../common.mk
 
 lint:
-	@$(ESLINT) --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
-	@$(ESLINT) --config $(ROOT)/eslint_test.json --max-warnings 0 test/
+	@$(ESLINT) --config $(ROOT)/eslint_ts.yaml --max-warnings 0 src/*.ts
+	@$(ESLINT) --config $(ROOT)/eslint_test.yaml --max-warnings 0 test/
 	@echo -e " $(OK) lint"
 
 .PHONY: compile
