@@ -32,7 +32,7 @@ overrides:
       "@typescript-eslint/explicit-function-return-type": error
 
   - files: ["*/test/**"]
-    parser: "@babel/eslint-parser"
+    parser: "@babel/eslint-parser" # Required by JSX in fluent-react
     parserOptions:
       requireConfigFile: false
     env:
