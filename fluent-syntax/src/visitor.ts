@@ -88,7 +88,7 @@ export abstract class Transformer extends Visitor {
   visit(node: AST.BaseNode): AST.BaseNode | undefined {
     let visit = this[`visit${node.type}`];
     if (typeof visit === "function") {
-      return visit.call(this, node);
+      return visit.call(this, node) as AST.BaseNode | undefined;
     }
     return this.genericVisit(node);
   }

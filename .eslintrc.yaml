@@ -1,0 +1,45 @@
+root: true
+
+env:
+  es6: true
+
+overrides:
+  - files: ["*/src/*.js"]
+    extends:
+      - ./eslint-base.yaml
+    parserOptions:
+      ecmaVersion: 9
+      sourceType: module
+
+  - files: ["*/src/*.ts"]
+    parser: "@typescript-eslint/parser"
+    parserOptions:
+      project: ./tsconfig.json
+    extends:
+      - eslint:recommended
+      - ./eslint-base.yaml
+      - plugin:@typescript-eslint/recommended
+      - plugin:@typescript-eslint/recommended-requiring-type-checking
+    rules:
+      complexity: off
+      prefer-const: off
+      no-undef: off
+      no-unused-vars: [error, args: none]
+      no-use-before-define: off
+      "@typescript-eslint/no-inferrable-types": off
+      "@typescript-eslint/no-unused-vars": [error, args: none]
+      "@typescript-eslint/no-use-before-define": off
+      "@typescript-eslint/explicit-function-return-type": error
+
+  - files: ["*/test/**"]
+    parserOptions:
+      ecmaVersion: 2020 # Required by import.meta
+      sourceType: module
+    env:
+      node: true
+      mocha: true
+    plugins:
+      - mocha
+    rules:
+      mocha/no-exclusive-tests: error
+      mocha/no-identical-title: error

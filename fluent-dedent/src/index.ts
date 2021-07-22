@@ -16,7 +16,7 @@ export default function ftl(
   strings: TemplateStringsArray,
   ...values: Array<unknown>
 ): string {
-  let code = strings.reduce((acc, cur) => acc + values.shift() + cur);
+  let code = strings.reduce((acc, cur) => acc + String(values.shift()) + cur);
   let lines = code.split("\n");
 
   let first = lines.shift();

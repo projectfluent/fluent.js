@@ -5,8 +5,7 @@ JEST    ?= node_modules/.bin/jest
 include ../common.mk
 
 lint:
-	@$(ESLINT) --config $(ROOT)/eslint_ts.json --max-warnings 0 src/*.ts
-	@$(ESLINT) --config $(ROOT)/eslint_test.json --max-warnings 0 test/
+	@$(ESLINT) --max-warnings 0 src/ test/
 	@echo -e " $(OK) lint"
 
 .PHONY: compile

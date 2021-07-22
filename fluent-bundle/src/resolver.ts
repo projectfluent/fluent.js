@@ -111,7 +111,7 @@ function getArguments(
   args: Array<Expression | NamedArgument>
 ): Arguments {
   const positional: Array<FluentValue> = [];
-  const named: Record<string, FluentValue> = Object.create(null);
+  const named = Object.create(null) as Record<string, FluentValue>;
 
   for (const arg of args) {
     if (arg.type === "narg") {

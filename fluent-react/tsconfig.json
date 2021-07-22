@@ -1,16 +1,7 @@
 {
-    "compilerOptions": {
-        "target": "es2018",
-        "module": "es2015",
-        "strict": true,
-        "allowJs": false,
-        "esModuleInterop": true,
-        "moduleResolution": "node",
-        "noEmitHelpers": true,
-        "declaration": true,
-        "outDir": "./esm",
-    },
-    "include": [
-        "./src/**/*.ts"
-    ]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./esm"
+  },
+  "include": ["./src/**/*.ts"]
 }

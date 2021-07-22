@@ -46,7 +46,7 @@ export interface LocalizedProps {
  *  source code.
  */
 export function Localized(props: LocalizedProps): ReactElement {
-  const { id, attrs, vars, elems, children = null } = props;
+  const { id, attrs, vars, elems, children } = props;
   const l10n = useContext(FluentContext);
   let child: ReactNode | null;
 
@@ -62,7 +62,7 @@ export function Localized(props: LocalizedProps): ReactElement {
     // one.
     child = children[0];
   } else {
-    child = children;
+    child = children ?? null;
   }
 
   if (!l10n) {

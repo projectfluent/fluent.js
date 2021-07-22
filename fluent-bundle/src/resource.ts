@@ -179,7 +179,7 @@ export class FluentResource {
     }
 
     function parseAttributes(): Record<string, Pattern> {
-      let attrs: Record<string, Pattern> = Object.create(null);
+      let attrs = Object.create(null) as Record<string, Pattern>;
 
       while (test(RE_ATTRIBUTE_START)) {
         let name = match1(RE_ATTRIBUTE_START);
