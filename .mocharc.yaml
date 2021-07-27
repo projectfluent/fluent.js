@@ -1,0 +1,4 @@
+ignore:
+  - fluent-dom/**
+  - fluent-react/**
+ui: tdd

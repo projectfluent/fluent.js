@@ -5,10 +5,13 @@
     "./fluent-*"
   ],
   "scripts": {
-    "lint": "eslint --max-warnings 0 'fluent-*/{src,test}/**/*.{js,ts}'"
+    "lint": "eslint --max-warnings 0 'fluent-*/{src,test}/**/*.{js,ts}'",
+    "test:common": "mocha 'fluent-*/test/*_test.js'",
+    "test": "npm run test:common && npm test -w fluent-dom && npm test -w fluent-react"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.0.0",
+    "npm": ">=7.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.4",

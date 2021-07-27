@@ -38,8 +38,12 @@
     "format",
     "parser"
   ],
+  "scripts": {
+    "test": "mocha 'test/*_test.js'"
+  },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.0.0",
+    "npm": ">=7.0.0"
   },
   "devDependencies": {
     "@fluent/dedent": "^0.3.0",

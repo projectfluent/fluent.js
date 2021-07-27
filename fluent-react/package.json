@@ -40,8 +40,12 @@
     "react",
     "reactjs"
   ],
+  "scripts": {
+    "test": "jest --collect-coverage"
+  },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.0.0",
+    "npm": ">=7.0.0"
   },
   "jest": {
     "setupFilesAfterEnv": [
