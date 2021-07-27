@@ -43,6 +43,7 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes",
+    "docs": "typedoc --options ../typedoc.config.cjs",
     "test": "jest --collect-coverage"
   },
   "engines": {

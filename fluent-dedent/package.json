@@ -26,6 +26,7 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "rollup -c ../rollup.config.mjs",
+    "docs": "typedoc --options ../typedoc.config.cjs",
     "test": "mocha 'test/*_test.js'"
   },
   "engines": {

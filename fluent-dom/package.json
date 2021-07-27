@@ -36,6 +36,7 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable",
+    "docs": "typedoc --options ../typedoc.config.cjs src/index.js",
     "test": "c8 mocha -ui tdd --require ./test/index.js 'test/*_test.js'"
   },
   "engines": {

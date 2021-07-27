@@ -4,7 +4,6 @@
 ROOT := $(dir $(lastword $(MAKEFILE_LIST)))
 SOURCES := $(wildcard src/*)
 VERSION := $(shell node -pe "require('./package.json').version")
-DOC_DESTINATION := $(subst @fluent, ../html, $(PACKAGE))
 
 export SHELL := /bin/bash
 ESLINT ?= $(ROOT)node_modules/.bin/eslint
@@ -22,10 +21,7 @@ ROLLUP_CMD = $(ROLLUP) $(CURDIR)/esm/index.js \
 	$(NULL)
 
 TYPEDOC_CMD = $(TYPEDOC) src/index.?s \
-	--out $(DOC_DESTINATION) \
-	--logger none \
-	--hideGenerator \
-	--includeVersion \
+	--options ../typedoc.config.cjs \
 	$(NULL)
 
 MOCHA_CMD = npx c8 $(MOCHA) \

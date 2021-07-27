@@ -28,7 +28,8 @@
     "l10n"
   ],
   "scripts": {
-    "build": "make build"
+    "build": "make build",
+    "docs": "true"
   },
   "devDependencies": {
     "rollup-plugin-node-resolve": "^4.2.2"
