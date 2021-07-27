@@ -1,4 +1,4 @@
-# @fluent/dedent ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/dedent/badge.svg)
+# @fluent/dedent ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `@fluent/dedent` provides a template literal tag to dedent Fluent code. It's
 part of [Project Fluent][].

@@ -1,26 +1,25 @@
-name: "@fluent/sequence"
+name: legacy
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
 jobs:
   dist:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [12.x, 14.x, 16.x]
+        node: [12.x, 14.x]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{matrix.node}}
         uses: actions/setup-node@v1
         with:
           node-version: ${{matrix.node}}
-      - name: Install build tools
-        run: npm ci
-      - name: Install package dependencies
-        working-directory: ./fluent-sequence
-        run: npm ci
-      - name: make dist
-        working-directory: ./fluent-sequence
-        run: make dist
+      - run: npm install --global npm@7
+      - run: npm ci
+      - run: npm run build --workspaces
+      - run: npm test
+      - run: npm run lint
+      - run: npm run docs --workspaces
