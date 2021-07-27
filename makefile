@@ -2,7 +2,9 @@ export SHELL := /bin/bash
 GH_PAGES ?= $(CURDIR)/node_modules/.bin/gh-pages
 
 TARGETS  := all dist test build html
-PACKAGES := $(wildcard fluent-*)
+
+# The order matters: dedent > bundle > sequence > others
+PACKAGES := fluent-dedent fluent-bundle fluent-sequence fluent-dom fluent-gecko fluent-langneg fluent-react fluent-syntax
 
 $(TARGETS): $(PACKAGES)
 

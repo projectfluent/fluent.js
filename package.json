@@ -2,6 +2,9 @@
   "name": "fluent-javascript",
   "private": true,
   "workspaces": [
+    "./fluent-dedent",
+    "./fluent-bundle",
+    "./fluent-sequence",
     "./fluent-*"
   ],
   "scripts": {
