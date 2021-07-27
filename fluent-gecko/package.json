@@ -27,6 +27,9 @@
     "localization",
     "l10n"
   ],
+  "scripts": {
+    "build": "make build"
+  },
   "devDependencies": {
     "rollup-plugin-node-resolve": "^4.2.2"
   }

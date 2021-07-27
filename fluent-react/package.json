@@ -41,6 +41,8 @@
     "reactjs"
   ],
   "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes",
     "test": "jest --collect-coverage"
   },
   "engines": {

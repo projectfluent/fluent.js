@@ -3,13 +3,14 @@ root: true
 env:
   es6: true
 
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: module
+
 overrides:
   - files: ["*/src/*.js"]
     extends:
       - ./eslint-base.yaml
-    parserOptions:
-      ecmaVersion: 9
-      sourceType: module
 
   - files: ["*/src/*.ts"]
     parser: "@typescript-eslint/parser"

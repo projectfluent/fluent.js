@@ -8,6 +8,7 @@
     "./fluent-*"
   ],
   "scripts": {
+    "build": "npm run build -ws",
     "lint": "eslint --max-warnings 0 'fluent-*/{src,test}/**/*.{js,ts}'",
     "test:common": "c8 mocha 'fluent-*/test/*_test.js'",
     "test": "npm run test:common && npm test -w fluent-dom && npm test -w fluent-react"

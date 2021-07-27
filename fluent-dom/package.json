@@ -34,6 +34,8 @@
     "format"
   ],
   "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable",
     "test": "c8 mocha -ui tdd --require ./test/index.js 'test/*_test.js'"
   },
   "engines": {
