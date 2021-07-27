@@ -76,14 +76,9 @@ Hacking on `fluent.js` is easy! To quickly get started clone the repo:
 
 You'll need at least Node.js 12 LTS. Older versions are not supported.
 
-Install the build tools used by all packages (Babel, Rollup, Mocha etc.):
+Install the dependencies used by all packages:
 
     $ npm install
-
-Install dependencies of individual `fluent.js` packages which are required for
-passing tests:
-
-    $ make deps
 
 Build all packages at once:
 

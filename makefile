@@ -1,7 +1,7 @@
 export SHELL := /bin/bash
 GH_PAGES ?= $(CURDIR)/node_modules/.bin/gh-pages
 
-TARGETS  := all dist lint test build html deps depsclean
+TARGETS  := all dist lint test build html
 PACKAGES := $(wildcard fluent-*)
 
 $(TARGETS): $(PACKAGES)

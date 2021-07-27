@@ -1,8 +1,9 @@
 PACKAGE := @fluent/react
 GLOBAL  := FluentReact
-JEST    ?= node_modules/.bin/jest
 
 include ../common.mk
+
+JEST ?= $(ROOT)node_modules/.bin/jest
 
 lint:
 	@$(ESLINT) --max-warnings 0 src/ test/
