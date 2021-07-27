@@ -12,7 +12,11 @@
     "./fluent-gecko"
   ],
   "scripts": {
+    "predist": "npm run clean",
+    "dist": "npm run build --workspaces",
+    "postdist": "npm run lint && npm run test && npm run docs --workspaces",
     "clean": "git clean -fdxe node_modules fluent-*/{coverage,dist,esm,index.js} html",
+    "deploy-html": "gh-pages -d html",
     "lint": "eslint --max-warnings 0 'fluent-*/{src,test}/**/*.{js,ts}'",
     "test:common": "c8 mocha 'fluent-*/test/*_test.js'",
     "test": "npm run test:common && npm test -w fluent-dom && npm test -w fluent-react"
