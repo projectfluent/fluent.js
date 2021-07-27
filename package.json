@@ -4,6 +4,9 @@
   "workspaces": [
     "./fluent-*"
   ],
+  "scripts": {
+    "lint": "eslint --max-warnings 0 'fluent-*/{src,test}/**/*.{js,ts}'"
+  },
   "engines": {
     "node": ">=12.0.0"
   },

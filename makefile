@@ -1,7 +1,7 @@
 export SHELL := /bin/bash
 GH_PAGES ?= $(CURDIR)/node_modules/.bin/gh-pages
 
-TARGETS  := all dist lint test build html
+TARGETS  := all dist test build html
 PACKAGES := $(wildcard fluent-*)
 
 $(TARGETS): $(PACKAGES)
@@ -20,6 +20,10 @@ clean: $(PACKAGES)
 	@echo
 	@rm -rf html
 	@echo -e "$(OK) html $@"
+
+lint:
+	@npm run lint
+	@echo -e "$(OK) lint"
 
 include tools/perf/makefile
 
