@@ -74,21 +74,25 @@ Hacking on `fluent.js` is easy! To quickly get started clone the repo:
     $ git clone https://github.com/projectfluent/fluent.js.git
     $ cd fluent.js
 
-You'll need at least Node.js 12 LTS. Older versions are not supported.
+You'll need at least **Node.js 12** and **npm v7**.
+Older versions are not supported.
 
-Install the dependencies used by all packages:
+Install the dependencies used by all packages, which are managed as
+[npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces):
 
     $ npm install
 
-Build all packages at once:
+Build and test all packages at once:
 
-    $ make
+    $ npm run dist
 
 …which is equivalent to:
 
-    $ make lint
-    $ make test
-    $ make build
+    $ npm run clean
+    $ npm run build --workspaces
+    $ npm run lint
+    $ npm run test
+    $ npm run docs --workspaces
 
-You can also `cd` into a package's directory and issue the above `make`
-commands from there.  Only this one package will be affected.
+Each package may also be built separately by running `npm run build` in
+its directory.
