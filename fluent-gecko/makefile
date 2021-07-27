@@ -13,25 +13,9 @@ lint:
 test: ;
 
 .PHONY: build
-build: FluentSyntax.jsm fluent-react.js
-
-FluentSyntax.jsm: $(SOURCES)
-	$(MAKE) -sC ../fluent-syntax compile
-	@$(ROLLUP) $(CURDIR)/src/fluent-syntax.js \
-	    --config ./xpcom_config.js \
-	    --no-treeshake \
-	    --no-freeze \
-	    --output.intro "/* $(call version,fluent-syntax) */" \
-	    --output.file ./dist/$@
-	@echo -e " $(OK) $@ built"
-
-fluent-react.js: $(SOURCES)
-	$(MAKE) -sC ../fluent-react compile
-	@$(ROLLUP) $(CURDIR)/src/fluent-react.js \
-	    --config ./vendor_config.js \
-	    --output.intro "/* $(call version,fluent-react) */" \
-	    --output.file ./dist/$@
-	@echo -e " $(OK) $@ built"
+build: $(SOURCES)
+	@$(ROLLUP) --config rollup.config.mjs
+	@echo -e " $(OK) built"
 
 clean:
 	@rm -rf dist

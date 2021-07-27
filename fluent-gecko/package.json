@@ -28,7 +28,7 @@
     "l10n"
   ],
   "scripts": {
-    "build": "make build",
+    "build": "rollup --config rollup.config.mjs",
     "docs": "true"
   },
   "devDependencies": {

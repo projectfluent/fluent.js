@@ -5,7 +5,11 @@
     "./fluent-dedent",
     "./fluent-bundle",
     "./fluent-sequence",
-    "./fluent-*"
+    "./fluent-dom",
+    "./fluent-langneg",
+    "./fluent-react",
+    "./fluent-syntax",
+    "./fluent-gecko"
   ],
   "scripts": {
     "clean": "git clean -fdxe node_modules fluent-*/{coverage,dist,esm,index.js} html",
