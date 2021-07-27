@@ -9,7 +9,6 @@ DOC_DESTINATION := $(subst @fluent, ../html, $(PACKAGE))
 export SHELL := /bin/bash
 ESLINT ?= $(ROOT)node_modules/.bin/eslint
 TSC ?= $(ROOT)node_modules/.bin/tsc
-NYC ?= $(ROOT)node_modules/.bin/nyc
 MOCHA ?= $(ROOT)node_modules/.bin/mocha
 ROLLUP ?= $(ROOT)node_modules/.bin/rollup
 TYPEDOC ?= $(ROOT)node_modules/.bin/typedoc
@@ -29,7 +28,7 @@ TYPEDOC_CMD = $(TYPEDOC) src/index.?s \
 	--includeVersion \
 	$(NULL)
 
-MOCHA_CMD =@$(NYC) --reporter=text --reporter=html $(MOCHA) \
+MOCHA_CMD = npx c8 $(MOCHA) \
 	--recursive --ui tdd \
 	$(MOCHA_EXTRA_ARGS) \
 	test/**/*_test.js \
