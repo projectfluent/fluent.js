@@ -137,6 +137,8 @@ const likelySubtagsMin: Record<string, string> = {
   "zh": "zh-hans-cn",
   "zh-hant": "zh-hant-tw",
   "zh-hk": "zh-hant-hk",
+  "zh-mo": "zh-hant-mo",
+  "zh-tw": "zh-hant-tw",
   "zh-gb": "zh-hant-gb",
   "zh-us": "zh-hant-us",
 };
