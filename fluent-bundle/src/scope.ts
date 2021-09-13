@@ -27,8 +27,8 @@ export class Scope {
     this.args = args;
   }
 
-  reportError(error: Error): void {
-    if (!this.errors) {
+  reportError(error: unknown): void {
+    if (!this.errors || !(error instanceof Error)) {
       throw error;
     }
     this.errors.push(error);

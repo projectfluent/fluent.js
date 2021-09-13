@@ -3,7 +3,6 @@
     "target": "es2018",
     "module": "es2015",
     "strict": true,
-    "useUnknownInCatchVariables": false,
     "allowJs": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
