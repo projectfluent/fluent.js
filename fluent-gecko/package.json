@@ -27,6 +27,10 @@
     "localization",
     "l10n"
   ],
+  "scripts": {
+    "build": "rollup --config rollup.config.mjs",
+    "docs": "true"
+  },
   "devDependencies": {
     "rollup-plugin-node-resolve": "^4.2.2"
   }

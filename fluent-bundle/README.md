@@ -1,4 +1,4 @@
-# @fluent/bundle ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/bundle/badge.svg)
+# @fluent/bundle ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `@fluent/bundle` is a JavaScript implementation of [Project Fluent][],
 optimized for runtime performance.

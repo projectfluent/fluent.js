@@ -1,4 +1,4 @@
-# @fluent/syntax ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/syntax/badge.svg)
+# @fluent/syntax ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `@fluent/syntax` is a tooling library for parsing, serializing, and working
 with the Fluent syntax. It's part of [Project Fluent][].

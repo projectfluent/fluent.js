@@ -23,7 +23,14 @@
     "fluent",
     "ftl"
   ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs",
+    "docs": "typedoc --options ../typedoc.config.cjs",
+    "test": "mocha 'test/*_test.js'"
+  },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.0.0",
+    "npm": ">=7.0.0"
   }
 }

@@ -1,4 +1,4 @@
-# fluent-gecko ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/gecko/badge.svg)
+# fluent-gecko ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `fluent-gecko` is a Gecko-compatible distribution of [Project Fluent][].
 

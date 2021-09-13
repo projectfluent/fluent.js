@@ -1,4 +1,4 @@
-# @fluent/react ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/react/badge.svg)
+# @fluent/react ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `@fluent/react` provides the React bindings for [Project Fluent][].
 

@@ -1,4 +1,4 @@
-# @fluent/dom ![](https://github.com/projectfluent/fluent.js/workflows/@fluent/dom/badge.svg)
+# @fluent/dom ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `@fluent/dom` provides the DOM bindings for [Project Fluent][].
 

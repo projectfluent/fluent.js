@@ -40,8 +40,15 @@
     "react",
     "reactjs"
   ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes",
+    "docs": "typedoc --options ../typedoc.config.cjs",
+    "test": "jest --collect-coverage"
+  },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.0.0",
+    "npm": ">=7.0.0"
   },
   "jest": {
     "setupFilesAfterEnv": [
