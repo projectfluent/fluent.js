@@ -69,7 +69,7 @@
     "@babel/eslint-parser": "^7.14.7",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "7.0.0",
-    "@fluent/bundle": "^0.16.0",
+    "@fluent/bundle": "file:../fluent-bundle",
     "@types/react": "^16.9.22",
     "@types/react-dom": "^16.9.5",
     "babel-jest": "^24.8.0",

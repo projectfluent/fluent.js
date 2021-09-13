@@ -49,7 +49,7 @@
     "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/dedent": "^0.3.0",
+    "@fluent/dedent": "file:../fluent-dedent",
     "sinon": "^4.2.2"
   }
 }
