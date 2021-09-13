@@ -7,9 +7,9 @@
     "build": "parcel build public/index.html"
   },
   "dependencies": {
-    "@fluent/bundle": "^0.16.1",
-    "@fluent/langneg": "^0.5.2",
-    "@fluent/sequence": "^0.6.0",
+    "@fluent/bundle": "^0.17.0",
+    "@fluent/langneg": "^0.6.0",
+    "@fluent/sequence": "^0.7.0",
     "cached-iterable": "^0.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.0",

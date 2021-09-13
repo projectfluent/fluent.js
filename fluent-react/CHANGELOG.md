@@ -1,5 +1,16 @@
 # Changelog
 
+## @fluent/react 0.14.0 (September 13, 2021)
+
+  - Remove `"type": "commonjs"` from the package's root `package.json`, but add
+    `"type": "module"` to the `esm/` directory.
+    ([#556](https://github.com/projectfluent/fluent.js/pull/556),
+    [#567](https://github.com/projectfluent/fluent.js/pull/567))
+  - Set Node.js 12 as the minimum supported version
+    ([#557](https://github.com/projectfluent/fluent.js/pull/557))
+  - Provide better errors when components are mis-configured
+    ([#549](https://github.com/projectfluent/fluent.js/pull/549))
+
 ## @fluent/react 0.13.1 (Apr 7, 2021)
 
   - Allow the Localized component to have an array with one element in its children

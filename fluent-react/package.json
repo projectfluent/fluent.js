@@ -1,7 +1,7 @@
 {
   "name": "@fluent/react",
   "description": "Fluent bindings for React",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -57,12 +57,12 @@
     "restoreMocks": true
   },
   "dependencies": {
-    "@fluent/sequence": "0.6.0",
+    "@fluent/sequence": "^0.7.0",
     "cached-iterable": "^0.3.0",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
-    "@fluent/bundle": ">=0.16.0 <0.17.0",
+    "@fluent/bundle": ">=0.16.0 <0.18.0",
     "react": ">=16.8.0"
   },
   "devDependencies": {

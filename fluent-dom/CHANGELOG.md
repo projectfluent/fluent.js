@@ -1,5 +1,12 @@
 # Changelog
 
+## @fluent/dom 0.8.0 (September 13, 2021)
+
+  - Remove `"type": "commonjs"` from the package's root `package.json`.
+    ([#556](https://github.com/projectfluent/fluent.js/pull/556))
+  - Set Node.js 12 as the minimum supported version
+    ([#557](https://github.com/projectfluent/fluent.js/pull/557))
+
 ## @fluent/dom 0.7.0 (July 2, 2020)
 
   - Remove the `compat.js` build and compile everything to ES2018. (#472, #474)

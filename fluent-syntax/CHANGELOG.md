@@ -1,5 +1,14 @@
 # Changelog
 
+## @fluent/syntax 0.18.0 (September 13, 2021)
+
+  - Remove `"type": "commonjs"` from the package's root `package.json`, but add
+    `"type": "module"` to the `esm/` directory.
+    ([#556](https://github.com/projectfluent/fluent.js/pull/556),
+    [#567](https://github.com/projectfluent/fluent.js/pull/567))
+  - Set Node.js 12 as the minimum supported version
+    ([#557](https://github.com/projectfluent/fluent.js/pull/557))
+
 ## @fluent/syntax 0.17.0 (April 9, 2021)
 
   - Align AST types with fluent-rs. (#525)
