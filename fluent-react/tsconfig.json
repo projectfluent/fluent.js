@@ -1,7 +1,10 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.build.json",
   "compilerOptions": {
-    "outDir": "./esm"
-  },
-  "include": ["./src/**/*.ts"]
+    "baseUrl": ".",
+    "paths": {
+      "@fluent/bundle": ["../fluent-bundle/src/index.ts"],
+      "@fluent/sequence": ["../fluent-sequence/src/index.ts"]
+    }
+  }
 }

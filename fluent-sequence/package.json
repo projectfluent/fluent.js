@@ -27,9 +27,9 @@
     "ftl"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p ./tsconfig.build.json",
     "postbuild": "rollup -c ../rollup.config.mjs",
-    "docs": "typedoc --options ../typedoc.config.cjs",
+    "docs": "typedoc --options ../typedoc.config.cjs --tsconfig ./tsconfig.build.json",
     "test": "mocha 'test/*_test.js'"
   },
   "engines": {

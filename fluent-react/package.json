@@ -41,9 +41,9 @@
     "reactjs"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p ./tsconfig.build.json",
     "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes",
-    "docs": "typedoc --options ../typedoc.config.cjs",
+    "docs": "typedoc --options ../typedoc.config.cjs --tsconfig ./tsconfig.build.json",
     "test": "jest --collect-coverage"
   },
   "engines": {

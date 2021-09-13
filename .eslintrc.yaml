@@ -15,7 +15,7 @@ overrides:
   - files: ["*/src/*.ts"]
     parser: "@typescript-eslint/parser"
     parserOptions:
-      project: ./tsconfig.json
+      project: ./fluent-*/tsconfig.json
     extends:
       - eslint:recommended
       - ./eslint-base.yaml
