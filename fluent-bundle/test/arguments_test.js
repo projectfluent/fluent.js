@@ -215,7 +215,8 @@ suite('Variables', function() {
     });
 
     test('can be a FluentDateTime', function(){
-      const arg = new FluentDateTime(new Date('2016-09-29'), {weekday: "long"});
+      const localDate = new Date(2016, 8, 29, 12);
+      const arg = new FluentDateTime(localDate, {weekday: "long"});
       const msg = bundle.getMessage('foo');
       const val = bundle.formatPattern(msg.value, {arg}, errs);
       assert.strictEqual(val, 'Thursday');
