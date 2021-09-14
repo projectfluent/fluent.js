@@ -8,12 +8,13 @@ import {FluentBundle} from '../esm/bundle.js';
 import {FluentResource} from '../esm/resource.js';
 
 suite('FluentBundle constructor', function() {
-  setup(function() {
-    this.nf = sinon.spy(Intl, 'NumberFormat');
+  let nfSpy;
+  setup(() => {
+    nfSpy = sinon.spy(Intl, 'NumberFormat');
   });
 
-  teardown(function() {
-    this.nf.restore();
+  teardown(() => {
+    nfSpy.restore();
   });
 
   test('accepts a single locale string', function() {
@@ -29,7 +30,7 @@ suite('FluentBundle constructor', function() {
     assert.strictEqual(val, 'Foo 1');
     assert.strictEqual(errs.length, 0);
     
-    const locale = this.nf.getCall(0).args[0];
+    const locale = nfSpy.lastCall.args[0];
     assert.deepEqual(locale, ['en-US']);
   });
 
@@ -46,7 +47,7 @@ suite('FluentBundle constructor', function() {
     assert.strictEqual(val, 'Foo 1');
     assert.strictEqual(errs.length, 0);
 
-    const locales = this.nf.getCall(0).args[0];
+    const locales = nfSpy.lastCall.args[0];
     assert.deepEqual(locales, ['de', 'en-US']);
   });
 });

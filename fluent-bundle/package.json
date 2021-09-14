@@ -50,6 +50,6 @@
   },
   "devDependencies": {
     "@fluent/dedent": "file:../fluent-dedent",
-    "sinon": "^4.2.2"
+    "sinon": "^11.1.2"
   }
 }
