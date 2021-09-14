@@ -11,12 +11,12 @@
     "@fluent/langneg": "^0.6.0",
     "@fluent/sequence": "^0.7.0",
     "cached-iterable": "^0.3.0",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@types/react": "^16.9.32",
-    "@types/react-dom": "^16.9.6",
+    "@types/react": "^17.0.20",
+    "@types/react-dom": "^17.0.9",
     "parcel-bundler": "1.12.x"
   },
   "engines": {
