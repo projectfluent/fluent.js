@@ -35,7 +35,7 @@
     "eslint-plugin-mocha": "^9.0.0",
     "esm": "^3.2.22",
     "fuzzer": "^0.2.1",
-    "gh-pages": "^2.0.1",
+    "gh-pages": "^3.2.3",
     "intl-pluralrules": "^1.0.0",
     "mocha": "^9.0.2",
     "prettyjson": "^1.2.1",
