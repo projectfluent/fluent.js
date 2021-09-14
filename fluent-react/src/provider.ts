@@ -1,10 +1,9 @@
 import { createElement, ReactNode, ReactElement } from "react";
-import PropTypes from "prop-types";
 import { FluentContext } from "./context.js";
 import { ReactLocalization } from "./localization.js";
 
 interface LocalizationProviderProps {
-  children?: ReactNode;
+  children: ReactNode;
   l10n: ReactLocalization;
 }
 
@@ -29,14 +28,7 @@ export function LocalizationProvider(
 ): ReactElement {
   return createElement(
     FluentContext.Provider,
-    {
-      value: props.l10n
-    },
+    { value: props.l10n },
     props.children
   );
 }
-
-LocalizationProvider.propTypes = {
-  children: PropTypes.element.isRequired,
-  l10n: PropTypes.instanceOf(ReactLocalization).isRequired,
-};

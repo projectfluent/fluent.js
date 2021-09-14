@@ -36,7 +36,7 @@ export default [
       intro: `/* fluent-react@${reactPkg.version} */`,
     },
     context: "this",
-    external: ["react", "prop-types"],
+    external: ["react"],
     plugins: [nodeResolve()],
   },
   {

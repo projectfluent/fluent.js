@@ -25,18 +25,4 @@ describe("LocalizationProvider - validation", () => {
     );
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
   });
-
-  test("without a child", () => {
-    expect(() => {
-      TestRenderer.create(
-        <LocalizationProvider l10n={new ReactLocalization([])} />
-      );
-    }).toThrow(/required/);
-  });
-
-  test("without the l10n prop", () => {
-    expect(() => {
-      TestRenderer.create(<LocalizationProvider />);
-    }).toThrow(/marked as required/);
-  });
 });

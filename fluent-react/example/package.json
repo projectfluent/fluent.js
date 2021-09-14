@@ -11,7 +11,6 @@
     "@fluent/langneg": "^0.6.0",
     "@fluent/sequence": "^0.7.0",
     "cached-iterable": "^0.3.0",
-    "prop-types": "^15.7.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
   },

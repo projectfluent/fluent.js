@@ -42,7 +42,7 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes",
+    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React",
     "docs": "typedoc --options ../typedoc.config.cjs --tsconfig ./tsconfig.build.json",
     "test": "jest --collect-coverage"
   },
@@ -59,8 +59,7 @@
   },
   "dependencies": {
     "@fluent/sequence": "^0.7.0",
-    "cached-iterable": "^0.3.0",
-    "prop-types": "^15.7.2"
+    "cached-iterable": "^0.3.0"
   },
   "peerDependencies": {
     "@fluent/bundle": ">=0.16.0 <0.18.0",
