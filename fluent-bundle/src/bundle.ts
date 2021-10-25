@@ -4,6 +4,7 @@ import { FluentResource } from "./resource.js";
 import { FluentValue, FluentNone, FluentFunction } from "./types.js";
 import { Message, Term, Pattern } from "./ast.js";
 import { NUMBER, DATETIME } from "./builtins.js";
+import { getMemoizerForLocale, IntlCache } from "./memoizer.js";
 
 export type TextTransform = (text: string) => string;
 
@@ -22,12 +23,7 @@ export class FluentBundle {
   public _functions: Record<string, FluentFunction>;
   public _useIsolating: boolean;
   public _transform: TextTransform;
-  public _intls = new WeakMap<
-    | typeof Intl.NumberFormat
-    | typeof Intl.DateTimeFormat
-    | typeof Intl.PluralRules,
-    Record<string, Intl.NumberFormat | Intl.DateTimeFormat | Intl.PluralRules>
-  >();
+  public _intls: IntlCache;
 
   /**
    * Create an instance of `FluentBundle`.
@@ -78,6 +74,7 @@ export class FluentBundle {
     };
     this._useIsolating = useIsolating;
     this._transform = transform;
+    this._intls = getMemoizerForLocale(locales);
   }
 
   /**
