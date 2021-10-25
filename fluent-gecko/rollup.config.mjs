@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import nodeResolve from "rollup-plugin-node-resolve";
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 const vim = `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */`;
 const license = `\
@@ -36,7 +36,7 @@ export default [
       intro: `/* fluent-react@${reactPkg.version} */`,
     },
     context: "this",
-    external: ["react", "prop-types"],
+    external: ["react"],
     plugins: [nodeResolve()],
   },
   {

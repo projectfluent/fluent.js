@@ -7,7 +7,6 @@ import {
   isValidElement,
   useContext
 } from "react";
-import PropTypes from "prop-types";
 import voidElementTags from "../vendor/voidElementTags.js";
 import { FluentContext } from "./context.js";
 import { FluentVariable } from "@fluent/bundle";
@@ -222,7 +221,3 @@ export function Localized(props: LocalizedProps): ReactElement {
 }
 
 export default Localized;
-
-Localized.propTypes = {
-  children: PropTypes.node
-};

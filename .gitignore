@@ -1,5 +1,6 @@
 node_modules
 html
+.vscode
 
 # Test coverage
 .nyc_output

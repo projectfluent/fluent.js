@@ -13,7 +13,7 @@ const globalName = {
   "@fluent/syntax": "FluentSyntax",
 };
 
-module.exports = async function() {
+export default async function() {
   // Current dir is the package's own directory here
   const pkgSrc = await readFile("package.json", "utf8");
   const { name, version } = JSON.parse(pkgSrc);

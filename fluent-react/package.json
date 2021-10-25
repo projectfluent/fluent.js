@@ -42,7 +42,7 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React,prop-types:PropTypes",
+    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React",
     "docs": "typedoc --options ../typedoc.config.cjs --tsconfig ./tsconfig.build.json",
     "test": "jest --collect-coverage"
   },
@@ -54,12 +54,12 @@
     "setupFilesAfterEnv": [
       "./test/setup.js"
     ],
-    "restoreMocks": true
+    "restoreMocks": true,
+    "testEnvironment": "jsdom"
   },
   "dependencies": {
     "@fluent/sequence": "^0.7.0",
-    "cached-iterable": "^0.3.0",
-    "prop-types": "^15.7.2"
+    "cached-iterable": "^0.3.0"
   },
   "peerDependencies": {
     "@fluent/bundle": ">=0.16.0 <0.18.0",
@@ -68,15 +68,13 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
     "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "7.0.0",
+    "@babel/preset-react": "^7.14.5",
     "@fluent/bundle": "file:../fluent-bundle",
-    "@types/react": "^16.9.22",
-    "@types/react-dom": "^16.9.5",
-    "babel-jest": "^24.8.0",
-    "jest": "^24.8.0",
-    "prettier": "^1.18.2",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-test-renderer": "^16.8.6"
+    "@types/react": "^17.0.20",
+    "babel-jest": "^27.2.0",
+    "jest": "^27.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-test-renderer": "^17.0.2"
   }
 }

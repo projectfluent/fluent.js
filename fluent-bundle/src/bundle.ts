@@ -196,7 +196,7 @@ export class FluentBundle {
       let value = resolveComplexPattern(scope, pattern);
       return value.toString(scope);
     } catch (err) {
-      if (scope.errors) {
+      if (scope.errors && err instanceof Error) {
         scope.errors.push(err);
         return new FluentNone().toString(scope);
       }

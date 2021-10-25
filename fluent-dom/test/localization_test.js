@@ -1,4 +1,5 @@
 import assert from "assert";
+import sinon from "sinon";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import Localization from "../esm/localization.js";
 
@@ -10,6 +11,9 @@ async function* mockGenerateMessages(resourceIds) {
 }
 
 suite("formatMessages", function() {
+  setup(() => sinon.stub(console, "warn"));
+  teardown(() => console.warn.restore());
+
   test("returns a translation", async function() {
     const loc = new Localization(["test.ftl"], mockGenerateMessages);
     const translations = await loc.formatMessages([{id: "key1"}]);
