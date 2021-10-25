@@ -1,4 +1,5 @@
 import assert from "assert";
+import sinon from "sinon";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import DOMLocalization from "../esm/dom_localization.js";
 
@@ -10,6 +11,9 @@ async function* mockGenerateMessages(resourceIds) {
 }
 
 suite("translateFragment", function() {
+  setup(() => sinon.stub(console, "warn"));
+  teardown(() => console.warn.restore());
+
   test("translates a node", async function() {
     const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 

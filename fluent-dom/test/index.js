@@ -13,6 +13,3 @@ Object.keys(document.defaultView).forEach(property => {
 global.navigator = {
   userAgent: 'node.js'
 };
-
-// silence console logging during tests
-console.warn = () => {}

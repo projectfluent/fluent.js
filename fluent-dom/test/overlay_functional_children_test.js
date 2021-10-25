@@ -1,8 +1,12 @@
 import assert from 'assert';
+import sinon from 'sinon';
 import translateElement from '../esm/overlay.js';
 import {elem} from './util.js';
 
 suite('Child without name', function() {
+  setup(() => sinon.stub(console, 'warn'));
+  teardown(() => console.warn.restore());
+
   test('in source', function() {
     const element = elem('div')`
       <button>Foo</button>`;
@@ -49,6 +53,9 @@ suite('Child without name', function() {
 });
 
 suite('Child with name', function() {
+  setup(() => sinon.stub(console, 'warn'));
+  teardown(() => console.warn.restore());
+
   test('in source', function() {
     const element = elem('div')`
       <button data-l10n-name="foo">Foo</button>`;

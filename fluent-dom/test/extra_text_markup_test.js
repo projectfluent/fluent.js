@@ -1,8 +1,12 @@
 import assert from 'assert';
+import sinon from 'sinon';
 import translateElement from '../esm/overlay.js';
 import {elem} from './util.js';
 
 suite('Localized text markup', function() {
+  setup(() => sinon.stub(console, 'warn'));
+  teardown(() => console.warn.restore());
+
   test('allowed element', function() {
     const element = elem('div')`Foo`;
     const translation = {
