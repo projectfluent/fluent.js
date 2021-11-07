@@ -156,14 +156,14 @@ function resolveVariableReference(
   let arg: FluentVariable;
   if (scope.params) {
     // We're inside a TermReference. It's OK to reference undefined parameters.
-    if (Object.prototype.hasOwnProperty.call(scope.params, name)) {
+    if (Reflect.has(scope.params, name)) {
       arg = scope.params[name];
     } else {
       return new FluentNone(`$${name}`);
     }
   } else if (
     scope.args
-    && Object.prototype.hasOwnProperty.call(scope.args, name)
+    && Reflect.has(scope.args, name)
   ) {
     // We're in the top-level Pattern or inside a MessageReference. Missing
     // variables references produce ReferenceErrors.
