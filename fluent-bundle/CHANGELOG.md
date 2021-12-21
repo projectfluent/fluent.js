@@ -1,5 +1,12 @@
 # Changelog
 
+## [@fluent/bundle 0.17.1](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.17.0...@fluent/bundle@0.17.1) (2021-12-21)
+
+  - Add per locale Intl memoizer
+    ([#504](https://github.com/projectfluent/fluent.js/pull/504))
+  - The type of caught errors is validated at runtime
+    ([#575](https://github.com/projectfluent/fluent.js/pull/575))
+
 ## @fluent/bundle 0.17.0 (September 13, 2021)
 
   - Remove `"type": "commonjs"` from the package's root `package.json`, but add

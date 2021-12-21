@@ -1,5 +1,10 @@
 # Changelog
 
+## [@fluent/dom 0.8.1](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.8.0...@fluent/dom@0.8.1) (2021-12-21)
+
+  - Add `.js` extension to imports
+    ([#581](https://github.com/projectfluent/fluent.js/pull/581))
+
 ## @fluent/dom 0.8.0 (September 13, 2021)
 
   - Remove `"type": "commonjs"` from the package's root `package.json`.

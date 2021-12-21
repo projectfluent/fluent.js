@@ -1,5 +1,12 @@
 # Changelog
 
+## [@fluent/langneg 0.6.1](https://github.com/projectfluent/fluent.js/compare/@fluent/langneg@0.6.0...@fluent/langneg@0.6.1) (2021-12-21)
+
+  - Add zh-mo and zh-tw to likely subtags
+    ([#570](https://github.com/projectfluent/fluent.js/pull/570))
+  - Add `.js` extension to imports
+    ([#581](https://github.com/projectfluent/fluent.js/pull/581))
+
 ## @fluent/langneg 0.6.0 (September 13, 2021)
 
   - Remove `"type": "commonjs"` from the package's root `package.json`, but add

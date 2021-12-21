@@ -1,5 +1,12 @@
 # Changelog
 
+## [@fluent/react 0.14.1](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.14.0...@fluent/react@0.14.1) (2021-12-21)
+
+  - Add `.js` extension to imports
+    ([#577](https://github.com/projectfluent/fluent.js/pull/577))
+  - Drop `prop-types` as a dependency
+    ([#575](https://github.com/projectfluent/fluent.js/pull/575))
+
 ## @fluent/react 0.14.0 (September 13, 2021)
 
   - Remove `"type": "commonjs"` from the package's root `package.json`, but add
