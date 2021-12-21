@@ -8,7 +8,8 @@
  */
 
 export {
-  negotiateLanguages, NegotiateLanguagesOptions
-} from "./negotiate_languages";
-export {acceptedLanguages} from "./accepted_languages";
-export {filterMatches} from "./matches";
+  negotiateLanguages,
+  NegotiateLanguagesOptions,
+} from "./negotiate_languages.js";
+export { acceptedLanguages } from "./accepted_languages.js";
+export { filterMatches } from "./matches.js";
