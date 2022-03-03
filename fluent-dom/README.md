@@ -26,14 +26,14 @@ identifying localizable elements with `data-l10n-id` and translating them.
 ```javascript
 import { DOMLocalization } from '@fluent/dom'
 
-const l10n = new DOMLocalization(MutationObserver, [
+const l10n = new DOMLocalization([
   '/browser/main.ftl',
   '/toolkit/menu.ftl'
 ], generateBundles);
 
 l10n.connectRoot(document.documentElement);
 
-l10n.translateDocument();
+l10n.translateRoots();
 
 const h1 = document.querySelector('h1');
 
