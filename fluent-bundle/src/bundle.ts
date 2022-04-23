@@ -11,6 +11,10 @@ export type TextTransform = (text: string) => string;
 type NativeValue = string | number | Date;
 export type FluentVariable = FluentValue | NativeValue;
 
+const noTransform: TextTransform = (
+  text => text
+);
+
 /**
  * Message bundles are single-language stores of translation resources. They are
  * responsible for formatting message values and attributes to strings.
@@ -23,6 +27,7 @@ export class FluentBundle {
   public _functions: Record<string, FluentFunction>;
   public _useIsolating: boolean;
   public _transform: TextTransform;
+  public _transformPlaceable: TextTransform;
   public _intls: IntlCache;
 
   /**
@@ -59,11 +64,13 @@ export class FluentBundle {
     {
       functions,
       useIsolating = true,
-      transform = (v: string): string => v
+      transform = noTransform,
+      transformPlaceable = noTransform,
     }: {
       functions?: Record<string, FluentFunction>;
       useIsolating?: boolean;
       transform?: TextTransform;
+      transformPlaceable?: TextTransform;
     } = {}
   ) {
     this.locales = Array.isArray(locales) ? locales : [locales];
@@ -74,6 +81,7 @@ export class FluentBundle {
     };
     this._useIsolating = useIsolating;
     this._transform = transform;
+    this._transformPlaceable = transformPlaceable;
     this._intls = getMemoizerForLocale(locales);
   }
 

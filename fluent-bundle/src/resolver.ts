@@ -181,7 +181,7 @@ function resolveVariableReference(
   // Convert the argument to a Fluent type.
   switch (typeof arg) {
     case "string":
-      return arg;
+      return scope.bundle._transformPlaceable(arg);
     case "number":
       return new FluentNumber(arg);
     case "object":
@@ -345,7 +345,9 @@ export function resolveComplexPattern(
       result.push(FSI);
     }
 
-    result.push(resolveExpression(scope, elem).toString(scope));
+    result.push(
+      resolveExpression(scope, elem).toString(scope)
+    );
 
     if (useIsolating) {
       result.push(PDI);
