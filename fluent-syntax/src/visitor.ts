@@ -106,7 +106,7 @@ export abstract class Transformer extends Visitor {
       } else if (Array.isArray(prop)) {
         let newVals: Array<AST.BaseNode> = [];
         for (let element of prop) {
-          let newVal = this.visit(element);
+          let newVal = this.visit(element as AST.BaseNode);
           if (newVal !== undefined) {
             newVals.push(newVal);
           }
@@ -127,10 +127,12 @@ export abstract class Transformer extends Visitor {
   visitNumberLiteral?(node: AST.NumberLiteral): AST.BaseNode | undefined;
   visitMessageReference?(node: AST.MessageReference): AST.BaseNode | undefined;
   visitTermReference?(node: AST.TermReference): AST.BaseNode | undefined;
-  visitVariableReference?(node: AST.VariableReference):
-  AST.BaseNode | undefined;
-  visitFunctionReference?(node: AST.FunctionReference):
-  AST.BaseNode | undefined;
+  visitVariableReference?(
+    node: AST.VariableReference
+  ): AST.BaseNode | undefined;
+  visitFunctionReference?(
+    node: AST.FunctionReference
+  ): AST.BaseNode | undefined;
   visitSelectExpression?(node: AST.SelectExpression): AST.BaseNode | undefined;
   visitCallArguments?(node: AST.CallArguments): AST.BaseNode | undefined;
   visitAttribute?(node: AST.Attribute): AST.BaseNode | undefined;

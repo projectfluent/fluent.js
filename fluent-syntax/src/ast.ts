@@ -57,6 +57,7 @@ export abstract class BaseNode {
       }
       return value;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const clone = Object.create(this.constructor.prototype) as BaseNode;
     for (const prop of Object.keys(this)) {
       clone[prop] = visit(this[prop]);

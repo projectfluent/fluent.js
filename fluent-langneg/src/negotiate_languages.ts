@@ -1,4 +1,4 @@
-import {filterMatches} from "./matches.js";
+import { filterMatches } from "./matches.js";
 
 export interface NegotiateLanguagesOptions {
   strategy?: "filtering" | "matching" | "lookup";
@@ -51,22 +51,19 @@ export interface NegotiateLanguagesOptions {
 export function negotiateLanguages(
   requestedLocales: Readonly<Array<string>>,
   availableLocales: Readonly<Array<string>>,
-  {
-    strategy = "filtering",
-    defaultLocale,
-  }: NegotiateLanguagesOptions = {}
+  { strategy = "filtering", defaultLocale }: NegotiateLanguagesOptions = {}
 ): Array<string> {
-
   const supportedLocales = filterMatches(
-    Array.from(Object(requestedLocales)).map(String),
-    Array.from(Object(availableLocales)).map(String),
+    Array.from(requestedLocales ?? []).map(String),
+    Array.from(availableLocales ?? []).map(String),
     strategy
   );
 
   if (strategy === "lookup") {
     if (defaultLocale === undefined) {
       throw new Error(
-        "defaultLocale cannot be undefined for strategy `lookup`");
+        "defaultLocale cannot be undefined for strategy `lookup`"
+      );
     }
     if (supportedLocales.length === 0) {
       supportedLocales.push(defaultLocale);
