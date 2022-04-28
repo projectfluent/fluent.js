@@ -10,20 +10,20 @@ async function* mockGenerateMessages(resourceIds) {
   yield bundle;
 }
 
-suite("formatMessages", function() {
+suite("formatMessages", function () {
   setup(() => sinon.stub(console, "warn"));
   teardown(() => console.warn.restore());
 
-  test("returns a translation", async function() {
+  test("returns a translation", async function () {
     const loc = new Localization(["test.ftl"], mockGenerateMessages);
-    const translations = await loc.formatMessages([{id: "key1"}]);
+    const translations = await loc.formatMessages([{ id: "key1" }]);
 
     assert.strictEqual(translations[0].value, "Key 1");
   });
 
-  test("returns undefined for a missing translation", async function() {
+  test("returns undefined for a missing translation", async function () {
     const loc = new Localization(["test.ftl"], mockGenerateMessages);
-    const translations = await loc.formatMessages([{id: "missing_key"}]);
+    const translations = await loc.formatMessages([{ id: "missing_key" }]);
 
     // Make sure that the returned value here is `undefined`.
     // This allows bindings to handle missing translations.

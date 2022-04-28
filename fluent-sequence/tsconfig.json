@@ -5,5 +5,5 @@
     "paths": {
       "@fluent/bundle": ["../fluent-bundle/src/index.ts"]
     }
-  },
+  }
 }

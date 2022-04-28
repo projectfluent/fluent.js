@@ -38,7 +38,7 @@ export default class DOMLocalization extends Localization {
       characterData: false,
       childList: true,
       subtree: true,
-      attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME]
+      attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME],
     };
   }
 
@@ -110,7 +110,7 @@ export default class DOMLocalization extends Localization {
   getAttributes(element) {
     return {
       id: element.getAttribute(L10NID_ATTR_NAME),
-      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null),
     };
   }
 
@@ -124,9 +124,11 @@ export default class DOMLocalization extends Localization {
    */
   connectRoot(newRoot) {
     for (const root of this.roots) {
-      if (root === newRoot ||
-          root.contains(newRoot) ||
-          newRoot.contains(root)) {
+      if (
+        root === newRoot ||
+        root.contains(newRoot) ||
+        newRoot.contains(root)
+      ) {
         throw new Error("Cannot add a root that overlaps with existing root.");
       }
     }
@@ -142,7 +144,6 @@ export default class DOMLocalization extends Localization {
         mutations => this.translateMutations(mutations)
       );
     }
-
 
     this.roots.add(newRoot);
     this.mutationObserver.observe(newRoot, this.observerConfig);
@@ -185,9 +186,7 @@ export default class DOMLocalization extends Localization {
    */
   translateRoots() {
     const roots = Array.from(this.roots);
-    return Promise.all(
-      roots.map(root => this.translateFragment(root))
-    );
+    return Promise.all(roots.map(root => this.translateFragment(root)));
   }
 
   /**
@@ -330,8 +329,10 @@ export default class DOMLocalization extends Localization {
   getTranslatables(element) {
     const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
 
-    if (typeof element.hasAttribute === "function" &&
-        element.hasAttribute(L10NID_ATTR_NAME)) {
+    if (
+      typeof element.hasAttribute === "function" &&
+      element.hasAttribute(L10NID_ATTR_NAME)
+    ) {
       nodes.push(element);
     }
 
@@ -349,7 +350,7 @@ export default class DOMLocalization extends Localization {
   getKeysForElement(element) {
     return {
       id: element.getAttribute(L10NID_ATTR_NAME),
-      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null)
+      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null),
     };
   }
 }

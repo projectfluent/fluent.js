@@ -3,7 +3,7 @@
 import assert from "assert";
 import ftl from "../esm/index.js";
 
-suite("content lines", function() {
+suite("content lines", function () {
   test("no indent", function () {
     assert.strictEqual(
       ftl`

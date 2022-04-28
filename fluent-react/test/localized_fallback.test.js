@@ -4,7 +4,7 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 
 test("uses message from 1st bundle", () => {
@@ -30,7 +30,7 @@ foo = FOO
   `);
 });
 
-test("uses message from the 2nd bundle", function() {
+test("uses message from the 2nd bundle", function () {
   const bundle1 = new FluentBundle();
   const bundle2 = new FluentBundle();
 
@@ -60,7 +60,7 @@ foo = FOO
   `);
 });
 
-test("falls back back for missing message", function() {
+test("falls back back for missing message", function () {
   jest.spyOn(console, "warn").mockImplementation(() => {});
 
   const bundle1 = new FluentBundle();

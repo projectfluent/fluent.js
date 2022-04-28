@@ -3,8 +3,8 @@
 import assert from "assert";
 import ftl from "../esm/index.js";
 
-suite("mixed indent", function() {
-  test("same amount", function() {
+suite("mixed indent", function () {
+  test("same amount", function () {
     assert.strictEqual(
       ftl`
 \t    foo
@@ -13,7 +13,7 @@ suite("mixed indent", function() {
     );
   });
 
-  test("larger than common", function() {
+  test("larger than common", function () {
     assert.strictEqual(
       ftl`
 \t        foo
@@ -22,7 +22,7 @@ suite("mixed indent", function() {
     );
   });
 
-  test("smaller than common", function() {
+  test("smaller than common", function () {
     assert.throws(
       () => ftl`
 \tfoo

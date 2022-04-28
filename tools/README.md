@@ -1,12 +1,9 @@
-Project Fluent Tools
-====================
+# Project Fluent Tools
 
 A collection of command line utilities to make learning and working with
 fluent.js easier.
 
-
-parse.js
---------
+## parse.js
 
 `parse.js` is a utility script that uses fluent.js Parser to parse a string
 into an AST and output the result.
@@ -25,9 +22,7 @@ Examples:
     echo "foo = Foo" | ./parse.js
     ./parse.js file.ftl
 
-
-format.js
----------
+## format.js
 
 `format.js` is a utility script that uses fluent.js Resolver to parse and
 transform a source string into Message objects and output the formatted result.
@@ -48,9 +43,7 @@ Examples:
     ./format.js file.ftl
     ./format.js -e data.json file.ftl
 
-
-fuzz.js
---------
+## fuzz.js
 
 `fuzz.js` is a fuzzer for fluent.js's parsers.
 
@@ -68,9 +61,7 @@ Examples:
     echo "foo = Foo" | ./fuzz.js
     ./fuzz.js -i 1000 file.ftl
 
-
-perf
-----
+## perf
 
 Measure the performance impact of changes that you make to the fluent.js
 codebase by running `./perf/test.js`.

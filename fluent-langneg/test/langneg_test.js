@@ -1,8 +1,8 @@
-import assert from 'assert';
-import {negotiateLanguages} from '../esm/negotiate_languages.js';
+import assert from "assert";
+import { negotiateLanguages } from "../esm/negotiate_languages.js";
 
 const data = {
-  "filtering": {
+  filtering: {
     "exact match": [
       [["en"], ["en"], ["en"]],
       [["en-US"], ["en-US"], ["en-US"]],
@@ -11,19 +11,35 @@ const data = {
       [["rm-surmiran"], ["rm-surmiran"], ["rm-surmiran"]],
       [["de-1996"], ["de-1996"], ["de-1996"]],
       [["fr-FR"], ["de", "it", "fr-FR"], ["fr-FR"]],
-      [["fr", "pl", "de-DE"], ["pl", "en-US", "de-DE"], ["pl", "de-DE"]],
+      [
+        ["fr", "pl", "de-DE"],
+        ["pl", "en-US", "de-DE"],
+        ["pl", "de-DE"],
+      ],
     ],
     "available as range": [
       [["en-US"], ["en"], ["en"]],
       [["en-Latn-US"], ["en-US"], ["en-US"]],
       [["en-US-macos"], ["en-US"], ["en-US"]],
-      [["fr-CA", "de-DE"], ["fr", "it", "de"], ["fr", "de"]],
+      [
+        ["fr-CA", "de-DE"],
+        ["fr", "it", "de"],
+        ["fr", "de"],
+      ],
       [["ja-JP-macos"], ["ja"], ["ja"]],
-      [["en-Latn-GB", "en-Latn-IN"], ["en-IN", "en-GB"], ["en-GB", "en-IN"]],
+      [
+        ["en-Latn-GB", "en-Latn-IN"],
+        ["en-IN", "en-GB"],
+        ["en-GB", "en-IN"],
+      ],
     ],
     "should match on likely subtag": [
       [["en"], ["en-GB", "de", "en-US"], ["en-US", "en-GB"]],
-      [["en"], ["en-Latn-GB", "de", "en-Latn-US"], ["en-Latn-US", "en-Latn-GB"]],
+      [
+        ["en"],
+        ["en-Latn-GB", "de", "en-Latn-US"],
+        ["en-Latn-US", "en-Latn-GB"],
+      ],
       [["fr"], ["fr-CA", "fr-FR"], ["fr-FR", "fr-CA"]],
       [["az-IR"], ["az-Latn", "az-Arab"], ["az-Arab"]],
       [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Latn"]],
@@ -42,13 +58,21 @@ const data = {
     ],
     "should prioritize properly": [
       // exact match first
-      [["en-US"], ["en-US-macos", "en", "en-US"], ["en-US", "en", "en-US-macos"]],
+      [
+        ["en-US"],
+        ["en-US-macos", "en", "en-US"],
+        ["en-US", "en", "en-US-macos"],
+      ],
       // available as range second
       [["en-Latn-US"], ["en-GB", "en-US"], ["en-US", "en-GB"]],
       // likely subtags third
       [["en"], ["en-Cyrl-US", "en-Latn-US"], ["en-Latn-US"]],
       // variant range fourth
-      [["en-US-macos"], ["en-US-windows", "en-GB-macos"], ["en-US-windows", "en-GB-macos"]],
+      [
+        ["en-US-macos"],
+        ["en-US-windows", "en-GB-macos"],
+        ["en-US-windows", "en-GB-macos"],
+      ],
       // regional range fifth
       [["en-US-macos"], ["en-GB-windows"], ["en-GB-windows"]],
     ],
@@ -60,10 +84,19 @@ const data = {
       [["fr"], ["de", "it"], []],
       [["fr"], ["de", "it"], "en-US", ["en-US"]],
       [["fr"], ["de", "en-US"], "en-US", ["en-US"]],
-      [["fr", "de-DE"], ["de-DE", "fr-CA"], "en-US", ["fr-CA", "de-DE", "en-US"]],
+      [
+        ["fr", "de-DE"],
+        ["de-DE", "fr-CA"],
+        "en-US",
+        ["fr-CA", "de-DE", "en-US"],
+      ],
     ],
     "should handle all matches on the 1st higher than any on the 2nd": [
-      [["fr-CA-macos", "de-DE"], ["de-DE", "fr-FR-windows"], ["fr-FR-windows", "de-DE"]],
+      [
+        ["fr-CA-macos", "de-DE"],
+        ["de-DE", "fr-FR-windows"],
+        ["fr-FR-windows", "de-DE"],
+      ],
     ],
     "should handle cases and underscores": [
       [["fr_FR"], ["fr-FR"], ["fr-FR"]],
@@ -88,51 +121,56 @@ const data = {
       [[[]], [[2]], []],
     ],
   },
-  "matching": {
+  matching: {
     "should match only one per requested": [
       [
         ["fr", "en"],
-        ["en-US", "fr-FR", "en", "fr"], undefined,
-        "matching", ["fr", "en"]
+        ["en-US", "fr-FR", "en", "fr"],
+        undefined,
+        "matching",
+        ["fr", "en"],
       ],
     ],
   },
-  "lookup": {
+  lookup: {
     "should match only one": [
       [
         ["fr-FR", "en"],
-        ["en-US", "fr-FR", "en", "fr"], 'en-US',
-        "lookup", ["fr-FR"]
+        ["en-US", "fr-FR", "en", "fr"],
+        "en-US",
+        "lookup",
+        ["fr-FR"],
       ],
-    ]
-  }
+    ],
+  },
 };
 
 const json = JSON.stringify;
 
-suite('Language Negotiation', () => {
+suite("Language Negotiation", () => {
   for (const strategy in data) {
     for (const groupName in data[strategy]) {
       const group = data[strategy][groupName];
 
       test(`${strategy} - ${groupName}`, () => {
         for (const test of group) {
-        const requested = test[0];
-        const available = test[1];
-        const defaultLocale = test.length > 3 ? test[2] : undefined;
-        const strategy = test.length > 4 ? test[3] : undefined;
-        const supported = test[test.length - 1];
+          const requested = test[0];
+          const available = test[1];
+          const defaultLocale = test.length > 3 ? test[2] : undefined;
+          const strategy = test.length > 4 ? test[3] : undefined;
+          const supported = test[test.length - 1];
 
-        const result = negotiateLanguages(
-          test[0],
-          test[1],
-          {
+          const result = negotiateLanguages(test[0], test[1], {
             defaultLocale,
-            strategy
-          }
-        );
-        assert.deepEqual(result, supported,
-  `\nExpected ${json(requested)} * ${json(available)} = ${json(supported)}.\n`);         
+            strategy,
+          });
+          assert.deepEqual(
+            result,
+            supported,
+            `\nExpected ${json(requested)} * ${json(available)} = ${json(
+              supported
+            )}.\n`
+          );
         }
       });
     }

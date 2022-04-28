@@ -3,7 +3,7 @@ import { FluentBundle } from "@fluent/bundle";
 export function mapBundleAsync(
   bundles: AsyncIterable<FluentBundle>,
   ids: string
-): Promise<FluentBundle | null>
+): Promise<FluentBundle | null>;
 
 export function mapBundleAsync(
   bundles: AsyncIterable<FluentBundle>,

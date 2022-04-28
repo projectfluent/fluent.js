@@ -3,8 +3,8 @@
 import assert from "assert";
 import ftl from "../esm/index.js";
 
-suite("interpolation", function() {
-  test("single", function() {
+suite("interpolation", function () {
+  test("single", function () {
     assert.strictEqual(
       ftl`
         foo ${"bar"}
@@ -13,7 +13,7 @@ suite("interpolation", function() {
     );
   });
 
-  test("multiple", function() {
+  test("multiple", function () {
     assert.strictEqual(
       ftl`
         foo ${"bar"}${"baz"}
@@ -22,7 +22,7 @@ suite("interpolation", function() {
     );
   });
 
-  test("on separate lines", function() {
+  test("on separate lines", function () {
     assert.strictEqual(
       ftl`
         ${"foo"}

@@ -10,11 +10,11 @@ async function* mockGenerateMessages(resourceIds) {
   yield bundle;
 }
 
-suite("translateFragment", function() {
+suite("translateFragment", function () {
   setup(() => sinon.stub(console, "warn"));
   teardown(() => console.warn.restore());
 
-  test("translates a node", async function() {
+  test("translates a node", async function () {
     const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
     const frag = document.createDocumentFragment();
@@ -27,7 +27,7 @@ suite("translateFragment", function() {
     assert.strictEqual(elem.textContent, "Key 1");
   });
 
-  test("does not inject content into a node with missing translation", async function() {
+  test("does not inject content into a node with missing translation", async function () {
     const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
     const frag = document.createDocumentFragment();
@@ -40,5 +40,4 @@ suite("translateFragment", function() {
 
     assert.strictEqual(elem.textContent, "Original Value");
   });
-
 });

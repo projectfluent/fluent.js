@@ -5,7 +5,7 @@ import {
   cloneElement,
   createElement,
   isValidElement,
-  useContext
+  useContext,
 } from "react";
 import voidElementTags from "../vendor/voidElementTags.js";
 import { FluentContext } from "./context.js";
@@ -53,8 +53,9 @@ export function Localized(props: LocalizedProps): ReactElement {
   // elements.
   if (Array.isArray(children)) {
     if (children.length > 1) {
-      throw new Error("<Localized/> expected to receive a single " +
-        "React node child");
+      throw new Error(
+        "<Localized/> expected to receive a single React node child"
+      );
     }
 
     // If it's an array with zero or one element, we can directly get the first
@@ -66,8 +67,7 @@ export function Localized(props: LocalizedProps): ReactElement {
 
   if (!l10n) {
     throw new Error(
-      "The <Localized /> component was not properly wrapped in a "
-        + "<LocalizationProvider />."
+      "The <Localized /> component was not properly wrapped in a <LocalizationProvider />."
     );
   }
 
@@ -82,15 +82,13 @@ export function Localized(props: LocalizedProps): ReactElement {
       if (l10n.areBundlesEmpty()) {
         l10n.reportError(
           new Error(
-            "A <Localized /> component was rendered when no localization "
-              + "bundles are present."
+            "A <Localized /> component was rendered when no localization bundles are present."
           )
         );
       } else {
         l10n.reportError(
           new Error(
-            `The id "${id}" did not match any messages in the localization `
-              + "bundles."
+            `The id "${id}" did not match any messages in the localization bundles.`
           )
         );
       }
@@ -132,7 +130,10 @@ export function Localized(props: LocalizedProps): ReactElement {
     for (const [name, allowed] of Object.entries(attrs)) {
       if (allowed && name in msg.attributes) {
         localizedProps[name] = bundle.formatPattern(
-          msg.attributes[name], vars, errors);
+          msg.attributes[name],
+          vars,
+          errors
+        );
       }
     }
     for (let error of errors) {
@@ -175,7 +176,6 @@ export function Localized(props: LocalizedProps): ReactElement {
     }
   }
 
-
   // If the message contains markup, parse it and try to match the children
   // found in the translation with the props passed to this Localized.
   const translationNodes = l10n.parseMarkup(messageValue);
@@ -205,8 +205,10 @@ export function Localized(props: LocalizedProps): ReactElement {
     // explicitly dismiss any textContent which might have accidentally been
     // defined in the translation to prevent the "void element tags must not
     // have children" error.
-    if (typeof sourceChild.type === "string"
-      && sourceChild.type in voidElementTags) {
+    if (
+      typeof sourceChild.type === "string" &&
+      sourceChild.type in voidElementTags
+    ) {
       return sourceChild;
     }
 

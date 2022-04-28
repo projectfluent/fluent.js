@@ -14,13 +14,13 @@ export class Scope {
   /** A dict of parameters passed to a TermReference. */
   public params: Record<string, FluentVariable> | null = null;
   /** The running count of placeables resolved so far. Used to detect the
-    * Billion Laughs and Quadratic Blowup attacks. */
+   * Billion Laughs and Quadratic Blowup attacks. */
   public placeables: number = 0;
 
   constructor(
     bundle: FluentBundle,
     errors: Array<Error> | null,
-    args: Record<string, FluentVariable> | null,
+    args: Record<string, FluentVariable> | null
   ) {
     this.bundle = bundle;
     this.errors = errors;

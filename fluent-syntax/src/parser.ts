@@ -2,13 +2,11 @@
 
 import * as AST from "./ast.js";
 // eslint-disable-next-line no-duplicate-imports
-import type {Resource, Entry} from "./ast.js";
+import type { Resource, Entry } from "./ast.js";
 import { EOF, EOL, FluentParserStream } from "./stream.js";
 import { ParseError } from "./errors.js";
 
-
 const trailingWSRe = /[ \t\n\r]+$/;
-
 
 type ParseFn<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,9 +85,11 @@ export class FluentParser {
       // they should parse as standalone when they're followed by Junk.
       // Consequently, we only attach Comments once we know that the Message
       // or the Term parsed successfully.
-      if (entry instanceof AST.Comment
-        && blankLines.length === 0
-        && ps.currentChar()) {
+      if (
+        entry instanceof AST.Comment &&
+        blankLines.length === 0 &&
+        ps.currentChar()
+      ) {
         // Stash the comment and decide what to do with it in the next pass.
         lastComment = entry;
         continue;
@@ -205,7 +205,7 @@ export class FluentParser {
 
     while (true) {
       let i = -1;
-      while (ps.currentChar() === "#" && (i < (level === -1 ? 2 : level))) {
+      while (ps.currentChar() === "#" && i < (level === -1 ? 2 : level)) {
         ps.next();
         i++;
       }
@@ -324,7 +324,8 @@ export class FluentParser {
 
     const cc = ch.charCodeAt(0);
 
-    if ((cc >= 48 && cc <= 57) || cc === 45) { // 0-9, -
+    if ((cc >= 48 && cc <= 57) || cc === 45) {
+      // 0-9, -
       return this.getNumber(ps);
     }
 
@@ -513,7 +514,9 @@ export class FluentParser {
       if (element instanceof Indent) {
         // Strip common indent.
         element.value = element.value.slice(
-          0, element.value.length - commonIndent);
+          0,
+          element.value.length - commonIndent
+        );
         if (element.value.length === 0) {
           continue;
         }
@@ -581,7 +584,7 @@ export class FluentParser {
 
     switch (next) {
       case "\\":
-      case "\"":
+      case '"':
         ps.next();
         return `\\${next}`;
       case "u":
@@ -605,8 +608,7 @@ export class FluentParser {
       const ch = ps.takeHexDigit();
 
       if (!ch) {
-        throw new ParseError(
-          "E0026", `\\${u}${sequence}${ps.currentChar()}`);
+        throw new ParseError("E0026", `\\${u}${sequence}${ps.currentChar()}`);
       }
 
       sequence += ch;
@@ -732,7 +734,6 @@ export class FluentParser {
       return new AST.MessageReference(id, attr);
     }
 
-
     throw new ParseError("E0028");
   }
 
@@ -800,7 +801,7 @@ export class FluentParser {
   }
 
   getString(ps: FluentParserStream): AST.StringLiteral {
-    ps.expectChar("\"");
+    ps.expectChar('"');
     let value = "";
 
     let ch;
@@ -816,7 +817,7 @@ export class FluentParser {
       throw new ParseError("E0020");
     }
 
-    ps.expectChar("\"");
+    ps.expectChar('"');
 
     return new AST.StringLiteral(value);
   }

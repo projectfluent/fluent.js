@@ -152,7 +152,7 @@ export default class Localization {
    * @returns {Promise<string>}
    */
   async formatValue(id, args) {
-    const [val] = await this.formatValues([{id, args}]);
+    const [val] = await this.formatValues([{ id, args }]);
     return val;
   }
 
@@ -166,7 +166,8 @@ export default class Localization {
    */
   onChange(eager = false) {
     this.bundles = CachedAsyncIterable.from(
-      this.generateBundles(this.resourceIds));
+      this.generateBundles(this.resourceIds)
+    );
     if (eager) {
       this.bundles.touchNext(2);
     }
@@ -227,7 +228,7 @@ function messageFromBundle(bundle, errors, message, args) {
     formatted.attributes = new Array(attrNames.length);
     for (let [i, name] of attrNames.entries()) {
       let value = bundle.formatPattern(message.attributes[name], args, errors);
-      formatted.attributes[i] = {name, value};
+      formatted.attributes[i] = { name, value };
     }
   }
 
@@ -270,7 +271,7 @@ function keysFromBundle(method, bundle, keys, translations) {
   const messageErrors = [];
   const missingIds = new Set();
 
-  keys.forEach(({id, args}, i) => {
+  keys.forEach(({ id, args }, i) => {
     if (translations[i] !== undefined) {
       return;
     }
@@ -283,7 +284,9 @@ function keysFromBundle(method, bundle, keys, translations) {
         const locale = bundle.locales[0];
         const errors = messageErrors.join(", ");
         // eslint-disable-next-line max-len
-        console.warn(`[fluent][resolver] errors in ${locale}/${id}: ${errors}.`);
+        console.warn(
+          `[fluent][resolver] errors in ${locale}/${id}: ${errors}.`
+        );
       }
     } else {
       missingIds.add(id);

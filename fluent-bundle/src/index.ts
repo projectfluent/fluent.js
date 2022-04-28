@@ -15,5 +15,5 @@ export {
   FluentFunction,
   FluentNone,
   FluentNumber,
-  FluentDateTime
+  FluentDateTime,
 } from "./types.js";

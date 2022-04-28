@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: 0 */
 
-import {Locale} from "./locale.js";
+import { Locale } from "./locale.js";
 
 /**
  * Negotiates the languages between the list of requested locales against
@@ -87,8 +87,7 @@ export function filterMatches(
     }
   }
 
-  outer:
-  for (const reqLocStr of requestedLocales) {
+  outer: for (const reqLocStr of requestedLocales) {
     const reqLocStrLC = reqLocStr.toLowerCase();
     const requestedLocale = new Locale(reqLocStrLC);
 
@@ -111,7 +110,6 @@ export function filterMatches(
         }
       }
     }
-
 
     // 2) Attempt to match against the available range
     // This turns `en` into `en-*-*-*` and `en-US` into `en-*-US-*`

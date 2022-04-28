@@ -4,7 +4,7 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 
 describe("Localized - rendering", () => {
@@ -320,7 +320,7 @@ foo = { $arg }
       1,
       expect.anything(),
       {
-        arg: "ARG"
+        arg: "ARG",
       },
       expect.anything()
     );
@@ -329,7 +329,7 @@ foo = { $arg }
       2,
       expect.anything(),
       {
-        arg: "ARG"
+        arg: "ARG",
       },
       expect.anything()
     );

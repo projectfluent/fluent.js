@@ -4,11 +4,11 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 
-describe("Localized - void elements", function() {
-  test("do not render the value in void elements", function() {
+describe("Localized - void elements", function () {
+  test("do not render the value in void elements", function () {
     const bundle = new FluentBundle();
 
     bundle.addResource(
@@ -28,7 +28,7 @@ foo = FOO
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<input />`);
   });
 
-  test("render attributes in void elements", function() {
+  test("render attributes in void elements", function () {
     const bundle = new FluentBundle();
 
     bundle.addResource(
@@ -53,7 +53,7 @@ foo =
     `);
   });
 
-  test("render attributes but not value in void elements", function() {
+  test("render attributes but not value in void elements", function () {
     const bundle = new FluentBundle();
 
     bundle.addResource(

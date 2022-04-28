@@ -14,5 +14,5 @@ information.
 
 The files were sourced from the `v16.2.0` tag of React DOM:
 
-  - [omittedCloseTags.js](https://github.com/facebook/react/blob/v16.2.0/packages/react-dom/src/shared/omittedCloseTags.js),
-  - [voidElementTags.js](https://github.com/facebook/react/blob/v16.2.0/packages/react-dom/src/shared/voidElementTags.js).
+- [omittedCloseTags.js](https://github.com/facebook/react/blob/v16.2.0/packages/react-dom/src/shared/omittedCloseTags.js),
+- [voidElementTags.js](https://github.com/facebook/react/blob/v16.2.0/packages/react-dom/src/shared/voidElementTags.js).

@@ -25,9 +25,7 @@ export function mapBundleSync(
     return getBundleForId(bundles, ids);
   }
 
-  return ids.map(
-    id => getBundleForId(bundles, id)
-  );
+  return ids.map(id => getBundleForId(bundles, id));
 }
 
 /*

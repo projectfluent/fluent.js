@@ -4,7 +4,7 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import {
   ReactLocalization,
   LocalizationProvider,
-  withLocalization
+  withLocalization,
 } from "../esm/index.js";
 
 function DummyComponent() {

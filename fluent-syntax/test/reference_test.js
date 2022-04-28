@@ -1,25 +1,23 @@
 import assert from "assert";
-import {dirname, join} from "path";
-import {readdir} from "fs";
-import {fileURLToPath} from 'url';
-import {readfile} from "./util.js";
-import {FluentParser} from "../esm/parser.js";
+import { dirname, join } from "path";
+import { readdir } from "fs";
+import { fileURLToPath } from "url";
+import { readfile } from "./util.js";
+import { FluentParser } from "../esm/parser.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "fixtures_reference");
 
-readdir(fixtures, function(err, filenames) {
+readdir(fixtures, function (err, filenames) {
   if (err) {
     throw err;
   }
 
-  const ftlnames = filenames.filter(
-    filename => filename.endsWith(".ftl")
-  );
+  const ftlnames = filenames.filter(filename => filename.endsWith(".ftl"));
 
   // XXX This suite is not ideal. We ignore Junk and skip a number of fixtures.
-  suite("Reference tests", function() {
-    const parser = new FluentParser({withSpans: false});
+  suite("Reference tests", function () {
+    const parser = new FluentParser({ withSpans: false });
 
     // The following fixtures produce different ASTs in the tooling parser than
     // in the reference parser. Skip them for now.
@@ -30,7 +28,6 @@ readdir(fixtures, function(err, filenames) {
     ];
 
     for (const filename of ftlnames) {
-
       // Skip the known AST incompatibilities.
       if (skips.includes(filename)) {
         test.skip(filename);
@@ -40,22 +37,22 @@ readdir(fixtures, function(err, filenames) {
       const ftlpath = join(fixtures, filename);
       const astpath = ftlpath.replace(/ftl$/, "json");
 
-      test(filename, async function() {
+      test(filename, async function () {
         const [ftl, expected] = await Promise.all(
-          [ftlpath, astpath].map(readfile));
+          [ftlpath, astpath].map(readfile)
+        );
 
-        const ref = JSON.parse(expected)
+        const ref = JSON.parse(expected);
         const ast = parser.parse(ftl);
 
         // Only compare Junk content and ignore annotations, which carry error
         // messages and positions. The reference parser doesn't produce
         // annotations at the moment.
-        ast.body = ast.body.map(entry => entry.type === "Junk" ?
-          {...entry, annotations: []} : entry);
+        ast.body = ast.body.map(entry =>
+          entry.type === "Junk" ? { ...entry, annotations: [] } : entry
+        );
 
-        assert.deepEqual(
-          ast, ref,
-          "Parsed AST doesn't match the expected one");
+        assert.deepEqual(ast, ref, "Parsed AST doesn't match the expected one");
       });
     }
   });

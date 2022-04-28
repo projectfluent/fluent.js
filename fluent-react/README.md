@@ -2,8 +2,7 @@
 
 `@fluent/react` provides the React bindings for [Project Fluent][].
 
-[Project Fluent]: https://projectfluent.org
-
+[project fluent]: https://projectfluent.org
 
 ## Installation
 
@@ -12,7 +11,6 @@ can install it from the npm registry or use it as a standalone script (as the
 `FluentReact` global).
 
     npm install @fluent/react
-
 
 # Integrating with React apps
 
