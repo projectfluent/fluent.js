@@ -47,7 +47,7 @@ export abstract class BaseNode {
     return true;
   }
 
-  clone(): BaseNode {
+  clone(): this {
     function visit(value: unknown): unknown {
       if (value instanceof BaseNode) {
         return value.clone();
@@ -57,7 +57,8 @@ export abstract class BaseNode {
       }
       return value;
     }
-    const clone = Object.create(this.constructor.prototype) as BaseNode;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const clone = Object.create(this.constructor.prototype) as this;
     for (const prop of Object.keys(this)) {
       clone[prop] = visit(this[prop]);
     }

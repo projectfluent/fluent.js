@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2019",
     "module": "es2015",
     "strict": true,
     "allowJs": false,
