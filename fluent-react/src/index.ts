@@ -17,11 +17,11 @@
  * components for more information.
  */
 
-export { ReactLocalization} from "./localization.js";
+export { ReactLocalization } from "./localization.js";
 export { LocalizationProvider } from "./provider.js";
 export {
   withLocalization,
-  WithLocalizationProps
+  WithLocalizationProps,
 } from "./with_localization.js";
 export { Localized, LocalizedProps } from "./localized.js";
 export { MarkupParser } from "./markup.js";

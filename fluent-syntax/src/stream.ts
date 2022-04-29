@@ -18,8 +18,7 @@ export class ParserStream {
     // The cursor still points to the EOL position, which in this case is the
     // beginning of the compound CRLF sequence. This ensures slices of
     // [inclusive, exclusive) continue to work properly.
-    if (this.string[offset] === "\r"
-      && this.string[offset + 1] === "\n") {
+    if (this.string[offset] === "\r" && this.string[offset + 1] === "\n") {
       return "\n";
     }
 
@@ -37,8 +36,10 @@ export class ParserStream {
   next(): string {
     this.peekOffset = 0;
     // Skip over the CRLF as if it was a single character.
-    if (this.string[this.index] === "\r"
-      && this.string[this.index + 1] === "\n") {
+    if (
+      this.string[this.index] === "\r" &&
+      this.string[this.index + 1] === "\n"
+    ) {
       this.index++;
     }
     this.index++;
@@ -47,8 +48,10 @@ export class ParserStream {
 
   peek(): string {
     // Skip over the CRLF as if it was a single character.
-    if (this.string[this.index + this.peekOffset] === "\r"
-      && this.string[this.index + this.peekOffset + 1] === "\n") {
+    if (
+      this.string[this.index + this.peekOffset] === "\r" &&
+      this.string[this.index + this.peekOffset + 1] === "\n"
+    ) {
       this.peekOffset++;
     }
     this.peekOffset++;
@@ -163,8 +166,10 @@ export class FluentParserStream extends ParserStream {
     }
 
     const cc = ch.charCodeAt(0);
-    return (cc >= 97 && cc <= 122) || // a-z
-      (cc >= 65 && cc <= 90); // A-Z
+    return (
+      (cc >= 97 && cc <= 122) || // a-z
+      (cc >= 65 && cc <= 90)
+    ); // A-Z
   }
 
   isIdentifierStart(): boolean {
@@ -172,9 +177,7 @@ export class FluentParserStream extends ParserStream {
   }
 
   isNumberStart(): boolean {
-    const ch = this.currentChar() === "-"
-      ? this.peek()
-      : this.currentChar();
+    const ch = this.currentChar() === "-" ? this.peek() : this.currentChar();
 
     if (ch === EOF) {
       this.resetPeek();
@@ -307,10 +310,13 @@ export class FluentParserStream extends ParserStream {
   takeIDChar(): string | null | typeof EOF {
     const closure = (ch: string): boolean => {
       const cc = ch.charCodeAt(0);
-      return ((cc >= 97 && cc <= 122) || // a-z
+      return (
+        (cc >= 97 && cc <= 122) || // a-z
         (cc >= 65 && cc <= 90) || // A-Z
         (cc >= 48 && cc <= 57) || // 0-9
-        cc === 95 || cc === 45); // _-
+        cc === 95 ||
+        cc === 45
+      ); // _-
     };
 
     return this.takeChar(closure);
@@ -319,7 +325,7 @@ export class FluentParserStream extends ParserStream {
   takeDigit(): string | null | typeof EOF {
     const closure = (ch: string): boolean => {
       const cc = ch.charCodeAt(0);
-      return (cc >= 48 && cc <= 57); // 0-9
+      return cc >= 48 && cc <= 57; // 0-9
     };
 
     return this.takeChar(closure);
@@ -328,9 +334,11 @@ export class FluentParserStream extends ParserStream {
   takeHexDigit(): string | null | typeof EOF {
     const closure = (ch: string): boolean => {
       const cc = ch.charCodeAt(0);
-      return (cc >= 48 && cc <= 57) // 0-9
-        || (cc >= 65 && cc <= 70) // A-F
-        || (cc >= 97 && cc <= 102); // a-f
+      return (
+        (cc >= 48 && cc <= 57) || // 0-9
+        (cc >= 65 && cc <= 70) || // A-F
+        (cc >= 97 && cc <= 102)
+      ); // a-f
     };
 
     return this.takeChar(closure);

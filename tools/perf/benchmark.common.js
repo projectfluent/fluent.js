@@ -1,7 +1,7 @@
 function runTest(env) {
   const results = {};
   const testData = JSON.parse(env.readFile("./fixtures/benchmarks.json"));
-  const {args, functions} = testData[env.benchmarkName];
+  const { args, functions } = testData[env.benchmarkName];
   const ftlCode = env.readFile(`./fixtures/${env.benchmarkName}.ftl`);
 
   {
@@ -41,15 +41,16 @@ function runTest(env) {
     }
 
     let start = env.now();
-    bundle = new env.FluentBundle.FluentBundle('en-US', {
-      functions: fncs
+    bundle = new env.FluentBundle.FluentBundle("en-US", {
+      functions: fncs,
     });
     const errors = bundle.addResource(resource);
     let end = env.now();
 
     if (errors.length > 0) {
       throw new Error(
-        `Errors accumulated while creating ${env.benchmarkName}.`);
+        `Errors accumulated while creating ${env.benchmarkName}.`
+      );
     }
 
     results[`${testName}/${env.benchmarkName}`] = env.ms(end) - env.ms(start);
@@ -62,10 +63,10 @@ function runTest(env) {
     for (const id of bundle._messages.keys()) {
       let message = bundle.getMessage(id);
       if (message.value) {
-          bundle.formatPattern(message.value, args, errors);
+        bundle.formatPattern(message.value, args, errors);
       }
       for (const attrName in message.attributes) {
-        bundle.formatPattern(message.attributes[attrName], args, errors)
+        bundle.formatPattern(message.attributes[attrName], args, errors);
       }
     }
     let end = env.now();

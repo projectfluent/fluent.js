@@ -1,12 +1,12 @@
-const fs = require('fs');
+const fs = require("fs");
 
-const FluentBundle = require('../../fluent-bundle/index.js');
-const FluentSyntax = require('../../fluent-syntax/index.js');
-const { runTest } = require('./benchmark.common');
-require('intl-pluralrules');
+const FluentBundle = require("../../fluent-bundle/index.js");
+const FluentSyntax = require("../../fluent-syntax/index.js");
+const { runTest } = require("./benchmark.common");
+require("intl-pluralrules");
 
 const env = {
-  readFile: (path) => {
+  readFile: path => {
     return fs.readFileSync(`${__dirname}/${path}`).toString();
   },
   ms: ([seconds, nanoseconds]) => {

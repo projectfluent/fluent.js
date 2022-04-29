@@ -14,7 +14,7 @@ import {
   Term,
   ComplexPattern,
   NumberLiteral,
-  StringLiteral
+  StringLiteral,
 } from "./ast.js";
 
 // This regex is used to iterate through the beginnings of messages and terms.
@@ -294,7 +294,7 @@ export class FluentResource {
         return {
           type: "select",
           selector,
-          ...variants
+          ...variants,
         } as SelectExpression;
       }
 
@@ -335,7 +335,7 @@ export class FluentResource {
             type: "term",
             name,
             attr,
-            args: []
+            args: [],
           } as TermReference;
         }
 
@@ -373,7 +373,7 @@ export class FluentResource {
         return {
           type: "narg",
           name: expr.name,
-          value: parseLiteral()
+          value: parseLiteral(),
         } as NamedArgument;
       }
 
@@ -421,7 +421,7 @@ export class FluentResource {
       } else {
         key = {
           type: "str",
-          value: match1(RE_IDENTIFIER)
+          value: match1(RE_IDENTIFIER),
         } as StringLiteral;
       }
       consumeToken(TOKEN_BRACKET_CLOSE, SyntaxError);
@@ -446,7 +446,7 @@ export class FluentResource {
       return {
         type: "num",
         value: parseFloat(value),
-        precision
+        precision,
       } as NumberLiteral;
     }
 
@@ -480,11 +480,11 @@ export class FluentResource {
         let [, codepoint4, codepoint6] = match(RE_UNICODE_ESCAPE);
         let codepoint = parseInt(codepoint4 || codepoint6, 16);
         return codepoint <= 0xd7ff || 0xe000 <= codepoint
-          // It's a Unicode scalar value.
-          ? String.fromCodePoint(codepoint)
-          // Lonely surrogates can cause trouble when the parsing result is
-          // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
-          : "�";
+          ? // It's a Unicode scalar value.
+            String.fromCodePoint(codepoint)
+          : // Lonely surrogates can cause trouble when the parsing result is
+            // saved using UTF-8. Use U+FFFD REPLACEMENT CHARACTER instead.
+            "�";
       }
 
       throw new SyntaxError("Unknown escape sequence");
@@ -541,5 +541,5 @@ export class FluentResource {
 }
 
 class Indent {
-  constructor(public value: string, public length: number) { }
+  constructor(public value: string, public length: number) {}
 }

@@ -59,7 +59,7 @@ export class FluentBundle {
     {
       functions,
       useIsolating = true,
-      transform = (v: string): string => v
+      transform = (v: string): string => v,
     }: {
       functions?: Record<string, FluentFunction>;
       useIsolating?: boolean;
@@ -70,7 +70,7 @@ export class FluentBundle {
     this._functions = {
       NUMBER,
       DATETIME,
-      ...functions
+      ...functions,
     };
     this._useIsolating = useIsolating;
     this._transform = transform;

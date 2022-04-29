@@ -15,7 +15,7 @@ import {
   FluentValue,
   FluentNone,
   FluentNumber,
-  FluentDateTime
+  FluentDateTime,
 } from "./types.js";
 
 function values(
@@ -83,13 +83,13 @@ export function NUMBER(
   if (arg instanceof FluentNumber) {
     return new FluentNumber(arg.valueOf(), {
       ...arg.opts,
-      ...values(opts, NUMBER_ALLOWED)
+      ...values(opts, NUMBER_ALLOWED),
     });
   }
 
   if (arg instanceof FluentDateTime) {
     return new FluentNumber(arg.valueOf(), {
-      ...values(opts, NUMBER_ALLOWED)
+      ...values(opts, NUMBER_ALLOWED),
     });
   }
 
@@ -160,13 +160,13 @@ export function DATETIME(
   if (arg instanceof FluentDateTime) {
     return new FluentDateTime(arg.valueOf(), {
       ...arg.opts,
-      ...values(opts, DATETIME_ALLOWED)
+      ...values(opts, DATETIME_ALLOWED),
     });
   }
 
   if (arg instanceof FluentNumber) {
     return new FluentDateTime(arg.valueOf(), {
-      ...values(opts, DATETIME_ALLOWED)
+      ...values(opts, DATETIME_ALLOWED),
     });
   }
 

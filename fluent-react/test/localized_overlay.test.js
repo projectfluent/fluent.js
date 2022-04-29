@@ -5,7 +5,7 @@ import { createParseMarkup } from "../esm/markup.js";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 
 describe("Localized - overlay", () => {
@@ -164,7 +164,7 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
           id="foo"
           elems={{
             confirm: <button className="confirm"></button>,
-            cancel: <button className="cancel"></button>
+            cancel: <button className="cancel"></button>,
           }}
         >
           <div />
@@ -204,7 +204,7 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
         <Localized
           id="foo"
           elems={{
-            confirm: <button className="confirm"></button>
+            confirm: <button className="confirm"></button>,
           }}
         >
           <div />
@@ -241,7 +241,7 @@ foo = <confirm>Sign in</confirm>.
           id="foo"
           elems={{
             confirm: <button className="confirm"></button>,
-            cancel: <button className="cancel"></button>
+            cancel: <button className="cancel"></button>,
           }}
         >
           <div />
@@ -937,8 +937,8 @@ foo = test <em>custom markup parser</em>
       return [
         {
           nodeName: "#text",
-          textContent: str.toUpperCase()
-        }
+          textContent: str.toUpperCase(),
+        },
       ];
     }
 

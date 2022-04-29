@@ -63,8 +63,8 @@ export class ReactLocalization {
       } else {
         this.reportError(
           new Error(
-            `The id "${id}" did not match any messages in the localization `
-              + "bundles."
+            `The id "${id}" did not match any messages in the localization ` +
+              "bundles."
           )
         );
       }

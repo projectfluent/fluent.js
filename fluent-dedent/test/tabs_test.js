@@ -3,8 +3,8 @@
 import assert from "assert";
 import ftl from "../esm/index.js";
 
-suite("tab indent", function() {
-  test("same amount", function() {
+suite("tab indent", function () {
+  test("same amount", function () {
     assert.strictEqual(
       ftl`
 \t\tfoo
@@ -13,7 +13,7 @@ suite("tab indent", function() {
     );
   });
 
-  test("larger than common", function() {
+  test("larger than common", function () {
     assert.strictEqual(
       ftl`
 \t\t\tfoo
@@ -22,7 +22,7 @@ suite("tab indent", function() {
     );
   });
 
-  test("smaller than common", function() {
+  test("smaller than common", function () {
     assert.throws(
       () => ftl`
 \tfoo
@@ -31,7 +31,7 @@ suite("tab indent", function() {
     );
   });
 
-  test("2 tabs vs. 8 spaces", function() {
+  test("2 tabs vs. 8 spaces", function () {
     assert.throws(
       () => ftl`
 \t\tfoo
@@ -40,7 +40,7 @@ suite("tab indent", function() {
     );
   });
 
-  test("8 spaces vs. 2 tabs", function() {
+  test("8 spaces vs. 2 tabs", function () {
     assert.throws(
       () => ftl`
         foo
@@ -49,7 +49,7 @@ suite("tab indent", function() {
     );
   });
 
-  test("2 tabs vs. 2 spaces", function() {
+  test("2 tabs vs. 2 spaces", function () {
     assert.throws(
       () => ftl`
 \t\tfoo
@@ -58,7 +58,7 @@ suite("tab indent", function() {
     );
   });
 
-  test("2 spaces vs. 2 tabs", function() {
+  test("2 spaces vs. 2 tabs", function () {
     assert.throws(
       () => ftl`
   foo

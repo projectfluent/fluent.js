@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 const vim = `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */`;
 const license = `\

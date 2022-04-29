@@ -3,7 +3,7 @@ import TestRenderer from "react-test-renderer";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 

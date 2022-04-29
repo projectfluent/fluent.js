@@ -29,7 +29,7 @@ import {
   FluentType,
   FluentNone,
   FluentNumber,
-  FluentDateTime
+  FluentDateTime,
 } from "./types.js";
 import { Scope } from "./scope.js";
 import {
@@ -42,7 +42,7 @@ import {
   FunctionReference,
   SelectExpression,
   ComplexPattern,
-  Pattern
+  Pattern,
 } from "./ast.js";
 import { FluentVariable } from "./bundle.js";
 
@@ -131,7 +131,7 @@ function resolveExpression(scope: Scope, expr: Expression): FluentValue {
       return expr.value;
     case "num":
       return new FluentNumber(expr.value, {
-        minimumFractionDigits: expr.precision
+        minimumFractionDigits: expr.precision,
       });
     case "var":
       return resolveVariableReference(scope, expr);
@@ -162,8 +162,8 @@ function resolveVariableReference(
       return new FluentNone(`$${name}`);
     }
   } else if (
-    scope.args
-    && Object.prototype.hasOwnProperty.call(scope.args, name)
+    scope.args &&
+    Object.prototype.hasOwnProperty.call(scope.args, name)
   ) {
     // We're in the top-level Pattern or inside a MessageReference. Missing
     // variables references produce ReferenceErrors.
@@ -337,7 +337,7 @@ export function resolveComplexPattern(
       // placeables are deeply nested.
       throw new RangeError(
         `Too many placeables expanded: ${scope.placeables}, ` +
-        `max allowed is ${MAX_PLACEABLES}`
+          `max allowed is ${MAX_PLACEABLES}`
       );
     }
 

@@ -6,7 +6,7 @@
  *
  */
 export abstract class BaseNode {
-  abstract type: string
+  abstract type: string;
 
   [name: string]: unknown;
 
@@ -97,11 +97,7 @@ export class Resource extends SyntaxNode {
   }
 }
 
-export declare type Entry =
-  Message |
-  Term |
-  Comments |
-  Junk;
+export declare type Entry = Message | Term | Comments | Junk;
 
 export class Message extends SyntaxNode {
   public type = "Message" as const;
@@ -181,13 +177,13 @@ export class Placeable extends SyntaxNode {
  * A subset of expressions which can be used as outside of Placeables.
  */
 export type InlineExpression =
-  StringLiteral |
-  NumberLiteral |
-  FunctionReference |
-  MessageReference |
-  TermReference |
-  VariableReference |
-  Placeable;
+  | StringLiteral
+  | NumberLiteral
+  | FunctionReference
+  | MessageReference
+  | TermReference
+  | VariableReference
+  | Placeable;
 export declare type Expression = InlineExpression | SelectExpression;
 
 // An abstract base class for Literals.
@@ -201,7 +197,7 @@ export abstract class BaseLiteral extends SyntaxNode {
     this.value = value;
   }
 
-  abstract parse(): { value: unknown }
+  abstract parse(): { value: unknown };
 }
 
 export class StringLiteral extends BaseLiteral {
@@ -220,11 +216,11 @@ export class StringLiteral extends BaseLiteral {
       switch (match) {
         case "\\\\":
           return "\\";
-        case "\\\"":
-          return "\"";
+        case '\\"':
+          return '"';
         default: {
           let codepoint = parseInt(codepoint4 || codepoint6, 16);
-          if (codepoint <= 0xD7FF || 0xE000 <= codepoint) {
+          if (codepoint <= 0xd7ff || 0xe000 <= codepoint) {
             // It's a Unicode scalar value.
             return String.fromCodePoint(codepoint);
           }
@@ -247,9 +243,7 @@ export class NumberLiteral extends BaseLiteral {
   parse(): { value: number; precision: number } {
     let value = parseFloat(this.value);
     let decimalPos = this.value.indexOf(".");
-    let precision = decimalPos > 0
-      ? this.value.length - decimalPos - 1
-      : 0;
+    let precision = decimalPos > 0 ? this.value.length - decimalPos - 1 : 0;
     return { value, precision };
   }
 }
@@ -402,10 +396,7 @@ export class ResourceComment extends BaseComment {
   public type = "ResourceComment" as const;
 }
 
-export declare type Comments =
-  Comment |
-  GroupComment |
-  ResourceComment;
+export declare type Comments = Comment | GroupComment | ResourceComment;
 
 export class Junk extends SyntaxNode {
   public type = "Junk" as const;

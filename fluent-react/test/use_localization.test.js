@@ -4,7 +4,7 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import {
   ReactLocalization,
   LocalizationProvider,
-  useLocalization
+  useLocalization,
 } from "../esm/index.js";
 
 function DummyComponent() {
@@ -21,7 +21,6 @@ describe("useLocalization", () => {
   }
 
   test("render inside of a LocalizationProvider", () => {
-
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([createBundle()])}>
         <DummyComponent />
