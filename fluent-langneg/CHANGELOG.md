@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.2](https://github.com/projectfluent/fluent.js/compare/@fluent/langneg@0.6.1...@fluent/langneg@0.6.2) (2022-05-03)
+
+### Bug Fixes
+
+* Adjust for updated linter rules ([#590](https://github.com/projectfluent/fluent.js/pull/590))
+
 ## [@fluent/langneg 0.6.1](https://github.com/projectfluent/fluent.js/compare/@fluent/langneg@0.6.0...@fluent/langneg@0.6.1) (2021-12-21)
 
 - Add zh-mo and zh-tw to likely subtags

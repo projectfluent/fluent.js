@@ -1,7 +1,7 @@
 {
   "name": "@fluent/langneg",
   "description": "Language Negotiation API for Fluent",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
