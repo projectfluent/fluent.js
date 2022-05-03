@@ -4,8 +4,9 @@ import { negotiateLanguages } from "@fluent/langneg";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import { ReactLocalization, LocalizationProvider } from "@fluent/react";
 
-// Parcel decorates filenames with cache-busting hashes.
-const ftl = require("../public/*.ftl");
+const ftl: Record<string, URL> = {
+  'en-US': new URL( "../public/en-US.ftl", import.meta.url),
+  pl: new URL( "../public/pl.ftl", import.meta.url) }
 
 const DEFAULT_LOCALE = "en-US";
 const AVAILABLE_LOCALES = {
@@ -14,7 +15,7 @@ const AVAILABLE_LOCALES = {
 };
 
 async function fetchMessages(locale: string): Promise<[string, string]> {
-  let response = await fetch(ftl[locale]);
+  let response = await fetch(String(ftl[locale]));
   let messages = await response.text();
   return [locale, messages];
 }
