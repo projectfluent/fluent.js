@@ -109,7 +109,7 @@ describe("Localized - validation", () => {
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          "[@fluent/react] Error: No id was provided for a <Localized /> component.",
+          "[@fluent/react] Error: No string id was provided when localizing a component.",
         ],
       ]
     `);
