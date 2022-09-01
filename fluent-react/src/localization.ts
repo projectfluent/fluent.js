@@ -1,6 +1,6 @@
 import { FluentBundle, FluentVariable } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
-import { Fragment, ReactElement, createElement, isValidElement, ReactFragment, cloneElement } from "react";
+import { Fragment, ReactElement, createElement, isValidElement, ReactFragment, cloneElement, ReactNode } from "react";
 import { CachedSyncIterable } from "cached-iterable";
 import { createParseMarkup, MarkupParser } from "./markup.js";
 import voidElementTags from "../vendor/voidElementTags.js";
@@ -87,55 +87,144 @@ export class ReactLocalization {
     },
     fallback?: string
   ): ReactFragment {
-    const bundle = this.getBundle(id);
-    if (!bundle) {
-      if (this.areBundlesEmpty()) {
-        this.reportError(
-          new Error(
-            "Attempting to get a fragment when no localization bundles are " +
-              "present."
-          )
-        );
-      } else {
-        this.reportError(
-          new Error(
-            `The id "${id}" did not match any messages in the localization ` +
-              "bundles."
-          )
+    return this.getElement(createElement(Fragment, null, fallback || id), id, args);
+  }
+
+  getElement(
+    component: ReactNode | Array<ReactNode>,
+    id: string,
+    args?: {
+      vars?: Record<string, FluentVariable>,
+      elems?: Record<string, ReactElement>,
+      attrs?: Record<string, boolean>;
+    },
+  ): ReactElement {
+    let componentToRender: ReactNode | null;
+
+    // Validate that the child element isn't an array that contains multiple
+    // elements.
+    if (Array.isArray(component)) {
+      if (component.length > 1) {
+        throw new Error(
+          "<Localized/> expected to receive a single React node child"
         );
       }
-      return createElement(Fragment, null, fallback || id);
+
+      // If it's an array with zero or one element, we can directly get the first
+      // one.
+      componentToRender = component[0];
+    } else {
+      componentToRender = component ?? null;
     }
 
-    const msg = bundle.getMessage(id);
-
-    if (!msg || !msg.value) {
-      return createElement(Fragment, null, fallback || id);
+    const bundle = this.getBundle(id);
+    if (bundle === null) {
+      if (id === undefined) {
+        this.reportError(
+          new Error("No string id was provided when localizing a component.")
+        );
+      } else {
+        if (this.areBundlesEmpty()) {
+          this.reportError(
+            new Error(
+              "Attempting to get a localized element when no localization bundles are " +
+                "present."
+            )
+          );
+        } else {
+          this.reportError(
+            new Error(
+              `The id "${id}" did not match any messages in the localization ` +
+                "bundles."
+            )
+          );
+        }
+      }
+      return createElement(Fragment, null, componentToRender);
     }
+
+    // this.getBundle makes the bundle.hasMessage check which ensures that
+    // bundle.getMessage returns an existing message.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const msg = bundle.getMessage(id)!;
 
     let errors: Array<Error> = [];
-    let value = bundle.formatPattern(msg.value, args && args.vars ? args.vars : {}, errors);
+
+    // Check if the component to render is a valid element -- if not, then
+    // it's either null or a simple fallback string. No need to localize the
+    // attributes.
+    if (!isValidElement(componentToRender)) {
+      if (msg.value) {
+        // Replace the fallback string with the message value;
+        let value = bundle.formatPattern(msg.value, args?.vars, errors);
+        for (let error of errors) {
+          this.reportError(error);
+        }
+        return createElement(Fragment, null, value);
+      }
+
+      return createElement(Fragment, null, componentToRender);
+    }
+
+    let localizedProps: Record<string, string> | undefined;
+    // The default is to forbid all message attributes. If the attrs prop exists
+    // on the Localized instance, only set message attributes which have been
+    // explicitly allowed by the developer.
+    if (args?.attrs && msg.attributes) {
+      localizedProps = {};
+      errors = [];
+      for (const [name, allowed] of Object.entries(args?.attrs)) {
+        if (allowed && name in msg.attributes) {
+          localizedProps[name] = bundle.formatPattern(
+            msg.attributes[name],
+            args?.vars,
+            errors
+          );
+        }
+      }
+      for (let error of errors) {
+        this.reportError(error);
+      }
+    }
+
+    // If the component to render is a known void element, explicitly dismiss the
+    // message value and do not pass it to cloneElement in order to avoid the
+    // "void element tags must neither have `children` nor use
+    // `dangerouslySetInnerHTML`" error.
+    if (typeof componentToRender.type === "string" && componentToRender.type in voidElementTags) {
+      return cloneElement(componentToRender, localizedProps);
+    }
+
+    // If the message has a null value, we're only interested in its attributes.
+    // Do not pass the null value to cloneElement as it would nuke all children
+    // of the wrapped component.
+    if (msg.value === null) {
+      return cloneElement(componentToRender, localizedProps);
+    }
+
+    errors = [];
+    const messageValue = bundle.formatPattern(msg.value, args?.vars, errors);
     for (let error of errors) {
       this.reportError(error);
     }
 
+    // If the message value doesn't contain any markup nor any HTML entities,
+    // insert it as the only child of the component to render.
+    if (!reMarkup.test(messageValue) || this.parseMarkup === null) {
+      return cloneElement(componentToRender, localizedProps, messageValue);
+    }
+
     let elemsLower: Record<string, ReactElement>;
-    if (args && args.elems) {
+    if (args?.elems) {
       elemsLower = {};
-      for (let [name, elem] of Object.entries(args.elems)) {
+      for (let [name, elem] of Object.entries(args?.elems)) {
         elemsLower[name.toLowerCase()] = elem;
       }
     }
 
-    // If the message value doesn't contain any markup nor any HTML entities,
-    // return a fragment with the message directly.
-    if (!reMarkup.test(value) || this.parseMarkup === null) {
-      return createElement(Fragment, null, value);
-    }
-
     // If the message contains markup, parse it and try to match the children
-    // found in the translation with the elems passed to this method.
-    const translationNodes = this.parseMarkup(value);
+    // found in the translation with the args passed to this function.
+    const translationNodes = this.parseMarkup(messageValue);
     const translatedChildren = translationNodes.map(childNode => {
       if (childNode.nodeName === "#text") {
         return childNode.textContent;
@@ -169,9 +258,14 @@ export class ReactLocalization {
         return sourceChild;
       }
 
+      // TODO Protect contents of elements wrapped in <Localized>
+      // https://github.com/projectfluent/fluent.js/issues/184
+      // TODO  Control localizable attributes on elements passed as props
+      // https://github.com/projectfluent/fluent.js/issues/185
       return cloneElement(sourceChild, undefined, childNode.textContent);
     });
-    return createElement(Fragment, null, ...translatedChildren);
+
+    return cloneElement(componentToRender, localizedProps, ...translatedChildren);
   }
 
   // XXX Control this via a prop passed to the LocalizationProvider.

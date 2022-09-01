@@ -14,6 +14,7 @@ function DummyComponent() {
     <div>
       <p>{l10n.getString("foo")}</p>
       <p>{l10n.getFragment("bar", { elems: { elem: <b/> } })}</p>
+      {l10n.getElement(<p/>, "bar", { elems: { elem: <i/> }, attrs: { "title": true } })}
     </div>
   );
 }
@@ -21,7 +22,7 @@ function DummyComponent() {
 describe("useLocalization", () => {
   function createBundle() {
     const bundle = new FluentBundle("en");
-    bundle.addResource(new FluentResource("foo = FOO\nbar = BAR<elem>BAZ</elem>\n"));
+    bundle.addResource(new FluentResource("foo = FOO\nbar = BAR<elem>BAZ</elem>\n\t.title = QUX\n"));
     return bundle;
   }
 
@@ -41,6 +42,14 @@ describe("useLocalization", () => {
           <b>
             BAZ
           </b>
+        </p>
+        <p
+          title="QUX"
+        >
+          BAR
+          <i>
+            BAZ
+          </i>
         </p>
       </div>
     `);
@@ -76,6 +85,14 @@ describe("useLocalization", () => {
           <b>
             BAZ
           </b>
+        </p>
+        <p
+          title="QUX"
+        >
+          BAR
+          <i>
+            BAZ
+          </i>
         </p>
       </div>
     `);
