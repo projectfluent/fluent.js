@@ -123,23 +123,22 @@ export class ReactLocalization {
         this.reportError(
           new Error("No string id was provided when localizing a component.")
         );
+      } else if (this.areBundlesEmpty()) {
+        this.reportError(
+          new Error(
+            "Attempting to get a localized element when no localization bundles are " +
+              "present."
+          )
+        );
       } else {
-        if (this.areBundlesEmpty()) {
-          this.reportError(
-            new Error(
-              "Attempting to get a localized element when no localization bundles are " +
-                "present."
-            )
-          );
-        } else {
-          this.reportError(
-            new Error(
-              `The id "${id}" did not match any messages in the localization ` +
-                "bundles."
-            )
-          );
-        }
+        this.reportError(
+          new Error(
+            `The id "${id}" did not match any messages in the localization ` +
+              "bundles."
+          )
+        );
       }
+
       return createElement(Fragment, null, componentToRender);
     }
 
