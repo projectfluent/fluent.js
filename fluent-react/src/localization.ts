@@ -119,7 +119,7 @@ export class ReactLocalization {
 
     const bundle = this.getBundle(id);
     if (bundle === null) {
-      if (id === undefined) {
+      if (!id) {
         this.reportError(
           new Error("No string id was provided when localizing a component.")
         );
