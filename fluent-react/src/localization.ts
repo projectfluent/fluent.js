@@ -106,7 +106,7 @@ export class ReactLocalization {
     if (Array.isArray(component)) {
       if (component.length > 1) {
         throw new Error(
-          "<Localized/> expected to receive a single React node child"
+          "Expected to receive a single React node element to inject a localized string into."
         );
       }
 
