@@ -213,11 +213,11 @@ export class ReactLocalization {
       return cloneElement(componentToRender, localizedProps, messageValue);
     }
 
-    let elemsLower: Record<string, ReactElement>;
+    let elemsLower: Map<string, ReactElement>;
     if (args?.elems) {
-      elemsLower = {};
+      elemsLower = new Map();
       for (let [name, elem] of Object.entries(args?.elems)) {
-        elemsLower[name.toLowerCase()] = elem;
+        elemsLower.set(name.toLowerCase(), elem);
       }
     }
 
@@ -239,7 +239,7 @@ export class ReactLocalization {
         return childNode.textContent;
       }
 
-      const sourceChild = elemsLower[childName];
+      const sourceChild = elemsLower.get(childName);
 
       // Ignore elems which are not valid React elements.
       if (!isValidElement(sourceChild)) {
