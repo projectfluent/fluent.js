@@ -224,26 +224,26 @@ export class ReactLocalization {
     // If the message contains markup, parse it and try to match the children
     // found in the translation with the args passed to this function.
     const translationNodes = this.parseMarkup(messageValue);
-    const translatedChildren = translationNodes.map(childNode => {
-      if (childNode.nodeName === "#text") {
-        return childNode.textContent;
+    const translatedChildren = translationNodes.map(({ nodeName, textContent }) => {
+      if (nodeName === "#text") {
+        return textContent;
       }
 
-      const childName = childNode.nodeName.toLowerCase();
+      const childName = nodeName.toLowerCase();
 
       // If the child is not expected just take its textContent.
       if (
         !elemsLower ||
         !Object.prototype.hasOwnProperty.call(elemsLower, childName)
       ) {
-        return childNode.textContent;
+        return textContent;
       }
 
       const sourceChild = elemsLower.get(childName);
 
       // Ignore elems which are not valid React elements.
       if (!isValidElement(sourceChild)) {
-        return childNode.textContent;
+        return textContent;
       }
 
       // If the element passed in the elems prop is a known void element,
@@ -261,7 +261,7 @@ export class ReactLocalization {
       // https://github.com/projectfluent/fluent.js/issues/184
       // TODO  Control localizable attributes on elements passed as props
       // https://github.com/projectfluent/fluent.js/issues/185
-      return cloneElement(sourceChild, undefined, childNode.textContent);
+      return cloneElement(sourceChild, undefined, textContent);
     });
 
     return cloneElement(componentToRender, localizedProps, ...translatedChildren);
