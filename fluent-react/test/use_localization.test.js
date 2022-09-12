@@ -13,7 +13,7 @@ function DummyComponent() {
   return (
     <div>
       <p>{l10n.getString("foo")}</p>
-      <p>{l10n.getFragment("bar", { elems: { elem: <b/> } })}</p>
+      <p>{l10n.getElement(<></>, "bar", { elems: { elem: <b/> } })}</p>
       {l10n.getElement(<p/>, "bar", { elems: { elem: <i/> }, attrs: { "title": true } })}
     </div>
   );

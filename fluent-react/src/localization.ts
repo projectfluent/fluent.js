@@ -1,6 +1,6 @@
 import { FluentBundle, FluentVariable } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
-import { Fragment, ReactElement, createElement, isValidElement, ReactFragment, cloneElement, ReactNode } from "react";
+import { Fragment, ReactElement, createElement, isValidElement, cloneElement, ReactNode } from "react";
 import { CachedSyncIterable } from "cached-iterable";
 import { createParseMarkup, MarkupParser } from "./markup.js";
 import voidElementTags from "../vendor/voidElementTags.js";
@@ -77,17 +77,6 @@ export class ReactLocalization {
     }
 
     return fallback || id;
-  }
-
-  getFragment(
-    id: string,
-    args?: {
-      vars?: Record<string, FluentVariable>,
-      elems?: Record<string, ReactElement>,
-    },
-    fallback?: string
-  ): ReactFragment {
-    return this.getElement(createElement(Fragment, null, fallback || id), id, args);
   }
 
   getElement(
