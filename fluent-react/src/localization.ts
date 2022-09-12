@@ -44,7 +44,7 @@ export class ReactLocalization {
 
   getString(
     id: string,
-    args?: Record<string, FluentVariable> | null,
+    vars?: Record<string, FluentVariable> | null,
     fallback?: string
   ): string {
     const bundle = this.getBundle(id);
@@ -52,7 +52,7 @@ export class ReactLocalization {
       const msg = bundle.getMessage(id);
       if (msg && msg.value) {
         let errors: Array<Error> = [];
-        let value = bundle.formatPattern(msg.value, args, errors);
+        let value = bundle.formatPattern(msg.value, vars, errors);
         for (let error of errors) {
           this.reportError(error);
         }
