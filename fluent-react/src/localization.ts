@@ -206,6 +206,10 @@ export class ReactLocalization {
     if (args?.elems) {
       elemsLower = new Map();
       for (let [name, elem] of Object.entries(args?.elems)) {
+        // Ignore elems which are not valid React elements.
+        if (!isValidElement(elem)) {
+          continue;
+        }
         elemsLower.set(name.toLowerCase(), elem);
       }
     }
@@ -219,19 +223,10 @@ export class ReactLocalization {
       }
 
       const childName = nodeName.toLowerCase();
+      const sourceChild = elemsLower?.get(childName);
 
       // If the child is not expected just take its textContent.
-      if (
-        !elemsLower ||
-        !elemsLower.has(childName)
-      ) {
-        return textContent;
-      }
-
-      const sourceChild = elemsLower.get(childName);
-
-      // Ignore elems which are not valid React elements.
-      if (!isValidElement(sourceChild)) {
+      if (!sourceChild) {
         return textContent;
       }
 
