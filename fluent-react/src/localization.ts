@@ -1,6 +1,6 @@
 import { FluentBundle, FluentVariable } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
-import { Fragment, ReactElement, createElement, isValidElement, cloneElement, ReactNode } from "react";
+import { Fragment, ReactElement, createElement, isValidElement, cloneElement } from "react";
 import { CachedSyncIterable } from "cached-iterable";
 import { createParseMarkup, MarkupParser } from "./markup.js";
 import voidElementTags from "../vendor/voidElementTags.js";
@@ -80,7 +80,7 @@ export class ReactLocalization {
   }
 
   getElement(
-    component: ReactNode | Array<ReactNode>,
+    componentToRender: ReactElement,
     id: string,
     args?: {
       vars?: Record<string, FluentVariable>,
@@ -88,24 +88,6 @@ export class ReactLocalization {
       attrs?: Record<string, boolean>;
     },
   ): ReactElement {
-    let componentToRender: ReactNode | null;
-
-    // Validate that the child element isn't an array that contains multiple
-    // elements.
-    if (Array.isArray(component)) {
-      if (component.length > 1) {
-        throw new Error(
-          "Expected to receive a single React element to localize."
-        );
-      }
-
-      // If it's an array with zero or one element, we can directly get the first
-      // one.
-      componentToRender = component[0];
-    } else {
-      componentToRender = component ?? null;
-    }
-
     const bundle = this.getBundle(id);
     if (bundle === null) {
       if (!id) {
@@ -137,22 +119,6 @@ export class ReactLocalization {
     const msg = bundle.getMessage(id)!;
 
     let errors: Array<Error> = [];
-
-    // Check if the component to render is a valid element -- if not, then
-    // it's either null or a simple fallback string. No need to localize the
-    // attributes.
-    if (!isValidElement(componentToRender)) {
-      if (msg.value) {
-        // Replace the fallback string with the message value;
-        let value = bundle.formatPattern(msg.value, args?.vars, errors);
-        for (let error of errors) {
-          this.reportError(error);
-        }
-        return createElement(Fragment, null, value);
-      }
-
-      return createElement(Fragment, null, componentToRender);
-    }
 
     let localizedProps: Record<string, string> | undefined;
     // The default is to forbid all message attributes. If the attrs prop exists
