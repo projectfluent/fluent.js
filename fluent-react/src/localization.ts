@@ -1,6 +1,12 @@
 import { FluentBundle, FluentVariable } from "@fluent/bundle";
 import { mapBundleSync } from "@fluent/sequence";
-import { Fragment, ReactElement, createElement, isValidElement, cloneElement } from "react";
+import {
+  Fragment,
+  ReactElement,
+  createElement,
+  isValidElement,
+  cloneElement,
+} from "react";
 import { CachedSyncIterable } from "cached-iterable";
 import { createParseMarkup, MarkupParser } from "./markup.js";
 import voidElementTags from "../vendor/voidElementTags.js";
@@ -83,10 +89,10 @@ export class ReactLocalization {
     sourceElement: ReactElement,
     id: string,
     args: {
-      vars?: Record<string, FluentVariable>,
-      elems?: Record<string, ReactElement>,
+      vars?: Record<string, FluentVariable>;
+      elems?: Record<string, ReactElement>;
       attrs?: Record<string, boolean>;
-    } = {},
+    } = {}
   ): ReactElement {
     const bundle = this.getBundle(id);
     if (bundle === null) {
@@ -145,7 +151,10 @@ export class ReactLocalization {
     // message value and do not pass it to cloneElement in order to avoid the
     // "void element tags must neither have `children` nor use
     // `dangerouslySetInnerHTML`" error.
-    if (typeof sourceElement.type === "string" && sourceElement.type in voidElementTags) {
+    if (
+      typeof sourceElement.type === "string" &&
+      sourceElement.type in voidElementTags
+    ) {
       return cloneElement(sourceElement, localizedProps);
     }
 
@@ -183,36 +192,38 @@ export class ReactLocalization {
     // If the message contains markup, parse it and try to match the children
     // found in the translation with the args passed to this function.
     const translationNodes = this.parseMarkup(messageValue);
-    const translatedChildren = translationNodes.map(({ nodeName, textContent }) => {
-      if (nodeName === "#text") {
-        return textContent;
+    const translatedChildren = translationNodes.map(
+      ({ nodeName, textContent }) => {
+        if (nodeName === "#text") {
+          return textContent;
+        }
+
+        const childName = nodeName.toLowerCase();
+        const sourceChild = elemsLower?.get(childName);
+
+        // If the child is not expected just take its textContent.
+        if (!sourceChild) {
+          return textContent;
+        }
+
+        // If the element passed in the elems prop is a known void element,
+        // explicitly dismiss any textContent which might have accidentally been
+        // defined in the translation to prevent the "void element tags must not
+        // have children" error.
+        if (
+          typeof sourceChild.type === "string" &&
+          sourceChild.type in voidElementTags
+        ) {
+          return sourceChild;
+        }
+
+        // TODO Protect contents of elements wrapped in <Localized>
+        // https://github.com/projectfluent/fluent.js/issues/184
+        // TODO  Control localizable attributes on elements passed as props
+        // https://github.com/projectfluent/fluent.js/issues/185
+        return cloneElement(sourceChild, undefined, textContent);
       }
-
-      const childName = nodeName.toLowerCase();
-      const sourceChild = elemsLower?.get(childName);
-
-      // If the child is not expected just take its textContent.
-      if (!sourceChild) {
-        return textContent;
-      }
-
-      // If the element passed in the elems prop is a known void element,
-      // explicitly dismiss any textContent which might have accidentally been
-      // defined in the translation to prevent the "void element tags must not
-      // have children" error.
-      if (
-        typeof sourceChild.type === "string" &&
-        sourceChild.type in voidElementTags
-      ) {
-        return sourceChild;
-      }
-
-      // TODO Protect contents of elements wrapped in <Localized>
-      // https://github.com/projectfluent/fluent.js/issues/184
-      // TODO  Control localizable attributes on elements passed as props
-      // https://github.com/projectfluent/fluent.js/issues/185
-      return cloneElement(sourceChild, undefined, textContent);
-    });
+    );
 
     return cloneElement(sourceElement, localizedProps, ...translatedChildren);
   }

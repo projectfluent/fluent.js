@@ -13,8 +13,11 @@ function DummyComponent() {
   return (
     <div>
       <p>{l10n.getString("foo")}</p>
-      <p>{l10n.getElement(<></>, "bar", { elems: { elem: <b/> } })}</p>
-      {l10n.getElement(<p/>, "bar", { elems: { elem: <i/> }, attrs: { "title": true } })}
+      <p>{l10n.getElement(<></>, "bar", { elems: { elem: <b /> } })}</p>
+      {l10n.getElement(<p />, "bar", {
+        elems: { elem: <i /> },
+        attrs: { title: true },
+      })}
     </div>
   );
 }
@@ -22,7 +25,11 @@ function DummyComponent() {
 describe("useLocalization", () => {
   function createBundle() {
     const bundle = new FluentBundle("en");
-    bundle.addResource(new FluentResource("foo = FOO\nbar = BAR<elem>BAZ</elem>\n\t.title = QUX\n"));
+    bundle.addResource(
+      new FluentResource(
+        "foo = FOO\nbar = BAR<elem>BAZ</elem>\n\t.title = QUX\n"
+      )
+    );
     return bundle;
   }
 

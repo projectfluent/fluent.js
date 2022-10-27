@@ -49,7 +49,7 @@ export function Localized(props: LocalizedProps): ReactElement {
 
   let componentToRender: ReactNode | null;
 
-  if(typeof children === "string") {
+  if (typeof children === "string") {
     componentToRender = children;
   } else if (!children) {
     componentToRender = null;
@@ -69,8 +69,8 @@ export function Localized(props: LocalizedProps): ReactElement {
       l10n.getString(
         id,
         vars,
-        typeof componentToRender === "string" ? componentToRender : undefined,
-      ),
+        typeof componentToRender === "string" ? componentToRender : undefined
+      )
     );
   }
 
