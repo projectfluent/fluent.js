@@ -80,7 +80,7 @@ export class ReactLocalization {
   }
 
   getElement(
-    componentToRender: ReactElement,
+    sourceElement: ReactElement,
     id: string,
     args: {
       vars?: Record<string, FluentVariable>,
@@ -110,7 +110,7 @@ export class ReactLocalization {
         );
       }
 
-      return createElement(Fragment, null, componentToRender);
+      return createElement(Fragment, null, sourceElement);
     }
 
     // this.getBundle makes the bundle.hasMessage check which ensures that
@@ -145,15 +145,15 @@ export class ReactLocalization {
     // message value and do not pass it to cloneElement in order to avoid the
     // "void element tags must neither have `children` nor use
     // `dangerouslySetInnerHTML`" error.
-    if (typeof componentToRender.type === "string" && componentToRender.type in voidElementTags) {
-      return cloneElement(componentToRender, localizedProps);
+    if (typeof sourceElement.type === "string" && sourceElement.type in voidElementTags) {
+      return cloneElement(sourceElement, localizedProps);
     }
 
     // If the message has a null value, we're only interested in its attributes.
     // Do not pass the null value to cloneElement as it would nuke all children
     // of the wrapped component.
     if (msg.value === null) {
-      return cloneElement(componentToRender, localizedProps);
+      return cloneElement(sourceElement, localizedProps);
     }
 
     errors = [];
@@ -165,7 +165,7 @@ export class ReactLocalization {
     // If the message value doesn't contain any markup nor any HTML entities,
     // insert it as the only child of the component to render.
     if (!reMarkup.test(messageValue) || this.parseMarkup === null) {
-      return cloneElement(componentToRender, localizedProps, messageValue);
+      return cloneElement(sourceElement, localizedProps, messageValue);
     }
 
     let elemsLower: Map<string, ReactElement>;
@@ -214,7 +214,7 @@ export class ReactLocalization {
       return cloneElement(sourceChild, undefined, textContent);
     });
 
-    return cloneElement(componentToRender, localizedProps, ...translatedChildren);
+    return cloneElement(sourceElement, localizedProps, ...translatedChildren);
   }
 
   // XXX Control this via a prop passed to the LocalizationProvider.
