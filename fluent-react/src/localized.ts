@@ -1,5 +1,4 @@
 import React, {
-  Children,
   isValidElement,
   ReactElement,
   ReactNode,
@@ -47,34 +46,30 @@ export function Localized(props: LocalizedProps): ReactElement {
     );
   }
 
-  let componentToRender: ReactNode | null;
+  let source: ReactNode | null;
 
-  if (typeof children === "string") {
-    componentToRender = children;
-  } else if (!children) {
-    componentToRender = null;
-  } else if (Array.isArray(children) && children.length === 1) {
-    componentToRender = children[0];
+  if (Array.isArray(children)) {
+    if (children.length > 1) {
+      throw new Error(
+        "Expected to receive a single React element to localize."
+      );
+    }
+    // If it's an array with zero or one element, we can directly get the first one.
+    source = children[0];
   } else {
-    componentToRender = Children.only(children);
+    source = children ?? null;
   }
 
   // Check if the component to render is a valid element -- if not, then
   // it's either null or a simple fallback string. No need to localize the
   // attributes or replace.
-  if (!isValidElement(componentToRender)) {
-    return React.createElement(
-      React.Fragment,
-      null,
-      l10n.getString(
-        id,
-        vars,
-        typeof componentToRender === "string" ? componentToRender : undefined
-      )
-    );
+  if (!isValidElement(source)) {
+    const fallback = typeof source === "string" ? source : undefined;
+    const string = l10n.getString(id, vars, fallback);
+    return React.createElement(React.Fragment, null, string);
   }
 
-  return l10n.getElement(componentToRender, id, { attrs, vars, elems });
+  return l10n.getElement(source, id, { attrs, vars, elems });
 }
 
 export default Localized;
