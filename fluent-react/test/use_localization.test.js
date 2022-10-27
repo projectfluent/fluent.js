@@ -10,13 +10,26 @@ import {
 function DummyComponent() {
   const { l10n } = useLocalization();
 
-  return <p>{l10n.getString("foo")}</p>;
+  return (
+    <div>
+      <p>{l10n.getString("foo")}</p>
+      <p>{l10n.getElement(<></>, "bar", { elems: { elem: <b /> } })}</p>
+      {l10n.getElement(<p />, "bar", {
+        elems: { elem: <i /> },
+        attrs: { title: true },
+      })}
+    </div>
+  );
 }
 
 describe("useLocalization", () => {
   function createBundle() {
-    const bundle = new FluentBundle("en", { useIsolating: false });
-    bundle.addResource(new FluentResource("foo = FOO\n"));
+    const bundle = new FluentBundle("en");
+    bundle.addResource(
+      new FluentResource(
+        "foo = FOO\nbar = BAR<elem>BAZ</elem>\n\t.title = QUX\n"
+      )
+    );
     return bundle;
   }
 
@@ -27,9 +40,25 @@ describe("useLocalization", () => {
       </LocalizationProvider>
     );
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-      <p>
-        FOO
-      </p>
+      <div>
+        <p>
+          FOO
+        </p>
+        <p>
+          BAR
+          <b>
+            BAZ
+          </b>
+        </p>
+        <p
+          title="QUX"
+        >
+          BAR
+          <i>
+            BAZ
+          </i>
+        </p>
+      </div>
     `);
   });
 
@@ -54,9 +83,25 @@ describe("useLocalization", () => {
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
-      <p>
-        FOO
-      </p>
+      <div>
+        <p>
+          FOO
+        </p>
+        <p>
+          BAR
+          <b>
+            BAZ
+          </b>
+        </p>
+        <p
+          title="QUX"
+        >
+          BAR
+          <i>
+            BAZ
+          </i>
+        </p>
+      </div>
     `);
   });
 });

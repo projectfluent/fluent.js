@@ -557,7 +557,7 @@ foo = Message
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"Message"`);
   });
 
-  test("render without a fallback and no message returns nothing", () => {
+  test("render without a fallback and no message returns the message ID", () => {
     jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle();
 
@@ -567,7 +567,7 @@ foo = Message
       </LocalizationProvider>
     );
 
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`null`);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`"foo"`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
