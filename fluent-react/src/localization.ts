@@ -82,11 +82,11 @@ export class ReactLocalization {
   getElement(
     componentToRender: ReactElement,
     id: string,
-    args?: {
+    args: {
       vars?: Record<string, FluentVariable>,
       elems?: Record<string, ReactElement>,
       attrs?: Record<string, boolean>;
-    },
+    } = {},
   ): ReactElement {
     const bundle = this.getBundle(id);
     if (bundle === null) {
@@ -124,14 +124,14 @@ export class ReactLocalization {
     // The default is to forbid all message attributes. If the attrs prop exists
     // on the Localized instance, only set message attributes which have been
     // explicitly allowed by the developer.
-    if (args?.attrs && msg.attributes) {
+    if (args.attrs && msg.attributes) {
       localizedProps = {};
       errors = [];
-      for (const [name, allowed] of Object.entries(args?.attrs)) {
+      for (const [name, allowed] of Object.entries(args.attrs)) {
         if (allowed && name in msg.attributes) {
           localizedProps[name] = bundle.formatPattern(
             msg.attributes[name],
-            args?.vars,
+            args.vars,
             errors
           );
         }
@@ -157,7 +157,7 @@ export class ReactLocalization {
     }
 
     errors = [];
-    const messageValue = bundle.formatPattern(msg.value, args?.vars, errors);
+    const messageValue = bundle.formatPattern(msg.value, args.vars, errors);
     for (let error of errors) {
       this.reportError(error);
     }
@@ -169,9 +169,9 @@ export class ReactLocalization {
     }
 
     let elemsLower: Map<string, ReactElement>;
-    if (args?.elems) {
+    if (args.elems) {
       elemsLower = new Map();
-      for (let [name, elem] of Object.entries(args?.elems)) {
+      for (let [name, elem] of Object.entries(args.elems)) {
         // Ignore elems which are not valid React elements.
         if (!isValidElement(elem)) {
           continue;
