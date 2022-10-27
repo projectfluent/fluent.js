@@ -1,4 +1,5 @@
 import React, {
+  Children,
   isValidElement,
   ReactElement,
   ReactNode,
@@ -48,20 +49,14 @@ export function Localized(props: LocalizedProps): ReactElement {
 
   let componentToRender: ReactNode | null;
 
-  // Validate that the child element isn't an array that contains multiple
-  // elements.
-  if (Array.isArray(children)) {
-    if (children.length > 1) {
-      throw new Error(
-        "Expected to receive a single React element to localize."
-      );
-    }
-
-    // If it's an array with zero or one element, we can directly get the first
-    // one.
+  if(typeof children === "string") {
+    componentToRender = children;
+  } else if (!children) {
+    componentToRender = null;
+  } else if (Array.isArray(children) && children.length === 1) {
     componentToRender = children[0];
   } else {
-    componentToRender = children ?? null;
+    componentToRender = Children.only(children);
   }
 
   // Check if the component to render is a valid element -- if not, then
