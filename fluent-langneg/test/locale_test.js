@@ -32,8 +32,8 @@ suite("Parses simple locales", () => {
         language: "zh",
         extended: ["gan"],
       })
-    )
-  })
+    );
+  });
 
   test("script part", () => {
     assert.ok(
@@ -74,7 +74,7 @@ suite("Parses simple locales", () => {
         script: "Latn",
         region: "419",
       })
-    )
+    );
   });
 
   test("variant part", () => {

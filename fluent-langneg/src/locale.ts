@@ -5,6 +5,7 @@ const extendedCodeRe = "((?:-(?:[a-z]{3})){1,3})";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
 const regionCodeRe = "(?:-([a-z]{2}|[0-9]{3}|\\*))";
 const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
+const extensionCodeRe = "(-(?:[a-wy-z])(?:-[a-z]{2,8})+)";
 
 /**
  * Regular expression splitting locale id into multiple pieces:
@@ -19,7 +20,8 @@ const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
  * It can also accept a range `*` character on any position.
  */
 const localeRe = new RegExp(
-  `^${languageCodeRe}${extendedCodeRe}?${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`,
+  `^${languageCodeRe}${extendedCodeRe}?${scriptCodeRe}?`
+    + `${regionCodeRe}?${variantCodeRe}?${extensionCodeRe}*$`,
   "i"
 );
 
@@ -30,6 +32,7 @@ export class Locale {
   script?: string;
   region?: string;
   variant?: string;
+  extension: Map<string, string> = new Map();
 
   /**
    * Parses a locale id using the localeRe into an array with four elements.
@@ -47,19 +50,26 @@ export class Locale {
       return;
     }
 
-    let [, language, extended, script, region, variant] = result;
+    let [, language, extended, script, region, variant, extension] = result;
 
     if (language) {
       this.language = language.toLowerCase();
     }
     if (extended) {
-      this.extended = extended.substring(1).split("-")
+      this.extended = extended.toLowerCase().substring(1).split("-");
     }
     if (script) {
       this.script = script[0].toUpperCase() + script.slice(1);
     }
     if (region) {
       this.region = region.toUpperCase();
+    }
+    if (extension) {
+      for (const [, type, code] of extension.matchAll(
+        /(?:-([a-wy-z])((?:-[a-z]{2,8})+))/g
+      )) {
+        this.extension.set(type.toLowerCase(), code.substring(1).toLowerCase());
+      }
     }
     this.variant = variant;
     this.isWellFormed = true;
@@ -71,7 +81,8 @@ export class Locale {
       this.extended.every((v, i) => v === other.extended[i]) &&
       this.script === other.script &&
       this.region === other.region &&
-      this.variant === other.variant
+      this.variant === other.variant &&
+      compareMap(this.extension, other.extension)
     );
   }
 
@@ -91,12 +102,22 @@ export class Locale {
         (otherRange && other.region === undefined)) &&
       (this.variant === other.variant ||
         (thisRange && this.variant === undefined) ||
-        (otherRange && other.variant === undefined))
+        (otherRange && other.variant === undefined)) &&
+      (compareMap(this.extension, other.extension) ||
+        (thisRange && this.extension.size === 0) ||
+        (otherRange && other.extension.size === 0))
     );
   }
 
   toString(): string {
-    return [this.language, ...this.extended, this.script, this.region, this.variant]
+    return [
+      this.language,
+      ...this.extended,
+      this.script,
+      this.region,
+      this.variant,
+      ...[...this.extension.entries()].flat(),
+    ]
       .filter(part => part !== undefined)
       .join("-");
   }
@@ -117,6 +138,7 @@ export class Locale {
       this.script = newLocale.script;
       this.region = newLocale.region;
       this.variant = newLocale.variant;
+      this.extension = newLocale.extension;
       return true;
     }
     return false;
@@ -186,4 +208,19 @@ function getLikelySubtagsMin(loc: string): Locale | null {
     return locale;
   }
   return null;
+}
+
+function compareMap<K, V>(map1: Map<K, V>, map2: Map<K, V>): boolean {
+  if (map1.size !== map2.size) {
+    return false;
+  }
+
+  for (const [key, value] of map1) {
+    const other = map2.get(key);
+    if (other !== value || (other === undefined && !map2.has(key))) {
+      return false;
+    }
+  }
+
+  return true;
 }
