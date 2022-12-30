@@ -53,6 +53,13 @@ suite("Parses simple locales", () => {
         region: "FA",
       })
     );
+
+    assert.ok(
+      isLocaleEqual("es-419", {
+        language: "es",
+        region: "419",
+      })
+    )
   });
 
   test("variant part", () => {

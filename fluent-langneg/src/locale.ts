@@ -2,7 +2,7 @@
 
 const languageCodeRe = "([a-z]{2,3}|\\*)";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
-const regionCodeRe = "(?:-([a-z]{2}|\\*))";
+const regionCodeRe = "(?:-([a-z]{2}|[0-9]{3}|\\*))";
 const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
 
 /**
