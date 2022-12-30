@@ -1,7 +1,5 @@
 /* eslint no-magic-numbers: 0 */
 
-import { Locale } from "./locale.js";
-
 /**
  * Negotiates the languages between the list of requested locales against
  * a list of available locales.
@@ -78,20 +76,20 @@ export function filterMatches(
   strategy: string
 ): Array<string> {
   const supportedLocales: Set<string> = new Set();
-  const availableLocalesMap: Map<string, Locale> = new Map();
+  const availableLocalesMap: Map<string, Intl.Locale> = new Map();
 
   for (let locale of availableLocales) {
-    let newLocale = new Locale(locale);
-    if (newLocale.isWellFormed) {
-      availableLocalesMap.set(locale, new Locale(locale));
+    let newLocale = tryLocale(locale);
+    if (newLocale) {
+      availableLocalesMap.set(locale, newLocale);
     }
   }
 
   outer: for (const reqLocStr of requestedLocales) {
     const reqLocStrLC = reqLocStr.toLowerCase();
-    const requestedLocale = new Locale(reqLocStrLC);
+    let requestedLocale = tryLocale(reqLocStrLC);
 
-    if (requestedLocale.language === undefined) {
+    if (!requestedLocale) {
       continue;
     }
 
@@ -115,7 +113,7 @@ export function filterMatches(
     // This turns `en` into `en-*-*-*` and `en-US` into `en-*-US-*`
     // Example: ['en-US'] * ['en'] = ['en']
     for (const [key, availableLocale] of availableLocalesMap.entries()) {
-      if (availableLocale.matches(requestedLocale, true, false)) {
+      if (localeMatches(availableLocale, requestedLocale, true, false)) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
         if (strategy === "lookup") {
@@ -132,9 +130,10 @@ export function filterMatches(
     // If data is available, it'll expand `en` into `en-Latn-US` and
     // `zh` into `zh-Hans-CN`.
     // Example: ['en'] * ['en-GB', 'en-US'] = ['en-US']
-    if (requestedLocale.addLikelySubtags()) {
+    let maximized = requestedLocale.maximize();
+    if (maximized.toString() !== requestedLocale.toString()) {
       for (const [key, availableLocale] of availableLocalesMap.entries()) {
-        if (availableLocale.matches(requestedLocale, true, false)) {
+        if (localeMatches(availableLocale, maximized, true, false)) {
           supportedLocales.add(key);
           availableLocalesMap.delete(key);
           if (strategy === "lookup") {
@@ -150,10 +149,10 @@ export function filterMatches(
 
     // 4) Attempt to look up for a different variant for the same locale ID
     // Example: ['en-US-mac'] * ['en-US-win'] = ['en-US-win']
-    requestedLocale.clearVariants();
+    requestedLocale = requestedLocale.minimize();
 
     for (const [key, availableLocale] of availableLocalesMap.entries()) {
-      if (availableLocale.matches(requestedLocale, true, true)) {
+      if (localeMatches(availableLocale, requestedLocale, true, true)) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
         if (strategy === "lookup") {
@@ -172,11 +171,11 @@ export function filterMatches(
     // over `zh-CN`.
     //
     // Example: ['zh-Hant-HK'] * ['zh-TW', 'zh-CN'] = ['zh-TW']
-    requestedLocale.clearRegion();
-
-    if (requestedLocale.addLikelySubtags()) {
+    requestedLocale = new Intl.Locale(requestedLocale.toString(), { region: "001" })
+    maximized = requestedLocale.maximize();
+    if (maximized.toString() !== requestedLocale.toString()) {
       for (const [key, availableLocale] of availableLocalesMap.entries()) {
-        if (availableLocale.matches(requestedLocale, true, false)) {
+        if (localeMatches(availableLocale, requestedLocale, true, false)) {
           supportedLocales.add(key);
           availableLocalesMap.delete(key);
           if (strategy === "lookup") {
@@ -192,10 +191,10 @@ export function filterMatches(
 
     // 6) Attempt to look up for a different region for the same locale ID
     // Example: ['en-US'] * ['en-AU'] = ['en-AU']
-    requestedLocale.clearRegion();
+    requestedLocale = new Intl.Locale(requestedLocale.toString(), { region: "001" })
 
     for (const [key, availableLocale] of availableLocalesMap.entries()) {
-      if (availableLocale.matches(requestedLocale, true, true)) {
+      if (localeMatches(availableLocale, requestedLocale, true, true)) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
         if (strategy === "lookup") {
@@ -210,4 +209,51 @@ export function filterMatches(
   }
 
   return Array.from(supportedLocales);
+}
+
+function tryLocale(locale: string): Intl.Locale | null {
+  try {
+    return new Intl.Locale(locale.replace(/_/g, "-"));
+  } catch {
+    return null;
+  }
+}
+
+function getPrivate(loc: Intl.Locale): string | null {
+  const result = /(?:-x((?:-[a-z]{2,8})+))$/i.exec(loc.toString());
+  if (!result) {
+    return null;
+  }
+
+  const [, priv] = result;
+  return priv.substring(1).toLowerCase();
+}
+
+function localeMatches(loc1: Intl.Locale, loc2: Intl.Locale, thisRange = false, otherRange = false): boolean {
+  const loc1Priv = getPrivate(loc1);
+  const loc2Priv = getPrivate(loc2);
+  return (loc1.language === loc2.language ||
+        (thisRange && loc1.language === undefined) ||
+        (otherRange && loc2.language === undefined)) &&
+      (loc1.script === loc2.script ||
+        (thisRange && loc1.script === undefined) ||
+        (otherRange && loc2.script === undefined)) &&
+      (loc1.region === loc2.region ||
+        (thisRange && loc1.region === undefined) ||
+        (otherRange && loc2.region === undefined)) &&
+      (loc1.calendar === loc2.calendar ||
+        (thisRange && loc1.calendar === undefined) ||
+        (otherRange && loc2.calendar === undefined)) &&
+      (loc1.hourCycle === loc2.hourCycle ||
+        (thisRange && loc1.hourCycle === undefined) ||
+        (otherRange && loc2.hourCycle === undefined)) &&
+      (loc1.numberingSystem === loc2.numberingSystem ||
+        (thisRange && loc1.numberingSystem === undefined) ||
+        (otherRange && loc2.numberingSystem === undefined)) &&
+      (loc1.collation === loc2.collation ||
+        (thisRange && loc1.collation === undefined) ||
+        (otherRange && loc2.collation === undefined)) &&
+      (loc1Priv === loc2Priv ||
+        (thisRange && loc1Priv === null) ||
+        (otherRange && loc2Priv === null))
 }
