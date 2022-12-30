@@ -3,7 +3,12 @@ import { Locale } from "../esm/locale.js";
 
 function isLocaleEqual(str, ref) {
   const locale = new Locale(str);
-  return locale.isEqual(ref);
+  return locale.isEqual({
+    ...{
+      extended: [],
+    },
+    ref,
+  });
 }
 
 suite("Parses simple locales", () => {
@@ -20,6 +25,15 @@ suite("Parses simple locales", () => {
       })
     );
   });
+
+  test("extended part", () => {
+    assert.ok(
+      isLocaleEqual("zh-gan", {
+        language: "zh",
+        extended: ["gan"],
+      })
+    )
+  })
 
   test("script part", () => {
     assert.ok(
@@ -55,8 +69,9 @@ suite("Parses simple locales", () => {
     );
 
     assert.ok(
-      isLocaleEqual("es-419", {
+      isLocaleEqual("es-Latn-419", {
         language: "es",
+        script: "Latn",
         region: "419",
       })
     )

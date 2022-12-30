@@ -1,12 +1,13 @@
 /* eslint no-magic-numbers: 0 */
 
 const languageCodeRe = "([a-z]{2,3}|\\*)";
+const extendedCodeRe = "((?:-(?:[a-z]{3})){1,3})";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
 const regionCodeRe = "(?:-([a-z]{2}|[0-9]{3}|\\*))";
 const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
 
 /**
- * Regular expression splitting locale id into four pieces:
+ * Regular expression splitting locale id into multiple pieces:
  *
  * Example: `en-Latn-US-macos`
  *
@@ -18,13 +19,14 @@ const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
  * It can also accept a range `*` character on any position.
  */
 const localeRe = new RegExp(
-  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`,
+  `^${languageCodeRe}${extendedCodeRe}?${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`,
   "i"
 );
 
 export class Locale {
   isWellFormed: boolean;
   language?: string;
+  extended: string[] = [];
   script?: string;
   region?: string;
   variant?: string;
@@ -45,10 +47,13 @@ export class Locale {
       return;
     }
 
-    let [, language, script, region, variant] = result;
+    let [, language, extended, script, region, variant] = result;
 
     if (language) {
       this.language = language.toLowerCase();
+    }
+    if (extended) {
+      this.extended = extended.substring(1).split("-")
     }
     if (script) {
       this.script = script[0].toUpperCase() + script.slice(1);
@@ -63,6 +68,7 @@ export class Locale {
   isEqual(other: Locale): boolean {
     return (
       this.language === other.language &&
+      this.extended.every((v, i) => v === other.extended[i]) &&
       this.script === other.script &&
       this.region === other.region &&
       this.variant === other.variant
@@ -74,6 +80,9 @@ export class Locale {
       (this.language === other.language ||
         (thisRange && this.language === undefined) ||
         (otherRange && other.language === undefined)) &&
+      (this.extended.every((v, i) => v === other.extended[i]) ||
+        (thisRange && this.extended.length === 0) ||
+        (otherRange && other.extended.length === 0)) &&
       (this.script === other.script ||
         (thisRange && this.script === undefined) ||
         (otherRange && other.script === undefined)) &&
@@ -87,7 +96,7 @@ export class Locale {
   }
 
   toString(): string {
-    return [this.language, this.script, this.region, this.variant]
+    return [this.language, ...this.extended, this.script, this.region, this.variant]
       .filter(part => part !== undefined)
       .join("-");
   }
@@ -104,6 +113,7 @@ export class Locale {
     const newLocale = getLikelySubtagsMin(this.toString().toLowerCase());
     if (newLocale) {
       this.language = newLocale.language;
+      this.extended = newLocale.extended;
       this.script = newLocale.script;
       this.region = newLocale.region;
       this.variant = newLocale.variant;
