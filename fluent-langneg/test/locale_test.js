@@ -3,7 +3,8 @@ import { Locale } from "../esm/locale.js";
 
 function isLocaleEqual(str, ref) {
   const locale = new Locale(str);
-  return locale.isEqual(ref);
+  const other = Locale.fromComponents(ref);
+  return locale.isEqual(other);
 }
 
 suite("Parses simple locales", () => {
@@ -105,6 +106,16 @@ suite("Parses simple locales", () => {
         language: "lij",
         region: "FA",
         variant: "linux",
+      })
+    );
+  });
+
+  test("skipping extensions", () => {
+    assert.ok(
+      isLocaleEqual("en-US-macos-linux-u-hc-h12", {
+        language: "en",
+        region: "US",
+        variant: "macos-linux",
       })
     );
   });

@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "target": "es2020",
     "outDir": "./esm"
   },
   "include": ["./src/**/*.ts"]
