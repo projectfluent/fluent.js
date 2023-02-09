@@ -6,7 +6,7 @@ import type { Resource, Entry } from "./ast.js";
 import { EOF, EOL, FluentParserStream } from "./stream.js";
 import { ParseError } from "./errors.js";
 
-const trailingWSRe = /[ \t\n\r]+$/;
+const trailingWSRe = /[ \n\r]+$/;
 
 type ParseFn<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

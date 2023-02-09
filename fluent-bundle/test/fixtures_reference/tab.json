@@ -11,6 +11,18 @@
                 "This line is indented by 4 spaces,"
             ],
             "attributes": {}
+        },
+        {
+            "id": "key05",
+            "value": "\t",
+            "attributes": {}
+        },
+        {
+            "id": "key06",
+            "value": null,
+            "attributes": {
+                "attr": "\t\t"
+            }
         }
     ]
 }
