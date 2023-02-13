@@ -1,7 +1,4 @@
-import { promises } from "fs";
-
-// 'fs/promises' is only available from Node.js 14.0.0
-const { readFile } = promises;
+import { readFile } from "fs/promises";
 
 const globalName = {
   "@fluent/bundle": "FluentBundle",
