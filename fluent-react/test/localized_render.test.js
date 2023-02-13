@@ -383,11 +383,11 @@ foo = { $arg }
             </div>
         `);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
-        Array [
+        [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
       ]
@@ -455,9 +455,9 @@ foo = Test message
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`null`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
         ],
       ]
     `);
@@ -514,9 +514,9 @@ foo = Test message
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"String fallback"`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
         ],
       ]
     `);
@@ -569,9 +569,9 @@ foo = Message
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"foo"`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
         ],
       ]
     `);

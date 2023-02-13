@@ -64,8 +64,8 @@ bar = BAR {$arg}
     // It reports an error on formatting errors, but doesn't throw.
     expect(getString("bar", {})).toBe("BAR {$arg}");
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
       ]
@@ -99,11 +99,11 @@ bar = BAR {$arg}
     // Doesn't throw on formatting errors.
     expect(getString("bar", {})).toBe("BAR {$arg}");
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"missing\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "missing" did not match any messages in the localization bundles.",
         ],
-        Array [
+        [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
       ]
@@ -123,8 +123,8 @@ bar = BAR {$arg}
     // Returns the id if no fallback.
     expect(getString("foo", { arg: 1 })).toBe("foo");
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           "[@fluent/react] Error: Attempting to get a string when no localization bundles are present.",
         ],
       ]
@@ -148,8 +148,8 @@ bar = BAR {$arg}
     );
 
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           "[@fluent/react] Error: Attempting to get a string when no localization bundles are present.",
         ],
       ]
