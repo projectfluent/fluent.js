@@ -55,6 +55,7 @@ export function Localized(props: LocalizedProps): ReactElement {
       );
     }
     // If it's an array with zero or one element, we can directly get the first one.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     source = children[0];
   } else {
     source = children ?? null;
