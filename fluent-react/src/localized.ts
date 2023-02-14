@@ -14,7 +14,7 @@ export interface LocalizedProps {
   vars?: Record<string, FluentVariable>;
   elems?: Record<string, ReactElement>;
 }
-/*
+/**
  * The `Localized` class renders its child with translated props and children.
  *
  *     <Localized id="hello-world">

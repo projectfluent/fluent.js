@@ -15,7 +15,7 @@ import voidElementTags from "../vendor/voidElementTags.js";
 // &amp;, &#0038;, &#x0026;.
 const reMarkup = /<|&#?\w+;/;
 
-/*
+/**
  * `ReactLocalization` handles translation formatting and fallback.
  *
  * The current negotiated fallback chain of languages is stored in the

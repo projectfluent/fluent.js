@@ -10,7 +10,7 @@ export function mapBundleSync(
   ids: Array<string>
 ): Array<FluentBundle | null>;
 
-/*
+/**
  * Synchronously map an identifier or an array of identifiers to the best
  * `FluentBundle` instance(s).
  *

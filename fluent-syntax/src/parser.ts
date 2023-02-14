@@ -122,7 +122,7 @@ export class FluentParser {
     return res;
   }
 
-  /*
+  /**
    * Parse the first Message or Term in `source`.
    *
    * Skip all encountered comments and start parsing at the first Message or
@@ -421,12 +421,14 @@ export class FluentParser {
     return new AST.NumberLiteral(value);
   }
 
-  // maybeGetPattern distinguishes between patterns which start on the same line
-  // as the identifier (a.k.a. inline signleline patterns and inline multiline
-  // patterns) and patterns which start on a new line (a.k.a. block multiline
-  // patterns). The distinction is important for the dedentation logic: the
-  // indent of the first line of a block pattern must be taken into account when
-  // calculating the maximum common indent.
+  /**
+   * maybeGetPattern distinguishes between patterns which start on the same line
+   * as the identifier (a.k.a. inline signleline patterns and inline multiline
+   * patterns) and patterns which start on a new line (a.k.a. block multiline
+   * patterns). The distinction is important for the dedentation logic: the
+   * indent of the first line of a block pattern must be taken into account when
+   * calculating the maximum common indent.
+   */
   maybeGetPattern(ps: FluentParserStream): AST.Pattern | null {
     ps.peekBlankInline();
     if (ps.isValueStart()) {
@@ -490,15 +492,19 @@ export class FluentParser {
     return new AST.Pattern(dedented);
   }
 
-  // Create a token representing an indent. It's not part of the AST and it will
-  // be trimmed and merged into adjacent TextElements, or turned into a new
-  // TextElement, if it's surrounded by two Placeables.
+  /**
+   * Create a token representing an indent. It's not part of the AST and it will
+   * be trimmed and merged into adjacent TextElements, or turned into a new
+   * TextElement, if it's surrounded by two Placeables.
+   */
   getIndent(ps: FluentParserStream, value: string, start: number): Indent {
     return new Indent(value, start, ps.index);
   }
 
-  // Dedent a list of elements by removing the maximum common indent from the
-  // beginning of text lines. The common indent is calculated in getPattern.
+  /**
+   * Dedent a list of elements by removing the maximum common indent from the
+   * beginning of text lines. The common indent is calculated in getPattern.
+   */
   dedent(
     elements: Array<AST.PatternElement | Indent>,
     commonIndent: number

@@ -225,10 +225,9 @@ export class FluentParserStream extends ParserStream {
     return false;
   }
 
-  // -1 - any
-  //  0 - comment
-  //  1 - group comment
-  //  2 - resource comment
+  /**
+   * @param level - -1: any, 0: comment, 1: group comment, 2: resource comment
+   */
   isNextLineComment(level: number = -1): boolean {
     if (this.currentChar() !== EOL) {
       return false;

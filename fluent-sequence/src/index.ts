@@ -1,4 +1,4 @@
-/*
+/**
  * @module fluent-sequence
  * @overview Manage ordered sequences of FluentBundles.
  */

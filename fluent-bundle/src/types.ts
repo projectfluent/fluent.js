@@ -1,7 +1,5 @@
 import { Scope } from "./scope.js";
 
-/* global Intl */
-
 export type FluentValue = FluentType<unknown> | string;
 
 export type FluentFunction = (

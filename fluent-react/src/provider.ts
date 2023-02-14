@@ -7,7 +7,7 @@ interface LocalizationProviderProps {
   l10n: ReactLocalization;
 }
 
-/*
+/**
  * The Provider component for the `ReactLocalization` class.
  *
  * Exposes a `ReactLocalization` instance to all descendants via React's

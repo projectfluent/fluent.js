@@ -22,7 +22,7 @@ export default async function () {
       format: "umd",
       amd: { id: name },
       name: globalName[name],
-      banner: `/* ${name}@${version} */`,
+      banner: `/** ${name}@${version} */`,
     },
   };
 }
