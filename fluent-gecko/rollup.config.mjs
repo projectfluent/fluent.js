@@ -31,7 +31,7 @@ export default [
     output: {
       file: "dist/fluent-react.js",
       format: "cjs",
-      preferConst: true,
+      generatedCode: { constBindings: true },
       banner: license,
       intro: `/* fluent-react@${reactPkg.version} */`,
     },
@@ -45,7 +45,7 @@ export default [
       file: "dist/FluentSyntax.jsm",
       format: "es",
       freeze: false,
-      preferConst: true,
+      generatedCode: { constBindings: true },
       banner: `${vim}\n\n${license}`,
       intro: `/* fluent-syntax@${syntaxPkg.version} */`,
     },
