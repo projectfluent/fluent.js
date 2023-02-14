@@ -841,11 +841,12 @@ export class FluentParser {
   }
 }
 
-class Indent {
+export class Indent {
   public type = "Indent";
   public span: AST.Span;
   public value: string;
 
+  /** @ignore */
   constructor(value: string, start: number, end: number) {
     this.value = value;
     this.span = new AST.Span(start, end);

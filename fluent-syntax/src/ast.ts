@@ -83,6 +83,7 @@ function scalarsEqual(
 export abstract class SyntaxNode extends BaseNode {
   public span?: Span;
 
+  /** @ignore */
   addSpan(start: number, end: number): void {
     this.span = new Span(start, end);
   }

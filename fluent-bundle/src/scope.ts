@@ -10,13 +10,17 @@ export class Scope {
   public args: Record<string, FluentVariable> | null;
   /**
    * The Set of patterns already encountered during this resolution.
-   * Used to detect and prevent cyclic resolutions. */
+   * Used to detect and prevent cyclic resolutions.
+   * @ignore
+   */
   public dirty: WeakSet<ComplexPattern> = new WeakSet();
   /** A dict of parameters passed to a TermReference. */
   public params: Record<string, FluentVariable> | null = null;
   /**
    * The running count of placeables resolved so far.
-   * Used to detect the Billion Laughs and Quadratic Blowup attacks. */
+   * Used to detect the Billion Laughs and Quadratic Blowup attacks.
+   * @ignore
+   */
   public placeables: number = 0;
 
   constructor(

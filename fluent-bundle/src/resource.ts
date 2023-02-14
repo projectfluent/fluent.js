@@ -69,6 +69,7 @@ const TOKEN_BLANK = /\s+/y;
  * Fluent Resource is a structure storing parsed localization entries.
  */
 export class FluentResource {
+  /** @ignore */
   public body: Array<Message | Term>;
 
   constructor(source: string) {
