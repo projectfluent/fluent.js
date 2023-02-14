@@ -40,7 +40,7 @@
     "eslint-plugin-mocha": "^10.1.0",
     "esm": "^3.2.22",
     "fuzzer": "^0.2.1",
-    "gh-pages": "^3.2.3",
+    "gh-pages": "^5.0.0",
     "intl-pluralrules": "^1.0.0",
     "mocha": "^10.2.0",
     "prettier": "^2.6.2",
