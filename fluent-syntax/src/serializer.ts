@@ -40,7 +40,7 @@ function shouldStartOnNewLine(pattern: AST.Pattern): boolean {
   return false;
 }
 
-// Bit masks representing the state of the serializer.
+/** Bit masks representing the state of the serializer. */
 const HAS_ENTRIES = 1;
 
 export interface FluentSerializerOptions {

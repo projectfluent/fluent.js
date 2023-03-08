@@ -3,10 +3,17 @@ import { FluentParser, FluentParserOptions } from "./parser.js";
 import { FluentSerializer, FluentSerializerOptions } from "./serializer.js";
 
 export * from "./ast.js";
-export * from "./errors.js";
-export * from "./parser.js";
-export * from "./serializer.js";
-export * from "./visitor.js";
+export { ParseError } from "./errors.js";
+export type { Indent } from "./parser.js";
+export { serializeExpression, serializeVariantKey } from "./serializer.js";
+export { Transformer, Visitor } from "./visitor.js";
+
+export {
+  FluentParser,
+  FluentParserOptions,
+  FluentSerializer,
+  FluentSerializerOptions,
+};
 
 export function parse(source: string, opts: FluentParserOptions): Resource {
   const parser = new FluentParser(opts);

@@ -1,4 +1,4 @@
-/*
+/**
  * Base class for all Fluent AST nodes.
  *
  * All productions described in the ASDL subclass BaseNode, including Span and
@@ -77,12 +77,13 @@ function scalarsEqual(
   return thisVal === otherVal;
 }
 
-/*
+/**
  * Base class for AST nodes which can have Spans.
  */
 export abstract class SyntaxNode extends BaseNode {
   public span?: Span;
 
+  /** @ignore */
   addSpan(start: number, end: number): void {
     this.span = new Span(start, end);
   }

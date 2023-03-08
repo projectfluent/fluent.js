@@ -1,4 +1,4 @@
-/*
+/**
  * @module fluent-react
  * @overview
  *
@@ -7,14 +7,17 @@
  * React's Components system and the virtual DOM.  Translations are exposed to
  * components via the provider pattern.
  *
- *     <LocalizationProvider l10n={…}>
- *         <Localized id="hello-world">
- *             <p>{'Hello, world!'}</p>
- *         </Localized>
- *     </LocalizationProvider>
- *
  * Consult the documentation of the `LocalizationProvider` and the `Localized`
  * components for more information.
+ *
+ * @example
+ * ```jsx
+ * <LocalizationProvider l10n={…}>
+ *     <Localized id="hello-world">
+ *         <p>{'Hello, world!'}</p>
+ *     </Localized>
+ * </LocalizationProvider>
+ * ```
  */
 
 export { ReactLocalization } from "./localization.js";

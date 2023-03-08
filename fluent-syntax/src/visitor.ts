@@ -10,9 +10,11 @@ import * as AST from "./ast.js";
  *
  * Visiting methods must implement the following interface:
  *
- *     interface VisitingMethod {
- *         (this: Visitor, node: AST.BaseNode): void;
- *     }
+ * ```ts
+ * interface VisitingMethod {
+ *     (this: Visitor, node: AST.BaseNode): void;
+ * }
+ * ```
  */
 export abstract class Visitor {
   [prop: string]: unknown;
@@ -75,9 +77,11 @@ export abstract class Visitor {
  *
  * Visiting methods must implement the following interface:
  *
- *     interface TransformingMethod {
- *         (this: Transformer, node: AST.BaseNode): AST.BaseNode | undefined;
- *     }
+ * ```ts
+ * interface TransformingMethod {
+ *     (this: Transformer, node: AST.BaseNode): AST.BaseNode | undefined;
+ * }
+ * ```
  *
  * The returned node will replace the original one in the AST. Return
  * `undefined` to remove the node instead.

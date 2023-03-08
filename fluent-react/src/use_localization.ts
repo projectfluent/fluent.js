@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { FluentContext } from "./context.js";
 import { ReactLocalization } from "./localization.js";
 
-/*
+/**
  * The `useLocalization` hook returns the FluentContext
  */
 type useLocalization = () => { l10n: ReactLocalization };

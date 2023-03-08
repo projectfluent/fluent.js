@@ -462,9 +462,7 @@ foo = BEFORE <input/> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -490,9 +488,7 @@ foo = BEFORE <input></input> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -520,9 +516,7 @@ foo = BEFORE <input>Foo</input> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
         Foo AFTER
       </div>
     `);
@@ -667,9 +661,7 @@ foo = BEFORE <span></span> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -843,9 +835,7 @@ foo = BEFORE <text-elem></text-elem> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);

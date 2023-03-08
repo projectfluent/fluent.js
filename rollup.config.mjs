@@ -1,7 +1,4 @@
-import { promises } from "fs";
-
-// 'fs/promises' is only available from Node.js 14.0.0
-const { readFile } = promises;
+import { readFile } from "fs/promises";
 
 const globalName = {
   "@fluent/bundle": "FluentBundle",
@@ -25,7 +22,7 @@ export default async function () {
       format: "umd",
       amd: { id: name },
       name: globalName[name],
-      banner: `/* ${name}@${version} */`,
+      banner: `/** ${name}@${version} */`,
     },
   };
 }

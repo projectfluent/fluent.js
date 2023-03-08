@@ -10,7 +10,7 @@ export function mapBundleAsync(
   ids: Array<string>
 ): Promise<Array<FluentBundle | null>>;
 
-/*
+/**
  * Asynchronously map an identifier or an array of identifiers to the best
  * `FluentBundle` instance(s).
  *
