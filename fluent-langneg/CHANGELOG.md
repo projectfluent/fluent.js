@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.0](https://github.com/projectfluent/fluent.js/compare/@fluent/langneg@0.6.2...@fluent/langneg@0.7.0) (2023-03-13)
+
+- Drop Node.js v12 support, add v18 & latest to CI tests
+  ([#607](https://github.com/projectfluent/fluent.js/pull/607))
+
 ## [0.6.2](https://github.com/projectfluent/fluent.js/compare/@fluent/langneg@0.6.1...@fluent/langneg@0.6.2) (2022-05-03)
 
 ### Bug Fixes

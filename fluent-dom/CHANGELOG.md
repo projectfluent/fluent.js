@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.0](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.8.1...@fluent/dom@0.9.0) (2023-03-13)
+
+- Drop Node.js v12 support, add v18 & latest to CI tests
+  ([#607](https://github.com/projectfluent/fluent.js/pull/607))
+- Use `/** comments */` where appropriate
+
 ## [@fluent/dom 0.8.1](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.8.0...@fluent/dom@0.8.1) (2021-12-21)
 
 - Add `.js` extension to imports

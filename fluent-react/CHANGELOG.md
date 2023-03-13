@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.15.0](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.14.1...@fluent/react@0.15.0) (2023-03-13)
+
+- Drop Node.js v12 support, add v18 & latest to CI tests
+  ([#607](https://github.com/projectfluent/fluent.js/pull/607))
+- Add `getElement` method to ReactLocalization
+  ([#595](https://github.com/projectfluent/fluent.js/pull/595))
+- Update fluent-react/example to use latest Parcel
+  ([#593](https://github.com/projectfluent/fluent.js/pull/593))
+- Update dev dependencies to react@18 and jest@29
+
 ## [@fluent/react 0.14.1](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.14.0...@fluent/react@0.14.1) (2021-12-21)
 
 - Add `.js` extension to imports
