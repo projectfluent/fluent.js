@@ -11,8 +11,8 @@
 
 ### Bug Fixes
 
-* Use correct TS type for `clone()` return ([#589](https://github.com/projectfluent/fluent.js/issues/589))
-* Adjust for updated linter rules ([#590](https://github.com/projectfluent/fluent.js/pull/590))
+- Use correct TS type for `clone()` return ([#589](https://github.com/projectfluent/fluent.js/issues/589))
+- Adjust for updated linter rules ([#590](https://github.com/projectfluent/fluent.js/pull/590))
 
 ## @fluent/syntax 0.18.0 (September 13, 2021)
 
