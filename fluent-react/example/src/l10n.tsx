@@ -5,8 +5,9 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import { ReactLocalization, LocalizationProvider } from "@fluent/react";
 
 const ftl: Record<string, URL> = {
-  'en-US': new URL( "../public/en-US.ftl", import.meta.url),
-  pl: new URL( "../public/pl.ftl", import.meta.url) }
+  "en-US": new URL("../public/en-US.ftl", import.meta.url),
+  pl: new URL("../public/pl.ftl", import.meta.url),
+};
 
 const DEFAULT_LOCALE = "en-US";
 const AVAILABLE_LOCALES = {
