@@ -37,7 +37,7 @@
     "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/bundle": "file:../fluent-bundle",
+    "@fluent/bundle": "^0.18.0",
     "cached-iterable": "^0.3.0"
   },
   "peerDependencies": {

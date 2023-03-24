@@ -44,7 +44,7 @@
     "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/bundle": "file:../fluent-bundle",
+    "@fluent/bundle": "^0.18.0",
     "jsdom": "^21.1.0"
   },
   "dependencies": {
