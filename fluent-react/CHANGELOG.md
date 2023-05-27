@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.15.1](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.15.0...@fluent/react@0.15.1) (2023-05-27)
+
+- Update dependencies & example ([#612](https://github.com/projectfluent/fluent.js/pull/612))
+
 ## [0.15.0](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.14.1...@fluent/react@0.15.0) (2023-03-13)
 
 - Drop Node.js v12 support, add v18 & latest to CI tests
