@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.15.2](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.15.1...@fluent/react@0.15.2) (2023-08-01)
+
+- Allow user provided reportError function ([#619](https://github.com/projectfluent/fluent.js/issues/619))
+
 ## [0.15.1](https://github.com/projectfluent/fluent.js/compare/@fluent/react@0.15.0...@fluent/react@0.15.1) (2023-05-27)
 
 - Update dependencies & example ([#612](https://github.com/projectfluent/fluent.js/pull/612))
