@@ -15,6 +15,12 @@ import voidElementTags from "../vendor/voidElementTags.js";
 // &amp;, &#0038;, &#x0026;.
 const reMarkup = /<|&#?\w+;/;
 
+const defaultReportError = (error: Error): void => {
+  /* global console */
+  // eslint-disable-next-line no-console
+  console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
+};
+
 /**
  * `ReactLocalization` handles translation formatting and fallback.
  *
@@ -29,13 +35,16 @@ const reMarkup = /<|&#?\w+;/;
 export class ReactLocalization {
   public bundles: Iterable<FluentBundle>;
   public parseMarkup: MarkupParser | null;
+  public reportError: (error: Error) => void;
 
   constructor(
     bundles: Iterable<FluentBundle>,
-    parseMarkup: MarkupParser | null = createParseMarkup()
+    parseMarkup: MarkupParser | null = createParseMarkup(),
+    reportError?: (error: Error) => void
   ) {
     this.bundles = CachedSyncIterable.from(bundles);
     this.parseMarkup = parseMarkup;
+    this.reportError = reportError || defaultReportError;
   }
 
   getBundle(id: string): FluentBundle | null {
@@ -226,13 +235,5 @@ export class ReactLocalization {
     );
 
     return cloneElement(sourceElement, localizedProps, ...translatedChildren);
-  }
-
-  // XXX Control this via a prop passed to the LocalizationProvider.
-  // See https://github.com/projectfluent/fluent.js/issues/411.
-  reportError(error: Error): void {
-    /* global console */
-    // eslint-disable-next-line no-console
-    console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
   }
 }
