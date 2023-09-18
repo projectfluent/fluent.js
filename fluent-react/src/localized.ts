@@ -13,6 +13,7 @@ export interface LocalizedProps {
   children?: ReactNode | Array<ReactNode>;
   vars?: Record<string, FluentVariable>;
   elems?: Record<string, ReactElement>;
+  nestedElems?: boolean;
 }
 
 /**
@@ -41,7 +42,7 @@ export interface LocalizedProps {
  * ```
  */
 export function Localized(props: LocalizedProps): ReactElement {
-  const { id, attrs, vars, elems, children } = props;
+  const { id, attrs, vars, elems, nestedElems, children } = props;
   const l10n = useContext(FluentContext);
 
   if (!l10n) {
@@ -74,7 +75,7 @@ export function Localized(props: LocalizedProps): ReactElement {
     return React.createElement(React.Fragment, null, string);
   }
 
-  return l10n.getElement(source, id, { attrs, vars, elems });
+  return l10n.getElement(source, id, { attrs, vars, elems, nestedElems });
 }
 
 export default Localized;
