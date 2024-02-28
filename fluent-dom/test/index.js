@@ -10,6 +10,6 @@ Object.keys(document.defaultView).forEach(property => {
   }
 });
 
-global.navigator = {
-  userAgent: "node.js",
-};
+Object.defineProperty(global, "navigator", {
+  get: () => ({ userAgent: "node.js" }),
+});

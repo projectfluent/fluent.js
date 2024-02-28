@@ -47,7 +47,7 @@
     "test": "jest --collect-coverage"
   },
   "engines": {
-    "node": ">=14.0.0",
+    "node": ">=18.0.0",
     "npm": ">=7.0.0"
   },
   "jest": {

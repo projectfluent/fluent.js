@@ -47,17 +47,8 @@ The API reference is available at https://projectfluent.org/fluent.js/bundle.
 
 - `Intl.DateTimeFormat` (standard, well-supported)
 - `Intl.NumberFormat` (standard, well-supported)
-- `Intl.PluralRules` (standard, new in ECMAScript 2018)
-
-`Intl.PluralRules` may already be available in some engines. In most cases,
-however, a polyfill will be required. We recommend [intl-pluralrules][].
-
-```javascript
-import "intl-pluralrules";
-import { FluentBundle } from "@fluent/bundle";
-```
+- `Intl.PluralRules` (standard, well-supported)
 
 See also the [Compatibility][] article on the `fluent.js` wiki.
 
-[intl-pluralrules]: https://www.npmjs.com/package/intl-pluralrules
 [compatibility]: https://github.com/projectfluent/fluent.js/wiki/Compatibility
