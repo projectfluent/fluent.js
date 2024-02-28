@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 
-"use strict";
-
-const fs = require("fs");
-const program = require("commander");
-
-require = require("esm")(module);
-const FluentSyntax = require("../fluent-syntax/esm/index.js");
+import { readFile } from "fs";
+import program from "commander";
+import { columnOffset, lineOffset, parse } from "../fluent-syntax/esm/index.js";
+import { FluentResource } from "../fluent-bundle/esm/index.js";
 
 program
   .version("0.0.1")
@@ -17,7 +14,7 @@ program
   .parse(process.argv);
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  readFile(program.args[0], print);
 } else {
   process.stdin.resume();
   process.stdin.on("data", data => print(null, data));
@@ -32,7 +29,6 @@ function print(err, data) {
 }
 
 function printRuntime(data) {
-  const { FluentResource } = require("../fluent-bundle/esm/index.js");
   const res = new FluentResource(data.toString());
   console.log(JSON.stringify(res, null, 4));
 }
@@ -40,15 +36,13 @@ function printRuntime(data) {
 function printResource(data) {
   const withSpans = !!program.withSpans;
   const source = data.toString();
-  const res = FluentSyntax.parse(source, { withSpans });
+  const res = parse(source, { withSpans });
   console.log(JSON.stringify(res, null, 2));
 
   if (!program.silent) {
     // Spans are required to pretty-print the annotations. If needed, re-parse
     // the source.
-    const { body } = withSpans
-      ? res
-      : FluentSyntax.parse(source, { withSpans: true });
+    const { body } = withSpans ? res : parse(source, { withSpans: true });
     body
       .filter(entry => entry.type === "Junk")
       .map(junk => printAnnotations(source, junk));
@@ -69,9 +63,9 @@ function printAnnotation(source, span, annot) {
     span: { start },
   } = annot;
   const slice = source.substring(span.start, span.end);
-  const lineNumber = FluentSyntax.lineOffset(source, start) + 1;
-  const columnOffset = FluentSyntax.columnOffset(source, start);
-  const showLines = lineNumber - FluentSyntax.lineOffset(source, span.start);
+  const lineNumber = lineOffset(source, start) + 1;
+  const columnNumber = columnOffset(source, start);
+  const showLines = lineNumber - lineOffset(source, span.start);
   const lines = slice.split("\n");
   const head = lines.slice(0, showLines);
   const tail = lines.slice(showLines);
@@ -79,7 +73,7 @@ function printAnnotation(source, span, annot) {
   console.log();
   console.log(`! ${code} on line ${lineNumber}:`);
   console.log(head.map(line => `  | ${line}`).join("\n"));
-  console.log(`  … ${indent(columnOffset)}^----- ${message}`);
+  console.log(`  … ${indent(columnNumber)}^----- ${message}`);
   console.log(tail.map(line => `  | ${line}`).join("\n"));
 }
 

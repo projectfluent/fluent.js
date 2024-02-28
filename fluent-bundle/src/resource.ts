@@ -542,5 +542,8 @@ export class FluentResource {
 }
 
 class Indent {
-  constructor(public value: string, public length: number) {}
+  constructor(
+    public value: string,
+    public length: number
+  ) {}
 }

@@ -119,7 +119,9 @@ describe("Localized - validation", () => {
     jest.spyOn(console, "warn").mockImplementation(() => {});
     const mockReportError = jest.fn();
     const renderer = TestRenderer.create(
-      <LocalizationProvider l10n={new ReactLocalization([], null, mockReportError)}>
+      <LocalizationProvider
+        l10n={new ReactLocalization([], null, mockReportError)}
+      >
         <Localized>
           <div />
         </Localized>
@@ -128,6 +130,8 @@ describe("Localized - validation", () => {
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`[]`);
-    expect(mockReportError).toHaveBeenCalledWith(new Error('No string id was provided when localizing a component.'));
+    expect(mockReportError).toHaveBeenCalledWith(
+      new Error("No string id was provided when localizing a component.")
+    );
   });
 });
