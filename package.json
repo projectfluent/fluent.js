@@ -23,7 +23,7 @@
     "test": "npm run test:common && npm test -w fluent-dom && npm test -w fluent-react"
   },
   "engines": {
-    "node": ">=14.18.0",
+    "node": ">=18.0.0",
     "npm": ">=7.0.0"
   },
   "prettier": {

@@ -40,7 +40,7 @@
     "test": "c8 mocha -ui tdd --require ./test/index.js 'test/*_test.js'"
   },
   "engines": {
-    "node": ">=14.0.0",
+    "node": ">=18.0.0",
     "npm": ">=7.0.0"
   },
   "devDependencies": {
