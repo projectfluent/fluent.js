@@ -39,7 +39,6 @@
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-mocha": "^10.1.0",
-    "esm": "^3.2.22",
     "fuzzer": "^0.2.1",
     "gh-pages": "^6.1.1",
     "mocha": "^10.2.0",

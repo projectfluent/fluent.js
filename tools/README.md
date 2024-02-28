@@ -3,9 +3,9 @@
 A collection of command line utilities to make learning and working with
 fluent.js easier.
 
-## parse.js
+## parse.mjs
 
-`parse.js` is a utility script that uses fluent.js Parser to parse a string
+`parse.mjs` is a utility script that uses fluent.js Parser to parse a string
 into an AST and output the result.
 
     Usage: parse [options] [file]
@@ -19,12 +19,12 @@ into an AST and output the result.
 
 Examples:
 
-    echo "foo = Foo" | ./parse.js
-    ./parse.js file.ftl
+    echo "foo = Foo" | ./parse.mjs
+    ./parse.mjs file.ftl
 
-## format.js
+## format.mjs
 
-`format.js` is a utility script that uses fluent.js Resolver to parse and
+`format.mjs` is a utility script that uses fluent.js Resolver to parse and
 transform a source string into Message objects and output the formatted result.
 
     Usage: format [options] [file]
@@ -39,13 +39,13 @@ transform a source string into Message objects and output the formatted result.
 
 Examples:
 
-    echo "foo = Foo" | ./format.js
-    ./format.js file.ftl
-    ./format.js -e data.json file.ftl
+    echo "foo = Foo" | ./format.mjs
+    ./format.mjs file.ftl
+    ./format.mjs -e data.json file.ftl
 
-## fuzz.js
+## fuzz.mjs
 
-`fuzz.js` is a fuzzer for fluent.js's parsers.
+`fuzz.mjs` is a fuzzer for fluent.js's parsers.
 
     Usage: fuzz [options] [file]
 
@@ -58,8 +58,8 @@ Examples:
 
 Examples:
 
-    echo "foo = Foo" | ./fuzz.js
-    ./fuzz.js -i 1000 file.ftl
+    echo "foo = Foo" | ./fuzz.mjs
+    ./fuzz.mjs -i 1000 file.ftl
 
 ## perf
 

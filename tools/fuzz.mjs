@@ -2,14 +2,14 @@
 
 "use strict";
 
-const fs = require("fs");
-const readline = require("readline");
-const program = require("commander");
-const fuzzer = require("fuzzer");
+import { readFile } from "fs";
+import { cursorTo } from "readline";
+import program from "commander";
+import { mutate, seed } from "fuzzer";
+import { FluentResource } from "../fluent-bundle/esm/index.js";
+import { parse } from "../fluent-syntax/esm/index.js";
 
-require = require("esm")(module);
-
-fuzzer.seed(Math.random() * 1000000000);
+seed(Math.random() * 1000000000);
 
 program
   .version("0.0.1")
@@ -19,7 +19,7 @@ program
   .parse(process.argv);
 
 if (program.args.length) {
-  fs.readFile(program.args[0], fuzz);
+  readFile(program.args[0], fuzz);
 } else {
   process.stdin.resume();
   process.stdin.on("data", data => fuzz(null, data));
@@ -30,12 +30,11 @@ function fuzz(err, data) {
     return console.error("File not found: " + err.path);
   }
 
-  let parse;
+  let parse_;
   if (program.runtime) {
-    let { FluentResource } = require("../fluent-bundle/esm/index.js");
-    parse = source => new FluentResource(source);
+    parse_ = source => new FluentResource(source);
   } else {
-    parse = require("../fluent-syntax/esm/index.js").parse;
+    parse_ = parse;
   }
 
   const source = data.toString();
@@ -44,7 +43,7 @@ function fuzz(err, data) {
   let i = 1;
 
   while (i <= program.repetitions) {
-    const mutated = fuzzer.mutate.string(source);
+    const mutated = mutate.string(source);
 
     if (mutations.has(mutated)) {
       continue;
@@ -53,11 +52,11 @@ function fuzz(err, data) {
     mutations.add(mutated);
 
     const progress = Math.round((i / program.repetitions) * 100);
-    readline.cursorTo(process.stdout, 0);
+    cursorTo(process.stdout, 0);
     process.stdout.write(`mutation ${i} ... ${progress}%`);
 
     try {
-      parse(mutated);
+      parse_(mutated);
     } catch (e) {
       console.log(`! mutation ${i}`);
       console.log(e);

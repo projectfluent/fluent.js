@@ -2,11 +2,14 @@
 
 "use strict";
 
-const fs = require("fs");
-const program = require("commander");
-
-require = require("esm")(module);
-const FluentSyntax = require("../fluent-syntax/esm/index.js");
+import { readFile } from "fs";
+import program from "commander";
+import {
+  columnOffset,
+  lineOffset,
+  parse,
+  serialize,
+} from "../fluent-syntax/esm/index.js";
 
 program
   .version("0.0.1")
@@ -15,7 +18,7 @@ program
   .parse(process.argv);
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  readFile(program.args[0], print);
 } else {
   process.stdin.resume();
   process.stdin.on("data", data => print(null, data));
@@ -27,8 +30,8 @@ function print(err, data) {
   }
 
   const source = data.toString();
-  const res = FluentSyntax.parse(source, { withSpans: true });
-  const pretty = FluentSyntax.serialize(res);
+  const res = parse(source, { withSpans: true });
+  const pretty = serialize(res);
   console.log(pretty);
 
   if (!program.silent) {
@@ -52,9 +55,9 @@ function printAnnotation(source, span, annot) {
     span: { start },
   } = annot;
   const slice = source.substring(span.start, span.end);
-  const lineNumber = FluentSyntax.lineOffset(source, start) + 1;
-  const columnOffset = FluentSyntax.columnOffset(source, start);
-  const showLines = lineNumber - FluentSyntax.lineOffset(source, span.start);
+  const lineNumber = lineOffset(source, start) + 1;
+  const columnNumber = columnOffset(source, start);
+  const showLines = lineNumber - lineOffset(source, span.start);
   const lines = slice.split("\n");
   const head = lines.slice(0, showLines);
   const tail = lines.slice(showLines);
@@ -62,7 +65,7 @@ function printAnnotation(source, span, annot) {
   console.log();
   console.log(`! ${code} on line ${lineNumber}:`);
   console.log(head.map(line => `  | ${line}`).join("\n"));
-  console.log(`  … ${indent(columnOffset)}^----- ${message}`);
+  console.log(`  … ${indent(columnNumber)}^----- ${message}`);
   console.log(tail.map(line => `  | ${line}`).join("\n"));
 }
 

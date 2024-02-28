@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 
-"use strict";
+import "colors";
+import { readFile, readFileSync } from "fs";
+import program from "commander";
 
-require("colors");
-const fs = require("fs");
-const program = require("commander");
-
-require = require("esm")(module);
-const Fluent = require("../fluent-bundle/esm/index.js");
+import { FluentBundle, FluentResource } from "../fluent-bundle/esm/index.js";
 
 program
   .version("0.0.1")
@@ -18,7 +15,7 @@ program
   .parse(process.argv);
 
 const ext = program.external
-  ? JSON.parse(fs.readFileSync(program.external, "utf8"))
+  ? JSON.parse(readFileSync(program.external, "utf8"))
   : {};
 
 function color(str, col) {
@@ -42,10 +39,8 @@ function print(err, data) {
     return console.error("File not found: " + err.path);
   }
 
-  const bundle = new Fluent.FluentBundle(program.lang);
-  const parseErrors = bundle.addResource(
-    new Fluent.FluentResource(data.toString())
-  );
+  const bundle = new FluentBundle(program.lang);
+  const parseErrors = bundle.addResource(new FluentResource(data.toString()));
 
   parseErrors.forEach(printError);
 
@@ -64,7 +59,7 @@ function print(err, data) {
 }
 
 if (program.args.length) {
-  fs.readFile(program.args[0], print);
+  readFile(program.args[0], print);
 } else {
   process.stdin.resume();
   process.stdin.on("data", data => print(null, data));
