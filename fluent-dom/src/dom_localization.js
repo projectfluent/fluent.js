@@ -191,8 +191,6 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Pauses the `MutationObserver`.
-   *
-   * @private
    */
   pauseObserving() {
     if (!this.mutationObserver) {
@@ -205,8 +203,6 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Resumes the `MutationObserver`.
-   *
-   * @private
    */
   resumeObserving() {
     if (!this.mutationObserver) {
