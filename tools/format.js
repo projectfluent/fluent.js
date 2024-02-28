@@ -7,7 +7,6 @@ const fs = require("fs");
 const program = require("commander");
 
 require = require("esm")(module);
-require("intl-pluralrules");
 const Fluent = require("../fluent-bundle/esm/index.js");
 
 program

@@ -42,7 +42,6 @@
     "esm": "^3.2.22",
     "fuzzer": "^0.2.1",
     "gh-pages": "^6.1.1",
-    "intl-pluralrules": "^1.0.0",
     "mocha": "^10.2.0",
     "prettier": "^3.2.5",
     "prettyjson": "^1.2.1",
