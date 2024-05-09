@@ -1,30 +1,32 @@
-/* eslint no-magic-numbers: 0 */
+function convertMasks(locale: string): string {
+  let result;
+  if (locale[0] === "*") {
+    result = "und" + locale.substr(1);
+  } else {
+    result = locale;
+  };
+  return result.replace(/\-\*/g, "");
+}
 
-const languageCodeRe = "([a-z]{2,3}|\\*)";
-const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
-const regionCodeRe = "(?:-([a-z]{2}|\\*))";
-const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
+function getVisibleLangTagLength(language: any, script: any, region: any) {
+  let result = 0;
+  result += language ? language.length : "und".length;
+  result += script ? script.length + 1 : 0;
+  result += region ? region.length + 1 : 0;
+  return result;
+}
 
-/**
- * Regular expression splitting locale id into four pieces:
- *
- * Example: `en-Latn-US-macos`
- *
- * language: en
- * script:   Latn
- * region:   US
- * variant:  macos
- *
- * It can also accept a range `*` character on any position.
- */
-const localeRe = new RegExp(
-  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`,
-  "i"
-);
+function getExtensionStart(locale: string): number | undefined {
+  let pos = locale.search(/-[a-zA-Z]-/);
+  if (pos === -1) {
+    return undefined;
+  }
+  return pos;
+}
 
 export class Locale {
   isWellFormed: boolean;
-  language?: string;
+  language: string;
   script?: string;
   region?: string;
   variant?: string;
@@ -39,29 +41,55 @@ export class Locale {
    * properly parsed as `en-*-US-*`.
    */
   constructor(locale: string) {
-    const result = localeRe.exec(locale.replace(/_/g, "-"));
-    if (!result) {
+    let result;
+    let normalized = convertMasks(locale.replace(/_/g, "-"));
+    try {
+      result = new Intl.Locale(normalized);
+    } catch (e) {
       this.isWellFormed = false;
+      this.language = "und";
       return;
     }
 
-    let [, language, script, region, variant] = result;
+    this.language = result.language || "und";
+    this.script = result.script;
+    this.region = result.region;
 
-    if (language) {
-      this.language = language.toLowerCase();
+    let visiblelangTagLength = getVisibleLangTagLength(this.language, this.script, this.region);
+
+    if (normalized.length > visiblelangTagLength) {
+      let extStart = getExtensionStart(locale);
+      this.variant = locale.substring(visiblelangTagLength + 1, extStart);
     }
-    if (script) {
-      this.script = script[0].toUpperCase() + script.slice(1);
-    }
-    if (region) {
-      this.region = region.toUpperCase();
-    }
-    this.variant = variant;
+
     this.isWellFormed = true;
+  }
+
+  static fromComponents({language, script, region, variant}: {
+    language?: string,
+    script?: string,
+    region?: string,
+    variant?: string,
+  }): Locale {
+    let result = new Locale("und");
+    if (language && language !== "*") {
+      result.language = language;
+    }
+    if (script && script !== "*") {
+      result.script = script;
+    }
+    if (region && region !== "*") {
+      result.region = region;
+    }
+    if (variant && variant !== "*") {
+      result.variant = variant;
+    }
+    return result;
   }
 
   isEqual(other: Locale): boolean {
     return (
+      this.isWellFormed === other.isWellFormed &&
       this.language === other.language &&
       this.script === other.script &&
       this.region === other.region &&
@@ -71,9 +99,10 @@ export class Locale {
 
   matches(other: Locale, thisRange = false, otherRange = false): boolean {
     return (
+      this.isWellFormed && other.isWellFormed &&
       (this.language === other.language ||
-        (thisRange && this.language === undefined) ||
-        (otherRange && other.language === undefined)) &&
+        (thisRange && this.language === "und") ||
+        (otherRange && other.language === "und")) &&
       (this.script === other.script ||
         (thisRange && this.script === undefined) ||
         (otherRange && other.script === undefined)) &&
