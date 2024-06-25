@@ -168,6 +168,9 @@ export default class DOMLocalization extends Localization {
 
     if (this.roots.size === 0) {
       this.mutationObserver = null;
+      if (this.windowElement && this.pendingrAF) {
+        this.windowElement.cancelAnimationFrame(this.pendingrAF);
+      }
       this.windowElement = null;
       this.pendingrAF = null;
       this.pendingElements.clear();
