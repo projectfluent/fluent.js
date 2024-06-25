@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.0](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.9.0...@fluent/dom@0.10.0) (2024-06-25)
+
+### ⚠ Breaking Changes
+
+- Update package.json engines.node to >= 18
+
+### Features
+
+- Make pauseObserving and resumeObserving public ([#623](https://github.com/projectfluent/fluent.js/issues/623))
+
+### Bug Fixes
+
+- Cancel the requestAnimationFrame when all roots are disconnected ([#633](https://github.com/projectfluent/fluent.js/issues/633))
+
 ## [0.9.0](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.8.1...@fluent/dom@0.9.0) (2023-03-13)
 
 - Drop Node.js v12 support, add v18 & latest to CI tests
