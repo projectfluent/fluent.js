@@ -8,6 +8,7 @@ const globalName = {
   "@fluent/react": "FluentReact",
   "@fluent/sequence": "FluentSequence",
   "@fluent/syntax": "FluentSyntax",
+  "@fluent/temporal": "FluentTemporal",
 };
 
 export default async function () {

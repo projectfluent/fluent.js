@@ -1,0 +1,56 @@
+{
+  "name": "@fluent/temporal",
+  "description": "Experimental Temporal support for Project Fluent",
+  "version": "0.1.0",
+  "homepage": "https://projectfluent.org",
+  "author": "Mozilla <l10n-drivers@mozilla.org>",
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Konstantin Haase",
+      "email": "github@rkh.im"
+    }
+  ],
+  "main": "./index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/projectfluent/fluent.js.git"
+  },
+  "keywords": [
+    "localization",
+    "l10n",
+    "internationalization",
+    "i18n",
+    "ftl",
+    "plural",
+    "gender",
+    "locale",
+    "language",
+    "formatting",
+    "translate",
+    "translation",
+    "format",
+    "temporal",
+    "time"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs",
+    "docs": "typedoc --options ../typedoc.config.cjs",
+    "test": "mocha 'test/*_test.js'"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=7.0.0"
+  },
+  "peerDependencies": {
+    "@fluent/bundle": "^0.18.0"
+  },
+  "devDependencies": {
+    "@fluent/bundle": "^0.18.0",
+    "@fluent/dedent": "^0.5.0",
+    "temporal-polyfill": "^0.2.5"
+  }
+}

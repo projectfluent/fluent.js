@@ -9,7 +9,8 @@
     "./fluent-langneg",
     "./fluent-react",
     "./fluent-syntax",
-    "./fluent-gecko"
+    "./fluent-gecko",
+    "./fluent-temporal"
   ],
   "scripts": {
     "predist": "npm run clean",
