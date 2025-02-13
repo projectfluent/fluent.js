@@ -29,7 +29,6 @@ import {
   FluentType,
   FluentNone,
   FluentNumber,
-  FluentDateTime,
 } from "./types.js";
 import { Scope } from "./scope.js";
 import {
@@ -175,28 +174,18 @@ function resolveVariableReference(
     return new FluentNone(`$${name}`);
   }
 
-  // Return early if the argument already is an instance of FluentType.
-  if (arg instanceof FluentType) {
+  if (arg instanceof FluentType || typeof arg === "string") {
     return arg;
   }
 
-  // Convert the argument to a Fluent type.
-  switch (typeof arg) {
-    case "string":
-      return arg;
-    case "number":
-      return new FluentNumber(arg);
-    case "object":
-      if (arg instanceof Date) {
-        return new FluentDateTime(arg.getTime());
-      }
-    // eslint-disable-next-line no-fallthrough
-    default:
-      scope.reportError(
-        new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)
-      );
-      return new FluentNone(`$${name}`);
-  }
+  const result = scope.bundle._caster.castValue(arg);
+  if (result) return result;
+
+  scope.reportError(
+    new TypeError(`Variable type not supported: $${name}, ${typeof arg}`)
+  );
+
+  return new FluentNone(`$${name}`);
 }
 
 /** Resolve a reference to another message. */

@@ -11,6 +11,7 @@ export type { Message } from "./ast.js";
 export { FluentBundle, FluentVariable, TextTransform } from "./bundle.js";
 export { FluentResource } from "./resource.js";
 export type { Scope } from "./scope.js";
+export { FluentCaster, FluentCastRegistry, defaultCaster } from "./cast.js";
 export {
   FluentValue,
   FluentType,

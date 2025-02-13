@@ -5,6 +5,7 @@ import { FluentValue, FluentNone, FluentFunction } from "./types.js";
 import { Message, Term, Pattern } from "./ast.js";
 import { NUMBER, DATETIME } from "./builtins.js";
 import { getMemoizerForLocale, IntlCache } from "./memoizer.js";
+import { defaultCaster, FluentCast, FluentCastRegistry } from "./cast.js";
 
 export type TextTransform = (text: string) => string;
 export type FluentVariable = FluentValue | string | number | Date;
@@ -28,6 +29,8 @@ export class FluentBundle {
   public _transform: TextTransform;
   /** @ignore */
   public _intls: IntlCache;
+  /** @ignore */
+  public _caster: FluentCastRegistry;
 
   /**
    * Create an instance of `FluentBundle`.
@@ -52,10 +55,12 @@ export class FluentBundle {
   constructor(
     locales: string | Array<string>,
     {
+      cast,
       functions,
       useIsolating = true,
       transform = (v: string): string => v,
     }: {
+      cast?: FluentCast;
       /** Additional functions available to translations as builtins. */
       functions?: Record<string, FluentFunction>;
       /**
@@ -77,6 +82,7 @@ export class FluentBundle {
     this._useIsolating = useIsolating;
     this._transform = transform;
     this._intls = getMemoizerForLocale(locales);
+    this._caster = new FluentCastRegistry(defaultCaster, cast);
   }
 
   /**
@@ -155,6 +161,38 @@ export class FluentBundle {
     }
 
     return errors;
+  }
+
+  /**
+   * Adds a conversion rule for specific variable types.
+   * 
+   * @example Conversion function for a custom class
+   * ```js
+   * class MyNumber {
+   *    constructor(value) { this.value = value; }
+   * }
+   * 
+   * bundle.addCast(MyNumber, (num) => new FluentNumber(num.value));
+   * ```
+   * 
+   * @example Registering a custom type
+   * ```js
+   * // Custom type to format Intl.Locale instances
+   * class FluentLanguage extends FluentType {
+   *     toString(scope) {
+   *       const dnf = scope.memoizeIntlObject(Intl.DisplayNames, { type: "language" });
+   *       return dnf.of(this.value);
+   *     }
+   * }
+   * 
+   * // Register for automatic conversion
+   * bundle.addCast(Intl.Locale, FluentLanguage);
+   * ```
+   * 
+   * @param args see {@link FluentCastRegistry.prototype.add}
+   */
+  addCast(...args: Parameters<typeof FluentCastRegistry.prototype.add>): void {
+    this._caster.add(...args);
   }
 
   /**
