@@ -30,6 +30,7 @@ import {
   FluentNone,
   FluentNumber,
   FluentDateTime,
+  FluentVariable,
 } from "./types.js";
 import { Scope } from "./scope.js";
 import {
@@ -44,7 +45,6 @@ import {
   ComplexPattern,
   Pattern,
 } from "./ast.js";
-import { FluentVariable } from "./bundle.js";
 
 /**
  * The maximum number of placeables which can be expanded in a single call to
@@ -187,8 +187,8 @@ function resolveVariableReference(
     case "number":
       return new FluentNumber(arg);
     case "object":
-      if (arg instanceof Date) {
-        return new FluentDateTime(arg.getTime());
+      if (FluentDateTime.supportsValue(arg)) {
+        return new FluentDateTime(arg);
       }
     // eslint-disable-next-line no-fallthrough
     default:

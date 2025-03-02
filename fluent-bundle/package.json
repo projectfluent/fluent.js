@@ -49,6 +49,7 @@
     "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/dedent": "^0.5.0"
+    "@fluent/dedent": "^0.5.0",
+    "temporal-polyfill": "^0.2.5"
   }
 }

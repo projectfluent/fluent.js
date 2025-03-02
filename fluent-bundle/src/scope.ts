@@ -1,5 +1,6 @@
-import { FluentBundle, FluentVariable } from "./bundle.js";
+import { FluentBundle } from "./bundle.js";
 import { ComplexPattern } from "./ast.js";
+import { FluentVariable } from "./types.js";
 
 export class Scope {
   /** The bundle for which the given resolution is happening. */

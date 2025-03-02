@@ -1,6 +1,19 @@
 import { Scope } from "./scope.js";
+import type { Temporal } from "temporal-polyfill";
 
 export type FluentValue = FluentType<unknown> | string;
+
+export type FluentVariable =
+  | FluentValue
+  | Temporal.Instant
+  | Temporal.PlainDateTime
+  | Temporal.PlainDate
+  | Temporal.PlainTime
+  | Temporal.PlainYearMonth
+  | Temporal.PlainMonthDay
+  | Temporal.ZonedDateTime
+  | string
+  | number;
 
 export type FluentFunction = (
   positional: Array<FluentValue>,
@@ -104,14 +117,46 @@ export class FluentNumber extends FluentType<number> {
 /**
  * A `FluentType` representing a date and time.
  *
- * A `FluentDateTime` instance stores the number value of the date it
- * represents, as a numerical timestamp in milliseconds. It may also store an
+ * A `FluentDateTime` instance stores a Date object, Temporal object, or a number
+ * as a numerical timestamp in milliseconds. It may also store an
  * option bag of options which will be passed to `Intl.DateTimeFormat` when the
  * `FluentDateTime` is formatted to a string.
  */
-export class FluentDateTime extends FluentType<number> {
+export class FluentDateTime extends FluentType<
+  | number
+  | Date
+  | Temporal.Instant
+  | Temporal.PlainDateTime
+  | Temporal.PlainDate
+  | Temporal.PlainMonthDay
+  | Temporal.PlainTime
+  | Temporal.PlainYearMonth
+  | Temporal.ZonedDateTime
+> {
   /** Options passed to `Intl.DateTimeFormat`. */
   public opts: Intl.DateTimeFormatOptions;
+
+  static supportsValue(value: any): value is ConstructorParameters<typeof Temporal.Instant>[0] {
+    if (typeof value === "number") return true;
+    if (value instanceof Date) return true;
+    if (value instanceof FluentType) return FluentDateTime.supportsValue(value.valueOf());
+    // Temporary workaround to support environments without Temporal
+    if ('Temporal' in globalThis) {
+      if (
+        // @ts-ignore
+        value instanceof Temporal.Instant        || // @ts-ignore
+        value instanceof Temporal.PlainDateTime  || // @ts-ignore
+        value instanceof Temporal.PlainDate      || // @ts-ignore
+        value instanceof Temporal.PlainMonthDay  || // @ts-ignore
+        value instanceof Temporal.PlainTime      || // @ts-ignore
+        value instanceof Temporal.PlainYearMonth || // @ts-ignore
+        value instanceof Temporal.ZonedDateTime
+      ) {
+        return true;
+      }
+    }
+    return false
+  }
 
   /**
    * Create an instance of `FluentDateTime` with options to the
@@ -120,9 +165,70 @@ export class FluentDateTime extends FluentType<number> {
    * @param value The number value of this `FluentDateTime`, in milliseconds.
    * @param opts Options which will be passed to `Intl.DateTimeFormat`.
    */
-  constructor(value: number, opts: Intl.DateTimeFormatOptions = {}) {
+  constructor(
+    value:
+      | number
+      | Date
+      | Temporal.Instant
+      | Temporal.PlainDateTime
+      | Temporal.PlainDate
+      | Temporal.PlainMonthDay
+      | Temporal.PlainTime
+      | Temporal.PlainYearMonth
+      | Temporal.ZonedDateTime
+      | FluentDateTime
+      | FluentType<number>,
+    opts: Intl.DateTimeFormatOptions = {}
+  ) {
+    // unwrap any FluentType value, but only retain the opts from FluentDateTime
+    if (value instanceof FluentDateTime) {
+      opts = { ...value.opts, ...opts };
+      value = value.value;
+    } else if (value instanceof FluentType) {
+      value = value.valueOf();
+    }
+
+    if (typeof value === "object") {
+      // Intl.DateTimeFormat defaults to gregorian calendar, but Temporal defaults to iso8601
+      if ('calendarId' in value) {
+        if (opts.calendar === undefined) {
+          opts = { ...opts, calendar: value.calendarId };
+        } else if (opts.calendar !== value.calendarId && 'withCalendar' in value) {
+          value = value.withCalendar(opts.calendar);
+        }
+      }
+
+      // Temporal.ZonedDateTime is timezone aware
+      if ('timeZoneId' in value) {
+        if (opts.timeZone === undefined) {
+          opts = { ...opts, timeZone: value.timeZoneId };
+        } else if (opts.timeZone !== value.timeZoneId && 'withTimeZone' in value) {
+          value = value.withTimeZone(opts.timeZone);
+        }
+      }
+
+      // Temporal.ZonedDateTime cannot be formatted directly
+      if ('toInstant' in value) {
+        value = value.toInstant();
+      }
+    }
+
     super(value);
     this.opts = opts;
+  }
+
+  /**
+   * Convert this `FluentDateTime` to a number.
+   * Note that this isn't always possible due to the nature of Temporal objects.
+   * In such cases, a TypeError will be thrown.
+   */
+  toNumber(): number {
+    const value = this.value;
+    if (typeof value === "number") return value;
+    if (value instanceof Date) return value.getTime();
+    if ('epochMilliseconds' in value) return value.epochMilliseconds;
+    if ('toZonedDateTime' in value) return (value as Temporal.PlainDateTime).toZonedDateTime("UTC").epochMilliseconds;
+    throw new TypeError("Unwrapping a non-number value as a number");
   }
 
   /**
@@ -131,10 +237,14 @@ export class FluentDateTime extends FluentType<number> {
   toString(scope: Scope): string {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
-      return dtf.format(this.value);
+      return dtf.format(this.value as Parameters<Intl.DateTimeFormat["format"]>[0]);
     } catch (err) {
       scope.reportError(err);
-      return new Date(this.value).toISOString();
+      if (typeof this.value === "number" || this.value instanceof Date) {
+        return new Date(this.value).toISOString();
+      } else {
+        return this.value.toString();
+      }
     }
   }
 }
