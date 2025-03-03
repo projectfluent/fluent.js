@@ -13,7 +13,8 @@ export type FluentVariable =
   | Temporal.PlainMonthDay
   | Temporal.ZonedDateTime
   | string
-  | number;
+  | number
+  | Date;
 
 export type FluentFunction = (
   positional: Array<FluentValue>,
