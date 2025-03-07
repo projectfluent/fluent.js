@@ -1,16 +1,21 @@
 import { Scope } from "./scope.js";
-import type { Temporal } from "temporal-polyfill";
+
+// Temporary workaround to support environments without Temporal
+// Replace with Temporal.* types once they are provided by TypeScript
+// In addition to this minimal interface, these objects are also expected
+// to be supported by Intl.DateTimeFormat
+interface TemporalObject {
+  epochMilliseconds?: number;
+  toZonedDateTime?(timeZone: string): { epochMilliseconds: number };
+  calendarId?: string;
+  toString(): string;
+}
 
 export type FluentValue = FluentType<unknown> | string;
 
 export type FluentVariable =
   | FluentValue
-  | Temporal.Instant
-  | Temporal.PlainDateTime
-  | Temporal.PlainDate
-  | Temporal.PlainTime
-  | Temporal.PlainYearMonth
-  | Temporal.PlainMonthDay
+  | TemporalObject
   | string
   | number
   | Date;
@@ -125,12 +130,7 @@ export class FluentNumber extends FluentType<number> {
 export class FluentDateTime extends FluentType<
   | number
   | Date
-  | Temporal.Instant
-  | Temporal.PlainDateTime
-  | Temporal.PlainDate
-  | Temporal.PlainMonthDay
-  | Temporal.PlainTime
-  | Temporal.PlainYearMonth
+  | TemporalObject
 > {
   /** Options passed to `Intl.DateTimeFormat`. */
   public opts: Intl.DateTimeFormatOptions;
@@ -141,14 +141,17 @@ export class FluentDateTime extends FluentType<
     if (value instanceof FluentType) return FluentDateTime.supportsValue(value.valueOf());
     // Temporary workaround to support environments without Temporal
     if ('Temporal' in globalThis) {
+      // for TypeScript, which doesn't know about Temporal yet
+      const _Temporal = (
+        globalThis as unknown as { Temporal: Record<string, () => unknown> }
+      ).Temporal;
       if (
-        // @ts-ignore
-        value instanceof Temporal.Instant        || // @ts-ignore
-        value instanceof Temporal.PlainDateTime  || // @ts-ignore
-        value instanceof Temporal.PlainDate      || // @ts-ignore
-        value instanceof Temporal.PlainMonthDay  || // @ts-ignore
-        value instanceof Temporal.PlainTime      || // @ts-ignore
-        value instanceof Temporal.PlainYearMonth
+        value instanceof _Temporal.Instant        ||
+        value instanceof _Temporal.PlainDateTime  ||
+        value instanceof _Temporal.PlainDate      ||
+        value instanceof _Temporal.PlainMonthDay  ||
+        value instanceof _Temporal.PlainTime      ||
+        value instanceof _Temporal.PlainYearMonth
       ) {
         return true;
       }
@@ -167,12 +170,7 @@ export class FluentDateTime extends FluentType<
     value:
       | number
       | Date
-      | Temporal.Instant
-      | Temporal.PlainDateTime
-      | Temporal.PlainDate
-      | Temporal.PlainMonthDay
-      | Temporal.PlainTime
-      | Temporal.PlainYearMonth
+      | TemporalObject
       | FluentDateTime
       | FluentType<number>,
     opts: Intl.DateTimeFormatOptions = {}
@@ -203,8 +201,15 @@ export class FluentDateTime extends FluentType<
     const value = this.value;
     if (typeof value === "number") return value;
     if (value instanceof Date) return value.getTime();
-    if ('epochMilliseconds' in value) return value.epochMilliseconds;
-    if ('toZonedDateTime' in value) return (value as Temporal.PlainDateTime).toZonedDateTime("UTC").epochMilliseconds;
+
+    if ('epochMilliseconds' in value) {
+      return value.epochMilliseconds as number;
+    }
+
+    if ('toZonedDateTime' in value) {
+      return value.toZonedDateTime!("UTC").epochMilliseconds;
+    }
+
     throw new TypeError("Unwrapping a non-number value as a number");
   }
 
