@@ -219,9 +219,8 @@ export class FluentDateTime extends FluentType<
       scope.reportError(err);
       if (typeof this.value === "number" || this.value instanceof Date) {
         return new Date(this.value).toISOString();
-      } else {
-        return this.value.toString();
       }
+      return this.value.toString();
     }
   }
 }
