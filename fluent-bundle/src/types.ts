@@ -11,7 +11,6 @@ export type FluentVariable =
   | Temporal.PlainTime
   | Temporal.PlainYearMonth
   | Temporal.PlainMonthDay
-  | Temporal.ZonedDateTime
   | string
   | number
   | Date;
@@ -132,7 +131,6 @@ export class FluentDateTime extends FluentType<
   | Temporal.PlainMonthDay
   | Temporal.PlainTime
   | Temporal.PlainYearMonth
-  | Temporal.ZonedDateTime
 > {
   /** Options passed to `Intl.DateTimeFormat`. */
   public opts: Intl.DateTimeFormatOptions;
@@ -150,8 +148,7 @@ export class FluentDateTime extends FluentType<
         value instanceof Temporal.PlainDate      || // @ts-ignore
         value instanceof Temporal.PlainMonthDay  || // @ts-ignore
         value instanceof Temporal.PlainTime      || // @ts-ignore
-        value instanceof Temporal.PlainYearMonth || // @ts-ignore
-        value instanceof Temporal.ZonedDateTime
+        value instanceof Temporal.PlainYearMonth
       ) {
         return true;
       }
@@ -176,7 +173,6 @@ export class FluentDateTime extends FluentType<
       | Temporal.PlainMonthDay
       | Temporal.PlainTime
       | Temporal.PlainYearMonth
-      | Temporal.ZonedDateTime
       | FluentDateTime
       | FluentType<number>,
     opts: Intl.DateTimeFormatOptions = {}
@@ -189,29 +185,9 @@ export class FluentDateTime extends FluentType<
       value = value.valueOf();
     }
 
-    if (typeof value === "object") {
-      // Intl.DateTimeFormat defaults to gregorian calendar, but Temporal defaults to iso8601
-      if ('calendarId' in value) {
-        if (opts.calendar === undefined) {
-          opts = { ...opts, calendar: value.calendarId };
-        } else if (opts.calendar !== value.calendarId && 'withCalendar' in value) {
-          value = value.withCalendar(opts.calendar);
-        }
-      }
-
-      // Temporal.ZonedDateTime is timezone aware
-      if ('timeZoneId' in value) {
-        if (opts.timeZone === undefined) {
-          opts = { ...opts, timeZone: value.timeZoneId };
-        } else if (opts.timeZone !== value.timeZoneId && 'withTimeZone' in value) {
-          value = value.withTimeZone(opts.timeZone);
-        }
-      }
-
-      // Temporal.ZonedDateTime cannot be formatted directly
-      if ('toInstant' in value) {
-        value = value.toInstant();
-      }
+    // Intl.DateTimeFormat defaults to gregorian calendar, but Temporal defaults to iso8601
+    if (typeof value === "object" && 'calendarId' in value && opts.calendar === undefined) {
+      opts = { ...opts, calendar: value.calendarId };
     }
 
     super(value);
