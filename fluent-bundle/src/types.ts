@@ -135,7 +135,7 @@ export class FluentDateTime extends FluentType<
   /** Options passed to `Intl.DateTimeFormat`. */
   public opts: Intl.DateTimeFormatOptions;
 
-  static supportsValue(value: any): value is ConstructorParameters<typeof Temporal.Instant>[0] {
+  static supportsValue(value: unknown): value is ConstructorParameters<typeof FluentDateTime>[0] {
     if (typeof value === "number") return true;
     if (value instanceof Date) return true;
     if (value instanceof FluentType) return FluentDateTime.supportsValue(value.valueOf());
