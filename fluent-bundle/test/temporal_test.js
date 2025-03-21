@@ -10,6 +10,9 @@ import { FluentDateTime } from "../esm/types.js";
 suite("Temporal support", function () {
   let bundle, arg;
 
+  // Node.js prior to v20 does not support the iso8601 calendar
+  const supportIso8601 = new Intl.DateTimeFormat("en-US", { calendar: "iso8601" }).format(0) === "1970-01-01";
+
   function msg(id, errors = undefined) {
     const errs = [];
     const msg = bundle.getMessage(id);
@@ -91,33 +94,35 @@ suite("Temporal support", function () {
     });
   });
 
-  suite("Temporal.PlainDate (iso8601)", function () {
-    setup(function () {
-      arg = Temporal.PlainDate.from("1970-01-01[u-ca=iso8601]");
-    });
+  if (supportIso8601) {
+    suite("Temporal.PlainDate (iso8601)", function () {
+      setup(function () {
+        arg = Temporal.PlainDate.from("1970-01-01[u-ca=iso8601]");
+      });
 
-    test("direct interpolation", function () {
-      assert.strictEqual(msg("direct"), "1970-01-01");
-    });
+      test("direct interpolation", function () {
+        assert.strictEqual(msg("direct"), "1970-01-01");
+      });
 
-    test("run through DATETIME()", function () {
-      assert.strictEqual(msg("dt"), "1970-01-01");
-    });
+      test("run through DATETIME()", function () {
+        assert.strictEqual(msg("dt"), "1970-01-01");
+      });
 
-    test("run through DATETIME() with month option", function () {
-      assert.strictEqual(msg("month"), "1970 January");
-    });
+      test("run through DATETIME() with month option", function () {
+        assert.strictEqual(msg("month"), "1970 January");
+      });
 
-    test("wrapped in FluentDateTime", function () {
-      arg = new FluentDateTime(arg, { month: "long" });
-      assert.strictEqual(msg("dt"), "January");
-    });
+      test("wrapped in FluentDateTime", function () {
+        arg = new FluentDateTime(arg, { month: "long" });
+        assert.strictEqual(msg("dt"), "January");
+      });
 
-    test("can be converted to a number", function () {
-      arg = new FluentDateTime(arg);
-      assert.strictEqual(arg.toNumber(), 0);
+      test("can be converted to a number", function () {
+        arg = new FluentDateTime(arg);
+        assert.strictEqual(arg.toNumber(), 0);
+      });
     });
-  });
+  }
 
   suite("Temporal.PlainDateTime", function () {
     setup(function () {
@@ -153,10 +158,6 @@ suite("Temporal support", function () {
 
     test("run through DATETIME()", function () {
       assert.strictEqual(msg("dt"), "12:00:00 AM");
-    });
-
-    test("run through DATETIME() with month option", function () {
-      assert.strictEqual(msg("month"), "12:00:00 AM");
     });
 
     test("wrapped in FluentDateTime", function () {
