@@ -40,11 +40,11 @@ suite("Temporal support", function () {
     });
 
     test("direct interpolation", function () {
-      assert.strictEqual(msg("direct"), "1/1/1970, 1:00:00 AM");
+      assert.strictEqual(msg("direct"), arg.toLocaleString());
     });
 
     test("run through DATETIME()", function () {
-      assert.strictEqual(msg("dt"), "1/1/1970, 1:00:00 AM");
+      assert.strictEqual(msg("dt"), arg.toLocaleString());
     });
 
     test("run through DATETIME() with month option", function () {
