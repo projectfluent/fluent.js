@@ -69,6 +69,8 @@ export class Scope {
     }
     let id = JSON.stringify(opts);
     if (!cache[id]) {
+      // @ts-expect-error This is fine.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       cache[id] = new ctor(this.bundle.locales, opts);
     }
     return cache[id];
