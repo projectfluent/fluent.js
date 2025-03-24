@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
@@ -35,7 +33,7 @@ suite("Transformations", function () {
   test("transforms TextElements", function () {
     const msg = bundle.getMessage("foo");
     const val = bundle.formatPattern(msg.value, {}, errs);
-    const attr = bundle.formatPattern(msg.attributes["bar"], {}, errs);
+    const attr = bundle.formatPattern(msg.attributes.bar, {}, errs);
     assert.strictEqual(val, "FAA");
     assert.strictEqual(attr, "BAr FAA BAz");
     assert.strictEqual(errs.length, 0);

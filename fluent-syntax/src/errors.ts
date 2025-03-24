@@ -12,7 +12,6 @@ export class ParseError extends Error {
   }
 }
 
-/* eslint-disable complexity */
 function getErrorMessage(code: string, args: Array<unknown>): string {
   switch (code) {
     case "E0001":

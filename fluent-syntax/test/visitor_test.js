@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 import { FluentParser } from "../esm/parser.js";
@@ -32,7 +30,7 @@ suite("Visitor", function () {
         }
         super.genericVisit(node);
       }
-      visitPattern(node) {
+      visitPattern() {
         this.pattern_calls++;
       }
     }

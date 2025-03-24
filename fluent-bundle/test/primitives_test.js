@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
@@ -101,7 +99,7 @@ suite("Primitives", function () {
 
     test("can be used as an attribute value", function () {
       const msg = bundle.getMessage("bar");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "Bar Attribute");
       assert.strictEqual(errs.length, 0);
     });
@@ -160,7 +158,7 @@ suite("Primitives", function () {
 
     test("can be used as an attribute value", function () {
       const msg = bundle.getMessage("baz");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "FooBarBazAttribute");
       assert.strictEqual(errs.length, 0);
     });

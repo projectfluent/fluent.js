@@ -13,7 +13,7 @@ suite("Async Fallback — single id", function () {
     bundle2 = new FluentBundle();
     bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar"));
 
-    generateBundles = async function* generateBundles() {
+    generateBundles = async function* () {
       yield* [bundle1, bundle2];
     };
   });
@@ -56,7 +56,7 @@ suite("Async Fallback — multiple ids", async function () {
     bundle2 = new FluentBundle();
     bundle2.addResource(new FluentResource("foo=Foo\nbar=Bar\nbaz=Baz"));
 
-    generateBundles = async function* generateBundles() {
+    generateBundles = async function* () {
       yield* [bundle1, bundle2];
     };
   });

@@ -127,36 +127,35 @@ export class FluentNumber extends FluentType<number> {
  * option bag of options which will be passed to `Intl.DateTimeFormat` when the
  * `FluentDateTime` is formatted to a string.
  */
-export class FluentDateTime extends FluentType<
-  | number
-  | Date
-  | TemporalObject
-> {
+export class FluentDateTime extends FluentType<number | Date | TemporalObject> {
   /** Options passed to `Intl.DateTimeFormat`. */
   public opts: Intl.DateTimeFormatOptions;
 
-  static supportsValue(value: unknown): value is ConstructorParameters<typeof FluentDateTime>[0] {
+  static supportsValue(
+    value: unknown
+  ): value is ConstructorParameters<typeof FluentDateTime>[0] {
     if (typeof value === "number") return true;
     if (value instanceof Date) return true;
-    if (value instanceof FluentType) return FluentDateTime.supportsValue(value.valueOf());
+    if (value instanceof FluentType)
+      return FluentDateTime.supportsValue(value.valueOf());
     // Temporary workaround to support environments without Temporal
-    if ('Temporal' in globalThis) {
+    if ("Temporal" in globalThis) {
       // for TypeScript, which doesn't know about Temporal yet
       const _Temporal = (
         globalThis as unknown as { Temporal: Record<string, () => unknown> }
       ).Temporal;
       if (
-        value instanceof _Temporal.Instant        ||
-        value instanceof _Temporal.PlainDateTime  ||
-        value instanceof _Temporal.PlainDate      ||
-        value instanceof _Temporal.PlainMonthDay  ||
-        value instanceof _Temporal.PlainTime      ||
+        value instanceof _Temporal.Instant ||
+        value instanceof _Temporal.PlainDateTime ||
+        value instanceof _Temporal.PlainDate ||
+        value instanceof _Temporal.PlainMonthDay ||
+        value instanceof _Temporal.PlainTime ||
         value instanceof _Temporal.PlainYearMonth
       ) {
         return true;
       }
     }
-    return false
+    return false;
   }
 
   /**
@@ -167,12 +166,7 @@ export class FluentDateTime extends FluentType<
    * @param opts Options which will be passed to `Intl.DateTimeFormat`.
    */
   constructor(
-    value:
-      | number
-      | Date
-      | TemporalObject
-      | FluentDateTime
-      | FluentType<number>,
+    value: number | Date | TemporalObject | FluentDateTime | FluentType<number>,
     opts: Intl.DateTimeFormatOptions = {}
   ) {
     // unwrap any FluentType value, but only retain the opts from FluentDateTime
@@ -184,7 +178,11 @@ export class FluentDateTime extends FluentType<
     }
 
     // Intl.DateTimeFormat defaults to gregorian calendar, but Temporal defaults to iso8601
-    if (typeof value === "object" && 'calendarId' in value && opts.calendar === undefined) {
+    if (
+      typeof value === "object" &&
+      "calendarId" in value &&
+      opts.calendar === undefined
+    ) {
       opts = { ...opts, calendar: value.calendarId };
     }
 
@@ -202,11 +200,11 @@ export class FluentDateTime extends FluentType<
     if (typeof value === "number") return value;
     if (value instanceof Date) return value.getTime();
 
-    if ('epochMilliseconds' in value) {
+    if ("epochMilliseconds" in value) {
       return value.epochMilliseconds as number;
     }
 
-    if ('toZonedDateTime' in value) {
+    if ("toZonedDateTime" in value) {
       return value.toZonedDateTime!("UTC").epochMilliseconds;
     }
 
@@ -219,7 +217,9 @@ export class FluentDateTime extends FluentType<
   toString(scope: Scope): string {
     try {
       const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
-      return dtf.format(this.value as Parameters<Intl.DateTimeFormat["format"]>[0]);
+      return dtf.format(
+        this.value as Parameters<Intl.DateTimeFormat["format"]>[0]
+      );
     } catch (err) {
       scope.reportError(err);
       if (typeof this.value === "number" || this.value instanceof Date) {

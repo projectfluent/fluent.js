@@ -130,7 +130,6 @@ export class ReactLocalization {
 
     // this.getBundle makes the bundle.hasMessage check which ensures that
     // bundle.getMessage returns an existing message.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const msg = bundle.getMessage(id)!;
 
     let errors: Array<Error> = [];

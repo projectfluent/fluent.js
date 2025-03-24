@@ -1,4 +1,4 @@
-"use strict";
+/* global Temporal */
 
 import assert from "assert";
 import ftl from "@fluent/dedent";
@@ -11,13 +11,17 @@ suite("Temporal support", function () {
   let bundle, arg;
 
   // Node.js prior to v20 does not support the iso8601 calendar
-  const supportIso8601 = new Intl.DateTimeFormat("en-US", { calendar: "iso8601" }).format(0) === "1970-01-01";
+  const supportIso8601 =
+    new Intl.DateTimeFormat("en-US", { calendar: "iso8601" }).format(0) ===
+    "1970-01-01";
 
   function msg(id, errors = undefined) {
     const errs = [];
-    const msg = bundle.getMessage(id);
-    const res = bundle.formatPattern(msg.value, { arg }, errors || errs);
-    if (errs.length > 0) { assert.fail(errs[0].message); }
+    const msg_ = bundle.getMessage(id);
+    const res = bundle.formatPattern(msg_.value, { arg }, errors || errs);
+    if (errs.length > 0) {
+      assert.fail(errs[0].message);
+    }
     return res;
   }
 
@@ -176,7 +180,7 @@ suite("Temporal support", function () {
       arg = Temporal.PlainYearMonth.from({
         year: 1970,
         month: 1,
-        calendar: "gregory"
+        calendar: "gregory",
       });
     });
 

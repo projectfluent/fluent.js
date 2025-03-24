@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
@@ -91,7 +89,7 @@ suite("Attributes", function () {
 
     test("can be formatted directly for entities with string values", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "Foo Attribute");
       assert.strictEqual(errs.length, 0);
     });
@@ -105,7 +103,7 @@ suite("Attributes", function () {
 
     test("can be formatted directly for entities with pattern values", function () {
       const msg = bundle.getMessage("bar");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "Bar Attribute");
       assert.strictEqual(errs.length, 0);
     });
@@ -140,7 +138,7 @@ suite("Attributes", function () {
 
     test("can be formatted directly for entities with string values", function () {
       const msg = bundle.getMessage("bar");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "Foo Attribute");
       assert.strictEqual(errs.length, 0);
     });
@@ -154,7 +152,7 @@ suite("Attributes", function () {
 
     test("can be formatted directly for entities with simple pattern values", function () {
       const msg = bundle.getMessage("baz");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "Foo Attribute");
       assert.strictEqual(errs.length, 0);
     });
@@ -168,7 +166,7 @@ suite("Attributes", function () {
 
     test("can be formatted directly when it uses a self-reference", function () {
       const msg = bundle.getMessage("qux");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "Qux Attribute");
       assert.strictEqual(errs.length, 0);
     });
@@ -199,7 +197,7 @@ suite("Attributes", function () {
 
     test("can be formatted directly", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.attributes["attr"], args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
       assert.strictEqual(val, "A");
       assert.strictEqual(errs.length, 0);
     });

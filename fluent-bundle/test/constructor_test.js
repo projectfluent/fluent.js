@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import sinon from "sinon";
 import ftl from "@fluent/dedent";
