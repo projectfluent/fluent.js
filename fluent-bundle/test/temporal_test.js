@@ -47,11 +47,11 @@ suite("Temporal support", function () {
     });
 
     test("direct interpolation", function () {
-      assert.strictEqual(msg("direct"), arg.toLocaleString());
+      assert.strictEqual(msg("direct"), arg.toLocaleString("en-US"));
     });
 
     test("run through DATETIME()", function () {
-      assert.strictEqual(msg("dt"), arg.toLocaleString());
+      assert.strictEqual(msg("dt"), arg.toLocaleString("en-US"));
     });
 
     test("run through DATETIME() with month option", function () {
