@@ -25,12 +25,12 @@ const defaultReportError = (error: Error): void => {
  * `ReactLocalization` handles translation formatting and fallback.
  *
  * The current negotiated fallback chain of languages is stored in the
- * `ReactLocalization` instance in form of an iterable of `FluentBundle`
+ * `ReactLocalization` instance in form of an iterable of {@link FluentBundle}
  * instances. This iterable is used to find the best existing translation for
  * a given identifier.
  *
- * The `ReactLocalization` class instances are exposed to `Localized` elements
- * via the `LocalizationProvider` component.
+ * The `ReactLocalization` class instances are exposed to {@link Localized} elements
+ * via the {@link LocalizationProvider} component.
  */
 export class ReactLocalization {
   public bundles: Iterable<FluentBundle>;

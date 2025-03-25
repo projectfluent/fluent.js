@@ -50,8 +50,8 @@ const NUMBER_ALLOWED = [
  *
  *     pi = The value of π is {NUMBER($pi, maximumFractionDigits: 2)}.
  *
- * The implementation expects an array of `FluentValues` representing the
- * positional arguments, and an object of named `FluentValues` representing the
+ * The implementation expects an array of {@link FluentValue | FluentValues} representing the
+ * positional arguments, and an object of named {@link FluentValue | FluentValues} representing the
  * named parameters.
  *
  * The following options are recognized:
@@ -121,8 +121,8 @@ const DATETIME_ALLOWED = [
  *
  *     now = It's {DATETIME($today, month: "long")}.
  *
- * The implementation expects an array of `FluentValues` representing the
- * positional arguments, and an object of named `FluentValues` representing the
+ * The implementation expects an array of {@link FluentValue | FluentValues} representing the
+ * positional arguments, and an object of named {@link FluentValue | FluentValues} representing the
  * named parameters.
  *
  * The following options are recognized:

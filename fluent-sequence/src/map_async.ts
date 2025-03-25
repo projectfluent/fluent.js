@@ -12,7 +12,7 @@ export function mapBundleAsync(
 
 /**
  * Asynchronously map an identifier or an array of identifiers to the best
- * `FluentBundle` instance(s).
+ * {@link FluentBundle} instance(s).
  *
  * @param bundles - An iterable of bundles to sift through.
  * @param ids - An id or ids to map.

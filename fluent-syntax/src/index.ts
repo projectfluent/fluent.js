@@ -15,11 +15,13 @@ export {
   FluentSerializerOptions,
 };
 
+/** @category Parse */
 export function parse(source: string, opts: FluentParserOptions): Resource {
   const parser = new FluentParser(opts);
   return parser.parse(source);
 }
 
+/** @category Serialize */
 export function serialize(
   resource: Resource,
   opts: FluentSerializerOptions
