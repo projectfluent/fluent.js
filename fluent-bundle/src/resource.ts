@@ -534,7 +534,6 @@ export class FluentResource {
     // Normalize a blank block and extract the indent details.
     function makeIndent(blank: string): Indent {
       let value = blank.replace(RE_BLANK_LINES, "\n");
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       let length = RE_INDENT.exec(blank)![1].length;
       return new Indent(value, length);
     }

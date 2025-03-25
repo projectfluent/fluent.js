@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import { ParserStream } from "../esm/stream.js";
 

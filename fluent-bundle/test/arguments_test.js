@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
@@ -46,11 +44,7 @@ suite("Variables", function () {
 
     test("can be used in an attribute", function () {
       const msg = bundle.getMessage("baz");
-      const val = bundle.formatPattern(
-        msg.attributes["attr"],
-        { num: 3 },
-        errs
-      );
+      const val = bundle.formatPattern(msg.attributes.attr, { num: 3 }, errs);
       assert.strictEqual(val, "Baz Attribute 3");
       assert.strictEqual(errs.length, 0);
     });
@@ -243,8 +237,6 @@ suite("Variables", function () {
   });
 
   suite("custom argument types", function () {
-    let argval, args;
-
     class CustomType extends FluentType {
       toString() {
         return "CUSTOM";
@@ -260,7 +252,7 @@ suite("Variables", function () {
         `)
       );
 
-      args = {
+      const args = {
         // CustomType is a wrapper around the value
         arg: new CustomType(),
       };

@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
@@ -8,7 +6,7 @@ import { FluentResource } from "../esm/resource.js";
 import { FluentNumber } from "../esm/types.js";
 
 suite("Runtime-specific functions", function () {
-  let bundle, args, errs;
+  let bundle, errs;
 
   setup(function () {
     errs = [];
@@ -19,9 +17,8 @@ suite("Runtime-specific functions", function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
         functions: {
-          CONCAT: (args, kwargs) => args.reduce((a, b) => `${a}${b}`, ""),
-          SUM: (args, kwargs) =>
-            new FluentNumber(args.reduce((a, b) => a + b, 0)),
+          CONCAT: args => args.reduce((a, b) => `${a}${b}`, ""),
+          SUM: args => new FluentNumber(args.reduce((a, b) => a + b, 0)),
           PLATFORM: () => "windows",
         },
       });
@@ -40,21 +37,21 @@ suite("Runtime-specific functions", function () {
 
     test("works for strings", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "FooBar");
       assert.strictEqual(errs.length, 0);
     });
 
     test("works for selectors", function () {
       const msg = bundle.getMessage("pref");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Options");
       assert.strictEqual(errs.length, 0);
     });
 
     test("works for numbers", function () {
       const msg = bundle.getMessage("bar");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "3");
       assert.strictEqual(errs.length, 0);
     });

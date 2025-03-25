@@ -1,7 +1,6 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast.js";
-// eslint-disable-next-line no-duplicate-imports
 import type { Resource, Entry } from "./ast.js";
 import { EOF, EOL, FluentParserStream } from "./stream.js";
 import { ParseError } from "./errors.js";
@@ -99,7 +98,6 @@ export class FluentParser {
         if (entry instanceof AST.Message || entry instanceof AST.Term) {
           entry.comment = lastComment;
           if (this.withSpans) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             entry.span!.start = entry.comment.span!.start;
           }
         } else {
@@ -533,7 +531,6 @@ export class FluentParser {
         // Join adjacent TextElements by replacing them with their sum.
         const sum = new AST.TextElement(prev.value + element.value);
         if (this.withSpans) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           sum.addSpan(prev.span!.start, element.span!.end);
         }
         trimmed[trimmed.length - 1] = sum;

@@ -3,7 +3,7 @@ import sinon from "sinon";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import Localization from "../esm/localization.js";
 
-async function* mockGenerateMessages(resourceIds) {
+async function* mockGenerateMessages() {
   const bundle = new FluentBundle(["en-US"]);
   const resource = new FluentResource("key1 = Key 1");
   bundle.addResource(resource);
