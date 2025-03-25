@@ -1,9 +1,3 @@
 {
-  "extends": "./tsconfig.build.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@fluent/bundle": ["../fluent-bundle/src/index.ts"]
-    }
-  }
+  "extends": "../tsconfig.json"
 }
