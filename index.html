@@ -1,0 +1,61 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>fluent.js</title><meta name="description" content="Documentation for fluent.js"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">fluent.js</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>fluent.js</h1></div><div class="tsd-panel tsd-typography"><h1 id="project-fluent" class="tsd-anchor-link">Project Fluent<a href="#project-fluent" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p>Fluent.js is a JavaScript implementation of Project Fluent, a localization
+framework designed to unleash the expressive power of the natural language.</p>
+<p>Project Fluent keeps simple things simple and makes complex things possible.
+The syntax used for describing translations is easy to read and understand. At
+the same time it allows, when necessary, to represent complex concepts from
+natural languages like gender, plurals, conjugations, and others.</p>
+<h2 id="packages" class="tsd-anchor-link">Packages<a href="#packages" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Fluent.js consists of a set of packages which have different use-cases and can
+be installed independently of each other.</p>
+<ul>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-bundle">@fluent/bundle</a></li>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-dedent">@fluent/dedent</a></li>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-dom">@fluent/dom</a></li>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-langneg">@fluent/langneg</a></li>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-react">@fluent/react</a></li>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-sequence">@fluent/sequence</a></li>
+<li><a href="https://github.com/projectfluent/fluent.js/tree/main/fluent-syntax">@fluent/syntax</a></li>
+</ul>
+<p>You can install each of the above packages via <code>npm</code>, e.g. <code>npm install @fluent/react</code>.<br>
+See the end of this <code>README</code> for instructions on how to build <code>fluent.js</code> locally.</p>
+<h2 id="learn-the-ftl-syntax" class="tsd-anchor-link">Learn the FTL syntax<a href="#learn-the-ftl-syntax" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>FTL is a localization file format used for describing translation resources.
+FTL stands for <em>Fluent Translation List</em>.</p>
+<p>FTL is designed to be simple to read, but at the same time allows to represent
+complex concepts from natural languages like gender, plurals, conjugations,
+and others.</p>
+<pre><code>hello-user = Hello, { $username }!
+</code></pre>
+<p><a href="https://projectfluent.org/fluent/guide/">Read the Fluent Syntax Guide</a> in order to learn more about the syntax. If
+you're a tool author you may be interested in the formal <a href="https://github.com/projectfluent/fluent/tree/master/spec">EBNF grammar</a>.</p>
+<h2 id="discuss" class="tsd-anchor-link">Discuss<a href="#discuss" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>We'd love to hear your thoughts on Project Fluent! Whether you're a localizer looking
+for a better way to express yourself in your language, or a developer trying to
+make your app localizable and multilingual, or a hacker looking for a project
+to contribute to, please do get in touch!</p>
+<ul>
+<li>Discourse: <a href="https://discourse.mozilla.org/c/fluent">https://discourse.mozilla.org/c/fluent</a></li>
+</ul>
+<h2 id="get-involved" class="tsd-anchor-link">Get Involved<a href="#get-involved" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Fluent.js is open-source, licensed under the Apache License, Version 2.0. We
+encourage everyone to take a look at our code and we'll listen to your
+feedback.</p>
+<h2 id="local-development" class="tsd-anchor-link">Local Development<a href="#local-development" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Hacking on <code>fluent.js</code> is easy! To quickly get started clone the repo:</p>
+<pre><code>$ git clone https://github.com/projectfluent/fluent.js.git
+$ cd fluent.js
+</code></pre>
+<p>You'll need at least <strong>Node.js 14.18</strong> and <strong>npm 7</strong>.
+Older versions are not supported.</p>
+<p>Install the dependencies used by all packages, which are managed as
+<a href="https://docs.npmjs.com/cli/v7/using-npm/workspaces">npm workspaces</a>:</p>
+<pre><code>$ npm install
+</code></pre>
+<p>Build and test all packages at once:</p>
+<pre><code>$ npm run dist
+</code></pre>
+<p>…which is equivalent to:</p>
+<pre><code>$ npm run clean
+$ npm run build --workspaces
+$ npm run lint
+$ npm run test
+$ npm run docs
+</code></pre>
+<p>Each package may also be built separately by running <code>npm run build</code> in
+its directory.</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#project-fluent"><span>Project <wbr/>Fluent</span></a><ul><li><a href="#packages"><span>Packages</span></a></li><li><a href="#learn-the-ftl-syntax"><span>Learn the FTL syntax</span></a></li><li><a href="#discuss"><span>Discuss</span></a></li><li><a href="#get-involved"><span>Get <wbr/>Involved</span></a></li><li><a href="#local-development"><span>Local <wbr/>Development</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">fluent.js</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div></body></html>
