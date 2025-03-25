@@ -10,9 +10,15 @@
     "./fluent-sequence",
     "./fluent-syntax"
   ],
+  "hideGenerator": true,
+  "highlightLanguages": ["html", "javascript", "jsx", "typescript"],
   "navigation": {
     "includeCategories": true,
     "includeFolders": false
+  },
+  "navigationLinks": {
+    "Project Fluent": "https://projectfluent.org/",
+    "GitHub": "https://github.com/projectfluent/fluent.js"
   },
   "out": "./html",
   "packageOptions": {
@@ -20,8 +26,6 @@
     "includeVersion": true
   },
   "plugin": ["typedoc-plugin-redirect"],
-  "hideGenerator": true,
-  "highlightLanguages": ["html", "javascript", "jsx", "typescript"],
   "redirects": {
     "bundle/index.html": "modules/_fluent_bundle.html",
     "dedent/index.html": "modules/_fluent_dedent.html",
