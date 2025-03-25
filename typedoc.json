@@ -23,12 +23,12 @@
   "hideGenerator": true,
   "highlightLanguages": ["html", "javascript", "jsx", "typescript"],
   "redirects": {
-    "bundle": "modules/_fluent_bundle.html",
-    "dedent": "modules/_fluent_dedent.html",
-    "dom": "modules/_fluent_dom.html",
-    "langneg": "modules/_fluent_langneg.html",
-    "react": "modules/_fluent_react.html",
-    "sequence": "modules/_fluent_sequence.html",
-    "syntax": "modules/_fluent_syntax.html"
+    "bundle/index.html": "modules/_fluent_bundle.html",
+    "dedent/index.html": "modules/_fluent_dedent.html",
+    "dom/index.html": "modules/_fluent_dom.html",
+    "langneg/index.html": "modules/_fluent_langneg.html",
+    "react/index.html": "modules/_fluent_react.html",
+    "sequence/index.html": "modules/_fluent_sequence.html",
+    "syntax/index.html": "modules/_fluent_syntax.html"
   }
 }
