@@ -14,9 +14,10 @@
   "scripts": {
     "predist": "npm run clean",
     "dist": "npm run build --workspaces",
-    "postdist": "npm run lint && npm run test && npm run docs --workspaces",
+    "postdist": "npm run lint && npm run test && npm run docs",
     "clean": "git clean -fdxe node_modules fluent-*/{coverage,dist,esm,index.js} html",
     "deploy-html": "gh-pages -d html",
+    "docs": "typedoc",
     "lint": "eslint --max-warnings 0",
     "prettier": "prettier --write .",
     "test:common": "c8 mocha 'fluent-*/test/*_test.js'",
@@ -45,7 +46,8 @@
     "prettyjson": "^1.2.1",
     "rollup": "^4.12.0",
     "sinon": "^17.0.1",
-    "typedoc": "^0.25.9",
+    "typedoc": "^0.28.1",
+    "typedoc-plugin-redirect": "^1.2.0",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.27.0"
   }

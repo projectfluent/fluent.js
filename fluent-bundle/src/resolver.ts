@@ -1,8 +1,4 @@
-/* global Intl */
-
 /**
- * @overview
- *
  * The role of the Fluent resolver is to format a `Pattern` to an instance of
  * `FluentValue`. For performance reasons, primitive strings are considered
  * such instances, too.

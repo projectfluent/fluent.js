@@ -63,7 +63,7 @@ export abstract class FluentType<T> {
 }
 
 /**
- * A `FluentType` representing no correct value.
+ * A {@link FluentType} representing no correct value.
  */
 export class FluentNone extends FluentType<string> {
   /**
@@ -83,7 +83,7 @@ export class FluentNone extends FluentType<string> {
 }
 
 /**
- * A `FluentType` representing a number.
+ * A {@link FluentType} representing a number.
  *
  * A `FluentNumber` instance stores the number value of the number it
  * represents. It may also store an option bag of options which will be passed
@@ -120,7 +120,7 @@ export class FluentNumber extends FluentType<number> {
 }
 
 /**
- * A `FluentType` representing a date and time.
+ * A {@link FluentType} representing a date and time.
  *
  * A `FluentDateTime` instance stores a Date object, Temporal object, or a number
  * as a numerical timestamp in milliseconds. It may also store an

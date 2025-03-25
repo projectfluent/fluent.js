@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
+/** @category Parse */
 export class ParseError extends Error {
   public code: string;
   public args: Array<unknown>;

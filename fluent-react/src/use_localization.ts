@@ -2,11 +2,7 @@ import { useContext } from "react";
 import { FluentContext } from "./context.js";
 import { ReactLocalization } from "./localization.js";
 
-/**
- * The `useLocalization` hook returns the FluentContext
- */
-type useLocalization = () => { l10n: ReactLocalization };
-export const useLocalization: useLocalization = () => {
+export function useLocalization(): { l10n: ReactLocalization } {
   const l10n = useContext(FluentContext);
 
   if (!l10n) {
@@ -17,4 +13,4 @@ export const useLocalization: useLocalization = () => {
   }
 
   return { l10n };
-};
+}

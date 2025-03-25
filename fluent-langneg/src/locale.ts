@@ -1,5 +1,3 @@
-/* eslint no-magic-numbers: 0 */
-
 const languageCodeRe = "([a-z]{2,3}|\\*)";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
 const regionCodeRe = "(?:-([a-z]{2}|\\*))";

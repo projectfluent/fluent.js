@@ -1,10 +1,6 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@fluent/bundle": ["../fluent-bundle/src/index.ts"],
-      "@fluent/sequence": ["../fluent-sequence/src/index.ts"]
-    }
+    "jsx": "react"
   }
 }

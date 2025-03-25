@@ -3,15 +3,15 @@ import { FluentContext } from "./context.js";
 import { ReactLocalization } from "./localization.js";
 
 /**
- * The Provider component for the `ReactLocalization` class.
+ * The Provider component for the {@link ReactLocalization} class.
  *
- * Exposes a `ReactLocalization` instance to all descendants via React's
+ * Exposes a {@link ReactLocalization} instance to all descendants via React's
  * context feature.  It makes translations available to all localizable
  * elements in the descendant's render tree without the need to pass them
  * explicitly.
  *
- * `LocalizationProvider` takes an instance of `ReactLocalization` in the
- * `l10n` prop. This instance will be made available to `Localized` components
+ * `LocalizationProvider` takes an instance of {@link ReactLocalization} in the
+ * `l10n` prop. This instance will be made available to {@link Localized} components
  * under the provider.
  *
  * @example

@@ -4,6 +4,7 @@
  * All productions described in the ASDL subclass BaseNode, including Span and
  * Annotation.
  *
+ * @category Data Model
  */
 export abstract class BaseNode {
   abstract type: string;
@@ -79,6 +80,8 @@ function scalarsEqual(
 
 /**
  * Base class for AST nodes which can have Spans.
+ *
+ * @category Data Model
  */
 export abstract class SyntaxNode extends BaseNode {
   public span?: Span;
@@ -89,6 +92,7 @@ export abstract class SyntaxNode extends BaseNode {
   }
 }
 
+/** @category Data Model */
 export class Resource extends SyntaxNode {
   public type = "Resource" as const;
   public body: Array<Entry>;
@@ -98,8 +102,10 @@ export class Resource extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export declare type Entry = Message | Term | Comments | Junk;
 
+/** @category Data Model */
 export class Message extends SyntaxNode {
   public type = "Message" as const;
   public id: Identifier;
@@ -121,6 +127,7 @@ export class Message extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Term extends SyntaxNode {
   public type = "Term" as const;
   public id: Identifier;
@@ -142,6 +149,7 @@ export class Term extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Pattern extends SyntaxNode {
   public type = "Pattern" as const;
   public elements: Array<PatternElement>;
@@ -152,8 +160,10 @@ export class Pattern extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export declare type PatternElement = TextElement | Placeable;
 
+/** @category Data Model */
 export class TextElement extends SyntaxNode {
   public type = "TextElement" as const;
   public value: string;
@@ -164,6 +174,7 @@ export class TextElement extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Placeable extends SyntaxNode {
   public type = "Placeable" as const;
   public expression: Expression;
@@ -176,6 +187,8 @@ export class Placeable extends SyntaxNode {
 
 /**
  * A subset of expressions which can be used as outside of Placeables.
+ *
+ * @category Data Model
  */
 export type InlineExpression =
   | StringLiteral
@@ -185,9 +198,15 @@ export type InlineExpression =
   | TermReference
   | VariableReference
   | Placeable;
+
+/** @category Data Model */
 export declare type Expression = InlineExpression | SelectExpression;
 
-// An abstract base class for Literals.
+/**
+ * An abstract base class for Literals.
+ *
+ * @category Data Model
+ */
 export abstract class BaseLiteral extends SyntaxNode {
   public value: string;
 
@@ -201,6 +220,7 @@ export abstract class BaseLiteral extends SyntaxNode {
   abstract parse(): { value: unknown };
 }
 
+/** @category Data Model */
 export class StringLiteral extends BaseLiteral {
   public type = "StringLiteral" as const;
 
@@ -238,6 +258,7 @@ export class StringLiteral extends BaseLiteral {
   }
 }
 
+/** @category Data Model */
 export class NumberLiteral extends BaseLiteral {
   public type = "NumberLiteral" as const;
 
@@ -249,8 +270,10 @@ export class NumberLiteral extends BaseLiteral {
   }
 }
 
+/** @category Data Model */
 export declare type Literal = StringLiteral | NumberLiteral;
 
+/** @category Data Model */
 export class MessageReference extends SyntaxNode {
   public type = "MessageReference" as const;
   public id: Identifier;
@@ -263,6 +286,7 @@ export class MessageReference extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class TermReference extends SyntaxNode {
   public type = "TermReference" as const;
   public id: Identifier;
@@ -281,6 +305,7 @@ export class TermReference extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class VariableReference extends SyntaxNode {
   public type = "VariableReference" as const;
   public id: Identifier;
@@ -291,6 +316,7 @@ export class VariableReference extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class FunctionReference extends SyntaxNode {
   public type = "FunctionReference" as const;
   public id: Identifier;
@@ -303,6 +329,7 @@ export class FunctionReference extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class SelectExpression extends SyntaxNode {
   public type = "SelectExpression" as const;
   public selector: InlineExpression;
@@ -315,6 +342,7 @@ export class SelectExpression extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class CallArguments extends SyntaxNode {
   public type = "CallArguments" as const;
   public positional: Array<InlineExpression>;
@@ -330,6 +358,7 @@ export class CallArguments extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Attribute extends SyntaxNode {
   public type = "Attribute" as const;
   public id: Identifier;
@@ -342,6 +371,7 @@ export class Attribute extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Variant extends SyntaxNode {
   public type = "Variant" as const;
   public key: Identifier | NumberLiteral;
@@ -356,6 +386,7 @@ export class Variant extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class NamedArgument extends SyntaxNode {
   public type = "NamedArgument" as const;
   public name: Identifier;
@@ -368,6 +399,7 @@ export class NamedArgument extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Identifier extends SyntaxNode {
   public type = "Identifier" as const;
   public name: string;
@@ -378,6 +410,7 @@ export class Identifier extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export abstract class BaseComment extends SyntaxNode {
   public content: string;
   constructor(content: string) {
@@ -386,19 +419,25 @@ export abstract class BaseComment extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Comment extends BaseComment {
   public type = "Comment" as const;
 }
 
+/** @category Data Model */
 export class GroupComment extends BaseComment {
   public type = "GroupComment" as const;
 }
+
+/** @category Data Model */
 export class ResourceComment extends BaseComment {
   public type = "ResourceComment" as const;
 }
 
+/** @category Data Model */
 export declare type Comments = Comment | GroupComment | ResourceComment;
 
+/** @category Data Model */
 export class Junk extends SyntaxNode {
   public type = "Junk" as const;
   public annotations: Array<Annotation>;
@@ -415,6 +454,7 @@ export class Junk extends SyntaxNode {
   }
 }
 
+/** @category Data Model */
 export class Span extends BaseNode {
   public type = "Span" as const;
   public start: number;
@@ -427,6 +467,7 @@ export class Span extends BaseNode {
   }
 }
 
+/** @category Data Model */
 export class Annotation extends SyntaxNode {
   public type = "Annotation" as const;
   public code: string;
