@@ -21,4 +21,4 @@ jobs:
       - run: npm run build --workspaces
       - run: npm test
       - run: npm run lint
-      - run: npm run docs --workspaces
+      - run: npm run docs

@@ -81,7 +81,7 @@ Build and test all packages at once:
     $ npm run build --workspaces
     $ npm run lint
     $ npm run test
-    $ npm run docs --workspaces
+    $ npm run docs
 
 Each package may also be built separately by running `npm run build` in
 its directory.
