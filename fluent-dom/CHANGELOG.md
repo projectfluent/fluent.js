@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.10.1](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.10.0...@fluent/dom@0.10.1) (2025-03-27)
+
+- Add aria-description as a localizable string ([#640](https://github.com/projectfluent/fluent.js/issues/640))
+
 ## [0.10.0](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.9.0...@fluent/dom@0.10.0) (2024-06-25)
 
 ### ⚠ Breaking Changes
