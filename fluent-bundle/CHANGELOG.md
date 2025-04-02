@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.19.1](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.19.0...@fluent/bundle@0.19.1) (2025-04-02)
+
+- Fix FluentDateTime and FluentNumber primitive conversions ([#641](https://github.com/projectfluent/fluent.js/issues/641))
+
 ## [0.19.0](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.18.0...@fluent/bundle@0.19.0) (2025-03-25)
 
 ### ⚠ Breaking Changes
