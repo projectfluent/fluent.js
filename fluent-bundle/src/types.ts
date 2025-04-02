@@ -108,14 +108,16 @@ export class FluentNumber extends FluentType<number> {
   /**
    * Format this `FluentNumber` to a string.
    */
-  toString(scope: Scope): string {
-    try {
-      const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
-      return nf.format(this.value);
-    } catch (err) {
-      scope.reportError(err);
-      return this.value.toString(10);
+  toString(scope?: Scope): string {
+    if (scope) {
+      try {
+        const nf = scope.memoizeIntlObject(Intl.NumberFormat, this.opts);
+        return nf.format(this.value);
+      } catch (err) {
+        scope.reportError(err);
+      }
     }
+    return this.value.toString(10);
   }
 }
 
@@ -214,18 +216,20 @@ export class FluentDateTime extends FluentType<number | Date | TemporalObject> {
   /**
    * Format this `FluentDateTime` to a string.
    */
-  toString(scope: Scope): string {
-    try {
-      const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
-      return dtf.format(
-        this.value as Parameters<Intl.DateTimeFormat["format"]>[0]
-      );
-    } catch (err) {
-      scope.reportError(err);
-      if (typeof this.value === "number" || this.value instanceof Date) {
-        return new Date(this.value).toISOString();
+  toString(scope?: Scope): string {
+    if (scope) {
+      try {
+        const dtf = scope.memoizeIntlObject(Intl.DateTimeFormat, this.opts);
+        return dtf.format(
+          this.value as Parameters<Intl.DateTimeFormat["format"]>[0]
+        );
+      } catch (err) {
+        scope.reportError(err);
       }
-      return this.value.toString();
     }
+    if (typeof this.value === "number" || this.value instanceof Date) {
+      return new Date(this.value).toISOString();
+    }
+    return this.value.toString();
   }
 }
