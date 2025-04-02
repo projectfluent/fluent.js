@@ -192,6 +192,10 @@ export class FluentDateTime extends FluentType<number | Date | TemporalObject> {
     this.opts = opts;
   }
 
+  [Symbol.toPrimitive](hint: "number" | "string" | "default"): string | number {
+    return hint === "string" ? this.toString() : this.toNumber();
+  }
+
   /**
    * Convert this `FluentDateTime` to a number.
    * Note that this isn't always possible due to the nature of Temporal objects.
