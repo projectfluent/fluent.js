@@ -66,7 +66,7 @@ suite("Temporal support", function () {
 
     test("can be converted to a number", function () {
       arg = new FluentDateTime(arg);
-      assert.strictEqual(arg.toNumber(), 0);
+      assert.strictEqual(+arg, 0);
     });
   });
 
@@ -94,7 +94,7 @@ suite("Temporal support", function () {
 
     test("can be converted to a number", function () {
       arg = new FluentDateTime(arg);
-      assert.strictEqual(arg.toNumber(), 0);
+      assert.strictEqual(+arg, 0);
     });
   });
 
@@ -123,7 +123,7 @@ suite("Temporal support", function () {
 
       test("can be converted to a number", function () {
         arg = new FluentDateTime(arg);
-        assert.strictEqual(arg.toNumber(), 0);
+        assert.strictEqual(+arg, 0);
       });
     });
   }
@@ -171,7 +171,7 @@ suite("Temporal support", function () {
 
     test("cannot be converted to a number", function () {
       arg = new FluentDateTime(arg);
-      assert.throws(() => arg.toNumber(), TypeError);
+      assert.throws(() => +arg, TypeError);
     });
   });
 
@@ -203,7 +203,7 @@ suite("Temporal support", function () {
 
     test("cannot be converted to a number", function () {
       arg = new FluentDateTime(arg);
-      assert.throws(() => arg.toNumber(), TypeError);
+      assert.throws(() => +arg, TypeError);
     });
   });
 });

@@ -195,7 +195,7 @@ export class FluentDateTime extends FluentType<number | Date | TemporalObject> {
    * Note that this isn't always possible due to the nature of Temporal objects.
    * In such cases, a TypeError will be thrown.
    */
-  toNumber(): number {
+  valueOf(): number {
     const value = this.value;
     if (typeof value === "number") return value;
     if (value instanceof Date) return value.getTime();
