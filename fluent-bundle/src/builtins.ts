@@ -88,7 +88,7 @@ export function NUMBER(
   }
 
   if (arg instanceof FluentDateTime) {
-    return new FluentNumber(arg.valueOf(), {
+    return new FluentNumber(arg.toNumber(), {
       ...values(opts, NUMBER_ALLOWED),
     });
   }
