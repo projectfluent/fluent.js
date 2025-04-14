@@ -1,10 +1,13 @@
 const languageCodeRe = "([a-z]{2,3}|\\*)";
+const extendedCodeRe = "((?:-(?:[a-z]{3})){1,3})";
 const scriptCodeRe = "(?:-([a-z]{4}|\\*))";
-const regionCodeRe = "(?:-([a-z]{2}|\\*))";
+const regionCodeRe = "(?:-([a-z]{2}|[0-9]{3}|\\*))";
 const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
+const extensionCodeRe = "(-(?:[a-wy-z])(?:-[a-z]{2,8})+)";
+const privateCodeRe = "(?:-x((?:-[a-z]{2,8})+))";
 
 /**
- * Regular expression splitting locale id into four pieces:
+ * Regular expression splitting locale id into multiple pieces:
  *
  * Example: `en-Latn-US-macos`
  *
@@ -16,16 +19,20 @@ const variantCodeRe = "(?:-(([0-9][a-z0-9]{3}|[a-z0-9]{5,8})|\\*))";
  * It can also accept a range `*` character on any position.
  */
 const localeRe = new RegExp(
-  `^${languageCodeRe}${scriptCodeRe}?${regionCodeRe}?${variantCodeRe}?$`,
+  `^${languageCodeRe}${extendedCodeRe}?${scriptCodeRe}?` +
+    `${regionCodeRe}?${variantCodeRe}?${extensionCodeRe}*${privateCodeRe}?$`,
   "i"
 );
 
 export class Locale {
   isWellFormed: boolean;
   language?: string;
+  extended: string[] = [];
   script?: string;
   region?: string;
   variant?: string;
+  extension: Map<string, string> = new Map();
+  priv?: string;
 
   /**
    * Parses a locale id using the localeRe into an array with four elements.
@@ -43,16 +50,30 @@ export class Locale {
       return;
     }
 
-    let [, language, script, region, variant] = result;
+    let [, language, extended, script, region, variant, extension, priv] =
+      result;
 
     if (language) {
       this.language = language.toLowerCase();
+    }
+    if (extended) {
+      this.extended = extended.substring(1).toLowerCase().split("-");
     }
     if (script) {
       this.script = script[0].toUpperCase() + script.slice(1);
     }
     if (region) {
       this.region = region.toUpperCase();
+    }
+    if (extension) {
+      for (const [, type, code] of extension.matchAll(
+        /(?:-([a-wy-z])((?:-[a-z]{2,8})+))/g
+      )) {
+        this.extension.set(type.toLowerCase(), code.substring(1).toLowerCase());
+      }
+    }
+    if (priv) {
+      this.priv = priv.substring(1).toLowerCase();
     }
     this.variant = variant;
     this.isWellFormed = true;
@@ -61,9 +82,12 @@ export class Locale {
   isEqual(other: Locale): boolean {
     return (
       this.language === other.language &&
+      this.extended.every((v, i) => v === other.extended[i]) &&
       this.script === other.script &&
       this.region === other.region &&
-      this.variant === other.variant
+      this.variant === other.variant &&
+      compareMap(this.extension, other.extension) &&
+      this.priv === other.priv
     );
   }
 
@@ -72,6 +96,9 @@ export class Locale {
       (this.language === other.language ||
         (thisRange && this.language === undefined) ||
         (otherRange && other.language === undefined)) &&
+      (this.extended.every((v, i) => v === other.extended[i]) ||
+        (thisRange && this.extended.length === 0) ||
+        (otherRange && other.extended.length === 0)) &&
       (this.script === other.script ||
         (thisRange && this.script === undefined) ||
         (otherRange && other.script === undefined)) &&
@@ -80,12 +107,27 @@ export class Locale {
         (otherRange && other.region === undefined)) &&
       (this.variant === other.variant ||
         (thisRange && this.variant === undefined) ||
-        (otherRange && other.variant === undefined))
+        (otherRange && other.variant === undefined)) &&
+      (compareMap(this.extension, other.extension) ||
+        (thisRange && this.extension.size === 0) ||
+        (otherRange && other.extension.size === 0)) &&
+      (this.priv === other.priv ||
+        (thisRange && this.priv === undefined) ||
+        (otherRange && other.priv === undefined))
     );
   }
 
   toString(): string {
-    return [this.language, this.script, this.region, this.variant]
+    const xSubtag = this.priv === undefined ? undefined : `x-${this.priv}`;
+    return [
+      this.language,
+      ...this.extended,
+      this.script,
+      this.region,
+      this.variant,
+      ...[...this.extension.entries()].flat(),
+      xSubtag,
+    ]
       .filter(part => part !== undefined)
       .join("-");
   }
@@ -102,9 +144,12 @@ export class Locale {
     const newLocale = getLikelySubtagsMin(this.toString().toLowerCase());
     if (newLocale) {
       this.language = newLocale.language;
+      this.extended = newLocale.extended;
       this.script = newLocale.script;
       this.region = newLocale.region;
       this.variant = newLocale.variant;
+      this.extension = newLocale.extension;
+      this.priv = newLocale.priv;
       return true;
     }
     return false;
@@ -174,4 +219,19 @@ function getLikelySubtagsMin(loc: string): Locale | null {
     return locale;
   }
   return null;
+}
+
+function compareMap<K, V>(map1: Map<K, V>, map2: Map<K, V>): boolean {
+  if (map1.size !== map2.size) {
+    return false;
+  }
+
+  for (const [key, value] of map1) {
+    const other = map2.get(key);
+    if (other !== value || (other === undefined && !map2.has(key))) {
+      return false;
+    }
+  }
+
+  return true;
 }
