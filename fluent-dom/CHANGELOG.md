@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.10.2](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.10.1...@fluent/dom@0.10.2) (2025-07-18)
+
+- Fix typescript types in DOMLocalization ([#643](https://github.com/projectfluent/fluent.js/issues/643))
+
 ## [0.10.1](https://github.com/projectfluent/fluent.js/compare/@fluent/dom@0.10.0...@fluent/dom@0.10.1) (2025-03-27)
 
 - Add aria-description as a localizable string ([#640](https://github.com/projectfluent/fluent.js/issues/640))
