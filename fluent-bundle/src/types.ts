@@ -4,12 +4,22 @@ import { Scope } from "./scope.js";
 // Replace with Temporal.* types once they are provided by TypeScript
 // In addition to this minimal interface, these objects are also expected
 // to be supported by Intl.DateTimeFormat
-interface TemporalObject {
-  epochMilliseconds?: number;
-  toZonedDateTime?(timeZone: string): { epochMilliseconds: number };
-  calendarId?: string;
+interface TemporalInstant {
+  epochMilliseconds: number
   toString(): string;
 }
+interface TemporalDateTypes {
+  calendarId: string;
+  toZonedDateTime?(timeZone: string): { epochMilliseconds: number };
+  toString(): string;
+}
+interface TemporalPlainTime {
+  hour: number
+  minute: number
+  second: number
+  toString(): string;
+}
+type TemporalObject = TemporalInstant | TemporalDateTypes | TemporalPlainTime
 
 export type FluentValue = FluentType<unknown> | string;
 
@@ -207,7 +217,7 @@ export class FluentDateTime extends FluentType<number | Date | TemporalObject> {
     if (value instanceof Date) return value.getTime();
 
     if ("epochMilliseconds" in value) {
-      return value.epochMilliseconds as number;
+      return value.epochMilliseconds;
     }
 
     if ("toZonedDateTime" in value) {
