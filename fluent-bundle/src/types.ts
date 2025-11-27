@@ -217,7 +217,7 @@ export class FluentDateTime extends FluentType<number | Date | TemporalObject> {
     if (value instanceof Date) return value.getTime();
 
     if ("epochMilliseconds" in value) {
-      return value.epochMilliseconds as number;
+      return value.epochMilliseconds;
     }
 
     if ("toZonedDateTime" in value) {
