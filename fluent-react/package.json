@@ -45,8 +45,7 @@
     "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=7.0.0"
+    "node": "^20.19 || ^22.12 || >=24"
   },
   "dependencies": {
     "@fluent/sequence": "^0.8.0",

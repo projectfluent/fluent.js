@@ -45,8 +45,7 @@
     "postbuild": "rollup -c ../rollup.config.mjs"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=7.0.0"
+    "node": "^20.19 || ^22.12 || >=24"
   },
   "devDependencies": {
     "@fluent/dedent": "^0.5.0"
