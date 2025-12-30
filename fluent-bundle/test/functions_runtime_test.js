@@ -6,7 +6,7 @@ import {
   FluentDateTime,
   FluentNumber,
   FluentResource,
-} from "../esm/index.js";
+} from "../src/index.ts";
 
 suite("Runtime-specific functions", function () {
   suite("passing into the constructor", function () {

@@ -3,7 +3,7 @@ import { dirname, join } from "path";
 import { readdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { readfile } from "./util.js";
-import { FluentParser } from "../esm/parser.js";
+import { FluentParser } from "../src/parser.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "fixtures_reference");

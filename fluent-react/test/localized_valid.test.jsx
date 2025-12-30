@@ -4,7 +4,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized,
-} from "../esm/index.js";
+} from "../src/index.ts";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 import { expect, vi } from "vitest";
 

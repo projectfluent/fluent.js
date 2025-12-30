@@ -1,7 +1,7 @@
 import assert from "assert";
 import sinon from "sinon";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import Localization from "../esm/localization.js";
+import Localization from "../src/localization.js";
 
 async function* mockGenerateMessages() {
   const bundle = new FluentBundle(["en-US"]);

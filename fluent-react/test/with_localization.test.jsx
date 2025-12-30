@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   withLocalization,
-} from "../esm/index.js";
+} from "../src/index.ts";
 import { vi } from "vitest";
 
 function DummyComponent() {

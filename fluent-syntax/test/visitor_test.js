@@ -1,7 +1,7 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
-import { FluentParser } from "../esm/parser.js";
-import { Visitor, Transformer } from "../esm/visitor.js";
+import { FluentParser } from "../src/parser.ts";
+import { Visitor, Transformer } from "../src/visitor.ts";
 
 suite("Visitor", function () {
   let resource;

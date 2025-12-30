@@ -1,12 +1,12 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentParser } from "../esm/parser.js";
+import { FluentParser } from "../src/parser.ts";
 import {
   FluentSerializer,
   serializeExpression,
   serializeVariantKey,
-} from "../esm/serializer.js";
+} from "../src/serializer.ts";
 
 suite("Serialize resource", function () {
   let pretty;

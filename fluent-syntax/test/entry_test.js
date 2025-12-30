@@ -1,9 +1,9 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import * as AST from "../esm/ast.js";
-import { FluentParser } from "../esm/parser.js";
-import { FluentSerializer } from "../esm/serializer.js";
+import * as AST from "../src/ast.ts";
+import { FluentParser } from "../src/parser.ts";
+import { FluentSerializer } from "../src/serializer.ts";
 
 suite("Parse entry", function () {
   let parser;

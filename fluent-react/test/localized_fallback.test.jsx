@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized,
-} from "../esm/index.js";
+} from "../src/index.ts";
 import { vi } from "vitest";
 
 test("uses message from 1st bundle", () => {

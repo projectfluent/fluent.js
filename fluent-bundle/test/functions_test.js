@@ -1,8 +1,8 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
 
 suite("Functions", function () {
   let bundle, errs;

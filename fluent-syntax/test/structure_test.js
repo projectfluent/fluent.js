@@ -4,7 +4,7 @@ import { readdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { readfile } from "./util.js";
 
-import { parse } from "../esm/index.js";
+import { parse } from "../src/index.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(__dirname, "fixtures_structure");

@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized,
-} from "../esm/index.js";
+} from "../src/index.ts";
 import { vi } from "vitest";
 
 describe("Localized - rendering", () => {

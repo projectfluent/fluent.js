@@ -1,6 +1,6 @@
 import assert from "assert";
 import sinon from "sinon";
-import translateElement from "../esm/overlay.js";
+import translateElement from "../src/overlay.js";
 import { elem } from "./util.js";
 
 suite("Text-semantic argument elements", function () {
