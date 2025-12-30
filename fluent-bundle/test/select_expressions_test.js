@@ -7,7 +7,7 @@ import { FluentResource } from "../esm/resource.js";
 suite("Select expressions", function () {
   let bundle, errs;
 
-  setup(function () {
+  beforeEach(function () {
     bundle = new FluentBundle("en-US", { useIsolating: false });
     errs = [];
   });

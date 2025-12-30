@@ -7,7 +7,7 @@ import { FluentResource } from "../esm/resource.js";
 suite("Literals as selectors", function () {
   let bundle, errs;
 
-  setup(function () {
+  beforeEach(function () {
     bundle = new FluentBundle("en-US", { useIsolating: false });
     errs = [];
   });

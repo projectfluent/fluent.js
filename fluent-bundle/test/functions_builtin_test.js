@@ -9,7 +9,7 @@ suite("Built-in functions", function () {
   let bundle, errors, msg;
 
   suite("NUMBER", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -475,7 +475,7 @@ suite("Built-in functions", function () {
   });
 
   suite("DATETIME", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`

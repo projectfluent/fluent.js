@@ -6,8 +6,9 @@ import { FluentParser } from "../esm/parser.js";
 import { FluentSerializer } from "../esm/serializer.js";
 
 suite("Parse entry", function () {
-  setup(function () {
-    this.parser = new FluentParser({ withSpans: false });
+  let parser;
+  beforeEach(function () {
+    parser = new FluentParser({ withSpans: false });
   });
 
   test("simple message", function () {
@@ -33,7 +34,7 @@ suite("Parse entry", function () {
       },
     };
 
-    const message = this.parser.parseEntry(input);
+    const message = parser.parseEntry(input);
     assert.deepEqual(message, output);
   });
 
@@ -61,7 +62,7 @@ suite("Parse entry", function () {
       },
     };
 
-    const message = this.parser.parseEntry(input);
+    const message = parser.parseEntry(input);
     assert.deepEqual(message, output);
   });
 
@@ -88,7 +89,7 @@ suite("Parse entry", function () {
       type: "Junk",
     };
 
-    const message = this.parser.parseEntry(input);
+    const message = parser.parseEntry(input);
     assert.deepEqual(message, output);
   });
 
@@ -118,7 +119,7 @@ suite("Parse entry", function () {
       },
     };
 
-    const message = this.parser.parseEntry(input);
+    const message = parser.parseEntry(input);
     assert.deepEqual(message, output);
   });
 
@@ -145,16 +146,12 @@ suite("Parse entry", function () {
       type: "Junk",
     };
 
-    const message = this.parser.parseEntry(input);
+    const message = parser.parseEntry(input);
     assert.deepEqual(message, output);
   });
 });
 
 suite("Serialize entry", function () {
-  setup(function () {
-    this.serializer = new FluentSerializer();
-  });
-
   test("simple message", function () {
     const input = new AST.Message(
       new AST.Identifier("foo"),
@@ -165,7 +162,7 @@ suite("Serialize entry", function () {
 
       `;
 
-    const message = this.serializer.serializeEntry(input);
+    const message = new FluentSerializer().serializeEntry(input);
     assert.deepEqual(message, output);
   });
 });

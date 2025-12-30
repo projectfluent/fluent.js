@@ -11,7 +11,7 @@ const PDI = "\u2069";
 suite("Isolating interpolations", function () {
   let bundle, args, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US");
     bundle.addResource(
       new FluentResource(ftl`
@@ -23,7 +23,7 @@ suite("Isolating interpolations", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
@@ -73,7 +73,7 @@ suite("Isolating interpolations", function () {
 suite("Skip isolation cases", function () {
   let bundle, args, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US");
     bundle.addResource(
       new FluentResource(ftl`
@@ -83,7 +83,7 @@ suite("Skip isolation cases", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 

@@ -4,8 +4,8 @@ import translateElement from "../esm/overlay.js";
 import { elem } from "./util.js";
 
 suite("Child without name", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
+  beforeEach(() => sinon.stub(console, "warn"));
+  afterEach(() => console.warn.restore());
 
   test("in source", function () {
     const element = elem("div")`
@@ -44,8 +44,8 @@ suite("Child without name", function () {
 });
 
 suite("Child with name", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
+  beforeEach(() => sinon.stub(console, "warn"));
+  afterEach(() => console.warn.restore());
 
   test("in source", function () {
     const element = elem("div")`

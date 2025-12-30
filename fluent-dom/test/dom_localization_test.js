@@ -11,8 +11,8 @@ async function* mockGenerateMessages() {
 }
 
 suite("translateFragment", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
+  beforeEach(() => sinon.stub(console, "warn"));
+  afterEach(() => console.warn.restore());
 
   test("translates a node", async function () {
     const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);

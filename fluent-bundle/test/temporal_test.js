@@ -25,7 +25,7 @@ suite("Temporal support", function () {
     return res;
   }
 
-  suiteSetup(async function () {
+  beforeAll(async function () {
     if (typeof Temporal === "undefined") {
       await import("temporal-polyfill/global");
     }
@@ -42,7 +42,7 @@ suite("Temporal support", function () {
   });
 
   suite("Temporal.Instant", function () {
-    setup(function () {
+    beforeEach(function () {
       arg = Temporal.Instant.from("1970-01-01T00:00:00Z");
     });
 
@@ -71,7 +71,7 @@ suite("Temporal support", function () {
   });
 
   suite("Temporal.PlainDate (gregory)", function () {
-    setup(function () {
+    beforeEach(function () {
       arg = Temporal.PlainDate.from("1970-01-01[u-ca=gregory]");
     });
 
@@ -100,7 +100,7 @@ suite("Temporal support", function () {
 
   if (supportIso8601) {
     suite("Temporal.PlainDate (iso8601)", function () {
-      setup(function () {
+      beforeEach(function () {
         arg = Temporal.PlainDate.from("1970-01-01[u-ca=iso8601]");
       });
 
@@ -120,7 +120,7 @@ suite("Temporal support", function () {
   }
 
   suite("Temporal.PlainDateTime", function () {
-    setup(function () {
+    beforeEach(function () {
       arg = Temporal.PlainDateTime.from("1970-01-01T00:00:00[u-ca=gregory]");
     });
 
@@ -143,7 +143,7 @@ suite("Temporal support", function () {
   });
 
   suite("Temporal.PlainTime", function () {
-    setup(function () {
+    beforeEach(function () {
       arg = Temporal.PlainTime.from("00:00:00");
     });
 
@@ -167,7 +167,7 @@ suite("Temporal support", function () {
   });
 
   suite("PlainYearMonth (gregory)", function () {
-    setup(function () {
+    beforeEach(function () {
       arg = Temporal.PlainYearMonth.from({
         year: 1970,
         month: 1,

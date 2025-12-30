@@ -1,6 +1,5 @@
 import js from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
-import mochaPlugin from "eslint-plugin-mocha";
 import globals from "globals";
 
 import tseslint from "typescript-eslint";
@@ -109,32 +108,26 @@ export default [
   {
     files: ["*/test/**"],
     languageOptions: {
-      globals: { ...globals.mocha, ...globals.node },
+      globals: { ...globals.node, ...globals.vitest },
       ecmaVersion: 2020,
     },
-    plugins: { mocha: mochaPlugin },
     rules: {
-      "mocha/no-exclusive-tests": "error",
-      "mocha/no-identical-title": "error",
       "no-console": "off",
       "prefer-arrow-callback": "off",
     },
   },
   {
     files: ["fluent-dom/test/*"],
-    languageOptions: { globals: { ...globals.browser } },
+    languageOptions: { globals: { ...globals.browser, ...globals.vitest } },
   },
   {
     files: ["fluent-react/test/**"],
     languageOptions: {
-      globals: { ...globals.browser, ...globals.jest },
+      globals: { ...globals.browser, ...globals.vitest },
       ecmaVersion: 2020,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
-    plugins: { mocha: mochaPlugin },
     rules: {
-      "mocha/no-exclusive-tests": "error",
-      "mocha/no-identical-title": "error",
       "no-unused-vars": "off",
     },
   },

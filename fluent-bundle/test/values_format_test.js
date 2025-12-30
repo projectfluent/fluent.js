@@ -7,7 +7,7 @@ import { FluentResource } from "../esm/resource.js";
 suite("Formatting values", function () {
   let bundle, args, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US", { useIsolating: false });
     bundle.addResource(
       new FluentResource(ftl`
@@ -28,7 +28,7 @@ suite("Formatting values", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 

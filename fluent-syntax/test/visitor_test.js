@@ -4,9 +4,10 @@ import { FluentParser } from "../esm/parser.js";
 import { Visitor, Transformer } from "../esm/visitor.js";
 
 suite("Visitor", function () {
-  setup(function () {
+  let resource;
+  beforeEach(function () {
     const parser = new FluentParser();
-    this.resource = parser.parse(ftl`
+    resource = parser.parse(ftl`
         one = Message
         # Comment
         two = Messages
@@ -35,7 +36,7 @@ suite("Visitor", function () {
       }
     }
     const mv = new MockVisitor();
-    mv.visit(this.resource);
+    mv.visit(resource);
     assert.strictEqual(mv.pattern_calls, 4);
     assert.deepStrictEqual(mv.calls, {
       Resource: 1,
@@ -66,15 +67,16 @@ suite("Visitor", function () {
       }
     }
     const vc = new VisitorCounter();
-    vc.visit(this.resource);
+    vc.visit(resource);
     assert.strictEqual(vc.word_count, 5);
   });
 });
 
 suite("Transformer", function () {
-  setup(function () {
+  let resource;
+  beforeEach(function () {
     const parser = new FluentParser();
-    this.resource = parser.parse(ftl`
+    resource = parser.parse(ftl`
         one = Message
         # Comment
         two = Messages
@@ -103,13 +105,13 @@ suite("Transformer", function () {
         return node;
       }
     }
-    const resource = this.resource.clone();
+    const modResource = resource.clone();
     const transformed = new ReplaceTransformer("Message", "Term").visit(
-      resource
+      modResource
     );
-    assert.notStrictEqual(resource, this.resource);
-    assert.strictEqual(resource, transformed);
-    assert.strictEqual(this.resource.equals(transformed), false);
+    assert.notStrictEqual(modResource, resource);
+    assert.strictEqual(modResource, transformed);
+    assert.strictEqual(resource.equals(transformed), false);
     assert.strictEqual(transformed.body[1].value.elements[0].value, "Terms");
   });
 });

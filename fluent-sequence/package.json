@@ -28,8 +28,7 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "postbuild": "rollup -c ../rollup.config.mjs",
-    "test": "mocha 'test/*_test.js'"
+    "postbuild": "rollup -c ../rollup.config.mjs"
   },
   "engines": {
     "node": ">=18.0.0",

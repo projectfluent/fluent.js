@@ -7,7 +7,7 @@ import { FluentResource } from "../esm/resource.js";
 suite("Transformations", function () {
   let bundle, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US", {
       transform: v => v.replace(/a/g, "A"),
       useIsolating: false,
@@ -26,7 +26,7 @@ suite("Transformations", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 

@@ -7,12 +7,12 @@ import { FluentResource } from "../esm/resource.js";
 suite("Patterns", function () {
   let bundle, args, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("Simple string value", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -30,7 +30,7 @@ suite("Patterns", function () {
   });
 
   suite("Complex string value", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -78,7 +78,7 @@ suite("Patterns", function () {
   });
 
   suite("Complex string referencing a message with null value", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -112,7 +112,7 @@ suite("Patterns", function () {
   });
 
   suite("Cyclic reference", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -131,7 +131,7 @@ suite("Patterns", function () {
   });
 
   suite("Cyclic self-reference", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -149,7 +149,7 @@ suite("Patterns", function () {
   });
 
   suite("Cyclic self-reference in a member", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -179,7 +179,7 @@ suite("Patterns", function () {
   });
 
   suite("Cyclic reference in a selector", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -204,7 +204,7 @@ suite("Patterns", function () {
   });
 
   suite("Cyclic self-reference in a selector", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`

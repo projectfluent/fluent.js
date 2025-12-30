@@ -7,12 +7,12 @@ import { FluentResource } from "../esm/resource.js";
 suite("Functions", function () {
   let bundle, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("missing", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -31,7 +31,7 @@ suite("Functions", function () {
   });
 
   suite("arguments", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
         functions: {

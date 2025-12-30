@@ -7,7 +7,7 @@ import { FluentResource } from "../esm/resource.js";
 suite("Errors", function () {
   let bundle;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US", { useIsolating: false });
     bundle.addResource(
       new FluentResource(ftl`

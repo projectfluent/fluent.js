@@ -7,12 +7,12 @@ import { FluentResource } from "../esm/resource.js";
 suite("Primitives", function () {
   let bundle, args, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("Numbers", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -41,7 +41,7 @@ suite("Primitives", function () {
   });
 
   suite("Simple string value", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -120,7 +120,7 @@ suite("Primitives", function () {
   });
 
   suite("Complex string value", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`

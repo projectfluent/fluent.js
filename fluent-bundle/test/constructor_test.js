@@ -7,11 +7,11 @@ import { FluentResource } from "../esm/resource.js";
 
 suite("FluentBundle constructor", function () {
   let nfSpy;
-  setup(() => {
+  beforeEach(() => {
     nfSpy = sinon.spy(Intl, "NumberFormat");
   });
 
-  teardown(() => {
+  afterEach(() => {
     nfSpy.restore();
   });
 

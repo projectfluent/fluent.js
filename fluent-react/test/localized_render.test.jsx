@@ -6,8 +6,13 @@ import {
   LocalizationProvider,
   Localized,
 } from "../esm/index.js";
+import { vi } from "vitest";
 
 describe("Localized - rendering", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   test("render the value", () => {
     const bundle = new FluentBundle();
 
@@ -259,7 +264,7 @@ foo =
 
   test("$arg is passed to format the value", () => {
     const bundle = new FluentBundle("en", { useIsolating: false });
-    const format = jest.spyOn(bundle, "formatPattern");
+    const format = vi.spyOn(bundle, "formatPattern");
 
     bundle.addResource(
       new FluentResource(`
@@ -290,7 +295,7 @@ foo = { $arg }
 
   test("$arg is passed to format the attributes", () => {
     const bundle = new FluentBundle();
-    const format = jest.spyOn(bundle, "formatPattern");
+    const format = vi.spyOn(bundle, "formatPattern");
 
     bundle.addResource(
       new FluentResource(`
@@ -336,7 +341,7 @@ foo = { $arg }
   });
 
   test("render with a fragment and no message preserves the fragment", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([])}>
@@ -357,7 +362,7 @@ foo = { $arg }
   });
 
   test("A missing $arg does not break rendering", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
 
     bundle.addResource(
@@ -443,7 +448,7 @@ foo = Test message
 
   test("render with an empty fragment and no message preserves the fragment", () => {
     const bundle = new FluentBundle();
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([bundle])}>
@@ -503,7 +508,7 @@ foo = Test message
   });
 
   test("render with a string fallback and no message returns the fallback", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(
@@ -558,7 +563,7 @@ foo = Message
   });
 
   test("render without a fallback and no message returns the message ID", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle();
 
     const renderer = TestRenderer.create(

@@ -11,8 +11,8 @@ async function* mockGenerateMessages() {
 }
 
 suite("formatMessages", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
+  beforeEach(() => sinon.stub(console, "warn"));
+  afterEach(() => console.warn.restore());
 
   test("returns a translation", async function () {
     const loc = new Localization(["test.ftl"], mockGenerateMessages);

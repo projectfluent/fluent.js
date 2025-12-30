@@ -6,8 +6,13 @@ import {
   Localized,
 } from "../esm/index.js";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
+import { expect, vi } from "vitest";
 
 describe("Localized - validation", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   function createValidBundle() {
     const validBundle = new FluentBundle();
     validBundle.addResource(
@@ -33,7 +38,7 @@ describe("Localized - validation", () => {
   });
 
   test("throws an error when placed outside of a LocalizationProvider", () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
     expect(() => {
       TestRenderer.create(
@@ -42,7 +47,7 @@ describe("Localized - validation", () => {
         </Localized>
       );
     }).toThrowErrorMatchingInlineSnapshot(
-      `"The <Localized /> component was not properly wrapped in a <LocalizationProvider />."`
+      `[Error: The <Localized /> component was not properly wrapped in a <LocalizationProvider />.]`
     );
 
     // React also does a console.error.
@@ -61,7 +66,7 @@ describe("Localized - validation", () => {
 
   test("throws when multiple children are provided", () => {
     // React also does a console.error, ignore that here.
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
     expect(() => {
       TestRenderer.create(
@@ -94,7 +99,7 @@ describe("Localized - validation", () => {
   });
 
   test("has a warning when no id is provided", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([])}>
@@ -116,8 +121,8 @@ describe("Localized - validation", () => {
   });
 
   test("Calls provided logger function, instead of default, when no id is provided", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
-    const mockReportError = jest.fn();
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const mockReportError = vi.fn();
     const renderer = TestRenderer.create(
       <LocalizationProvider
         l10n={new ReactLocalization([], null, mockReportError)}
@@ -129,7 +134,7 @@ describe("Localized - validation", () => {
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
-    expect(console.warn.mock.calls).toMatchInlineSnapshot(`[]`);
+    expect(console.warn).not.toHaveBeenCalled();
     expect(mockReportError).toHaveBeenCalledWith(
       new Error("No string id was provided when localizing a component.")
     );

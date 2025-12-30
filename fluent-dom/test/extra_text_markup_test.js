@@ -4,8 +4,8 @@ import translateElement from "../esm/overlay.js";
 import { elem } from "./util.js";
 
 suite("Localized text markup", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
+  beforeEach(() => sinon.stub(console, "warn"));
+  afterEach(() => console.warn.restore());
 
   test("allowed element", function () {
     const element = elem("div")`Foo`;

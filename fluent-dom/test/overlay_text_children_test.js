@@ -4,8 +4,8 @@ import translateElement from "../esm/overlay.js";
 import { elem } from "./util.js";
 
 suite("Text-semantic argument elements", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
+  beforeEach(() => sinon.stub(console, "warn"));
+  afterEach(() => console.warn.restore());
 
   test("without data-l10n-name", function () {
     const element = elem("div")`

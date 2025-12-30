@@ -7,7 +7,7 @@ import { mapBundleAsync } from "../esm/index.js";
 suite("Async Fallback — single id", function () {
   let bundle1, bundle2, generateBundles;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle1 = new FluentBundle();
     bundle1.addResource(new FluentResource("bar=Bar"));
     bundle2 = new FluentBundle();
@@ -50,7 +50,7 @@ suite("Async Fallback — single id", function () {
 suite("Async Fallback — multiple ids", async function () {
   let bundle1, bundle2, generateBundles;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle1 = new FluentBundle();
     bundle1.addResource(new FluentResource("foo=Foo\nbar=Bar"));
     bundle2 = new FluentBundle();
@@ -90,7 +90,7 @@ suite("Async Fallback — multiple ids", async function () {
 suite("Async Fallback — early return", async function () {
   let bundle1, bundle2;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle1 = new FluentBundle();
     bundle1.addResource(new FluentResource("foo=Foo\nbar=Bar"));
     bundle2 = new FluentBundle();
