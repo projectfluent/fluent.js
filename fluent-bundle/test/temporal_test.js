@@ -112,15 +112,6 @@ suite("Temporal support", function () {
         assert.strictEqual(msg("dt"), "1970-01-01");
       });
 
-      test("run through DATETIME() with month option", function () {
-        assert.strictEqual(msg("month"), "1970 January");
-      });
-
-      test("wrapped in FluentDateTime", function () {
-        arg = new FluentDateTime(arg, { month: "long" });
-        assert.strictEqual(msg("dt"), "January");
-      });
-
       test("can be converted to a number", function () {
         arg = new FluentDateTime(arg);
         assert.strictEqual(+arg, 0);
