@@ -22,4 +22,8 @@ export class LocaleWrapper extends Intl.Locale {
       }
     }
   }
+
+  get language(): string {
+    return super.language ?? "und";
+  }
 }
