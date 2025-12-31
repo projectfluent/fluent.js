@@ -9,7 +9,6 @@
     "./fluent-langneg",
     "./fluent-react",
     "./fluent-syntax",
-    "./fluent-gecko",
     "./tools"
   ],
   "scripts": {
