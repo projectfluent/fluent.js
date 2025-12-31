@@ -10,7 +10,6 @@ export default [
       "**/node_modules/",
       "*/coverage/",
       "*/dist/",
-      "*/esm/",
       "*/vendor/",
       "fluent-*/index.js",
       "html/",

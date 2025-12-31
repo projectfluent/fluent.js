@@ -2,6 +2,15 @@
   "name": "@fluent/dom",
   "version": "0.10.2",
   "description": "Fluent bindings for DOM",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./overlay": "./dist/overlay.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "./dist/"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
@@ -18,9 +27,6 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "main": "./index.js",
-  "module": "./esm/index.js",
-  "types": "./esm/index.d.ts",
   "keywords": [
     "localization",
     "l10n",
@@ -34,14 +40,10 @@
     "format"
   ],
   "scripts": {
-    "build": "tsc",
-    "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable"
+    "build": "tsc"
   },
   "engines": {
     "node": "^20.19 || ^22.12 || >=24"
-  },
-  "devDependencies": {
-    "@fluent/bundle": "^0.19.0"
   },
   "dependencies": {
     "cached-iterable": "^0.3"

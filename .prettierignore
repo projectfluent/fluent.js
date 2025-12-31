@@ -4,8 +4,6 @@ html
 
 coverage/
 dist/
-esm/
-/fluent-*/index.js
 /tools/**/*.ftl
 /tools/**/*.json
 

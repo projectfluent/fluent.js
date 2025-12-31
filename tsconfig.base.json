@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "target": "es2021",
-    "module": "es2015",
+    "module": "nodenext",
     "strict": true,
     "allowJs": false,
     "esModuleInterop": true,
-    "moduleResolution": "node",
     "noEmitHelpers": true,
     "declaration": true
   }

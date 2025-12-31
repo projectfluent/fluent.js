@@ -1,1 +1,1 @@
-export * from "../../fluent-react/esm/index.js";
+export * from "../../fluent-react/dist/index.js";

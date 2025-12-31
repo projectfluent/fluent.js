@@ -1,7 +1,7 @@
-import { FluentParser } from "../../fluent-syntax/esm/parser.js";
-import { FluentSerializer } from "../../fluent-syntax/esm/serializer.js";
-import { Visitor, Transformer } from "../../fluent-syntax/esm/visitor.js";
-import * as ast from "../../fluent-syntax/esm/ast.js";
+import { FluentParser } from "../../fluent-syntax/dist/parser.js";
+import { FluentSerializer } from "../../fluent-syntax/dist/serializer.js";
+import { Visitor, Transformer } from "../../fluent-syntax/dist/visitor.js";
+import * as ast from "../../fluent-syntax/dist/ast.js";
 
 this.EXPORTED_SYMBOLS = [
   ...Object.keys(ast),
