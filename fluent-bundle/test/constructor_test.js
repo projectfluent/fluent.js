@@ -1,18 +1,17 @@
 import assert from "assert";
-import sinon from "sinon";
 import ftl from "@fluent/dedent";
 
 import { FluentBundle } from "../src/bundle.ts";
 import { FluentResource } from "../src/resource.ts";
+import { expect, vi } from "vitest";
 
 suite("FluentBundle constructor", function () {
-  let nfSpy;
-  beforeEach(() => {
-    nfSpy = sinon.spy(Intl, "NumberFormat");
-  });
-
-  afterEach(() => {
-    nfSpy.restore();
+  beforeAll(() => {
+    vi.spyOn(Intl, "NumberFormat").mockImplementation(
+      class Mock {
+        format = vi.fn(() => "1");
+      }
+    );
   });
 
   test("accepts a single locale string", function () {
@@ -28,10 +27,10 @@ suite("FluentBundle constructor", function () {
     const val = bundle.formatPattern(msg.value, null, errs);
 
     assert.strictEqual(val, "Foo 1");
-    assert.strictEqual(errs.length, 0);
-
-    const locale = nfSpy.lastCall.args[0];
-    assert.deepEqual(locale, ["en-US"]);
+    expect(errs).toEqual([]);
+    expect(Intl.NumberFormat).toHaveBeenLastCalledWith(["en-US"], {
+      minimumFractionDigits: 0,
+    });
   });
 
   test("accepts an array of locales", function () {
@@ -47,9 +46,9 @@ suite("FluentBundle constructor", function () {
     const val = bundle.formatPattern(msg.value, null, errs);
 
     assert.strictEqual(val, "Foo 1");
-    assert.strictEqual(errs.length, 0);
-
-    const locales = nfSpy.lastCall.args[0];
-    assert.deepEqual(locales, ["de", "en-US"]);
+    expect(errs).toEqual([]);
+    expect(Intl.NumberFormat).toHaveBeenLastCalledWith(["de", "en-US"], {
+      minimumFractionDigits: 0,
+    });
   });
 });

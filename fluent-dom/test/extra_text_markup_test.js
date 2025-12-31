@@ -1,11 +1,12 @@
 import assert from "assert";
-import sinon from "sinon";
 import translateElement from "../src/overlay.js";
 import { elem } from "./util.js";
+import { beforeAll, vi } from "vitest";
 
 suite("Localized text markup", function () {
-  beforeEach(() => sinon.stub(console, "warn"));
-  afterEach(() => console.warn.restore());
+  beforeAll(() => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
 
   test("allowed element", function () {
     const element = elem("div")`Foo`;

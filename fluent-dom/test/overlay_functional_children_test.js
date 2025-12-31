@@ -1,12 +1,13 @@
 import assert from "assert";
-import sinon from "sinon";
 import translateElement from "../src/overlay.js";
 import { elem } from "./util.js";
+import { beforeAll, vi } from "vitest";
+
+beforeAll(() => {
+  vi.spyOn(console, "warn").mockImplementation(() => {});
+});
 
 suite("Child without name", function () {
-  beforeEach(() => sinon.stub(console, "warn"));
-  afterEach(() => console.warn.restore());
-
   test("in source", function () {
     const element = elem("div")`
       <button>Foo</button>`;
@@ -44,9 +45,6 @@ suite("Child without name", function () {
 });
 
 suite("Child with name", function () {
-  beforeEach(() => sinon.stub(console, "warn"));
-  afterEach(() => console.warn.restore());
-
   test("in source", function () {
     const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;

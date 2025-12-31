@@ -17,23 +17,6 @@ export default [
       "tools/",
     ],
   },
-  {
-    languageOptions: {
-      ecmaVersion: 2018,
-      sourceType: "module",
-    },
-  },
-
-  // Config files
-  {
-    files: ["**/*.mjs"],
-    languageOptions: { ecmaVersion: 2020 },
-  },
-  {
-    files: ["**/*.cjs"],
-    languageOptions: { globals: { ...globals.node } },
-  },
-
   js.configs.recommended,
   {
     files: ["**/*.js", "**/*.mjs", "*/src/*.ts"],
@@ -109,7 +92,6 @@ export default [
     files: ["*/test/**"],
     languageOptions: {
       globals: { ...globals.node, ...globals.vitest },
-      ecmaVersion: 2020,
     },
     rules: {
       "no-console": "off",
@@ -124,7 +106,6 @@ export default [
     files: ["fluent-react/test/**"],
     languageOptions: {
       globals: { ...globals.browser, ...globals.vitest },
-      ecmaVersion: 2020,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     rules: {
