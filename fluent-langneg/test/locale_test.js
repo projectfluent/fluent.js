@@ -3,8 +3,12 @@ import { Locale } from "../esm/locale.js";
 
 function isLocaleEqual(str, ref) {
   const locale = new Locale(str);
-  const other = Locale.fromComponents(ref);
-  return locale.isEqual(other);
+  return (
+    locale.language === ref.language &&
+    locale.script === ref.script &&
+    locale.region === ref.region &&
+    locale.variant === ref.variant
+  );
 }
 
 suite("Parses simple locales", () => {
@@ -125,20 +129,20 @@ suite("Parses locale ranges", () => {
   test("language part", () => {
     assert.ok(
       isLocaleEqual("*", {
-        language: "*",
+        language: "und",
       })
     );
 
     assert.ok(
       isLocaleEqual("*-Latn", {
-        language: "*",
+        language: "und",
         script: "Latn",
       })
     );
 
     assert.ok(
       isLocaleEqual("*-US", {
-        language: "*",
+        language: "und",
         region: "US",
       })
     );
@@ -148,14 +152,12 @@ suite("Parses locale ranges", () => {
     assert.ok(
       isLocaleEqual("en-*", {
         language: "en",
-        script: "*",
       })
     );
 
     assert.ok(
       isLocaleEqual("en-*-US", {
         language: "en",
-        script: "*",
         region: "US",
       })
     );
@@ -166,7 +168,6 @@ suite("Parses locale ranges", () => {
       isLocaleEqual("en-Latn-*", {
         language: "en",
         script: "Latn",
-        region: "*",
       })
     );
   });
@@ -177,7 +178,6 @@ suite("Parses locale ranges", () => {
         language: "en",
         script: "Latn",
         region: "US",
-        variant: "*",
       })
     );
   });

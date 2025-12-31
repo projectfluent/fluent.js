@@ -69,38 +69,6 @@ export class Locale {
     this.isWellFormed = true;
   }
 
-  static fromComponents({language, script, region, variant}: {
-    language?: string,
-    script?: string,
-    region?: string,
-    variant?: string,
-  }): Locale {
-    let result = new Locale("und");
-    if (language && language !== "*") {
-      result.language = language;
-    }
-    if (script && script !== "*") {
-      result.script = script;
-    }
-    if (region && region !== "*") {
-      result.region = region;
-    }
-    if (variant && variant !== "*") {
-      result.variant = variant;
-    }
-    return result;
-  }
-
-  isEqual(other: Locale): boolean {
-    return (
-      this.isWellFormed === other.isWellFormed &&
-      this.language === other.language &&
-      this.script === other.script &&
-      this.region === other.region &&
-      this.variant === other.variant
-    );
-  }
-
   matches(other: Locale, thisRange = false, otherRange = false): boolean {
     return (
       this.isWellFormed && other.isWellFormed &&
