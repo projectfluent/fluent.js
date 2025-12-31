@@ -44,14 +44,7 @@ const data = {
       ],
       [["fr"], ["fr-CA", "fr-FR"], ["fr-FR", "fr-CA"]],
       [["az-IR"], ["az-Latn", "az-Arab"], ["az-Arab"]],
-      [
-        ["sr-RU"],
-        ["sr-Cyrl", "sr-Latn"],
-        ["sr-Cyrl"],
-        undefined,
-        undefined,
-        20,
-      ],
+      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Cyrl"], undefined, 20],
       [["sr"], ["sr-Latn", "sr-Cyrl"], ["sr-Cyrl"]],
       [["zh-GB"], ["zh-Hans", "zh-Hant"], ["zh-Hant"]],
       [["sr", "ru"], ["sr-Latn", "ru"], ["ru"]],
@@ -136,21 +129,13 @@ const data = {
         ["fr", "en"],
         ["en-US", "fr-FR", "en", "fr"],
         ["fr", "en"],
-        undefined,
-        "matching",
       ],
-      [["es-419"], ["es", "en"], ["es"], undefined, "matching"],
+      [["es-419"], ["es", "en"], ["es"]],
     ],
   },
   lookup: {
     "should match only one": [
-      [
-        ["fr-FR", "en"],
-        ["en-US", "fr-FR", "en", "fr"],
-        ["fr-FR"],
-        "en-US",
-        "lookup",
-      ],
+      [["fr-FR", "en"], ["en-US", "fr-FR", "en", "fr"], ["fr-FR"], "en-US"],
     ],
   },
 };
@@ -168,10 +153,9 @@ suite("Language Negotiation", () => {
           available,
           supported,
           defaultLocale,
-          strategy,
           minNodeVersion,
         ] of group) {
-          if (nodeVersion < minNodeVersion) return;
+          if (nodeVersion < minNodeVersion) continue;
           const result = negotiateLanguages(requested, available, {
             defaultLocale,
             strategy,

@@ -81,7 +81,9 @@ export function filterMatches(
   for (let locale of availableLocales) {
     try {
       availableLocalesMap.set(locale, new LocaleWrapper(locale));
-    } catch {}
+    } catch {
+      continue;
+    }
   }
 
   outer: for (const reqTag of requestedLocales) {
