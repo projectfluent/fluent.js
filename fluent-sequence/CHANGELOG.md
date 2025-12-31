@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.0](https://github.com/projectfluent/fluent.js/compare/@fluent/sequence@0.7.0...@fluent/sequence@0.8.0) (2023-03-13)
+
+- Drop Node.js v12 support, add v18 & latest to CI tests
+  ([#607](https://github.com/projectfluent/fluent.js/pull/607))
+
 ## @fluent/sequence 0.7.0 (September 13, 2021)
 
 - Remove `"type": "commonjs"` from the package's root `package.json`, but add

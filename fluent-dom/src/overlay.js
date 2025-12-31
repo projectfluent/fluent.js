@@ -45,7 +45,7 @@ const TEXT_LEVEL_ELEMENTS = {
 
 const LOCALIZABLE_ATTRIBUTES = {
   "http://www.w3.org/1999/xhtml": {
-    global: ["title", "aria-label", "aria-valuetext"],
+    global: ["title", "aria-description", "aria-label", "aria-valuetext"],
     a: ["download"],
     area: ["download", "alt"],
     // value is special-cased in isAttrNameLocalizable

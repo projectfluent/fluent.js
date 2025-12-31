@@ -40,13 +40,15 @@ function shouldStartOnNewLine(pattern: AST.Pattern): boolean {
   return false;
 }
 
-// Bit masks representing the state of the serializer.
+/** Bit masks representing the state of the serializer. */
 const HAS_ENTRIES = 1;
 
+/** @category Serialize */
 export interface FluentSerializerOptions {
   withJunk?: boolean;
 }
 
+/** @category Serialize */
 export class FluentSerializer {
   public withJunk: boolean;
 
@@ -198,6 +200,7 @@ function serializePlaceable(placeable: AST.Placeable): string {
   return `{ ${serializeExpression(expr)} }`;
 }
 
+/** @category Serialize */
 export function serializeExpression(expr: Expression | Placeable): string {
   if (expr instanceof AST.StringLiteral) {
     return `"${expr.value}"`;
@@ -266,6 +269,7 @@ function serializeNamedArgument(arg: AST.NamedArgument): string {
   return `${arg.name.name}: ${value}`;
 }
 
+/** @category Serialize */
 export function serializeVariantKey(
   key: AST.Identifier | AST.NumberLiteral
 ): string {

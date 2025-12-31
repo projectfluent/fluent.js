@@ -17,7 +17,7 @@ suite("Serialize resource", function () {
       withJunk: false,
     });
 
-    pretty = function pretty(text) {
+    pretty = text => {
       const res = parser.parse(text);
       return serializer.serialize(res);
     };
@@ -567,7 +567,7 @@ suite("serializeExpression", function () {
   setup(function () {
     parser = new FluentParser();
 
-    pretty = function pretty(text) {
+    pretty = text => {
       const {
         value: {
           elements: [placeable],
@@ -664,7 +664,7 @@ suite("Serialize padding around comments", function () {
       withJunk: false,
     });
 
-    pretty = function pretty(text) {
+    pretty = text => {
       const res = parser.parse(text);
       return serializer.serialize(res);
     };

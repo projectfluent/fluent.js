@@ -120,7 +120,7 @@ export default class DOMLocalization extends Localization {
    * Additionally, if this `DOMLocalization` has an observer, start observing
    * `newRoot` in order to translate mutations in it.
    *
-   * @param {Element}      newRoot - Root to observe.
+   * @param {Element | DocumentFragment}      newRoot - Root to observe.
    */
   connectRoot(newRoot) {
     for (const root of this.roots) {
@@ -158,7 +158,7 @@ export default class DOMLocalization extends Localization {
    * Returns `true` if the root was the last one managed by this
    * `DOMLocalization`.
    *
-   * @param   {Element} root - Root to disconnect.
+   * @param   {Element | DocumentFragment} root - Root to disconnect.
    * @returns {boolean}
    */
   disconnectRoot(root) {
@@ -168,6 +168,9 @@ export default class DOMLocalization extends Localization {
 
     if (this.roots.size === 0) {
       this.mutationObserver = null;
+      if (this.windowElement && this.pendingrAF) {
+        this.windowElement.cancelAnimationFrame(this.pendingrAF);
+      }
       this.windowElement = null;
       this.pendingrAF = null;
       this.pendingElements.clear();
@@ -191,8 +194,6 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Pauses the `MutationObserver`.
-   *
-   * @private
    */
   pauseObserving() {
     if (!this.mutationObserver) {
@@ -205,8 +206,6 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Resumes the `MutationObserver`.
-   *
-   * @private
    */
   resumeObserving() {
     if (!this.mutationObserver) {
@@ -270,7 +269,7 @@ export default class DOMLocalization extends Localization {
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
-   * @param   {DOMFragment} frag - Element or DocumentFragment to be translated
+   * @param   {Element | DocumentFragment} frag - Element or DocumentFragment to be translated
    * @returns {Promise}
    */
   translateFragment(frag) {
@@ -322,7 +321,7 @@ export default class DOMLocalization extends Localization {
   /**
    * Collects all translatable child elements of the element.
    *
-   * @param {Element} element
+   * @param {Element | DocumentFragment} element
    * @returns {Array<Element>}
    * @private
    */

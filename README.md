@@ -13,13 +13,13 @@ natural languages like gender, plurals, conjugations, and others.
 Fluent.js consists of a set of packages which have different use-cases and can
 be installed independently of each other.
 
-- [@fluent/bundle](https://github.com/projectfluent/fluent.js/tree/master/fluent-bundle)
-- [@fluent/dedent](https://github.com/projectfluent/fluent.js/tree/master/fluent-dedent)
-- [@fluent/dom](https://github.com/projectfluent/fluent.js/tree/master/fluent-dom)
-- [@fluent/langneg](https://github.com/projectfluent/fluent.js/tree/master/fluent-langneg)
-- [@fluent/react](https://github.com/projectfluent/fluent.js/tree/master/fluent-react)
-- [@fluent/sequence](https://github.com/projectfluent/fluent.js/tree/master/fluent-sequence)
-- [@fluent/syntax](https://github.com/projectfluent/fluent.js/tree/master/fluent-syntax)
+- [@fluent/bundle](https://github.com/projectfluent/fluent.js/tree/main/fluent-bundle)
+- [@fluent/dedent](https://github.com/projectfluent/fluent.js/tree/main/fluent-dedent)
+- [@fluent/dom](https://github.com/projectfluent/fluent.js/tree/main/fluent-dom)
+- [@fluent/langneg](https://github.com/projectfluent/fluent.js/tree/main/fluent-langneg)
+- [@fluent/react](https://github.com/projectfluent/fluent.js/tree/main/fluent-react)
+- [@fluent/sequence](https://github.com/projectfluent/fluent.js/tree/main/fluent-sequence)
+- [@fluent/syntax](https://github.com/projectfluent/fluent.js/tree/main/fluent-syntax)
 
 You can install each of the above packages via `npm`, e.g. `npm install @fluent/react`.  
 See the end of this `README` for instructions on how to build `fluent.js` locally.
@@ -63,7 +63,7 @@ Hacking on `fluent.js` is easy! To quickly get started clone the repo:
     $ git clone https://github.com/projectfluent/fluent.js.git
     $ cd fluent.js
 
-You'll need at least **Node.js 12** and **npm v7**.
+You'll need at least **Node.js 14.18** and **npm 7**.
 Older versions are not supported.
 
 Install the dependencies used by all packages, which are managed as
@@ -81,7 +81,7 @@ Build and test all packages at once:
     $ npm run build --workspaces
     $ npm run lint
     $ npm run test
-    $ npm run docs --workspaces
+    $ npm run docs
 
 Each package may also be built separately by running `npm run build` in
 its directory.

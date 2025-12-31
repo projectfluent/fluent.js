@@ -85,9 +85,9 @@ not-foo = NOT FOO
   `);
 
   expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-    Array [
-      Array [
-        "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+    [
+      [
+        "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
       ],
     ]
   `);

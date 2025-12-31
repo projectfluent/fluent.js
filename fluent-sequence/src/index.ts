@@ -1,6 +1,7 @@
-/*
- * @module fluent-sequence
- * @overview Manage ordered sequences of FluentBundles.
+/**
+ * Manage ordered sequences of {@link @fluent/bundle!FluentBundle | FluentBundles}.
+ *
+ * @module
  */
 
 export { mapBundleSync } from "./map_sync.js";

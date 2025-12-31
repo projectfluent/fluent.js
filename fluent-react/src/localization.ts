@@ -15,27 +15,36 @@ import voidElementTags from "../vendor/voidElementTags.js";
 // &amp;, &#0038;, &#x0026;.
 const reMarkup = /<|&#?\w+;/;
 
-/*
+const defaultReportError = (error: Error): void => {
+  /* global console */
+  // eslint-disable-next-line no-console
+  console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
+};
+
+/**
  * `ReactLocalization` handles translation formatting and fallback.
  *
  * The current negotiated fallback chain of languages is stored in the
- * `ReactLocalization` instance in form of an iterable of `FluentBundle`
+ * `ReactLocalization` instance in form of an iterable of {@link FluentBundle}
  * instances. This iterable is used to find the best existing translation for
  * a given identifier.
  *
- * The `ReactLocalization` class instances are exposed to `Localized` elements
- * via the `LocalizationProvider` component.
+ * The `ReactLocalization` class instances are exposed to {@link Localized} elements
+ * via the {@link LocalizationProvider} component.
  */
 export class ReactLocalization {
   public bundles: Iterable<FluentBundle>;
   public parseMarkup: MarkupParser | null;
+  public reportError: (error: Error) => void;
 
   constructor(
     bundles: Iterable<FluentBundle>,
-    parseMarkup: MarkupParser | null = createParseMarkup()
+    parseMarkup: MarkupParser | null = createParseMarkup(),
+    reportError?: (error: Error) => void
   ) {
     this.bundles = CachedSyncIterable.from(bundles);
     this.parseMarkup = parseMarkup;
+    this.reportError = reportError || defaultReportError;
   }
 
   getBundle(id: string): FluentBundle | null {
@@ -121,7 +130,6 @@ export class ReactLocalization {
 
     // this.getBundle makes the bundle.hasMessage check which ensures that
     // bundle.getMessage returns an existing message.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const msg = bundle.getMessage(id)!;
 
     let errors: Array<Error> = [];
@@ -226,13 +234,5 @@ export class ReactLocalization {
     );
 
     return cloneElement(sourceElement, localizedProps, ...translatedChildren);
-  }
-
-  // XXX Control this via a prop passed to the LocalizationProvider.
-  // See https://github.com/projectfluent/fluent.js/issues/411.
-  reportError(error: Error): void {
-    /* global console */
-    // eslint-disable-next-line no-console
-    console.warn(`[@fluent/react] ${error.name}: ${error.message}`);
   }
 }

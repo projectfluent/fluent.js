@@ -5,23 +5,21 @@ This tiny React app demonstrates how `@fluent/react` can integrate with React.
 ## Running
 
 The example app requires a local build of `@fluent/react`. In the root of
-your `fluent.js` clone install the build tools:
+your `fluent.js` clone, install the build tools:
 
     cd fluent.js/
     npm install
 
 Then build and package `@fluent/react`:
 
-    cd fluent.js/fluent-react/
-    npm install
-    make
-    npm pack
+    npm run dist
+    npm pack -w fluent-react
 
 Finally, change back to this directory, and build the example:
 
-    cd fluent.js/fluent-react/example/
+    cd fluent-react/example/
     npm install
-    npm install --no-save ../fluent-react-*.tgz
+    npm install --no-save ../../fluent-react-*.tgz
     npm start
 
 Open http://localhost:1234 to see the example running.

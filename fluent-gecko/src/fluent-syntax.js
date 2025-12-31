@@ -1,7 +1,3 @@
-/* eslint object-shorthand: "off",
-          comma-dangle: "off",
-          no-labels: "off" */
-
 import { FluentParser } from "../../fluent-syntax/esm/parser.js";
 import { FluentSerializer } from "../../fluent-syntax/esm/serializer.js";
 import { Visitor, Transformer } from "../../fluent-syntax/esm/visitor.js";

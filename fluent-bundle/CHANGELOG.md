@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.19.1](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.19.0...@fluent/bundle@0.19.1) (2025-04-02)
+
+- Fix FluentDateTime and FluentNumber primitive conversions ([#641](https://github.com/projectfluent/fluent.js/issues/641))
+
+## [0.19.0](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.18.0...@fluent/bundle@0.19.0) (2025-03-25)
+
+### ⚠ Breaking Changes
+
+- Require Node.js >= 18
+
+### Features
+
+- Add Temporal support ([#636](https://github.com/projectfluent/fluent.js/issues/636))
+
+## [0.18.0](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.17.1...@fluent/bundle@0.18.0) (2023-03-13)
+
+- Drop Node.js v12 support, add v18 & latest to CI tests
+  ([#607](https://github.com/projectfluent/fluent.js/pull/607))
+- Use `/** comments */` where appropriate
+
 ## [@fluent/bundle 0.17.1](https://github.com/projectfluent/fluent.js/compare/@fluent/bundle@0.17.0...@fluent/bundle@0.17.1) (2021-12-21)
 
 - Add per locale Intl memoizer

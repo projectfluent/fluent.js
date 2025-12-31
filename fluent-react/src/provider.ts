@@ -2,30 +2,29 @@ import { createElement, ReactNode, ReactElement } from "react";
 import { FluentContext } from "./context.js";
 import { ReactLocalization } from "./localization.js";
 
-interface LocalizationProviderProps {
-  children: ReactNode;
-  l10n: ReactLocalization;
-}
-
-/*
- * The Provider component for the `ReactLocalization` class.
+/**
+ * The Provider component for the {@link ReactLocalization} class.
  *
- * Exposes a `ReactLocalization` instance to all descendants via React's
+ * Exposes a {@link ReactLocalization} instance to all descendants via React's
  * context feature.  It makes translations available to all localizable
  * elements in the descendant's render tree without the need to pass them
  * explicitly.
  *
- *     <LocalizationProvider l10n={…}>
- *         …
- *     </LocalizationProvider>
- *
- * `LocalizationProvider` takes an instance of `ReactLocalization` in the
- * `l10n` prop. This instance will be made available to `Localized` components
+ * `LocalizationProvider` takes an instance of {@link ReactLocalization} in the
+ * `l10n` prop. This instance will be made available to {@link Localized} components
  * under the provider.
+ *
+ * @example
+ * ```jsx
+ * <LocalizationProvider l10n={…}>
+ *     …
+ * </LocalizationProvider>
+ * ```
  */
-export function LocalizationProvider(
-  props: LocalizationProviderProps
-): ReactElement {
+export function LocalizationProvider(props: {
+  children: ReactNode;
+  l10n: ReactLocalization;
+}): ReactElement {
   return createElement(
     FluentContext.Provider,
     { value: props.l10n },

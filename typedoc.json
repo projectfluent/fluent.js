@@ -1,0 +1,38 @@
+{
+  "name": "fluent.js",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "./fluent-bundle",
+    "./fluent-dedent",
+    "./fluent-dom",
+    "./fluent-langneg",
+    "./fluent-react",
+    "./fluent-sequence",
+    "./fluent-syntax"
+  ],
+  "hideGenerator": true,
+  "highlightLanguages": ["html", "javascript", "jsx", "typescript"],
+  "navigation": {
+    "includeCategories": true,
+    "includeFolders": false
+  },
+  "navigationLinks": {
+    "Project Fluent": "https://projectfluent.org/",
+    "GitHub": "https://github.com/projectfluent/fluent.js"
+  },
+  "out": "./html",
+  "packageOptions": {
+    "entryPoints": ["src/index.ts"],
+    "includeVersion": true
+  },
+  "plugin": ["typedoc-plugin-redirect"],
+  "redirects": {
+    "bundle/index.html": "modules/_fluent_bundle.html",
+    "dedent/index.html": "modules/_fluent_dedent.html",
+    "dom/index.html": "modules/_fluent_dom.html",
+    "langneg/index.html": "modules/_fluent_langneg.html",
+    "react/index.html": "modules/_fluent_react.html",
+    "sequence/index.html": "modules/_fluent_sequence.html",
+    "syntax/index.html": "modules/_fluent_syntax.html"
+  }
+}

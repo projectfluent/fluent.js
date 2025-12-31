@@ -1,7 +1,7 @@
 {
   "name": "@fluent/bundle",
   "description": "Localization library for expressive translations.",
-  "version": "0.17.1",
+  "version": "0.19.1",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -41,14 +41,14 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "rollup -c ../rollup.config.mjs",
-    "docs": "typedoc --options ../typedoc.config.cjs",
     "test": "mocha 'test/*_test.js'"
   },
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=18.0.0",
     "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/dedent": "file:../fluent-dedent"
+    "@fluent/dedent": "^0.5.0",
+    "temporal-polyfill": "^0.2.5"
   }
 }

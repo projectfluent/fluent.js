@@ -1,8 +1,4 @@
-/* global Intl */
-
 /**
- * @overview
- *
  * The role of the Fluent resolver is to format a `Pattern` to an instance of
  * `FluentValue`. For performance reasons, primitive strings are considered
  * such instances, too.
@@ -30,6 +26,7 @@ import {
   FluentNone,
   FluentNumber,
   FluentDateTime,
+  FluentVariable,
 } from "./types.js";
 import { Scope } from "./scope.js";
 import {
@@ -44,18 +41,19 @@ import {
   ComplexPattern,
   Pattern,
 } from "./ast.js";
-import { FluentVariable } from "./bundle.js";
 
-// The maximum number of placeables which can be expanded in a single call to
-// `formatPattern`. The limit protects against the Billion Laughs and Quadratic
-// Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
+/**
+ * The maximum number of placeables which can be expanded in a single call to
+ * `formatPattern`. The limit protects against the Billion Laughs and Quadratic
+ * Blowup attacks. See https://msdn.microsoft.com/en-us/magazine/ee335713.aspx.
+ */
 const MAX_PLACEABLES = 100;
 
-// Unicode bidi isolation characters.
+/** Unicode bidi isolation characters. */
 const FSI = "\u2068";
 const PDI = "\u2069";
 
-// Helper: match a variant key to the given selector.
+/** Helper: match a variant key to the given selector. */
 function match(scope: Scope, selector: FluentValue, key: FluentValue): boolean {
   if (key === selector) {
     // Both are strings.
@@ -86,7 +84,7 @@ function match(scope: Scope, selector: FluentValue, key: FluentValue): boolean {
   return false;
 }
 
-// Helper: resolve the default variant from a list of variants.
+/** Helper: resolve the default variant from a list of variants. */
 function getDefault(
   scope: Scope,
   variants: Array<Variant>,
@@ -105,7 +103,7 @@ interface Arguments {
   named: Record<string, FluentValue>;
 }
 
-// Helper: resolve arguments to a call expression.
+/** Helper: resolve arguments to a call expression. */
 function getArguments(
   scope: Scope,
   args: Array<Expression | NamedArgument>
@@ -124,7 +122,7 @@ function getArguments(
   return { positional, named };
 }
 
-// Resolve an expression to a Fluent type.
+/** Resolve an expression to a Fluent type. */
 function resolveExpression(scope: Scope, expr: Expression): FluentValue {
   switch (expr.type) {
     case "str":
@@ -148,7 +146,7 @@ function resolveExpression(scope: Scope, expr: Expression): FluentValue {
   }
 }
 
-// Resolve a reference to a variable.
+/** Resolve a reference to a variable. */
 function resolveVariableReference(
   scope: Scope,
   { name }: VariableReference
@@ -185,8 +183,8 @@ function resolveVariableReference(
     case "number":
       return new FluentNumber(arg);
     case "object":
-      if (arg instanceof Date) {
-        return new FluentDateTime(arg.getTime());
+      if (FluentDateTime.supportsValue(arg)) {
+        return new FluentDateTime(arg);
       }
     // eslint-disable-next-line no-fallthrough
     default:
@@ -197,7 +195,7 @@ function resolveVariableReference(
   }
 }
 
-// Resolve a reference to another message.
+/** Resolve a reference to another message. */
 function resolveMessageReference(
   scope: Scope,
   { name, attr }: MessageReference
@@ -225,7 +223,7 @@ function resolveMessageReference(
   return new FluentNone(name);
 }
 
-// Resolve a call to a Term with key-value arguments.
+/** Resolve a call to a Term with key-value arguments. */
 function resolveTermReference(
   scope: Scope,
   { name, attr, args }: TermReference
@@ -256,7 +254,7 @@ function resolveTermReference(
   return resolved;
 }
 
-// Resolve a call to a Function with positional and key-value arguments.
+/** Resolve a call to a Function with positional and key-value arguments. */
 function resolveFunctionReference(
   scope: Scope,
   { name, args }: FunctionReference
@@ -283,7 +281,7 @@ function resolveFunctionReference(
   }
 }
 
-// Resolve a select expression to the member object.
+/** Resolve a select expression to the member object. */
 function resolveSelectExpression(
   scope: Scope,
   { selector, variants, star }: SelectExpression
@@ -304,7 +302,7 @@ function resolveSelectExpression(
   return getDefault(scope, variants, star);
 }
 
-// Resolve a pattern (a complex string with placeables).
+/** Resolve a pattern (a complex string with placeables). */
 export function resolveComplexPattern(
   scope: Scope,
   ptn: ComplexPattern
@@ -356,8 +354,10 @@ export function resolveComplexPattern(
   return result.join("");
 }
 
-// Resolve a simple or a complex Pattern to a FluentString (which is really the
-// string primitive).
+/**
+ * Resolve a simple or a complex Pattern to a FluentString
+ * (which is really the string primitive).
+ */
 function resolvePattern(scope: Scope, value: Pattern): FluentValue {
   // Resolve a simple pattern.
   if (typeof value === "string") {

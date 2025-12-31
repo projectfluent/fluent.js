@@ -1,12 +1,11 @@
 /*  eslint no-magic-numbers: [0]  */
 
 import * as AST from "./ast.js";
-// eslint-disable-next-line no-duplicate-imports
 import type { Resource, Entry } from "./ast.js";
 import { EOF, EOL, FluentParserStream } from "./stream.js";
 import { ParseError } from "./errors.js";
 
-const trailingWSRe = /[ \t\n\r]+$/;
+const trailingWSRe = /[ \n\r]+$/;
 
 type ParseFn<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,10 +36,12 @@ function withSpan<T extends AST.SyntaxNode>(fn: ParseFn<T>): ParseFn<T> {
   };
 }
 
+/** @category Parse */
 export interface FluentParserOptions {
   withSpans?: boolean;
 }
 
+/** @category Parse */
 export class FluentParser {
   public withSpans: boolean;
 
@@ -99,7 +100,6 @@ export class FluentParser {
         if (entry instanceof AST.Message || entry instanceof AST.Term) {
           entry.comment = lastComment;
           if (this.withSpans) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             entry.span!.start = entry.comment.span!.start;
           }
         } else {
@@ -122,7 +122,7 @@ export class FluentParser {
     return res;
   }
 
-  /*
+  /**
    * Parse the first Message or Term in `source`.
    *
    * Skip all encountered comments and start parsing at the first Message or
@@ -147,6 +147,7 @@ export class FluentParser {
     return this.getEntryOrJunk(ps);
   }
 
+  /** @internal */
   getEntryOrJunk(ps: FluentParserStream): AST.Entry {
     const entryStartPos = ps.index;
 
@@ -180,6 +181,7 @@ export class FluentParser {
     }
   }
 
+  /** @internal */
   getEntry(ps: FluentParserStream): AST.Entry {
     if (ps.currentChar() === "#") {
       return this.getComment(ps);
@@ -196,6 +198,7 @@ export class FluentParser {
     throw new ParseError("E0002");
   }
 
+  /** @internal */
   getComment(ps: FluentParserStream): AST.Comments {
     // 0 - comment
     // 1 - group comment
@@ -244,6 +247,7 @@ export class FluentParser {
     return new Comment(content);
   }
 
+  /** @internal */
   getMessage(ps: FluentParserStream): AST.Message {
     const id = this.getIdentifier(ps);
 
@@ -260,6 +264,7 @@ export class FluentParser {
     return new AST.Message(id, value, attrs);
   }
 
+  /** @internal */
   getTerm(ps: FluentParserStream): AST.Term {
     ps.expectChar("-");
     const id = this.getIdentifier(ps);
@@ -276,6 +281,7 @@ export class FluentParser {
     return new AST.Term(id, value, attrs);
   }
 
+  /** @internal */
   getAttribute(ps: FluentParserStream): AST.Attribute {
     ps.expectChar(".");
 
@@ -292,6 +298,7 @@ export class FluentParser {
     return new AST.Attribute(key, value);
   }
 
+  /** @internal */
   getAttributes(ps: FluentParserStream): Array<AST.Attribute> {
     const attrs = [];
     ps.peekBlank();
@@ -304,6 +311,7 @@ export class FluentParser {
     return attrs;
   }
 
+  /** @internal */
   getIdentifier(ps: FluentParserStream): AST.Identifier {
     let name = ps.takeIDStart();
 
@@ -315,6 +323,7 @@ export class FluentParser {
     return new AST.Identifier(name);
   }
 
+  /** @internal */
   getVariantKey(ps: FluentParserStream): AST.Identifier | AST.NumberLiteral {
     const ch = ps.currentChar();
 
@@ -332,6 +341,7 @@ export class FluentParser {
     return this.getIdentifier(ps);
   }
 
+  /** @internal */
   getVariant(ps: FluentParserStream, hasDefault: boolean = false): AST.Variant {
     let defaultIndex = false;
 
@@ -360,6 +370,7 @@ export class FluentParser {
     return new AST.Variant(key, value, defaultIndex);
   }
 
+  /** @internal */
   getVariants(ps: FluentParserStream): Array<AST.Variant> {
     const variants: Array<AST.Variant> = [];
     let hasDefault = false;
@@ -388,6 +399,7 @@ export class FluentParser {
     return variants;
   }
 
+  /** @internal */
   getDigits(ps: FluentParserStream): string {
     let num = "";
 
@@ -403,6 +415,7 @@ export class FluentParser {
     return num;
   }
 
+  /** @internal */
   getNumber(ps: FluentParserStream): AST.NumberLiteral {
     let value = "";
 
@@ -421,12 +434,16 @@ export class FluentParser {
     return new AST.NumberLiteral(value);
   }
 
-  // maybeGetPattern distinguishes between patterns which start on the same line
-  // as the identifier (a.k.a. inline signleline patterns and inline multiline
-  // patterns) and patterns which start on a new line (a.k.a. block multiline
-  // patterns). The distinction is important for the dedentation logic: the
-  // indent of the first line of a block pattern must be taken into account when
-  // calculating the maximum common indent.
+  /**
+   * maybeGetPattern distinguishes between patterns which start on the same line
+   * as the identifier (a.k.a. inline signleline patterns and inline multiline
+   * patterns) and patterns which start on a new line (a.k.a. block multiline
+   * patterns). The distinction is important for the dedentation logic: the
+   * indent of the first line of a block pattern must be taken into account when
+   * calculating the maximum common indent.
+   *
+   * @internal
+   */
   maybeGetPattern(ps: FluentParserStream): AST.Pattern | null {
     ps.peekBlankInline();
     if (ps.isValueStart()) {
@@ -443,6 +460,7 @@ export class FluentParser {
     return null;
   }
 
+  /** @internal */
   getPattern(ps: FluentParserStream, isBlock: boolean): AST.Pattern {
     const elements: Array<AST.PatternElement | Indent> = [];
     let commonIndentLength;
@@ -490,15 +508,23 @@ export class FluentParser {
     return new AST.Pattern(dedented);
   }
 
-  // Create a token representing an indent. It's not part of the AST and it will
-  // be trimmed and merged into adjacent TextElements, or turned into a new
-  // TextElement, if it's surrounded by two Placeables.
+  /**
+   * Create a token representing an indent. It's not part of the AST and it will
+   * be trimmed and merged into adjacent TextElements, or turned into a new
+   * TextElement, if it's surrounded by two Placeables.
+   *
+   * @internal
+   */
   getIndent(ps: FluentParserStream, value: string, start: number): Indent {
     return new Indent(value, start, ps.index);
   }
 
-  // Dedent a list of elements by removing the maximum common indent from the
-  // beginning of text lines. The common indent is calculated in getPattern.
+  /**
+   * Dedent a list of elements by removing the maximum common indent from the
+   * beginning of text lines. The common indent is calculated in getPattern.
+   *
+   * @internal
+   */
   dedent(
     elements: Array<AST.PatternElement | Indent>,
     commonIndent: number
@@ -527,7 +553,6 @@ export class FluentParser {
         // Join adjacent TextElements by replacing them with their sum.
         const sum = new AST.TextElement(prev.value + element.value);
         if (this.withSpans) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           sum.addSpan(prev.span!.start, element.span!.end);
         }
         trimmed[trimmed.length - 1] = sum;
@@ -559,6 +584,7 @@ export class FluentParser {
     return trimmed;
   }
 
+  /** @internal */
   getTextElement(ps: FluentParserStream): AST.TextElement {
     let buffer = "";
 
@@ -579,6 +605,7 @@ export class FluentParser {
     return new AST.TextElement(buffer);
   }
 
+  /** @internal */
   getEscapeSequence(ps: FluentParserStream): string {
     const next = ps.currentChar();
 
@@ -596,6 +623,7 @@ export class FluentParser {
     }
   }
 
+  /** @internal */
   getUnicodeEscapeSequence(
     ps: FluentParserStream,
     u: string,
@@ -617,6 +645,7 @@ export class FluentParser {
     return `\\${u}${sequence}`;
   }
 
+  /** @internal */
   getPlaceable(ps: FluentParserStream): AST.Placeable {
     ps.expectChar("{");
     ps.skipBlank();
@@ -625,6 +654,7 @@ export class FluentParser {
     return new AST.Placeable(expression);
   }
 
+  /** @internal */
   getExpression(ps: FluentParserStream): AST.Expression | AST.Placeable {
     const selector = this.getInlineExpression(ps);
     ps.skipBlank();
@@ -669,6 +699,7 @@ export class FluentParser {
     return selector;
   }
 
+  /** @internal */
   getInlineExpression(
     ps: FluentParserStream
   ): AST.InlineExpression | AST.Placeable {
@@ -737,6 +768,7 @@ export class FluentParser {
     throw new ParseError("E0028");
   }
 
+  /** @internal */
   getCallArgument(
     ps: FluentParserStream
   ): AST.InlineExpression | AST.NamedArgument {
@@ -759,6 +791,7 @@ export class FluentParser {
     throw new ParseError("E0009");
   }
 
+  /** @internal */
   getCallArguments(ps: FluentParserStream): AST.CallArguments {
     const positional: Array<AST.InlineExpression> = [];
     const named: Array<AST.NamedArgument> = [];
@@ -800,6 +833,7 @@ export class FluentParser {
     return new AST.CallArguments(positional, named);
   }
 
+  /** @internal */
   getString(ps: FluentParserStream): AST.StringLiteral {
     ps.expectChar('"');
     let value = "";
@@ -822,6 +856,7 @@ export class FluentParser {
     return new AST.StringLiteral(value);
   }
 
+  /** @internal */
   getLiteral(ps: FluentParserStream): AST.Literal {
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
@@ -835,11 +870,13 @@ export class FluentParser {
   }
 }
 
-class Indent {
+/** @internal */
+export class Indent {
   public type = "Indent";
   public span: AST.Span;
   public value: string;
 
+  /** @ignore */
   constructor(value: string, start: number, end: number) {
     this.value = value;
     this.span = new AST.Span(start, end);

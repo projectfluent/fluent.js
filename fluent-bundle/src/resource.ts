@@ -69,6 +69,7 @@ const TOKEN_BLANK = /\s+/y;
  * Fluent Resource is a structure storing parsed localization entries.
  */
 export class FluentResource {
+  /** @ignore */
   public body: Array<Message | Term>;
 
   constructor(source: string) {
@@ -533,7 +534,6 @@ export class FluentResource {
     // Normalize a blank block and extract the indent details.
     function makeIndent(blank: string): Indent {
       let value = blank.replace(RE_BLANK_LINES, "\n");
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       let length = RE_INDENT.exec(blank)![1].length;
       return new Indent(value, length);
     }
@@ -541,5 +541,8 @@ export class FluentResource {
 }
 
 class Indent {
-  constructor(public value: string, public length: number) {}
+  constructor(
+    public value: string,
+    public length: number
+  ) {}
 }

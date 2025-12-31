@@ -1,11 +1,18 @@
 # Changelog
 
+## [0.19.0](https://github.com/projectfluent/fluent.js/compare/@fluent/syntax@0.18.1...@fluent/syntax@0.19.0) (2023-03-13)
+
+- Drop Node.js v12 support, add v18 & latest to CI tests
+  ([#607](https://github.com/projectfluent/fluent.js/pull/607))
+- Treat tab as text, not whitespace
+  ([#606](https://github.com/projectfluent/fluent.js/pull/606))
+
 ## [0.18.1](https://github.com/projectfluent/fluent.js/compare/@fluent/syntax@0.18.0...@fluent/syntax@0.18.1) (2022-05-03)
 
 ### Bug Fixes
 
-* Use correct TS type for `clone()` return ([#589](https://github.com/projectfluent/fluent.js/issues/589))
-* Adjust for updated linter rules ([#590](https://github.com/projectfluent/fluent.js/pull/590))
+- Use correct TS type for `clone()` return ([#589](https://github.com/projectfluent/fluent.js/issues/589))
+- Adjust for updated linter rules ([#590](https://github.com/projectfluent/fluent.js/pull/590))
 
 ## @fluent/syntax 0.18.0 (September 13, 2021)
 

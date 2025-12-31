@@ -163,13 +163,11 @@ suite("Language Negotiation", () => {
         for (const test of group) {
           const requested = test[0];
           const available = test[1];
-          const defaultLocale = test.length > 3 ? test[2] : undefined;
-          const strategy = test.length > 4 ? test[3] : undefined;
           const supported = test[test.length - 1];
 
           const result = negotiateLanguages(test[0], test[1], {
-            defaultLocale,
-            strategy,
+            defaultLocale: test.length > 3 ? test[2] : undefined,
+            strategy: test.length > 4 ? test[3] : undefined,
           });
           assert.deepEqual(
             result,

@@ -1,3 +1,8 @@
+/**
+ * Raw messages are `{value, attributes}` shapes containing translation units
+ * called `Patterns`. `Patterns` are implementation-specific; they should be
+ * treated as black boxes and formatted with `FluentBundle.formatPattern`.
+ */
 export type Message = {
   id: string;
   value: Pattern | null;
