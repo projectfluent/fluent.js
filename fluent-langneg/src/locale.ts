@@ -1,18 +1,18 @@
 function convertMasks(locale: string): string {
   let result;
   if (locale[0] === "*") {
-    result = "und" + locale.substr(1);
+    result = `und${locale.substring(1)}`;
   } else {
     result = locale;
-  };
-  return result.replace(/\-\*/g, "");
+  }
+  return result.replace(/-\*/g, "");
 }
 
 function getVisibleLangTagLength(
   language: string,
   script: string | undefined,
   region: string | undefined
-) {
+): number {
   let result = 0;
   result += language ? language.length : "und".length;
   result += script ? script.length + 1 : 0;
@@ -49,7 +49,7 @@ export class Locale {
     let normalized = convertMasks(locale.replace(/_/g, "-"));
     try {
       result = new Intl.Locale(normalized);
-    } catch (e) {
+    } catch {
       this.isWellFormed = false;
       this.language = "und";
       return;
@@ -59,7 +59,11 @@ export class Locale {
     this.script = result.script;
     this.region = result.region;
 
-    let visiblelangTagLength = getVisibleLangTagLength(this.language, this.script, this.region);
+    let visiblelangTagLength = getVisibleLangTagLength(
+      this.language,
+      this.script,
+      this.region
+    );
 
     if (normalized.length > visiblelangTagLength) {
       let extStart = getExtensionStart(locale);
@@ -71,7 +75,8 @@ export class Locale {
 
   matches(other: Locale, thisRange = false, otherRange = false): boolean {
     return (
-      this.isWellFormed && other.isWellFormed &&
+      this.isWellFormed &&
+      other.isWellFormed &&
       (this.language === other.language ||
         (thisRange && this.language === "und") ||
         (otherRange && other.language === "und")) &&

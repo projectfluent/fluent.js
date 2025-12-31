@@ -130,13 +130,7 @@ const data = {
         "matching",
         ["fr", "en"],
       ],
-      [
-        ["es-419"],
-        ["es", "en"],
-        undefined,
-        "matching",
-        ["es"],
-      ],
+      [["es-419"], ["es", "en"], undefined, "matching", ["es"]],
     ],
   },
   lookup: {
