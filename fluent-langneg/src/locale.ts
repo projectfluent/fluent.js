@@ -8,7 +8,11 @@ function convertMasks(locale: string): string {
   return result.replace(/\-\*/g, "");
 }
 
-function getVisibleLangTagLength(language: any, script: any, region: any) {
+function getVisibleLangTagLength(
+  language: string,
+  script: string | undefined,
+  region: string | undefined
+) {
   let result = 0;
   result += language ? language.length : "und".length;
   result += script ? script.length + 1 : 0;
@@ -51,7 +55,7 @@ export class Locale {
       return;
     }
 
-    this.language = result.language || "und";
+    this.language = result.language;
     this.script = result.script;
     this.region = result.region;
 
