@@ -42,11 +42,11 @@ const data = {
       ],
       [["fr"], ["fr-CA", "fr-FR"], ["fr-FR", "fr-CA"]],
       [["az-IR"], ["az-Latn", "az-Arab"], ["az-Arab"]],
-      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Latn"]],
+      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Cyrl"]],
       [["sr"], ["sr-Latn", "sr-Cyrl"], ["sr-Cyrl"]],
       [["zh-GB"], ["zh-Hans", "zh-Hant"], ["zh-Hant"]],
       [["sr", "ru"], ["sr-Latn", "ru"], ["ru"]],
-      [["sr-RU"], ["sr-Latn-RO", "sr-Cyrl"], ["sr-Latn-RO"]],
+      [["sr-RO"], ["sr-Cyrl", "sr-Latn"], ["sr-Latn"]],
     ],
     "should match cross-region": [
       [["en"], ["en-US"], ["en-US"]],

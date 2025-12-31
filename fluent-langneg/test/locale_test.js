@@ -1,13 +1,13 @@
 import assert from "assert";
-import { Locale } from "../esm/locale.js";
+import { LocaleWrapper } from "../esm/locale.js";
 
 function isLocaleEqual(str, ref) {
-  const locale = new Locale(str);
+  const locale = new LocaleWrapper(str);
   return (
     locale.language === ref.language &&
     locale.script === ref.script &&
     locale.region === ref.region &&
-    locale.variant === ref.variant
+    locale.variants === ref.variants
   );
 }
 
@@ -66,7 +66,7 @@ suite("Parses simple locales", () => {
         language: "en",
         script: "Latn",
         region: "US",
-        variant: "macos",
+        variants: "macos",
       })
     );
 
@@ -75,7 +75,7 @@ suite("Parses simple locales", () => {
         language: "lij",
         script: "Arab",
         region: "FA",
-        variant: "linux",
+        variants: "linux",
       })
     );
   });
@@ -92,7 +92,7 @@ suite("Parses simple locales", () => {
       isLocaleEqual("lij-FA-linux", {
         language: "lij",
         region: "FA",
-        variant: "linux",
+        variants: "linux",
       })
     );
   });
@@ -109,7 +109,7 @@ suite("Parses simple locales", () => {
       isLocaleEqual("lij-FA-linux", {
         language: "lij",
         region: "FA",
-        variant: "linux",
+        variants: "linux",
       })
     );
   });
@@ -119,7 +119,7 @@ suite("Parses simple locales", () => {
       isLocaleEqual("en-US-macos-linux-u-hc-h12", {
         language: "en",
         region: "US",
-        variant: "macos-linux",
+        variants: "macos-linux",
       })
     );
   });
