@@ -6,14 +6,14 @@
  */
 
 export type { Message } from "./ast.js";
-export { FluentBundle, TextTransform } from "./bundle.js";
+export { FluentBundle, type TextTransform } from "./bundle.js";
 export { FluentResource } from "./resource.js";
 export type { Scope } from "./scope.js";
 export {
-  FluentValue,
-  FluentVariable,
-  FluentType,
-  FluentFunction,
+  type FluentValue,
+  type FluentVariable,
+  type FluentType,
+  type FluentFunction,
   FluentNone,
   FluentNumber,
   FluentDateTime,

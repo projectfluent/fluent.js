@@ -2,8 +2,8 @@
 
 import { readFile } from "fs";
 import program from "commander";
-import { columnOffset, lineOffset, parse } from "../fluent-syntax/esm/index.js";
-import { FluentResource } from "../fluent-bundle/esm/index.js";
+import { FluentResource } from "@fluent/bundle";
+import { columnOffset, lineOffset, parse } from "@fluent/syntax";
 
 program
   .version("0.0.1")

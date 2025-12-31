@@ -15,7 +15,7 @@
     "predist": "npm run clean",
     "dist": "npm run build --workspaces",
     "postdist": "npm run lint && npm run test && npm run docs",
-    "clean": "git clean -fdxe node_modules fluent-*/{coverage,dist,esm,index.js} html",
+    "clean": "git clean -fdxe node_modules fluent-*/{coverage,dist} coverage html",
     "deploy-html": "gh-pages -d html",
     "docs": "typedoc",
     "lint": "eslint --max-warnings 0",

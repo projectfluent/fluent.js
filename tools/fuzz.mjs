@@ -6,8 +6,8 @@ import { readFile } from "fs";
 import { cursorTo } from "readline";
 import program from "commander";
 import { mutate, seed } from "fuzzer";
-import { FluentResource } from "../fluent-bundle/esm/index.js";
-import { parse } from "../fluent-syntax/esm/index.js";
+import { FluentResource } from "@fluent/bundle";
+import { parse } from "@fluent/syntax";
 
 seed(Math.random() * 1000000000);
 
