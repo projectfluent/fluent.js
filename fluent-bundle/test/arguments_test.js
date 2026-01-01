@@ -126,13 +126,6 @@ suite("Variables", function () {
       assert(errs[0] instanceof TypeError); // unsupported variable type
     });
 
-    test("cannot be a boolean", function () {
-      const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, { arg: true }, errs);
-      assert.strictEqual(val, "{$arg}");
-      assert(errs[0] instanceof TypeError); // unsupported variable type
-    });
-
     test("cannot be undefined", function () {
       const msg = bundle.getMessage("foo");
       const val = bundle.formatPattern(msg.value, { arg: undefined }, errs);
@@ -174,6 +167,41 @@ suite("Variables", function () {
       const msg = bundle.getMessage("foo");
       const val = bundle.formatPattern(msg.value, args, errs);
       assert.strictEqual(val, "Argument");
+      assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite("and booleans", function () {
+    let args;
+
+    beforeAll(function () {
+      bundle = new FluentBundle("en-US", { useIsolating: false });
+      bundle.addResource(
+        new FluentResource(ftl`
+        foo = { $arg }
+        bar =
+            { $arg ->
+                [true] yes
+               *[false] no
+            }
+        `)
+      );
+      args = {
+        arg: true,
+      };
+    });
+
+    test("a placeholder can be a boolean", function () {
+      const msg = bundle.getMessage("foo");
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, "true");
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test("a selector can be a boolean", function () {
+      const msg = bundle.getMessage("bar");
+      const val = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(val, "yes");
       assert.strictEqual(errs.length, 0);
     });
   });

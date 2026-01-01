@@ -177,6 +177,8 @@ function resolveVariableReference(
   switch (typeof arg) {
     case "string":
       return arg;
+    case "boolean":
+      return String(arg);
     case "number":
       return new FluentNumber(arg);
     case "object":
