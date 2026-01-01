@@ -69,7 +69,7 @@ export abstract class FluentType<T> {
    * This method can use `Intl` formatters available through the `scope`
    * argument.
    */
-  abstract toString(scope: Scope): string;
+  abstract toString(scope?: Scope): string;
 }
 
 /**
@@ -87,7 +87,7 @@ export class FluentNone extends FluentType<string> {
   /**
    * Format this `FluentNone` to the fallback string.
    */
-  toString(scope: Scope): string {
+  toString(scope?: Scope): string {
     return `{${this.value}}`;
   }
 }
