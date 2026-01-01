@@ -75,5 +75,3 @@ export function Localized(props: LocalizedProps): ReactElement {
 
   return l10n.getElement(source, id, { attrs, vars, elems });
 }
-
-export default Localized;
