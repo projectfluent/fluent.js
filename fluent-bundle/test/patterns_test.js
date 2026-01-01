@@ -5,7 +5,9 @@ import { FluentBundle } from "../src/bundle.ts";
 import { FluentResource } from "../src/resource.ts";
 
 suite("Patterns", function () {
-  let bundle, args, errs;
+  /** @type {FluentBundle} */
+  let bundle;
+  let errs;
 
   beforeEach(function () {
     errs = [];
@@ -23,7 +25,7 @@ suite("Patterns", function () {
 
     test("returns the value", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Foo");
       assert.strictEqual(errs.length, 0);
     });
@@ -50,28 +52,28 @@ suite("Patterns", function () {
 
     test("resolves the reference to a message", function () {
       const msg = bundle.getMessage("ref-message");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Foo");
       assert.strictEqual(errs.length, 0);
     });
 
     test("resolves the reference to a term", function () {
       const msg = bundle.getMessage("ref-term");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Bar");
       assert.strictEqual(errs.length, 0);
     });
 
     test("returns the id if a message reference is missing", function () {
       const msg = bundle.getMessage("ref-missing-message");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "{missing}");
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
 
     test("returns the id if a term reference is missing", function () {
       const msg = bundle.getMessage("ref-missing-term");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "{-missing}");
       assert.ok(errs[0] instanceof ReferenceError); // unknown message
     });
@@ -91,21 +93,21 @@ suite("Patterns", function () {
 
     test("returns {???} when trying to format a null value", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "{???}");
       assert.strictEqual(errs.length, 1);
     });
 
     test("formats the attribute", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.attributes.attr, args, errs);
+      const val = bundle.formatPattern(msg.attributes.attr, undefined, errs);
       assert.strictEqual(val, "Foo Attr");
       assert.strictEqual(errs.length, 0);
     });
 
     test("falls back to id when the referenced message has no value", function () {
       const msg = bundle.getMessage("bar");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "{foo} Bar");
       assert.ok(errs[0] instanceof ReferenceError); // no value
     });
@@ -118,15 +120,29 @@ suite("Patterns", function () {
         new FluentResource(ftl`
         foo = { bar }
         bar = { foo }
+        open-foo = Open foo
+            .accesskey = O
+            .tooltip = Press {open-foo.accesskey} to open a Foo.
         `)
       );
     });
 
-    test("returns ???", function () {
+    test("returns {bar}", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, "{???}");
+      const val = bundle.formatPattern(msg.value, undefined, errs);
+      assert.strictEqual(val, "{bar}");
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
+    });
+
+    test("Succeeds on non-cyclic references to own attributes", () => {
+      const msg = bundle.getMessage("open-foo");
+      const attr = bundle.formatPattern(
+        msg.attributes.tooltip,
+        undefined,
+        errs
+      );
+      assert.strictEqual(attr, "Press O to open a Foo.");
+      assert.strictEqual(errs.length, 0);
     });
   });
 
@@ -140,10 +156,10 @@ suite("Patterns", function () {
       );
     });
 
-    test("returns ???", function () {
+    test("returns {foo}", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
-      assert.strictEqual(val, "{???}");
+      const val = bundle.formatPattern(msg.value, undefined, errs);
+      assert.strictEqual(val, "{foo}");
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
   });
@@ -163,10 +179,10 @@ suite("Patterns", function () {
       );
     });
 
-    test("returns ???", function () {
+    test("returns {foo}", function () {
       const msg = bundle.getMessage("foo");
       const val = bundle.formatPattern(msg.value, { sel: "a" }, errs);
-      assert.strictEqual(val, "{???}");
+      assert.strictEqual(val, "{foo}");
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
@@ -197,7 +213,7 @@ suite("Patterns", function () {
 
     test("returns the default variant", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Foo");
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
@@ -228,14 +244,14 @@ suite("Patterns", function () {
 
     test("returns the default variant", function () {
       const msg = bundle.getMessage("foo");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Foo");
       assert.ok(errs[0] instanceof RangeError); // cyclic reference
     });
 
     test("can reference an attribute", function () {
       const msg = bundle.getMessage("bar");
-      const val = bundle.formatPattern(msg.value, args, errs);
+      const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "Bar");
       assert.strictEqual(errs.length, 0);
     });
