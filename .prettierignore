@@ -1,0 +1,13 @@
+node_modules
+html
+.*
+
+coverage/
+dist/
+esm/
+/fluent-*/index.js
+/tools/**/*.ftl
+/tools/**/*.json
+
+fixtures/
+fixtures_*/

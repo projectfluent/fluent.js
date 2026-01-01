@@ -1,11 +1,10 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
-import { FluentParser, Visitor, Transformer } from "../src";
+import { FluentParser } from "../esm/parser.js";
+import { Visitor, Transformer } from "../esm/visitor.js";
 
-suite("Visitor", function() {
-  setup(function() {
+suite("Visitor", function () {
+  setup(function () {
     const parser = new FluentParser();
     this.resource = parser.parse(ftl`
         one = Message
@@ -15,7 +14,7 @@ suite("Visitor", function() {
             .an = Attribute
         `);
   });
-  test("Mock Visitor", function() {
+  test("Mock Visitor", function () {
     class MockVisitor extends Visitor {
       constructor() {
         super();
@@ -31,26 +30,23 @@ suite("Visitor", function() {
         }
         super.genericVisit(node);
       }
-      visitPattern(node) {
+      visitPattern() {
         this.pattern_calls++;
       }
     }
     const mv = new MockVisitor();
     mv.visit(this.resource);
     assert.strictEqual(mv.pattern_calls, 4);
-    assert.deepStrictEqual(
-      mv.calls,
-      {
-        'Resource': 1,
-        'Comment': 1,
-        'Message': 3,
-        'Identifier': 4,
-        'Attribute': 1,
-        'Span': 10,
-      }
-    )
+    assert.deepStrictEqual(mv.calls, {
+      Resource: 1,
+      Comment: 1,
+      Message: 3,
+      Identifier: 4,
+      Attribute: 1,
+      Span: 10,
+    });
   });
-  test("WordCount", function() {
+  test("WordCount", function () {
     class VisitorCounter extends Visitor {
       constructor() {
         super();
@@ -58,8 +54,8 @@ suite("Visitor", function() {
       }
       genericVisit(node) {
         switch (node.type) {
-          case 'Span':
-          case 'Annotation':            
+          case "Span":
+          case "Annotation":
             break;
           default:
             super.genericVisit(node);
@@ -72,11 +68,11 @@ suite("Visitor", function() {
     const vc = new VisitorCounter();
     vc.visit(this.resource);
     assert.strictEqual(vc.word_count, 5);
-  })
+  });
 });
 
-suite("Transformer", function() {
-  setup(function() {
+suite("Transformer", function () {
+  setup(function () {
     const parser = new FluentParser();
     this.resource = parser.parse(ftl`
         one = Message
@@ -86,7 +82,7 @@ suite("Transformer", function() {
             .an = Attribute
         `);
   });
-  test("ReplaceTransformer", function() {
+  test("ReplaceTransformer", function () {
     class ReplaceTransformer extends Transformer {
       constructor(before, after) {
         super();
@@ -95,8 +91,8 @@ suite("Transformer", function() {
       }
       genericVisit(node) {
         switch (node.type) {
-          case 'Span':
-          case 'Annotation':
+          case "Span":
+          case "Annotation":
             return node;
           default:
             return super.genericVisit(node);
@@ -107,11 +103,13 @@ suite("Transformer", function() {
         return node;
       }
     }
-    const resource = this.resource.clone()
-    const transformed = new ReplaceTransformer('Message', 'Term').visit(resource);
+    const resource = this.resource.clone();
+    const transformed = new ReplaceTransformer("Message", "Term").visit(
+      resource
+    );
     assert.notStrictEqual(resource, this.resource);
     assert.strictEqual(resource, transformed);
     assert.strictEqual(this.resource.equals(transformed), false);
-    assert.strictEqual(transformed.body[1].value.elements[0].value, 'Terms');
+    assert.strictEqual(transformed.body[1].value.elements[0].value, "Terms");
   });
 });

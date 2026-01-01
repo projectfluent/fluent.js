@@ -15,15 +15,37 @@ const reOverlay = /<|&#?\w+;/;
  */
 const TEXT_LEVEL_ELEMENTS = {
   "http://www.w3.org/1999/xhtml": [
-    "em", "strong", "small", "s", "cite", "q", "dfn", "abbr", "data",
-    "time", "code", "var", "samp", "kbd", "sub", "sup", "i", "b", "u",
-    "mark", "bdi", "bdo", "span", "br", "wbr"
+    "em",
+    "strong",
+    "small",
+    "s",
+    "cite",
+    "q",
+    "dfn",
+    "abbr",
+    "data",
+    "time",
+    "code",
+    "var",
+    "samp",
+    "kbd",
+    "sub",
+    "sup",
+    "i",
+    "b",
+    "u",
+    "mark",
+    "bdi",
+    "bdo",
+    "span",
+    "br",
+    "wbr",
   ],
 };
 
 const LOCALIZABLE_ATTRIBUTES = {
   "http://www.w3.org/1999/xhtml": {
-    global: ["title", "aria-label", "aria-valuetext"],
+    global: ["title", "aria-description", "aria-label", "aria-valuetext"],
     a: ["download"],
     area: ["download", "alt"],
     // value is special-cased in isAttrNameLocalizable
@@ -35,20 +57,23 @@ const LOCALIZABLE_ATTRIBUTES = {
     track: ["label"],
     img: ["alt"],
     textarea: ["placeholder"],
-    th: ["abbr"]
+    th: ["abbr"],
   },
   "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul": {
     global: [
-      "accesskey", "aria-label", "aria-valuetext", "label",
-      "title", "tooltiptext"
+      "accesskey",
+      "aria-label",
+      "aria-valuetext",
+      "label",
+      "title",
+      "tooltiptext",
     ],
     description: ["value"],
     key: ["key", "keycode"],
     label: ["value"],
     textbox: ["placeholder", "value"],
-  }
+  },
 };
-
 
 /**
  * Translate an element.
@@ -64,17 +89,24 @@ const LOCALIZABLE_ATTRIBUTES = {
  * @private
  */
 export default function translateElement(element, translation) {
-  const {value} = translation;
+  const { value } = translation;
 
   if (typeof value === "string") {
-    if (!reOverlay.test(value)) {
+    if (
+      element.localName === "title" &&
+      element.namespaceURI === "http://www.w3.org/1999/xhtml"
+    ) {
+      // A special case for the HTML title element whose content must be text.
+      element.textContent = value;
+    } else if (!reOverlay.test(value)) {
       // If the translation doesn't contain any markup skip the overlay logic.
       element.textContent = value;
     } else {
       // Else parse the translation's HTML using an inert template element,
       // sanitize it and replace the element's content.
       const templateElement = element.ownerDocument.createElementNS(
-        "http://www.w3.org/1999/xhtml", "template"
+        "http://www.w3.org/1999/xhtml",
+        "template"
       );
       templateElement.innerHTML = value;
       overlayChildNodes(templateElement.content, element);
@@ -118,13 +150,15 @@ function overlayChildNodes(fromFragment, toElement) {
 
     console.warn(
       `An element of forbidden type "${childNode.localName}" was found in ` +
-      "the translation. Only safe text-level elements and elements with " +
-      "data-l10n-name are allowed."
+        "the translation. Only safe text-level elements and elements with " +
+        "data-l10n-name are allowed."
     );
 
     // If all else fails, replace the element with its text content.
     fromFragment.replaceChild(
-      createTextNodeFromTextContent(childNode), childNode);
+      createTextNodeFromTextContent(childNode),
+      childNode
+    );
   }
 
   toElement.textContent = "";
@@ -155,15 +189,19 @@ function hasAttribute(attributes, name) {
  */
 function overlayAttributes(fromElement, toElement) {
   const explicitlyAllowed = toElement.hasAttribute("data-l10n-attrs")
-    ? toElement.getAttribute("data-l10n-attrs")
-      .split(",").map(i => i.trim())
+    ? toElement
+        .getAttribute("data-l10n-attrs")
+        .split(",")
+        .map(i => i.trim())
     : null;
 
   // Remove existing localizable attributes if they
   // will not be used in the new translation.
   for (const attr of Array.from(toElement.attributes)) {
-    if (isAttrNameLocalizable(attr.name, toElement, explicitlyAllowed)
-      && !hasAttribute(fromElement.attributes, attr.name)) {
+    if (
+      isAttrNameLocalizable(attr.name, toElement, explicitlyAllowed) &&
+      !hasAttribute(fromElement.attributes, attr.name)
+    ) {
       toElement.removeAttribute(attr.name);
     }
   }
@@ -177,8 +215,10 @@ function overlayAttributes(fromElement, toElement) {
 
   // Set localizable attributes.
   for (const attr of Array.from(fromElement.attributes)) {
-    if (isAttrNameLocalizable(attr.name, toElement, explicitlyAllowed)
-      && toElement.getAttribute(attr.name) !== attr.value) {
+    if (
+      isAttrNameLocalizable(attr.name, toElement, explicitlyAllowed) &&
+      toElement.getAttribute(attr.name) !== attr.value
+    ) {
       toElement.setAttribute(attr.name, attr.value);
     }
   }
@@ -203,17 +243,15 @@ function getNodeForNamedElement(sourceElement, translatedChild) {
   );
 
   if (!sourceChild) {
-    console.warn(
-      `An element named "${childName}" wasn't found in the source.`
-    );
+    console.warn(`An element named "${childName}" wasn't found in the source.`);
     return createTextNodeFromTextContent(translatedChild);
   }
 
   if (sourceChild.localName !== translatedChild.localName) {
     console.warn(
       `An element named "${childName}" was found in the translation ` +
-      `but its type ${translatedChild.localName} didn't match the ` +
-      `element found in the source (${sourceChild.localName}).`
+        `but its type ${translatedChild.localName} didn't match the ` +
+        `element found in the source (${sourceChild.localName}).`
     );
     return createTextNodeFromTextContent(translatedChild);
   }
@@ -320,8 +358,11 @@ function isAttrNameLocalizable(name, element, explicitlyAllowed = null) {
   }
 
   // Special case for value on HTML inputs with type button, reset, submit
-  if (element.namespaceURI === "http://www.w3.org/1999/xhtml" &&
-      elemName === "input" && attrName === "value") {
+  if (
+    element.namespaceURI === "http://www.w3.org/1999/xhtml" &&
+    elemName === "input" &&
+    attrName === "value"
+  ) {
     const type = element.type.toLowerCase();
     if (type === "submit" || type === "button" || type === "reset") {
       return true;

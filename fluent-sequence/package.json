@@ -1,7 +1,7 @@
 {
   "name": "@fluent/sequence",
   "description": "Manage ordered sequences of FluentBundles",
-  "version": "0.4.0",
+  "version": "0.8.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -15,11 +15,9 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "directories": {
-    "lib": "./src"
-  },
   "main": "./index.js",
-  "module": "./src/index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
@@ -28,11 +26,18 @@
     "fluent",
     "ftl"
   ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.build.json",
+    "postbuild": "rollup -c ../rollup.config.mjs",
+    "test": "mocha 'test/*_test.js'"
+  },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=18.0.0",
+    "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "cached-iterable": "^0.2.1"
+    "@fluent/bundle": "^0.19.0",
+    "cached-iterable": "^0.3.0"
   },
   "peerDependencies": {
     "@fluent/bundle": ">= 0.13.0"

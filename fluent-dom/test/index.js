@@ -1,25 +1,15 @@
-'use strict';
+import { JSDOM } from "jsdom";
 
-const JSDOM = require('jsdom').JSDOM;
-
-global.window = new JSDOM('', {
+global.window = new JSDOM("", {
   url: "http://localhost",
 }).window;
 global.document = global.window.document;
 Object.keys(document.defaultView).forEach(property => {
-  if (typeof global[property] === 'undefined') {
+  if (typeof global[property] === "undefined") {
     global[property] = document.defaultView[property];
   }
 });
 
-global.navigator = {
-  userAgent: 'node.js'
-};
-
-exports.elem = function elem(name) {
-  return function(str) {
-    const element = document.createElement(name);
-    element.innerHTML = str;
-    return element;
-  }
-}
+Object.defineProperty(global, "navigator", {
+  get: () => ({ userAgent: "node.js" }),
+});

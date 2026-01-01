@@ -1,0 +1,3 @@
+{
+  "intentionallyNotExported": ["Pattern", "TemporalObject"]
+}

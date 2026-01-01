@@ -1,0 +1,27 @@
+{
+  "name": "fluent-react-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "parcel serve public/index.html",
+    "build": "parcel build public/index.html"
+  },
+  "dependencies": {
+    "@fluent/bundle": "^0.18.0",
+    "@fluent/langneg": "^0.7.0",
+    "@fluent/sequence": "^0.8.0",
+    "cached-iterable": "^0.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "parcel": "^2.5.0",
+    "process": "^0.11.10"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "browsers": "Firefox >= 57"
+  }
+}

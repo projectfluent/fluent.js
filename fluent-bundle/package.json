@@ -1,7 +1,7 @@
 {
   "name": "@fluent/bundle",
   "description": "Localization library for expressive translations.",
-  "version": "0.14.0",
+  "version": "0.19.1",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -15,11 +15,9 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "directories": {
-    "lib": "./src"
-  },
   "main": "./index.js",
-  "module": "./src/index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
@@ -40,11 +38,17 @@
     "format",
     "parser"
   ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs",
+    "test": "mocha 'test/*_test.js'"
+  },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=18.0.0",
+    "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/dedent": "^0.1.0",
-    "sinon": "^4.2.2"
+    "@fluent/dedent": "^0.5.0",
+    "temporal-polyfill": "^0.2.5"
   }
 }

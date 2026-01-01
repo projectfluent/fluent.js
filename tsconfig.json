@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@fluent/bundle": ["./fluent-bundle/src/index.ts"],
+      "@fluent/sequence": ["./fluent-sequence/src/index.ts"]
+    }
+  }
+}

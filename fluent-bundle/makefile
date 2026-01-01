@@ -1,32 +1,6 @@
-PACKAGE := @fluent/bundle
-GLOBAL  := FluentBundle
+export SHELL := /bin/bash
 
-include ../common.mk
-
-build: index.js compat.js
-
-index.js: $(SOURCES)
-	@rollup $(CURDIR)/src/index.js \
-	    --config $(ROOT)/bundle_config.js \
-	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --amd.id $(PACKAGE) \
-	    --name $(GLOBAL) \
-	    --output.file $@
-	@echo -e " $(OK) $@ built"
-
-compat.js: $(SOURCES)
-	@rollup $(CURDIR)/src/index.js \
-	    --config $(ROOT)/compat_config.js \
-	    --banner "/* $(PACKAGE)@$(VERSION) */" \
-	    --amd.id $(PACKAGE) \
-	    --name $(GLOBAL) \
-	    --output.file $@
-	@echo -e " $(OK) $@ built"
-
-clean:
-	@rm -f index.js compat.js
-	@rm -rf .nyc_output coverage
-	@echo -e " $(OK) clean"
+OK := \033[32;01m✓\033[0m
 
 BEHAVIOR_FTL := $(wildcard ../fluent-syntax/test/fixtures_behavior/*.ftl)
 REFERENCE_FTL := $(wildcard ../fluent-syntax/test/fixtures_reference/*.ftl)
@@ -35,6 +9,7 @@ BEHAVIOR_JSON := $(BEHAVIOR_FTL:../fluent-syntax/test/fixtures_behavior/%.ftl=te
 REFERENCE_JSON := $(REFERENCE_FTL:../fluent-syntax/test/fixtures_reference/%.ftl=test/fixtures_reference/%.json)
 STRUCTURE_JSON := $(STRUCTURE_FTL:../fluent-syntax/test/fixtures_structure/%.ftl=test/fixtures_structure/%.json)
 
+.PHONY: fixtures
 fixtures: $(BEHAVIOR_JSON) $(REFERENCE_JSON) $(STRUCTURE_JSON)
 
 .PHONY: $(BEHAVIOR_JSON)

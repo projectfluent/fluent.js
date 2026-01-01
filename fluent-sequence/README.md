@@ -1,10 +1,10 @@
-# @fluent/sequence
+# @fluent/sequence ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
 `@fluent/sequence` provides mapping functions from string identifiers to
 `FluentBundle` instances taken from synchronous or asynchronous sequences.
-It's part of Project Fluent, a localization framework designed to unleash the
-expressive power of the natural language.
+It's part of [Project Fluent][].
 
+[project fluent]: https://projectfluent.org
 
 ## Installation
 
@@ -13,7 +13,6 @@ You can install it from the npm registry or use it as a standalone script (as
 the `FluentSequence` global).
 
     npm install @fluent/sequence
-
 
 ## How to use
 
@@ -31,18 +30,18 @@ A simple function which formats translations based on the identifier might
 be implemented as follows:
 
 ```js
-import {mapBundleSync} from "@fluent/sequence";
+import { mapBundleSync } from "@fluent/sequence";
 
 function formatString(id, args) {
-    // contexts is a negotiated iterable of FluentBundle instances.
-    let ctx = mapBundleSync(contexts, id);
+  // contexts is a negotiated iterable of FluentBundle instances.
+  let ctx = mapBundleSync(contexts, id);
 
-    if (ctx === null) {
-        return id;
-    }
+  if (ctx === null) {
+    return id;
+  }
 
-    let msg = ctx.getMessage(id);
-    return ctx.format(msg, args);
+  let msg = ctx.getMessage(id);
+  return ctx.format(msg, args);
 }
 ```
 
@@ -55,14 +54,4 @@ depleting the iterator.
 The API reference is available at
 https://projectfluent.org/fluent.js/sequence.
 
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-
 [`cached-iterable`]: https://www.npmjs.com/package/cached-iterable
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/

@@ -252,8 +252,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "\\\"",
               "type": "StringLiteral",
+              "value": "\\\"",
               "span": {
                 "type": "Span",
                 "start": 262,
@@ -298,8 +298,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "\\\\",
               "type": "StringLiteral",
+              "value": "\\\\",
               "span": {
                 "type": "Span",
                 "start": 291,
@@ -419,8 +419,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "\\u0041",
               "type": "StringLiteral",
+              "value": "\\u0041",
               "span": {
                 "type": "Span",
                 "start": 443,
@@ -465,8 +465,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "\\\\u0041",
               "type": "StringLiteral",
+              "value": "\\\\u0041",
               "span": {
                 "type": "Span",
                 "start": 479,
@@ -562,8 +562,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "{",
               "type": "StringLiteral",
+              "value": "{",
               "span": {
                 "type": "Span",
                 "start": 586,
@@ -626,8 +626,8 @@
           {
             "type": "Placeable",
             "expression": {
-              "value": "}",
               "type": "StringLiteral",
+              "value": "}",
               "span": {
                 "type": "Span",
                 "start": 623,

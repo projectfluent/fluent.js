@@ -1,7 +1,7 @@
 {
   "name": "@fluent/langneg",
   "description": "Language Negotiation API for Fluent",
-  "version": "0.3.0",
+  "version": "0.7.0",
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -15,11 +15,9 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "directories": {
-    "lib": "./src"
-  },
   "main": "./index.js",
-  "module": "./src/index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
@@ -33,7 +31,13 @@
     "language",
     "language-negotiation"
   ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs",
+    "test": "mocha 'test/*_test.js'"
+  },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=18.0.0",
+    "npm": ">=7.0.0"
   }
 }

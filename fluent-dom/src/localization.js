@@ -67,7 +67,6 @@ export default class Localization {
     }
 
     if (!hasAtLeastOneBundle && typeof console !== "undefined") {
-      // eslint-disable-next-line max-len
       console.warn(`[fluent] Request for keys failed because no resource bundles got generated.
   keys: ${JSON.stringify(keys)}.
   resourceIds: ${JSON.stringify(this.resourceIds)}.`);
@@ -77,26 +76,29 @@ export default class Localization {
   }
 
   /**
-   * Format translations into {value, attributes} objects.
+   * Format translations into `{value, attributes}` objects.
    *
-   * The fallback logic is the same as in `formatValues` but it returns {value,
-   * attributes} objects which are suitable for the translation of DOM
-   * elements.
-   *
-   *     docL10n.formatMessages([
-   *       {id: 'hello', args: { who: 'Mary' }},
-   *       {id: 'welcome'}
-   *     ]).then(console.log);
-   *
-   *     // [
-   *     //   { value: 'Hello, Mary!', attributes: null },
-   *     //   {
-   *     //     value: 'Welcome!',
-   *     //     attributes: [ { name: "title", value: 'Hello' } ]
-   *     //   }
-   *     // ]
+   * The fallback logic is the same as in `formatValues`
+   * but it returns `{value, attributes}` objects
+   * which are suitable for the translation of DOM elements.
    *
    * Returns a Promise resolving to an array of the translation strings.
+   *
+   * @example
+   * ```js
+   * docL10n.formatMessages([
+   *   {id: 'hello', args: { who: 'Mary' }},
+   *   {id: 'welcome'}
+   * ]).then(console.log);
+   *
+   * // [
+   * //   { value: 'Hello, Mary!', attributes: null },
+   * //   {
+   * //     value: 'Welcome!',
+   * //     attributes: [ { name: "title", value: 'Hello' } ]
+   * //   }
+   * // ]
+   * ```
    *
    * @param   {Array<Object>} keys
    * @returns {Promise<Array<{value: string, attributes: Object}>>}
@@ -112,15 +114,18 @@ export default class Localization {
    * A generalized version of `DOMLocalization.formatValue`. Keys must
    * be `{id, args}` objects.
    *
-   *     docL10n.formatValues([
-   *       {id: 'hello', args: { who: 'Mary' }},
-   *       {id: 'hello', args: { who: 'John' }},
-   *       {id: 'welcome'}
-   *     ]).then(console.log);
-   *
-   *     // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
-   *
    * Returns a Promise resolving to an array of the translation strings.
+   *
+   * @example
+   * ```js
+   * docL10n.formatValues([
+   *   {id: 'hello', args: { who: 'Mary' }},
+   *   {id: 'hello', args: { who: 'John' }},
+   *   {id: 'welcome'}
+   * ]).then(console.log);
+   *
+   * // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
+   * ```
    *
    * @param   {Array<Object>} keys
    * @returns {Promise<Array<string>>}
@@ -135,24 +140,27 @@ export default class Localization {
    * If passed, `args` is a simple hash object with a list of variables that
    * will be interpolated in the value of the translation.
    *
-   *     docL10n.formatValue(
-   *       'hello', { who: 'world' }
-   *     ).then(console.log);
-   *
-   *     // 'Hello, world!'
-   *
    * Returns a Promise resolving to the translation string.
    *
    * Use this sparingly for one-off messages which don't need to be
    * retranslated when the user changes their language preferences, e.g. in
    * notifications.
    *
+   * @example
+   * ```js
+   * docL10n.formatValue(
+   *   'hello', { who: 'world' }
+   * ).then(console.log);
+   *
+   * // 'Hello, world!'
+   * ```
+   *
    * @param   {string}  id     - Identifier of the translation to format
    * @param   {Object}  [args] - Optional external arguments
    * @returns {Promise<string>}
    */
   async formatValue(id, args) {
-    const [val] = await this.formatValues([{id, args}]);
+    const [val] = await this.formatValues([{ id, args }]);
     return val;
   }
 
@@ -166,7 +174,8 @@ export default class Localization {
    */
   onChange(eager = false) {
     this.bundles = CachedAsyncIterable.from(
-      this.generateBundles(this.resourceIds));
+      this.generateBundles(this.resourceIds)
+    );
     if (eager) {
       this.bundles.touchNext(2);
     }
@@ -227,7 +236,7 @@ function messageFromBundle(bundle, errors, message, args) {
     formatted.attributes = new Array(attrNames.length);
     for (let [i, name] of attrNames.entries()) {
       let value = bundle.formatPattern(message.attributes[name], args, errors);
-      formatted.attributes[i] = {name, value};
+      formatted.attributes[i] = { name, value };
     }
   }
 
@@ -270,7 +279,7 @@ function keysFromBundle(method, bundle, keys, translations) {
   const messageErrors = [];
   const missingIds = new Set();
 
-  keys.forEach(({id, args}, i) => {
+  keys.forEach(({ id, args }, i) => {
     if (translations[i] !== undefined) {
       return;
     }
@@ -282,8 +291,9 @@ function keysFromBundle(method, bundle, keys, translations) {
       if (messageErrors.length > 0 && typeof console !== "undefined") {
         const locale = bundle.locales[0];
         const errors = messageErrors.join(", ");
-        // eslint-disable-next-line max-len
-        console.warn(`[fluent][resolver] errors in ${locale}/${id}: ${errors}.`);
+        console.warn(
+          `[fluent][resolver] errors in ${locale}/${id}: ${errors}.`
+        );
       }
     } else {
       missingIds.add(id);

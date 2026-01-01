@@ -1,12 +1,12 @@
-load('../../fluent-bundle/index.js');
-load('../../fluent-syntax/index.js');
-load('./benchmark.common.js');
+load("../../fluent-bundle/index.js");
+load("../../fluent-syntax/index.js");
+load("./benchmark.common.js");
 
 const env = {
-  readFile: (path) => {
+  readFile: path => {
     return read(path);
   },
-  ms: (milliseconds) => {
+  ms: milliseconds => {
     return milliseconds;
   },
   benchmarkName: arguments[0],

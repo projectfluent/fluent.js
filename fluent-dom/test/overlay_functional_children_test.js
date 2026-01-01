@@ -1,90 +1,82 @@
-import assert from 'assert';
-import translateElement from '../src/overlay';
-import {elem} from './index';
+import assert from "assert";
+import sinon from "sinon";
+import translateElement from "../esm/overlay.js";
+import { elem } from "./util.js";
 
-suite('Child without name', function() {
-  test('in source', function() {
-    const element = elem('div')`
+suite("Child without name", function () {
+  setup(() => sinon.stub(console, "warn"));
+  teardown(() => console.warn.restore());
+
+  test("in source", function () {
+    const element = elem("div")`
       <button>Foo</button>`;
     const translation = {
-      value: 'FOO',
-      attributes: null
+      value: "FOO",
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 
-  test('in translation', function() {
-    const element = elem('div')`Foo`;
+  test("in translation", function () {
+    const element = elem("div")`Foo`;
     const translation = {
-      value: '<button>FOO</button>',
-      attributes: null
+      value: "<button>FOO</button>",
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 
-  test('in both', function() {
-    const element = elem('div')`
+  test("in both", function () {
+    const element = elem("div")`
       <button>Foo</button>`;
     const translation = {
-      value: '<button>FOO</button>',
-      attributes: null
+      value: "<button>FOO</button>",
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 });
 
-suite('Child with name', function() {
-  test('in source', function() {
-    const element = elem('div')`
+suite("Child with name", function () {
+  setup(() => sinon.stub(console, "warn"));
+  teardown(() => console.warn.restore());
+
+  test("in source", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
-      value: '<button>FOO</button>',
-      attributes: null
+      value: "<button>FOO</button>",
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 
-  test('in translation', function() {
-    const element = elem('div')`
+  test("in translation", function () {
+    const element = elem("div")`
       <button>Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo">FOO</button>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 
-  test('in both', function() {
-    const element = elem('div')`
+  test("in both", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo">FOO</button>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -94,12 +86,12 @@ suite('Child with name', function() {
     );
   });
 
-  test('translation without text content', function() {
-    const element = elem('div')`
+  test("translation without text content", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo"></button>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -109,42 +101,37 @@ suite('Child with name', function() {
     );
   });
 
-  test('different names', function() {
-    const element = elem('div')`
+  test("different names", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="bar">BAR</button>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'BAR'
-    );
+    assert.strictEqual(element.innerHTML, "BAR");
   });
 
-  test('of different type', function() {
-    const element = elem('div')`
+  test("of different type", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
       value: '<div data-l10n-name="foo">FOO</div>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 
-  test('used twice', function() {
-    const element = elem('div')`
+  test("used twice", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
-      value: '<button data-l10n-name="foo">FOO 1</button> <button data-l10n-name="foo">FOO 2</button>',
-      attributes: null
+      value:
+        '<button data-l10n-name="foo">FOO 1</button> <button data-l10n-name="foo">FOO 2</button>',
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -155,14 +142,15 @@ suite('Child with name', function() {
   });
 });
 
-suite('Two named children', function() {
-  test('in order', function() {
-    const element = elem('div')`
+suite("Two named children", function () {
+  test("in order", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>
       <button data-l10n-name="bar">Bar</button>`;
     const translation = {
-      value: '<button data-l10n-name="foo">FOO</button><button data-l10n-name="bar">BAR</button>',
-      attributes: null
+      value:
+        '<button data-l10n-name="foo">FOO</button><button data-l10n-name="bar">BAR</button>',
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -172,13 +160,14 @@ suite('Two named children', function() {
     );
   });
 
-  test('out of order', function() {
-    const element = elem('div')`
+  test("out of order", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>
       <button data-l10n-name="bar">Bar</button>`;
     const translation = {
-      value: '<button data-l10n-name="bar">BAR</button><button data-l10n-name="foo">FOO</button>',
-      attributes: null
+      value:
+        '<button data-l10n-name="bar">BAR</button><button data-l10n-name="foo">FOO</button>',
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -188,16 +177,17 @@ suite('Two named children', function() {
     );
   });
 
-  test('nested in source', function() {
-    const element = elem('div')`
+  test("nested in source", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">
         Foo 1
         <button data-l10n-name="bar">Bar</button>
         Foo 2
       </button>`;
     const translation = {
-      value: '<button data-l10n-name="foo">FOO</button><button data-l10n-name="bar">BAR</button>',
-      attributes: null
+      value:
+        '<button data-l10n-name="foo">FOO</button><button data-l10n-name="bar">BAR</button>',
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -207,14 +197,15 @@ suite('Two named children', function() {
     );
   });
 
-  test('nested in translation', function() {
+  test("nested in translation", function () {
     // Buttons can't be nested. Let's use divs for this test.
-    const element = elem('div')`
+    const element = elem("div")`
       <div data-l10n-name="foo">Foo</div>
       <div data-l10n-name="bar">Bar</div>`;
     const translation = {
-      value: '<div data-l10n-name="foo">FOO 1 <div data-l10n-name="bar">BAR</div> FOO 2</div>',
-      attributes: null
+      value:
+        '<div data-l10n-name="foo">FOO 1 <div data-l10n-name="bar">BAR</div> FOO 2</div>',
+      attributes: null,
     };
 
     translateElement(element, translation);
@@ -225,130 +216,151 @@ suite('Two named children', function() {
   });
 });
 
-suite('Child attributes', function() {
-  test('functional attribute in source', function() {
-    const element = elem('div')`
+suite("Child attributes", function () {
+  test("functional attribute in source", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo" class="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" class="foo">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" class="foo">FOO</button>'
+    );
   });
 
-  test('functional attribute in translation', function() {
-    const element = elem('div')`
+  test("functional attribute in translation", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo" class="bar">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo">FOO</button>'
+    );
   });
 
-  test('functional attribute in both', function() {
-    const element = elem('div')`
+  test("functional attribute in both", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo" class="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo" class="bar">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" class="foo">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" class="foo">FOO</button>'
+    );
   });
 
-  test('localizable attribute in source', function() {
-    const element = elem('div')`
+  test("localizable attribute in source", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo" title="Foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo">FOO</button>'
+    );
   });
 
-  test('localizable attribute in translation', function() {
-    const element = elem('div')`
+  test("localizable attribute in translation", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo" title="FOO">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" title="FOO">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" title="FOO">FOO</button>'
+    );
   });
 
-  test('localizable attribute in both', function() {
-    const element = elem('div')`
+  test("localizable attribute in both", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo" title="Foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo" title="BAR">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" title="BAR">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" title="BAR">FOO</button>'
+    );
   });
 
-  test('localizable attribute does not leak on retranslation', function() {
-    const element = elem('div')`
+  test("localizable attribute does not leak on retranslation", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo">Foo</button>`;
     const translationA = {
       value: '<button data-l10n-name="foo" title="FOO A">FOO A</a>',
-      attributes: null
+      attributes: null,
     };
     const translationB = {
       value: '<button data-l10n-name="foo">FOO B</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translationA);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" title="FOO A">FOO A</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" title="FOO A">FOO A</button>'
+    );
     translateElement(element, translationB);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo">FOO B</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo">FOO B</button>'
+    );
   });
 });
 
-suite('Child attributes overrides', function() {
-  test('the source can override child\'s attributes', function() {
-    const element = elem('div')`
+suite("Child attributes overrides", function () {
+  test("the source can override child's attributes", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo" data-l10n-attrs="class" class="foo">Foo</button>`;
     const translation = {
       value: '<button data-l10n-name="foo" class="FOO">FOO</a>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" data-l10n-attrs="class" class="FOO">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" data-l10n-attrs="class" class="FOO">FOO</button>'
+    );
   });
 
-  test('the translation cannot override child\'s attributes', function() {
-    const element = elem('div')`
+  test("the translation cannot override child's attributes", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo" class="foo">Foo</button>`;
     const translation = {
-      value: '<button data-l10n-name="foo" data-l10n-attrs="class" class="FOO">FOO</a>',
-      attributes: null
+      value:
+        '<button data-l10n-name="foo" data-l10n-attrs="class" class="FOO">FOO</a>',
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(element.innerHTML,
-      '<button data-l10n-name="foo" class="foo">FOO</button>');
+    assert.strictEqual(
+      element.innerHTML,
+      '<button data-l10n-name="foo" class="foo">FOO</button>'
+    );
   });
 });

@@ -1,7 +1,10 @@
 .nyc_output
 coverage
-docs
-examples
+esm/.compiled
+example
+src
 test
 makefile
+babel.config.js
 compat_config.js
+tsconfig.json

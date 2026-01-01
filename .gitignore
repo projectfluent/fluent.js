@@ -1,6 +1,6 @@
 node_modules
 html
-package-lock.json
+.vscode
 
 # Test coverage
 .nyc_output

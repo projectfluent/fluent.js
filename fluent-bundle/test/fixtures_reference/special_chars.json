@@ -1,0 +1,19 @@
+{
+    "body": [
+        {
+            "id": "bracket-inline",
+            "value": "[Value]",
+            "attributes": {}
+        },
+        {
+            "id": "dot-inline",
+            "value": ".Value",
+            "attributes": {}
+        },
+        {
+            "id": "star-inline",
+            "value": "*Value",
+            "attributes": {}
+        }
+    ]
+}

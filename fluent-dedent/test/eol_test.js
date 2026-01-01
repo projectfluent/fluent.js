@@ -1,14 +1,9 @@
-"use strict";
-
 import assert from "assert";
-import ftl from "../src/index";
+import ftl from "../esm/index.js";
 
 suite("EOL at extremes", function () {
   test("no EOLs", function () {
-    assert.throws(
-      () => ftl`foo`,
-      /Content must start on a new line/
-    );
+    assert.throws(() => ftl`foo`, /Content must start on a new line/);
   });
 
   test("EOL at the beginning", function () {

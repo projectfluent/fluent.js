@@ -1,5 +1,7 @@
 .nyc_output
 coverage
-docs
+esm/.compiled
+src
 test
 makefile
+tsconfig.json

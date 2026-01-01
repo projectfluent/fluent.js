@@ -1,2 +1,2 @@
-index.js
-compat.js
+esm/
+/index.js

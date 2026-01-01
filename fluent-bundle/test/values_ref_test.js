@@ -1,17 +1,16 @@
-'use strict';
-
-import assert from 'assert';
+import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import FluentBundle from '../src/bundle';
-import FluentResource from '../src/resource';
+import { FluentBundle } from "../esm/bundle.js";
+import { FluentResource } from "../esm/resource.js";
 
-suite('Referencing values', function(){
+suite("Referencing values", function () {
   let bundle, args, errs;
 
-  suiteSetup(function() {
-    bundle = new FluentBundle('en-US', { useIsolating: false });
-    bundle.addResource(new FluentResource(ftl`
+  suiteSetup(function () {
+    bundle = new FluentBundle("en-US", { useIsolating: false });
+    bundle.addResource(
+      new FluentResource(ftl`
       key1 = Value 1
       -key2 = { $sel ->
           [a] A2
@@ -49,99 +48,99 @@ suite('Referencing values', function(){
       ref16 = { -key6.a ->
           *[a] A
       }
-      `));
+      `)
+    );
   });
 
-  setup(function() {
+  setup(function () {
     errs = [];
   });
 
-  test('references the value', function(){
-    const msg = bundle.getMessage('ref1');
+  test("references the value", function () {
+    const msg = bundle.getMessage("ref1");
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, 'Value 1');
+    assert.strictEqual(val, "Value 1");
     assert.strictEqual(errs.length, 0);
   });
 
-  test('references the default variant', function(){
-    const msg = bundle.getMessage('ref2');
+  test("references the default variant", function () {
+    const msg = bundle.getMessage("ref2");
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, 'B2');
+    assert.strictEqual(val, "B2");
     assert.strictEqual(errs.length, 0);
   });
 
-  test('references the value if it is a pattern', function(){
-    const msg = bundle.getMessage('ref3');
+  test("references the value if it is a pattern", function () {
+    const msg = bundle.getMessage("ref3");
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, 'Value 3');
+    assert.strictEqual(val, "Value 3");
     assert.strictEqual(errs.length, 0);
   });
 
-  test('references the default variant if it is a pattern', function(){
-    const msg = bundle.getMessage('ref4');
+  test("references the default variant if it is a pattern", function () {
+    const msg = bundle.getMessage("ref4");
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, 'B4');
+    assert.strictEqual(val, "B4");
     assert.strictEqual(errs.length, 0);
   });
 
-  test('falls back to id if there is no value', function(){
-    const msg = bundle.getMessage('ref5');
+  test("falls back to id if there is no value", function () {
+    const msg = bundle.getMessage("ref5");
     const val = bundle.formatPattern(msg.value, args, errs);
-    assert.strictEqual(val, '{key5}');
+    assert.strictEqual(val, "{key5}");
     assert.ok(errs[0] instanceof ReferenceError); // no value
   });
 
-  test('references the variants', function(){
-    const msg_a = bundle.getMessage('ref6');
-    const msg_b = bundle.getMessage('ref7');
-    const val_a = bundle.formatPattern(msg_a.value, args, errs)
-    const val_b = bundle.formatPattern(msg_b.value, args, errs)
-    assert.strictEqual(val_a, 'A2');
-    assert.strictEqual(val_b, 'B2');
+  test("references the variants", function () {
+    const msg_a = bundle.getMessage("ref6");
+    const msg_b = bundle.getMessage("ref7");
+    const val_a = bundle.formatPattern(msg_a.value, args, errs);
+    const val_b = bundle.formatPattern(msg_b.value, args, errs);
+    assert.strictEqual(val_a, "A2");
+    assert.strictEqual(val_b, "B2");
     assert.strictEqual(errs.length, 0);
   });
 
-  test('references the variants which are patterns', function(){
-    const msg_a = bundle.getMessage('ref8');
-    const msg_b = bundle.getMessage('ref9');
-    const val_a = bundle.formatPattern(msg_a.value, args, errs)
-    const val_b = bundle.formatPattern(msg_b.value, args, errs)
-    assert.strictEqual(val_a, 'A4');
-    assert.strictEqual(val_b, 'B4');
+  test("references the variants which are patterns", function () {
+    const msg_a = bundle.getMessage("ref8");
+    const msg_b = bundle.getMessage("ref9");
+    const val_a = bundle.formatPattern(msg_a.value, args, errs);
+    const val_b = bundle.formatPattern(msg_b.value, args, errs);
+    assert.strictEqual(val_a, "A4");
+    assert.strictEqual(val_b, "B4");
     assert.strictEqual(errs.length, 0);
   });
 
-  test('references the attributes', function(){
-    const msg_a = bundle.getMessage('ref10');
-    const msg_b = bundle.getMessage('ref11');
-    const msg_c = bundle.getMessage('ref12');
-    const val_a = bundle.formatPattern(msg_a.value, args, errs)
-    const val_b = bundle.formatPattern(msg_b.value, args, errs)
-    const val_c = bundle.formatPattern(msg_c.value, args, errs)
-    assert.strictEqual(val_a, 'A5');
-    assert.strictEqual(val_b, 'B5');
-    assert.strictEqual(val_c, '{key5.c}');
+  test("references the attributes", function () {
+    const msg_a = bundle.getMessage("ref10");
+    const msg_b = bundle.getMessage("ref11");
+    const msg_c = bundle.getMessage("ref12");
+    const val_a = bundle.formatPattern(msg_a.value, args, errs);
+    const val_b = bundle.formatPattern(msg_b.value, args, errs);
+    const val_c = bundle.formatPattern(msg_c.value, args, errs);
+    assert.strictEqual(val_a, "A5");
+    assert.strictEqual(val_b, "B5");
+    assert.strictEqual(val_c, "{key5.c}");
     assert.strictEqual(errs.length, 1);
   });
 
-  test('missing message reference', function(){
-    const msg_a = bundle.getMessage('ref13');
-    const msg_b = bundle.getMessage('ref14');
-    const val_a = bundle.formatPattern(msg_a.value, args, errs)
-    const val_b = bundle.formatPattern(msg_b.value, args, errs)
-    assert.strictEqual(val_a, '{key6}');
-    assert.strictEqual(val_b, '{key6}');
+  test("missing message reference", function () {
+    const msg_a = bundle.getMessage("ref13");
+    const msg_b = bundle.getMessage("ref14");
+    const val_a = bundle.formatPattern(msg_a.value, args, errs);
+    const val_b = bundle.formatPattern(msg_b.value, args, errs);
+    assert.strictEqual(val_a, "{key6}");
+    assert.strictEqual(val_b, "{key6}");
     assert.strictEqual(errs.length, 2);
   });
 
-  test('missing term reference', function(){
-    const msg_a = bundle.getMessage('ref15');
-    const msg_b = bundle.getMessage('ref16');
-    const val_a = bundle.formatPattern(msg_a.value, args, errs)
-    const val_b = bundle.formatPattern(msg_b.value, args, errs)
-    assert.strictEqual(val_a, '{-key6}');
-    assert.strictEqual(val_b, 'A');
+  test("missing term reference", function () {
+    const msg_a = bundle.getMessage("ref15");
+    const msg_b = bundle.getMessage("ref16");
+    const val_a = bundle.formatPattern(msg_a.value, args, errs);
+    const val_b = bundle.formatPattern(msg_b.value, args, errs);
+    assert.strictEqual(val_a, "{-key6}");
+    assert.strictEqual(val_b, "A");
     assert.strictEqual(errs.length, 2);
   });
-
 });

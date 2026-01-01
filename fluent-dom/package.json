@@ -1,6 +1,6 @@
 {
   "name": "@fluent/dom",
-  "version": "0.6.0",
+  "version": "0.10.2",
   "description": "Fluent bindings for DOM",
   "repository": {
     "type": "git",
@@ -18,11 +18,9 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "directories": {
-    "lib": "./src"
-  },
   "main": "./index.js",
-  "module": "./src/index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "keywords": [
     "localization",
     "l10n",
@@ -35,11 +33,18 @@
     "translation",
     "format"
   ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable",
+    "test": "c8 mocha -ui tdd --require ./test/index.js 'test/*_test.js'"
+  },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=18.0.0",
+    "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "jsdom": "^15.1.0"
+    "@fluent/bundle": "^0.19.0",
+    "jsdom": "^24.0.0"
   },
   "dependencies": {
     "cached-iterable": "^0.3"

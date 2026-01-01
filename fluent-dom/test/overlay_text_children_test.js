@@ -1,44 +1,42 @@
-import assert from 'assert';
-import translateElement from '../src/overlay';
-import {elem} from './index';
+import assert from "assert";
+import sinon from "sinon";
+import translateElement from "../esm/overlay.js";
+import { elem } from "./util.js";
 
-suite('Text-semantic argument elements', function() {
-  test('without data-l10n-name', function() {
-    const element = elem('div')`
+suite("Text-semantic argument elements", function () {
+  setup(() => sinon.stub(console, "warn"));
+  teardown(() => console.warn.restore());
+
+  test("without data-l10n-name", function () {
+    const element = elem("div")`
       <em class="bar"></em>`;
     const translation = {
       value: '<em title="FOO">FOO</em>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      '<em title="FOO">FOO</em>'
-    );
+    assert.strictEqual(element.innerHTML, '<em title="FOO">FOO</em>');
   });
 
-  test('mismatched types', function() {
-    const element = elem('div')`
+  test("mismatched types", function () {
+    const element = elem("div")`
       <button data-l10n-name="foo"></button>`;
     const translation = {
       value: '<em data-l10n-name="foo" title="FOO">FOO</em>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);
-    assert.strictEqual(
-      element.innerHTML,
-      'FOO'
-    );
+    assert.strictEqual(element.innerHTML, "FOO");
   });
 
-  test('types and names match', function() {
-    const element = elem('div')`
+  test("types and names match", function () {
+    const element = elem("div")`
       <em data-l10n-name="foo" class="foo"></em>`;
     const translation = {
       value: '<em data-l10n-name="foo" title="FOO">FOO</em>',
-      attributes: null
+      attributes: null,
     };
 
     translateElement(element, translation);

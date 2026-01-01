@@ -1,12 +1,12 @@
-# @fluent/langneg
+# @fluent/langneg ![](https://github.com/projectfluent/fluent.js/workflows/test/badge.svg)
 
-`@fluent/langneg` is an API for negotiating languages. It's part of Project
-Fluent, a localization framework designed to unleash the expressive power of
-the natural language.
+`@fluent/langneg` provides an API for negotiating languages. It's part of
+[Project Fluent][]. Its main function is to provide functionality around the
+[Intl.Locale][] API with a focus on language negotiation, matching and
+selection.
 
-It's main function is to provide functionality around the [Intl.Locale][] API
-with a focus on language negotiation, matching and selection.
-
+[project fluent]: https://projectfluent.org
+[intl.locale]: https://github.com/tc39/proposal-intl-locale
 
 ## Installation
 
@@ -15,16 +15,15 @@ You can install it from the npm registry or use it as a standalone script.
 
     npm install @fluent/langneg
 
-
 ## How to use
 
 ```javascript
-import { negotiateLanguages } from '@fluent/langneg';
+import { negotiateLanguages } from "@fluent/langneg";
 
 const supportedLocales = negotiateLanguages(
-  navigator.languages,       // requested locales
-  ['de', 'en-US', 'pl'],     // available locales
-  { defaultLocale: 'en-US' }
+  navigator.languages, // requested locales
+  ["de", "en-US", "pl"], // available locales
+  { defaultLocale: "en-US" }
 );
 ```
 
@@ -37,18 +36,6 @@ The API supports three negotiation strategies:
 
 ### filtering (default)
 
-In this strategy the algorithm will look for the best matching available
-locale for each requested locale.
-
-Example:
-
-requested: ['de-DE', 'fr-FR']
-available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
-
-supported: ['de-DE', 'fr']
-
-### matching
-
 In this strategy the algorithm will try to match as many available locales
 as possible for each of the requested locale.
 
@@ -58,6 +45,18 @@ requested: ['de-DE', 'fr-FR']
 available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
 
 supported: ['de-DE', 'de', 'fr', 'fr-CA']
+
+### matching
+
+In this strategy the algorithm will look for the best matching available
+locale for each requested locale.
+
+Example:
+
+requested: ['de-DE', 'fr-FR']
+available: ['it', 'de', 'en-US', 'fr-CA', 'de-DE', 'fr', 'de-AU']
+
+supported: ['de-DE', 'fr']
 
 ### lookup
 
@@ -75,7 +74,7 @@ supported: ['de-DE']
 
 ```javascript
 let supported = negotiateLanguages(requested, available, {
-  strategy: 'matching',
+  strategy: "matching",
 });
 ```
 
@@ -86,15 +85,4 @@ subtags data, which is useful in finding most likely available locales
 in case the requested locale is too generic.
 
 An example of that scenario is when the user requests `en` locale, and
-the application supportes `en-GB` and `en-US`.
-
-## Learn more
-
-Find out more about Project Fluent at [projectfluent.org][], including
-documentation of the Fluent file format ([FTL][]), links to other packages and
-implementations, and information about how to get involved.
-
-
-[projectfluent.org]: https://projectfluent.org
-[FTL]: https://projectfluent.org/fluent/guide/
-[Intl.Locale]: https://github.com/tc39/proposal-intl-locale
+the application supports `en-GB` and `en-US`.
