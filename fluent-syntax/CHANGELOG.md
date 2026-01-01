@@ -87,7 +87,6 @@
 ## @fluent/syntax 0.15.0 (March 2, 2020)
 
 - Migrate `@fluent/syntax` to TypeScript. (#457)
-
   - `FluentSerializer` now relies on `instanceof` checks rather than
     `node.type` comparisons. Serializing a JSON dump of an AST is not
     supported any more.
@@ -126,7 +125,6 @@ the full Syntax 0.9 [changelog][chlog0.9] for details.
   directly in the reference expression.
 
   This change affects the following AST nodes:
-
   - `MessageReference` now has an optional `attribute` field,
   - `FunctionReference` now has a required `arguments` field,
   - `TermReference` now has an optional `attribute` field and an optional
@@ -328,7 +326,6 @@ backwards-incompatible changes below.
 ## fluent-syntax 0.6.0 (January 31, 2018)
 
 - Implement Fluent Syntax 0.5.
-
   - Add support for terms.
   - Add support for `#`, `##` and `###` comments.
   - Remove support for tags.

@@ -1,7 +1,7 @@
 import assert from "assert";
-import sinon from "sinon";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import DOMLocalization from "../esm/dom_localization.js";
+import DOMLocalization from "../src/dom_localization.js";
+import { vi } from "vitest";
 
 async function* mockGenerateMessages() {
   const bundle = new FluentBundle(["en-US"]);
@@ -11,9 +11,6 @@ async function* mockGenerateMessages() {
 }
 
 suite("translateFragment", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
-
   test("translates a node", async function () {
     const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
@@ -30,6 +27,7 @@ suite("translateFragment", function () {
   test("does not inject content into a node with missing translation", async function () {
     const domLoc = new DOMLocalization(["test.ftl"], mockGenerateMessages);
 
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const frag = document.createDocumentFragment();
     const elem = document.createElement("p");
     domLoc.setAttributes(elem, "missing_key");
