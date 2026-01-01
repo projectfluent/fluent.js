@@ -188,4 +188,41 @@ bar = BAR {$arg}
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"BAR"`);
   });
+
+  test("getFormattedMessage with access to the l10n context", () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const bundle = new FluentBundle("en", { useIsolating: false });
+    const EnhancedComponent = withLocalization(DummyComponent);
+
+    bundle.addResource(
+      new FluentResource(`
+foo = FOO
+  .bar = BAR {$arg}
+`)
+    );
+
+    const renderer = TestRenderer.create(
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
+        <EnhancedComponent />
+      </LocalizationProvider>
+    );
+
+    const { getFormattedMessage } =
+      renderer.root.findByType(DummyComponent).props;
+
+    // Returns the translation.
+    expect(getFormattedMessage("foo", { arg: "ARG" })).toEqual({
+      value: "FOO",
+      attributes: { bar: "BAR ARG" },
+    });
+
+    // It reports an error on formatting errors, but doesn't throw.
+    expect(getFormattedMessage("foo", {})).toEqual({
+      value: "FOO",
+      attributes: { bar: "BAR {$arg}" },
+    });
+    expect(console.warn.mock.calls).toEqual([
+      ["[@fluent/react] ReferenceError: Unknown variable: $arg"],
+    ]);
+  });
 });
