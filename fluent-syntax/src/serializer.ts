@@ -12,8 +12,10 @@ function includesNewLine(elem: AST.PatternElement): boolean {
 }
 
 function isSelectExpr(elem: AST.PatternElement): boolean {
-  return elem instanceof AST.Placeable
-    && elem.expression instanceof AST.SelectExpression;
+  return (
+    elem instanceof AST.Placeable &&
+    elem.expression instanceof AST.SelectExpression
+  );
 }
 
 function shouldStartOnNewLine(pattern: AST.Pattern): boolean {
@@ -38,14 +40,15 @@ function shouldStartOnNewLine(pattern: AST.Pattern): boolean {
   return false;
 }
 
-
-// Bit masks representing the state of the serializer.
+/** Bit masks representing the state of the serializer. */
 const HAS_ENTRIES = 1;
 
+/** @category Serialize */
 export interface FluentSerializerOptions {
   withJunk?: boolean;
 }
 
+/** @category Serialize */
 export class FluentSerializer {
   public withJunk: boolean;
 
@@ -105,20 +108,18 @@ export class FluentSerializer {
   }
 }
 
-
 function serializeComment(comment: AST.BaseComment, prefix = "#"): string {
-  const prefixed = comment.content.split("\n").map(
-    line => line.length ? `${prefix} ${line}` : prefix
-  ).join("\n");
+  const prefixed = comment.content
+    .split("\n")
+    .map(line => (line.length ? `${prefix} ${line}` : prefix))
+    .join("\n");
   // Add the trailing newline.
   return `${prefixed}\n`;
 }
 
-
 function serializeJunk(junk: AST.Junk): string {
   return junk.content;
 }
-
 
 function serializeMessage(message: AST.Message): string {
   const parts: Array<string> = [];
@@ -141,7 +142,6 @@ function serializeMessage(message: AST.Message): string {
   return parts.join("");
 }
 
-
 function serializeTerm(term: AST.Term): string {
   const parts: Array<string> = [];
 
@@ -160,12 +160,10 @@ function serializeTerm(term: AST.Term): string {
   return parts.join("");
 }
 
-
 function serializeAttribute(attribute: AST.Attribute): string {
   const value = indentExceptFirstLine(serializePattern(attribute.value));
   return `\n    .${attribute.id.name} =${value}`;
 }
-
 
 function serializePattern(pattern: AST.Pattern): string {
   const content = pattern.elements.map(serializeElement).join("");
@@ -176,7 +174,6 @@ function serializePattern(pattern: AST.Pattern): string {
 
   return ` ${indentExceptFirstLine(content)}`;
 }
-
 
 function serializeElement(element: AST.PatternElement): string {
   if (element instanceof AST.TextElement) {
@@ -189,7 +186,6 @@ function serializeElement(element: AST.PatternElement): string {
 
   throw new Error(`Unknown element type: ${element}`);
 }
-
 
 function serializePlaceable(placeable: AST.Placeable): string {
   const expr = placeable.expression;
@@ -204,10 +200,8 @@ function serializePlaceable(placeable: AST.Placeable): string {
   return `{ ${serializeExpression(expr)} }`;
 }
 
-
-export function serializeExpression(
-  expr: Expression | Placeable
-): string {
+/** @category Serialize */
+export function serializeExpression(expr: Expression | Placeable): string {
   if (expr instanceof AST.StringLiteral) {
     return `"${expr.value}"`;
   }
@@ -250,7 +244,6 @@ export function serializeExpression(
   throw new Error(`Unknown expression type: ${expr}`);
 }
 
-
 function serializeVariant(variant: AST.Variant): string {
   const key = serializeVariantKey(variant.key);
   const value = indentExceptFirstLine(serializePattern(variant.value));
@@ -262,7 +255,6 @@ function serializeVariant(variant: AST.Variant): string {
   return `\n    [${key}]${value}`;
 }
 
-
 function serializeCallArguments(expr: AST.CallArguments): string {
   const positional = expr.positional.map(serializeExpression).join(", ");
   const named = expr.named.map(serializeNamedArgument).join(", ");
@@ -272,12 +264,12 @@ function serializeCallArguments(expr: AST.CallArguments): string {
   return `(${positional || named})`;
 }
 
-
 function serializeNamedArgument(arg: AST.NamedArgument): string {
   const value = serializeExpression(arg.value);
   return `${arg.name.name}: ${value}`;
 }
 
+/** @category Serialize */
 export function serializeVariantKey(
   key: AST.Identifier | AST.NumberLiteral
 ): string {

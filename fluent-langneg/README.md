@@ -5,9 +5,8 @@
 [Intl.Locale][] API with a focus on language negotiation, matching and
 selection.
 
-[Project Fluent]: https://projectfluent.org
-[Intl.Locale]: https://github.com/tc39/proposal-intl-locale
-
+[project fluent]: https://projectfluent.org
+[intl.locale]: https://github.com/tc39/proposal-intl-locale
 
 ## Installation
 
@@ -16,16 +15,15 @@ You can install it from the npm registry or use it as a standalone script.
 
     npm install @fluent/langneg
 
-
 ## How to use
 
 ```javascript
-import { negotiateLanguages } from '@fluent/langneg';
+import { negotiateLanguages } from "@fluent/langneg";
 
 const supportedLocales = negotiateLanguages(
-  navigator.languages,       // requested locales
-  ['de', 'en-US', 'pl'],     // available locales
-  { defaultLocale: 'en-US' }
+  navigator.languages, // requested locales
+  ["de", "en-US", "pl"], // available locales
+  { defaultLocale: "en-US" }
 );
 ```
 
@@ -76,7 +74,7 @@ supported: ['de-DE']
 
 ```javascript
 let supported = negotiateLanguages(requested, available, {
-  strategy: 'matching',
+  strategy: "matching",
 });
 ```
 

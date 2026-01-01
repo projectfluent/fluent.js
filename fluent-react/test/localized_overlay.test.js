@@ -5,7 +5,7 @@ import { createParseMarkup } from "../esm/markup.js";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 
 describe("Localized - overlay", () => {
@@ -164,7 +164,7 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
           id="foo"
           elems={{
             confirm: <button className="confirm"></button>,
-            cancel: <button className="cancel"></button>
+            cancel: <button className="cancel"></button>,
           }}
         >
           <div />
@@ -204,7 +204,7 @@ foo = <confirm>Sign in</confirm> or <cancel>cancel</cancel>.
         <Localized
           id="foo"
           elems={{
-            confirm: <button className="confirm"></button>
+            confirm: <button className="confirm"></button>,
           }}
         >
           <div />
@@ -241,7 +241,7 @@ foo = <confirm>Sign in</confirm>.
           id="foo"
           elems={{
             confirm: <button className="confirm"></button>,
-            cancel: <button className="cancel"></button>
+            cancel: <button className="cancel"></button>,
           }}
         >
           <div />
@@ -462,9 +462,7 @@ foo = BEFORE <input/> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -490,9 +488,7 @@ foo = BEFORE <input></input> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -520,9 +516,7 @@ foo = BEFORE <input>Foo</input> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
         Foo AFTER
       </div>
     `);
@@ -667,9 +661,7 @@ foo = BEFORE <span></span> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -843,9 +835,7 @@ foo = BEFORE <text-elem></text-elem> AFTER
     expect(renderer.toJSON()).toMatchInlineSnapshot(`
       <div>
         BEFORE 
-        <span>
-          
-        </span>
+        <span />
          AFTER
       </div>
     `);
@@ -937,8 +927,8 @@ foo = test <em>custom markup parser</em>
       return [
         {
           nodeName: "#text",
-          textContent: str.toUpperCase()
-        }
+          textContent: str.toUpperCase(),
+        },
       ];
     }
 

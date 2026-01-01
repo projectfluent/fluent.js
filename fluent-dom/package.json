@@ -1,6 +1,6 @@
 {
   "name": "@fluent/dom",
-  "version": "0.8.0",
+  "version": "0.10.2",
   "description": "Fluent bindings for DOM",
   "repository": {
     "type": "git",
@@ -36,16 +36,15 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable",
-    "docs": "typedoc --options ../typedoc.config.cjs src/index.js",
     "test": "c8 mocha -ui tdd --require ./test/index.js 'test/*_test.js'"
   },
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=18.0.0",
     "npm": ">=7.0.0"
   },
   "devDependencies": {
-    "@fluent/bundle": "file:../fluent-bundle",
-    "jsdom": "^17.0.0"
+    "@fluent/bundle": "^0.19.0",
+    "jsdom": "^24.0.0"
   },
   "dependencies": {
     "cached-iterable": "^0.3"

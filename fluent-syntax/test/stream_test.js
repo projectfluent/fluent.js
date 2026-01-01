@@ -1,10 +1,8 @@
-"use strict";
-
 import assert from "assert";
 import { ParserStream } from "../esm/stream.js";
 
-suite("ParserStream", function() {
-  test("next", function() {
+suite("ParserStream", function () {
+  test("next", function () {
     let ps = new ParserStream("abcd");
 
     assert.strictEqual("a", ps.currentChar());
@@ -27,7 +25,7 @@ suite("ParserStream", function() {
     assert.strictEqual(4, ps.index);
   });
 
-  test("peek", function() {
+  test("peek", function () {
     let ps = new ParserStream("abcd");
 
     assert.strictEqual("a", ps.currentPeek());
@@ -50,7 +48,7 @@ suite("ParserStream", function() {
     assert.strictEqual(4, ps.peekOffset);
   });
 
-  test("peek_and_next", function() {
+  test("peek_and_next", function () {
     let ps = new ParserStream("abcd");
 
     assert.strictEqual("b", ps.peek());
@@ -96,7 +94,7 @@ suite("ParserStream", function() {
     assert.strictEqual(4, ps.index);
   });
 
-  test("skip_to_peek", function() {
+  test("skip_to_peek", function () {
     let ps = new ParserStream("abcd");
 
     ps.peek();
@@ -124,7 +122,7 @@ suite("ParserStream", function() {
     assert.strictEqual(3, ps.index);
   });
 
-  test("reset_peek", function() {
+  test("reset_peek", function () {
     let ps = new ParserStream("abcd");
 
     ps.next();

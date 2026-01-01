@@ -1,22 +1,22 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import {FluentBundle} from "../esm/bundle.js";
-import {FluentResource} from '../esm/resource.js';
+import { FluentBundle } from "../esm/bundle.js";
+import { FluentResource } from "../esm/resource.js";
 
-suite("Errors", function() {
+suite("Errors", function () {
   let bundle;
 
-  suiteSetup(function() {
+  suiteSetup(function () {
     bundle = new FluentBundle("en-US", { useIsolating: false });
-    bundle.addResource(new FluentResource(ftl`
+    bundle.addResource(
+      new FluentResource(ftl`
       foo = {$one} and {$two}
-      `));
+      `)
+    );
   });
 
-  test("Reporting into an array", function() {
+  test("Reporting into an array", function () {
     let errors = [];
     let message = bundle.getMessage("foo");
 
@@ -35,7 +35,7 @@ suite("Errors", function() {
     assert.ok(errors[3] instanceof ReferenceError);
   });
 
-  test("First error is thrown", function() {
+  test("First error is thrown", function () {
     let message = bundle.getMessage("foo");
     assert.throws(
       () => bundle.formatPattern(message.value, {}),

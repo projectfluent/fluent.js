@@ -1,3 +1,4 @@
-.cache
-dist
+.parcel-cache/
+dist/
 *.tgz
+package-lock.json

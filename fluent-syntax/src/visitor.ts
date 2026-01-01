@@ -10,9 +10,11 @@ import * as AST from "./ast.js";
  *
  * Visiting methods must implement the following interface:
  *
- *     interface VisitingMethod {
- *         (this: Visitor, node: AST.BaseNode): void;
- *     }
+ * ```ts
+ * interface VisitingMethod {
+ *     (this: Visitor, node: AST.BaseNode): void;
+ * }
+ * ```
  */
 export abstract class Visitor {
   [prop: string]: unknown;
@@ -75,9 +77,11 @@ export abstract class Visitor {
  *
  * Visiting methods must implement the following interface:
  *
- *     interface TransformingMethod {
- *         (this: Transformer, node: AST.BaseNode): AST.BaseNode | undefined;
- *     }
+ * ```ts
+ * interface TransformingMethod {
+ *     (this: Transformer, node: AST.BaseNode): AST.BaseNode | undefined;
+ * }
+ * ```
  *
  * The returned node will replace the original one in the AST. Return
  * `undefined` to remove the node instead.
@@ -106,7 +110,7 @@ export abstract class Transformer extends Visitor {
       } else if (Array.isArray(prop)) {
         let newVals: Array<AST.BaseNode> = [];
         for (let element of prop) {
-          let newVal = this.visit(element);
+          let newVal = this.visit(element as AST.BaseNode);
           if (newVal !== undefined) {
             newVals.push(newVal);
           }
@@ -127,10 +131,12 @@ export abstract class Transformer extends Visitor {
   visitNumberLiteral?(node: AST.NumberLiteral): AST.BaseNode | undefined;
   visitMessageReference?(node: AST.MessageReference): AST.BaseNode | undefined;
   visitTermReference?(node: AST.TermReference): AST.BaseNode | undefined;
-  visitVariableReference?(node: AST.VariableReference):
-  AST.BaseNode | undefined;
-  visitFunctionReference?(node: AST.FunctionReference):
-  AST.BaseNode | undefined;
+  visitVariableReference?(
+    node: AST.VariableReference
+  ): AST.BaseNode | undefined;
+  visitFunctionReference?(
+    node: AST.FunctionReference
+  ): AST.BaseNode | undefined;
   visitSelectExpression?(node: AST.SelectExpression): AST.BaseNode | undefined;
   visitCallArguments?(node: AST.CallArguments): AST.BaseNode | undefined;
   visitAttribute?(node: AST.Attribute): AST.BaseNode | undefined;

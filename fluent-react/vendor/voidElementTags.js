@@ -5,7 +5,7 @@
  * LICENSE file in this directory.
  */
 
-import omittedCloseTags from './omittedCloseTags';
+import omittedCloseTags from "./omittedCloseTags";
 
 // For HTML, certain tags cannot have children. This has the same purpose as
 // `omittedCloseTags` except that `menuitem` should still have its closing tag.

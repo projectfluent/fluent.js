@@ -7,17 +7,15 @@ Fluent Syntax is indentation-sensitive, and `@fluent/dedent` offers a
 convenient way to include Fluent snippets in source code keeping the current
 level of indentation and without compromising the readability.
 
-[Project Fluent]: https://projectfluent.org
-
+[project fluent]: https://projectfluent.org
 
 ## Installation
 
-`@fluent/dedent` can be used both on the client-side and the server-side.  You can
+`@fluent/dedent` can be used both on the client-side and the server-side. You can
 install it from the npm registry or use it as a standalone script (as the
 `FluentDedent` global).
 
     npm install @fluent/dedent
-
 
 ## How to use
 

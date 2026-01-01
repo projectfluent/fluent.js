@@ -4,7 +4,7 @@ import { FluentBundle, FluentResource } from "@fluent/bundle";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 
 describe("Localized - rendering", () => {
@@ -320,7 +320,7 @@ foo = { $arg }
       1,
       expect.anything(),
       {
-        arg: "ARG"
+        arg: "ARG",
       },
       expect.anything()
     );
@@ -329,7 +329,7 @@ foo = { $arg }
       2,
       expect.anything(),
       {
-        arg: "ARG"
+        arg: "ARG",
       },
       expect.anything()
     );
@@ -383,11 +383,11 @@ foo = { $arg }
             </div>
         `);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
-        Array [
+        [
           "[@fluent/react] ReferenceError: Unknown variable: $arg",
         ],
       ]
@@ -455,9 +455,9 @@ foo = Test message
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`null`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
         ],
       ]
     `);
@@ -514,9 +514,9 @@ foo = Test message
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"String fallback"`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
         ],
       ]
     `);
@@ -557,7 +557,7 @@ foo = Message
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"Message"`);
   });
 
-  test("render without a fallback and no message returns nothing", () => {
+  test("render without a fallback and no message returns the message ID", () => {
     jest.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle();
 
@@ -567,11 +567,11 @@ foo = Message
       </LocalizationProvider>
     );
 
-    expect(renderer.toJSON()).toMatchInlineSnapshot(`null`);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`"foo"`);
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: The id \\"foo\\" did not match any messages in the localization bundles.",
+      [
+        [
+          "[@fluent/react] Error: The id "foo" did not match any messages in the localization bundles.",
         ],
       ]
     `);

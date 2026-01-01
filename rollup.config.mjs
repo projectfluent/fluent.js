@@ -1,7 +1,4 @@
-import { promises } from "fs";
-
-// 'fs/promises' is only available from Node.js 14.0.0
-const { readFile } = promises;
+import { readFile } from "fs/promises";
 
 const globalName = {
   "@fluent/bundle": "FluentBundle",
@@ -13,7 +10,7 @@ const globalName = {
   "@fluent/syntax": "FluentSyntax",
 };
 
-export default async function() {
+export default async function () {
   // Current dir is the package's own directory here
   const pkgSrc = await readFile("package.json", "utf8");
   const { name, version } = JSON.parse(pkgSrc);
@@ -25,7 +22,7 @@ export default async function() {
       format: "umd",
       amd: { id: name },
       name: globalName[name],
-      banner: `/* ${name}@${version} */`,
+      banner: `/** ${name}@${version} */`,
     },
   };
-};
+}

@@ -3,16 +3,16 @@ import { FluentBundle } from "@fluent/bundle";
 export function mapBundleAsync(
   bundles: AsyncIterable<FluentBundle>,
   ids: string
-): Promise<FluentBundle | null>
+): Promise<FluentBundle | null>;
 
 export function mapBundleAsync(
   bundles: AsyncIterable<FluentBundle>,
   ids: Array<string>
 ): Promise<Array<FluentBundle | null>>;
 
-/*
+/**
  * Asynchronously map an identifier or an array of identifiers to the best
- * `FluentBundle` instance(s).
+ * {@link FluentBundle} instance(s).
  *
  * @param bundles - An iterable of bundles to sift through.
  * @param ids - An id or ids to map.

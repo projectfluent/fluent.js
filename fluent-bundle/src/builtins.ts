@@ -15,7 +15,7 @@ import {
   FluentValue,
   FluentNone,
   FluentNumber,
-  FluentDateTime
+  FluentDateTime,
 } from "./types.js";
 
 function values(
@@ -50,8 +50,8 @@ const NUMBER_ALLOWED = [
  *
  *     pi = The value of π is {NUMBER($pi, maximumFractionDigits: 2)}.
  *
- * The implementation expects an array of `FluentValues` representing the
- * positional arguments, and an object of named `FluentValues` representing the
+ * The implementation expects an array of {@link FluentValue | FluentValues} representing the
+ * positional arguments, and an object of named {@link FluentValue | FluentValues} representing the
  * named parameters.
  *
  * The following options are recognized:
@@ -83,13 +83,13 @@ export function NUMBER(
   if (arg instanceof FluentNumber) {
     return new FluentNumber(arg.valueOf(), {
       ...arg.opts,
-      ...values(opts, NUMBER_ALLOWED)
+      ...values(opts, NUMBER_ALLOWED),
     });
   }
 
   if (arg instanceof FluentDateTime) {
-    return new FluentNumber(arg.valueOf(), {
-      ...values(opts, NUMBER_ALLOWED)
+    return new FluentNumber(arg.toNumber(), {
+      ...values(opts, NUMBER_ALLOWED),
     });
   }
 
@@ -121,8 +121,8 @@ const DATETIME_ALLOWED = [
  *
  *     now = It's {DATETIME($today, month: "long")}.
  *
- * The implementation expects an array of `FluentValues` representing the
- * positional arguments, and an object of named `FluentValues` representing the
+ * The implementation expects an array of {@link FluentValue | FluentValues} representing the
+ * positional arguments, and an object of named {@link FluentValue | FluentValues} representing the
  * named parameters.
  *
  * The following options are recognized:
@@ -157,17 +157,8 @@ export function DATETIME(
     return new FluentNone(`DATETIME(${arg.valueOf()})`);
   }
 
-  if (arg instanceof FluentDateTime) {
-    return new FluentDateTime(arg.valueOf(), {
-      ...arg.opts,
-      ...values(opts, DATETIME_ALLOWED)
-    });
-  }
-
-  if (arg instanceof FluentNumber) {
-    return new FluentDateTime(arg.valueOf(), {
-      ...values(opts, DATETIME_ALLOWED)
-    });
+  if (arg instanceof FluentDateTime || arg instanceof FluentNumber) {
+    return new FluentDateTime(arg, values(opts, DATETIME_ALLOWED));
   }
 
   throw new TypeError("Invalid argument to DATETIME");

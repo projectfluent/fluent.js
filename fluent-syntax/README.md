@@ -3,7 +3,7 @@
 `@fluent/syntax` is a tooling library for parsing, serializing, and working
 with the Fluent syntax. It's part of [Project Fluent][].
 
-[Project Fluent]: https://projectfluent.org
+[project fluent]: https://projectfluent.org
 
 ## Installation
 
@@ -13,11 +13,10 @@ can install it from the npm registry or use it as a standalone script (as the
 
     npm install @fluent/syntax
 
-
 ## How to use
 
 ```javascript
-import {parse, Resource} from "@fluent/syntax";
+import { parse, Resource } from "@fluent/syntax";
 
 const res = parse(`
 -brand-name = Foo 3000

@@ -6,21 +6,23 @@ export interface WithLocalizationProps {
   getString(
     id: string,
     args?: Record<string, FluentVariable> | null,
-    fallback?: string): string;
+    fallback?: string
+  ): string;
 }
-
-type WithoutLocalizationProps<P> = Omit<P, keyof WithLocalizationProps>
-  & Partial<WithLocalizationProps>;
 
 export function withLocalization<P extends WithLocalizationProps>(
   Inner: ComponentType<P>
-): ComponentType<WithoutLocalizationProps<P>> {
-  function WithLocalization(props: WithoutLocalizationProps<P>): ReactElement {
+): ComponentType<
+  Omit<P, keyof WithLocalizationProps> & Partial<WithLocalizationProps>
+> {
+  function WithLocalization(
+    props: Omit<P, keyof WithLocalizationProps> & Partial<WithLocalizationProps>
+  ): ReactElement {
     const l10n = useContext(FluentContext);
     if (!l10n) {
       throw new Error(
-        "withLocalization was used without wrapping it in a "
-          + "<LocalizationProvider />."
+        "withLocalization was used without wrapping it in a " +
+          "<LocalizationProvider />."
       );
     }
     // Re-bind getString to trigger a re-render of Inner.

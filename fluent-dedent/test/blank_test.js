@@ -1,10 +1,8 @@
-"use strict";
-
 import assert from "assert";
 import ftl from "../esm/index.js";
 
-suite("blank lines", function() {
-  test("leading", function() {
+suite("blank lines", function () {
+  test("leading", function () {
     assert.strictEqual(
       ftl`
 
@@ -14,7 +12,7 @@ suite("blank lines", function() {
     );
   });
 
-  test("middle", function() {
+  test("middle", function () {
     assert.strictEqual(
       ftl`
         foo
@@ -25,7 +23,7 @@ suite("blank lines", function() {
     );
   });
 
-  test("trailing", function() {
+  test("trailing", function () {
     assert.strictEqual(
       ftl`
         foo
@@ -35,7 +33,7 @@ suite("blank lines", function() {
     );
   });
 
-  test("containing the same amount of spaces as the common indent", function() {
+  test("containing the same amount of spaces as the common indent", function () {
     assert.strictEqual(
       ftl`
       
@@ -44,7 +42,7 @@ suite("blank lines", function() {
     );
   });
 
-  test("containing too few spaces", function() {
+  test("containing too few spaces", function () {
     assert.throws(
       () => ftl`
   
@@ -53,7 +51,7 @@ suite("blank lines", function() {
     );
   });
 
-  test("containing too many spaces", function() {
+  test("containing too many spaces", function () {
     assert.strictEqual(
       ftl`
         

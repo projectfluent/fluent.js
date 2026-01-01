@@ -1,12 +1,10 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2018",
-    "module": "es2015",
-    "strict": true,
-    "allowJs": false,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "noEmitHelpers": true,
-    "declaration": true
+    "baseUrl": ".",
+    "paths": {
+      "@fluent/bundle": ["./fluent-bundle/src/index.ts"],
+      "@fluent/sequence": ["./fluent-sequence/src/index.ts"]
+    }
   }
 }

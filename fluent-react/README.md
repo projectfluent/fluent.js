@@ -2,8 +2,7 @@
 
 `@fluent/react` provides the React bindings for [Project Fluent][].
 
-[Project Fluent]: https://projectfluent.org
-
+[project fluent]: https://projectfluent.org
 
 ## Installation
 
@@ -12,7 +11,6 @@ can install it from the npm registry or use it as a standalone script (as the
 `FluentReact` global).
 
     npm install @fluent/react
-
 
 # Integrating with React apps
 
@@ -24,7 +22,7 @@ maximum flexibility, `@fluent/react` expects the developer to write a little
 bit of a setup code related to language negotiation and translation fetching.
 It makes `@fluent/react` unopinionated and suitable for many different
 scenarios. You will likely also need to install a few other packages:
-`@fluent/bundle`, `@fluent/langneg` and `intl-pluralrules`.
+`@fluent/bundle` and `@fluent/langneg`.
 
 Consult the [wiki][] for documentation on how to set up and use
 `@fluent/react`.

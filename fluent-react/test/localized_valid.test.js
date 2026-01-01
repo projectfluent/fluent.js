@@ -3,7 +3,7 @@ import TestRenderer from "react-test-renderer";
 import {
   ReactLocalization,
   LocalizationProvider,
-  Localized
+  Localized,
 } from "../esm/index.js";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
 
@@ -107,11 +107,31 @@ describe("Localized - validation", () => {
     expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
 
     expect(console.warn.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "[@fluent/react] Error: No id was provided for a <Localized /> component.",
+      [
+        [
+          "[@fluent/react] Error: No string id was provided when localizing a component.",
         ],
       ]
     `);
+  });
+
+  test("Calls provided logger function, instead of default, when no id is provided", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+    const mockReportError = jest.fn();
+    const renderer = TestRenderer.create(
+      <LocalizationProvider
+        l10n={new ReactLocalization([], null, mockReportError)}
+      >
+        <Localized>
+          <div />
+        </Localized>
+      </LocalizationProvider>
+    );
+
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`<div />`);
+    expect(console.warn.mock.calls).toMatchInlineSnapshot(`[]`);
+    expect(mockReportError).toHaveBeenCalledWith(
+      new Error("No string id was provided when localizing a component.")
+    );
   });
 });

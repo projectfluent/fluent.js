@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
+/** @category Parse */
 export class ParseError extends Error {
   public code: string;
   public args: Array<unknown>;
@@ -12,7 +13,6 @@ export class ParseError extends Error {
   }
 }
 
-/* eslint-disable complexity */
 function getErrorMessage(code: string, args: Array<unknown>): string {
   switch (code) {
     case "E0001":

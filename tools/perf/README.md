@@ -1,5 +1,4 @@
-Perf testing
-============
+# Perf testing
 
 Measure the performance impact of changes that you make to the fluent.js
 codebase.
@@ -7,16 +6,16 @@ codebase.
 Execution time is reported in milliseconds (ms).
 
 The script measures the speed of parsing, compilation and getting all entities
-from a resource file based on Firefox OS's [Settings localization file][].  The
+from a resource file based on Firefox OS's [Settings localization file][]. The
 file consists of ca. 500 entities, majority of which are simple key-value
-pairs.  This aims to immitate a real-life scenario in which only a handful of
+pairs. This aims to immitate a real-life scenario in which only a handful of
 entities make use of Project Fluent's advanced features.
 
-[Settings localization file]: https://github.com/mozilla-b2g/gaia/blob/v1.0.1/apps/settings/locales/settings.en-US.properties
+[settings localization file]: https://github.com/mozilla-b2g/gaia/blob/v1.0.1/apps/settings/locales/settings.en-US.properties
 
-  Usage: test.js [options] command
+Usage: test.js [options] command
 
-  Options:
+Options:
 
     -h, --help                 output usage information
     -V, --version              output the version number
@@ -28,13 +27,12 @@ entities make use of Project Fluent's advanced features.
     -c, --compare <reference>  Compare with a reference JSON
     -a, --alpha <float>        Significance level for the t-test [0.01]
 
-The `command` argument is the command that will be spawned via 
-`child_process.exec`.  This allows to reliably measure the speed over a big 
-sample of runs without triggering JIT compilation of the modern JavaScript 
-engines.  The command is always executed with `tools/perf` being the current 
-directory.  If not given, the value of `command` will be determined based on 
+The `command` argument is the command that will be spawned via
+`child_process.exec`. This allows to reliably measure the speed over a big
+sample of runs without triggering JIT compilation of the modern JavaScript
+engines. The command is always executed with `tools/perf` being the current
+directory. If not given, the value of `command` will be determined based on
 the value ot the `engine` argument.
-
 
 Examples:
 
@@ -45,29 +43,25 @@ Examples:
     ./test.js --compare ~/reference.js
     ./test.js "~/src/jsshell/js benchmark.jsshell.js"
 
+## Statistical significance
 
-Statistical significance
-------------------------
-
-You can save raw JSON output to a file to serve as a benchmark for future 
-measurements.  Afer you make edits to the codebase, re-run `perf` with 
+You can save raw JSON output to a file to serve as a benchmark for future
+measurements. Afer you make edits to the codebase, re-run `perf` with
 `--compare path/to/reference.json` to see relative changes of new means.
 
-The differences are tested for statistical significance with a two-sample 
-[t-test][] with a default significance level of 0.01.  If the difference is 
+The differences are tested for statistical significance with a two-sample
+[t-test][] with a default significance level of 0.01. If the difference is
 significant, it will be show in green (faster) or red (slower).
 
 ![Screenshot](http://i.imgur.com/74aE9LR.png)
 
 [t-test]: https://en.wikipedia.org/wiki/Student%27s_t-test
 
+## High Resolution Timer (HRT)
 
-High Resolution Timer (HRT)
----------------------------
-
-All numbers are reported in millisecods (ms) via node's 
-[process.hrtime][] or SpiderMonkey shell's [dateNow][].  This allows to 
-measure the time of a single operation.  
+All numbers are reported in millisecods (ms) via node's
+[process.hrtime][] or SpiderMonkey shell's [dateNow][]. This allows to
+measure the time of a single operation.
 
 [process.hrtime]: http://nodejs.org/api/process.html#process_process_hrtime
-[dateNow]: https://developer.mozilla.org/en-US/docs/SpiderMonkey/Hacking_Tips#Benchmarking_with_sub-milliseconds_%28JS_shell%29
+[datenow]: https://developer.mozilla.org/en-US/docs/SpiderMonkey/Hacking_Tips#Benchmarking_with_sub-milliseconds_%28JS_shell%29

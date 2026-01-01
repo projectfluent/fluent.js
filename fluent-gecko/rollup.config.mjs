@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 const vim = `/* vim: set ts=2 et sw=2 tw=80 filetype=javascript: */`;
 const license = `\
@@ -31,9 +31,9 @@ export default [
     output: {
       file: "dist/fluent-react.js",
       format: "cjs",
-      preferConst: true,
+      generatedCode: { constBindings: true },
       banner: license,
-      intro: `/* fluent-react@${reactPkg.version} */`,
+      intro: `/** fluent-react@${reactPkg.version} */`,
     },
     context: "this",
     external: ["react"],
@@ -45,9 +45,9 @@ export default [
       file: "dist/FluentSyntax.jsm",
       format: "es",
       freeze: false,
-      preferConst: true,
+      generatedCode: { constBindings: true },
       banner: `${vim}\n\n${license}`,
-      intro: `/* fluent-syntax@${syntaxPkg.version} */`,
+      intro: `/** fluent-syntax@${syntaxPkg.version} */`,
     },
     context: "this",
     treeshake: false,

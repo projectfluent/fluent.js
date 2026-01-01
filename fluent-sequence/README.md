@@ -4,8 +4,7 @@
 `FluentBundle` instances taken from synchronous or asynchronous sequences.
 It's part of [Project Fluent][].
 
-[Project Fluent]: https://projectfluent.org
-
+[project fluent]: https://projectfluent.org
 
 ## Installation
 
@@ -14,7 +13,6 @@ You can install it from the npm registry or use it as a standalone script (as
 the `FluentSequence` global).
 
     npm install @fluent/sequence
-
 
 ## How to use
 
@@ -32,18 +30,18 @@ A simple function which formats translations based on the identifier might
 be implemented as follows:
 
 ```js
-import {mapBundleSync} from "@fluent/sequence";
+import { mapBundleSync } from "@fluent/sequence";
 
 function formatString(id, args) {
-    // contexts is a negotiated iterable of FluentBundle instances.
-    let ctx = mapBundleSync(contexts, id);
+  // contexts is a negotiated iterable of FluentBundle instances.
+  let ctx = mapBundleSync(contexts, id);
 
-    if (ctx === null) {
-        return id;
-    }
+  if (ctx === null) {
+    return id;
+  }
 
-    let msg = ctx.getMessage(id);
-    return ctx.format(msg, args);
+  let msg = ctx.getMessage(id);
+  return ctx.format(msg, args);
 }
 ```
 
