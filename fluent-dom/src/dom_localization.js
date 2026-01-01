@@ -294,7 +294,7 @@ export default class DOMLocalization extends Localization {
       return undefined;
     }
 
-    const keys = elements.map(this.getKeysForElement);
+    const keys = elements.map(this.getAttributes);
     const translations = await this.formatMessages(keys);
     return this.applyTranslations(elements, translations);
   }
@@ -336,20 +336,5 @@ export default class DOMLocalization extends Localization {
     }
 
     return nodes;
-  }
-
-  /**
-   * Get the `data-l10n-*` attributes from DOM elements as a two-element
-   * array.
-   *
-   * @param {Element} element
-   * @returns {Object}
-   * @private
-   */
-  getKeysForElement(element) {
-    return {
-      id: element.getAttribute(L10NID_ATTR_NAME),
-      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null),
-    };
   }
 }
