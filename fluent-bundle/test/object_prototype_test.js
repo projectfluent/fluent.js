@@ -26,7 +26,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$constructor}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null prototype", function () {
@@ -60,7 +60,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$hasOwnProperty}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null prototype", function () {
@@ -94,7 +94,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$isPrototypeOf}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null prototype", function () {
@@ -128,7 +128,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$propertyIsEnumerable}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null prototype", function () {
@@ -166,7 +166,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$toLocaleString}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null prototype", function () {
@@ -200,7 +200,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$toString}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null prototype", function () {
@@ -234,7 +234,7 @@ suite("Interesting Object properties", function () {
       const val = bundle.formatPattern(msg.value, {}, errs);
       assert.strictEqual(val, "{$valueOf}");
       assert.strictEqual(errs.length, 1);
-      assert(errs[0] instanceof ReferenceError); // unknown variable
+      assert(errs[0] instanceof TypeError); // variable type not supported
     });
 
     test("empty args with null property", function () {
