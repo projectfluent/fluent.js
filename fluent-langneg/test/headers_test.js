@@ -37,7 +37,7 @@ suite("parse headers", () => {
       acceptedLanguages(
         "en;q=no, fr;z=0.9, de;q=0.7;q=9, *;q=0.5, fr-CH;q=a=0.1"
       ),
-      ["fr", "fr-CH", "de", "*", "en"]
+      ["fr", "de", "*", "en", "fr-CH"]
     );
   });
 
