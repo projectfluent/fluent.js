@@ -28,6 +28,7 @@ export type FluentVariable =
   | TemporalObject
   | string
   | number
+  | boolean
   | Date;
 
 export type FluentFunction = (
