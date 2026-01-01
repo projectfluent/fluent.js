@@ -90,9 +90,16 @@ export class DOMLocalization extends Localization {
   setAttributes(
     element: Element,
     id: string,
-    args: Record<string, string>
+    args?: Record<string, string>
   ): Element {
     element.setAttribute(L10NID_ATTR_NAME, id);
+    return this.setArgs(element, args);
+  }
+
+  /**
+   * Set only the `data-l10n-args` attribute on a DOM element.
+   */
+  setArgs(element: Element, args?: Record<string, string>): Element {
     if (args) {
       element.setAttribute(L10NARGS_ATTR_NAME, JSON.stringify(args));
     } else {
