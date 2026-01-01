@@ -1,6 +1,6 @@
 import assert from "assert";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import DOMLocalization from "../src/dom_localization.js";
+import { DOMLocalization } from "../src/dom_localization.ts";
 import { vi } from "vitest";
 
 async function* mockGenerateMessages() {

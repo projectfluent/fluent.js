@@ -1,5 +1,10 @@
+import type { FluentBundle } from "@fluent/bundle";
+import {
+  Localization,
+  type FormattedMessage,
+  type MessageKey,
+} from "./localization.js";
 import translateElement from "./overlay.js";
-import Localization from "./localization.js";
 
 const L10NID_ATTR_NAME = "data-l10n-id";
 const L10NARGS_ATTR_NAME = "data-l10n-args";
@@ -14,37 +19,36 @@ const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
  * formatting of translations and methods for observing DOM
  * trees with a `MutationObserver`.
  */
-export default class DOMLocalization extends Localization {
-  /**
-   * @param {Array<String>}    resourceIds     - List of resource IDs
-   * @param {Function}         generateBundles - Function that returns a
-   *                                             generator over FluentBundles
-   * @returns {DOMLocalization}
-   */
-  constructor(resourceIds, generateBundles) {
+export class DOMLocalization extends Localization {
+  // A Set of DOM trees observed by the `MutationObserver`.
+  roots = new Set<Element | DocumentFragment>();
+
+  // requestAnimationFrame handler.
+  pendingrAF: number | null = null;
+
+  pendingElements = new Set<Element>();
+  windowElement: (Window & typeof globalThis) | null = null;
+  mutationObserver: MutationObserver | null = null;
+
+  observerConfig = {
+    attributes: true,
+    characterData: false,
+    childList: true,
+    subtree: true,
+    attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME],
+  };
+
+  constructor(
+    resourceIds: string[],
+    generateBundles: (resourceIds: string[]) => Iterable<FluentBundle>
+  ) {
     super(resourceIds, generateBundles);
-
-    // A Set of DOM trees observed by the `MutationObserver`.
-    this.roots = new Set();
-    // requestAnimationFrame handler.
-    this.pendingrAF = null;
-    // list of elements pending for translation.
-    this.pendingElements = new Set();
-    this.windowElement = null;
-    this.mutationObserver = null;
-
-    this.observerConfig = {
-      attributes: true,
-      characterData: false,
-      childList: true,
-      subtree: true,
-      attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME],
-    };
   }
 
-  onChange(eager = false) {
+  onChange(eager = false): void {
     super.onChange(eager);
     if (this.roots) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.translateRoots();
     }
   }
@@ -79,12 +83,15 @@ export default class DOMLocalization extends Localization {
    * </p>
    * ```
    *
-   * @param {Element}                element - Element to set attributes on
-   * @param {string}                 id      - l10n-id string
-   * @param {Object<string, string>} args    - KVP list of l10n arguments
-   * @returns {Element}
+   * @param element - Element to set attributes on
+   * @param id      - l10n-id string
+   * @param args    - KVP list of l10n arguments
    */
-  setAttributes(element, id, args) {
+  setAttributes(
+    element: Element,
+    id: string,
+    args: Record<string, string>
+  ): Element {
     element.setAttribute(L10NID_ATTR_NAME, id);
     if (args) {
       element.setAttribute(L10NARGS_ATTR_NAME, JSON.stringify(args));
@@ -103,14 +110,15 @@ export default class DOMLocalization extends Localization {
    * );
    * // -> { id: 'hello', args: { who: 'world' } }
    * ```
-   *
-   * @param   {Element}  element - HTML element
-   * @returns {{id: string, args: Object}}
    */
-  getAttributes(element) {
+  getAttributes(element: Element): {
+    id: string | null;
+    args: Record<string, unknown> | null;
+  } {
+    const args = element.getAttribute(L10NARGS_ATTR_NAME);
     return {
       id: element.getAttribute(L10NID_ATTR_NAME),
-      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null),
+      args: args ? (JSON.parse(args) as Record<string, unknown>) : null,
     };
   }
 
@@ -119,10 +127,8 @@ export default class DOMLocalization extends Localization {
    *
    * Additionally, if this `DOMLocalization` has an observer, start observing
    * `newRoot` in order to translate mutations in it.
-   *
-   * @param {Element | DocumentFragment}      newRoot - Root to observe.
    */
-  connectRoot(newRoot) {
+  connectRoot(newRoot: Element | DocumentFragment): void {
     for (const root of this.roots) {
       if (
         root === newRoot ||
@@ -140,13 +146,13 @@ export default class DOMLocalization extends Localization {
       }
     } else {
       this.windowElement = newRoot.ownerDocument.defaultView;
-      this.mutationObserver = new this.windowElement.MutationObserver(
+      this.mutationObserver = new this.windowElement!.MutationObserver(
         mutations => this.translateMutations(mutations)
       );
     }
 
     this.roots.add(newRoot);
-    this.mutationObserver.observe(newRoot, this.observerConfig);
+    this.mutationObserver!.observe(newRoot, this.observerConfig);
   }
 
   /**
@@ -157,11 +163,8 @@ export default class DOMLocalization extends Localization {
    *
    * Returns `true` if the root was the last one managed by this
    * `DOMLocalization`.
-   *
-   * @param   {Element | DocumentFragment} root - Root to disconnect.
-   * @returns {boolean}
    */
-  disconnectRoot(root) {
+  disconnectRoot(root: Element | DocumentFragment): boolean {
     this.roots.delete(root);
     // Pause the mutation observer to stop observing `root`.
     this.pauseObserving();
@@ -187,7 +190,7 @@ export default class DOMLocalization extends Localization {
    *
    * @returns {Promise}
    */
-  translateRoots() {
+  translateRoots(): Promise<void[]> {
     const roots = Array.from(this.roots);
     return Promise.all(roots.map(root => this.translateFragment(root)));
   }
@@ -195,7 +198,7 @@ export default class DOMLocalization extends Localization {
   /**
    * Pauses the `MutationObserver`.
    */
-  pauseObserving() {
+  pauseObserving(): void {
     if (!this.mutationObserver) {
       return;
     }
@@ -207,7 +210,7 @@ export default class DOMLocalization extends Localization {
   /**
    * Resumes the `MutationObserver`.
    */
-  resumeObserving() {
+  resumeObserving(): void {
     if (!this.mutationObserver) {
       return;
     }
@@ -219,19 +222,19 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Translate mutations detected by the `MutationObserver`.
-   *
-   * @private
    */
-  translateMutations(mutations) {
+  private translateMutations(mutations: MutationRecord[]): void {
     for (const mutation of mutations) {
       switch (mutation.type) {
-        case "attributes":
-          if (mutation.target.hasAttribute("data-l10n-id")) {
-            this.pendingElements.add(mutation.target);
+        case "attributes": {
+          const target = mutation.target as HTMLElement;
+          if (target.hasAttribute("data-l10n-id")) {
+            this.pendingElements.add(target);
           }
           break;
+        }
         case "childList":
-          for (const addedNode of mutation.addedNodes) {
+          for (const addedNode of mutation.addedNodes as NodeListOf<HTMLElement>) {
             if (addedNode.nodeType === addedNode.ELEMENT_NODE) {
               if (addedNode.childElementCount) {
                 for (const element of this.getTranslatables(addedNode)) {
@@ -250,7 +253,8 @@ export default class DOMLocalization extends Localization {
     // into a single requestAnimationFrame.
     if (this.pendingElements.size > 0) {
       if (this.pendingrAF === null) {
-        this.pendingrAF = this.windowElement.requestAnimationFrame(() => {
+        this.pendingrAF = this.windowElement!.requestAnimationFrame(() => {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.translateElements(Array.from(this.pendingElements));
           this.pendingElements.clear();
           this.pendingrAF = null;
@@ -269,10 +273,10 @@ export default class DOMLocalization extends Localization {
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
    *
-   * @param   {Element | DocumentFragment} frag - Element or DocumentFragment to be translated
+   * @param   {} frag - Element or DocumentFragment to be translated
    * @returns {Promise}
    */
-  translateFragment(frag) {
+  translateFragment(frag: Element | DocumentFragment): Promise<void> {
     return this.translateElements(this.getTranslatables(frag));
   }
 
@@ -285,28 +289,25 @@ export default class DOMLocalization extends Localization {
    * with information about which translations to use.
    *
    * Returns a `Promise` that gets resolved once the translation is complete.
-   *
-   * @param   {Array<Element>} elements - List of elements to be translated
-   * @returns {Promise}
    */
-  async translateElements(elements) {
+  async translateElements(elements: Element[]): Promise<void> {
     if (!elements.length) {
       return undefined;
     }
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const keys = elements.map(this.getAttributes);
-    const translations = await this.formatMessages(keys);
+    const translations = await this.formatMessages(keys as MessageKey[]);
     return this.applyTranslations(elements, translations);
   }
 
   /**
    * Applies translations onto elements.
-   *
-   * @param {Array<Element>} elements
-   * @param {Array<Object>}  translations
-   * @private
    */
-  applyTranslations(elements, translations) {
+  private applyTranslations(
+    elements: Element[],
+    translations: FormattedMessage[]
+  ): void {
     this.pauseObserving();
 
     for (let i = 0; i < elements.length; i++) {
@@ -320,18 +321,11 @@ export default class DOMLocalization extends Localization {
 
   /**
    * Collects all translatable child elements of the element.
-   *
-   * @param {Element | DocumentFragment} element
-   * @returns {Array<Element>}
-   * @private
    */
-  getTranslatables(element) {
+  private getTranslatables(element: Element | DocumentFragment): Element[] {
     const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
 
-    if (
-      typeof element.hasAttribute === "function" &&
-      element.hasAttribute(L10NID_ATTR_NAME)
-    ) {
+    if (element instanceof Element && element.hasAttribute(L10NID_ATTR_NAME)) {
       nodes.push(element);
     }
 
