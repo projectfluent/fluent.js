@@ -1,4 +1,4 @@
-import { Locale } from "./locale.js";
+import { LocaleWrapper } from "./locale.js";
 
 /**
  * Negotiates the languages between the list of requested locales against
@@ -75,137 +75,190 @@ export function filterMatches(
   availableLocales: Array<string>,
   strategy: string
 ): Array<string> {
-  const supportedLocales: Set<string> = new Set();
-  const availableLocalesMap: Map<string, Locale> = new Map();
+  const supportedLocales = new Set<string>();
+  const availableLocalesMap = new Map<string, LocaleWrapper>();
 
   for (let locale of availableLocales) {
-    let newLocale = new Locale(locale);
-    if (newLocale.isWellFormed) {
-      availableLocalesMap.set(locale, new Locale(locale));
+    try {
+      availableLocalesMap.set(locale, new LocaleWrapper(locale));
+    } catch {
+      continue;
     }
   }
 
-  outer: for (const reqLocStr of requestedLocales) {
-    const reqLocStrLC = reqLocStr.toLowerCase();
-    const requestedLocale = new Locale(reqLocStrLC);
-
-    if (requestedLocale.language === undefined) {
+  outer: for (const reqTag of requestedLocales) {
+    let requested: LocaleWrapper;
+    try {
+      requested = new LocaleWrapper(reqTag);
+    } catch {
       continue;
     }
 
     // 1) Attempt to make an exact match
     // Example: `en-US` === `en-US`
+    const reqTagLowerCase = reqTag.toLowerCase();
     for (const key of availableLocalesMap.keys()) {
-      if (reqLocStrLC === key.toLowerCase()) {
+      if (reqTagLowerCase === key.toLowerCase()) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
-        if (strategy === "lookup") {
-          return Array.from(supportedLocales);
-        } else if (strategy === "filtering") {
-          continue;
-        } else {
-          continue outer;
+        switch (strategy) {
+          case "lookup":
+            break outer;
+          case "filtering":
+            continue;
+          default:
+            continue outer;
         }
       }
     }
 
+    const reqVariants = requested.variants;
+
     // 2) Attempt to match against the available range
-    // This turns `en` into `en-*-*-*` and `en-US` into `en-*-US-*`
     // Example: ['en-US'] * ['en'] = ['en']
-    for (const [key, availableLocale] of availableLocalesMap.entries()) {
-      if (availableLocale.matches(requestedLocale, true, false)) {
+    for (const [key, available] of availableLocalesMap) {
+      if (
+        languagesMatch(available, requested, false) &&
+        scriptsMatch(available, requested, false) &&
+        regionsMatch(available, requested, false) &&
+        (available.variants === reqVariants || available.variants === undefined)
+      ) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
-        if (strategy === "lookup") {
-          return Array.from(supportedLocales);
-        } else if (strategy === "filtering") {
-          continue;
-        } else {
-          continue outer;
+        switch (strategy) {
+          case "lookup":
+            break outer;
+          case "filtering":
+            continue;
+          default:
+            continue outer;
         }
       }
     }
 
     // 3) Attempt to retrieve a maximal version of the requested locale ID
-    // If data is available, it'll expand `en` into `en-Latn-US` and
-    // `zh` into `zh-Hans-CN`.
+    // It'll expand `en` into `en-Latn-US` and `zh` into `zh-Hans-CN`.
     // Example: ['en'] * ['en-GB', 'en-US'] = ['en-US']
-    if (requestedLocale.addLikelySubtags()) {
-      for (const [key, availableLocale] of availableLocalesMap.entries()) {
-        if (availableLocale.matches(requestedLocale, true, false)) {
-          supportedLocales.add(key);
-          availableLocalesMap.delete(key);
-          if (strategy === "lookup") {
-            return Array.from(supportedLocales);
-          } else if (strategy === "filtering") {
+    requested = requested.maximize();
+
+    for (const [key, available] of availableLocalesMap) {
+      if (
+        languagesMatch(available, requested, false) &&
+        scriptsMatch(available, requested, false) &&
+        regionsMatch(available, requested, false) &&
+        (available.variants === reqVariants || available.variants === undefined)
+      ) {
+        supportedLocales.add(key);
+        availableLocalesMap.delete(key);
+        switch (strategy) {
+          case "lookup":
+            break outer;
+          case "filtering":
             continue;
-          } else {
+          default:
             continue outer;
-          }
         }
       }
     }
 
     // 4) Attempt to look up for a different variant for the same locale ID
     // Example: ['en-US-mac'] * ['en-US-win'] = ['en-US-win']
-    requestedLocale.clearVariants();
-
-    for (const [key, availableLocale] of availableLocalesMap.entries()) {
-      if (availableLocale.matches(requestedLocale, true, true)) {
+    for (const [key, available] of availableLocalesMap) {
+      if (
+        languagesMatch(available, requested, true) &&
+        scriptsMatch(available, requested, true) &&
+        regionsMatch(available, requested, true)
+      ) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
-        if (strategy === "lookup") {
-          return Array.from(supportedLocales);
-        } else if (strategy === "filtering") {
-          continue;
-        } else {
-          continue outer;
+        switch (strategy) {
+          case "lookup":
+            break outer;
+          case "filtering":
+            continue;
+          default:
+            continue outer;
         }
       }
     }
 
     // 5) Attempt to match against the likely subtag without region
-    // In the example below, addLikelySubtags will turn
+    // In the example below, maximize() will turn
     // `zh-Hant` into `zh-Hant-TW` giving `zh-TW` priority match
     // over `zh-CN`.
     //
     // Example: ['zh-Hant-HK'] * ['zh-TW', 'zh-CN'] = ['zh-TW']
-    requestedLocale.clearRegion();
+    requested = new Intl.Locale(requested.language, {
+      script: requested.script,
+    }).maximize();
 
-    if (requestedLocale.addLikelySubtags()) {
-      for (const [key, availableLocale] of availableLocalesMap.entries()) {
-        if (availableLocale.matches(requestedLocale, true, false)) {
-          supportedLocales.add(key);
-          availableLocalesMap.delete(key);
-          if (strategy === "lookup") {
-            return Array.from(supportedLocales);
-          } else if (strategy === "filtering") {
+    for (const [key, available] of availableLocalesMap) {
+      if (
+        languagesMatch(available, requested, false) &&
+        scriptsMatch(available, requested, false) &&
+        regionsMatch(available, requested, false)
+      ) {
+        supportedLocales.add(key);
+        availableLocalesMap.delete(key);
+        switch (strategy) {
+          case "lookup":
+            break outer;
+          case "filtering":
             continue;
-          } else {
+          default:
             continue outer;
-          }
         }
       }
     }
 
     // 6) Attempt to look up for a different region for the same locale ID
     // Example: ['en-US'] * ['en-AU'] = ['en-AU']
-    requestedLocale.clearRegion();
-
-    for (const [key, availableLocale] of availableLocalesMap.entries()) {
-      if (availableLocale.matches(requestedLocale, true, true)) {
+    for (const [key, available] of availableLocalesMap) {
+      if (
+        languagesMatch(available, requested, true) &&
+        scriptsMatch(available, requested, true)
+      ) {
         supportedLocales.add(key);
         availableLocalesMap.delete(key);
-        if (strategy === "lookup") {
-          return Array.from(supportedLocales);
-        } else if (strategy === "filtering") {
-          continue;
-        } else {
-          continue outer;
+        switch (strategy) {
+          case "lookup":
+            break outer;
+          case "filtering":
+            continue;
+          default:
+            continue outer;
         }
       }
     }
   }
 
   return Array.from(supportedLocales);
+}
+
+function languagesMatch(
+  a: Intl.Locale,
+  b: Intl.Locale,
+  range = false
+): boolean {
+  return (
+    a.language === b.language ||
+    a.language === "und" ||
+    (range && b.language === "und")
+  );
+}
+
+function scriptsMatch(a: Intl.Locale, b: Intl.Locale, range = false): boolean {
+  return (
+    a.script === b.script ||
+    a.script === undefined ||
+    (range && b.script === undefined)
+  );
+}
+
+function regionsMatch(a: Intl.Locale, b: Intl.Locale, range = false): boolean {
+  return (
+    a.region === b.region ||
+    a.region === undefined ||
+    (range && b.region === undefined)
+  );
 }
