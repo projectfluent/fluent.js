@@ -1,6 +1,6 @@
-import { FluentBundle } from "./bundle.js";
-import { ComplexPattern } from "./ast.js";
-import { FluentVariable } from "./types.js";
+import type { FluentBundle } from "./bundle.js";
+import type { MessageReference, TermReference } from "./ast.js";
+import type { FluentVariable } from "./types.js";
 
 export class Scope {
   /** The bundle for which the given resolution is happening. */
@@ -14,7 +14,7 @@ export class Scope {
    * Used to detect and prevent cyclic resolutions.
    * @ignore
    */
-  public dirty: WeakSet<ComplexPattern> = new WeakSet();
+  public dirty: WeakSet<MessageReference | TermReference> = new WeakSet();
   /** A dict of parameters passed to a TermReference. */
   public params: Record<string, FluentVariable> | null = null;
   /**

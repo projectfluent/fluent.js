@@ -195,8 +195,16 @@ function resolveVariableReference(
 /** Resolve a reference to another message. */
 function resolveMessageReference(
   scope: Scope,
-  { name, attr }: MessageReference
+  ref: MessageReference
 ): FluentValue {
+  const { name, attr } = ref;
+
+  if (scope.dirty.has(ref)) {
+    scope.reportError(new RangeError("Cyclic reference"));
+    return new FluentNone(name);
+  }
+  scope.dirty.add(ref);
+
   const message = scope.bundle._messages.get(name);
   if (!message) {
     scope.reportError(new ReferenceError(`Unknown message: ${name}`));
@@ -221,11 +229,16 @@ function resolveMessageReference(
 }
 
 /** Resolve a call to a Term with key-value arguments. */
-function resolveTermReference(
-  scope: Scope,
-  { name, attr, args }: TermReference
-): FluentValue {
+function resolveTermReference(scope: Scope, ref: TermReference): FluentValue {
+  const { name, attr, args } = ref;
   const id = `-${name}`;
+
+  if (scope.dirty.has(ref)) {
+    scope.reportError(new RangeError("Cyclic reference"));
+    return new FluentNone(id);
+  }
+  scope.dirty.add(ref);
+
   const term = scope.bundle._terms.get(id);
   if (!term) {
     scope.reportError(new ReferenceError(`Unknown term: ${id}`));
@@ -304,13 +317,6 @@ export function resolveComplexPattern(
   scope: Scope,
   ptn: ComplexPattern
 ): FluentValue {
-  if (scope.dirty.has(ptn)) {
-    scope.reportError(new RangeError("Cyclic reference"));
-    return new FluentNone();
-  }
-
-  // Tag the pattern as dirty for the purpose of the current resolution.
-  scope.dirty.add(ptn);
   const result = [];
 
   // Wrap interpolations with Directional Isolate Formatting characters
@@ -325,7 +331,6 @@ export function resolveComplexPattern(
 
     scope.placeables++;
     if (scope.placeables > MAX_PLACEABLES) {
-      scope.dirty.delete(ptn);
       // This is a fatal error which causes the resolver to instantly bail out
       // on this pattern. The length check protects against excessive memory
       // usage, and throwing protects against eating up the CPU when long
@@ -347,7 +352,6 @@ export function resolveComplexPattern(
     }
   }
 
-  scope.dirty.delete(ptn);
   return result.join("");
 }
 
