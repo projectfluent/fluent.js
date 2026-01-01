@@ -1,7 +1,22 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global console */
 
+// @ts-expect-error Ignore types
 import { CachedAsyncIterable } from "cached-iterable";
+
+import type { FluentBundle, FluentVariable, Message } from "@fluent/bundle";
+
+export type MessageKey = { id: string; args?: Record<string, FluentVariable> };
+export type FormatMethod<T> = (
+  bundle: FluentBundle,
+  messageErrors: Error[],
+  message: Message,
+  args: Record<string, FluentVariable> | undefined
+) => T;
+export type FormattedMessage = {
+  value: string | null;
+  attributes: Array<{ name: string; value: string }> | null;
+};
 
 /**
  * The `Localization` class is a central high-level API for vanilla
@@ -9,27 +24,27 @@ import { CachedAsyncIterable } from "cached-iterable";
  * It combines language negotiation, FluentBundle and I/O to
  * provide a scriptable API to format translations.
  */
-export default class Localization {
-  /**
-   * @param {Array<String>} resourceIds     - List of resource IDs
-   * @param {Function}      generateBundles - Function that returns a
-   *                                          generator over FluentBundles
-   *
-   * @returns {Localization}
-   */
-  constructor(resourceIds = [], generateBundles) {
+export class Localization {
+  declare bundles: AsyncIterable<FluentBundle>;
+  resourceIds: string[];
+  generateBundles: (resourceIds: string[]) => Iterable<FluentBundle>;
+
+  constructor(
+    resourceIds: string[] = [],
+    generateBundles: (resourceIds: string[]) => Iterable<FluentBundle>
+  ) {
     this.resourceIds = resourceIds;
     this.generateBundles = generateBundles;
     this.onChange(true);
   }
 
-  addResourceIds(resourceIds, eager = false) {
+  addResourceIds(resourceIds: string[], eager = false): number {
     this.resourceIds.push(...resourceIds);
     this.onChange(eager);
     return this.resourceIds.length;
   }
 
-  removeResourceIds(resourceIds) {
+  removeResourceIds(resourceIds: string[]): number {
     this.resourceIds = this.resourceIds.filter(r => !resourceIds.includes(r));
     this.onChange();
     return this.resourceIds.length;
@@ -41,14 +56,12 @@ export default class Localization {
    * Format translations for `keys` from `FluentBundle` instances on this
    * DOMLocalization. In case of errors, fetch the next context in the
    * fallback chain.
-   *
-   * @param   {Array<Object>}         keys    - Translation keys to format.
-   * @param   {Function}              method  - Formatting function.
-   * @returns {Promise<Array<string|Object>>}
-   * @private
    */
-  async formatWithFallback(keys, method) {
-    const translations = [];
+  private async formatWithFallback<T>(
+    keys: MessageKey[],
+    method: FormatMethod<T>
+  ): Promise<T[]> {
+    const translations: T[] = [];
     let hasAtLeastOneBundle = false;
 
     for await (const bundle of this.bundles) {
@@ -99,12 +112,8 @@ export default class Localization {
    * //   }
    * // ]
    * ```
-   *
-   * @param   {Array<Object>} keys
-   * @returns {Promise<Array<{value: string, attributes: Object}>>}
-   * @private
    */
-  formatMessages(keys) {
+  formatMessages(keys: MessageKey[]): Promise<FormattedMessage[]> {
     return this.formatWithFallback(keys, messageFromBundle);
   }
 
@@ -126,11 +135,8 @@ export default class Localization {
    *
    * // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
    * ```
-   *
-   * @param   {Array<Object>} keys
-   * @returns {Promise<Array<string>>}
    */
-  formatValues(keys) {
+  formatValues(keys: MessageKey[]): Promise<Array<string | null>> {
     return this.formatWithFallback(keys, valueFromBundle);
   }
 
@@ -154,17 +160,16 @@ export default class Localization {
    *
    * // 'Hello, world!'
    * ```
-   *
-   * @param   {string}  id     - Identifier of the translation to format
-   * @param   {Object}  [args] - Optional external arguments
-   * @returns {Promise<string>}
    */
-  async formatValue(id, args) {
+  async formatValue(
+    id: string,
+    args?: Record<string, FluentVariable>
+  ): Promise<string | null> {
     const [val] = await this.formatValues([{ id, args }]);
     return val;
   }
 
-  handleEvent() {
+  handleEvent(): void {
     this.onChange();
   }
 
@@ -172,11 +177,14 @@ export default class Localization {
    * This method should be called when there's a reason to believe
    * that language negotiation or available resources changed.
    */
-  onChange(eager = false) {
+  onChange(eager = false): void {
+    // eslint-disable-next-line
     this.bundles = CachedAsyncIterable.from(
       this.generateBundles(this.resourceIds)
     );
     if (eager) {
+      // @ts-expect-error cached-iterable is not typed
+      // eslint-disable-next-line
       this.bundles.touchNext(2);
     }
   }
@@ -190,14 +198,14 @@ export default class Localization {
  *
  * If the message doesn't have a value, return `null`.
  *
- * @param   {FluentBundle} bundle
- * @param   {Array<Error>} errors
- * @param   {Object} message
- * @param   {Object} args
- * @returns {string|null}
  * @private
  */
-function valueFromBundle(bundle, errors, message, args) {
+function valueFromBundle(
+  bundle: FluentBundle,
+  errors: Error[],
+  message: Message,
+  args: Record<string, FluentVariable> | undefined
+): string | null {
   if (message.value) {
     return bundle.formatPattern(message.value, args, errors);
   }
@@ -214,15 +222,15 @@ function valueFromBundle(bundle, errors, message, args) {
  * The function will return an object with a value and attributes of the
  * entity.
  *
- * @param   {FluentBundle} bundle
- * @param   {Array<Error>} errors
- * @param   {Object} message
- * @param   {Object} args
- * @returns {Object}
  * @private
  */
-function messageFromBundle(bundle, errors, message, args) {
-  const formatted = {
+function messageFromBundle(
+  bundle: FluentBundle,
+  errors: Error[],
+  message: Message,
+  args: Record<string, FluentVariable> | undefined
+): FormattedMessage {
+  const formatted: FormattedMessage = {
     value: null,
     attributes: null,
   };
@@ -267,17 +275,16 @@ function messageFromBundle(bundle, errors, message, args) {
  *
  * See `Localization.formatWithFallback` for more info on how this is used.
  *
- * @param {Function}       method
- * @param {FluentBundle} bundle
- * @param {Array<string>}  keys
- * @param {{Array<{value: string, attributes: Object}>}} translations
- *
- * @returns {Set<string>}
  * @private
  */
-function keysFromBundle(method, bundle, keys, translations) {
-  const messageErrors = [];
-  const missingIds = new Set();
+function keysFromBundle<T>(
+  method: FormatMethod<T>,
+  bundle: FluentBundle,
+  keys: MessageKey[],
+  translations: T[]
+): Set<string> {
+  const messageErrors: Error[] = [];
+  const missingIds = new Set<string>();
 
   keys.forEach(({ id, args }, i) => {
     if (translations[i] !== undefined) {

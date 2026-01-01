@@ -1,5 +1,5 @@
 import assert from "assert";
-import translateElement from "../src/overlay.js";
+import translateElement from "../src/overlay.ts";
 import { elem } from "./util.js";
 import { beforeAll, vi } from "vitest";
 
