@@ -6,7 +6,9 @@ import { CachedAsyncIterable } from "cached-iterable";
 
 import type { FluentBundle, FluentVariable, Message } from "@fluent/bundle";
 
-export type MessageKey = { id: string; args?: Record<string, FluentVariable> };
+export type MessageKey =
+  | string
+  | { id: string; args?: Record<string, FluentVariable> };
 export type FormatMethod<T> = (
   bundle: FluentBundle,
   messageErrors: Error[],
@@ -286,9 +288,19 @@ function keysFromBundle<T>(
   const messageErrors: Error[] = [];
   const missingIds = new Set<string>();
 
-  keys.forEach(({ id, args }, i) => {
+  keys.forEach((key, i) => {
     if (translations[i] !== undefined) {
       return;
+    }
+
+    let id: string;
+    let args: Record<string, FluentVariable> | undefined;
+    if (typeof key === "string") {
+      id = key;
+      args = undefined;
+    } else {
+      id = key.id;
+      args = key.args;
     }
 
     let message = bundle.getMessage(id);

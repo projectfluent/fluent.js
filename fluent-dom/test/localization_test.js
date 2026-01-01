@@ -1,7 +1,6 @@
-import assert from "assert";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
+import { afterEach, beforeAll, expect, vi } from "vitest";
 import { Localization } from "../src/localization.ts";
-import { vi } from "vitest";
 
 async function* mockGenerateMessages() {
   const bundle = new FluentBundle(["en-US"]);
@@ -10,21 +9,35 @@ async function* mockGenerateMessages() {
   yield bundle;
 }
 
-suite("formatMessages", function () {
-  test("returns a translation", async function () {
-    const loc = new Localization(["test.ftl"], mockGenerateMessages);
-    const translations = await loc.formatMessages([{ id: "key1" }]);
+beforeAll(() => vi.spyOn(console, "warn").mockImplementation(() => {}));
+afterEach(vi.clearAllMocks);
 
-    assert.strictEqual(translations[0].value, "Key 1");
+for (const [name, keys] of [
+  ["string keys", ["missing_key", "key1"]],
+  ["object keys", [{ id: "missing_key" }, { id: "key1" }]],
+]) {
+  suite(name, () => {
+    test("formatMessages", async function () {
+      const loc = new Localization(["test.ftl"], mockGenerateMessages);
+      const translations = await loc.formatMessages(keys);
+
+      expect(translations).toEqual([
+        undefined,
+        { value: "Key 1", attributes: null },
+      ]);
+      expect(console.warn.mock.calls).toEqual([
+        ["[fluent] Missing translations in en-US: missing_key"],
+      ]);
+    });
+
+    test("formatValues", async function () {
+      const loc = new Localization(["test.ftl"], mockGenerateMessages);
+      const translations = await loc.formatValues(keys);
+
+      expect(translations).toEqual([undefined, "Key 1"]);
+      expect(console.warn.mock.calls).toEqual([
+        ["[fluent] Missing translations in en-US: missing_key"],
+      ]);
+    });
   });
-
-  test("returns undefined for a missing translation", async function () {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
-    const loc = new Localization(["test.ftl"], mockGenerateMessages);
-    const translations = await loc.formatMessages([{ id: "missing_key" }]);
-
-    // Make sure that the returned value here is `undefined`.
-    // This allows bindings to handle missing translations.
-    assert.strictEqual(translations[1], undefined);
-  });
-});
+}
