@@ -273,7 +273,7 @@ function parseMessage(source: string, cursor: number, id: string): Message {
         type: "select",
         selector: expression,
         ...variants,
-      } as SelectExpression; // TODO: FIXME
+      } satisfies SelectExpression;
     }
 
     throw new SyntaxError("Unclosed placeable");
@@ -363,15 +363,14 @@ function parseMessage(source: string, cursor: number, id: string): Message {
   function parseVariants(): {
     variants: Array<Variant>;
     star: number;
-  } | null {
+  } {
     const variants: Array<Variant> = [];
-    let count = 0;
     let star;
 
     RE_VARIANT_START.lastIndex = cursor;
     while (RE_VARIANT_START.test(source)) {
       if (consumeChar("*")) {
-        star = count;
+        star = variants.length;
       }
 
       const key = parseVariantKey();
@@ -379,12 +378,8 @@ function parseMessage(source: string, cursor: number, id: string): Message {
       if (value === null) {
         throw new SyntaxError("Expected variant value");
       }
-      variants[count++] = { key, value };
+      variants.push({ key, value });
       RE_VARIANT_START.lastIndex = cursor;
-    }
-
-    if (count === 0) {
-      return null;
     }
 
     if (star === undefined) {
