@@ -23,6 +23,13 @@
             "attributes": {
                 "attr": "\t\t"
             }
+        },
+        {
+            "id": "key07",
+            "value": null,
+            "attributes": {
+                "good": "Spaces as indent"
+            }
         }
     ]
 }

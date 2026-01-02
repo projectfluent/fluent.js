@@ -19,3 +19,8 @@ key05 =
 # OK (attribute value is two tabs)
 key06 =
   .attr = 		
+
+# Partial Error (tab is not a valid indent)
+key07 =
+  .good = Spaces as indent
+	.bad = Tab as indent

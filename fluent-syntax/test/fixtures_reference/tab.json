@@ -116,6 +116,41 @@
                 "type": "Comment",
                 "content": "OK (attribute value is two tabs)"
             }
+        },
+        {
+            "type": "Message",
+            "id": {
+                "type": "Identifier",
+                "name": "key07"
+            },
+            "value": null,
+            "attributes": [
+                {
+                    "type": "Attribute",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "good"
+                    },
+                    "value": {
+                        "type": "Pattern",
+                        "elements": [
+                            {
+                                "type": "TextElement",
+                                "value": "Spaces as indent"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "comment": {
+                "type": "Comment",
+                "content": "Partial Error (tab is not a valid indent)"
+            }
+        },
+        {
+            "type": "Junk",
+            "annotations": [],
+            "content": "\t.bad = Tab as indent\n"
         }
     ]
 }

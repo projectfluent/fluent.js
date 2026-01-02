@@ -19,11 +19,11 @@ import {
 
 // This regex is used to iterate through the beginnings of messages and terms.
 // With the /m flag, the ^ matches at the beginning of every line.
-const RE_MESSAGE_START = /^(-?[a-zA-Z][\w-]*) *= */gm;
+const RE_MESSAGE_START = /^(?<!\r)(-?[a-zA-Z][\w-]*) *= */gm;
 
 // Both Attributes and Variants are parsed in while loops. These regexes are
 // used to break out of them.
-const RE_ATTRIBUTE_START = /\.([a-zA-Z][\w-]*) *= */y;
+const RE_ATTRIBUTE_START = /(?<=\n *)\.([a-zA-Z][\w-]*) *= */y;
 const RE_VARIANT_START = /\*?\[/y;
 
 const RE_NUMBER_LITERAL = /(-?[0-9]+(?:\.([0-9]+))?)/y;
@@ -37,8 +37,8 @@ const RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;
 // if the next line is indented. For StringLiterals they are: \ (starts an
 // escape sequence), " (ends the literal), and line breaks which are not allowed
 // in StringLiterals. Note that string runs may be empty; text runs may not.
-const RE_TEXT_RUN = /([^{}\n\r]+)/y;
-const RE_STRING_RUN = /([^\\"\n\r]*)/y;
+const RE_TEXT_RUN = /((?:[^{}\n\r]|\r(?!\n))+)/y;
+const RE_STRING_RUN = /((?:[^\\"\n\r]|\r(?!\n))*)/y;
 
 // Escape sequences.
 const RE_STRING_ESCAPE = /\\([\\"])/y;
@@ -53,17 +53,17 @@ const RE_BLANK_LINES = / *\r?\n/g;
 const RE_INDENT = /( *)$/;
 
 // Common tokens.
-const TOKEN_BRACE_OPEN = /{\s*/y;
-const TOKEN_BRACE_CLOSE = /\s*}/y;
-const TOKEN_BRACKET_OPEN = /\[\s*/y;
-const TOKEN_BRACKET_CLOSE = /\s*] */y;
-const TOKEN_PAREN_OPEN = /\s*\(\s*/y;
-const TOKEN_ARROW = /\s*->\s*/y;
-const TOKEN_COLON = /\s*:\s*/y;
+const TOKEN_BRACE_OPEN = /{(?: |\r?\n)*/y;
+const TOKEN_BRACE_CLOSE = /(?: |\r?\n)*}/y;
+const TOKEN_BRACKET_OPEN = /\[(?: |\r?\n)*/y;
+const TOKEN_BRACKET_CLOSE = /(?: |\r?\n)*] */y;
+const TOKEN_PAREN_OPEN = /(?: |\r?\n)*\((?: |\r?\n)*/y;
+const TOKEN_ARROW = /(?: |\r?\n)*->(?: |\r?\n)*/y;
+const TOKEN_COLON = /(?: |\r?\n)*:(?: |\r?\n)*/y;
 // Note the optional comma. As a deviation from the Fluent EBNF, the parser
 // doesn't enforce commas between call arguments.
-const TOKEN_COMMA = /\s*,?\s*/y;
-const TOKEN_BLANK = /\s+/y;
+const TOKEN_COMMA = /(?: |\r?\n)*,?(?: |\r?\n)*/y;
+const TOKEN_BLANK = /(?: |\r?\n)+/y;
 
 /**
  * Fluent Resource is a structure storing parsed localization entries.
