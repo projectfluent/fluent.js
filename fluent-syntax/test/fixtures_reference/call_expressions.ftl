@@ -19,6 +19,7 @@ positional-args = {FUN(1, "a", msg)}
 named-args = {FUN(x: 1, y: "Y")}
 dense-named-args = {FUN(x:1, y:"Y")}
 mixed-args = {FUN(1, "a", msg, x: 1, y: "Y")}
+variable-args = {FUN($foo, arg: $bar)}
 
 # ERROR Positional arg must not follow keyword args
 shuffled-args = {FUN(1, x: 1, "a", y: "Y", msg)}
@@ -80,11 +81,11 @@ unindented-closing-paren = {FUN(
 one-argument = {FUN(1,)}
 many-arguments = {FUN(1, 2, 3,)}
 inline-sparse-args = {FUN(  1,  2,  3,  )}
-mulitline-args = {FUN(
+multiline-args = {FUN(
         1,
         2,
     )}
-mulitline-sparse-args = {FUN(
+multiline-sparse-args = {FUN(
 
         1
         ,

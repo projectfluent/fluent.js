@@ -65,7 +65,7 @@ export class FluentParser {
     this.getCallArgument = withSpan(this.getCallArgument);
     this.getCallArguments = withSpan(this.getCallArguments);
     this.getString = withSpan(this.getString);
-    this.getLiteral = withSpan(this.getLiteral);
+    this.getNamedArgumentValue = withSpan(this.getNamedArgumentValue);
     this.getComment = withSpan(this.getComment);
     /* eslint-enable @typescript-eslint/unbound-method */
   }
@@ -784,7 +784,7 @@ export class FluentParser {
       ps.next();
       ps.skipBlank();
 
-      const value = this.getLiteral(ps);
+      const value = this.getNamedArgumentValue(ps);
       return new AST.NamedArgument(exp.id, value);
     }
 
@@ -857,13 +857,21 @@ export class FluentParser {
   }
 
   /** @internal */
-  getLiteral(ps: FluentParserStream): AST.Literal {
+  getNamedArgumentValue(
+    ps: FluentParserStream
+  ): AST.Literal | AST.VariableReference {
     if (ps.isNumberStart()) {
       return this.getNumber(ps);
     }
 
     if (ps.currentChar() === '"') {
       return this.getString(ps);
+    }
+
+    if (ps.currentChar() === "$") {
+      ps.next();
+      const id = this.getIdentifier(ps);
+      return new AST.VariableReference(id);
     }
 
     throw new ParseError("E0014");

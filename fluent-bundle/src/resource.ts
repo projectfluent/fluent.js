@@ -29,6 +29,7 @@ const RE_VARIANT_START = /\*?\[/y;
 const RE_NUMBER_LITERAL = /(-?[0-9]+(?:\.([0-9]+))?)/y;
 const RE_IDENTIFIER = /([a-zA-Z][\w-]*)/y;
 const RE_REFERENCE = /([$-])?([a-zA-Z][\w-]*)(?:\.([a-zA-Z][\w-]*))?/y;
+const RE_VARIABLE_REF = /[$]([a-zA-Z][\w-]*)/y;
 const RE_FUNCTION_NAME = /^[A-Z][A-Z0-9_-]*$/;
 
 // A "run" is a sequence of text or string literal characters which don't
@@ -349,11 +350,10 @@ function parseMessage(source: string, cursor: number, id: string): Message {
 
     if (consumeToken(TOKEN_COLON)) {
       // The reference is the beginning of a named argument.
-      return {
-        type: "narg",
-        name: expr.name,
-        value: parseLiteral(),
-      } satisfies NamedArgument;
+      const ref = match(RE_VARIABLE_REF, false);
+      const value: Literal | VariableReference =
+        ref === null ? parseLiteral() : { type: "var", name: ref[1] };
+      return { type: "narg", name: expr.name, value } satisfies NamedArgument;
     }
 
     // It's a regular message reference.
