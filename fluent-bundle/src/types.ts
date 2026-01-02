@@ -5,7 +5,7 @@ import { Scope } from "./scope.js";
 // In addition to this minimal interface, these objects are also expected
 // to be supported by Intl.DateTimeFormat
 interface TemporalInstant {
-  epochMilliseconds: number
+  epochMilliseconds: number;
   toString(): string;
 }
 interface TemporalDateTypes {
@@ -14,12 +14,12 @@ interface TemporalDateTypes {
   toString(): string;
 }
 interface TemporalPlainTime {
-  hour: number
-  minute: number
-  second: number
+  hour: number;
+  minute: number;
+  second: number;
   toString(): string;
 }
-type TemporalObject = TemporalInstant | TemporalDateTypes | TemporalPlainTime
+type TemporalObject = TemporalInstant | TemporalDateTypes | TemporalPlainTime;
 
 export type FluentValue = FluentType<unknown> | string;
 

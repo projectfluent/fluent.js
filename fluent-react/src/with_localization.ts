@@ -5,9 +5,16 @@ import { FluentVariable } from "@fluent/bundle";
 export interface WithLocalizationProps {
   getString(
     id: string,
-    args?: Record<string, FluentVariable> | null,
+    vars?: Record<string, FluentVariable> | null,
     fallback?: string
   ): string;
+  getFormattedMessage(
+    id: string,
+    vars?: Record<string, FluentVariable> | null
+  ): {
+    value: string | null;
+    attributes?: Record<string, string>;
+  };
 }
 
 export function withLocalization<P extends WithLocalizationProps>(
@@ -27,7 +34,12 @@ export function withLocalization<P extends WithLocalizationProps>(
     }
     // Re-bind getString to trigger a re-render of Inner.
     const getString = l10n.getString.bind(l10n);
-    return createElement(Inner, { getString, ...props } as P);
+    const getFormattedMessage = l10n.getFormattedMessage.bind(l10n);
+    return createElement(Inner, {
+      getString,
+      getFormattedMessage,
+      ...props,
+    } as P);
   }
 
   WithLocalization.displayName = `WithLocalization(${displayName(Inner)})`;

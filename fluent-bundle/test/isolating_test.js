@@ -1,8 +1,8 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
 
 // Unicode bidi isolation characters.
 const FSI = "\u2068";
@@ -11,7 +11,7 @@ const PDI = "\u2069";
 suite("Isolating interpolations", function () {
   let bundle, args, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US");
     bundle.addResource(
       new FluentResource(ftl`
@@ -23,7 +23,7 @@ suite("Isolating interpolations", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
@@ -73,7 +73,7 @@ suite("Isolating interpolations", function () {
 suite("Skip isolation cases", function () {
   let bundle, args, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US");
     bundle.addResource(
       new FluentResource(ftl`
@@ -83,7 +83,7 @@ suite("Skip isolation cases", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 

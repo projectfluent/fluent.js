@@ -5,7 +5,7 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized,
-} from "../esm/index.js";
+} from "../src/index.ts";
 
 describe("Localized - void elements", function () {
   test("do not render the value in void elements", function () {

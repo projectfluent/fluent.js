@@ -64,8 +64,8 @@ export class ReactLocalization {
   ): string {
     const bundle = this.getBundle(id);
     if (bundle) {
-      const msg = bundle.getMessage(id);
-      if (msg && msg.value) {
+      const msg = bundle.getMessage(id)!;
+      if (msg.value) {
         let errors: Array<Error> = [];
         let value = bundle.formatPattern(msg.value, vars, errors);
         for (let error of errors) {
@@ -74,24 +74,49 @@ export class ReactLocalization {
         return value;
       }
     } else {
-      if (this.areBundlesEmpty()) {
-        this.reportError(
-          new Error(
-            "Attempting to get a string when no localization bundles are " +
-              "present."
-          )
-        );
-      } else {
-        this.reportError(
-          new Error(
-            `The id "${id}" did not match any messages in the localization ` +
-              "bundles."
-          )
-        );
-      }
+      const msg = this.areBundlesEmpty()
+        ? "Attempting to get a string when no localization bundles are present."
+        : `The id "${id}" did not match any messages in the localization bundles.`;
+      this.reportError(new Error(msg));
     }
 
     return fallback || id;
+  }
+
+  getFormattedMessage(
+    id: string,
+    vars?: Record<string, FluentVariable> | null
+  ): {
+    value: string | null;
+    attributes?: Record<string, string>;
+  } {
+    const bundle = this.getBundle(id);
+    if (bundle === null) {
+      const msg = this.areBundlesEmpty()
+        ? "Attempting to get a localized message when no localization bundles are present."
+        : `The id "${id}" did not match any messages in the localization bundles.`;
+      this.reportError(new Error(msg));
+      return { value: null };
+    }
+
+    let value: string | null = null;
+    let attributes: Record<string, string> | null = null;
+    const msg = bundle.getMessage(id)!;
+    let errors: Array<Error> = [];
+    if (msg.value) {
+      value = bundle.formatPattern(msg.value, vars, errors);
+    }
+    if (msg.attributes) {
+      attributes = Object.create(null) as Record<string, string>;
+      for (const [name, pattern] of Object.entries(msg.attributes)) {
+        attributes[name] = bundle.formatPattern(pattern, vars, errors);
+      }
+    }
+    for (let error of errors) {
+      this.reportError(error);
+    }
+
+    return attributes ? { value, attributes } : { value };
   }
 
   getElement(
@@ -105,26 +130,13 @@ export class ReactLocalization {
   ): ReactElement {
     const bundle = this.getBundle(id);
     if (bundle === null) {
-      if (!id) {
-        this.reportError(
-          new Error("No string id was provided when localizing a component.")
-        );
-      } else if (this.areBundlesEmpty()) {
-        this.reportError(
-          new Error(
-            "Attempting to get a localized element when no localization bundles are " +
-              "present."
-          )
-        );
-      } else {
-        this.reportError(
-          new Error(
-            `The id "${id}" did not match any messages in the localization ` +
-              "bundles."
-          )
-        );
-      }
-
+      // eslint-disable-next-line no-nested-ternary
+      const msg = !id
+        ? "No string id was provided when localizing a component."
+        : this.areBundlesEmpty()
+          ? "Attempting to get a localized element when no localization bundles are present."
+          : `The id "${id}" did not match any messages in the localization bundles.`;
+      this.reportError(new Error(msg));
       return createElement(Fragment, null, sourceElement);
     }
 

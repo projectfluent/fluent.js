@@ -5,13 +5,18 @@ import {
   ReactLocalization,
   LocalizationProvider,
   withLocalization,
-} from "../esm/index.js";
+} from "../src/index.ts";
+import { vi } from "vitest";
 
 function DummyComponent() {
   return <div />;
 }
 
 describe("withLocalization", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   test("render inside of a LocalizationProvider", () => {
     const EnhancedComponent = withLocalization(DummyComponent);
 
@@ -24,13 +29,13 @@ describe("withLocalization", () => {
   });
 
   test("thows an error when rendered outside of a LocalizationProvider", () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
     const EnhancedComponent = withLocalization(DummyComponent);
 
     expect(() => {
       TestRenderer.create(<EnhancedComponent />);
-    }).toThrowErrorMatchingInlineSnapshot(
-      `"withLocalization was used without wrapping it in a <LocalizationProvider />."`
+    }).toThrow(
+      "withLocalization was used without wrapping it in a <LocalizationProvider />."
     );
 
     // React also does a console.error.
@@ -38,7 +43,7 @@ describe("withLocalization", () => {
   });
 
   test("getString with access to the l10n context", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
     const EnhancedComponent = withLocalization(DummyComponent);
 
@@ -73,7 +78,7 @@ bar = BAR {$arg}
   });
 
   test("getString with access to the l10n context, with fallback value", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const bundle = new FluentBundle("en", { useIsolating: false });
     const EnhancedComponent = withLocalization(DummyComponent);
 
@@ -111,7 +116,7 @@ bar = BAR {$arg}
   });
 
   test("getString with an empty bundle list", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const EnhancedComponent = withLocalization(DummyComponent);
     const renderer = TestRenderer.create(
       <LocalizationProvider l10n={new ReactLocalization([])}>
@@ -132,7 +137,7 @@ bar = BAR {$arg}
   });
 
   test("getString with an empty bundle list, with fallback value", () => {
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const EnhancedComponent = withLocalization(DummyComponent);
     const renderer = TestRenderer.create(
@@ -182,5 +187,42 @@ bar = BAR {$arg}
     );
 
     expect(renderer.toJSON()).toMatchInlineSnapshot(`"BAR"`);
+  });
+
+  test("getFormattedMessage with access to the l10n context", () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const bundle = new FluentBundle("en", { useIsolating: false });
+    const EnhancedComponent = withLocalization(DummyComponent);
+
+    bundle.addResource(
+      new FluentResource(`
+foo = FOO
+  .bar = BAR {$arg}
+`)
+    );
+
+    const renderer = TestRenderer.create(
+      <LocalizationProvider l10n={new ReactLocalization([bundle])}>
+        <EnhancedComponent />
+      </LocalizationProvider>
+    );
+
+    const { getFormattedMessage } =
+      renderer.root.findByType(DummyComponent).props;
+
+    // Returns the translation.
+    expect(getFormattedMessage("foo", { arg: "ARG" })).toEqual({
+      value: "FOO",
+      attributes: { bar: "BAR ARG" },
+    });
+
+    // It reports an error on formatting errors, but doesn't throw.
+    expect(getFormattedMessage("foo", {})).toEqual({
+      value: "FOO",
+      attributes: { bar: "BAR {$arg}" },
+    });
+    expect(console.warn.mock.calls).toEqual([
+      ["[@fluent/react] ReferenceError: Unknown variable: $arg"],
+    ]);
   });
 });
