@@ -6,13 +6,13 @@ import {
   FluentDateTime,
   FluentNumber,
   FluentResource,
-} from "../esm/index.js";
+} from "../src/index.ts";
 
 suite("Runtime-specific functions", function () {
   suite("passing into the constructor", function () {
     let bundle, errs;
 
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
         functions: {
@@ -61,7 +61,7 @@ suite("Runtime-specific functions", function () {
     /** @type {FluentBundle} */
     let bundle;
 
-    suiteSetup(() => {
+    beforeAll(() => {
       const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
       const ONE_YEAR_IN_MS = 365 * ONE_DAY_IN_MS;
 

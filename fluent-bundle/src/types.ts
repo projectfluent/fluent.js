@@ -5,7 +5,7 @@ import { Scope } from "./scope.js";
 // In addition to this minimal interface, these objects are also expected
 // to be supported by Intl.DateTimeFormat
 interface TemporalInstant {
-  epochMilliseconds: number
+  epochMilliseconds: number;
   toString(): string;
 }
 interface TemporalDateTypes {
@@ -14,12 +14,12 @@ interface TemporalDateTypes {
   toString(): string;
 }
 interface TemporalPlainTime {
-  hour: number
-  minute: number
-  second: number
+  hour: number;
+  minute: number;
+  second: number;
   toString(): string;
 }
-type TemporalObject = TemporalInstant | TemporalDateTypes | TemporalPlainTime
+type TemporalObject = TemporalInstant | TemporalDateTypes | TemporalPlainTime;
 
 export type FluentValue = FluentType<unknown> | string;
 
@@ -28,6 +28,7 @@ export type FluentVariable =
   | TemporalObject
   | string
   | number
+  | boolean
   | Date;
 
 export type FluentFunction = (
@@ -69,7 +70,7 @@ export abstract class FluentType<T> {
    * This method can use `Intl` formatters available through the `scope`
    * argument.
    */
-  abstract toString(scope: Scope): string;
+  abstract toString(scope?: Scope): string;
 }
 
 /**
@@ -87,7 +88,7 @@ export class FluentNone extends FluentType<string> {
   /**
    * Format this `FluentNone` to the fallback string.
    */
-  toString(scope: Scope): string {
+  toString(scope?: Scope): string {
     return `{${this.value}}`;
   }
 }

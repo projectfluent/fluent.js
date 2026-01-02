@@ -1,12 +1,12 @@
 import React from "react";
 import TestRenderer from "react-test-renderer";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { createParseMarkup } from "../esm/markup.js";
+import { createParseMarkup } from "../src/markup.ts";
 import {
   ReactLocalization,
   LocalizationProvider,
   Localized,
-} from "../esm/index.js";
+} from "../src/index.ts";
 
 describe("Localized - overlay", () => {
   test("< in text", () => {

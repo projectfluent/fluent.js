@@ -1,15 +1,15 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
-import { FluentNumber, FluentDateTime } from "../esm/types.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
+import { FluentNumber, FluentDateTime } from "../src/types.ts";
 
 suite("Built-in functions", function () {
   let bundle, errors, msg;
 
   suite("NUMBER", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -472,10 +472,34 @@ suite("Built-in functions", function () {
         "Variable type not supported: $arg, object"
       );
     });
+
+    test("numbering system", () => {
+      const res = new FluentResource("key = {$arg}\n");
+      errors = [];
+
+      let ar = new FluentBundle("ar", { useIsolating: false });
+      ar.addResource(res);
+      msg = ar.getMessage("key");
+
+      let fmt = ar.formatPattern(msg.value, { arg: 10 }, errors);
+      assert.strictEqual(fmt, "10");
+
+      const arg = new FluentNumber(10, { numberingSystem: "arab" });
+      fmt = ar.formatPattern(msg.value, { arg }, errors);
+      assert.strictEqual(fmt, "١٠");
+
+      ar = new FluentBundle("ar-u-nu-arab", { useIsolating: false });
+      ar.addResource(res);
+      msg = ar.getMessage("key");
+      fmt = ar.formatPattern(msg.value, { arg: 10 }, errors);
+      assert.strictEqual(fmt, "١٠");
+
+      assert.strictEqual(errors.length, 0);
+    });
   });
 
   suite("DATETIME", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`

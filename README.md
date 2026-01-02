@@ -63,7 +63,7 @@ Hacking on `fluent.js` is easy! To quickly get started clone the repo:
     $ git clone https://github.com/projectfluent/fluent.js.git
     $ cd fluent.js
 
-You'll need at least **Node.js 14.18** and **npm 7**.
+You'll need at least **Node.js 20.19**.
 Older versions are not supported.
 
 Install the dependencies used by all packages, which are managed as
