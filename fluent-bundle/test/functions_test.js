@@ -5,7 +5,9 @@ import { FluentBundle } from "../src/bundle.ts";
 import { FluentResource } from "../src/resource.ts";
 
 suite("Functions", function () {
-  let bundle, errs;
+  /** @type {FluentBundle} */
+  let bundle;
+  let errs;
 
   beforeEach(function () {
     errs = [];
@@ -30,7 +32,7 @@ suite("Functions", function () {
     });
   });
 
-  suite("arguments", function () {
+  suite("positional arguments", function () {
     beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
@@ -105,6 +107,62 @@ suite("Functions", function () {
       const val = bundle.formatPattern(msg.value, undefined, errs);
       assert.strictEqual(val, "1");
       assert.strictEqual(errs.length, 0);
+    });
+  });
+
+  suite("named arguments", function () {
+    beforeAll(function () {
+      bundle = new FluentBundle("en-US", {
+        useIsolating: false,
+        functions: {
+          IDENTITY: (args, nargs) => nargs.arg,
+        },
+      });
+      bundle.addResource(
+        new FluentResource(ftl`
+        foo = Foo
+            .attr = Attribute
+        pass-string        = { IDENTITY(arg: "a") }
+        pass-number        = { IDENTITY(arg: 1) }
+        pass-variable      = { IDENTITY(arg: $var) }
+        pass-message       = { IDENTITY(arg: foo) }
+        pass-attr          = { IDENTITY(arg: foo.attr) }
+        pass-function-call = { IDENTITY(arg: IDENTITY(1)) }
+        `)
+      );
+    });
+
+    test("accepts strings", function () {
+      const msg = bundle.getMessage("pass-string");
+      const val = bundle.formatPattern(msg.value, undefined, errs);
+      assert.strictEqual(val, "a");
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test("accepts numbers", function () {
+      const msg = bundle.getMessage("pass-number");
+      const val = bundle.formatPattern(msg.value, undefined, errs);
+      assert.strictEqual(val, "1");
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test("accepts variables", function () {
+      const msg = bundle.getMessage("pass-variable");
+      const val = bundle.formatPattern(msg.value, { var: "Variable" }, errs);
+      assert.strictEqual(val, "Variable");
+      assert.strictEqual(errs.length, 0);
+    });
+
+    test("does not accept entities", function () {
+      assert.strictEqual(bundle.hasMessage("pass-message"), false);
+    });
+
+    test("does not accept attributes", function () {
+      assert.strictEqual(bundle.hasMessage("pass-attr"), false);
+    });
+
+    test("does not accept function calls", function () {
+      assert.strictEqual(bundle.hasMessage("pass-function-call"), false);
     });
   });
 });
