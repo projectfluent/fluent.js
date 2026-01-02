@@ -21,19 +21,6 @@
             "attributes": {
                 "title": "Title"
             }
-        },
-        {
-            "id": "err05",
-            "value": [
-                {
-                    "type": "select",
-                    "selector": {
-                        "type": "var",
-                        "name": "sel"
-                    }
-                }
-            ],
-            "attributes": {}
         }
     ]
 }

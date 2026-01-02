@@ -103,6 +103,27 @@
                 }
             ],
             "attributes": {}
+        },
+        {
+            "id": "key05",
+            "value": [
+                {
+                    "type": "term",
+                    "name": "term",
+                    "attr": null,
+                    "args": [
+                        {
+                            "type": "narg",
+                            "name": "arg",
+                            "value": {
+                                "type": "var",
+                                "name": "foo"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "attributes": {}
         }
     ]
 }

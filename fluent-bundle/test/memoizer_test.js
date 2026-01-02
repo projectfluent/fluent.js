@@ -1,5 +1,5 @@
 import assert from "assert";
-import { getMemoizerForLocale } from "../esm/memoizer.js";
+import { getMemoizerForLocale } from "../src/memoizer.ts";
 
 suite("Memoizer", function () {
   test("returns same instance for same locale", function () {

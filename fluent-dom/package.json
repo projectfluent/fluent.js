@@ -35,16 +35,13 @@
   ],
   "scripts": {
     "build": "tsc",
-    "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable",
-    "test": "c8 mocha -ui tdd --require ./test/index.js 'test/*_test.js'"
+    "postbuild": "rollup -c ../rollup.config.mjs --globals cached-iterable:CachedIterable"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=7.0.0"
+    "node": "^20.19 || ^22.12 || >=24"
   },
   "devDependencies": {
-    "@fluent/bundle": "^0.19.0",
-    "jsdom": "^24.0.0"
+    "@fluent/bundle": "^0.19.0"
   },
   "dependencies": {
     "cached-iterable": "^0.3"

@@ -1,17 +1,17 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentParser } from "../esm/parser.js";
+import { FluentParser } from "../src/parser.ts";
 import {
   FluentSerializer,
   serializeExpression,
   serializeVariantKey,
-} from "../esm/serializer.js";
+} from "../src/serializer.ts";
 
 suite("Serialize resource", function () {
   let pretty;
 
-  setup(function () {
+  beforeEach(function () {
     const parser = new FluentParser();
     const serializer = new FluentSerializer({
       withJunk: false,
@@ -564,7 +564,7 @@ suite("Serialize resource", function () {
 suite("serializeExpression", function () {
   let pretty, parser;
 
-  setup(function () {
+  beforeEach(function () {
     parser = new FluentParser();
 
     pretty = text => {
@@ -658,7 +658,7 @@ suite("serializeExpression", function () {
 suite("Serialize padding around comments", function () {
   let pretty;
 
-  setup(function () {
+  beforeEach(function () {
     const parser = new FluentParser();
     const serializer = new FluentSerializer({
       withJunk: false,
@@ -721,7 +721,7 @@ suite("Serialize padding around comments", function () {
 suite("serializeVariantKey", function () {
   let prettyVariantKey;
 
-  setup(function () {
+  beforeEach(function () {
     let parser = new FluentParser();
 
     prettyVariantKey = function (text, index) {

@@ -1,13 +1,13 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
 
 suite("Transformations", function () {
   let bundle, errs;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle = new FluentBundle("en-US", {
       transform: v => v.replace(/a/g, "A"),
       useIsolating: false,
@@ -26,7 +26,7 @@ suite("Transformations", function () {
     );
   });
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 

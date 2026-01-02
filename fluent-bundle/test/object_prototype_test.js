@@ -1,18 +1,18 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
 
 suite("Interesting Object properties", function () {
   let bundle, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("Object.prototype.constructor", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -46,7 +46,7 @@ suite("Interesting Object properties", function () {
   });
 
   suite("Object.prototype.hasOwnProperty", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -80,7 +80,7 @@ suite("Interesting Object properties", function () {
   });
 
   suite("Object.prototype.isPrototypeOf", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -114,7 +114,7 @@ suite("Interesting Object properties", function () {
   });
 
   suite("Object.prototype.propertyIsEnumerable", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -152,7 +152,7 @@ suite("Interesting Object properties", function () {
   });
 
   suite("Object.prototype.toLocaleString", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -186,7 +186,7 @@ suite("Interesting Object properties", function () {
   });
 
   suite("Object.prototype.toString", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -220,7 +220,7 @@ suite("Interesting Object properties", function () {
   });
 
   suite("Object.prototype.valueOf", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`

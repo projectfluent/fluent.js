@@ -424,7 +424,6 @@ The undocumented `_parse` export was also removed in favor of
 - Rename `MessageContext` to `FluentBundle`. (#222)
 
   The following renames have been made to the public API:
-
   - Rename `MessageContext` to `FluentBundle`.
   - Rename `MessageArgument` to `FluentType`.
   - Rename `MessageNumberArgument` to `FluentNumber`.
@@ -492,7 +491,6 @@ The undocumented `_parse` export was also removed in favor of
 ## fluent 0.6.0 (January 31, 2018)
 
 - Implement Fluent Syntax 0.5.
-
   - Add support for terms.
   - Add support for `#`, `##` and `###` comments.
   - Remove support for tags.

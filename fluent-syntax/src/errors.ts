@@ -50,7 +50,7 @@ function getErrorMessage(code: string, args: Array<unknown>): string {
     case "E0013":
       return "Expected variant key";
     case "E0014":
-      return "Expected literal";
+      return "Expected literal or variable reference";
     case "E0015":
       return "Only one variant can be marked as default (*)";
     case "E0016":

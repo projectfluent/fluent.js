@@ -390,9 +390,9 @@ export class Variant extends SyntaxNode {
 export class NamedArgument extends SyntaxNode {
   public type = "NamedArgument" as const;
   public name: Identifier;
-  public value: Literal;
+  public value: Literal | VariableReference;
 
-  constructor(name: Identifier, value: Literal) {
+  constructor(name: Identifier, value: Literal | VariableReference) {
     super();
     this.name = name;
     this.value = value;
