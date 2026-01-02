@@ -4,7 +4,7 @@ import "colors";
 import { readFile, readFileSync } from "fs";
 import program from "commander";
 
-import { FluentBundle, FluentResource } from "../fluent-bundle/esm/index.js";
+import { FluentBundle, FluentResource } from "@fluent/bundle";
 
 program
   .version("0.0.1")

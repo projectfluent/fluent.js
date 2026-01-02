@@ -5,7 +5,8 @@ import {
   ReactLocalization,
   LocalizationProvider,
   Localized,
-} from "../esm/index.js";
+} from "../src/index.ts";
+import { vi } from "vitest";
 
 test("uses message from 1st bundle", () => {
   const bundle1 = new FluentBundle();
@@ -61,7 +62,7 @@ foo = FOO
 });
 
 test("falls back back for missing message", function () {
-  jest.spyOn(console, "warn").mockImplementation(() => {});
+  vi.spyOn(console, "warn").mockImplementation(() => {});
 
   const bundle1 = new FluentBundle();
   bundle1.addResource(

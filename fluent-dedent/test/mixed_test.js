@@ -1,5 +1,5 @@
 import assert from "assert";
-import ftl from "../esm/index.js";
+import ftl from "../src/index.ts";
 
 suite("mixed indent", function () {
   test("same amount", function () {

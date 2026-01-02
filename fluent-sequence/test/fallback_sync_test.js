@@ -2,12 +2,12 @@ import assert from "assert";
 
 import { CachedSyncIterable } from "cached-iterable";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import { mapBundleSync } from "../esm/index.js";
+import { mapBundleSync } from "../src/index.ts";
 
 suite("Sync Fallback — single id", function () {
   let bundle1, bundle2;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle1 = new FluentBundle();
     bundle1.addResource(new FluentResource("bar=Bar"));
     bundle2 = new FluentBundle();
@@ -54,7 +54,7 @@ suite("Sync Fallback — single id", function () {
 suite("Sync Fallback — multiple ids", function () {
   let bundle1, bundle2;
 
-  suiteSetup(function () {
+  beforeAll(function () {
     bundle1 = new FluentBundle();
     bundle1.addResource(new FluentResource("foo=Foo\nbar=Bar"));
     bundle2 = new FluentBundle();

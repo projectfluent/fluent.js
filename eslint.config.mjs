@@ -1,6 +1,5 @@
 import js from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
-import mochaPlugin from "eslint-plugin-mocha";
 import globals from "globals";
 
 import tseslint from "typescript-eslint";
@@ -11,30 +10,12 @@ export default [
       "**/node_modules/",
       "*/coverage/",
       "*/dist/",
-      "*/esm/",
       "*/vendor/",
       "fluent-*/index.js",
       "html/",
       "tools/",
     ],
   },
-  {
-    languageOptions: {
-      ecmaVersion: 2018,
-      sourceType: "module",
-    },
-  },
-
-  // Config files
-  {
-    files: ["**/*.mjs"],
-    languageOptions: { ecmaVersion: 2020 },
-  },
-  {
-    files: ["**/*.cjs"],
-    languageOptions: { globals: { ...globals.node } },
-  },
-
   js.configs.recommended,
   {
     files: ["**/*.js", "**/*.mjs", "*/src/*.ts"],
@@ -109,32 +90,24 @@ export default [
   {
     files: ["*/test/**"],
     languageOptions: {
-      globals: { ...globals.mocha, ...globals.node },
-      ecmaVersion: 2020,
+      globals: { ...globals.node, ...globals.vitest },
     },
-    plugins: { mocha: mochaPlugin },
     rules: {
-      "mocha/no-exclusive-tests": "error",
-      "mocha/no-identical-title": "error",
       "no-console": "off",
       "prefer-arrow-callback": "off",
     },
   },
   {
     files: ["fluent-dom/test/*"],
-    languageOptions: { globals: { ...globals.browser } },
+    languageOptions: { globals: { ...globals.browser, ...globals.vitest } },
   },
   {
     files: ["fluent-react/test/**"],
     languageOptions: {
-      globals: { ...globals.browser, ...globals.jest },
-      ecmaVersion: 2020,
+      globals: { ...globals.browser, ...globals.vitest },
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
-    plugins: { mocha: mochaPlugin },
     rules: {
-      "mocha/no-exclusive-tests": "error",
-      "mocha/no-identical-title": "error",
       "no-unused-vars": "off",
     },
   },
