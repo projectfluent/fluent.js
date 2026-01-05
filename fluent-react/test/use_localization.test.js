@@ -27,7 +27,7 @@ describe("useLocalization", () => {
     const bundle = new FluentBundle("en");
     bundle.addResource(
       new FluentResource(
-        "foo = FOO\nbar = BAR<elem>BAZ</elem>\n\t.title = QUX\n"
+        "foo = FOO\nbar = BAR<elem>BAZ</elem>\n  .title = QUX\n"
       )
     );
     return bundle;
