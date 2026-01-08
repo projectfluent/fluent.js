@@ -1,5 +1,5 @@
 import assert from "assert";
-import { negotiateLanguages } from "../esm/negotiate_languages.js";
+import { negotiateLanguages } from "../src/negotiate_languages.ts";
 
 const nodeVersion = parseInt(process.version.substring(1));
 

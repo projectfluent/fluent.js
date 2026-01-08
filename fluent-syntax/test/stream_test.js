@@ -1,5 +1,5 @@
 import assert from "assert";
-import { ParserStream } from "../esm/stream.js";
+import { ParserStream } from "../src/stream.ts";
 
 suite("ParserStream", function () {
   test("next", function () {

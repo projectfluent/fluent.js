@@ -3,18 +3,17 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
   workflow_dispatch:
 jobs:
   dist:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [18, 20, latest]
+        node: [20.19.0, 22, latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{matrix.node}}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{matrix.node}}
       - run: npm ci
