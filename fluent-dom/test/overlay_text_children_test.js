@@ -1,12 +1,13 @@
 import assert from "assert";
-import sinon from "sinon";
-import translateElement from "../esm/overlay.js";
+import translateElement from "../src/overlay.js";
 import { elem } from "./util.js";
+import { beforeAll, vi } from "vitest";
+
+beforeAll(() => {
+  vi.spyOn(console, "warn").mockImplementation(() => {});
+});
 
 suite("Text-semantic argument elements", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
-
   test("without data-l10n-name", function () {
     const element = elem("div")`
       <em class="bar"></em>`;

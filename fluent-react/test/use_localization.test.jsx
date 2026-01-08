@@ -5,7 +5,8 @@ import {
   ReactLocalization,
   LocalizationProvider,
   useLocalization,
-} from "../esm/index.js";
+} from "../src/index.ts";
+import { expect, vi } from "vitest";
 
 function DummyComponent() {
   const { l10n } = useLocalization();
@@ -63,12 +64,12 @@ describe("useLocalization", () => {
   });
 
   test("throws an error when rendered outside of a LocalizationProvider", () => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
     expect(() => {
       TestRenderer.create(<DummyComponent />);
-    }).toThrowErrorMatchingInlineSnapshot(
-      `"useLocalization was used without wrapping it in a <LocalizationProvider />."`
+    }).toThrow(
+      "useLocalization was used without wrapping it in a <LocalizationProvider />."
     );
 
     // React also does a console.error.

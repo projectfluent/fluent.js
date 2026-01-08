@@ -1,11 +1,12 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
-import * as AST from "../esm/ast.js";
-import { FluentParser } from "../esm/parser.js";
+import * as AST from "../src/ast.ts";
+import { FluentParser } from "../src/parser.ts";
 
 suite("BaseNode.equals", function () {
-  setup(function () {
-    this.parser = new FluentParser();
+  let parser;
+  beforeEach(function () {
+    parser = new FluentParser();
   });
   test("Identifier.equals", function () {
     const thisNode = new AST.Identifier("name");
@@ -34,14 +35,14 @@ suite("BaseNode.equals", function () {
     assert.strictEqual(thisNode.equals(otherNode), true);
   });
   test("Variant order matters", function () {
-    const thisRes = this.parser.parse(ftl`
+    const thisRes = parser.parse(ftl`
           msg = { $val ->
               [few] things
               [1] one
              *[other] default
             }
           `);
-    const otherRes = this.parser.parse(ftl`
+    const otherRes = parser.parse(ftl`
           msg = { $val ->
               [few] things
              *[other] default
@@ -55,12 +56,12 @@ suite("BaseNode.equals", function () {
     assert.notStrictEqual(thisRes, thisRes.clone());
   });
   test("Attribute order matters", function () {
-    const thisRes = this.parser.parse(ftl`
+    const thisRes = parser.parse(ftl`
           msg =
             .attr1 = one
             .attr2 = two
           `);
-    const otherRes = this.parser.parse(ftl`
+    const otherRes = parser.parse(ftl`
           msg =
             .attr2 = two
             .attr1 = one

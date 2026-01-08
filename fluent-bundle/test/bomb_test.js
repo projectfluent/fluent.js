@@ -1,18 +1,18 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
 
 suite("Reference bombs", function () {
   let bundle, args, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("Billion Laughs", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`

@@ -1,18 +1,18 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
 
 suite("Macros", function () {
   let bundle, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("References and calls", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
@@ -41,7 +41,7 @@ suite("Macros", function () {
   });
 
   suite("Passing arguments", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
@@ -115,7 +115,7 @@ suite("Macros", function () {
   });
 
   suite("Nesting message references", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
@@ -173,7 +173,7 @@ suite("Macros", function () {
   });
 
   suite("Nesting term references", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });
@@ -342,7 +342,7 @@ suite("Macros", function () {
   });
 
   suite("Parameterized term attributes", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", {
         useIsolating: false,
       });

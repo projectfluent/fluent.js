@@ -1,19 +1,19 @@
 import assert from "assert";
 import ftl from "@fluent/dedent";
 
-import { FluentBundle } from "../esm/bundle.js";
-import { FluentResource } from "../esm/resource.js";
-import { FluentType, FluentNumber, FluentDateTime } from "../esm/types.js";
+import { FluentBundle } from "../src/bundle.ts";
+import { FluentResource } from "../src/resource.ts";
+import { FluentType, FluentNumber, FluentDateTime } from "../src/types.ts";
 
 suite("Variables", function () {
   let bundle, errs;
 
-  setup(function () {
+  beforeEach(function () {
     errs = [];
   });
 
   suite("in values", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -58,7 +58,7 @@ suite("Variables", function () {
   });
 
   suite("in selectors", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -78,7 +78,7 @@ suite("Variables", function () {
   });
 
   suite("in function calls", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -96,7 +96,7 @@ suite("Variables", function () {
   });
 
   suite("simple errors", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -158,7 +158,7 @@ suite("Variables", function () {
   suite("and strings", function () {
     let args;
 
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -179,7 +179,7 @@ suite("Variables", function () {
   });
 
   suite("and numbers", function () {
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -207,7 +207,7 @@ suite("Variables", function () {
   suite("and dates", function () {
     let dtf;
 
-    suiteSetup(function () {
+    beforeAll(function () {
       dtf = new Intl.DateTimeFormat("en-US");
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
@@ -243,7 +243,7 @@ suite("Variables", function () {
       }
     }
 
-    suiteSetup(function () {
+    beforeAll(function () {
       bundle = new FluentBundle("en-US", { useIsolating: false });
       bundle.addResource(
         new FluentResource(ftl`
@@ -251,25 +251,25 @@ suite("Variables", function () {
         bar = { foo }
         `)
       );
+    });
 
-      const args = {
-        // CustomType is a wrapper around the value
-        arg: new CustomType(),
-      };
+    const args = {
+      // CustomType is a wrapper around the value
+      arg: new CustomType(),
+    };
 
-      test("interpolation", function () {
-        const msg = bundle.getMessage("foo");
-        const value = bundle.formatPattern(msg.value, args, errs);
-        assert.strictEqual(value, "CUSTOM");
-        assert.strictEqual(errs.length, 0);
-      });
+    test("interpolation", function () {
+      const msg = bundle.getMessage("foo");
+      const value = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(value, "CUSTOM");
+      assert.strictEqual(errs.length, 0);
+    });
 
-      test("nested interpolation", function () {
-        const msg = bundle.getMessage("bar");
-        const value = bundle.formatPattern(msg.value, args, errs);
-        assert.strictEqual(value, "CUSTOM");
-        assert.strictEqual(errs.length, 0);
-      });
+    test("nested interpolation", function () {
+      const msg = bundle.getMessage("bar");
+      const value = bundle.formatPattern(msg.value, args, errs);
+      assert.strictEqual(value, "CUSTOM");
+      assert.strictEqual(errs.length, 0);
     });
   });
 });

@@ -1,7 +1,7 @@
 import assert from "assert";
-import sinon from "sinon";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
-import Localization from "../esm/localization.js";
+import Localization from "../src/localization.js";
+import { vi } from "vitest";
 
 async function* mockGenerateMessages() {
   const bundle = new FluentBundle(["en-US"]);
@@ -11,9 +11,6 @@ async function* mockGenerateMessages() {
 }
 
 suite("formatMessages", function () {
-  setup(() => sinon.stub(console, "warn"));
-  teardown(() => console.warn.restore());
-
   test("returns a translation", async function () {
     const loc = new Localization(["test.ftl"], mockGenerateMessages);
     const translations = await loc.formatMessages([{ id: "key1" }]);
@@ -22,6 +19,7 @@ suite("formatMessages", function () {
   });
 
   test("returns undefined for a missing translation", async function () {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     const loc = new Localization(["test.ftl"], mockGenerateMessages);
     const translations = await loc.formatMessages([{ id: "missing_key" }]);
 

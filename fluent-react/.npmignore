@@ -5,6 +5,5 @@ example
 src
 test
 makefile
-babel.config.js
 compat_config.js
 tsconfig.json

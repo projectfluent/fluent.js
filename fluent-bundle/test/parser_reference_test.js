@@ -3,7 +3,7 @@ import { dirname, join } from "path";
 import { readdirSync, readFileSync } from "fs";
 import { fileURLToPath } from "url";
 
-import { FluentResource } from "../esm/resource.js";
+import { FluentResource } from "../src/resource.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ftlFixtures = join(
