@@ -161,6 +161,31 @@
             "attributes": {}
         },
         {
+            "id": "variable-args",
+            "value": [
+                {
+                    "type": "func",
+                    "name": "FUN",
+                    "args": [
+                        {
+                            "type": "var",
+                            "name": "foo"
+                        },
+                        {
+                            "type": "narg",
+                            "name": "arg",
+                            "value": {
+                                "type": "var",
+                                "name": "bar"
+                            }
+                        }
+
+                    ]
+                }
+            ],
+            "attributes": {}
+        },
+        {
             "id": "shuffled-args",
             "value": [
                 {
@@ -555,7 +580,7 @@
             "attributes": {}
         },
         {
-            "id": "mulitline-args",
+            "id": "multiline-args",
             "value": [
                 {
                     "type": "func",
@@ -577,7 +602,7 @@
             "attributes": {}
         },
         {
-            "id": "mulitline-sparse-args",
+            "id": "multiline-sparse-args",
             "value": [
                 {
                     "type": "func",

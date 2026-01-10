@@ -68,7 +68,7 @@ export type Variant = {
 export type NamedArgument = {
   type: "narg";
   name: string;
-  value: Literal;
+  value: Literal | VariableReference;
 };
 
 export type Literal = StringLiteral | NumberLiteral;

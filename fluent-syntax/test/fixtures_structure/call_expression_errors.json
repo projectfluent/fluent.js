@@ -52,7 +52,7 @@
           "type": "Annotation",
           "code": "E0014",
           "arguments": [],
-          "message": "Expected literal",
+          "message": "Expected literal or variable reference",
           "span": {
             "type": "Span",
             "start": 80,

@@ -14,7 +14,8 @@ suite("Built-in functions", function () {
       bundle.addResource(
         new FluentResource(ftl`
         num-bare = { NUMBER($arg) }
-        num-fraction-valid = { NUMBER($arg, minimumFractionDigits: 1) }
+        num-fraction-literal = { NUMBER($arg, minimumFractionDigits: 1) }
+        num-fraction-variable = { NUMBER($arg, minimumFractionDigits: $mfd) }
         num-fraction-bad = { NUMBER($arg, minimumFractionDigits: "oops") }
         num-style = { NUMBER($arg, style: "percent") }
         num-currency = { NUMBER($arg, currency: "EUR") }
@@ -35,7 +36,7 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, {}, errors),
         "{NUMBER($arg)}"
@@ -43,6 +44,18 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof ReferenceError);
       assert.strictEqual(errors[0].message, "Unknown variable: $arg");
+
+      errors = [];
+      msg = bundle.getMessage("num-fraction-variable");
+      assert.strictEqual(
+        bundle.formatPattern(msg.value, {}, errors),
+        "{NUMBER($arg)}"
+      );
+      assert.strictEqual(errors.length, 2);
+      assert.ok(errors[0] instanceof ReferenceError);
+      assert.strictEqual(errors[0].message, "Unknown variable: $arg");
+      assert.ok(errors[1] instanceof ReferenceError);
+      assert.strictEqual(errors[1].message, "Unknown variable: $mfd");
 
       errors = [];
       msg = bundle.getMessage("num-fraction-bad");
@@ -97,9 +110,17 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 0);
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
+        "1,234.0"
+      );
+      assert.strictEqual(errors.length, 0);
+
+      errors = [];
+      msg = bundle.getMessage("num-fraction-variable");
+      assert.strictEqual(
+        bundle.formatPattern(msg.value, { arg, mfd: 1 }, errors),
         "1,234.0"
       );
       assert.strictEqual(errors.length, 0);
@@ -152,9 +173,18 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 0);
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
+        "1,234.0"
+      );
+      assert.strictEqual(errors.length, 0);
+
+      errors = [];
+      msg = bundle.getMessage("num-fraction-variable");
+      const mfd = new FluentNumber(1);
+      assert.strictEqual(
+        bundle.formatPattern(msg.value, { arg, mfd }, errors),
         "1,234.0"
       );
       assert.strictEqual(errors.length, 0);
@@ -208,9 +238,18 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 0);
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
+        "$1,234.0"
+      );
+      assert.strictEqual(errors.length, 0);
+
+      errors = [];
+      msg = bundle.getMessage("num-fraction-variable");
+      const mfd = new FluentNumber(1, { style: "currency", currency: "USD" });
+      assert.strictEqual(
+        bundle.formatPattern(msg.value, { arg, mfd }, errors),
         "$1,234.0"
       );
       assert.strictEqual(errors.length, 0);
@@ -266,7 +305,7 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 0);
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
         "1,475,107,200,000.0"
@@ -288,7 +327,7 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors[0].message, "Invalid argument to NUMBER");
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
         "{NUMBER()}"
@@ -296,6 +335,14 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 1);
       assert.ok(errors[0] instanceof TypeError);
       assert.strictEqual(errors[0].message, "Invalid argument to NUMBER");
+
+      errors = [];
+      msg = bundle.getMessage("num-fraction-variable");
+      assert.strictEqual(
+        bundle.formatPattern(msg.value, { arg: 10, mfd: " 1 " }, errors),
+        "10.0"
+      );
+      assert.strictEqual(errors.length, 0);
 
       errors = [];
       msg = bundle.getMessage("num-fraction-bad");
@@ -350,7 +397,7 @@ suite("Built-in functions", function () {
       assert.strictEqual(errors.length, 0);
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
         "1,475,107,200,000.0"
@@ -408,7 +455,7 @@ suite("Built-in functions", function () {
       );
 
       errors = [];
-      msg = bundle.getMessage("num-fraction-valid");
+      msg = bundle.getMessage("num-fraction-literal");
       assert.strictEqual(
         bundle.formatPattern(msg.value, { arg }, errors),
         "{NUMBER($arg)}"
@@ -419,6 +466,20 @@ suite("Built-in functions", function () {
         errors[0].message,
         "Variable type not supported: $arg, object"
       );
+
+      errors = [];
+      msg = bundle.getMessage("num-fraction-variable");
+      assert.strictEqual(
+        bundle.formatPattern(msg.value, { arg: 10, mfd: [] }, errors),
+        "10"
+      );
+      assert.strictEqual(errors.length, 2);
+      assert.ok(errors[0] instanceof TypeError);
+      assert.strictEqual(
+        errors[0].message,
+        "Variable type not supported: $mfd, object"
+      );
+      assert.ok(errors[1] instanceof RangeError);
 
       errors = [];
       msg = bundle.getMessage("num-fraction-bad");
@@ -471,6 +532,30 @@ suite("Built-in functions", function () {
         errors[0].message,
         "Variable type not supported: $arg, object"
       );
+    });
+
+    test("numbering system", () => {
+      const res = new FluentResource("key = {$arg}\n");
+      errors = [];
+
+      let ar = new FluentBundle("ar", { useIsolating: false });
+      ar.addResource(res);
+      msg = ar.getMessage("key");
+
+      let fmt = ar.formatPattern(msg.value, { arg: 10 }, errors);
+      assert.strictEqual(fmt, "10");
+
+      const arg = new FluentNumber(10, { numberingSystem: "arab" });
+      fmt = ar.formatPattern(msg.value, { arg }, errors);
+      assert.strictEqual(fmt, "١٠");
+
+      ar = new FluentBundle("ar-u-nu-arab", { useIsolating: false });
+      ar.addResource(res);
+      msg = ar.getMessage("key");
+      fmt = ar.formatPattern(msg.value, { arg: 10 }, errors);
+      assert.strictEqual(fmt, "١٠");
+
+      assert.strictEqual(errors.length, 0);
     });
   });
 

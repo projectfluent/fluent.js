@@ -204,7 +204,7 @@ export class FluentBundle {
       return value.toString(scope);
     } catch (err) {
       if (scope.errors && err instanceof Error) {
-        scope.errors.push(err);
+        scope.errors.unshift(err);
         return new FluentNone().toString(scope);
       }
       throw err;

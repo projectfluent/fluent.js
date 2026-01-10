@@ -15,19 +15,6 @@
             "attributes": {
                 "title": "Title"
             }
-        },
-        {
-            "id": "err04",
-            "value": [
-                {
-                    "type": "select",
-                    "selector": {
-                        "type": "var",
-                        "name": "sel"
-                    }
-                }
-            ],
-            "attributes": {}
         }
     ]
 }
