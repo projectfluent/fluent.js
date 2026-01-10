@@ -4,12 +4,7 @@
 
 import { readFile } from "fs";
 import program from "commander";
-import {
-  columnOffset,
-  lineOffset,
-  parse,
-  serialize,
-} from "../fluent-syntax/esm/index.js";
+import { columnOffset, lineOffset, parse, serialize } from "@fluent/syntax";
 
 program
   .version("0.0.1")
