@@ -10,9 +10,9 @@ export { Transformer, Visitor } from "./visitor.js";
 
 export {
   FluentParser,
-  FluentParserOptions,
+  type FluentParserOptions,
   FluentSerializer,
-  FluentSerializerOptions,
+  type FluentSerializerOptions,
 };
 
 /** @category Parse */

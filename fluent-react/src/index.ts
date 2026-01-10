@@ -22,8 +22,8 @@ export { ReactLocalization } from "./localization.js";
 export { LocalizationProvider } from "./provider.js";
 export {
   withLocalization,
-  WithLocalizationProps,
+  type WithLocalizationProps,
 } from "./with_localization.js";
-export { Localized, LocalizedProps } from "./localized.js";
-export { MarkupParser } from "./markup.js";
+export { Localized, type LocalizedProps } from "./localized.js";
+export type { MarkupParser } from "./markup.js";
 export { useLocalization } from "./use_localization.js";

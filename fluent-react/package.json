@@ -2,6 +2,16 @@
   "name": "@fluent/react",
   "description": "Fluent bindings for React",
   "version": "0.15.2",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "!dist/fluent-react.cjs",
+    "vendor/"
+  ],
   "homepage": "https://projectfluent.org",
   "author": "Mozilla <l10n-drivers@mozilla.org>",
   "license": "Apache-2.0",
@@ -15,9 +25,6 @@
       "email": "stas@mozilla.com"
     }
   ],
-  "main": "./index.js",
-  "module": "./esm/index.js",
-  "types": "./esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/projectfluent/fluent.js.git"
@@ -42,7 +49,7 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "postbuild": "rollup -c ../rollup.config.mjs --globals @fluent/sequence:FluentSequence,cached-iterable:CachedIterable,react:React"
+    "postbuild": "rollup --config rollup.firefox.js"
   },
   "engines": {
     "node": "^20.19 || ^22.12 || >=24"
@@ -56,7 +63,7 @@
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "@fluent/bundle": "^0.19.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/react": "^18.0.28",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
