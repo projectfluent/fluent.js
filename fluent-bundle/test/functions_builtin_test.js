@@ -472,6 +472,30 @@ suite("Built-in functions", function () {
         "Variable type not supported: $arg, object"
       );
     });
+
+    test("numbering system", () => {
+      const res = new FluentResource("key = {$arg}\n");
+      errors = [];
+
+      let ar = new FluentBundle("ar", { useIsolating: false });
+      ar.addResource(res);
+      msg = ar.getMessage("key");
+
+      let fmt = ar.formatPattern(msg.value, { arg: 10 }, errors);
+      assert.strictEqual(fmt, "10");
+
+      const arg = new FluentNumber(10, { numberingSystem: "arab" });
+      fmt = ar.formatPattern(msg.value, { arg }, errors);
+      assert.strictEqual(fmt, "١٠");
+
+      ar = new FluentBundle("ar-u-nu-arab", { useIsolating: false });
+      ar.addResource(res);
+      msg = ar.getMessage("key");
+      fmt = ar.formatPattern(msg.value, { arg: 10 }, errors);
+      assert.strictEqual(fmt, "١٠");
+
+      assert.strictEqual(errors.length, 0);
+    });
   });
 
   suite("DATETIME", function () {
