@@ -44,7 +44,7 @@ const data = {
       ],
       [["fr"], ["fr-CA", "fr-FR"], ["fr-FR", "fr-CA"]],
       [["az-IR"], ["az-Latn", "az-Arab"], ["az-Arab"]],
-      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Cyrl"], undefined, 20],
+      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Cyrl"], undefined, 22],
       [["sr"], ["sr-Latn", "sr-Cyrl"], ["sr-Cyrl"]],
       [["zh-GB"], ["zh-Hans", "zh-Hant"], ["zh-Hant"]],
       [["sr", "ru"], ["sr-Latn", "ru"], ["ru"]],
