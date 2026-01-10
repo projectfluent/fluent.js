@@ -1,6 +1,8 @@
 import assert from "assert";
 import { negotiateLanguages } from "../src/negotiate_languages.ts";
 
+const nodeVersion = parseInt(process.version.substring(1));
+
 const data = {
   filtering: {
     "exact match": [
@@ -42,11 +44,11 @@ const data = {
       ],
       [["fr"], ["fr-CA", "fr-FR"], ["fr-FR", "fr-CA"]],
       [["az-IR"], ["az-Latn", "az-Arab"], ["az-Arab"]],
-      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Latn"]],
+      [["sr-RU"], ["sr-Cyrl", "sr-Latn"], ["sr-Cyrl"], undefined, 22],
       [["sr"], ["sr-Latn", "sr-Cyrl"], ["sr-Cyrl"]],
       [["zh-GB"], ["zh-Hans", "zh-Hant"], ["zh-Hant"]],
       [["sr", "ru"], ["sr-Latn", "ru"], ["ru"]],
-      [["sr-RU"], ["sr-Latn-RO", "sr-Cyrl"], ["sr-Latn-RO"]],
+      [["sr-RO"], ["sr-Cyrl", "sr-Latn"], ["sr-Latn"]],
     ],
     "should match cross-region": [
       [["en"], ["en-US"], ["en-US"]],
@@ -82,13 +84,13 @@ const data = {
     ],
     "should handle default locale properly": [
       [["fr"], ["de", "it"], []],
-      [["fr"], ["de", "it"], "en-US", ["en-US"]],
-      [["fr"], ["de", "en-US"], "en-US", ["en-US"]],
+      [["fr"], ["de", "it"], ["en-US"], "en-US"],
+      [["fr"], ["de", "en-US"], ["en-US"], "en-US"],
       [
         ["fr", "de-DE"],
         ["de-DE", "fr-CA"],
-        "en-US",
         ["fr-CA", "de-DE", "en-US"],
+        "en-US",
       ],
     ],
     "should handle all matches on the 1st higher than any on the 2nd": [
@@ -126,21 +128,14 @@ const data = {
       [
         ["fr", "en"],
         ["en-US", "fr-FR", "en", "fr"],
-        undefined,
-        "matching",
         ["fr", "en"],
       ],
+      [["es-419"], ["es", "en"], ["es"]],
     ],
   },
   lookup: {
     "should match only one": [
-      [
-        ["fr-FR", "en"],
-        ["en-US", "fr-FR", "en", "fr"],
-        "en-US",
-        "lookup",
-        ["fr-FR"],
-      ],
+      [["fr-FR", "en"], ["en-US", "fr-FR", "en", "fr"], ["fr-FR"], "en-US"],
     ],
   },
 };
@@ -153,14 +148,17 @@ suite("Language Negotiation", () => {
       const group = data[strategy][groupName];
 
       test(`${strategy} - ${groupName}`, () => {
-        for (const test of group) {
-          const requested = test[0];
-          const available = test[1];
-          const supported = test[test.length - 1];
-
-          const result = negotiateLanguages(test[0], test[1], {
-            defaultLocale: test.length > 3 ? test[2] : undefined,
-            strategy: test.length > 4 ? test[3] : undefined,
+        for (const [
+          requested,
+          available,
+          supported,
+          defaultLocale,
+          minNodeVersion,
+        ] of group) {
+          if (nodeVersion < minNodeVersion) continue;
+          const result = negotiateLanguages(requested, available, {
+            defaultLocale,
+            strategy,
           });
           assert.deepEqual(
             result,

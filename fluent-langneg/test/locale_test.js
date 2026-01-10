@@ -1,9 +1,14 @@
 import assert from "assert";
-import { Locale } from "../src/locale.ts";
+import { LocaleWrapper } from "../src/locale.ts";
 
 function isLocaleEqual(str, ref) {
-  const locale = new Locale(str);
-  return locale.isEqual(ref);
+  const locale = new LocaleWrapper(str);
+  return (
+    locale.language === ref.language &&
+    locale.script === ref.script &&
+    locale.region === ref.region &&
+    locale.variants === ref.variants
+  );
 }
 
 suite("Parses simple locales", () => {
@@ -61,7 +66,7 @@ suite("Parses simple locales", () => {
         language: "en",
         script: "Latn",
         region: "US",
-        variant: "macos",
+        variants: "macos",
       })
     );
 
@@ -70,7 +75,7 @@ suite("Parses simple locales", () => {
         language: "lij",
         script: "Arab",
         region: "FA",
-        variant: "linux",
+        variants: "linux",
       })
     );
   });
@@ -87,7 +92,7 @@ suite("Parses simple locales", () => {
       isLocaleEqual("lij-FA-linux", {
         language: "lij",
         region: "FA",
-        variant: "linux",
+        variants: "linux",
       })
     );
   });
@@ -104,7 +109,17 @@ suite("Parses simple locales", () => {
       isLocaleEqual("lij-FA-linux", {
         language: "lij",
         region: "FA",
-        variant: "linux",
+        variants: "linux",
+      })
+    );
+  });
+
+  test("skipping extensions", () => {
+    assert.ok(
+      isLocaleEqual("en-US-macos-linux-u-hc-h12", {
+        language: "en",
+        region: "US",
+        variants: "macos-linux",
       })
     );
   });
@@ -114,20 +129,20 @@ suite("Parses locale ranges", () => {
   test("language part", () => {
     assert.ok(
       isLocaleEqual("*", {
-        language: "*",
+        language: "und",
       })
     );
 
     assert.ok(
       isLocaleEqual("*-Latn", {
-        language: "*",
+        language: "und",
         script: "Latn",
       })
     );
 
     assert.ok(
       isLocaleEqual("*-US", {
-        language: "*",
+        language: "und",
         region: "US",
       })
     );
@@ -137,14 +152,12 @@ suite("Parses locale ranges", () => {
     assert.ok(
       isLocaleEqual("en-*", {
         language: "en",
-        script: "*",
       })
     );
 
     assert.ok(
       isLocaleEqual("en-*-US", {
         language: "en",
-        script: "*",
         region: "US",
       })
     );
@@ -155,7 +168,6 @@ suite("Parses locale ranges", () => {
       isLocaleEqual("en-Latn-*", {
         language: "en",
         script: "Latn",
-        region: "*",
       })
     );
   });
@@ -166,7 +178,6 @@ suite("Parses locale ranges", () => {
         language: "en",
         script: "Latn",
         region: "US",
-        variant: "*",
       })
     );
   });
