@@ -17,11 +17,12 @@ be installed independently of each other.
 - [@fluent/dedent](https://github.com/projectfluent/fluent.js/tree/main/fluent-dedent)
 - [@fluent/dom](https://github.com/projectfluent/fluent.js/tree/main/fluent-dom)
 - [@fluent/langneg](https://github.com/projectfluent/fluent.js/tree/main/fluent-langneg)
+- [@fluent/prettier-plugin](https://github.com/projectfluent/fluent.js/tree/main/fluent-prettier-plugin)
 - [@fluent/react](https://github.com/projectfluent/fluent.js/tree/main/fluent-react)
 - [@fluent/sequence](https://github.com/projectfluent/fluent.js/tree/main/fluent-sequence)
 - [@fluent/syntax](https://github.com/projectfluent/fluent.js/tree/main/fluent-syntax)
 
-You can install each of the above packages via `npm`, e.g. `npm install @fluent/react`.  
+You can install each of the above packages via `npm`, e.g. `npm install @fluent/react`.
 See the end of this `README` for instructions on how to build `fluent.js` locally.
 
 ## Learn the FTL syntax

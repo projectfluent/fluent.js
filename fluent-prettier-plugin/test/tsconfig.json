@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["*.ts"]
+}

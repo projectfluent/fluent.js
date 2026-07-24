@@ -9,6 +9,7 @@
     "./fluent-langneg",
     "./fluent-react",
     "./fluent-syntax",
+    "./fluent-prettier-plugin",
     "./fluent-gecko"
   ],
   "scripts": {
@@ -27,6 +28,7 @@
     "trailingComma": "es5"
   },
   "devDependencies": {
+    "@types/node": "^25.9.2",
     "colors": "^1.3.3",
     "commander": "^2.20",
     "eslint": "^9.23.0",

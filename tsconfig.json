@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@fluent/bundle": ["./fluent-bundle/src/index.ts"],
-      "@fluent/sequence": ["./fluent-sequence/src/index.ts"]
+      "@fluent/sequence": ["./fluent-sequence/src/index.ts"],
+      "@fluent/syntax": ["./fluent-syntax/src/index.ts"]
     }
   }
 }

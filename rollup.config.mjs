@@ -5,6 +5,7 @@ const globalName = {
   "@fluent/dedent": "FluentDedent",
   "@fluent/dom": "FluentDOM",
   "@fluent/langneg": "FluentLangNeg",
+  "@fluent/prettier-plugin": "FluentPrettierPlugin",
   "@fluent/react": "FluentReact",
   "@fluent/sequence": "FluentSequence",
   "@fluent/syntax": "FluentSyntax",

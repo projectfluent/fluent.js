@@ -5,14 +5,16 @@ export default defineConfig({
     alias: {
       "@fluent/bundle": "/fluent-bundle/src/index.ts",
       "@fluent/dedent": "/fluent-dedent/src/index.ts",
+      "@fluent/prettier-plugin": "/fluent-prettier-plugin/src/index.ts",
       "@fluent/sequence": "/fluent-sequence/src/index.ts",
+      "@fluent/syntax": "/fluent-syntax/src/index.ts",
     },
     projects: [
       {
         extends: true,
         test: {
           name: "common",
-          include: ["fluent-*/test/*_test.js"],
+          include: ["fluent-*/test/*_test.{js,ts}"],
           exclude: ["fluent-dom/", "fluent-react/"],
           globals: true,
           environment: "node",

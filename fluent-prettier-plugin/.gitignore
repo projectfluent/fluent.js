@@ -1,0 +1,3 @@
+esm/*
+!esm/package.json
+/index.js
