@@ -16,9 +16,9 @@ const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
  */
 export default class DOMLocalization extends Localization {
   /**
-   * @param {Array<String>}    resourceIds     - List of resource IDs
-   * @param {Function}         generateBundles - Function that returns a
-   *                                             generator over FluentBundles
+   * @param {string[]}         resourceIds     - List of resource IDs
+   * @param {import("./localization.js").GenerateBundles} generateBundles
+   *        - Function that returns an iterable over FluentBundles
    * @returns {DOMLocalization}
    */
   constructor(resourceIds, generateBundles) {
@@ -42,6 +42,12 @@ export default class DOMLocalization extends Localization {
     };
   }
 
+  /**
+   * Regenerate the bundles and retranslate all connected roots.
+   *
+   * @param {boolean} [eager] - Whether to start fetching the first bundles
+   *                            right away
+   */
   onChange(eager = false) {
     super.onChange(eager);
     if (this.roots) {

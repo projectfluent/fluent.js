@@ -3,6 +3,29 @@
 
 import { CachedAsyncIterable } from "cached-iterable";
 
+/** @typedef {import("@fluent/bundle").FluentBundle} FluentBundle */
+/** @typedef {import("@fluent/bundle").FluentVariable} FluentVariable */
+
+/**
+ * A translation key: a message identifier and optional variables.
+ *
+ * @typedef {{ id: string, args?: Record<string, FluentVariable> }} L10nKey
+ */
+
+/**
+ * A formatted message: its value and the list of its attributes, either of
+ * which may be `null` if the message doesn't define them.
+ *
+ * @typedef {{ value: string | null, attributes: Array<{ name: string, value: string }> | null }} L10nMessage
+ */
+
+/**
+ * A function returning an iterable (sync or async) of `FluentBundle`s to use
+ * for the given resource IDs, ordered from the most to the least preferred.
+ *
+ * @typedef {(resourceIds: string[]) => Iterable<FluentBundle> | AsyncIterable<FluentBundle>} GenerateBundles
+ */
+
 /**
  * The `Localization` class is a central high-level API for vanilla
  * JavaScript use of Fluent.
@@ -11,9 +34,9 @@ import { CachedAsyncIterable } from "cached-iterable";
  */
 export default class Localization {
   /**
-   * @param {Array<String>} resourceIds     - List of resource IDs
-   * @param {Function}      generateBundles - Function that returns a
-   *                                          generator over FluentBundles
+   * @param {string[]}        resourceIds     - List of resource IDs
+   * @param {GenerateBundles} generateBundles - Function that returns an
+   *                                            iterable over FluentBundles
    *
    * @returns {Localization}
    */
@@ -23,12 +46,26 @@ export default class Localization {
     this.onChange(true);
   }
 
+  /**
+   * Add resource IDs and regenerate the bundles.
+   *
+   * @param   {string[]} resourceIds - Resource IDs to add
+   * @param   {boolean}  [eager]     - Whether to start fetching the first
+   *                                   bundles right away
+   * @returns {number} The new number of resource IDs
+   */
   addResourceIds(resourceIds, eager = false) {
     this.resourceIds.push(...resourceIds);
     this.onChange(eager);
     return this.resourceIds.length;
   }
 
+  /**
+   * Remove resource IDs and regenerate the bundles.
+   *
+   * @param   {string[]} resourceIds - Resource IDs to remove
+   * @returns {number} The new number of resource IDs
+   */
   removeResourceIds(resourceIds) {
     this.resourceIds = this.resourceIds.filter(r => !resourceIds.includes(r));
     this.onChange();
@@ -100,9 +137,9 @@ export default class Localization {
    * // ]
    * ```
    *
-   * @param   {Array<Object>} keys
-   * @returns {Promise<Array<{value: string, attributes: Object}>>}
-   * @private
+   * @param   {L10nKey[]} keys
+   * @returns {Promise<Array<L10nMessage | undefined>>}
+   * @protected
    */
   formatMessages(keys) {
     return this.formatWithFallback(keys, messageFromBundle);
@@ -127,7 +164,7 @@ export default class Localization {
    * // ['Hello, Mary!', 'Hello, John!', 'Welcome!']
    * ```
    *
-   * @param   {Array<Object>} keys
+   * @param   {L10nKey[]} keys
    * @returns {Promise<Array<string>>}
    */
   formatValues(keys) {
@@ -171,6 +208,9 @@ export default class Localization {
   /**
    * This method should be called when there's a reason to believe
    * that language negotiation or available resources changed.
+   *
+   * @param {boolean} [eager] - Whether to start fetching the first bundles
+   *                            right away
    */
   onChange(eager = false) {
     this.bundles = CachedAsyncIterable.from(
