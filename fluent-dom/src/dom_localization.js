@@ -26,6 +26,8 @@ export default class DOMLocalization extends Localization {
 
     // A Set of DOM trees observed by the `MutationObserver`.
     this.roots = new Set();
+    // The roots that use the observer.
+    this.rootsUsingObserver = new Set();
     // requestAnimationFrame handler.
     this.pendingrAF = null;
     // list of elements pending for translation.
@@ -121,8 +123,12 @@ export default class DOMLocalization extends Localization {
    * `newRoot` in order to translate mutations in it.
    *
    * @param {Element | DocumentFragment}      newRoot - Root to observe.
+   * @param {{useObserver: boolean}} use { useObserver: false} to opt out the
+   *                                 Mutation Observer for this root. True by default.
    */
-  connectRoot(newRoot) {
+  connectRoot(newRoot, opts = {}) {
+    const useObserver = "useObserver" in opts ? opts.useObserver : true; // Defaults to true
+
     for (const root of this.roots) {
       if (
         root === newRoot ||
@@ -146,7 +152,10 @@ export default class DOMLocalization extends Localization {
     }
 
     this.roots.add(newRoot);
-    this.mutationObserver.observe(newRoot, this.observerConfig);
+    if (useObserver) {
+      this.rootsUsingObserver.add(newRoot);
+      this.mutationObserver.observe(newRoot, this.observerConfig);
+    }
   }
 
   /**
@@ -162,9 +171,14 @@ export default class DOMLocalization extends Localization {
    * @returns {boolean}
    */
   disconnectRoot(root) {
+    const rootUseObserver = this.rootsUsingObserver.has(root);
     this.roots.delete(root);
-    // Pause the mutation observer to stop observing `root`.
-    this.pauseObserving();
+
+    if (rootUseObserver) {
+      this.rootsUsingObserver.delete(root);
+      // Pause the mutation observer to stop observing `root`.
+      this.pauseObserving();
+    }
 
     if (this.roots.size === 0) {
       this.mutationObserver = null;
@@ -177,8 +191,10 @@ export default class DOMLocalization extends Localization {
       return true;
     }
 
-    // Resume observing all other roots.
-    this.resumeObserving();
+    if (rootUseObserver) {
+      // Resume observing all other roots.
+      this.resumeObserving();
+    }
     return false;
   }
 
@@ -212,7 +228,7 @@ export default class DOMLocalization extends Localization {
       return;
     }
 
-    for (const root of this.roots) {
+    for (const root of this.rootsUsingObserver) {
       this.mutationObserver.observe(root, this.observerConfig);
     }
   }
