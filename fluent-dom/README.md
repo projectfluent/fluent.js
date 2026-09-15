@@ -41,6 +41,39 @@ const h1 = document.querySelector("h1");
 l10n.setAttributes(h1, "welcome", { user: "Anna" });
 ```
 
+If your application already has a rendering lifecycle, for example when it's
+built with Web Components or a component framework, the `MutationObserver`
+used by `DOMLocalization` can become a performance problem as the number of
+connected roots grows. The `MiniDOMLocalization` class provides the same DOM
+translation API without the observer. Elements are only translated when you
+ask for it, typically from the component's render hook, and connected roots are
+retranslated when the language changes.
+
+```javascript
+import { MiniDOMLocalization } from "@fluent/dom";
+
+const l10n = new MiniDOMLocalization(
+  ["/browser/main.ftl", "/toolkit/menu.ftl"],
+  generateBundles
+);
+
+class MyElement extends HTMLElement {
+  connectedCallback() {
+    l10n.connectRoot(this.shadowRoot);
+  }
+
+  disconnectedCallback() {
+    l10n.disconnectRoot(this.shadowRoot);
+  }
+
+  render() {
+    this.shadowRoot.innerHTML = `<h1 data-l10n-id="welcome"></h1>`;
+    // Nothing observes the DOM, so translate explicitly after rendering.
+    l10n.translateFragment(this.shadowRoot);
+  }
+}
+```
+
 For imperative uses straight from the JS code, there's also a `Localization`
 class that provides just the API needed to format messages in the running code.
 

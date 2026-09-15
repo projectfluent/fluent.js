@@ -1,10 +1,7 @@
-import translateElement from "./overlay.js";
-import Localization from "./localization.js";
-
-const L10NID_ATTR_NAME = "data-l10n-id";
-const L10NARGS_ATTR_NAME = "data-l10n-args";
-
-const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
+import MiniDOMLocalization, {
+  L10NID_ATTR_NAME,
+  L10NARGS_ATTR_NAME,
+} from "./mini_dom_localization.js";
 
 /**
  * The `DOMLocalization` class is responsible for fetching resources and
@@ -13,8 +10,10 @@ const L10N_ELEMENT_QUERY = `[${L10NID_ATTR_NAME}]`;
  * It implements the fallback strategy in case of errors encountered during the
  * formatting of translations and methods for observing DOM
  * trees with a `MutationObserver`.
+ *
+ * See `MiniDOMLocalization` for a variant without the `MutationObserver`.
  */
-export default class DOMLocalization extends Localization {
+export default class DOMLocalization extends MiniDOMLocalization {
   /**
    * @param {Array<String>}    resourceIds     - List of resource IDs
    * @param {Function}         generateBundles - Function that returns a
@@ -24,8 +23,6 @@ export default class DOMLocalization extends Localization {
   constructor(resourceIds, generateBundles) {
     super(resourceIds, generateBundles);
 
-    // A Set of DOM trees observed by the `MutationObserver`.
-    this.roots = new Set();
     // requestAnimationFrame handler.
     this.pendingrAF = null;
     // list of elements pending for translation.
@@ -40,13 +37,6 @@ export default class DOMLocalization extends Localization {
       subtree: true,
       attributeFilter: [L10NID_ATTR_NAME, L10NARGS_ATTR_NAME],
     };
-  }
-
-  onChange(eager = false) {
-    super.onChange(eager);
-    if (this.roots) {
-      this.translateRoots();
-    }
   }
 
   /**
@@ -95,26 +85,6 @@ export default class DOMLocalization extends Localization {
   }
 
   /**
-   * Get the `data-l10n-*` attributes from DOM elements.
-   *
-   * ```javascript
-   * localization.getAttributes(
-   *   document.querySelector('#welcome')
-   * );
-   * // -> { id: 'hello', args: { who: 'world' } }
-   * ```
-   *
-   * @param   {Element}  element - HTML element
-   * @returns {{id: string, args: Object}}
-   */
-  getAttributes(element) {
-    return {
-      id: element.getAttribute(L10NID_ATTR_NAME),
-      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null),
-    };
-  }
-
-  /**
    * Add `newRoot` to the list of roots managed by this `DOMLocalization`.
    *
    * Additionally, if this `DOMLocalization` has an observer, start observing
@@ -145,7 +115,7 @@ export default class DOMLocalization extends Localization {
       );
     }
 
-    this.roots.add(newRoot);
+    super.connectRoot(newRoot);
     this.mutationObserver.observe(newRoot, this.observerConfig);
   }
 
@@ -162,11 +132,11 @@ export default class DOMLocalization extends Localization {
    * @returns {boolean}
    */
   disconnectRoot(root) {
-    this.roots.delete(root);
+    const wasLast = super.disconnectRoot(root);
     // Pause the mutation observer to stop observing `root`.
     this.pauseObserving();
 
-    if (this.roots.size === 0) {
+    if (wasLast) {
       this.mutationObserver = null;
       if (this.windowElement && this.pendingrAF) {
         this.windowElement.cancelAnimationFrame(this.pendingrAF);
@@ -180,16 +150,6 @@ export default class DOMLocalization extends Localization {
     // Resume observing all other roots.
     this.resumeObserving();
     return false;
-  }
-
-  /**
-   * Translate all roots associated with this `DOMLocalization`.
-   *
-   * @returns {Promise}
-   */
-  translateRoots() {
-    const roots = Array.from(this.roots);
-    return Promise.all(roots.map(root => this.translateFragment(root)));
   }
 
   /**
@@ -260,96 +220,28 @@ export default class DOMLocalization extends Localization {
   }
 
   /**
-   * Translate a DOM element or fragment asynchronously using this
-   * `DOMLocalization` object.
-   *
-   * Manually trigger the translation (or re-translation) of a DOM fragment.
-   * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
-   * with information about which translations to use.
-   *
-   * Returns a `Promise` that gets resolved once the translation is complete.
-   *
-   * @param   {Element | DocumentFragment} frag - Element or DocumentFragment to be translated
-   * @returns {Promise}
-   */
-  translateFragment(frag) {
-    return this.translateElements(this.getTranslatables(frag));
-  }
-
-  /**
-   * Translate a list of DOM elements asynchronously using this
-   * `DOMLocalization` object.
-   *
-   * Manually trigger the translation (or re-translation) of a list of elements.
-   * Use the `data-l10n-id` and `data-l10n-args` attributes to mark up the DOM
-   * with information about which translations to use.
-   *
-   * Returns a `Promise` that gets resolved once the translation is complete.
-   *
-   * @param   {Array<Element>} elements - List of elements to be translated
-   * @returns {Promise}
-   */
-  async translateElements(elements) {
-    if (!elements.length) {
-      return undefined;
-    }
-
-    const keys = elements.map(this.getKeysForElement);
-    const translations = await this.formatMessages(keys);
-    return this.applyTranslations(elements, translations);
-  }
-
-  /**
    * Applies translations onto elements.
    *
    * @param {Array<Element>} elements
    * @param {Array<Object>}  translations
-   * @private
+   * @protected
    */
   applyTranslations(elements, translations) {
     this.pauseObserving();
-
-    for (let i = 0; i < elements.length; i++) {
-      if (translations[i] !== undefined) {
-        translateElement(elements[i], translations[i]);
-      }
-    }
-
+    super.applyTranslations(elements, translations);
     this.resumeObserving();
-  }
-
-  /**
-   * Collects all translatable child elements of the element.
-   *
-   * @param {Element | DocumentFragment} element
-   * @returns {Array<Element>}
-   * @private
-   */
-  getTranslatables(element) {
-    const nodes = Array.from(element.querySelectorAll(L10N_ELEMENT_QUERY));
-
-    if (
-      typeof element.hasAttribute === "function" &&
-      element.hasAttribute(L10NID_ATTR_NAME)
-    ) {
-      nodes.push(element);
-    }
-
-    return nodes;
   }
 
   /**
    * Get the `data-l10n-*` attributes from DOM elements as a two-element
    * array.
    *
+   * @deprecated Use `getAttributes` instead.
    * @param {Element} element
    * @returns {Object}
    * @private
    */
   getKeysForElement(element) {
-    return {
-      id: element.getAttribute(L10NID_ATTR_NAME),
-      args: JSON.parse(element.getAttribute(L10NARGS_ATTR_NAME) || null),
-    };
+    return this.getAttributes(element);
   }
 }
