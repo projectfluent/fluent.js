@@ -36,6 +36,11 @@ export function lineOffset(source: string, pos: number): number {
 }
 
 export function columnOffset(source: string, pos: number): number {
+  // lastIndexOf clamps a negative fromIndex to zero.
+  if (pos === 0) {
+    return 0;
+  }
+
   // Find the last line break starting backwards from the index just before
   // pos.  This allows us to correctly handle ths case where the character at
   // pos  is a line break as well.
