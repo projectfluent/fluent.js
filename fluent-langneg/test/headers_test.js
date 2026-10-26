@@ -48,6 +48,24 @@ suite("parse headers", () => {
     );
   });
 
+  test("with whitespace-only entries", () => {
+    assert.deepStrictEqual(acceptedLanguages("en-US, ,\t, fr"), [
+      "en-US",
+      "fr",
+    ]);
+  });
+
+  test("with only whitespace entries", () => {
+    assert.deepStrictEqual(acceptedLanguages(" ,\t, "), []);
+  });
+
+  test("with whitespace entries and quality values", () => {
+    assert.deepStrictEqual(
+      acceptedLanguages("en;q=0.8, , fr;q=0.9,\t, de;q=0.7"),
+      ["fr", "en", "de"]
+    );
+  });
+
   test("edge cases", () => {
     const args = [null, NaN, Infinity, [], {}];
 
