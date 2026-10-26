@@ -172,3 +172,52 @@ suite("Language Negotiation", () => {
     }
   }
 });
+
+suite("Language variant case", () => {
+  for (const strategy of ["matching", "lookup"]) {
+    const options = {
+      strategy,
+      defaultLocale: strategy === "lookup" ? "fr" : undefined,
+    };
+
+    test(`${strategy} - lowercase variants`, () => {
+      assert.deepStrictEqual(
+        negotiateLanguages(
+          ["en-oxendict"],
+          ["en-US-fonipa", "en-US-oxendict"],
+          options
+        ),
+        ["en-US-oxendict"]
+      );
+    });
+
+    test(`${strategy} - uppercase available variant`, () => {
+      assert.deepStrictEqual(
+        negotiateLanguages(
+          ["en-oxendict"],
+          ["en-US-fonipa", "en-US-OXENDICT"],
+          options
+        ),
+        ["en-US-OXENDICT"]
+      );
+    });
+
+    test(`${strategy} - uppercase requested variant`, () => {
+      assert.deepStrictEqual(
+        negotiateLanguages(
+          ["en-OXENDICT"],
+          ["en-US-fonipa", "en-US-oxendict"],
+          options
+        ),
+        ["en-US-oxendict"]
+      );
+    });
+
+    test(`${strategy} - keeps ignoring an invalid non-ASCII variant`, () => {
+      assert.deepStrictEqual(
+        negotiateLanguages(["en"], ["en-Kelvin"], options),
+        strategy === "lookup" ? ["fr"] : []
+      );
+    });
+  }
+});

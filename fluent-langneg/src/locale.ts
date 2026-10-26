@@ -18,7 +18,9 @@ export class LocaleWrapper extends Intl.Locale {
       if (tag.length > lsrTagLength) {
         let unicodeExtStart: number | undefined = tag.search(/-[a-zA-Z]-/);
         if (unicodeExtStart === -1) unicodeExtStart = undefined;
-        this.variants = tag.substring(lsrTagLength + 1, unicodeExtStart);
+        this.variants = tag
+          .substring(lsrTagLength + 1, unicodeExtStart)
+          .toLowerCase();
       }
     }
   }
